@@ -151,7 +151,6 @@ module RuboCop
 
       def all_suite_files
         options = ::RSpec::Core::ConfigurationOptions.new(@rspec_args)
-        options.parse_options if options.respond_to?(:parse_options)
         options.configure(::RSpec.configuration)
 
         ::RSpec.configuration.files_to_run.uniq
