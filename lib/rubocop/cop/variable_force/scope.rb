@@ -45,9 +45,9 @@ module RuboCop
             node
           else
             child_index = case node.type
-                          when :module, :sclass     then 1
-                          when :def, :class, :block then 2
-                          when :defs                then 3
+                          when :module, :sclass then 1
+                          when :def, :class, :block, :numblock then 2
+                          when :defs then 3
                           end
 
             node.children[child_index]

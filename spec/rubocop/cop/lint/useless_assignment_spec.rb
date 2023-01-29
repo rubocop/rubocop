@@ -266,6 +266,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         end
       RUBY
     end
+
+    it 'registers offenses for self assignment in numblock', :ruby27 do
+      expect_offense(<<~RUBY)
+        do_something { foo += _1 }
+                       ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+      RUBY
+    end
   end
 
   context 'when a variable is assigned in loop body and unreferenced' do
