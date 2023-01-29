@@ -1639,6 +1639,7 @@ Lint/Debugger:
     # a user's configuration, but are otherwise not significant.
     Kernel:
       - binding.irb
+      - p
       - Kernel.binding.irb
     Byebug:
       - byebug
@@ -1648,6 +1649,9 @@ Lint/Debugger:
     Capybara:
       - save_and_open_page
       - save_and_open_screenshot
+    PP:
+      - PP.pp
+      - pp
     debug.rb:
       - binding.b
       - binding.break
