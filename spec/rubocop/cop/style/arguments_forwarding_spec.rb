@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     end
 
     it 'does not register an offense when assigning the restarg outside forwarding method arguments' do
-      expect_no_offenses(<<~'RUBY')
+      expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           var = args
           foo(*args, &block)
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     end
 
     it 'does not register an offense when body of method definition is empty' do
-      expect_no_offenses(<<~'RUBY')
+      expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
         end
       RUBY
@@ -245,6 +245,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         expect_correction(<<~RUBY)
           def foo(...)
             bar(...)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense with default positional arguments' do
+        expect_no_offenses(<<~RUBY)
+          def foo(arg=1, *args)
+            bar(*args)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense with default keyword arguments' do
+        expect_no_offenses(<<~RUBY)
+          def foo(*args, arg: 1)
+            bar(*args)
           end
         RUBY
       end

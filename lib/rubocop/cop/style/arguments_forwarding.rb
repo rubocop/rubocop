@@ -84,6 +84,7 @@ module RuboCop
         def on_def(node)
           return unless node.body
           return unless (rest_args_name, args = use_rest_arguments?(node.arguments))
+          return if args.any?(&:default?)
 
           node.each_descendant(:send) do |send_node|
             kwargs_name, block_name = extract_argument_names_from(args)
