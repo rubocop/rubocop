@@ -57,17 +57,21 @@ module RuboCop
           File.expand_path(File.join(cache_root_dir, 'server'))
         end
 
+        # rubocop:disable Metrics/MethodLength
         def cache_root_dir_from_config
           CacheConfig.root_dir do
             # `RuboCop::ConfigStore` has heavy dependencies, this is a lightweight implementation
             # so that only the necessary `CacheRootDirectory` can be obtained.
-            require 'yaml'
             config_path = ConfigFinder.find_config_path(Dir.pwd)
+            file_contents = File.read(config_path)
+
+            # Returns early if `CacheRootDirectory` is not used before requiring `erb` or `yaml`.
+            next unless file_contents.include?('CacheRootDirectory')
 
             require 'erb'
-            file_contents = File.read(config_path)
             yaml_code = ERB.new(file_contents).result
 
+            require 'yaml'
             config_yaml = YAML.safe_load(
               yaml_code, permitted_classes: [Regexp, Symbol], aliases: true
             )
@@ -80,6 +84,7 @@ module RuboCop
             config_yaml&.dig('AllCops', 'CacheRootDirectory')
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         def port_path
           dir.join('port')

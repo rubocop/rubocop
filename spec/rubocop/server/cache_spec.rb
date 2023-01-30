@@ -30,6 +30,20 @@ RSpec.describe RuboCop::Server::Cache do
       end
     end
 
+    context 'when `CacheRootDirectory` configure value is not set', :isolated_environment do
+      after { cache_class.cache_path }
+
+      it 'does not require `erb` and `yaml`' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            DisabledByDefault: true
+        YAML
+
+        expect(described_class).not_to receive(:require).with('erb')
+        expect(described_class).not_to receive(:require).with('yaml')
+      end
+    end
+
     context 'when `CacheRootDirectory` configure value is set', :isolated_environment do
       context 'when cache root path is not specified path' do
         let(:cache_path) { File.join('/tmp/cache-root-directory', 'rubocop_cache', 'server') }
@@ -43,6 +57,9 @@ RSpec.describe RuboCop::Server::Cache do
             AllCops:
               CacheRootDirectory: '/tmp/cache-root-directory'
           YAML
+
+          expect(described_class).to receive(:require).with('erb')
+          expect(described_class).to receive(:require).with('yaml')
 
           if RuboCop::Platform.windows?
             expect(cache_class.cache_path).to eq(cache_path.prepend('D:'))
