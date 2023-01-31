@@ -363,7 +363,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
   end
 
   it 'registers an offense and corrects when xstr heredoc constant is defined after public method' do
-    expect_offense(<<~'RUBY')
+    expect_offense(<<~RUBY)
       class Foo
         def do_something
         end
@@ -375,7 +375,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       end
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       class Foo
         CONSTANT = <<~`EOS`
           str

@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation, :config do
                    ^^^ Empty interpolation detected.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       "this is the "
     RUBY
   end
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation, :config do
                    ^^^^ Empty interpolation detected.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       "this is the "
     RUBY
   end

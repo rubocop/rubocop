@@ -905,7 +905,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
 
       it 'accepts aligned values in `in` clause' do
-        expect_no_offenses(<<~'RUBY')
+        expect_no_offenses(<<~RUBY)
           case condition
           in [42]
             foo
@@ -916,7 +916,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
 
       it 'accepts aligned value in `in` clause and `else` is empty' do
-        expect_no_offenses(<<~'RUBY')
+        expect_no_offenses(<<~RUBY)
           case x
           in 42
             foo

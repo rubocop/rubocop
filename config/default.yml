@@ -4843,6 +4843,11 @@ Style/RedundantFreeze:
   VersionAdded: '0.34'
   VersionChanged: '0.66'
 
+Style/RedundantHeredocDelimiterQuotes:
+  Description: 'Checks for redundant heredoc delimiter quotes.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantInitialize:
   Description: 'Checks for redundant `initialize` methods.'
   Enabled: pending

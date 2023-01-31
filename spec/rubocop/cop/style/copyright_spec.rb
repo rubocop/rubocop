@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     it 'adds an offense' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         ^ Include a copyright notice matching [...]
       RUBY
 

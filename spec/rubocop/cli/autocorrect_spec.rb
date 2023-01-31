@@ -716,12 +716,12 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
   end
 
   it 'corrects Style/InverseMethods and Style/Not offenses' do
-    source = <<~'RUBY'
+    source = <<~RUBY
       x.select {|y| not y.z }
     RUBY
     create_file('example.rb', source)
     expect(cli.run(['--autocorrect-all', '--only', 'Style/InverseMethods,Style/Not'])).to eq(0)
-    corrected = <<~'RUBY'
+    corrected = <<~RUBY
       x.reject {|y|  y.z }
     RUBY
     expect(File.read('example.rb')).to eq(corrected)
@@ -732,7 +732,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       AllCops:
         TargetRubyVersion: 2.6
     YAML
-    source = <<~'RUBY'
+    source = <<~RUBY
       until x
         if foo
           foo.some_method do
@@ -743,7 +743,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
     create_file('example.rb', source)
     expect(cli.run(['--autocorrect-all', '--only', 'Style/Next,Style/SafeNavigation'])).to eq(0)
-    corrected = <<~'RUBY'
+    corrected = <<~RUBY
       until x
         next unless foo
         foo.some_method do
@@ -755,7 +755,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
   end
 
   it 'corrects `Lint/Lambda` and `Lint/UnusedBlockArgument` offenses' do
-    source = <<~'RUBY'
+    source = <<~RUBY
       c = -> event do
         puts 'Hello world'
       end
@@ -765,7 +765,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      '--autocorrect-all',
                      '--only', 'Lint/Lambda,Lint/UnusedBlockArgument'
                    ])).to eq(0)
-    corrected = <<~'RUBY'
+    corrected = <<~RUBY
       c = lambda do |_event|
         puts 'Hello world'
       end
@@ -1100,7 +1100,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         EnforcedStyle: indented_internal_methods
     YAML
 
-    source = <<~'RUBY'
+    source = <<~RUBY
       class Foo
                          private
 
@@ -1121,7 +1121,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      ].join(',')
                    ])).to eq(0)
 
-    corrected = <<~'RUBY'
+    corrected = <<~RUBY
       class Foo
       private
 
@@ -1135,7 +1135,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
   it 'corrects IndentationWidth and IndentationConsistency offenses' \
      'without correcting `Style/TrailingBodyOnClass`' do
-    source = <<~'RUBY'
+    source = <<~RUBY
       class Test foo
           def func1
           end
@@ -1151,7 +1151,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                      ['Layout/IndentationConsistency', 'Layout/IndentationWidth'].join(',')
                    ])).to eq(0)
 
-    corrected = <<~'RUBY'
+    corrected = <<~RUBY
       class Test foo
                  def func1
                  end

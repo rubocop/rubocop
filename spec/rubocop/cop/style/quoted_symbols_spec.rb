@@ -247,7 +247,7 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
         ^^^^^^^^^^^ Prefer double-quoted symbols unless you need single quotes to avoid extra backslashes for escaping.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         :"o'clock"
       RUBY
     end

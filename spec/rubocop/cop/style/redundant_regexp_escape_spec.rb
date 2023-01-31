@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
                    ^^ Redundant escape inside regexp literal
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = /[:.]/
         RUBY
       end
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
                                ^^ Redundant escape inside regexp literal
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = /[[:punct:]&&[^.]]/
         RUBY
       end
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
                            ^^ Redundant escape inside regexp literal
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = /[[:alnum:].]/
         RUBY
       end
@@ -327,7 +327,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
                ^^ Redundant escape inside regexp literal
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           r = /-/i
         RUBY
       end
@@ -597,7 +597,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
         p x
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         x = s[/[一二三四.]+/]
         p x
       RUBY

@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
 
   it 'accepts a `raise` guard clause not followed by empty line when guard ' \
      'clause is after condition without method invocation' do
-    expect_no_offenses(<<~'RUBY')
+    expect_no_offenses(<<~RUBY)
       def foo
         raise unless $1 == o
 

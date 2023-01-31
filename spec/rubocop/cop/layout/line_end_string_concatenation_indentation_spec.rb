@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
     end
 
     it 'accepts a multiline string literal' do
-      expect_no_offenses(<<~'RUBY')
+      expect_no_offenses(<<~RUBY)
         puts %(
           foo
           bar
@@ -128,7 +128,7 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
     end
 
     it 'accepts a heredoc string ...' do
-      expect_no_offenses(<<~'RUBY')
+      expect_no_offenses(<<~RUBY)
         let(:source) do
           <<~CODE
             func({
@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
     end
 
     it 'accepts an empty heredoc string with interpolation' do
-      expect_no_offenses(<<~'RUBY')
+      expect_no_offenses(<<~RUBY)
         puts(<<~TEXT)
         TEXT
       RUBY

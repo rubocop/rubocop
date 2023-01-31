@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
       let(:cop_config) { { 'AllowGemfileRubyComment' => false } }
 
       it 'registers an offense when using ruby config as comment' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           # Specific version (comment) will be used by RVM
           #ruby=2.7.0
           ^^^^^^^^^^^ Missing space after `#`.
@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
 
       context 'file not named Gemfile' do
         it 'registers an offense when using ruby config as comment' do
-          expect_offense(<<~'RUBY', 'test/test_case.rb')
+          expect_offense(<<~RUBY, 'test/test_case.rb')
             # Specific version (comment) will be used by RVM
             #ruby=2.7.0
             ^^^^^^^^^^^ Missing space after `#`.
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
 
       context 'file named Gemfile' do
         it 'does not register an offense when using ruby config as comment' do
-          expect_no_offenses(<<~'RUBY', 'Gemfile')
+          expect_no_offenses(<<~RUBY, 'Gemfile')
             # Specific version (comment) will be used by RVM
             #ruby=2.7.0
             #ruby-gemset=myproject

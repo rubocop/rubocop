@@ -437,7 +437,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
 
     context 'with an unnecessary-character-class after a comment' do
       it 'registers an offense and corrects' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           foo = /
             a # This comment shouldn't affect the position of the offense
             [b]
@@ -445,7 +445,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
           /x
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = /
             a # This comment shouldn't affect the position of the offense
             b

@@ -298,7 +298,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   it 'registers an offense when using heredoc as an argument of raise in `then` branch and it does not have `else` branch' do
-    expect_offense(<<~'RUBY')
+    expect_offense(<<~RUBY)
       def func
         if condition
         ^^ Use a guard clause (`return unless condition`) instead of wrapping the code inside a conditional expression.
