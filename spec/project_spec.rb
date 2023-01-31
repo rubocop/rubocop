@@ -233,13 +233,23 @@ RSpec.describe 'RuboCop Project', type: :feature do
   describe 'Changelog' do
     subject(:changelog) { File.read(path) }
 
-    let(:path) { File.join(File.dirname(__FILE__), '..', 'CHANGELOG.md') }
+    let(:path) { File.expand_path('../CHANGELOG.md', __dir__) }
     let(:entries) { lines.grep(/^\*/).map(&:chomp) }
 
     include_examples 'has Changelog format'
 
     context 'future entries' do
-      dir = File.join(File.dirname(__FILE__), '..', 'changelog')
+      let(:all_cop_names) do
+        RuboCop::Cop::Cop
+          .registry
+          .without_department(:Test)
+          .without_department(:Test2)
+          .cops
+          .map(&:cop_name)
+          .to_set
+      end
+
+      dir = File.expand_path('../changelog', __dir__)
 
       Dir["#{dir}/*.md"].each do |path|
         context "For #{path}" do
@@ -264,6 +274,17 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
           it 'starts with `new_`, `fix_`, or `change_`' do
             expect(File.basename(path)).to(match(/\A(new|fix|change)_.+/))
+          end
+
+          it 'has valid cop name with backticks', :aggregate_failures do
+            entries.each do |entry|
+              entry.scan(%r{\b[A-Z]\w+(?:/[A-Z]\w+)+\b}) do |cop_name|
+                expect(all_cop_names.include?(cop_name))
+                  .to be(true), "Invalid cop name #{cop_name}."
+                expect(entry.include?("`#{cop_name}`"))
+                  .to be(true), "Missing backticks for #{cop_name}."
+              end
+            end
           end
         end
       end
