@@ -400,7 +400,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
         end
 
         it 'accepts case match without else' do
-          expect_no_offenses(<<~'RUBY')
+          expect_no_offenses(<<~RUBY)
             case 0
             in a
               p a

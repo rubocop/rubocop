@@ -44,12 +44,12 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     it 'respects the configuration when autocorrecting' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         `ls`
         ^^^^ Use `%x` around command string.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         %x(ls)
       RUBY
     end
@@ -62,12 +62,12 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     it 'ignores the default when autocorrecting' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         `ls`
         ^^^^ Use `%x` around command string.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         %x[ls]
       RUBY
     end
@@ -259,7 +259,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line ` string without backticks' do
       it 'registers an offense and corrects to %x' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           foo = `
                 ^ Use `%x` around command string.
             ls

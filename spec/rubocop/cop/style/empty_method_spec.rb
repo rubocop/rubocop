@@ -6,50 +6,50 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
     context 'with an empty instance method definition' do
       it 'registers an offense for empty method' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def foo
           ^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def foo; end
         RUBY
       end
 
       it 'registers an offense for method with arguments' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def foo(bar, baz)
           ^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def foo(bar, baz); end
         RUBY
       end
 
       it 'registers an offense for method with arguments without parens' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def foo bar, baz
           ^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def foo bar, baz; end
         RUBY
       end
 
       it 'registers an offense for method with blank line' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def foo
           ^^^^^^^ Put empty method definitions on a single line.
 
           end
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def foo; end
         RUBY
       end
@@ -95,38 +95,38 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
 
     context 'with an empty class method definition' do
       it 'registers an offense for empty method' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def self.foo
           ^^^^^^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def self.foo; end
         RUBY
       end
 
       it 'registers an offense for empty method with arguments' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def self.foo(bar, baz)
           ^^^^^^^^^^^^^^^^^^^^^^ Put empty method definitions on a single line.
           end
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def self.foo(bar, baz); end
         RUBY
       end
 
       it 'registers an offense for method with blank line' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def self.foo
           ^^^^^^^^^^^^ Put empty method definitions on a single line.
 
           end
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def self.foo; end
         RUBY
       end
@@ -219,12 +219,12 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
       end
 
       it 'registers an offense for single line method' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def foo; end
           ^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def foo
           end
         RUBY
@@ -270,12 +270,12 @@ RSpec.describe RuboCop::Cop::Style::EmptyMethod, :config do
       end
 
       it 'registers an offense for single line method' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           def self.foo; end
           ^^^^^^^^^^^^^^^^^ Put the `end` of empty method definitions on the next line.
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           def self.foo
           end
         RUBY

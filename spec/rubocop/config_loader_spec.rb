@@ -786,7 +786,7 @@ RSpec.describe RuboCop::ConfigLoader do
           end
 
           if custom_dept_to_disable == 'Foo'
-            message = <<~'OUTPUT'.chomp
+            message = <<~OUTPUT.chomp
               unrecognized cop or department Foo found in parent_rubocop.yml
               Foo is not a department. Use `Foo/Bar`.
             OUTPUT

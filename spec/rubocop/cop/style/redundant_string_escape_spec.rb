@@ -381,7 +381,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
         MYHEREDOC
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         <<~MYHEREDOC
           #whatever
         MYHEREDOC
@@ -396,7 +396,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
         MYHEREDOC
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         <<~MYHEREDOC
           #
         MYHEREDOC
@@ -411,7 +411,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
         MYHEREDOC
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         <<~MYHEREDOC
           '
         MYHEREDOC

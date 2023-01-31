@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       (1 + 1).to_s
     RUBY
   end
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       (1 + 1).to_s
     RUBY
   end
@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       (1 + 1).to_s
     RUBY
   end
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       (1 + 1; 2 + 2).to_s
     RUBY
   end
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       @var.to_s
     RUBY
   end
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       @var.to_s
     RUBY
   end
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       @@var.to_s
     RUBY
   end
@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       @@var.to_s
     RUBY
   end
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       $var.to_s
     RUBY
   end
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       $var.to_s
     RUBY
   end
@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       $1.to_s
     RUBY
   end
@@ -128,7 +128,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       $1.to_s
     RUBY
   end
@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       $+.to_s
     RUBY
   end
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       $+.to_s
     RUBY
   end
@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       number.to_s
     RUBY
   end
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       do_something(42).to_s
     RUBY
   end
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       do_something(42).to_s
     RUBY
   end
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
       ^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       foo.do_something(42).to_s
     RUBY
   end
@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
                ^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       var = 1; var.to_s
     RUBY
   end
@@ -216,7 +216,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
        ^^^^^^^^^ Prefer `to_s` over string interpolation.
     RUBY
 
-    expect_correction(<<~'RUBY')
+    expect_correction(<<~RUBY)
       [@var.to_s, 'foo']
     RUBY
   end

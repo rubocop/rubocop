@@ -495,7 +495,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'autocorrects multiline %w() array' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         %w(
         ^^^ Use an array literal `[...]` for an array of words.
           foo
@@ -503,7 +503,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         )
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [
           'foo',
           'bar'

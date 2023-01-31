@@ -14,12 +14,12 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
     end
 
     it 'registers an offense for `array.size == 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         [1, 2, 3].size == 0
         ^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `size == 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [1, 2, 3].empty?
       RUBY
     end
@@ -36,122 +36,122 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
     end
 
     it 'registers an offense for `array.size.zero?`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         [1, 2, 3].size.zero?
                   ^^^^^^^^^^ Use `empty?` instead of `size.zero?`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `0 == array.length`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 == [1, 2, 3].length
         ^^^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `0 == length`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `0 == array.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 == [1, 2, 3].size
         ^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `0 == size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `array.length < 1`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         [1, 2, 3].length < 1
         ^^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `length < 1`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `array.size < 1`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         [1, 2, 3].size < 1
         ^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `size < 1`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `1 > array.length`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         1 > [1, 2, 3].length
         ^^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `1 > length`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `1 > array.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         1 > [1, 2, 3].size
         ^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `1 > size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         [1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `array.length > 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         [1, 2, 3].length > 0
         ^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `length > 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `array.size > 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         [1, 2, 3].size > 0
         ^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `size > 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `array.length != 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         [1, 2, 3].length != 0
         ^^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `length != 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `array.size != 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         [1, 2, 3].size != 0
         ^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `size != 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
@@ -168,56 +168,56 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
     end
 
     it 'registers an offense for `!array.size.zero?`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         ![1, 2, 3].size.zero?
                    ^^^^^^^^^^ Use `empty?` instead of `size.zero?`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `0 < array.length' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 < [1, 2, 3].length
         ^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `0 < length`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `0 < array.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 < [1, 2, 3].size
         ^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `0 < size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `0 != array.length`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 != [1, 2, 3].length
         ^^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `0 != length`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
 
     it 'registers an offense for `0 != array.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 != [1, 2, 3].size
         ^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `0 != size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
       RUBY
     end
@@ -225,45 +225,45 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
 
   context 'with hashes' do
     it 'registers an offense for `hash.size == 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         { a: 1, b: 2 }.size == 0
         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `size == 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         { a: 1, b: 2 }.empty?
       RUBY
     end
 
     it 'registers an offense for `0 == hash.size' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 == { a: 1, b: 2 }.size
         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `0 == size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         { a: 1, b: 2 }.empty?
       RUBY
     end
 
     it 'registers an offense for `hash.size != 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         { a: 1, b: 2 }.size != 0
         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `size != 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         !{ a: 1, b: 2 }.empty?
       RUBY
     end
 
     it 'registers an offense for `0 != hash.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 != { a: 1, b: 2 }.size
         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `0 != size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         !{ a: 1, b: 2 }.empty?
       RUBY
     end
@@ -271,45 +271,45 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
 
   context 'with strings' do
     it 'registers an offense for `string.size == 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         "string".size == 0
         ^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `size == 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         "string".empty?
       RUBY
     end
 
     it 'registers an offense for `0 == string.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 == "string".size
         ^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `0 == size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         "string".empty?
       RUBY
     end
 
     it 'registers an offense for `string.size != 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         "string".size != 0
         ^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `size != 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         !"string".empty?
       RUBY
     end
 
     it 'registers an offense for `0 != string.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 != "string".size
         ^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `0 != size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         !"string".empty?
       RUBY
     end
@@ -317,45 +317,45 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
 
   context 'with collection variables' do
     it 'registers an offense for `collection.size == 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         collection.size == 0
         ^^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `size == 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         collection.empty?
       RUBY
     end
 
     it 'registers an offense for `0 == collection.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 == collection.size
         ^^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `0 == size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         collection.empty?
       RUBY
     end
 
     it 'registers an offense for `collection.size != 0`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         collection.size != 0
         ^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `size != 0`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         !collection.empty?
       RUBY
     end
 
     it 'registers an offense for `0 != collection.size`' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         0 != collection.size
         ^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `0 != size`.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         !collection.empty?
       RUBY
     end

@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = %r{home/}
         RUBY
       end
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line %r regex without slashes' do
       it 'registers an offense' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           foo = %r{
                 ^^^ Use `//` around regular expression.
             foo
@@ -223,7 +223,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           }x
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = /
             foo
             bar
@@ -288,7 +288,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = %r{home/}
         RUBY
       end
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex without slashes' do
       it 'registers an offense' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           foo = /
                 ^ Use `%r` around regular expression.
             foo
@@ -304,7 +304,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           /x
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = %r{
             foo
             bar
@@ -383,7 +383,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
                 ^^^^^^^^ Use `%r` around regular expression.
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = %r{home/}
         RUBY
       end
@@ -399,7 +399,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
 
     describe 'a multi-line `//` regex without slashes' do
       it 'registers an offense' do
-        expect_offense(<<~'RUBY')
+        expect_offense(<<~RUBY)
           foo = /
                 ^ Use `%r` around regular expression.
             foo
@@ -407,7 +407,7 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           /x
         RUBY
 
-        expect_correction(<<~'RUBY')
+        expect_correction(<<~RUBY)
           foo = %r{
             foo
             bar

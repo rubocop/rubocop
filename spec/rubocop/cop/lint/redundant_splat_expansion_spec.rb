@@ -371,13 +371,13 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
     let(:cop_config) { { 'AllowPercentLiteralArrayArgument' => true } }
 
     it 'does not register an offense when using percent string literal array' do
-      expect_no_offenses(<<~'RUBY')
+      expect_no_offenses(<<~RUBY)
         do_something(*%w[foo bar baz])
       RUBY
     end
 
     it 'does not register an offense when using percent symbol literal array' do
-      expect_no_offenses(<<~'RUBY')
+      expect_no_offenses(<<~RUBY)
         do_something(*%i[foo bar baz])
       RUBY
     end
@@ -390,7 +390,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
     it_behaves_like 'array splat expansion', '%W(one #{two} three)', as_args: '"one", "#{two}", "three"'
 
     it 'registers an offense when using percent literal array' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         do_something(*%w[foo bar baz])
                      ^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
       RUBY
@@ -400,7 +400,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
     it_behaves_like 'array splat expansion', '%I(first second #{third})', as_args: ':"first", :"second", :"#{third}"'
 
     it 'registers an offense when using percent symbol literal array' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         do_something(*%i[foo bar baz])
                      ^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
       RUBY

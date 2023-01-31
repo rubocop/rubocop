@@ -234,7 +234,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
 
       context 'with multiple heredocs' do
         it 'registers an offense' do
-          expect_offense(<<~'RUBY')
+          expect_offense(<<~RUBY)
             my_method.
                      ^ Place the . on the next line, together with the method name.
               something(<<~HERE, <<~THERE).
@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
               somethingelse
           RUBY
 
-          expect_correction(<<~'RUBY')
+          expect_correction(<<~RUBY)
             my_method
               .something(<<~HERE, <<~THERE)
                 something
@@ -440,7 +440,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
 
       context 'with multiple heredocs' do
         it 'registers an offense' do
-          expect_offense(<<~'RUBY')
+          expect_offense(<<~RUBY)
             my_method
               .something(<<~HERE, <<~THERE)
               ^ Place the . on the previous line, together with the method call receiver.
@@ -452,7 +452,7 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
               ^ Place the . on the previous line, together with the method call receiver.
           RUBY
 
-          expect_correction(<<~'RUBY')
+          expect_correction(<<~RUBY)
             my_method.
               something(<<~HERE, <<~THERE).
                 something

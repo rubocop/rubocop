@@ -695,7 +695,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         end
 
         it 'registers an offense for array include? with multiple parameters without parens' do
-          expect_offense(<<~'RUBY')
+          expect_offense(<<~RUBY)
             (%w(a b).include? params[:t], 3) ? "ab" : "c"
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
           RUBY

@@ -1231,12 +1231,12 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
 
   describe 'autocorrect' do
     it 'corrects =~ in ternary operations' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         foo? ? bar =~ /a/ : bar =~ /b/
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
       RUBY
 
-      expect_correction(<<~'RUBY')
+      expect_correction(<<~RUBY)
         bar =~ (foo? ? /a/ : /b/)
       RUBY
     end

@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
     end
 
     it 'registers an offense for space around heredoc start' do
-      expect_offense(<<~'RUBY')
+      expect_offense(<<~RUBY)
         f( <<~HEREDOC )
                      ^ Space inside parentheses detected.
           ^ Space inside parentheses detected.
