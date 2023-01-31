@@ -325,6 +325,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
       expect_no_offenses('format("#{foo}", "bar", "baz")')
     end
 
+    it 'does not register an offense when using `Kernel.format` with the interpolated number of decimal places fields match' do
+      expect_no_offenses('Kernel.format("%.#{number_of_decimal_places}f", num)')
+    end
+
     it 'registers an offense for String#% when the fields do not match' do
       expect_offense(<<~'RUBY')
         "%s %s" % ["#{foo}", 1, 2]

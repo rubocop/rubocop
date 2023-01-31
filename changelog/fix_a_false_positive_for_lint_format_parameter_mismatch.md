@@ -1,0 +1,1 @@
+* [#11521](https://github.com/rubocop/rubocop/issues/11521): Fix a false positive for `Lint/FormatParameterMismatch` when using `Kernel.format` with the interpolated number of decimal places fields match. ([@koic][])
