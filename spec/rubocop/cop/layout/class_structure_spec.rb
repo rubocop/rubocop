@@ -404,9 +404,9 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         class A
           public def bar
           end
-
           private def foo
           end
+
         end
       RUBY
     end
@@ -427,9 +427,37 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         class A
           def bar
           end
-
           private def foo
           end
+
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when definitions that need to be sorted are defined alternately' do
+      expect_offense(<<~RUBY)
+        class A
+          private def foo; end
+
+          def bar; end
+          ^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+
+          private def baz; end
+
+          def qux; end
+          ^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          def bar; end
+          def qux; end
+          private def foo; end
+
+
+          private def baz; end
+
         end
       RUBY
     end
@@ -451,10 +479,10 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         class A
           def bar
           end
-
           def foo
           end
           private :foo
+
         end
       RUBY
     end
