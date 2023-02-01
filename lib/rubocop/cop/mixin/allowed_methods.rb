@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     # This module encapsulates the ability to allow certain methods when
-    # parsing.
+    # parsing. Even if the code is in offense, if it contains methods
+    # that are allowed. This module is equivalent to the IgnoredMethods module,
+    # which will be deprecated in RuboCop 2.0.
     module AllowedMethods
       private
 
