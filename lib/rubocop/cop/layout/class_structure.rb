@@ -134,6 +134,7 @@ module RuboCop
       #
       class ClassStructure < Base
         include VisibilityHelp
+        include CommentsHelp
         extend AutoCorrector
 
         HUMANIZED_NODE_TYPE = {
@@ -163,7 +164,7 @@ module RuboCop
 
         # Autocorrect by swapping between two nodes autocorrecting them
         def autocorrect(corrector, node)
-          previous = node.left_siblings.find do |sibling|
+          previous = node.left_siblings.reverse.find do |sibling|
             !ignore_for_autocorrect?(node, sibling)
           end
           return unless previous
@@ -281,21 +282,6 @@ module RuboCop
           return false unless node.method?(:private_constant)
 
           node.arguments.any? { |arg| (arg.sym_type? || arg.str_type?) && arg.value == name }
-        end
-
-        def source_range_with_comment(node)
-          begin_pos, end_pos =
-            if (node.def_type? && !node.method?(:initialize)) ||
-               (node.send_type? && node.def_modifier?)
-              start_node = find_visibility_start(node) || node
-              end_node = find_visibility_end(node) || node
-              [begin_pos_with_comment(start_node),
-               end_position_for(end_node) + 1]
-            else
-              [begin_pos_with_comment(node), end_position_for(node)]
-            end
-
-          Parser::Source::Range.new(buffer, begin_pos, end_pos)
         end
 
         def end_position_for(node)
