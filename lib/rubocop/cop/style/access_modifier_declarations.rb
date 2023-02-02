@@ -129,7 +129,8 @@ module RuboCop
         end
 
         def offense?(node)
-          (group_style? && access_modifier_is_inlined?(node)) ||
+          (group_style? && access_modifier_is_inlined?(node) &&
+            !right_siblings_same_inline_method?(node)) ||
             (inline_style? && access_modifier_is_not_inlined?(node))
         end
 
@@ -147,6 +148,12 @@ module RuboCop
 
         def access_modifier_is_not_inlined?(node)
           !access_modifier_is_inlined?(node)
+        end
+
+        def right_siblings_same_inline_method?(node)
+          node.right_siblings.any? do |sibling|
+            sibling.method?(node.method_name) && !sibling.arguments.empty?
+          end
         end
 
         def message(range)
