@@ -26,7 +26,7 @@ require 'rubocop/rspec/support'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
-  # These two settings work together to allow you to limit a spec run
+  # This setting works together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
   # `:focus` metadata. When nothing is tagged with `:focus`, all examples
   # get run.
