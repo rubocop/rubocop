@@ -2785,4 +2785,42 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
   end
+
+  it 'corrects `Style/AccessModifierDeclarations` offenses when multiple groupable access modifiers are defined' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      class Test
+        private def foo; end
+        private def bar; end
+        def baz; end
+      end
+    RUBY
+    status = cli.run(%w[--autocorrect-all --only Style/AccessModifierDeclarations])
+    expect($stdout.string).to eq(<<~RESULT)
+      Inspecting 1 file
+      C
+
+      Offenses:
+
+      example.rb:2:3: C: [Corrected] Style/AccessModifierDeclarations: private should not be inlined in method definitions.
+        private def foo; end
+        ^^^^^^^
+      example.rb:3:3: C: [Corrected] Style/AccessModifierDeclarations: private should not be inlined in method definitions.
+        private def bar; end
+        ^^^^^^^
+
+      1 file inspected, 2 offenses detected, 2 offenses corrected
+    RESULT
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      class Test
+        def baz; end
+      private
+
+      def foo; end
+
+      def bar; end
+      end
+    RUBY
+  end
 end

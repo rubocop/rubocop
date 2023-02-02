@@ -250,6 +250,28 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
 
       include_examples 'always accepted', access_modifier
     end
+
+    it 'offends when multiple groupable access modifiers are defined' do
+      expect_offense(<<~RUBY)
+        class Test
+          private def foo; end
+          private def bar; end
+          ^^^^^^^ `private` should not be inlined in method definitions.
+          def baz; end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Test
+          def baz; end
+        private
+
+        def foo; end
+
+        def bar; end
+        end
+      RUBY
+    end
   end
 
   context 'when `inline` is configured' do
