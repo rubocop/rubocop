@@ -12,10 +12,11 @@ module RuboCop
       #
       # @example Max: 1 (default)
       #   # bad
-      #   foo { _1.call(_2, _3, _4) }
+      #   use_multiple_numbered_parameters { _1.call(_2, _3, _4) }
       #
       #   # good
-      #   foo { do_something(_1) }
+      #   array.each { use_array_element_as_numbered_parameter(_1) }
+      #   hash.each { use_only_hash_value_as_numbered_parameter(_2) }
       class NumberedParametersLimit < Base
         extend TargetRubyVersion
         extend ExcludeLimit
@@ -26,9 +27,10 @@ module RuboCop
         exclude_limit 'Max'
 
         MSG = 'Avoid using more than %<max>i numbered %<parameter>s; %<count>i detected.'
+        NUMBERED_PARAMETER_PATTERN = /\A_[1-9]\z/.freeze
 
         def on_numblock(node)
-          _send_node, param_count, * = *node
+          param_count = numbered_parameter_nodes(node).uniq.count
           return if param_count <= max_count
 
           parameter = max_count > 1 ? 'parameters' : 'parameter'
@@ -37,6 +39,12 @@ module RuboCop
         end
 
         private
+
+        def numbered_parameter_nodes(node)
+          node.each_descendant(:lvar).select do |lvar_node|
+            lvar_node.source.match?(NUMBERED_PARAMETER_PATTERN)
+          end
+        end
 
         def max_count
           max = cop_config.fetch('Max', DEFAULT_MAX_VALUE)
