@@ -202,6 +202,39 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
       RUBY
     end
 
+    it 'accepts when assigning aligned bracketed array elements' do
+      expect_no_offenses(<<~RUBY)
+        var = [
+          first,
+          second
+        ]
+      RUBY
+    end
+
+    it 'accepts when assigning aligned unbracketed array elements' do
+      expect_no_offenses(<<~RUBY)
+        var =
+          first,
+          second
+      RUBY
+    end
+
+    it 'registers an offense when assigning not aligned unbracketed array elements' do
+      expect_offense(<<~RUBY)
+        var =
+             first,
+             ^^^^^ Use one level of indentation for elements following the first line of a multi-line array.
+            second
+            ^^^^^^ Use one level of indentation for elements following the first line of a multi-line array.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        var =
+          first,
+          second
+      RUBY
+    end
+
     it 'accepts single line array' do
       expect_no_offenses('array = [ a, b ]')
     end

@@ -76,7 +76,7 @@ module RuboCop
         end
 
         def target_method_lineno(node)
-          node.loc.line
+          node.bracketed? ? node.loc.line : node.parent.loc.line
         end
       end
     end
