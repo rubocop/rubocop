@@ -239,14 +239,21 @@ RSpec.describe 'RuboCop Project', type: :feature do
     include_examples 'has Changelog format'
 
     context 'future entries' do
-      let(:all_cop_names) do
+      let(:allowed_cop_names) do
+        existing_cop_names.to_set.union(legacy_cop_names)
+      end
+
+      let(:existing_cop_names) do
         RuboCop::Cop::Cop
           .registry
           .without_department(:Test)
           .without_department(:Test2)
           .cops
           .map(&:cop_name)
-          .to_set
+      end
+
+      let(:legacy_cop_names) do
+        RuboCop::ConfigObsoletion.legacy_cop_names
       end
 
       dir = File.expand_path('../changelog', __dir__)
@@ -279,7 +286,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
           it 'has valid cop name with backticks', :aggregate_failures do
             entries.each do |entry|
               entry.scan(%r{\b[A-Z]\w+(?:/[A-Z]\w+)+\b}) do |cop_name|
-                expect(all_cop_names.include?(cop_name))
+                expect(allowed_cop_names.include?(cop_name))
                   .to be(true), "Invalid cop name #{cop_name}."
                 expect(entry.include?("`#{cop_name}`"))
                   .to be(true), "Missing backticks for #{cop_name}."
