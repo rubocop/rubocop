@@ -271,8 +271,7 @@ Gemspec/DevelopmentDependencies:
     - Gemfile
     - gems.rb
     - gemspec
-  AllowedGems:
-    - bundler
+  AllowedGems: []
   Include:
     - '**/*.gemspec'
     - '**/Gemfile'
