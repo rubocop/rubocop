@@ -152,4 +152,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantHeredocDelimiterQuotes, :config do
       EDGE　CASE
     RUBY
   end
+
+  it 'does not register an offense when using the heredoc delimiter with backslash' do
+    expect_no_offenses(<<~'RUBY')
+      do_something(<<~'EOS')
+        Preserve \
+        newlines
+      EOS
+    RUBY
+  end
 end
