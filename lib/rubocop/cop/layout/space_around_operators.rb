@@ -177,7 +177,7 @@ module RuboCop
         end
 
         def autocorrect(corrector, range)
-          if /\*\*/.match?(range.source) && !space_around_exponent_operator?
+          if range.source.include?('**') && !space_around_exponent_operator?
             corrector.replace(range, '**')
           elsif range.source.end_with?("\n")
             corrector.replace(range, " #{range.source.strip}\n")

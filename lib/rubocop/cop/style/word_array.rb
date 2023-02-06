@@ -110,7 +110,7 @@ module RuboCop
             string = s.str_content.dup.force_encoding(::Encoding::UTF_8)
             !string.valid_encoding? ||
               (complex_regex && !complex_regex.match?(string)) ||
-              / /.match?(string)
+              string.include?(' ')
           end
         end
 

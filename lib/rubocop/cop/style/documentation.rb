@@ -145,7 +145,7 @@ module RuboCop
         end
 
         def compact_namespace?(node)
-          /::/.match?(node.loc.name.source)
+          node.loc.name.source.include?('::')
         end
 
         # First checks if the :nodoc: comment is associated with the

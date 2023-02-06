@@ -60,7 +60,7 @@ module RuboCop
         def symbols_contain_spaces?(node)
           node.children.any? do |sym|
             content, = *sym
-            / /.match?(content)
+            content.to_s.include?(' ')
           end
         end
 

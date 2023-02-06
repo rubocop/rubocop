@@ -8,7 +8,7 @@ module RuboCop
         extend AutoCorrector
 
         def on_class(node)
-          return unless /B/.match?(node.loc.name.source)
+          return unless node.loc.name.source.include?('B')
 
           add_offense(node.loc.name, message: 'B to A') do |corrector|
             autocorrect(corrector, node)

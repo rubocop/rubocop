@@ -34,7 +34,7 @@ module RuboCop
 
           allowed = /#{cop_config['AllowedNames'].join('|')}/
           name = node.loc.name.source.gsub(allowed, '')
-          return unless /_/.match?(name)
+          return unless name.include?('_')
 
           add_offense(node.loc.name)
         end

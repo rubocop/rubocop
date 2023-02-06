@@ -10,7 +10,7 @@ RSpec.describe RuboCop::ConfigStore do
       # dir/.rubocop.yml
       # dir/file2
       # dir/subdir/file3
-      "#{/dir/.match?(arg) ? 'dir' : '.'}/.rubocop.yml"
+      "#{arg.include?('dir') ? 'dir' : '.'}/.rubocop.yml"
     end
     allow(RuboCop::ConfigLoader).to receive(:configuration_from_file) { |arg| arg }
     allow(RuboCop::ConfigLoader).to receive(:load_file) { |arg| RuboCop::Config.new(arg) }

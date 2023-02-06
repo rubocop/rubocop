@@ -148,7 +148,7 @@ module RuboCop
         end
 
         def contains_backtick?(node)
-          /`/.match?(node_body(node))
+          node_body(node).include?('`')
         end
 
         def node_body(node)

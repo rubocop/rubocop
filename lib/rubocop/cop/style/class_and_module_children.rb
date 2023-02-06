@@ -178,7 +178,7 @@ module RuboCop
         end
 
         def compact_node_name?(node)
-          /::/.match?(node.identifier.source)
+          node.identifier.source.include?('::')
         end
       end
     end
