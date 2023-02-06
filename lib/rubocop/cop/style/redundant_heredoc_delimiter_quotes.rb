@@ -22,7 +22,8 @@ module RuboCop
       #   EOS
       #
       #   do_something(<<~'EOS')
-      #     escaped character\.
+      #     Preserve \
+      #     newlines
       #   EOS
       #
       class RedundantHeredocDelimiterQuotes < Base
