@@ -1006,10 +1006,8 @@ Layout/LineContinuationLeadingSpace:
                   Use trailing spaces instead of leading spaces in strings
                   broken over multiple lines (by a backslash).
   Enabled: pending
-  AutoCorrect: false
-  SafeAutoCorrect: false
   VersionAdded: '1.31'
-  VersionChanged: '1.32'
+  VersionChanged: '<<next>>'
   EnforcedStyle: trailing
   SupportedStyles:
     - leading
