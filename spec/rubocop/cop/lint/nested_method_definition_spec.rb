@@ -267,6 +267,38 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
     RUBY
   end
 
+  it 'does not register offense for nested definition inside `Module.new` with block' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        def self.define
+          Module.new do |m|
+            def y
+            end
+
+            do_something(m)
+          end
+        end
+      end
+    RUBY
+  end
+
+  context 'when Ruby >= 2.7', :ruby27 do
+    it 'does not register offense for nested definition inside `Module.new` with numblock' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def self.define
+            Module.new do
+              def y
+              end
+
+              do_something(_1)
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when `AllowedMethods: [has_many]`' do
     let(:cop_config) do
       { 'AllowedMethods' => ['has_many'] }
