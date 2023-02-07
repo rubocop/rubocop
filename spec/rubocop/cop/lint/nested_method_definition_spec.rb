@@ -299,6 +299,52 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
     end
   end
 
+  context 'when Ruby >= 3.2', :ruby32 do
+    it 'does not register offense for nested definition inside `Data.define`' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def self.define
+            Data.define(:name) do
+              def y
+              end
+            end
+          end
+        end
+
+        class Foo
+          def self.define
+            Data.define do
+              def y
+              end
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register offense for nested definition inside `::Data.define`' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def self.define
+            ::Data.define(:name) do
+              def y
+              end
+            end
+          end
+        end
+
+        class Foo
+          def self.define
+            ::Data.define do
+              def y
+              end
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when `AllowedMethods: [has_many]`' do
     let(:cop_config) do
       { 'AllowedMethods' => ['has_many'] }

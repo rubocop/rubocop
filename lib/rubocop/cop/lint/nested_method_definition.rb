@@ -120,7 +120,7 @@ module RuboCop
 
         def scoping_method_call?(child)
           child.sclass_type? || eval_call?(child) || exec_call?(child) ||
-            class_or_module_or_struct_new_call?(child) || allowed_method_name?(child)
+            class_constructor?(child) || allowed_method_name?(child)
         end
 
         def allowed_method_name?(node)
@@ -139,9 +139,12 @@ module RuboCop
           (block (send _ {:instance_exec :class_exec :module_exec} ...) ...)
         PATTERN
 
-        # @!method class_or_module_or_struct_new_call?(node)
-        def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
-          ({block numblock} (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
+        # @!method class_constructor?(node)
+        def_node_matcher :class_constructor?, <<~PATTERN
+          ({block numblock} {
+            (send (const {nil? cbase} {:Class :Module :Struct}) :new ...)
+            (send (const {nil? cbase} :Data) :define ...)
+          } ...)
         PATTERN
       end
     end
