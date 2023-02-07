@@ -1019,6 +1019,48 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
     end
   end
 
+  context '`def` in `Data.define` block', :ruby32 do
+    %w[protected private].each do |modifier|
+      it "doesn't register an offense if a method is defined in `Data.define` with block" do
+        expect_no_offenses(<<~RUBY)
+          Data.define do
+            #{modifier}
+            def foo
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense if no method is defined in `Data.define` with block' do
+        expect_offense(<<~RUBY, modifier: modifier)
+          Data.define do
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
+          end
+        RUBY
+      end
+
+      it 'registers an offense if no method is defined in `::Data.define` with block' do
+        expect_offense(<<~RUBY, modifier: modifier)
+          ::Data.define do
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
+          end
+        RUBY
+      end
+
+      it 'registers an offense if no method is defined in `Data.define` with numblock' do
+        expect_offense(<<~RUBY, modifier: modifier)
+          Data.define do
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
+            do_something(_1)
+          end
+        RUBY
+      end
+    end
+  end
+
   %w[module class].each do |keyword|
     it_behaves_like('at the top of the body', keyword)
     it_behaves_like('non-repeated visibility modifiers', keyword)
