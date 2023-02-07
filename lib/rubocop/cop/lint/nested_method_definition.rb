@@ -108,7 +108,7 @@ module RuboCop
           return unless def_ancestor
 
           within_scoping_def =
-            node.each_ancestor(:block, :sclass).any? do |ancestor|
+            node.each_ancestor(:block, :numblock, :sclass).any? do |ancestor|
               scoping_method_call?(ancestor)
             end
 
@@ -141,7 +141,7 @@ module RuboCop
 
         # @!method class_or_module_or_struct_new_call?(node)
         def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
-          (block (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
+          ({block numblock} (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
         PATTERN
       end
     end
