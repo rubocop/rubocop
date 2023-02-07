@@ -34,6 +34,7 @@ module RuboCop
       #   return cond ? b : c
       #
       class MultilineTernaryOperator < Base
+        include CommentsHelp
         extend AutoCorrector
 
         MSG_IF = 'Avoid multi-line ternary operators, use `if` or `unless` instead.'
@@ -46,9 +47,7 @@ module RuboCop
           message = enforce_single_line_ternary_operator?(node) ? MSG_SINGLE_LINE : MSG_IF
 
           add_offense(node, message: message) do |corrector|
-            next unless offense?(node)
-
-            corrector.replace(node, replacement(node))
+            autocorrect(corrector, node)
           end
         end
 
@@ -56,6 +55,16 @@ module RuboCop
 
         def offense?(node)
           node.ternary? && node.multiline?
+        end
+
+        def autocorrect(corrector, node)
+          return unless offense?(node)
+
+          corrector.replace(node, replacement(node))
+          return unless (parent = node.parent)
+          return unless (comments_in_condition = comments_in_condition(node))
+
+          corrector.insert_before(parent, comments_in_condition)
         end
 
         def replacement(node)
@@ -70,6 +79,12 @@ module RuboCop
               end
             RUBY
           end
+        end
+
+        def comments_in_condition(node)
+          comments_in_range(node).map do |comment|
+            "#{comment.loc.expression.source}\n"
+          end.join
         end
 
         def enforce_single_line_ternary_operator?(node)
