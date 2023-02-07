@@ -167,9 +167,12 @@ module RuboCop
           ({block numblock} (send _ {:class_eval :instance_eval}) ...)
         PATTERN
 
-        # @!method class_or_module_or_struct_new_call?(node)
-        def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
-          ({block numblock} (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
+        # @!method class_constructor?(node)
+        def_node_matcher :class_constructor?, <<~PATTERN
+          ({block numblock} {
+            (send (const {nil? cbase} {:Class :Module :Struct}) :new ...)
+            (send (const {nil? cbase} :Data) :define ...)
+          } ...)
         PATTERN
 
         def check_node(node)
@@ -270,7 +273,7 @@ module RuboCop
 
         def eval_call?(child)
           class_or_instance_eval?(child) ||
-            class_or_module_or_struct_new_call?(child) ||
+            class_constructor?(child) ||
             any_context_creating_methods?(child)
         end
 
