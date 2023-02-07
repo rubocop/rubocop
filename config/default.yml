@@ -2402,6 +2402,11 @@ Lint/UnreachableLoop:
     # eg. `exactly(2).times`
     - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
 
+Lint/UnsafeRange:
+  Description: 'Checks for unsafe ranges in regular expressions.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: '#underscore-unused-vars'
