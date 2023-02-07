@@ -179,4 +179,68 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
   it 'accepts a single line ternary operator expression' do
     expect_no_offenses('a = cond ? b : c')
   end
+
+  it 'registers an offense and corrects when the if branch and the else branch are ' \
+     'on a separate line from the condition and not contains a comment' do
+    expect_offense(<<~RUBY)
+      # comment a
+      a = cond ?
+          ^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        b : c # comment b
+      # comment c
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # comment a
+      a = if cond
+        b
+      else
+        c
+      end # comment b
+      # comment c
+    RUBY
+  end
+
+  it 'registers an offense and corrects when if branch and the else branch are ' \
+     'on a separate line from the condition and contains a comment' do
+    expect_offense(<<~RUBY)
+      a = cond ? # comment a
+          ^^^^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        # comment b
+        b : c
+
+      a = cond ?
+          ^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        b : # comment
+        c
+
+      a = cond ? b : # comment
+          ^^^^^^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        c
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # comment a
+      # comment b
+      a = if cond
+        b
+      else
+        c
+      end
+
+      # comment
+      a = if cond
+        b
+      else
+        c
+      end
+
+      # comment
+      a = if cond
+        b
+      else
+        c
+      end
+    RUBY
+  end
 end
