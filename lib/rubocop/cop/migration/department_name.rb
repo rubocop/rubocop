@@ -16,7 +16,7 @@ module RuboCop
         # The token that makes up a disable comment.
         # The allowed specification for comments after `# rubocop: disable` is
         # `DepartmentName/CopName` or` all`.
-        DISABLING_COPS_CONTENT_TOKEN = %r{[A-z]+/[A-z]+|all}.freeze
+        DISABLING_COPS_CONTENT_TOKEN = %r{[A-Za-z]+/[A-Za-z]+|all}.freeze
 
         def on_new_investigation
           processed_source.comments.each do |comment|
@@ -67,7 +67,7 @@ module RuboCop
         end
 
         def contain_unexpected_character_for_department_name?(name)
-          name.match?(%r{[^A-z/, ]})
+          name.match?(%r{[^A-Za-z/, ]})
         end
 
         def qualified_legacy_cop_name(cop_name)
