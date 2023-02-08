@@ -70,6 +70,9 @@ module RuboCop
         def on_send(node)
           return unless debugger_method?(node)
 
+          # Basically, debugger methods are not used as a method argument without arguments.
+          return if node.arguments.empty? && node.each_ancestor(:send, :csend).any?
+
           add_offense(node)
         end
 
