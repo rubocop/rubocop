@@ -18,13 +18,21 @@ module RuboCop
         MSG = 'Character range may include unintended characters.'
         RANGES = [('a'..'z').freeze, ('A'..'Z').freeze, ('0'..'9').freeze].freeze
 
+        def on_irange(node)
+          return unless node.children.all?(&:str_type?)
+
+          range_start, range_end = node.children
+          add_offense(node) if unsafe_range?(range_start.value, range_end.value)
+        end
+        alias on_erange on_irange
+
         def on_regexp(node)
-          each_unsafe_range(node) do |loc|
+          each_unsafe_regexp_range(node) do |loc|
             add_offense(loc)
           end
         end
 
-        def each_unsafe_range(node)
+        def each_unsafe_regexp_range(node)
           node.parsed_tree&.each_expression do |expr|
             next if skip_expression?(expr)
 
@@ -33,7 +41,7 @@ module RuboCop
               # it is an octal escape sequence which we can skip.
               next if range_start.count > 1 || range_end.count > 1
 
-              next unless unsafe_range?(range_start.first, range_end.first)
+              next unless unsafe_range?(range_start.first.text, range_end.first.text)
 
               yield(build_source_range(range_start, range_end))
             end
@@ -49,9 +57,9 @@ module RuboCop
           )
         end
 
-        def range_for(expr)
+        def range_for(char)
           RANGES.detect do |range|
-            range.include?(expr.text)
+            range.include?(char)
           end
         end
 

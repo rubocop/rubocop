@@ -1,6 +1,26 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UnsafeRange, :config do
+  it 'registers an offense for an overly broad character range' do
+    expect_offense(<<~RUBY)
+      foo = 'A'..'z'
+            ^^^^^^^^ Character range may include unintended characters.
+    RUBY
+  end
+
+  it 'registers an offense for an overly broad exclusive character range' do
+    expect_offense(<<~RUBY)
+      foo = 'A'...'z'
+            ^^^^^^^^^ Character range may include unintended characters.
+    RUBY
+  end
+
+  it 'does not register an offense for an acceptable range' do
+    expect_no_offenses(<<~RUBY)
+      foo = 'A'..'Z'
+    RUBY
+  end
+
   it 'registers an offense for an overly broad range' do
     expect_offense(<<~RUBY)
       foo = /[A-z]/
