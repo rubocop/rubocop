@@ -352,6 +352,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when the branches contains empty hash literal argument' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            bar(foo)
+          else
+            bar({})
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar(foo || {})
+        RUBY
+      end
+
       it 'does not register an offense when the branches contains splat argument' do
         expect_no_offenses(<<~RUBY)
           if foo

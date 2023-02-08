@@ -167,8 +167,8 @@ module RuboCop
         def argument_with_operator?(argument)
           return true if ARGUMENT_WITH_OPERATOR_TYPES.include?(argument.type)
           return false unless argument.hash_type?
+          return false unless (node = argument.children.first)
 
-          node = argument.children.first
           node.kwsplat_type? || node.forwarded_kwrestarg_type?
         end
 
