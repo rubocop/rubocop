@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 1.45.1 (2023-02-08)
+
 ### Bug fixes
 
 * [#11552](https://github.com/rubocop/rubocop/pull/11552): Fix a false positive for `Lint/Debugger` when methods containing different method chains. ([@ydah][])
