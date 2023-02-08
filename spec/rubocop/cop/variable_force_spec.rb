@@ -28,9 +28,7 @@ RSpec.describe RuboCop::Cop::VariableForce do
       end
     end
 
-    # FIXME: Remove `broken_on: jruby` when JRuby incompatible is resolved:
-    # https://github.com/jruby/jruby/issues/7113
-    context 'when processing a regex with regopt', broken_on: :jruby do
+    context 'when processing a regex with regopt' do
       let(:node) { parse_source('/\x82/n =~ "a"').ast }
 
       it 'does not raise an error' do
