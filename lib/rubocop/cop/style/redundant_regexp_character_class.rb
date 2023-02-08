@@ -74,7 +74,7 @@ module RuboCop
 
           non_redundant =
             whitespace_in_free_space_mode?(node, class_elem) ||
-            backslash_b?(class_elem) || backslash_zero?(class_elem) ||
+            backslash_b?(class_elem) || octal_requiring_char_class?(class_elem) ||
             requires_escape_outside_char_class?(class_elem)
 
           !non_redundant
@@ -104,11 +104,10 @@ module RuboCop
           elem == '\b'
         end
 
-        def backslash_zero?(elem)
-          # See https://github.com/rubocop/rubocop/issues/11067 for details - in short "\0" != "0" -
-          # the former means an Unicode code point `"\u0000"`, the latter a number character `"0"`.
-          # Similarly "\032" means "\u001A". Other numbers starting with "\0" can also be mentioned.
-          elem == '\0'
+        def octal_requiring_char_class?(elem)
+          # The octal escapes \1 to \7 only work inside a character class
+          # because they would be a backreference outside it.
+          elem.match?(/\A\\[1-7]\z/)
         end
 
         def requires_escape_outside_char_class?(elem)

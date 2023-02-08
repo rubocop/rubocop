@@ -307,12 +307,29 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
     end
   end
 
-  context 'with a character class containing an escaped-0' do
+  context 'with a character class containing an octal escape sequence that also works outside' do
     # See https://github.com/rubocop/rubocop/issues/11067 for details - in short "\0" != "0" - the
     # former means an Unicode code point `"\u0000"`, the latter a number character `"0"`.
-    # Similarly "\032" means "\u001A". Other numbers starting with "\0" can also be mentioned.
+    # Similarly "\032" means "\u001A".
+    # "\0" and "\" followed by *more* than one digit also work outside sets because they are
+    # not treated as backreferences by Onigmo.
+    it 'registers an offense for escapes that would work outside the class' do
+      expect_offense(<<~'RUBY')
+        foo = /[\032]/
+               ^^^^^^ Redundant single-element character class, `[\032]` can be replaced with `\032`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        foo = /\032/
+      RUBY
+    end
+  end
+
+  context 'with a character class containing an octal escape sequence that does not work outside' do
+    # The octal escapes \1 to \7 only work inside a character class
+    # because they would be a backreference outside it.
     it 'does not register an offense' do
-      expect_no_offenses('foo = /[\032]/')
+      expect_no_offenses('foo = /[\1]/')
     end
   end
 
