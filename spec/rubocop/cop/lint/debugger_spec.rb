@@ -76,6 +76,40 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
         ^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.binding.irb`.
       RUBY
     end
+
+    it 'registers an offense for a p call' do
+      expect_offense(<<~RUBY)
+        p 'foo'
+        ^^^^^^^ Remove debugger entry point `p 'foo'`.
+      RUBY
+    end
+
+    it 'registers an offense for a p call with foo method argument' do
+      expect_offense(<<~RUBY)
+        foo(p 'foo')
+            ^^^^^^^ Remove debugger entry point `p 'foo'`.
+      RUBY
+    end
+
+    it 'registers an offense for a p call with p method argument' do
+      expect_offense(<<~RUBY)
+        p(p 'foo')
+          ^^^^^^^ Remove debugger entry point `p 'foo'`.
+        ^^^^^^^^^^ Remove debugger entry point `p(p 'foo')`.
+      RUBY
+    end
+
+    it 'does not register an offense for a p.do_something call' do
+      expect_no_offenses(<<~RUBY)
+        p.do_something
+      RUBY
+    end
+
+    it 'does not register an offense for a p with Foo call' do
+      expect_no_offenses(<<~RUBY)
+        Foo.p
+      RUBY
+    end
   end
 
   context 'byebug' do
