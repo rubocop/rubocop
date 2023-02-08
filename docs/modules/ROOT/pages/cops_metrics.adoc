@@ -63,10 +63,6 @@ end
 | `[]`
 | Array
 
-| IgnoredMethods
-| `[]`
-| Array
-
 | CountRepeatedAttributes
 | `true`
 | Boolean
@@ -154,19 +150,11 @@ end                 # 6 points
 | `[]`
 | Array
 
-| ExcludedMethods
-| `[]`
-| Array
-
 | AllowedMethods
 | `refine`
 | Array
 
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredMethods
 | `[]`
 | Array
 
@@ -334,10 +322,6 @@ Blocks that are calls to builtin iteration methods
 | `[]`
 | Array
 
-| IgnoredMethods
-| `[]`
-| Array
-
 | Max
 | `7`
 | Integer
@@ -413,19 +397,11 @@ end               # 6 points
 | `[]`
 | Array
 
-| ExcludedMethods
-| `[]`
-| Array
-
 | AllowedMethods
 | `[]`
 | Array
 
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredMethods
 | `[]`
 | Array
 |===
@@ -673,10 +649,6 @@ end                             # 7 complexity points
 | Array
 
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredMethods
 | `[]`
 | Array
 

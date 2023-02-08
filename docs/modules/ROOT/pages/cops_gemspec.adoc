@@ -236,7 +236,7 @@ gem "bar"
 | `Gemfile`, `gems.rb`, `gemspec`
 
 | AllowedGems
-| `bundler`
+| `[]`
 | Array
 
 | Include

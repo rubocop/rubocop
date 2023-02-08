@@ -229,9 +229,9 @@ array = [1, 2, 3,
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Yes
 | 0.49
-| 1.40
+| 1.45
 |===
 
 Checks the indentation of the first line of the
@@ -4066,10 +4066,6 @@ end
 | AllowedPatterns
 | `[]`
 | Array
-
-| IgnoredPatterns
-| `[]`
-| Array
 |===
 
 === References
@@ -4244,9 +4240,9 @@ end
 
 | Pending
 | Yes
-| Yes (Unsafe)
+| Yes
 | 1.31
-| 1.32
+| 1.45
 |===
 
 Checks that strings broken over multiple lines (by a backslash) contain
@@ -4301,10 +4297,6 @@ instead of trailing spaces.
 
 |===
 | Name | Default value | Configurable values
-
-| AutoCorrect
-| `false`
-| Boolean
 
 | EnforcedStyle
 | `trailing`
@@ -4575,10 +4567,6 @@ bar: "0000000000", baz: "0000000000"}
 | Boolean
 
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredPatterns
 | `[]`
 | Array
 |===

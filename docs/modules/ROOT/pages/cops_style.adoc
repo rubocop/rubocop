@@ -1019,10 +1019,6 @@ things.map { |thing|
 | `[]`
 | Array
 
-| IgnoredMethods
-| `[]`
-| Array
-
 | AllowBracesOnProceduralOneLiners
 | `false`
 | Boolean
@@ -1421,10 +1417,6 @@ var.class.name == 'Date'
 | Array
 
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredMethods
 | `[]`
 | Array
 |===
@@ -2914,6 +2906,10 @@ module A
 Checks for missing documentation comment for public methods.
 It can optionally be configured to also require documentation for
 non-public methods.
+
+NOTE: This cop allows `initialize` method because `initialize` is
+a special method called from `new`. In some programming languages
+they are called constructor to distinguish it from method.
 
 === Examples
 
@@ -4683,10 +4679,6 @@ redirect('foo/%{bar_id}')
 | Array
 
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredMethods
 | `[]`
 | Array
 |===
@@ -7085,15 +7077,7 @@ Array 1
 | `[]`
 | Array
 
-| IgnoredMethods
-| `[]`
-| Array
-
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredPatterns
 | `[]`
 | Array
 
@@ -7180,10 +7164,6 @@ object.foo()
 | Array
 
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredMethods
 | `[]`
 | Array
 |===
@@ -9173,10 +9153,11 @@ parameter but this maximum can be configured by setting `Max`.
 [source,ruby]
 ----
 # bad
-foo { _1.call(_2, _3, _4) }
+use_multiple_numbered_parameters { _1.call(_2, _3, _4) }
 
 # good
-foo { do_something(_1) }
+array.each { use_array_element_as_numbered_parameter(_1) }
+hash.each { use_only_hash_value_as_numbered_parameter(_2) }
 ----
 
 === Configurable attributes
@@ -9468,10 +9449,6 @@ bar.baz.positive?
 | Array
 
 | AllowedPatterns
-| `[]`
-| Array
-
-| IgnoredMethods
 | `[]`
 | Array
 
@@ -11042,6 +11019,44 @@ CONST = 1.freeze
 
 # good
 CONST = 1
+----
+
+== Style/RedundantHeredocDelimiterQuotes
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.45
+| -
+|===
+
+Checks for redundant heredoc delimiter quotes.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+do_something(<<~'EOS')
+  no string interpolation style text
+EOS
+
+# good
+do_something(<<~EOS)
+  no string interpolation style text
+EOS
+
+do_something(<<~'EOS')
+  #{string_interpolation_style_text_not_evaluated}
+EOS
+
+do_something(<<~'EOS')
+  Preserve \
+  newlines
+EOS
 ----
 
 == Style/RedundantInitialize
@@ -13851,10 +13866,6 @@ something.map { |s| s.upcase }
 | `[]`
 | Array
 
-| IgnoredMethods
-| `[]`
-| Array
-
 | AllowComments
 | `false`
 | Boolean
@@ -15298,12 +15309,14 @@ obj == 'string'   #=> true
 "bar" != foo
 42 >= foo
 10 < bar
+99 == CONST
 
 # good
 foo == 99
 foo == "bar"
 foo <= 42
 bar > 10
+CONST == 99
 "#{interpolation}" == foo
 /#{interpolation}/ == foo
 ----
@@ -15404,12 +15417,14 @@ have the same result if reversed.
 1 + x
 10 * y
 1 & z
+1 + CONST
 
 # good
 60 * 24
 x + 1
 y * 10
 z & 1
+CONST + 1
 
 # good
 1 | x
