@@ -2,6 +2,13 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#11552](https://github.com/rubocop/rubocop/pull/11552): Fix a false positive for `Lint/Debugger` when methods containing different method chains. ([@ydah][])
+* [#11548](https://github.com/rubocop/rubocop/pull/11548): Fix an error for `Style/AccessModifierDeclarations` when if a non method definition was included. ([@ydah][])
+* [#11554](https://github.com/rubocop/rubocop/issues/11554): Fix an error for `Style/RedundantCondition` when the branches contains empty hash literal argument. ([@koic][])
+* [#11549](https://github.com/rubocop/rubocop/issues/11549): Fix an error for third party cops when inheriting `RuboCop::Cop::Cop`. ([@koic][])
+
 ## 1.45.0 (2023-02-08)
 
 ### New features
