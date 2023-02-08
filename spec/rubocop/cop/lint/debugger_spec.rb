@@ -110,6 +110,30 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
         Foo.p
       RUBY
     end
+
+    it 'does not register an offense when `p` is an argument of method call' do
+      expect_no_offenses(<<~RUBY)
+        let(:p) { foo }
+
+        it { expect(do_something(p)).to eq bar }
+      RUBY
+    end
+
+    it 'does not register an offense when `p` is an argument of safe navigation method call' do
+      expect_no_offenses(<<~RUBY)
+        let(:p) { foo }
+
+        it { expect(obj&.do_something(p)).to eq bar }
+      RUBY
+    end
+
+    it 'does not register an offense when `p` is a keyword argument of method call' do
+      expect_no_offenses(<<~RUBY)
+        let(:p) { foo }
+
+        it { expect(do_something(k: p)).to eq bar }
+      RUBY
+    end
   end
 
   context 'byebug' do
