@@ -82,44 +82,25 @@ module RuboCop
         def debugger_methods
           @debugger_methods ||= begin
             config = cop_config.fetch('DebuggerMethods', [])
-            values = config.is_a?(Array) ? config : config.values.flatten
-            values.map do |v|
-              next unless v
-
-              *receiver, method_name = v.split('.')
-              {
-                receiver: receiver.empty? ? nil : receiver.map(&:to_sym),
-                method_name: method_name.to_sym
-              }
-            end.compact
+            config.is_a?(Array) ? config : config.values.flatten
           end
         end
 
         def debugger_method?(send_node)
-          method_name = send_node.method_name
+          return if send_node.parent&.send_type? && send_node.parent.receiver == send_node
 
-          debugger_methods.any? do |method|
-            next unless method[:method_name] == method_name
-
-            if method[:receiver].nil?
-              send_node.receiver.nil?
-            else
-              method[:receiver] == receiver_chain(send_node)
-            end
-          end
+          debugger_methods.include?(chained_method_name(send_node))
         end
 
-        def receiver_chain(send_node)
-          receivers = []
+        def chained_method_name(send_node)
+          chained_method_name = send_node.method_name.to_s
           receiver = send_node.receiver
-
           while receiver
-            name = receiver.send_type? ? receiver.method_name : receiver.const_name&.to_sym
-            receivers.unshift(name)
+            name = receiver.send_type? ? receiver.method_name : receiver.const_name
+            chained_method_name = "#{name}.#{chained_method_name}"
             receiver = receiver.receiver
           end
-
-          receivers
+          chained_method_name
         end
       end
     end
