@@ -51,7 +51,7 @@ module RuboCop
         def on_block(node)
           return if allowed_method?(node.method_name) || matches_allowed_pattern?(node.method_name)
           return if method_receiver_excluded?(node)
-          return if node.class_constructor? || node.struct_constructor?
+          return if node.class_constructor?
 
           check_code_length(node)
         end
