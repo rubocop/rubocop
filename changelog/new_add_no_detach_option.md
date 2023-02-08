@@ -1,1 +1,0 @@
-* [#11188](https://github.com/rubocop/rubocop/issues/11188): Add a `--no-detach` option for `--start-server`. This will start the server process in the foreground, which can be helpful when running within Docker where detaching the process terminates the container. ([@f1sherman][])
