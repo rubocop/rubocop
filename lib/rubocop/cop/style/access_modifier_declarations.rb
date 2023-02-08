@@ -152,7 +152,7 @@ module RuboCop
 
         def right_siblings_same_inline_method?(node)
           node.right_siblings.any? do |sibling|
-            sibling.method?(node.method_name) && !sibling.arguments.empty?
+            sibling.send_type? && sibling.method?(node.method_name) && !sibling.arguments.empty?
           end
         end
 

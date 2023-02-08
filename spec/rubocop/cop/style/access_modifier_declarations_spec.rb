@@ -258,12 +258,14 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           private def bar; end
           ^^^^^^^ `private` should not be inlined in method definitions.
           def baz; end
+          QUX = ['qux']
         end
       RUBY
 
       expect_correction(<<~RUBY)
         class Test
           def baz; end
+          QUX = ['qux']
         private
 
         def foo; end
