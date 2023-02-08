@@ -53,6 +53,11 @@ module RuboCop
       def add_offense(node_or_range, location: :expression, message: nil, severity: nil, &block)
         @v0_argument = node_or_range
         range = find_location(node_or_range, location)
+
+        # Since this range may be generated from Ruby code embedded in some
+        # template file, we convert it to location info in the original file.
+        range = range_for_original(range)
+
         if block.nil? && !support_autocorrect?
           super(range, message: message, severity: severity)
         else
@@ -93,13 +98,20 @@ module RuboCop
         super
       end
 
-      private
-
-      def begin_investigation(processed_source)
+      # Called before any investigation
+      # @api private
+      def begin_investigation(processed_source, offset: 0, original: processed_source)
         super
         @offenses = current_offenses
         @last_corrector = @current_corrector
+
+        # We need to keep track of the original source and offset,
+        # because `processed_source` here may be an embedded code in it.
+        @current_offset = offset
+        @current_original = original
       end
+
+      private
 
       # Override Base
       def callback_argument(_range)
@@ -140,6 +152,14 @@ module RuboCop
         yield
       rescue ::Parser::ClobberingError
         # ignore Clobbering errors
+      end
+
+      def range_for_original(range)
+        ::Parser::Source::Range.new(
+          @current_original.buffer,
+          range.begin_pos + @current_offset,
+          range.end_pos + @current_offset
+        )
       end
     end
   end
