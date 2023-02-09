@@ -156,8 +156,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
       expect(changelog.end_with?("\n")).to be true
     end
 
-    it 'has either entries, headers, or empty lines' do
-      expect(non_reference_lines).to all(match(/^(\*|#|$)/))
+    it 'has either entries, headers, empty lines, or comments' do
+      expect(non_reference_lines).to all(match(/^(\*|#|$|<!---|-->|  )/))
     end
 
     describe 'entry' do

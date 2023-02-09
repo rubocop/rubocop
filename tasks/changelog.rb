@@ -25,7 +25,6 @@ class Changelog
     end
 
     def write
-      FileUtils.mkdir_p(ENTRIES_PATH)
       File.write(path, content)
       path
     end
