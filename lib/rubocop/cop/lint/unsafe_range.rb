@@ -36,14 +36,8 @@ module RuboCop
           node.parsed_tree&.each_expression do |expr|
             next if skip_expression?(expr)
 
-            range_pairs(expr).each do |range_start, range_end|
-              # If the start/end include multiple expressions
-              # it is an octal escape sequence which we can skip.
-              next if [range_start, range_end].any? do |bound|
-                # With regexp_parser < 2.7 this will be an array of multiple
-                # expressions.  For >= 2.7 it will be a single expression.
-                bound.count > 1 || bound.first.type == :escape
-              end
+            range_pairs(expr).reject do |range_start, range_end|
+              next if skip_range?(range_start, range_end)
 
               next unless unsafe_range?(range_start.first.text, range_end.first.text)
 
@@ -157,6 +151,15 @@ module RuboCop
 
         def skip_expression?(expr)
           !(expr.type == :set && expr.token == :character)
+        end
+
+        def skip_range?(range_start, range_end)
+          [range_start, range_end].any? do |bound|
+            # With regexp_parser < 2.7 octal escapes
+            # will be an array of multiple expressions.
+            # For >= 2.7 it will be a single expression.
+            bound.count > 1 || bound.first.type == :escape
+          end
         end
       end
     end

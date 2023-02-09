@@ -118,7 +118,13 @@ RSpec.describe RuboCop::Cop::Lint::UnsafeRange, :config do
 
   it 'does not register an offense with opening octal bound' do
     expect_no_offenses(<<~'RUBY')
-      foo = /[\101-z]/
+      foo = /[\x01-z]/
+    RUBY
+  end
+
+  it 'does not register an offense with closing hex bound' do
+    expect_no_offenses(<<~'RUBY')
+      foo = /[A-\x7a]/
     RUBY
   end
 
