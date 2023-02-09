@@ -39,7 +39,11 @@ module RuboCop
             range_pairs(expr).each do |range_start, range_end|
               # If the start/end include multiple expressions
               # it is an octal escape sequence which we can skip.
-              next if range_start.count > 1 || range_end.count > 1
+              next if [range_start, range_end].any? do |bound|
+                # With regexp_parser < 2.7 this will be an array of multiple
+                # expressions.  For >= 2.7 it will be a single expression.
+                bound.count > 1 || bound.first.type == :escape
+              end
 
               next unless unsafe_range?(range_start.first.text, range_end.first.text)
 
@@ -68,7 +72,7 @@ module RuboCop
         end
 
         # Helper to abstract complexity of building range pairs
-        # with octal escape reconstruction.
+        # with octal escape reconstruction (needed for regexp_parser < 2.7).
         class RangePairs
           attr_reader :compound_token, :pairs, :root
 
