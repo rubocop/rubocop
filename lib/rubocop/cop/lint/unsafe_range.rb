@@ -19,7 +19,7 @@ module RuboCop
         RANGES = [('a'..'z').freeze, ('A'..'Z').freeze, ('0'..'9').freeze].freeze
 
         def on_irange(node)
-          return unless node.children.all?(&:str_type?)
+          return unless node.children.compact.all?(&:str_type?)
 
           range_start, range_end = node.children
           add_offense(node) if unsafe_range?(range_start.value, range_end.value)

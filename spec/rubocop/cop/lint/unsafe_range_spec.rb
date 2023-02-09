@@ -21,6 +21,12 @@ RSpec.describe RuboCop::Cop::Lint::UnsafeRange, :config do
     RUBY
   end
 
+  it 'does not register an offense for an open-ended range' do
+    expect_no_offenses(<<~RUBY)
+      "string"[1..]
+    RUBY
+  end
+
   it 'registers an offense for an overly broad range' do
     expect_offense(<<~RUBY)
       foo = /[A-z]/
