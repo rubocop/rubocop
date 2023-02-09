@@ -32,35 +32,53 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def each_repeated_character_class_element_loc(node)
           node.parsed_tree&.each_expression do |expr|
             next if skip_expression?(expr)
 
             seen = Set.new
-            enum = expr.expressions.to_enum
-            expression_count = expr.expressions.count
+            group_expressions(node, expr.expressions) do |group|
+              group_source = group.map(&:to_s).join
 
-            expression_count.times do |current_number|
-              current_child = enum.next
-              next if within_interpolation?(node, current_child)
+              yield source_range(group) if seen.include?(group_source)
 
-              current_child_source = current_child.to_s
-              next_child = enum.peek if current_number + 1 < expression_count
-
-              if seen.include?(current_child_source)
-                next if start_with_escaped_zero_number?(current_child_source, next_child.to_s)
-
-                yield current_child.expression
-              end
-
-              seen << current_child_source
+              seen << group_source
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         private
+
+        def group_expressions(node, expressions)
+          expressions = expressions.to_a
+
+          until expressions.empty?
+            group = [expressions.shift]
+            next if within_interpolation?(node, group.first)
+
+            pop_octal_digits(group, expressions) if escaped_octal?(group.first.to_s)
+
+            yield(group)
+          end
+        end
+
+        def pop_octal_digits(current_child, expressions)
+          2.times do
+            next_child = expressions.first
+            break unless octal?(next_child.to_s)
+
+            current_child << expressions.shift
+          end
+        end
+
+        def source_range(children)
+          return children.first.expression if children.size == 1
+
+          range_between(
+            children.first.expression.begin_pos,
+            children.last.expression.begin_pos + children.last.te - children.last.ts
+          )
+        end
 
         def skip_expression?(expr)
           expr.type != :set || expr.token == :intersection
@@ -75,9 +93,12 @@ module RuboCop
           interpolation_locs(node).any? { |il| il.overlaps?(parse_tree_child_loc) }
         end
 
-        def start_with_escaped_zero_number?(current_child, next_child)
-          # Represents escaped code from `"\00"` (`"\u0000"`) to `"\07"` (`"\a"`).
-          current_child == '\\0' && next_child.match?(/[0-7]/)
+        def escaped_octal?(string)
+          string.size == 2 && string[0] == '\\' && octal?(string[1])
+        end
+
+        def octal?(char)
+          ('0'..'7').cover?(char)
         end
 
         def interpolation_locs(node)
