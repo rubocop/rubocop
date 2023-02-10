@@ -51,7 +51,7 @@ module RuboCop
         def build_source_range(range_start, range_end)
           range_between(
             range_start.first.expression.begin_pos,
-            range_end.last.expression.begin_pos + range_end.last.te - range_end.last.ts
+            range_end.last.expression.begin_pos + range_end.last.to_s.length
           )
         end
 
