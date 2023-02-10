@@ -2140,6 +2140,11 @@ Lint/RedundantDirGlobSort:
   VersionChanged: '1.26'
   SafeAutoCorrect: false
 
+Lint/RedundantRegexpQuantifiers:
+  Description: 'Checks for redundant quantifiers in Regexps.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
   Enabled: true

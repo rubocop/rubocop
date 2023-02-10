@@ -68,7 +68,9 @@ module RuboCop
             return { body: expression } unless (q = quantifier)
 
             body = expression.adjust(end_pos: -q.text.length)
-            q_loc = expression.with(begin_pos: body.end_pos)
+            q.origin = origin
+            q.source = source if q.respond_to?(:source=) # for regexp_parser 1.8
+            q_loc = q.expression
             { body: body, quantifier: q_loc }
           end
         end
@@ -86,6 +88,7 @@ module RuboCop
         end
       end
       ::Regexp::Expression::Base.include Expression::Base
+      ::Regexp::Expression::Quantifier.include Expression::Base
       ::Regexp::Expression::CharacterSet.include Expression::CharacterSet
     end
   end
