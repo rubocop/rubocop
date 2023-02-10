@@ -76,6 +76,10 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
         ^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.binding.irb`.
       RUBY
     end
+  end
+
+  context 'when print debug method is configured by user' do
+    let(:cop_config) { { 'DebuggerMethods' => %w[p] } }
 
     it 'registers an offense for a p call' do
       expect_offense(<<~RUBY)
