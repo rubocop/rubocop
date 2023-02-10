@@ -24,6 +24,8 @@ module RuboCop
 
         MSG_REPEATED_ELEMENT = 'Duplicate element inside regexp character class'
 
+        OCTAL_DIGITS_AFTER_ESCAPE = 2
+
         def on_regexp(node)
           each_repeated_character_class_element_loc(node) do |loc|
             add_offense(loc, message: MSG_REPEATED_ELEMENT) do |corrector|
@@ -50,12 +52,16 @@ module RuboCop
         private
 
         def group_expressions(node, expressions)
+          # Create a mutable list to simplify state tracking while we iterate.
           expressions = expressions.to_a
 
           until expressions.empty?
+            # With we may need to compose a group of multiple expressions.
             group = [expressions.shift]
             next if within_interpolation?(node, group.first)
 
+            # With regexp_parser < 2.7 escaped octal sequences may be up to 3
+            # separate expressions ("\\0", "0", "1").
             pop_octal_digits(group, expressions) if escaped_octal?(group.first.to_s)
 
             yield(group)
@@ -63,7 +69,7 @@ module RuboCop
         end
 
         def pop_octal_digits(current_child, expressions)
-          2.times do
+          OCTAL_DIGITS_AFTER_ESCAPE.times do
             next_child = expressions.first
             break unless octal?(next_child.to_s)
 
@@ -94,7 +100,7 @@ module RuboCop
         end
 
         def escaped_octal?(string)
-          string.size == 2 && string[0] == '\\' && octal?(string[1])
+          string.length == 2 && string[0] == '\\' && octal?(string[1])
         end
 
         def octal?(char)
