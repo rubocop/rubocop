@@ -82,7 +82,7 @@ module RuboCop
 
           range_between(
             children.first.expression.begin_pos,
-            children.last.expression.begin_pos + children.last.te - children.last.ts
+            children.last.expression.begin_pos + children.last.to_s.length
           )
         end
 
