@@ -1630,13 +1630,12 @@ Lint/Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
   VersionAdded: '0.14'
-  VersionChanged: '1.10'
+  VersionChanged: '<<next>>'
   DebuggerMethods:
     # Groups are available so that a specific group can be disabled in
     # a user's configuration, but are otherwise not significant.
     Kernel:
       - binding.irb
-      - p
       - Kernel.binding.irb
     Byebug:
       - byebug
@@ -1646,9 +1645,6 @@ Lint/Debugger:
     Capybara:
       - save_and_open_page
       - save_and_open_screenshot
-    PP:
-      - PP.pp
-      - pp
     debug.rb:
       - binding.b
       - binding.break
