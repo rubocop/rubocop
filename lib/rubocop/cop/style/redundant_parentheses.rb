@@ -153,7 +153,7 @@ module RuboCop
 
           return if node.send_type? && !method_call_with_redundant_parentheses?(node)
 
-          offense(begin_node, 'an unary operation')
+          offense(begin_node, 'a unary operation')
         end
 
         def offense(node, msg)
