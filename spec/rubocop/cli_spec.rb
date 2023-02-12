@@ -1680,9 +1680,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    # FIXME: Remove `broken_on: jruby`, which works around a JRuby 9.2.13.0 regression:
-    # https://github.com/jruby/jruby/issues/6365
-    it 'fails when a configuration file has invalid YAML syntax', broken_on: :jruby do
+    it 'fails when a configuration file has invalid YAML syntax' do
       create_file('example/.rubocop.yml', <<~YAML)
         AllCops:
           Exclude:
@@ -1693,7 +1691,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # MRI and JRuby return slightly different error messages.
       expect($stderr.string)
         .to match(%r{^\(\S+example/\.rubocop\.yml\):\ (did\ not\ find\ )?
-                  expected\ alphabetic\ or \ numeric\ character}x)
+                  (expected\ alphabetic\ or \ numeric\ character|unexpected\ character)}x)
     end
 
     context 'when a file inherits from a higher level' do
