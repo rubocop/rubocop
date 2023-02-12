@@ -5,26 +5,35 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
   include_examples 'aligned', "\xef\xbb\xbfclass", 'Test', 'end'
 
-  include_examples 'aligned', 'class',  'Test',      'end'
-  include_examples 'aligned', 'module', 'Test',      'end'
-  include_examples 'aligned', 'if',     'test',      'end'
-  include_examples 'aligned', 'unless', 'test',      'end'
-  include_examples 'aligned', 'while',  'test',      'end'
-  include_examples 'aligned', 'until',  'test',      'end'
-  include_examples 'aligned', 'case',   'a when b',  'end'
+  include_examples 'aligned', 'class',          'Test',      'end'
+  include_examples 'aligned', 'class << self;', 'Test',      'end'
+  include_examples 'aligned', 'module',         'Test',      'end'
+  include_examples 'aligned', 'if',             'test',      'end'
+  include_examples 'aligned', 'unless',         'test',      'end'
+  include_examples 'aligned', 'while',          'test',      'end'
+  include_examples 'aligned', 'until',          'test',      'end'
+  include_examples 'aligned', 'case',           'a when b',  'end'
 
   include_examples 'misaligned', <<~RUBY, false
     puts 1; class Test
       end
       ^^^ `end` at 2, 2 is not aligned with `class` at 1, 8.
 
-    module Test
+    class Test
       end
-      ^^^ `end` at 2, 2 is not aligned with `module` at 1, 0.
+      ^^^ `end` at 2, 2 is not aligned with `class` at 1, 0.
 
-    puts 1; class Test
+    puts 1; class << self
       end
       ^^^ `end` at 2, 2 is not aligned with `class` at 1, 8.
+
+    class << self
+      end
+      ^^^ `end` at 2, 2 is not aligned with `class` at 1, 0.
+
+    puts 1; module Test
+      end
+      ^^^ `end` at 2, 2 is not aligned with `module` at 1, 8.
 
     module Test
       end
@@ -71,13 +80,14 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       ^^^ `end` at 2, 2 is not aligned with `case` at 1, 0.
   RUBY
 
-  include_examples 'aligned', 'puts 1; class',  'Test',     '        end'
-  include_examples 'aligned', 'puts 1; module', 'Test',     '        end'
-  include_examples 'aligned', 'puts 1; if',     'Test',     '        end'
-  include_examples 'aligned', 'puts 1; unless', 'Test',     '        end'
-  include_examples 'aligned', 'puts 1; while',  'Test',     '        end'
-  include_examples 'aligned', 'puts 1; until',  'Test',     '        end'
-  include_examples 'aligned', 'puts 1; case',   'a when b', '        end'
+  include_examples 'aligned', 'puts 1; class',          'Test',     '        end'
+  include_examples 'aligned', 'puts 1; class << self;', 'Test',     '        end'
+  include_examples 'aligned', 'puts 1; module',         'Test',     '        end'
+  include_examples 'aligned', 'puts 1; if',             'Test',     '        end'
+  include_examples 'aligned', 'puts 1; unless',         'Test',     '        end'
+  include_examples 'aligned', 'puts 1; while',          'Test',     '        end'
+  include_examples 'aligned', 'puts 1; until',          'Test',     '        end'
+  include_examples 'aligned', 'puts 1; case',           'a when b', '        end'
 
   it 'can handle ternary if' do
     expect_no_offenses('a = cond ? x : y')
@@ -90,13 +100,14 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   context 'when EnforcedStyleAlignWith is start_of_line' do
     let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true } }
 
-    include_examples 'aligned', 'puts 1; class',  'Test',     'end'
-    include_examples 'aligned', 'puts 1; module', 'Test',     'end'
-    include_examples 'aligned', 'puts 1; if',     'test',     'end'
-    include_examples 'aligned', 'puts 1; unless', 'test',     'end'
-    include_examples 'aligned', 'puts 1; while',  'test',     'end'
-    include_examples 'aligned', 'puts 1; until',  'test',     'end'
-    include_examples 'aligned', 'puts 1; case',   'a when b', 'end'
+    include_examples 'aligned', 'puts 1; class',          'Test',     'end'
+    include_examples 'aligned', 'puts 1; class << self;', 'Test',     'end'
+    include_examples 'aligned', 'puts 1; module',         'Test',     'end'
+    include_examples 'aligned', 'puts 1; if',             'test',     'end'
+    include_examples 'aligned', 'puts 1; unless',         'test',     'end'
+    include_examples 'aligned', 'puts 1; while',          'test',     'end'
+    include_examples 'aligned', 'puts 1; until',          'test',     'end'
+    include_examples 'aligned', 'puts 1; case',           'a when b', 'end'
 
     include_examples 'misaligned', <<~RUBY, false
       puts 1; class Test
@@ -235,6 +246,10 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
              end
              ^^^ `end` at 2, 7 is not aligned with `module` at 1, 0.
 
+      class << self
+        end
+        ^^^ `end` at 2, 2 is not aligned with `class` at 1, 0.
+
       if test
         end
         ^^^ `end` at 2, 2 is not aligned with `if` at 1, 0.
@@ -256,13 +271,14 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         ^^^ `end` at 2, 2 is not aligned with `case` at 1, 0.
     RUBY
 
-    include_examples 'aligned', 'class',  'Test',      'end'
-    include_examples 'aligned', 'module', 'Test',      'end'
-    include_examples 'aligned', 'if',     'test',      'end'
-    include_examples 'aligned', 'unless', 'test',      'end'
-    include_examples 'aligned', 'while',  'test',      'end'
-    include_examples 'aligned', 'until',  'test',      'end'
-    include_examples 'aligned', 'case',   'a when b',  'end'
+    include_examples 'aligned', 'class',          'Test',     'end'
+    include_examples 'aligned', 'class << self;', 'Test',     'end'
+    include_examples 'aligned', 'module',         'Test',     'end'
+    include_examples 'aligned', 'if',             'test',     'end'
+    include_examples 'aligned', 'unless',         'test',     'end'
+    include_examples 'aligned', 'while',          'test',     'end'
+    include_examples 'aligned', 'until',          'test',     'end'
+    include_examples 'aligned', 'case',           'a when b', 'end'
 
     include_examples 'misaligned', <<~RUBY, :start_of_line
       puts 1; class Test
@@ -272,6 +288,10 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       puts 1; module Test
       end
       ^^^ `end` at 2, 0 is not aligned with `module` at 1, 8.
+
+      puts 1; class << self
+      end
+      ^^^ `end` at 2, 0 is not aligned with `class` at 1, 8.
 
       puts 1; if test
       end
@@ -294,13 +314,14 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       ^^^ `end` at 2, 0 is not aligned with `case` at 1, 8.
     RUBY
 
-    include_examples 'aligned', 'puts 1; class',  'Test',     '        end'
-    include_examples 'aligned', 'puts 1; module', 'Test',     '        end'
-    include_examples 'aligned', 'puts 1; if',     'Test',     '        end'
-    include_examples 'aligned', 'puts 1; unless', 'Test',     '        end'
-    include_examples 'aligned', 'puts 1; while',  'Test',     '        end'
-    include_examples 'aligned', 'puts 1; until',  'Test',     '        end'
-    include_examples 'aligned', 'puts 1; case',   'a when b', '        end'
+    include_examples 'aligned', 'puts 1; class',          'Test',     '        end'
+    include_examples 'aligned', 'puts 1; class << self;', 'Test',     '        end'
+    include_examples 'aligned', 'puts 1; module',         'Test',     '        end'
+    include_examples 'aligned', 'puts 1; if',             'Test',     '        end'
+    include_examples 'aligned', 'puts 1; unless',         'Test',     '        end'
+    include_examples 'aligned', 'puts 1; while',          'Test',     '        end'
+    include_examples 'aligned', 'puts 1; until',          'Test',     '        end'
+    include_examples 'aligned', 'puts 1; case',           'a when b', '        end'
 
     it 'register an offense when using `+` operator method and `end` is not aligned' do
       expect_offense(<<~RUBY)

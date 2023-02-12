@@ -82,6 +82,10 @@ module RuboCop
           check_other_alignment(node)
         end
 
+        def on_sclass(node)
+          check_other_alignment(node)
+        end
+
         def on_module(node)
           check_other_alignment(node)
         end
