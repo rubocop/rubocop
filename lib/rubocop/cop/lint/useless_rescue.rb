@@ -72,8 +72,9 @@ module RuboCop
         def use_exception_variable_in_ensure?(resbody_node)
           return false unless (exception_variable = resbody_node.exception_variable)
           return false unless (ensure_node = resbody_node.each_ancestor(:ensure).first)
+          return false unless (ensure_body = ensure_node.body)
 
-          ensure_node.body.each_descendant(:lvar).map(&:source).include?(exception_variable.source)
+          ensure_body.each_descendant(:lvar).map(&:source).include?(exception_variable.source)
         end
 
         def exception_objects(resbody_node)

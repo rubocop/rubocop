@@ -62,6 +62,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessRescue, :config do
     RUBY
   end
 
+  it 'does not register an offense when `rescue` does not exception variable and `ensure` has empty body' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+      rescue => e
+      ensure
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using exception variable in `ensure` clause' do
     expect_no_offenses(<<~RUBY)
       def foo
