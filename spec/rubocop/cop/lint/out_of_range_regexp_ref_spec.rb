@@ -234,6 +234,50 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef, :config do
       end
     end
 
+    context 'matching hashes' do
+      it 'does not register an offense when in range references are used' do
+        expect_no_offenses(<<~RUBY)
+          case hash
+          in a: /(foo)(bar)/
+            $2
+          end
+        RUBY
+      end
+
+      it 'registers an offense when out of range references are used' do
+        expect_offense(<<~RUBY)
+          case hash
+          in a: /(foo)(bar)/, b: /(bar)baz/
+            $3
+            ^^ $3 is out of range (2 regexp capture groups detected).
+          end
+        RUBY
+      end
+    end
+
+    context 'matching pins' do
+      it 'does not register an offense when in range references are used' do
+        expect_no_offenses(<<~RUBY)
+          a = 1
+          case array
+          in [^a, /(foo)(bar)/]
+            $2
+          end
+        RUBY
+      end
+
+      it 'registers an offense when out of range references are used' do
+        expect_offense(<<~RUBY)
+          a = 1
+          case array
+          in [^a, /(foo)(bar)/, /(foo)bar/]
+            $3
+            ^^ $3 is out of range (2 regexp capture groups detected).
+          end
+        RUBY
+      end
+    end
+
     context 'matching with aliases' do
       context 'variable aliases' do
         it 'does not register an offense when in range references are used' do
