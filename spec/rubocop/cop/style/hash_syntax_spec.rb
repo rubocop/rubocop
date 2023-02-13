@@ -1090,6 +1090,28 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense in chained calls' do
+        expect_offense(<<~RUBY)
+          create(:foo, bar: bar).baz
+                            ^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          create(:foo, bar:).baz
+        RUBY
+      end
+
+      it 'registers an offense in chained calls with dispatch keywords' do
+        expect_offense(<<~RUBY)
+          yield(:foo, bar: bar).baz
+                           ^^^ Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          yield(:foo, bar:).baz
+        RUBY
+      end
+
       it 'registers an offense when without parentheses call expr follows after nested method call' do
         # Add parentheses to prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
         expect_offense(<<~RUBY)
