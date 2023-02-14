@@ -16,6 +16,7 @@ module RuboCop
 
         PHASE_1_OVERRIDDEN = '(skipped because the default Layout/LineLength:Max is overridden)'
         PHASE_1_DISABLED = '(skipped because Layout/LineLength is disabled)'
+        PHASE_1_SKIPPED = '(skipped because a list of cops is passed to the `--only` flag)'
 
         def run
           add_formatter
@@ -31,6 +32,8 @@ module RuboCop
             skip_line_length_cop(PHASE_1_DISABLED)
           elsif !same_max_line_length?(@config_store.for_pwd, ConfigLoader.default_configuration)
             skip_line_length_cop(PHASE_1_OVERRIDDEN)
+          elsif options_has_only_flag?
+            skip_line_length_cop(PHASE_1_SKIPPED)
           else
             run_line_length_cop
           end
@@ -55,6 +58,10 @@ module RuboCop
 
         def line_length_cop(config)
           config.for_cop('Layout/LineLength')
+        end
+
+        def options_has_only_flag?
+          @options[:only]
         end
 
         # Do an initial run with only Layout/LineLength so that cops that

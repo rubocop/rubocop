@@ -394,6 +394,97 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 ''].join("\n"))
     end
 
+    context 'when --only is used' do
+      before do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          class MyClass
+            def initialize
+              p "No documentation for class"
+            end
+          end
+
+          def f
+          #{'  #' * 46}
+            if #{'a' * 120}
+              return y
+            end
+
+            z
+          end
+        RUBY
+      end
+
+      context 'when --only does not contain Layout/Linelength' do
+        it 'generates TODO only for the mentioned cop' do
+          $stdout = StringIO.new
+          expect(cli.run(['--auto-gen-config', '--only', 'Style/Documentation'])).to eq(0)
+          expect(File.readlines('.rubocop_todo.yml')
+                    .drop_while { |line| line.start_with?('#') }.join)
+            .to eq(<<~YAML)
+
+              # Offense count: 1
+              # Configuration parameters: AllowedConstants.
+              Style/Documentation:
+                Exclude:
+                  - 'spec/**/*'
+                  - 'test/**/*'
+                  - 'example.rb'
+          YAML
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<~STRING)
+            Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
+            Phase 1 of 2: run Layout/LineLength cop (skipped because a list of cops is passed to the `--only` flag)
+            Phase 2 of 2: run all cops
+            Inspecting 1 file
+            C
+
+            1 file inspected, 1 offense detected
+            Created .rubocop_todo.yml.
+          STRING
+        end
+      end
+
+      context 'when --only contains Layout/LineLength' do
+        it 'generates TODO for every cop listed in the --only flag' do
+          $stdout = StringIO.new
+          expect(cli.run(['--auto-gen-config', '--only', 'Layout/LineLength,Style/Documentation']))
+            .to eq(0)
+          expect(File.readlines('.rubocop_todo.yml')
+                    .drop_while { |line| line.start_with?('#') }.join)
+            .to eq(<<~YAML)
+
+              # Offense count: 2
+              # This cop supports safe autocorrection (--autocorrect).
+              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns.
+              # URISchemes: http, https
+              Layout/LineLength:
+                Max: 138
+
+              # Offense count: 1
+              # Configuration parameters: AllowedConstants.
+              Style/Documentation:
+                Exclude:
+                  - 'spec/**/*'
+                  - 'test/**/*'
+                  - 'example.rb'
+          YAML
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<~STRING)
+            Added inheritance from `.rubocop_todo.yml` in `.rubocop.yml`.
+            Phase 1 of 2: run Layout/LineLength cop (skipped because a list of cops is passed to the `--only` flag)
+            Phase 2 of 2: run all cops
+            Inspecting 1 file
+            C
+
+            1 file inspected, 3 offenses detected
+            Created .rubocop_todo.yml.
+          STRING
+        end
+      end
+    end
+
     context 'when --config is used' do
       it 'can generate a todo list' do
         create_file('example1.rb', ['$x = 0 ', '#' * 90, 'y ', 'puts x'])
