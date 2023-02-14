@@ -69,7 +69,7 @@ module RuboCop
         end
 
         def on_in_pattern(node)
-          regexp_patterns = patterns(node).select(&:regexp_type?)
+          regexp_patterns = regexp_patterns(node)
 
           @valid_ref = regexp_patterns.map { |pattern| check_regexp(pattern) }.compact.max
         end
@@ -90,16 +90,12 @@ module RuboCop
 
         private
 
-        def patterns(pattern_node)
-          pattern = pattern_node.node_parts[0]
-
-          case pattern.type
-          when :array_pattern, :match_alt
-            pattern.children
-          when :match_as
-            patterns(pattern)
-          else
+        def regexp_patterns(in_node)
+          pattern = in_node.pattern
+          if pattern.regexp_type?
             [pattern]
+          else
+            pattern.each_descendant(:regexp).to_a
           end
         end
 
