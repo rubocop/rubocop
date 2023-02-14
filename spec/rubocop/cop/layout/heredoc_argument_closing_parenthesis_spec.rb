@@ -76,6 +76,16 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
       RUBY
     end
 
+    it 'accepts when heredoc is a method argument in a parenthesized block argument' do
+      expect_no_offenses(<<~RUBY)
+        foo(bar do
+          baz <<~EOS
+            text
+          EOS
+        end)
+      RUBY
+    end
+
     it 'accepts correct case with other param after' do
       expect_no_offenses(<<~RUBY)
         foo(<<-SQL, 123)

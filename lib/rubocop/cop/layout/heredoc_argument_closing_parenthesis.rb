@@ -215,6 +215,7 @@ module RuboCop
         end
 
         def exist_argument_between_heredoc_end_and_closing_parentheses?(node)
+          return true unless node.loc.end
           return false unless (heredoc_end = find_most_bottom_of_heredoc_end(node.arguments))
 
           heredoc_end < node.loc.end.begin_pos &&
