@@ -1640,4 +1640,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
     end
   end
+
+  it 'does not register an offense for blocks with a very large offset' do
+    expect_no_offenses(<<~RUBY)
+      foo {
+      #{' ' * 100_001}}
+    RUBY
+  end
 end

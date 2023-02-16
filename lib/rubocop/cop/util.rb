@@ -3,6 +3,7 @@
 module RuboCop
   module Cop
     # This module contains a collection of useful utility methods.
+    # rubocop:disable Metrics/ModuleLength
     module Util
       include PathUtil
 
@@ -92,13 +93,20 @@ module RuboCop
         sexp.each_child_node { |elem| on_node(syms, elem, excludes, &block) }
       end
 
+      # Arbitrarily chosen value, should be enough to cover
+      # the most nested source code in real world projects.
+      MAX_LINE_BEGINS_REGEX_INDEX = 50
       LINE_BEGINS_REGEX_CACHE = Hash.new do |hash, index|
-        hash[index] = /^\s{#{index}}\S/
+        hash[index] = /^\s{#{index}}\S/ if index <= MAX_LINE_BEGINS_REGEX_INDEX
       end
-      private_constant :LINE_BEGINS_REGEX_CACHE
+      private_constant :MAX_LINE_BEGINS_REGEX_INDEX, :LINE_BEGINS_REGEX_CACHE
 
       def begins_its_line?(range)
-        range.source_line.match?(LINE_BEGINS_REGEX_CACHE[range.column])
+        if (regex = LINE_BEGINS_REGEX_CACHE[range.column])
+          range.source_line.match?(regex)
+        else
+          range.source_line.index(/\S/) == range.column
+        end
       end
 
       # Returns, for example, a bare `if` node if the given node is an `if`
@@ -190,5 +198,6 @@ module RuboCop
         source == target || (source.is_a?(Array) && source.include?(target))
       end
     end
+    # rubocop:enable Metrics/ModuleLength
   end
 end
