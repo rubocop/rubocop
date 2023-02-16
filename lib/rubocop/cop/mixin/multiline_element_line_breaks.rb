@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# TEAM: backend_infra
-# WATCHERS: maxh
-
 module RuboCop
   module Cop
     # Common functionality for checking for a line break before each
