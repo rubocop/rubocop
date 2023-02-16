@@ -12,7 +12,7 @@ module RuboCop
       # `(array1 & array2).any?` and is more readable.
       #
       # @safety
-      #   This cop cannot guarantee that array1 and array2 are
+      #   This cop cannot guarantee that `array1` and `array2` are
       #   actually arrays while method `intersect?` is for arrays only.
       #
       # @example

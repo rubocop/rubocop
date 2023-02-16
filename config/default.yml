@@ -3050,6 +3050,7 @@ Style/ArrayCoercion:
 Style/ArrayIntersect:
   Description: 'Use `array1.intersect?(array2)` instead of `(array1 & array2).any?`.'
   Enabled: 'pending'
+  Safe: false
   VersionAdded: '1.40'
 
 Style/ArrayJoin:
