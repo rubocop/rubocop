@@ -4108,6 +4108,12 @@ Style/LambdaCall:
     - call
     - braces
 
+Style/LengthyLiteral:
+  Description: 'Checks for extremely large literals, such as `Array`s and `Hash`es with many entries.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  LengthThreshold: 250
+
 Style/LineEndConcatenation:
   Description: >-
                  Use \ instead of + or << to concatenate two string literals at
