@@ -82,10 +82,19 @@ module RuboCop
           attr_accessor :largest_brackets
         end
 
+        def on_new_investigation
+          super
+
+          # Prevent O(n2) checks (checking the entire matrix once for each child array) by caching
+          @matrix_of_complex_content_cache = Hash.new do |cache, node|
+            cache[node] = matrix_of_complex_content?(node)
+          end
+        end
+
         def on_array(node)
           if bracketed_array_of?(:str, node)
             return if complex_content?(node.values)
-            return if within_2d_array_of_complex_content?(node)
+            return if within_matrix_of_complex_content?(node)
 
             check_bracketed_array(node, 'w')
           elsif node.percent_literal?(:string)
@@ -95,12 +104,15 @@ module RuboCop
 
         private
 
-        def within_2d_array_of_complex_content?(node)
+        def within_matrix_of_complex_content?(node)
           return false unless (parent = node.parent)
 
-          parent.array_type? &&
-            parent.values.all?(&:array_type?) &&
-            parent.values.any? { |subarray| complex_content?(subarray.values) }
+          parent.array_type? && @matrix_of_complex_content_cache[parent]
+        end
+
+        def matrix_of_complex_content?(array)
+          array.values.all?(&:array_type?) &&
+            array.values.any? { |subarray| complex_content?(subarray.values) }
         end
 
         def complex_content?(strings, complex_regex: word_regex)
