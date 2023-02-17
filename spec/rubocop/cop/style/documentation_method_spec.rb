@@ -619,6 +619,16 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             RUBY
           end
         end
+
+        it 'registers an offense for inline def with ruby2_keywords' do
+          expect_offense(<<~RUBY)
+            module Foo
+              ruby2_keywords def bar
+              ^^^^^^^^^^^^^^^^^^^^^^ Missing method documentation comment.
+              end
+            end
+          RUBY
+        end
       end
 
       context 'with documentation comment' do
@@ -664,6 +674,16 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
               end
             RUBY
           end
+        end
+
+        it 'does not register an offense for inline def with ruby2_keywords' do
+          expect_no_offenses(<<~RUBY)
+            module Foo
+              # Documentation
+              ruby2_keywords def bar
+              end
+            end
+          RUBY
         end
       end
 

@@ -101,16 +101,16 @@ module RuboCop
 
         MSG = 'Missing method documentation comment.'
 
-        # @!method module_function_node?(node)
-        def_node_matcher :module_function_node?, <<~PATTERN
-          (send nil? :module_function ...)
+        # @!method modifier_node?(node)
+        def_node_matcher :modifier_node?, <<~PATTERN
+          (send nil? {:module_function :ruby2_keywords} ...)
         PATTERN
 
         def on_def(node)
           return if node.method?(:initialize)
 
           parent = node.parent
-          module_function_node?(parent) ? check(parent) : check(node)
+          modifier_node?(parent) ? check(parent) : check(node)
         end
         alias on_defs on_def
 
