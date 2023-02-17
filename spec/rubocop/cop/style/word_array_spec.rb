@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'timeout'
+
 RSpec.describe RuboCop::Cop::Style::WordArray, :config do
   before do
     # Reset data which is shared by all instances of WordArray
@@ -374,6 +376,21 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
           ['forty two', 'Forty Two']
         ]
       RUBY
+    end
+
+    it 'investigates a large matrix in a reasonable amount of time' do
+      expect do
+        Timeout.timeout(5) do # Should take under a second, but 5 seconds is plenty of margin
+          expect_no_offenses(<<~RUBY)
+            [
+              #{Array.new(999) do |n|
+                "['#{n}', 'simple_content'],"
+              end.join("\n  ")}
+              ['100', 'complex content'],
+            ]
+          RUBY
+        end
+      end.not_to raise_error, 'did not complete investigation in reasonable time'
     end
 
     it 'registers an offense and corrects for nested arrays' do
