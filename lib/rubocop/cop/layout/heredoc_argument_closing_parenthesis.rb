@@ -67,8 +67,7 @@ module RuboCop
 
           outermost_send = outermost_send_on_same_line(heredoc_arg)
           return unless outermost_send
-          return unless outermost_send.loc.end
-          return unless heredoc_arg.first_line != outermost_send.loc.end.line
+          return if end_keyword_before_closing_parentesis?(node)
           return if subsequent_closing_parentheses_in_same_line?(outermost_send)
           return if exist_argument_between_heredoc_end_and_closing_parentheses?(node)
 
@@ -159,6 +158,12 @@ module RuboCop
         end
 
         # Closing parenthesis helpers.
+
+        def end_keyword_before_closing_parentesis?(parenthesized_send_node)
+          parenthesized_send_node.ancestors.any? do |ancestor|
+            ancestor.loc.respond_to?(:end) && ancestor.loc.end&.source == 'end'
+          end
+        end
 
         def subsequent_closing_parentheses_in_same_line?(outermost_send)
           last_arg_of_outer_send = outermost_send.last_argument
