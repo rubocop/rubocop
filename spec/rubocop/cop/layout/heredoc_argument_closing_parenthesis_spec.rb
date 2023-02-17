@@ -80,6 +80,25 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config 
       expect_no_offenses(<<~RUBY)
         foo(bar do
           baz <<~EOS
+          EOS
+        end)
+      RUBY
+    end
+
+    it 'accepts when heredoc is a branch body in a method argument of a parenthesized argument' do
+      expect_no_offenses(<<~RUBY)
+        foo(unless condition
+          bar(<<~EOS)
+            text
+          EOS
+        end)
+      RUBY
+    end
+
+    it 'accepts when heredoc is a branch body in a nested method argument of a parenthesized argument' do
+      expect_no_offenses(<<~RUBY)
+        foo(unless condition
+          bar(baz(<<~EOS))
             text
           EOS
         end)

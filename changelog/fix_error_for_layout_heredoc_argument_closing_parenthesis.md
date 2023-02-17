@@ -1,0 +1,1 @@
+* [#11589](https://github.com/rubocop/rubocop/pull/11589): Fix an error for `Layout/HeredocArgumentClosingParenthesis` when heredoc is a branch body in a method argument of a parenthesized argument. ([@koic][])
