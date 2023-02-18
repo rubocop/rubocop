@@ -31,7 +31,7 @@ end
 
 RSpec.shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
   name ||= alignment_base
-  name = name.gsub(/\n/, ' <newline>')
+  name = name.gsub("\n", ' <newline>')
   it "accepts matching #{name} ... end" do
     expect_no_offenses("#{alignment_base} #{arg}\n#{end_kw}")
   end

@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
       expect_correction(corrected_source)
     end
 
-    let(:source_with_case) { source.sub(/case/, 'case :a').sub(/^\s*\^.*\n/, '') }
+    let(:source_with_case) { source.sub('case', 'case :a').sub(/^\s*\^.*\n/, '') }
 
     it 'accepts the source with case' do
       expect_no_offenses(source_with_case)

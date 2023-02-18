@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Utils::FormatString do
       end
 
       it 'does not detect escaped named format sequence' do
-        escaped = format_string.gsub(/%/, '%%')
+        escaped = format_string.gsub('%', '%%')
 
         expect(described_class.new(escaped).named_interpolation?).to be_falsey
         expect(described_class.new("prefix:#{escaped}").named_interpolation?).to be_falsey
