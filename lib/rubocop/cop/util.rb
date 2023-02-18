@@ -142,7 +142,7 @@ module RuboCop
       end
 
       def escape_string(string)
-        string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
+        string.inspect[1..-2].tap { |s| s.gsub!('\\"', '"') }
       end
 
       def to_string_literal(string)

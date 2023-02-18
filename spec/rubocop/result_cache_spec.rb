@@ -148,7 +148,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             if contents.include?("\r")
               f.write(contents.delete("\r"))
             else
-              f.write(contents.gsub(/\n/, "\r\n"))
+              f.write(contents.gsub("\n", "\r\n"))
             end
           end
           cache2 = described_class.new(file, team, options, config_store, cache_root)
@@ -367,7 +367,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache = described_class.new(file, team, options, config_store)
           expect(cache.path).to start_with(File.join(Dir.home, '.cache', 'rubocop_cache'))
 
-          count = cache.path.scan(/rubocop_cache/).count
+          count = cache.path.scan('rubocop_cache').count
           expect(count).to eq(1)
         end
       end
@@ -393,7 +393,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             File.join(ENV.fetch('XDG_CACHE_HOME'), puid, 'rubocop_cache')
           )
 
-          count = cache.path.scan(/rubocop_cache/).count
+          count = cache.path.scan('rubocop_cache').count
           expect(count).to eq(1)
         end
       end
@@ -426,7 +426,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cache = described_class.new(file, team, options, config_store)
           expect(cache.path).to start_with(File.join('/tmp/cache-from-env', 'rubocop_cache'))
 
-          count = cache.path.scan(/rubocop_cache/).count
+          count = cache.path.scan('rubocop_cache').count
           expect(count).to eq(1)
         end
       end

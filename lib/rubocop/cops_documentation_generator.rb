@@ -198,7 +198,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     table = ['|===', "| #{header.join(' | ')}\n\n"].join("\n")
     marked_contents = content.map do |plain_content|
       # Escape `|` with backslash to prevent the regexp `|` is not used as a table separator.
-      plain_content.map { |c| "| #{c.gsub(/\|/, '\|')}" }.join("\n")
+      plain_content.map { |c| "| #{c.gsub('|', '\|')}" }.join("\n")
     end
     table << marked_contents.join("\n\n")
     table << "\n|===\n"

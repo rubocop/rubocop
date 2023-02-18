@@ -4947,6 +4947,11 @@ Style/RedundantPercentQ:
   Enabled: true
   VersionAdded: '0.76'
 
+Style/RedundantRegexpArgument:
+  Description: 'Identifies places where argument can be replaced from a deterministic regexp to a string.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantRegexpCharacterClass:
   Description: 'Checks for unnecessary single-element Regexp character classes.'
   Enabled: true

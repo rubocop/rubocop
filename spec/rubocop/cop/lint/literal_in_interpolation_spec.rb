@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        #{prefix}[this #{[word].inspect.gsub(/"/, '\"')} is not significant]
+        #{prefix}[this #{[word].inspect.gsub('"', '\"')} is not significant]
       RUBY
     end
 

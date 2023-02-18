@@ -61,7 +61,7 @@ module RuboCop
           if style == :verbose
             "has_#{method_name}"
           else
-            method_name.to_s.sub(/has_/, '')
+            method_name.to_s.delete_prefix('has_')
           end
         end
 

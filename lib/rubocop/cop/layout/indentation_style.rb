@@ -76,7 +76,7 @@ module RuboCop
 
         def autocorrect_lambda_for_tabs(corrector, range)
           spaces = ' ' * configured_indentation_width
-          corrector.replace(range, range.source.gsub(/\t/, spaces))
+          corrector.replace(range, range.source.gsub("\t", spaces))
         end
 
         def autocorrect_lambda_for_spaces(corrector, range)

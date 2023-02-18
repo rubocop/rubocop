@@ -35,7 +35,7 @@ module RuboCop
         def check(node)
           expression = node.source
           op = node.loc.operator.source
-          escaped_op = op.gsub(/\./, '\.')
+          escaped_op = op.gsub('.', '\.')
 
           # account for multiline range literals
           expression.sub!(/#{escaped_op}\n\s*/, op)

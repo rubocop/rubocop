@@ -116,7 +116,7 @@ module RuboCop
           return false if argument_newline?(node)
 
           source = node.parent ? node.parent.source : node.source
-          parse(source.gsub(/\\\n/, "\n")).valid_syntax?
+          parse(source.gsub("\\\n", "\n")).valid_syntax?
         end
 
         def inside_string_literal?(range, token)

@@ -35,7 +35,7 @@ module RuboCop
               unless contents.empty?
                 corrector.replace(
                   contents,
-                  contents.source.gsub(/\A/, '# ').gsub(/\n\n/, "\n#\n").gsub(/\n(?=[^#])/, "\n# ")
+                  contents.source.gsub(/\A/, '# ').gsub("\n\n", "\n#\n").gsub(/\n(?=[^#])/, "\n# ")
                 )
               end
               corrector.remove(eq_end)
