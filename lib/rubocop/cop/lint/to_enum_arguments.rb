@@ -43,8 +43,12 @@ module RuboCop
           return unless def_node
 
           enum_conversion_call?(node) do |method_node, arguments|
-            add_offense(node) unless method_name?(method_node, def_node.method_name) &&
-                                     arguments_match?(arguments, def_node)
+            next if method_node.call_type? &&
+                    !method_node.method?(:__method__) && !method_node.method?(:__callee__)
+            next if method_name?(method_node, def_node.method_name) &&
+                    arguments_match?(arguments, def_node)
+
+            add_offense(node)
           end
         end
 

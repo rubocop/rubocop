@@ -122,6 +122,23 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
     RUBY
   end
 
+  it 'does not register an offense when enumerator is not created for `__method__` and `__callee__` methods' do
+    expect_no_offenses(<<~RUBY)
+      def m(x)
+        return to_enum(never_nullable(value), x)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when enumerator is not created for `__method__` and `__callee__` methods ' \
+     'and using safe navigation operator' do
+    expect_no_offenses(<<~RUBY)
+      def m(x)
+        return to_enum(obj&.never_nullable(value), x)
+      end
+    RUBY
+  end
+
   %w[:m __callee__ __method__].each do |code|
     it "does not register an offense when enumerator is created with `#{code}` and the correct arguments" do
       expect_no_offenses(<<~RUBY)
