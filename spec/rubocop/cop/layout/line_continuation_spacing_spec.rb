@@ -61,6 +61,21 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationSpacing, :config do
       RUBY
     end
 
+    it 'registers an offense when too much space in front of backslash in array literals' do
+      expect_offense(<<~'RUBY')
+        [
+          :foo  \
+              ^^^ Use one space in front of backslash.
+        ]
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        [
+          :foo \
+        ]
+      RUBY
+    end
+
     it 'registers no offense with one space in front of backslash' do
       expect_no_offenses(<<~'RUBY')
         if 2 + 2 \
@@ -77,6 +92,14 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationSpacing, :config do
           is\
           ok
         X
+      RUBY
+    end
+
+    it 'ignores percent literals' do
+      expect_no_offenses(<<~'RUBY')
+        %i[
+          foo  \
+        ]
       RUBY
     end
 
@@ -164,6 +187,21 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationSpacing, :config do
       RUBY
     end
 
+    it 'registers an offense when too much space in front of backslash in array literals' do
+      expect_offense(<<~'RUBY')
+        [
+          :foo  \
+              ^^^ Use zero spaces in front of backslash.
+        ]
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        [
+          :foo\
+        ]
+      RUBY
+    end
+
     it 'ignores heredocs and comments' do
       expect_no_offenses(<<~'RUBY')
         # this \
@@ -171,6 +209,14 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationSpacing, :config do
           is  \
           ok
         X
+      RUBY
+    end
+
+    it 'ignores percent literals' do
+      expect_no_offenses(<<~'RUBY')
+        %i[
+          foo  \
+        ]
       RUBY
     end
 
