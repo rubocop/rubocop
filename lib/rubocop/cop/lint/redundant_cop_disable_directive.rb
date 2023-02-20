@@ -284,12 +284,18 @@ module RuboCop
             .all? { |intervening| /\A\s*,\s*\Z/.match?(intervening) }
         end
 
+        SIMILAR_COP_NAMES_CACHE = Hash.new do |hash, cop_name|
+          hash[:all_cop_names] = Registry.global.names unless hash.key?(:all_cop_names)
+          hash[cop_name] = NameSimilarity.find_similar_name(cop_name, hash[:all_cop_names])
+        end
+        private_constant :SIMILAR_COP_NAMES_CACHE
+
         def describe(cop)
           return 'all cops' if cop == 'all'
           return "`#{remove_department_marker(cop)}` department" if department_marker?(cop)
           return "`#{cop}`" if all_cop_names.include?(cop)
 
-          similar = NameSimilarity.find_similar_name(cop, all_cop_names)
+          similar = SIMILAR_COP_NAMES_CACHE[cop]
           similar ? "`#{cop}` (did you mean `#{similar}`?)" : "`#{cop}` (unknown cop)"
         end
 
