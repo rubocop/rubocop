@@ -7,8 +7,8 @@ module RuboCop
       # By default it enforces accessors to be placed in grouped declarations,
       # but it can be configured to enforce separating them in multiple declarations.
       #
-      # NOTE: `Sorbet` is not compatible with "grouped" style. Consider "separated" style
-      # or disabling this cop.
+      # NOTE: If there is a method call before the accessor method it is always allowed
+      # as it might be intended like Sorbet.
       #
       # @example EnforcedStyle: grouped (default)
       #   # bad
@@ -43,11 +43,9 @@ module RuboCop
         GROUPED_MSG = 'Group together all `%<accessor>s` attributes.'
         SEPARATED_MSG = 'Use one attribute per `%<accessor>s`.'
 
-        ACCESSOR_METHODS = %i[attr_reader attr_writer attr_accessor attr].freeze
-
         def on_class(node)
           class_send_elements(node).each do |macro|
-            next unless accessor?(macro)
+            next unless macro.attribute_accessor?
 
             check(macro)
           end
@@ -58,7 +56,7 @@ module RuboCop
         private
 
         def check(send_node)
-          return if previous_line_comment?(send_node)
+          return if previous_line_comment?(send_node) || !groupable_accessor?(send_node)
           return unless (grouped_style? && sibling_accessors(send_node).size > 1) ||
                         (separated_style? && send_node.arguments.size > 1)
 
@@ -81,6 +79,13 @@ module RuboCop
           comment_line?(processed_source[node.first_line - 2])
         end
 
+        def groupable_accessor?(node)
+          return true unless (previous_expression = node.left_siblings.last)
+          return true unless previous_expression.send_type?
+
+          previous_expression.attribute_accessor? || previous_expression.access_modifier?
+        end
+
         def class_send_elements(class_node)
           class_def = class_node.body
 
@@ -93,10 +98,6 @@ module RuboCop
           end
         end
 
-        def accessor?(send_node)
-          send_node.macro? && ACCESSOR_METHODS.include?(send_node.method_name)
-        end
-
         def grouped_style?
           style == :grouped
         end
@@ -107,7 +108,7 @@ module RuboCop
 
         def sibling_accessors(send_node)
           send_node.parent.each_child_node(:send).select do |sibling|
-            accessor?(sibling) &&
+            sibling.attribute_accessor? &&
               sibling.method?(send_node.method_name) &&
               node_visibility(sibling) == node_visibility(send_node) &&
               !previous_line_comment?(sibling)

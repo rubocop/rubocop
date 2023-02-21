@@ -124,6 +124,45 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       RUBY
     end
 
+    it 'does not register an offense for accessors with other methods' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          annotation_method :one
+          attr_reader :one
+
+          annotation_method :two
+          attr_reader :two
+        end
+      RUBY
+    end
+
+    it 'registers an offense for accessors with method definitions' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def foo
+          end
+          attr_reader :one
+          ^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+
+          def bar
+          end
+          attr_reader :two
+          ^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          def foo
+          end
+          attr_reader :one, :two
+
+          def bar
+          end
+        end
+      RUBY
+    end
+
     it 'registers offense and corrects if at least two separate accessors without comments' do
       expect_offense(<<~RUBY)
         class Foo
