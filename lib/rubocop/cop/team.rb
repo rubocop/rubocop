@@ -130,7 +130,7 @@ module RuboCop
           # holds source read in from stdin, when --stdin option is used
           @options[:stdin] = new_source
         else
-          filename = processed_source.buffer.name
+          filename = processed_source.file_path
           File.write(filename, new_source)
         end
         @updated_source_file = true
