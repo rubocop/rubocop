@@ -256,25 +256,6 @@ RSpec.describe RuboCop::Cop::Team do
         expect(cops[1].name).to eq('Lint/Void')
       end
     end
-
-    context 'when some classes are disabled with config' do
-      let(:disabled_config) do
-        %w[
-          Lint/Void
-          Layout/LineLength
-        ].each_with_object(RuboCop::Config.new) do |cop_name, accum|
-          accum[cop_name] = { 'Enabled' => false }
-        end
-      end
-      let(:config) { RuboCop::ConfigLoader.merge_with_default(disabled_config, '') }
-      let(:cop_names) { cops.map(&:name) }
-
-      it 'does not return instances of the classes' do
-        expect(cops.empty?).to be(false)
-        expect(cop_names.include?('Lint/Void')).to be(false)
-        expect(cop_names.include?('Layout/LineLength')).to be(false)
-      end
-    end
   end
 
   describe '#forces' do

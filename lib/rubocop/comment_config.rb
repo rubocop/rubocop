@@ -42,6 +42,10 @@ module RuboCop
       disabled_line_ranges.none? { |range| range.include?(line_number) }
     end
 
+    def cop_opted_in?(cop)
+      opt_in_cops.include?(cop.cop_name)
+    end
+
     def cop_disabled_line_ranges
       @cop_disabled_line_ranges ||= analyze
     end
@@ -72,6 +76,19 @@ module RuboCop
       end
 
       extras
+    end
+
+    def opt_in_cops
+      @opt_in_cops ||= begin
+        cops = Set.new
+        each_directive do |directive|
+          next unless directive.enabled?
+          next if directive.all_cops?
+
+          cops.merge(directive.cop_names)
+        end
+        cops
+      end
     end
 
     def analyze # rubocop:todo Metrics/AbcSize
