@@ -87,22 +87,26 @@ module RuboCop
           corrector.replace(range, correction)
         end
 
-        def string_literal_ranges(ast)
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def ignored_literal_ranges(ast)
           # which lines start inside a string literal?
           return [] if ast.nil?
 
-          ranges = Set.new
-          ast.each_node(:str, :dstr) do |str|
-            loc = str.location
+          ast.each_node(:str, :dstr, :array).with_object(Set.new) do |literal, ranges|
+            loc = literal.location
 
-            if str.heredoc?
+            if literal.array_type?
+              next unless literal.percent_literal?
+
+              ranges << loc.expression
+            elsif literal.heredoc?
               ranges << loc.heredoc_body
             elsif loc.respond_to?(:begin) && loc.begin
               ranges << loc.expression
             end
           end
-          ranges
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def comment_ranges(comments)
           comments.map(&:loc).map(&:expression)
@@ -119,7 +123,7 @@ module RuboCop
         end
 
         def ignored_ranges
-          @ignored_ranges ||= string_literal_ranges(processed_source.ast) +
+          @ignored_ranges ||= ignored_literal_ranges(processed_source.ast) +
                               comment_ranges(processed_source.comments)
         end
 
