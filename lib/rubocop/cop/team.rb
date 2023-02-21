@@ -28,7 +28,7 @@ module RuboCop
       def self.mobilize_cops(cop_classes, config, options = {})
         cop_classes = Registry.new(cop_classes.to_a, options) unless cop_classes.is_a?(Registry)
 
-        cop_classes.enabled(config).map do |cop_class|
+        cop_classes.map do |cop_class|
           cop_class.new(config, options)
         end
       end
@@ -58,6 +58,7 @@ module RuboCop
         @options = options
         reset
         @ready = true
+        @registry = Registry.new(cops, options.dup)
 
         validate_config
       end
@@ -84,7 +85,7 @@ module RuboCop
         # until there are no corrections left to perform
         # To speed things up, run autocorrecting cops by themselves, and only
         # run the other cops when no corrections are left
-        on_duty = roundup_relevant_cops(processed_source.file_path)
+        on_duty = roundup_relevant_cops(processed_source)
 
         autocorrect_cops, other_cops = on_duty.partition(&:autocorrect?)
         report = investigate_partial(autocorrect_cops, processed_source,
@@ -156,11 +157,13 @@ module RuboCop
       end
 
       # @return [Array<cop>]
-      def roundup_relevant_cops(filename)
-        cops.reject do |cop|
-          cop.excluded_file?(filename) ||
-            !support_target_ruby_version?(cop) ||
-            !support_target_rails_version?(cop)
+      def roundup_relevant_cops(processed_source)
+        cops.select do |cop|
+          next true if processed_source.comment_config.cop_opted_in?(cop)
+          next false unless @registry.enabled?(cop, @config)
+          next false if cop.excluded_file?(processed_source.file_path)
+
+          support_target_ruby_version?(cop) && support_target_rails_version?(cop)
         end
       end
 

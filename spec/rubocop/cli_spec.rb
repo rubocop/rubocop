@@ -279,7 +279,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'for a disabled cop' do
-    it 'reports no offense when enabled on part of a file' do
+    it 'reports an offense when explicitly enabled on part of a file' do
       create_file('.rubocop.yml', <<~YAML)
         AllCops:
           SuggestExtensions: false
@@ -292,18 +292,17 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         a = 1
         # rubocop:enable Lint/UselessAssignment
-        b = a
-        b += 1
+        b = 2
         # rubocop:disable Lint/UselessAssignment
-        c = 2
+        c = 3
       RUBY
 
-      expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(0)
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
+        == example.rb ==
+        W:  5:  1: Lint/UselessAssignment: Useless assignment to variable - b.
 
-        --
-        0  Total in 0 files
-
+        1 file inspected, 1 offense detected
       RESULT
     end
   end
