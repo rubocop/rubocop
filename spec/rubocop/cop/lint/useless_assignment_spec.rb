@@ -17,6 +17,22 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned and assigned again in a modifier loop condition' do
+    it 'accepts with parentheses' do
+      expect_no_offenses(<<~RUBY)
+        a = nil
+        puts a while (a = false)
+      RUBY
+    end
+
+    it 'accepts without parentheses' do
+      expect_no_offenses(<<~RUBY)
+        a = nil
+        puts a until a = true
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned and unreferenced in a method' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
