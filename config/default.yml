@@ -2923,6 +2923,7 @@ Naming/VariableNumber:
     - rfc822       # Time#rfc822
     - rfc2822      # Time#rfc2822
     - rfc3339      # DateTime.rfc3339
+    - x86_64       # Allowed by default as an underscore separated CPU architecture name
   AllowedPatterns: []
 
 #################### Security ##############################
