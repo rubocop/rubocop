@@ -126,8 +126,8 @@ Checks for grouping of accessors in `class` and `module` bodies.
 By default it enforces accessors to be placed in grouped declarations,
 but it can be configured to enforce separating them in multiple declarations.
 
-NOTE: `Sorbet` is not compatible with "grouped" style. Consider "separated" style
-or disabling this cop.
+NOTE: If there is a method call before the accessor method it is always allowed
+as it might be intended like Sorbet.
 
 === Examples
 
@@ -457,8 +457,8 @@ NOTE: Required Ruby version: 3.1
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
-| Yes
-| Yes
+| No
+| Yes (Unsafe)
 | 1.40
 | -
 |===
@@ -473,7 +473,7 @@ The `array1.intersect?(array2)` method is faster than
 
 === Safety
 
-This cop cannot guarantee that array1 and array2 are
+This cop cannot guarantee that `array1` and `array2` are
 actually arrays while method `intersect?` is for arrays only.
 
 === Examples
@@ -12847,7 +12847,7 @@ Checks that arrays are sliced with endless ranges instead of
 === Safety
 
 This cop is unsafe because `x..-1` and `x..` are only guaranteed to
-be equivalent for `Array#[]`, and the cop cannot determine what class
+be equivalent for `Array#[]`, `String#[]`, and the cop cannot determine what class
 the receiver is.
 
 For example:

@@ -1630,7 +1630,7 @@ Lint/Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
   VersionAdded: '0.14'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.46'
   DebuggerMethods:
     # Groups are available so that a specific group can be disabled in
     # a user's configuration, but are otherwise not significant.
