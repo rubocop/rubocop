@@ -35,6 +35,12 @@ RSpec.describe RuboCop::Cop::Lint::RefinementImportMethods, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when using `include` on the top level' do
+      expect_no_offenses(<<~RUBY)
+        include Foo
+      RUBY
+    end
   end
 
   context 'Ruby <= 3.0', :ruby30 do

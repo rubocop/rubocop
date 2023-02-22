@@ -41,7 +41,8 @@ module RuboCop
 
         def on_send(node)
           return if node.receiver
-          return unless node.parent.block_type? && node.parent.method?(:refine)
+          return unless (parent = node.parent)
+          return unless parent.block_type? && parent.method?(:refine)
 
           add_offense(node.loc.selector, message: format(MSG, current: node.method_name))
         end
