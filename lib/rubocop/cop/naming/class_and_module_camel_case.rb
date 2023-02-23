@@ -34,11 +34,18 @@ module RuboCop
 
           allowed = /#{cop_config['AllowedNames'].join('|')}/
           name = node.loc.name.source.gsub(allowed, '')
+          name = remove_grouped_digits(name)
           return unless name.include?('_')
 
           add_offense(node.loc.name)
         end
         alias on_module on_class
+
+        private
+
+        def remove_grouped_digits(name)
+          name.split('_').grep_v(/^\d+$/).join('_')
+        end
       end
     end
   end

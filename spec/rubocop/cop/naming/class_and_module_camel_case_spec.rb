@@ -35,6 +35,33 @@ RSpec.describe RuboCop::Cop::Naming::ClassAndModuleCamelCase, :config do
     RUBY
   end
 
+  context 'names with digits' do
+    it 'accepts names with grouped digits' do
+      expect_no_offenses(<<~RUBY)
+        class X86_64
+        end
+
+        module ISO_8859_1
+        end
+
+        class CVE_2023_1234
+        end
+      RUBY
+    end
+
+    it 'registers offense when digits with lowercase letters' do
+      expect_offense(<<~RUBY)
+        class X86_64a
+              ^^^^^^^ Use CamelCase for classes and modules.
+        end
+
+        module CVE_x123
+               ^^^^^^^^ Use CamelCase for classes and modules.
+        end
+      RUBY
+    end
+  end
+
   it 'allows module_parent method' do
     expect_no_offenses(<<~RUBY)
       class module_parent::MyClass
