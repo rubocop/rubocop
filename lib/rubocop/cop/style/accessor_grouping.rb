@@ -22,6 +22,15 @@ module RuboCop
       #     attr_reader :bar, :baz
       #   end
       #
+      #   # good
+      #   class Foo
+      #     # may be intended comment for bar.
+      #     attr_reader :bar
+      #
+      #     may_be_intended_annotation :baz
+      #     attr_reader :baz
+      #   end
+      #
       # @example EnforcedStyle: separated
       #   # bad
       #   class Foo
