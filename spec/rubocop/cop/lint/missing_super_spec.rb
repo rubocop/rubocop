@@ -30,6 +30,17 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
       RUBY
     end
 
+    it 'does not register an offense for the `Class.new` without parent class argument' do
+      expect_no_offenses(<<~RUBY)
+        class Child < Parent
+          Class.new do
+            def initialize
+            end
+          end
+        end
+      RUBY
+    end
+
     it 'does not register an offense for the constructor-like method defined outside of a class' do
       expect_no_offenses(<<~RUBY)
         module M
