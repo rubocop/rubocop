@@ -68,7 +68,7 @@ module RuboCop
         PATTERN
 
         def on_const(node)
-          return if !unqualified_const?(node) || node.parent&.defined_module
+          return if !unqualified_const?(node) || node.parent&.defined_module || node.loc.nil?
 
           add_offense(node)
         end

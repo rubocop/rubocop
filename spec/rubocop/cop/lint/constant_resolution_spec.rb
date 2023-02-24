@@ -118,5 +118,11 @@ RSpec.describe RuboCop::Cop::Lint::ConstantResolution, :config do
         MY_CONST::B
       RUBY
     end
+
+    it 'registers no offense when using `__ENCODING__`' do
+      expect_no_offenses(<<~RUBY)
+        __ENCODING__
+      RUBY
+    end
   end
 end
