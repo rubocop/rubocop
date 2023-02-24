@@ -28,6 +28,21 @@ module RuboCop
       #   end
       #
       #   # bad
+      #   Employee = Class.new(Person) do
+      #     def initialize(name, salary)
+      #       @salary = salary
+      #     end
+      #   end
+      #
+      #   # good
+      #   Employee = Class.new(Person) do
+      #     def initialize(name, salary)
+      #       super(name)
+      #       @salary = salary
+      #     end
+      #   end
+      #
+      #   # bad
       #   class Parent
       #     def self.inherited(base)
       #       do_something
@@ -54,6 +69,13 @@ module RuboCop
                                          singleton_method_undefined].freeze
 
         CALLBACKS = (CLASS_LIFECYCLE_CALLBACKS + METHOD_LIFECYCLE_CALLBACKS).to_set.freeze
+
+        # @!method class_new_block(node)
+        def_node_matcher :class_new_block, <<~RUBY
+          ({block numblock}
+            (send
+              (const {nil? cbase} :Class) :new $_) ...)
+        RUBY
 
         def on_def(node)
           return unless offender?(node)
@@ -88,8 +110,15 @@ module RuboCop
         end
 
         def inside_class_with_stateful_parent?(node)
-          class_node = node.each_ancestor(:class).first
-          class_node&.parent_class && !stateless_class?(class_node.parent_class)
+          if (class_node = node.each_ancestor(:class).first)
+            class_node&.parent_class && !stateless_class?(class_node.parent_class)
+          elsif (block_node = node.each_ancestor(:block, :numblock).first)
+            return false unless (super_class = class_new_block(block_node))
+
+            !stateless_class?(super_class)
+          else
+            false
+          end
         end
 
         def stateless_class?(node)
