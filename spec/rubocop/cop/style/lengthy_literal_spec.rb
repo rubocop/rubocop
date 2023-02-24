@@ -11,6 +11,8 @@ RSpec.describe RuboCop::Cop::Style::LengthyLiteral, :config do
     'Avoid hard coding large quantities of data in code. ' \
       'Prefer reading the data from an external source.'
   end
+  let(:large_array) { (0...length_threshold).to_a }
+  let(:large_hash) { (0...length_threshold).to_h { |n| [n, n] } }
 
   it 'registers an offense when using an `Array` literal with too many entries (on one line)' do
     literal = large_array.to_s
@@ -100,15 +102,5 @@ RSpec.describe RuboCop::Cop::Style::LengthyLiteral, :config do
         #{large_array.drop(1).join(",\n  ")}
       ]
     RUBY
-  end
-
-  private
-
-  def large_array
-    (0...length_threshold).to_a
-  end
-
-  def large_hash
-    (0...length_threshold).to_h { |n| [n, n] }
   end
 end
