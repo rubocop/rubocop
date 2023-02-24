@@ -72,6 +72,8 @@ module RuboCop
           return if cop_config['AllowComments'] && contains_comments?(node)
 
           add_offense(node, message: format(MSG, keyword: node.keyword)) do |corrector|
+            next if node.parent&.call_type?
+
             autocorrect(corrector, node)
           end
         end
