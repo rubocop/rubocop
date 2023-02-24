@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 RSpec.describe RuboCop::Cop::Style::LengthyLiteral, :config do
   let(:cop_config) do
     {
