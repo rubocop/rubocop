@@ -68,7 +68,7 @@ module RuboCop
           node.loc.else.line
         elsif node.if_type? && node.ternary?
           node.else_branch.loc.line
-        elsif (next_sibling = node.right_sibling)
+        elsif (next_sibling = node.right_sibling) && next_sibling.is_a?(AST::Node)
           next_sibling.loc.line
         elsif (parent = node.parent)
           parent.loc.end ? parent.loc.end.line : parent.loc.line

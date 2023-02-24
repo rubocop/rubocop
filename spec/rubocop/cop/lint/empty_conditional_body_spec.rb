@@ -273,6 +273,26 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     expect_correction('')
   end
 
+  it 'registers an offense when missing `if` body and using method call for return value' do
+    expect_offense(<<~RUBY)
+      if condition
+      ^^^^^^^^^^^^ Avoid `if` branches without a body.
+      end.do_something
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense when missing `if` body and using safe navigation method call for return value' do
+    expect_offense(<<~RUBY)
+      if condition
+      ^^^^^^^^^^^^ Avoid `if` branches without a body.
+      end&.do_something
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'does not register an offense for missing `unless` body with a comment' do
     expect_no_offenses(<<~RUBY)
       unless condition
