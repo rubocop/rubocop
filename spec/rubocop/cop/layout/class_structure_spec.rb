@@ -387,6 +387,37 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when public class method with heredoc after instance method' do
+    expect_offense(<<~RUBY)
+      class Foo
+        def instance_method
+          'instance method'
+        end
+
+        def self.class_method
+        ^^^^^^^^^^^^^^^^^^^^^ `public_class_methods` is supposed to appear before `public_methods`.
+          <<~EOS
+            class method
+          EOS
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class Foo
+        def self.class_method
+          <<~EOS
+            class method
+          EOS
+        end
+        def instance_method
+          'instance method'
+        end
+
+      end
+    RUBY
+  end
+
   context 'when def modifier is used' do
     it 'registers an offense and corrects public method with modifier declared after private method with modifier' do
       expect_offense(<<~RUBY)
