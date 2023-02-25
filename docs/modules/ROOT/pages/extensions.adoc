@@ -84,6 +84,8 @@ Rake-specific analysis
 Code style checking for Sequel gem
 * https://github.com/rubocop/rubocop-thread_safety[rubocop-thread_safety] -
 Thread-safety analysis
+* https://github.com/rubocop/rubocop-capybara[rubocop-capybara] -
+Capybara-specific analysis
 
 ==== Third-party Extensions
 
