@@ -74,11 +74,18 @@ module RuboCop
 
         def char_class_begins_or_ends_with_escaped_hyphen?(node, index)
           # The hyphen character is allowed to be escaped within a character class
-          # but it's not necessry to escape hyphen if it's the first or last character
+          # but it's not necessary to escape hyphen if it's the first or last character
           # within the character class. This method checks if that's the case.
           # e.g. "[0-9\\-]" or "[\\-0-9]" would return true
-          contents_range(node).source[index - 1] == '[' ||
-            contents_range(node).source[index + 2] == ']'
+          content = contents_range(node).source
+
+          if content[index + 2] == ']'
+            true
+          elsif content[index - 1] == '['
+            index < 2 || content[index - 2] != '\\'
+          else
+            false
+          end
         end
 
         def delimiter?(node, char)

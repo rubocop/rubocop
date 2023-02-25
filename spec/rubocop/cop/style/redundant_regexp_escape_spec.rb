@@ -137,6 +137,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
           RUBY
         end
       end
+
+      context "with an escaped opening square bracket before an escaped '-' character" do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~'RUBY')
+            foo = /[\[\-]/
+                      ^^ Redundant escape inside regexp literal
+          RUBY
+
+          expect_correction(<<~'RUBY')
+            foo = /[\[-]/
+          RUBY
+        end
+      end
     end
 
     context "with an escaped '-' character being the first character inside a character class" do
@@ -171,6 +184,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
       it 'does not register an offense' do
         expect_no_offenses('foo = %r{[\w\-\#]}')
         expect_no_offenses('foo = /[\w\-\#]/')
+        expect_no_offenses('foo = /[\[\-\]]/')
       end
     end
 

@@ -1,0 +1,1 @@
+* [#11607](https://github.com/rubocop/rubocop/issues/11607): Fix a false positive for `Style/RedundantRegexpEscape` when an escaped hyphen follows after an escaped opening square bracket within a character class. ([@SparLaimor][])
