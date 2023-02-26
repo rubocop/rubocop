@@ -109,6 +109,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'registers an offense when using restarg and block arg for `.()` call' do
+      expect_offense(<<~RUBY)
+        def foo(*args, &block)
+                ^^^^^^^^^^^^^ Use arguments forwarding.
+          bar.(*args, &block)
+               ^^^^^^^^^^^^^ Use arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar.(...)
+        end
+      RUBY
+    end
+
     it 'does not register an offense when using arguments forwarding' do
       expect_no_offenses(<<~RUBY)
         def foo(...)
