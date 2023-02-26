@@ -2544,6 +2544,12 @@ Metrics/ClassLength:
   Max: 100
   CountAsOne: []
 
+Metrics/CollectionLiteralLength:
+  Description: 'Checks for `Array` or `Hash` literals with many entries.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  LengthThreshold: 250
+
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
   Description: >-
