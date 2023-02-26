@@ -2543,6 +2543,12 @@ Metrics/ClassLength:
   Max: 100
   CountAsOne: []
 
+Metrics/CollectionLiteralLength:
+  Description: 'Checks for `Array` or `Hash` literals with many entries.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  LengthThreshold: 250
+
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
   Description: >-
@@ -4107,12 +4113,6 @@ Style/LambdaCall:
   SupportedStyles:
     - call
     - braces
-
-Style/LengthyLiteral:
-  Description: 'Checks for extremely large literals, such as `Array`s and `Hash`es with many entries.'
-  Enabled: pending
-  VersionAdded: '<<next>>'
-  LengthThreshold: 250
 
 Style/LineEndConcatenation:
   Description: >-

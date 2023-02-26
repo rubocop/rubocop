@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Metrics
       # Checks for literals with extremely many entries. This is indicative of
       # configuration or data that may be better extracted somewhere else, like
       # a database, fetched from an API, or read from a non-code file (CSV,
@@ -47,7 +47,7 @@ module RuboCop
       #   # Reading huge Set from external data source
       #   SomeFramework.config_for(:something)[:numbers].to_set
       #
-      class LengthyLiteral < Base
+      class CollectionLiteralLength < Base
         MSG = 'Avoid hard coding large quantities of data in code. ' \
               'Prefer reading the data from an external source.'
         RESTRICT_ON_SEND = [:[]].freeze

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::LengthyLiteral, :config do
+RSpec.describe RuboCop::Cop::Metrics::CollectionLiteralLength, :config do
   let(:cop_config) do
     {
       'LengthThreshold' => length_threshold
