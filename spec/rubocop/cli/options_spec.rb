@@ -664,6 +664,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                 Enabled: false
               Security:
                 Enabled: false
+              Metrics:
+                Enabled: false
 
               Style/SomeCop:
                 Description: Something
