@@ -4,10 +4,13 @@ module RuboCop
   module Cop
     module Style
       # Checks for numeric comparisons that can be replaced
-      # by a predicate method, such as receiver.length == 0,
-      # receiver.length > 0, receiver.length != 0,
-      # receiver.length < 1 and receiver.size == 0 that can be
-      # replaced by receiver.empty? and !receiver.empty?.
+      # by a predicate method, such as `receiver.length == 0`,
+      # `receiver.length > 0`, and `receiver.length != 0`,
+      # `receiver.length < 1` and `receiver.size == 0` that can be
+      # replaced by `receiver.empty?` and `!receiver.empty?`.
+      #
+      # NOTE: `File`, `Tempfile`, and `StringIO` do not have `empty?`
+      # so allow `size == 0` and `size.zero?`.
       #
       # @safety
       #   This cop is unsafe because it cannot be guaranteed that the receiver
@@ -49,6 +52,7 @@ module RuboCop
 
         def check_zero_length_predicate(node)
           return unless (length_method = zero_length_predicate(node.parent))
+          return if non_polymorphic_collection?(node.parent)
 
           offense = node.loc.selector.join(node.parent.source_range.end)
           message = format(ZERO_MSG, current: "#{length_method}.zero?")
@@ -134,7 +138,7 @@ module RuboCop
         # @!method non_polymorphic_collection?(node)
         def_node_matcher :non_polymorphic_collection?, <<~PATTERN
           {(send (send (send (const {nil? cbase} :File) :stat _) ...) ...)
-           (send (send (send (const {nil? cbase} {:Tempfile :StringIO}) {:new :open} ...) ...) ...)}
+           (send (send (send (const {nil? cbase} {:File :Tempfile :StringIO}) {:new :open} ...) ...) ...)}
         PATTERN
       end
     end
