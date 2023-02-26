@@ -403,44 +403,106 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
 
   context 'when inspecting a StringIO object' do
     context 'when initialized with a string' do
-      it 'does not register an offense' do
+      it 'does not register an offense using `size == 0`' do
         expect_no_offenses(<<~RUBY)
           StringIO.new('foo').size == 0
         RUBY
       end
 
-      it 'does not register an offense with top-level ::StringIO' do
+      it 'does not register an offense with top-level ::StringIO using `size == 0`' do
         expect_no_offenses(<<~RUBY)
           ::StringIO.new('foo').size == 0
+        RUBY
+      end
+
+      it 'does not register an offense using `size.zero?`' do
+        expect_no_offenses(<<~RUBY)
+          StringIO.new('foo').size.zero?
+        RUBY
+      end
+
+      it 'does not register an offense with top-level ::StringIO using `size.zero?`' do
+        expect_no_offenses(<<~RUBY)
+          ::StringIO.new('foo').size.zero?
         RUBY
       end
     end
 
     context 'when initialized without arguments' do
-      it 'does not register an offense' do
+      it 'does not register an offense using `size == 0`' do
         expect_no_offenses(<<~RUBY)
           StringIO.new.size == 0
         RUBY
       end
 
-      it 'does not register an offense with top-level ::StringIO' do
+      it 'does not register an offense with top-level ::StringIO using `size == 0`' do
         expect_no_offenses(<<~RUBY)
           ::StringIO.new.size == 0
+        RUBY
+      end
+
+      it 'does not register an offense using `size.zero?`' do
+        expect_no_offenses(<<~RUBY)
+          StringIO.new.size.zero?
+        RUBY
+      end
+
+      it 'does not register an offense with top-level ::StringIO using `size.zero?`' do
+        expect_no_offenses(<<~RUBY)
+          ::StringIO.new.size.zero?
         RUBY
       end
     end
   end
 
+  context 'when inspecting a File object' do
+    it 'does not register an offense using `size == 0`' do
+      expect_no_offenses(<<~RUBY)
+        File.new('foo').size == 0
+      RUBY
+    end
+
+    it 'does not register an offense with top-level ::File using `size == 0`' do
+      expect_no_offenses(<<~RUBY)
+        ::File.new('foo').size == 0
+      RUBY
+    end
+
+    it 'does not register an offense using `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        File.new('foo').size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense with top-level ::File using `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        ::File.new('foo').size.zero?
+      RUBY
+    end
+  end
+
   context 'when inspecting a Tempfile object' do
-    it 'does not register an offense' do
+    it 'does not register an offense using `size == 0`' do
       expect_no_offenses(<<~RUBY)
         Tempfile.new('foo').size == 0
       RUBY
     end
 
-    it 'does not register an offense with top-level ::Tempfile' do
+    it 'does not register an offense with top-level ::Tempfile using `size == 0`' do
       expect_no_offenses(<<~RUBY)
         ::Tempfile.new('foo').size == 0
+      RUBY
+    end
+
+    it 'does not register an offense using `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        Tempfile.new('foo').size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense with top-level ::Tempfile using `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        ::Tempfile.new('foo').size.zero?
       RUBY
     end
   end
