@@ -124,9 +124,9 @@ module RuboCop
 
         def register_offense_to_forwarding_method_arguments(forwarding_method)
           add_offense(arguments_range(forwarding_method)) do |corrector|
-            range = range_between(
-              forwarding_method.loc.selector.end_pos, forwarding_method.source_range.end_pos
-            )
+            begin_pos = forwarding_method.loc.selector&.end_pos || forwarding_method.loc.dot.end_pos
+            range = range_between(begin_pos, forwarding_method.source_range.end_pos)
+
             corrector.replace(range, '(...)')
           end
         end
