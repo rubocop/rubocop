@@ -23,6 +23,23 @@ RSpec.describe RuboCop::Cop::Style::ConcatArrayLiterals, :config do
     RUBY
   end
 
+  it 'registers an offense when using `concat` with multiline multiple elements array literal argument' do
+    expect_offense(<<~RUBY)
+      arr.concat([
+          ^^^^^^^^ Use `push(foo, bar)` instead of `concat([[...]
+        foo,
+        bar
+      ])
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.push(
+        foo,
+        bar
+      )
+    RUBY
+  end
+
   it 'registers an offense when using `concat` with multiple array literal arguments' do
     expect_offense(<<~RUBY)
       arr.concat([foo, bar], [baz])
