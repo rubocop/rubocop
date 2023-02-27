@@ -33,8 +33,3 @@ https://github.com/prontolabs/pronto[Pronto] does quick automated code review of
 == ReviewDog
 
 https://github.com/reviewdog/reviewdog[ReviewDog] is similar to Pronto but with better support for GitHub Actions.
-
-== Sider
-
-https://sider.review[Sider] improves your team's productivity by automating code analysis.
-It supports RuboCop's autocorrection.

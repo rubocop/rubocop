@@ -25,7 +25,7 @@ linter:
 * A vast number of ready-made xref:extensions.adoc[extensions] (e.g. `rubocop-rails`, `rubocop-rspec`, `rubocop-performance` and `rubocop-minitest`)
 
 * Wide editor/IDE support
-* Many online services use RuboCop internally (e.g. HoundCI, Sider and CodeClimate)
+* Many online services use RuboCop internally (e.g. HoundCI and CodeClimate)
 * Best logo/stickers ever
 
 The project is closely tied to several efforts to document and promote the best practices of the Ruby community:
