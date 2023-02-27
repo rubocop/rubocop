@@ -38,7 +38,7 @@ module RuboCop
           offense = offense_range(node)
           current = offense.source
 
-          if node.arguments.any?(&:percent_literal?)
+          if (use_percent_literal = node.arguments.any?(&:percent_literal?))
             if percent_literals_includes_only_basic_literals?(node)
               prefer = preferred_method(node)
               message = format(MSG, prefer: prefer, current: current)
@@ -51,7 +51,15 @@ module RuboCop
           end
 
           add_offense(offense, message: message) do |corrector|
-            corrector.replace(offense, prefer)
+            if use_percent_literal
+              corrector.replace(offense, prefer)
+            else
+              corrector.replace(node.loc.selector, 'push')
+              node.arguments.each do |argument|
+                corrector.remove(argument.loc.begin)
+                corrector.remove(argument.loc.end)
+              end
+            end
           end
         end
         # rubocop:enable Metrics
