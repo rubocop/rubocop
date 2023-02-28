@@ -139,7 +139,7 @@ module RuboCop
 
         def heredoc_with_disabled_interpolation?(node)
           if heredoc?(node)
-            node.source_range.source.end_with?("'")
+            node.source.end_with?("'")
           elsif node.parent&.dstr_type?
             heredoc_with_disabled_interpolation?(node.parent)
           else

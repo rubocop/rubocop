@@ -115,7 +115,7 @@ module RuboCop
         end
 
         def adjust_minus(corrector, node)
-          heredoc_beginning = node.source_range.source
+          heredoc_beginning = node.source
           corrected = heredoc_beginning.sub(/<<-?/, '<<~')
           corrector.replace(node, corrected)
         end

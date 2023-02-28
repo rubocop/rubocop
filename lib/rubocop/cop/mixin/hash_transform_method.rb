@@ -179,7 +179,7 @@ module RuboCop
         end
 
         def set_new_body_expression(transforming_body_expr, corrector)
-          body_source = transforming_body_expr.source_range.source
+          body_source = transforming_body_expr.source
           if transforming_body_expr.hash_type? && !transforming_body_expr.braces?
             body_source = "{ #{body_source} }"
           end

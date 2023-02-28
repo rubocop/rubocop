@@ -97,7 +97,7 @@ module RuboCop
         end
 
         def autocorrect_variable_interpolation(corrector, embedded_node, node)
-          replacement = "#{embedded_node.source_range.source}.to_s"
+          replacement = "#{embedded_node.source}.to_s"
 
           corrector.replace(node, replacement)
         end
