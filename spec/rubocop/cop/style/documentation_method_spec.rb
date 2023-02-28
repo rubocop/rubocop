@@ -92,6 +92,14 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
           expect_no_offenses('private def method; end')
         end
 
+        it 'does not register an offense with inline `private_class_method`' do
+          expect_no_offenses(<<~RUBY)
+            private_class_method def self.foo
+              puts 'bar'
+            end
+          RUBY
+        end
+
         context 'when required for non-public methods' do
           let(:require_for_non_public_methods) { true }
 
@@ -128,6 +136,15 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             expect_offense(<<~RUBY)
               private def method; end
                       ^^^^^^^^^^^^^^^ Missing method documentation comment.
+            RUBY
+          end
+
+          it 'register an offense with inline `private_class_method`' do
+            expect_offense(<<~RUBY)
+              private_class_method def self.foo
+                                   ^^^^^^^^^^^^ Missing method documentation comment.
+                puts 'bar'
+              end
             RUBY
           end
         end
