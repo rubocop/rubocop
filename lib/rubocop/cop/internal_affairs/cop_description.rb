@@ -77,7 +77,7 @@ module RuboCop
         end
 
         def first_comment_line(node)
-          node.source_range.source.lines.find { |line| comment_line?(line) }
+          node.source.lines.find { |line| comment_line?(line) }
         end
 
         def comment_body(comment_line)
@@ -86,7 +86,7 @@ module RuboCop
 
         def comment_index(node, comment_line)
           body = comment_body(comment_line)
-          node.source_range.source.index(body)
+          node.source.index(body)
         end
 
         def relevant_file?(file)

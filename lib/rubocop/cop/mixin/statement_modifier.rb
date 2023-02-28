@@ -72,7 +72,7 @@ module RuboCop
         comment = processed_source.find_comment { |c| same_line?(c, node) }
         return unless comment
 
-        comment_source = comment.source_range.source
+        comment_source = comment.source
         comment_source unless comment_disables_cop?(comment_source)
       end
 

@@ -35,7 +35,7 @@ module RuboCop
         def move_comment(eol_comment:, node:, corrector:)
           return unless eol_comment
 
-          text = eol_comment.source_range.source
+          text = eol_comment.source
           corrector.insert_before(node, "#{text}\n#{' ' * node.loc.keyword.column}")
           corrector.remove(eol_comment)
         end

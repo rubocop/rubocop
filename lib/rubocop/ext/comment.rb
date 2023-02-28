@@ -4,6 +4,10 @@ module RuboCop
   module Ext
     # Extensions to `Parser::Source::Comment`.
     module Comment
+      def source
+        loc.expression.source
+      end
+
       def source_range
         loc.expression
       end
