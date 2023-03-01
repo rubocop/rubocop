@@ -127,11 +127,16 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
     it 'does not register an offense for accessors with other methods' do
       expect_no_offenses(<<~RUBY)
         class Foo
+          extend T::Sig
+
           annotation_method :one
           attr_reader :one
 
           annotation_method :two
           attr_reader :two
+
+          sig { returns(Integer) }
+          attr_reader :three
         end
       RUBY
     end
