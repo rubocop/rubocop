@@ -196,6 +196,39 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/RedundantParentheses` when using Ruby 3.1' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+      Style/HashSyntax:
+        EnforcedShorthandSyntax: always
+      Style/RedundantParentheses:
+        Enabled: true
+      Style/MethodCallWithArgsParentheses:
+        Enabled: true
+        EnforcedStyle: omit_parentheses
+    YAML
+    source = <<~RUBY
+      it 'fails' do
+        foo = create :foo, bar: bar, other: (create :other, bar: bar)
+        quux = (doo bar: bar).baz
+        pass
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run(['--autocorrect', '--only',
+                    'Style/HashSyntax,' \
+                    'Style/RedundantParentheses,' \
+                    'Style/MethodCallWithArgsParentheses'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      it 'fails' do
+        foo = create :foo, bar:, other: (create :other, bar:)
+        quux = (doo bar:).baz
+        pass
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/IfUnlessModifier` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
