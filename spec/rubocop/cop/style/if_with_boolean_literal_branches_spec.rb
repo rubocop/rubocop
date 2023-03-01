@@ -611,6 +611,14 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
     end
   end
 
+  it 'does not crash when using `()` as a condition' do
+    expect_no_offenses(<<~RUBY)
+      if ()
+      else
+      end
+    RUBY
+  end
+
   context 'when `AllowedMethods: nonzero?`' do
     let(:cop_config) { { 'AllowedMethods' => ['nonzero?'] } }
 

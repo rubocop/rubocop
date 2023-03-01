@@ -118,6 +118,8 @@ module RuboCop
         end
 
         def return_boolean_value?(condition)
+          return false unless condition
+
           if condition.begin_type?
             return_boolean_value?(condition.children.first)
           elsif condition.or_type?
