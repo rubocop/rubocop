@@ -48,13 +48,11 @@ module RuboCop
 
         def on_if(node)
           return unless if_else?(node)
-
-          condition = unwrap_begin_nodes(node.condition)
-
+          return unless (condition = unwrap_begin_nodes(node.condition))
           return if double_negation?(condition) || !negated_condition?(condition)
 
-          type = node.ternary? ? 'ternary' : 'if-else'
-          add_offense(node, message: format(MSG, type: type)) do |corrector|
+          message = message(node)
+          add_offense(node, message: message) do |corrector|
             unless corrected_ancestor?(node)
               correct_negated_condition(corrector, condition)
               swap_branches(corrector, node)
@@ -73,13 +71,20 @@ module RuboCop
         end
 
         def unwrap_begin_nodes(node)
-          node = node.children.first while node.begin_type? || node.kwbegin_type?
+          node = node.children.first while node && (node.begin_type? || node.kwbegin_type?)
+
           node
         end
 
         def negated_condition?(node)
           node.send_type? &&
             (node.negation_method? || NEGATED_EQUALITY_METHODS.include?(node.method_name))
+        end
+
+        def message(node)
+          type = node.ternary? ? 'ternary' : 'if-else'
+
+          format(MSG, type: type)
         end
 
         def corrected_ancestor?(node)
