@@ -14,18 +14,22 @@ module RuboCop
       #   # bad
       #   class Foo
       #     attr_reader :bar
+      #     attr_reader :bax
       #     attr_reader :baz
       #   end
       #
       #   # good
       #   class Foo
-      #     attr_reader :bar, :baz
+      #     attr_reader :bar, :bax, :baz
       #   end
       #
       #   # good
       #   class Foo
       #     # may be intended comment for bar.
       #     attr_reader :bar
+      #
+      #     sig { returns(String) }
+      #     attr_reader :bax
       #
       #     may_be_intended_annotation :baz
       #     attr_reader :baz
@@ -90,6 +94,14 @@ module RuboCop
 
         def groupable_accessor?(node)
           return true unless (previous_expression = node.left_siblings.last)
+
+          # Accessors with Sorbet `sig { ... }` blocks shouldn't be groupable.
+          if previous_expression.block_type?
+            previous_expression.child_nodes.each do |child_node|
+              break previous_expression = child_node if child_node.send_type?
+            end
+          end
+
           return true unless previous_expression.send_type?
 
           previous_expression.attribute_accessor? || previous_expression.access_modifier?
