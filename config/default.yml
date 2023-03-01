@@ -2547,7 +2547,7 @@ Metrics/ClassLength:
 Metrics/CollectionLiteralLength:
   Description: 'Checks for `Array` or `Hash` literals with many entries.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.47'
   LengthThreshold: 250
 
 # Avoid complex methods.

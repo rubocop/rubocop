@@ -145,6 +145,15 @@ end
 class Foo
   attr_reader :bar, :baz
 end
+
+# good
+class Foo
+  # may be intended comment for bar.
+  attr_reader :bar
+
+  may_be_intended_annotation :baz
+  attr_reader :baz
+end
 ----
 
 ==== EnforcedStyle: separated
@@ -5811,6 +5820,20 @@ written as modifier `if`/`unless`. The cop also checks for modifier
 The maximum line length is configured in the `Layout/LineLength`
 cop. The tab size is configured in the `IndentationWidth` of the
 `Layout/IndentationStyle` cop.
+
+NOTE: It is allowed when `defined?` argument has an undefined value,
+because using the modifier form causes the following incompatibility:
+
+[source,ruby]
+----
+unless defined?(undefined_foo)
+  undefined_foo = 'default_value'
+end
+undefined_foo # => 'default_value'
+
+undefined_bar = 'default_value' unless defined?(undefined_bar)
+undefined_bar # => nil
+----
 
 === Examples
 
@@ -15451,10 +15474,13 @@ CONST + 1
 |===
 
 Checks for numeric comparisons that can be replaced
-by a predicate method, such as receiver.length == 0,
-receiver.length > 0, receiver.length != 0,
-receiver.length < 1 and receiver.size == 0 that can be
-replaced by receiver.empty? and !receiver.empty?.
+by a predicate method, such as `receiver.length == 0`,
+`receiver.length > 0`, and `receiver.length != 0`,
+`receiver.length < 1` and `receiver.size == 0` that can be
+replaced by `receiver.empty?` and `!receiver.empty?`.
+
+NOTE: `File`, `Tempfile`, and `StringIO` do not have `empty?`
+so allow `size == 0` and `size.zero?`.
 
 === Safety
 

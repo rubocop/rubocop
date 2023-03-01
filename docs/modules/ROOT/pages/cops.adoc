@@ -337,6 +337,7 @@ In the following section you find all available cops:
 * xref:cops_metrics.adoc#metricsblocklength[Metrics/BlockLength]
 * xref:cops_metrics.adoc#metricsblocknesting[Metrics/BlockNesting]
 * xref:cops_metrics.adoc#metricsclasslength[Metrics/ClassLength]
+* xref:cops_metrics.adoc#metricscollectionliterallength[Metrics/CollectionLiteralLength]
 * xref:cops_metrics.adoc#metricscyclomaticcomplexity[Metrics/CyclomaticComplexity]
 * xref:cops_metrics.adoc#metricsmethodlength[Metrics/MethodLength]
 * xref:cops_metrics.adoc#metricsmodulelength[Metrics/ModuleLength]
