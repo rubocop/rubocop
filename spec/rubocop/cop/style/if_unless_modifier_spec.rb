@@ -107,6 +107,20 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
+      context 'when the line is too long due to long comment with modifier' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            some_statement if some_quite_long_condition # The condition might have been long, but this comment is longer. In fact, it is too long for Rubocop
+                           ^^ Modifier form of `if` makes the line too long.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # The condition might have been long, but this comment is longer. In fact, it is too long for Rubocop
+            some_statement if some_quite_long_condition
+          RUBY
+        end
+      end
+
       describe 'IgnoreCopDirectives' do
         let(:spaces) { ' ' * 57 }
         let(:comment) { '# rubocop:disable Style/For' }
@@ -136,9 +150,8 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
 
             expect_correction(<<~RUBY)
               def f
-                if condition
-                  #{body}
-                end #{comment}
+                #{comment}
+                #{body} if condition
               end
             RUBY
           end

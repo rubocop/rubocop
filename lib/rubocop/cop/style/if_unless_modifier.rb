@@ -53,6 +53,7 @@ module RuboCop
         include LineLengthHelp
         include AllowedPattern
         include RangeHelp
+        include CommentsHelp
         extend AutoCorrector
 
         MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
@@ -101,24 +102,41 @@ module RuboCop
 
         def autocorrect(corrector, node)
           replacement = if node.modifier_form?
-                          last_argument = node.if_branch.last_argument if node.if_branch.send_type?
-
-                          if last_argument.respond_to?(:heredoc?) && last_argument.heredoc?
-                            heredoc = extract_heredoc_from(last_argument)
-                            remove_heredoc(corrector, heredoc)
-                            to_normal_form_with_heredoc(node, indent(node), heredoc)
-                          else
-                            to_normal_form(node, indent(node))
-                          end
+                          replacement_for_modifier_form(corrector, node)
                         else
                           to_modifier_form(node)
                         end
           corrector.replace(node, replacement)
         end
 
+        def replacement_for_modifier_form(corrector, node) # rubocop:disable Metrics/AbcSize
+          comment = comment_on_node_line(node)
+          if comment && too_long_due_to_comment_after_modifier?(node, comment)
+            remove_comment(corrector, node, comment)
+
+            return to_modifier_form_with_move_comment(node, indent(node), comment)
+          end
+
+          last_argument = node.if_branch.last_argument if node.if_branch.send_type?
+          if last_argument.respond_to?(:heredoc?) && last_argument.heredoc?
+            heredoc = extract_heredoc_from(last_argument)
+            remove_heredoc(corrector, heredoc)
+
+            return to_normal_form_with_heredoc(node, indent(node), heredoc)
+          end
+
+          to_normal_form(node, indent(node))
+        end
+
         def too_long_due_to_modifier?(node)
           node.modifier_form? && too_long_single_line?(node) &&
             !another_statement_on_same_line?(node)
+        end
+
+        def too_long_due_to_comment_after_modifier?(node, comment)
+          source_length = processed_source.lines[node.first_line - 1].length
+          source_length >= max_line_length &&
+            source_length - comment.source_range.length <= max_line_length
         end
 
         def allowed_patterns
@@ -215,6 +233,13 @@ module RuboCop
           RUBY
         end
 
+        def to_modifier_form_with_move_comment(node, indentation, comment)
+          <<~RUBY.chomp
+            #{comment.source}
+            #{indentation}#{node.body.source} #{node.keyword} #{node.condition.source}
+          RUBY
+        end
+
         def extract_heredoc_from(last_argument)
           heredoc_body = last_argument.loc.heredoc_body
           heredoc_end = last_argument.loc.heredoc_end
@@ -226,6 +251,14 @@ module RuboCop
           heredoc.each do |range|
             corrector.remove(range_by_whole_lines(range, include_final_newline: true))
           end
+        end
+
+        def comment_on_node_line(node)
+          processed_source.comments.find { |c| same_line?(c, node) }
+        end
+
+        def remove_comment(corrector, _node, comment)
+          corrector.remove(range_with_surrounding_space(range: comment.source_range, side: :left))
         end
       end
     end
