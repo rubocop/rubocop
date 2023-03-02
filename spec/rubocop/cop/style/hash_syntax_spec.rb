@@ -1438,6 +1438,21 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense in calls without parentheses but inside parentheses' do
+        expect_offense(<<~RUBY)
+          (create :foo, bar: bar)
+                             ^^^ Omit the hash value.
+
+          pass
+        RUBY
+
+        expect_correction(<<~RUBY)
+          (create :foo, bar:)
+
+          pass
+        RUBY
+      end
+
       context 'when hash roket syntax' do
         let(:enforced_style) { 'hash_rockets' }
 
