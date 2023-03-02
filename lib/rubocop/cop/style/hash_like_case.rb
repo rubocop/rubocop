@@ -37,6 +37,8 @@ module RuboCop
       #   end
       #
       class HashLikeCase < Base
+        include MinBranchesCount
+
         MSG = 'Consider replacing `case-when` with a hash lookup.'
 
         # @!method hash_like_case?(node)
@@ -49,7 +51,7 @@ module RuboCop
         PATTERN
 
         def on_case(node)
-          return if node.when_branches.size < min_branches_count
+          return unless min_branches_count?(node)
 
           hash_like_case?(node) do |condition_nodes, body_nodes|
             if nodes_of_same_type?(condition_nodes) && nodes_of_same_type?(body_nodes)
@@ -62,14 +64,6 @@ module RuboCop
 
         def nodes_of_same_type?(nodes)
           nodes.all? { |node| node.type == nodes.first.type }
-        end
-
-        def min_branches_count
-          length = cop_config['MinBranchesCount'] || 3
-          return length if length.is_a?(Integer) && length.positive?
-
-          warn Rainbow('`MinBranchesCount` needs to be a positive integer!').red
-          exit!
         end
       end
     end

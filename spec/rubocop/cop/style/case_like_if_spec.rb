@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::CaseLikeIf, :config do
+  let(:cop_config) { { 'MinBranchesCount' => 2 } }
+
   it 'registers an offense and corrects when using `===`' do
     expect_offense(<<~RUBY)
       if Integer === x
@@ -430,6 +432,19 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf, :config do
         case foo
         when /(?<name>.*)/
         when 123
+        end
+      RUBY
+    end
+  end
+
+  context 'MinBranchesCount: 3' do
+    let(:cop_config) { { 'MinBranchesCount' => 3 } }
+
+    it 'does not register an offense when branches count is less than required' do
+      expect_no_offenses(<<~RUBY)
+        if x == 1
+        elsif x == 2
+        else
         end
       RUBY
     end

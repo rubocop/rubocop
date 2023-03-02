@@ -3261,6 +3261,9 @@ Style/CaseLikeIf:
   Enabled: true
   Safe: false
   VersionAdded: '0.88'
+  VersionChanged: '<<next>>'
+  # `MinBranchesCount` defines the number of branches `if` needs to have to trigger this cop.
+  MinBranchesCount: 3
 
 Style/CharacterLiteral:
   Description: 'Checks for uses of character literals.'
