@@ -11,12 +11,14 @@ module RuboCop
       #   so if the original conditional used a different equality operator, the
       #   behavior may be different.
       #
-      # @example
+      # @example MinBranchesCount: 3 (default)
       #   # bad
       #   if status == :active
       #     perform_action
       #   elsif status == :inactive || status == :hibernating
       #     check_timeout
+      #   elsif status == :invalid
+      #     report_invalid
       #   else
       #     final_action
       #   end
@@ -27,12 +29,27 @@ module RuboCop
       #     perform_action
       #   when :inactive, :hibernating
       #     check_timeout
+      #   when :invalid
+      #     report_invalid
+      #   else
+      #     final_action
+      #   end
+      #
+      # @example MinBranchesCount: 4
+      #   # good
+      #   if status == :active
+      #     perform_action
+      #   elsif status == :inactive || status == :hibernating
+      #     check_timeout
+      #   elsif status == :invalid
+      #     report_invalid
       #   else
       #     final_action
       #   end
       #
       class CaseLikeIf < Base
         include RangeHelp
+        include MinBranchesCount
         extend AutoCorrector
 
         MSG = 'Convert `if-elsif` to `case-when`.'
@@ -78,7 +95,7 @@ module RuboCop
 
         def should_check?(node)
           !node.unless? && !node.elsif? && !node.modifier_form? && !node.ternary? &&
-            node.elsif_conditional?
+            node.elsif_conditional? && min_branches_count?(node)
         end
 
         # rubocop:disable Metrics/MethodLength
