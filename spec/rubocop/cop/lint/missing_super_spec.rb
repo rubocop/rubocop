@@ -12,6 +12,19 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
       RUBY
     end
 
+    it 'registers an offense when no `super` call and when defining some method' do
+      expect_offense(<<~RUBY)
+        class Child < Parent
+          def initialize
+          ^^^^^^^^^^^^^^ Call `super` to initialize state of the parent class.
+          end
+
+          def do_something
+          end
+        end
+      RUBY
+    end
+
     it 'does not register an offense for the class without parent class' do
       expect_no_offenses(<<~RUBY)
         class Child

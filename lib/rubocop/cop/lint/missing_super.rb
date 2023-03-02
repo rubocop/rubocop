@@ -110,12 +110,12 @@ module RuboCop
         end
 
         def inside_class_with_stateful_parent?(node)
-          if (class_node = node.parent) && class_node.class_type?
-            class_node.parent_class && !stateless_class?(class_node.parent_class)
-          elsif (block_node = node.each_ancestor(:block, :numblock).first)
+          if (block_node = node.each_ancestor(:block, :numblock).first)
             return false unless (super_class = class_new_block(block_node))
 
             !stateless_class?(super_class)
+          elsif (class_node = node.each_ancestor(:class).first)
+            class_node.parent_class && !stateless_class?(class_node.parent_class)
           else
             false
           end
