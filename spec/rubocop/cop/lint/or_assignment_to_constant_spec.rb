@@ -12,6 +12,43 @@ RSpec.describe RuboCop::Cop::Lint::OrAssignmentToConstant, :config do
     RUBY
   end
 
+  it 'registers an offense with or-assignment to a constant in method definition' do
+    expect_offense(<<~RUBY)
+      def foo
+        M::CONST ||= 1
+                 ^^^ Avoid using or-assignment with constants.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense with or-assignment to a constant in singleton method definition' do
+    expect_offense(<<~RUBY)
+      def self.foo
+        M::CONST ||= 1
+                 ^^^ Avoid using or-assignment with constants.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense with or-assignment to a constant in method definition using `define_method`' do
+    expect_offense(<<~RUBY)
+      define_method :foo do
+        M::CONST ||= 1
+                 ^^^ Avoid using or-assignment with constants.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      define_method :foo do
+        M::CONST = 1
+      end
+    RUBY
+  end
+
   it 'does not register an offense with plain assignment to a constant' do
     expect_no_offenses(<<~RUBY)
       CONST = 1

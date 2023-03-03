@@ -31,6 +31,8 @@ module RuboCop
           return unless lhs&.casgn_type?
 
           add_offense(node.loc.operator) do |corrector|
+            next if node.each_ancestor(:def, :defs).any?
+
             corrector.replace(node.loc.operator, '=')
           end
         end
