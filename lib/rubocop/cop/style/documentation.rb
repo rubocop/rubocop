@@ -178,13 +178,19 @@ module RuboCop
         def identifier(node)
           # Get the fully qualified identifier for a class/module
           nodes = [node, *node.each_ancestor(:class, :module)]
-          nodes.reverse_each.flat_map { |n| qualify_const(n.identifier) }.join('::')
+          identifier = nodes.reverse_each.flat_map { |n| qualify_const(n.identifier) }.join('::')
+
+          identifier.sub('::::', '::')
         end
 
         def qualify_const(node)
-          return if node.nil? || node.cbase_type? || node.self_type? || node.send_type?
+          return if node.nil?
 
-          [qualify_const(node.namespace), node.short_name].compact
+          if node.cbase_type? || node.self_type? || node.call_type? || node.variable?
+            node.source
+          else
+            [qualify_const(node.namespace), node.short_name].compact
+          end
         end
       end
     end
