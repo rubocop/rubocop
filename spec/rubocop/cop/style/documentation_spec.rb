@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
   it 'registers an offense for non-empty cbase class' do
     expect_offense(<<~RUBY)
       class ::MyClass
-      ^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class MyClass`.
+      ^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class ::MyClass`.
         def method
         end
       end
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
   it 'registers an offense for non-empty class nested under self' do
     expect_offense(<<~RUBY)
       class self::MyClass
-      ^^^^^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class MyClass`.
+      ^^^^^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class self::MyClass`.
         def method
         end
       end
@@ -40,7 +40,70 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
   it 'registers an offense for non-empty class nested under method call' do
     expect_offense(<<~RUBY)
       class my_method::MyClass
-      ^^^^^^^^^^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class MyClass`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class my_method::MyClass`.
+        def method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for non-empty class nested under safe navigation method call' do
+    expect_offense(<<~RUBY)
+      class obj&.my_method::MyClass
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing top-level documentation comment for `class obj&.my_method::MyClass`.
+        def method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for non-empty class nested under local variable' do
+    expect_offense(<<~RUBY)
+      m = Module.new
+      module m::N
+      ^^^^^^^^^^^ Missing top-level documentation comment for `module m::N`.
+        def method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for non-empty class nested under instance variable' do
+    expect_offense(<<~RUBY)
+      module @m::N
+      ^^^^^^^^^^^^ Missing top-level documentation comment for `module @m::N`.
+        def method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for non-empty class nested under class variable' do
+    expect_offense(<<~RUBY)
+      module @@m::N
+      ^^^^^^^^^^^^^ Missing top-level documentation comment for `module @@m::N`.
+        def method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for non-empty class nested under global variable' do
+    expect_offense(<<~RUBY)
+      module $m::N
+      ^^^^^^^^^^^^ Missing top-level documentation comment for `module $m::N`.
+        def method
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for non-empty class nested under local variables' do
+    expect_offense(<<~RUBY)
+      m = Module.new
+      n = Module.new
+      module m::n::M
+      ^^^^^^^^^^^^^^ Missing top-level documentation comment for `module m::n::M`.
         def method
         end
       end
