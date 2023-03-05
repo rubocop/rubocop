@@ -641,4 +641,80 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       end
     end
   end
+
+  context 'DefLikeMacros: [\'foo\']' do
+    let(:cop_config) { { 'DefLikeMacros' => ['foo'] } }
+
+    it 'registers offense' do
+      expect_offense(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
+        foo 'second foo' do
+        ^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between block definitions; found 0.
+          #foo body
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
+
+        foo 'second foo' do
+          #foo body
+        end
+      RUBY
+    end
+
+    it 'registers offense if next to method' do
+      expect_offense(<<~RUBY)
+        def foo_first_foo
+          #foo body
+        end
+        foo 'second foo' do
+        ^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between block definitions; found 0.
+          #foo body
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo_first_foo
+          #foo body
+        end
+
+        foo 'second foo' do
+          #foo body
+        end
+      RUBY
+    end
+
+    it 'does not register offense' do
+      expect_no_offenses(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
+
+        foo 'second foo' do
+          #foo body
+        end
+      RUBY
+    end
+
+    it 'does not register offense for non registered macro names' do
+      expect_no_offenses(<<~RUBY)
+        bar "bar" do
+          #bar body
+        end
+        foo 'first foo' do
+          #foo body
+        end
+
+        sig {void}
+        foo 'second foo' do
+          #foo body
+        end
+      RUBY
+    end
+  end
 end

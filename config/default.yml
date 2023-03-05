@@ -577,6 +577,8 @@ Layout/EmptyLineBetweenDefs:
   EmptyLineBetweenMethodDefs: true
   EmptyLineBetweenClassDefs: true
   EmptyLineBetweenModuleDefs: true
+  # `DefLikeMacros` takes the name of any macro that you want to treat like a def.
+  DefLikeMacros: []
   # `AllowAdjacentOneLineDefs` means that single line method definitions don't
   # need an empty line between them. `true` by default.
   AllowAdjacentOneLineDefs: true
