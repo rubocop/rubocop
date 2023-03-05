@@ -135,7 +135,8 @@ module RuboCop
           return if nodes.all?(&:single_line?) && cop_config['AllowAdjacentOneLineDefs']
 
           correction_node = nodes.last
-          location = correction_node.loc.keyword.join(correction_node.loc.name)
+
+          location = def_location(correction_node)
           add_offense(location, message: message(correction_node, count: count)) do |corrector|
             autocorrect(corrector, *nodes, count)
           end
@@ -159,10 +160,28 @@ module RuboCop
 
         private
 
+        def def_location(correction_node)
+          if correction_node.block_type?
+            correction_node.source_range.join(correction_node.children.first.source_range)
+          else
+            correction_node.loc.keyword.join(correction_node.loc.name)
+          end
+        end
+
         def candidate?(node)
           return false unless node
 
-          method_candidate?(node) || class_candidate?(node) || module_candidate?(node)
+          method_candidate?(node) || class_candidate?(node) || module_candidate?(node) ||
+            macro_candidate?(node)
+        end
+
+        def empty_line_between_macros
+          cop_config.fetch('DefLikeMacros', []).map(&:to_sym)
+        end
+
+        def macro_candidate?(node)
+          node.block_type? && node.children.first.macro? &&
+            empty_line_between_macros.include?(node.children.first.method_name)
         end
 
         def method_candidate?(node)
@@ -226,7 +245,11 @@ module RuboCop
         end
 
         def def_start(node)
-          node.loc.keyword.line
+          if node.block_type? && node.children.first.send_type?
+            node.source_range.line
+          else
+            node.loc.keyword.line
+          end
         end
 
         def def_end(node)
