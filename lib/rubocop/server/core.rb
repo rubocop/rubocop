@@ -100,7 +100,7 @@ module RuboCop
 
       def use_json_format?
         return true if ARGV.include?('--format=json') || ARGV.include?('--format=j')
-        return false unless (index = ARGV.index('--format'))
+        return false unless (index = ARGV.index('--format') || ARGV.index('-f'))
 
         format = ARGV[index + 1]
 
