@@ -342,6 +342,7 @@ module RuboCop
         end
 
         def proper_block_style?(node)
+          return true if require_braces?(node)
           return special_method_proper_block_style?(node) if special_method?(node.method_name)
 
           case style
@@ -349,6 +350,14 @@ module RuboCop
           when :semantic            then semantic_block_style?(node)
           when :braces_for_chaining then braces_for_chaining_style?(node)
           when :always_braces       then braces_style?(node)
+          end
+        end
+
+        def require_braces?(node)
+          return false unless node.braces?
+
+          node.each_ancestor(:send).any? do |send|
+            send.arithmetic_operation? && node.source_range.end_pos < send.loc.selector.begin_pos
           end
         end
 
