@@ -240,6 +240,20 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   end
 
   context 'pry' do
+    it 'registers an offense for a pry call' do
+      expect_offense(<<~RUBY)
+        pry
+        ^^^ Remove debugger entry point `pry`.
+      RUBY
+    end
+
+    it 'registers an offense for a pry with an argument call' do
+      expect_offense(<<~RUBY)
+        pry foo
+        ^^^^^^^ Remove debugger entry point `pry foo`.
+      RUBY
+    end
+
     it 'registers an offense for a pry binding call' do
       expect_offense(<<~RUBY)
         binding.pry
@@ -298,10 +312,6 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
           ^^^^^^^^^^^^ Remove debugger entry point `::Pry.rescue`.
         end
       RUBY
-    end
-
-    it 'does not register an offense for a `pry` call without binding' do
-      expect_no_offenses('pry')
     end
 
     it 'does not register an offense for a `rescue` call without Pry' do
