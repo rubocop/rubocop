@@ -160,8 +160,8 @@ module RuboCop
       def roundup_relevant_cops(processed_source)
         cops.select do |cop|
           next true if processed_source.comment_config.cop_opted_in?(cop)
-          next false unless @registry.enabled?(cop, @config)
           next false if cop.excluded_file?(processed_source.file_path)
+          next false unless @registry.enabled?(cop, @config)
 
           support_target_ruby_version?(cop) && support_target_rails_version?(cop)
         end

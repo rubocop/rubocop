@@ -197,7 +197,9 @@ module RuboCop
       def enabled?(cop, config)
         return true if options[:only]&.include?(cop.cop_name)
 
-        cfg = config.for_cop(cop)
+        # We need to use `cop_name` in this case, because `for_cop` uses caching
+        # which expects cop names or cop classes as keys.
+        cfg = config.for_cop(cop.cop_name)
 
         cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config)
 

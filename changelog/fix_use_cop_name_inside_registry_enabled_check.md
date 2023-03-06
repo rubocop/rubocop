@@ -1,0 +1,1 @@
+* [#11657](https://github.com/rubocop/rubocop/issues/11657): Use cop name to check if cop inside registry is enabled. Previously, it was able to cause large memory usage during linting. ([@fatkodima][])
