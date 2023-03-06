@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.48.0 (2023-03-06)
+
 ### New features
 
 * [#11628](https://github.com/rubocop/rubocop/issues/11628): Add new `Style/DirEmpty` cop. ([@ydah][])

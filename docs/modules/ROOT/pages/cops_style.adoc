@@ -138,18 +138,22 @@ as it might be intended like Sorbet.
 # bad
 class Foo
   attr_reader :bar
+  attr_reader :bax
   attr_reader :baz
 end
 
 # good
 class Foo
-  attr_reader :bar, :baz
+  attr_reader :bar, :bax, :baz
 end
 
 # good
 class Foo
   # may be intended comment for bar.
   attr_reader :bar
+
+  sig { returns(String) }
+  attr_reader :bax
 
   may_be_intended_annotation :baz
   attr_reader :baz
@@ -1129,7 +1133,7 @@ self.class === something
 | No
 | Yes (Unsafe)
 | 0.88
-| -
+| 1.48
 |===
 
 Identifies places where `if-elsif` constructions
@@ -1143,6 +1147,8 @@ behavior may be different.
 
 === Examples
 
+==== MinBranchesCount: 3 (default)
+
 [source,ruby]
 ----
 # bad
@@ -1150,6 +1156,8 @@ if status == :active
   perform_action
 elsif status == :inactive || status == :hibernating
   check_timeout
+elsif status == :invalid
+  report_invalid
 else
   final_action
 end
@@ -1160,10 +1168,38 @@ when :active
   perform_action
 when :inactive, :hibernating
   check_timeout
+when :invalid
+  report_invalid
 else
   final_action
 end
 ----
+
+==== MinBranchesCount: 4
+
+[source,ruby]
+----
+# good
+if status == :active
+  perform_action
+elsif status == :inactive || status == :hibernating
+  check_timeout
+elsif status == :invalid
+  report_invalid
+else
+  final_action
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| MinBranchesCount
+| `3`
+| Integer
+|===
 
 === References
 
@@ -2652,6 +2688,36 @@ path = File.dirname(File.realpath(__FILE__))
 
 # good
 path = __dir__
+----
+
+== Style/DirEmpty
+
+NOTE: Required Ruby version: 2.4
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.48
+| -
+|===
+
+Prefer to use `Dir.empty?('path/to/dir')` when checking if a directory is empty.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Dir.entries('path/to/dir').size == 2
+Dir.children('path/to/dir').empty?
+Dir.children('path/to/dir').size == 0
+Dir.each_child('path/to/dir').none?
+
+# good
+Dir.empty?('path/to/dir')
 ----
 
 == Style/DisableCopsWithinSourceCodeDirective
@@ -4196,6 +4262,46 @@ ENV['X'].some_method # (e.g. `.nil?`)
 === References
 
 * https://rubystyle.guide/#hash-fetch-defaults
+
+== Style/FileEmpty
+
+NOTE: Required Ruby version: 2.4
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.48
+| -
+|===
+
+Prefer to use `File.empty?('path/to/file')` when checking if a file is empty.
+
+=== Safety
+
+This cop's autocorrection is unsafe it because `File.size`, `File.read`,
+and `File.binread` raise `ENOENT` exception when there is no file
+corresponding to the path, while `File.empty?` does not raise an exception.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+File.zero?('path/to/file')
+File.size('path/to/file') == 0
+File.size('path/to/file') >= 0
+File.size('path/to/file').zero?
+File.read('path/to/file').empty?
+File.binread('path/to/file') == ''
+FileTest.zero?('path/to/file')
+
+# good
+File.empty?('path/to/file')
+FileTest.empty?('path/to/file')
+----
 
 == Style/FileRead
 

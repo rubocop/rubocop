@@ -3261,7 +3261,7 @@ Style/CaseLikeIf:
   Enabled: true
   Safe: false
   VersionAdded: '0.88'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.48'
   # `MinBranchesCount` defines the number of branches `if` needs to have to trigger this cop.
   MinBranchesCount: 3
 
@@ -3534,7 +3534,7 @@ Style/DirEmpty:
   Description: >-
                  Prefer to use `Dir.empty?('path/to/dir')` when checking if a directory is empty.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.48'
 
 Style/DisableCopsWithinSourceCodeDirective:
   Description: >-
@@ -3737,7 +3737,7 @@ Style/FileEmpty:
   Enabled: pending
   Safe: false
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.48'
 
 Style/FileRead:
   Description: 'Favor `File.(bin)read` convenience methods.'
