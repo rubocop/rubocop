@@ -172,7 +172,9 @@ RSpec.describe RuboCop::Cop::Registry do
       end
 
       it 'exposes both cops' do
-        expect(registry.cops).to match_array([RuboCop::Cop::Foo::Bar, RuboCop::Cop::Baz::Foo::Bar])
+        expect(registry.cops).to contain_exactly(
+          RuboCop::Cop::Foo::Bar, RuboCop::Cop::Baz::Foo::Bar
+        )
       end
     end
   end

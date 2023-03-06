@@ -230,7 +230,7 @@ RSpec.describe RuboCop::Cop::Team do
         before = team.cops.dup
         team.inspect_file(source)
         team.inspect_file(source)
-        expect(team.cops).to match_array([be(before.first), be_a(RuboCop::Cop::Base)])
+        expect(team.cops).to contain_exactly(be(before.first), be_a(RuboCop::Cop::Base))
         expect(team.cops.last).not_to be(before.last)
       end
     end
