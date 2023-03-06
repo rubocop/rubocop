@@ -137,7 +137,7 @@ module RuboCop
         alias on_sclass on_class
 
         def on_block(node)
-          return unless eval_call?(node)
+          return unless eval_call?(node) || included_block?(node)
 
           check_node(node.body)
         end
@@ -192,10 +192,13 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_child_nodes(node, unused, cur_vis)
           node.child_nodes.each do |child|
             if child.send_type? && access_modifier?(child)
               cur_vis, unused = check_send_node(child, cur_vis, unused)
+            elsif child.block_type? && included_block?(child)
+              next
             elsif method_definition?(child)
               unused = nil
             elsif start_of_new_scope?(child)
@@ -207,6 +210,7 @@ module RuboCop
 
           [cur_vis, unused]
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def check_send_node(node, cur_vis, unused)
           if node.bare_access_modifier?
@@ -238,6 +242,10 @@ module RuboCop
           end
 
           [new_vis, unused]
+        end
+
+        def included_block?(block_node)
+          active_support_extensions_enabled? && block_node.method?(:included)
         end
 
         def method_definition?(child)

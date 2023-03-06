@@ -1081,4 +1081,113 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
       it_behaves_like('nested modules', keyword, modifier)
     end
   end
+
+  context 'when `AllCops/ActiveSupportExtensionsEnabled: true`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => true })
+    end
+
+    context 'when using same access modifier inside and outside the included block' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          class SomeClass
+            included do
+              private
+              def foo; end
+            end
+            private
+            def bar; end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when using repeated access modifier inside/outside the included block' do
+        expect_offense(<<~RUBY)
+          class SomeClass
+            included do
+              private
+              private
+              ^^^^^^^ Useless `private` access modifier.
+              def foo; end
+            end
+            private
+            private
+            ^^^^^^^ Useless `private` access modifier.
+            def bar; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class SomeClass
+            included do
+              private
+              def foo; end
+            end
+            private
+            def bar; end
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when `AllCops/ActiveSupportExtensionsEnabled: false`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => false })
+    end
+
+    context 'when using same access modifier inside and outside the `included` block' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          class SomeClass
+            included do
+              private
+              def foo; end
+            end
+            private
+            ^^^^^^^ Useless `private` access modifier.
+            def bar; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class SomeClass
+            included do
+              private
+              def foo; end
+            end
+            def bar; end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when using repeated access modifier inside/outside the `included` block' do
+        expect_offense(<<~RUBY)
+          class SomeClass
+            included do
+              private
+              private
+              ^^^^^^^ Useless `private` access modifier.
+              def foo; end
+            end
+            private
+            ^^^^^^^ Useless `private` access modifier.
+            private
+            ^^^^^^^ Useless `private` access modifier.
+            def bar; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class SomeClass
+            included do
+              private
+              def foo; end
+            end
+            def bar; end
+          end
+        RUBY
+      end
+    end
+  end
 end
