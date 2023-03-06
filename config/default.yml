@@ -3527,6 +3527,12 @@ Style/Dir:
   Enabled: true
   VersionAdded: '0.50'
 
+Style/DirEmpty:
+  Description: >-
+                 Prefer to use `Dir.empty?('path/to/dir')` when checking if a directory is empty.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/DisableCopsWithinSourceCodeDirective:
   Description: >-
                  Forbids disabling/enabling cops within source code.
