@@ -1,1 +1,0 @@
-* [#11663](https://github.com/rubocop/rubocop/issues/11663): Fix an incorrect autocorrect for `Style/BlockDelimiters` when multi-line blocks to `{` and `}` with arithmetic operation method chain. ([@koic][])
