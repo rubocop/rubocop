@@ -123,6 +123,34 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
           expect(stdout).not_to start_with 'RuboCop server starting on '
         end
       end
+
+      context 'when `-f json`' do
+        it 'does not display the server start message' do
+          create_file('example.rb', <<~RUBY)
+            puts 0
+          RUBY
+
+          stdout, _stderr, _status = Open3.capture3(
+            'ruby', '-I', '.',
+            rubocop, '--server', '-f', 'json', '--stdin', 'example.rb', stdin_data: 'puts 0'
+          )
+          expect(stdout).not_to start_with 'RuboCop server starting on '
+        end
+      end
+
+      context 'when `-f j`' do
+        it 'does not display the server start message' do
+          create_file('example.rb', <<~RUBY)
+            puts 0
+          RUBY
+
+          stdout, _stderr, _status = Open3.capture3(
+            'ruby', '-I', '.',
+            rubocop, '--server', '-f', 'j', '--stdin', 'example.rb', stdin_data: 'puts 0'
+          )
+          expect(stdout).not_to start_with 'RuboCop server starting on '
+        end
+      end
     end
 
     context 'when using `--server` option after running server and updating configuration' do
