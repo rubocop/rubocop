@@ -3731,6 +3731,14 @@ Style/FetchEnvVar:
   # Environment variables to be excluded from the inspection.
   AllowedVars: []
 
+Style/FileEmpty:
+  Description: >-
+                 Prefer to use `File.empty?('path/to/file')` when checking if a file is empty.
+  Enabled: pending
+  Safe: false
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Style/FileRead:
   Description: 'Favor `File.(bin)read` convenience methods.'
   StyleGuide: '#file-read'
