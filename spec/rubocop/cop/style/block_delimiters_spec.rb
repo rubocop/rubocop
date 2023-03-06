@@ -603,6 +603,26 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'registers an offense and autocorrects when multi-line blocks to `{` and `}` with method chain' do
+        expect_offense(<<~RUBY)
+          foo bar + baz {
+                        ^ Avoid using `{...}` for multi-line blocks.
+          }.qux.quux
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar + baz do
+          end.qux.quux
+        RUBY
+      end
+
+      it 'does not register an offense when multi-line blocks to `{` and `}` with arithmetic operation method chain' do
+        expect_no_offenses(<<~RUBY)
+          foo bar + baz {
+          }.qux + quux
+        RUBY
+      end
+
       it 'does not autocorrect {} if do-end would introduce a syntax error' do
         expect_no_offenses(<<~RUBY)
           my_method :arg1, arg2: proc {
