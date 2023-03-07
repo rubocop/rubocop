@@ -141,6 +141,47 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       RUBY
     end
 
+    it 'does not register an offense for grouped accessors below a typechecked accessor method' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          extend T::Sig
+
+          sig { returns(Integer) }
+          attr_reader :one
+
+          attr_reader :two, :three
+        end
+      RUBY
+    end
+
+    it 'registers an offense for grouped accessors distinct from a typechecked accessor method' do
+      expect_offense(<<~RUBY)
+        class Foo
+          extend T::Sig
+
+          sig { returns(Integer) }
+          attr_reader :one
+
+          attr_reader :two, :three
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+
+          attr_reader :four
+          ^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          extend T::Sig
+
+          sig { returns(Integer) }
+          attr_reader :one
+
+          attr_reader :two, :three, :four
+        end
+      RUBY
+    end
+
     it 'registers an offense for accessors with method definitions' do
       expect_offense(<<~RUBY)
         class Foo
