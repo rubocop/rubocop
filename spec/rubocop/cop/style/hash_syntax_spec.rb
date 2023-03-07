@@ -1154,6 +1154,19 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense when expression follows attribute assignment' do
+        expect_offense(<<~RUBY)
+          object.attr = {foo: foo}
+                              ^^^ Omit the hash value.
+          pass
+        RUBY
+
+        expect_correction(<<~RUBY)
+          object.attr = {foo:}
+          pass
+        RUBY
+      end
+
       it 'registers an offense when expression follows multiple assignments' do
         expect_offense(<<~RUBY)
           foo = bar = do_stuff arg, opt1: opt1,
