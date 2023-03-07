@@ -100,6 +100,7 @@ module RuboCop
         last_pair = node.parent.pairs.last
         return unless last_pair.key.source == last_pair.value.source
         return unless (dispatch_node = find_ancestor_method_dispatch_node(node))
+        return if dispatch_node.assignment_method?
         return if dispatch_node.parenthesized?
         return if dispatch_node.parent && parentheses?(dispatch_node.parent)
         return if last_expression?(dispatch_node) && !method_dispatch_as_argument?(dispatch_node)
