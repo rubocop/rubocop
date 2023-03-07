@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'English'
+require 'fileutils'
 before_us = $LOADED_FEATURES.dup
 require 'rainbow'
 
@@ -743,7 +744,11 @@ require_relative 'rubocop/yaml_duplication_checker'
 
 # rubocop:enable Style/RequireOrder
 
-unless File.exist?("#{__dir__}/../rubocop.gemspec") # Check if we are a gem
+set_rubocop_required_features =
+  ENV['__RUBOCOP_ASSUME_WE_ARE_NOT_A_GEM'] == 'true' ||
+  !File.exist?("#{__dir__}/../rubocop.gemspec") # Check if we are a gem
+
+if set_rubocop_required_features
   RuboCop::ResultCache.rubocop_required_features = $LOADED_FEATURES - before_us
 end
 RuboCop::AST.rubocop_loaded if RuboCop::AST.respond_to?(:rubocop_loaded)
