@@ -36,17 +36,19 @@ module RuboCop
           # If the end is on its own line, there is no offense
           return if begins_its_line?(node.loc.end)
 
-          register_offense(node)
+          offense_range = offense_range(node)
+          return if offense_range.source.lstrip.start_with?(';')
+
+          register_offense(node, offense_range)
         end
 
         alias on_numblock on_block
 
         private
 
-        def register_offense(node)
+        def register_offense(node, offense_range)
           add_offense(node.loc.end, message: message(node)) do |corrector|
-            offense_range = offense_range(node)
-            replacement = replacement(node)
+            replacement = "\n#{offense_range.source.lstrip}"
 
             if (heredoc = last_heredoc_argument(node.body))
               corrector.remove(offense_range)
@@ -72,23 +74,7 @@ module RuboCop
         end
 
         def offense_range(node)
-          Parser::Source::Range.new(
-            node.source_range.source_buffer,
-            node.children.compact.last.source_range.end_pos,
-            end_of_method_chain(node).source_range.end_pos
-          )
-        end
-
-        def replacement(node)
-          end_with_method_chain = node.loc.end.join(end_of_method_chain(node).source_range.end)
-
-          "\n#{end_with_method_chain.source.strip}"
-        end
-
-        def end_of_method_chain(node)
-          return node unless node.parent&.call_type?
-
-          end_of_method_chain(node.parent)
+          node.children.compact.last.source_range.end.join(node.loc.end)
         end
       end
     end
