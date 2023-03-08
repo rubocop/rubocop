@@ -10,8 +10,8 @@ module RuboCop
       #
       #   Naming/MethodName:
       #     AllowedPatterns:
-      #       - '\A\s*onSelectionBulkChange\s*'
-      #       - '\A\s*onSelectionCleared\s*'
+      #       - '\AonSelectionBulkChange\z'
+      #       - '\AonSelectionCleared\z'
       #
       # Method names matching patterns are always allowed.
       #
