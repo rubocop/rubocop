@@ -70,7 +70,7 @@ module RuboCop
 
         def check(send_node)
           return if previous_line_comment?(send_node) || !groupable_accessor?(send_node)
-          return unless (grouped_style? && sibling_accessors(send_node).size > 1) ||
+          return unless (grouped_style? && groupable_sibling_accessors(send_node).size > 1) ||
                         (separated_style? && send_node.arguments.size > 1)
 
           message = message(send_node)
@@ -127,12 +127,12 @@ module RuboCop
           style == :separated
         end
 
-        def sibling_accessors(send_node)
+        def groupable_sibling_accessors(send_node)
           send_node.parent.each_child_node(:send).select do |sibling|
             sibling.attribute_accessor? &&
               sibling.method?(send_node.method_name) &&
               node_visibility(sibling) == node_visibility(send_node) &&
-              !previous_line_comment?(sibling)
+              groupable_accessor?(sibling) && !previous_line_comment?(sibling)
           end
         end
 
@@ -143,7 +143,7 @@ module RuboCop
 
         def preferred_accessors(node)
           if grouped_style?
-            accessors = sibling_accessors(node)
+            accessors = groupable_sibling_accessors(node)
             group_accessors(node, accessors) if node.loc == accessors.first.loc
           else
             separate_accessors(node)
