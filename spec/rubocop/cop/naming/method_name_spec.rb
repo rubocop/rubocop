@@ -136,8 +136,8 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
         {
           'EnforcedStyle' => enforced_style,
           'AllowedPatterns' => [
-            '\A\s*onSelectionBulkChange\s*',
-            '\A\s*on_selection_cleared\s*'
+            '\AonSelectionBulkChange\z',
+            '\Aon_selection_cleared\z'
           ]
         }
       end
