@@ -33,6 +33,10 @@ module RuboCop
           message << '.' unless message.end_with?('.')
           message
         end
+
+        def find_severity(_range, _severity)
+          :fatal
+        end
       end
     end
   end
