@@ -108,6 +108,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessRescue, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `Thread#raise` in `rescue` clause' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        do_something
+      rescue
+        Thread.current.raise
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using modifier `rescue`' do
     expect_no_offenses(<<~RUBY)
       do_something rescue nil
