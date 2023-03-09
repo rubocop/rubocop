@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
         MESSAGE
         offense = offenses.first
         expect(offense.message).to eq(message)
-        expect(offense.severity).to eq(:error)
+        expect(offense.severity).to eq(:fatal)
       end
 
       context 'with --display-cop-names option' do
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
           MESSAGE
           offense = offenses.first
           expect(offense.message).to eq(message)
-          expect(offense.severity).to eq(:error)
+          expect(offense.severity).to eq(:fatal)
         end
       end
 
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
           MESSAGE
           offense = offenses.first
           expect(offense.message).to eq(message)
-          expect(offense.severity).to eq(:error)
+          expect(offense.severity).to eq(:fatal)
         end
       end
     end

@@ -149,7 +149,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stderr.string).to eq ''
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:3:1: E: Lint/Syntax: unexpected " \
+      .to eq(["#{abs('example.rb')}:3:1: F: Lint/Syntax: unexpected " \
               'token $end (Using Ruby 2.6 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
@@ -1948,6 +1948,28 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(2)
         expect(
           $stderr.string.include?('Error: configuration for Lint/Syntax cop found in .rubocop.yml')
+        ).to be(true)
+      end
+    end
+
+    context 'when `Lint` is given `Severity: info`' do
+      let(:code) do
+        <<~RUBY
+          1 /// 2
+        RUBY
+      end
+
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Lint:
+            Severity: info
+        YAML
+      end
+
+      it '`Lint/Syntax` severity `fatal` cannot be changed by configuration' do
+        expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(1)
+        expect(
+          $stdout.string.include?('F:  1:  7: Lint/Syntax: unexpected token tINTEGER')
         ).to be(true)
       end
     end
