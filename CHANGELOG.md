@@ -1588,7 +1588,7 @@
 * [#9257](https://github.com/rubocop/rubocop/issues/9257): Fix false positive for `Style/SymbolProc` when the block uses a variable from outside the block. ([@dvandersluis][])
 * [#9251](https://github.com/rubocop/rubocop/issues/9251): Fix extracted cop warning when the extension is loaded using `--require`. ([@dvandersluis][])
 * [#9244](https://github.com/rubocop/rubocop/issues/9244): When a cop defined in an extension is explicitly enabled, ensure that it remains enabled. ([@dvandersluis][])
-* [#8046](https://github.com/rubocop/rubocop/issues/8046): Fix an error for `Layout/HeredocArgumentClosingParenthesis` when there is an argument between a heredoc argument and the closing paretheses. ([@koic][])
+* [#8046](https://github.com/rubocop/rubocop/issues/8046): Fix an error for `Layout/HeredocArgumentClosingParenthesis` when there is an argument between a heredoc argument and the closing parentheses. ([@koic][])
 * [#9261](https://github.com/rubocop/rubocop/pull/9261): Fix an incorrect auto-correct for `Style/MultilineWhenThen` when one line for multiple candidate values of `when` statement. ([@makicamel][])
 * [#9258](https://github.com/rubocop/rubocop/pull/9258): Fix calculation of cop department for nested departments. ([@mvz][])
 * [#9277](https://github.com/rubocop/rubocop/pull/9277): Fix `Layout/EmptyLineBetweenDefs` error with endless method definitions. ([@dvandersluis][])

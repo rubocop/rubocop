@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
     end
 
-    context 'when using a mix of diffent methods' do
+    context 'when using a mix of different methods' do
       it 'registers an offense for some calls having several mixins' do
         expect_offense(<<~RUBY)
           class Foo
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
       end
     end
 
-    context 'when using a mix of diffent methods' do
+    context 'when using a mix of different methods' do
       it 'registers an offense with some duplicated mixin methods' do
         expect_offense(<<~RUBY)
           class Foo

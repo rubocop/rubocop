@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 }) }
 
-  it 'registers an offense when the right side has mulitiple arrays' do
+  it 'registers an offense when the right side has multiple arrays' do
     expect_offense(<<~RUBY)
       a, b, c = [1, 2], [3, 4], [5, 6]
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use parallel assignment.
