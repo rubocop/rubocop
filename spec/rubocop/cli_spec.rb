@@ -305,6 +305,38 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         1 file inspected, 1 offense detected
       RESULT
     end
+
+    it '`Lint/Syntax` must be enabled when `Lint` is given `Enabled: false`' do
+      create_file('.rubocop.yml', <<~YAML)
+        Lint:
+          Enabled: false
+      YAML
+
+      create_file('example.rb', <<~RUBY)
+        1 /// 2
+      RUBY
+
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+      expect(
+        $stdout.string.include?('F:  1:  7: Lint/Syntax: unexpected token tINTEGER')
+      ).to be(true)
+    end
+
+    it '`Lint/Syntax` must be enabled when `DisabledByDefault: true`' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          DisabledByDefault: true
+      YAML
+
+      create_file('example.rb', <<~RUBY)
+        1 /// 2
+      RUBY
+
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+      expect(
+        $stdout.string.include?('F:  1:  7: Lint/Syntax: unexpected token tINTEGER')
+      ).to be(true)
+    end
   end
 
   describe 'rubocop:disable comment' do
