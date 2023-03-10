@@ -304,8 +304,8 @@ module RuboCop
     end
 
     def enable_cop?(qualified_cop_name, cop_options)
-      # If the cop is explicitly enabled, the other checks can be skipped.
-      return true if cop_options['Enabled'] == true
+      # If the cop is explicitly enabled or `Lint/Syntax`, the other checks can be skipped.
+      return true if cop_options['Enabled'] == true || qualified_cop_name == 'Lint/Syntax'
 
       department = department_of(qualified_cop_name)
       cop_enabled = cop_options.fetch('Enabled') { !for_all_cops['DisabledByDefault'] }
