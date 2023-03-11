@@ -2857,6 +2857,7 @@ Naming/MethodParameterName:
     - 'on'
     - os
     - pp
+    - pr
     - to
   # Forbidden names that will register an offense
   ForbiddenNames: []
