@@ -94,7 +94,7 @@ module RuboCop
         private
 
         def allowed_gem?(node)
-          allowed_gems.include?(node.first_argument.value)
+          allowed_gems.include?(node.first_argument.str_content)
         end
 
         def allowed_gems

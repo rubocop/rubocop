@@ -38,6 +38,15 @@ RSpec.describe RuboCop::Cop::Gemspec::DependencyVersion, :config do
         RUBY
       end
 
+      it 'registers an offense when adding dependency without version specification and method called on gem name argument' do
+        expect_offense(<<~RUBY)
+          Gem::Specification.new do |spec|
+            spec.add_dependency('parser'.freeze)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Dependency version specification is required.
+          end
+        RUBY
+      end
+
       it 'registers an offense when adding dependency using git option without version specification' do
         expect_offense(<<~RUBY)
           Gem::Specification.new do |spec|
