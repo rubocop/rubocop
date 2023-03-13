@@ -11,6 +11,17 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#11673](https://github.com/rubocop/rubocop/pull/11673): Fix incorrect `Style/HashSyntax` autocorrection for assignment methods. ([@gsamokovarov][])
+* [#11682](https://github.com/rubocop/rubocop/issues/11682): Fix a false positive for `Lint/UselessRescue` when using `Thread#raise` in `rescue` clause. ([@koic][])
+* [#11672](https://github.com/rubocop/rubocop/issues/11672): Fix an error for `Layout/BlockEndNewline` when multiline block `}` is not on its own line and it is used as multiple arguments. ([@koic][])
+* [#11675](https://github.com/rubocop/rubocop/pull/11675): `Style/AccessorGrouping`: Fix sibling detection for methods with type sigs. ([@issyl0][])
+* [#11658](https://github.com/rubocop/rubocop/issues/11658): Fix `Lint/Debugger` should not allow pry. ([@ThHareau][])
+* [#11686](https://github.com/rubocop/rubocop/pull/11686): Fix `Lint/Syntax` behavior when `Enabled: false` of `Lint` department. ([@koic][])
+* [#11677](https://github.com/rubocop/rubocop/issues/11677): Fix the severity for `Lint/Syntax`. ([@koic][])
+* [#11691](https://github.com/rubocop/rubocop/pull/11691): Fix an error for `Gemspec/DependencyVersion` when method called on gem name argument for `add_dependency`. ([@koic][])
+
 ## 1.48.0 (2023-03-06)
 
 ### New features
@@ -6968,3 +6979,4 @@
 [@istvanfazakas]: https://github.com/istvanfazakas
 [@KessaPassa]: https://github.com/KessaPassa
 [@jasondoc3]: https://github.com/jasondoc3
+[@ThHareau]: https://github.com/ThHareau
