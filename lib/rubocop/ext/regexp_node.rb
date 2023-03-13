@@ -29,7 +29,7 @@ module RuboCop
           @parsed_tree&.each_expression(true) { |e| e.origin = origin }
         end
       # Please remove this `else` branch when support for regexp_parser 1.8 will be dropped.
-      # It's for compatibility with regexp_arser 1.8 and will never be maintained.
+      # It's for compatibility with regexp_parser 1.8 and will never be maintained.
       else
         def assign_properties(*)
           super
