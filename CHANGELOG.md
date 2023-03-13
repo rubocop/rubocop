@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.48.1 (2023-03-13)
+
 ### Bug fixes
 
 * [#11673](https://github.com/rubocop/rubocop/pull/11673): Fix incorrect `Style/HashSyntax` autocorrection for assignment methods. ([@gsamokovarov][])
