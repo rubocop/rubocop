@@ -483,8 +483,8 @@ are disabled by default.
 
 The cop enabling process can be altered by setting `DisabledByDefault` or
 `EnabledByDefault` (but not both) to `true`. These settings override the default for *all*
-cops to disabled or enabled, regardless of the cops' default values (whether enabled,
-disabled or pending).
+cops to disabled or enabled, except `Lint/Syntax` which is always enabled,
+regardless of the cops' default values (whether enabled, disabled or pending).
 
 [source,yaml]
 ----
@@ -492,7 +492,7 @@ AllCops:
   DisabledByDefault: true
 ----
 
-All cops are then disabled by default. Only cops appearing in user
+All cops except `Lint/Syntax` are then disabled by default. Only cops appearing in user
 configuration files with `Enabled: true` will be enabled; every other cop will
 be disabled without having to explicitly disable them in configuration. It is
 also possible to enable entire departments by adding for example
