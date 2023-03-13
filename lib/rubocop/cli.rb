@@ -87,20 +87,20 @@ module RuboCop
 
       tmp_dir = File.join(ConfigFinder.project_root, 'tmp')
       FileUtils.mkdir_p(tmp_dir)
+      cpu_profile_file = File.join(tmp_dir, 'rubocop-stackprof.dump')
       status = nil
 
-      StackProf.run(out: File.join(tmp_dir, 'rubocop-stackprof.dump')) do
+      StackProf.run(out: cpu_profile_file) do
         status = yield
       end
-      puts 'Profile report generated'
+      puts "Profile report generated at #{cpu_profile_file}"
 
       if with_memory
         puts 'Building memory report...'
         report = MemoryProfiler.stop
-        report.pretty_print(
-          to_file: File.join(tmp_dir, 'rubocop-memory_profiler.txt'),
-          scale_bytes: true
-        )
+        memory_profile_file = File.join(tmp_dir, 'rubocop-memory_profiler.txt')
+        report.pretty_print(to_file: memory_profile_file, scale_bytes: true)
+        puts "Memory report generated at #{memory_profile_file}"
       end
       status
     end
