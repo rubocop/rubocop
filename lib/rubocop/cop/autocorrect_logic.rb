@@ -43,18 +43,24 @@ module RuboCop
 
       private
 
-      def disable_offense(range)
-        heredoc_range = surrounding_heredoc(range)
-        if heredoc_range
-          disable_offense_before_and_after(range_by_lines(heredoc_range))
+      def disable_offense(offense_range)
+        range = surrounding_heredoc(offense_range) || surrounding_percent_array(offense_range)
+
+        if range
+          disable_offense_before_and_after(range_by_lines(range))
         else
-          eol_comment = " # rubocop:todo #{cop_name}"
-          needed_line_length = (range.source_line + eol_comment).length
-          if needed_line_length <= max_line_length
-            disable_offense_at_end_of_line(range_of_first_line(range), eol_comment)
-          else
-            disable_offense_before_and_after(range_by_lines(range))
-          end
+          disable_offense_with_eol_or_surround_comment(offense_range)
+        end
+      end
+
+      def disable_offense_with_eol_or_surround_comment(range)
+        eol_comment = " # rubocop:todo #{cop_name}"
+        needed_line_length = (range.source_line + eol_comment).length
+
+        if needed_line_length <= max_line_length
+          disable_offense_at_end_of_line(range_of_first_line(range), eol_comment)
+        else
+          disable_offense_before_and_after(range_by_lines(range))
         end
       end
 
@@ -67,6 +73,16 @@ module RuboCop
         end
         heredoc_nodes.map { |node| node.source_range.join(node.loc.heredoc_end) }
                      .find { |range| range.contains?(offense_range) }
+      end
+
+      def surrounding_percent_array(offense_range)
+        return nil if offense_range.empty?
+
+        percent_array = processed_source.ast.each_descendant.select do |node|
+          node.array_type? && node.percent_literal?
+        end
+
+        percent_array.map(&:source_range).find { |range| range.crossing?(offense_range) }
       end
 
       def range_of_first_line(range)
