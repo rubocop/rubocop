@@ -20,7 +20,7 @@
 * [#11672](https://github.com/rubocop/rubocop/issues/11672): Fix an error for `Layout/BlockEndNewline` when multiline block `}` is not on its own line and it is used as multiple arguments. ([@koic][])
 * [#11675](https://github.com/rubocop/rubocop/pull/11675): `Style/AccessorGrouping`: Fix sibling detection for methods with type sigs. ([@issyl0][])
 * [#11658](https://github.com/rubocop/rubocop/issues/11658): Fix `Lint/Debugger` should not allow pry. ([@ThHareau][])
-* [#11686](https://github.com/rubocop/rubocop/pull/11686): Fix `Lint/Syntax` behavior when `Enabled: false` of `Lint` department. ([@koic][])
+* [#11689](https://github.com/rubocop/rubocop/pull/11689): Fix `Lint/Syntax` behavior when `Enabled: false` of `Lint` department. ([@koic][])
 * [#11677](https://github.com/rubocop/rubocop/issues/11677): Fix the severity for `Lint/Syntax`. ([@koic][])
 * [#11691](https://github.com/rubocop/rubocop/pull/11691): Fix an error for `Gemspec/DependencyVersion` when method called on gem name argument for `add_dependency`. ([@koic][])
 
