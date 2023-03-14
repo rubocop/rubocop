@@ -51,6 +51,8 @@ module RuboCop
         MSG_BEFORE_FOR_ONLY_BEFORE = 'Keep a blank line before `%<modifier>s`.'
         MSG_AFTER_FOR_ONLY_BEFORE = 'Remove a blank line after `%<modifier>s`.'
 
+        RESTRICT_ON_SEND = %i[public protected private module_function].freeze
+
         def initialize(config = nil, options = nil)
           super
 

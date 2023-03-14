@@ -111,9 +111,9 @@ module RuboCop
           return false unless node.block_type? || node.numblock_type?
 
           send_node = node.send_node
-          return false if matches_allowed_pattern?(send_node.source)
-
-          send_node.enumerable_method? || send_node.enumerator_method? || send_node.method?(:loop)
+          loopable = send_node.enumerable_method? || send_node.enumerator_method? ||
+                     send_node.method?(:loop)
+          loopable && !matches_allowed_pattern?(send_node.source)
         end
 
         def check(node)

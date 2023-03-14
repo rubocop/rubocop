@@ -50,9 +50,9 @@ module RuboCop
 
         def on_send(node)
           # Include "the whole expression".
-          node = node.parent while convertible_block?(node) ||
-                                   node.parent.is_a?(RuboCop::AST::BinaryOperatorNode) ||
-                                   node.parent&.send_type?
+          node = node.parent while node.parent&.send_type? ||
+                                   convertible_block?(node) ||
+                                   node.parent.is_a?(RuboCop::AST::BinaryOperatorNode)
 
           return unless offense?(node) && !part_of_ignored_node?(node)
 
@@ -75,9 +75,8 @@ module RuboCop
         end
 
         def offense?(node)
-          return false if configured_to_not_be_inspected?(node)
-
-          node.multiline? && !too_long?(node) && suitable_as_single_line?(node)
+          node.multiline? && !too_long?(node) && suitable_as_single_line?(node) &&
+            !configured_to_not_be_inspected?(node)
         end
 
         def configured_to_not_be_inspected?(node)
