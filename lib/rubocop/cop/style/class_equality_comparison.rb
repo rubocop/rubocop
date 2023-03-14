@@ -27,12 +27,16 @@ module RuboCop
       #   var.class.equal?(Date)
       #   var.class.eql?(Date)
       #   var.class.name == 'Date'
+      #   var.class.to_s == 'Date'
+      #   var.class.inspect == 'Date'
       #
       # @example AllowedMethods: [`==`]
       #   # good
       #   var.instance_of?(Date)
       #   var.class == Date
       #   var.class.name == 'Date'
+      #   var.class.to_s == 'Date'
+      #   var.class.inspect == 'Date'
       #
       #   # bad
       #   var.class.equal?(Date)
@@ -47,6 +51,8 @@ module RuboCop
       #   var.class.equal?(Date)
       #   var.class.eql?(Date)
       #   var.class.name == 'Date'
+      #   var.class.to_s == 'Date'
+      #   var.class.inspect == 'Date'
       #
       # @example AllowedPatterns: ['eq']
       #   # good
@@ -57,6 +63,8 @@ module RuboCop
       #   # bad
       #   var.class == Date
       #   var.class.name == 'Date'
+      #   var.class.to_s == 'Date'
+      #   var.class.inspect == 'Date'
       #
       class ClassEqualityComparison < Base
         include RangeHelp
@@ -67,11 +75,12 @@ module RuboCop
         MSG = 'Use `instance_of?(%<class_name>s)` instead of comparing classes.'
 
         RESTRICT_ON_SEND = %i[== equal? eql?].freeze
+        CLASS_NAME_METHODS = %i[name to_s inspect].freeze
 
         # @!method class_comparison_candidate?(node)
         def_node_matcher :class_comparison_candidate?, <<~PATTERN
           (send
-            {$(send _ :class) (send $(send _ :class) :name)}
+            {$(send _ :class) (send $(send _ :class) #class_name_method?)}
             {:== :equal? :eql?} $_)
         PATTERN
 
@@ -94,7 +103,7 @@ module RuboCop
         private
 
         def class_name(class_node, node)
-          if node.children.first.method?(:name)
+          if class_name_method?(node.children.first.method_name)
             return class_node.receiver.source if class_node.receiver
 
             if class_node.str_type?
@@ -105,6 +114,10 @@ module RuboCop
           end
 
           class_node.source
+        end
+
+        def class_name_method?(method_name)
+          CLASS_NAME_METHODS.include?(method_name)
         end
 
         def offense_range(receiver_node, node)
