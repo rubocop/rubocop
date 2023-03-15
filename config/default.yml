@@ -2779,7 +2779,7 @@ Naming/InclusiveLanguage:
   Description: 'Recommend the use of inclusive language instead of problematic terms.'
   Enabled: false
   VersionAdded: '1.18'
-  VersionChanged: '1.21'
+  VersionChanged: '<<next>>'
   CheckIdentifiers: true
   CheckConstants: true
   CheckVariables: true
