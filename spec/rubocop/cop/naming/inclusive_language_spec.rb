@@ -11,6 +11,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
         whitelist = %w(user1 user2)
         ^^^^^^^^^ Consider replacing 'whitelist' with another term.
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense when using a flagged term with mixed case' do
@@ -19,6 +21,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
               ^^^^^^^^^ Consider replacing 'WhiteList' with another term.
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense for a partial word match' do
@@ -27,6 +31,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
                   ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         end
       RUBY
+
+      expect_no_corrections
     end
 
     context 'disable default flagged term' do
@@ -39,6 +45,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           # working on replacing whitelist and blacklist
                                                ^^^^^^^^^ Consider replacing 'blacklist' with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -56,6 +64,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
                   ^^^^^ Consider replacing 'slave' with 'replica', 'secondary', or 'follower'.
           ^^^^^^ Consider replacing 'master' with 'main', 'primary', or 'leader'.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -69,6 +79,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           # white-list of IPs
             ^^^^^^^^^^ Consider replacing 'white-list' with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -98,6 +110,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           'database@slave'
                     ^^^^^ Consider replacing 'slave' with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -128,6 +142,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           barx, foo = method_call
                 ^^^ Consider replacing 'foo' with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -145,6 +161,10 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           whitelist = %w(user1 user2)
           ^^^^^^^^^ Consider replacing 'whitelist' with 'allowlist'.
         RUBY
+
+        expect_correction(<<~RUBY)
+          allowlist = %w(user1 user2)
+        RUBY
       end
     end
 
@@ -160,6 +180,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           whitelist = %w(user1 user2)
           ^^^^^^^^^ Consider replacing 'whitelist' with 'allowlist' or 'permit'.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -178,6 +200,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           default_branch = 'master'
                             ^^^^^^ Consider replacing 'master' with 'main', 'primary', or 'leader'.
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -195,6 +219,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           whitelist = %w(user1 user2)
           ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -222,6 +248,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           @whitelist = %w(user1 user2)
            ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         RUBY
+
+        expect_no_corrections
       end
 
       it 'registers offenses for class variables' do
@@ -229,6 +257,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           @@whitelist = %w(user1 user2)
             ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         RUBY
+
+        expect_no_corrections
       end
 
       it 'registers offenses for global variables' do
@@ -236,6 +266,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           $whitelist = %w(user1 user2)
            ^^^^^^^^^ Consider replacing 'whitelist' with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -263,6 +295,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           WHITELIST = %w(user1 user2)
           ^^^^^^^^^ Consider replacing 'WHITELIST' with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -300,6 +334,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           primary
           secondary"
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense in a heredoc' do
@@ -313,6 +349,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           secondary
         TEXT
       RUBY
+
+      expect_no_corrections
     end
 
     it 'does not register offenses and not raise `ArgumentError` for invalid byte sequence in UTF-8' do
@@ -345,6 +383,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           config[:master] = {}
                   ^^^^^^ Consider replacing 'master' with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -372,6 +412,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
         bar = baz # it's a foo!
                            ^^^ Consider replacing 'foo' with another term.
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense in a block comment' do
@@ -382,6 +424,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
         bar
         =end
       RUBY
+
+      expect_no_corrections
     end
 
     context 'when CheckComments is false' do

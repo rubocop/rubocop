@@ -22,6 +22,9 @@ module RuboCop
       # `WholeWord: true` can be set on a flagged term to indicate the cop should only match when
       # a term matches the whole word (partial matches will not be offenses).
       #
+      # The cop supports autocorrection when there is only one suggestion. When there are multiple
+      # suggestions, the best suggestion cannot be identified and will not be autocorrected.
+      #
       # @example FlaggedTerms: { whitelist: { Suggestions: ['allowlist'] } }
       #   # Suggest replacing identifier whitelist with allowlist
       #
@@ -68,6 +71,7 @@ module RuboCop
       #   TeslaVehicle
       class InclusiveLanguage < Base
         include RangeHelp
+        extend AutoCorrector
 
         EMPTY_ARRAY = [].freeze
         MSG = "Consider replacing '%<term>s'%<suffix>s."
@@ -104,9 +108,16 @@ module RuboCop
 
         def add_offenses_for_token(token, word_locations)
           word_locations.each do |word_location|
-            start_position = token.pos.begin_pos + token.pos.source.index(word_location.word)
-            range = range_between(start_position, start_position + word_location.word.length)
-            add_offense(range, message: create_message(word_location.word))
+            word = word_location.word
+            range = offense_range(token, word)
+
+            add_offense(range, message: create_message(word)) do |corrector|
+              suggestions = find_flagged_term(word)['Suggestions']
+
+              next unless suggestions.is_a?(String)
+
+              corrector.replace(range, suggestions)
+            end
           end
         end
 
@@ -263,6 +274,12 @@ module RuboCop
                              quoted_suggestions.join(', ')
                            end
           " with #{suggestion_str}"
+        end
+
+        def offense_range(token, word)
+          start_position = token.pos.begin_pos + token.pos.source.index(word)
+
+          range_between(start_position, start_position + word.length)
         end
       end
     end
