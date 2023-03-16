@@ -41,14 +41,22 @@ module RuboCop
         MSG = 'Useless method definition detected.'
 
         def on_def(node)
-          return if use_rest_or_optional_args?(node)
+          return if method_definition_with_modifier?(node) || use_rest_or_optional_args?(node)
           return unless delegating?(node.body, node)
 
-          add_offense(node) { |corrector| corrector.remove(node) }
+          add_offense(node) do |corrector|
+            range = node.parent&.send_type? ? node.parent : node
+
+            corrector.remove(range)
+          end
         end
         alias on_defs on_def
 
         private
+
+        def method_definition_with_modifier?(node)
+          node.parent&.send_type? && !node.parent&.non_bare_access_modifier?
+        end
 
         def use_rest_or_optional_args?(node)
           node.arguments.any? { |arg| arg.restarg_type? || arg.optarg_type? || arg.kwoptarg_type? }
