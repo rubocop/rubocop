@@ -1,0 +1,1 @@
+* [#11704](https://github.com/rubocop/rubocop/issues/11704): Fix a false positive for `Lint/UselessMethodDefinition` when method definition with non access modifier containing only `super` call. ([@koic][])
