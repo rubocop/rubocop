@@ -111,7 +111,7 @@ module RuboCop
           return if comments.none?
 
           regexp = comment_regexp(arg_node)
-          comments.any? { |comment| regexp.match?(comment) } || regexp.match?(comments.join)
+          comments.any?(regexp) || regexp.match?(comments.join)
         end
 
         def preceding_comment_blocks(node)

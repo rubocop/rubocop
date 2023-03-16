@@ -281,7 +281,7 @@ module RuboCop
             .drop_while { |r| !r.equal?(range) }
             .each_cons(2)
             .map { |range1, range2| range1.end.join(range2.begin).source }
-            .all? { |intervening| /\A\s*,\s*\Z/.match?(intervening) }
+            .all?(/\A\s*,\s*\z/)
         end
 
         SIMILAR_COP_NAMES_CACHE = Hash.new do |hash, cop_name|

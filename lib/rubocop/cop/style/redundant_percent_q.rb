@@ -93,7 +93,7 @@ module RuboCop
 
           return true if STRING_INTERPOLATION_REGEXP.match?(src)
 
-          src.scan(/\\./).any? { |s| ESCAPED_NON_BACKSLASH.match?(s) }
+          src.scan(/\\./).any?(ESCAPED_NON_BACKSLASH)
         end
 
         def acceptable_capital_q?(node)

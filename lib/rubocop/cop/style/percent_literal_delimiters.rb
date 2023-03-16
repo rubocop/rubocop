@@ -92,9 +92,8 @@ module RuboCop
 
         def contains_delimiter?(node, delimiters)
           delimiters_regexp = Regexp.union(delimiters)
-          node
-            .children.map { |n| string_source(n) }.compact
-            .any? { |s| delimiters_regexp.match?(s) }
+
+          node.children.map { |n| string_source(n) }.compact.any?(delimiters_regexp)
         end
 
         def string_source(node)
