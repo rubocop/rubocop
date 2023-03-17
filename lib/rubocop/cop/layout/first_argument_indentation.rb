@@ -153,9 +153,10 @@ module RuboCop
         MSG = 'Indent the first argument one step more than %<base>s.'
 
         def on_send(node)
+          return unless should_check?(node)
+          return if same_line?(node, node.first_argument)
           return if style != :consistent && enforce_first_argument_with_fixed_indentation? &&
                     !enable_layout_first_method_argument_line_break?
-          return if !node.arguments? || bare_operator?(node) || node.setter_method?
 
           indent = base_indentation(node) + configured_indentation_width
 
@@ -165,6 +166,10 @@ module RuboCop
         alias on_super on_send
 
         private
+
+        def should_check?(node)
+          node.arguments? && !bare_operator?(node) && !node.setter_method?
+        end
 
         def autocorrect(corrector, node)
           AlignmentCorrector.correct(corrector, processed_source, node, column_delta)

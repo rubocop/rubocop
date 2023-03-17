@@ -34,6 +34,7 @@ module RuboCop
 
         def on_send(node)
           return unless regular_method_call_with_arguments?(node)
+          return if node.parenthesized?
 
           first_arg = node.first_argument.source_range
           first_arg_with_space = range_with_surrounding_space(first_arg, side: :left)
@@ -52,7 +53,6 @@ module RuboCop
         end
 
         def expect_params_after_method_name?(node)
-          return false if node.parenthesized?
           return true if no_space_between_method_name_and_first_argument?(node)
 
           first_arg = node.first_argument

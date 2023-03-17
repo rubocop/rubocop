@@ -64,10 +64,10 @@ module RuboCop
         def str_contents_range(node)
           if heredoc?(node)
             node.loc.heredoc_body
+          elsif node.str_type?
+            node.source_range
           elsif begin_loc_present?(node)
             contents_range(node)
-          else
-            node.source_range
           end
         end
 
