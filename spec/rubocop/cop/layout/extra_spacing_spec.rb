@@ -592,4 +592,44 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
   end
+
+  context 'when multiple comments have extra spaces' do
+    it 'registers offenses for all comments' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def require(p)  # rubocop:disable Naming/MethodParameterName
+                        ^ Unnecessary spacing detected.
+          end
+
+          def load(p)  # rubocop:disable Naming/MethodParameterName
+                     ^ Unnecessary spacing detected.
+          end
+
+          def join(*ps)  # rubocop:disable Naming/MethodParameterName
+                       ^ Unnecessary spacing detected.
+          end
+
+          def exist?(*ps)  # rubocop:disable Naming/MethodParameterName
+                         ^ Unnecessary spacing detected.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          def require(p) # rubocop:disable Naming/MethodParameterName
+          end
+
+          def load(p) # rubocop:disable Naming/MethodParameterName
+          end
+
+          def join(*ps) # rubocop:disable Naming/MethodParameterName
+          end
+
+          def exist?(*ps) # rubocop:disable Naming/MethodParameterName
+          end
+        end
+      RUBY
+    end
+  end
 end
