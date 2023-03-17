@@ -261,11 +261,14 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
       end
 
       context 'and the offense is inside a percent array' do
-        it 'adds before-and-after disable statement around the percent array' do
+        before do
           create_file('.rubocop.yml', <<~YAML)
             Layout/LineLength:
               Max: 30
           YAML
+        end
+
+        it 'adds before-and-after disable statement around the percent array' do
           create_file('example.rb', <<~RUBY)
             # frozen_string_literal: true
 
@@ -278,6 +281,28 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
             # rubocop:todo Layout/LineLength
             ARRAY = %i[
               AAAAAAAAAAAAAAAAAAAA BBBBBBBBBBBBBBBBBBBB
+            ].freeze
+            # rubocop:enable Layout/LineLength
+          RUBY
+        end
+
+        it 'adds before-and-after disable statement around the multi-line percent array' do
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            ARRAY = %i[
+              AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+              AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            ].freeze
+          RUBY
+          expect(exit_code).to eq(0)
+          expect(File.read('example.rb')).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            # rubocop:todo Layout/LineLength
+            ARRAY = %i[
+              AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+              AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
             ].freeze
             # rubocop:enable Layout/LineLength
           RUBY
