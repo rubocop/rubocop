@@ -466,6 +466,15 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
           foo arg
         RUBY
       end
+
+      it 'does not register an offense in conditionals' do
+        expect_no_offenses(<<~RUBY)
+          var =
+            unless object.action(value:, other:)
+              condition || other_condition
+            end
+        RUBY
+      end
     end
 
     context 'anonymous rest arguments in 3.2', :ruby32 do
