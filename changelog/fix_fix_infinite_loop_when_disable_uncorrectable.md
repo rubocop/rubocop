@@ -1,0 +1,1 @@
+* [#11706](https://github.com/rubocop/rubocop/issues/11706): Fix infinite loop when `--disable-uncorrectable` option and there is a multi-line percent array violates `Layout/LineLength`. ([@nobuyo][])
