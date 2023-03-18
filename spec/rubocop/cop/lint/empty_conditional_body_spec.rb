@@ -317,6 +317,19 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     RUBY
   end
 
+  context '>= Ruby 3.1', :ruby31 do
+    it 'registers an offense for multi-line value omission in `unless`' do
+      expect_offense(<<~RUBY)
+        var =
+          unless object.action value:, other:
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid `unless` branches without a body.
+            condition || other_condition # This is the value of `other:`, like so:
+                                         # `other: condition || other_condition`
+          end
+      RUBY
+    end
+  end
+
   context 'when AllowComments is false' do
     let(:cop_config) { { 'AllowComments' => false } }
 

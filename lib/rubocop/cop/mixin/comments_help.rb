@@ -71,7 +71,7 @@ module RuboCop
         elsif (next_sibling = node.right_sibling) && next_sibling.is_a?(AST::Node)
           next_sibling.loc.line
         elsif (parent = node.parent)
-          parent.loc.end ? parent.loc.end.line : parent.loc.line
+          parent.loc.respond_to?(:end) && parent.loc.end ? parent.loc.end.line : parent.loc.line
         else
           node.loc.end.line
         end
