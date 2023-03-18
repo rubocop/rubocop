@@ -238,7 +238,7 @@ module RuboCop
 
           indent = ' ' * node.loc.column
           corrector.replace(
-            node.source_range,
+            node,
             ['class << self',
              "#{indent}  #{accessor(kind, node.method_name)}",
              "#{indent}end"].join("\n")
