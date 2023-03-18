@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Server::Cache do
         end
       end
 
-      context 'when cache root path is not specified path and `XDG_CACHE_HOME` environment variable is spacified' do
+      context 'when cache root path is not specified path and `XDG_CACHE_HOME` environment variable is specified' do
         let(:cache_path) { File.join('/tmp/cache-root-directory', 'rubocop_cache', 'server') }
 
         around do |example|

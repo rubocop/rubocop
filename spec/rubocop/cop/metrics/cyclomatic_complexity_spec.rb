@@ -242,7 +242,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
           var&.dont_count_me
           var = 2
           var&.bar
-          var&.dont_count_me_eother
+          var&.dont_count_me_either
         end
       RUBY
     end

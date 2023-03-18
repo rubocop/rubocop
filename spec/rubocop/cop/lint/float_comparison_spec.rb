@@ -29,7 +29,7 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
     RUBY
   end
 
-  it 'registers an offense when comparing with arightmetic operator on floats' do
+  it 'registers an offense when comparing with arithmetic operator on floats' do
     expect_offense(<<~RUBY)
       x == 0.1 + y
       ^^^^^^^^^^^^ Avoid (in)equality comparisons of floats as they are unreliable.

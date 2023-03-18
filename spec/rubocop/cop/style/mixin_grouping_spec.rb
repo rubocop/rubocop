@@ -223,7 +223,7 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
           end
         RUBY
 
-        # empty line left by prpend Qux
+        # empty line left by prepend Qux
         expect_correction(<<~RUBY)
           class Foo
             prepend Qux, Bar

@@ -291,7 +291,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a lambda for extra spacebefore first parameter' do
+    it 'registers an offense and corrects a lambda for extra space before first parameter' do
       expect_offense(<<~RUBY)
         ->(  x ) { puts x }
            ^ Extra space before first block parameter detected.
@@ -302,7 +302,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a lambda for multiple spacesafter last parameter' do
+    it 'registers an offense and corrects a lambda for multiple spaces after last parameter' do
       expect_offense(<<~RUBY)
         ->( x, y   ) { puts x }
                  ^^ Extra space after last block parameter detected.

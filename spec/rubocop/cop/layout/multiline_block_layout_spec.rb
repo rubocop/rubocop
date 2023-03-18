@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects a do/end block with a mult-line body' do
+  it 'registers an offense and corrects a do/end block with a multi-line body' do
     expect_offense(<<~RUBY)
       test do |foo| bar
                     ^^^ Block body expression is on the same line as the block start.

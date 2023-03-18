@@ -122,7 +122,7 @@ module RuboCop
         end
 
         def safe_to_register_offense?(block, except_key)
-          extracted = extract_body_if_nagated(block.body)
+          extracted = extract_body_if_negated(block.body)
           if extracted.method?('in?') || extracted.method?('include?') || \
              extracted.method?('exclude?')
             return true
@@ -132,7 +132,7 @@ module RuboCop
           except_key.sym_type? || except_key.str_type?
         end
 
-        def extract_body_if_nagated(body)
+        def extract_body_if_negated(body)
           return body unless body.method?('!')
 
           body.receiver
@@ -161,7 +161,7 @@ module RuboCop
 
         def except_key(node)
           key_argument = node.argument_list.first.source
-          body = extract_body_if_nagated(node.body)
+          body = extract_body_if_negated(node.body)
           lhs, _method_name, rhs = *body
           return if [lhs, rhs].map(&:source).none?(key_argument)
 

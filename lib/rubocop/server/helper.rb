@@ -11,7 +11,7 @@
 #
 module RuboCop
   module Server
-    # This module has a helper memthod for `RuboCop::Server::SocketReader`.
+    # This module has a helper method for `RuboCop::Server::SocketReader`.
     # @api private
     module Helper
       def self.redirect(stdin: $stdin, stdout: $stdout, stderr: $stderr, &_block)

@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
-    it 'registers an offense assigning any variable type to if elsewith multiple assignment' do
+    it 'registers an offense assigning any variable type to if else with multiple assignment' do
       expect_offense(<<~RUBY, variable: variable)
         %{variable}, %{variable} = if foo
         ^{variable}^^^{variable}^^^^^^^^^ Assign variables inside of conditionals

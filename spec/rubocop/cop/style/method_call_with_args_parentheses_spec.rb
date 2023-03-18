@@ -469,7 +469,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     context 'anonymous rest arguments in 3.2', :ruby32 do
-      it 'does not regiester an offense when method calls to have parens' do
+      it 'does not register an offense when method calls to have parens' do
         expect_no_offenses(<<~RUBY)
           def foo(*)
             foo(*)
@@ -480,7 +480,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
     end
 
     context 'anonymous keyword rest arguments in 3.2', :ruby32 do
-      it 'does not regiester an offense when method calls to have parens' do
+      it 'does not register an offense when method calls to have parens' do
         expect_no_offenses(<<~RUBY)
           def foo(**)
             foo(**)

@@ -384,7 +384,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
-  context 'using `defined?` in the condtion' do
+  context 'using `defined?` in the condition' do
     it 'registers for argument value is defined' do
       expect_offense(<<~RUBY)
         value = :custom

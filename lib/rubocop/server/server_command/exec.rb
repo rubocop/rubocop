@@ -21,7 +21,7 @@ module RuboCop
           # We must pass the --color option to preserve this behavior.
           @args.unshift('--color') unless %w[--color --no-color].any? { |f| @args.include?(f) }
           status = RuboCop::CLI.new.run(@args)
-          # This status file is read by `rubocop --server` (`RuboCop::Server::Clientcommand::Exec`).
+          # This status file is read by `rubocop --server` (`RuboCop::Server::ClientCommand::Exec`).
           # so that they use the correct exit code.
           # Status is 1 when there are any issues, and 0 otherwise.
           Cache.write_status_file(status)

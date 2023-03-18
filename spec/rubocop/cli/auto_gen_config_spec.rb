@@ -416,7 +416,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         RUBY
       end
 
-      context 'when --only does not contain Layout/Linelength' do
+      context 'when --only does not contain Layout/LineLength' do
         it 'generates TODO only for the mentioned cop' do
           $stdout = StringIO.new
           expect(cli.run(['--auto-gen-config', '--only', 'Style/Documentation'])).to eq(0)
@@ -644,7 +644,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
     end
 
     context 'when existing config file has a YAML document start header' do
-      it 'inserts `inherit_from` key after hearder' do
+      it 'inserts `inherit_from` key after header' do
         create_file('example1.rb', <<~RUBY)
           def foo; end
         RUBY

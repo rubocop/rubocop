@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayLineBreaks, :config do
     end
   end
 
-  context 'ignore laste element' do
+  context 'ignore last element' do
     let(:cop_config) { { 'AllowMultilineFinalElement' => true } }
 
     it 'ignores last value that is a multiline hash' do

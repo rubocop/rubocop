@@ -327,7 +327,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
       RUBY
     end
 
-    it 'autocorrects non-preffered builtin names' do
+    it 'autocorrects non-preferred builtin names' do
       expect_offense(<<~RUBY)
         puts $:
              ^^ Prefer `$LOAD_PATH` over `$:`.

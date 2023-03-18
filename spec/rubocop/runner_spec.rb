@@ -432,7 +432,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             expect(runner.run([])).to be false
           end
 
-          it 'ommits unsafe correctable `Style/FrozenStringLiteral`' do
+          it 'omits unsafe correctable `Style/FrozenStringLiteral`' do
             runner.run([])
             expect(formatter_output).to eq <<~RESULT
               Inspecting 1 file
@@ -475,7 +475,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             expect(runner.run([])).to be false
           end
 
-          it 'ommits uncorrectable `Layout/LineLength`' do
+          it 'omits uncorrectable `Layout/LineLength`' do
             runner.run([])
             expect(formatter_output).to eq <<~RESULT
               Inspecting 1 file

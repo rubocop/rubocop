@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     expect_no_offenses('foo.baz + bar if foo')
   end
 
-  it 'allows chained method calls during assignment safe guardedby an object check' do
+  it 'allows chained method calls during assignment safe guarded by an object check' do
     expect_no_offenses('foo.baz = bar if foo')
   end
 
@@ -1182,7 +1182,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       expect_no_offenses('foo.bar if baz.respond_to?(:bar)')
     end
 
-    it 'allows method calls safeguarded by a respond_to check on adifferent variable and method' do
+    it 'allows method calls safeguarded by a respond_to check on a different variable and method' do
       expect_no_offenses('foo.bar if baz.respond_to?(:foo)')
     end
 

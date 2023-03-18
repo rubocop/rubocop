@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
     expect_no_offenses('foo && bar ? baz : qux')
   end
 
-  it 'accepts missing parentheses when using ternary operator in square bracksts' do
+  it 'accepts missing parentheses when using ternary operator in square brackets' do
     expect_no_offenses('do_something[foo && bar ? baz : qux]')
   end
 

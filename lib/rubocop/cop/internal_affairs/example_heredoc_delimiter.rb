@@ -52,7 +52,7 @@ module RuboCop
         # @return [void]
         def autocorrect(corrector, node)
           [
-            heredoc_openning_delimiter_range_from(node),
+            heredoc_opening_delimiter_range_from(node),
             heredoc_closing_delimiter_range_from(node)
           ].each do |range|
             corrector.replace(range, EXPECTED_HEREDOC_DELIMITER)
@@ -90,7 +90,7 @@ module RuboCop
 
         # @param node [RuboCop::AST::StrNode]
         # @return [Parser::Source::Range]
-        def heredoc_openning_delimiter_range_from(node)
+        def heredoc_opening_delimiter_range_from(node)
           match_data = node.source.match(Heredoc::OPENING_DELIMITER)
           node.source_range.begin.adjust(
             begin_pos: match_data.begin(2),
