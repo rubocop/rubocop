@@ -55,7 +55,7 @@ module RuboCop
           elsif (class_node = parent.parent).body.nil?
             corrector.remove(range_for_empty_class_body(class_node, parent))
           else
-            corrector.insert_after(parent.source_range, ' do')
+            corrector.insert_after(parent, ' do')
           end
         end
 

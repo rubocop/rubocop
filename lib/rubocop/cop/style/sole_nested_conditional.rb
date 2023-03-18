@@ -167,7 +167,7 @@ module RuboCop
           corrector.insert_before(condition,
                                   "#{'!' if node.unless?}#{replace_condition(node.condition)} && ")
 
-          corrector.remove(node.condition.source_range)
+          corrector.remove(node.condition)
           corrector.remove(range_with_surrounding_space(node.loc.keyword, newlines: false))
           corrector.replace(if_branch.loc.keyword, 'if')
         end
@@ -187,7 +187,7 @@ module RuboCop
           return if end_pos > begin_pos
 
           corrector.replace(range_between(end_pos, begin_pos), '(')
-          corrector.insert_after(condition.last_argument.source_range, ')')
+          corrector.insert_after(condition.last_argument, ')')
         end
 
         def insert_bang(corrector, node, is_modify_form)

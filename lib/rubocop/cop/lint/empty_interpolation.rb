@@ -25,7 +25,7 @@ module RuboCop
         def on_interpolation(begin_node)
           return unless begin_node.children.empty?
 
-          add_offense(begin_node) { |corrector| corrector.remove(begin_node.source_range) }
+          add_offense(begin_node) { |corrector| corrector.remove(begin_node) }
         end
       end
     end

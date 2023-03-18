@@ -69,7 +69,7 @@ module RuboCop
 
         def register_offense(node)
           add_offense(node) do |corrector|
-            corrector.replace(node.source_range, to_single_line(node.source).strip)
+            corrector.replace(node, to_single_line(node.source).strip)
           end
           ignore_node(node)
         end
