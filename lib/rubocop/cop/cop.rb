@@ -138,10 +138,10 @@ module RuboCop
       def correction_lambda
         return unless support_autocorrect?
 
-        dedup_on_node(@v0_argument) { autocorrect(@v0_argument) }
+        dedupe_on_node(@v0_argument) { autocorrect(@v0_argument) }
       end
 
-      def dedup_on_node(node)
+      def dedupe_on_node(node)
         @corrected_nodes ||= {}.compare_by_identity
         yield unless @corrected_nodes.key?(node)
       ensure

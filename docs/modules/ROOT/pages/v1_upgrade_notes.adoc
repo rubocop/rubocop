@@ -156,9 +156,9 @@ _Legacy:_ interface allowed for a `node`, with an optional `location` (symbol or
 
 _Current:_ pass a range (or node as a shortcut for `node.loc.expression`), no `location:`. No abuse tolerated.
 
-==== de-dupping changes
+==== deduping changes
 
-Both de-dup on `range` and won't process the duplicated offenses at all.
+Both dedupe on `range` and won't process the duplicated offenses at all.
 
 _Legacy:_ if offenses on same `node` but different `range`: considered as multiple offenses but a single autocorrect call.
 

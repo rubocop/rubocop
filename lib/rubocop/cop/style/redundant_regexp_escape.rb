@@ -107,7 +107,7 @@ module RuboCop
             end
           end
         # Please remove this `else` branch when support for regexp_parser 1.8 will be dropped.
-        # It's for compatibility with regexp_arser 1.8 and will never be maintained.
+        # It's for compatibility with regexp_parser 1.8 and will never be maintained.
         else
           def each_escape(node)
             node.parsed_tree&.traverse&.reduce(0) do |char_class_depth, (event, expr)|

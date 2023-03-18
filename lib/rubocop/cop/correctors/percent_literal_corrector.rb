@@ -66,10 +66,10 @@ module RuboCop
         end
       end
 
-      def line_breaks(node, source, previous_line_num, base_line_num, node_indx)
+      def line_breaks(node, source, previous_line_num, base_line_num, node_index)
         source_in_lines = source.split("\n")
         if first_line?(node, previous_line_num)
-          node_indx.zero? && node.first_line == base_line_num ? '' : ' '
+          node_index.zero? && node.first_line == base_line_num ? '' : ' '
         else
           process_lines(node, previous_line_num, base_line_num, source_in_lines)
         end

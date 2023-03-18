@@ -310,8 +310,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       context 'with a trailing RuboCop directive' do
         it 'registers an offense for the line' do
           expect_offense(<<~RUBY)
-            #{'a' * 80} # rubcop:disable Layout/SomeCop
-            #{' ' * 80}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [112/80]
+            #{'a' * 80} # rubocop:disable Layout/SomeCop
+            #{' ' * 80}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [113/80]
           RUBY
         end
       end
@@ -1086,7 +1086,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'when over limit' do
-        it 'adds offense and autocorrects it by breaking the semicolonbefore the hash' do
+        it 'adds offense and autocorrects it by breaking the semicolon before the hash' do
           expect_offense(<<~RUBY)
             {foo: 1, bar: "2"}; a = 400000000000 + 500000000000000
                                                     ^^^^^^^^^^^^^^ Line is too long. [54/40]
@@ -1100,7 +1100,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'when over limit and semicolon at end of line' do
-        it 'adds offense and autocorrects it by breaking the first semicolonbefore the hash' do
+        it 'adds offense and autocorrects it by breaking the first semicolon before the hash' do
           expect_offense(<<~RUBY)
             {foo: 1, bar: "2"}; a = 400000000000 + 500000000000000;
                                                     ^^^^^^^^^^^^^^^ Line is too long. [55/40]
@@ -1114,7 +1114,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'when over limit and many spaces around semicolon' do
-        it 'adds offense and autocorrects it by breaking the semicolonbefore the hash' do
+        it 'adds offense and autocorrects it by breaking the semicolon before the hash' do
           expect_offense(<<~RUBY)
             {foo: 1, bar: "2"}  ;   a = 400000000000 + 500000000000000
                                                     ^^^^^^^^^^^^^^^^^^ Line is too long. [58/40]
@@ -1128,7 +1128,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'when over limit and many semicolons' do
-        it 'adds offense and autocorrects it by breaking the semicolonbefore the hash' do
+        it 'adds offense and autocorrects it by breaking the semicolon before the hash' do
           expect_offense(<<~RUBY)
             {foo: 1, bar: "2"}  ;;; a = 400000000000 + 500000000000000
                                                     ^^^^^^^^^^^^^^^^^^ Line is too long. [58/40]
@@ -1142,7 +1142,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'when over limit and one semicolon at the end' do
-        it 'adds offense and does not autocorrectbefore the hash' do
+        it 'adds offense and does not autocorrect before the hash' do
           expect_offense(<<~RUBY)
             a = 400000000000 + 500000000000000000000;
                                                     ^ Line is too long. [41/40]
@@ -1153,7 +1153,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'when over limit and many semicolons at the end' do
-        it 'adds offense and does not autocorrectbefore the hash' do
+        it 'adds offense and does not autocorrect before the hash' do
           expect_offense(<<~RUBY)
             a = 400000000000 + 500000000000000000000;;;;;;;
                                                     ^^^^^^^ Line is too long. [47/40]

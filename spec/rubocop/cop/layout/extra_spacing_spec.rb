@@ -346,7 +346,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     context 'false' do
       let(:allow_comments) { false }
 
-      it 'regsiters offense' do
+      it 'registers offense' do
         expect_offense(<<~RUBY)
           object.method(argument)  # this is a comment
                                  ^ Unnecessary spacing detected.

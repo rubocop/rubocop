@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
     RUBY
   end
 
-  it 'registers multiple offenses when there are chained concatenationscombined with << calls' do
+  it 'registers multiple offenses when there are chained concatenations combined with << calls' do
     expect_offense(<<~'RUBY')
       top = "test#{x}" <<
                        ^^ Use `\` instead of `+` or `<<` to concatenate those strings.

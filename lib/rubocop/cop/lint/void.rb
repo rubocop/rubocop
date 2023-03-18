@@ -59,10 +59,10 @@ module RuboCop
                                                    shuffle slice sort sort_by squeeze strip sub
                                                    succ swapcase tr tr_s transform_values
                                                    unicode_normalize uniq upcase].freeze
-        METHODS_REPLACABLE_BY_EACH = %i[collect map].freeze
+        METHODS_REPLACEABLE_BY_EACH = %i[collect map].freeze
 
         NONMUTATING_METHODS = (NONMUTATING_METHODS_WITH_BANG_VERSION +
-                               METHODS_REPLACABLE_BY_EACH).freeze
+                               METHODS_REPLACEABLE_BY_EACH).freeze
 
         def on_block(node)
           return unless node.body && !node.body.begin_type?
@@ -133,7 +133,11 @@ module RuboCop
           method_name = node.method_name
           return unless NONMUTATING_METHODS.include?(method_name)
 
-          suggestion = METHODS_REPLACABLE_BY_EACH.include?(method_name) ? 'each' : "#{method_name}!"
+          suggestion = if METHODS_REPLACEABLE_BY_EACH.include?(method_name)
+                         'each'
+                       else
+                         "#{method_name}!"
+                       end
           add_offense(node,
                       message: format(NONMUTATING_MSG, method: method_name, suggest: suggestion))
         end

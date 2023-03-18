@@ -367,7 +367,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
     end
   end
 
-  context 'when using ActiveSupport behavior when Rails is not eabled' do
+  context 'when using ActiveSupport behavior when Rails is not enabled' do
     it 'reports offenses and corrects' do
       expect_offense(<<~RUBY)
         module SomeModule

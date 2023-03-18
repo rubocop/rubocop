@@ -242,7 +242,7 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects when using springf with second argument that uses an operator' do
+    it 'registers an offense and corrects when using sprintf with second argument that uses an operator' do
       expect_offense(<<~RUBY)
         format(something, a + 42)
         ^^^^^^ Favor `String#%` over `format`.

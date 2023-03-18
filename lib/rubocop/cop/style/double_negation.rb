@@ -103,12 +103,12 @@ module RuboCop
         def find_def_node_from_ascendant(node)
           return unless (parent = node.parent)
           return parent if parent.def_type? || parent.defs_type?
-          return node.parent.child_nodes.first if define_mehod?(parent)
+          return node.parent.child_nodes.first if define_method?(parent)
 
           find_def_node_from_ascendant(node.parent)
         end
 
-        def define_mehod?(node)
+        def define_method?(node)
           return false unless node.block_type?
 
           child = node.child_nodes.first

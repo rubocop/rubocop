@@ -576,7 +576,7 @@ RSpec.describe RuboCop::ConfigLoader do
         end.not_to output(/overrides the same parameter/).to_stdout
       end
 
-      it 'overwrites the Exclude from the parent when the cop overridesthe global inherit_mode' do
+      it 'overwrites the Exclude from the parent when the cop overrides the global inherit_mode' do
         expect do
           excludes = configuration_from_file['Style/Dir']['Exclude']
           expect(excludes).to eq([File.expand_path('spec/requests/group_invite_spec.rb')])
@@ -1001,7 +1001,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
-    context 'when a file inherits and overrides with non-namedspaced cops' do
+    context 'when a file inherits and overrides with non-namespaced cops' do
       let(:file_path) { '.rubocop.yml' }
 
       before do

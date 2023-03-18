@@ -28,7 +28,7 @@ module RuboCop
               @expression ||= origin.adjust(begin_pos: ts, end_pos: ts + full_length)
             end
           # Please remove this `else` branch when support for regexp_parser 1.8 will be dropped.
-          # It's for compatibility with regexp_arser 1.8 and will never be maintained.
+          # It's for compatibility with regexp_parser 1.8 and will never be maintained.
           else
             attr_accessor :source
 

@@ -173,14 +173,14 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       end
 
       describe '--server-status' do
-        context 'when server is not runnning' do
+        context 'when server is not running' do
           it 'displays server status' do
             output = `ruby -I . "#{rubocop}" --server-status`
             expect(output).to match(/RuboCop server is not running./)
           end
         end
 
-        context 'when server is runnning' do
+        context 'when server is running' do
           before do
             `ruby -I . "#{rubocop}" --start-server`
           end
@@ -812,7 +812,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
     context 'when a cop name is not specified' do
       it 'displays how to use `--only` option' do
-        expect(cli.run(%w[--except -a Lint/NumberConverion])).to eq(2)
+        expect(cli.run(%w[--except -a Lint/NumberConversion])).to eq(2)
         expect($stderr.string).to eq(<<~MESSAGE)
           --except argument should be [COP1,COP2,...].
         MESSAGE

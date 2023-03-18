@@ -320,7 +320,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
-    it 'registers an offense and correct multi-line parametersindented too far' do
+    it 'registers an offense and correct multi-line parameters indented too far' do
       expect_offense(<<~RUBY)
         create :transaction, :closed,
                  account:          account,

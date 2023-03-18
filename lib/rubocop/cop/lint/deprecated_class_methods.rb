@@ -38,7 +38,7 @@ module RuboCop
           attr clone dup exists? freeze gethostbyaddr gethostbyname iterator?
         ].freeze
 
-        PREFERRED_METHDOS = {
+        PREFERRED_METHODS = {
           clone: 'to_h',
           dup: 'to_h',
           exists?: 'exist?',
@@ -97,11 +97,11 @@ module RuboCop
 
             "#{preferred_attr_method} #{node.first_argument.source}"
           elsif dir_env_file_const?(node.receiver)
-            prefer = PREFERRED_METHDOS[node.method_name]
+            prefer = PREFERRED_METHODS[node.method_name]
 
             prefer ? "#{node.receiver.source}.#{prefer}" : 'ENV'
           else
-            PREFERRED_METHDOS[node.method_name]
+            PREFERRED_METHODS[node.method_name]
           end
         end
 

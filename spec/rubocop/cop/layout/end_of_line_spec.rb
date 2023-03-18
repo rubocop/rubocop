@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
     it 'can inspect non-UTF-8 encoded source with proper encoding comment' do
       # Weird place to have a test on working with non-utf-8 encodings.
       # Encodings are not specific to the EndOfLine cop, so the test is better
-      # be moved somewhere more general ?
+      # be moved somewhere more general?
       # Also working with encodings is actually the responsibility of
       # 'whitequark/parser' gem, not Rubocop itself so these test really belongs there(?)
 

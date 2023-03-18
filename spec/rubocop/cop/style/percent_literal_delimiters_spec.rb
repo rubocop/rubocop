@@ -151,11 +151,11 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'does not register an offense for preferred delimiters with only a closing delimiter' do
-      expect_no_offenses('%w(only closing delimiter charapter\))')
+      expect_no_offenses('%w(only closing delimiter character\))')
     end
 
     it 'does not register an offense for preferred delimiters with not a pairing delimiter' do
-      expect_no_offenses('%w|\|not pairirng delimiter|')
+      expect_no_offenses('%w|\|not pairing delimiter|')
     end
 
     it 'registers an offense for other delimiters' do

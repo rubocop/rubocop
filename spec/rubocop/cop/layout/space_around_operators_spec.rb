@@ -799,7 +799,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects a hash rocket with an extra spaceon multiple line' do
+    it 'registers an offense and corrects a hash rocket with an extra space on multiple line' do
       expect_offense(<<~RUBY)
         {
           1 =>  2

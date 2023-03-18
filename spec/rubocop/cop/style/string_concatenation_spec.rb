@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
     RUBY
   end
 
-  it 'correctly handles nested concatenable parts' do
+  it 'correctly handles nested concatenatable parts' do
     expect_offense(<<~RUBY)
       (user.vip? ? greeting + ', ' : '') + user.name + ' <' + user.email + '>'
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.

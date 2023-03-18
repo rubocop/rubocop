@@ -335,7 +335,7 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
         RUBY
       end
 
-      it 'accepts rescuing a single error other than StandardErrorassigned to a variable' do
+      it 'accepts rescuing a single error other than StandardError assigned to a variable' do
         expect_no_offenses(<<~RUBY)
           begin
             foo

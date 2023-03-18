@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak, :config do
   context 'last element can be multiline' do
     let(:cop_config) { { 'AllowMultilineFinalElement' => true } }
 
-    it 'ignores last argument that value is a multine Hash' do
+    it 'ignores last argument that value is a multiline Hash' do
       expect_no_offenses(<<~RUBY)
         def foo(bar, baz = {
           a: b
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodParameterLineBreak, :config do
       RUBY
     end
 
-    it 'registers and corrects parameters that value is a multiline hashe and is not the last parameter' do
+    it 'registers and corrects parameters that value is a multiline hashes and is not the last parameter' do
       expect_offense(<<~RUBY)
         def foo(bar, baz = {
                 ^^^ Add a line break before the first parameter of a multi-line method parameter list.

@@ -1466,7 +1466,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      context 'when hash roket syntax' do
+      context 'when hash rocket syntax' do
         let(:enforced_style) { 'hash_rockets' }
 
         it 'does not register an offense' do

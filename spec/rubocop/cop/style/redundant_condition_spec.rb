@@ -433,7 +433,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'does not register an offense when the branches contains arguments fowarding', :ruby27 do
+      it 'does not register an offense when the branches contains arguments forwarding', :ruby27 do
         expect_no_offenses(<<~RUBY)
           def do_something(foo, ...)
             if foo

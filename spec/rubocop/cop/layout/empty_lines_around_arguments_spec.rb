@@ -202,7 +202,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
       end
     end
 
-    it 'registers autocorrects empty line whetn args start on definition line' do
+    it 'registers autocorrects empty line when args start on definition line' do
       expect_offense(<<~RUBY)
         bar(qux,
 

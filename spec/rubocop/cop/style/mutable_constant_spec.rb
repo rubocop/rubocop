@@ -536,7 +536,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
         RUBY
       end
 
-      it 'accepts operating on a constant and an interger' do
+      it 'accepts operating on a constant and an integer' do
         expect_no_offenses(<<~RUBY)
           CONST = FOO + 2
         RUBY
