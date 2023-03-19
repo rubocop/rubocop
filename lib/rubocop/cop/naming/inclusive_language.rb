@@ -5,6 +5,7 @@ module RuboCop
     module Naming
       # Recommends the use of inclusive language instead of problematic terms.
       # The cop can check the following locations for offenses:
+      #
       # - identifiers
       # - constants
       # - variables
@@ -12,6 +13,7 @@ module RuboCop
       # - symbols
       # - comments
       # - file paths
+      #
       # Each of these locations can be individually enabled/disabled via configuration,
       # for example CheckIdentifiers = true/false.
       #

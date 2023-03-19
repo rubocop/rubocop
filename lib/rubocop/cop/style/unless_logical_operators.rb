@@ -8,6 +8,7 @@ module RuboCop
       # to read and understand.
       #
       # This cop supports two styles:
+      #
       # - `forbid_mixed_logical_operators` (default)
       # - `forbid_logical_operators`
       #
