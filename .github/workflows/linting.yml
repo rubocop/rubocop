@@ -2,8 +2,6 @@ name: Linting
 on:
   pull_request:
     paths:
-      - '.github/workflows/linting.yml'
-      - '.yamllint.yml'
       - '**/*.yaml'
       - '**/*.yml'
   workflow_dispatch:
