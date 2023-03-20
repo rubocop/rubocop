@@ -362,6 +362,50 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     RUBY
   end
 
+  shared_examples 'one-line pattern matching' do
+    it 'does not register an offense when using match var in body' do
+      expect_no_offenses(<<~RUBY)
+        if [42] in [x]
+          x
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using some match var in body' do
+      expect_no_offenses(<<~RUBY)
+        if { x: 1, y: 2 } in { x:, y: }
+          a && y
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when not using match var in body' do
+      expect_no_offenses(<<~RUBY)
+        if [42] in [x]
+          y
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when not using any match var in body' do
+      expect_no_offenses(<<~RUBY)
+        if { x: 1, y: 2 } in { x:, y: }
+          a && b
+        end
+      RUBY
+    end
+  end
+
+  # The node type for one-line `in` pattern matching in Ruby 2.7 is `match_pattern`.
+  context 'using `match_pattern` as a one-line pattern matching', :ruby27 do
+    include_examples 'one-line pattern matching'
+  end
+
+  # The node type for one-line `in` pattern matching in Ruby 3.0 is `match_pattern_p`.
+  context 'using `match_pattern_p` as a one-line pattern matching', :ruby30 do
+    include_examples 'one-line pattern matching'
+  end
+
   context 'multiline `if` that fits on one line and using hash value omission syntax', :ruby31 do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
