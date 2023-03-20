@@ -22,6 +22,8 @@ jobs:
       - name: Yamllint
         uses: karancode/yamllint-github-action@v2.1.1
         with:
+          yamllint_strict: true
+          yamllint_format: parsable
           yamllint_comment: true
         env:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
