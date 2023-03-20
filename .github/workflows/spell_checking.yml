@@ -19,7 +19,7 @@ jobs:
         with:
           check_filenames: true
           check_hidden: true
-          ignore_words_file: codespell.txt
+          ignore_words_file: .codespellignore
   misspell:
     name: Check spelling of all files in commit with misspell
     runs-on: ubuntu-latest
