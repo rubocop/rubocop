@@ -1886,7 +1886,7 @@
 
 * [#8882](https://github.com/rubocop/rubocop/pull/8882): **(Potentially breaking)** RuboCop assumes that Cop classes do not define new `on_<type>` methods at runtime (e.g. via `extend` in `initialize`). ([@marcandre][])
 * [#7966](https://github.com/rubocop/rubocop/issues/7966): **(Breaking)** Enable all pending cops for RuboCop 1.0. ([@koic][])
-* [#8490](https://github.com/rubocop/rubocop/pull/8490): **(Breaking)** Change logic for cop department name computation. Cops inside deep namespaces (5 or more levels deep) now belong to departments with names that are calculated by joining module names starting from the third one with slashes as separators. For example, cop `Rubocop::Cop::Foo::Bar::Baz` now belongs to `Foo/Bar` department (previously it was `Bar`). ([@dsavochkin][])
+* [#8490](https://github.com/rubocop/rubocop/pull/8490): **(Breaking)** Change logic for cop department name computation. Cops inside deep namespaces (5 or more levels deep) now belong to departments with names that are calculated by joining module names starting from the third one with slashes as separators. For example, cop `RuboCop::Cop::Foo::Bar::Baz` now belongs to `Foo/Bar` department (previously it was `Bar`). ([@dsavochkin][])
 * [#8692](https://github.com/rubocop/rubocop/pull/8692): Default changed to disallow `Layout/TrailingWhitespace` in heredoc. ([@marcandre][])
 * [#8894](https://github.com/rubocop/rubocop/issues/8894): Make `Security/Open` aware of `URI.open`. ([@koic][])
 * [#8901](https://github.com/rubocop/rubocop/issues/8901): Fix false positive for `Naming/BinaryOperatorParameterName` when defining `=~`. ([@zajn][])
@@ -6165,7 +6165,7 @@
 * Deprecated `-e`/`--emacs` option. (Use `--format emacs` instead).
 * Made `progress` formatter the default.
 * Most formatters (`progress`, `simple` and `clang`) now print relative file paths if the paths are under the current working directory.
-* Migrate all cops to new namespaces. `Rubocop::Cop::Lint` is for cops that emit warnings. `Rubocop::Cop::Style` is for cops that do not belong in other namespaces.
+* Migrate all cops to new namespaces. `RuboCop::Cop::Lint` is for cops that emit warnings. `RuboCop::Cop::Style` is for cops that do not belong in other namespaces.
 * Merge `FavorPercentR` and `PercentR` into one cop called `RegexpLiteral`, and add configuration parameter `MaxSlashes`.
 * Add `CountKeywordArgs` configuration option to `ParameterLists` cop.
 

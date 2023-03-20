@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
       # Encodings are not specific to the EndOfLine cop, so the test is better
       # be moved somewhere more general?
       # Also working with encodings is actually the responsibility of
-      # 'whitequark/parser' gem, not Rubocop itself so these test really belongs there(?)
+      # 'whitequark/parser' gem, not RuboCop itself so these test really belongs there(?)
 
       encoding = 'iso-8859-15'
       input = (+<<~RUBY).force_encoding(encoding)

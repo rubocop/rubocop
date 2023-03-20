@@ -61,7 +61,7 @@ module RuboCop
                             correctable_count,
                             rainbow,
                             # :safe_autocorrect is a derived option based on several command-line
-                            # arguments - see Rubocop::Options#add_autocorrection_options
+                            # arguments - see RuboCop::Options#add_autocorrection_options
                             safe_autocorrect: @options[:safe_autocorrect])
 
         output.puts

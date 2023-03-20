@@ -11,7 +11,7 @@ module RuboCop
       #
       #   Moving from compact to nested children requires knowledge of whether the
       #   outer parent is a module or a class. Moving from nested to compact requires
-      #   verification that the outer parent is defined elsewhere. Rubocop does not
+      #   verification that the outer parent is defined elsewhere. RuboCop does not
       #   have the knowledge to perform either operation safely and thus requires
       #   manual oversight.
       #

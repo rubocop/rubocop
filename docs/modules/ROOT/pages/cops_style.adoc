@@ -1267,7 +1267,7 @@ Autocorrection is unsafe.
 
 Moving from compact to nested children requires knowledge of whether the
 outer parent is a module or a class. Moving from nested to compact requires
-verification that the outer parent is defined elsewhere. Rubocop does not
+verification that the outer parent is defined elsewhere. RuboCop does not
 have the knowledge to perform either operation safely and thus requires
 manual oversight.
 
@@ -1767,7 +1767,7 @@ items.include?
 
 | PreferredMethods
 | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
-| 
+|
 
 | MethodsAcceptingSymbol
 | `inject`, `reduce`
@@ -6322,11 +6322,11 @@ end
 
 | InverseMethods
 | `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
-| 
+|
 
 | InverseBlocks
 | `{:select=>:reject, :select!=>:reject!}`
-| 
+|
 |===
 
 == Style/InvertibleUnlessCondition
@@ -6394,7 +6394,7 @@ foo if !condition
 
 | InverseMethods
 | `{:!==>:==, :>=>:<=, :<==>:>, :<=>:>=, :>==>:<, :!~=>:=~, :zero?=>:nonzero?, :nonzero?=>:zero?, :any?=>:none?, :none?=>:any?, :even?=>:odd?, :odd?=>:even?}`
-| 
+|
 |===
 
 == Style/IpAddresses
@@ -6821,7 +6821,7 @@ end
 
 | ValueCapitalization
 | `<none>`
-| 
+|
 |===
 
 == Style/MapCompactWithConditionalBlock
@@ -10170,7 +10170,7 @@ default.
 
 | PreferredDelimiters
 | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
-| 
+|
 |===
 
 === References
@@ -10610,7 +10610,7 @@ A.foo
 
 | Methods
 | `{"join"=>"", "sum"=>0, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
-| 
+|
 |===
 
 == Style/RedundantAssignment
@@ -13651,7 +13651,7 @@ from the String class.
 
 | PreferredMethods
 | `{"intern"=>"to_sym"}`
-| 
+|
 |===
 
 == Style/Strip
@@ -15383,7 +15383,7 @@ array of 2 or fewer elements.
 
 | WordRegex
 | `(?-mix:\A(?:\p{Word}\|\p{Word}-\p{Word}\|\n\|\t)+\z)`
-| 
+|
 |===
 
 === References

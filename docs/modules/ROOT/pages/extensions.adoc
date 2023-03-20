@@ -207,7 +207,7 @@ $ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
 
 RuboCop has API for extensions to support templates such as ERB, Haml, Slim, etc.
 
-Normally, RuboCop extracts one Ruby code from one Ruby file, however there are multiple embedded Ruby codes in one template file. To solve this problem, RuboCop has a mechanism called `Rubocop::Runner.ruby_extractors`, to which any Ruby extractor can be added on the extension side.
+Normally, RuboCop extracts one Ruby code from one Ruby file, however there are multiple embedded Ruby codes in one template file. To solve this problem, RuboCop has a mechanism called `RuboCop::Runner.ruby_extractors`, to which any Ruby extractor can be added on the extension side.
 
 Ruby extractor must be a callable object that takes a `RuboCop::ProcessedSource` and returns an `Array` of `Hash` that contains Ruby source codes and their offsets from original source code, or returns `nil` for unrelated file.
 
