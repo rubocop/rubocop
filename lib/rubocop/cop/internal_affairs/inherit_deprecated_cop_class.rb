@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # `RuboCop::Cop::Cop` is deprecated and will be removed in Rubocop 2.0.
+      # `RuboCop::Cop::Cop` is deprecated and will be removed in RuboCop 2.0.
       # Your custom cop class should inherit from `RuboCop::Cop::Base` instead of
       # `RuboCop::Cop::Cop`.
       #

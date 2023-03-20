@@ -35,7 +35,7 @@ module RuboCop
         return false if cop_config['AutoCorrect'] == false
 
         # :safe_autocorrect is a derived option based on several command-line
-        # arguments - see Rubocop::Options#add_autocorrection_options
+        # arguments - see RuboCop::Options#add_autocorrection_options
         return safe_autocorrect? if @options.fetch(:safe_autocorrect, false)
 
         true

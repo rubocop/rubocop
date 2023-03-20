@@ -90,12 +90,12 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral, :config do
 
       it 'registers an offense and corrects when sending method without receiver takes a regexp argument' do
         expect_offense(<<~RUBY)
-          expect('Rubocop').to match /Robo/
+          expect('RuboCop').to match /Robo/
                                      ^ Ambiguous regexp literal. Parenthesize the method arguments if it's surely a regexp literal, or add a whitespace to the right of the `/` if it should be a division.
         RUBY
 
         expect_correction(<<~RUBY)
-          expect('Rubocop').to match(/Robo/)
+          expect('RuboCop').to match(/Robo/)
         RUBY
       end
 

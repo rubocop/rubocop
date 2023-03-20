@@ -339,7 +339,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
   context 'when IgnoreCopDirectives is enabled' do
     let(:cop_config) { { 'Max' => 80, 'IgnoreCopDirectives' => true } }
 
-    context 'and the Rubocop directive is excessively long' do
+    context 'and the RuboCop directive is excessively long' do
       it 'accepts the line' do
         expect_no_offenses(<<~RUBY)
           # rubocop:disable Metrics/SomeReallyLongMetricNameThatShouldBeMuchShorterAndNeedsANameChange
@@ -347,7 +347,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
     end
 
-    context 'and the Rubocop directive causes an excessive line length' do
+    context 'and the RuboCop directive causes an excessive line length' do
       it 'accepts the line' do
         expect_no_offenses(<<~RUBY)
           def method_definition_that_is_just_under_the_line_length_limit(foo, bar) # rubocop:disable Metrics/AbcSize
