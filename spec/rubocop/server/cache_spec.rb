@@ -283,6 +283,15 @@ RSpec.describe RuboCop::Server::Cache do
         end
         expect(described_class.pid_running?).to be(false)
       end
+
+      it 'works properly when insufficient permissions to server cache dir are granted' do
+        expect(described_class).to receive(:pid_path).and_wrap_original do |method|
+          result = method.call
+          described_class.dir.chmod(0o644) # Make insufficient permissions.
+          result
+        end
+        expect(described_class.pid_running?).to be(false)
+      end
     end
   end
 end
