@@ -8,6 +8,14 @@ RSpec.describe RuboCop::Config do
   let(:hash) { {} }
   let(:loaded_path) { 'example/.rubocop.yml' }
 
+  describe '.new' do
+    context 'without arguments' do
+      subject(:configuration) { described_class.new }
+
+      it { expect(configuration['Lint/BooleanSymbol']['SafeAutoCorrect']).to be(false) }
+    end
+  end
+
   describe '#validate', :isolated_environment do
     subject(:configuration) do
       # ConfigLoader.load_file will validate config
