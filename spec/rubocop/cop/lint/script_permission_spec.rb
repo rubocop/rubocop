@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/NumericLiteralPrefix
 RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
   subject(:cop) { described_class.new(config, options) }
 
@@ -18,7 +17,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
   context 'with file permission 0644' do
     before do
       File.write(file.path, source)
-      FileUtils.chmod(0644, file.path)
+      FileUtils.chmod(0644, file.path) # rubocop:disable Style/NumericLiteralPrefix
     end
 
     if RuboCop::Platform.windows?
@@ -61,7 +60,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
   end
 
   context 'with file permission 0755' do
-    before { FileUtils.chmod(0755, file.path) }
+    before { FileUtils.chmod(0755, file.path) } # rubocop:disable Style/NumericLiteralPrefix
 
     it 'accepts with shebang line' do
       File.write(file.path, source)
@@ -90,4 +89,3 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
     end
   end
 end
-# rubocop:enable Style/NumericLiteralPrefix
