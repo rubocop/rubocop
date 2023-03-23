@@ -29,7 +29,7 @@ module RuboCop
     end
 
     # rubocop:disable Metrics/AbcSize
-    def initialize(hash = {}, loaded_path = nil)
+    def initialize(hash = RuboCop::ConfigLoader.default_configuration, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
         cop_name = cop.respond_to?(:cop_name) ? cop.cop_name : cop
