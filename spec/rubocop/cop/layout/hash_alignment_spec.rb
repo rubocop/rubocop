@@ -1360,6 +1360,57 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       end
     end
 
+    context 'when using anonymous keyword rest arguments', :ruby32 do
+      context 'and forwarded keyword rest argument after a hash key' do
+        it 'registers an offense on the misaligned key and corrects' do
+          expect_offense(<<~RUBY)
+            def foo(**)
+              bar ab: 1,
+                  c: 2, **
+                  ^^^^ Align the keys and values of a hash literal if they span more than one line.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo(**)
+              bar ab: 1,
+                  c:  2, **
+            end
+          RUBY
+        end
+      end
+
+      context 'and aligned keys but forwarded keyword rest argument after' do
+        it 'does not register an offense on the `forwarded_kwrestarg`' do
+          expect_no_offenses(<<~RUBY)
+            def foo(**)
+              bar a: 1,
+                  b: 2, **
+            end
+          RUBY
+        end
+      end
+
+      context 'and a misaligned forwarded keyword rest argument' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            def foo(**)
+              bar a: 1,
+                    **
+                    ^^ Align keyword splats with the rest of the hash if it spans more than one line.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo(**)
+              bar a: 1,
+                  **
+            end
+          RUBY
+        end
+      end
+    end
+
     context 'when the only item is a kwsplat' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
