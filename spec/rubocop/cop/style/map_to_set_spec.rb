@@ -28,6 +28,19 @@ RSpec.describe RuboCop::Cop::Style::MapToSet, :config do
       end
     end
 
+    context "for `#{method}.to_set` with symbol proc" do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY, method: method)
+          foo.#{method}(&:do_something).to_set
+              ^{method} Pass a block to `to_set` instead of calling `#{method}.to_set`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.to_set(&:do_something)
+        RUBY
+      end
+    end
+
     context 'when the receiver is an array' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY, method: method)
