@@ -29,6 +29,19 @@ RSpec.describe RuboCop::Cop::Style::MapToHash, :config do
         end
       end
 
+      context "for `#{method}.to_h` with symbol proc" do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY, method: method)
+            foo.#{method}(&:do_something).to_h
+                ^{method} Pass a block to `to_h` instead of calling `#{method}.to_h`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.to_h(&:do_something)
+          RUBY
+        end
+      end
+
       context 'when the receiver is an array' do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY, method: method)
