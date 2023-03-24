@@ -44,7 +44,7 @@ module RuboCop
 
           # Report offense only if changing case doesn't change semantics,
           # i.e., if the string would become dynamic or has special characters.
-          ast = ProcessedSource.new(corrected(node.source), target_ruby_version).ast
+          ast = parse(corrected(node.source)).ast
           return if node.children != ast.children
 
           add_offense(node.loc.begin) do |corrector|

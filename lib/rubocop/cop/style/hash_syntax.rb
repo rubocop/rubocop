@@ -207,7 +207,7 @@ module RuboCop
           return true if /\A[_a-z]\w*[?!]?\z/i.match?(sym_name)
 
           # For more complicated hash keys, let the parser validate the syntax.
-          ProcessedSource.new("{ #{sym_name}: :foo }", target_ruby_version).valid_syntax?
+          parse("{ #{sym_name}: :foo }").valid_syntax?
         end
 
         def check(pairs, delim, msg)
