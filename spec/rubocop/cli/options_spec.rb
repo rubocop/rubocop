@@ -451,6 +451,14 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect($stderr.string.include?('Unrecognized cop or department: .')).to be(true)
       end
 
+      it '`Lint/Syntax` must be enabled even if `--only` is given `Style/StringLiterals` only' do
+        create_file('example.rb', '1 /// 2')
+        expect(cli.run(['--only', 'Style/StringLiterals', 'example.rb'])).to eq(1)
+        expect(
+          $stdout.string.include?('example.rb:1:7: F: Lint/Syntax: unexpected token tINTEGER')
+        ).to be(true)
+      end
+
       %w[Syntax Lint/Syntax].each do |name|
         it "only checks syntax if #{name} is given" do
           create_file('example.rb', 'x ')

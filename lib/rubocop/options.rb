@@ -182,7 +182,10 @@ module RuboCop
           raise OptionArgumentError, message
         end
 
-        @options[:"#{option}"] = list.empty? ? [''] : list.split(',')
+        cop_names = list.empty? ? [''] : list.split(',')
+        cop_names.unshift('Lint/Syntax') if option == 'only' && !cop_names.include?('Lint/Syntax')
+
+        @options[:"#{option}"] = cop_names
       end
     end
 
