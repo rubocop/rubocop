@@ -4878,6 +4878,11 @@ Style/RedundantInterpolation:
   VersionAdded: '0.76'
   VersionChanged: '1.30'
 
+Style/RedundantLineContinuation:
+  Description: 'Check for redundant line continuation.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."
   Enabled: true

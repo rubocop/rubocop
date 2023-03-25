@@ -123,7 +123,7 @@ module RuboCop
 
         def safe_to_register_offense?(block, except_key)
           extracted = extract_body_if_negated(block.body)
-          if extracted.method?('in?') || extracted.method?('include?') || \
+          if extracted.method?('in?') || extracted.method?('include?') ||
              extracted.method?('exclude?')
             return true
           end
