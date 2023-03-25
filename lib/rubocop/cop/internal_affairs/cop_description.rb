@@ -24,7 +24,7 @@ module RuboCop
         MSG = 'Description should be started with %<suggestion>s instead of `This cop ...`.'
 
         SPECIAL_WORDS = %w[is can could should will would must may].freeze
-        COP_DESC_OFFENSE_REGEX = \
+        COP_DESC_OFFENSE_REGEX =
           /^\s+# This cop (?<special>#{SPECIAL_WORDS.join('|')})?\s*(?<word>.+?) .*/.freeze
         REPLACEMENT_REGEX = /^\s+# This cop (#{SPECIAL_WORDS.join('|')})?\s*(.+?) /.freeze
 
