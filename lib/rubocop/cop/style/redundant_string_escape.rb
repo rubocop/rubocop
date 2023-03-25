@@ -36,7 +36,6 @@ module RuboCop
       #   STR
       class RedundantStringEscape < Base
         include MatchRange
-        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Redundant escape of %<char>s inside string literal.'
