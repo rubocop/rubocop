@@ -28,6 +28,34 @@ RSpec.describe RuboCop::Cop::Style::MapToSet, :config do
       end
     end
 
+    context 'when using numbered parameters', :ruby27 do
+      context "for `#{method}.to_set` with block arity 1" do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY, method: method)
+            foo.#{method} { [_1, _1 * 2] }.to_set
+                ^{method} Pass a block to `to_set` instead of calling `#{method}.to_set`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.to_set { [_1, _1 * 2] }
+          RUBY
+        end
+      end
+
+      context "for `#{method}.to_set` with block arity 2" do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY, method: method)
+            foo.#{method} { [_1.to_s, _2.to_i] }.to_set
+                ^{method} Pass a block to `to_set` instead of calling `#{method}.to_set`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.to_set { [_1.to_s, _2.to_i] }
+          RUBY
+        end
+      end
+    end
+
     context "for `#{method}.to_set` with symbol proc" do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY, method: method)

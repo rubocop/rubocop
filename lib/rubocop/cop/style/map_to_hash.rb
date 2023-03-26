@@ -40,7 +40,7 @@ module RuboCop
         # @!method map_to_h?(node)
         def_node_matcher :map_to_h?, <<~PATTERN
           {
-            $(send (block $(send _ {:map :collect}) ...) :to_h)
+            $(send ({block numblock} $(send _ {:map :collect}) ...) :to_h)
             $(send $(send _ {:map :collect} (block_pass sym)) :to_h)
           }
         PATTERN
