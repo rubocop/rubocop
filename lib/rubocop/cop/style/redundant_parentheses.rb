@@ -98,7 +98,7 @@ module RuboCop
         end
 
         def like_method_argument_parentheses?(node)
-          node.send_type? && node.arguments.one? &&
+          node.send_type? && node.arguments.one? && !node.parenthesized? &&
             !node.arithmetic_operation? && node.first_argument.begin_type?
         end
 

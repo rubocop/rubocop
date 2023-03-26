@@ -183,6 +183,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense for parens around method arguments of a method call with an argument' do
+    expect_offense(<<~RUBY)
+      x.y((z))
+          ^^^ Don't use parentheses around a method call.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.y(z)
+    RUBY
+  end
+
   it 'registers an offense for parens around an interpolated expression' do
     expect_offense(<<~RUBY)
       "\#{(foo)}"
