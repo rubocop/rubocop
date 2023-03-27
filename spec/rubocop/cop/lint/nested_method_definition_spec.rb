@@ -297,6 +297,34 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
         end
       RUBY
     end
+
+    it 'does not register offense for nested definition inside instance_eval with a numblock' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def x(obj)
+            obj.instance_eval do
+              @bar = _1
+              def y
+              end
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register offense for nested definition inside instance_exec with a numblock' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def x(obj)
+            obj.instance_exec(3) do
+              @bar = _1
+              def y
+              end
+            end
+          end
+        end
+      RUBY
+    end
   end
 
   context 'when Ruby >= 3.2', :ruby32 do
