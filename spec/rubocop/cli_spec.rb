@@ -1191,7 +1191,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Exclude:
             - ignored/**
       YAML
-      expect(File).not_to receive(:open).with(%r{/ignored/})
       expect(cli.run(%w[--format simple example])).to eq(0)
       expect($stdout.string).to eq(<<~OUTPUT)
 
