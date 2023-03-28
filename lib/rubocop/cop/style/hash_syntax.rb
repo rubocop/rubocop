@@ -88,6 +88,9 @@ module RuboCop
       #   {foo: foo, bar: bar}
       #
       #   # good
+      #   {foo: foo, bar:}
+      #
+      #   # good
       #   {foo:, bar:}
       #
       # @example EnforcedShorthandSyntax: consistent
