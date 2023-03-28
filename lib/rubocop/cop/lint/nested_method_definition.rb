@@ -131,12 +131,12 @@ module RuboCop
 
         # @!method eval_call?(node)
         def_node_matcher :eval_call?, <<~PATTERN
-          (block (send _ {:instance_eval :class_eval :module_eval} ...) ...)
+          ({block numblock} (send _ {:instance_eval :class_eval :module_eval} ...) ...)
         PATTERN
 
         # @!method exec_call?(node)
         def_node_matcher :exec_call?, <<~PATTERN
-          (block (send _ {:instance_exec :class_exec :module_exec} ...) ...)
+          ({block numblock} (send _ {:instance_exec :class_exec :module_exec} ...) ...)
         PATTERN
       end
     end
