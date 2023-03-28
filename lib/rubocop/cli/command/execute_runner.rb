@@ -76,11 +76,16 @@ module RuboCop
           warn <<~WARNING
             Errors are usually caused by RuboCop bugs.
             Please, report your problems to RuboCop's issue tracker.
-            #{Gem.loaded_specs['rubocop'].metadata['bug_tracker_uri']}
-
+            #{bug_tracker_uri}
             Mention the following information in the issue report:
             #{RuboCop::Version.version(debug: true)}
           WARNING
+        end
+
+        def bug_tracker_uri
+          return unless Gem.loaded_specs.key?('rubocop')
+
+          "#{Gem.loaded_specs['rubocop'].metadata['bug_tracker_uri']}\n"
         end
 
         def maybe_print_corrected_source
