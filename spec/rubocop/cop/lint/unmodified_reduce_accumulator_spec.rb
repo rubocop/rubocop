@@ -609,7 +609,7 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator, :config do
           RUBY
         end
 
-        it 'does not register an offense when when returning the accumulator' do
+        it 'does not register an offense when returning the accumulator' do
           expect_no_offenses(<<~RUBY)
             values.#{method}(0) { _1 + _2 }
           RUBY
