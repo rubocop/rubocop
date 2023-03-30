@@ -5543,6 +5543,11 @@ Style/WordArray:
   # The regular expression `WordRegex` decides what is considered a word.
   WordRegex: !ruby/regexp '/\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/'
 
+Style/YAMLFileRead:
+  Description: 'Checks for the use of `YAML.load`, `YAML.safe_load`, and `YAML.parse` with `File.read` argument.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/YodaCondition:
   Description: 'Forbid or enforce yoda conditions.'
   Reference: 'https://en.wikipedia.org/wiki/Yoda_conditions'
