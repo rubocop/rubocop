@@ -109,6 +109,7 @@ module RuboCop
             check_other_alignment(node)
           end
         end
+        alias on_case_match on_case
 
         private
 
@@ -169,7 +170,10 @@ module RuboCop
         end
 
         def alignment_node_for_variable_style(node)
-          return node.parent if node.case_type? && node.argument? && same_line?(node, node.parent)
+          if (node.case_type? || node.case_match_type?) && node.argument? &&
+             same_line?(node, node.parent)
+            return node.parent
+          end
 
           assignment = assignment_or_operator_method(node)
 
