@@ -232,7 +232,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       it 'takes the cache_root from the options' do
         cache2 = described_class.new(file, team, { cache_root: 'some/path' }, config_store)
 
-        expect(cache2.path).to start_with('some/path')
+        expect(cache2.path).to start_with('some/path/rubocop_cache')
       end
     end
 
@@ -362,6 +362,14 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           cacheroot = described_class.cache_root(config_store)
           expect(cacheroot).to eq(File.join(Dir.home, '.cache', 'rubocop_cache'))
         end
+
+        it 'contains the root in path only once' do
+          cache = described_class.new(file, team, options, config_store)
+          expect(cache.path).to start_with(File.join(Dir.home, '.cache', 'rubocop_cache'))
+
+          count = cache.path.scan(/rubocop_cache/).count
+          expect(count).to eq(1)
+        end
       end
 
       context 'and XDG_CACHE_HOME is set' do
@@ -377,6 +385,16 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         it 'contains the given path and UID' do
           cacheroot = described_class.cache_root(config_store)
           expect(cacheroot).to eq(File.join(ENV.fetch('XDG_CACHE_HOME'), puid, 'rubocop_cache'))
+        end
+
+        it 'contains the root in path only once' do
+          cache = described_class.new(file, team, options, config_store)
+          expect(cache.path).to start_with(
+            File.join(ENV.fetch('XDG_CACHE_HOME'), puid, 'rubocop_cache')
+          )
+
+          count = cache.path.scan(/rubocop_cache/).count
+          expect(count).to eq(1)
         end
       end
     end
@@ -402,6 +420,14 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         it 'contains the root from RUBOCOP_CACHE_ROOT' do
           cacheroot = described_class.cache_root(config_store)
           expect(cacheroot).to eq(File.join('/tmp/cache-from-env', 'rubocop_cache'))
+        end
+
+        it 'contains the root in path only once' do
+          cache = described_class.new(file, team, options, config_store)
+          expect(cache.path).to start_with(File.join('/tmp/cache-from-env', 'rubocop_cache'))
+
+          count = cache.path.scan(/rubocop_cache/).count
+          expect(count).to eq(1)
         end
       end
     end

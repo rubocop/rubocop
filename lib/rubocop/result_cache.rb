@@ -86,7 +86,7 @@ module RuboCop
     attr :path
 
     def initialize(file, team, options, config_store, cache_root = nil)
-      cache_root ||= options[:cache_root]
+      cache_root ||= File.join(options[:cache_root], 'rubocop_cache') if options[:cache_root]
       cache_root ||= ResultCache.cache_root(config_store)
       @allow_symlinks_in_cache_location =
         ResultCache.allow_symlinks_in_cache_location?(config_store)
