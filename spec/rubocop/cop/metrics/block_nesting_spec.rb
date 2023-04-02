@@ -227,6 +227,30 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
         end
       RUBY
     end
+
+    context 'when numbered parameter', :ruby27 do
+      it 'accepts nested multiline blocks' do
+        expect_no_offenses(<<~RUBY)
+          if a
+            if b
+              [1, 2].each do
+                puts _1
+              end
+            end
+          end
+        RUBY
+      end
+
+      it 'accepts nested inline blocks' do
+        expect_no_offenses(<<~RUBY)
+          if a
+            if b
+              [1, 2].each { puts _1 }
+            end
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when CountBlocks is true' do
@@ -257,6 +281,36 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
             end
           end
         RUBY
+      end
+    end
+
+    context 'when numbered parameter', :ruby27 do
+      context 'nested multiline block' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if a
+              if b
+                [1, 2].each do
+                ^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+                  puts _1
+                end
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'nested inline block' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if a
+              if b
+                [1, 2].each { puts _1 }
+                ^^^^^^^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+              end
+            end
+          RUBY
+        end
       end
     end
   end
