@@ -150,6 +150,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when using line concatenation and calling a method without parentheses' do
+    expect_no_offenses(<<~'RUBY')
+      foo do_something \
+        argument
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation and safe navigation calling a method without parentheses' do
+    expect_no_offenses(<<~'RUBY')
+      foo obj&.do_something \
+        argument
+    RUBY
+  end
+
   it 'does not register an offense when line continuations with arithmetic operator' do
     expect_no_offenses(<<~'RUBY')
       1 \

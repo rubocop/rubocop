@@ -109,9 +109,14 @@ module RuboCop
 
         def argument_newline?(node)
           node = node.children.first if node.root? && node.begin_type?
-          return if !node.send_type? || node.arguments.empty?
 
-          node.loc.selector.line != node.first_argument.loc.line
+          if argument_is_method?(node)
+            argument_newline?(node.first_argument)
+          else
+            return false unless method_call_with_arguments?(node)
+
+            node.loc.selector.line != node.first_argument.loc.line
+          end
         end
 
         def find_node_for_line(line)
@@ -132,6 +137,17 @@ module RuboCop
           else
             source_range.line == line
           end
+        end
+
+        def argument_is_method?(node)
+          return false unless node.send_type?
+          return false unless (first_argument = node.first_argument)
+
+          method_call_with_arguments?(first_argument)
+        end
+
+        def method_call_with_arguments?(node)
+          node.call_type? && !node.arguments.empty?
         end
 
         def start_with_arithmetic_operator?(source_line)
