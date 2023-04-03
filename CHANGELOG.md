@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.49.0 (2023-04-03)
+
 ### New features
 
 * [#11696](https://github.com/rubocop/rubocop/issues/11696): Add new `Style/DataInheritance` cop. ([@ktopolski][])

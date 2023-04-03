@@ -2779,7 +2779,7 @@ Naming/InclusiveLanguage:
   Description: 'Recommend the use of inclusive language instead of problematic terms.'
   Enabled: false
   VersionAdded: '1.18'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.49'
   CheckIdentifiers: true
   CheckConstants: true
   CheckVariables: true
@@ -3512,7 +3512,7 @@ Style/DataInheritance:
   Description: 'Checks for inheritance from Data.define.'
   StyleGuide: '#no-extend-data-define'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.49'
 
 Style/DateTime:
   Description: 'Use Time over DateTime.'
@@ -4887,7 +4887,7 @@ Style/RedundantInterpolation:
 Style/RedundantLineContinuation:
   Description: 'Check for redundant line continuation.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.49'
 
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."

@@ -5805,8 +5805,14 @@ end
 
 # good
 def foo(x, y = 1)
+  # Alternatives to `__callee__` are `__method__` and `:foo`.
   return to_enum(__callee__, x, y)
-  # alternatives to `__callee__` are `__method__` and `:foo`
+end
+
+# good
+def foo(x, y = 1)
+  # It is also allowed if it is wrapped in some method like Sorbet.
+  return to_enum(T.must(__callee__), x, y)
 end
 ----
 

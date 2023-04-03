@@ -1408,6 +1408,8 @@ var.class == Date
 var.class.equal?(Date)
 var.class.eql?(Date)
 var.class.name == 'Date'
+var.class.to_s == 'Date'
+var.class.inspect == 'Date'
 ----
 
 ==== AllowedMethods: [`==`]
@@ -1418,6 +1420,8 @@ var.class.name == 'Date'
 var.instance_of?(Date)
 var.class == Date
 var.class.name == 'Date'
+var.class.to_s == 'Date'
+var.class.inspect == 'Date'
 
 # bad
 var.class.equal?(Date)
@@ -1436,6 +1440,8 @@ var.class == Date
 var.class.equal?(Date)
 var.class.eql?(Date)
 var.class.name == 'Date'
+var.class.to_s == 'Date'
+var.class.inspect == 'Date'
 ----
 
 ==== AllowedPatterns: ['eq']
@@ -1450,6 +1456,8 @@ var.class.eql?(Date)
 # bad
 var.class == Date
 var.class.name == 'Date'
+var.class.to_s == 'Date'
+var.class.inspect == 'Date'
 ----
 
 === Configurable attributes
@@ -1767,7 +1775,7 @@ items.include?
 
 | PreferredMethods
 | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
-|
+| 
 
 | MethodsAcceptingSymbol
 | `inject`, `reduce`
@@ -2520,6 +2528,50 @@ an offense is reported.
 | ``
 | String
 |===
+
+== Style/DataInheritance
+
+NOTE: Required Ruby version: 3.2
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.49
+| -
+|===
+
+Checks for inheritance from `Data.define` to avoid creating the anonymous parent class.
+
+=== Safety
+
+Autocorrection is unsafe because it will change the inheritance
+tree (e.g. return value of `Module#ancestors`) of the constant.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+class Person < Data.define(:first_name, :last_name)
+  def age
+    42
+  end
+end
+
+# good
+Person = Data.define(:first_name, :last_name) do
+  def age
+    42
+  end
+end
+----
+
+=== References
+
+* https://rubystyle.guide#no-extend-data-define
 
 == Style/DateTime
 
@@ -5565,6 +5617,9 @@ The supported styles are:
 {foo: foo, bar: bar}
 
 # good
+{foo: foo, bar:}
+
+# good
 {foo:, bar:}
 ----
 
@@ -5926,6 +5981,18 @@ written as modifier `if`/`unless`. The cop also checks for modifier
 The maximum line length is configured in the `Layout/LineLength`
 cop. The tab size is configured in the `IndentationWidth` of the
 `Layout/IndentationStyle` cop.
+
+One-line pattern matching is always allowed. To ensure that there are few cases
+where the match variable is not used, and to prevent oversights. The variable `x`
+becomes undefined and raises `NameError` when the following example is changed to
+the modifier form:
+
+[source,ruby]
+----
+if [42] in [x]
+  x # `x` is undefined when using modifier form.
+end
+----
 
 NOTE: It is allowed when `defined?` argument has an undefined value,
 because using the modifier form causes the following incompatibility:
@@ -6322,11 +6389,11 @@ end
 
 | InverseMethods
 | `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
-|
+| 
 
 | InverseBlocks
 | `{:select=>:reject, :select!=>:reject!}`
-|
+| 
 |===
 
 == Style/InvertibleUnlessCondition
@@ -6394,7 +6461,7 @@ foo if !condition
 
 | InverseMethods
 | `{:!==>:==, :>=>:<=, :<==>:>, :<=>:>=, :>==>:<, :!~=>:=~, :zero?=>:nonzero?, :nonzero?=>:zero?, :any?=>:none?, :none?=>:any?, :even?=>:odd?, :odd?=>:even?}`
-|
+| 
 |===
 
 == Style/IpAddresses
@@ -6821,7 +6888,7 @@ end
 
 | ValueCapitalization
 | `<none>`
-|
+| 
 |===
 
 == Style/MapCompactWithConditionalBlock
@@ -6969,21 +7036,19 @@ Enforces the presence (default) or absence of parentheses in
 method calls containing parameters.
 
 In the default style (require_parentheses), macro methods are allowed.
-Additional methods can be added to the `AllowedMethods`
-or `AllowedPatterns` list. These options are
-valid only in the default style. Macros can be included by
-either setting `IgnoreMacros` to false or adding specific macros to
-the `IncludedMacros` list.
+Additional methods can be added to the `AllowedMethods` or
+`AllowedPatterns` list. These options are valid only in the default
+style. Macros can be included by either setting `IgnoreMacros` to false
+or adding specific macros to the `IncludedMacros` list.
 
-Precedence of options is all follows:
+Precedence of options is as follows:
 
 1. `AllowedMethods`
 2. `AllowedPatterns`
 3. `IncludedMacros`
 
-eg. If a method is listed in both
-`IncludedMacros` and `AllowedMethods`, then the latter takes
-precedence (that is, the method is allowed).
+If a method is listed in both `IncludedMacros` and `AllowedMethods`,
+then the latter takes precedence (that is, the method is allowed).
 
 In the alternative style (omit_parentheses), there are three additional
 options.
@@ -7002,14 +7067,29 @@ options.
     to `true` allows the presence of parentheses in such a method call
     even with arguments.
 
-NOTE: Parentheses are still allowed in cases where omitting them
-results in ambiguous or syntactically incorrect code. For example,
-parentheses are required around a method with arguments when inside an
-endless method definition introduced in Ruby 3.0. Parentheses are also
-allowed when forwarding arguments with the triple-dot syntax introduced
-in Ruby 2.7 as omitting them starts an endless range.
-And Ruby 3.1's hash omission syntax has a case that requires parentheses
-because of the following issue: https://bugs.ruby-lang.org/issues/18396.
+NOTE: The style of `omit_parentheses` allows parentheses in cases where
+omitting them results in ambiguous or syntactically incorrect code.
+
+Non-exhaustive list of examples:
+
+- Parentheses are required allowed in method calls with arguments inside
+  literals, logical operators, setting default values in position and
+  keyword arguments, chaining and more.
+- Parentheses are allowed in method calls with arguments inside
+  operators to avoid ambiguity.
+  triple-dot syntax introduced in Ruby 2.7 as omitting them starts an
+  endless range.
+- Parentheses are allowed when forwarding arguments with the
+  triple-dot syntax introduced in Ruby 2.7 as omitting them starts an
+  endless range.
+- Parentheses are required in calls with arguments when inside an
+  endless method definition introduced in Ruby 3.0.
+- Ruby 3.1's hash omission syntax allows parentheses if the method call
+  is in conditionals and requires parentheses if the call
+  is not the value-returning expression. See
+  https://bugs.ruby-lang.org/issues/18396.
+- Parentheses are required in anonymous arguments, keyword arguments
+  and block passing in Ruby 3.2.
 
 === Examples
 
@@ -7049,34 +7129,28 @@ array.delete(e)
 array.delete e
 
 # bad
-foo.enforce(strict: true)
+action.enforce(strict: true)
 
 # good
-foo.enforce strict: true
+action.enforce strict: true
 
 # good
-# Allows parens for calls that won't produce valid Ruby or be ambiguous.
-model.validate strict(true)
+# Parentheses are allowed for code that can be ambiguous without
+# them.
+action.enforce(condition) || other_condition
 
 # good
-# Allows parens for calls that won't produce valid Ruby or be ambiguous.
+# Parentheses are allowed for calls that won't produce valid Ruby
+# without them.
 yield path, File.basename(path)
 
 # good
-# Operators methods calls with parens
-array&.[](index)
-
-# good
-# Operators methods without parens, if you prefer
-array.[] index
-
-# good
-# Operators methods calls with parens
-array&.[](index)
-
-# good
-# Operators methods without parens, if you prefer
-array.[] index
+# Omitting the parentheses in Ruby 3.1 hash omission syntax can lead
+# to ambiguous code. We allow them in conditionals and non-last
+# expressions. See https://bugs.ruby-lang.org/issues/18396
+if meets(criteria:, action:)
+  safe_action(action) || dangerous_action(action)
+end
 ----
 
 ==== IgnoreMacros: true (default)
@@ -10170,7 +10244,7 @@ default.
 
 | PreferredDelimiters
 | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
-|
+| 
 |===
 
 === References
@@ -10610,7 +10684,7 @@ A.foo
 
 | Methods
 | `{"join"=>"", "sum"=>0, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
-|
+| 
 |===
 
 == Style/RedundantAssignment
@@ -11360,6 +11434,83 @@ y << 'b'   # raise `FrozenError`.
 
 # good if @var is already a String
 @var
+----
+
+== Style/RedundantLineContinuation
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.49
+| -
+|===
+
+Check for redundant line continuation.
+
+This cop marks a line continuation as redundant if removing the backslash
+does not result in a syntax error.
+However, a backslash at the end of a comment or
+for string concatenation is not redundant and is not considered an offense.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+foo. \
+  bar
+foo \
+  &.bar \
+    .baz
+
+# good
+foo.
+  bar
+foo
+  &.bar
+    .baz
+
+# bad
+[foo, \
+  bar]
+{foo: \
+  bar}
+
+# good
+[foo,
+  bar]
+{foo:
+  bar}
+
+# bad
+foo(bar, \
+  baz)
+
+# good
+foo(bar,
+  baz)
+
+# also good - backslash in string concatenation is not redundant
+foo('bar' \
+  'baz')
+
+# also good - backslash at the end of a comment is not redundant
+foo(bar, # \
+  baz)
+
+# also good - backslash at the line following the newline begins with a + or -,
+# it is not redundant
+1 \
+  + 2 \
+    - 3
+
+# also good - backslash with newline between the method name and its arguments,
+# it is not redundant.
+some_method \
+  (argument)
 ----
 
 == Style/RedundantParentheses
@@ -13651,7 +13802,7 @@ from the String class.
 
 | PreferredMethods
 | `{"intern"=>"to_sym"}`
-|
+| 
 |===
 
 == Style/Strip
@@ -15022,6 +15173,7 @@ It discourages such code, as the condition becomes more difficult
 to read and understand.
 
 This cop supports two styles:
+
 - `forbid_mixed_logical_operators` (default)
 - `forbid_logical_operators`
 
@@ -15383,7 +15535,7 @@ array of 2 or fewer elements.
 
 | WordRegex
 | `(?-mix:\A(?:\p{Word}\|\p{Word}-\p{Word}\|\n\|\t)+\z)`
-|
+| 
 |===
 
 === References
