@@ -3508,6 +3508,12 @@ Style/Copyright:
   Notice: '^Copyright (\(c\) )?2[0-9]{3} .+'
   AutocorrectNotice: ''
 
+Style/DataInheritance:
+  Description: 'Checks for inheritance from Data.define.'
+  StyleGuide: '#no-extend-data-define'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/DateTime:
   Description: 'Use Time over DateTime.'
   StyleGuide: '#date-time'
