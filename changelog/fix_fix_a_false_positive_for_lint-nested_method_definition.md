@@ -1,1 +1,0 @@
-* [#11740](https://github.com/rubocop/rubocop/pull/11740): Fix a false positive for `Lint/NestedMethodDefinition` when nested definition inside `*_eval` and `*_exec` method call with a numblock. ([@ydah][])
