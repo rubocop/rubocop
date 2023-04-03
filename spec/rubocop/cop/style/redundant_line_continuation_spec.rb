@@ -192,6 +192,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when line continuations with using && for comparison chaining' do
+    expect_no_offenses(<<~'RUBY')
+      foo == other.foo \
+        && bar == other.bar \
+        && baz == other.baz
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with using || for comparison chaining' do
+    expect_no_offenses(<<~'RUBY')
+      foo == other.foo \
+        || bar == other.bar \
+        || baz == other.baz
+    RUBY
+  end
+
   it 'does not register an offense when line continuations inside heredoc' do
     expect_no_offenses(<<~'RUBY')
       <<~SQL
