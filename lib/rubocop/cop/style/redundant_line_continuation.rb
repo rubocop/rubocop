@@ -88,7 +88,7 @@ module RuboCop
         def require_line_continuation?(range)
           !ends_with_backslash_without_comment?(range.source_line) ||
             string_concatenation?(range.source_line) ||
-            starts_with_plus_or_minus?(processed_source[range.line])
+            start_with_arithmetic_operator?(processed_source[range.line])
         end
 
         def ends_with_backslash_without_comment?(source_line)
@@ -103,7 +103,8 @@ module RuboCop
           return true unless (node = find_node_for_line(range.line))
           return false if argument_newline?(node)
 
-          parse(node.source.gsub(/\\\n/, "\n")).valid_syntax?
+          source = node.parent ? node.parent.source : node.source
+          parse(source.gsub(/\\\n/, "\n")).valid_syntax?
         end
 
         def argument_newline?(node)
@@ -133,7 +134,7 @@ module RuboCop
           end
         end
 
-        def starts_with_plus_or_minus?(source_line)
+        def start_with_arithmetic_operator?(source_line)
           %r{\A\s*[+\-*/%]}.match?(source_line)
         end
       end
