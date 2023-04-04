@@ -195,6 +195,31 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     expect_no_corrections
   end
 
+  it 'registers an offense when using if / else with multiple lines' do
+    expect_offense(<<~RUBY)
+      def func
+        if something
+        ^^ Unnecessary 'else' after 'return'
+          work1
+          return work2
+        else
+          work3
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        if something
+          work1
+          return work2
+        end
+
+        work3
+      end
+    RUBY
+  end
+
   it 'accepts a method which body does not end with if / unless' do
     expect_no_offenses(<<~RUBY)
       def func
