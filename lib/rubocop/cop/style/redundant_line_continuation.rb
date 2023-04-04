@@ -69,6 +69,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant line continuation.'
+        ALLOWED_STRING_TOKENS = %i[tSTRING tSTRING_CONTENT].freeze
 
         def on_new_investigation
           return unless processed_source.ast
@@ -88,7 +89,8 @@ module RuboCop
         def require_line_continuation?(range)
           !ends_with_backslash_without_comment?(range.source_line) ||
             string_concatenation?(range.source_line) ||
-            start_with_arithmetic_operator?(processed_source[range.line])
+            start_with_arithmetic_operator?(processed_source[range.line]) ||
+            inside_string_literal?(range)
         end
 
         def ends_with_backslash_without_comment?(source_line)
@@ -97,6 +99,12 @@ module RuboCop
 
         def string_concatenation?(source_line)
           /["']\s*\\\z/.match?(source_line)
+        end
+
+        def inside_string_literal?(range)
+          processed_source.tokens.each.any? do |token|
+            ALLOWED_STRING_TOKENS.include?(token.type) && token.pos.overlaps?(range)
+          end
         end
 
         def redundant_line_continuation?(range)

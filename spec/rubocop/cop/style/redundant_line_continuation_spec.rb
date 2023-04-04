@@ -134,6 +134,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when line continuations for double quoted string' do
+    expect_no_offenses(<<~'RUBY')
+      foo = "foo \
+        bar"
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations for single quoted string' do
+    expect_no_offenses(<<~'RUBY')
+      foo = 'foo \
+        bar'
+    RUBY
+  end
+
   it 'does not register an offense when line continuations inside comment' do
     expect_no_offenses(<<~'RUBY')
       # foo \
