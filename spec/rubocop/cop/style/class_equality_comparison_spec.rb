@@ -69,6 +69,43 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
         var.instance_of?(Date)
       RUBY
     end
+
+    it 'registers an offense and corrects when comparing local variable for equality' do
+      expect_offense(<<~RUBY)
+        class_name = 'Model'
+        var.class.name == class_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?` instead of comparing classes.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense and corrects when comparing instance variable for equality' do
+      expect_offense(<<~RUBY)
+        var.class.name == @class_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?` instead of comparing classes.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense and corrects when comparing method call for equality' do
+      expect_offense(<<~RUBY)
+        var.class.name == class_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?` instead of comparing classes.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense and corrects when comparing safe navigation method call for equality' do
+      expect_offense(<<~RUBY)
+        var.class.name == obj&.class_name
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?` instead of comparing classes.
+      RUBY
+
+      expect_no_corrections
+    end
   end
 
   context 'when using `Class#to_s`' do
@@ -205,8 +242,8 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
       expect_offense(<<~RUBY)
         module Foo
           def bar?(value)
-            bar.class.name == @class_name
-                ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?(@class_name)` instead of comparing classes.
+            bar.class.name == Model
+                ^^^^^^^^^^^^^^^^^^^ Use `instance_of?(Model)` instead of comparing classes.
           end
         end
       RUBY
@@ -214,7 +251,7 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
       expect_correction(<<~RUBY)
         module Foo
           def bar?(value)
-            bar.instance_of?(@class_name)
+            bar.instance_of?(Model)
           end
         end
       RUBY

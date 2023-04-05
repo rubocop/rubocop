@@ -72,7 +72,7 @@ module RuboCop
         include AllowedPattern
         extend AutoCorrector
 
-        MSG = 'Use `instance_of?(%<class_name>s)` instead of comparing classes.'
+        MSG = 'Use `instance_of?%<class_argument>s` instead of comparing classes.'
 
         RESTRICT_ON_SEND = %i[== equal? eql?].freeze
         CLASS_NAME_METHODS = %i[name to_s inspect].freeze
@@ -92,10 +92,12 @@ module RuboCop
 
           class_comparison_candidate?(node) do |receiver_node, class_node|
             range = offense_range(receiver_node, node)
-            class_name = class_name(class_node, node)
+            class_argument = (class_name = class_name(class_node, node)) ? "(#{class_name})" : ''
 
-            add_offense(range, message: format(MSG, class_name: class_name)) do |corrector|
-              corrector.replace(range, "instance_of?(#{class_name})")
+            add_offense(range, message: format(MSG, class_argument: class_argument)) do |corrector|
+              next unless class_name
+
+              corrector.replace(range, "instance_of?#{class_argument}")
             end
           end
         end
@@ -104,12 +106,18 @@ module RuboCop
 
         def class_name(class_node, node)
           if class_name_method?(node.children.first.method_name)
-            return class_node.receiver.source if class_node.receiver
+            if (receiver = class_node.receiver) && class_name_method?(class_node.method_name)
+              return receiver.source
+            end
 
             if class_node.str_type?
-              value = class_node.source.delete('"').delete("'")
-              value.prepend('::') if class_node.each_ancestor(:class, :module).any?
+              value = trim_string_quotes(class_node)
+              value.prepend('::') if require_cbase?(class_node)
               return value
+            elsif unable_to_determine_type?(class_node)
+              # When a variable or return value of a method is used, it returns nil
+              # because the type is not known and cannot be suggested.
+              return
             end
           end
 
@@ -118,6 +126,18 @@ module RuboCop
 
         def class_name_method?(method_name)
           CLASS_NAME_METHODS.include?(method_name)
+        end
+
+        def require_cbase?(class_node)
+          class_node.each_ancestor(:class, :module).any?
+        end
+
+        def unable_to_determine_type?(class_node)
+          class_node.variable? || class_node.call_type?
+        end
+
+        def trim_string_quotes(class_node)
+          class_node.source.delete('"').delete("'")
         end
 
         def offense_range(receiver_node, node)
