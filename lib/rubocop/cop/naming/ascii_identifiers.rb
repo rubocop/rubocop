@@ -57,7 +57,7 @@ module RuboCop
         CONSTANT_MSG   = 'Use only ascii symbols in constants.'
 
         def on_new_investigation
-          processed_source.each_token do |token|
+          processed_source.tokens.each do |token|
             next if !should_check?(token) || token.text.ascii_only?
 
             message = token.type == :tIDENTIFIER ? IDENTIFIER_MSG : CONSTANT_MSG

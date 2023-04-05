@@ -98,7 +98,7 @@ module RuboCop
         private
 
         def investigate_tokens
-          processed_source.each_token do |token|
+          processed_source.tokens.each do |token|
             next unless check_token?(token.type)
 
             word_locations = scan_for_words(token.text)

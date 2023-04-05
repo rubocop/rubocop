@@ -31,7 +31,7 @@ module RuboCop
           return unless processed_source.raw_source.include?("\n\n\n")
 
           lines = Set.new
-          processed_source.each_token { |token| lines << token.line }
+          processed_source.tokens.each { |token| lines << token.line }
 
           each_extra_empty_line(lines.sort) do |range|
             add_offense(range) do |corrector|

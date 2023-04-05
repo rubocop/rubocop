@@ -137,7 +137,7 @@ module RuboCop
         end
 
         def current_token(comment)
-          processed_source.find_token { |token| token.pos == comment.source_range }
+          processed_source.tokens.find { |token| token.pos == comment.source_range }
         end
 
         def previous_token(node)
