@@ -28,14 +28,17 @@ module RuboCop
           return unless node.arguments?
           return if opening_line(node) == closing_line(node)
           return if correction_exceeds_max_line_length?(node)
+          return unless (begin_of_arguments = node.arguments.loc.begin)
 
-          add_offense(node) { |corrector| autocorrect(corrector, node) }
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node, begin_of_arguments)
+          end
         end
         alias on_defs on_def
 
         private
 
-        def autocorrect(corrector, node)
+        def autocorrect(corrector, node, begin_of_arguments)
           arguments = node.arguments
           joined_arguments = arguments.map(&:source).join(', ')
           last_line_source_of_arguments = last_line_source_of_arguments(arguments)
@@ -47,7 +50,7 @@ module RuboCop
           end
 
           corrector.remove(arguments_range(node))
-          corrector.insert_after(arguments.loc.begin, joined_arguments)
+          corrector.insert_after(begin_of_arguments, joined_arguments)
         end
 
         def last_line_source_of_arguments(arguments)
