@@ -3748,7 +3748,6 @@ Style/FileEmpty:
                  Prefer to use `File.empty?('path/to/file')` when checking if a file is empty.
   Enabled: pending
   Safe: false
-  SafeAutoCorrect: false
   VersionAdded: '1.48'
 
 Style/FileRead:
@@ -4576,11 +4575,10 @@ Style/NumericPredicate:
                  Checks for the use of predicate- or comparison methods for
                  numeric comparisons.
   StyleGuide: '#predicate-methods'
-  Safe: false
   # This will change to a new method call which isn't guaranteed to be on the
   # object. Switching these methods has to be done with knowledge of the types
   # of the variables which rubocop doesn't have.
-  SafeAutoCorrect: false
+  Safe: false
   Enabled: true
   VersionAdded: '0.42'
   VersionChanged: '0.59'

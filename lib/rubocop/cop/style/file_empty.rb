@@ -6,9 +6,9 @@ module RuboCop
       # Prefer to use `File.empty?('path/to/file')` when checking if a file is empty.
       #
       # @safety
-      #   This cop's autocorrection is unsafe it because `File.size`, `File.read`,
-      #   and `File.binread` raise `ENOENT` exception when there is no file
-      #   corresponding to the path, while `File.empty?` does not raise an exception.
+      #   This cop is unsafe, because `File.size`, `File.read`, and `File.binread`
+      #   raise `ENOENT` exception when there is no file corresponding to the path,
+      #   while `File.empty?` does not raise an exception.
       #
       # @example
       #   # bad
