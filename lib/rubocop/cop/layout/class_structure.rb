@@ -159,6 +159,7 @@ module RuboCop
             previous = index
           end
         end
+        alias on_sclass on_class
 
         private
 

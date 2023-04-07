@@ -545,4 +545,27 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       RUBY
     end
   end
+
+  context 'when singleton class' do
+    context 'simple example' do
+      specify do
+        expect_offense <<~RUBY
+          class << self
+            CONST = 'wrong place'
+            include AnotherModule
+            ^^^^^^^^^^^^^^^^^^^^^ `module_inclusion` is supposed to appear before `constants`.
+            extend SomeModule
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class << self
+            include AnotherModule
+            extend SomeModule
+            CONST = 'wrong place'
+          end
+        RUBY
+      end
+    end
+  end
 end
