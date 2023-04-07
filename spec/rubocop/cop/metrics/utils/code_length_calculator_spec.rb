@@ -306,6 +306,19 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
         expect(length).to eq(2)
       end
 
+      it 'calculates singleton class length' do
+        source = parse_source(<<~RUBY)
+          class << self
+            a = 1
+            # a = 2
+            a = 3
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source).calculate
+        expect(length).to eq(2)
+      end
+
       it 'does not count blank lines' do
         source = parse_source(<<~RUBY)
           class Test

@@ -10,7 +10,7 @@ module RuboCop
           include Util
 
           FOLDABLE_TYPES = %i[array hash heredoc send csend].freeze
-          CLASSLIKE_TYPES = %i[class module].freeze
+          CLASSLIKE_TYPES = %i[class module sclass].freeze
           private_constant :FOLDABLE_TYPES, :CLASSLIKE_TYPES
 
           def initialize(node, processed_source, count_comments: false, foldable_types: [])
