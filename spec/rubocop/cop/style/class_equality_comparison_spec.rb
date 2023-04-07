@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects when comparing local variable for equality' do
+    it 'registers an offense but does not correct when comparing local variable for equality' do
       expect_offense(<<~RUBY)
         class_name = 'Model'
         var.class.name == class_name
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
       expect_no_corrections
     end
 
-    it 'registers an offense and corrects when comparing instance variable for equality' do
+    it 'registers an offense but does not correct when comparing instance variable for equality' do
       expect_offense(<<~RUBY)
         var.class.name == @class_name
             ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?` instead of comparing classes.
@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
       expect_no_corrections
     end
 
-    it 'registers an offense and corrects when comparing method call for equality' do
+    it 'registers an offense but does not correct when comparing method call for equality' do
       expect_offense(<<~RUBY)
         var.class.name == class_name
             ^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?` instead of comparing classes.
@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
       expect_no_corrections
     end
 
-    it 'registers an offense and corrects when comparing safe navigation method call for equality' do
+    it 'registers an offense but does not correct when comparing safe navigation method call for equality' do
       expect_offense(<<~RUBY)
         var.class.name == obj&.class_name
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?` instead of comparing classes.
