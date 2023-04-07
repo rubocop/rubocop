@@ -35,6 +35,26 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass, :config do
     RUBY
   end
 
+  it 'registers an offense when body trails after singleton class definition' do
+    expect_offense(<<~RUBY)
+      class << self; body
+                     ^^^^ Place the first line of class body on its own line.
+      end
+      class << self; def bar; end
+                     ^^^^^^^^^^^^ Place the first line of class body on its own line.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class << self#{trailing_whitespace}
+        body
+      end
+      class << self#{trailing_whitespace}
+        def bar; end
+      end
+    RUBY
+  end
+
   it 'registers offense with multi-line class' do
     expect_offense(<<~RUBY)
       class Foo; body

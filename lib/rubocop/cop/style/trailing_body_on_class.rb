@@ -34,6 +34,7 @@ module RuboCop
             )
           end
         end
+        alias on_sclass on_class
       end
     end
   end
