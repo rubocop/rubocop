@@ -23,6 +23,14 @@ module RuboCop
     class << self
       include FileFinder
 
+      PENDING_BANNER = <<~BANNER
+        The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
+
+        Please also note that you can opt-in to new cops by default by adding this to your config:
+          AllCops:
+            NewCops: enable
+      BANNER
+
       attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops,
                     :ignore_unrecognized_cops
       attr_writer :default_configuration
@@ -164,14 +172,6 @@ module RuboCop
 
         ConfigFinder.project_root
       end
-
-      PENDING_BANNER = <<~BANNER
-        The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
-
-        Please also note that you can opt-in to new cops by default by adding this to your config:
-          AllCops:
-            NewCops: enable
-      BANNER
 
       def warn_on_pending_cops(pending_cops)
         warn Rainbow(PENDING_BANNER).yellow
