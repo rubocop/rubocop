@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for string conversion in string interpolation,
+      # Checks for string conversion in string interpolation, `print`, `puts`, and `warn` arguments,
       # which is redundant.
       #
       # @example
@@ -11,18 +11,26 @@ module RuboCop
       #   # bad
       #
       #   "result is #{something.to_s}"
+      #   print something.to_s
+      #   puts something.to_s
+      #   warn something.to_s
       #
       # @example
       #
       #   # good
       #
       #   "result is #{something}"
+      #   print something
+      #   puts something
+      #   warn something
+      #
       class RedundantStringCoercion < Base
         include Interpolation
         extend AutoCorrector
 
-        MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'
-        MSG_SELF = 'Use `self` instead of `Object#to_s` in interpolation.'
+        MSG_DEFAULT = 'Redundant use of `Object#to_s` in %<context>s.'
+        MSG_SELF = 'Use `self` instead of `Object#to_s` in %<context>s.'
+        RESTRICT_ON_SEND = %i[print puts warn].freeze
 
         # @!method to_s_without_args?(node)
         def_node_matcher :to_s_without_args?, '(send _ :to_s)'
@@ -32,18 +40,30 @@ module RuboCop
 
           return unless to_s_without_args?(final_node)
 
-          message = final_node.receiver ? MSG_DEFAULT : MSG_SELF
+          register_offense(final_node, 'interpolation')
+        end
 
-          add_offense(final_node.loc.selector, message: message) do |corrector|
-            receiver = final_node.receiver
-            corrector.replace(
-              final_node,
-              if receiver
-                receiver.source
-              else
-                'self'
-              end
-            )
+        def on_send(node)
+          return if node.receiver
+
+          node.each_child_node(:send) do |child|
+            next unless child.method?(:to_s)
+
+            register_offense(child, "`#{node.method_name}`")
+          end
+        end
+
+        private
+
+        def register_offense(node, context)
+          receiver = node.receiver
+          template = receiver ? MSG_DEFAULT : MSG_SELF
+          message = format(template, context: context)
+
+          add_offense(node.loc.selector, message: message) do |corrector|
+            replacement = receiver ? receiver.source : 'self'
+
+            corrector.replace(node, replacement)
           end
         end
       end
