@@ -124,10 +124,12 @@ RSpec.describe 'RuboCop Project', type: :feature do
     end
     # rubocop:enable RSpec/NoExpectationExample
 
-    it 'does not include `Safe: true`' do
-      cop_names.each do |name|
-        safe = config.dig(name, 'Safe')
-        expect(safe).not_to be(true), "`#{name}` has unnecessary `Safe: true` config."
+    %w[Safe SafeAutoCorrect AutoCorrect].each do |metadata|
+      it "does not include `#{metadata}: true`" do
+        cop_names.each do |cop_name|
+          safe = config.dig(cop_name, metadata)
+          expect(safe).not_to be(true), "`#{cop_name}` has unnecessary `#{metadata}: true` config."
+        end
       end
     end
   end

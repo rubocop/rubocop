@@ -1016,8 +1016,6 @@ Layout/LineContinuationLeadingSpace:
 Layout/LineContinuationSpacing:
   Description: 'Checks the spacing in front of backslash in line continuations.'
   Enabled: pending
-  AutoCorrect: true
-  SafeAutoCorrect: true
   VersionAdded: '1.31'
   EnforcedStyle: space
   SupportedStyles:
