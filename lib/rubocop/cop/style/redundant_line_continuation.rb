@@ -90,7 +90,7 @@ module RuboCop
           !ends_with_backslash_without_comment?(range.source_line) ||
             string_concatenation?(range.source_line) ||
             start_with_arithmetic_operator?(processed_source[range.line]) ||
-            inside_string_literal?(range)
+            inside_string_literal_or_method_with_argument?(range)
         end
 
         def ends_with_backslash_without_comment?(source_line)
@@ -101,9 +101,9 @@ module RuboCop
           /["']\s*\\\z/.match?(source_line)
         end
 
-        def inside_string_literal?(range)
-          processed_source.tokens.each.any? do |token|
-            ALLOWED_STRING_TOKENS.include?(token.type) && token.pos.overlaps?(range)
+        def inside_string_literal_or_method_with_argument?(range)
+          processed_source.tokens.each_cons(2).any? do |token, next_token|
+            inside_string_literal?(range, token) || method_with_argument?(token, next_token)
           end
         end
 
@@ -113,6 +113,18 @@ module RuboCop
 
           source = node.parent ? node.parent.source : node.source
           parse(source.gsub(/\\\n/, "\n")).valid_syntax?
+        end
+
+        def inside_string_literal?(range, token)
+          ALLOWED_STRING_TOKENS.include?(token.type) && token.pos.overlaps?(range)
+        end
+
+        # A method call without parentheses such as the following cannot remove `\`:
+        #
+        #   do_something \
+        #     argument
+        def method_with_argument?(current_token, next_token)
+          current_token.type == :tIDENTIFIER && next_token.type == :tIDENTIFIER
         end
 
         def argument_newline?(node)

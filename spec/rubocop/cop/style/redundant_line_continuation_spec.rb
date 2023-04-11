@@ -134,6 +134,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using redundant line concatenation for assigning a return value and with argument parentheses' do
+    expect_offense(<<~'RUBY')
+      foo = do_something( \
+                          ^ Redundant line continuation.
+        argument)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo = do_something(#{trailing_whitespace}
+        argument)
+    RUBY
+  end
+
   it 'does not register an offense when line continuations for double quoted string' do
     expect_no_offenses(<<~'RUBY')
       foo = "foo \
@@ -174,6 +187,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
   it 'does not register an offense when using line concatenation and safe navigation calling a method without parentheses' do
     expect_no_offenses(<<~'RUBY')
       foo obj&.do_something \
+        argument
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
         argument
     RUBY
   end
