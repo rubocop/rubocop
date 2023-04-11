@@ -531,7 +531,23 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'corrects when the expression uses a modifier rescue statement' do
+  it 'corrects when the expression uses a modifier rescue statement', :ruby26 do
+    expect_offense(<<~RUBY)
+      a, b = 1, 2 rescue foo
+      ^^^^^^^^^^^ Do not use parallel assignment.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        a = 1
+        b = 2
+      rescue
+        foo
+      end
+    RUBY
+  end
+
+  it 'corrects when the expression uses a modifier rescue statement', :ruby27 do
     expect_offense(<<~RUBY)
       a, b = 1, 2 rescue foo
       ^^^^^^^^^^^ Do not use parallel assignment.
@@ -587,8 +603,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'corrects when the expression uses a modifier rescue statement ' \
-     'as the only thing inside of a method' do
+  it 'corrects when the expression uses a modifier rescue statement as the only thing inside of a method', :ruby26 do
     expect_offense(<<~RUBY)
       def foo
         a, b = 1, 2 rescue foo
@@ -606,7 +621,47 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
-  it 'corrects when the expression uses a modifier rescue statement inside of a method' do
+  it 'corrects when the expression uses a modifier rescue statement as the only thing inside of a method', :ruby27 do
+    expect_offense(<<~RUBY)
+      def foo
+        a, b = 1, 2 rescue foo
+        ^^^^^^^^^^^ Do not use parallel assignment.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        a = 1
+        b = 2
+      rescue
+        foo
+      end
+    RUBY
+  end
+
+  it 'corrects when the expression uses a modifier rescue statement inside of a method', :ruby26 do
+    expect_offense(<<~RUBY)
+      def foo
+        a, b = %w(1 2) rescue foo
+        ^^^^^^^^^^^^^^ Do not use parallel assignment.
+        something_else
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        begin
+          a = '1'
+          b = '2'
+        rescue
+          foo
+        end
+        something_else
+      end
+    RUBY
+  end
+
+  it 'corrects when the expression uses a modifier rescue statement inside of a method', :ruby27 do
     expect_offense(<<~RUBY)
       def foo
         a, b = %w(1 2) rescue foo
@@ -699,7 +754,23 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
       RUBY
     end
 
-    it 'works with rescue' do
+    it 'works with rescue', :ruby26 do
+      expect_offense(<<~RUBY)
+        a, b = 1, 2 rescue foo
+        ^^^^^^^^^^^ Do not use parallel assignment.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+           a = 1
+           b = 2
+        rescue
+           foo
+        end
+      RUBY
+    end
+
+    it 'works with rescue', :ruby27 do
       expect_offense(<<~RUBY)
         a, b = 1, 2 rescue foo
         ^^^^^^^^^^^ Do not use parallel assignment.
