@@ -168,4 +168,50 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMatchPattern, :config, :ruby27 do
       end
     RUBY
   end
+
+  it 'register an offense for repeated `in` patterns and the same `if` guard is used' do
+    expect_offense(<<~RUBY)
+      case x
+      in foo if condition
+        first_method
+      in foo if condition
+         ^^^ Duplicate `in` pattern detected.
+        third_method
+      end
+    RUBY
+  end
+
+  it 'register an offense for repeated `in` patterns and the same `unless` guard is used' do
+    expect_offense(<<~RUBY)
+      case x
+      in foo unless condition
+        first_method
+      in foo unless condition
+         ^^^ Duplicate `in` pattern detected.
+        third_method
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for repeated `in` patterns but different `if` guard is used' do
+    expect_no_offenses(<<~RUBY)
+      case x
+      in foo if condition1
+        first_method
+      in foo if condition2
+        third_method
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for repeated `in` patterns but different `unless` guard is used' do
+    expect_no_offenses(<<~RUBY)
+      case x
+      in foo unless condition1
+        first_method
+      in foo unless condition2
+        third_method
+      end
+    RUBY
+  end
 end
