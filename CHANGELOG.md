@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.50.0 (2023-04-11)
+
 ### New features
 
 * [#11749](https://github.com/rubocop/rubocop/pull/11749): Add new `Lint/DuplicateMatchPattern` cop. ([@koic][])

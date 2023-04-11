@@ -1753,7 +1753,7 @@ Lint/DuplicateMagicComment:
 Lint/DuplicateMatchPattern:
   Description: 'Do not repeat patterns in `in` keywords.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.50'
 
 Lint/DuplicateMethods:
   Description: 'Check for duplicate method definitions.'

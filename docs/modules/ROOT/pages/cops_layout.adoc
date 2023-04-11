@@ -4355,10 +4355,6 @@ preceding text by exactly one space (default) or zero spaces.
 |===
 | Name | Default value | Configurable values
 
-| AutoCorrect
-| `true`
-| Boolean
-
 | EnforcedStyle
 | `space`
 | `space`, `no_space`

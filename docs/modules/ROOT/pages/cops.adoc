@@ -222,6 +222,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintduplicateelsifcondition[Lint/DuplicateElsifCondition]
 * xref:cops_lint.adoc#lintduplicatehashkey[Lint/DuplicateHashKey]
 * xref:cops_lint.adoc#lintduplicatemagiccomment[Lint/DuplicateMagicComment]
+* xref:cops_lint.adoc#lintduplicatematchpattern[Lint/DuplicateMatchPattern]
 * xref:cops_lint.adoc#lintduplicatemethods[Lint/DuplicateMethods]
 * xref:cops_lint.adoc#lintduplicateregexpcharacterclasselement[Lint/DuplicateRegexpCharacterClassElement]
 * xref:cops_lint.adoc#lintduplicaterequire[Lint/DuplicateRequire]

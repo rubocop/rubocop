@@ -1380,6 +1380,91 @@ Checks for duplicated magic comments.
 # frozen_string_literal: true
 ----
 
+== Lint/DuplicateMatchPattern
+
+NOTE: Required Ruby version: 2.7
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.50
+| -
+|===
+
+Checks that there are no repeated patterns used in `in` keywords.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+case x
+in 'first'
+  do_something
+in 'first'
+  do_something_else
+end
+
+# good
+case x
+in 'first'
+  do_something
+in 'second'
+  do_something_else
+end
+
+# bad - repeated alternate patterns with the same conditions don't depend on the order
+case x
+in foo | bar
+  first_method
+in bar | foo
+  second_method
+end
+
+# good
+case x
+in foo | bar
+  first_method
+in bar | baz
+  second_method
+end
+
+# bad - repeated hash patterns with the same conditions don't depend on the order
+case x
+in foo: a, bar: b
+  first_method
+in bar: b, foo: a
+  second_method
+end
+
+# good
+case x
+in foo: a, bar: b
+  first_method
+in bar: b, baz: c
+  second_method
+end
+
+# bad - repeated array patterns with elements in the same order
+case x
+in [foo, bar]
+  first_method
+in [foo, bar]
+  second_method
+end
+
+# good
+case x
+in [foo, bar]
+  first_method
+in [bar, foo]
+  second_method
+end
+----
+
 == Lint/DuplicateMethods
 
 |===
@@ -4596,7 +4681,7 @@ do_something(*%w[foo bar baz])
 | 0.77
 |===
 
-Checks for string conversion in string interpolation,
+Checks for string conversion in string interpolation, `print`, `puts`, and `warn` arguments,
 which is redundant.
 
 === Examples
@@ -4606,6 +4691,9 @@ which is redundant.
 # bad
 
 "result is #{something.to_s}"
+print something.to_s
+puts something.to_s
+warn something.to_s
 ----
 
 [source,ruby]
@@ -4613,6 +4701,9 @@ which is redundant.
 # good
 
 "result is #{something}"
+print something
+puts something
+warn something
 ----
 
 === References
