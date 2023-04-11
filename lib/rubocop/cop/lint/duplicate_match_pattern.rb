@@ -71,6 +71,22 @@ module RuboCop
       #     second_method
       #   end
       #
+      #   # bad - repeated the same patterns and guard conditions
+      #   case x
+      #   in foo if bar
+      #     first_method
+      #   in foo if bar
+      #     second_method
+      #   end
+      #
+      #   # good
+      #   case x
+      #   in foo if bar
+      #     first_method
+      #   in foo if baz
+      #     second_method
+      #   end
+      #
       class DuplicateMatchPattern < Base
         extend TargetRubyVersion
 
@@ -90,11 +106,15 @@ module RuboCop
         private
 
         def pattern_identity(pattern)
-          if pattern.hash_pattern_type? || pattern.match_alt_type?
-            pattern.children.map(&:source).sort
-          else
-            pattern.source
-          end
+          pattern_source = if pattern.hash_pattern_type? || pattern.match_alt_type?
+                             pattern.children.map(&:source).sort
+                           else
+                             pattern.source
+                           end
+
+          return pattern_source unless (guard = pattern.parent.children[1])
+
+          pattern_source + guard.source
         end
       end
     end
