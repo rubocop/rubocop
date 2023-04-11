@@ -1,1 +1,0 @@
-* [#11752](https://github.com/rubocop/rubocop/pull/11752): Fix a false positive for `Style/RedundantLineContinuation` when using line concatenation and calling a method without parentheses. ([@koic][])
