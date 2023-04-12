@@ -107,7 +107,7 @@ module RuboCop
 
         def pattern_identity(pattern)
           pattern_source = if pattern.hash_pattern_type? || pattern.match_alt_type?
-                             pattern.children.map(&:source).sort
+                             pattern.children.map(&:source).sort.to_s
                            else
                              pattern.source
                            end
