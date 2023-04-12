@@ -11,6 +11,12 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#11787](https://github.com/rubocop/rubocop/issues/11787): Fix a false positive for `Lint/DuplicateMatchPattern` when repeated `in` patterns but different `if` guard is used. ([@koic][])
+* [#11789](https://github.com/rubocop/rubocop/pull/11789): Fix false negatives for `Style/ParallelAssignment` when Ruby 2.7+. ([@koic][])
+* [#11783](https://github.com/rubocop/rubocop/issues/11783): Fix a false positive for `Style/RedundantLineContinuation` using line concatenation for assigning a return value and without argument parentheses. ([@koic][])
+
 ## 1.50.0 (2023-04-11)
 
 ### New features
