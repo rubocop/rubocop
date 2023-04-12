@@ -1463,6 +1463,22 @@ in [foo, bar]
 in [bar, foo]
   second_method
 end
+
+# bad - repeated the same patterns and guard conditions
+case x
+in foo if bar
+  first_method
+in foo if bar
+  second_method
+end
+
+# good
+case x
+in foo if bar
+  first_method
+in foo if baz
+  second_method
+end
 ----
 
 == Lint/DuplicateMethods
