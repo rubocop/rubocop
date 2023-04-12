@@ -6,7 +6,7 @@ require 'tempfile'
 module CopHelper
   extend RSpec::SharedContext
 
-  let(:ruby_version) { 2.6 }
+  let(:ruby_version) { RuboCop::TargetRuby::DEFAULT_VERSION }
   let(:rails_version) { false }
 
   def inspect_source(source, file = nil)

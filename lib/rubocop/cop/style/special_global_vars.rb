@@ -234,9 +234,9 @@ module RuboCop
         end
 
         def matching_styles(global)
-          STYLE_VARS_MAP.map do |style, vars|
+          STYLE_VARS_MAP.filter_map do |style, vars|
             style if vars.values.flatten(1).include? global
-          end.compact
+          end
         end
 
         def english_name_replacement(preferred_name, node)

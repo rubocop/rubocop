@@ -5,7 +5,7 @@ module RuboCop
   # @api private
   class TargetRuby
     KNOWN_RUBIES = [2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2, 3.3].freeze
-    DEFAULT_VERSION = 2.6
+    DEFAULT_VERSION = 2.7
 
     OBSOLETE_RUBIES = {
       1.9 => '0.41',
@@ -14,7 +14,8 @@ module RuboCop
       2.2 => '0.68',
       2.3 => '0.81',
       2.4 => '1.12',
-      2.5 => '1.28'
+      2.5 => '1.28',
+      2.6 => '1.50'
     }.freeze
     private_constant :KNOWN_RUBIES, :OBSOLETE_RUBIES
 
