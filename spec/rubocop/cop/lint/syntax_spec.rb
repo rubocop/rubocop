@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
         expect(offenses.size).to eq(1)
         message = <<~MESSAGE.chomp
           unexpected token $end
-          (Using Ruby 2.6 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+          (Using Ruby 2.7 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
         MESSAGE
         offense = offenses.first
         expect(offense.message).to eq(message)
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
           expect(offenses.size).to eq(1)
           message = <<~MESSAGE.chomp
             Lint/Syntax: unexpected token $end
-            (Using Ruby 2.6 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+            (Using Ruby 2.7 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
           MESSAGE
           offense = offenses.first
           expect(offense.message).to eq(message)
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
           expect(offenses.size).to eq(1)
           message = <<~MESSAGE.chomp
             unexpected token $end
-            (Using Ruby 2.6 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+            (Using Ruby 2.7 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
           MESSAGE
           offense = offenses.first
           expect(offense.message).to eq(message)

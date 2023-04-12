@@ -54,7 +54,7 @@ module RuboCop
         def inside_string_ranges(node)
           return [] unless node.is_a?(Parser::AST::Node)
 
-          node.each_node(:str, :dstr, :xstr).map { |n| inside_string_range(n) }.compact
+          node.each_node(:str, :dstr, :xstr).filter_map { |n| inside_string_range(n) }
         end
 
         def inside_string_range(node)

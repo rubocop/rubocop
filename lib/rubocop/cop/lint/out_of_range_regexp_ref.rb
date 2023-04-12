@@ -65,13 +65,13 @@ module RuboCop
         def on_when(node)
           regexp_conditions = node.conditions.select(&:regexp_type?)
 
-          @valid_ref = regexp_conditions.map { |condition| check_regexp(condition) }.compact.max
+          @valid_ref = regexp_conditions.filter_map { |condition| check_regexp(condition) }.max
         end
 
         def on_in_pattern(node)
           regexp_patterns = regexp_patterns(node)
 
-          @valid_ref = regexp_patterns.map { |pattern| check_regexp(pattern) }.compact.max
+          @valid_ref = regexp_patterns.filter_map { |pattern| check_regexp(pattern) }.max
         end
 
         def on_nth_ref(node)

@@ -102,7 +102,7 @@ module RuboCop
 
         unless @failures.blank?
           puts "==> Failed Examples\n\n"
-          puts @completed.map(&:failed_examples).compact.sort.join("\n")
+          puts @completed.filter_map(&:failed_examples).sort.join("\n")
           puts
         end
 

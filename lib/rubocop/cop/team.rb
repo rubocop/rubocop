@@ -112,7 +112,7 @@ module RuboCop
       end
 
       def external_dependency_checksum
-        keys = cops.map(&:external_dependency_checksum).compact
+        keys = cops.filter_map(&:external_dependency_checksum)
         Digest::SHA1.hexdigest(keys.join)
       end
 

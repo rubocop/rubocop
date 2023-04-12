@@ -228,9 +228,9 @@ module RuboCop
         end
 
         def find_most_bottom_of_heredoc_end(arguments)
-          arguments.map do |argument|
+          arguments.filter_map do |argument|
             argument.loc.heredoc_end.end_pos if argument.loc.respond_to?(:heredoc_end)
-          end.compact.max
+          end.max
         end
 
         # Internal trailing comma helpers.

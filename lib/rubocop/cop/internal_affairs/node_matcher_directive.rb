@@ -59,12 +59,12 @@ module RuboCop
         def method_directives(node)
           comments = processed_source.ast_with_comments[node]
 
-          comments.map do |comment|
+          comments.filter_map do |comment|
             match = comment.text.match(REGEXP)
             next unless match
 
             { node: comment, method_name: match[:method_name], args: match[:args] }
-          end.compact
+          end
         end
 
         def too_many_directives(node)

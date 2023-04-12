@@ -386,7 +386,7 @@ module RuboCop
         def allowed_statements?(branches)
           return false unless branches.all?
 
-          statements = branches.map { |branch| tail(branch) }.compact
+          statements = branches.filter_map { |branch| tail(branch) }
 
           lhs_all_match?(statements) && statements.none?(&:masgn_type?) &&
             assignment_types_match?(*statements)

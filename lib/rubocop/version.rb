@@ -43,7 +43,7 @@ module RuboCop
         env.config_store.unvalidated.for_pwd.loaded_features.sort
       end
 
-      features.map do |loaded_feature|
+      features.filter_map do |loaded_feature|
         next unless (match = loaded_feature.match(/rubocop-(?<feature>.*)/))
 
         # Get the expected name of the folder containing the extension code.
@@ -61,7 +61,7 @@ module RuboCop
         next unless (feature_version = feature_version(feature))
 
         "  - #{loaded_feature} #{feature_version}"
-      end.compact
+      end
     end
 
     # Returns feature version in one of two ways:

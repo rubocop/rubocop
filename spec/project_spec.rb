@@ -169,13 +169,13 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
       describe 'link to related issue' do
         let(:issues) do
-          entries.map do |entry|
+          entries.filter_map do |entry|
             entry.match(%r{
               (?<=^\*\s)
               \[(?<ref>(?:(?<repo>rubocop/[a-z_-]+)?\#(?<number>\d+))|.*)\]
               \((?<url>[^)]+)\)
             }x)
-          end.compact
+          end
         end
 
         it 'has a reference' do

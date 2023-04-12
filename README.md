@@ -75,8 +75,8 @@ You can read a lot more about RuboCop in its [official docs](https://docs.ruboco
 
 RuboCop officially supports the following runtime Ruby implementations:
 
-* MRI 2.6+
-* JRuby 9.3+
+* MRI 2.7+
+* JRuby 9.4+
 
 Targets Ruby 2.0+ code analysis.
 
