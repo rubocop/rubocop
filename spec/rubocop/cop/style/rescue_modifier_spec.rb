@@ -18,10 +18,17 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
     RUBY
   end
 
-  it 'registers an offense for modifier rescue around parallel assignment' do
+  it 'registers an offense for modifier rescue around parallel assignment', :ruby26 do
     expect_offense(<<~RUBY)
       a, b = 1, 2 rescue nil
       ^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
+  end
+
+  it 'registers an offense for modifier rescue around parallel assignment', :ruby27 do
+    expect_offense(<<~RUBY)
+      a, b = 1, 2 rescue nil
+             ^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
     RUBY
   end
 
