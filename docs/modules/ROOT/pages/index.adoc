@@ -23,7 +23,6 @@ linter:
 * Extremely flexible configuration that allows you to adapt RuboCop to pretty much every style and preference
 * It's easy to extend RuboCop with custom cops and formatters
 * A vast number of ready-made xref:extensions.adoc[extensions] (e.g. `rubocop-rails`, `rubocop-rspec`, `rubocop-performance` and `rubocop-minitest`)
-
 * Wide editor/IDE support
 * Many online services use RuboCop internally (e.g. HoundCI and CodeClimate)
 * Best logo/stickers ever
