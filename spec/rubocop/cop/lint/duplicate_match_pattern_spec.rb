@@ -214,4 +214,12 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMatchPattern, :config, :ruby27 do
       end
     RUBY
   end
+
+  it 'does not crash when using hash pattern with `if` guard' do
+    expect_no_offenses(<<~RUBY)
+      case x
+      in { key: value } if condition
+      end
+    RUBY
+  end
 end
