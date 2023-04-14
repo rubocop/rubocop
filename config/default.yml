@@ -4067,7 +4067,9 @@ Style/InverseMethods:
 Style/InvertibleUnlessCondition:
   Description: 'Favor `if` with inverted condition over `unless`.'
   Enabled: false
+  Safe: false
   VersionAdded: '1.44'
+  VersionChanged: '<<next>>'
   # `InverseMethods` are methods that can be inverted in a `unless` condition.
   # The relationship of inverse methods needs to be defined in both directions.
   # Keys and values both need to be defined as symbols.
