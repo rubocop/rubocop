@@ -9,7 +9,7 @@ module RuboCop
       # NOTE: This cop does not move the first argument, if you want that to
       # be on a separate line, see `Layout/FirstMethodArgumentLineBreak`.
       #
-      # @example AllowMultilineFinalElement: false (default)
+      # @example
       #
       #   # bad
       #   foo(a, b,
@@ -30,6 +30,8 @@ module RuboCop
       #
       #   # good
       #   foo(a, b, c)
+      #
+      # @example AllowMultilineFinalElement: false (default)
       #
       #   # good
       #   foo(
@@ -42,26 +44,6 @@ module RuboCop
       #
       # @example AllowMultilineFinalElement: true
       #
-      #   # bad
-      #   foo(a, b,
-      #     c
-      #   )
-      #
-      #   # good
-      #   foo(a, b, {
-      #     foo: "bar",
-      #   })
-      #
-      #   # good
-      #   foo(
-      #     a,
-      #     b,
-      #     c
-      #   )
-      #
-      #   # good
-      #   foo(a, b, c)
-      #
       #   # good
       #   foo(
       #     a,
@@ -70,6 +52,7 @@ module RuboCop
       #       foo: "bar",
       #     }
       #   )
+      #
       class MultilineMethodArgumentLineBreaks < Base
         include MultilineElementLineBreaks
         extend AutoCorrector

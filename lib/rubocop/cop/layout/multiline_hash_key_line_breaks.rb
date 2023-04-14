@@ -6,62 +6,43 @@ module RuboCop
       # Ensures that each key in a multi-line hash
       # starts on a separate line.
       #
+      # @example
+      #
+      #   # bad
+      #   {
+      #     a: 1, b: 2,
+      #     c: 3
+      #   }
+      #
+      #   # good
+      #   {
+      #     a: 1,
+      #     b: 2,
+      #     c: 3
+      #   }
+      #
+      #   # good
+      #   {
+      #     a: 1,
+      #     b: {
+      #       c: 3,
+      #     }
+      #   }
+      #
       # @example AllowMultilineFinalElement: false (default)
       #
       #   # bad
-      #   {
-      #     a: 1, b: 2,
-      #     c: 3
-      #   }
-      #
-      #   # bad
       #   { a: 1, b: {
       #     c: 3,
       #   }}
-      #
-      #   # good
-      #   {
-      #     a: 1,
-      #     b: 2,
-      #     c: 3
-      #   }
-      #
-      #   # good
-      #   {
-      #     a: 1,
-      #     b: {
-      #       c: 3,
-      #     }
-      #   }
       #
       # @example AllowMultilineFinalElement: true
       #
-      #   # bad
-      #   {
-      #     a: 1, b: 2,
-      #     c: 3
-      #   }
-      #
       #   # good
       #   { a: 1, b: {
       #     c: 3,
       #   }}
       #
-      #   # good
-      #   {
-      #     a: 1,
-      #     b: 2,
-      #     c: 3
-      #   }
-      #
-      #
-      #   # good
-      #   {
-      #     a: 1,
-      #     b: {
-      #       c: 3,
-      #     }
-      #   }
       class MultilineHashKeyLineBreaks < Base
         include MultilineElementLineBreaks
         extend AutoCorrector

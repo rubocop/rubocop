@@ -9,18 +9,12 @@ module RuboCop
       # NOTE: This cop does not move the first argument, if you want that to
       # be on a separate line, see `Layout/FirstMethodParameterLineBreak`.
       #
-      # @example AllowMultilineFinalElement: false (default)
+      # @example
       #
       #   # bad
       #   def foo(a, b,
       #     c
       #   )
-      #   end
-      #
-      #   # bad
-      #   def foo(a, b = {
-      #     foo: "bar",
-      #   })
       #   end
       #
       #   # good
@@ -42,42 +36,24 @@ module RuboCop
       #
       #   # good
       #   def foo(a, b, c)
+      #   end
+      #
+      # @example AllowMultilineFinalElement: false (default)
+      #
+      #   # bad
+      #   def foo(a, b = {
+      #     foo: "bar",
+      #   })
       #   end
       #
       # @example AllowMultilineFinalElement: true
       #
-      #   # bad
-      #   def foo(a, b,
-      #     c
-      #   )
-      #   end
-      #
       #   # good
       #   def foo(a, b = {
       #     foo: "bar",
       #   })
       #   end
       #
-      #   # good
-      #   def foo(
-      #     a,
-      #     b,
-      #     c
-      #   )
-      #   end
-      #
-      #   # good
-      #   def foo(
-      #     a,
-      #     b = {
-      #       foo: "bar",
-      #     }
-      #   )
-      #   end
-      #
-      #   # good
-      #   def foo(a, b, c)
-      #   end
       class MultilineMethodParameterLineBreaks < Base
         include MultilineElementLineBreaks
         extend AutoCorrector

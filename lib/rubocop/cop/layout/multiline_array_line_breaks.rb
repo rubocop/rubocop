@@ -6,63 +6,44 @@ module RuboCop
       # Ensures that each item in a multi-line array
       # starts on a separate line.
       #
+      # @example
+      #
+      #   # bad
+      #   [
+      #     a, b,
+      #     c
+      #   ]
+      #
+      #   # good
+      #   [
+      #     a,
+      #     b,
+      #     c
+      #   ]
+      #
+      #   # good
+      #   [
+      #     a,
+      #     b,
+      #     foo(
+      #       bar
+      #     )
+      #   ]
+      #
       # @example AllowMultilineFinalElement: false (default)
       #
       #   # bad
-      #   [
-      #     a, b,
-      #     c
-      #   ]
-      #
-      #   # bad
-      #   [ a, b, foo(
+      #   [a, b, foo(
       #     bar
       #   )]
-      #
-      #   # good
-      #   [
-      #     a,
-      #     b,
-      #     c
-      #   ]
-      #
-      #   # good
-      #   [
-      #     a,
-      #     b,
-      #     foo(
-      #       bar
-      #     )
-      #   ]
       #
       # @example AllowMultilineFinalElement: true
       #
-      #   # bad
-      #   [
-      #     a, b,
-      #     c
-      #   ]
-      #
       #   # good
-      #   [ a, b, foo(
+      #   [a, b, foo(
       #     bar
       #   )]
       #
-      #   # good
-      #   [
-      #     a,
-      #     b,
-      #     c
-      #   ]
-      #
-      #   # good
-      #   [
-      #     a,
-      #     b,
-      #     foo(
-      #       bar
-      #     )
-      #   ]
       class MultilineArrayLineBreaks < Base
         include MultilineElementLineBreaks
         extend AutoCorrector

@@ -6,49 +6,40 @@ module RuboCop
       # Checks for a line break before the first element in a
       # multi-line array.
       #
+      # @example
+      #
+      #   # bad
+      #   [ :a,
+      #     :b]
+      #
+      #   # good
+      #   [
+      #     :a,
+      #     :b]
+      #
+      #   # good
+      #   [:a, :b]
+      #
       # @example AllowMultilineFinalElement: false (default)
       #
-      #     # bad
-      #     [ :a,
-      #       :b]
+      #   # bad
+      #   [ :a, {
+      #     :b => :c
+      #   }]
       #
-      #     # bad
-      #     [ :a, {
-      #       :b => :c
-      #     }]
-      #
-      #     # good
-      #     [:a, :b]
-      #
-      #     # good
-      #     [
-      #       :a,
-      #       :b]
-      #
-      #     # good
-      #     [
-      #       :a, {
-      #       :b => :c
-      #     }]
+      #   # good
+      #   [
+      #     :a, {
+      #     :b => :c
+      #   }]
       #
       # @example AllowMultilineFinalElement: true
       #
-      #     # bad
-      #     [ :a,
-      #       :b]
+      #   # good
+      #   [:a, {
+      #     :b => :c
+      #   }]
       #
-      #     # good
-      #     [ :a, {
-      #       :b => :c
-      #     }]
-      #
-      #     # good
-      #     [
-      #       :a,
-      #       :b]
-      #
-      #     # good
-      #     [:a, :b]
       class FirstArrayElementLineBreak < Base
         include FirstElementLineBreak
         extend AutoCorrector
