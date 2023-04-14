@@ -36,10 +36,13 @@ module RuboCop
       class CollectionCompact < Base
         include RangeHelp
         extend AutoCorrector
+        extend TargetRubyVersion
 
         MSG = 'Use `%<good>s` instead of `%<bad>s`.'
         RESTRICT_ON_SEND = %i[reject reject! select select!].freeze
         TO_ENUM_METHODS = %i[to_enum lazy].freeze
+
+        minimum_target_ruby_version 2.4
 
         # @!method reject_method_with_block_pass?(node)
         def_node_matcher :reject_method_with_block_pass?, <<~PATTERN
