@@ -286,6 +286,32 @@ RSpec.describe RuboCop::ConfigLoader do
         expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['dir/**/*.rb'])
       end
 
+      it 'does not expand a nil Include' do
+        create_file(file_path, <<~YAML)
+          inherit_from: ../.rubocop.yml
+          Style/StringLiterals:
+            Include: ~
+        YAML
+
+        expect(configuration_from_file['Style/StringLiterals']['Include'].nil?).to be(true)
+      end
+
+      it 'gets an Include that is relative to the subdirectory when inheriting from a nil Include' do
+        create_file('.rubocop.yml', <<~YAML)
+          Style/StringLiterals:
+            Include: ~
+        YAML
+
+        create_file(file_path, <<~YAML)
+          inherit_from: ../.rubocop.yml
+          Style/StringLiterals:
+            Include:
+              - dir/**/*.rb
+        YAML
+
+        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['dir/**/*.rb'])
+      end
+
       it 'ignores parent AllCops/Exclude if ignore_parent_exclusion is true' do
         sub_file_path = 'vendor/.rubocop.yml'
         create_file(sub_file_path, <<~YAML)
