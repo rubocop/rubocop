@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
+RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
   it 'registers an offense and corrects when using `reject` on array to reject nils' do
     expect_offense(<<~RUBY)
       array.reject { |e| e.nil? }
@@ -154,6 +154,15 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config do
       expect_no_offenses(<<~RUBY)
         array.lazy.reject { |e| e.nil? }
         array.lazy.reject! { |e| e.nil? }
+      RUBY
+    end
+  end
+
+  context 'when Ruby <= 2.3', :ruby23 do
+    it 'does not register an offense when using `reject` on hash to reject nils' do
+      expect_no_offenses(<<~RUBY)
+        hash.reject { |k, v| v.nil? }
+        hash.reject! { |k, v| v.nil? }
       RUBY
     end
   end
