@@ -4069,7 +4069,7 @@ Style/InvertibleUnlessCondition:
   Enabled: false
   Safe: false
   VersionAdded: '1.44'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.50'
   # `InverseMethods` are methods that can be inverted in a `unless` condition.
   # The relationship of inverse methods needs to be defined in both directions.
   # Keys and values both need to be defined as symbols.

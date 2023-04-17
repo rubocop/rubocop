@@ -2859,26 +2859,29 @@ multi-line array.
 
 === Examples
 
-==== AllowMultilineFinalElement: false (default)
-
 [source,ruby]
 ----
 # bad
 [ :a,
   :b]
 
-# bad
-[ :a, {
-  :b => :c
-}]
-
-# good
-[:a, :b]
-
 # good
 [
   :a,
   :b]
+
+# good
+[:a, :b]
+----
+
+==== AllowMultilineFinalElement: false (default)
+
+[source,ruby]
+----
+# bad
+[ :a, {
+  :b => :c
+}]
 
 # good
 [
@@ -2891,22 +2894,10 @@ multi-line array.
 
 [source,ruby]
 ----
-# bad
-[ :a,
-  :b]
-
 # good
-[ :a, {
+[:a, {
   :b => :c
 }]
-
-# good
-[
-  :a,
-  :b]
-
-# good
-[:a, :b]
 ----
 
 === Configurable attributes
@@ -3083,18 +3074,11 @@ multi-line hash.
 
 === Examples
 
-==== AllowMultilineFinalElement: false (default)
-
 [source,ruby]
 ----
 # bad
 { a: 1,
   b: 2}
-
-# bad
-{ a: 1, b: {
-  c: 3
-}}
 
 # good
 {
@@ -3104,6 +3088,16 @@ multi-line hash.
 # good
 {
   a: 1, b: {
+  c: 3
+}}
+----
+
+==== AllowMultilineFinalElement: false (default)
+
+[source,ruby]
+----
+# bad
+{ a: 1, b: {
   c: 3
 }}
 ----
@@ -3114,27 +3108,12 @@ multi-line hash.
 ----
 # bad
 { a: 1,
-  b: 2}
-
-# bad
-{ a: 1,
   b: {
   c: 3
 }}
 
 # good
 { a: 1, b: {
-  c: 3
-}}
-
-# good
-{
-  a: 1,
-  b: 2 }
-
-# good
-{
-  a: 1, b: {
   c: 3
 }}
 ----
@@ -3166,14 +3145,26 @@ multi-line method call.
 
 === Examples
 
-==== AllowMultilineFinalElement: false (default)
-
 [source,ruby]
 ----
 # bad
 method(foo, bar,
   baz)
 
+# good
+method(
+  foo, bar,
+  baz)
+
+  # ignored
+  method foo, bar,
+    baz
+----
+
+==== AllowMultilineFinalElement: false (default)
+
+[source,ruby]
+----
 # bad
 method(foo, bar, {
   baz: "a",
@@ -3182,29 +3173,16 @@ method(foo, bar, {
 
 # good
 method(
-  foo, bar,
-  baz)
-
-# good
-method(
   foo, bar, {
   baz: "a",
   qux: "b",
 })
-
-# ignored
-method foo, bar,
-  baz
 ----
 
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
 ----
-# bad
-method(foo, bar,
-  baz)
-
 # bad
 method(foo,
   bar,
@@ -3222,11 +3200,6 @@ method(foo, bar, {
 
 # good
 method(
-  foo, bar,
-  baz)
-
-# good
-method(
   foo,
   bar,
   {
@@ -3234,10 +3207,6 @@ method(
     qux: "b",
   }
 )
-
-# ignored
-method foo, bar,
-  baz
 ----
 
 === Configurable attributes
@@ -3267,8 +3236,6 @@ multi-line method parameter definition.
 
 === Examples
 
-==== AllowMultilineFinalElement: false (default)
-
 [source,ruby]
 ----
 # bad
@@ -3277,17 +3244,28 @@ def method(foo, bar,
   do_something
 end
 
-# bad
-def method(foo, bar, baz = {
-  :a => "b",
-})
-  do_something
-end
-
 # good
 def method(
     foo, bar,
     baz)
+  do_something
+end
+
+# ignored
+def method foo,
+    bar
+  do_something
+end
+----
+
+==== AllowMultilineFinalElement: false (default)
+
+[source,ruby]
+----
+# bad
+def method(foo, bar, baz = {
+  :a => "b",
+})
   do_something
 end
 
@@ -3298,41 +3276,16 @@ def method(
 })
   do_something
 end
-
-# ignored
-def method foo,
-    bar
-  do_something
-end
 ----
 
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
 ----
-# bad
-def method(foo, bar,
-    baz)
-  do_something
-end
-
 # good
 def method(foo, bar, baz = {
   :a => "b",
 })
-  do_something
-end
-
-# good
-def method(
-    foo, bar,
-    baz)
-  do_something
-end
-
-# ignored
-def method foo,
-    bar
   do_something
 end
 ----
@@ -4710,8 +4663,6 @@ starts on a separate line.
 
 === Examples
 
-==== AllowMultilineFinalElement: false (default)
-
 [source,ruby]
 ----
 # bad
@@ -4719,11 +4670,6 @@ starts on a separate line.
   a, b,
   c
 ]
-
-# bad
-[ a, b, foo(
-  bar
-)]
 
 # good
 [
@@ -4740,38 +4686,26 @@ starts on a separate line.
     bar
   )
 ]
+----
+
+==== AllowMultilineFinalElement: false (default)
+
+[source,ruby]
+----
+# bad
+[a, b, foo(
+  bar
+)]
 ----
 
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
 ----
-# bad
-[
-  a, b,
-  c
-]
-
 # good
-[ a, b, foo(
+[a, b, foo(
   bar
 )]
-
-# good
-[
-  a,
-  b,
-  c
-]
-
-# good
-[
-  a,
-  b,
-  foo(
-    bar
-  )
-]
 ----
 
 === Configurable attributes
@@ -5082,8 +5016,6 @@ starts on a separate line.
 
 === Examples
 
-==== AllowMultilineFinalElement: false (default)
-
 [source,ruby]
 ----
 # bad
@@ -5091,11 +5023,6 @@ starts on a separate line.
   a: 1, b: 2,
   c: 3
 }
-
-# bad
-{ a: 1, b: {
-  c: 3,
-}}
 
 # good
 {
@@ -5111,37 +5038,26 @@ starts on a separate line.
     c: 3,
   }
 }
+----
+
+==== AllowMultilineFinalElement: false (default)
+
+[source,ruby]
+----
+# bad
+{ a: 1, b: {
+  c: 3,
+}}
 ----
 
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
 ----
-# bad
-{
-  a: 1, b: 2,
-  c: 3
-}
-
 # good
 { a: 1, b: {
   c: 3,
 }}
-
-# good
-{
-  a: 1,
-  b: 2,
-  c: 3
-}
-
-# good
-{
-  a: 1,
-  b: {
-    c: 3,
-  }
-}
 ----
 
 === Configurable attributes
@@ -5174,8 +5090,6 @@ be on a separate line, see `Layout/FirstMethodArgumentLineBreak`.
 
 === Examples
 
-==== AllowMultilineFinalElement: false (default)
-
 [source,ruby]
 ----
 # bad
@@ -5197,7 +5111,12 @@ foo(
 
 # good
 foo(a, b, c)
+----
 
+==== AllowMultilineFinalElement: false (default)
+
+[source,ruby]
+----
 # good
 foo(
   a,
@@ -5212,26 +5131,6 @@ foo(
 
 [source,ruby]
 ----
-# bad
-foo(a, b,
-  c
-)
-
-# good
-foo(a, b, {
-  foo: "bar",
-})
-
-# good
-foo(
-  a,
-  b,
-  c
-)
-
-# good
-foo(a, b, c)
-
 # good
 foo(
   a,
@@ -5612,20 +5511,12 @@ be on a separate line, see `Layout/FirstMethodParameterLineBreak`.
 
 === Examples
 
-==== AllowMultilineFinalElement: false (default)
-
 [source,ruby]
 ----
 # bad
 def foo(a, b,
   c
 )
-end
-
-# bad
-def foo(a, b = {
-  foo: "bar",
-})
 end
 
 # good
@@ -5647,6 +5538,17 @@ end
 
 # good
 def foo(a, b, c)
+end
+----
+
+==== AllowMultilineFinalElement: false (default)
+
+[source,ruby]
+----
+# bad
+def foo(a, b = {
+  foo: "bar",
+})
 end
 ----
 
@@ -5654,37 +5556,10 @@ end
 
 [source,ruby]
 ----
-# bad
-def foo(a, b,
-  c
-)
-end
-
 # good
 def foo(a, b = {
   foo: "bar",
 })
-end
-
-# good
-def foo(
-  a,
-  b,
-  c
-)
-end
-
-# good
-def foo(
-  a,
-  b = {
-    foo: "bar",
-  }
-)
-end
-
-# good
-def foo(a, b, c)
 end
 ----
 
