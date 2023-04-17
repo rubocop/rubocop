@@ -11,6 +11,12 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#11799](https://github.com/rubocop/rubocop/pull/11799): Fix a false positive for `Style/CollectionCompact` when using `reject` on hash to reject nils in Ruby 2.3 analysis. ([@koic][])
+* [#11792](https://github.com/rubocop/rubocop/issues/11792): Fix an error for `Lint/DuplicateMatchPattern` when using hash pattern with `if` guard. ([@koic][])
+* [#11800](https://github.com/rubocop/rubocop/issues/11800): Mark `Style/InvertibleUnlessCondition` as unsafe. ([@koic][])
+
 ## 1.50.1 (2023-04-12)
 
 ### Bug fixes
