@@ -537,6 +537,12 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           ^^^^^^^^^^^ Use `//` around regular expression.
         RUBY
       end
+
+      it 'does not register an offense when using a regexp starts with equal as a method argument' do
+        expect_no_offenses(<<~RUBY)
+          do_something %r/=regexp/
+        RUBY
+      end
     end
 
     context 'when using `%r` regexp with `EnforcedStyle: mixed`' do
