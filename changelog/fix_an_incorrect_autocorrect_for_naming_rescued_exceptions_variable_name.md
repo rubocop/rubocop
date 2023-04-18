@@ -1,0 +1,1 @@
+* [#11809](https://github.com/rubocop/rubocop/issues/11809): Fix an incorrect autocorrect for `Naming/RescuedExceptionsVariableName` when exception variable is referenced after `rescue` statement. ([@koic][])

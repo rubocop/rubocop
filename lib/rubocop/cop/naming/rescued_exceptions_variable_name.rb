@@ -82,9 +82,7 @@ module RuboCop
           message = message(node)
 
           add_offense(range, message: message) do |corrector|
-            corrector.replace(range, preferred_name)
-
-            correct_node(corrector, node.body, offending_name, preferred_name)
+            autocorrect(corrector, node, range, offending_name, preferred_name)
           end
         end
 
@@ -93,6 +91,16 @@ module RuboCop
         def offense_range(resbody)
           variable = resbody.exception_variable
           variable.source_range
+        end
+
+        def autocorrect(corrector, node, range, offending_name, preferred_name)
+          corrector.replace(range, preferred_name)
+          correct_node(corrector, node.body, offending_name, preferred_name)
+          return unless (kwbegin_node = node.parent.each_ancestor(:kwbegin).first)
+
+          kwbegin_node.right_siblings.each do |child_node|
+            correct_node(corrector, child_node, offending_name, preferred_name)
+          end
         end
 
         def variable_name_matches?(node, name)
