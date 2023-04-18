@@ -505,7 +505,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
         }
       end
 
-      let(:file1) do
+      let(:file_with_renamed_config) do
         create_file('obsoletions1.yml', <<~YAML)
           renamed:
             Foo/Bar: Foo/Baz
@@ -513,7 +513,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
         YAML
       end
 
-      let(:file2) do
+      let(:file_with_removed_and_split_config) do
         create_file('obsoletions2.yml', <<~YAML)
           removed:
             Legacy/Test:
@@ -544,8 +544,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
 
       it 'includes obsoletions from all sources' do
-        described_class.files << file1
-        described_class.files << file2
+        described_class.files << file_with_renamed_config
+        described_class.files << file_with_removed_and_split_config
 
         begin
           config_obsoletion.reject_obsolete!
