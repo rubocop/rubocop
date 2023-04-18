@@ -3,7 +3,16 @@
 module RuboCop
   module Cop
     module Style
-      # Enforces using // or %r around regular expressions.
+      # Enforces using `//` or `%r` around regular expressions.
+      #
+      # NOTE: The following `%r` cases using a regexp starts with a blank or `=`
+      # as a method argument allowed to prevent syntax errors.
+      #
+      # [source,ruby]
+      # ----
+      # do_something %r{ regexp} # `do_something / regexp/` is an invalid syntax.
+      # do_something %r{=regexp} # `do_something /=regexp/` is an invalid syntax.
+      # ----
       #
       # @example EnforcedStyle: slashes (default)
       #   # bad
@@ -151,7 +160,7 @@ module RuboCop
 
         def allowed_omit_parentheses_with_percent_r_literal?(node)
           return false unless node.parent&.call_type?
-          return true if node.content.start_with?(' ')
+          return true if node.content.start_with?(' ', '=')
 
           enforced_style = config.for_cop('Style/MethodCallWithArgsParentheses')['EnforcedStyle']
 
