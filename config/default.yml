@@ -4092,8 +4092,6 @@ Style/InvertibleUnlessCondition:
     # :blank?: :present?
     # :include?: :exclude?
     # :exclude?: :include?
-    # :one?: :many?
-    # :many?: :one?
 
 Style/IpAddresses:
   Description: "Don't include literal IP addresses in code."
