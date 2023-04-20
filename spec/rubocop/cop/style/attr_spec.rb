@@ -28,6 +28,18 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
     RUBY
   end
 
+  it 'registers an offense when using `attr` and method definitions' do
+    expect_offense(<<~RUBY)
+      class SomeClass
+        attr :name
+        ^^^^ Do not use `attr`. Use `attr_reader` instead.
+
+        def foo
+        end
+      end
+    RUBY
+  end
+
   it 'accepts attr when it does not take arguments' do
     expect_no_offenses('func(attr)')
   end

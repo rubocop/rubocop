@@ -24,7 +24,7 @@ module RuboCop
         def on_send(node)
           return unless node.command?(:attr) && node.arguments?
           # check only for method definitions in class/module body
-          return if node.parent && !node.parent.class_type? && !class_eval?(node.parent)
+          return if allowed_context?(node)
 
           message = message(node)
           add_offense(node.loc.selector, message: message) do |corrector|
@@ -33,6 +33,16 @@ module RuboCop
         end
 
         private
+
+        def allowed_context?(node)
+          return false unless (class_node = node.each_ancestor(:class, :block).first)
+
+          (!class_node.class_type? && !class_eval?(class_node)) || define_attr_method?(class_node)
+        end
+
+        def define_attr_method?(node)
+          node.each_descendant(:def).any? { |def_node| def_node.method?(:attr) }
+        end
 
         def autocorrect(corrector, node)
           attr_name, setter = *node.arguments
