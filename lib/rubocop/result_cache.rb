@@ -83,7 +83,7 @@ module RuboCop
       config_store.for_pwd.for_all_cops['AllowSymlinksInCacheRootDirectory']
     end
 
-    attr :path
+    attr_reader :path
 
     def initialize(file, team, options, config_store, cache_root = nil)
       cache_root ||= File.join(options[:cache_root], 'rubocop_cache') if options[:cache_root]
