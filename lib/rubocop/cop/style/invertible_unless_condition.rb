@@ -10,12 +10,16 @@ module RuboCop
       # Methods that can be inverted should be defined in `InverseMethods`. Note that
       # the relationship of inverse methods needs to be defined in both directions.
       # For example,
-      #   InverseMethods:
-      #     :!=: :==
-      #     :even?: :odd?
-      #     :odd?: :even?
       #
-      #  will suggest both `even?` and `odd?` to be inverted, but only `!=` (and not `==`).
+      # [source,yaml]
+      # ----
+      # InverseMethods:
+      #   :!=: :==
+      #   :even?: :odd?
+      #   :odd?: :even?
+      # ----
+      #
+      # will suggest both `even?` and `odd?` to be inverted, but only `!=` (and not `==`).
       #
       # @safety
       #   This cop is unsafe because it cannot be guaranteed that the method
