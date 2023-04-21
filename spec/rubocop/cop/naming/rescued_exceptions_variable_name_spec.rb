@@ -456,6 +456,27 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         RUBY
       end
     end
+
+    context 'when the variable is referenced after `rescue` statement' do
+      it 'handles it' do
+        expect_offense(<<~RUBY)
+          begin
+            something
+          rescue StandardError => e1
+                                  ^^ Use `e` instead of `e1`.
+          end
+          foo(e1)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          begin
+            something
+          rescue StandardError => e
+          end
+          foo(e)
+        RUBY
+      end
+    end
   end
 
   context 'with the `PreferredName` setup' do
