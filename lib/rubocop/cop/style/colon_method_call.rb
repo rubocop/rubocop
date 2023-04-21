@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for methods invoked via the :: operator instead
-      # of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
+      # Checks for methods invoked via the `::` operator instead
+      # of the `.` operator (like `FileUtils::rmdir` instead of `FileUtils.rmdir`).
       #
       # @example
       #   # bad
