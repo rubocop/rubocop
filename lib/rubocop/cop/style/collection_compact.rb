@@ -9,8 +9,8 @@ module RuboCop
       # @safety
       #   It is unsafe by default because false positives may occur in the
       #   `nil` check of block arguments to the receiver object. Additionally,
-      #    we can't know the type of the receiver object for sure, which may
-      #    result in false positives as well.
+      #   we can't know the type of the receiver object for sure, which may
+      #   result in false positives as well.
       #
       #   For example, `[[1, 2], [3, nil]].reject { |first, second| second.nil? }`
       #   and `[[1, 2], [3, nil]].compact` are not compatible. This will work fine
@@ -19,7 +19,9 @@ module RuboCop
       # @example
       #   # bad
       #   array.reject(&:nil?)
+      #   array.delete_if(&:nil?)
       #   array.reject { |e| e.nil? }
+      #   array.delete_if { |e| e.nil? }
       #   array.select { |e| !e.nil? }
       #
       #   # good
@@ -39,14 +41,14 @@ module RuboCop
         extend TargetRubyVersion
 
         MSG = 'Use `%<good>s` instead of `%<bad>s`.'
-        RESTRICT_ON_SEND = %i[reject reject! select select!].freeze
+        RESTRICT_ON_SEND = %i[reject delete_if reject! select select!].freeze
         TO_ENUM_METHODS = %i[to_enum lazy].freeze
 
         minimum_target_ruby_version 2.4
 
         # @!method reject_method_with_block_pass?(node)
         def_node_matcher :reject_method_with_block_pass?, <<~PATTERN
-          (send !nil? {:reject :reject!}
+          (send !nil? {:reject :delete_if :reject!}
             (block_pass
               (sym :nil?)))
         PATTERN
@@ -55,7 +57,7 @@ module RuboCop
         def_node_matcher :reject_method?, <<~PATTERN
           (block
             (send
-              !nil? {:reject :reject!})
+              !nil? {:reject :delete_if :reject!})
             $(args ...)
             (send
               $(lvar _) :nil?))
@@ -74,7 +76,9 @@ module RuboCop
 
         def on_send(node)
           return unless (range = offense_range(node))
-          return if target_ruby_version <= 3.0 && to_enum_method?(node)
+          if (target_ruby_version <= 3.0 || node.method?(:delete_if)) && to_enum_method?(node)
+            return
+          end
 
           good = good_method_name(node)
           message = format(MSG, good: good, bad: range.source)
