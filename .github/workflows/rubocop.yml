@@ -97,4 +97,4 @@ jobs:
           ruby-version: 2.7
           bundler-cache: true
       - name: spec
-        run: bundle exec rspec
+        run: bundle exec rake spec
