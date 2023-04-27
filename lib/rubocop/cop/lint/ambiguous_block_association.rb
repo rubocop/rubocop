@@ -52,6 +52,8 @@ module RuboCop
       #   expect { do_something }.to not_change { object.attribute }
       #
       class AmbiguousBlockAssociation < Base
+        extend AutoCorrector
+
         include AllowedMethods
         include AllowedPattern
 
@@ -68,7 +70,9 @@ module RuboCop
 
           message = message(node)
 
-          add_offense(node, message: message)
+          add_offense(node, message: message) do |corrector|
+            wrap_in_parentheses(corrector, node)
+          end
         end
         alias on_csend on_send
 
@@ -88,6 +92,13 @@ module RuboCop
           block_param = send_node.last_argument
 
           format(MSG, param: block_param.source, method: block_param.send_node.source)
+        end
+
+        def wrap_in_parentheses(corrector, node)
+          range = node.loc.selector.end.join(node.first_argument.source_range.begin)
+
+          corrector.replace(range, '(')
+          corrector.insert_after(node.last_argument, ')')
         end
       end
     end
