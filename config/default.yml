@@ -2342,7 +2342,9 @@ Lint/ToJSON:
 Lint/TopLevelReturnWithArgument:
   Description: 'Detects top level return statements with argument.'
   Enabled: true
+  Safe: false
   VersionAdded: '0.89'
+  VersionChanged: '<<next>>'
 
 Lint/TrailingCommaInAttributeDeclaration:
   Description: 'Checks for trailing commas in attribute declarations.'

@@ -7,6 +7,10 @@ module RuboCop
       # top-level return statement with an argument, then the argument is
       # always ignored. This is detected automatically since Ruby 2.7.
       #
+      # @safety
+      #   This cop is unsafe because it may cause false positives where the Ruby code is used
+      #   through `eval` or equivalent.
+      #
       # @example
       #
       #   # Detected since Ruby 2.7
