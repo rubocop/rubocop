@@ -97,12 +97,14 @@ i18n wrapper function analysis (`gettext` and `rails-i18n`)
 Custom cops and config defaults for Chef Infra Cookbooks
 * https://github.com/utkarsh2102/rubocop-packaging[rubocop-packaging] -
 Upstream best practices and coding conventions for downstream (e.g. Debian packages) compatibility.
-* https://github.com/Shopify/rubocop-sorbet[rubocop-sorbet]
+* https://github.com/Shopify/rubocop-sorbet[rubocop-sorbet] -
 Sorbet-specific analysis
 * https://github.com/DmitryTsepelev/rubocop-graphql[rubocop-graphql] -
 GraphQL-specific analysis
 * https://github.com/dukaev/rubocop-changed[rubocop-changed] -
 Reduced CI time by analyzing only changed files
+* https://github.com/SketchUp/rubocop-sketchup[rubocop-sketchup] -
+SketchUp Ruby API specific analysis
 
 Any extensions missing? Send us a Pull Request!
 
