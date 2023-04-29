@@ -47,6 +47,10 @@ module RuboCop
           @node.type == REGEXP_NAMED_CAPTURE_TYPE
         end
 
+        def exception_assignment?
+          node.parent&.resbody_type? && node.parent.exception_variable == node
+        end
+
         def operator_assignment?
           return false unless meta_assignment_node
 

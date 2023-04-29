@@ -47,6 +47,18 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+          foo = 1
+          puts foo
+          def some_method
+            2
+            bar = 3
+            puts bar
+          end
+        end
+      RUBY
     end
   end
 
@@ -60,6 +72,18 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           def self.some_method
             foo = 2
             ^^^ Useless assignment to variable - `foo`.
+            bar = 3
+            puts bar
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass
+          foo = 1
+          puts foo
+          def self.some_method
+            2
             bar = 3
             puts bar
           end
@@ -84,6 +108,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        1.times do
+          foo = 1
+          puts foo
+          instance = Object.new
+          def instance.some_method
+            2
+            bar = 3
+            puts bar
+          end
+        end
+      RUBY
     end
   end
 
@@ -96,6 +133,18 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           class SomeClass
             foo = 2
             ^^^ Useless assignment to variable - `foo`.
+            bar = 3
+            puts bar
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        1.times do
+          foo = 1
+          puts foo
+          class SomeClass
+            2
             bar = 3
             puts bar
           end
@@ -120,6 +169,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        1.times do
+          foo = 1
+          puts foo
+          array_class = Array
+          class SomeClass < array_class
+            2
+            bar = 3
+            puts bar
+          end
+        end
+      RUBY
     end
   end
 
@@ -138,6 +200,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        1.times do
+          foo = 1
+          puts foo
+          instance = Object.new
+          class << instance
+            2
+            bar = 3
+            puts bar
+          end
+        end
+      RUBY
     end
   end
 
@@ -150,6 +225,18 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           module SomeModule
             foo = 2
             ^^^ Useless assignment to variable - `foo`.
+            bar = 3
+            puts bar
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        1.times do
+          foo = 1
+          puts foo
+          module SomeModule
+            2
             bar = 3
             puts bar
           end
@@ -176,6 +263,12 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         bar = 2
         puts bar
       RUBY
+
+      expect_correction(<<~RUBY)
+        1
+        bar = 2
+        puts bar
+      RUBY
     end
   end
 
@@ -184,6 +277,10 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
       expect_offense(<<~RUBY)
         foo ||= 1
         ^^^ Useless assignment to variable - `foo`. Use `||` instead of `||=`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo || 1
       RUBY
     end
   end
@@ -200,6 +297,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           puts bar
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          1
+          bar = 2
+          3
+          puts bar
+        end
+      RUBY
     end
   end
 
@@ -213,6 +319,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           ^^^ Useless assignment to variable - `foo`.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo = 1
+          puts foo
+          3
+        end
+      RUBY
     end
   end
 
@@ -222,6 +336,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         def some_method
           foo = 1
           ^^^ Useless assignment to variable - `foo`.
+          foo = 3
+          puts foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          1
           foo = 3
           puts foo
         end
@@ -281,12 +403,22 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           ^^^ Useless assignment to variable - `foo`.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        1.times do |i; foo|
+          2
+        end
+      RUBY
     end
 
     it 'registers offenses for self assignment in numblock', :ruby27 do
       expect_offense(<<~RUBY)
         do_something { foo += _1 }
                        ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something { foo + _1 }
       RUBY
     end
   end
@@ -298,6 +430,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           while true
             foo = 1
             ^^^ Useless assignment to variable - `foo`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          while true
+            1
           end
         end
       RUBY
@@ -375,6 +515,20 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           total
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          total = 0
+          foo = 0
+
+          while total < 100
+            total += 1
+            foo = 1
+          end
+
+          total
+        end
+      RUBY
     end
   end
 
@@ -388,6 +542,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
             puts foo
             foo = 3
             ^^^ Useless assignment to variable - `foo`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        while true
+          def some_method
+            foo = 1
+            puts foo
+            3
           end
         end
       RUBY
@@ -408,6 +572,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo = 1
+
+        while foo < 100
+          foo += 1
+          def some_method
+            1
+          end
+        end
+      RUBY
     end
   end
 
@@ -418,6 +593,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           if flag
             foo = 1
             ^^^ Useless assignment to variable - `foo`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag)
+          if flag
+            1
           end
         end
       RUBY
@@ -432,6 +615,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           if flag
             foo = 1
             ^^^ Useless assignment to variable - `foo`.
+            foo = 2
+          end
+
+          foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag)
+          if flag
+            1
             foo = 2
           end
 
@@ -573,6 +767,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag)
+          1
+
+          if flag
+            foo = 2
+            puts foo
+          end
+        end
+      RUBY
     end
   end
 
@@ -583,6 +788,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           if flag
             foo = 2
             ^^^ Useless assignment to variable - `foo`.
+          else
+            foo = 3
+            puts foo
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag)
+          if flag
+            2
           else
             foo = 3
             puts foo
@@ -608,6 +824,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag)
+          foo = 1
+
+          if flag
+            puts foo
+            2
+          else
+            puts foo
+          end
+        end
+      RUBY
     end
   end
 
@@ -618,6 +847,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         if flag
           foo = 1
           ^^^ Useless assignment to variable - `foo`.
+        else
+          puts foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if flag
+          1
         else
           puts foo
         end
@@ -641,6 +878,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag_a, flag_b)
+          foo = 1
+
+          if flag_a
+            puts foo
+            2
+          elsif flag_b
+            puts foo
+          end
+        end
+      RUBY
     end
   end
 
@@ -656,6 +906,22 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
             puts foo
             foo = 2
             ^^^ Useless assignment to variable - `foo`.
+          else
+            case
+            when flag_b
+              puts foo
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag_a, flag_b)
+          foo = 1
+
+          if flag_a
+            puts foo
+            2
           else
             case
             when flag_b
@@ -706,6 +972,12 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           ^^^ Useless assignment to variable - `foo`.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(flag)
+          1 unless foo
+        end
+      RUBY
     end
   end
 
@@ -727,6 +999,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         def some_method
           foo = 1
           ^^^ Useless assignment to variable - `foo`.
+          (foo = do_something_returns_object_or_nil) && do_something
+          foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          1
           (foo = do_something_returns_object_or_nil) && do_something
           foo
         end
@@ -795,6 +1075,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           foo
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo = 1
+          foo += 2
+          foo
+        end
+      RUBY
     end
   end
 
@@ -818,6 +1106,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           ^^^ Useless assignment to variable - `foo`. Use `||` instead of `||=`.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo = do_something_returns_object_or_nil
+          foo || 1
+        end
+      RUBY
     end
   end
 
@@ -831,6 +1126,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           some_return_value
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo = do_something_returns_object_or_nil
+          foo || 1
+          some_return_value
+        end
+      RUBY
     end
   end
 
@@ -840,6 +1143,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         def some_method
           foo, bar = do_something
                ^^^ Useless assignment to variable - `bar`. Use `_` or `_bar` as a variable name to indicate that it won't be used.
+          puts foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo, _ = do_something
           puts foo
         end
       RUBY
@@ -888,6 +1198,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           do_something
           foo = true
           ^^^ Useless assignment to variable - `foo`.
+        rescue
+          do_anything
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          do_something
+          true
         rescue
           do_anything
         end
@@ -983,6 +1302,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
 
         puts foo
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo = false
+
+        begin
+          do_something
+        rescue
+          true
+          foo = true
+        end
+
+        puts foo
+      RUBY
     end
   end
 
@@ -1004,6 +1336,21 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
 
         puts foo
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo = false
+
+        begin
+          do_something
+        rescue
+          true
+          foo = true
+        ensure
+          do_anything
+        end
+
+        puts foo
+      RUBY
     end
   end
 
@@ -1018,6 +1365,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         ensure
           foo = true
           ^^^ Useless assignment to variable - `foo`.
+          foo = true
+        end
+
+        puts foo
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          do_something
+        rescue
+          do_anything
+        ensure
+          true
           foo = true
         end
 
@@ -1082,6 +1442,23 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
 
         puts foo
       RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          do_something
+          :in_begin
+        rescue FirstError
+          :in_first_rescue
+        rescue SecondError
+          :in_second_rescue
+        else
+          :in_else
+        ensure
+          foo = :in_ensure
+        end
+
+        puts foo
+      RUBY
     end
   end
 
@@ -1093,6 +1470,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           do_something
         rescue FirstError => error
                              ^^^^^ Useless assignment to variable - `error`.
+        rescue SecondError
+          p error # => nil
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          do_something
+        rescue FirstError
         rescue SecondError
           p error # => nil
         end
@@ -1120,6 +1506,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           super
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(bar)
+          1
+          super
+        end
+      RUBY
     end
   end
 
@@ -1132,6 +1525,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           super(bar)
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method(foo, bar)
+          1
+          super(bar)
+        end
+      RUBY
     end
   end
 
@@ -1140,6 +1540,10 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
       expect_offense(<<~RUBY)
         /(?<foo>\w+)/ =~ 'FOO'
         ^^^^^^^^^^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        /(?:\w+)/ =~ 'FOO'
       RUBY
     end
   end
@@ -1150,6 +1554,12 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         def some_method
           /(?<foo>\w+)/ =~ 'FOO'
           ^^^^^^^^^^^^^ Useless assignment to variable - `foo`.
+        end
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        def some_method
+          /(?:\w+)/ =~ 'FOO'
         end
       RUBY
     end
@@ -1198,6 +1608,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         def some_method
           foo = 1
           ^^^ Useless assignment to variable - `foo`.
+          1.times do |foo|
+            puts foo
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          1
           1.times do |foo|
             puts foo
           end
@@ -1306,6 +1725,10 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         foo = 1
         ^^^ Useless assignment to variable - `foo`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        1
+      RUBY
     end
   end
 
@@ -1325,6 +1748,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         expect_offense(<<~RUBY)
           some_method(foo = 1) do
                       ^^^ Useless assignment to variable - `foo`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          some_method(1) do
           end
         RUBY
       end
@@ -1378,6 +1806,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
             puts environment
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def some_method
+            {}
+            another_symbol
+            puts environment
+          end
+        RUBY
       end
     end
 
@@ -1392,6 +1828,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
             puts environment
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def some_method
+            environment = nil
+            another_symbol
+            {}
+            puts environment
+          end
+        RUBY
       end
     end
 
@@ -1401,6 +1846,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           def some_method
             enviromnent = {}
             ^^^^^^^^^^^ Useless assignment to variable - `enviromnent`.
+            another_symbol
+            puts envelope
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def some_method
+            {}
             another_symbol
             puts envelope
           end
@@ -1418,6 +1871,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
             puts self.environment
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def some_method
+            {}
+            another_symbol
+            puts self.environment
+          end
+        RUBY
       end
     end
 
@@ -1431,6 +1892,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
             puts environment(1)
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def some_method
+            {}
+            another_symbol
+            puts environment(1)
+          end
+        RUBY
       end
     end
 
@@ -1440,6 +1909,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           class SomeClass
             enviromnent = {}
             ^^^^^^^^^^^ Useless assignment to variable - `enviromnent`.
+
+            def some_method(environment)
+              puts environment
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class SomeClass
+            {}
 
             def some_method(environment)
               puts environment

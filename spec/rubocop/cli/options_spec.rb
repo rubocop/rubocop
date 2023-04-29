@@ -766,9 +766,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               == example.rb ==
               C:  1:  5: [Correctable] Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
               C:  2:  1: [Correctable] Layout/IndentationStyle: Tab detected in indentation.
-              W:  2:  2: Lint/UselessAssignment: Useless assignment to variable - y.
+              W:  2:  2: [Correctable] Lint/UselessAssignment: Useless assignment to variable - y.
 
-              1 file inspected, 3 offenses detected, 2 offenses autocorrectable
+              1 file inspected, 3 offenses detected, 3 offenses autocorrectable
             RESULT
         end
       end
@@ -1946,8 +1946,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect(cli.run(['--autocorrect', '--format', 'simple', target_file])).to eq(1)
 
         expect($stdout.string.lines.to_a.last)
-          .to eq('1 file inspected, 2 offenses detected, 1 offense corrected' \
-                 "\n")
+          .to eq('1 file inspected, 2 offenses detected, 1 offense corrected, 1 more offense can ' \
+                 "be corrected with `rubocop -A`\n")
       end
     end
 
@@ -1999,7 +1999,10 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         RUBY
 
         expect(cli.run(['--autocorrect', '--format', 'simple', target_file])).to eq(1)
-        expect($stdout.string.lines.to_a.last).to eq("1 file inspected, 2 offenses detected\n")
+        expect($stdout.string.lines.to_a.last).to eq(
+          '1 file inspected, 2 offenses detected, 1 more offense can be corrected with ' \
+          "`rubocop -A`\n"
+        )
       end
     end
   end

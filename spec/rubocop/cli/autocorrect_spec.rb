@@ -14,6 +14,8 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('.rubocop.yml', <<~YAML)
       Layout/HashAlignment:
         EnforcedColonStyle: table
+      Lint/UselessAssignment:
+        Enabled: false
       Style/FrozenStringLiteralComment:
         Enabled: false
     YAML
@@ -30,7 +32,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       }
     RUBY
     create_file('example.rb', source)
-    expect(cli.run(['--autocorrect-all'])).to eq(1)
+    expect(cli.run(['--autocorrect-all'])).to eq(0)
     expect(File.read('example.rb')).to eq(source)
   end
 
@@ -46,6 +48,9 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         ForceEqualSignAlignment: true
 
       Layout/MultilineMethodCallBraceLayout:
+        Enabled: false
+
+      Lint/UselessAssignment:
         Enabled: false
     YAML
 
@@ -112,6 +117,8 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('.rubocop.yml', <<~YAML)
       Layout/ExtraSpacing:
         ForceEqualSignAlignment: true
+      Lint/UselessAssignment:
+        Enabled: false
     YAML
 
     create_file('example.rb', <<~RUBY)
@@ -138,6 +145,9 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
       Layout/HashAlignment:
         EnforcedHashRocketStyle: table
+
+      Lint/UselessAssignment:
+        Enabled: false
     YAML
     source = <<~RUBY
       a = { 1=>2, a => b }
@@ -153,7 +163,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       }
     RUBY
     create_file('example.rb', source)
-    expect(cli.run(['--autocorrect-all'])).to eq(1)
+    expect(cli.run(['--autocorrect-all'])).to eq(0)
 
     # 1=>2 is changed to 1 => 2. The rest is unchanged.
     # SpaceAroundOperators leaves it to HashAlignment when the style is table.
@@ -854,10 +864,12 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         RUBY
         create_file('example.rb', source)
         create_file('.rubocop.yml', <<~YAML)
+          Lint/UselessAssignment:
+            Enabled: false
           Style/BlockDelimiters:
             EnforcedStyle: #{style}
         YAML
-        expect(cli.run(['--autocorrect-all'])).to eq(1)
+        expect(cli.run(['--autocorrect-all'])).to eq(0)
         # rubocop:disable Style/HashLikeCase
         corrected = case style
                     when :semantic
@@ -1043,7 +1055,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         BlockB do |_portfolio|
           foo
         end
-      rescue StandardError => e # some problem
+      rescue StandardError # some problem
         bar
       end
 
@@ -1263,7 +1275,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       module Foo
       class Bar
 
-        stuff = [
+        STUFF = [
                   {
                     some: 'hash',
                   },
@@ -1271,7 +1283,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                     another: 'hash',
                     with: 'more'
                   },
-                ]
+                ].freeze
       end
       end
     RUBY
@@ -1294,7 +1306,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
         module Foo
           class Bar
-            stuff = [
+            STUFF = [
               {
                 some: 'hash'
               },
@@ -1302,7 +1314,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
                 another: 'hash',
                 with: 'more'
               }
-            ]
+            ].freeze
           end
         end
       RUBY
@@ -1875,12 +1887,12 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         EnforcedStyleForMultiline: comma
     YAML
 
-    expect(cli.run(%w[--autocorrect-all])).to eq(1)
+    expect(cli.run(%w[--autocorrect-all])).to eq(0)
     expect($stderr.string).to eq('')
     expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
-      result = foo(
+      foo(
         # comment
         <<~SQL.squish)
           SELECT * FROM bar
