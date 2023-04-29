@@ -164,6 +164,12 @@ RSpec.describe RuboCop::Cop::Lint::IncompatibleIoSelectWithFiberScheduler, :conf
     RUBY
   end
 
+  it 'does not register an offense when using `IO.select` with read and excepts arguments' do
+    expect_no_offenses(<<~RUBY)
+      IO.select([rp], [], [excepts])
+    RUBY
+  end
+
   it 'does not register an offense when using `Enumerable#select`' do
     expect_no_offenses(<<~RUBY)
       collection.select { |item| item.do_something? }
