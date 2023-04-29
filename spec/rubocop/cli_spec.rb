@@ -27,9 +27,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         Dir.chdir('other') { expect(cli.run(['--format', 'simple', checked_path])).to eq(1) }
         expect($stdout.string).to eq(<<~RESULT)
           == #{abs('Rakefile')} ==
-          W:  3:  1: Lint/UselessAssignment: Useless assignment to variable - x.
+          W:  3:  1: [Correctable] Lint/UselessAssignment: Useless assignment to variable - x.
 
-          1 file inspected, 1 offense detected
+          1 file inspected, 1 offense detected, 1 offense autocorrectable
         RESULT
       end
     end
@@ -300,9 +300,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         == example.rb ==
-        W:  5:  1: Lint/UselessAssignment: Useless assignment to variable - b.
+        W:  5:  1: [Correctable] Lint/UselessAssignment: Useless assignment to variable - b.
 
-        1 file inspected, 1 offense detected
+        1 file inspected, 1 offense detected, 1 offense autocorrectable
       RESULT
     end
 
@@ -1128,9 +1128,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(<<~RESULT)
           == .other/example.rb ==
-          W:  3:  1: Lint/UselessAssignment: Useless assignment to variable - x.
+          W:  3:  1: [Correctable] Lint/UselessAssignment: Useless assignment to variable - x.
 
-          1 file inspected, 1 offense detected
+          1 file inspected, 1 offense detected, 1 offense autocorrectable
         RESULT
     end
 
@@ -1788,7 +1788,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         RUBY
 
         expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
-        expect($stdout.string.lines.to_a.last).to eq("1 file inspected, 2 offenses detected\n")
+        expect($stdout.string.lines.to_a.last).to eq(
+          "1 file inspected, 2 offenses detected, 1 offense autocorrectable\n"
+        )
       end
     end
   end

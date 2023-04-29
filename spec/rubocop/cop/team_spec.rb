@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Team do
              'bar' +
              "#{baz}"
 
-        i=i+1
+        i+1
 
         def a
           self::b
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Team do
              'bar' \
              "#{baz}"
 
-        i += 1
+        i + 1
 
         def a
           b

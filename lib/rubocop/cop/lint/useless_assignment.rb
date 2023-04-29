@@ -13,6 +13,12 @@ module RuboCop
       # reassignments and properly handles varied cases such as branch, loop,
       # rescue, ensure, etc.
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because removing assignment from
+      #   operator assignment can cause NameError if this assignment has been used to declare
+      #   local variable. For example, replacing `a ||= 1` to `a || 1` may cause
+      #   "undefined local variable or method `a' for main:Object (NameError)".
+      #
       # @example
       #
       #   # bad
@@ -31,6 +37,10 @@ module RuboCop
       #     do_something(some_var)
       #   end
       class UselessAssignment < Base
+        extend AutoCorrector
+
+        include RangeHelp
+
         MSG = 'Useless assignment to variable - `%<variable>s`.'
 
         def self.joining_forces
@@ -55,7 +65,9 @@ module RuboCop
                          assignment.node.loc.name
                        end
 
-            add_offense(location, message: message)
+            add_offense(location, message: message) do |corrector|
+              autocorrect(corrector, assignment)
+            end
           end
         end
 
@@ -118,6 +130,49 @@ module RuboCop
           return false unless node.send_type?
 
           node.receiver.nil? && !node.arguments?
+        end
+
+        def autocorrect(corrector, assignment)
+          if assignment.exception_assignment?
+            remove_exception_assignment_part(corrector, assignment.node)
+          elsif assignment.multiple_assignment?
+            rename_variable_with_underscore(corrector, assignment.node)
+          elsif assignment.operator_assignment?
+            remove_trailing_character_from_operator(corrector, assignment.node)
+          elsif assignment.regexp_named_capture?
+            replace_named_capture_group_with_non_capturing_group(corrector, assignment.node,
+                                                                 assignment.variable.name)
+          else
+            remove_local_variable_assignment_part(corrector, assignment.node)
+          end
+        end
+
+        def remove_exception_assignment_part(corrector, node)
+          corrector.remove(
+            range_between(
+              (node.parent.children.first&.source_range || node.parent.location.keyword).end_pos,
+              node.source_range.end_pos
+            )
+          )
+        end
+
+        def rename_variable_with_underscore(corrector, node)
+          corrector.replace(node, '_')
+        end
+
+        def remove_trailing_character_from_operator(corrector, node)
+          corrector.remove(node.parent.location.operator.end.adjust(begin_pos: -1))
+        end
+
+        def replace_named_capture_group_with_non_capturing_group(corrector, node, variable_name)
+          corrector.replace(
+            node.children.first,
+            node.children.first.source.sub(/\(\?<#{variable_name}>/, '(?:')
+          )
+        end
+
+        def remove_local_variable_assignment_part(corrector, node)
+          corrector.replace(node, node.expression.source)
         end
       end
     end
