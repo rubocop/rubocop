@@ -236,6 +236,8 @@ module RuboCop
         end
 
         def offense(begin_pos, end_pos, msg, style_param = 'EnforcedStyle')
+          return if begin_pos > end_pos
+
           range = range_between(begin_pos, end_pos)
           add_offense(range, message: msg) do |corrector|
             case range.source
