@@ -13,6 +13,10 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
         return 1, 2, 3
         ^^^^^^^^^^^^^^ Top level return with argument detected.
       RUBY
+
+      expect_correction(<<~RUBY)
+        return
+      RUBY
     end
 
     it 'expects multiple offenses from the return with arguments statements' do
@@ -25,6 +29,14 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
 
         return 1, 2, 3
         ^^^^^^^^^^^^^^ Top level return with argument detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return
+
+        return
+
+        return
       RUBY
     end
   end
@@ -53,6 +65,16 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
 
         bar
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+
+        [1, 2, 3, 4, 5].each { |n| return n }
+
+        return
+
+        bar
+      RUBY
     end
   end
 
@@ -65,6 +87,14 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
 
         return 1, 2, 3
         ^^^^^^^^^^^^^^ Top level return with argument detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def method
+          return 'Hello World'
+        end
+
+        return
       RUBY
     end
   end
@@ -99,6 +129,18 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
           return "Hello World" if 1 == 1
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+        return if 1 == 1
+        bar
+        return
+        return
+
+        def method
+          return "Hello World" if 1 == 1
+        end
+      RUBY
     end
   end
 
@@ -109,6 +151,14 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
 
         if a == b; warn 'hey'; return 42; end
                                ^^^^^^^^^ Top level return with argument detected.
+
+        bar
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+
+        if a == b; warn 'hey'; return; end
 
         bar
       RUBY
