@@ -2343,6 +2343,9 @@ Lint/TopLevelReturnWithArgument:
   Description: 'Detects top level return statements with argument.'
   Enabled: true
   VersionAdded: '0.89'
+  # These codes are `eval`-ed in method and their return values may be used.
+  Exclude:
+    - '**/*.jb'
 
 Lint/TrailingCommaInAttributeDeclaration:
   Description: 'Checks for trailing commas in attribute declarations.'
