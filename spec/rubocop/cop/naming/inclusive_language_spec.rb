@@ -129,6 +129,48 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       RUBY
     end
 
+    context 'specified as Array' do
+      let(:cop_config) do
+        { 'FlaggedTerms' => {
+          'master' => { 'AllowedRegex' => ['master\'s degree', 'mastermind'] }
+        } }
+      end
+
+      it 'does not register an offense for an allowed use' do
+        expect_no_offenses(<<~RUBY)
+          # The mastermind had a master's degree.
+        RUBY
+      end
+    end
+
+    context 'specified as a String with regular expression syntax' do
+      let(:cop_config) do
+        { 'FlaggedTerms' => {
+          'master' => { 'AllowedRegex' => 'master(?:card|mind)' }
+        } }
+      end
+
+      it 'does not register an offense for an allowed use' do
+        expect_no_offenses(<<~RUBY)
+          # The mastermind's Mastercard was declined.
+        RUBY
+      end
+    end
+
+    context 'specified as Regexp' do
+      let(:cop_config) do
+        { 'FlaggedTerms' => {
+          'master' => { 'AllowedRegex' => /master(?:card|mind)/ }
+        } }
+      end
+
+      it 'does not register an offense for an allowed use' do
+        expect_no_offenses(<<~RUBY)
+          # The mastermind's Mastercard was declined.
+        RUBY
+      end
+    end
+
     context 'offense after an allowed use' do
       let(:cop_config) do
         { 'FlaggedTerms' => {
