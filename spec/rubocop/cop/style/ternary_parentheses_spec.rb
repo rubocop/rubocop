@@ -400,7 +400,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
 
     # In Ruby 2.7, `match-pattern` node represents one line pattern matching.
     #
-    # % ruby-parse --27 -e 'foo in bar'
+    # $ ruby-parse --27 -e 'foo in bar'
     # (match-pattern (send nil :foo) (match-var :bar))
     #
     context 'with one line pattern matching', :ruby27 do
@@ -413,7 +413,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
 
     # In Ruby 3.0, `match-pattern-p` node represents one line pattern matching.
     #
-    # % ruby-parse --30 -e 'foo in bar'
+    # $ ruby-parse --30 -e 'foo in bar'
     # (match-pattern-p (send nil :foo) (match-var :bar))
     #
     context 'with one line pattern matching', :ruby30 do

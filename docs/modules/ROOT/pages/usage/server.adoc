@@ -52,7 +52,7 @@ user             16337   0.0  0.0  5331560   2396   ??  S    23:51PM   0:00.00 r
 When you update and run `rubocop`, the server process will restart automatically.
 
 ```console
-% rubocop --server
+$ rubocop --server
 RuboCop version incompatibility found, RuboCop server restarting...
 RuboCop server starting on 127.0.0.1:60665.
 ```
@@ -60,7 +60,7 @@ RuboCop server starting on 127.0.0.1:60665.
 If you would like to start the server in the foreground, which can be useful when running within Docker, you can pass the `--no-detach` option.
 
 ```console
-% rubocop --start-server --no-detach
+$ rubocop --start-server --no-detach
 ```
 
 == Restart Server
@@ -70,7 +70,7 @@ You will need to restart the server when you upgrade RuboCop or change
 the RuboCop configuration.
 
 ```console
-% rubocop --restart-server
+$ rubocop --restart-server
 RuboCop server starting on 127.0.0.1:55822.
 ```
 

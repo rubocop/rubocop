@@ -1029,7 +1029,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       it 'does not register an offense when hash key and hash value are the same but the value ends `!`' do
         # Prevents the following syntax error:
         #
-        # % ruby -cve 'def foo! = puts("hi"); {foo!:}'
+        # $ ruby -cve 'def foo! = puts("hi"); {foo!:}'
         # ruby 3.1.0dev (2021-12-05T10:23:42Z master 19f037e452) [x86_64-darwin19]
         # -e:1: identifier foo! is not valid to get
         expect_no_offenses(<<~RUBY)
@@ -1040,7 +1040,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       it 'does not register an offense when hash key and hash value are the same but the value ends `?`' do
         # Prevents the following syntax error:
         #
-        # % ruby -cve 'def foo? = puts("hi"); {foo?:}'
+        # $ ruby -cve 'def foo? = puts("hi"); {foo?:}'
         # ruby 3.1.0dev (2021-12-05T10:23:42Z master 19f037e452) [x86_64-darwin19]
         # -e:1: identifier foo? is not valid to get
         expect_no_offenses(<<~RUBY)

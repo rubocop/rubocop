@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
       it 'does not register an offense when defining kwarg with block args method' do
         # Prevents the following syntax error:
         #
-        # % ruby -cve 'def foo(k:, &); bar(&); end'
+        # $ ruby -cve 'def foo(k:, &); bar(&); end'
         # ruby 3.1.0dev (2021-12-05T10:23:42Z master 19f037e452) [x86_64-darwin19]
         # -e:1: no anonymous block parameter
         #
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
       it 'does not register an offense when defining kwoptarg with block args method' do
         # Prevents the following syntax error:
         #
-        # % ruby -cve 'def foo(k: v, &); bar(&); end'
+        # $ ruby -cve 'def foo(k: v, &); bar(&); end'
         # ruby 3.1.0dev (2021-12-05T10:23:42Z master 19f037e452) [x86_64-darwin19]
         # -e:1: no anonymous block parameter
         #

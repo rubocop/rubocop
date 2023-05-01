@@ -2436,9 +2436,9 @@ This cop emulates the following Ruby warnings in Ruby 2.6.
 
 [source,console]
 ----
-% cat example.rb
+$ cat example.rb
 ERB.new('hi', nil, '-', '@output_buffer')
-% ruby -rerb example.rb
+$ ruby -rerb example.rb
 example.rb:1: warning: Passing safe_level with the 2nd argument of ERB.new is
 deprecated. Do not use it, and specify other arguments as keyword arguments.
 example.rb:1: warning: Passing trim_mode with the 3rd argument of ERB.new is
@@ -3038,7 +3038,7 @@ foo = "something with #{interpolation} inside"
 Checks uses of lambda without a literal block.
 It emulates the following warning in Ruby 3.0:
 
-  % ruby -vwe 'lambda(&proc {})'
+  $ ruby -vwe 'lambda(&proc {})'
   ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
   -e:1: warning: lambda without a literal block is deprecated; use the proc without
   lambda instead
@@ -3987,13 +3987,13 @@ Time.now.to_datetime.to_i
 Checks for uses of numbered parameter assignment.
 It emulates the following warning in Ruby 2.7:
 
-  % ruby -ve '_1 = :value'
+  $ ruby -ve '_1 = :value'
   ruby 2.7.2p137 (2020-10-01 revision 5445e04352) [x86_64-darwin19]
   -e:1: warning: `_1' is reserved for numbered parameter; consider another name
 
 Assigning to a numbered parameter (from `_1` to `_9`) causes an error in Ruby 3.0.
 
-  % ruby -ve '_1 = :value'
+  $ ruby -ve '_1 = :value'
   ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
   -e:1: _1 is reserved for numbered parameter
 

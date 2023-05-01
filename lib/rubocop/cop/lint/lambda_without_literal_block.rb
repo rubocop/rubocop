@@ -6,7 +6,7 @@ module RuboCop
       # Checks uses of lambda without a literal block.
       # It emulates the following warning in Ruby 3.0:
       #
-      #   % ruby -vwe 'lambda(&proc {})'
+      #   $ ruby -vwe 'lambda(&proc {})'
       #   ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
       #   -e:1: warning: lambda without a literal block is deprecated; use the proc without
       #   lambda instead
