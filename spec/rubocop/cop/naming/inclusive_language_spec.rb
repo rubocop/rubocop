@@ -169,6 +169,23 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
           # The mastermind's Mastercard was declined.
         RUBY
       end
+
+      context 'using free-spacing/extended mode' do
+        let(:cop_config) do
+          { 'FlaggedTerms' => {
+            'master' => { 'AllowedRegex' => /master(?:
+              card|
+              mind
+            )/x }
+          } }
+        end
+
+        it 'does not register an offense for an allowed use' do
+          expect_no_offenses(<<~RUBY)
+            # The mastermind's Mastercard was declined.
+          RUBY
+        end
+      end
     end
 
     context 'offense after an allowed use' do

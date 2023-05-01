@@ -148,7 +148,7 @@ module RuboCop
             next if term_definition.nil?
 
             allowed_strings.concat(process_allowed_regex(term_definition['AllowedRegex']))
-            regex_string = ensure_regex_string(extract_regexp(term, term_definition))
+            regex_string = ensure_case_insensitive_regexp(extract_regexp(term, term_definition))
             flagged_term_strings << regex_string
 
             add_to_flagged_term_hash(regex_string, term, term_definition)
@@ -165,15 +165,17 @@ module RuboCop
         end
 
         def add_to_flagged_term_hash(regex_string, term, term_definition)
-          @flagged_term_hash[Regexp.new(regex_string, Regexp::IGNORECASE)] =
+          @flagged_term_hash[regex_string] =
             term_definition.merge('Term' => term,
                                   'SuggestionString' =>
                                     preprocess_suggestions(term_definition['Suggestions']))
         end
 
+        # TODO: Rename *_strings to *_regexes throughout this cop
+
         def set_regexes(flagged_term_strings, allowed_strings)
-          @flagged_terms_regex = array_to_ignorecase_regex(flagged_term_strings)
-          @allowed_regex = array_to_ignorecase_regex(allowed_strings) unless allowed_strings.empty?
+          @flagged_terms_regex = Regexp.union(flagged_term_strings)
+          @allowed_regex = Regexp.union(allowed_strings) unless allowed_strings.empty?
         end
 
         def process_allowed_regex(allowed)
@@ -182,12 +184,16 @@ module RuboCop
           Array(allowed).map do |allowed_term|
             next if allowed_term.is_a?(String) && allowed_term.strip.empty?
 
-            ensure_regex_string(allowed_term)
+            ensure_case_insensitive_regexp(allowed_term)
           end
         end
 
-        def ensure_regex_string(regex)
-          regex.is_a?(Regexp) ? regex.source : regex
+        def ensure_case_insensitive_regexp(object)
+          case object
+          when Regexp then Regexp.new(object.source, object.options | Regexp::IGNORECASE)
+          when String then Regexp.new(object, Regexp::IGNORECASE)
+          else raise ArgumentError, "Expected Regexp or String, received: #{object.class}"
+          end
         end
 
         def array_to_ignorecase_regex(strings)
