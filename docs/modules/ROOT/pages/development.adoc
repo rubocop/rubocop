@@ -347,6 +347,34 @@ The corrector allows you to `insert_after`, `insert_before`, `wrap` or
 Range can be determined on `node.location` where it brings specific
 ranges for expression or other internal information that the node holds.
 
+==== Preventing Clobbering
+
+The corrector detects and prevents correcting overlapping nodes, to prevent one correction from clobbering another.
+Supporting nested corrections is done by taking multiple passes, and skipping corrections for nested nodes.
+This can be implemented using the `IgnoredNode` module:
+
+[source,diff]
+----
+ extend AutoCorrector
++include IgnoredNode
+
+ def on_send(node)
+   return unless some_condition?(node)
+
+   add_offense(node) do |corrector|
++    next if part_of_ignored_node?(node)
++
+     corrector.replace(node, "...")
+   end
++
++  ignore_node(node)
+ end
+----
+
+This works because the correcting a file is implemented by repeating investigation and correction until the file no longer requires correction, meaning all nested nodes will eventually be processed.
+
+Note that `expect_correction` in `Cop` specs only asserts the result after one pass.
+
 === Configuration
 
 Each cop can hold a configuration and you can refer to `cop_config` in the
