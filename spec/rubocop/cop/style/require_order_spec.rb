@@ -92,6 +92,27 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
     end
   end
 
+  context 'when multiple `require` are not sorted' do
+    it 'registers offense' do
+      expect_offense(<<~RUBY)
+        require 'd'
+        require 'a'
+        ^^^^^^^^^^^ Sort `require` in alphabetical order.
+        require 'b'
+        ^^^^^^^^^^^ Sort `require` in alphabetical order.
+        require 'c'
+        ^^^^^^^^^^^ Sort `require` in alphabetical order.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        require 'a'
+        require 'b'
+        require 'c'
+        require 'd'
+      RUBY
+    end
+  end
+
   context 'when both `require` and `require_relative` are in same section' do
     it 'registers no offense' do
       expect_no_offenses(<<~RUBY)

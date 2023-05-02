@@ -88,10 +88,7 @@ module RuboCop
           return unless previous_older_sibling
 
           add_offense(node, message: format(MSG, name: node.method_name)) do |corrector|
-            corrector.swap(
-              range_with_comments_and_lines(previous_older_sibling),
-              range_with_comments_and_lines(node.parent.if_type? ? node.parent : node)
-            )
+            autocorrect(corrector, node, previous_older_sibling)
           end
         end
 
@@ -112,6 +109,14 @@ module RuboCop
 
             node.first_argument.source < sibling.first_argument.source
           end
+        end
+
+        def autocorrect(corrector, node, previous_older_sibling)
+          range1 = range_with_comments_and_lines(previous_older_sibling)
+          range2 = range_with_comments_and_lines(node.parent.if_type? ? node.parent : node)
+
+          corrector.remove(range2)
+          corrector.insert_before(range1, range2.source)
         end
 
         def search_node(node)
