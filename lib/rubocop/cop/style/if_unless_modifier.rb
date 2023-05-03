@@ -84,7 +84,10 @@ module RuboCop
           return unless (msg = message(node))
 
           add_offense(node.loc.keyword, message: format(msg, keyword: node.keyword)) do |corrector|
+            next if part_of_ignored_node?(node)
+
             autocorrect(corrector, node)
+            ignore_node(node)
           end
         end
 
