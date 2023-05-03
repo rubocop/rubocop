@@ -73,6 +73,26 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
+      context 'when using multiple `if` modifier in the long one line' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def f
+              return value if items.filter_map { |item| item.do_something if item.something? }
+                                                                          ^^ Modifier form of `if` makes the line too long.
+                           ^^ Modifier form of `if` makes the line too long.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def f
+              if items.filter_map { |item| item.do_something if item.something? }
+                return value
+              end
+            end
+          RUBY
+        end
+      end
+
       context 'when using a method with heredoc argument' do
         it 'accepts' do
           expect_offense(<<~RUBY)
