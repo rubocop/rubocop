@@ -4877,6 +4877,13 @@ Style/RedundantFileExtensionInRequire:
   Enabled: true
   VersionAdded: '0.88'
 
+Style/RedundantFilterChain:
+  Description: >-
+                  Identifies usages of `any?`, `empty?`, `none?` or `one?` predicate methods chained to
+                  `select`/`filter`/`find_all` and change them to use predicate method instead.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."
   Enabled: true
