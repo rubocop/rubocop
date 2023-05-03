@@ -284,6 +284,10 @@ module RuboCop
       end
     end
 
+    def inspect # :nodoc:
+      "#<#{self.class.name}:#{object_id} @loaded_path=#{loaded_path}>"
+    end
+
     private
 
     def target_rails_version_from_bundler_lock_file

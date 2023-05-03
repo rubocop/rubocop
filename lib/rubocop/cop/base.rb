@@ -305,6 +305,10 @@ module RuboCop
         @current_original = original
       end
 
+      def inspect # :nodoc:
+        "#<#{self.class.name}:#{object_id} @config=#{@config} @options=#{@options}>"
+      end
+
       private
 
       ### Reserved for Cop::Cop
