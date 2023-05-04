@@ -70,6 +70,10 @@ module RuboCop
 
         MSG = 'Redundant line continuation.'
         ALLOWED_STRING_TOKENS = %i[tSTRING tSTRING_CONTENT].freeze
+        ARGUMENT_TYPES = %i[
+          kFALSE kNIL kSELF kTRUE tCONSTANT tCVAR tFLOAT tGVAR tIDENTIFIER tINTEGER tIVAR
+          tLBRACK tLCURLY tLPAREN_ARG tSTRING tSTRING_BEG tSYMBOL tXSTRING_BEG
+        ].freeze
 
         def on_new_investigation
           return unless processed_source.ast
@@ -124,7 +128,7 @@ module RuboCop
         #   do_something \
         #     argument
         def method_with_argument?(current_token, next_token)
-          current_token.type == :tIDENTIFIER && next_token.type == :tIDENTIFIER
+          current_token.type == :tIDENTIFIER && ARGUMENT_TYPES.include?(next_token.type)
         end
 
         def argument_newline?(node)
