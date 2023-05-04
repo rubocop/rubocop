@@ -569,7 +569,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
   context 'space_inside_bracket cops' do
     let(:source) do
       <<~RUBY
-        [ a[b], c[ d ], [1, 2] ]
+        puts [ a[b], c[ d ], [1, 2] ]
         foo[[ 3, 4 ], [5, 6] ]
       RUBY
     end
@@ -608,7 +608,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         <<~RUBY
           # frozen_string_literal: true
 
-          [ a[b], c[d], [ 1, 2 ] ]
+          puts [ a[b], c[d], [ 1, 2 ] ]
           foo[[ 3, 4 ], [ 5, 6 ]]
         RUBY
       end
@@ -624,7 +624,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         <<~RUBY
           # frozen_string_literal: true
 
-          [a[ b ], c[ d ], [1, 2]]
+          puts [a[ b ], c[ d ], [1, 2]]
           foo[ [3, 4], [5, 6] ]
         RUBY
       end
@@ -640,7 +640,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         <<~RUBY
           # frozen_string_literal: true
 
-          [ a[b], c[d], [ 1, 2 ]]
+          puts [ a[b], c[d], [ 1, 2 ]]
           foo[[ 3, 4 ], [ 5, 6 ]]
         RUBY
       end
@@ -656,7 +656,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         <<~RUBY
           # frozen_string_literal: true
 
-          [ a[ b ], c[ d ], [ 1, 2 ]]
+          puts [ a[ b ], c[ d ], [ 1, 2 ]]
           foo[ [ 3, 4 ], [ 5, 6 ] ]
         RUBY
       end
@@ -1784,8 +1784,8 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
   it 'handles different SpaceInsideBlockBraces and SpaceInsideHashLiteralBraces' do
     create_file('example.rb', <<~RUBY)
-      {foo: bar,
-       bar: baz,}
+      puts({foo: bar,
+       bar: baz,})
       foo.each {bar;}
     RUBY
     create_file('.rubocop.yml', <<~YAML)
@@ -1796,13 +1796,13 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       Style/TrailingCommaInHashLiteral:
         EnforcedStyleForMultiline: consistent_comma
     YAML
-    expect(cli.run(%w[--autocorrect-all])).to eq(1)
+    expect(cli.run(%w[--autocorrect-all])).to eq(0)
     expect($stderr.string).to eq('')
     expect(File.read('example.rb')).to eq(<<~RUBY)
       # frozen_string_literal: true
 
-      {foo: bar,
-       bar: baz,}
+      puts({foo: bar,
+            bar: baz,})
       foo.each { bar }
     RUBY
   end

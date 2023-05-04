@@ -10,6 +10,14 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
           ^{op} Operator `#{op}` used in void context.
         a %{op} b
       RUBY
+
+      expect_correction(<<~RUBY)
+        a
+        b
+        a
+        b
+        a #{op} b
+      RUBY
     end
 
     it "accepts void op #{op} if on last line" do
@@ -37,6 +45,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^{op} Operator `#{op}@` used in void context.
         %{op}b
       RUBY
+
+      expect_correction(<<~RUBY)
+        b
+        b
+        #{op}b
+      RUBY
     end
   end
 
@@ -48,6 +62,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         %{op}b
         ^{op} Operator `#{op}` used in void context.
         %{op}b
+      RUBY
+
+      expect_correction(<<~RUBY)
+        b
+        b
+        #{op}b
       RUBY
     end
   end
@@ -73,6 +93,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^{var} Variable `#{var}` used in void context.
         top
       RUBY
+
+      expect_correction(<<~RUBY)
+        #{var} = 5
+        top
+      RUBY
     end
   end
 
@@ -83,6 +108,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^{lit} Literal `#{lit}` used in void context.
         top
       RUBY
+
+      expect_correction(<<~RUBY)
+        #{''}
+        top
+      RUBY
     end
   end
 
@@ -90,6 +120,10 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     expect_offense(<<~RUBY)
       self; top
       ^^^^ `self` used in void context.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ; top
     RUBY
   end
 
@@ -99,6 +133,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       ^^^^^^^^^^^ `defined?(x)` used in void context.
       top
     RUBY
+
+    expect_correction(<<~RUBY)
+
+      top
+    RUBY
   end
 
   it 'registers an offense for void `-> { bar }` if not on last line' do
@@ -106,6 +145,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       def foo
         -> { bar }
         ^^^^^^^^^^ `-> { bar }` used in void context.
+        top
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
         top
       end
     RUBY
@@ -137,6 +182,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         top
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        top
+      end
+    RUBY
   end
 
   it 'does not register an offense for void `lambda { bar }` if on last line' do
@@ -165,6 +216,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         top
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        top
+      end
+    RUBY
   end
 
   it 'does not register an offense for void `proc { bar }` if on last line' do
@@ -190,6 +247,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       def foo
         Proc.new { bar }
         ^^^^^^^^^^^^^^^^ `Proc.new { bar }` used in void context.
+        top
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
         top
       end
     RUBY
@@ -226,6 +289,13 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         end
         "done"
       RUBY
+
+      expect_correction(<<~RUBY)
+        [1,2,3].each do |n|
+          n.to_s
+        end
+        "done"
+      RUBY
     end
 
     context 'Ruby 2.7', :ruby27 do
@@ -233,6 +303,13 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         expect_offense(<<~RUBY)
           [1,2,3].map do
           ^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#each`?
+            _1.to_s
+          end
+          "done"
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1,2,3].each do
             _1.to_s
           end
           "done"
@@ -246,12 +323,22 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^^^^^^ Method `#sort` used in void context. Did you mean `#sort!`?
         top(x)
       RUBY
+
+      expect_correction(<<~RUBY)
+        x.sort!
+        top(x)
+      RUBY
     end
 
     it 'registers an offense for chained methods' do
       expect_offense(<<~RUBY)
         x.sort.flatten
         ^^^^^^^^^^^^^^ Method `#flatten` used in void context. Did you mean `#flatten!`?
+        top(x)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.sort.flatten!
         top(x)
       RUBY
     end
@@ -285,6 +372,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         42
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def something
+        42
+      end
+    RUBY
   end
 
   it 'registers two offenses for void literals in an initialize method' do
@@ -294,6 +387,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^^ Literal `42` used in void context.
         42
         ^^ Literal `42` used in void context.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def initialize
       end
     RUBY
   end
@@ -307,6 +405,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^^ Literal `42` used in void context.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def foo=(rhs)
+      end
+    RUBY
   end
 
   it 'registers two offenses for void literals in a `#each` method' do
@@ -318,6 +421,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^^ Literal `42` used in void context.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      array.each do |_item|
+      end
+    RUBY
   end
 
   it 'handles `#each` block with single expression' do
@@ -325,6 +433,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       array.each do |_item|
         42
         ^^ Literal `42` used in void context.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.each do |_item|
       end
     RUBY
   end
@@ -336,6 +449,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
           _1
           ^^ Variable `_1` used in void context.
           42
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.tap do
         end
       RUBY
     end
@@ -356,6 +474,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^^ Literal `42` used in void context.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo.tap do |x|
+      end
+    RUBY
   end
 
   it 'registers two offenses for void literals in a `for`' do
@@ -367,6 +490,11 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^^ Literal `42` used in void context.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      for _item in array do
+      end
+    RUBY
   end
 
   it 'handles explicit begin blocks' do
@@ -374,6 +502,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       begin
        1
        ^ Literal `1` used in void context.
+       2
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
        2
       end
     RUBY
