@@ -191,10 +191,138 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
-  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses' do
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of method call' do
     expect_no_offenses(<<~'RUBY')
       foo = do_something \
         argument
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of local variable' do
+    expect_no_offenses(<<~'RUBY')
+      argument = 42
+
+      foo = do_something \
+        argument
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of instance variable' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        @argument
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of class variable' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        @@argument
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of global variable' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        $argument
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of constant' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        ARGUMENT
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of string literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        'argument'
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of interpolated string literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        "argument#{x}"
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of xstring literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        `argument`
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of symbol literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        :argument
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of regexp literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        (1..9)
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of integer literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        42
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of float literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        42.0
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of true literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        true
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of false literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        false
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of nil literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        nil
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of self' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        self
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of array literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        []
+    RUBY
+  end
+
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of hash literal' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        {}
     RUBY
   end
 
