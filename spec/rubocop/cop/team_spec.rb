@@ -21,9 +21,9 @@ RSpec.describe RuboCop::Cop::Team do
       source = <<~'RUBY'
         foo.map{ |a| a.nil? }
 
-        'foo' +
-          'bar' +
-          "#{baz}"
+        puts 'foo' +
+             'bar' +
+             "#{baz}"
 
         i=i+1
 
@@ -36,9 +36,9 @@ RSpec.describe RuboCop::Cop::Team do
 
         foo.map(&:nil?)
 
-        'foo' \
-          'bar' \
-          "#{baz}"
+        puts 'foo' \
+             'bar' \
+             "#{baz}"
 
         i += 1
 
