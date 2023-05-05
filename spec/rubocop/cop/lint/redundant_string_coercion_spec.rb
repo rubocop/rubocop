@@ -138,4 +138,10 @@ RSpec.describe RuboCop::Cop::Lint::RedundantStringCoercion, :config do
       obj.print first.to_s, second.to_s
     RUBY
   end
+
+  it 'does not register an offense when using `to_s(argument)` in `puts` argument' do
+    expect_no_offenses(<<~RUBY)
+      puts obj.to_s(argument)
+    RUBY
+  end
 end

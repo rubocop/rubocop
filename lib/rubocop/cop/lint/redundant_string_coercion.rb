@@ -47,7 +47,7 @@ module RuboCop
           return if node.receiver
 
           node.each_child_node(:send) do |child|
-            next unless child.method?(:to_s)
+            next if !child.method?(:to_s) || child.arguments.any?
 
             register_offense(child, "`#{node.method_name}`")
           end
