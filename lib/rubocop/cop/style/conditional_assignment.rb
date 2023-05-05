@@ -350,7 +350,7 @@ module RuboCop
         end
 
         def ternary_condition?(node)
-          [node, node.children.first].any? { |n| n.if_type? && n.ternary? }
+          [node, node.children.first].compact.any? { |n| n.if_type? && n.ternary? }
         end
 
         def lhs_all_match?(branches)
