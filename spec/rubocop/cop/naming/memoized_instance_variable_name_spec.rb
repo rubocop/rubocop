@@ -19,6 +19,12 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
               ^^^^^^^ Memoized variable `@my_var` does not match method name `x`. Use `@x` instead.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            def x
+              @x ||= :foo
+            end
+          RUBY
         end
       end
 
@@ -28,6 +34,12 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
             def self.x
               @my_var ||= :foo
               ^^^^^^^ Memoized variable `@my_var` does not match method name `x`. Use `@x` instead.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def self.x
+              @x ||= :foo
             end
           RUBY
         end
@@ -41,6 +53,12 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
               ^^ Memoized variable `@y` does not match method name `x`. Use `@x` instead.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            foo = def x
+              @x ||= :foo
+            end
+          RUBY
         end
       end
 
@@ -50,6 +68,14 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
             def x
               @y ||= begin
               ^^ Memoized variable `@y` does not match method name `x`. Use `@x` instead.
+                :foo
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def x
+              @x ||= begin
                 :foo
               end
             end
@@ -66,6 +92,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
               ^^^^ Memoized variable `@bar` does not match method name `foo`. Use `@foo` instead.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            def foo
+              helper_variable = something_we_need_to_calculate_foo
+              @foo ||= calculate_expensive_thing(helper_variable)
+            end
+          RUBY
         end
 
         it 'registers an offense for a predicate method' do
@@ -76,6 +109,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
               ^^^^ Memoized variable `@bar` does not match method name `foo?`. Use `@foo` instead.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            def foo?
+              helper_variable = something_we_need_to_calculate_foo
+              @foo ||= calculate_expensive_thing(helper_variable)
+            end
+          RUBY
         end
 
         it 'registers an offense for a bang method' do
@@ -84,6 +124,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
               helper_variable = something_we_need_to_calculate_foo
               @bar ||= calculate_expensive_thing(helper_variable)
               ^^^^ Memoized variable `@bar` does not match method name `foo!`. Use `@foo` instead.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo!
+              helper_variable = something_we_need_to_calculate_foo
+              @foo ||= calculate_expensive_thing(helper_variable)
             end
           RUBY
         end
@@ -218,6 +265,12 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                 ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
               end
             RUBY
+
+            expect_correction(<<~RUBY)
+              define_method(:values) do
+                @values ||= do_something
+              end
+            RUBY
           end
         end
 
@@ -241,6 +294,14 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                   klass.define_method(:values) do
                     @foo ||= do_something
                     ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                  end
+                end
+              RUBY
+
+              expect_correction(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    @values ||= do_something
                   end
                 end
               RUBY
@@ -271,6 +332,14 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                   end
                 end
               RUBY
+
+              expect_correction(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    @values ||= do_something
+                  end
+                end
+              RUBY
             end
           end
         end
@@ -288,6 +357,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
             ^^^^^^^ Memoized variable `@my_var` does not match method name `x`. Use `@x` instead.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def x
+            return @x if defined?(@x)
+            @x = false
+          end
+        RUBY
       end
 
       it 'registers an offense when memoized variable does not match class method name' do
@@ -298,6 +374,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                                        ^^^^^^^ Memoized variable `@my_var` does not match method name `x`. Use `@x` instead.
             @my_var = false
             ^^^^^^^ Memoized variable `@my_var` does not match method name `x`. Use `@x` instead.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.x
+            return @x if defined?(@x)
+            @x = false
           end
         RUBY
       end
@@ -411,6 +494,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                 ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
               end
             RUBY
+
+            expect_correction(<<~RUBY)
+              define_method(:values) do
+                return @values if defined?(@values)
+                @values = do_something
+              end
+            RUBY
           end
         end
 
@@ -438,6 +528,15 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                                             ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
                     @foo = do_something
                     ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                  end
+                end
+              RUBY
+
+              expect_correction(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    return @values if defined?(@values)
+                    @values = do_something
                   end
                 end
               RUBY
@@ -472,6 +571,15 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                   end
                 end
               RUBY
+
+              expect_correction(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    return @values if defined?(@values)
+                    @values = do_something
+                  end
+                end
+              RUBY
             end
           end
         end
@@ -490,6 +598,12 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
             ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_foo` instead.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            @_foo ||= :foo
+          end
+        RUBY
       end
 
       it 'registers an offense when it has leading `_` but names do not match' do
@@ -497,6 +611,12 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
           def foo
             @_my_var ||= :foo
             ^^^^^^^^ Memoized variable `@_my_var` does not match method name `foo`. Use `@_foo` instead.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            @_foo ||= :foo
           end
         RUBY
       end
@@ -528,6 +648,12 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                 ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
               end
             RUBY
+
+            expect_correction(<<~RUBY)
+              define_method(:values) do
+                @_values ||= do_something
+              end
+            RUBY
           end
         end
 
@@ -551,6 +677,14 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                   klass.define_method(:values) do
                     @foo ||= do_something
                     ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                  end
+                end
+              RUBY
+
+              expect_correction(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    @_values ||= do_something
                   end
                 end
               RUBY
@@ -581,6 +715,14 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                   end
                 end
               RUBY
+
+              expect_correction(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    @_values ||= do_something
+                  end
+                end
+              RUBY
             end
           end
         end
@@ -598,6 +740,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
             ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_foo` instead.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            return @_foo if defined?(@_foo)
+            @_foo = false
+          end
+        RUBY
       end
 
       it 'registers an offense when it has leading `_` but names do not match' do
@@ -608,6 +757,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                                         ^^^^^^^^ Memoized variable `@_my_var` does not match method name `foo`. Use `@_foo` instead.
             @_my_var = false
             ^^^^^^^^ Memoized variable `@_my_var` does not match method name `foo`. Use `@_foo` instead.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            return @_foo if defined?(@_foo)
+            @_foo = false
           end
         RUBY
       end
@@ -644,6 +800,13 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                 ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
               end
             RUBY
+
+            expect_correction(<<~RUBY)
+              define_method(:values) do
+                return @_values if defined?(@_values)
+                @_values = do_something
+              end
+            RUBY
           end
         end
 
@@ -671,6 +834,15 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                                             ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
                     @foo = do_something
                     ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                  end
+                end
+              RUBY
+
+              expect_correction(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    return @_values if defined?(@_values)
+                    @_values = do_something
                   end
                 end
               RUBY
@@ -702,6 +874,15 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
                                             ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
                     @foo = do_something
                     ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                  end
+                end
+              RUBY
+
+              expect_correction(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    return @_values if defined?(@_values)
+                    @_values = do_something
                   end
                 end
               RUBY
