@@ -210,7 +210,7 @@ module RuboCop
         def add_offense_for_missing_line(node, code)
           register_offense(node) do |corrector|
             line_str = missing_line(node, code)
-            corrector.insert_after(node.source_range.end, ", #{line_str}")
+            corrector.insert_after(node.last_argument.source_range.end, ", #{line_str}")
           end
         end
 

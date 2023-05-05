@@ -70,6 +70,21 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
     RUBY
   end
 
+  it 'registers an offense when using `#eval` without lineno and with parenthesized method call' do
+    expect_offense(<<~RUBY)
+      eval(<<-CODE, binding, __FILE__)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+        do_something
+      CODE
+    RUBY
+
+    expect_correction(<<~RUBY)
+      eval(<<-CODE, binding, __FILE__, __LINE__ + 1)
+        do_something
+      CODE
+    RUBY
+  end
+
   it 'registers an offense when using `#eval` with an incorrect line number' do
     expect_offense(<<~RUBY)
       eval 'do_something', binding, __FILE__, __LINE__ + 1
