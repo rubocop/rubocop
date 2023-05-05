@@ -17,7 +17,8 @@ module RuboCop
       # @safety
       #   This cop relies on the pattern `@instance_var ||= ...`,
       #   but this is sometimes used for other purposes than memoization
-      #   so this cop is considered unsafe.
+      #   so this cop is considered unsafe. Also, its autocorrection is unsafe
+      #   because it may conflict with instance variable names already in use.
       #
       # @example EnforcedStyleForLeadingUnderscores: disallowed (default)
       #   # bad
@@ -145,6 +146,8 @@ module RuboCop
       #     @_foo ||= calculate_expensive_thing
       #   end
       class MemoizedInstanceVariableName < Base
+        extend AutoCorrector
+
         include ConfigurableEnforcedStyle
 
         MSG = 'Memoized variable `%<var>s` does not match ' \
@@ -163,6 +166,7 @@ module RuboCop
         PATTERN
 
         # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def on_or_asgn(node)
           lhs, _value = *node
           return unless lhs.ivasgn_type?
@@ -175,14 +179,18 @@ module RuboCop
 
           return if matches?(method_name, lhs)
 
+          suggested_var = suggested_var(method_name)
           msg = format(
             message(lhs.children.first.to_s),
             var: lhs.children.first.to_s,
-            suggested_var: suggested_var(method_name),
+            suggested_var: suggested_var,
             method: method_name
           )
-          add_offense(lhs, message: msg)
+          add_offense(lhs, message: msg) do |corrector|
+            corrector.replace(lhs.loc.name, "@#{suggested_var}")
+          end
         end
+        # rubocop:enable Metrics/MethodLength
         # rubocop:enable Metrics/AbcSize
 
         # @!method defined_memoized?(node, ivar)
@@ -205,15 +213,22 @@ module RuboCop
           defined_memoized?(method_node.body, var_name) do |defined_ivar, return_ivar, ivar_assign|
             return if matches?(method_name, ivar_assign)
 
+            suggested_var = suggested_var(method_name)
             msg = format(
               message(var_name.to_s),
               var: var_name.to_s,
-              suggested_var: suggested_var(method_name),
+              suggested_var: suggested_var,
               method: method_name
             )
-            add_offense(defined_ivar, message: msg)
-            add_offense(return_ivar, message: msg)
-            add_offense(ivar_assign.loc.name, message: msg)
+            add_offense(defined_ivar, message: msg) do |corrector|
+              corrector.replace(defined_ivar, "@#{suggested_var}")
+            end
+            add_offense(return_ivar, message: msg) do |corrector|
+              corrector.replace(return_ivar, "@#{suggested_var}")
+            end
+            add_offense(ivar_assign.loc.name, message: msg) do |corrector|
+              corrector.replace(ivar_assign.loc.name, "@#{suggested_var}")
+            end
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
