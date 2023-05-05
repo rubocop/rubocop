@@ -852,6 +852,27 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
+    it 'registers an offense when empty `case` condition' do
+      expect_offense(<<~RUBY)
+        var = case
+        ^^^^^^^^^^ Assign variables inside of conditionals
+        when foo
+          bar
+        else
+          baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case
+        when foo
+          var = bar
+        else
+          var = baz
+        end
+      RUBY
+    end
+
     context 'for loop' do
       it 'ignores pseudo assignments in a for loop' do
         expect_no_offenses('for i in [1, 2, 3]; puts i; end')
