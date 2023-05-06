@@ -1,0 +1,1 @@
+* [#11852](https://github.com/rubocop/rubocop/issues/11852): Fix an incorrect autocorrect for `Style/EvalWithLocation` when using `eval` without line number and with parenthesized method call. ([@koic][])
