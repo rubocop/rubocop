@@ -16,6 +16,17 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
         items.reverse_each { |item| do_something_else(item, arg) }
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
       RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { |item| do_something(item)
+        do_something_else(item, arg) }
+
+        items.each_with_index { |item| do_something(item)
+        do_something_else(item, arg) }
+
+        items.reverse_each { |item| do_something(item)
+        do_something_else(item, arg) }
+      RUBY
     end
 
     context 'Ruby 2.7' do
@@ -32,6 +43,17 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
           items.reverse_each { do_something(_1) }
           items.reverse_each { do_something_else(_1, arg) }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          items.each { do_something(_1)
+          do_something_else(_1, arg) }
+
+          items.each_with_index { do_something(_1)
+          do_something_else(_1, arg) }
+
+          items.reverse_each { do_something(_1)
+          do_something_else(_1, arg) }
         RUBY
       end
     end
@@ -91,6 +113,11 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
         for item in items do do_something(item) end
         for item in items do do_something_else(item, arg) end
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for item in items do do_something(item)
+        do_something_else(item, arg) end
       RUBY
     end
 
