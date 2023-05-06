@@ -14,6 +14,10 @@ RSpec.describe RuboCop::Cop::Style::HashLikeCase, :config do
           'BAR'
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        { 'foo' => 'FOO', 'bar' => 'BAR' }[x]
+      RUBY
     end
 
     it 'registers an offense when using `case-when` with symbol conditions and literal bodies of the same type' do
@@ -25,6 +29,10 @@ RSpec.describe RuboCop::Cop::Style::HashLikeCase, :config do
         when :bar
           'BAR'
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        { :foo => 'FOO', :bar => 'BAR' }[x]
       RUBY
     end
 

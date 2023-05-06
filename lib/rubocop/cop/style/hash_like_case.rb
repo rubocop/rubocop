@@ -37,6 +37,8 @@ module RuboCop
       #   end
       #
       class HashLikeCase < Base
+        extend AutoCorrector
+
         include MinBranchesCount
 
         MSG = 'Consider replacing `case-when` with a hash lookup.'
@@ -55,7 +57,9 @@ module RuboCop
 
           hash_like_case?(node) do |condition_nodes, body_nodes|
             if nodes_of_same_type?(condition_nodes) && nodes_of_same_type?(body_nodes)
-              add_offense(node)
+              add_offense(node) do |corrector|
+                autocorrect(corrector, node, condition_nodes, body_nodes)
+              end
             end
           end
         end
@@ -64,6 +68,23 @@ module RuboCop
 
         def nodes_of_same_type?(nodes)
           nodes.all? { |node| node.type == nodes.first.type }
+        end
+
+        def autocorrect(corrector, node, condition_nodes, body_nodes)
+          corrector.replace(node, build_replacement(node, condition_nodes, body_nodes))
+        end
+
+        def build_replacement(node, condition_nodes, body_nodes)
+          "#{build_hash_literal(condition_nodes, body_nodes)}[#{node.condition.source}]"
+        end
+
+        def build_hash_literal(condition_nodes, body_nodes)
+          format(
+            '{ %<content>s }',
+            content: condition_nodes.zip(body_nodes).map do |condition_node, body_node|
+              "#{condition_node.source} => #{body_node.source}"
+            end.join(', ')
+          )
         end
       end
     end
