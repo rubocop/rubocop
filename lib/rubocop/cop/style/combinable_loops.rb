@@ -78,8 +78,7 @@ module RuboCop
         private
 
         def collection_looping_method?(node)
-          # TODO: Remove `Symbol#to_s` after supporting only Ruby >= 2.7.
-          method_name = node.method_name.to_s
+          method_name = node.method_name
           method_name.start_with?('each') || method_name.end_with?('_each')
         end
 
