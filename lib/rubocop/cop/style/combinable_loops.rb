@@ -57,22 +57,31 @@ module RuboCop
       #   end
       #
       class CombinableLoops < Base
+        extend AutoCorrector
+
+        include RangeHelp
+
         MSG = 'Combine this loop with the previous loop.'
 
         def on_block(node)
           return unless node.parent&.begin_type?
           return unless collection_looping_method?(node)
+          return unless same_collection_looping_block?(node, node.left_sibling)
 
-          add_offense(node) if same_collection_looping?(node, node.left_sibling)
+          add_offense(node) do |corrector|
+            combine_with_left_sibling(corrector, node)
+          end
         end
 
         alias on_numblock on_block
 
         def on_for(node)
           return unless node.parent&.begin_type?
+          return unless same_collection_looping_for?(node, node.left_sibling)
 
-          sibling = node.left_sibling
-          add_offense(node) if sibling&.for_type? && node.collection == sibling.collection
+          add_offense(node) do |corrector|
+            combine_with_left_sibling(corrector, node)
+          end
         end
 
         private
@@ -83,11 +92,23 @@ module RuboCop
           method_name.start_with?('each') || method_name.end_with?('_each')
         end
 
-        def same_collection_looping?(node, sibling)
+        def same_collection_looping_block?(node, sibling)
           (sibling&.block_type? || sibling&.numblock_type?) &&
             sibling.send_node.method?(node.method_name) &&
             sibling.receiver == node.receiver &&
             sibling.send_node.arguments == node.send_node.arguments
+        end
+
+        def same_collection_looping_for?(node, sibling)
+          sibling&.for_type? && node.collection == sibling.collection
+        end
+
+        def combine_with_left_sibling(corrector, node)
+          corrector.replace(
+            node.left_sibling.body,
+            "#{node.left_sibling.body.source}\n#{node.body.source}"
+          )
+          corrector.remove(range_with_surrounding_space(range: node.source_range, side: :left))
         end
       end
     end
