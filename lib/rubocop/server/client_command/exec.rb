@@ -18,10 +18,11 @@ module RuboCop
         def run
           ensure_server!
           Cache.status_path.delete if Cache.status_path.file?
+          read_stdin = ARGV.include?('-s') || ARGV.include?('--stdin')
           send_request(
             command: 'exec',
             args: ARGV.dup,
-            body: $stdin.tty? ? '' : $stdin.read
+            body: read_stdin ? $stdin.read : ''
           )
           warn stderr unless stderr.empty?
           status
