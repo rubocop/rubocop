@@ -294,6 +294,15 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       RUBY
 
       expect_no_offenses(<<~RUBY)
+        something
+
+        something do |e|
+          # comment
+          e.upcase
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY)
         something do |e|
           e.upcase # comment
         end
@@ -421,6 +430,34 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
 
     it 'accepts ::Proc.new with 1 numbered parameter' do
       expect_no_offenses('::Proc.new { _1.method }')
+    end
+
+    context 'AllowComments: true' do
+      let(:cop_config) { { 'AllowComments' => true } }
+
+      it 'accepts blocks containing comments' do
+        expect_no_offenses(<<~RUBY)
+          something do
+            # comment
+            _1.upcase
+          end
+        RUBY
+
+        expect_no_offenses(<<~RUBY)
+          something do
+            _1.upcase # comment
+          end
+        RUBY
+
+        expect_no_offenses(<<~RUBY)
+          something
+
+          something do
+            # comment
+            _1.upcase
+          end
+        RUBY
+      end
     end
   end
 end

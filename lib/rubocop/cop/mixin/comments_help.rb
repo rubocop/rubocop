@@ -62,7 +62,7 @@ module RuboCop
       # Returns the end line of a node, which might be a comment and not part of the AST
       # End line is considered either the line at which another node starts, or
       # the line at which the parent node ends.
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Lint/DuplicateBranch
       def find_end_line(node)
         if node.if_type? && node.else?
           node.loc.else.line
@@ -70,6 +70,8 @@ module RuboCop
           node.else_branch.loc.line
         elsif node.if_type? && node.elsif?
           node.each_ancestor(:if).find(&:if?).loc.end.line
+        elsif node.block_type? || node.numblock_type?
+          node.loc.end.line
         elsif (next_sibling = node.right_sibling) && next_sibling.is_a?(AST::Node)
           next_sibling.loc.line
         elsif (parent = node.parent)
@@ -78,7 +80,7 @@ module RuboCop
           node.loc.end.line
         end
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Lint/DuplicateBranch
     end
   end
 end
