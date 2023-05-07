@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Team do
              'bar' \
              "#{baz}"
 
-        i + 1
+        i
 
         def a
           b
