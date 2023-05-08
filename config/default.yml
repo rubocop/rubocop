@@ -154,6 +154,7 @@ AllCops:
     rubocop-rake: [rake]
     rubocop-graphql: [graphql]
     rubocop-capybara: [capybara]
+    rubocop-factory_bot: [factory_bot, factory_bot_rails]
   # Enable/Disable checking the methods extended by Active Support.
   ActiveSupportExtensionsEnabled: false
 
