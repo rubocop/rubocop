@@ -187,6 +187,8 @@ module RuboCop
           if_branch = node.if_branch
           else_branch = node.else_branch
 
+          corrector.replace(node.loc.begin, "\n") if node.loc.begin&.is?('then')
+
           if if_branch&.send_type? && heredoc?(if_branch.last_argument)
             autocorrect_heredoc_argument(corrector, node, if_branch, else_branch, guard)
           elsif else_branch&.send_type? && heredoc?(else_branch.last_argument)

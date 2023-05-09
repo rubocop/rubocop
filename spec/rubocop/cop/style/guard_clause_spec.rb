@@ -165,6 +165,18 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     expect_no_corrections
   end
 
+  it 'registers an offense when using `raise` in `else` branch in a one-liner with `then`' do
+    expect_offense(<<~RUBY)
+      if something then work else raise('message') end
+      ^^ Use a guard clause (`raise('message') unless something`) instead of wrapping the code inside a conditional expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      raise('message') unless something#{trailing_whitespace}
+       work#{trailing_whitespace * 3}
+    RUBY
+  end
+
   it 'registers an offense when using `and return` in `then` branch' do
     expect_offense(<<~RUBY)
       def func
