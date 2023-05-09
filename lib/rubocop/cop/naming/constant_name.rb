@@ -76,7 +76,7 @@ module RuboCop
         end
 
         def contains_constant?(node)
-          node.branches.any?(&:const_type?)
+          node.branches.compact.any?(&:const_type?)
         end
       end
     end
