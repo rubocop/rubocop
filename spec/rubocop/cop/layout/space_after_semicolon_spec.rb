@@ -24,6 +24,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon, :config do
       it 'accepts a space between a semicolon and a closing brace' do
         expect_no_offenses('test { ; }')
       end
+
+      it 'accepts no space between a semicolon and a closing brace of string interpolation' do
+        expect_no_offenses(<<~'RUBY')
+          "#{ ;}"
+        RUBY
+      end
     end
 
     context 'when EnforcedStyle for SpaceInsideBlockBraces is space' do
