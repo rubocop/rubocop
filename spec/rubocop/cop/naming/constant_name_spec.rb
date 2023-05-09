@@ -114,6 +114,15 @@ RSpec.describe RuboCop::Cop::Naming::ConstantName, :config do
     RUBY
   end
 
+  it 'does not register an offense when assigning a constant from an empty branch of `else`' do
+    expect_no_offenses(<<~RUBY)
+      CONST = if condition
+        foo
+      else
+      end
+    RUBY
+  end
+
   context 'when a rhs is a conditional expression' do
     context 'when conditional branches contain only constants' do
       it 'does not check names' do
