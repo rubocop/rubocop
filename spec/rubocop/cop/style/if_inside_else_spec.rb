@@ -143,8 +143,10 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     expect_correction(<<~RUBY)
       if x
         'x'
-      elsif y
+      else
+        if y
         'y'
+      end
       end
     RUBY
   end
@@ -183,10 +185,12 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     expect_correction(<<~RUBY)
       if x
         'x'
-      elsif y
+      else
+        if y
         'y'
         elsif z
         'z'
+      end
       end
     RUBY
   end
@@ -229,12 +233,49 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     expect_correction(<<~RUBY)
       if x
         'x'
-      elsif y
+      else
+        if y
         'y'
         elsif z
         'z'
         else
         'a'
+        end
+      end
+    RUBY
+  end
+
+  it 'handles a deep nested multiline `if...then...elsif...else...end`' do
+    expect_offense(<<~RUBY)
+      if cond
+      else
+        if nested_one
+        ^^ Convert `if` nested inside `else` to `elsif`.
+        else
+          if c
+          ^^ Convert `if` nested inside `else` to `elsif`.
+            if d
+            else
+              if e
+              ^^ Convert `if` nested inside `else` to `elsif`.
+              end
+            end
+          end
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if cond
+      elsif nested_one
+        else
+          if c
+            if d
+            else
+              if e
+              end
+            end
+          end
       end
     RUBY
   end
