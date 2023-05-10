@@ -90,8 +90,11 @@ module RuboCop
             0
           elsif exist_semicolon_before_right_curly_brace?(tokens)
             -3
-          elsif exist_semicolon_after_left_curly_brace?(tokens)
+          elsif exist_semicolon_after_left_curly_brace?(tokens) ||
+                exist_semicolon_after_left_string_interpolation_brace?(tokens)
             2
+          elsif exist_semicolon_before_right_string_interpolation_brace?(tokens)
+            -4
           end
         end
 
@@ -101,6 +104,14 @@ module RuboCop
 
         def exist_semicolon_after_left_curly_brace?(tokens)
           tokens[1]&.left_curly_brace? && tokens[2]&.semicolon?
+        end
+
+        def exist_semicolon_before_right_string_interpolation_brace?(tokens)
+          tokens[-3]&.type == :tSTRING_DEND && tokens[-4]&.semicolon?
+        end
+
+        def exist_semicolon_after_left_string_interpolation_brace?(tokens)
+          tokens[1]&.type == :tSTRING_DBEG && tokens[2]&.semicolon?
         end
 
         def register_semicolon(line, column, after_expression, token_before_semicolon = nil)
