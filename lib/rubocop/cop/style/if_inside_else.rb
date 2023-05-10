@@ -59,11 +59,13 @@ module RuboCop
       #   end
       #
       class IfInsideElse < Base
+        include IgnoredNode
         include RangeHelp
         extend AutoCorrector
 
         MSG = 'Convert `if` nested inside `else` to `elsif`.'
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def on_if(node)
           return if node.ternary? || node.unless?
 
@@ -73,9 +75,13 @@ module RuboCop
           return if allow_if_modifier_in_else_branch?(else_branch)
 
           add_offense(else_branch.loc.keyword) do |corrector|
+            next if part_of_ignored_node?(node)
+
             autocorrect(corrector, else_branch)
+            ignore_node(node)
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         private
 
