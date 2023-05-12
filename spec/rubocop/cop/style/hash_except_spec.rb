@@ -172,12 +172,36 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
           {foo: 1, bar: 2, baz: 3}.reject { |k, v| ![1, 2].include?(v) }
         RUBY
       end
+
+      it 'does not register an offense when using `reject` and calling `include?` method on a key' do
+        expect_no_offenses(<<~RUBY)
+          {foo: 1, bar: 2, baz: 3}.reject { |k, v| k.include?('oo') }
+        RUBY
+      end
+
+      it 'does not register an offense when using `reject` and calling `!include?` method on a key' do
+        expect_no_offenses(<<~RUBY)
+          {foo: 1, bar: 2, baz: 3}.reject { |k, v| !k.include?('oo') }
+        RUBY
+      end
     end
 
     context 'using `exclude?`' do
       it 'does not register offenses when using `reject` and calling `!exclude?` method with symbol array' do
         expect_no_offenses(<<~RUBY)
           {foo: 1, bar: 2, baz: 3}.reject { |k, v| !%i[foo bar].exclude?(k) }
+        RUBY
+      end
+
+      it 'does not register an offense when using `reject` and calling `exclude?` method on a key' do
+        expect_no_offenses(<<~RUBY)
+          {foo: 1, bar: 2, baz: 3}.reject { |k, v| k.exclude?('oo') }
+        RUBY
+      end
+
+      it 'does not register an offense when using `reject` and calling `!exclude?` method on a key' do
+        expect_no_offenses(<<~RUBY)
+          {foo: 1, bar: 2, baz: 3}.reject { |k, v| !k.exclude?('oo') }
         RUBY
       end
     end
@@ -457,6 +481,18 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
             {foo: 1, bar: 2, baz: 3}.except(*array)
           RUBY
         end
+
+        it 'does not register an offense when using `reject` and calling `include?` method on a key' do
+          expect_no_offenses(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| k.include?('oo') }
+          RUBY
+        end
+
+        it 'does not register an offense when using `reject` and calling `!include?` method on a key' do
+          expect_no_offenses(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| !k.include?('oo') }
+          RUBY
+        end
       end
 
       context 'using `exclude?`' do
@@ -542,6 +578,18 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
         it 'does not register an offense when using `reject` and calling `exclude?` method with symbol array and second block value' do
           expect_no_offenses(<<~RUBY)
             {foo: 1, bar: 2, baz: 3}.reject { |k, v| ![1, 2].exclude?(v) }
+          RUBY
+        end
+
+        it 'does not register an offense when using `reject` and calling `exclude?` method on a key' do
+          expect_no_offenses(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| k.exclude?('oo') }
+          RUBY
+        end
+
+        it 'does not register an offense when using `reject` and calling `!exclude?` method on a key' do
+          expect_no_offenses(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| !k.exclude?('oo') }
           RUBY
         end
       end
