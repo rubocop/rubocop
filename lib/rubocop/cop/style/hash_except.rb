@@ -45,13 +45,13 @@ module RuboCop
           (block
             (send _ _)
             (args
-              (arg _)
+              $(arg _)
               (arg _))
             {
-              (send
+              $(send
                 _ {:== :!= :eql? :include?} _)
               (send
-                (send
+                $(send
                   _ {:== :!= :eql? :include?} _) :!)
               })
         PATTERN
@@ -61,13 +61,13 @@ module RuboCop
           (block
             (send _ _)
             (args
-              (arg _)
+              $(arg _)
               (arg _))
             {
-              (send
+              $(send
                 _ {:== :!= :eql? :in? :include? :exclude?} _)
               (send
-                (send
+                $(send
                   _ {:== :!= :eql? :in? :include? :exclude?} _) :!)
               })
         PATTERN
@@ -89,13 +89,24 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def bad_method?(block)
           if active_support_extensions_enabled?
-            bad_method_with_active_support?(block)
+            bad_method_with_active_support?(block) do |key_arg, send_node|
+              if send_node.method?(:in?) && send_node.receiver&.source != key_arg.source
+                return false
+              end
+              return true if !send_node.method?(:include?) && !send_node.method?(:exclude?)
+
+              send_node.first_argument&.source == key_arg.source
+            end
           else
-            bad_method_with_poro?(block)
+            bad_method_with_poro?(block) do |key_arg, send_node|
+              !send_node.method?(:include?) || send_node.first_argument&.source == key_arg.source
+            end
           end
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def semantically_except_method?(send, block)
           body = block.body
