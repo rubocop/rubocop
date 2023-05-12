@@ -3716,6 +3716,11 @@ Style/EvenOdd:
   VersionAdded: '0.12'
   VersionChanged: '0.29'
 
+Style/ExactRegexpMatch:
+  Description: 'Checks for exact regexp match inside Regexp literals.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/ExpandPathArguments:
   Description: "Use `expand_path(__dir__)` instead of `expand_path('..', __FILE__)`."
   Enabled: true
