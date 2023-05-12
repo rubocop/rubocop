@@ -75,7 +75,7 @@ module RuboCop
 
         # @!method add_development_dependency?(node)
         def_node_matcher :add_development_dependency?, <<~PATTERN
-          (send _ :add_development_dependency (str #forbidden_gem? ...))
+          (send _ :add_development_dependency (str #forbidden_gem? ...) _? _?)
         PATTERN
 
         # @!method gem?(node)
