@@ -40,6 +40,15 @@ module RuboCop
       #
       #   # good
       #   foo if [b.lightweight, b.heavyweight].include?(a)
+      #
+      # @example ComparisonsThreshold: 2 (default)
+      #   # bad
+      #   foo if a == 'a' || a == 'b'
+      #
+      # @example ComparisonsThreshold: 3
+      #   # good
+      #   foo if a == 'a' || a == 'b'
+      #
       class MultipleComparison < Base
         extend AutoCorrector
 
@@ -58,6 +67,7 @@ module RuboCop
           return unless node == root_of_or_node
           return unless nested_variable_comparison?(root_of_or_node)
           return if @allowed_method_comparison
+          return if @compared_elements.size < comparisons_threshold
 
           add_offense(node) do |corrector|
             elements = @compared_elements.join(', ')
@@ -150,6 +160,10 @@ module RuboCop
 
         def allow_method_comparison?
           cop_config.fetch('AllowMethodComparison', true)
+        end
+
+        def comparisons_threshold
+          cop_config.fetch('ComparisonsThreshold', 2)
         end
       end
     end

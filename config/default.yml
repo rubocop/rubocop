@@ -4383,6 +4383,7 @@ Style/MultipleComparison:
   VersionAdded: '0.49'
   VersionChanged: '1.1'
   AllowMethodComparison: true
+  ComparisonsThreshold: 2
 
 Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'

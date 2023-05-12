@@ -222,4 +222,32 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
       RUBY
     end
   end
+
+  context 'when `ComparisonsThreshold`: 2' do
+    let(:cop_config) { { 'ComparisonsThreshold' => 2 } }
+
+    it 'registers an offense and corrects when `a` is compared twice' do
+      expect_offense(<<~RUBY)
+        a = "a"
+        foo if a == "a" || a == "b"
+               ^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = "a"
+        foo if ["a", "b"].include?(a)
+      RUBY
+    end
+  end
+
+  context 'when `ComparisonsThreshold`: 3' do
+    let(:cop_config) { { 'ComparisonsThreshold' => 3 } }
+
+    it 'does not register an offense when `a` is compared twice' do
+      expect_no_offenses(<<~RUBY)
+        a = "a"
+        foo if a == "a" || a == "b"
+      RUBY
+    end
+  end
 end
