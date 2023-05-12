@@ -132,6 +132,33 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
       end
     end
+
+    it 'is expected that all cops documented with `@safety` are `Safe: false` or `SafeAutoCorrect: false`' do
+      require 'yard'
+
+      YARD::Registry.load!
+
+      unsafe_cops = YARD::Registry.all(:class).select do |example|
+        example.tags.any? { |tag| tag.tag_name == 'safety' }
+      end
+
+      unsafe_cop_names = unsafe_cops.map do |cop|
+        department_and_cop_names = cop.path.split('::')[2..] # Drop `RuboCop::Cop` from class name.
+
+        department_and_cop_names.join('/')
+      end
+
+      unsafe_cop_names.each do |cop_name|
+        cop_config = config[cop_name]
+        unsafe = cop_config['Safe'] == false || cop_config['SafeAutoCorrect'] == false
+
+        expect(unsafe).to(
+          be(true),
+          "`#{cop_name}` cop should be set `Safe: false` or `SafeAutoCorrect: false` " \
+          'because `@safety` YARD tag exists.'
+        )
+      end
+    end
   end
 
   describe 'cop message' do

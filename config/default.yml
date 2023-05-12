@@ -2948,7 +2948,9 @@ Naming/VariableNumber:
 Security/CompoundHash:
   Description: 'When overwriting Object#hash to combine values, prefer delegating to Array#hash over writing a custom implementation.'
   Enabled: pending
+  Safe: false
   VersionAdded: '1.28'
+  VersionChanged: '<<next>>'
 
 Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
@@ -3521,7 +3523,9 @@ Style/DataInheritance:
   Description: 'Checks for inheritance from Data.define.'
   StyleGuide: '#no-extend-data-define'
   Enabled: pending
+  SafeAutoCorrect: false
   VersionAdded: '1.49'
+  VersionChanged: '<<next>>'
 
 Style/DateTime:
   Description: 'Use Time over DateTime.'
@@ -4628,7 +4632,9 @@ Style/OpenStructUse:
     - https://docs.ruby-lang.org/en/3.0.0/OpenStruct.html#class-OpenStruct-label-Caveats
 
   Enabled: pending
+  Safe: false
   VersionAdded: '1.23'
+  VersionChanged: '<<next>>'
 
 Style/OperatorMethodCall:
   Description: 'Checks for redundant dot before operator method call.'
