@@ -1,1 +1,0 @@
-* [#11861](https://github.com/rubocop/rubocop/issues/11861): Fix a false positive for `Layout/SpaceAfterSemicolon` when no space between a semicolon and a closing brace of string interpolation. ([@koic][])
