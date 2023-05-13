@@ -4931,6 +4931,11 @@ Style/RedundantRegexpCharacterClass:
   Enabled: true
   VersionAdded: '0.85'
 
+Style/RedundantRegexpConstructor:
+  Description: 'Checks for the instantiation of regexp using redundant `Regexp.new` or `Regexp.compile`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantRegexpEscape:
   Description: 'Checks for redundant escapes in Regexps.'
   Enabled: true
