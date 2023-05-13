@@ -5,8 +5,6 @@ RSpec.shared_examples_for 'multiline literal brace layout' do
 
   let(:prefix) { '' } # A prefix before the opening brace.
   let(:suffix) { '' } # A suffix for the line after the closing brace.
-  let(:open) { nil } # The opening brace.
-  let(:close) { nil } # The closing brace.
   let(:a) { 'a' } # The first element.
   let(:b) { 'b' } # The second element.
   let(:b_comment) { '' } # Comment after the second element.

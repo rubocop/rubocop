@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
-  let(:redundant_parens_enabled) { false }
-
   shared_examples 'safe assignment disabled' do |style, message|
     let(:cop_config) { { 'EnforcedStyle' => style, 'AllowSafeAssignment' => false } }
 

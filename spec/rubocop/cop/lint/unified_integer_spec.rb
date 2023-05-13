@@ -16,8 +16,6 @@ RSpec.describe RuboCop::Cop::Lint::UnifiedInteger, :config do
         end
 
         context 'when explicitly specified as toplevel constant' do
-          let(:source) { "1.is_a?(::#{klass})" }
-
           it 'registers an offense' do
             expect_offense(<<~RUBY, klass: klass)
               1.is_a?(::%{klass})

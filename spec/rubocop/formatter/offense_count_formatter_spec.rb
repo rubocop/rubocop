@@ -5,7 +5,6 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
 
   let(:output) { StringIO.new }
   let(:options) { { display_style_guide: false } }
-  let(:file_count) { files.size }
 
   let(:files) do
     %w[lib/rubocop.rb spec/spec_helper.rb exe/rubocop].map do |path|

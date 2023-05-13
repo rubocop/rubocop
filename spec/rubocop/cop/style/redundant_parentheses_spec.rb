@@ -639,8 +639,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   end
 
   context 'pin operator', :ruby31 do
-    let(:target_ruby_version) { 3.1 }
-
     shared_examples 'redundant parentheses' do |variable, description|
       it "registers an offense and corrects #{description}" do
         expect_offense(<<~RUBY, variable: variable)

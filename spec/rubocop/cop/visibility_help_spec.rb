@@ -25,10 +25,6 @@ RSpec.describe RuboCop::Cop::VisibilityHelp do
       parse_source(source)
     end
 
-    let(:source) do
-      raise NotImplementedError
-    end
-
     context 'without visibility block' do
       let(:source) do
         <<~RUBY
