@@ -23,6 +23,28 @@ RSpec.describe RuboCop::Cop::Gemspec::DevelopmentDependencies, :config do
       RUBY
     end
 
+    it 'registers an offense when using `#add_development_dependency` in a gemspec a single version argument' do
+      expect_offense(<<~RUBY, 'example.gemspec', preferred_file: enforced_style)
+        Gem::Specification.new do |spec|
+          spec.name = 'example'
+          spec.add_development_dependency 'foo', '>= 1.0'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Specify development dependencies in %{preferred_file}.
+          spec.add_development_dependency 'allowed', '>= 1.0'
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using `#add_development_dependency` in a gemspec with two version' do
+      expect_offense(<<~RUBY, 'example.gemspec', preferred_file: enforced_style)
+        Gem::Specification.new do |spec|
+          spec.name = 'example'
+          spec.add_development_dependency 'foo', '>= 1.0', '< 2.0'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Specify development dependencies in %{preferred_file}.
+          spec.add_development_dependency 'allowed', '>= 1.0', '< 2.0'
+        end
+      RUBY
+    end
+
     it 'registers no offenses when specifying dependencies in Gemfile' do
       expect_no_offenses(<<~RUBY, 'Gemfile')
         gem 'example'
