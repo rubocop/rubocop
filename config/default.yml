@@ -2604,6 +2604,11 @@ Lint/UselessAssignment:
   VersionAdded: '0.11'
   VersionChanged: '1.66'
 
+Lint/UselessConstantScoping:
+  Description: 'Checks for useless constant scoping.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UselessDefined:
   Description: 'Checks for calls to `defined?` with strings and symbols. The result of such a call will always be truthy.'
   Enabled: pending

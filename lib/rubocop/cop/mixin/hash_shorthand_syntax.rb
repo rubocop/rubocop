@@ -11,6 +11,24 @@ module RuboCop
       DO_NOT_MIX_OMIT_VALUE_MSG = "#{DO_NOT_MIX_MSG_PREFIX} #{OMIT_HASH_VALUE_MSG}"
       DO_NOT_MIX_EXPLICIT_VALUE_MSG = "#{DO_NOT_MIX_MSG_PREFIX} #{EXPLICIT_HASH_VALUE_MSG}"
 
+      DefNode = Struct.new(:node) do
+        def selector
+          if node.loc.respond_to?(:selector)
+            node.loc.selector
+          else
+            node.loc.keyword
+          end
+        end
+
+        def first_argument
+          node.first_argument
+        end
+
+        def last_argument
+          node.last_argument
+        end
+      end
+
       def on_hash_for_mixed_shorthand(hash_node)
         return if ignore_mixed_hash_shorthand_syntax?(hash_node)
 
@@ -210,24 +228,6 @@ module RuboCop
           hash_key_source = pair_node.key.source
           replacement = "#{hash_key_source}:"
           register_offense(pair_node, OMIT_HASH_VALUE_MSG, replacement)
-        end
-      end
-
-      DefNode = Struct.new(:node) do
-        def selector
-          if node.loc.respond_to?(:selector)
-            node.loc.selector
-          else
-            node.loc.keyword
-          end
-        end
-
-        def first_argument
-          node.first_argument
-        end
-
-        def last_argument
-          node.last_argument
         end
       end
     end
