@@ -121,7 +121,7 @@ module RuboCop
 
         def allowed_patterns
           # Convert the patterns to be anchored
-          super.map { |regexp| Regexp.new(/\A#{regexp}\z/) }
+          super.map { |regexp| /\A#{regexp}\z/ }
         end
       end
     end
