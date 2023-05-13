@@ -4,9 +4,10 @@ module RuboCop
   module Cop
     # Methods that calculate and return Parser::Source::Ranges
     module RangeHelp
-      private
-
       BYTE_ORDER_MARK = 0xfeff # The Unicode codepoint
+      NOT_GIVEN = Module.new
+
+      private
 
       def source_range(source_buffer, line_number, column, length = 1)
         if column.is_a?(Range)
@@ -51,7 +52,6 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      NOT_GIVEN = Module.new
       def range_with_surrounding_space(range_positional = NOT_GIVEN, # rubocop:disable Metrics/ParameterLists
                                        range: NOT_GIVEN, side: :both, newlines: true,
                                        whitespace: false, continuations: false,

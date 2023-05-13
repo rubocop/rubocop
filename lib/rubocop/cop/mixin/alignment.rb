@@ -5,9 +5,9 @@ module RuboCop
     # This module checks for nodes that should be aligned to the left or right.
     # This amount is determined by the instance variable @column_delta.
     module Alignment
-      private
-
       SPACE = ' '
+
+      private
 
       attr_reader :column_delta
 
