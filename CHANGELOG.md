@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.51.0 (2023-05-13)
+
 ### New features
 
 * [#11819](https://github.com/rubocop/rubocop/pull/11819): Add autocorrection for `Lint/AmbiguousBlockAssociation`. ([@r7kamura][])

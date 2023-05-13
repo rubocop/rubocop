@@ -38,7 +38,7 @@ x != y # or x = !y
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.48
 | 1.13
 |===
@@ -2830,6 +2830,9 @@ array = [
 |===
 
 This cop checks for `IO.select` that is incompatible with Fiber Scheduler since Ruby 3.0.
+
+When an array of IO objects waiting for an exception (the third argument of `IO.select`)
+is used as an argument, there is no alternative API, so offenses are not registered.
 
 NOTE: When the method is successful the return value of `IO.select` is `[[IO]]`,
 and the return value of `io.wait_readable` and `io.wait_writable` are `self`.
@@ -5971,7 +5974,7 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.89
 | -
 |===
@@ -5984,9 +5987,22 @@ always ignored. This is detected automatically since Ruby 2.7.
 
 [source,ruby]
 ----
-# Detected since Ruby 2.7
-return 1 # 1 is always ignored.
+# bad
+return 1
+
+# good
+return
 ----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Exclude
+| `+**/*.jb+`
+| Array
+|===
 
 == Lint/TrailingCommaInAttributeDeclaration
 
@@ -6925,9 +6941,9 @@ end
 
 | Enabled
 | Yes
-| No
+| Yes (Unsafe)
 | 0.11
-| -
+| 1.51
 |===
 
 Checks for every useless assignment to local variable in every
@@ -6939,6 +6955,13 @@ The basic idea for this cop was from the warning of `ruby -cw`:
 Currently this cop has advanced logic that detects unreferenced
 reassignments and properly handles varied cases such as branch, loop,
 rescue, ensure, etc.
+
+=== Safety
+
+This cop's autocorrection is unsafe because removing assignment from
+operator assignment can cause NameError if this assignment has been used to declare
+local variable. For example, replacing `a ||= 1` to `a || 1` may cause
+"undefined local variable or method `a' for main:Object (NameError)".
 
 === Examples
 
@@ -7282,7 +7305,7 @@ do_something(1)
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.9
 | -
 |===

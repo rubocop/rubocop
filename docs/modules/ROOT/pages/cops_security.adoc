@@ -6,10 +6,10 @@
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
-| Yes
+| No
 | No
 | 1.28
-| -
+| 1.51
 |===
 
 Checks for implementations of the `hash` method which combine

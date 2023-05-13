@@ -2455,7 +2455,7 @@ Lint/UselessAssignment:
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
   VersionAdded: '0.11'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.51'
   SafeAutoCorrect: false
 
 Lint/UselessElseWithoutRescue:
@@ -2950,7 +2950,7 @@ Security/CompoundHash:
   Enabled: pending
   Safe: false
   VersionAdded: '1.28'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.51'
 
 Security/Eval:
   Description: 'The use of eval represents a serious security risk.'
@@ -3525,7 +3525,7 @@ Style/DataInheritance:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.51'
 
 Style/DateTime:
   Description: 'Use Time over DateTime.'
@@ -3719,7 +3719,7 @@ Style/EvenOdd:
 Style/ExactRegexpMatch:
   Description: 'Checks for exact regexp match inside Regexp literals.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.51'
 
 Style/ExpandPathArguments:
   Description: "Use `expand_path(__dir__)` instead of `expand_path('..', __FILE__)`."
@@ -4639,7 +4639,7 @@ Style/OpenStructUse:
   Enabled: pending
   Safe: false
   VersionAdded: '1.23'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.51'
 
 Style/OperatorMethodCall:
   Description: 'Checks for redundant dot before operator method call.'

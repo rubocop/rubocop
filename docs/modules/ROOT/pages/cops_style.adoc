@@ -1690,8 +1690,8 @@ and hashes can be replaced with `{Array,Hash}#{compact,compact!}`.
 
 It is unsafe by default because false positives may occur in the
 `nil` check of block arguments to the receiver object. Additionally,
- we can't know the type of the receiver object for sure, which may
- result in false positives as well.
+we can't know the type of the receiver object for sure, which may
+result in false positives as well.
 
 For example, `[[1, 2], [3, nil]].reject { |first, second| second.nil? }`
 and `[[1, 2], [3, nil]].compact` are not compatible. This will work fine
@@ -1703,7 +1703,9 @@ when the receiver is a hash object.
 ----
 # bad
 array.reject(&:nil?)
+array.delete_if(&:nil?)
 array.reject { |e| e.nil? }
+array.delete_if { |e| e.nil? }
 array.select { |e| !e.nil? }
 
 # good
@@ -1800,8 +1802,8 @@ items.include?
 | -
 |===
 
-Checks for methods invoked via the :: operator instead
-of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
+Checks for methods invoked via the `::` operator instead
+of the `.` operator (like `FileUtils::rmdir` instead of `FileUtils.rmdir`).
 
 === Examples
 
@@ -1865,7 +1867,7 @@ end
 
 | Enabled
 | No
-| No
+| Yes (Unsafe)
 | 0.90
 | -
 |===
@@ -2510,8 +2512,11 @@ Check that a copyright notice was given in each source file.
 The default regexp for an acceptable copyright notice can be found in
 config/default.yml. The default can be changed as follows:
 
- Style/Copyright:
-   Notice: '^Copyright (\(c\) )?2\d{3} Acme Inc'
+[source,yaml]
+----
+Style/Copyright:
+  Notice: '^Copyright (\(c\) )?2\d{3} Acme Inc'
+----
 
 This regex string is treated as an unanchored regex. For each file
 that RuboCop scans, a comment that matches this regex must be found or
@@ -2540,9 +2545,9 @@ NOTE: Required Ruby version: 3.2
 
 | Pending
 | Yes
-| Yes
+| Yes (Unsafe)
 | 1.49
-| -
+| 1.51
 |===
 
 Checks for inheritance from `Data.define` to avoid creating the anonymous parent class.
@@ -2940,7 +2945,7 @@ classes, other modules, constant definitions or constant visibility
 declarations.
 
 The documentation requirement is annulled if the class or module has
-a "#:nodoc:" comment next to it. Likewise, "#:nodoc: all" does the
+a `#:nodoc:` comment next to it. Likewise, `#:nodoc: all` does the
 same for all its children.
 
 === Examples
@@ -4065,6 +4070,40 @@ end
 === References
 
 * https://rubystyle.guide#predicate-methods
+
+== Style/ExactRegexpMatch
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.51
+| -
+|===
+
+Checks for exact regexp match inside Regexp literals.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+string =~ /\Astring\z/
+string === /\Astring\z/
+string.match(/\Astring\z/)
+string.match?(/\Astring\z/)
+
+# good
+string == 'string'
+
+# bad
+string !~ /\Astring\z/
+
+# good
+string != 'string'
+----
 
 == Style/ExpandPathArguments
 
@@ -6417,12 +6456,16 @@ is disabled by default.
 Methods that can be inverted should be defined in `InverseMethods`. Note that
 the relationship of inverse methods needs to be defined in both directions.
 For example,
-  InverseMethods:
-    :!=: :==
-    :even?: :odd?
-    :odd?: :even?
 
- will suggest both `even?` and `odd?` to be inverted, but only `!=` (and not `==`).
+[source,yaml]
+----
+InverseMethods:
+  :!=: :==
+  :even?: :odd?
+  :odd?: :even?
+----
+
+will suggest both `even?` and `odd?` to be inverted, but only `!=` (and not `==`).
 
 === Safety
 
@@ -9785,10 +9828,10 @@ end
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
-| Yes
+| No
 | No
 | 1.23
-| -
+| 1.51
 |===
 
 Flags uses of OpenStruct, as it is now officially discouraged
@@ -12056,7 +12099,16 @@ STR
 | 0.30
 |===
 
-Enforces using // or %r around regular expressions.
+Enforces using `//` or `%r` around regular expressions.
+
+NOTE: The following `%r` cases using a regexp starts with a blank or `=`
+as a method argument allowed to prevent syntax errors.
+
+[source,ruby]
+----
+do_something %r{ regexp} # `do_something / regexp/` is an invalid syntax.
+do_something %r{=regexp} # `do_something /=regexp/` is an invalid syntax.
+----
 
 === Examples
 
