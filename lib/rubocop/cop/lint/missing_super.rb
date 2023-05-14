@@ -11,6 +11,9 @@ module RuboCop
       # missing method. In other cases, the theoretical ideal handling could be
       # challenging or verbose for no actual gain.
       #
+      # Autocorrection is not supported because the position of `super` cannot be
+      # determined automatically.
+      #
       # @example
       #   # bad
       #   class Employee < Person

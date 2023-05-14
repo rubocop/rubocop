@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
   context 'constructor' do
-    it 'registers an offense when no `super` call' do
+    it 'registers an offense and does not autocorrect when no `super` call' do
       expect_offense(<<~RUBY)
         class Child < Parent
           def initialize
@@ -10,9 +10,11 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
 
-    it 'registers an offense when no `super` call and when defining some method' do
+    it 'registers an offense and does not autocorrect when no `super` call and when defining some method' do
       expect_offense(<<~RUBY)
         class Child < Parent
           def initialize
@@ -23,6 +25,8 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'does not register an offense for the class without parent class' do
@@ -75,7 +79,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
   end
 
   context '`Class.new` block' do
-    it 'registers an offense when no `super` call' do
+    it 'registers an offense and does not autocorrect when no `super` call' do
       expect_offense(<<~RUBY)
         Class.new(Parent) do
           def initialize
@@ -83,6 +87,8 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'does not register an offense for the `Class.new` without parent class argument' do
@@ -105,7 +111,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
   end
 
   context '`Class.new` numbered block', :ruby27 do
-    it 'registers an offense when no `super` call' do
+    it 'registers an offense and does not autocorrect when no `super` call' do
       expect_offense(<<~RUBY)
         Class.new(Parent) do
           def initialize
@@ -115,6 +121,8 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
           do_something(_1)
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'does not register an offense for the `Class.new` without parent class argument' do
@@ -150,7 +158,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
       RUBY
     end
 
-    it 'registers an offense when class callback without `super` call' do
+    it 'registers an offense and does not autocorrect when class callback without `super` call' do
       expect_offense(<<~RUBY)
         class Foo
           def self.inherited(base)
@@ -158,9 +166,11 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
 
-    it 'registers an offense when class callback within `self << class` and without `super` call' do
+    it 'registers an offense and does not autocorrect when class callback within `self << class` and without `super` call' do
       expect_offense(<<~RUBY)
         class Foo
           class << self
@@ -170,9 +180,11 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
 
-    it 'registers an offense when method callback is without `super` call' do
+    it 'registers an offense and does not autocorrect when method callback is without `super` call' do
       expect_offense(<<~RUBY)
         class Foo
           def method_added(*)
@@ -180,6 +192,8 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'does not register an offense when callback has a `super` call' do
