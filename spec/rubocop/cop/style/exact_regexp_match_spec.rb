@@ -62,6 +62,12 @@ RSpec.describe RuboCop::Cop::Style::ExactRegexpMatch, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `string === /\A0+\z/` (literal with quantifier)' do
+    expect_no_offenses(<<~'RUBY')
+      string === /\A0+\z/
+    RUBY
+  end
+
   it 'does not register an offense when using `string =~ /\Astring.*\z/` (any pattern)' do
     expect_no_offenses(<<~'RUBY')
       string =~ /\Astring.*\z/
