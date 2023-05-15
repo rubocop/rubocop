@@ -41,8 +41,7 @@ module RuboCop
           return unless (regexp = exact_regexp_match(node))
 
           parsed_regexp = Regexp::Parser.parse(regexp)
-          tokens = parsed_regexp.map(&:token)
-          return unless tokens[0] == :bos && tokens[1] == :literal && tokens[2] == :eos
+          return unless exact_match_pattern?(parsed_regexp)
 
           prefer = "#{node.receiver.source} #{new_method(node)} '#{parsed_regexp[1].text}'"
 
@@ -52,6 +51,13 @@ module RuboCop
         end
 
         private
+
+        def exact_match_pattern?(parsed_regexp)
+          tokens = parsed_regexp.map(&:token)
+          return false unless tokens[0] == :bos && tokens[1] == :literal && tokens[2] == :eos
+
+          !parsed_regexp[1].quantifier
+        end
 
         def new_method(node)
           node.method?(:!~) ? '!=' : '=='
