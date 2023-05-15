@@ -84,6 +84,7 @@ module RuboCop
           }
         PATTERN
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return unless (block_node = node.block_node)
           return if block_node.body&.begin_type?
@@ -91,11 +92,14 @@ module RuboCop
           return unless (regexp_method_send_node = extract_send_node(block_node))
           return if match_predicate_without_receiver?(regexp_method_send_node)
 
-          opposite = opposite?(regexp_method_send_node)
+          replacement = replacement(regexp_method_send_node, node)
+          return if target_ruby_version <= 2.2 && replacement == 'grep_v'
+
           regexp = find_regexp(regexp_method_send_node, block_node)
 
-          register_offense(node, block_node, regexp, opposite)
+          register_offense(node, block_node, regexp, replacement)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
@@ -105,9 +109,15 @@ module RuboCop
           node.hash_type? || creates_hash?(node) || env_const?(node)
         end
 
-        def register_offense(node, block_node, regexp, opposite)
-          method_name = node.method_name.to_sym
-          replacement = opposite ? OPPOSITE_REPLACEMENTS[method_name] : REPLACEMENTS[method_name]
+        def replacement(regexp_method_send_node, node)
+          opposite = opposite?(regexp_method_send_node)
+
+          method_name = node.method_name
+
+          opposite ? OPPOSITE_REPLACEMENTS[method_name] : REPLACEMENTS[method_name]
+        end
+
+        def register_offense(node, block_node, regexp, replacement)
           message = format(MSG, replacement: replacement, original_method: node.method_name)
 
           add_offense(block_node, message: message) do |corrector|
