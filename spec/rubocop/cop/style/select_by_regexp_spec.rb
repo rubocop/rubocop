@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
-  { 'select' => 'grep', 'find_all' => 'grep', 'reject' => 'grep_v' }.each do |method, correction|
+  shared_examples 'regexp match' do |method, correction|
     message = "Prefer `#{correction}` to `#{method}` with a regexp match."
 
     context "with #{method}" do
@@ -328,7 +328,7 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     end
   end
 
-  { 'select' => 'grep_v', 'find_all' => 'grep_v', 'reject' => 'grep' }.each do |method, correction|
+  shared_examples 'regexp mismatch' do |method, correction|
     message = "Prefer `#{correction}` to `#{method}` with a regexp match."
 
     context "with #{method}" do
@@ -426,6 +426,40 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
           RUBY
         end
       end
+    end
+  end
+
+  context 'when Ruby >= 2.3', :ruby23 do
+    include_examples('regexp match', 'select', 'grep')
+    include_examples('regexp match', 'find_all', 'grep')
+    include_examples('regexp mismatch', 'reject', 'grep')
+
+    include_examples('regexp match', 'reject', 'grep_v')
+    include_examples('regexp mismatch', 'select', 'grep_v')
+    include_examples('regexp mismatch', 'find_all', 'grep_v')
+  end
+
+  context 'when Ruby <= 2.2', :ruby22 do
+    include_examples('regexp match', 'select', 'grep')
+    include_examples('regexp match', 'find_all', 'grep')
+    include_examples('regexp mismatch', 'reject', 'grep')
+
+    it 'does not register an offense when `reject` with regexp match' do
+      expect_no_offenses(<<~RUBY)
+        array.reject { |x| x =~ /regexp/ }
+      RUBY
+    end
+
+    it 'does not register an offense when `select` with regexp mismatch' do
+      expect_no_offenses(<<~RUBY)
+        array.select { |x| x !~ /regexp/ }
+      RUBY
+    end
+
+    it 'does not register an offense when `find_all` with regexp mismatch' do
+      expect_no_offenses(<<~RUBY)
+        array.find_all { |x| x !~ /regexp/ }
+      RUBY
     end
   end
 end
