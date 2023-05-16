@@ -9,9 +9,13 @@ module RuboCop
           'rubocop-ast %<rubocop_ast_version>s, ' \
           'running on %<ruby_engine>s %<ruby_version>s)%<server_mode>s [%<ruby_platform>s]'
 
-    CANONICAL_FEATURE_NAMES = { 'Rspec' => 'RSpec', 'Graphql' => 'GraphQL', 'Md' => 'Markdown',
-                                'Thread_safety' => 'ThreadSafety' }.freeze
-    EXTENSION_PATH_NAMES = { 'rubocop-md' => 'markdown' }.freeze
+    CANONICAL_FEATURE_NAMES = {
+      'Rspec' => 'RSpec', 'Graphql' => 'GraphQL', 'Md' => 'Markdown', 'Factory_bot' => 'FactoryBot',
+      'Thread_safety' => 'ThreadSafety'
+    }.freeze
+    EXTENSION_PATH_NAMES = {
+      'rubocop-md' => 'markdown', 'rubocop-factory_bot' => 'factory_bot'
+    }.freeze
 
     # @api private
     def self.version(debug: false, env: nil)
