@@ -136,6 +136,7 @@ require_relative 'rubocop/cop/mixin/comments_help' # relies on visibility_help
 require_relative 'rubocop/cop/mixin/def_node' # relies on visibility_help
 
 require_relative 'rubocop/cop/utils/format_string'
+require_relative 'rubocop/cop/utils/regexp_ranges'
 
 require_relative 'rubocop/cop/migration/department_name'
 
