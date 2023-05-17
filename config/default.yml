@@ -4806,6 +4806,11 @@ Style/RedundantArgument:
     # String#chomp!
     chomp!: "\n"
 
+Style/RedundantArrayConstructor:
+  Description: 'Checks for the instantiation of array using redundant `Array` constructor.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'
   Enabled: true
