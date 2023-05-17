@@ -24,6 +24,9 @@ module RuboCop
           return unless node.children.compact.all?(&:str_type?)
 
           range_start, range_end = node.children
+
+          return if range_start.nil? || range_end.nil?
+
           add_offense(node) if unsafe_range?(range_start.value, range_end.value)
         end
         alias on_erange on_irange

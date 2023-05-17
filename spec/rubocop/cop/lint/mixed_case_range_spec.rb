@@ -27,6 +27,20 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
     RUBY
   end
 
+  context 'ruby > 2.6', :ruby27 do
+    it 'does not register an offense for a beginless range' do
+      expect_no_offenses(<<~RUBY)
+        (..'z')
+      RUBY
+    end
+  end
+
+  it 'does not register an offense for an endless range' do
+    expect_no_offenses(<<~RUBY)
+      ('a'..)
+    RUBY
+  end
+
   it 'registers an offense for an overly broad range' do
     expect_offense(<<~RUBY)
       foo = /[A-z]/
