@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for unsafe ranges that may include unintended characters.
+      # Checks for mixed-case character ranges since they include likely unintended characters.
       #
       # @example
       #
@@ -12,11 +12,13 @@ module RuboCop
       #
       #   # good
       #   r = /[A-Za-z]/
-      class UnsafeRange < Base
+      class MixedCaseRange < Base
         include RangeHelp
 
-        MSG = 'Character range may include unintended characters.'
-        RANGES = [('a'..'z').freeze, ('A'..'Z').freeze, ('0'..'9').freeze].freeze
+        MSG = 'Ranges from upper to lower case ASCII letters may include unintended ' \
+              'characters. Instead of `A-z` (which also includes several symbols) ' \
+              'specify each range individually: `A-Za-z` and individually specify any symbols.'
+        RANGES = [('a'..'z').freeze, ('A'..'Z').freeze].freeze
 
         def on_irange(node)
           return unless node.children.compact.all?(&:str_type?)

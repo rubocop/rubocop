@@ -1,17 +1,23 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UnsafeRange, :config do
+RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
+  let(:message) do
+    'Ranges from upper to lower case ASCII letters may include unintended ' \
+      'characters. Instead of `A-z` (which also includes several symbols) ' \
+      'specify each range individually: `A-Za-z` and individually specify any symbols.'
+  end
+
   it 'registers an offense for an overly broad character range' do
     expect_offense(<<~RUBY)
       foo = 'A'..'z'
-            ^^^^^^^^ Character range may include unintended characters.
+            ^^^^^^^^ #{message}
     RUBY
   end
 
   it 'registers an offense for an overly broad exclusive character range' do
     expect_offense(<<~RUBY)
       foo = 'A'...'z'
-            ^^^^^^^^^ Character range may include unintended characters.
+            ^^^^^^^^^ #{message}
     RUBY
   end
 
@@ -21,47 +27,34 @@ RSpec.describe RuboCop::Cop::Lint::UnsafeRange, :config do
     RUBY
   end
 
-  it 'does not register an offense for an open-ended range' do
-    expect_no_offenses(<<~RUBY)
-      "string"[1..]
-    RUBY
-  end
-
   it 'registers an offense for an overly broad range' do
     expect_offense(<<~RUBY)
       foo = /[A-z]/
-              ^^^ Character range may include unintended characters.
+              ^^^ #{message}
     RUBY
   end
 
   it 'registers an offense for an overly broad range between interpolations' do
-    expect_offense(<<~'RUBY')
+    expect_offense(<<~'RUBY'.sub(/\#{message}/, message))
       foo = /[#{A-z}A-z#{y}]/
-                    ^^^ Character range may include unintended characters.
-    RUBY
-  end
-
-  it 'registers an offense for a range spanning multiple accepted ranges' do
-    expect_offense(<<~RUBY)
-      foo = /[0-z]/
-              ^^^ Character range may include unintended characters.
+                    ^^^ #{message}
     RUBY
   end
 
   it 'registers an offense for each of multiple unsafe ranges' do
     expect_offense(<<~RUBY)
       foo = /[_A-b;Z-a!]/
-                   ^^^ Character range may include unintended characters.
-               ^^^ Character range may include unintended characters.
+                   ^^^ #{message}
+               ^^^ #{message}
     RUBY
   end
 
   it 'registers an offense for each of multiple unsafe ranges at the correct place' do
     expect_offense(<<~RUBY)
       foo = %r{[A-z]+/[A-z]+|all}.freeze || /_[A-z]/
-                                               ^^^ Character range may include unintended characters.
-                       ^^^ Character range may include unintended characters.
-                ^^^ Character range may include unintended characters.
+                                               ^^^ #{message}
+                       ^^^ #{message}
+                ^^^ #{message}
     RUBY
   end
 
@@ -70,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::UnsafeRange, :config do
       foo = /
         A-z # not a character class
         [A-z]_..._
-         ^^^ Character range may include unintended characters.
+         ^^^ #{message}
       /x
     RUBY
   end
@@ -78,29 +71,29 @@ RSpec.describe RuboCop::Cop::Lint::UnsafeRange, :config do
   it 'registers an offense for nested (intersected) unsafe ranges' do
     expect_offense(<<~RUBY)
       foo = /[_A-z;&&[^G-f]]/
-                       ^^^ Character range may include unintended characters.
-               ^^^ Character range may include unintended characters.
+                       ^^^ #{message}
+               ^^^ #{message}
     RUBY
   end
 
   it 'registers an offense for unsafe range with possible octal digits following' do
     expect_offense(<<~RUBY)
       foo = /[_A-z123]/
-               ^^^ Character range may include unintended characters.
+               ^^^ #{message}
     RUBY
   end
 
   it 'registers an offense for unsafe range with full octal escape preceeding' do
-    expect_offense(<<~'RUBY')
+    expect_offense(<<~'RUBY'.sub(/\#{message}/, message))
       foo = /[\001A-z123]/
-                  ^^^ Character range may include unintended characters.
+                  ^^^ #{message}
     RUBY
   end
 
   it 'registers an offense for unsafe range with short octal escape preceeding' do
-    expect_offense(<<~'RUBY')
+    expect_offense(<<~'RUBY'.sub(/\#{message}/, message))
       foo = /[\1A-z123]/
-                ^^^ Character range may include unintended characters.
+                ^^^ #{message}
     RUBY
   end
 

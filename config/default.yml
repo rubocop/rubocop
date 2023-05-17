@@ -1989,6 +1989,11 @@ Lint/MissingSuper:
   VersionAdded: '0.89'
   VersionChanged: '1.4'
 
+Lint/MixedCaseRange:
+  Description: 'Checks for mixed-case character ranges since they include likely unintended characters.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
   Enabled: true
@@ -2401,11 +2406,6 @@ Lint/UnreachableLoop:
     # RSpec uses `times` in its message expectations
     # eg. `exactly(2).times`
     - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
-
-Lint/UnsafeRange:
-  Description: 'Checks for unsafe ranges in regular expressions.'
-  Enabled: pending
-  VersionAdded: '<<next>>'
 
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
