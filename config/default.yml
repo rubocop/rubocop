@@ -1992,6 +1992,7 @@ Lint/MissingSuper:
 Lint/MixedCaseRange:
   Description: 'Checks for mixed-case character ranges since they include likely unintended characters.'
   Enabled: pending
+  SafeAutoCorrect: false
   VersionAdded: '<<next>>'
 
 Lint/MixedRegexpCaptureTypes:
