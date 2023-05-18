@@ -44,7 +44,7 @@ module RuboCop
             range_pairs(expr).reject do |range_start, range_end|
               next if skip_range?(range_start, range_end)
 
-              next unless unsafe_range?(range_start.first.text, range_end.first.text)
+              next unless unsafe_range?(range_start.text, range_end.text)
 
               yield(build_source_range(range_start, range_end))
             end
@@ -54,10 +54,7 @@ module RuboCop
         private
 
         def build_source_range(range_start, range_end)
-          range_between(
-            range_start.first.expression.begin_pos,
-            range_end.last.expression.begin_pos + range_end.last.to_s.length
-          )
+          range_between(range_start.expression.begin_pos, range_end.expression.end_pos)
         end
 
         def range_for(char)
@@ -80,10 +77,7 @@ module RuboCop
 
         def skip_range?(range_start, range_end)
           [range_start, range_end].any? do |bound|
-            # With regexp_parser < 2.7 octal escapes
-            # will be an array of multiple expressions.
-            # For >= 2.7 it will be a single expression.
-            bound.count > 1 || bound.first.type == :escape
+            bound.type == :escape
           end
         end
       end

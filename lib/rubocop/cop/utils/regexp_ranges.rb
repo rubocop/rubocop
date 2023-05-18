@@ -6,14 +6,27 @@ module RuboCop
       # Helper to abstract complexity of building range pairs
       # with octal escape reconstruction (needed for regexp_parser < 2.7).
       class RegexpRanges
-        attr_reader :compound_token, :pairs, :root
+        attr_reader :compound_token, :root
 
         def initialize(root)
           @root = root
           @compound_token = []
-          @pairs = []
-          populate(root)
         end
+
+        def pairs
+          unless @pairs
+            @pairs = []
+            populate(root)
+          end
+
+          # If either bound is a compound the first one is an escape
+          # and that's all we need to work with.
+          # If there are any cops that wanted to operate on the compound
+          # expression we could wrap it with a facade class.
+          @pairs.map { |pair| pair.map(&:first) }
+        end
+
+        private
 
         def populate(expr)
           expressions = expr.expressions.to_a
@@ -37,7 +50,7 @@ module RuboCop
         def process_set(expressions, current)
           case current.token
           when :range
-            pairs << compose_range(expressions, current)
+            @pairs << compose_range(expressions, current)
           when :character
             # Child expressions may include the range we are looking for.
             populate(current)

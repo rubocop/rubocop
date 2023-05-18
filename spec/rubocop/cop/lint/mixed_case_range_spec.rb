@@ -117,13 +117,19 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
     RUBY
   end
 
-  it 'does not register an offense with escaped octal bounds' do
+  it 'does not register an offense with escaped octal opening bound' do
     expect_no_offenses(<<~'RUBY')
-      foo = /[\101-\172]/
+      foo = /[\101-z]/
     RUBY
   end
 
-  it 'does not register an offense with opening octal bound' do
+  it 'does not register an offense with escaped octal closing bound' do
+    expect_no_offenses(<<~'RUBY')
+      foo = /[A-\172]/
+    RUBY
+  end
+
+  it 'does not register an offense with opening hex bound' do
     expect_no_offenses(<<~'RUBY')
       foo = /[\x01-z]/
     RUBY
