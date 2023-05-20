@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
   it 'registers an offense when using `#eval` without any arguments' do
     expect_offense(<<~RUBY)
       eval <<-CODE
-      ^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+      ^^^^^^^^^^^^ Pass a binding, `__FILE__`, and `__LINE__` to `eval`.
         do_something
       CODE
     RUBY
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
   it 'registers an offense when using `Kernel.eval` without any arguments' do
     expect_offense(<<~RUBY)
       Kernel.eval <<-CODE
-      ^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+      ^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__`, and `__LINE__` to `eval`.
         do_something
       CODE
     RUBY
@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
   it 'registers an offense when using `::Kernel.eval` without any arguments' do
     expect_offense(<<~RUBY)
       ::Kernel.eval <<-CODE
-      ^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+      ^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__`, and `__LINE__` to `eval`.
         do_something
       CODE
     RUBY
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
   it 'registers an offense when using `#eval` with `binding` only' do
     expect_offense(<<~RUBY)
       eval <<-CODE, binding
-      ^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+      ^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__`, and `__LINE__` to `eval`.
         do_something
       CODE
     RUBY
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
   it 'registers an offense when using `#eval` without lineno' do
     expect_offense(<<~RUBY)
       eval <<-CODE, binding, __FILE__
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__`, and `__LINE__` to `eval`.
         do_something
       CODE
     RUBY
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
   it 'registers an offense when using `#eval` without lineno and with parenthesized method call' do
     expect_offense(<<~RUBY)
       eval(<<-CODE, binding, __FILE__)
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__` and `__LINE__` to `eval`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Pass a binding, `__FILE__`, and `__LINE__` to `eval`.
         do_something
       CODE
     RUBY
