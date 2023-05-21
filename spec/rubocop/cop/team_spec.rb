@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       it 'returns only instances of the classes' do
         expect(cops.size).to eq(2)
-        cops.sort! { |a, b| a.name <=> b.name }
+        cops.sort_by!(&:name)
         expect(cops[0].name).to eq('Layout/LineLength')
         expect(cops[1].name).to eq('Lint/Void')
       end
