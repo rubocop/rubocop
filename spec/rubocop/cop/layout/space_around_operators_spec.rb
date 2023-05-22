@@ -9,6 +9,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         'Layout/SpaceAroundOperators' => {
           'AllowForAlignment' => allow_for_alignment,
           'EnforcedStyleForExponentOperator' => exponent_operator_style
+        },
+        'Layout/ExtraSpacing' => {
+          'Enabled' => force_equal_sign_alignment,
+          'ForceEqualSignAlignment' => force_equal_sign_alignment
         }
       )
   end
@@ -16,6 +20,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
   let(:hash_style) { 'key' }
   let(:allow_for_alignment) { true }
   let(:exponent_operator_style) { nil }
+  let(:force_equal_sign_alignment) { false }
 
   it 'accepts operator surrounded by tabs' do
     expect_no_offenses("a\t+\tb")
@@ -971,9 +976,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
   end
 
   describe 'when Layout/ExtraSpacing has `ForceEqualSignAlignment` configured to true' do
-    let(:other_cops) do
-      { 'Layout/ExtraSpacing' => { 'Enabled' => true, 'ForceEqualSignAlignment' => true } }
-    end
+    let(:force_equal_sign_alignment) { true }
 
     it 'allows variables to be aligned' do
       expect_no_offenses(<<~RUBY)

@@ -3,20 +3,8 @@
 RSpec.shared_examples_for 'multiline literal brace layout trailing comma' do
   let(:prefix) { '' } # A prefix before the opening brace.
   let(:suffix) { '' } # A suffix for the line after the closing brace.
-  let(:open) { nil } # The opening brace.
-  let(:close) { nil } # The closing brace.
   let(:a) { 'a' } # The first element.
   let(:b) { 'b' } # The second element.
-
-  # same line message for symmetrical style (use [...] to abbreviate).
-  let(:same_line_message) do
-    'Closing brace must be on the same line as the last element when opening [...]'
-  end
-
-  # same line message for same_line style
-  let(:always_same_line_message) do
-    'Closing brace must be on the same line as the last element.'
-  end
 
   context 'symmetrical style' do
     let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }

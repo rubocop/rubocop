@@ -21,10 +21,6 @@ RSpec.describe RuboCop::Cop::RangeHelp do
     parse_source(source)
   end
 
-  let(:source) do
-    raise NotImplementedError
-  end
-
   describe 'source indicated by #range_with_surrounding_comma' do
     subject do
       r = instance.send(:range_with_surrounding_comma, input_range, side)

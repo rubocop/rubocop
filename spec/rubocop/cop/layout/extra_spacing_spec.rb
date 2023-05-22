@@ -291,10 +291,6 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       { 'AllowForAlignment' => allow_alignment,
         'AllowBeforeTrailingComments' => allow_comments }
     end
-    let(:src_with_extra) do
-      ['  object.method(argument)  # this is a comment',
-       '                         ^ Unnecessary spacing detected.']
-    end
 
     context 'true' do
       let(:allow_comments) { true }

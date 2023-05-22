@@ -294,7 +294,6 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
   end
 
   context 'when `Layout/AccessModifierIndentation EnforcedStyle: outdent`' do
-    let(:allow_for_alignment) { true }
     let(:indentation_width) { 2 }
     let(:config) do
       RuboCop::Config.new(
