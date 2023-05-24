@@ -284,7 +284,7 @@ module RuboCop
       # @api private
       def self.callbacks_needed
         @callbacks_needed ||= public_instance_methods.select do |m|
-          m.match?(/^on_|^after_/) &&
+          m.start_with?(/on_|after_/) &&
             !Base.method_defined?(m) # exclude standard "callbacks" like 'on_begin_investigation'
         end
       end
