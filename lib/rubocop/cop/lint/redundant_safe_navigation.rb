@@ -49,7 +49,7 @@ module RuboCop
       #   do_something if attrs&.not_nil_safe_method(:[])
       #
       class RedundantSafeNavigation < Base
-        include AllowedMethods
+        include NilMethods
         include RangeHelp
         extend AutoCorrector
 
@@ -63,7 +63,7 @@ module RuboCop
         PATTERN
 
         def on_csend(node)
-          return unless check?(node) && allowed_method?(node.method_name)
+          return unless check?(node) && nil_methods.include?(node.method_name)
           return if respond_to_nil_specific_method?(node)
 
           range = range_between(node.loc.dot.begin_pos, node.source_range.end_pos)
