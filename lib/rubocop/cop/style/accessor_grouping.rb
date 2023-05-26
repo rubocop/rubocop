@@ -92,6 +92,7 @@ module RuboCop
           comment_line?(processed_source[node.first_line - 2])
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def groupable_accessor?(node)
           return true unless (previous_expression = node.left_siblings.last)
 
@@ -104,8 +105,11 @@ module RuboCop
 
           return true unless previous_expression.send_type?
 
-          previous_expression.attribute_accessor? || previous_expression.access_modifier?
+          previous_expression.attribute_accessor? ||
+            previous_expression.access_modifier? ||
+            node.first_line - previous_expression.last_line > 1 # there is a space between nodes
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def class_send_elements(class_node)
           class_def = class_node.body

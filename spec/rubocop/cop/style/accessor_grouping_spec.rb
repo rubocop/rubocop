@@ -412,6 +412,26 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when other method is followed by a space and grouped accessors' do
+      expect_offense(<<~RUBY)
+        class Foo
+          other_macro :zoo, :woo
+
+          attr_reader :foo, :bar
+          ^^^^^^^^^^^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          other_macro :zoo, :woo
+
+          attr_reader :foo
+          attr_reader :bar
+        end
+      RUBY
+    end
+
     context 'when there are comments for attributes' do
       it 'registers and corrects an offense' do
         expect_offense(<<~RUBY)
