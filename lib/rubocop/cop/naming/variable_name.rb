@@ -20,9 +20,14 @@ module RuboCop
       #   # good
       #   fooBar = 1
       #
+      # @example AllowedIdentifiers: ['fooBar']
+      #   # good (with EnforcedStyle: snake_case)
+      #   fooBar = 1
+      #
       # @example AllowedPatterns: ['_v\d+\z']
-      #   # good
+      #   # good (with EnforcedStyle: camelCase)
       #   :release_v1
+      #
       class VariableName < Base
         include AllowedIdentifiers
         include ConfigurableNaming
