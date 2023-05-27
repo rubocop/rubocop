@@ -58,6 +58,7 @@ module RuboCop
 
         def on_class(node)
           return unless node.parent_class && exception_class?(node.parent_class)
+          return if inherit_exception_class_with_omitted_namespace?(node)
 
           message = message(node.parent_class)
 
@@ -85,6 +86,12 @@ module RuboCop
 
         def exception_class?(class_node)
           class_node.const_name == 'Exception'
+        end
+
+        def inherit_exception_class_with_omitted_namespace?(class_node)
+          return false if class_node.parent_class.namespace&.cbase_type?
+
+          class_node.left_siblings.any? { |sibling| exception_class?(sibling.identifier) }
         end
 
         def preferred_base_class
