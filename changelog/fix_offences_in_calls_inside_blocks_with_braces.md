@@ -1,0 +1,1 @@
+* [#11898](https://github.com/rubocop/rubocop/pull/11898): Fix offences in calls inside blocks with braces for `Style/MethodCallWithArgsParentheses` with `omit_parentheses` enforced style. ([@gsamokovarov][])

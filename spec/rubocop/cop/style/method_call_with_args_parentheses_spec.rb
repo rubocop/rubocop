@@ -695,6 +695,28 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'register an offense in calls inside braced blocks' do
+      expect_offense(<<~RUBY)
+        client.images(page: page) { |resource| Image.new(resource) }
+                                                        ^^^^^^^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        client.images(page: page) { |resource| Image.new resource }
+      RUBY
+    end
+
+    it 'register an offense in calls inside braced numblocks', :ruby27 do
+      expect_offense(<<~RUBY)
+        client.images(page: page) { Image.new(_1) }
+                                             ^^^^ Omit parentheses for method calls with arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        client.images(page: page) { Image.new _1 }
+      RUBY
+    end
+
     it 'accepts parens in single-line inheritance' do
       expect_no_offenses(<<-RUBY)
         class Point < Struct.new(:x, :y); end
