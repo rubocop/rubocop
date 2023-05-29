@@ -331,7 +331,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
     end
   end
 
-  context 'when `Style/EndlessMethod` is disabled' do
+  context 'when `Style/EndlessMethod` is disabled', :ruby30 do
     before { config['Style/EndlessMethod'] = { 'Enabled' => false } }
 
     it 'corrects to an normal method' do
