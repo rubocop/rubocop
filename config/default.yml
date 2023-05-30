@@ -467,7 +467,9 @@ Layout/ClassStructure:
   Description: 'Enforces a configured order of definitions within a class body.'
   StyleGuide: '#consistent-classes'
   Enabled: false
+  SafeAutoCorrect: false
   VersionAdded: '0.52'
+  VersionChanged: '<<next>>'
   Categories:
     module_inclusion:
       - include
