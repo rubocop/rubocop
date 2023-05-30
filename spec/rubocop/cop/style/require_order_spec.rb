@@ -8,6 +8,13 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
         require 'b'
       RUBY
     end
+
+    it 'registers no offense when single-quoted string and double-quoted string are mixed' do
+      expect_no_offenses(<<~RUBY)
+        require 'a'
+        require "b"
+      RUBY
+    end
   end
 
   context 'when only one `require`' do

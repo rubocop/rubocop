@@ -106,8 +106,9 @@ module RuboCop
             break unless sibling&.send_type? && sibling&.method?(node.method_name)
             break unless sibling.arguments? && !sibling.receiver
             break unless in_same_section?(sibling, node)
+            break unless node.first_argument.str_type? && sibling.first_argument.str_type?
 
-            node.first_argument.source < sibling.first_argument.source
+            node.first_argument.value < sibling.first_argument.value
           end
         end
 
