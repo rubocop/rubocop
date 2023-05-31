@@ -16,7 +16,7 @@ module RuboCop
                       'root of the project. RuboCop will use this path to determine which ' \
                       'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
                       'like Naming/FileName can be checked.'
-    EXITING_OPTIONS = %i[version verbose_version show_cops show_docs_url].freeze
+    EXITING_OPTIONS = %i[version verbose_version show_cops show_docs_url lsp].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
@@ -49,12 +49,14 @@ module RuboCop
 
     private
 
+    # rubocop:disable Metrics/AbcSize
     def define_options
       OptionParser.new do |opts|
         opts.banner = rainbow.wrap('Usage: rubocop [options] [file1, file2, ...]').bright
 
         add_check_options(opts)
         add_cache_options(opts)
+        add_lsp_option(opts)
         add_server_options(opts)
         add_output_options(opts)
         add_autocorrection_options(opts)
@@ -66,6 +68,7 @@ module RuboCop
         add_profile_options(opts) if RUBY_ENGINE == 'ruby' && !Platform.windows?
       end
     end
+    # rubocop:enable Metrics/AbcSize
 
     def add_check_options(opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       section(opts, 'Basic Options') do # rubocop:disable Metrics/BlockLength
@@ -202,6 +205,12 @@ module RuboCop
       section(opts, 'Caching') do
         option(opts, '-C', '--cache FLAG')
         option(opts, '--cache-root DIR') { @validator.validate_cache_enabled_for_cache_root }
+      end
+    end
+
+    def add_lsp_option(opts)
+      section(opts, 'LSP Option') do
+        option(opts, '--lsp')
       end
     end
 
@@ -620,6 +629,7 @@ module RuboCop
       stop_server:                      'Stop server process.',
       server_status:                    'Show server status.',
       no_detach:                        'Run the server process in the foreground.',
+      lsp:                              'Start a language server listening on STDIN.',
       raise_cop_error:                  ['Raise cop-related errors with cause and location.',
                                          'This is used to prevent cops from failing silently.',
                                          'Default is false.'],

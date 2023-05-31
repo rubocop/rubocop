@@ -5,6 +5,7 @@
 ** xref:usage/basic_usage.adoc[Basic Usage]
 ** xref:usage/autocorrect.adoc[Autocorrect]
 ** xref:usage/caching.adoc[Caching]
+** xref:usage/lsp.adoc[LSP]
 ** xref:usage/server.adoc[Server]
 ** xref:usage/profiling.adoc[Profiling]
 * xref:configuration.adoc[Configuration]

@@ -87,6 +87,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                parameter AllCops: CacheRootDirectory and
                                                the $RUBOCOP_CACHE_ROOT environment variable.
 
+          LSP Option:
+                  --lsp                        Start a language server listening on STDIN.
+
           Server Options:
                   --[no-]server                If a server process has not been started yet, start
                                                the server process and execute inspection with server.

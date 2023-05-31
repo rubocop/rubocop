@@ -33,6 +33,8 @@ code linting functionality:
 - https://github.com/Shopify/ruby-lsp[ruby-lsp]
 - https://solargraph.org/[Solargraph]
 
+And the RuboCop xref:usage/lsp.adoc[LSP] functionality has designed to provide built-in language server.
+
 === Emacs
 
 https://github.com/rubocop/rubocop-emacs[rubocop.el] is a simple
