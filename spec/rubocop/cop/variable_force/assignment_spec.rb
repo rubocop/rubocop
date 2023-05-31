@@ -115,6 +115,20 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
         expect(assignment.meta_assignment_node.type).to eq(:masgn)
       end
     end
+
+    context 'when it is rest assignment' do
+      let(:source) do
+        <<~RUBY
+          def some_method
+            *foo = [1, 2]
+          end
+        RUBY
+      end
+
+      it 'returns splat node' do
+        expect(assignment.meta_assignment_node.type).to eq(:splat)
+      end
+    end
   end
 
   describe '#operator' do

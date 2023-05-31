@@ -132,10 +132,11 @@ module RuboCop
           node.receiver.nil? && !node.arguments?
         end
 
+        # rubocop:disable Metrics/AbcSize
         def autocorrect(corrector, assignment)
           if assignment.exception_assignment?
             remove_exception_assignment_part(corrector, assignment.node)
-          elsif assignment.multiple_assignment?
+          elsif assignment.multiple_assignment? || assignment.rest_assignment?
             rename_variable_with_underscore(corrector, assignment.node)
           elsif assignment.operator_assignment?
             remove_trailing_character_from_operator(corrector, assignment.node)
@@ -146,6 +147,7 @@ module RuboCop
             remove_local_variable_assignment_part(corrector, assignment.node)
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def remove_exception_assignment_part(corrector, node)
           corrector.remove(

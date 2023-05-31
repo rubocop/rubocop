@@ -40,6 +40,7 @@ module RuboCop
       OPERATOR_ASSIGNMENT_TYPES = (LOGICAL_OPERATOR_ASSIGNMENT_TYPES + [:op_asgn]).freeze
 
       MULTIPLE_ASSIGNMENT_TYPE = :masgn
+      REST_ASSIGNMENT_TYPE = :splat
 
       VARIABLE_REFERENCE_TYPE = :lvar
 
