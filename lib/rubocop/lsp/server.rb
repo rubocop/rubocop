@@ -1,7 +1,9 @@
-require "language_server-protocol"
-require_relative "standardizer"
-require_relative "routes"
-require_relative "logger"
+# frozen_string_literal: true
+
+require 'language_server-protocol'
+require_relative 'logger'
+require_relative 'routes'
+require_relative 'runtime'
 
 #
 # This code is based on https://github.com/standardrb/standard.
@@ -12,18 +14,16 @@ require_relative "logger"
 #
 # https://github.com/standardrb/standard/blob/main/LICENSE.txt
 #
-module Standard
+module RuboCop
   module Lsp
-    Proto = LanguageServer::Protocol
-    SEV = Proto::Constant::DiagnosticSeverity
-
+    # Language Server Protocol of RuboCop.
+    # @api private
     class Server
-      def initialize(config)
-        @writer = Proto::Transport::Io::Writer.new($stdout)
-        @reader = Proto::Transport::Io::Reader.new($stdin)
-        @logger = Logger.new
-        @standardizer = Standard::Lsp::Standardizer.new(config, @logger)
-        @routes = Routes.new(@writer, @logger, @standardizer)
+      def initialize(config_store)
+        @reader = LanguageServer::Protocol::Transport::Io::Reader.new($stdin)
+        @writer = LanguageServer::Protocol::Transport::Io::Writer.new($stdout)
+        @runtime = RuboCop::Lsp::Runtime.new(config_store)
+        @routes = Routes.new(self)
       end
 
       def start
@@ -35,10 +35,27 @@ module Standard
           else
             @routes.handle_unsupported_method(request)
           end
-        rescue => e
-          @logger.puts "Error #{e.class} #{e.message[0..100]}"
-          @logger.puts e.backtrace.inspect
+        rescue StandardError => e
+          log("Error #{e.class} #{e.message[0..100]}")
+          log(e.backtrace.inspect)
         end
+      end
+
+      def write(response)
+        @writer.write(response)
+      end
+
+      def format(path, text)
+        @runtime.format(path, text)
+      end
+
+      def offenses(path, text)
+        @runtime.offenses(path, text)
+      end
+
+      def stop(&block)
+        at_exit(&block) if block
+        exit
       end
     end
   end

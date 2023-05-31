@@ -1,4 +1,6 @@
-require_relative "kills_server"
+# frozen_string_literal: true
+
+require_relative 'severity'
 
 #
 # This code is based on https://github.com/standardrb/standard.
@@ -9,207 +11,211 @@ require_relative "kills_server"
 #
 # https://github.com/standardrb/standard/blob/main/LICENSE.txt
 #
-module Standard
+module RuboCop
   module Lsp
+    # Routes for Language Server Protocol of RuboCop.
+    # @api private
     class Routes
-      def initialize(writer, logger, standardizer)
-        @writer = writer
-        @logger = logger
-        @standardizer = standardizer
-
-        @text_cache = {}
-        @kills_server = KillsServer.new
-      end
-
       def self.handle(name, &block)
         define_method("handle_#{name}", &block)
       end
 
+      private_class_method :handle
+
+      def initialize(server)
+        @server = server
+
+        @text_cache = {}
+      end
+
       def for(name)
         name = "handle_#{name}"
-        if respond_to?(name)
-          method(name)
-        end
+        return unless respond_to?(name)
+
+        method(name)
       end
 
-      handle "initialize" do |request|
-        @writer.write(id: request[:id], result: Proto::Interface::InitializeResult.new(
-          capabilities: Proto::Interface::ServerCapabilities.new(
-            document_formatting_provider: true,
-            diagnostic_provider: true,
-            text_document_sync: Proto::Interface::TextDocumentSyncOptions.new(
-              change: Proto::Constant::TextDocumentSyncKind::FULL,
-              open_close: true
+      handle 'initialize' do |request|
+        @server.write(
+          id: request[:id],
+          result: LanguageServer::Protocol::Interface::InitializeResult.new(
+            capabilities: LanguageServer::Protocol::Interface::ServerCapabilities.new(
+              document_formatting_provider: true,
+              diagnostic_provider: true,
+              text_document_sync: LanguageServer::Protocol::Interface::TextDocumentSyncOptions.new(
+                change: LanguageServer::Protocol::Constant::TextDocumentSyncKind::FULL,
+                open_close: true
+              )
             )
           )
-        ))
+        )
       end
 
-      handle "initialized" do |request|
-        @logger.puts "Standard Ruby v#{Standard::VERSION} LSP server initialized, pid #{Process.pid}"
+      handle 'initialized' do |_request|
+        version = RuboCop::Version::STRING
+
+        Logger.log("RuboCop #{version} language server initialized, PID #{Process.pid}")
       end
 
-      handle "shutdown" do |request|
-        @logger.puts "Client asked to shutdown Standard LSP server."
-        @kills_server.call do
-          @writer.write(id: request[:id], result: nil)
-          @logger.puts "Exiting..."
+      handle 'shutdown' do |request|
+        Logger.log('Client asked to shutdown RuboCop language server.')
+        @server.stop do
+          @server.write(id: request[:id], result: nil)
+          Logger.log('Exiting...')
         end
       end
 
-      handle "textDocument/diagnostic" do |request|
+      handle 'textDocument/diagnostic' do |request|
         doc = request[:params][:textDocument]
         result = diagnostic(doc[:uri], doc[:text])
-        @writer.write(result)
+        @server.write(result)
       end
 
-      handle "textDocument/didChange" do |request|
+      handle 'textDocument/didChange' do |request|
         params = request[:params]
         result = diagnostic(params[:textDocument][:uri], params[:contentChanges][0][:text])
-        @writer.write(result)
+        @server.write(result)
       end
 
-      handle "textDocument/didOpen" do |request|
+      handle 'textDocument/didOpen' do |request|
         doc = request[:params][:textDocument]
         result = diagnostic(doc[:uri], doc[:text])
-        @writer.write(result)
+        @server.write(result)
       end
 
-      handle "textDocument/didClose" do |request|
+      handle 'textDocument/didClose' do |request|
         @text_cache.delete(request.dig(:params, :textDocument, :uri))
       end
 
-      handle "textDocument/formatting" do |request|
+      handle 'textDocument/formatting' do |request|
         uri = request[:params][:textDocument][:uri]
-        @writer.write({id: request[:id], result: format_file(uri)})
+        @server.write(id: request[:id], result: format_file(uri))
       end
 
-      handle "workspace/didChangeConfiguration" do |_request|
-        @logger.puts "Ignoring workspace/didChangeConfiguration"
+      handle 'workspace/didChangeConfiguration' do |_request|
+        Logger.log('Ignoring workspace/didChangeConfiguration')
       end
 
-      handle "workspace/didChangeWatchedFiles" do |request|
-        if request[:params][:changes].any? { |change| change[:uri].end_with?(".standard.yml") }
-          @logger.puts "Configuration file changed; restart required"
-          @kills_server.call
+      handle 'workspace/didChangeWatchedFiles' do |request|
+        changed = request[:params][:changes].any? do |change|
+          change[:uri].end_with?(RuboCop::ConfigFinder::DOTFILE)
+        end
+
+        if changed
+          Logger.log('Configuration file changed; restart required')
+          @server.stop
         end
       end
 
-      handle "workspace/executeCommand" do |request|
-        if request[:params][:command] == "standardRuby.formatAutoFixes"
+      handle 'workspace/executeCommand' do |request|
+        if request[:params][:command] == 'rubocop.formatAutocorrects'
           uri = request[:params][:arguments][0][:uri]
-          @writer.write({
+          @server.write(
             id: request[:id],
-            method: "workspace/applyEdit",
+            method: 'workspace/applyEdit',
             params: {
-              label: "Format with Standard Ruby auto-fixes",
+              label: 'Format with RuboCop autocorrects',
               edit: {
                 changes: {
                   uri => format_file(uri)
                 }
               }
             }
-          })
+          )
         else
           handle_unsupported_method(request, request[:params][:command])
         end
       end
 
-      handle "textDocument/didSave" do |_request|
+      handle 'textDocument/willSave' do |_request|
         # Nothing to do
       end
 
-      handle "$/cancelRequest" do |_request|
+      handle 'textDocument/didSave' do |_request|
+        # Nothing to do
+      end
+
+      handle '$/cancelRequest' do |_request|
         # Can't cancel anything because single-threaded
       end
 
-      handle "$/setTrace" do |_request|
+      handle '$/setTrace' do |_request|
         # No-op, we log everything
       end
 
       def handle_unsupported_method(request, method = request[:method])
-        @writer.write({id: request[:id], error: Proto::Interface::ResponseError.new(
-          code: Proto::Constant::ErrorCodes::METHOD_NOT_FOUND,
-          message: "Unsupported Method: #{method}"
-        )})
-        @logger.puts "Unsupported Method: #{method}"
+        @server.write(
+          id: request[:id],
+          error: LanguageServer::Protocol::Interface::ResponseError.new(
+            code: LanguageServer::Protocol::Constant::ErrorCodes::METHOD_NOT_FOUND,
+            message: "Unsupported Method: #{method}"
+          )
+        )
+        Logger.log("Unsupported Method: #{method}")
       end
 
       def handle_method_missing(request)
-        if request.key?(:id)
-          @writer.write({id: request[:id], result: nil})
-        end
+        return unless request.key?(:id)
+
+        @server.write(id: request[:id], result: nil)
       end
 
       private
 
-      def uri_to_path(uri)
-        uri.sub(%r{^file://}, "")
-      end
-
       def format_file(file_uri)
-        text = @text_cache[file_uri]
-        if text.nil?
-          @logger.puts "Format request arrived before text synchonized; skipping: `#{file_uri}'"
-          []
-        else
-          new_text = @standardizer.format(uri_to_path(file_uri), text)
-          if new_text == text
-            []
-          else
-            [{
-              newText: new_text,
-              range: {
-                start: {line: 0, character: 0},
-                end: {line: text.count("\n") + 1, character: 0}
-              }
-            }]
-          end
+        unless (text = @text_cache[file_uri])
+          Logger.log("Format request arrived before text synchronized; skipping: `#{file_uri}'")
+
+          return []
         end
+
+        new_text = @server.format(remove_file_protocol_from(file_uri), text)
+
+        return [] if new_text == text
+
+        [
+          newText: new_text,
+          range: {
+            start: { line: 0, character: 0 },
+            end: { line: text.count("\n") + 1, character: 0 }
+          }
+        ]
       end
 
       def diagnostic(file_uri, text)
         @text_cache[file_uri] = text
-        offenses = @standardizer.offenses(uri_to_path(file_uri), text)
-
-        lsp_diagnostics = offenses.map { |o|
-          code = o[:cop_name]
-
-          msg = o[:message].delete_prefix(code)
-          loc = o[:location]
-
-          severity = case o[:severity]
-          when "error", "fatal"
-            SEV::ERROR
-          when "warning"
-            SEV::WARNING
-          when "convention"
-            SEV::INFORMATION
-          when "refactor", "info"
-            SEV::HINT
-          else # the above cases fully cover what RuboCop sends at this time
-            logger.puts "Unknown severity: #{severity.inspect}"
-            SEV::HINT
-          end
-
-          {
-            code: code,
-            message: msg,
-            range: {
-              start: {character: loc[:start_column] - 1, line: loc[:start_line] - 1},
-              end: {character: loc[:last_column] - 1, line: loc[:last_line] - 1}
-            },
-            severity: severity,
-            source: "standard"
-          }
-        }
+        offenses = @server.offenses(remove_file_protocol_from(file_uri), text)
+        diagnostics = offenses.map { |offense| to_diagnostic(offense) }
 
         {
-          method: "textDocument/publishDiagnostics",
+          method: 'textDocument/publishDiagnostics',
           params: {
             uri: file_uri,
-            diagnostics: lsp_diagnostics
+            diagnostics: diagnostics
           }
+        }
+      end
+
+      def remove_file_protocol_from(uri)
+        uri.delete_prefix('file://')
+      end
+
+      def to_diagnostic(offense)
+        code = offense[:cop_name]
+        message = offense[:message]
+        loc = offense[:location]
+        rubocop_severity = offense[:severity]
+        severity = Severity.find_by(rubocop_severity)
+
+        {
+          code: code, message: message, range: to_range(loc), severity: severity, source: 'rubocop'
+        }
+      end
+
+      def to_range(location)
+        {
+          start: { character: location[:start_column] - 1, line: location[:start_line] - 1 },
+          end: { character: location[:last_column] - 1, line: location[:last_line] - 1 }
         }
       end
     end

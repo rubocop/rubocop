@@ -1,0 +1,55 @@
+= LSP (Language Server Protocol)
+
+NOTE: The built-in language server was introduced in RuboCop 1.53. This experimental feature has been under consideration for a while.
+
+https://microsoft.github.io/language-server-protocol/[The Language Server Protocol] is the modern standard for providing cross-editor support for various programming languages.
+
+This feature enables extremely fast interactions through the LSP.
+
+Offense detection and autocorrection are performed in real-time by editors and IDEs using the language server.
+The xref:usage/lsp.adoc[Server Mode] is primarily used to speed up RuboCop runs in the terminal.
+Therefore, if you want real-time feedback from RuboCop in your editor or IDE,
+opting to use this language server instead of the server mode will not only provide a fast and efficient solution,
+but also offer a straightforward setup for integration.
+
+== Run as a Language Server
+
+Run `rubocop --lsp` command from LSP client.
+
+When the language server is started, the command displays the language server's PID:
+
+```console
+$ ps aux | grep rubocop
+user             17414   0.0  0.2  5557716 144376   ??  Ss    4:48PM   0:02.13 /Users/user/.rbenv/versions/3.2.2/lib/ruby/gems/3.2.0/bin/rubocop --lsp
+```
+
+== Autocorrection
+
+The language server supports `textDocument/formatting` method and is autocorrectable. The autocorrection is safe.
+
+== Examples of LSP Client
+
+Here are examples of LSP client configurations.
+
+=== Emacs (Eglot)
+
+https://github.com/joaotavora/eglot[Eglot] is a client for Language Server Protocol servers on Emacs.
+
+Add the following to your Emacs configuration file (e.g. `~/.emacs.d/init.el`):
+
+```lisp
+(require 'eglot)
+
+(add-to-list 'eglot-server-programs '(ruby-mode . ("bundle" "exec" "rubocop" "--lsp")))
+(add-hook 'ruby-mode-hook 'eglot-ensure)
+```
+
+Below is an example of additional setting for autocorrecting on save:
+
+```lisp
+(add-hook 'ruby-mode-hook (lambda () (add-hook 'before-save-hook 'eglot-format-buffer nil 'local)))
+```
+
+If you run into problems, first use "M-x eglot-reconnect" to reconnect to the language server.
+
+See Eglot's official documentation for more information.
