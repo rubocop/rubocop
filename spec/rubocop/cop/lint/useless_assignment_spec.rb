@@ -1169,6 +1169,25 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned with rest assignment and unreferenced' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          foo, *bar = do_something
+                ^^^ Useless assignment to variable - `bar`.
+          puts foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo, *_ = do_something
+          puts foo
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned in loop body and referenced in post while condition' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
