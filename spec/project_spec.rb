@@ -133,6 +133,18 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
     end
 
+    it 'does not include unnecessary `SafeAutoCorrect: false`' do
+      cop_names.each do |cop_name|
+        next unless config.dig(cop_name, 'Safe') == false
+
+        safe_autocorrect = config.dig(cop_name, 'SafeAutoCorrect')
+
+        expect(safe_autocorrect).not_to(
+          be(false), "`#{cop_name}` has unnecessary `SafeAutoCorrect: false` config."
+        )
+      end
+    end
+
     it 'is expected that all cops documented with `@safety` are `Safe: false` or `SafeAutoCorrect: false`' do
       require 'yard'
 
