@@ -35,7 +35,12 @@ module RuboCop
       #   # good
       #   hash.compact!
       #
+      # @example AllowedReceivers: ['params']
+      #   # good
+      #   params.reject(&:nil?)
+      #
       class CollectionCompact < Base
+        include AllowedReceivers
         include RangeHelp
         extend AutoCorrector
         extend TargetRubyVersion
@@ -76,6 +81,7 @@ module RuboCop
 
         def on_send(node)
           return unless (range = offense_range(node))
+          return if allowed_receiver?(node.receiver)
           if (target_ruby_version <= 3.0 || node.method?(:delete_if)) && to_enum_method?(node)
             return
           end

@@ -69,6 +69,7 @@ require_relative 'rubocop/cop/mixin/alignment'
 require_relative 'rubocop/cop/mixin/allowed_identifiers'
 require_relative 'rubocop/cop/mixin/allowed_methods'
 require_relative 'rubocop/cop/mixin/allowed_pattern'
+require_relative 'rubocop/cop/mixin/allowed_receivers'
 require_relative 'rubocop/cop/mixin/auto_corrector' # rubocop:todo Naming/InclusiveLanguage
 require_relative 'rubocop/cop/mixin/check_assignment'
 require_relative 'rubocop/cop/mixin/check_line_breakable'

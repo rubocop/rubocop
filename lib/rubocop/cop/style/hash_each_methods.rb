@@ -28,6 +28,7 @@ module RuboCop
       #   execute(sql).keys.each { |v| p v }
       #   execute(sql).values.each { |v| p v }
       class HashEachMethods < Base
+        include AllowedReceivers
         include Lint::UnusedArgument
         extend AutoCorrector
 
@@ -115,28 +116,6 @@ module RuboCop
 
         def kv_range(outer_node)
           outer_node.receiver.loc.selector.join(outer_node.loc.selector)
-        end
-
-        def allowed_receiver?(receiver)
-          receiver_name = receiver_name(receiver)
-
-          allowed_receivers.include?(receiver_name)
-        end
-
-        def receiver_name(receiver)
-          if receiver.send_type?
-            if receiver.receiver
-              "#{receiver_name(receiver.receiver)}.#{receiver.method_name}"
-            else
-              receiver.method_name.to_s
-            end
-          else
-            receiver.source
-          end
-        end
-
-        def allowed_receivers
-          cop_config.fetch('AllowedReceivers', [])
         end
       end
     end
