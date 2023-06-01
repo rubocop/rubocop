@@ -197,4 +197,27 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
       RUBY
     end
   end
+
+  context "when `AllowedReceivers: ['params']`" do
+    let(:cop_config) { { 'AllowedReceivers' => ['params'] } }
+
+    it 'does not register an offense when receiver is `params` method' do
+      expect_no_offenses(<<~RUBY)
+        params.reject { |param| param.nil? }
+      RUBY
+    end
+
+    it 'does not register an offense when method chained receiver is `params` method' do
+      expect_no_offenses(<<~RUBY)
+        params.merge(key: value).delete_if { |_k, v| v.nil? }
+      RUBY
+    end
+
+    it 'registers an offense when receiver is not allowed name' do
+      expect_offense(<<~RUBY)
+        foo.reject { |param| param.nil? }
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `compact` instead of `reject { |param| param.nil? }`.
+      RUBY
+    end
+  end
 end

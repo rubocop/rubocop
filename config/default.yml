@@ -3363,6 +3363,7 @@ Style/CollectionCompact:
   Safe: false
   VersionAdded: '1.2'
   VersionChanged: '1.3'
+  AllowedReceivers: []
 
 # Align with the style guide.
 Style/CollectionMethods:
