@@ -2225,6 +2225,11 @@ Lint/RescueType:
   Enabled: true
   VersionAdded: '0.49'
 
+Lint/ReturnInMemoizedContext:
+  Description: 'Checks for return in memoized context.'
+  Enabled: pending
+  VersionAdded: '1.53'
+
 Lint/ReturnInVoidContext:
   Description: 'Checks for return in void context.'
   Enabled: true
