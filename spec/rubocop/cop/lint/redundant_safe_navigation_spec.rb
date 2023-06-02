@@ -72,21 +72,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when `&.` is used for `to_d`' do
-    expect_offense(<<~RUBY)
-      if foo&.to_d
-            ^^^^^^ Redundant safe navigation detected.
-        do_something_else
-      end
-    RUBY
-
-    expect_correction(<<~RUBY)
-      if foo.to_d
-        do_something_else
-      end
-    RUBY
-  end
-
   it 'does not register an offense when using `&.` outside of conditions' do
     expect_no_offenses(<<~RUBY)
       foo&.respond_to?(:bar)
@@ -106,6 +91,14 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
   it 'does not register an offense when using `&.respond_to?` with `nil` specific method as argument in condition' do
     expect_no_offenses(<<~RUBY)
       do_something if foo&.respond_to?(:to_a)
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used with coercion methods' do
+    expect_no_offenses(<<~RUBY)
+      foo&.to_s || 'Default string'
+      foo&.to_i || 1
+      do_something if foo&.to_d
     RUBY
   end
 end
