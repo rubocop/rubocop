@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # Enforces the use of `Object#instance_of?` instead of class comparison
       # for equality.
-      # `==`, `equal?`, and `eql?` methods are allowed by default.
+      # `==`, `equal?`, and `eql?` custom method definitions are allowed by default.
       # These are customizable with `AllowedMethods` option.
       #
       # @example
@@ -18,53 +18,31 @@ module RuboCop
       #   # good
       #   var.instance_of?(Date)
       #
-      # @example AllowedMethods: [] (default)
+      # @example AllowedMethods: ['==', 'equal?', 'eql?'] (default)
       #   # good
-      #   var.instance_of?(Date)
+      #   def ==(other)
+      #     self.class == other.class && name == other.name
+      #   end
       #
-      #   # bad
-      #   var.class == Date
-      #   var.class.equal?(Date)
-      #   var.class.eql?(Date)
-      #   var.class.name == 'Date'
-      #   var.class.to_s == 'Date'
-      #   var.class.inspect == 'Date'
+      #   def equal?(other)
+      #     self.class.equal?(other.class) && name.equal?(other.name)
+      #   end
       #
-      # @example AllowedMethods: [`==`]
-      #   # good
-      #   var.instance_of?(Date)
-      #   var.class == Date
-      #   var.class.name == 'Date'
-      #   var.class.to_s == 'Date'
-      #   var.class.inspect == 'Date'
-      #
-      #   # bad
-      #   var.class.equal?(Date)
-      #   var.class.eql?(Date)
+      #   def eql?(other)
+      #     self.class.eql?(other.class) && name.eql?(other.name)
+      #   end
       #
       # @example AllowedPatterns: [] (default)
-      #   # good
-      #   var.instance_of?(Date)
-      #
       #   # bad
-      #   var.class == Date
-      #   var.class.equal?(Date)
-      #   var.class.eql?(Date)
-      #   var.class.name == 'Date'
-      #   var.class.to_s == 'Date'
-      #   var.class.inspect == 'Date'
+      #   def eq(other)
+      #     self.class.eq(other.class) && name.eq(other.name)
+      #   end
       #
       # @example AllowedPatterns: ['eq']
       #   # good
-      #   var.instance_of?(Date)
-      #   var.class.equal?(Date)
-      #   var.class.eql?(Date)
-      #
-      #   # bad
-      #   var.class == Date
-      #   var.class.name == 'Date'
-      #   var.class.to_s == 'Date'
-      #   var.class.inspect == 'Date'
+      #   def eq(other)
+      #     self.class.eq(other.class) && name.eq(other.name)
+      #   end
       #
       class ClassEqualityComparison < Base
         include RangeHelp
