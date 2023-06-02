@@ -3292,6 +3292,9 @@ because in some cases it makes sense to overtake what is considered a
 missing method. In other cases, the theoretical ideal handling could be
 challenging or verbose for no actual gain.
 
+Autocorrection is not supported because the position of `super` cannot be
+determined automatically.
+
 === Examples
 
 [source,ruby]

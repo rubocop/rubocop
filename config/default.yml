@@ -4809,7 +4809,7 @@ Style/RedundantArgument:
 Style/RedundantArrayConstructor:
   Description: 'Checks for the instantiation of array using redundant `Array` constructor.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.52'
 
 Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'
@@ -4887,7 +4887,7 @@ Style/RedundantFilterChain:
                   Identifies usages of `any?`, `empty?`, `none?` or `one?` predicate methods chained to
                   `select`/`filter`/`find_all` and change them to use predicate method instead.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.52'
 
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."
@@ -4939,7 +4939,7 @@ Style/RedundantRegexpCharacterClass:
 Style/RedundantRegexpConstructor:
   Description: 'Checks for the instantiation of regexp using redundant `Regexp.new` or `Regexp.compile`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.52'
 
 Style/RedundantRegexpEscape:
   Description: 'Checks for redundant escapes in Regexps.'

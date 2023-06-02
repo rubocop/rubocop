@@ -1294,11 +1294,19 @@ foo_bar = 1
 fooBar = 1
 ----
 
+==== AllowedIdentifiers: ['fooBar']
+
+[source,ruby]
+----
+# good (with EnforcedStyle: snake_case)
+fooBar = 1
+----
+
 ==== AllowedPatterns: ['_v\d+\z']
 
 [source,ruby]
 ----
-# good
+# good (with EnforcedStyle: camelCase)
 :release_v1
 ----
 

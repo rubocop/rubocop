@@ -1720,6 +1720,24 @@ hash.select! { |k, v| !v.nil? }
 hash.compact!
 ----
 
+==== AllowedReceivers: ['params']
+
+[source,ruby]
+----
+# good
+params.reject(&:nil?)
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedReceivers
+| `[]`
+| Array
+|===
+
 == Style/CollectionMethods
 
 |===
@@ -8483,6 +8501,22 @@ foo if a == b.lightweight || a == b.heavyweight
 foo if [b.lightweight, b.heavyweight].include?(a)
 ----
 
+==== ComparisonsThreshold: 2 (default)
+
+[source,ruby]
+----
+# bad
+foo if a == 'a' || a == 'b'
+----
+
+==== ComparisonsThreshold: 3
+
+[source,ruby]
+----
+# good
+foo if a == 'a' || a == 'b'
+----
+
 === Configurable attributes
 
 |===
@@ -8491,6 +8525,10 @@ foo if [b.lightweight, b.heavyweight].include?(a)
 | AllowMethodComparison
 | `true`
 | Boolean
+
+| ComparisonsThreshold
+| `2`
+| Integer
 |===
 
 == Style/MutableConstant
@@ -10732,6 +10770,40 @@ A.foo
 | 
 |===
 
+== Style/RedundantArrayConstructor
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.52
+| -
+|===
+
+Checks for the instantiation of array using redundant `Array` constructor.
+Autocorrect replaces to array literal which is the simplest and fastest.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Array.new([])
+Array[]
+Array([])
+Array.new(['foo', 'foo', 'foo'])
+Array['foo', 'foo', 'foo']
+Array(['foo', 'foo', 'foo'])
+
+# good
+[]
+['foo', 'foo', 'foo']
+Array.new(3, 'foo')
+Array.new(3) { 'foo' }
+----
+
 == Style/RedundantAssignment
 
 |===
@@ -11241,6 +11313,62 @@ require_relative '../foo.so'
 
 * https://rubystyle.guide#no-explicit-rb-to-require
 
+== Style/RedundantFilterChain
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.52
+| -
+|===
+
+Identifies usages of `any?`, `empty?` or `none?` predicate methods
+chained to `select`/`filter`/`find_all` and change them to use predicate method instead.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+arr.select { |x| x > 1 }.any?
+
+# good
+arr.any? { |x| x > 1 }
+
+# bad
+arr.select { |x| x > 1 }.empty?
+arr.select { |x| x > 1 }.none?
+
+# good
+arr.none? { |x| x > 1 }
+
+# good
+relation.select(:name).any?
+arr.select { |x| x > 1 }.any?(&:odd?)
+----
+
+==== AllCops:ActiveSupportExtensionsEnabled: false (default)
+
+[source,ruby]
+----
+# good
+arr.select { |x| x > 1 }.many?
+----
+
+==== AllCops:ActiveSupportExtensionsEnabled: true
+
+[source,ruby]
+----
+# bad
+arr.select { |x| x > 1 }.many?
+
+# good
+arr.many? { |x| x > 1 }
+----
+
 == Style/RedundantFreeze
 
 |===
@@ -11656,6 +11784,35 @@ r = %r{/b}
 
 # good
 r = /[ab]/
+----
+
+== Style/RedundantRegexpConstructor
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.52
+| -
+|===
+
+Checks for the instantiation of regexp using redundant `Regexp.new` or `Regexp.compile`.
+Autocorrect replaces to regexp literal which is the simplest and fastest.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Regexp.new(/regexp/)
+Regexp.compile(/regexp/)
+
+# good
+/regexp/
+Regexp.new('regexp')
+Regexp.compile('regexp')
 ----
 
 == Style/RedundantRegexpEscape
@@ -12316,9 +12473,7 @@ require 'a'
 | 0.34
 |===
 
-Checks for uses of rescue in its modifier form.
-
-The cop to check `rescue` in its modifier form is added for following
+Checks for uses of `rescue` in its modifier form is added for following
 reasons:
 
 * The syntax of modifier form `rescue` can be misleading because it
