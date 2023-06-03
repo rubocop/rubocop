@@ -129,6 +129,21 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
         expect(assignment.meta_assignment_node.type).to eq(:splat)
       end
     end
+
+    context 'when it is `for` assignment' do
+      let(:source) do
+        <<~RUBY
+          def some_method
+            for item in items
+            end
+          end
+        RUBY
+      end
+
+      it 'returns splat node' do
+        expect(assignment.meta_assignment_node.type).to eq(:for)
+      end
+    end
   end
 
   describe '#operator' do

@@ -69,6 +69,12 @@ module RuboCop
           meta_assignment_node.type == REST_ASSIGNMENT_TYPE
         end
 
+        def for_assignment?
+          return false unless meta_assignment_node
+
+          meta_assignment_node.for_type?
+        end
+
         def operator
           assignment_node = meta_assignment_node || @node
           assignment_node.loc.operator.source
@@ -78,7 +84,8 @@ module RuboCop
           unless instance_variable_defined?(:@meta_assignment_node)
             @meta_assignment_node = operator_assignment_node ||
                                     multiple_assignment_node ||
-                                    rest_assignment_node
+                                    rest_assignment_node ||
+                                    for_assignment_node
           end
 
           @meta_assignment_node
@@ -106,6 +113,12 @@ module RuboCop
         def rest_assignment_node
           return nil unless node.parent
           return nil unless node.parent.type == REST_ASSIGNMENT_TYPE
+
+          node.parent
+        end
+
+        def for_assignment_node
+          return nil unless node.parent&.for_type?
 
           node.parent
         end
