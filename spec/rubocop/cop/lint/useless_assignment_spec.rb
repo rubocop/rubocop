@@ -255,6 +255,31 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned and unreferenced in `for`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        for item in items
+            ^^^^ Useless assignment to variable - `item`. Did you mean `items`?
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        for _ in items
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is assigned and referenced in `for`' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        for item in items
+          do_something(item)
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned and unreferenced in top level' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
