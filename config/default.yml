@@ -4843,6 +4843,11 @@ Style/RedundantConstantBase:
   Enabled: pending
   VersionAdded: '1.40'
 
+Style/RedundantCurrentDirectoryInPath:
+  Description: 'Checks for uses a redundant current directory in path.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantDoubleSplatHashBraces:
   Description: 'Checks for redundant uses of double splat hash braces.'
   Enabled: pending
