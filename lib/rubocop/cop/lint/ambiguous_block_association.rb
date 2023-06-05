@@ -97,7 +97,8 @@ module RuboCop
         def wrap_in_parentheses(corrector, node)
           range = node.loc.selector.end.join(node.first_argument.source_range.begin)
 
-          corrector.replace(range, '(')
+          corrector.remove(range)
+          corrector.insert_before(range, '(')
           corrector.insert_after(node.last_argument, ')')
         end
       end

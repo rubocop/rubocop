@@ -342,6 +342,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
   end
 
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with ' \
+     '`Lint/AmbiguousBlockAssociation`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      expect { foo }.not_to change { bar }
+    RUBY
+    expect(
+      cli.run(
+        [
+          '--autocorrect',
+          '--only', 'Style/MethodCallWithArgsParentheses,Lint/AmbiguousBlockAssociation'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      expect { foo }.not_to(change { bar })
+    RUBY
+  end
+
+  it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with ' \
      '`Lint/AmbiguousOperator`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
