@@ -128,6 +128,22 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
     end
 
     context 'when requiring `pp`' do
+      it 'does not register an offense and corrects when using `PP.pp`' do
+        expect_no_offenses(<<~RUBY)
+          require 'pp'
+
+          PP.pp
+        RUBY
+      end
+
+      it 'does not register an offense and corrects when using `::PP.pp`' do
+        expect_no_offenses(<<~RUBY)
+          require 'pp'
+
+          ::PP.pp
+        RUBY
+      end
+
       it 'does not register an offense and corrects when using `pretty_inspect`' do
         expect_no_offenses(<<~RUBY)
           require 'pp'
