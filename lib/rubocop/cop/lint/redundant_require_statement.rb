@@ -49,6 +49,11 @@ module RuboCop
             (str #redundant_feature?))
         PATTERN
 
+        # @!method pp_const?(node)
+        def_node_matcher :pp_const?, <<~PATTERN
+          (const {nil? cbase} :PP)
+        PATTERN
+
         def on_send(node)
           return unless redundant_require_statement?(node)
 
@@ -72,16 +77,16 @@ module RuboCop
           feature_name == 'enumerator' ||
             (target_ruby_version >= 2.1 && feature_name == 'thread') ||
             (target_ruby_version >= 2.2 && RUBY_22_LOADED_FEATURES.include?(feature_name)) ||
-            (target_ruby_version >= 2.5 && feature_name == 'pp' && !use_pretty_print_method?) ||
+            (target_ruby_version >= 2.5 && feature_name == 'pp' && !need_to_require_pp?) ||
             (target_ruby_version >= 2.7 && feature_name == 'ruby2_keywords') ||
             (target_ruby_version >= 3.1 && feature_name == 'fiber') ||
             (target_ruby_version >= 3.2 && feature_name == 'set')
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
-        def use_pretty_print_method?
+        def need_to_require_pp?
           processed_source.ast.each_descendant(:send).any? do |node|
-            PRETTY_PRINT_METHODS.include?(node.method_name)
+            pp_const?(node.receiver) || PRETTY_PRINT_METHODS.include?(node.method_name)
           end
         end
       end
