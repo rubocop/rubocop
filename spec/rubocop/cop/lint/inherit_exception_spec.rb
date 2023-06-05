@@ -48,6 +48,29 @@ RSpec.describe RuboCop::Cop::Lint::InheritException, :config do
         end
       end
 
+      context 'when inheriting `Exception` and has non-constant siblings' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            module Foo
+              include Bar
+
+              class C < Exception; end # This `Exception` is the same as `::Exception`.
+                        ^^^^^^^^^ Inherit from `RuntimeError` instead of `Exception`.
+              class Exception < RuntimeError; end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module Foo
+              include Bar
+
+              class C < RuntimeError; end # This `Exception` is the same as `::Exception`.
+              class Exception < RuntimeError; end
+            end
+          RUBY
+        end
+      end
+
       context 'when inheriting `::Exception`' do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY)

@@ -91,7 +91,9 @@ module RuboCop
         def inherit_exception_class_with_omitted_namespace?(class_node)
           return false if class_node.parent_class.namespace&.cbase_type?
 
-          class_node.left_siblings.any? { |sibling| exception_class?(sibling.identifier) }
+          class_node.left_siblings.any? do |sibling|
+            sibling.respond_to?(:identifier) && exception_class?(sibling.identifier)
+          end
         end
 
         def preferred_base_class
