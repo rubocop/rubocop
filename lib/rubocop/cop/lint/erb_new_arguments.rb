@@ -3,8 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      #
-      # This cop emulates the following Ruby warnings in Ruby 2.6.
+      # Emulates the following Ruby warnings in Ruby 2.6.
       #
       # [source,console]
       # ----

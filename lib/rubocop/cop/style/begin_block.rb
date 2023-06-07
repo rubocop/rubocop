@@ -3,8 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      #
-      # This cop checks for BEGIN blocks.
+      # Checks for BEGIN blocks.
       #
       # @example
       #   # bad

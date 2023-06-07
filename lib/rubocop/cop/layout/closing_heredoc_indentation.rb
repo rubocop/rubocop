@@ -3,7 +3,6 @@
 module RuboCop
   module Cop
     module Layout
-      #
       # Checks the indentation of here document closings.
       #
       # @example

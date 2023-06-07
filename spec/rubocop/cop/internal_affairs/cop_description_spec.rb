@@ -106,6 +106,38 @@ RSpec.describe RuboCop::Cop::InternalAffairs::CopDescription, :config do
     end
   end
 
+  it 'registers an offense if the description starts with an empty comment line' do
+    expect_offense(<<~RUBY)
+      module RuboCop
+        module Cop
+          module Lint
+            #
+      ^^^^^^^ Description should not start with an empty comment line.
+            # Checks some problem
+            #
+            # ...
+            class Foo < Base
+            end
+          end
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module RuboCop
+        module Cop
+          module Lint
+            # Checks some problem
+            #
+            # ...
+            class Foo < Base
+            end
+          end
+        end
+      end
+    RUBY
+  end
+
   context 'There is no description comment' do
     it 'does not register offense' do
       expect_no_offenses(<<~RUBY)
