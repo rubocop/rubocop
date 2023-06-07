@@ -63,7 +63,7 @@ module RuboCop
 
         # @!method block_read?(node)
         def_node_matcher :block_read?, <<~PATTERN
-          (block _ (args (arg $_)) (send (lvar $_) :read))
+          (block _ (args (arg _name)) (send (lvar _name) :read))
         PATTERN
 
         def on_send(node)
@@ -100,7 +100,7 @@ module RuboCop
         def file_open_read?(node)
           return true if send_read?(node)
 
-          block_read?(node) { |block_arg, read_lvar| block_arg == read_lvar }
+          block_read?(node)
         end
 
         def read_method(mode)
