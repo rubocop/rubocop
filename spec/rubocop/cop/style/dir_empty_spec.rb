@@ -13,10 +13,10 @@ RSpec.describe RuboCop::Cop::Style::DirEmpty, :config do
       RUBY
     end
 
-    it 'registers an offense for `!Dir.entries.size == 2`' do
+    it 'registers an offense for `Dir.entries.size != 2`' do
       expect_offense(<<~RUBY)
-        !Dir.entries('path/to/dir').size == 2
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Dir.empty?('path/to/dir')` instead.
+        Dir.entries('path/to/dir').size != 2
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!Dir.empty?('path/to/dir')` instead.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Style::DirEmpty, :config do
     it 'registers an offense for `Dir.entries.size > 2`' do
       expect_offense(<<~RUBY)
         Dir.entries('path/to/dir').size > 2
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Dir.empty?('path/to/dir')` instead.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!Dir.empty?('path/to/dir')` instead.
       RUBY
 
       expect_correction(<<~RUBY)
