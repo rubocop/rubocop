@@ -3,7 +3,6 @@
 module RuboCop
   module Cop
     module Lint
-      #
       # Prefer `equal?` over `==` when comparing `object_id`.
       #
       # `Object#equal?` is provided to compare objects for identity, and in contrast

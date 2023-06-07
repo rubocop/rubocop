@@ -12,6 +12,13 @@ module RuboCop
       #     ....
       #   end
       #
+      #   # bad
+      #   #
+      #   # Checks ...
+      #   class SomeCop < Base
+      #     ...
+      #   end
+      #
       #   # good
       #   # Checks ...
       #   class SomeCop < Base
@@ -21,27 +28,47 @@ module RuboCop
       class CopDescription < Base
         extend AutoCorrector
 
-        MSG = 'Description should be started with %<suggestion>s instead of `This cop ...`.'
+        MSG_STARTS_WITH_WRONG_WORD =
+          'Description should be started with %<suggestion>s instead of `This cop ...`.'
+        MSG_STARTS_WITH_EMPTY_COMMENT_LINE =
+          'Description should not start with an empty comment line.'
 
         SPECIAL_WORDS = %w[is can could should will would must may].freeze
         COP_DESC_OFFENSE_REGEX =
           /^\s+# This cop (?<special>#{SPECIAL_WORDS.join('|')})?\s*(?<word>.+?) .*/.freeze
         REPLACEMENT_REGEX = /^\s+# This cop (#{SPECIAL_WORDS.join('|')})?\s*(.+?) /.freeze
+        EMPTY_COMMENT_LINE_REGEX = /\A\s*#\s*\n\z/.freeze
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         def on_class(node)
           return unless (module_node = node.parent) && node.parent_class
 
           description_beginning = first_comment_line(module_node)
           return unless description_beginning
 
-          start_with_subject = description_beginning.match(COP_DESC_OFFENSE_REGEX)
-          return unless start_with_subject
+          if description_beginning.match?(EMPTY_COMMENT_LINE_REGEX)
+            register_offense_for_empty_comment_line(module_node, description_beginning)
+          else
+            start_with_subject = description_beginning.match(COP_DESC_OFFENSE_REGEX)
+            return unless start_with_subject
 
+            register_offense_for_wrong_word(module_node, description_beginning, start_with_subject)
+          end
+        end
+
+        private
+
+        def register_offense_for_empty_comment_line(module_node, description_beginning)
+          range = range(module_node, description_beginning)
+          add_offense(range, message: MSG_STARTS_WITH_EMPTY_COMMENT_LINE) do |corrector|
+            corrector.remove(range)
+          end
+        end
+
+        def register_offense_for_wrong_word(module_node, description_beginning, start_with_subject)
           suggestion = start_with_subject['word']&.capitalize
           range = range(module_node, description_beginning)
           suggestion_for_message = suggestion_for_message(suggestion, start_with_subject)
-          message = format(MSG, suggestion: suggestion_for_message)
+          message = format(MSG_STARTS_WITH_WRONG_WORD, suggestion: suggestion_for_message)
 
           add_offense(range, message: message) do |corrector|
             if suggestion && !start_with_subject['special']
@@ -49,9 +76,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
-
-        private
 
         def replace_with_suggestion(corrector, range, suggestion, description_beginning)
           replacement = description_beginning.gsub(REPLACEMENT_REGEX, "#{suggestion} ")
