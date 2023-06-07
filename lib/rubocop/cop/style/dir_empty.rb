@@ -19,18 +19,16 @@ module RuboCop
         extend AutoCorrector
         extend TargetRubyVersion
 
-        MSG = 'Use `Dir.empty?(%<arg>s)` instead.'
-        RESTRICT_ON_SEND = %i[== > empty? none?].freeze
+        MSG = 'Use `%<replacement>s` instead.'
+        RESTRICT_ON_SEND = %i[== != > empty? none?].freeze
 
         minimum_target_ruby_version 2.4
 
         # @!method offensive?(node)
         def_node_matcher :offensive?, <<~PATTERN
           {
-            (send (send (send $(const {nil? cbase} :Dir) :entries $_) :size) {:== :>} (int 2))
-            (send (send (send $(const {nil? cbase} :Dir) :children $_) :size) {:== :>} (int 0))
-            (send (send (send (send $(const {nil? cbase} :Dir) :entries $_) :size) :!) {:== :>} (int 2))
-            (send (send (send (send $(const {nil? cbase} :Dir) :children $_) :size) :!) {:== :>} (int 0))
+            (send (send (send $(const {nil? cbase} :Dir) :entries $_) :size) {:== :!= :>} (int 2))
+            (send (send (send $(const {nil? cbase} :Dir) :children $_) :size) {:== :!= :>} (int 0))
             (send (send $(const {nil? cbase} :Dir) :children $_) :empty?)
             (send (send $(const {nil? cbase} :Dir) :each_child $_) :none?)
           }
@@ -38,10 +36,9 @@ module RuboCop
 
         def on_send(node)
           offensive?(node) do |const_node, arg_node|
-            add_offense(node, message: format(MSG, arg: arg_node.source)) do |corrector|
-              bang(node)
-              corrector.replace(node,
-                                "#{bang(node)}#{const_node.source}.empty?(#{arg_node.source})")
+            replacement = "#{bang(node)}#{const_node.source}.empty?(#{arg_node.source})"
+            add_offense(node, message: format(MSG, replacement: replacement)) do |corrector|
+              corrector.replace(node, replacement)
             end
           end
         end
@@ -49,10 +46,7 @@ module RuboCop
         private
 
         def bang(node)
-          if (node.method?(:==) && node.child_nodes.first.method?(:!)) ||
-             (node.method?(:>) && !node.child_nodes.first.method?(:!))
-            '!'
-          end
+          '!' if %i[!= >].include? node.method_name
         end
       end
     end
