@@ -8,6 +8,10 @@ gem 'asciidoctor'
 gem 'bump', require: false
 gem 'bundler', '>= 1.15.0', '< 3.0'
 gem 'memory_profiler', platform: :mri
+# FIXME: Workaround for Parser 3.2.2.2 or lower with Ruby 3.3.0dev.
+# When the Praser gem releases a new version of Racc that includes the runtime dependencies,
+# it will be able to upgrade the Parser gem dependency and remove the workaround.
+gem 'racc', '>= 1.6.2'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.18.0'
