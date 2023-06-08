@@ -207,4 +207,17 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
       RUBY
     end
   end
+
+  context 'with custom AllowedParentClasses config' do
+    let(:cop_config) { { 'AllowedParentClasses' => %w[Array] } }
+
+    it 'does not register an offense for a class with custom stateless parent class' do
+      expect_no_offenses(<<~RUBY)
+        class Child < Array
+          def initialize
+          end
+        end
+      RUBY
+    end
+  end
 end

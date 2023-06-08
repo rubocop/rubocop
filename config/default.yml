@@ -1988,6 +1988,7 @@ Lint/MissingSuper:
                   Checks for the presence of constructors and lifecycle callbacks
                   without calls to `super`.
   Enabled: true
+  AllowedParentClasses: []
   VersionAdded: '0.89'
   VersionChanged: '1.4'
 

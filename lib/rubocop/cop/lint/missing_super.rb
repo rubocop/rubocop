@@ -14,6 +14,13 @@ module RuboCop
       # Autocorrection is not supported because the position of `super` cannot be
       # determined automatically.
       #
+      # `Object` and `BasicObject` are allowed by this cop because of their
+      # stateless nature. However, sometimes you might want to allow other parent
+      # classes from this cop, for example in the case of an abstract class that is
+      # not meant to be called with `super`. In those cases, you can use the
+      # `AllowedParentClasses` option to specify which classes should be allowed
+      # *in addition to* `Object` and `BasicObject`.
+      #
       # @example
       #   # bad
       #   class Employee < Person
@@ -56,6 +63,21 @@ module RuboCop
       #   class Parent
       #     def self.inherited(base)
       #       super
+      #       do_something
+      #     end
+      #   end
+      #
+      #   # good
+      #   class ClassWithNoParent
+      #     def initialize
+      #       do_something
+      #     end
+      #   end
+      #
+      # @example AllowedParentClasses: [MyAbstractClass]
+      #   # good
+      #   class MyConcreteClass < MyAbstractClass
+      #     def initialize
       #       do_something
       #     end
       #   end
@@ -116,16 +138,20 @@ module RuboCop
           if (block_node = node.each_ancestor(:block, :numblock).first)
             return false unless (super_class = class_new_block(block_node))
 
-            !stateless_class?(super_class)
+            !allowed_class?(super_class)
           elsif (class_node = node.each_ancestor(:class).first)
-            class_node.parent_class && !stateless_class?(class_node.parent_class)
+            class_node.parent_class && !allowed_class?(class_node.parent_class)
           else
             false
           end
         end
 
-        def stateless_class?(node)
-          STATELESS_CLASSES.include?(node.const_name)
+        def allowed_class?(node)
+          allowed_classes.include?(node.const_name)
+        end
+
+        def allowed_classes
+          @allowed_classes ||= STATELESS_CLASSES + cop_config.fetch('AllowedParentClasses', [])
         end
       end
     end
