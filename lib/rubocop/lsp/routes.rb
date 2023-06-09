@@ -36,6 +36,8 @@ module RuboCop
       end
 
       handle 'initialize' do |request|
+        @server.configure(safe_autocorrect: safe_autocorrect?(request))
+
         @server.write(
           id: request[:id],
           result: LanguageServer::Protocol::Interface::InitializeResult.new(
@@ -161,6 +163,12 @@ module RuboCop
       end
 
       private
+
+      def safe_autocorrect?(request)
+        safe_autocorrect = request.dig(:params, :initializationOptions, :safeAutocorrect)
+
+        safe_autocorrect.nil? || safe_autocorrect == true
+      end
 
       def format_file(file_uri)
         unless (text = @text_cache[file_uri])

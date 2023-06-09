@@ -53,6 +53,10 @@ module RuboCop
         @runtime.offenses(path, text)
       end
 
+      def configure(safe_autocorrect: true)
+        @runtime.safe_autocorrect = safe_autocorrect
+      end
+
       def stop(&block)
         at_exit(&block) if block
         exit
