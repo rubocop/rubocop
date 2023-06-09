@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
     end
   end
 
-  describe 'format' do
+  describe 'format by default (safe autocorrect)' do
     let(:requests) do
       [
         {
@@ -183,6 +183,132 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
         id: 20,
         result: [
           newText: "puts 'bye'\n",
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 1, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
+  describe 'format with `safeAutocorrect: true`' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?",
+            initializationOptions: {
+              safeAutocorrect: true
+            }
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: "puts 'hi'",
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [{ text: "puts 'bye'" }],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: "puts 'bye'\n",
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 1, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
+  describe 'format with `safeAutocorrect: false`' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?",
+            initializationOptions: {
+              safeAutocorrect: false
+            }
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: "puts 'hi'",
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [{ text: "puts 'bye'" }],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: "# frozen_string_literal: true\n\nputs 'bye'\n",
           range: {
             start: { line: 0, character: 0 }, end: { line: 1, character: 0 }
           }

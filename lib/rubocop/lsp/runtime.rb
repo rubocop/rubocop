@@ -14,9 +14,12 @@ module RuboCop
     # Runtime for Language Server Protocol of RuboCop.
     # @api private
     class Runtime
+      attr_writer :safe_autocorrect
+
       def initialize(config_store)
         @config_store = config_store
         @logged_paths = []
+        @safe_autocorrect = true
       end
 
       # This abuses the `--stdin` option of rubocop and reads the formatted text
@@ -32,7 +35,7 @@ module RuboCop
       #   https://github.com/rubocop/rubocop/blob/v1.52.0/lib/rubocop/runner.rb#L72
       def format(path, text)
         formatting_options = {
-          stdin: text, force_exclusion: true, autocorrect: true, safe_autocorrect: true
+          stdin: text, force_exclusion: true, autocorrect: true, safe_autocorrect: @safe_autocorrect
         }
 
         redirect_stdout { run_rubocop(formatting_options, path) }
