@@ -117,8 +117,7 @@ module RuboCop
           end
 
           def capturing_variable?(name)
-            # TODO: Remove `Symbol#to_s` after supporting only Ruby >= 2.7.
-            name && !name.to_s.start_with?('_')
+            name && !name.start_with?('_')
           end
 
           def branch?(node)
