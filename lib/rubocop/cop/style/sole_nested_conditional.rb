@@ -186,7 +186,9 @@ module RuboCop
           begin_pos = condition.first_argument.source_range.begin_pos
           return if end_pos > begin_pos
 
-          corrector.replace(range_between(end_pos, begin_pos), '(')
+          range = range_between(end_pos, begin_pos)
+          corrector.remove(range)
+          corrector.insert_after(range, '(')
           corrector.insert_after(condition.last_argument, ')')
         end
 
