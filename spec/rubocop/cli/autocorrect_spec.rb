@@ -408,6 +408,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with ' \
+     '`Style/SoleNestedConditional`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+    YAML
+    create_file('example.rb', <<~RUBY)
+      if items.include? item
+        if condition
+          do_something
+        end
+      end
+    RUBY
+    expect(
+      cli.run(
+        [
+          '--autocorrect',
+          '--only', 'Style/MethodCallWithArgsParentheses,Style/SoleNestedConditional'
+        ]
+      )
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if items.include?(item) && condition
+          do_something
+        end
+    RUBY
+  end
+
   it 'corrects `Style/IfUnlessModifier` with `Style/SoleNestedConditional`' do
     source = <<~RUBY
       def foo
