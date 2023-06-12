@@ -2432,7 +2432,7 @@ NOTE: Required Ruby version: 2.6
 | -
 |===
 
-This cop emulates the following Ruby warnings in Ruby 2.6.
+Emulates the following Ruby warnings in Ruby 2.6.
 
 [source,console]
 ----
@@ -2829,7 +2829,7 @@ array = [
 | 1.24
 |===
 
-This cop checks for `IO.select` that is incompatible with Fiber Scheduler since Ruby 3.0.
+Checks for `IO.select` that is incompatible with Fiber Scheduler since Ruby 3.0.
 
 When an array of IO objects waiting for an exception (the third argument of `IO.select`)
 is used as an argument, there is no alternative API, so offenses are not registered.
@@ -5355,7 +5355,7 @@ Foo = Bar
 | -
 |===
 
-This cop checks for `send`, `public_send`, and `__send__` methods
+Checks for `send`, `public_send`, and `__send__` methods
 when using mix-in.
 
 `include` and `prepend` methods were private methods until Ruby 2.0,

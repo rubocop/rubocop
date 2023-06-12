@@ -726,7 +726,7 @@ Checks if usage of %() or %Q() matches configuration.
 | -
 |===
 
-This cop checks for BEGIN blocks.
+Checks for BEGIN blocks.
 
 === Examples
 
@@ -1379,7 +1379,7 @@ var.kind_of?(String)
 
 Enforces the use of `Object#instance_of?` instead of class comparison
 for equality.
-`==`, `equal?`, and `eql?` methods are allowed by default.
+`==`, `equal?`, and `eql?` custom method definitions are allowed by default.
 These are customizable with `AllowedMethods` option.
 
 === Examples
@@ -1396,52 +1396,32 @@ var.class.name == 'Date'
 var.instance_of?(Date)
 ----
 
-==== AllowedMethods: [] (default)
+==== AllowedMethods: ['==', 'equal?', 'eql?'] (default)
 
 [source,ruby]
 ----
 # good
-var.instance_of?(Date)
+def ==(other)
+  self.class == other.class && name == other.name
+end
 
-# bad
-var.class == Date
-var.class.equal?(Date)
-var.class.eql?(Date)
-var.class.name == 'Date'
-var.class.to_s == 'Date'
-var.class.inspect == 'Date'
-----
+def equal?(other)
+  self.class.equal?(other.class) && name.equal?(other.name)
+end
 
-==== AllowedMethods: [`==`]
-
-[source,ruby]
-----
-# good
-var.instance_of?(Date)
-var.class == Date
-var.class.name == 'Date'
-var.class.to_s == 'Date'
-var.class.inspect == 'Date'
-
-# bad
-var.class.equal?(Date)
-var.class.eql?(Date)
+def eql?(other)
+  self.class.eql?(other.class) && name.eql?(other.name)
+end
 ----
 
 ==== AllowedPatterns: [] (default)
 
 [source,ruby]
 ----
-# good
-var.instance_of?(Date)
-
 # bad
-var.class == Date
-var.class.equal?(Date)
-var.class.eql?(Date)
-var.class.name == 'Date'
-var.class.to_s == 'Date'
-var.class.inspect == 'Date'
+def eq(other)
+  self.class.eq(other.class) && name.eq(other.name)
+end
 ----
 
 ==== AllowedPatterns: ['eq']
@@ -1449,15 +1429,9 @@ var.class.inspect == 'Date'
 [source,ruby]
 ----
 # good
-var.instance_of?(Date)
-var.class.equal?(Date)
-var.class.eql?(Date)
-
-# bad
-var.class == Date
-var.class.name == 'Date'
-var.class.to_s == 'Date'
-var.class.inspect == 'Date'
+def eq(other)
+  self.class.eq(other.class) && name.eq(other.name)
+end
 ----
 
 === Configurable attributes
@@ -2749,7 +2723,7 @@ NOTE: Required Ruby version: 2.0
 | -
 |===
 
-Checks for places where the `#__dir__` method can replace more
+Checks for places where the `#\_\_dir\_\_` method can replace more
 complex constructs to retrieve a canonicalized absolute path to the
 current file.
 
@@ -4002,12 +3976,12 @@ ENV.fetch('HOME', default)
 |===
 
 Ensures that eval methods (`eval`, `instance_eval`, `class_eval`
-and `module_eval`) are given filename and line number values (`__FILE__`
-and `__LINE__`). This data is used to ensure that any errors raised
+and `module_eval`) are given filename and line number values (`\_\_FILE\_\_`
+and `\_\_LINE\_\_`). This data is used to ensure that any errors raised
 within the evaluated code will be given the correct identification
 in a backtrace.
 
-The cop also checks that the line number given relative to `__LINE__` is
+The cop also checks that the line number given relative to `\_\_LINE\_\_` is
 correct.
 
 This cop will autocorrect incorrect or missing filename and line number
@@ -5742,8 +5716,8 @@ NOTE: Required Ruby version: 2.5
 | 0.90
 |===
 
-Looks for uses of `_.each_with_object({}) {...}`,
-`_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+Looks for uses of `\_.each_with_object({}) {...}`,
+`\_.map {...}.to_h`, and `Hash[\_.map {...}]` that are actually just
 transforming the keys of a hash, and tries to use a simpler & faster
 call to `transform_keys` instead.
 It should only be enabled on Ruby version 2.5 or newer.
@@ -5784,8 +5758,8 @@ NOTE: Required Ruby version: 2.4
 | 0.90
 |===
 
-Looks for uses of `_.each_with_object({}) {...}`,
-`_.map {...}.to_h`, and `Hash[_.map {...}]` that are actually just
+Looks for uses of `\_.each_with_object({}) {...}`,
+`\_.map {...}.to_h`, and `Hash[\_.map {...}]` that are actually just
 transforming the values of a hash, and tries to use a simpler & faster
 call to `transform_values` instead.
 
@@ -13450,7 +13424,7 @@ end if condition_a
 | 0.36
 |===
 
-This cop looks for uses of Perl-style global variables.
+Looks for uses of Perl-style global variables.
 Correcting to global variables in the 'English' library
 will add a require statement to the top of the file if
 enabled by RequireEnglish config.
