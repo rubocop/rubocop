@@ -1,1 +1,0 @@
-* [#11915](https://github.com/rubocop/rubocop/pull/11915): Fix a false positive for `Lint/RedundantSafeNavigation` when `&.` is used for `to_s`, `to_i`, `to_d`, and other coercion methods. ([@lucthev][])
