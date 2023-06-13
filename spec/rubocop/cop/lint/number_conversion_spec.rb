@@ -202,6 +202,28 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
+    it 'registers an offense when using multiple number conversion methods' do
+      expect_offense(<<~RUBY)
+        case foo.to_f
+             ^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `foo.to_f`, use stricter `Float(foo)`.
+        ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `case foo.to_f[...]
+        when 0.0
+          bar
+        else
+          baz
+        end.to_i
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Integer(case foo.to_f
+        when 0.0
+          bar
+        else
+          baz
+        end, 10)
+      RUBY
+    end
+
     it 'does not register an offense when using `Integer` constructor' do
       expect_no_offenses(<<~RUBY)
         Integer(var, 10).to_f

@@ -74,6 +74,7 @@ module RuboCop
         extend AutoCorrector
         include AllowedMethods
         include AllowedPattern
+        include IgnoredNode
 
         CONVERSION_METHOD_CLASS_MAPPING = {
           to_i: "#{Integer.name}(%<number_object>s, 10)",
@@ -116,7 +117,11 @@ module RuboCop
               corrected_method: correct_method(node, receiver)
             )
             add_offense(node, message: message) do |corrector|
+              next if part_of_ignored_node?(node)
+
               corrector.replace(node, correct_method(node, node.receiver))
+
+              ignore_node(node)
             end
           end
         end
