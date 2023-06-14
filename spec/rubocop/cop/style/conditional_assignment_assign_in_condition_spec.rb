@@ -835,6 +835,29 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
+    it 'registers an offense for an assignment that uses if branch bodies including a block' do
+      expect_offense(<<~RUBY)
+        result = if condition
+        ^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
+          foo do
+          end
+        else
+          bar do
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if condition
+          result = foo do
+          end
+        else
+          result = bar do
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense for assignment to case when then else' do
       expect_offense(<<~RUBY)
         baz = case foo
