@@ -341,6 +341,16 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
               .baz
           RUBY
         end
+
+        it 'does not register an offense with a line broken string argument' do
+          expect_no_offenses(<<~RUBY)
+            foo('
+              xyz
+            ')
+              .bar
+              .baz
+          RUBY
+        end
       end
     end
 
