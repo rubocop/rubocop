@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     module Lint
       # Checks for duplicated keys in hash literals.
+      # This cop considers both primitive types and constants for the hash keys.
       #
       # This cop mirrors a warning in Ruby 2.2.
       #
@@ -24,7 +25,7 @@ module RuboCop
         MSG = 'Duplicated key in hash literal.'
 
         def on_hash(node)
-          keys = node.keys.select(&:recursive_basic_literal?)
+          keys = node.keys.select { |key| key.recursive_basic_literal? || key.const_type? }
 
           return unless duplicates?(keys)
 
