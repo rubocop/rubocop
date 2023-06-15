@@ -12,6 +12,46 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when self-assigning redundant else ternary branch and ' \
+     'using method call with an argument in the if ternary branch' do
+    expect_offense(<<~RUBY)
+      foo = condition ? bar(arg) : foo
+                                   ^^^ Remove the self-assignment branch.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo = bar(arg) if condition
+    RUBY
+  end
+
+  it 'registers and corrects an offense when self-assigning redundant else ternary branch and ' \
+     'using a line broke method chain in the if ternary branch' do
+    expect_offense(<<~RUBY)
+      foo = condition ? bar.
+        baz : foo
+              ^^^ Remove the self-assignment branch.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo = bar.
+        baz if condition
+    RUBY
+  end
+
+  it 'registers and corrects an offense when self-assigning redundant else ternary branch and ' \
+     'using an empty parentheses in the if ternary branch' do
+    expect_offense(<<~RUBY)
+      foo = condition ? (
+        ) : foo
+            ^^^ Remove the self-assignment branch.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo = (
+        ) if condition
+    RUBY
+  end
+
   it 'registers and corrects an offense when self-assigning redundant if ternary branch' do
     expect_offense(<<~RUBY)
       foo = condition ? foo : bar

@@ -62,7 +62,9 @@ module RuboCop
         end
 
         def multiple_statements?(branch)
-          branch && branch.children.compact.count > 1
+          return false unless branch&.begin_type?
+
+          !branch.children.empty?
         end
 
         def self_assign?(variable, branch)
