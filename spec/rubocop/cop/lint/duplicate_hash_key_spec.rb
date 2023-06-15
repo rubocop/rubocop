@@ -10,6 +10,15 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateHashKey, :config do
     end
   end
 
+  context 'when there is a duplicated constant key in the hash literal' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        hash = { 'otherkey' => 'value', KEY => 'value', KEY => 'hi' }
+                                                        ^^^ Duplicated key in hash literal.
+      RUBY
+    end
+  end
+
   context 'when there are two duplicated keys in a hash' do
     it 'registers two offenses' do
       expect_offense(<<~RUBY)
