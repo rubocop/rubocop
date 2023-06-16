@@ -158,13 +158,16 @@ module RuboCop
           return false unless expressions.size >= 1 && unique_expressions.one?
 
           unique_expression = unique_expressions.first
-          return true unless unique_expression.assignment?
+          return true unless unique_expression&.assignment?
 
           lhs = unique_expression.child_nodes.first
           node.condition.child_nodes.none? { |n| n.source == lhs.source if n.variable? }
         end
 
-        def check_expressions(node, expressions, insert_position) # rubocop:disable Metrics/MethodLength
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        def check_expressions(node, expressions, insert_position)
+          return if expressions.any?(&:nil?)
+
           inserted_expression = false
 
           expressions.each do |expression|
@@ -184,6 +187,7 @@ module RuboCop
             end
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         def last_child_of_parent?(node)
           return true unless (parent = node.parent)

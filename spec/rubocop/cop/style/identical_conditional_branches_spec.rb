@@ -509,11 +509,31 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
-  context 'with empty brace' do
-    it 'does not raise any error' do
+  context 'with empty parentheses' do
+    it 'does not raise any error when using empty brace in the both parentheses' do
       expect_no_offenses(<<~RUBY)
         if condition
           ()
+        else
+          ()
+        end
+      RUBY
+    end
+
+    it 'does not raise any error when using empty parentheses in the `if` branch' do
+      expect_no_offenses(<<~RUBY)
+        if condition
+          ()
+        else
+          foo
+        end
+      RUBY
+    end
+
+    it 'does not raise any error when using empty parentheses in the `else` branch' do
+      expect_no_offenses(<<~RUBY)
+        if condition
+          foo
         else
           ()
         end
