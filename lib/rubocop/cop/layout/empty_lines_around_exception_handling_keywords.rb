@@ -68,6 +68,8 @@ module RuboCop
           check_body(node.body, node.loc.line)
         end
         alias on_defs on_def
+        alias on_block on_def
+        alias on_numblock on_def
 
         def on_kwbegin(node)
           body, = *node
