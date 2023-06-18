@@ -1,0 +1,1 @@
+* [#11959](https://github.com/rubocop/rubocop/pull/11959): Fix false negatives for `Layout/EmptyLinesAroundExceptionHandlingKeywords` when using Ruby 2.5's `rescue` inside block and Ruby 2.7's numbered block. ([@koic][])
