@@ -139,6 +139,7 @@ require_relative 'rubocop/cop/mixin/comments_help' # relies on visibility_help
 require_relative 'rubocop/cop/mixin/def_node' # relies on visibility_help
 
 require_relative 'rubocop/cop/utils/format_string'
+require_relative 'rubocop/cop/utils/regexp_ranges'
 
 require_relative 'rubocop/cop/migration/department_name'
 
@@ -336,6 +337,7 @@ require_relative 'rubocop/cop/lint/literal_in_interpolation'
 require_relative 'rubocop/cop/lint/loop'
 require_relative 'rubocop/cop/lint/missing_cop_enable_directive'
 require_relative 'rubocop/cop/lint/missing_super'
+require_relative 'rubocop/cop/lint/mixed_case_range'
 require_relative 'rubocop/cop/lint/mixed_regexp_capture_types'
 require_relative 'rubocop/cop/lint/multiple_comparison'
 require_relative 'rubocop/cop/lint/nested_method_definition'

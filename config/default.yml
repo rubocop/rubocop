@@ -1991,6 +1991,12 @@ Lint/MissingSuper:
   VersionAdded: '0.89'
   VersionChanged: '1.4'
 
+Lint/MixedCaseRange:
+  Description: 'Checks for mixed-case character ranges since they include likely unintended characters.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
   Enabled: true
