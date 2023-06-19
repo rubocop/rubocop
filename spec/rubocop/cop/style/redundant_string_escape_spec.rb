@@ -283,6 +283,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     it 'does not register an offense with escaped double quote' do
       expect_no_offenses('"\""')
     end
+
+    it 'does not register an offense when an escaped double quote precedes interpolation in a symbol literal' do
+      expect_no_offenses(<<~'RUBY')
+        :"\"#{value}"
+      RUBY
+    end
   end
 
   context 'with a single quoted string' do

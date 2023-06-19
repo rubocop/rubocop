@@ -157,6 +157,8 @@ module RuboCop
             return delimiter?(node.parent, char)
           end
 
+          return true unless node.loc.begin
+
           delimiters = [node.loc.begin.source[-1], node.loc.end.source[0]]
 
           delimiters.include?(char)
