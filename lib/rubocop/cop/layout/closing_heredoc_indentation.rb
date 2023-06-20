@@ -72,7 +72,7 @@ module RuboCop
         end
 
         def argument_indentation_correct?(node)
-          return unless node.argument? || node.chained?
+          return false unless node.argument? || node.chained?
 
           opening_indentation(
             find_node_used_heredoc_argument(node.parent)

@@ -108,7 +108,7 @@ module RuboCop
           comments = heredoc_comment_blocks(arg_node.loc.heredoc_body.line_span)
                      .concat(preceding_comment_blocks(arg_node.parent))
 
-          return if comments.none?
+          return false if comments.none?
 
           regexp = comment_regexp(arg_node)
           comments.any?(regexp) || regexp.match?(comments.join)

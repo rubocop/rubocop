@@ -198,7 +198,7 @@ module RuboCop
         end
 
         def command_or_kernel_call?(name, node)
-          return unless node.method?(name)
+          return false unless node.method?(name)
 
           node.command?(name) || kernel_call?(node, name)
         end

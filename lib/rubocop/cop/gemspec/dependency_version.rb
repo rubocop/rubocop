@@ -126,13 +126,13 @@ module RuboCop
         end
 
         def required_offense?(node)
-          return unless required_style?
+          return false unless required_style?
 
           !includes_version_specification?(node) && !includes_commit_reference?(node)
         end
 
         def forbidden_offense?(node)
-          return unless forbidden_style?
+          return false unless forbidden_style?
 
           includes_version_specification?(node) || includes_commit_reference?(node)
         end

@@ -98,7 +98,7 @@ module RuboCop
 
           def call_in_literals?(node)
             parent = node.parent&.block_type? ? node.parent.parent : node.parent
-            return unless parent
+            return false unless parent
 
             parent.pair_type? ||
               parent.array_type? ||
@@ -109,7 +109,7 @@ module RuboCop
 
           def call_in_logical_operators?(node)
             parent = node.parent&.block_type? ? node.parent.parent : node.parent
-            return unless parent
+            return false unless parent
 
             logical_operator?(parent) ||
               (parent.send_type? &&

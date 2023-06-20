@@ -117,11 +117,11 @@ module RuboCop
         def add_newline?(node)
           # Determine if a blank line should be inserted before the new directive
           # in order to spread out pattern matchers
-          return if node.sibling_index&.zero?
-          return unless node.parent
+          return false if node.sibling_index&.zero?
+          return false unless node.parent
 
           prev_sibling = node.parent.child_nodes[node.sibling_index - 1]
-          return unless prev_sibling && pattern_matcher?(prev_sibling)
+          return false unless prev_sibling && pattern_matcher?(prev_sibling)
 
           node.loc.line == last_line(prev_sibling) + 1
         end

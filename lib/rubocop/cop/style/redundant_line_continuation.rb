@@ -150,7 +150,7 @@ module RuboCop
         end
 
         def same_line?(node, line)
-          return unless (source_range = node.source_range)
+          return false unless (source_range = node.source_range)
 
           if node.is_a?(AST::StrNode)
             if node.heredoc?

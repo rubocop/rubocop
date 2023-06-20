@@ -9,7 +9,7 @@ module RuboCop
       private
 
       def percent_literal?(node)
-        return unless (begin_source = begin_source(node))
+        return false unless (begin_source = begin_source(node))
 
         begin_source.start_with?('%')
       end

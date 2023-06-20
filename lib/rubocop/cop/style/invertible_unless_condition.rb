@@ -72,7 +72,7 @@ module RuboCop
           when :begin
             invertible?(node.children.first)
           when :send
-            return if inheritance_check?(node)
+            return false if inheritance_check?(node)
 
             node.method?(:!) || inverse_methods.key?(node.method_name)
           when :or, :and

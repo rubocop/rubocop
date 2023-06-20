@@ -90,7 +90,7 @@ module RuboCop
         end
 
         def debugger_method?(send_node)
-          return if send_node.parent&.send_type? && send_node.parent.receiver == send_node
+          return false if send_node.parent&.send_type? && send_node.parent.receiver == send_node
 
           debugger_methods.include?(chained_method_name(send_node))
         end
