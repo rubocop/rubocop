@@ -67,7 +67,7 @@ module RuboCop
       end
 
       def variable_alignment?(whole_expression, rhs, end_alignment_style)
-        return if end_alignment_style == :keyword
+        return false if end_alignment_style == :keyword
 
         !line_break_before_keyword?(whole_expression, rhs)
       end

@@ -85,7 +85,7 @@ module RuboCop
         end
 
         def allowed_ternary?(node)
-          return unless node&.parent&.if_type?
+          return false unless node&.parent&.if_type?
 
           node.parent.ternary? && ternary_parentheses_required?
         end

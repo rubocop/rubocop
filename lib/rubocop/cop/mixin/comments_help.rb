@@ -25,7 +25,7 @@ module RuboCop
       def comments_contain_disables?(node, cop_name)
         disabled_ranges = processed_source.disabled_line_ranges[cop_name]
 
-        return unless disabled_ranges
+        return false unless disabled_ranges
 
         node_range = node.source_range.line...find_end_line(node)
 

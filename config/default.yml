@@ -5064,6 +5064,15 @@ Style/ReturnNil:
     - return_nil
   VersionAdded: '0.50'
 
+Style/ReturnNilInPredicateMethodDefinition:
+  Description: 'Checks if uses of `return` or `return nil` in predicate method definition.'
+  StyleGuide: '#bool-methods-qmark'
+  Enabled: pending
+  SafeAutoCorrect: false
+  AllowedMethods: []
+  AllowedPatterns: []
+  VersionAdded: '<<next>>'
+
 Style/SafeNavigation:
   Description: >-
                   Transforms usages of a method call safeguarded by

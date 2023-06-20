@@ -366,10 +366,10 @@ module RuboCop
         end
 
         def starts_with_access_modifier?(body_node)
-          return unless body_node.begin_type?
+          return false unless body_node.begin_type?
 
           starting_node = body_node.children.first
-          return unless starting_node
+          return false unless starting_node
 
           starting_node.send_type? && starting_node.bare_access_modifier?
         end

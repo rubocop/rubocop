@@ -361,7 +361,7 @@ module RuboCop
         end
 
         def assignment_types_match?(*nodes)
-          return unless assignment_type?(nodes.first)
+          return false unless assignment_type?(nodes.first)
 
           nodes.map(&:type).uniq.one?
         end

@@ -65,7 +65,7 @@ module RuboCop
         end
 
         def send_node?(node)
-          return nil unless node
+          return false unless node
 
           node.call_type?
         end

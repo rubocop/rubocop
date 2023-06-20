@@ -109,7 +109,7 @@ module RuboCop
         end
 
         def use_block_argument_as_local_variable?(node, last_argument)
-          return if node.body.nil?
+          return false if node.body.nil?
 
           node.body.each_descendant(:lvar, :lvasgn).any? do |lvar|
             !lvar.parent.block_pass_type? && lvar.node_parts[0].to_s == last_argument

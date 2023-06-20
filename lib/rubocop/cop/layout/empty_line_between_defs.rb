@@ -160,7 +160,7 @@ module RuboCop
         private
 
         def candidate?(node)
-          return unless node
+          return false unless node
 
           method_candidate?(node) || class_candidate?(node) || module_candidate?(node)
         end

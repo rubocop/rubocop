@@ -204,14 +204,14 @@ module RuboCop
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def on_defined?(node)
           arg = node.arguments.first
-          return unless arg.ivar_type?
+          return false unless arg.ivar_type?
 
           method_node, method_name = find_definition(node)
-          return unless method_node
+          return false unless method_node
 
           var_name = arg.children.first
           defined_memoized?(method_node.body, var_name) do |defined_ivar, return_ivar, ivar_assign|
-            return if matches?(method_name, ivar_assign)
+            return false if matches?(method_name, ivar_assign)
 
             suggested_var = suggested_var(method_name)
             msg = format(

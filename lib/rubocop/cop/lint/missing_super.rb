@@ -103,7 +103,7 @@ module RuboCop
         end
 
         def callback_method_def?(node)
-          return unless CALLBACKS.include?(node.method_name)
+          return false unless CALLBACKS.include?(node.method_name)
 
           node.each_ancestor(:class, :sclass, :module).first
         end

@@ -63,7 +63,7 @@ module RuboCop
         RUBY
 
         def offense?(node)
-          return if node.modifier_form?
+          return false if node.modifier_form?
 
           redundant_condition?(node) || redundant_condition_inverted?(node)
         end
