@@ -12,13 +12,9 @@ module RuboCop
       #   'foo'.byterindex(/f/)
       #   'foo'.gsub(/f/, 'x')
       #   'foo'.gsub!(/f/, 'x')
-      #   'foo'.index(/f/)
       #   'foo'.partition(/f/)
-      #   'foo'.rindex(/f/)
       #   'foo'.rpartition(/f/)
       #   'foo'.scan(/f/)
-      #   'foo'.slice(/f/)
-      #   'foo'.slice!(/f/)
       #   'foo'.split(/f/)
       #   'foo'.start_with?(/f/)
       #   'foo'.sub(/f/, 'x')
@@ -29,13 +25,9 @@ module RuboCop
       #   'foo'.byterindex('f')
       #   'foo'.gsub('f', 'x')
       #   'foo'.gsub!('f', 'x')
-      #   'foo'.index('f')
       #   'foo'.partition('f')
-      #   'foo'.rindex('f')
       #   'foo'.rpartition('f')
       #   'foo'.scan('f')
-      #   'foo'.slice(/f/)
-      #   'foo'.slice!(/f/)
       #   'foo'.split('f')
       #   'foo'.start_with?('f')
       #   'foo'.sub('f', 'x')
@@ -45,8 +37,7 @@ module RuboCop
 
         MSG = 'Use string `%<prefer>s` as argument instead of regexp `%<current>s`.'
         RESTRICT_ON_SEND = %i[
-          byteindex byterindex gsub gsub! index partition rindex rpartition scan
-          split start_with? sub sub!
+          byteindex byterindex gsub gsub! partition rpartition scan split start_with? sub sub!
         ].freeze
         DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/.freeze
         STR_SPECIAL_CHARS = %w[\n \" \' \\\\ \t \b \f \r].freeze
