@@ -64,6 +64,32 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateRegexpCharacterClassElement, :config
     end
   end
 
+  context 'with repeated character class elements when `"\07\01\078"` (means `"\u0007\u0001\u00078"`)' do
+    it 'registers an offense' do
+      expect_offense(<<~'RUBY')
+        /[\07\01\078]/
+                ^^^ Duplicate element inside regexp character class
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        /[\07\018]/
+      RUBY
+    end
+  end
+
+  context 'with repeated character class elements when `"\177\01\1778"` (means `"\u007f\u0001\u007f8"`)' do
+    it 'registers an offense' do
+      expect_offense(<<~'RUBY')
+        /[\177\01\1778]/
+                 ^^^^ Duplicate element inside regexp character class
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        /[\177\018]/
+      RUBY
+    end
+  end
+
   context 'with a repeated character class element and %r{} literal' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
