@@ -1532,7 +1532,6 @@ Lint/AmbiguousBlockAssociation:
   Description: >-
                  Checks for ambiguous block association with method when param passed without
                  parentheses.
-  StyleGuide: '#syntax'
   Enabled: true
   VersionAdded: '0.48'
   VersionChanged: '1.13'
