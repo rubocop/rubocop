@@ -33,7 +33,7 @@ module RuboCop
                       inherit_mode: determine_inherit_mode(hash, k))
           end
           hash[k] = v
-          fix_include_paths(base_config.loaded_path, hash, k, v) if v.key?('Include')
+          fix_include_paths(base_config.loaded_path, path, hash, k, v) if v.key?('Include')
         end
       end
     end
@@ -42,10 +42,16 @@ module RuboCop
     # base configuration are relative to the directory where the base configuration file is. For the
     # derived configuration, we need to make those paths relative to where the derived configuration
     # file is.
-    def fix_include_paths(base_config_path, hash, key, value)
+    def fix_include_paths(base_config_path, derived_config_path, hash, key, value)
       return unless File.basename(base_config_path).start_with?('.rubocop')
 
       base_dir = File.dirname(base_config_path)
+      derived_dir = File.dirname(derived_config_path)
+
+      # If the two files are in the same directory, don't adjust anything. This is equivalent to the
+      # configuration being specified in a single file
+      return if base_dir == derived_dir
+
       hash[key]['Include'] = value['Include'].map do |include_path|
         PathUtil.relative_path(File.join(base_dir, include_path), Dir.pwd)
       end

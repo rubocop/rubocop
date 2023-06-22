@@ -345,6 +345,33 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a file inherits from another file in the same directory' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        allow(Dir).to receive(:pwd).and_return("#{File.dirname(file_path)}/src")
+        create_file('.rubocop_base.yml', <<~YAML)
+          AllCops:
+            Exclude:
+              - vendor/**
+          Style/StringLiterals:
+            Include:
+              - '**/*.rb'
+        YAML
+
+        create_file(file_path, ['inherit_from: .rubocop_base.yml'])
+      end
+
+      it 'the Include and Exclude lists are not adjusted' do
+        excludes = configuration_from_file['AllCops']['Exclude']
+        expect(excludes).to eq([File.expand_path('vendor/**')])
+      end
+
+      it 'gets an Include that is relative to the subdirectory' do
+        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['**/*.rb'])
+      end
+    end
+
     context 'when a file inherits and overrides an Exclude' do
       let(:file_path) { '.rubocop.yml' }
       let(:message) do
