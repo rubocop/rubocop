@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
 
   context 'when investigating Ruby files' do
     it 'does not register any offenses' do
-      expect_no_offenses(<<~RUBY, '/foo.rb')
+      expect_no_offenses(<<~RUBY, 'foo.rb')
         gem('rubocop')
       RUBY
     end

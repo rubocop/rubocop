@@ -283,7 +283,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       it 'gets an Include that is relative to the subdirectory' do
-        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['dir/**/*.rb'])
+        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['**/*.rb'])
       end
 
       it 'ignores parent AllCops/Exclude if ignore_parent_exclusion is true' do
@@ -341,7 +341,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       it 'gets an Include that is relative to the subdirectory' do
-        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['src/**/*.rb'])
+        expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['../src/**/*.rb'])
       end
     end
 
