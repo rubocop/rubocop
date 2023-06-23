@@ -46,7 +46,7 @@ module RuboCop
       return unless File.basename(base_config_path).start_with?('.rubocop')
 
       base_dir = File.dirname(base_config_path)
-      hash[key]['Include'] = value['Include'].map do |include_path|
+      hash[key]['Include'] = value['Include']&.map do |include_path|
         PathUtil.relative_path(File.join(base_dir, include_path), Dir.pwd)
       end
     end
