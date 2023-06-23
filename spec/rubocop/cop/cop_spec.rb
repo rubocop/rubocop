@@ -318,7 +318,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
 
     context 'when the file doesn\'t match the Include configuration' do
-      let(:file) { '/bar.rb' }
+      let(:file) { 'bar.rb' }
 
       it { is_expected.to be(false) }
     end
