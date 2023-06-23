@@ -124,7 +124,7 @@ module RuboCop
           source == value ||
             # `Symbol#inspect` uses double quotes, but allow single-quoted
             # symbols to work as well.
-            source.tr("'", '"') == value
+            source.gsub('"', '\"').tr("'", '"') == value
         end
 
         def requires_quotes?(sym_node)

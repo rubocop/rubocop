@@ -42,9 +42,21 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
     RUBY
   end
 
-  it 'does not register an offense for a symbol that requires quotes' do
+  it 'does not register an offense for a symbol that requires double quotes' do
     expect_no_offenses(<<~RUBY)
       :"foo-bar"
+    RUBY
+  end
+
+  it 'does not register an offense for a symbol that requires single quotes' do
+    expect_no_offenses(<<~RUBY)
+      :'foo-bar'
+    RUBY
+  end
+
+  it 'does not register an offense for a symbol that requires single quotes, when it includes double quotes' do
+    expect_no_offenses(<<~RUBY)
+      :'foo-bar""'
     RUBY
   end
 
