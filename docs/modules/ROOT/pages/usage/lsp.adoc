@@ -31,6 +31,12 @@ The language server supports `textDocument/formatting` method and is autocorrect
 
 Here are examples of LSP client configurations.
 
+=== VS Code
+
+https://github.com/rubocop/vscode-rubocop[vscode-rubocop] integrates RuboCop into VS Code.
+
+You can install this VS Code extension from the https://marketplace.visualstudio.com/items?itemName=rubocop.vscode-rubocop[Visual Studio Marketplace].
+
 === Emacs (Eglot)
 
 https://github.com/joaotavora/eglot[Eglot] is a client for Language Server Protocol servers on Emacs.
