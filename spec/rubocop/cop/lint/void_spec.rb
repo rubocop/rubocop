@@ -349,6 +349,15 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         baz
       RUBY
     end
+
+    it 'does not register an offense when using a method definition' do
+      expect_no_offenses(<<~RUBY)
+        def merge
+        end
+
+        42
+      RUBY
+    end
   end
 
   context 'when not checking for methods with no side effects' do
