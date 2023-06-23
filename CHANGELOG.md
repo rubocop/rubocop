@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.53.0 (2023-06-23)
+
 ### New features
 
 * [#11561](https://github.com/rubocop/rubocop/pull/11561): Add new `Lint/MixedCaseRange` cop. ([@rwstauner][])

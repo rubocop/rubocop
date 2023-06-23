@@ -632,9 +632,9 @@ end
 
 | Disabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.52
-| -
+| 1.53
 |===
 
 Checks if the code style follows the ExpectedOrder configuration:
@@ -701,6 +701,14 @@ automatically.
        - prepend
        - extend
 ----
+
+=== Safety
+
+Autocorrection is unsafe because class methods and module inclusion
+can behave differently, based on which methods or constants have
+already been defined.
+
+Constants will only be moved when they are assigned with literals.
 
 === Examples
 

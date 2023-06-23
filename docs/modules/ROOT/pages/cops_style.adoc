@@ -11072,6 +11072,31 @@ module A
 end
 ----
 
+== Style/RedundantCurrentDirectoryInPath
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.53
+| -
+|===
+
+Checks for uses a redundant current directory in path.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+require_relative './path/to/feature'
+
+# good
+require_relative 'path/to/feature'
+----
+
 == Style/RedundantDoubleSplatHashBraces
 
 |===
@@ -11719,6 +11744,52 @@ question = '"What did you say?"'
 === References
 
 * https://rubystyle.guide#percent-q
+
+== Style/RedundantRegexpArgument
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.53
+| -
+|===
+
+Identifies places where argument can be replaced from
+a deterministic regexp to a string.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+'foo'.byteindex(/f/)
+'foo'.byterindex(/f/)
+'foo'.gsub(/f/, 'x')
+'foo'.gsub!(/f/, 'x')
+'foo'.partition(/f/)
+'foo'.rpartition(/f/)
+'foo'.scan(/f/)
+'foo'.split(/f/)
+'foo'.start_with?(/f/)
+'foo'.sub(/f/, 'x')
+'foo'.sub!(/f/, 'x')
+
+# good
+'foo'.byteindex('f')
+'foo'.byterindex('f')
+'foo'.gsub('f', 'x')
+'foo'.gsub!('f', 'x')
+'foo'.partition('f')
+'foo'.rpartition('f')
+'foo'.scan('f')
+'foo'.split('f')
+'foo'.start_with?('f')
+'foo'.sub('f', 'x')
+'foo'.sub!('f', 'x')
+----
 
 == Style/RedundantRegexpCharacterClass
 
@@ -12647,6 +12718,93 @@ end
 | `return`
 | `return`, `return_nil`
 |===
+
+== Style/ReturnNilInPredicateMethodDefinition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.53
+| -
+|===
+
+Checks if `return` or `return nil` is used in predicate method definitions.
+
+=== Safety
+
+Autocorrection is marked as unsafe because the change of the return value
+from `nil` to `false` could potentially lead to incompatibility issues.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+def foo?
+  return if condition
+
+  do_something?
+end
+
+# bad
+def foo?
+  return nil if condition
+
+  do_something?
+end
+
+# good
+def foo?
+  return false if condition
+
+  do_something?
+end
+----
+
+==== AllowedMethod: ['foo?']
+
+[source,ruby]
+----
+# good
+def foo?
+  return if condition
+
+  do_something?
+end
+----
+
+==== AllowedPattern: [/foo/]
+
+[source,ruby]
+----
+# good
+def foo?
+  return if condition
+
+  do_something?
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+
+| AllowedPatterns
+| `[]`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide#bool-methods-qmark
 
 == Style/SafeNavigation
 
@@ -15726,6 +15884,42 @@ array of 2 or fewer elements.
 === References
 
 * https://rubystyle.guide#percent-w
+
+== Style/YAMLFileRead
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.53
+| -
+|===
+
+Checks for the use of `YAML.load`, `YAML.safe_load`, and `YAML.parse` with
+`File.read` argument.
+
+NOTE: `YAML.safe_load_file` was introduced in Ruby 3.0.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+YAML.load(File.read(path))
+YAML.parse(File.read(path))
+
+# good
+YAML.load_file(path)
+YAML.parse_file(path)
+
+# bad
+YAML.safe_load(File.read(path)) # Ruby 3.0 and newer
+
+# good
+YAML.safe_load_file(path)       # Ruby 3.0 and newer
+----
 
 == Style/YodaCondition
 

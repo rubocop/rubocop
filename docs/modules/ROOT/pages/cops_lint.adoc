@@ -121,10 +121,6 @@ expect { do_something }.to not_change { object.attribute }
 | Array
 |===
 
-=== References
-
-* https://rubystyle.guide#syntax
-
 == Lint/AmbiguousOperator
 
 |===
@@ -1324,6 +1320,7 @@ end
 |===
 
 Checks for duplicated keys in hash literals.
+This cop considers both primitive types and constants for the hash keys.
 
 This cop mirrors a warning in Ruby 2.2.
 
@@ -3295,6 +3292,13 @@ challenging or verbose for no actual gain.
 Autocorrection is not supported because the position of `super` cannot be
 determined automatically.
 
+`Object` and `BasicObject` are allowed by this cop because of their
+stateless nature. However, sometimes you might want to allow other parent
+classes from this cop, for example in the case of an abstract class that is
+not meant to be called with `super`. In those cases, you can use the
+`AllowedParentClasses` option to specify which classes should be allowed
+*in addition to* `Object` and `BasicObject`.
+
 === Examples
 
 [source,ruby]
@@ -3343,6 +3347,74 @@ class Parent
     do_something
   end
 end
+
+# good
+class ClassWithNoParent
+  def initialize
+    do_something
+  end
+end
+----
+
+==== AllowedParentClasses: [MyAbstractClass]
+
+[source,ruby]
+----
+# good
+class MyConcreteClass < MyAbstractClass
+  def initialize
+    do_something
+  end
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedParentClasses
+| `[]`
+| Array
+|===
+
+== Lint/MixedCaseRange
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.53
+| -
+|===
+
+Checks for mixed-case character ranges since they include likely unintended characters.
+
+Offenses are registered for regexp character classes like `/[A-z]/`
+as well as range objects like `('A'..'z')`.
+
+NOTE: Range objects cannot be autocorrected.
+
+=== Safety
+
+The cop autocorrects regexp character classes
+by replacing one character range with two: `A-z` becomes `A-Za-z`.
+In most cases this is probably what was originally intended
+but it changes the regexp to no longer match symbols it used to include.
+For this reason, this cop's autocorrect is unsafe (it will
+change the behavior of the code).
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+r = /[A-z]/
+
+# good
+r = /[A-Za-z]/
 ----
 
 == Lint/MixedRegexpCaptureTypes
@@ -4472,6 +4544,43 @@ end
 
 Dir['./lib/**/*.rb'].each do |file|
 end
+----
+
+== Lint/RedundantRegexpQuantifiers
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.53
+| -
+|===
+
+Checks for redundant quantifiers inside Regexp literals.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+/(?:x+)+/
+
+# good
+/(?:x)+/
+
+# good
+/(?:x+)/
+
+# bad
+/(?:x+)?/
+
+# good
+/(?:x)*/
+
+# good
+/(?:x*)/
 ----
 
 == Lint/RedundantRequireStatement

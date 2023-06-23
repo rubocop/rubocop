@@ -469,7 +469,7 @@ Layout/ClassStructure:
   Enabled: false
   SafeAutoCorrect: false
   VersionAdded: '0.52'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.53'
   Categories:
     module_inclusion:
       - include
@@ -1997,7 +1997,7 @@ Lint/MixedCaseRange:
   Description: 'Checks for mixed-case character ranges since they include likely unintended characters.'
   Enabled: pending
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.53'
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
@@ -2151,7 +2151,7 @@ Lint/RedundantDirGlobSort:
 Lint/RedundantRegexpQuantifiers:
   Description: 'Checks for redundant quantifiers in Regexps.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.53'
 
 Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
@@ -4859,7 +4859,7 @@ Style/RedundantConstantBase:
 Style/RedundantCurrentDirectoryInPath:
   Description: 'Checks for uses a redundant current directory in path.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.53'
 
 Style/RedundantDoubleSplatHashBraces:
   Description: 'Checks for redundant uses of double splat hash braces.'
@@ -4952,7 +4952,7 @@ Style/RedundantPercentQ:
 Style/RedundantRegexpArgument:
   Description: 'Identifies places where argument can be replaced from a deterministic regexp to a string.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.53'
 
 Style/RedundantRegexpCharacterClass:
   Description: 'Checks for unnecessary single-element Regexp character classes.'
@@ -5073,7 +5073,7 @@ Style/ReturnNilInPredicateMethodDefinition:
   SafeAutoCorrect: false
   AllowedMethods: []
   AllowedPatterns: []
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.53'
 
 Style/SafeNavigation:
   Description: >-
@@ -5562,7 +5562,7 @@ Style/WordArray:
 Style/YAMLFileRead:
   Description: 'Checks for the use of `YAML.load`, `YAML.safe_load`, and `YAML.parse` with `File.read` argument.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.53'
 
 Style/YodaCondition:
   Description: 'Forbid or enforce yoda conditions.'
