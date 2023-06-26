@@ -14,6 +14,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     end
   end
 
+  it 'registers an offense and corrects when using double quote and single quote characters' do
+    expect_offense(<<~RUBY)
+      str.gsub(/"''/, '')
+               ^^^^^ Use string `'"\\'\\''` as argument instead of regexp `/"''/`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      str.gsub('"\\'\\'', '')
+    RUBY
+  end
+
   it 'registers an offense and corrects when using double quote character' do
     expect_offense(<<~RUBY)
       str.gsub(/"/)
