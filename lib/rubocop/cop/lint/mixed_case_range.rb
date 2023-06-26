@@ -84,6 +84,8 @@ module RuboCop
         end
 
         def unsafe_range?(range_start, range_end)
+          return false if range_start.length != 1 || range_end.length != 1
+
           range_for(range_start) != range_for(range_end)
         end
 
