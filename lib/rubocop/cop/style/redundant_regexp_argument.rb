@@ -48,9 +48,7 @@ module RuboCop
           return if !regexp_node.regopt.children.empty? || regexp_node.content == ' '
           return unless determinist_regexp?(regexp_node)
 
-          new_argument = replacement(regexp_node)
-          quote = new_argument.include?('"') ? "'" : '"'
-          prefer = "#{quote}#{new_argument}#{quote}"
+          prefer = preferred_argument(regexp_node)
           message = format(MSG, prefer: prefer, current: regexp_node.source)
 
           add_offense(regexp_node, message: message) do |corrector|
@@ -62,6 +60,19 @@ module RuboCop
 
         def determinist_regexp?(regexp_node)
           DETERMINISTIC_REGEX.match?(regexp_node.source)
+        end
+
+        def preferred_argument(regexp_node)
+          new_argument = replacement(regexp_node)
+
+          if new_argument.include?('"')
+            new_argument.gsub!("'", "\\\\'")
+            quote = "'"
+          else
+            quote = '"'
+          end
+
+          "#{quote}#{new_argument}#{quote}"
         end
 
         def replacement(regexp_node)
