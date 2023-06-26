@@ -27,6 +27,18 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
     RUBY
   end
 
+  it 'does not register an offense when the number of characters at the start of range is other than 1' do
+    expect_no_offenses(<<~RUBY)
+      foo = 'aa'..'z'
+    RUBY
+  end
+
+  it 'does not register an offense when the number of characters at the end of range is other than 1' do
+    expect_no_offenses(<<~RUBY)
+      foo = 'a'..'zz'
+    RUBY
+  end
+
   context 'ruby > 2.6', :ruby27 do
     it 'does not register an offense for a beginless range' do
       expect_no_offenses(<<~RUBY)
