@@ -12,21 +12,6 @@ Therefore, if you want real-time feedback from RuboCop in your editor or IDE,
 opting to use this language server instead of the server mode will not only provide a fast and efficient solution,
 but also offer a straightforward setup for integration.
 
-== Run as a Language Server
-
-Run `rubocop --lsp` command from LSP client.
-
-When the language server is started, the command displays the language server's PID:
-
-```console
-$ ps aux | grep rubocop
-user             17414   0.0  0.2  5557716 144376   ??  Ss    4:48PM   0:02.13 /Users/user/.rbenv/versions/3.2.2/lib/ruby/gems/3.2.0/bin/rubocop --lsp
-```
-
-== Autocorrection
-
-The language server supports `textDocument/formatting` method and is autocorrectable. The autocorrection is safe.
-
 == Examples of LSP Client
 
 Here are examples of LSP client configurations.
@@ -59,3 +44,20 @@ Below is an example of additional setting for autocorrecting on save:
 If you run into problems, first use "M-x eglot-reconnect" to reconnect to the language server.
 
 See Eglot's official documentation for more information.
+
+== Autocorrection
+
+The language server supports `textDocument/formatting` method and is autocorrectable. The autocorrection is safe.
+
+== Run as a Language Server
+
+Run `rubocop --lsp` command from LSP client.
+
+When the language server is started, the command displays the language server's PID:
+
+```console
+$ ps aux | grep rubocop
+user             17414   0.0  0.2  5557716 144376   ??  Ss    4:48PM   0:02.13 /Users/user/.rbenv/versions/3.2.2/lib/ruby/gems/3.2.0/bin/rubocop --lsp
+```
+
+NOTE: `rubocop --lsp` is for starting LSP client, so users don't manually execute it.
