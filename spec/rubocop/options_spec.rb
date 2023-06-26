@@ -97,6 +97,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                You can specify the server host and port with the
                                                $RUBOCOP_SERVER_HOST and the $RUBOCOP_SERVER_PORT
                                                environment variables.
+                                               You can set a timeout in seconds with the
+                                               $RUBOCOP_SERVER_IDLE_TIMEOUT environment variable,
+                                               after which the server will shut down if no connections
+                                               are made.
                   --restart-server             Restart server process.
                   --start-server               Start server process.
                   --stop-server                Stop server process.

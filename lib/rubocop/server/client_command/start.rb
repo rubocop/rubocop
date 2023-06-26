@@ -20,6 +20,7 @@ module RuboCop
           super()
         end
 
+        # rubocop:disable Metrics/MethodLength
         def run
           if Server.running?
             warn "RuboCop server (#{Cache.pid_path.read}) is already running."
@@ -38,10 +39,12 @@ module RuboCop
 
             host = ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1')
             port = ENV.fetch('RUBOCOP_SERVER_PORT', 0)
+            idle_timeout = ENV.fetch('RUBOCOP_SERVER_IDLE_TIMEOUT', nil)&.to_i
 
-            Server::Core.new.start(host, port, detach: @detach)
+            Server::Core.new.start(host, port, detach: @detach, idle_timeout: idle_timeout)
           end
         end
+        # rubocop:enable Metrics/MethodLength
       end
     end
   end
