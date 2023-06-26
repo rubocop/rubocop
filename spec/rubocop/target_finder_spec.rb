@@ -24,6 +24,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                        .rbx
                        .ru
                        .ruby
+                       .schema
                        .spec
                        .thor
                        .watchr]
@@ -50,6 +51,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                       Puppetfile
                       Rakefile
                       rakefile
+                      Schemafile
                       Snapfile
                       Steepfile
                       Thorfile
