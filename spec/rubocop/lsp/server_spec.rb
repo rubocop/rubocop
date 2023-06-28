@@ -527,4 +527,24 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
       )
     end
   end
+
+  context 'when an internal error occurs' do
+    before do
+      allow_any_instance_of(RuboCop::Lsp::Routes).to receive(:for).with('initialize').and_raise # rubocop:disable RSpec/AnyInstance
+    end
+
+    let(:requests) do
+      [
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'initialize',
+        params: { probably: "Don't need real params for this test?" }
+      ]
+    end
+
+    it 'logs an internal server error message' do
+      expect(stderr).to start_with('[server] Error RuntimeError')
+      expect(messages.count).to eq(0)
+    end
+  end
 end
