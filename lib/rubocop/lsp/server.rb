@@ -36,8 +36,8 @@ module RuboCop
             @routes.handle_unsupported_method(request)
           end
         rescue StandardError => e
-          log("Error #{e.class} #{e.message[0..100]}")
-          log(e.backtrace.inspect)
+          Logger.log("Error #{e.class} #{e.message[0..100]}")
+          Logger.log(e.backtrace.inspect)
         end
       end
 
