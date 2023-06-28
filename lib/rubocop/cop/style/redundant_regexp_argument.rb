@@ -40,7 +40,9 @@ module RuboCop
           byteindex byterindex gsub gsub! partition rpartition scan split start_with? sub sub!
         ].freeze
         DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/.freeze
-        STR_SPECIAL_CHARS = %w[\n \" \' \\\\ \t \b \f \r].freeze
+        STR_SPECIAL_CHARS = %w[
+          \a \c \C \e \f \M \n \" \' \\\\ \t \b \f \r \u \v \x \0 \1 \2 \3 \4 \5 \6 \7
+        ].freeze
 
         def on_send(node)
           return unless (regexp_node = node.first_argument)
