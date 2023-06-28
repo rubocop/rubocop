@@ -80,6 +80,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using unicode chars' do
+    expect_offense(<<~'RUBY')
+      "foo\nbar\nbaz\n".split(/\u3000/)
+                              ^^^^^^^^ Use string `"\u3000"` as argument instead of regexp `/\u3000/`.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "foo\nbar\nbaz\n".split("\u3000")
+    RUBY
+  end
+
   it 'registers an offense and corrects when using consecutive backslash escape chars' do
     expect_offense(<<~'RUBY')
       "foo\\\.bar".split(/\\\./)
