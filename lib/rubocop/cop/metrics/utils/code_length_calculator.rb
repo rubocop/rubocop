@@ -63,7 +63,7 @@ module RuboCop
             types
           end
 
-          def code_length(node)
+          def code_length(node) # rubocop:disable Metrics/MethodLength
             if classlike_node?(node)
               classlike_code_length(node)
             elsif heredoc_node?(node)
@@ -72,7 +72,14 @@ module RuboCop
               body = extract_body(node)
               return 0 unless body
 
-              body.source.each_line.count { |line| !irrelevant_line?(line) }
+              source =
+                if node_with_heredoc?(body)
+                  source_from_node_with_heredoc(body)
+                else
+                  body.source.lines
+                end
+
+              source.count { |line| !irrelevant_line?(line) }
             end
           end
 
@@ -174,6 +181,27 @@ module RuboCop
 
           def another_args?(node)
             node.call_type? && node.arguments.count > 1
+          end
+
+          def node_with_heredoc?(node)
+            node.each_descendant(:str, :dstr).any? { |descendant| heredoc_node?(descendant) }
+          end
+
+          def source_from_node_with_heredoc(node)
+            last_line = -1
+            node.each_descendant do |descendant|
+              next unless descendant.loc
+
+              descendant_last_line =
+                if heredoc_node?(descendant)
+                  descendant.loc.heredoc_end.line
+                else
+                  descendant.last_line
+                end
+
+              last_line = [last_line, descendant_last_line].max
+            end
+            @processed_source[(node.first_line - 1)..(last_line - 1)]
           end
         end
       end
