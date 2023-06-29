@@ -26,11 +26,15 @@ module RuboCop
       end
 
       def delimiter_string(node)
-        node.source.match(OPENING_DELIMITER).captures[1]
+        return '' unless (match = node.source.match(OPENING_DELIMITER))
+
+        match.captures[1]
       end
 
       def heredoc_type(node)
-        node.source.match(OPENING_DELIMITER).captures[0]
+        return '' unless (match = node.source.match(OPENING_DELIMITER))
+
+        match.captures[0]
       end
     end
   end

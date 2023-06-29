@@ -173,6 +173,14 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
           RUBY
         end
       end
+
+      context 'when using blank heredoc delimiters' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            <<''
+          RUBY
+        end
+      end
     end
 
     context 'with a squiggly heredoc' do
