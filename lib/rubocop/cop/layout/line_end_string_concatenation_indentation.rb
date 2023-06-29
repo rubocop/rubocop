@@ -84,6 +84,8 @@ module RuboCop
           return unless strings_concatenated_with_backslash?(node)
 
           children = node.children
+          return if children.empty?
+
           if style == :aligned && !always_indented?(node)
             check_aligned(children, 1)
           else
