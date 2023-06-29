@@ -47,7 +47,7 @@ module RuboCop
         def correct_elsif(node)
           <<~RUBY.chop
             if #{node.condition.source}
-              #{node.if_branch.source}
+              #{node.if_branch&.source}
             #{build_else_branch(node.else_branch).chop}
             end
           RUBY
@@ -56,7 +56,7 @@ module RuboCop
         def build_else_branch(second_condition)
           result = <<~RUBY
             elsif #{second_condition.condition.source}
-              #{second_condition.if_branch.source}
+              #{second_condition.if_branch&.source}
           RUBY
 
           if second_condition.else_branch
