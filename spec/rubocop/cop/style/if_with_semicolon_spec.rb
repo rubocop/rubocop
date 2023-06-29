@@ -23,17 +23,6 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects for one line if/;/end without else body' do
-    expect_offense(<<~RUBY)
-      if cond; run else; end
-      ^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      cond ? run : nil
-    RUBY
-  end
-
   it 'registers an offense when not using `else` branch' do
     expect_offense(<<~RUBY)
       if cond; run end
@@ -53,6 +42,21 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
   end
 
   context 'when elsif is present' do
+    it 'accepts without branch bodies' do
+      expect_offense(<<~RUBY)
+        if cond; elsif cond2; end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use `if/else` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+        #{' ' * 2}
+        elsif cond2
+        #{' ' * 2}
+        end
+      RUBY
+    end
+
     it 'accepts without `else` branch' do
       expect_offense(<<~RUBY)
         if cond; run elsif cond2; run2 end
