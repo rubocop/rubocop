@@ -161,4 +161,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantHeredocDelimiterQuotes, :config do
       EOS
     RUBY
   end
+
+  it 'does not register an offense when using the blank heredoc delimiter' do
+    expect_no_offenses(<<~RUBY)
+      <<''
+    RUBY
+  end
 end
