@@ -157,6 +157,10 @@ RSpec.describe RuboCop::Cop::Layout::LineEndStringConcatenationIndentation, :con
         TEXT
       RUBY
     end
+
+    it 'accepts the `%` form string `"%\n\n"`' do
+      expect_no_offenses("%\n\n")
+    end
   end
 
   context 'when EnforcedStyle is aligned' do
