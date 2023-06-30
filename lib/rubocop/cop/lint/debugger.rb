@@ -68,10 +68,7 @@ module RuboCop
         MSG = 'Remove debugger entry point `%<source>s`.'
 
         def on_send(node)
-          return unless debugger_method?(node)
-
-          # Basically, debugger methods are not used as a method argument without arguments.
-          return if node.arguments.empty? && node.each_ancestor(:send, :csend).any?
+          return if !debugger_method?(node) || assumed_usage_context?(node)
 
           add_offense(node)
         end
@@ -93,6 +90,13 @@ module RuboCop
           return false if send_node.parent&.send_type? && send_node.parent.receiver == send_node
 
           debugger_methods.include?(chained_method_name(send_node))
+        end
+
+        def assumed_usage_context?(node)
+          # Basically, debugger methods are not used as a method argument without arguments.
+          return false unless node.arguments.empty? && node.each_ancestor(:send, :csend).any?
+
+          node.each_ancestor.none?(&:lambda_or_proc?)
         end
 
         def chained_method_name(send_node)
