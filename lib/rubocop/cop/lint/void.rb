@@ -113,9 +113,15 @@ module RuboCop
         def check_var(node)
           return unless node.variable? || node.const_type?
 
-          add_offense(node.loc.name,
-                      message: format(VAR_MSG, var: node.loc.name.source)) do |corrector|
-            autocorrect_void_var(corrector, node)
+          if node.const_type? && node.special_keyword?
+            add_offense(node, message: format(VAR_MSG, var: node.source)) do |corrector|
+              autocorrect_void_expression(corrector, node)
+            end
+          else
+            add_offense(node.loc.name,
+                        message: format(VAR_MSG, var: node.loc.name.source)) do |corrector|
+              autocorrect_void_expression(corrector, node)
+            end
           end
         end
 
@@ -123,7 +129,7 @@ module RuboCop
           return if !node.literal? || node.xstr_type? || node.range_type?
 
           add_offense(node, message: format(LIT_MSG, lit: node.source)) do |corrector|
-            autocorrect_void_literal(corrector, node)
+            autocorrect_void_expression(corrector, node)
           end
         end
 
@@ -131,7 +137,7 @@ module RuboCop
           return unless node.self_type?
 
           add_offense(node, message: SELF_MSG) do |corrector|
-            autocorrect_void_self(corrector, node)
+            autocorrect_void_expression(corrector, node)
           end
         end
 
@@ -179,18 +185,6 @@ module RuboCop
               "\n"
             )
           end
-        end
-
-        def autocorrect_void_var(corrector, node)
-          corrector.remove(range_with_surrounding_space(range: node.loc.name, side: :left))
-        end
-
-        def autocorrect_void_literal(corrector, node)
-          corrector.remove(range_with_surrounding_space(range: node.source_range, side: :left))
-        end
-
-        def autocorrect_void_self(corrector, node)
-          corrector.remove(range_with_surrounding_space(range: node.source_range, side: :left))
         end
 
         def autocorrect_void_expression(corrector, node)

@@ -560,4 +560,20 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       end
     RUBY
   end
+
+  it 'registers offense when using special __ENCODING__' do
+    expect_offense(<<~RUBY)
+      def foo
+        __ENCODING__
+        ^^^^^^^^^^^^ Variable `__ENCODING__` used in void context.
+        42
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        42
+      end
+    RUBY
+  end
 end
