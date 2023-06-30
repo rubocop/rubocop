@@ -324,6 +324,10 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
       expect_no_offenses('bar === "foo"')
     end
 
+    it 'accepts equality check method is used without the first argument' do
+      expect_no_offenses('foo.==')
+    end
+
     it 'registers an offense for string literal on right' do
       expect_offense(<<~RUBY)
         bar == "foo"

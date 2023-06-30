@@ -118,16 +118,18 @@ module RuboCop
           node.comparison_method? && !noncommutative_operator?(node)
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def valid_yoda?(node)
-          lhs = node.receiver
-          rhs = node.first_argument
+          return true unless (rhs = node.first_argument)
 
+          lhs = node.receiver
           return true if (constant_portion?(lhs) && constant_portion?(rhs)) ||
                          (!constant_portion?(lhs) && !constant_portion?(rhs)) ||
                          interpolation?(lhs)
 
           enforce_yoda? ? constant_portion?(lhs) : constant_portion?(rhs)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def message(node)
           format(MSG, source: node.source)
