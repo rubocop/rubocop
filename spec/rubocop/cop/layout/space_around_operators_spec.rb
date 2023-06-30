@@ -257,6 +257,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       [].map(&:size)
       a.(b)
       -3
+      foo::~
       arr.collect { |e| -e }
       x = +2
     RUBY
