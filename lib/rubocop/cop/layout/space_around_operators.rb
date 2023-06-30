@@ -153,7 +153,9 @@ module RuboCop
         private
 
         def regular_operator?(send_node)
-          !send_node.unary_operation? && !send_node.dot? && operator_with_regular_syntax?(send_node)
+          return false if send_node.unary_operation? || send_node.dot? || send_node.double_colon?
+
+          operator_with_regular_syntax?(send_node)
         end
 
         def operator_with_regular_syntax?(send_node)
