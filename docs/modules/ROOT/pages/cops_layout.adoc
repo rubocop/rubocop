@@ -1626,6 +1626,10 @@ class ErrorC < BaseError; end
 | `true`
 | Boolean
 
+| DefLikeMacros
+| `[]`
+| Array
+
 | AllowAdjacentOneLineDefs
 | `true`
 | Boolean

@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.54.0 (2023-07-01)
+
 ### New features
 
 * [#12000](https://github.com/rubocop/rubocop/pull/12000): Support safe or unsafe autocorrect config for LSP. ([@koic][])
