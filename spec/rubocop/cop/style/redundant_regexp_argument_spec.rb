@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
         'foo'.#{method}("f")
       RUBY
     end
+
+    it "registers an offense and corrects when the method with safe navigation operator is `#{method}`" do
+      expect_offense(<<~RUBY, method: method)
+        'foo'&.#{method}(/f/)
+               _{method} ^^^ Use string `"f"` as argument instead of regexp `/f/`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        'foo'&.#{method}("f")
+      RUBY
+    end
   end
 
   it 'registers an offense and corrects when using double quote and single quote characters' do
