@@ -187,6 +187,18 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
     RUBY
   end
 
+  it 'does not crash when using a heredoc in a block without block arguments' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        do_something do
+          <<~HEREDOC
+            text
+          HEREDOC
+        end
+      end
+    RUBY
+  end
+
   context 'when CountComments is enabled' do
     before { cop_config['CountComments'] = true }
 
