@@ -57,6 +57,7 @@ module RuboCop
             corrector.replace(regexp_node, prefer)
           end
         end
+        alias on_csend on_send
 
         private
 
