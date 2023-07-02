@@ -56,6 +56,21 @@ RSpec.describe RuboCop::Cop::InternalAffairs::LocationLineEqualityComparison, :c
     RUBY
   end
 
+  it 'registers an offense and corrects when using `first_line` inside block' do
+    expect_offense(<<~RUBY)
+      nodes.select do |node|
+        node.first_line == nodes.first.first_line
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `same_line?(node, nodes.first)`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      nodes.select do |node|
+        same_line?(node, nodes.first)
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `same_line?`' do
     expect_no_offenses(<<~RUBY)
       same_line?(node, node.parent)
