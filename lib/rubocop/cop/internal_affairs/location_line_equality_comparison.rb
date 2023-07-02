@@ -51,7 +51,9 @@ module RuboCop
 
         def extract_receiver(node)
           receiver = node.receiver
-          receiver = receiver.receiver if receiver.method?(:loc) || receiver.method?(:source_range)
+          if receiver.send_type? && (receiver.method?(:loc) || receiver.method?(:source_range))
+            receiver = receiver.receiver
+          end
           receiver.source
         end
       end
