@@ -5,6 +5,14 @@ module RuboCop
     module Lint
       # Checks for redundant quantifiers inside Regexp literals.
       #
+      # It is always allowed when interpolation is used in a regexp literal,
+      # because it's unknown what kind of string will be expanded as a result:
+      #
+      # [source,ruby]
+      # ----
+      # /(?:a*#{interpolation})?/x
+      # ----
+      #
       # @example
       #   # bad
       #   /(?:x+)+/
@@ -32,6 +40,8 @@ module RuboCop
                                    'with a single `%<replacement>s`.'
 
         def on_regexp(node)
+          return if node.interpolation?
+
           each_redundantly_quantified_pair(node) do |group, child|
             replacement = merged_quantifier(group, child)
             add_offense(
