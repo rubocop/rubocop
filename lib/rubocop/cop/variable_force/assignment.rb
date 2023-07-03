@@ -102,10 +102,11 @@ module RuboCop
         end
 
         def multiple_assignment_node
-          grandparent_node = node.parent&.parent
-          return nil unless grandparent_node
+          return nil unless (grandparent_node = node.parent&.parent)
+          if (node = find_multiple_assignment_node(grandparent_node))
+            return node
+          end
           return nil unless grandparent_node.type == MULTIPLE_ASSIGNMENT_TYPE
-          return nil unless node.parent.type == MULTIPLE_LEFT_HAND_SIDE_TYPE
 
           grandparent_node
         end
@@ -121,6 +122,16 @@ module RuboCop
           return nil unless node.parent&.for_type?
 
           node.parent
+        end
+
+        def find_multiple_assignment_node(grandparent_node)
+          return unless grandparent_node.type == MULTIPLE_LEFT_HAND_SIDE_TYPE
+          return if grandparent_node.children.any?(&:splat_type?)
+
+          parent = grandparent_node.parent
+          return parent if parent.type == MULTIPLE_ASSIGNMENT_TYPE
+
+          find_multiple_assignment_node(parent)
         end
       end
     end
