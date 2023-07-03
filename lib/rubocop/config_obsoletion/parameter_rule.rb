@@ -19,7 +19,7 @@ module RuboCop
       end
 
       def violated?
-        config[cop]&.key?(parameter)
+        applies_to_current_ruby_version? && config[cop]&.key?(parameter)
       end
 
       def warning?
@@ -27,6 +27,14 @@ module RuboCop
       end
 
       private
+
+      def applies_to_current_ruby_version?
+        minimum_ruby_version = metadata['minimum_ruby_version']
+
+        return true unless minimum_ruby_version
+
+        config.target_ruby_version >= minimum_ruby_version
+      end
 
       def alternative
         metadata['alternative']
