@@ -131,6 +131,14 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRegexpQuantifiers, :config do
     end
   end
 
+  context 'with non-redundant quantifiers and interpolation in x-mode' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~'RUBY')
+        foo = /(?:a*#{interpolation})?/x
+      RUBY
+    end
+  end
+
   context 'with deeply nested redundant quantifiers' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
