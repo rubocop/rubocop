@@ -1,1 +1,0 @@
-* [#12020](https://github.com/rubocop/rubocop/issues/12020): This PR fixes an infinite loop error for `Layout/SpaceAfterComma` with `Layout/SpaceBeforeSemicolon` when autocorrection conflicts. ([@koic][])

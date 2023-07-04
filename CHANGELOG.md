@@ -11,6 +11,14 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12024](https://github.com/rubocop/rubocop/issues/12024): Fix a false positive for `Lint/RedundantRegexpQuantifiers` when interpolation is used in a regexp literal. ([@koic][])
+* [#12020](https://github.com/rubocop/rubocop/issues/12020): This PR fixes an infinite loop error for `Layout/SpaceAfterComma` with `Layout/SpaceBeforeSemicolon` when autocorrection conflicts. ([@koic][])
+* [#12014](https://github.com/rubocop/rubocop/pull/12014): Fix an error for `Lint/UselessAssignment` when part of a multiple assignment is enclosed in parentheses. ([@koic][])
+* [#12011](https://github.com/rubocop/rubocop/pull/12011): Fix an error for `Metrics/MethodLength` when using a heredoc in a block without block arguments. ([@koic][])
+* [#12010](https://github.com/rubocop/rubocop/pull/12010): Fix false negatives for `Style/RedundantRegexpArgument` when using safe navigation operator. ([@koic][])
+
 ## 1.54.0 (2023-07-01)
 
 ### New features
