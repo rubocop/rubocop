@@ -31,7 +31,9 @@ module RuboCop
         def on_heredoc(node)
           return if meaningful_delimiters?(node)
 
-          add_offense(node.loc.heredoc_end)
+          range = node.children.empty? ? node : node.loc.heredoc_end
+
+          add_offense(range)
         end
 
         private

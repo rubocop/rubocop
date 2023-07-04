@@ -90,6 +90,15 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
         RUBY
       end
     end
+
+    context 'when using blank heredoc delimiters' do
+      it 'registers an offense with a non-meaningful delimiter' do
+        expect_offense(<<~RUBY)
+          <<~''
+          ^^^^^ Use meaningful heredoc delimiters.
+        RUBY
+      end
+    end
   end
 
   context 'with a squiggly heredoc' do
