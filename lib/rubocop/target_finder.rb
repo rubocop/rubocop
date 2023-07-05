@@ -114,7 +114,7 @@ module RuboCop
     end
 
     def combined_exclude_glob_patterns(base_dir)
-      exclude = @config_store.for(base_dir).for_all_cops['Exclude']
+      exclude = @config_store.for(base_dir).for_all_cops['Exclude'] || []
       patterns = exclude.select { |pattern| pattern.is_a?(String) && pattern.end_with?('/**/*') }
                         .map { |pattern| pattern.sub("#{base_dir}/", '') }
       "#{base_dir}/{#{patterns.join(',')}}"

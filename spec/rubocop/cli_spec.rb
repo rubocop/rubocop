@@ -1097,6 +1097,23 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to eq(['', '0 files inspected, no offenses detected', ''].join("\n"))
     end
 
+    it 'works when `AllCops:Exclude` is empty' do
+      create_file('example.rb', ['x = 0', 'puts x'])
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          Exclude:
+      YAML
+
+      expect(cli.run(%w[--format simple])).to eq(1)
+      expect($stdout.string).to eq(<<~STDOUT)
+        == example.rb ==
+        C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+
+        1 file inspected, 1 offense detected, 1 offense autocorrectable
+      STDOUT
+      expect($stderr.string).to eq ''
+    end
+
     it 'only reads configuration in explicitly included hidden directories' do
       create_file('.hidden/example.rb', 'x=0')
       # This file contains configuration for an unknown cop. This would cause a
