@@ -31,7 +31,7 @@ module RuboCop
       #     do_something?
       #   end
       #
-      # @example AllowedMethod: ['foo?']
+      # @example AllowedMethods: ['foo?']
       #   # good
       #   def foo?
       #     return if condition
@@ -39,7 +39,7 @@ module RuboCop
       #     do_something?
       #   end
       #
-      # @example AllowedPattern: [/foo/]
+      # @example AllowedPatterns: [/foo/]
       #   # good
       #   def foo?
       #     return if condition
