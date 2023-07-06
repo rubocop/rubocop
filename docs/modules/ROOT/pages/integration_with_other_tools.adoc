@@ -27,13 +27,14 @@ has designed to address this problem and provide lightning fast editor integrati
 
 === LSP
 
-https://microsoft.github.io/language-server-protocol/[The Language Server Protocol] is the modern standard for providing cross-editor support for various programming languages. The following Ruby LSP servers are using RuboCop internally to provide
-code linting functionality:
+https://microsoft.github.io/language-server-protocol/[The Language Server Protocol] is the modern standard for providing cross-editor support for various programming languages. The RuboCop xref:usage/lsp.adoc[LSP] functionality has designed to provide built-in language server. The following is a LSP client for interacting with the built-in server:
+
+- https://github.com/rubocop/vscode-rubocop[vscode-rubocop]
+
+And the following Ruby LSP servers are using RuboCop internally to provide code linting functionality:
 
 - https://github.com/Shopify/ruby-lsp[ruby-lsp]
 - https://solargraph.org/[Solargraph]
-
-And the RuboCop xref:usage/lsp.adoc[LSP] functionality has designed to provide built-in language server.
 
 === Emacs
 
