@@ -76,18 +76,13 @@ module CopHelper
   end
 end
 
-module RuboCop
-  module Cop
-    # Monkey-patch Cop for tests to provide easy access to messages and
-    # highlights.
-    class Cop
-      def messages
-        offenses.sort.map(&:message)
-      end
+# Monkey-patch Cop for tests to provide easy access to messages and highlights.
+RuboCop::Cop::Cop.class_eval do
+  def messages
+    offenses.sort.map(&:message)
+  end
 
-      def highlights
-        offenses.sort.map { |o| o.location.source }
-      end
-    end
+  def highlights
+    offenses.sort.map { |o| o.location.source }
   end
 end
