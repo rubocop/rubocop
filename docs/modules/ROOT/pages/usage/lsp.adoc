@@ -45,6 +45,37 @@ If you run into problems, first use "M-x eglot-reconnect" to reconnect to the la
 
 See Eglot's official documentation for more information.
 
+=== Neovim (coc.nvim)
+
+https://github.com/neoclide/coc.nvim[coc.nvim] is an extension host for Vim and Neovim, powered by Node.js.
+It allows the loading of extensions similar to VSCode and provides hosting for language servers.
+
+Add the following to your coc.nvim configuration file (e.g. `~/.config/nvim/coc-settings.json`):
+
+```json
+{
+  "languageserver": {
+    "rubocop": {
+      "command": "bundle",
+      "args" : ["exec", "rubocop", "--lsp"],
+      "filetypes": ["ruby"],
+      "rootPatterns": [".git", "Gemfile"],
+      "requireRootPattern": true
+    }
+  }
+}
+```
+
+Below is an example of additional setting for autocorrecting on save:
+
+```json
+{
+  "coc.preferences.formatOnSave": true
+}
+```
+
+See coc.nvim's official documentation for more information.
+
 == Autocorrection
 
 The language server supports `textDocument/formatting` method and is autocorrectable. The autocorrection is safe by default (`rubocop -a`).
