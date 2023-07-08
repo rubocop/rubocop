@@ -86,6 +86,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  context 'when using an invalid encoding string' do
+    it 'does not crash and reports an offense' do
+      create_file('example.rb', <<~'RUBY')
+        "\xE3\xD3\x8B\xE3\x83\xBC\x83\xE3\x83\xE3\x82\xB3\xA3\x82\x99"
+      RUBY
+      result = cli.run(['--format', 'simple', 'example.rb'])
+      expect(result).to eq(1)
+      expect($stdout.string)
+        .to eq(<<~RESULT)
+          == example.rb ==
+          C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+
+          1 file inspected, 1 offense detected, 1 offense autocorrectable
+      RESULT
+      expect($stderr.string).to eq ''
+    end
+  end
+
   context 'when checking a correct file' do
     it 'returns 0' do
       create_file('example.rb', <<~RUBY)
