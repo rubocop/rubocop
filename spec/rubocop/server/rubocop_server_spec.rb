@@ -37,7 +37,8 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
         RuboCop::Server::Cache.write_version_file('0.99.9')
 
         expect(`ruby -I . "#{rubocop}" --server-status`).to match(/RuboCop server .* is running/)
-        expect(`ruby -I . "#{rubocop}" #{options}`).to start_with(
+        _stdout, stderr, _status = Open3.capture3("ruby -I . \"#{rubocop}\" #{options}")
+        expect(stderr).to start_with(
           'RuboCop version incompatibility found, RuboCop server restarting...'
         )
       end

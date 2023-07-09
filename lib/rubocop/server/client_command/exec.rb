@@ -32,7 +32,7 @@ module RuboCop
 
         def ensure_server!
           if incompatible_version?
-            puts 'RuboCop version incompatibility found, RuboCop server restarting...'
+            warn 'RuboCop version incompatibility found, RuboCop server restarting...'
             ClientCommand::Stop.new.run
           elsif check_running_server
             return
