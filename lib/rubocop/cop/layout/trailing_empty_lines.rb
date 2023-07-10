@@ -51,6 +51,7 @@ module RuboCop
           # there could be good reasons why it needs to end with a certain
           # number of newlines.
           return if ends_in_end?(processed_source)
+          return if end_with_percent_blank_string?(processed_source)
 
           whitespace_at_end = buffer.source[/\s*\Z/]
           blank_lines = whitespace_at_end.count("\n") - 1
@@ -84,6 +85,10 @@ module RuboCop
 
           extra = buffer.source[processed_source.tokens.last.end_pos..]
           extra&.strip&.start_with?('__END__')
+        end
+
+        def end_with_percent_blank_string?(processed_source)
+          processed_source.buffer.source.end_with?("%\n\n")
         end
 
         def message(wanted_blank_lines, blank_lines)
