@@ -86,6 +86,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
 
       expect_correction("x = 0\n")
     end
+
+    it 'accepts the `%` form string `"%\n\n"` at the end of file' do
+      expect_no_offenses("%\n\n")
+    end
+
+    it 'accepts when assigning the `%` form string `"%\n\n"` to a variable at the end of file' do
+      expect_no_offenses("x = %\n\n")
+    end
   end
 
   context 'when EnforcedStyle is final_blank_line' do
@@ -151,6 +159,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
         x = 0
 
       RUBY
+    end
+
+    it 'accepts the `%` form string `"%\n\n"` at the end of file' do
+      expect_no_offenses("%\n\n")
+    end
+
+    it 'accepts when assigning the `%` form string `"%\n\n"` to a variable at the end of file' do
+      expect_no_offenses("x = %\n\n")
     end
   end
 end
