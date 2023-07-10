@@ -76,6 +76,38 @@ Below is an example of additional setting for autocorrecting on save:
 
 See coc.nvim's official documentation for more information.
 
+=== Neovim (nvim-lspconfig)
+
+https://github.com/neovim/nvim-lspconfig[nvim-lspconfig] provides quickstart configs for Neovim's LSP.
+
+Add the following to your nvim-lspconfig configuration file (e.g. `~/.config/nvim/init.lua`):
+
+```lua
+vim.opt.signcolumn = "yes"
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ruby",
+  callback = function()
+    vim.lsp.start {
+      name = "rubocop",
+      cmd = { "bundle", "exec", "rubocop", "--lsp" },
+    }
+  end,
+})
+```
+
+Below is an example of additional setting for autocorrecting on save:
+
+```lua
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "ruby",
+  callback = function()
+    vim.lsp.buf.format()
+  end,
+})
+```
+
+See nvim-lspconfig's official documentation for more information.
+
 == Autocorrection
 
 The language server supports `textDocument/formatting` method and is autocorrectable. The autocorrection is safe by default (`rubocop -a`).
