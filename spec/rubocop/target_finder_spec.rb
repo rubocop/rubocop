@@ -71,7 +71,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     create_empty_file('dir1/ruby2.rb')
     create_empty_file('dir1/file.txt')
     create_empty_file('dir1/file')
-    create_file('dir1/executable',  '#!/usr/bin/env ruby')
+    create_file('dir1/executable', '#!/usr/bin/env ruby')
     create_empty_file('dir2/ruby3.rb')
     create_empty_file('.hidden/ruby4.rb')
   end

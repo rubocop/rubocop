@@ -75,9 +75,7 @@ module RuboCop
       end
 
       def aligned_token?(range, line)
-        aligned_words?(range, line) ||
-          aligned_char?(range, line) ||
-          aligned_assignment?(range, line)
+        aligned_words?(range, line) || aligned_dot?(range, line) || aligned_assignment?(range, line)
       end
 
       def aligned_operator?(range, line)
@@ -88,8 +86,10 @@ module RuboCop
         /\s\S/.match?(line[range.column - 1, 2])
       end
 
-      def aligned_char?(range, line)
-        line[range.column] == range.source[0]
+      def aligned_dot?(range, line)
+        char = line[range.column]
+
+        char == '.' && char == range.source[0]
       end
 
       def aligned_assignment?(range, line)
