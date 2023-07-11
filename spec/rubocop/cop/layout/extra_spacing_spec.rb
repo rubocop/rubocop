@@ -267,6 +267,21 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         end
       end
     end
+
+    it 'registers an offense and corrects when a character is vertically aligned' do
+      expect_offense(<<~RUBY)
+        d_is_vertically_aligned  do
+                               ^ Unnecessary spacing detected.
+          _______________________d
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        d_is_vertically_aligned do
+          _______________________d
+        end
+      RUBY
+    end
   end
 
   context 'when AllowForAlignment is false' do

@@ -32,9 +32,9 @@ module RuboCop
 
       def interpret_string_escape(escape)
         case escape[1]
-        when 'u' then interpret_unicode(escape)
-        when 'x' then interpret_hex(escape)
-        when /\d/       then interpret_octal(escape)
+        when 'u'  then interpret_unicode(escape)
+        when 'x'  then interpret_hex(escape)
+        when /\d/ then interpret_octal(escape)
         else
           escape[1] # literal escaped char, like \\
         end
