@@ -53,8 +53,9 @@ module RuboCop
         @runtime.offenses(path, text)
       end
 
-      def configure(safe_autocorrect: true)
-        @runtime.safe_autocorrect = safe_autocorrect
+      def configure(options)
+        @runtime.safe_autocorrect = options[:safe_autocorrect]
+        @runtime.layout_mode = options[:layout_mode]
       end
 
       def stop(&block)
