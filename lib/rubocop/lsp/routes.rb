@@ -36,7 +36,9 @@ module RuboCop
       end
 
       handle 'initialize' do |request|
-        @server.configure(safe_autocorrect: safe_autocorrect?(request))
+        initialization_options = extract_initialization_options_from(request)
+
+        @server.configure(initialization_options)
 
         @server.write(
           id: request[:id],
@@ -164,10 +166,13 @@ module RuboCop
 
       private
 
-      def safe_autocorrect?(request)
+      def extract_initialization_options_from(request)
         safe_autocorrect = request.dig(:params, :initializationOptions, :safeAutocorrect)
 
-        safe_autocorrect.nil? || safe_autocorrect == true
+        {
+          safe_autocorrect: safe_autocorrect.nil? || safe_autocorrect == true,
+          layout_mode: request.dig(:params, :initializationOptions, :layoutMode) == true
+        }
       end
 
       def format_file(file_uri)

@@ -317,6 +317,231 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
     end
   end
 
+  describe 'format without `layoutMode` option' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?"
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: <<~RUBY,
+                puts "hi"
+                  puts 'bye'
+              RUBY
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [
+              {
+                text: <<~RUBY
+                  puts "hi"
+                    puts 'bye'
+                RUBY
+              }
+            ],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: <<~RUBY,
+            puts 'hi'
+            puts 'bye'
+          RUBY
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 3, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
+  describe 'format with `layoutMode: true`' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?",
+            initializationOptions: {
+              layoutMode: true
+            }
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: <<~RUBY,
+                puts "hi"
+                  puts 'bye'
+              RUBY
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [
+              {
+                text: <<~RUBY
+                  puts "hi"
+                    puts 'bye'
+                RUBY
+              }
+            ],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: <<~RUBY,
+            puts "hi"
+            puts 'bye'
+          RUBY
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 3, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
+  describe 'format with `layoutMode: false`' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?",
+            initializationOptions: {
+              layoutMode: false
+            }
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: <<~RUBY,
+                puts "hi"
+                  puts 'bye'
+              RUBY
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [
+              {
+                text: <<~RUBY
+                  puts "hi"
+                    puts 'bye'
+                RUBY
+              }
+            ],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: <<~RUBY,
+            puts 'hi'
+            puts 'bye'
+          RUBY
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 3, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
   describe 'no op commands' do
     let(:requests) do
       [

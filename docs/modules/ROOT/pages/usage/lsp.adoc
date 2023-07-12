@@ -131,6 +131,29 @@ For detailed instructions on setting the parameter, please refer to the configur
 
 NOTE: The `safeAutocorrect` parameter was introduced in RuboCop 1.54.
 
+== Layout Mode
+
+LSP client can run layout cops by passing the following `layoutMode` parameter in the `initialize` request.
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 42,
+  "method": "initialize",
+  "params": {
+    "initializationOptions": {
+      "layoutMode": true
+    }
+  }
+}
+```
+
+Furthermore, enabling autocorrect in a LSP client at the time of saving equates to the effect of `rubocop -x` option.
+
+For detailed instructions on setting the parameter, please refer to the configuration methods of your LSP client.
+
+NOTE: The `layoutMode` parameter was introduced in RuboCop 1.55.
+
 == Run as a Language Server
 
 Run `rubocop --lsp` command from LSP client.
