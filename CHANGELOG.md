@@ -11,6 +11,14 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12043](https://github.com/rubocop/rubocop/pull/12043): Fix a false negative for `Layout/ExtraSpacing` when some characters are vertically aligned. ([@koic][])
+* [#12040](https://github.com/rubocop/rubocop/pull/12040): Fix a false positive for `Layout/TrailingEmptyLines` to prevent the following incorrect autocorrection when inspecting the `%` form string `%\n\n`. ([@koic][])
+* [#1867](https://github.com/rubocop/rubocop/issues/1867): Fix an error when `AllCops:Exclude` is empty in .rubocop.yml. ([@koic][])
+* [#12034](https://github.com/rubocop/rubocop/issues/12034): Fix invalid byte sequence in UTF-8 error when using an invalid encoding string. ([@koic][])
+* [#12038](https://github.com/rubocop/rubocop/pull/12038): Output the "server restarting" message to stderr. ([@knu][])
+
 ## 1.54.1 (2023-07-04)
 
 ### Bug fixes
