@@ -12764,7 +12764,7 @@ def foo?
 end
 ----
 
-==== AllowedMethod: ['foo?']
+==== AllowedMethods: ['foo?']
 
 [source,ruby]
 ----
@@ -12776,7 +12776,7 @@ def foo?
 end
 ----
 
-==== AllowedPattern: [/foo/]
+==== AllowedPatterns: [/foo/]
 
 [source,ruby]
 ----

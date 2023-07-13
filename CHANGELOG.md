@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.54.2 (2023-07-13)
+
 ### Bug fixes
 
 * [#12043](https://github.com/rubocop/rubocop/pull/12043): Fix a false negative for `Layout/ExtraSpacing` when some characters are vertically aligned. ([@koic][])
