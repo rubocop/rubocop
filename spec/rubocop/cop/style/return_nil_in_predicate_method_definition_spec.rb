@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       expect_offense(<<~RUBY)
         def foo?
           return if condition
-          ^^^^^^ Use `return false` instead of `return` in the predicate method.
+          ^^^^^^ Return `false` instead of `nil` in predicate methods.
 
           bar?
         end
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       expect_offense(<<~RUBY)
         def foo?
           return nil if condition
-          ^^^^^^^^^^ Use `return false` instead of `return nil` in the predicate method.
+          ^^^^^^^^^^ Return `false` instead of `nil` in predicate methods.
 
           bar?
         end
@@ -36,6 +36,25 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
           return false if condition
 
           bar?
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using `nil` at the end of the predicate method definition' do
+      expect_offense(<<~RUBY)
+        def foo?
+          return true if condition
+
+          nil
+          ^^^ Return `false` instead of `nil` in predicate methods.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo?
+          return true if condition
+
+          false
         end
       RUBY
     end
@@ -70,6 +89,18 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       RUBY
     end
 
+    it 'does not register an offense when using `nil` at the middle of method definition' do
+      expect_no_offenses(<<~RUBY)
+        def foo?
+          do_something
+
+          nil
+
+          do_something
+        end
+      RUBY
+    end
+
     it 'does not register an offense when not using `return`' do
       expect_no_offenses(<<~RUBY)
         def foo?
@@ -78,9 +109,18 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       RUBY
     end
 
-    it 'does not register an offense when empty body`' do
+    it 'does not register an offense when empty body' do
       expect_no_offenses(<<~RUBY)
         def foo?
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when empty body with `rescue`' do
+      expect_no_offenses(<<~RUBY)
+        def foo?
+          return false unless condition
+        rescue
         end
       RUBY
     end
@@ -91,7 +131,7 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       expect_offense(<<~RUBY)
         def self.foo?
           return if condition
-          ^^^^^^ Use `return false` instead of `return` in the predicate method.
+          ^^^^^^ Return `false` instead of `nil` in predicate methods.
 
           bar?
         end
@@ -110,7 +150,7 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       expect_offense(<<~RUBY)
         def self.foo?
           return nil if condition
-          ^^^^^^^^^^ Use `return false` instead of `return nil` in the predicate method.
+          ^^^^^^^^^^ Return `false` instead of `nil` in predicate methods.
 
           bar?
         end
