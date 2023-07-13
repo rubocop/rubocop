@@ -52,7 +52,7 @@ module RuboCop
         include AllowedMethods
         include AllowedPattern
 
-        MSG = 'Use `return false` instead of `%<prefer>s` in the predicate method.'
+        MSG = 'Return `false` instead of `nil` in predicate methods.'
 
         # @!method return_nil?(node)
         def_node_matcher :return_nil?, <<~PATTERN
@@ -65,16 +65,28 @@ module RuboCop
           return unless (body = node.body)
 
           body.each_descendant(:return) do |return_node|
-            next unless return_nil?(return_node)
-
-            message = format(MSG, prefer: return_node.source)
-
-            add_offense(return_node, message: message) do |corrector|
-              corrector.replace(return_node, 'return false')
-            end
+            register_offense(return_node, 'return false') if return_nil?(return_node)
           end
+
+          return unless (nil_node = nil_node_at_the_end_of_method_body(body))
+
+          register_offense(nil_node, 'false')
         end
         alias on_defs on_def
+
+        private
+
+        def nil_node_at_the_end_of_method_body(body)
+          return unless (last_child = body.children.last)
+
+          last_child if last_child.is_a?(AST::Node) && last_child.nil_type?
+        end
+
+        def register_offense(offense_node, replacement)
+          add_offense(offense_node) do |corrector|
+            corrector.replace(offense_node, replacement)
+          end
+        end
       end
     end
   end
