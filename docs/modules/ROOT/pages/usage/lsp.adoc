@@ -7,7 +7,7 @@ https://microsoft.github.io/language-server-protocol/[The Language Server Protoc
 This feature enables extremely fast interactions through the LSP.
 
 Offense detection and autocorrection are performed in real-time by editors and IDEs using the language server.
-The xref:usage/lsp.adoc[Server Mode] is primarily used to speed up RuboCop runs in the terminal.
+The xref:usage/server.adoc[Server Mode] is primarily used to speed up RuboCop runs in the terminal.
 Therefore, if you want real-time feedback from RuboCop in your editor or IDE,
 opting to use this language server instead of the server mode will not only provide a fast and efficient solution,
 but also offer a straightforward setup for integration.
