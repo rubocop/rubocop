@@ -67,6 +67,8 @@ $ cd my/cool/ruby/project
 $ rubocop
 ```
 
+You can also use this magic in your favorite editor with RuboCop's [built-in LSP](https://docs.rubocop.org/rubocop/usage/lsp.html).
+
 ## Documentation
 
 You can read a lot more about RuboCop in its [official docs](https://docs.rubocop.org).
