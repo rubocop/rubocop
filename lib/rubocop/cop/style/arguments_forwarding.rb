@@ -10,8 +10,9 @@ module RuboCop
       #
       # In Ruby 3.2, anonymous args/kwargs forwarding has been added.
       #
-      # This cop identifies places where `use_args(*args)`/`use_kwargs(**kwargs)`
-      # can be replaced by `use_args(*)`/`use_kwargs(**)`.
+      # This cop also identifies places where `use_args(*args)`/`use_kwargs(**kwargs)` can be
+      # replaced by `use_args(*)`/`use_kwargs(**)`; if desired, this functionality can be disabled
+      # by setting UseAnonymousForwarding: false.
       #
       # @example
       #   # bad
