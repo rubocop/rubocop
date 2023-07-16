@@ -48,9 +48,9 @@ RuboCop and uses it by default when available.
 === Vim
 
 RuboCop is supported by
-https://github.com/scrooloose/syntastic[syntastic],
+https://github.com/vim-syntastic/syntastic[syntastic],
 https://github.com/neomake/neomake[neomake],
-and https://github.com/w0rp/ale[ale].
+and https://github.com/dense-analysis/ale[ale].
 
 There is also the https://github.com/ngmy/vim-rubocop[vim-rubocop] plugin.
 
@@ -79,7 +79,7 @@ Installation instructions can be found https://github.com/mrdougal/textmate2-rub
 === Atom
 
 The https://github.com/AtomLinter/linter-rubocop[linter-rubocop] plugin for Atom's
-https://github.com/AtomLinter/Linter[linter] runs RuboCop and highlights the offenses in Atom.
+https://github.com/steelbrain/linter[linter] runs RuboCop and highlights the offenses in Atom.
 
 === LightTable
 
@@ -103,7 +103,7 @@ RuboCop integration for your favorite editor.
 
 == Git pre-commit hook integration with overcommit
 
-https://github.com/brigade/overcommit[overcommit] is a fully configurable and
+https://github.com/sds/overcommit[overcommit] is a fully configurable and
 extendable Git commit hook manager. To use RuboCop with overcommit, add the
 following to your `.overcommit.yml` file:
 
@@ -146,21 +146,21 @@ entries in `additional_dependencies`:
 
 If you're fond of https://github.com/guard/guard[Guard] you might
 like
-https://github.com/yujinakayama/guard-rubocop[guard-rubocop]. It
+https://github.com/rubocop/guard-rubocop[guard-rubocop]. It
 allows you to automatically check Ruby code style with RuboCop when
 files are modified.
 
 == Mega-Linter integration
 
-You can use https://nvuillam.github.io/mega-linter/[Mega-Linter]
+You can use https://megalinter.io/latest/[Mega-Linter]
 to run RuboCop automatically on every PR, and also lint all file
 types detected in your repository.
 
 Please follow the
-https://nvuillam.github.io/mega-linter/installation[installation instructions]
+https://megalinter.io/latest/installation[installation instructions]
 to activate RuboCop without any additional configuration.
 
-https://nvuillam.github.io/mega-linter/flavors/ruby/[Mega-Linter's Ruby flavor]
+https://megalinter.io/latest/flavors/ruby/[Mega-Linter's Ruby flavor]
 is optimized for Ruby linting.
 
 == Rake integration
