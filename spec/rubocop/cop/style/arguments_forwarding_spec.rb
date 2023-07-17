@@ -15,9 +15,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg and block arg' do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
-                ^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, &block)
-              ^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -31,9 +31,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg, kwargs and block arg' do
       expect_offense(<<~RUBY)
         def foo(*args, **kwargs, &block)
-                ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, **kwargs, &block)
-              ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -47,9 +47,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg, kwargs and block arg with another method call' do
       expect_offense(<<~RUBY)
         def foo(*args, **kwargs, &block)
-                ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, **kwargs, &block)
-              ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           baz(1, 2, 3)
         end
       RUBY
@@ -65,11 +65,11 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg, kwargs and block arg twice' do
       expect_offense(<<~RUBY)
         def foo(*args, **kwargs, &block)
-                ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, **kwargs, &block)
-              ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           baz(*args, **kwargs, &block)
-              ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -84,9 +84,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when passing restarg and block arg in defs' do
       expect_offense(<<~RUBY)
         def self.foo(*args, &block)
-                     ^^^^^^^^^^^^^ Use arguments forwarding.
+                     ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, &block)
-              ^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -100,9 +100,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when the parentheses of arguments are omitted' do
       expect_offense(<<~RUBY)
         def foo *args, &block
-                ^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar *args, &block
-              ^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -119,10 +119,10 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when forwarding to a method in block' do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
-                ^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           do_something do
             bar(*args, &block)
-                ^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           end
         end
       RUBY
@@ -139,9 +139,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when delegating' do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
-                ^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           obj.bar(*args, &block)
-                  ^^^^^^^^^^^^^ Use arguments forwarding.
+                  ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
     end
@@ -149,9 +149,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg and block arg for `.()` call' do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
-                ^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar.(*args, &block)
-               ^^^^^^^^^^^^^ Use arguments forwarding.
+               ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -273,9 +273,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       it 'registers an offense when using only rest arg' do
         expect_offense(<<~RUBY)
           def foo(*args)
-                  ^^^^^ Use arguments forwarding.
+                  ^^^^^ Use shorthand syntax `...` for arguments forwarding.
             bar(*args)
-                ^^^^^ Use arguments forwarding.
+                ^^^^^ Use shorthand syntax `...` for arguments forwarding.
           end
         RUBY
 
@@ -289,9 +289,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       it 'registers an offense when using only kwrest arg' do
         expect_offense(<<~RUBY)
           def foo(**kwargs)
-                  ^^^^^^^^ Use arguments forwarding.
+                  ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
             bar(**kwargs)
-                ^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           end
         RUBY
 
@@ -324,9 +324,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg and anonymous block arg' do
       expect_offense(<<~RUBY)
         def foo(*args, &)
-                ^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, &)
-              ^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -340,9 +340,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg, kwargs, and anonymous block arg' do
       expect_offense(<<~RUBY)
         def foo(*args, **kwargs, &)
-                ^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, **kwargs, &)
-              ^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -610,9 +610,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg, kwrestarg and block arg' do
       expect_offense(<<~RUBY)
         def foo(*args, **kwargs, &block)
-                ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, **kwargs, &block)
-              ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -626,9 +626,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg, kwargs and block arg with another method call' do
       expect_offense(<<~RUBY)
         def foo(*args, **kwargs, &block)
-                ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, **kwargs, &block)
-              ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           baz(1, 2, 3)
         end
       RUBY
@@ -644,11 +644,11 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'registers an offense when using restarg, kwargs and block arg twice' do
       expect_offense(<<~RUBY)
         def foo(*args, **kwargs, &block)
-                ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(*args, **kwargs, &block)
-              ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           baz(*args, **kwargs, &block)
-              ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
 
@@ -873,9 +873,9 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       it 'registers an offense when using restarg, kwrestarg and block arg' do
         expect_offense(<<~RUBY)
           def foo(*args, **kwargs, &block)
-                  ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                  ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
             bar(*args, **kwargs, &block)
-                ^^^^^^^^^^^^^^^^^^^^^^^ Use arguments forwarding.
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           end
         RUBY
 

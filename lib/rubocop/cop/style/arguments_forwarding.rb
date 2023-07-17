@@ -81,7 +81,7 @@ module RuboCop
 
         FORWARDING_LVAR_TYPES = %i[splat kwsplat block_pass].freeze
 
-        FORWARDING_MSG = 'Use arguments forwarding.'
+        FORWARDING_MSG = 'Use shorthand syntax `...` for arguments forwarding.'
         ARGS_MSG = 'Use anonymous positional arguments forwarding.'
         KWARGS_MSG = 'Use anonymous keyword arguments forwarding.'
 
