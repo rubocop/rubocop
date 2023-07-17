@@ -961,6 +961,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parens in singe-line pattern matching', :ruby30 do
+      expect_no_offenses(<<~RUBY)
+        execute(query) => {elapsed:, sql_count:}
+      RUBY
+    end
+
     context 'allowing parenthesis in chaining' do
       let(:cop_config) do
         {

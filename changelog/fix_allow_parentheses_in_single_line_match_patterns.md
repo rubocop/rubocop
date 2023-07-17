@@ -1,0 +1,1 @@
+* [#12055](https://github.com/rubocop/rubocop/pull/12055): Allow parentheses in single-line match patterns when using the `omit_parentheses` style of `Style/MethodCallWithArgsParentheses`. ([@gsamokovarov][])
