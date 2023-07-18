@@ -435,6 +435,32 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       expect(found_basenames.include?('ruby4.rb')).to be(true)
     end
 
+    it 'works also if a folder is named "{foo}"' do
+      create_empty_file('{foo}/ruby4.rb')
+
+      config = instance_double(RuboCop::Config)
+      exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
+      allow(config).to receive(:for_all_cops).and_return(exclude_property)
+      allow(config_store).to receive(:for).and_return(config)
+
+      expect(found_basenames.include?('ruby1.rb')).to be(false)
+      expect(found_basenames.include?('ruby3.rb')).to be(true)
+      expect(found_basenames.include?('ruby4.rb')).to be(true)
+    end
+
+    it 'works also if a folder is named "[...something]"' do
+      create_empty_file('[...something]/ruby4.rb')
+
+      config = instance_double(RuboCop::Config)
+      exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
+      allow(config).to receive(:for_all_cops).and_return(exclude_property)
+      allow(config_store).to receive(:for).and_return(config)
+
+      expect(found_basenames.include?('ruby1.rb')).to be(false)
+      expect(found_basenames.include?('ruby3.rb')).to be(true)
+      expect(found_basenames.include?('ruby4.rb')).to be(true)
+    end
+
     it 'works if patterns are empty' do
       allow(Dir).to receive(:glob).and_call_original
       allow_any_instance_of(described_class).to receive(:wanted_dir_patterns).and_return([])
