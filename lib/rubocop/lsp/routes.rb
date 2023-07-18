@@ -171,6 +171,7 @@ module RuboCop
 
         {
           safe_autocorrect: safe_autocorrect.nil? || safe_autocorrect == true,
+          lint_mode: request.dig(:params, :initializationOptions, :lintMode) == true,
           layout_mode: request.dig(:params, :initializationOptions, :layoutMode) == true
         }
       end

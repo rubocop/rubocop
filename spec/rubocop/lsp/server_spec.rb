@@ -317,6 +317,231 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
     end
   end
 
+  describe 'format without `lintMode` option' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?"
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: <<~RUBY,
+                puts foo.object_id == bar.object_id
+                  puts 'hi'
+              RUBY
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [
+              {
+                text: <<~RUBY
+                  puts foo.object_id == bar.object_id
+                    puts "hi"
+                RUBY
+              }
+            ],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: <<~RUBY,
+            puts foo.equal?(bar)
+            puts 'hi'
+          RUBY
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 3, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
+  describe 'format with `lintMode: true`' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?",
+            initializationOptions: {
+              lintMode: true
+            }
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: <<~RUBY,
+                puts foo.object_id == bar.object_id
+                  puts 'hi'
+              RUBY
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [
+              {
+                text: <<~RUBY
+                  puts foo.object_id == bar.object_id
+                    puts "hi"
+                RUBY
+              }
+            ],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: <<~RUBY,
+            puts foo.equal?(bar)
+              puts "hi"
+          RUBY
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 3, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
+  describe 'format with `lintMode: false`' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?",
+            initializationOptions: {
+              lintMode: false
+            }
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: <<~RUBY,
+                puts foo.object_id == bar.object_id
+                  puts 'hi'
+              RUBY
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [
+              {
+                text: <<~RUBY
+                  puts foo.object_id == bar.object_id
+                    puts "hi"
+                RUBY
+              }
+            ],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: <<~RUBY,
+            puts foo.equal?(bar)
+            puts 'hi'
+          RUBY
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 3, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
   describe 'format without `layoutMode` option' do
     let(:requests) do
       [
@@ -533,6 +758,83 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
           newText: <<~RUBY,
             puts 'hi'
             puts 'bye'
+          RUBY
+          range: {
+            start: { line: 0, character: 0 }, end: { line: 3, character: 0 }
+          }
+        ]
+      )
+    end
+  end
+
+  describe 'format with `lintMode: true` and `layoutMode: true`' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'initialize',
+          params: {
+            probably: "Don't need real params for this test?",
+            initializationOptions: {
+              lintMode: true,
+              layoutMode: true
+            }
+          }
+        },
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: <<~RUBY,
+                puts foo.object_id == bar.object_id
+                  puts 'hi'
+              RUBY
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [
+              {
+                text: <<~RUBY
+                  puts foo.object_id == bar.object_id
+                    puts "hi"
+                RUBY
+              }
+            ],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(
+        jsonrpc: '2.0',
+        id: 20,
+        result: [
+          newText: <<~RUBY,
+            puts foo.equal?(bar)
+            puts "hi"
           RUBY
           range: {
             start: { line: 0, character: 0 }, end: { line: 3, character: 0 }

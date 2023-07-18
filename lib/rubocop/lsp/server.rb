@@ -55,6 +55,7 @@ module RuboCop
 
       def configure(options)
         @runtime.safe_autocorrect = options[:safe_autocorrect]
+        @runtime.lint_mode = options[:lint_mode]
         @runtime.layout_mode = options[:layout_mode]
       end
 
