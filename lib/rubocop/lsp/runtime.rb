@@ -14,12 +14,13 @@ module RuboCop
     # Runtime for Language Server Protocol of RuboCop.
     # @api private
     class Runtime
-      attr_writer :safe_autocorrect, :layout_mode
+      attr_writer :safe_autocorrect, :lint_mode, :layout_mode
 
       def initialize(config_store)
         @config_store = config_store
         @logged_paths = []
         @safe_autocorrect = true
+        @lint_mode = false
         @layout_mode = false
       end
 
@@ -38,7 +39,7 @@ module RuboCop
         formatting_options = {
           stdin: text, force_exclusion: true, autocorrect: true, safe_autocorrect: @safe_autocorrect
         }
-        formatting_options[:only] = ['Layout'] if @layout_mode
+        formatting_options[:only] = config_only_options if @lint_mode || @layout_mode
 
         redirect_stdout { run_rubocop(formatting_options, path) }
 
@@ -49,7 +50,7 @@ module RuboCop
         diagnostic_options = {
           stdin: text, force_exclusion: true, formatters: ['json'], format: 'json'
         }
-        diagnostic_options[:only] = ['Layout'] if @layout_mode
+        diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode
 
         json = redirect_stdout { run_rubocop(diagnostic_options, path) }
         results = JSON.parse(json, symbolize_names: true)
@@ -66,6 +67,13 @@ module RuboCop
       end
 
       private
+
+      def config_only_options
+        only_options = []
+        only_options << 'Lint' if @lint_mode
+        only_options << 'Layout' if @layout_mode
+        only_options
+      end
 
       def redirect_stdout(&block)
         stdout = StringIO.new
