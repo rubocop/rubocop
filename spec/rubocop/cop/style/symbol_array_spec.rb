@@ -79,17 +79,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       RUBY
     end
 
-    it "doesn't break when a symbol contains )" do
-      expect_offense(<<~RUBY)
-        [:one, :")", :three, :"(", :"]", :"["]
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
-      RUBY
-
-      expect_correction(<<~'RUBY')
-        %i(one \) three \( ] [)
-      RUBY
-    end
-
     it 'does not register an offense for array with non-syms' do
       expect_no_offenses('[:one, :two, "three"]')
     end
@@ -98,8 +87,20 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect_no_offenses('%i(one two three)')
     end
 
+    it 'does not register an offense for array containing delimiters without spaces' do
+      expect_no_offenses('%i[one two [] ()]')
+    end
+
     it 'does not register an offense if symbol contains whitespace' do
       expect_no_offenses('[:one, :two, :"space here"]')
+    end
+
+    it 'does not register an offense if a symbol contains unclosed delimiters' do
+      expect_no_offenses('[:one, :")", :two, :"(", :"]"]')
+    end
+
+    it 'does not register an offense if a symbol contains a delimiter with spaces' do
+      expect_no_offenses('[:one, :two, :"[ ]", :"( )"]')
     end
 
     it 'registers an offense in a non-ambiguous block context' do
@@ -133,6 +134,28 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
+    it 'registers an offense for a %i array containing [ ]' do
+      expect_offense(<<~'RUBY')
+        %i[one \[ \] two]
+        ^^^^^^^^^^^^^^^^^ Use `[:one, :'[', :']', :two]` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [:one, :'[', :']', :two]
+      RUBY
+    end
+
+    it 'registers an offense for a %i array containing ( )' do
+      expect_offense(<<~'RUBY')
+        %i(one \( \) two)
+        ^^^^^^^^^^^^^^^^^ Use `[:one, :'(', :')', :two]` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [:one, :'(', :')', :two]
+      RUBY
+    end
+
     context 'when PreferredDelimiters is specified' do
       let(:other_cops) do
         {
@@ -142,17 +165,6 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
             }
           }
         }
-      end
-
-      it 'autocorrects an array with delimiters' do
-        expect_offense(<<~RUBY)
-          [:one, :")", :three, :"(", :"]", :"["]
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
-        RUBY
-
-        expect_correction(<<~'RUBY')
-          %i[one ) three ( \] \[]
-        RUBY
       end
 
       it 'autocorrects an array in multiple lines' do

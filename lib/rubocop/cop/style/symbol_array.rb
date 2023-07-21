@@ -22,6 +22,15 @@ module RuboCop
       #   # bad
       #   [:foo, :bar, :baz]
       #
+      #   # bad (contains spaces)
+      #   %i[foo\ bar baz\ quux]
+      #
+      #   # bad (contains [] with spaces)
+      #   %i[foo \[ \]]
+      #
+      #   # bad (contains () with spaces)
+      #   %i(foo \( \))
+      #
       # @example EnforcedStyle: brackets
       #   # good
       #   [:foo, :bar, :baz]
@@ -40,6 +49,7 @@ module RuboCop
 
         PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'
         ARRAY_MSG = 'Use %<prefer>s for an array of symbols.'
+        DELIMITERS = ['[', ']', '(', ')'].freeze
 
         class << self
           attr_accessor :largest_brackets
@@ -47,7 +57,7 @@ module RuboCop
 
         def on_array(node)
           if bracketed_array_of?(:sym, node)
-            return if symbols_contain_spaces?(node)
+            return if complex_content?(node)
 
             check_bracketed_array(node, 'i')
           elsif node.percent_literal?(:symbol)
@@ -57,11 +67,20 @@ module RuboCop
 
         private
 
-        def symbols_contain_spaces?(node)
+        def complex_content?(node)
           node.children.any? do |sym|
             content, = *sym
-            content.to_s.include?(' ')
+            content = content.to_s
+            content_without_delimiter_pairs = content.gsub(/(\[\])|(\(\))/, '')
+
+            content.include?(' ') || DELIMITERS.any? do |delimiter|
+              content_without_delimiter_pairs.include?(delimiter)
+            end
           end
+        end
+
+        def invalid_percent_array_contents?(node)
+          complex_content?(node)
         end
 
         def build_bracketed_array(node)
