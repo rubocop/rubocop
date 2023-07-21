@@ -67,7 +67,7 @@ module RuboCop
 
         def require_path
           path = source_path.relative_path_from(root_file_path.dirname)
-          path.to_s.sub('.rb', '')
+          path.to_s.delete_suffix('.rb')
         end
       end
     end

@@ -63,7 +63,7 @@ module RuboCop
 
       def classname_attribute_value(file)
         @classname_attribute_value_cache ||= Hash.new do |hash, key|
-          hash[key] = key.gsub(/\.rb\Z/, '').gsub("#{Dir.pwd}/", '').tr('/', '.')
+          hash[key] = key.delete_suffix('.rb').gsub("#{Dir.pwd}/", '').tr('/', '.')
         end
         @classname_attribute_value_cache[file]
       end
