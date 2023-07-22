@@ -202,6 +202,10 @@ module RuboCop
       lib_root = File.join(File.dirname(__FILE__), '..')
       exe_root = File.join(lib_root, '..', 'exe')
 
+      # Make sure to use an absolute path to prevent errors on Windows
+      # when traversing the relative paths with symlinks.
+      exe_root = File.absolute_path(exe_root)
+
       # These are all the files we have `require`d plus everything in the
       # exe directory. A change to any of them could affect the cop output
       # so we include them in the cache hash.
