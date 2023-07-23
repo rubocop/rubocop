@@ -147,5 +147,12 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when one of the loops is empty' do
+      expect_no_offenses(<<~RUBY)
+        items.each {}
+        items.each {}
+      RUBY
+    end
   end
 end
