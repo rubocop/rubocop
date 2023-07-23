@@ -67,6 +67,7 @@ module RuboCop
           return unless node.parent&.begin_type?
           return unless collection_looping_method?(node)
           return unless same_collection_looping_block?(node, node.left_sibling)
+          return unless node.body && node.left_sibling.body
 
           add_offense(node) do |corrector|
             combine_with_left_sibling(corrector, node)
