@@ -68,7 +68,7 @@ module RuboCop
 
         def same_conditions_node_different_branch?(variable, outer_local_variable)
           variable_node = variable_node(variable)
-          return false unless variable_node.conditional?
+          return false unless node_or_its_ascendant_conditional?(variable_node)
 
           outer_local_variable_node =
             find_conditional_node_from_ascendant(outer_local_variable.declaration_node)
@@ -95,6 +95,12 @@ module RuboCop
           return parent if parent.conditional?
 
           find_conditional_node_from_ascendant(parent)
+        end
+
+        def node_or_its_ascendant_conditional?(node)
+          return true if node.conditional?
+
+          !!find_conditional_node_from_ascendant(node)
         end
       end
     end

@@ -235,6 +235,24 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
   end
 
   context 'when a block local variable has same name as an outer scope variable' \
+          'with different branches of same `if` condition node' \
+          'in a nested node' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          if condition?
+            foo = 1
+          else
+            bar = [1, 2, 3]
+            bar.each do |foo|
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as an outer scope variable' \
           'with different branches of same `case` condition node' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
