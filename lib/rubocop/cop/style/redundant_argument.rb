@@ -35,6 +35,8 @@ module RuboCop
       #   array.join('')
       #   [1, 2, 3].join("")
       #   array.sum(0)
+      #   exit(true)
+      #   exit!(false)
       #   string.split(" ")
       #   "first\nsecond".split(" ")
       #   string.chomp("\n")
@@ -45,6 +47,8 @@ module RuboCop
       #   array.join
       #   [1, 2, 3].join
       #   array.sum
+      #   exit
+      #   exit!
       #   string.split
       #   "first second".split
       #   string.chomp
@@ -55,9 +59,10 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Argument %<arg>s is redundant because it is implied by default.'
+        NO_RECEIVER_METHODS = %i[exit exit!].freeze
 
         def on_send(node)
-          return if node.receiver.nil?
+          return if !NO_RECEIVER_METHODS.include?(node.method_name) && node.receiver.nil?
           return if node.arguments.count != 1
           return unless redundant_argument?(node)
 
