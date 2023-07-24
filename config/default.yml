@@ -4811,12 +4811,16 @@ Style/RedundantArgument:
   Enabled: pending
   Safe: false
   VersionAdded: '1.4'
-  VersionChanged: '1.40'
+  VersionChanged: '<<next>>'
   Methods:
     # Array#join
     join: ''
     # Array#sum
     sum: 0
+    # Kernel.#exit
+    exit: true
+    # Kernel.#exit!
+    exit!: false
     # String#split
     split: ' '
     # String#chomp
