@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       RUBY
     end
 
-    it 'registers an offense when using `nil` at the end of the predicate method definition' do
+    it 'registers an offense when using `nil` at the end of the predicate method definition and using guard condition' do
       expect_offense(<<~RUBY)
         def foo?
           return true if condition
@@ -59,12 +59,17 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       RUBY
     end
 
-    it 'does not register an offense when using `return false`' do
-      expect_no_offenses(<<~RUBY)
+    it 'registers an offense when using `nil` at the end of the predicate method definition' do
+      expect_offense(<<~RUBY)
         def foo?
-          return false if condition
+          nil
+          ^^^ Return `false` instead of `nil` in predicate methods.
+        end
+      RUBY
 
-          bar?
+      expect_correction(<<~RUBY)
+        def foo?
+          false
         end
       RUBY
     end
@@ -97,6 +102,40 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
           nil
 
           do_something
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the last safe navigation method argument in method definition is `nil`' do
+      expect_no_offenses(<<~RUBY)
+        def foo?
+          bar&.baz(nil)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the last method argument in method definition is `nil`' do
+      expect_no_offenses(<<~RUBY)
+        def foo?
+          bar.baz(nil)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when assigning `nil` to a variable in predicate method definition' do
+      expect_no_offenses(<<~RUBY)
+        def foo?
+          bar = nil
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `return false`' do
+      expect_no_offenses(<<~RUBY)
+        def foo?
+          return false if condition
+
+          bar?
         end
       RUBY
     end
