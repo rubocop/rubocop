@@ -224,6 +224,11 @@ changed_parameters:
       - AllowedMethods
       - AllowedPatterns
     severity: warning
+  - cops: Style/ArgumentsForwarding
+    parameters: AllowOnlyRestArgument
+    reason: "`AllowOnlyRestArgument` has no effect with TargetRubyVersion >= 3.2."
+    severity: warning
+    minimum_ruby_version: 3.2
 
 # Enforced styles that have been removed or replaced
 changed_enforced_styles:

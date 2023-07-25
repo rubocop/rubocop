@@ -3072,6 +3072,7 @@ Style/ArgumentsForwarding:
   StyleGuide: '#arguments-forwarding'
   Enabled: pending
   AllowOnlyRestArgument: true
+  UseAnonymousForwarding: true
   VersionAdded: '1.1'
 
 Style/ArrayCoercion:

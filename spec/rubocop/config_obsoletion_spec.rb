@@ -399,6 +399,45 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
     end
 
+    context 'when the configuration includes deprecated parameters for the TargetRubyVersion' do
+      let(:hash) do
+        {
+          'AllCops' => { 'TargetRubyVersion' => target_ruby_version },
+          **cop_config
+        }
+      end
+      let(:warning_message) { config_obsoletion.warnings.join("\n") }
+
+      context 'with Style/ArgumentsForwarding AllowOnlyRestArgument' do
+        let(:cop_config) do
+          { 'Style/ArgumentsForwarding' => { 'AllowOnlyRestArgument' => false } }
+        end
+
+        context 'with TargetRubyVersion 3.2' do
+          let(:target_ruby_version) { 3.2 }
+
+          it 'prints a warning message' do
+            expected_message = <<~OUTPUT.chomp
+              obsolete parameter `AllowOnlyRestArgument` (for `Style/ArgumentsForwarding`) found in example/.rubocop.yml
+              `AllowOnlyRestArgument` has no effect with TargetRubyVersion >= 3.2.
+            OUTPUT
+
+            expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+            expect(warning_message).to eq(expected_message)
+          end
+        end
+
+        context 'with TargetRubyVersion 3.1' do
+          let(:target_ruby_version) { 3.1 }
+
+          it 'does not print a warning message' do
+            expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+            expect(warning_message).to eq('')
+          end
+        end
+      end
+    end
+
     context 'when the configuration includes any deprecated parameters' do
       let(:hash) do
         {
