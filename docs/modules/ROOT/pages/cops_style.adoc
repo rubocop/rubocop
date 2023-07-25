@@ -342,6 +342,12 @@ In Ruby 2.7, arguments forwarding has been added.
 This cop identifies places where `do_something(*args, &block)`
 can be replaced by `do_something(...)`.
 
+In Ruby 3.2, anonymous args/kwargs forwarding has been added.
+
+This cop also identifies places where `use_args(*args)`/`use_kwargs(**kwargs)` can be
+replaced by `use_args(*)`/`use_kwargs(**)`; if desired, this functionality can be disabled
+by setting UseAnonymousForwarding: false.
+
 === Examples
 
 [source,ruby]
@@ -362,7 +368,35 @@ def foo(...)
 end
 ----
 
-==== AllowOnlyRestArgument: true (default)
+==== UseAnonymousForwarding: true (default, only relevant for Ruby >= 3.2)
+
+[source,ruby]
+----
+# bad
+def foo(*args, **kwargs)
+  args_only(*args)
+  kwargs_only(**kwargs)
+end
+
+# good
+def foo(*, **)
+  args_only(*)
+  kwargs_only(**)
+end
+----
+
+==== UseAnonymousForwarding: false (only relevant for Ruby >= 3.2)
+
+[source,ruby]
+----
+# good
+def foo(*args, **kwargs)
+  args_only(*args)
+  kwargs_only(**kwargs)
+end
+----
+
+==== AllowOnlyRestArgument: true (default, only relevant for Ruby < 3.2)
 
 [source,ruby]
 ----
@@ -376,7 +410,7 @@ def foo(**kwargs)
 end
 ----
 
-==== AllowOnlyRestArgument: false
+==== AllowOnlyRestArgument: false (only relevant for Ruby < 3.2)
 
 [source,ruby]
 ----
@@ -398,6 +432,10 @@ end
 | Name | Default value | Configurable values
 
 | AllowOnlyRestArgument
+| `true`
+| Boolean
+
+| UseAnonymousForwarding
 | `true`
 | Boolean
 |===
@@ -5298,9 +5336,9 @@ EnforcedStyle.
 
 | Pending
 | Yes
-| Yes
+| Yes (Unsafe)
 | 1.10
-| 1.11
+| 1.55
 |===
 
 Checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and
@@ -5309,6 +5347,17 @@ sequences of values to hashes.
 Correction code from splat argument (`Hash[*ary]`) is not simply determined. For example,
 `Hash[*ary]` can be replaced with `ary.each_slice(2).to_h` but it will be complicated.
 So, `AllowSplatArgument` option is true by default to allow splat argument for simple code.
+
+=== Safety
+
+This cop's autocorrection is unsafe because `ArgumentError` occurs
+if the number of elements is odd:
+
+[source,ruby]
+----
+Hash[[[1, 2], [3]]] #=> {1=>2, 3=>nil}
+[[1, 2], [5]].to_h  #=> wrong array length at 1 (expected 2, was 1) (ArgumentError)
+----
 
 === Examples
 
@@ -10678,7 +10727,7 @@ rand(1...7)
 | No
 | Yes (Unsafe)
 | 1.4
-| 1.40
+| 1.55
 |===
 
 Checks for a redundant argument passed to certain methods.
@@ -10717,6 +10766,8 @@ This cop is unsafe because of the following limitations:
 array.join('')
 [1, 2, 3].join("")
 array.sum(0)
+exit(true)
+exit!(false)
 string.split(" ")
 "first\nsecond".split(" ")
 string.chomp("\n")
@@ -10727,6 +10778,8 @@ A.foo(2)
 array.join
 [1, 2, 3].join
 array.sum
+exit
+exit!
 string.split
 "first second".split
 string.chomp
@@ -10740,7 +10793,7 @@ A.foo
 | Name | Default value | Configurable values
 
 | Methods
-| `{"join"=>"", "sum"=>0, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
+| `{"join"=>"", "sum"=>0, "exit"=>true, "exit!"=>false, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
 | 
 |===
 
@@ -14290,6 +14343,15 @@ array of 2 or fewer elements.
 
 # bad
 [:foo, :bar, :baz]
+
+# bad (contains spaces)
+%i[foo\ bar baz\ quux]
+
+# bad (contains [] with spaces)
+%i[foo \[ \]]
+
+# bad (contains () with spaces)
+%i(foo \( \))
 ----
 
 ==== EnforcedStyle: brackets

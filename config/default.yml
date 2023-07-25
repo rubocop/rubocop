@@ -3919,7 +3919,7 @@ Style/HashConversion:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.10'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.55'
   AllowSplatArgument: true
 
 Style/HashEachMethods:
@@ -4812,7 +4812,7 @@ Style/RedundantArgument:
   Enabled: pending
   Safe: false
   VersionAdded: '1.4'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.55'
   Methods:
     # Array#join
     join: ''
