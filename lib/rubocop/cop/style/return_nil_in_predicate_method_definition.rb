@@ -77,6 +77,8 @@ module RuboCop
         private
 
         def nil_node_at_the_end_of_method_body(body)
+          return body if body.nil_type?
+          return unless body.begin_type?
           return unless (last_child = body.children.last)
 
           last_child if last_child.is_a?(AST::Node) && last_child.nil_type?
