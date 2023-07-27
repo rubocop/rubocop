@@ -240,14 +240,14 @@ module RuboCop
         class SendNodeClassifier
           extend NodePattern::Macros
 
-          # @!method find_forwarded_rest_arg(node, rest_name)
-          def_node_search :find_forwarded_rest_arg, '(splat (lvar %1))'
+          # @!method forwarded_rest_arg?(node, rest_name)
+          def_node_matcher :forwarded_rest_arg?, '(splat (lvar %1))'
 
-          # @!method find_forwarded_kwrest_arg(node, kwrest_name)
-          def_node_search :find_forwarded_kwrest_arg, '(kwsplat (lvar %1))'
+          # @!method extract_forwarded_kwrest_arg(node, kwrest_name)
+          def_node_matcher :extract_forwarded_kwrest_arg, '(hash <$(kwsplat (lvar %1)) ...>)'
 
-          # @!method find_forwarded_block_arg(node, block_name)
-          def_node_search :find_forwarded_block_arg, '(block_pass {(lvar %1) nil?})'
+          # @!method forwarded_block_arg?(node, block_name)
+          def_node_matcher :forwarded_block_arg?, '(block_pass {(lvar %1) nil?})'
 
           def initialize(def_node, send_node, referenced_lvars, forwardable_args, **config)
             @def_node = def_node
@@ -262,19 +262,19 @@ module RuboCop
           def forwarded_rest_arg
             return nil if referenced_rest_arg?
 
-            find_forwarded_rest_arg(@send_node, @rest_arg_name).first
+            arguments.find { |arg| forwarded_rest_arg?(arg, @rest_arg_name) }
           end
 
           def forwarded_kwrest_arg
             return nil if referenced_kwrest_arg?
 
-            find_forwarded_kwrest_arg(@send_node, @kwrest_arg_name).first
+            arguments.filter_map { |arg| extract_forwarded_kwrest_arg(arg, @kwrest_arg_name) }.first
           end
 
           def forwarded_block_arg
             return nil if referenced_block_arg?
 
-            find_forwarded_block_arg(@send_node, @block_arg_name).first
+            arguments.find { |arg| forwarded_block_arg?(arg, @block_arg_name) }
           end
 
           def classification
@@ -288,6 +288,10 @@ module RuboCop
           end
 
           private
+
+          def arguments
+            @send_node.arguments
+          end
 
           def referenced_rest_arg?
             @referenced_lvars.include?(@rest_arg_name)

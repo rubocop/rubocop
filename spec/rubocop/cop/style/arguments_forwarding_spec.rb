@@ -318,6 +318,30 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         RUBY
       end
     end
+
+    it 'does not register an offense for restarg when passing block to separate call' do
+      expect_no_offenses(<<~RUBY)
+        def foo(*args, &block)
+          bar(*args).baz(&block)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for restarg and kwrestarg when passing block to separate call' do
+      expect_no_offenses(<<~RUBY)
+        def foo(*args, **kwargs, &block)
+          bar(*args, **kwargs).baz(&block)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for restarg/kwrestarg/block passed to separate methods' do
+      expect_no_offenses(<<~RUBY)
+        def foo(*args, **kwargs, &block)
+          bar(first(*args), second(**kwargs), third(&block))
+        end
+      RUBY
+    end
   end
 
   context 'TargetRubyVersion >= 3.1', :ruby31 do
@@ -587,6 +611,58 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         def foo(*, **, &block)
           block = new_block
           bar(*, **, &block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for restarg when passing block to separate call' do
+      expect_offense(<<~RUBY)
+        def foo(*args, &block)
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+          bar(*args).baz(&block)
+              ^^^^^ Use anonymous positional arguments forwarding (`*`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(*, &block)
+          bar(*).baz(&block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for restarg and kwrestarg when passing block to separate call' do
+      expect_offense(<<~RUBY)
+        def foo(*args, **kwargs, &block)
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                       ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          bar(*args, **kwargs).baz(&block)
+              ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                     ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(*, **, &block)
+          bar(*, **).baz(&block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense for restarg and kwrestarg when passing to separate calls' do
+      expect_offense(<<~RUBY)
+        def foo(*args, **kwargs, &block)
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                       ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          bar(first(*args), second(**kwargs), third(&block))
+                    ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                                   ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(*, **, &block)
+          bar(first(*), second(**), third(&block))
         end
       RUBY
     end
