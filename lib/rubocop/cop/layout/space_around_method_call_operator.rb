@@ -19,7 +19,7 @@ module RuboCop
       #   foo &. bar
       #   foo &. bar&. buzz
       #   RuboCop:: Cop
-      #   RuboCop:: Cop:: Cop
+      #   RuboCop:: Cop:: Base
       #   :: RuboCop::Cop
       #
       #   # good
@@ -31,7 +31,7 @@ module RuboCop
       #   foo&.bar
       #   foo&.bar&.buzz
       #   RuboCop::Cop
-      #   RuboCop::Cop::Cop
+      #   RuboCop::Cop::Base
       #   ::RuboCop::Cop
       #
       class SpaceAroundMethodCallOperator < Base

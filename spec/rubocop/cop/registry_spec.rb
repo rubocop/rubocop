@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Registry do
     stub_const('RuboCop::Cop::RSpec::Foo', Class.new(RuboCop::Cop::Cop))
   end
 
-  # `RuboCop::Cop::Cop` mutates its `registry` when inherited from.
+  # `RuboCop::Cop::Base` mutates its `registry` when inherited from.
   # This can introduce nondeterministic failures in other parts of the
   # specs if this mutation occurs before code that depends on this global cop
   # store. The workaround is to replace the global cop store with a temporary

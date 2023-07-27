@@ -53,7 +53,7 @@ module RuboCop
       # List of cops that should not try to autocorrect at the same
       # time as this cop
       #
-      # @return [Array<RuboCop::Cop::Cop>]
+      # @return [Array<RuboCop::Cop::Base>]
       #
       # @api public
       def self.autocorrect_incompatible_with
