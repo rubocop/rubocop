@@ -45,7 +45,15 @@ module RuboCop
       #
       #   spec.add_runtime_dependency 'rspec'
       #
-      #   # good only if TreatCommentsAsGroupSeparators is true
+      # @example TreatCommentsAsGroupSeparators: true (default)
+      #   # good
+      #   # For code quality
+      #   spec.add_dependency 'rubocop'
+      #   # For tests
+      #   spec.add_dependency 'rspec'
+      #
+      # @example TreatCommentsAsGroupSeparators: false
+      #   # bad
       #   # For code quality
       #   spec.add_dependency 'rubocop'
       #   # For tests

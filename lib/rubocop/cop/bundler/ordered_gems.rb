@@ -19,7 +19,15 @@ module RuboCop
       #
       #   gem 'rspec'
       #
-      #   # good only if TreatCommentsAsGroupSeparators is true
+      # @example TreatCommentsAsGroupSeparators: true (default)
+      #   # good
+      #   # For code quality
+      #   gem 'rubocop'
+      #   # For tests
+      #   gem 'rspec'
+      #
+      # @example TreatCommentsAsGroupSeparators: false
+      #   # bad
       #   # For code quality
       #   gem 'rubocop'
       #   # For tests
