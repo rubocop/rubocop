@@ -35,9 +35,15 @@ module RuboCop
       #   https://github.com/rubocop/rubocop/blob/v1.52.0/lib/rubocop/cli/command/execute_runner.rb#L95
       # Setting `parallel: true` would break this here:
       #   https://github.com/rubocop/rubocop/blob/v1.52.0/lib/rubocop/runner.rb#L72
-      def format(path, text)
+      def format(path, text, command:)
+        safe_autocorrect = if command
+                             command == 'rubocop.formatAutocorrects'
+                           else
+                             @safe_autocorrect
+                           end
+
         formatting_options = {
-          stdin: text, force_exclusion: true, autocorrect: true, safe_autocorrect: @safe_autocorrect
+          stdin: text, force_exclusion: true, autocorrect: true, safe_autocorrect: safe_autocorrect
         }
         formatting_options[:only] = config_only_options if @lint_mode || @layout_mode
 
