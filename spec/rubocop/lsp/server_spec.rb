@@ -980,7 +980,7 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
     end
   end
 
-  describe 'execute command formatting' do
+  describe 'execute command safe formatting' do
     let(:requests) do
       [
         {
@@ -1018,6 +1018,59 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
             changes: {
               'file:///path/to/file.rb': [
                 newText: "puts 'hi'\n",
+                range: {
+                  start: { line: 0, character: 0 }, end: { line: 1, character: 0 }
+                }
+              ]
+            }
+          }
+        }
+      )
+    end
+  end
+
+  describe 'execute command unsafe formatting' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: 'something.map { |s| s.upcase }',
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 99,
+          method: 'workspace/executeCommand',
+          params: {
+            command: 'rubocop.formatAutocorrectsAll',
+            arguments: [uri: 'file:///path/to/file.rb']
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(stderr).to eq('')
+      expect(messages.last).to eq(
+        jsonrpc: '2.0',
+        id: 99,
+        method: 'workspace/applyEdit',
+        params: {
+          label: 'Format all with RuboCop autocorrects',
+          edit: {
+            changes: {
+              'file:///path/to/file.rb': [
+                newText: <<~RUBY,
+                  # frozen_string_literal: true
+
+                  something.map(&:upcase)
+                RUBY
                 range: {
                   start: { line: 0, character: 0 }, end: { line: 1, character: 0 }
                 }

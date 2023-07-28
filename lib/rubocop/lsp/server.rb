@@ -45,8 +45,8 @@ module RuboCop
         @writer.write(response)
       end
 
-      def format(path, text)
-        @runtime.format(path, text)
+      def format(path, text, command:)
+        @runtime.format(path, text, command: command)
       end
 
       def offenses(path, text)
