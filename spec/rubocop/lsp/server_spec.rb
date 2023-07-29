@@ -1064,7 +1064,7 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
           textDocument: {
             languageId: 'ruby',
             text: "puts 'neat'",
-            # Depends on this project's .standard.yml ignoring `tmp/**/*`
+            # Depends on this project's .rubocop.yml ignoring `tmp/**/*`
             uri: "file://#{Dir.pwd}/tmp/foo/bar.rb",
             version: 0
           }
@@ -1145,7 +1145,7 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
             textDocument: {
               languageId: 'ruby',
               text: "puts 'hi'",
-              # Depends on this project's .standard.yml ignoring `tmp/**/*`
+              # Depends on this project's .rubocop.yml ignoring `tmp/**/*`
               uri: "file://#{Dir.pwd}/tmp/zzz.rb",
               version: 0
             }
