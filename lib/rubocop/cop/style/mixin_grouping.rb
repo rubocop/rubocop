@@ -40,7 +40,7 @@ module RuboCop
         def on_class(node)
           begin_node = node.child_nodes.find(&:begin_type?) || node
           begin_node.each_child_node(:send).select(&:macro?).each do |macro|
-            next unless MIXIN_METHODS.include?(macro.method_name)
+            next if !MIXIN_METHODS.include?(macro.method_name) || macro.arguments.empty?
 
             check(macro)
           end

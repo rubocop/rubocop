@@ -42,6 +42,14 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when `include` has no arguments' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            include
+          end
+        RUBY
+      end
     end
 
     context 'when using `extend`' do
@@ -60,6 +68,14 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when `extend` has no arguments' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            extend
+          end
+        RUBY
+      end
     end
 
     context 'when using `prepend`' do
@@ -75,6 +91,14 @@ RSpec.describe RuboCop::Cop::Style::MixinGrouping, :config do
           class Foo
             prepend Qux
             prepend Bar
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when `prepend` has no arguments' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            prepend
           end
         RUBY
       end
