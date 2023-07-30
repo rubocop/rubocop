@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
   end
 
   context 'when elsif is present' do
-    it 'accepts without branch bodies' do
+    it 'registers an offense when without branch bodies' do
       expect_offense(<<~RUBY)
         if cond; elsif cond2; end
         ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use `if/else` instead.
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
       RUBY
     end
 
-    it 'accepts without `else` branch' do
+    it 'registers an offense when without `else` branch' do
       expect_offense(<<~RUBY)
         if cond; run elsif cond2; run2 end
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use `if/else` instead.
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
       RUBY
     end
 
-    it 'accepts second elsif block' do
+    it 'registers an offense when second elsif block' do
       expect_offense(<<~RUBY)
         if cond; run elsif cond2; run2 elsif cond3; run3 else dont end
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use `if/else` instead.
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
       RUBY
     end
 
-    it 'accepts with `else` branch' do
+    it 'registers an offense when with `else` branch' do
       expect_offense(<<~RUBY)
         if cond; run elsif cond2; run2 else dont end
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use `if/else` instead.

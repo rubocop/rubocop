@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
 
       context 'when using a method with heredoc argument' do
-        it 'accepts' do
+        it 'registers an offense' do
           expect_offense(<<~RUBY)
             fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo(<<~EOS) if condition
                                                                                  ^^ Modifier form of `if` makes the line too long.

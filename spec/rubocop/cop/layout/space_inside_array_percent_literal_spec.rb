@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayPercentLiteral, :config do
           expect_correction("#{code_example('1 2 3')}\n")
         end
 
-        it 'accepts literals with escaped and additional spaces' do
+        it 'registers an offense when literals with escaped and additional spaces' do
           expect_offense(<<~RUBY)
             #{code_example('a\   b \ c')}
                   ^^ Use only a single space inside array percent literal.

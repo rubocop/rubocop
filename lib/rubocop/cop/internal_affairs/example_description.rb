@@ -46,7 +46,8 @@ module RuboCop
 
         EXPECT_OFFENSE_INCORRECT_DESCRIPTIONS = [
           /^(does not|doesn't) (register|find|flag|report)/,
-          /^(does not|doesn't) add (a|an|any )?offense/
+          /^(does not|doesn't) add (a|an|any )?offense/,
+          /^accepts\b/
         ].freeze
 
         EXPECT_NO_CORRECTIONS_INCORRECT_DESCRIPTIONS = [/^(auto[- ]?)?correct/].freeze

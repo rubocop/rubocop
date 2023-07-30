@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
     context 'do not allow access modifiers on symbols' do
       let(:cop_config) { { 'AllowModifiersOnSymbols' => false } }
 
-      it 'accepts when argument to #{access_modifier} is a symbol' do
+      it 'registers an offense when argument to #{access_modifier} is a symbol' do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Foo
             foo
