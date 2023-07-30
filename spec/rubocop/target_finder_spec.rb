@@ -554,12 +554,12 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       allow(config).to receive(:file_to_include?) do |file|
         File.basename(file) == 'file'
       end
-      allow(config)
-        .to receive(:for_all_cops).and_return('Exclude' => [],
-                                              'Include' => [],
-                                              'RubyInterpreters' => [])
-      allow(config).to receive(:[]).and_return([])
-      allow(config).to receive(:file_to_exclude?).and_return(false)
+      allow(config).to receive_messages(
+        for_all_cops: { 'Exclude' => [], 'Include' => [], 'RubyInterpreters' => [] },
+        :[] => [],
+        file_to_exclude?: false
+      )
+
       allow(config_store).to receive(:for).and_return(config)
 
       expect(found_basenames.include?('file')).to be(true)
@@ -567,11 +567,11 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
     it 'does not pick files specified to be excluded in config' do
       config = instance_double(RuboCop::Config).as_null_object
-      allow(config)
-        .to receive(:for_all_cops).and_return('Exclude' => [],
-                                              'Include' => [],
-                                              'RubyInterpreters' => [])
-      allow(config).to receive(:file_to_include?).and_return(false)
+      allow(config).to receive_messages(
+        for_all_cops: { 'Exclude' => [], 'Include' => [], 'RubyInterpreters' => [] },
+        file_to_include?: false
+      )
+
       allow(config).to receive(:file_to_exclude?) do |file|
         File.basename(file) == 'ruby2.rb'
       end
