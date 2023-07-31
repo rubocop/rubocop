@@ -119,9 +119,7 @@ module RuboCop
         end
 
         def for_assignment_node
-          return nil unless node.parent&.for_type?
-
-          node.parent
+          node.ancestors.find(&:for_type?)
         end
 
         def find_multiple_assignment_node(grandparent_node)
