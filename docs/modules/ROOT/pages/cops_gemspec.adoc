@@ -362,8 +362,24 @@ spec.add_runtime_dependency 'rubocop'
 spec.add_runtime_dependency 'rubocop'
 
 spec.add_runtime_dependency 'rspec'
+----
 
-# good only if TreatCommentsAsGroupSeparators is true
+==== TreatCommentsAsGroupSeparators: true (default)
+
+[source,ruby]
+----
+# good
+# For code quality
+spec.add_dependency 'rubocop'
+# For tests
+spec.add_dependency 'rspec'
+----
+
+==== TreatCommentsAsGroupSeparators: false
+
+[source,ruby]
+----
+# bad
 # For code quality
 spec.add_dependency 'rubocop'
 # For tests

@@ -439,8 +439,24 @@ gem 'rubocop'
 gem 'rubocop'
 
 gem 'rspec'
+----
 
-# good only if TreatCommentsAsGroupSeparators is true
+==== TreatCommentsAsGroupSeparators: true (default)
+
+[source,ruby]
+----
+# good
+# For code quality
+gem 'rubocop'
+# For tests
+gem 'rspec'
+----
+
+==== TreatCommentsAsGroupSeparators: false
+
+[source,ruby]
+----
+# bad
 # For code quality
 gem 'rubocop'
 # For tests

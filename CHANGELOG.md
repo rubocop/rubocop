@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.55.1 (2023-07-31)
+
 ### Bug fixes
 
 * [#12068](https://github.com/rubocop/rubocop/pull/12068): Fix a false positive for `Style/ReturnNilInPredicateMethodDefinition` when the last method argument in method definition is `nil`. ([@koic][])
