@@ -69,9 +69,9 @@ module RuboCop
 
         def complex_content?(node)
           node.children.any? do |sym|
-            content, = *sym
-            content = content.to_s
-            content_without_delimiter_pairs = content.gsub(/(\[\])|(\(\))/, '')
+            content = *sym
+            content = content.map { |c| c.is_a?(AST::Node) ? c.source : c }.join
+            content_without_delimiter_pairs = content.gsub(/(\[[^\s\[\]]*\])|(\([^\s\(\)]*\))/, '')
 
             content.include?(' ') || DELIMITERS.any? do |delimiter|
               content_without_delimiter_pairs.include?(delimiter)
