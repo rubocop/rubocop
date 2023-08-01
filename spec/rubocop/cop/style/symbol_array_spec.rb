@@ -88,7 +88,11 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
     end
 
     it 'does not register an offense for array containing delimiters without spaces' do
-      expect_no_offenses('%i[one two [] ()]')
+      expect_no_offenses('%i[zero (one) [two] three[4] five[six] seven(8) nine(ten) ([]) [] ()]')
+    end
+
+    it 'does not register an offense for a percent array with interpolations' do
+      expect_no_offenses('%I[one_#{two} three #{four}_five six#{seven}eight [nine_#{ten}]]')
     end
 
     it 'does not register an offense if symbol contains whitespace' do
@@ -145,6 +149,28 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       RUBY
     end
 
+    it 'registers an offense for a %i array containing whitespace between brackets' do
+      expect_offense(<<~'RUBY')
+        %i[one two \[three\ four\ five\]]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[:one, :two, :'[three four five]']` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [:one, :two, :'[three four five]']
+      RUBY
+    end
+
+    it 'registers an offense for a %i array containing brackets between brackets' do
+      expect_offense(<<~'RUBY')
+        %i[one two \[\[\]]
+        ^^^^^^^^^^^^^^^^^^ Use `[:one, :two, :'[[]']` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [:one, :two, :'[[]']
+      RUBY
+    end
+
     it 'registers an offense for a %i array containing ( )' do
       expect_offense(<<~'RUBY')
         %i(one \( \) two)
@@ -153,6 +179,28 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
 
       expect_correction(<<~RUBY)
         [:one, :'(', :')', :two]
+      RUBY
+    end
+
+    it 'registers an offense for a %i array containing parentheses between parentheses' do
+      expect_offense(<<~'RUBY')
+        %i(one two \(\(\))
+        ^^^^^^^^^^^^^^^^^^ Use `[:one, :two, :'(()']` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [:one, :two, :'(()']
+      RUBY
+    end
+
+    it 'registers an offense for a %i array containing whitespace between parentheses' do
+      expect_offense(<<~'RUBY')
+        %i(one two \(three\ four\ five\))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `[:one, :two, :'(three four five)']` for an array of symbols.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [:one, :two, :'(three four five)']
       RUBY
     end
 
