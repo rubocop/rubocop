@@ -1797,6 +1797,29 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       expect_offense_detected
     end
 
+    context 'when the cop has the "info" severity' do
+      before do
+        create_file(target_file, <<~RUBY)
+          Long::Line::Not::Autocorrectable
+        RUBY
+
+        create_file('.rubocop.yml', <<~YAML)
+          Layout/LineLength:
+            Max: 10
+            Severity: info
+        YAML
+      end
+
+      it 'succeeds when option is autocorrect and the offense is not autocorrectable' do
+        expect(cli.run(['--fail-level', 'autocorrect',
+                        '--only', 'Layout/LineLength',
+                        target_file])).to eq(0)
+        expect($stderr.string).to eq('')
+        expect($stdout.string.include?('1 file inspected, 1 offense detected')).to be(true)
+        expect($stdout.string.include?('Layout/LineLength')).to be(true)
+      end
+    end
+
     context 'with --display-only-fail-level-offenses' do
       it 'outputs offense message when fail-level is less than the severity' do
         expect(cli.run(['--fail-level', 'refactor',
