@@ -140,7 +140,8 @@ RSpec.describe RuboCop::Cop::Lint::SuppressedException, :config do
   end
 
   context 'with AllowComments set to true' do
-    let(:cop_config) { { 'AllowComments' => true } }
+    let(:cop_config) { { 'AllowComments' => true, 'AllowNil' => allow_nil } }
+    let(:allow_nil) { true }
 
     it 'does not register an offense for empty rescue with comment' do
       expect_no_offenses(<<~RUBY)
@@ -239,6 +240,31 @@ RSpec.describe RuboCop::Cop::Lint::SuppressedException, :config do
             rescue
               # do nothing
             end
+          RUBY
+        end
+      end
+    end
+
+    context 'with AllowNil set to true' do
+      let(:allow_nil) { true }
+
+      context 'when using endless method definition', :ruby30 do
+        it 'does not register an offense for inline nil rescue' do
+          expect_no_offenses(<<~RUBY)
+            def some_method = other_method(42) rescue nil
+          RUBY
+        end
+      end
+    end
+
+    context 'with AllowNil set to false' do
+      let(:allow_nil) { false }
+
+      context 'when using endless method definition', :ruby30 do
+        it 'registers an offense for inline nil rescue' do
+          expect_offense(<<~RUBY)
+            def some_method = other_method(42) rescue nil
+                                               ^^^^^^^^^^ Do not suppress exceptions.
           RUBY
         end
       end
