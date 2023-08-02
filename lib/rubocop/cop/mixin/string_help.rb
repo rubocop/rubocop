@@ -30,8 +30,10 @@ module RuboCop
       private
 
       def inside_interpolation?(node)
-        # A :begin node inside a :dstr or :dsym node is an interpolation.
-        node.ancestors.drop_while { |a| !a.begin_type? }.any? { |a| a.dstr_type? || a.dsym_type? }
+        # A :begin node inside a :dstr, :dsym, or :regexp node is an interpolation.
+        node.ancestors
+            .drop_while { |a| !a.begin_type? }
+            .any? { |a| a.dstr_type? || a.dsym_type? || a.regexp_type? }
       end
     end
   end
