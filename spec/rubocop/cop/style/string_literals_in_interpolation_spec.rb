@@ -41,6 +41,18 @@ RSpec.describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
       SOURCE
     end
 
+    it 'registers an offense for double quotes within a regexp' do
+      expect_offense(<<~'RUBY')
+        /foo#{"sar".sub("s", 'b')}/
+              ^^^^^ Prefer single-quoted strings inside interpolations.
+                        ^^^ Prefer single-quoted strings inside interpolations.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        /foo#{'sar'.sub('s', 'b')}/
+      RUBY
+    end
+
     it 'accepts double quotes on a static string' do
       expect_no_offenses('"A"')
     end
