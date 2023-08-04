@@ -69,6 +69,8 @@ module RuboCop
                     matches_allowed_pattern?(def_node.method_name))
 
           class_comparison_candidate?(node) do |receiver_node, class_node|
+            return if class_node.dstr_type?
+
             range = offense_range(receiver_node, node)
             class_argument = (class_name = class_name(class_node, node)) ? "(#{class_name})" : ''
 
