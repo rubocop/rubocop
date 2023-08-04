@@ -70,6 +70,12 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
       RUBY
     end
 
+    it 'does not register an offense when comparing interpolated string class name for equality' do
+      expect_no_offenses(<<~'RUBY')
+        var.class.name == "String#{interpolation}"
+      RUBY
+    end
+
     it 'registers an offense but does not correct when comparing local variable for equality' do
       expect_offense(<<~RUBY)
         class_name = 'Model'
