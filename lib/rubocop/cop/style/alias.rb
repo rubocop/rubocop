@@ -122,7 +122,7 @@ module RuboCop
         end
 
         def bareword?(sym_node)
-          !sym_node.source.start_with?(':')
+          !sym_node.source.start_with?(':') || sym_node.dsym_type?
         end
 
         def correct_alias_method_to_alias(corrector, send_node)
