@@ -134,9 +134,7 @@ module RuboCop
 
         def correct_alias_to_alias_method(corrector, node)
           replacement =
-            'alias_method ' \
-            ":#{identifier(node.new_identifier)}, " \
-            ":#{identifier(node.old_identifier)}"
+            "alias_method #{identifier(node.new_identifier)}, #{identifier(node.old_identifier)}"
 
           corrector.replace(node, replacement)
         end
@@ -146,10 +144,13 @@ module RuboCop
           corrector.replace(node.old_identifier, node.old_identifier.source[1..])
         end
 
-        # @!method identifier(node)
-        def_node_matcher :identifier, <<~PATTERN
-          (sym $_)
-        PATTERN
+        def identifier(node)
+          if node.sym_type?
+            ":#{node.children.first}"
+          else
+            node.source
+          end
+        end
       end
     end
   end

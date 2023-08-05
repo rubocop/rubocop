@@ -1,0 +1,1 @@
+* [#12099](https://github.com/rubocop/rubocop/pull/12099): Fix an incorrect autocorrect for `Style/Alias` when `EncforcedStyle: prefer_alias_method` and using `alias` with interpolated symbol argument. ([@koic][])
