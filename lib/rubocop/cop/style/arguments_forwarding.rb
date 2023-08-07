@@ -85,6 +85,10 @@ module RuboCop
         ARGS_MSG = 'Use anonymous positional arguments forwarding (`*`).'
         KWARGS_MSG = 'Use anonymous keyword arguments forwarding (`**`).'
 
+        def on_new_investigation
+          @forwardable = true
+        end
+
         def on_def(node)
           return unless node.body
 
@@ -205,27 +209,74 @@ module RuboCop
         end
 
         def register_forward_all_offense_on_forwarding_method(forwarding_method)
-          add_offense(arguments_range(forwarding_method), message: FORWARDING_MSG) do |corrector|
-            begin_pos = forwarding_method.loc.selector&.end_pos || forwarding_method.loc.dot.end_pos
-            range = range_between(begin_pos, forwarding_method.source_range.end_pos)
+          return unless (begin_pos = find_begin_pos_of_forward_all_offense_range(forwarding_method))
 
-            corrector.replace(range, '(...)')
+          range = range_between(begin_pos, forwarding_method.last_argument.source_range.end_pos)
+
+          add_offense(range, message: FORWARDING_MSG) do |corrector|
+            if forwarding_method.parenthesized?
+              corrector.replace(range, '...')
+            else
+              space_range = range_between(forwarding_method.loc.selector.end_pos, begin_pos)
+
+              corrector.replace(space_range, '(')
+              corrector.replace(range, '...)')
+            end
           end
         end
 
         def register_forward_all_offense_on_method_def(method_definition)
-          add_offense(arguments_range(method_definition), message: FORWARDING_MSG) do |corrector|
-            arguments_range = range_with_surrounding_space(
-              method_definition.arguments.source_range, side: :left
-            )
-            corrector.replace(arguments_range, '(...)')
+          return unless @forwardable
+
+          range = arguments_range(method_definition)
+
+          add_offense(range, message: FORWARDING_MSG) do |corrector|
+            if method_definition.arguments.parenthesized_call?
+              corrector.replace(range, '...')
+            else
+              space_range = range_between(
+                method_definition.loc.name.end_pos,
+                method_definition.first_argument.loc.name.begin_pos - 1
+              )
+
+              corrector.replace(space_range, '(')
+              corrector.replace(range, '...)')
+            end
+          end
+        end
+
+        def find_begin_pos_of_forward_all_offense_range(forwarding_method)
+          if (forwarding_node = forwarding_method.arguments.find { |node| forwardable_arg?(node) })
+            if target_ruby_version <= 2.7 && !forwardable_arg?(forwarding_method.first_argument)
+              @forwardable = false
+
+              return
+            end
+
+            forwarding_node.source_range.begin_pos
+          else
+            forwarding_method.loc.dot.end_pos
           end
         end
 
         def arguments_range(node)
           arguments = node.arguments
 
-          range_between(arguments.first.source_range.begin_pos, arguments.last.source_range.end_pos)
+          forwarding_node = if forwardable_param?(arguments.first)
+                              arguments.first
+                            else
+                              arguments.find { |argument| forwardable_param?(argument) }
+                            end
+
+          range_between(forwarding_node.source_range.begin_pos, arguments.last.source_range.end_pos)
+        end
+
+        def forwardable_param?(argument)
+          argument.restarg_type? || argument.kwrestarg_type?
+        end
+
+        def forwardable_arg?(argument)
+          argument.splat_type? || argument.hash_type?
         end
 
         def allow_only_rest_arguments?
@@ -322,7 +373,7 @@ module RuboCop
 
           def pre_ruby_32_allow_forward_all?
             target_ruby_version < 3.2 &&
-              @def_node.arguments.none?(&:default?) &&
+              @def_node.arguments.none? { |arg| arg.respond_to?(:default?) && arg.default? } &&
               (@block_arg ? forwarded_block_arg : !@config.fetch(:allow_only_rest_arguments))
           end
         end

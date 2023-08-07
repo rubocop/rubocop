@@ -376,6 +376,14 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when using multiple left hand side with restarg, kwargs, and anonymous block arg' do
+      expect_no_offenses(<<~RUBY)
+        def foo((bar, baz), **kwargs)
+          bar(bar, baz, **kwargs)
+        end
+      RUBY
+    end
   end
 
   context 'TargetRubyVersion >= 3.2', :ruby32 do
@@ -907,6 +915,73 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     it 'does not register an offense when body of method definition is empty' do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
+        end
+      RUBY
+    end
+
+    # NOTE: Leading arguments with argument forwarding are not supported until Ruby 2.7.3,
+    # so in `:ruby27`, it's always accepted.
+    #
+    #   $ ruby -vce 'def x(...); y(arg, ...); end'
+    #   ruby 2.7.2p137 (2020-10-01 revision 5445e04352) [x86_64-darwin19]
+    #   -e:1: syntax error, unexpected ')'
+    #   def x(...); y(arg, ...); end
+    #
+    #   $ ruby -vce 'def x(...); y(arg, ...); end'
+    #   ruby 2.7.3p183 (2021-04-05 revision 6847ee089d) [x86_64-darwin19]
+    #   Syntax OK
+    it 'does not register an offense when using a leading argument, restarg, kwrestarg and block arg', :ruby27 do
+      expect_no_offenses(<<~RUBY)
+        def foo(*args, **kwargs, &block)
+          bar(arg, *args, **kwargs, &block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using a leading argument, restarg, kwrestarg and block arg', :ruby30 do
+      expect_offense(<<~RUBY)
+        def foo(*args, **kwargs, &block)
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(arg, *args, **kwargs, &block)
+                   ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar(arg, ...)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using a leading argument with restarg, kwrestarg and block arg', :ruby30 do
+      expect_offense(<<~RUBY)
+        def foo(arg, *args, **kwargs, &block)
+                     ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(arg, *args, **kwargs, &block)
+                   ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(arg, ...)
+          bar(arg, ...)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using a leading argument with kwrestarg and block arg', :ruby30 do
+      expect_offense(<<~RUBY)
+        def foo(arg, **kwargs, &block)
+                     ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(arg, **kwargs, &block)
+                   ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(arg, ...)
+          bar(arg, ...)
         end
       RUBY
     end
