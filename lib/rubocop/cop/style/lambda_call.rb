@@ -20,6 +20,7 @@ module RuboCop
       #  lambda.(x, y)
       class LambdaCall < Base
         include ConfigurableEnforcedStyle
+        include IgnoredNode
         extend AutoCorrector
 
         MSG = 'Prefer the use of `%<prefer>s` over `%<current>s`.'
@@ -33,8 +34,12 @@ module RuboCop
             current = node.source
 
             add_offense(node, message: format(MSG, prefer: prefer, current: current)) do |corrector|
+              next if part_of_ignored_node?(node)
+
               opposite_style_detected
               corrector.replace(node, prefer)
+
+              ignore_node(node)
             end
           else
             correct_style_detected
