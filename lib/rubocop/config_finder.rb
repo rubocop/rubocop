@@ -46,14 +46,14 @@ module RuboCop
 
         file = File.join(Dir.home, DOTFILE)
 
-        return file if File.exist?(file)
+        file if File.exist?(file)
       end
 
       def find_user_xdg_config
         xdg_config_home = expand_path(ENV.fetch('XDG_CONFIG_HOME', '~/.config'))
         xdg_config = File.join(xdg_config_home, 'rubocop', XDG_CONFIG)
 
-        return xdg_config if File.exist?(xdg_config)
+        xdg_config if File.exist?(xdg_config)
       end
 
       def expand_path(path)

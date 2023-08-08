@@ -152,10 +152,25 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     RUBY
   end
 
-  it 'accepts return in a non-final position' do
-    expect_no_offenses(<<~RUBY)
+  it 'registers an offense when returning value with guard clause and `return` is used' do
+    expect_offense(<<~RUBY)
       def func
         return something if something_else
+        ^^^^^^ Redundant `return` detected.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
+        something if something_else
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when returning value with guard clause and `return` is not used' do
+    expect_no_offenses(<<~RUBY)
+      def func
+        something if something_else
       end
     RUBY
   end

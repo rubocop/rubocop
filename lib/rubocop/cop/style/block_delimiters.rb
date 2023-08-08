@@ -370,7 +370,8 @@ module RuboCop
         def special_method_proper_block_style?(node)
           method_name = node.method_name
           return true if allowed_method?(method_name) || matches_allowed_pattern?(method_name)
-          return node.braces? if braces_required_method?(method_name)
+
+          node.braces? if braces_required_method?(method_name)
         end
 
         def braces_required_method?(method_name)

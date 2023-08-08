@@ -32,25 +32,25 @@ module RuboCop
         # @!method struct_new(node)
         def_node_matcher :struct_new, <<~PATTERN
           (send
-            (const ${nil? cbase} :Struct) :new ...)
+            (const {nil? cbase} :Struct) :new ...)
         PATTERN
 
         def on_send(node)
-          return unless struct_new(node) do
-            node.arguments.each_with_index do |arg, index|
-              # Ignore if the first argument is a class name
-              next if index.zero? && arg.str_type?
+          return unless struct_new(node)
 
-              # Ignore if the argument is not a member name
-              next unless STRUCT_MEMBER_NAME_TYPES.include?(arg.type)
+          node.arguments.each_with_index do |arg, index|
+            # Ignore if the first argument is a class name
+            next if index.zero? && arg.str_type?
 
-              member_name = arg.value
+            # Ignore if the argument is not a member name
+            next unless STRUCT_MEMBER_NAME_TYPES.include?(arg.type)
 
-              next unless STRUCT_METHOD_NAMES.include?(member_name.to_sym)
+            member_name = arg.value
 
-              message = format(MSG, member_name: member_name.inspect, method_name: member_name.to_s)
-              add_offense(arg, message: message)
-            end
+            next unless STRUCT_METHOD_NAMES.include?(member_name.to_sym)
+
+            message = format(MSG, member_name: member_name.inspect, method_name: member_name.to_s)
+            add_offense(arg, message: message)
           end
         end
       end

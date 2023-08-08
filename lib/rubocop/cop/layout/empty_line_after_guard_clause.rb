@@ -137,7 +137,7 @@ module RuboCop
             return node if node
           end
 
-          return last_heredoc_argument(n.receiver) if n.respond_to?(:receiver)
+          last_heredoc_argument(n.receiver) if n.respond_to?(:receiver)
         end
 
         def last_heredoc_argument_node(node)
