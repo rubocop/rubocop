@@ -22,9 +22,14 @@ module RuboCop
       #     return something
       #   end
       #
-      #   # good
+      #   # bad
       #   def test
       #     return something if something_else
+      #   end
+      #
+      #   # good
+      #   def test
+      #     something if something_else
       #   end
       #
       #   # good
@@ -136,7 +141,7 @@ module RuboCop
         end
 
         def check_if_node(node)
-          return if node.modifier_form? || node.ternary?
+          return if node.ternary?
 
           check_branch(node.if_branch)
           check_branch(node.else_branch)
