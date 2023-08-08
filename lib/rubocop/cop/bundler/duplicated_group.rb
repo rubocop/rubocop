@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Bundler
-      # A Gem group should be listed only once in a Gemfile.
+      # A Gem group, or a set of groups should be listed only once in a Gemfile.
       # @example
       #   # bad
       #   group :development do
@@ -14,10 +14,11 @@ module RuboCop
       #     gem 'rubocop-rails'
       #   end
       #
-      #   # bad
+      #   # bad (same set of groups declared twice)
       #   group :development, :test do
       #     gem 'rubocop'
       #   end
+      #
       #   group :test, :development do
       #     gem 'rspec'
       #   end
