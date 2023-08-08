@@ -100,7 +100,7 @@ module RuboCop
           return if send_classifications.empty?
 
           if only_forwards_all?(send_classifications)
-            add_forward_all_offenses(node, send_classifications)
+            add_forward_all_offenses(node, send_classifications, forwardable_args)
           elsif target_ruby_version >= 3.2
             add_post_ruby_32_offenses(node, send_classifications, forwardable_args)
           end
@@ -118,12 +118,13 @@ module RuboCop
           send_classifications.each_value.all? { |c, _, _| c == :all }
         end
 
-        def add_forward_all_offenses(node, send_classifications)
-          send_classifications.each_key do |send_node|
-            register_forward_all_offense_on_forwarding_method(send_node)
+        def add_forward_all_offenses(node, send_classifications, forwardable_args)
+          send_classifications.each do |send_node, (_c, forward_rest, _forward_kwrest)|
+            register_forward_all_offense(send_node, send_node, forward_rest)
           end
 
-          register_forward_all_offense_on_method_def(node)
+          rest_arg, _kwrest_arg, _block_arg = *forwardable_args
+          register_forward_all_offense(node, node.arguments, rest_arg)
         end
 
         def add_post_ruby_32_offenses(def_node, send_classifications, forwardable_args)
@@ -186,9 +187,7 @@ module RuboCop
 
         def register_forward_args_offense(def_arguments_or_send, rest_arg_or_splat)
           add_offense(rest_arg_or_splat, message: ARGS_MSG) do |corrector|
-            unless parentheses?(def_arguments_or_send)
-              add_parentheses(def_arguments_or_send, corrector)
-            end
+            add_parens_if_missing(def_arguments_or_send, corrector)
 
             corrector.replace(rest_arg_or_splat, '*')
           end
@@ -196,36 +195,28 @@ module RuboCop
 
         def register_forward_kwargs_offense(add_parens, def_arguments_or_send, kwrest_arg_or_splat)
           add_offense(kwrest_arg_or_splat, message: KWARGS_MSG) do |corrector|
-            if add_parens && !parentheses?(def_arguments_or_send)
-              add_parentheses(def_arguments_or_send, corrector)
-            end
+            add_parens_if_missing(def_arguments_or_send, corrector) if add_parens
 
             corrector.replace(kwrest_arg_or_splat, '**')
           end
         end
 
-        def register_forward_all_offense_on_forwarding_method(forwarding_method)
-          add_offense(arguments_range(forwarding_method), message: FORWARDING_MSG) do |corrector|
-            begin_pos = forwarding_method.loc.selector&.end_pos || forwarding_method.loc.dot.end_pos
-            range = range_between(begin_pos, forwarding_method.source_range.end_pos)
+        def register_forward_all_offense(def_or_send, send_or_arguments, rest_or_splat)
+          arg_range = arguments_range(def_or_send, rest_or_splat)
 
-            corrector.replace(range, '(...)')
+          add_offense(arg_range, message: FORWARDING_MSG) do |corrector|
+            add_parens_if_missing(send_or_arguments, corrector)
+
+            corrector.replace(arg_range, '...')
           end
         end
 
-        def register_forward_all_offense_on_method_def(method_definition)
-          add_offense(arguments_range(method_definition), message: FORWARDING_MSG) do |corrector|
-            arguments_range = range_with_surrounding_space(
-              method_definition.arguments.source_range, side: :left
-            )
-            corrector.replace(arguments_range, '(...)')
-          end
-        end
-
-        def arguments_range(node)
+        def arguments_range(node, first_node)
           arguments = node.arguments
 
-          range_between(arguments.first.source_range.begin_pos, arguments.last.source_range.end_pos)
+          start_node = first_node || arguments.first
+
+          range_between(start_node.source_range.begin_pos, arguments.last.source_range.end_pos)
         end
 
         def allow_only_rest_arguments?
@@ -234,6 +225,12 @@ module RuboCop
 
         def use_anonymous_forwarding?
           cop_config.fetch('UseAnonymousForwarding', false)
+        end
+
+        def add_parens_if_missing(node, corrector)
+          return if parentheses?(node)
+
+          add_parentheses(node, corrector)
         end
 
         # Classifies send nodes for possible rest/kwrest/all (including block) forwarding.
@@ -280,7 +277,7 @@ module RuboCop
           def classification
             return nil unless forwarded_rest_arg || forwarded_kwrest_arg
 
-            if referenced_none? && (forwarded_exactly_all? || pre_ruby_32_allow_forward_all?)
+            if can_forward_all?
               :all
             elsif target_ruby_version >= 3.2
               :rest_or_kwrest
@@ -288,6 +285,27 @@ module RuboCop
           end
 
           private
+
+          def can_forward_all?
+            return false if any_arg_referenced?
+            return false if ruby_32_missing_rest_or_kwest?
+            return false unless offensive_block_forwarding?
+            return false if forward_additional_kwargs?
+
+            no_additional_args? || (target_ruby_version >= 3.0 && no_post_splat_args?)
+          end
+
+          def ruby_32_missing_rest_or_kwest?
+            target_ruby_version >= 3.2 && !forwarded_rest_and_kwrest_args
+          end
+
+          def offensive_block_forwarding?
+            @block_arg ? forwarded_block_arg : allow_offense_for_no_block?
+          end
+
+          def forwarded_rest_and_kwrest_args
+            forwarded_rest_arg && forwarded_kwrest_arg
+          end
 
           def arguments
             @send_node.arguments
@@ -305,25 +323,36 @@ module RuboCop
             @referenced_lvars.include?(@block_arg_name)
           end
 
-          def referenced_none?
-            !(referenced_rest_arg? || referenced_kwrest_arg? || referenced_block_arg?)
-          end
-
-          def forwarded_exactly_all?
-            @send_node.arguments.size == 3 &&
-              forwarded_rest_arg &&
-              forwarded_kwrest_arg &&
-              forwarded_block_arg
+          def any_arg_referenced?
+            referenced_rest_arg? || referenced_kwrest_arg? || referenced_block_arg?
           end
 
           def target_ruby_version
             @config.fetch(:target_ruby_version)
           end
 
-          def pre_ruby_32_allow_forward_all?
-            target_ruby_version < 3.2 &&
-              @def_node.arguments.none?(&:default?) &&
-              (@block_arg ? forwarded_block_arg : !@config.fetch(:allow_only_rest_arguments))
+          def no_post_splat_args?
+            splat_index = arguments.index(forwarded_rest_arg)
+            arg_after_splat = arguments[splat_index + 1]
+
+            [nil, :hash, :block_pass].include?(arg_after_splat&.type)
+          end
+
+          def forward_additional_kwargs?
+            return false unless forwarded_kwrest_arg
+
+            !forwarded_kwrest_arg.parent.children.one?
+          end
+
+          def allow_offense_for_no_block?
+            !@config.fetch(:allow_only_rest_arguments)
+          end
+
+          def no_additional_args?
+            forwardable_count = [@rest_arg, @kwrest_arg, @block_arg].compact.size
+
+            @def_node.arguments.size == forwardable_count &&
+              @send_node.arguments.size == forwardable_count
           end
         end
       end
