@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     module Bundler
       # A Gem's requirements should be listed only once in a Gemfile.
+      #
       # @example
       #   # bad
       #   gem 'rubocop'
