@@ -80,6 +80,7 @@ module RuboCop
         minimum_target_ruby_version 2.7
 
         FORWARDING_LVAR_TYPES = %i[splat kwsplat block_pass].freeze
+        ADDITIONAL_ARG_TYPES = %i[lvar arg].freeze
 
         FORWARDING_MSG = 'Use shorthand syntax `...` for arguments forwarding.'
         ARGS_MSG = 'Use anonymous positional arguments forwarding (`*`).'
@@ -212,7 +213,7 @@ module RuboCop
         end
 
         def arguments_range(node, first_node)
-          arguments = node.arguments
+          arguments = node.arguments.reject { |arg| ADDITIONAL_ARG_TYPES.include?(arg.type) }
 
           start_node = first_node || arguments.first
 
@@ -332,9 +333,9 @@ module RuboCop
           end
 
           def no_post_splat_args?
-            splat_index = arguments.index(forwarded_rest_arg)
-            arg_after_splat = arguments[splat_index + 1]
+            return true unless (splat_index = arguments.index(forwarded_rest_arg))
 
+            arg_after_splat = arguments[splat_index + 1]
             [nil, :hash, :block_pass].include?(arg_after_splat&.type)
           end
 

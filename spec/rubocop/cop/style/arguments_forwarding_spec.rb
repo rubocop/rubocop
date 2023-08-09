@@ -519,6 +519,38 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when forwarding kwargs/block arg' do
+      expect_offense(<<~RUBY)
+        def foo(**kwargs, &block)
+                ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          baz(**kwargs, &block)
+              ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          baz(...)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when forwarding kwargs/block arg and an additional arg' do
+      expect_offense(<<~RUBY)
+        def foo(x, **kwargs, &block)
+                   ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          baz(x, **kwargs, &block)
+                 ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(x, ...)
+          baz(x, ...)
+        end
+      RUBY
+    end
   end
 
   context 'TargetRubyVersion >= 3.1', :ruby31 do
