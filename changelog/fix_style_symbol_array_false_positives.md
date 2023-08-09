@@ -1,1 +1,0 @@
-* [#12071](https://github.com/rubocop/rubocop/issues/12071): Fix `Style/SymbolArray` false positives when using square brackets or interpolation in a symbol literal in a percent style array. ([@jasondoc3][])
