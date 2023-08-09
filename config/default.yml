@@ -177,7 +177,7 @@ Bundler/DuplicatedGroup:
   Description: 'Checks for duplicate group entries in Gemfile.'
   Enabled: true
   Severity: warning
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.56'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'

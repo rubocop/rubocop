@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.56.0 (2023-08-09)
+
 ### New features
 
 * [#12074](https://github.com/rubocop/rubocop/pull/12074): Add new `Bundler/DuplicatedGroup` cop. ([@OwlKing][])

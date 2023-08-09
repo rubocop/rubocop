@@ -63,6 +63,70 @@ end
 | Array
 |===
 
+== Bundler/DuplicatedGroup
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Enabled
+| Yes
+| No
+| 1.56
+| -
+|===
+
+A Gem group, or a set of groups, should be listed only once in a Gemfile.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+group :development do
+  gem 'rubocop'
+end
+
+group :development do
+  gem 'rubocop-rails'
+end
+
+# bad (same set of groups declared twice)
+group :development, :test do
+  gem 'rubocop'
+end
+
+group :test, :development do
+  gem 'rspec'
+end
+
+# good
+group :development do
+  gem 'rubocop'
+end
+
+group :development, :test do
+  gem 'rspec'
+end
+
+# good
+gem 'rubocop', groups: [:development, :test]
+gem 'rspec', groups: [:development, :test]
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Severity
+| `warning`
+| String
+
+| Include
+| `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`
+| Array
+|===
+
 == Bundler/GemComment
 
 |===

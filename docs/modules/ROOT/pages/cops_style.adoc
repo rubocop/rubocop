@@ -11993,9 +11993,14 @@ def test
   return something
 end
 
-# good
+# bad
 def test
   return something if something_else
+end
+
+# good
+def test
+  something if something_else
 end
 
 # good
@@ -14126,7 +14131,7 @@ Checks if uses of quotes match the configured preference.
 | -
 |===
 
-Checks that quotes inside the string interpolation
+Checks that quotes inside string, symbol, and regexp interpolations
 match the configured preference.
 
 === Examples
@@ -14136,10 +14141,20 @@ match the configured preference.
 [source,ruby]
 ----
 # bad
-result = "Tests #{success ? "PASS" : "FAIL"}"
+string = "Tests #{success ? "PASS" : "FAIL"}"
+symbol = :"Tests #{success ? "PASS" : "FAIL"}"
+heredoc = <<~TEXT
+  Tests #{success ? "PASS" : "FAIL"}
+TEXT
+regexp = /Tests #{success ? "PASS" : "FAIL"}/
 
 # good
-result = "Tests #{success ? 'PASS' : 'FAIL'}"
+string = "Tests #{success ? 'PASS' : 'FAIL'}"
+symbol = :"Tests #{success ? 'PASS' : 'FAIL'}"
+heredoc = <<~TEXT
+  Tests #{success ? 'PASS' : 'FAIL'}
+TEXT
+regexp = /Tests #{success ? 'PASS' : 'FAIL'}/
 ----
 
 ==== EnforcedStyle: double_quotes
@@ -14147,10 +14162,20 @@ result = "Tests #{success ? 'PASS' : 'FAIL'}"
 [source,ruby]
 ----
 # bad
-result = "Tests #{success ? 'PASS' : 'FAIL'}"
+string = "Tests #{success ? 'PASS' : 'FAIL'}"
+symbol = :"Tests #{success ? 'PASS' : 'FAIL'}"
+heredoc = <<~TEXT
+  Tests #{success ? 'PASS' : 'FAIL'}
+TEXT
+regexp = /Tests #{success ? 'PASS' : 'FAIL'}/
 
 # good
-result = "Tests #{success ? "PASS" : "FAIL"}"
+string = "Tests #{success ? "PASS" : "FAIL"}"
+symbol = :"Tests #{success ? "PASS" : "FAIL"}"
+heredoc = <<~TEXT
+  Tests #{success ? "PASS" : "FAIL"}
+TEXT
+regexp = /Tests #{success ? "PASS" : "FAIL"}/
 ----
 
 === Configurable attributes
