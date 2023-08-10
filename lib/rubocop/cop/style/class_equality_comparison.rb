@@ -8,6 +8,11 @@ module RuboCop
       # `==`, `equal?`, and `eql?` custom method definitions are allowed by default.
       # These are customizable with `AllowedMethods` option.
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because there is no guarantee that
+      #   the constant `Foo` exists when autocorrecting `var.class.name == 'Foo'` to
+      #   `var.instance_of?(Foo)`.
+      #
       # @example
       #   # bad
       #   var.class == Date

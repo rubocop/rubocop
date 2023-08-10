@@ -3354,7 +3354,9 @@ Style/ClassEqualityComparison:
   Description: 'Enforces the use of `Object#instance_of?` instead of class comparison for equality.'
   StyleGuide: '#instance-of-vs-class-comparison'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.93'
+  VersionChanged: '<<next>>'
   AllowedMethods:
     - ==
     - equal?
