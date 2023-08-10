@@ -43,26 +43,29 @@ module RuboCop
         MSG = 'Gem group `%<group_name>s` already defined on line ' \
               '%<line_of_first_occurrence>d of the Gemfile.'
 
+        # @!method group_declarations(node)
+        def_node_search :group_declarations, '(send nil? :group ...)'
+
         def on_new_investigation
           return if processed_source.blank?
 
           duplicated_group_nodes.each do |nodes|
             nodes[1..].each do |node|
-              register_offense(node, node.arguments.map(&:value).join(', '), nodes.first.first_line)
+              group_name = node.arguments.map(&:source).join(', ')
+
+              register_offense(node, group_name, nodes.first.first_line)
             end
           end
         end
 
         private
 
-        # @!method group_declarations(node)
-        def_node_search :group_declarations, '(send nil? :group ...)'
-
         def duplicated_group_nodes
-          group_declarations(processed_source.ast)
-            .group_by { |node| node.arguments.map(&:value).map(&:to_s).sort }
-            .values
-            .select { |nodes| nodes.size > 1 }
+          groups = group_declarations(processed_source.ast).group_by do |node|
+            group_attributes(node).sort
+          end
+
+          groups.values.select { |nodes| nodes.size > 1 }
         end
 
         def register_offense(node, group_name, line_of_first_occurrence)
@@ -74,6 +77,16 @@ module RuboCop
             line_of_first_occurrence: line_of_first_occurrence
           )
           add_offense(offense_location, message: message)
+        end
+
+        def group_attributes(node)
+          node.arguments.map do |argument|
+            if argument.hash_type?
+              argument.pairs.map(&:source).sort.join(', ')
+            else
+              argument.value.to_s
+            end
+          end
         end
       end
     end
