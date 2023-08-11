@@ -148,5 +148,168 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
         RUBY
       end
     end
+
+    context 'and a set of groups is duplicated but `source` URLs are different' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY, 'Gemfile')
+          source 'https://rubygems.pkg.github.com/private-org' do
+            group :development do
+              gem 'rubocop'
+            end
+          end
+
+          group :development do
+            gem 'rubocop-rails'
+          end
+        RUBY
+      end
+    end
+
+    context 'and a set of groups is duplicated and `source` URLs are the same' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY, 'Gemfile')
+          source 'https://rubygems.pkg.github.com/private-org' do
+            group :development do
+              gem 'rubocop'
+            end
+          end
+
+          source 'https://rubygems.pkg.github.com/private-org' do
+            group :development do
+            ^^^^^^^^^^^^^^^^^^ Gem group `:development` already defined on line 2 of the Gemfile.
+              gem 'rubocop-rails'
+            end
+          end
+
+          group :development do
+            gem 'rubocop-performance'
+          end
+        RUBY
+      end
+    end
+
+    context 'and a set of groups is duplicated but `git` URLs are different' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY, 'Gemfile')
+          git 'https://github.com/rubocop/rubocop.git' do
+            group :default do
+              gem 'rubocop'
+            end
+          end
+
+          git 'https://github.com/rails/rails.git' do
+            group :default do
+              gem 'activesupport'
+              gem 'actionpack'
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'and a set of groups is duplicated and `git` URLs are the same' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY, 'Gemfile')
+          git 'https://github.com/rails/rails.git' do
+            group :default do
+              gem 'activesupport'
+            end
+          end
+
+          git 'https://github.com/rails/rails.git' do
+            group :default do
+            ^^^^^^^^^^^^^^ Gem group `:default` already defined on line 2 of the Gemfile.
+              gem 'actionpack'
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'and a set of groups is duplicated but `platforms` values are different' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY, 'Gemfile')
+          platforms :ruby do
+            group :default do
+              gem 'openssl'
+            end
+          end
+
+          platforms :jruby do
+            group :default do
+              gem 'jruby-openssl'
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'and a set of groups is duplicated and `platforms` values are the same' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY, 'Gemfile')
+          platforms :ruby do
+            group :default do
+              gem 'ruby-debug'
+            end
+          end
+
+          platforms :ruby do
+            group :default do
+            ^^^^^^^^^^^^^^ Gem group `:default` already defined on line 2 of the Gemfile.
+              gem 'sqlite3'
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'and a set of groups is duplicated but `path` values are different' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<-RUBY, 'Gemfile')
+          path 'components_admin' do
+            group :default do
+              gem 'admin_ui'
+            end
+          end
+
+          path 'components_public' do
+            group :default do
+              gem 'public_ui'
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'and a set of groups is duplicated and `path` values are the same' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY, 'Gemfile')
+          path 'components' do
+            group :default do
+              gem 'admin_ui'
+            end
+          end
+
+          path 'components' do
+            group :default do
+            ^^^^^^^^^^^^^^ Gem group `:default` already defined on line 2 of the Gemfile.
+              gem 'public_ui'
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'when `source` URL argument is not given' do
+      it 'does not crash' do
+        expect_no_offenses(<<-RUBY, 'Gemfile')
+          source do
+            group :development do
+              gem 'rubocop'
+            end
+          end
+        RUBY
+      end
+    end
   end
 end

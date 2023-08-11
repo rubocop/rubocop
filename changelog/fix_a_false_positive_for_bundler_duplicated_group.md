@@ -1,0 +1,1 @@
+* [#12113](https://github.com/rubocop/rubocop/issues/12113): Fix a false positive for `Bundler/DuplicatedGroup` when groups are duplicated but `source`, `git`, `platforms`, or `path` values are different. ([@koic][])
