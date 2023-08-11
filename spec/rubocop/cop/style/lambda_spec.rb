@@ -215,6 +215,23 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
           end
         end
 
+        context 'with a multiline `->` call' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              -> {
+              ^^ Use the `lambda` method for multiline lambdas.
+                _1.do_something
+              }
+            RUBY
+
+            expect_correction(<<~RUBY)
+              lambda {
+                _1.do_something
+              }
+            RUBY
+          end
+        end
+
         context 'with a multiline lambda method call' do
           it 'does not register an offense' do
             expect_no_offenses(<<~RUBY)

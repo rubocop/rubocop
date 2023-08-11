@@ -14,12 +14,15 @@ module RuboCop
         # Check for unparenthesized args' preceding and trailing whitespaces.
         remove_unparenthesized_whitespace(corrector)
 
-        # Avoid correcting to `lambdado` by inserting whitespace
-        # if none exists before or after the lambda arguments.
-        insert_separating_space(corrector)
+        if block_node.block_type?
+          # Avoid correcting to `lambdado` by inserting whitespace
+          # if none exists before or after the lambda arguments.
+          insert_separating_space(corrector)
+
+          remove_arguments(corrector)
+        end
 
         replace_selector(corrector)
-        remove_arguments(corrector)
 
         replace_delimiters(corrector)
 
