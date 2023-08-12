@@ -136,7 +136,7 @@ module RuboCop
         end
 
         def filename_good?(basename)
-          basename = basename.sub(/^\./, '')
+          basename = basename.delete_prefix('.')
           basename = basename.sub(/\.[^.]+$/, '')
           # special handling for Action Pack Variants file names like
           # some_file.xlsx+mobile.axlsx

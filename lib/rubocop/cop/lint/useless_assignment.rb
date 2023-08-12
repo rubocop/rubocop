@@ -96,8 +96,7 @@ module RuboCop
           return_value_node = return_value_node_of_scope(scope)
           return unless assignment.meta_assignment_node.equal?(return_value_node)
 
-          " Use `#{assignment.operator.sub(/=$/, '')}` " \
-            "instead of `#{assignment.operator}`."
+          " Use `#{assignment.operator.delete_suffix('=')}` instead of `#{assignment.operator}`."
         end
 
         def similar_name_message(variable)
