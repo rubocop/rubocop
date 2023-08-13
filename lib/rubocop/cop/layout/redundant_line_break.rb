@@ -118,7 +118,9 @@ module RuboCop
         end
 
         def comment_within?(node)
-          processed_source.comments.map(&:loc).map(&:line).any? do |comment_line_number|
+          comment_line_numbers = processed_source.comments.map { |comment| comment.loc.line }
+
+          comment_line_numbers.any? do |comment_line_number|
             comment_line_number >= node.first_line && comment_line_number <= node.last_line
           end
         end

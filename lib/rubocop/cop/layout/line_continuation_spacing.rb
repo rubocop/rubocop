@@ -109,7 +109,7 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def comment_ranges(comments)
-          comments.map(&:loc).map(&:expression)
+          comments.map(&:source_range)
         end
 
         def last_line(processed_source)
