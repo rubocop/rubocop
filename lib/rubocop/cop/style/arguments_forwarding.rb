@@ -280,7 +280,7 @@ module RuboCop
 
             if can_forward_all?
               :all
-            elsif target_ruby_version >= 3.2
+            else
               :rest_or_kwrest
             end
           end
