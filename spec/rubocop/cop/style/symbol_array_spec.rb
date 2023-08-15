@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'registers an offense for a %i array containing [ ]' do
+    it 'registers an offense for a %i array containing escaped [ ]' do
       expect_offense(<<~'RUBY')
         %i[one \[ \] two]
         ^^^^^^^^^^^^^^^^^ Use `[:one, :'[', :']', :two]` for an array of symbols.
@@ -146,6 +146,12 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
 
       expect_correction(<<~RUBY)
         [:one, :'[', :']', :two]
+      RUBY
+    end
+
+    it 'does not register an offense for a %i array containing unescaped [ ]' do
+      expect_no_offenses(<<~RUBY)
+        %i(one [ ] two)
       RUBY
     end
 
@@ -171,7 +177,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       RUBY
     end
 
-    it 'registers an offense for a %i array containing ( )' do
+    it 'registers an offense for a %i array containing escaped ( )' do
       expect_offense(<<~'RUBY')
         %i(one \( \) two)
         ^^^^^^^^^^^^^^^^^ Use `[:one, :'(', :')', :two]` for an array of symbols.
@@ -179,6 +185,12 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
 
       expect_correction(<<~RUBY)
         [:one, :'(', :')', :two]
+      RUBY
+    end
+
+    it 'does not register an offense for a %i array containing unescaped ( )' do
+      expect_no_offenses(<<~RUBY)
+        %i[one ( ) two]
       RUBY
     end
 
