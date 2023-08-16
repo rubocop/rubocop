@@ -56,6 +56,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantFilterChain, :config do
       RUBY
     end
 
+    it "does not register an offense when using `##{method}` followed by `#present?`" do
+      expect_no_offenses(<<~RUBY)
+        arr.#{method} { |x| x > 1 }.present?
+      RUBY
+    end
+
     it "does not register an offense when using `##{method}` without a block followed by `#any?`" do
       expect_no_offenses(<<~RUBY)
         relation.#{method}(:name).any?
@@ -90,6 +96,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantFilterChain, :config do
 
       expect_correction(<<~RUBY)
         arr.many? { |x| x > 1 }
+      RUBY
+    end
+
+    it 'registers an offense when using `#select` followed by `#present?`' do
+      expect_offense(<<~RUBY)
+        arr.select { |x| x > 1 }.present?
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `any?` instead of `select.present?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        arr.any? { |x| x > 1 }
       RUBY
     end
   end

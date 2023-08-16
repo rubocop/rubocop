@@ -28,6 +28,9 @@ module RuboCop
       #   # good
       #   arr.select { |x| x > 1 }.many?
       #
+      #   # good
+      #   arr.select { |x| x > 1 }.present?
+      #
       # @example AllCops:ActiveSupportExtensionsEnabled: true
       #   # bad
       #   arr.select { |x| x > 1 }.many?
@@ -35,12 +38,18 @@ module RuboCop
       #   # good
       #   arr.many? { |x| x > 1 }
       #
+      #   # bad
+      #   arr.select { |x| x > 1 }.present?
+      #
+      #   # good
+      #   arr.any? { |x| x > 1 }
+      #
       class RedundantFilterChain < Base
         extend AutoCorrector
 
         MSG = 'Use `%<prefer>s` instead of `%<first_method>s.%<second_method>s`.'
 
-        RAILS_METHODS = %i[many?].freeze
+        RAILS_METHODS = %i[many? present?].freeze
         RESTRICT_ON_SEND = (%i[any? empty? none? one?] + RAILS_METHODS).freeze
 
         # @!method select_predicate?(node)
@@ -58,7 +67,8 @@ module RuboCop
           empty?: :none?,
           none?: :none?,
           one?: :one?,
-          many?: :many?
+          many?: :many?,
+          present?: :any?
         }.freeze
         private_constant :REPLACEMENT_METHODS
 
