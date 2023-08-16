@@ -585,6 +585,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'accepts parentheses in super call with multiline style argument' do
+    expect_no_offenses(<<~RUBY)
+      super (
+        42
+      )
+    RUBY
+  end
+
+  it 'accepts parentheses in yield call with multiline style argument' do
+    expect_no_offenses(<<~RUBY)
+      yield (
+        42
+      )
+    RUBY
+  end
+
   it 'registers an offense and corrects when method arguments are unnecessarily parenthesized' do
     expect_offense(<<~RUBY)
       foo(
