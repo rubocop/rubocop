@@ -55,6 +55,25 @@ module RuboCop
       #   foo || raise('exception') if something
       #   ok
       #
+      #   # bad
+      #   define_method(:test) do
+      #     if something
+      #       work
+      #     end
+      #   end
+      #
+      #   # good
+      #   define_method(:test) do
+      #     return unless something
+      #
+      #     work
+      #   end
+      #
+      #   # also good
+      #   define_method(:test) do
+      #     work if something
+      #   end
+      #
       # @example AllowConsecutiveConditionals: false (default)
       #   # bad
       #   def test
@@ -109,6 +128,13 @@ module RuboCop
           check_ending_body(body)
         end
         alias on_defs on_def
+
+        def on_block(node)
+          return unless node.method?(:define_method) || node.method?(:define_singleton_method)
+
+          on_def(node)
+        end
+        alias on_numblock on_block
 
         def on_if(node)
           return if accepted_form?(node)
