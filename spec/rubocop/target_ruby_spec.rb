@@ -380,6 +380,62 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
+
+          it 'sets first known ruby version that satisfies range requirement' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new('>= 2.3.1', '< 3.0.0')
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
+
+          it 'sets first known ruby version that satisfies range requirement in array notation' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new(['>= 2.3.1', '< 3.0.0'])
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
+
+          it 'sets first known ruby version that satisfies range requirement with frozen strings' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new('>= 2.3.1'.freeze, '< 3.0.0'.freeze)
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
+
+          it 'sets first known ruby version that satisfies range requirement in array notation with frozen strings' do
+            content =
+              <<-HEREDOC
+                Gem::Specification.new do |s|
+                  s.name = 'test'
+                  s.required_ruby_version = Gem::Requirement.new(['>= 2.3.1'.freeze, '< 3.0.0'.freeze])
+                  s.licenses = ['MIT']
+                end
+              HEREDOC
+
+            create_file(gemspec_file_path, content)
+            expect(target_ruby.version).to eq default_version
+          end
         end
 
         context 'when file contains `required_ruby_version` as an array' do

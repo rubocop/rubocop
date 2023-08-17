@@ -155,9 +155,11 @@ module RuboCop
         (send _ :required_ruby_version= $_)
       PATTERN
 
-      # @!method gem_requirement?(node)
-      def_node_matcher :gem_requirement?, <<~PATTERN
-        (send (const(const _ :Gem):Requirement) :new $str)
+      # @!method gem_requirement_versions(node)
+      def_node_matcher :gem_requirement_versions, <<~PATTERN
+        (send (const(const _ :Gem):Requirement) :new
+          {$str+ | (send $str :freeze)+ | (array $str+) | (array (send $str :freeze)+)}
+        )
       PATTERN
 
       def name
@@ -194,10 +196,12 @@ module RuboCop
       end
 
       def version_from_right_hand_side(right_hand_side)
+        gem_requirement_versions = gem_requirement_versions(right_hand_side)
+
         if right_hand_side.array_type?
           version_from_array(right_hand_side)
-        elsif gem_requirement?(right_hand_side)
-          right_hand_side.children.last.value
+        elsif gem_requirement_versions
+          gem_requirement_versions.map(&:value)
         else
           right_hand_side.value
         end
