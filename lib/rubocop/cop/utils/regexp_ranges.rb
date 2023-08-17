@@ -6,27 +6,40 @@ module RuboCop
       # Helper to abstract complexity of building range pairs
       # with octal escape reconstruction (needed for regexp_parser < 2.7).
       class RegexpRanges
-        attr_reader :compound_token, :root
+        attr_reader :root
 
         def initialize(root)
           @root = root
           @compound_token = []
+          @pairs = []
+          @populated = false
+        end
+
+        def compound_token
+          populate_all unless @populated
+
+          @compound_token
         end
 
         def pairs
-          unless @pairs
-            @pairs = []
-            populate(root)
-          end
+          populate_all unless @populated
+
+          @pairs
+        end
+
+        private
+
+        def populate_all
+          populate(@root)
 
           # If either bound is a compound the first one is an escape
           # and that's all we need to work with.
           # If there are any cops that wanted to operate on the compound
           # expression we could wrap it with a facade class.
-          @pairs.map { |pair| pair.map(&:first) }
-        end
+          @pairs.map! { |pair| pair.map(&:first) }
 
-        private
+          @populated = true
+        end
 
         def populate(expr)
           expressions = expr.expressions.to_a
@@ -35,15 +48,15 @@ module RuboCop
             current = expressions.shift
 
             if escaped_octal?(current)
-              compound_token << current
-              compound_token.concat(pop_octal_digits(expressions))
+              @compound_token << current
+              @compound_token.concat(pop_octal_digits(expressions))
               # If we have all the digits we can discard.
             end
 
             next unless current.type == :set
 
             process_set(expressions, current)
-            compound_token.clear
+            @compound_token.clear
           end
         end
 
@@ -64,8 +77,8 @@ module RuboCop
 
         def compose_range(expressions, current)
           range_start, range_end = current.expressions
-          range_start = if compound_token.size.between?(1, 2) && octal_digit?(range_start.text)
-                          compound_token.dup << range_start
+          range_start = if @compound_token.size.between?(1, 2) && octal_digit?(range_start.text)
+                          @compound_token.dup << range_start
                         else
                           [range_start]
                         end
