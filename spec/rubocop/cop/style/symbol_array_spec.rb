@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       end
 
       it 'autocorrects an array in multiple lines' do
-        expect_offense(<<-RUBY)
+        expect_offense(<<~RUBY)
           [
           ^ Use `%i` or `%I` for an array of symbols.
           :foo,
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
           ]
         RUBY
 
-        expect_correction(<<-RUBY)
+        expect_correction(<<~RUBY)
           %i[
           foo
           bar
@@ -247,14 +247,14 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       end
 
       it 'autocorrects an array using partial newlines' do
-        expect_offense(<<-RUBY)
+        expect_offense(<<~RUBY)
           [:foo, :bar, :baz,
           ^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
           :boz, :buz,
           :biz]
         RUBY
 
-        expect_correction(<<-RUBY)
+        expect_correction(<<~RUBY)
           %i[foo bar baz
           boz buz
           biz]

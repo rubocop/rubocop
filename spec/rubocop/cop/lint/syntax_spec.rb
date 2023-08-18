@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
     end
 
     context 'with a parser error' do
-      let(:source) { <<-RUBY }
+      let(:source) { <<~RUBY }
         # \xf9
       RUBY
 

@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks, :config do
   shared_examples 'rejects return inside a block' do |operator|
     it "rejects a return statement inside a block when using #{operator}" do
-      expect_offense(<<-RUBY)
+      expect_offense(<<~RUBY)
         some_value = 10
 
         some_value #{operator} begin
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks, :config do
 
   shared_examples 'accepts a block with no return' do |operator|
     it "accepts a block with no return when using #{operator}" do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         @good_method #{operator} begin
           if rand(1..2).odd?
             "odd number"

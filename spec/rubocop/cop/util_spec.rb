@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Util do
 
   describe '#line_range' do
     let(:source) do
-      <<-RUBY
+      <<~RUBY
         foo = 1
         bar = 2
         class Test
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Util do
 
   describe '#same_line?' do
     let(:source) do
-      <<-RUBY
+      <<~RUBY
         @foo + @bar
         @baz
       RUBY

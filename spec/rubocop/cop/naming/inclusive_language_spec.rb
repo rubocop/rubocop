@@ -354,7 +354,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
     end
 
     it 'does not register offenses and not raise `ArgumentError` for invalid byte sequence in UTF-8' do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         %W("a\\255\\255")
       RUBY
     end

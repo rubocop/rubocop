@@ -13,13 +13,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyLambdaParameter, :config do
   end
 
   it 'accepts a keyword lambda' do
-    expect_no_offenses(<<-RUBY)
+    expect_no_offenses(<<~RUBY)
       lambda { || do_something }
     RUBY
   end
 
   it 'does not crash on a super' do
-    expect_no_offenses(<<-RUBY)
+    expect_no_offenses(<<~RUBY)
       def foo
         super { || do_something }
       end

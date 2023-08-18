@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters, :confi
   end
 
   it 'accepts other percent literals' do
-    expect_no_offenses(<<-RUBY)
+    expect_no_offenses(<<~RUBY)
       %q( a  b c )
       %r( a  b c )
       %s( a  b c )

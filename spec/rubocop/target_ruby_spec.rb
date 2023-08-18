@@ -150,145 +150,140 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           let(:lock_file_path) { File.join(base_path, file_name) }
 
           it "uses MRI Ruby version when it is present in #{file_name}" do
-            content =
-              <<-HEREDOC
-                GEM
-                  remote: https://rubygems.org/
-                  specs:
-                    actionmailer (4.1.0)
-                    actionpack (= 4.1.0)
-                  rails (4.1.0)
-                    actionmailer (= 4.1.0)
-                    actionpack (= 4.1.0)
-                    railties (= 4.1.0)
-                  railties (4.1.0)
+            content = <<~HEREDOC
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  actionmailer (4.1.0)
+                  actionpack (= 4.1.0)
+                rails (4.1.0)
+                  actionmailer (= 4.1.0)
+                  actionpack (= 4.1.0)
+                  railties (= 4.1.0)
+                railties (4.1.0)
 
-                PLATFORMS
-                  ruby
+              PLATFORMS
+                ruby
 
-                DEPENDENCIES
-                  ruby-extensions (~> 1.9.0)
+              DEPENDENCIES
+                ruby-extensions (~> 1.9.0)
 
-                RUBY VERSION
-                    ruby 2.0.0p0
+              RUBY VERSION
+                  ruby 2.0.0p0
 
-                BUNDLED WITH
-                  1.16.1
-              HEREDOC
+              BUNDLED WITH
+                1.16.1
+            HEREDOC
             create_file(lock_file_path, content)
             expect(target_ruby.version).to eq 2.0
           end
 
           it 'uses MRI Ruby version when it has multiple digits' do
-            content =
-              <<-HEREDOC
-                GEM
-                  remote: https://rubygems.org/
-                  specs:
-                    actionmailer (4.1.0)
-                    actionpack (= 4.1.0)
-                  rails (4.1.0)
-                    actionmailer (= 4.1.0)
-                    actionpack (= 4.1.0)
-                    railties (= 4.1.0)
-                  railties (4.1.0)
+            content = <<~HEREDOC
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  actionmailer (4.1.0)
+                  actionpack (= 4.1.0)
+                rails (4.1.0)
+                  actionmailer (= 4.1.0)
+                  actionpack (= 4.1.0)
+                  railties (= 4.1.0)
+                railties (4.1.0)
 
-                PLATFORMS
-                  ruby
+              PLATFORMS
+                ruby
 
-                DEPENDENCIES
-                  ruby-extensions (~> 1.9.0)
+              DEPENDENCIES
+                ruby-extensions (~> 1.9.0)
 
-                RUBY VERSION
-                    ruby 20.10.100p450
+              RUBY VERSION
+                  ruby 20.10.100p450
 
-                BUNDLED WITH
-                  1.16.1
-              HEREDOC
+              BUNDLED WITH
+                1.16.1
+            HEREDOC
             create_file(lock_file_path, content)
             expect(target_ruby.version).to eq 20.10
           end
 
           it "uses the default Ruby when Ruby is not in #{file_name}" do
-            content =
-              <<-HEREDOC
-                GEM
-                  remote: https://rubygems.org/
-                  specs:
-                    addressable (2.5.2)
-                      public_suffix (>= 2.0.2, < 4.0)
-                    ast (2.4.0)
-                    bump (0.5.4)
+            content = <<~HEREDOC
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  addressable (2.5.2)
+                    public_suffix (>= 2.0.2, < 4.0)
+                  ast (2.4.0)
+                  bump (0.5.4)
 
-                PLATFORMS
-                  ruby
+              PLATFORMS
+                ruby
 
-                DEPENDENCIES
-                  bump
-                  bundler (~> 1.3)
-                  ruby-extensions (~> 1.9.0)
+              DEPENDENCIES
+                bump
+                bundler (~> 1.3)
+                ruby-extensions (~> 1.9.0)
 
-                BUNDLED WITH
-                  1.16.1
-              HEREDOC
+              BUNDLED WITH
+                1.16.1
+            HEREDOC
             create_file(lock_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
 
           it "uses the default Ruby when rbx is in #{file_name}" do
-            content =
-              <<-HEREDOC
-                GEM
-                  remote: https://rubygems.org/
-                  specs:
-                    addressable (2.5.2)
-                      public_suffix (>= 2.0.2, < 4.0)
-                    ast (2.4.0)
-                    bump (0.5.4)
+            content = <<~HEREDOC
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  addressable (2.5.2)
+                    public_suffix (>= 2.0.2, < 4.0)
+                  ast (2.4.0)
+                  bump (0.5.4)
 
-                PLATFORMS
-                  ruby
+              PLATFORMS
+                ruby
 
-                DEPENDENCIES
-                  bump
-                  bundler (~> 1.3)
-                  ruby-extensions (~> 1.9.0)
+              DEPENDENCIES
+                bump
+                bundler (~> 1.3)
+                ruby-extensions (~> 1.9.0)
 
-                RUBY VERSION
-                    ruby 2.0.0p0 (rbx 3.42)
+              RUBY VERSION
+                  ruby 2.0.0p0 (rbx 3.42)
 
-                BUNDLED WITH
-                  1.16.1
-              HEREDOC
+              BUNDLED WITH
+                1.16.1
+            HEREDOC
             create_file(lock_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
 
           it "uses the default Ruby when jruby is in #{file_name}" do
-            content =
-              <<-HEREDOC
-                GEM
-                  remote: https://rubygems.org/
-                  specs:
-                    addressable (2.5.2)
-                      public_suffix (>= 2.0.2, < 4.0)
-                    ast (2.4.0)
-                    bump (0.5.4)
+            content = <<~HEREDOC
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  addressable (2.5.2)
+                    public_suffix (>= 2.0.2, < 4.0)
+                  ast (2.4.0)
+                  bump (0.5.4)
 
-                PLATFORMS
-                  ruby
+              PLATFORMS
+                ruby
 
-                DEPENDENCIES
-                  bump
-                  bundler (~> 1.3)
-                  ruby-extensions (~> 1.9.0)
+              DEPENDENCIES
+                bump
+                bundler (~> 1.3)
+                ruby-extensions (~> 1.9.0)
 
-                RUBY VERSION
-                    ruby 2.0.0p0 (jruby 9.1.13.0)
+              RUBY VERSION
+                  ruby 2.0.0p0 (jruby 9.1.13.0)
 
-                BUNDLED WITH
-                  1.16.1
-              HEREDOC
+              BUNDLED WITH
+                1.16.1
+            HEREDOC
             create_file(lock_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
@@ -307,42 +302,39 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
 
           it 'sets target_ruby from inclusive range' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = '>= 2.7.2'
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = '>= 2.7.2'
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq 2.7
           end
 
           it 'sets target_ruby from exclusive range' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = '> 2.7.8'
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = '> 2.7.8'
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq 2.7
           end
 
           it 'sets target_ruby from approximate version' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = '~> 2.7.0'
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = '~> 2.7.0'
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq 2.7
@@ -354,84 +346,78 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
 
           it 'sets target_ruby from required_ruby_version from inclusive requirement range' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = Gem::Requirement.new('>= 2.3.1')
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = Gem::Requirement.new('>= 2.3.1')
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
 
           it 'sets first known ruby version that satisfies requirement' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = Gem::Requirement.new('< 3.0.0')
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = Gem::Requirement.new('< 3.0.0')
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
 
           it 'sets first known ruby version that satisfies range requirement' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = Gem::Requirement.new('>= 2.3.1', '< 3.0.0')
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = Gem::Requirement.new('>= 2.3.1', '< 3.0.0')
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
 
           it 'sets first known ruby version that satisfies range requirement in array notation' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = Gem::Requirement.new(['>= 2.3.1', '< 3.0.0'])
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = Gem::Requirement.new(['>= 2.3.1', '< 3.0.0'])
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
 
           it 'sets first known ruby version that satisfies range requirement with frozen strings' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = Gem::Requirement.new('>= 2.3.1'.freeze, '< 3.0.0'.freeze)
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = Gem::Requirement.new('>= 2.3.1'.freeze, '< 3.0.0'.freeze)
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq default_version
           end
 
           it 'sets first known ruby version that satisfies range requirement in array notation with frozen strings' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = Gem::Requirement.new(['>= 2.3.1'.freeze, '< 3.0.0'.freeze])
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = Gem::Requirement.new(['>= 2.3.1'.freeze, '< 3.0.0'.freeze])
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq default_version
@@ -443,28 +429,26 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
 
           it 'sets target_ruby to the minimal version satisfying the requirements' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = ['<=3.0.4', '>=2.7.5']
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = ['<=3.0.4', '>=2.7.5']
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq 2.7
           end
 
           it 'sets target_ruby from required_ruby_version with many requirements' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.required_ruby_version = ['<=3.1.0', '>2.6.8', '~>2.7.1']
-                  s.licenses = ['MIT']
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.required_ruby_version = ['<=3.1.0', '>2.6.8', '~>2.7.1']
+                s.licenses = ['MIT']
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq 2.7
@@ -476,15 +460,14 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           let(:gemspec_file_path) { File.join(base_path, 'example.gemspec') }
 
           it 'sets default target_ruby' do
-            content =
-              <<-HEREDOC
-                Gem::Specification.new do |s|
-                  s.name = 'test'
-                  s.platform = Gem::Platform::RUBY
-                  s.licenses = ['MIT']
-                  s.summary = 'test tool.'
-                end
-              HEREDOC
+            content = <<~HEREDOC
+              Gem::Specification.new do |s|
+                s.name = 'test'
+                s.platform = Gem::Platform::RUBY
+                s.licenses = ['MIT']
+                s.summary = 'test tool.'
+              end
+            HEREDOC
 
             create_file(gemspec_file_path, content)
             expect(target_ruby.version).to eq default_version
@@ -508,31 +491,30 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
       ['Gemfile.lock', 'gems.locked'].each do |file_name|
         context "when #{file_name} is in a parent directory" do
           it 'does' do
-            content =
-              <<-HEREDOC
-                GEM
-                  remote: https://rubygems.org/
-                  specs:
-                    actionmailer (4.1.0)
-                    actionpack (= 4.1.0)
-                  rails (4.1.0)
-                    actionmailer (= 4.1.0)
-                    actionpack (= 4.1.0)
-                    railties (= 4.1.0)
-                  railties (4.1.0)
+            content = <<~HEREDOC
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  actionmailer (4.1.0)
+                  actionpack (= 4.1.0)
+                rails (4.1.0)
+                  actionmailer (= 4.1.0)
+                  actionpack (= 4.1.0)
+                  railties (= 4.1.0)
+                railties (4.1.0)
 
-                PLATFORMS
-                  ruby
+              PLATFORMS
+                ruby
 
-                DEPENDENCIES
-                  ruby-extensions (~> 1.9.0)
+              DEPENDENCIES
+                ruby-extensions (~> 1.9.0)
 
-                RUBY VERSION
-                    ruby 2.0.0p0
+              RUBY VERSION
+                  ruby 2.0.0p0
 
-                BUNDLED WITH
-                  1.16.1
-              HEREDOC
+              BUNDLED WITH
+                1.16.1
+            HEREDOC
             dir = configuration.base_dir_for_path_parameters
             create_file(File.join(dir, '..', file_name), content)
             expect(target_ruby.version).to eq 2.0

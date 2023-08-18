@@ -244,7 +244,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'autocorrects an array of words in multiple lines' do
-      expect_offense(<<-RUBY)
+      expect_offense(<<~RUBY)
         [
         ^ Use `%w` or `%W` for an array of words.
         "foo",
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
         ]
       RUBY
 
-      expect_correction(<<-RUBY)
+      expect_correction(<<~RUBY)
         %w(
         foo
         bar
@@ -263,14 +263,14 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'autocorrects an array of words using partial newlines' do
-      expect_offense(<<-RUBY)
+      expect_offense(<<~RUBY)
         ["foo", "bar", "baz",
         ^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
         "boz", "buz",
         "biz"]
       RUBY
 
-      expect_correction(<<-RUBY)
+      expect_correction(<<~RUBY)
         %w(foo bar baz
         boz buz
         biz)

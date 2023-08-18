@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
   end
 
   it 'accepts rescuing nothing' do
-    expect_no_offenses(<<-RUBY)
+    expect_no_offenses(<<~RUBY)
       begin
         foo
       rescue
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
   end
 
   it 'accepts rescuing a single exception' do
-    expect_no_offenses(<<-RUBY)
+    expect_no_offenses(<<~RUBY)
       def foobar
         foo
       rescue NameError
@@ -26,8 +26,8 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
   end
 
   it 'accepts rescuing nothing within a method definition' do
-    expect_no_offenses(<<-RUBY)
-     def foobar
+    expect_no_offenses(<<~RUBY)
+      def foobar
         foo
       rescue
         bar

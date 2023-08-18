@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
 
     context 'and a gem is duplicated in default group' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           source 'https://rubygems.org'
           gem 'rubocop'
           gem 'rubocop'
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
 
     context 'and a duplicated gem is in a git/path/group/platforms block' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           gem 'rubocop'
           group :development do
             gem 'rubocop', path: '/path/to/gem'
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
     end
 
     it 'registers an offense when gem from default group is conditionally duplicated' do
-      expect_offense(<<-RUBY, 'Gemfile')
+      expect_offense(<<~RUBY, 'Gemfile')
         gem 'rubocop'
         if Dir.exist? local
           gem 'rubocop', path: local
@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
     end
 
     it 'does not register an offense when gem is duplicated within `if-else` statement' do
-      expect_no_offenses(<<-RUBY, 'Gemfile')
+      expect_no_offenses(<<~RUBY, 'Gemfile')
         if Dir.exist?(local)
           gem 'rubocop', path: local
           gem 'flog', path: local
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
     end
 
     it 'does not register an offense when gem is duplicated within `if-elsif` statement' do
-      expect_no_offenses(<<-RUBY, 'Gemfile')
+      expect_no_offenses(<<~RUBY, 'Gemfile')
         if Dir.exist?(local)
           gem 'rubocop', path: local
         elsif ENV['RUBOCOP_VERSION'] == 'master'
@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
     end
 
     it 'does not register an offense when gem is duplicated within `case` statement' do
-      expect_no_offenses(<<-RUBY, 'Gemfile')
+      expect_no_offenses(<<~RUBY, 'Gemfile')
         case
         when Dir.exist?(local)
           gem 'rubocop', path: local

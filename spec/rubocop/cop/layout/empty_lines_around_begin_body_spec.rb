@@ -201,14 +201,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody, :config do
     RUBY
   end
 
-  include_examples 'accepts', 'begin block without empty line', <<-RUBY
+  include_examples 'accepts', 'begin block without empty line', <<~RUBY
     begin
       foo
     end
   RUBY
 
-  include_examples 'accepts',
-                   'begin block without empty line in a method', <<-RUBY
+  include_examples 'accepts', 'begin block without empty line in a method', <<~RUBY
     def foo
       begin
         bar

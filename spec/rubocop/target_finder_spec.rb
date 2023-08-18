@@ -263,7 +263,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
       context 'when local AllCops/Include lists two patterns' do
         before do
-          create_file('.rubocop.yml', <<-YAML)
+          create_file('.rubocop.yml', <<~YAML)
             AllCops:
               Include:
                 - '**/*.rb'
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
         context 'when a subdirectory AllCops/Include only lists one pattern' do
           before do
-            create_file('dir2/.rubocop.yml', <<-YAML)
+            create_file('dir2/.rubocop.yml', <<~YAML)
               AllCops:
                 Include:
                   - '**/*.ruby'
@@ -345,7 +345,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
       context 'when local AllCops/Include lists two patterns' do
         before do
-          create_file('.rubocop.yml', <<-YAML)
+          create_file('.rubocop.yml', <<~YAML)
             AllCops:
               Include:
                 - '**/*.rb'
@@ -357,7 +357,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
         context 'when a subdirectory AllCops/Include only lists one pattern' do
           before do
-            create_file('dir2/.rubocop.yml', <<-YAML)
+            create_file('dir2/.rubocop.yml', <<~YAML)
               AllCops:
                 Include:
                   - '**/*.ruby'

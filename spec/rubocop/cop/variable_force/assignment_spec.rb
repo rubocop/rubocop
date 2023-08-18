@@ -6,7 +6,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
   let(:ast) { RuboCop::ProcessedSource.new(source, ruby_version).ast }
 
   let(:source) do
-    <<-RUBY
+    <<~RUBY
       class SomeClass
         def some_method(flag)
           puts 'Hello World!'
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
   describe '#meta_assignment_node' do
     context 'when it is += operator assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo += 1
           end
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is ||= operator assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo ||= 1
           end
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is &&= operator assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo &&= 1
           end
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is multiple assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo, bar = [1, 2]
           end
@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
   describe '#operator' do
     context 'when it is normal assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo = 1
           end
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is += operator assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo += 1
           end
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is ||= operator assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo ||= 1
           end
@@ -191,7 +191,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is &&= operator assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo &&= 1
           end
@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
     context 'when it is multiple assignment' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             foo, bar = [1, 2]
           end

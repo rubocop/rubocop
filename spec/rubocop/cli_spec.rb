@@ -1639,18 +1639,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       expect(cli.run(%w[--format simple example])).to eq(1)
 
-      expect($stderr.string).to eq(<<-RESULT.strip_margin('|'))
-        |Warning: Layout/LineLength does not support Min parameter.
-        |
-        |Supported parameters are:
-        |
-        |  - Enabled
-        |  - Max
-        |  - AllowHeredoc
-        |  - AllowURI
-        |  - URISchemes
-        |  - IgnoreCopDirectives
-        |  - AllowedPatterns
+      expect($stderr.string).to eq(<<~RESULT)
+        Warning: Layout/LineLength does not support Min parameter.
+
+        Supported parameters are:
+
+          - Enabled
+          - Max
+          - AllowHeredoc
+          - AllowURI
+          - URISchemes
+          - IgnoreCopDirectives
+          - AllowedPatterns
       RESULT
     end
 

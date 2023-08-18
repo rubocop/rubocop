@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Style::ReturnNil, :config do
     end
 
     it 'does not register an offense for return nil from iterators' do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         loop do
           return if x
         end

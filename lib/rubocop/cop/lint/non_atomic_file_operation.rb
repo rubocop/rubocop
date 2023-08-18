@@ -57,12 +57,12 @@ module RuboCop
           REMOVE_FORCE_METHODS).freeze
 
         # @!method send_exist_node(node)
-        def_node_search :send_exist_node, <<-PATTERN
+        def_node_search :send_exist_node, <<~PATTERN
           $(send (const nil? {:FileTest :File :Dir :Shell}) {:exist? :exists?} ...)
         PATTERN
 
         # @!method receiver_and_method_name(node)
-        def_node_matcher :receiver_and_method_name, <<-PATTERN
+        def_node_matcher :receiver_and_method_name, <<~PATTERN
           (send (const nil? $_) $_ ...)
         PATTERN
 

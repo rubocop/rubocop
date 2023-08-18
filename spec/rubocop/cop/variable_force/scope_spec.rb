@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
   describe '#name' do
     context 'when the scope is instance method definition' do
-      let(:source) { <<-RUBY }
+      let(:source) { <<~RUBY }
         def some_method
         end
       RUBY
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
     end
 
     context 'when the scope is singleton method definition' do
-      let(:source) { <<-RUBY }
+      let(:source) { <<~RUBY }
         def self.some_method
         end
       RUBY
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is instance method' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def some_method
             this_is_target
           end
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is singleton method' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           def self.some_method
             this_is_target
           end
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is module' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           module SomeModule
             this_is_target
           end
@@ -104,7 +104,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is class' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           class SomeClass
             this_is_target
           end
@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is singleton class' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           class << self
             this_is_target
           end
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is block' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           1.times do
             this_is_target
           end
@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     context 'when the scope is top level' do
       let(:source) do
-        <<-RUBY
+        <<~RUBY
           this_is_target
         RUBY
       end
@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
   describe '#include?' do
     subject { scope.include?(target_node) }
 
-    let(:source) { <<-RUBY }
+    let(:source) { <<~RUBY }
       class SomeClass
         def self.some_method(arg1, arg2)
           do_something
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     describe 'outer scope boundary handling' do
       context 'when the scope is instance method' do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           def some_method(arg1, arg2)
             :body
           end
@@ -231,7 +231,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is singleton method' do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           def self.some_method(arg1, arg2)
             :body
           end
@@ -244,7 +244,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is module' do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           module SomeModule
             :body
           end
@@ -257,7 +257,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is class' do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           some_super_class = Class.new
 
           class SomeClass < some_super_class
@@ -272,7 +272,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is singleton class' do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           some_object = Object.new
 
           class << some_object
@@ -287,7 +287,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is block' do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           1.times do |arg1, arg2|
             :body
           end
@@ -300,7 +300,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context 'when the scope is top level' do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           :body
         RUBY
 
@@ -313,7 +313,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
     describe 'inner scope boundary handling' do
       context "when there's a method invocation with block" do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           foo = 1
 
           do_something(1, 2) do |arg|
@@ -330,7 +330,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
       end
 
       context "when there's a singleton method definition" do
-        let(:source) { <<-RUBY }
+        let(:source) { <<~RUBY }
           foo = 1
 
           def self.some_method(arg1, arg2)

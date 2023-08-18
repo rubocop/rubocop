@@ -250,7 +250,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers an offense for duplicate alias in #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           def some_method
             implement 1
@@ -262,7 +262,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "doesn't register an offense for non-duplicate alias in #{type}" do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           def some_method
             implement 1
@@ -273,7 +273,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers an offense for duplicate alias_method in #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           def some_method
             implement 1
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "accepts for non-duplicate alias_method in #{type}" do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           def some_method
             implement 1
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "doesn't register an offense for alias for gvar in #{type}" do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           alias $foo $bar
         end
@@ -304,7 +304,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers an offense for duplicate attr_reader in #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           def something
           end
@@ -315,7 +315,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers an offense for duplicate attr_writer in #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           def something=(right)
           end
@@ -326,7 +326,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers offenses for duplicate attr_accessor in #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           attr_accessor :something
 
@@ -341,7 +341,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers an offense for duplicate attr in #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           def something
           end
@@ -352,7 +352,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers offenses for duplicate assignable attr in #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           attr :something, true
 
@@ -367,7 +367,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "accepts for attr_reader and setter in #{type}" do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           def something=(right)
           end
@@ -377,7 +377,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "accepts for attr_writer and getter in #{type}" do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         #{opening_line}
           def something
           end
@@ -387,7 +387,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers an offense for duplicate nested method in #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           def foo
             def some_method
@@ -407,7 +407,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
 
     it "registers an offense for duplicate nested method in self method of #{type}" do
-      expect_offense(<<-RUBY, 'example.rb')
+      expect_offense(<<~RUBY, 'example.rb')
         #{opening_line}
           def self.foo
             def some_method

@@ -45,7 +45,7 @@ module RuboCop
         MSG = 'Avoid using `OpenStruct`; use `Struct`, `Hash`, a class or test doubles instead.'
 
         # @!method uses_open_struct?(node)
-        def_node_matcher :uses_open_struct?, <<-PATTERN
+        def_node_matcher :uses_open_struct?, <<~PATTERN
           (const {nil? (cbase)} :OpenStruct)
         PATTERN
 

@@ -387,7 +387,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
       context 'with documentation comment' do
         context 'when method is public' do
           it 'does not register an offense' do
-            expect_no_offenses(<<-RUBY)
+            expect_no_offenses(<<~RUBY)
               class Foo
                 # Documentation
                 def bar

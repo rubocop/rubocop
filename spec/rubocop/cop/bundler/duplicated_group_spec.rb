@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a group is duplicated' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           group :development do
             gem 'rubocop'
           end
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a group is duplicated using different argument types' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           group :development do
             gem 'rubocop'
           end
@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           group :test, :development do
             gem 'rubocop'
           end
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated but `source` URLs are different' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           source 'https://rubygems.pkg.github.com/private-org' do
             group :development do
               gem 'rubocop'
@@ -167,7 +167,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated and `source` URLs are the same' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           source 'https://rubygems.pkg.github.com/private-org' do
             group :development do
               gem 'rubocop'
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated but `git` URLs are different' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           git 'https://github.com/rubocop/rubocop.git' do
             group :default do
               gem 'rubocop'
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated and `git` URLs are the same' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           git 'https://github.com/rails/rails.git' do
             group :default do
               gem 'activesupport'
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated but `platforms` values are different' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           platforms :ruby do
             group :default do
               gem 'openssl'
@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated and `platforms` values are the same' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           platforms :ruby do
             group :default do
               gem 'ruby-debug'
@@ -265,7 +265,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated but `path` values are different' do
       it 'does not register an offense' do
-        expect_no_offenses(<<-RUBY, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           path 'components_admin' do
             group :default do
               gem 'admin_ui'
@@ -283,7 +283,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'and a set of groups is duplicated and `path` values are the same' do
       it 'registers an offense' do
-        expect_offense(<<-RUBY, 'Gemfile')
+        expect_offense(<<~RUBY, 'Gemfile')
           path 'components' do
             group :default do
               gem 'admin_ui'
@@ -302,7 +302,7 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
 
     context 'when `source` URL argument is not given' do
       it 'does not crash' do
-        expect_no_offenses(<<-RUBY, 'Gemfile')
+        expect_no_offenses(<<~RUBY, 'Gemfile')
           source do
             group :development do
               gem 'rubocop'

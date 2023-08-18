@@ -45,8 +45,8 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
         | ^^^^^^^^^ Incorrect indentation detected (column 1 instead of 0).
         RUBY
 
-        expect_correction(<<-RUBY.strip_margin('|'))
-        |# comment
+        expect_correction(<<~RUBY)
+          # comment
         RUBY
       end
 
@@ -56,8 +56,8 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
         |  ^^^^^^^^^ Incorrect indentation detected (column 2 instead of 0).
         RUBY
 
-        expect_correction(<<-RUBY.strip_margin('|'))
-        |# comment
+        expect_correction(<<~RUBY)
+          # comment
         RUBY
       end
 

@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
     end
 
     it 'does not register offense for non-empty brackets with newline inside' do
-      expect_no_offenses(<<-RUBY)
+      expect_no_offenses(<<~RUBY)
         foo[
           bar
         ]

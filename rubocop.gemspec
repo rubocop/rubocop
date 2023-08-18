@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 2.7.0'
   s.authors = ['Bozhidar Batsov', 'Jonas Arvidsson', 'Yuji Nakayama']
-  s.description = <<-DESCRIPTION
+  s.description = <<~DESCRIPTION
     RuboCop is a Ruby code style checking and code formatting tool.
     It aims to enforce the community-driven Ruby Style Guide.
   DESCRIPTION

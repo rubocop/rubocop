@@ -8,9 +8,9 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation, :config do
     |  end
     RUBY
 
-    expect_correction(<<-RUBY.strip_margin('|'))
-    |def f
-    |  end
+    expect_correction(<<~RUBY)
+      def f
+        end
     RUBY
   end
 
@@ -62,9 +62,9 @@ RSpec.describe RuboCop::Cop::Layout::InitialIndentation, :config do
     |   ^ Indentation of first line in file detected.
     RUBY
 
-    expect_correction(<<-RUBY.strip_margin('|'))
-    |   # comment
-    |x = 1
+    expect_correction(<<~RUBY)
+         # comment
+      x = 1
     RUBY
   end
 
