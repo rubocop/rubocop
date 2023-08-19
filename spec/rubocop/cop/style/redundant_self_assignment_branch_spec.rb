@@ -93,6 +93,25 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignmentBranch, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when self-assigning redundant if branch with heredoc' do
+    expect_offense(<<~RUBY)
+      foo = if condition
+              foo
+              ^^^ Remove the self-assignment branch.
+            else
+              <<~TEXT
+                bar
+              TEXT
+            end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo = <<~TEXT unless condition
+                bar
+              TEXT
+    RUBY
+  end
+
   it 'does not register an offense when self-assigning redundant else branch and multiline if branch' do
     expect_no_offenses(<<~RUBY)
       foo = if condition
