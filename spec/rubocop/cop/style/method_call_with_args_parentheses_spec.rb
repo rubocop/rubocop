@@ -961,7 +961,22 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'accepts parens in singe-line pattern matching', :ruby30 do
+    # Ruby 2.7's one-line `in` pattern node type is `match-pattern`.
+    it 'accepts parens in one-line `in` pattern matching', :ruby27 do
+      expect_no_offenses(<<~RUBY)
+        execute(query) in {elapsed:, sql_count:}
+      RUBY
+    end
+
+    # Ruby 3.0's one-line `in` pattern node type is `match-pattern-p`.
+    it 'accepts parens in one-line `in` pattern matching', :ruby30 do
+      expect_no_offenses(<<~RUBY)
+        execute(query) in {elapsed:, sql_count:}
+      RUBY
+    end
+
+    # Ruby 3.0's one-line `=>` pattern node type is `match-pattern`.
+    it 'accepts parens in one-line `=>` pattern matching', :ruby30 do
       expect_no_offenses(<<~RUBY)
         execute(query) => {elapsed:, sql_count:}
       RUBY
