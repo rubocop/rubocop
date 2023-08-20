@@ -57,7 +57,7 @@ module RuboCop
 
         def on_new_investigation
           processed_source.comments.each do |comment|
-            next unless /\A#+[^#\s=+-]/.match?(comment.text)
+            next unless /\A(?!#\+\+|#--)(#+[^#\s=])/.match?(comment.text)
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
             next if doxygen_comment_style?(comment)
             next if gemfile_ruby_comment?(comment)

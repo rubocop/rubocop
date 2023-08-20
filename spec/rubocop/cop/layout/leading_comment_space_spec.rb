@@ -143,6 +143,20 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
       RUBY
     end
 
+    it 'registers an offense when using `#+` or `#-` as they are not RDoc comments' do
+      expect_offense(<<~RUBY)
+        #+
+        ^^ Missing space after `#`.
+        #-
+        ^^ Missing space after `#`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # +
+        # -
+      RUBY
+    end
+
     it 'registers an offense when starting `:`' do
       expect_offense(<<~RUBY)
         #:nodoc:
