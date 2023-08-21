@@ -77,6 +77,24 @@ end
 
 A Gem group, or a set of groups, should be listed only once in a Gemfile.
 
+For example, if the values of `source`, `git`, `platforms`, or `path`
+surrounding `group` are different, no offense will be registered:
+
+[source,ruby]
+-----
+platforms :ruby do
+  group :default do
+    gem 'openssl'
+  end
+end
+
+platforms :jruby do
+  group :default do
+    gem 'jruby-openssl'
+  end
+end
+-----
+
 === Examples
 
 [source,ruby]
