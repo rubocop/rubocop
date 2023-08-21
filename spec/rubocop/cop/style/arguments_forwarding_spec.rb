@@ -283,6 +283,14 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'does not register an offense with an additional kwarg' do
+      expect_no_offenses(<<~RUBY)
+        def foo(first:, **kwargs, &block)
+          forwarded(**kwargs, &block)
+        end
+      RUBY
+    end
+
     context 'AllowOnlyRestArgument: true' do
       let(:cop_config) { { 'AllowOnlyRestArgument' => true } }
 
@@ -440,6 +448,38 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       expect_no_offenses(<<~RUBY)
         def foo(m, *args, &block)
           bar(*args, m, &block)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense with an additional required kwarg that is not forwarded' do
+      expect_no_offenses(<<~RUBY)
+        def foo(first:, **kwargs, &block)
+          forwarded(**kwargs, &block)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense with an additional required kwarg that is forwarded' do
+      expect_no_offenses(<<~RUBY)
+        def foo(first:, **kwargs, &block)
+          forwarded(first: first, **kwargs, &block)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense with an additional optional kwarg that is not forwarded' do
+      expect_no_offenses(<<~RUBY)
+        def foo(first: nil, **kwargs, &block)
+          forwarded(**kwargs, &block)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense with an additional optional kwarg that is forwarded' do
+      expect_no_offenses(<<~RUBY)
+        def foo(first: nil, **kwargs, &block)
+          forwarded(first: first, **kwargs, &block)
         end
       RUBY
     end
@@ -1094,6 +1134,88 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       expect_correction(<<~RUBY)
         def foo(*, **, &block)
           bar(first(*), second(**), third(&block))
+        end
+      RUBY
+    end
+
+    it 'registers an offense with an additional required kwarg that is not forwarded' do
+      expect_offense(<<~RUBY)
+        def foo(first:, **kwargs, &block)
+                        ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          forwarded(**kwargs, &block)
+                    ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(first:, **, &block)
+          forwarded(**, &block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense with an additional required kwarg that is forwarded' do
+      expect_offense(<<~RUBY)
+        def foo(first:, **kwargs, &block)
+                        ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          forwarded(first: first, **kwargs, &block)
+                                  ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(first:, **, &block)
+          forwarded(first: first, **, &block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense with an additional optional kwarg that is not forwarded' do
+      expect_offense(<<~RUBY)
+        def foo(first: nil, **kwargs, &block)
+                            ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          forwarded(first:, **kwargs, &block)
+                            ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(first: nil, **, &block)
+          forwarded(first:, **, &block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense with an additional optional kwarg that is forwarded' do
+      expect_offense(<<~RUBY)
+        def foo(first: nil, **kwargs, &block)
+                            ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          forwarded(first: first, **kwargs, &block)
+                                  ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(first: nil, **, &block)
+          forwarded(first: first, **, &block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense with an arg and additional optional kwarg that is forwarded' do
+      expect_offense(<<~RUBY)
+        def foo(*args, first: nil, **kwargs, &block)
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                                   ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          forwarded(*args, first: first, **kwargs, &block)
+                    ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                                         ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(*, first: nil, **, &block)
+          forwarded(*, first: first, **, &block)
         end
       RUBY
     end
