@@ -11,6 +11,20 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12136](https://github.com/rubocop/rubocop/pull/12136): Fix a false negative for `Layout/LeadingCommentSpace` when using `#+` or `#-` as they are not RDoc comments. ([@koic][])
+* [#12113](https://github.com/rubocop/rubocop/issues/12113): Fix a false positive for `Bundler/DuplicatedGroup` when groups are duplicated but `source`, `git`, `platforms`, or `path` values are different. ([@koic][])
+* [#12134](https://github.com/rubocop/rubocop/issues/12134): Fix a false positive for `Style/MethodCallWithArgsParentheses` when parentheses are used in one-line `in` pattern matching. ([@koic][])
+* [#12111](https://github.com/rubocop/rubocop/issues/12111): Fix an error for `Bundler/DuplicatedGroup` group declaration has keyword option. ([@koic][])
+* [#12109](https://github.com/rubocop/rubocop/issues/12109): Fix an error for `Style/ArgumentsForwarding` cop when forwarding kwargs/block arg and an additional arg. ([@ydah][])
+* [#12117](https://github.com/rubocop/rubocop/issues/12117): Fix a false positive for `Style/ArgumentsForwarding` cop when not always forwarding block. ([@owst][])
+* [#12115](https://github.com/rubocop/rubocop/pull/12115): Fix an error for `Style/Lambda` when using numbered parameter with a multiline `->` call. ([@koic][])
+* [#12124](https://github.com/rubocop/rubocop/issues/12124): Fix false positives for `Style/RedundantParentheses` when parentheses in `super` or `yield` call with multiline style argument. ([@koic][])
+* [#12120](https://github.com/rubocop/rubocop/pull/12120): Fix false positives for `Style/SymbolArray` when `%i` array containing unescaped `[`, `]`, `(`, or `)`. ([@koic][])
+* [#12133](https://github.com/rubocop/rubocop/pull/12133): Fix `Style/RedundantSelfAssignmentBranch` to handle heredocs. ([@r7kamura][])
+* [#12105](https://github.com/rubocop/rubocop/issues/12105): Fix target ruby `Gem::Requirement` matcher and version parsing to support multiple version constraints. ([@ItsEcholot][])
+
 ## 1.56.0 (2023-08-09)
 
 ### New features
@@ -7290,3 +7304,4 @@
 [@p0deje]: https://github.com/p0deje
 [@bigzed]: https://github.com/bigzed
 [@OwlKing]: https://github.com/OwlKing
+[@ItsEcholot]: https://github.com/ItsEcholot
