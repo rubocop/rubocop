@@ -167,4 +167,28 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
       RUBY
     end
   end
+
+  context 'anonymous positional arguments forwarding', :ruby32 do
+    it 'does not register an offense when enumerator is created with the correct arguments' do
+      expect_no_offenses(<<~RUBY)
+        def do_something(*)
+          return to_enum(:do_something, *) unless block_given?
+
+          do_something_else
+        end
+      RUBY
+    end
+  end
+
+  context 'anonymous keyword arguments forwarding', :ruby32 do
+    it 'does not register an offense when enumerator is created with the correct arguments' do
+      expect_no_offenses(<<~RUBY)
+        def do_something(**)
+          return to_enum(:do_something, **) unless block_given?
+
+          do_something_else
+        end
+      RUBY
+    end
+  end
 end
