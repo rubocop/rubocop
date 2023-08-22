@@ -291,7 +291,7 @@ module RuboCop
             return false if any_arg_referenced?
             return false if ruby_32_missing_rest_or_kwest?
             return false unless offensive_block_forwarding?
-            return false if forward_additional_kwargs?
+            return false if additional_kwargs_or_forwarded_kwargs?
 
             no_additional_args? || (target_ruby_version >= 3.0 && no_post_splat_args?)
           end
@@ -337,6 +337,14 @@ module RuboCop
 
             arg_after_splat = arguments[splat_index + 1]
             [nil, :hash, :block_pass].include?(arg_after_splat&.type)
+          end
+
+          def additional_kwargs_or_forwarded_kwargs?
+            additional_kwargs? || forward_additional_kwargs?
+          end
+
+          def additional_kwargs?
+            @def_node.arguments.any? { |a| a.kwarg_type? || a.kwoptarg_type? }
           end
 
           def forward_additional_kwargs?
