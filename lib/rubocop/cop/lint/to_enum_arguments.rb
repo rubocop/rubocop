@@ -74,7 +74,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
         def argument_match?(send_arg, def_arg)
           def_arg_name = def_arg.children[0]
 
@@ -87,12 +87,14 @@ module RuboCop
             send_arg.hash_type? &&
               send_arg.pairs.any? { |pair| passing_keyword_arg?(pair, def_arg_name) }
           when :kwrestarg
-            send_arg.each_child_node(:kwsplat).any? { |child| child.source == def_arg.source }
+            send_arg.each_child_node(:kwsplat, :forwarded_kwrestarg).any? do |child|
+              child.source == def_arg.source
+            end
           when :forward_arg
             send_arg.forwarded_args_type?
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       end
     end
   end
