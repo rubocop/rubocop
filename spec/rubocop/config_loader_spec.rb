@@ -9,12 +9,14 @@ RSpec.describe RuboCop::ConfigLoader do
     described_class.debug = true
     # Force reload of default configuration
     described_class.default_configuration = nil
+    RuboCop::ConfigFinder.project_root = nil
   end
 
   after do
     described_class.debug = false
     # Remove custom configuration
     described_class.default_configuration = nil
+    RuboCop::ConfigFinder.project_root = nil
   end
 
   let(:default_config) { described_class.default_configuration }
@@ -80,14 +82,14 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
-    context 'when there is a spurious rubocop config outside of the project', root: 'dir' do
+    context 'when there is a spurious rubocop config outside of the project' do
       let(:dir_path) { 'dir' }
 
       before do
         # Force reload of project root
         RuboCop::ConfigFinder.project_root = nil
-        create_empty_file('Gemfile')
-        create_empty_file('../.rubocop.yml')
+        create_empty_file('dir/Gemfile')
+        create_empty_file('.rubocop.yml')
       end
 
       after do
@@ -96,7 +98,9 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       it 'ignores the spurious config and falls back to the provided default file if run from the project' do
-        expect(configuration_file_for).to end_with('config/default.yml')
+        Dir.chdir('dir') do
+          expect(configuration_file_for).to end_with('config/default.yml')
+        end
       end
     end
 
@@ -146,6 +150,55 @@ RSpec.describe RuboCop::ConfigLoader do
         config['Enabled'] = false
         expect(configuration_from_file.to_h)
           .to eql(default_config.merge('Style/Encoding' => config))
+      end
+    end
+
+    context 'when the project is in a subdirectory of $HOME', :project_inside_home do
+      let(:file_path) { File.expand_path('~/work/vendor/.rubocop.yml') }
+
+      before do
+        create_file(file_path, <<~YAML)
+          AllCops:
+            Exclude:
+              - ./**
+        YAML
+      end
+
+      it 'gets AllCops/Exclude from the highest directory level' do
+        excludes = configuration_from_file['AllCops']['Exclude']
+        expect(excludes).to eq([File.expand_path('~/work/vendor/**')])
+      end
+
+      context 'and there is a personal config file in the home folder' do
+        before do
+          create_file('~/.rubocop.yml', <<~YAML)
+            AllCops:
+              Exclude:
+                - tmp/**
+          YAML
+        end
+
+        it 'ignores personal AllCops/Exclude' do
+          excludes = configuration_from_file['AllCops']['Exclude']
+          expect(excludes).to eq([File.expand_path('~/work/vendor/**')])
+        end
+
+        context 'and there is a project config higher up but before the home dir' do
+          before do
+            create_file(File.expand_path('~/work/.rubocop.yml'), <<~YAML)
+              AllCops:
+                Exclude:
+                  - docs/**
+            YAML
+          end
+
+          it 'gets AllCops/Exclude from the highest directory level before $HOME' do
+            excludes = configuration_from_file['AllCops']['Exclude']
+            expect(excludes).to eq(
+              [File.expand_path('~/work/vendor/**'), File.expand_path('~/work/docs/**')]
+            )
+          end
+        end
       end
     end
 
