@@ -57,16 +57,13 @@ module RuboCop
 
           end_of_first_line = node.source_range.begin_pos - node.source_range.column
 
-          raw_lines(node).each_cons(2) do |raw_line_one, raw_line_two|
+          lines = raw_lines(node)
+          lines.each_cons(2).with_index(node.first_line) do |(raw_line_one, raw_line_two), line_num|
             end_of_first_line += raw_line_one.length
 
-            next unless continuation?(raw_line_one)
+            next unless continuation?(raw_line_one, line_num, node)
 
-            if enforced_style_leading?
-              investigate_leading_style(raw_line_one, raw_line_two, end_of_first_line)
-            else
-              investigate_trailing_style(raw_line_one, raw_line_two, end_of_first_line)
-            end
+            investigate(raw_line_one, raw_line_two, end_of_first_line)
           end
         end
 
@@ -74,6 +71,14 @@ module RuboCop
 
         def raw_lines(node)
           processed_source.raw_source.lines[node.first_line - 1, line_range(node).size]
+        end
+
+        def investigate(first_line, second_line, end_of_first_line)
+          if enforced_style_leading?
+            investigate_leading_style(first_line, second_line, end_of_first_line)
+          else
+            investigate_trailing_style(first_line, second_line, end_of_first_line)
+          end
         end
 
         def investigate_leading_style(first_line, second_line, end_of_first_line)
@@ -98,8 +103,11 @@ module RuboCop
           end
         end
 
-        def continuation?(line)
-          line.end_with?("\\\n")
+        def continuation?(line, line_num, node)
+          return false unless line.end_with?("\\\n")
+
+          # Ensure backslash isn't part of a token spanning to the next line.
+          node.children.none? { |c| c.first_line == line_num && c.multiline? }
         end
 
         def autocorrect(corrector, offense_range, insert_pos, spaces)
