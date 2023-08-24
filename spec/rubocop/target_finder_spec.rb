@@ -510,18 +510,16 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     end
 
     it 'can exclude symlinks as well as directories' do
-      Dir.mktmpdir do |tmpdir|
-        create_empty_file(File.join(tmpdir, 'ruby5.rb'))
-        create_link('link', tmpdir)
+      create_empty_file(File.join(Dir.home, 'ruby5.rb'))
+      create_link('link', Dir.home)
 
-        config = instance_double(RuboCop::Config)
-        exclude_property = { 'Exclude' => [File.expand_path('link/**/*')] }
-        allow(config).to receive(:for_all_cops).and_return(exclude_property)
-        allow(config_store).to receive(:for).and_return(config)
+      config = instance_double(RuboCop::Config)
+      exclude_property = { 'Exclude' => [File.expand_path('link/**/*')] }
+      allow(config).to receive(:for_all_cops).and_return(exclude_property)
+      allow(config_store).to receive(:for).and_return(config)
 
-        expect(found_basenames.include?('ruby5.rb')).to be(false)
-        expect(found_basenames.include?('ruby3.rb')).to be(true)
-      end
+      expect(found_basenames.include?('ruby5.rb')).to be(false)
+      expect(found_basenames.include?('ruby3.rb')).to be(true)
     end
   end
 
