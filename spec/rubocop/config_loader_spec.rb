@@ -9,12 +9,14 @@ RSpec.describe RuboCop::ConfigLoader do
     described_class.debug = true
     # Force reload of default configuration
     described_class.default_configuration = nil
+    RuboCop::ConfigFinder.project_root = nil
   end
 
   after do
     described_class.debug = false
     # Remove custom configuration
     described_class.default_configuration = nil
+    RuboCop::ConfigFinder.project_root = nil
   end
 
   let(:default_config) { described_class.default_configuration }
