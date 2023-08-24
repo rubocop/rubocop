@@ -106,6 +106,13 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationLeadingSpace, :config do
       RUBY
     end
 
+    it 'registers no offense for multiline string with backslash' do
+      expect_no_offenses(<<~'RUBY')
+        '"this text is too" \
+        " long"'
+      RUBY
+    end
+
     describe 'interpolated strings' do
       it 'registers no offense on interpolated string alone' do
         expect_no_offenses(<<~'RUBY')
@@ -280,6 +287,13 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationLeadingSpace, :config do
           'this text is too' \
           ' long'
         )
+      RUBY
+    end
+
+    it 'registers no offense for multiline string with backslash' do
+      expect_no_offenses(<<~'RUBY')
+        '"this text is too " \
+        "long"'
       RUBY
     end
 
