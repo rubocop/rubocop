@@ -11,6 +11,8 @@ RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLe
       # Make sure to expand all symlinks in the path first. Otherwise we may
       # get mismatched pathnames when loading config files later on.
       tmpdir = File.realpath(tmpdir)
+      # Make upwards search for .rubocop.yml files stop at this directory.
+      RuboCop::FileFinder.root_level = tmpdir
 
       virtual_home = File.expand_path(File.join(tmpdir, 'home'))
       Dir.mkdir(virtual_home)
@@ -20,9 +22,6 @@ RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLe
       base_dir = example.metadata[:project_inside_home] ? virtual_home : tmpdir
       root = example.metadata[:root]
       working_dir = root ? File.join(base_dir, 'work', root) : File.join(base_dir, 'work')
-
-      # Make upwards search for .rubocop.yml files stop at this directory.
-      RuboCop::FileFinder.root_level = working_dir
 
       begin
         FileUtils.mkdir_p(working_dir)
