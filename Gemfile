@@ -22,6 +22,9 @@ gem 'test-queue'
 gem 'yard', '~> 0.9'
 
 group :test do
+  # FIXME: This `bigdecimal` dependency can be removed when https://github.com/jnunemaker/crack/pull/75
+  # is merged and released. It's a workaround until then.
+  gem 'bigdecimal', platform: :mri
   gem 'webmock', require: false
 end
 
