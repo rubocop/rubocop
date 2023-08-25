@@ -327,6 +327,18 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'accepts using guard clause is after `:nocov:` comment' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        # :nocov:
+        return if condition
+        # :nocov:
+
+        bar
+      end
+    RUBY
+  end
+
   it 'accepts a guard clause inside oneliner block' do
     expect_no_offenses(<<~RUBY)
       def foo
