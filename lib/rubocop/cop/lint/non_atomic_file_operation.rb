@@ -51,10 +51,12 @@ module RuboCop
         MAKE_FORCE_METHODS = %i[makedirs mkdir_p mkpath].freeze
         MAKE_METHODS = %i[mkdir].freeze
         REMOVE_FORCE_METHODS = %i[rm_f rm_rf].freeze
-        REMOVE_METHODS = %i[remove remove_dir remove_entry remove_entry_secure
-                            delete unlink remove_file rm rmdir safe_unlink].freeze
-        RESTRICT_ON_SEND = (MAKE_METHODS + MAKE_FORCE_METHODS + REMOVE_METHODS +
-          REMOVE_FORCE_METHODS).freeze
+        REMOVE_METHODS = %i[remove delete unlink remove_file rm rmdir safe_unlink].freeze
+        RECURSIVE_REMOVE_METHODS = %i[remove_dir remove_entry remove_entry_secure].freeze
+        RESTRICT_ON_SEND = (
+          MAKE_METHODS + MAKE_FORCE_METHODS + REMOVE_METHODS + RECURSIVE_REMOVE_METHODS +
+          REMOVE_FORCE_METHODS
+        ).freeze
 
         # @!method send_exist_node(node)
         def_node_search :send_exist_node, <<~PATTERN
@@ -140,6 +142,8 @@ module RuboCop
             'mkdir_p'
           elsif REMOVE_METHODS.include?(node.method_name)
             'rm_f'
+          elsif RECURSIVE_REMOVE_METHODS.include?(node.method_name)
+            'rm_rf'
           else
             node.method_name
           end
