@@ -3,7 +3,23 @@
 module RuboCop
   module Cop
     module Layout
-      # Enforces empty line after guard clause
+      # Enforces empty line after guard clause.
+      #
+      # This cop allows `# :nocov:` directive after guard clause because
+      # SimpleCov excludes code from the coverage report by wrapping it in `# :nocov:`:
+      #
+      # [source,ruby]
+      # ----
+      # def foo
+      #   # :nocov:
+      #   return if condition
+      #   # :nocov:
+      #   bar
+      # end
+      # ----
+      #
+      # Refer to SimpleCov's documentation for more details:
+      # https://github.com/simplecov-ruby/simplecov#ignoringskipping-code
       #
       # @example
       #
@@ -42,19 +58,22 @@ module RuboCop
 
         MSG = 'Add empty line after guard clause.'
         END_OF_HEREDOC_LINE = 1
+        SIMPLE_DIRECTIVE_COMMENT_PATTERN = /\A# *:nocov:\z/.freeze
 
         def on_if(node)
           return if correct_style?(node)
           return if multiple_statements_on_line?(node)
 
           if node.modifier_form? && (heredoc_node = last_heredoc_argument(node))
-            return if next_line_empty_or_enable_directive_comment?(heredoc_line(node, heredoc_node))
+            if next_line_empty_or_allowed_directive_comment?(heredoc_line(node, heredoc_node))
+              return
+            end
 
             add_offense(heredoc_node.loc.heredoc_end) do |corrector|
               autocorrect(corrector, heredoc_node)
             end
           else
-            return if next_line_empty_or_enable_directive_comment?(node.last_line)
+            return if next_line_empty_or_allowed_directive_comment?(node.last_line)
 
             add_offense(offense_location(node)) { |corrector| autocorrect(corrector, node) }
           end
@@ -70,7 +89,7 @@ module RuboCop
                        end
 
           next_line = node_range.last_line + 1
-          if next_line_enable_directive_comment?(next_line)
+          if next_line_allowed_directive_comment?(next_line)
             node_range = processed_source.comment_at_line(next_line)
           end
 
@@ -88,21 +107,21 @@ module RuboCop
           node.if_branch&.guard_clause?
         end
 
-        def next_line_empty_or_enable_directive_comment?(line)
+        def next_line_empty_or_allowed_directive_comment?(line)
           return true if next_line_empty?(line)
 
           next_line = line + 1
-          next_line_enable_directive_comment?(next_line) && next_line_empty?(next_line)
+          next_line_allowed_directive_comment?(next_line) && next_line_empty?(next_line)
         end
 
         def next_line_empty?(line)
           processed_source[line].blank?
         end
 
-        def next_line_enable_directive_comment?(line)
+        def next_line_allowed_directive_comment?(line)
           return false unless (comment = processed_source.comment_at_line(line))
 
-          DirectiveComment.new(comment).enabled?
+          DirectiveComment.new(comment).enabled? || simplecov_directive_comment?(comment)
         end
 
         def next_line_rescue_or_ensure?(node)
@@ -174,6 +193,12 @@ module RuboCop
           return false unless parent
 
           parent.begin_type? && parent.single_line?
+        end
+
+        # SimpleCov excludes code from the coverage report by wrapping it in `# :nocov:`:
+        # https://github.com/simplecov-ruby/simplecov#ignoringskipping-code
+        def simplecov_directive_comment?(comment)
+          SIMPLE_DIRECTIVE_COMMENT_PATTERN.match?(comment.text)
         end
       end
     end
