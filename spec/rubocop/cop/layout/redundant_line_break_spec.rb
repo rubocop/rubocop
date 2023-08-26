@@ -100,6 +100,14 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
+      it 'accepts a modified singleton method definition' do
+        expect_no_offenses(<<~RUBY)
+          x def self.y
+              z
+            end
+        RUBY
+      end
+
       it 'accepts a method call on a single line' do
         expect_no_offenses(<<~RUBY)
           my_method(1, 2, "x")

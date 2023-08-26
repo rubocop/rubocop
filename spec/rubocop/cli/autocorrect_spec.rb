@@ -2456,6 +2456,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/RedundantLineBreak` and `Style/SingleLineMethods` offenses' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 2.7
+      Layout/RedundantLineBreak:
+        Enabled: true
+      Layout/SingleLineMethods:
+        Enabled: true
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      x def self.y; z end
+    RUBY
+
+    expect(cli.run(['-a', '--only', 'Layout/RedundantLineBreak,Style/SingleLineMethods'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      x def self.y;#{' '}
+          z#{' '}
+        end
+    RUBY
+  end
+
   it 'corrects `Layout/DotPosition` and `Layout/SingleLineBlockChain` offenses' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
