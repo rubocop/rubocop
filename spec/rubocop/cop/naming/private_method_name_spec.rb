@@ -84,6 +84,17 @@ RSpec.describe RuboCop::Cop::Naming::PrivateMethodName, :config do
       RUBY
     end
 
+    it 'does not register an offense as class method.' do
+      expect_no_offenses(<<~RUBY)
+        class MyClass
+          public
+          def self.foo
+            # ...
+          end
+        end
+      RUBY
+    end
+
     it 'does not register an offense as attr accessor.' do
       expect_no_offenses(<<~RUBY)
         public
@@ -100,6 +111,17 @@ RSpec.describe RuboCop::Cop::Naming::PrivateMethodName, :config do
         class MyClass
           protected
           def foo
+            # ...
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense as class method.' do
+      expect_no_offenses(<<~RUBY)
+        class MyClass
+          protected
+          def self.foo
             # ...
           end
         end
