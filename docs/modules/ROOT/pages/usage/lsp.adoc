@@ -45,6 +45,15 @@ If you run into problems, first use "M-x eglot-reconnect" to reconnect to the la
 
 See Eglot's official documentation for more information.
 
+=== Emacs (LSP Mode)
+
+https://github.com/emacs-lsp/lsp-mode[LSP Mode] is an Emacs client/library for the Language Server Protocol.
+
+You can get the new `lsp-mode` package from https://melpa.org/#/lsp-mode[MELPA].
+
+See LSP Mode official documentation for more information:
+https://emacs-lsp.github.io/lsp-mode/page/lsp-rubocop/
+
 === Vim and Neovim (coc.nvim)
 
 https://github.com/neoclide/coc.nvim[coc.nvim] is an extension host for Vim and Neovim, powered by Node.js.
