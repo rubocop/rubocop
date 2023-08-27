@@ -45,7 +45,10 @@ module RuboCop
           result: LanguageServer::Protocol::Interface::InitializeResult.new(
             capabilities: LanguageServer::Protocol::Interface::ServerCapabilities.new(
               document_formatting_provider: true,
-              diagnostic_provider: true,
+              diagnostic_provider: LanguageServer::Protocol::Interface::DiagnosticOptions.new(
+                inter_file_dependencies: false,
+                workspace_diagnostics: false
+              ),
               text_document_sync: LanguageServer::Protocol::Interface::TextDocumentSyncOptions.new(
                 change: LanguageServer::Protocol::Constant::TextDocumentSyncKind::FULL,
                 open_close: true

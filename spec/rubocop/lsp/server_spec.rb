@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
           capabilities: {
             textDocumentSync: { openClose: true, change: 1 },
             documentFormattingProvider: true,
-            diagnosticProvider: true
+            diagnosticProvider: { interFileDependencies: false, workspaceDiagnostics: false }
           }
         }
       )
