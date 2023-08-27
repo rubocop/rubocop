@@ -2926,6 +2926,11 @@ Naming/PredicateName:
   Exclude:
     - 'spec/**/*'
 
+Naming/PrivateMethodName:
+  Description: 'Checks private method names are prefixed with an underscore.'
+  Enabled: false
+  VersionAdded: '<<next>>'
+
 Naming/RescuedExceptionsVariableName:
   Description: 'Use consistent rescued exceptions variables naming.'
   Enabled: true
