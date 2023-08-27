@@ -106,7 +106,7 @@ module RuboCop
 
         def suitable_as_single_line?(node)
           !comment_within?(node) &&
-            node.each_descendant(:if, :case, :kwbegin, :def).none? &&
+            node.each_descendant(:if, :case, :kwbegin, :def, :defs).none? &&
             node.each_descendant(:dstr, :str).none? { |n| n.heredoc? || n.value.include?("\n") } &&
             node.each_descendant(:begin).none? { |b| !b.single_line? }
         end
