@@ -165,7 +165,7 @@ RSpec.describe RuboCop::RakeTask do
         Rake::Task['rubocop:autocorrect_all'].execute
       end
 
-      it 'runs with with the options that were passed to its parent task' do
+      it 'runs with the options that were passed to its parent task' do
         described_class.new do |task|
           task.patterns = ['lib/**/*.rb']
           task.formatters = ['files']

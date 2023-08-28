@@ -155,11 +155,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     expect_no_offenses("'a,b,c'.split(/,+/)")
   end
 
-  it 'accepts when using using regexp argument with ignorecase regexp option' do
+  it 'accepts when using regexp argument with ignorecase regexp option' do
     expect_no_offenses("'fooSplitbar'.split(/split/i)")
   end
 
-  it 'accepts when using using regexp argument with extended regexp option' do
+  it 'accepts when using regexp argument with extended regexp option' do
     expect_no_offenses("'fooSplitbar'.split(/split/x)")
   end
 
