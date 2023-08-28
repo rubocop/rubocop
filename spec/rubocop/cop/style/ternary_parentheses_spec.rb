@@ -663,7 +663,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         expect_no_offenses('foo = bar = (bar == 1) ? a : b')
       end
 
-      it 'accepts accepts safe multiple assignment' do
+      it 'accepts safe multiple assignment' do
         expect_no_offenses('foo = (bar = baz = find_bar) ? a : b')
       end
 

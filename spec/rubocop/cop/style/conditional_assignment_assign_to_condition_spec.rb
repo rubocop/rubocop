@@ -1924,7 +1924,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     end
 
     it 'registers an offense for multiple assignment when an earlier ' \
-       'assignment is is protected by a modifier' do
+       'assignment is protected by a modifier' do
       expect_offense(<<~RUBY)
         if foo
         ^^^^^^ Use the return of the conditional for variable assignment and comparison.
