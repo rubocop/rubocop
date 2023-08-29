@@ -117,7 +117,7 @@ module RuboCop
             if argument.hash_type?
               argument.pairs.map(&:source).sort.join(', ')
             else
-              argument.value.to_s
+              argument.respond_to?(:value) ? argument.value.to_s : argument.source
             end
           end
         end

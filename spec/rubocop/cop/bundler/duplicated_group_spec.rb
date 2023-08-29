@@ -149,6 +149,21 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGroup, :config do
       end
     end
 
+    context 'and a set of groups is duplicated and `group` value is a splat value' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY, 'Gemfile')
+          group(*LIVE_ENVS) do
+            gem 'admin_ui'
+          end
+
+          group(*LIVE_ENVS) do
+          ^^^^^^^^^^^^^^^^^ Gem group `*LIVE_ENVS` already defined on line 1 of the Gemfile.
+            gem 'public_ui'
+          end
+        RUBY
+      end
+    end
+
     context 'and a set of groups is duplicated but `source` URLs are different' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY, 'Gemfile')
