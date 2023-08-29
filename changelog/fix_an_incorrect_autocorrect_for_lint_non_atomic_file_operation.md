@@ -1,1 +1,0 @@
-* [#12148](https://github.com/rubocop/rubocop/pull/12148): Fix an incorrect autocorrect for `Lint/NonAtomicFileOperation` when using `FileUtils.remove_dir`, `FileUtils.remove_entry`, or `FileUtils.remove_entry_secure`. ([@koic][])

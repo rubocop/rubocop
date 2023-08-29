@@ -11,6 +11,15 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12138](https://github.com/rubocop/rubocop/issues/12138): Fix a false positive for `Layout/LineContinuationLeadingSpace` when a backslash is part of a multiline string literal. ([@ymap][])
+* [#12155](https://github.com/rubocop/rubocop/pull/12155): Fix false positive for `Layout/RedundantLineBreak` when using a modified singleton method definition. ([@koic][])
+* [#12143](https://github.com/rubocop/rubocop/issues/12143): Fix a false positive for `Lint/ToEnumArguments` when using anonymous keyword arguments forwarding. ([@koic][])
+* [#12148](https://github.com/rubocop/rubocop/pull/12148): Fix an incorrect autocorrect for `Lint/NonAtomicFileOperation` when using `FileUtils.remove_dir`, `FileUtils.remove_entry`, or `FileUtils.remove_entry_secure`. ([@koic][])
+* [#12141](https://github.com/rubocop/rubocop/issues/12141): Fix false positive for `Style/ArgumentsForwarding` when method def includes additional kwargs. ([@owst][])
+* [#12154](https://github.com/rubocop/rubocop/issues/12154): Fix incorrect `diagnosticProvider` value of LSP. ([@koic][])
+
 ## 1.56.1 (2023-08-21)
 
 ### Bug fixes
@@ -7307,3 +7316,4 @@
 [@bigzed]: https://github.com/bigzed
 [@OwlKing]: https://github.com/OwlKing
 [@ItsEcholot]: https://github.com/ItsEcholot
+[@ymap]: https://github.com/ymap
