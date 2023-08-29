@@ -441,6 +441,31 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when args are forwarded at several call sites' do
+      expect_offense(<<~RUBY)
+        def foo(*args, **kwargs, &block)
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          baz(*args, **kwargs, &block)
+              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+
+          if something?
+            baz(*args, **kwargs, &block)
+                ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          baz(...)
+
+          if something?
+            baz(...)
+          end
+        end
+      RUBY
+    end
   end
 
   context 'TargetRubyVersion >= 3.0', :ruby30 do
@@ -504,6 +529,31 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       expect_correction(<<~RUBY)
         def foo(m, ...)
           bar(m, ...)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when args are forwarded at several call sites' do
+      expect_offense(<<~RUBY)
+        def foo(m, *args, **kwargs, &block)
+                   ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          baz(m, *args, **kwargs, &block)
+                 ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+
+          if something?
+            baz(m, *args, **kwargs, &block)
+                   ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(m, ...)
+          baz(m, ...)
+
+          if something?
+            baz(m, ...)
+          end
         end
       RUBY
     end
@@ -1082,6 +1132,56 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
           bar(*, **, &block)
           bar(*, &block)
           bar(**, &block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when args are forwarded at several call sites' do
+      expect_offense(<<~RUBY)
+        def foo(bar, *args)
+                     ^^^^^ Use anonymous positional arguments forwarding (`*`).
+          baz(*args)
+              ^^^^^ Use anonymous positional arguments forwarding (`*`).
+
+          if something?
+            baz(*args)
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(bar, *)
+          baz(*)
+
+          if something?
+            baz(*)
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when kwargs are forwarded at several call sites' do
+      expect_offense(<<~RUBY)
+        def foo(bar, **kwargs)
+                     ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          baz(**kwargs)
+              ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+
+          if something?
+            baz(**kwargs)
+                ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(bar, **)
+          baz(**)
+
+          if something?
+            baz(**)
+          end
         end
       RUBY
     end
