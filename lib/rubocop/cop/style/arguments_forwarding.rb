@@ -116,11 +116,11 @@ module RuboCop
         end
 
         def only_forwards_all?(send_classifications)
-          send_classifications.each_value.all? { |c, _, _| c == :all }
+          send_classifications.all? { |_, c, _, _| c == :all }
         end
 
         def add_forward_all_offenses(node, send_classifications, forwardable_args)
-          send_classifications.each do |send_node, (_c, forward_rest, _forward_kwrest)|
+          send_classifications.each do |send_node, _c, forward_rest, _forward_kwrest|
             register_forward_all_offense(send_node, send_node, forward_rest)
           end
 
@@ -133,7 +133,7 @@ module RuboCop
 
           rest_arg, kwrest_arg, _block_arg = *forwardable_args
 
-          send_classifications.each do |send_node, (_c, forward_rest, forward_kwrest)|
+          send_classifications.each do |send_node, _c, forward_rest, forward_kwrest|
             if forward_rest
               register_forward_args_offense(def_node.arguments, rest_arg)
               register_forward_args_offense(send_node, forward_rest)
@@ -157,7 +157,7 @@ module RuboCop
         end
 
         def classify_send_nodes(def_node, send_nodes, referenced_lvars, forwardable_args)
-          send_nodes.to_h do |send_node|
+          send_nodes.filter_map do |send_node|
             classification_and_forwards = classification_and_forwards(
               def_node,
               send_node,
@@ -165,8 +165,10 @@ module RuboCop
               forwardable_args
             )
 
-            [send_node, classification_and_forwards]
-          end.compact
+            next unless classification_and_forwards
+
+            [send_node, *classification_and_forwards]
+          end
         end
 
         def classification_and_forwards(def_node, send_node, referenced_lvars, forwardable_args)
