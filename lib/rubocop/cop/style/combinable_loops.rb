@@ -93,8 +93,9 @@ module RuboCop
         end
 
         def same_collection_looping_block?(node, sibling)
-          (sibling&.block_type? || sibling&.numblock_type?) &&
-            sibling.send_node.method?(node.method_name) &&
+          return false if sibling.nil? || (!sibling.block_type? && !sibling.numblock_type?)
+
+          sibling.method?(node.method_name) &&
             sibling.receiver == node.receiver &&
             sibling.send_node.arguments == node.send_node.arguments
         end

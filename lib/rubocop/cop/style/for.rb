@@ -80,7 +80,7 @@ module RuboCop
         private
 
         def suspect_enumerable?(node)
-          node.multiline? && node.send_node.method?(:each) && !node.send_node.arguments?
+          node.multiline? && node.method?(:each) && !node.send_node.arguments?
         end
       end
     end
