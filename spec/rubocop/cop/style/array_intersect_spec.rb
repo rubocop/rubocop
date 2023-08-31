@@ -32,6 +32,24 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
       RUBY
     end
 
+    it 'does not register an offense when using `(array1 & array2).any?` with block' do
+      expect_no_offenses(<<~RUBY)
+        (array1 & array2).any? { |x| false }
+      RUBY
+    end
+
+    it 'does not register an offense when using `(array1 & array2).any?` with symbol block' do
+      expect_no_offenses(<<~RUBY)
+        (array1 & array2).any?(&:block)
+      RUBY
+    end
+
+    it 'does not register an offense when using `(array1 & array2).any?` with numbered block' do
+      expect_no_offenses(<<~RUBY)
+        (array1 & array2).any? { do_something(_1) }
+      RUBY
+    end
+
     it 'does not register an offense when using `([1, 2, 3] & [4, 5, 6]).present?`' do
       expect_no_offenses(<<~RUBY)
         ([1, 2, 3] & [4, 5, 6]).present?

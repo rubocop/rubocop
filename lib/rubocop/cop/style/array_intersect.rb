@@ -11,6 +11,15 @@ module RuboCop
       # The `array1.intersect?(array2)` method is faster than
       # `(array1 & array2).any?` and is more readable.
       #
+      # In cases like the following, compatibility is not ensured,
+      # so it will not be detected when using block argument.
+      #
+      # [source,ruby]
+      # ----
+      # ([1] & [1,2]).any? { |x| false }    # => false
+      # [1].intersect?([1,2]) { |x| false } # => true
+      # ----
+      #
       # @safety
       #   This cop cannot guarantee that `array1` and `array2` are
       #   actually arrays while method `intersect?` is for arrays only.
@@ -68,16 +77,15 @@ module RuboCop
         RESTRICT_ON_SEND = (STRAIGHT_METHODS + NEGATED_METHODS).freeze
 
         def on_send(node)
+          return if (parent = node.parent) && (parent.block_type? || parent.numblock_type?)
           return unless (receiver, argument, method_name = bad_intersection_check?(node))
 
           message = message(receiver.source, argument.source, method_name)
 
           add_offense(node, message: message) do |corrector|
-            if straight?(method_name)
-              corrector.replace(node, "#{receiver.source}.intersect?(#{argument.source})")
-            else
-              corrector.replace(node, "!#{receiver.source}.intersect?(#{argument.source})")
-            end
+            bang = straight?(method_name) ? '' : '!'
+
+            corrector.replace(node, "#{bang}#{receiver.source}.intersect?(#{argument.source})")
           end
         end
 
