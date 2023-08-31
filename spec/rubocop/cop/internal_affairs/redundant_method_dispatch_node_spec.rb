@@ -12,6 +12,28 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantMethodDispatchNode, :conf
     RUBY
   end
 
+  it 'registers an offense when using `node.send_node.method?(:method_name)`' do
+    expect_offense(<<~RUBY)
+      node.send_node.method?(:method_name)
+          ^^^^^^^^^^ Remove the redundant `send_node`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      node.method?(:method_name)
+    RUBY
+  end
+
+  it 'registers an offense when using `node.send_node.method?(node.method_name)`' do
+    expect_offense(<<~RUBY)
+      node.send_node.method?(node.method_name)
+          ^^^^^^^^^^ Remove the redundant `send_node`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      node.method?(node.method_name)
+    RUBY
+  end
+
   it 'does not register an offense when using `node.method_name`' do
     expect_no_offenses(<<~RUBY)
       node.method_name

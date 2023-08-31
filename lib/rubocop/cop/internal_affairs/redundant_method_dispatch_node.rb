@@ -14,6 +14,12 @@ module RuboCop
       #   node.method_name
       #
       #   # bad
+      #   node.send_node.method?(:method_name)
+      #
+      #   # good
+      #   node.method?(:method_name)
+      #
+      #   # bad
       #   node.send_node.receiver
       #
       #   # good
@@ -24,11 +30,14 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Remove the redundant `send_node`.'
-        RESTRICT_ON_SEND = %i[method_name receiver].freeze
+        RESTRICT_ON_SEND = %i[method_name method? receiver].freeze
 
         # @!method dispatch_method(node)
         def_node_matcher :dispatch_method, <<~PATTERN
-          (send $(send _ :send_node) _)
+          {
+            (send $(send _ :send_node) {:method_name :receiver})
+            (send $(send _ :send_node) :method? _)
+          }
         PATTERN
 
         def on_send(node)
