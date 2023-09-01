@@ -57,6 +57,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional, :config do
     RUBY
   end
 
+  it 'registers an offense for unless/else with boolean results' do
+    expect_offense(<<~RUBY)
+      unless x == y
+      ^^^^^^^^^^^^^ This conditional expression can just be replaced by `!(x == y)`.
+        true
+      else
+        false
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !(x == y)
+    RUBY
+  end
+
+  it 'registers an offense for unless/else with negated boolean results' do
+    expect_offense(<<~RUBY)
+      unless x == y
+      ^^^^^^^^^^^^^ This conditional expression can just be replaced by `x == y`.
+        false
+      else
+        true
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x == y
+    RUBY
+  end
+
   it 'registers an offense for if/elsif/else with boolean results' do
     expect_offense(<<~RUBY)
       if cond
@@ -118,6 +148,102 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional, :config do
       else
         3
       end
+    RUBY
+  end
+
+  it 'registers an offense for if with true results' do
+    expect_offense(<<~RUBY)
+      true if x == y
+      ^^^^^^^^^^^^^^ This conditional expression can just be replaced by `x == y`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x == y
+    RUBY
+  end
+
+  it 'registers an offense for if with false results' do
+    expect_offense(<<~RUBY)
+      false if x == y
+      ^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `!(x == y)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !(x == y)
+    RUBY
+  end
+
+  it 'registers an offense for unless with true results' do
+    expect_offense(<<~RUBY)
+      true unless x == y
+      ^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `!(x == y)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !(x == y)
+    RUBY
+  end
+
+  it 'registers an offense for unless with false results' do
+    expect_offense(<<~RUBY)
+      false unless x == y
+      ^^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `x == y`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x == y
+    RUBY
+  end
+
+  it 'registers an offense for if block with true results' do
+    expect_offense(<<~RUBY)
+      if x == y
+      ^^^^^^^^^ This conditional expression can just be replaced by `x == y`.
+        true
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x == y
+    RUBY
+  end
+
+  it 'registers an offense for if block with false results' do
+    expect_offense(<<~RUBY)
+      if x == y
+      ^^^^^^^^^ This conditional expression can just be replaced by `!(x == y)`.
+        false
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !(x == y)
+    RUBY
+  end
+
+  it 'registers an offense for unless block with true results' do
+    expect_offense(<<~RUBY)
+      unless x == y
+      ^^^^^^^^^^^^^ This conditional expression can just be replaced by `!(x == y)`.
+        true
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !(x == y)
+    RUBY
+  end
+
+  it 'registers an offense for unless block with false results' do
+    expect_offense(<<~RUBY)
+      unless x == y
+      ^^^^^^^^^^^^^ This conditional expression can just be replaced by `x == y`.
+        false
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x == y
     RUBY
   end
 end

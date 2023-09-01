@@ -24,6 +24,13 @@ module RuboCop
       #
       #   # good
       #   x != y
+      #
+      #   # bad
+      #   true if x == y
+      #
+      #   # good
+      #   x == y
+      #
       class RedundantConditional < Base
         include Alignment
         extend AutoCorrector
@@ -62,10 +69,22 @@ module RuboCop
           (if (send _ #{COMPARISON_OPERATOR_MATCHER} _) false true)
         RUBY
 
+        # @!method true_or_false?(node)
+        def_node_matcher :true_or_false?, <<~RUBY
+          ({:true :false})
+        RUBY
+
         def offense?(node)
+          return true if redundant?(node)
           return false if node.modifier_form?
 
           redundant_condition?(node) || redundant_condition_inverted?(node)
+        end
+
+        def redundant?(node)
+          return false if node.else? || node.elsif? || node.elsif_conditional? || node.ternary?
+
+          node.if_branch.true_type? || node.if_branch.false_type?
         end
 
         def replacement_condition(node)
@@ -79,8 +98,14 @@ module RuboCop
           (
             (node.if? || node.elsif? || node.ternary?) && redundant_condition_inverted?(node)
           ) || (
-            node.unless? && redundant_condition?(node)
-          )
+            node.unless? && redundant_condition_inverted?(node)
+          ) ||
+            redundant_condition_only_if_inverted?(node)
+        end
+
+        def redundant_condition_only_if_inverted?(node)
+          (!node.elsif_conditional? && (node.if? && node.if_branch.false_type?)) ||
+            (node.unless? && node.if_branch.true_type?)
         end
 
         def indented_else_node(expression, node)
