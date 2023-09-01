@@ -40,9 +40,13 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Do not use empty `case` condition, instead use an `if` expression.'
+        NOT_SUPPORTED_PARENT_TYPES = %i[return break next send csend].freeze
 
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_case(case_node)
-          return if case_node.condition
+          if case_node.condition || NOT_SUPPORTED_PARENT_TYPES.include?(case_node.parent&.type)
+            return
+          end
 
           branch_bodies = [*case_node.when_branches.map(&:body), case_node.else_branch].compact
 
@@ -52,6 +56,7 @@ module RuboCop
 
           add_offense(case_node.loc.keyword) { |corrector| autocorrect(corrector, case_node) }
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
