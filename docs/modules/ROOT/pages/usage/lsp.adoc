@@ -118,6 +118,22 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 See nvim-lspconfig's official documentation for more information.
 
+=== Helix
+
+https://github.com/helix-editor/helix[Helix] is a post-modern modal text editor with built-in language server support.
+
+Add the following to your Helix language configuration file (e.g. `~/.config/helix/languages.toml`):
+
+```toml
+[[language]]
+name = "ruby"
+language-server = { command = "bundle", args = ["exec", "rubocop", "--lsp"] }
+auto-format = true
+```
+
+See Helix's official documentation for more information:
+https://docs.helix-editor.com/languages.html
+
 == Autocorrection
 
 The language server supports `textDocument/formatting` method and is autocorrectable. The autocorrection is safe by default (`rubocop -a`).
