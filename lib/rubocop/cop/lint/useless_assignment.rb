@@ -51,11 +51,12 @@ module RuboCop
           scope.variables.each_value { |variable| check_for_unused_assignments(variable) }
         end
 
+        # rubocop:disable Metrics/AbcSize
         def check_for_unused_assignments(variable)
           return if variable.should_be_unused?
 
           variable.assignments.each do |assignment|
-            next if assignment.used?
+            next if assignment.used? || part_of_ignored_node?(assignment.node)
 
             message = message_for_useless_assignment(assignment)
 
@@ -68,8 +69,11 @@ module RuboCop
             add_offense(location, message: message) do |corrector|
               autocorrect(corrector, assignment)
             end
+
+            ignore_node(assignment.node)
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def message_for_useless_assignment(assignment)
           variable = assignment.variable

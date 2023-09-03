@@ -2917,6 +2917,37 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/UselessAssignment` offenses when variables are assigned with chained assignment and unreferenced' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def some_method
+        foo = bar = do_something
+      end
+    RUBY
+    status = cli.run(%w[--autocorrect-all --only Lint/UselessAssignment])
+    expect($stdout.string).to eq(<<~RESULT)
+      Inspecting 1 file
+      W
+
+      Offenses:
+
+      example.rb:2:3: W: [Corrected] Lint/UselessAssignment: Useless assignment to variable - bar.
+        bar = do_something
+        ^^^
+      example.rb:2:3: W: [Corrected] Lint/UselessAssignment: Useless assignment to variable - foo.
+        foo = bar = do_something
+        ^^^
+
+      1 file inspected, 2 offenses detected, 2 offenses corrected
+    RESULT
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      def some_method
+        do_something
+      end
+    RUBY
+  end
+
   it 'corrects `Style/AccessModifierDeclarations` offenses when multiple groupable access modifiers are defined' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
