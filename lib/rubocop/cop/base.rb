@@ -70,6 +70,7 @@ module RuboCop
 
       def self.inherited(subclass)
         super
+        subclass.instance_variable_set(:@gem_requirements, gem_requirements.dup)
         Registry.global.enlist(subclass)
       end
 
@@ -124,6 +125,29 @@ module RuboCop
       # multiple times with the same `processed_source.path` but different content.
       def self.support_multiple_source?
         false
+      end
+
+      ## Gem requirements
+
+      @gem_requirements = {}
+
+      class << self
+        attr_reader :gem_requirements
+
+        # Register a version requirement for the given gem name.
+        # This cop will be skipped unless the target satisfies *all* requirements.
+        # @param [String] gem_name
+        # @param [Array<String>] version_requirements The version requirements,
+        #   using the same syntax as a Gemfile, e.g. ">= 1.2.3"
+        #
+        #   If omitted, any version of the gem will be accepted.
+        #
+        #   https://guides.rubygems.org/patterns/#declaring-dependencies
+        #
+        # @api public
+        def requires_gem(gem_name, *version_requirements)
+          @gem_requirements[gem_name] = Gem::Requirement.new(version_requirements)
+        end
       end
 
       def initialize(config = nil, options = nil)
@@ -495,6 +519,18 @@ module RuboCop
           range.begin_pos + @current_offset,
           range.end_pos + @current_offset
         )
+      end
+
+      def target_satisfies_all_gem_version_requirements?
+        self.class.gem_requirements.all? do |gem_name, version_req|
+          all_gem_versions_in_target = @config.gem_versions_in_target
+          next false unless all_gem_versions_in_target
+
+          gem_version_in_target = all_gem_versions_in_target[gem_name]
+          next false unless gem_version_in_target
+
+          version_req.satisfied_by?(gem_version_in_target)
+        end
       end
     end
   end
