@@ -64,6 +64,58 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     end
   end
 
+  describe 'requires_gem', :restore_registry do
+    context 'on a cop with no gem requirements' do
+      let(:cop_class) do
+        stub_cop_class('CopSpec::CopWithNoGemReqs') do
+          # no calls to `require_gem`
+        end
+      end
+
+      describe '.gem_requirements' do
+        it 'returns an empty hash' do
+          expect(cop_class.gem_requirements).to eq({})
+        end
+      end
+    end
+
+    describe 'on a cop with gem requirements' do
+      let(:cop_class) do
+        stub_cop_class('CopSpec::CopWithGemReqs') do
+          requires_gem 'gem1', '>= 1.2.3'
+          requires_gem 'gem2', '>= 4.5.6'
+        end
+      end
+
+      it 'can be retrieved with .gem_requirements' do
+        expected = {
+          'gem1' => Gem::Requirement.new('>= 1.2.3'),
+          'gem2' => Gem::Requirement.new('>= 4.5.6')
+        }
+        expect(cop_class.gem_requirements).to eq(expected)
+      end
+    end
+
+    it 'is heritable' do
+      superclass = stub_cop_class('CopSpec::SuperclassCopWithGemReqs') do
+        requires_gem 'gem1', '>= 1.2.3'
+      end
+
+      subclass = stub_cop_class('CopSpec::SubclassCopWithGemReqs', inherit: superclass) do
+        requires_gem 'gem2', '>= 4.5.6'
+      end
+
+      expected = {
+        'gem1' => Gem::Requirement.new('>= 1.2.3'),
+        'gem2' => Gem::Requirement.new('>= 4.5.6')
+      }
+      expect(subclass.gem_requirements).to eq(expected)
+
+      # Ensure the superclass wasn't modified:
+      expect(superclass.gem_requirements).to eq(expected.slice('gem1'))
+    end
+  end
+
   it 'keeps track of offenses' do
     cop.add_offense(nil, location: location, message: 'message')
 
