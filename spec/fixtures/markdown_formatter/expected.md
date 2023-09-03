@@ -1,6 +1,6 @@
 # RuboCop Inspection Report
 
-4 files inspected, 23 offenses detected:
+4 files inspected, 22 offenses detected:
 
 ### app/controllers/application_controller.rb - (2 offenses)
   * **Line # 1 - convention:** Style/Documentation: Missing top-level documentation comment for `class ApplicationController`.
@@ -100,7 +100,7 @@
         def book_params ...
     ```
 
-### app/models/book.rb - (7 offenses)
+### app/models/book.rb - (6 offenses)
   * **Line # 1 - convention:** Style/Documentation: Missing top-level documentation comment for `class Book`.
 
     ```rb
@@ -120,12 +120,6 @@
     ```
 
   * **Line # 3 - warning:** Lint/UselessAssignment: Useless assignment to variable - `foo`.
-
-    ```rb
-        foo = bar = baz
-    ```
-
-  * **Line # 3 - warning:** Lint/UselessAssignment: Useless assignment to variable - `bar`. Did you mean `baz`?
 
     ```rb
         foo = bar = baz
