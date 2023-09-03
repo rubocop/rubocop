@@ -378,6 +378,71 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
       it { is_expected.to be(true) }
     end
+
+    describe 'for a cop with gem version requirements', :restore_registry do
+      subject { cop.relevant_file?(file) }
+
+      let(:file) { 'foo.rb' }
+
+      let(:cop_class) do
+        stub_cop_class('CopSpec::CopWithGemReqs') do
+          requires_gem 'gem1', '>= 1.2.3'
+        end
+      end
+
+      before do
+        allow(config).to receive(:gem_versions_in_target).and_return(gem_versions_in_target)
+      end
+
+      context 'the target doesn\'t satisfy any of the gem requirements' do
+        let(:gem_versions_in_target) { {} }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'the target has a required gem, but in a version that\'s too old' do
+        let(:gem_versions_in_target) { { 'gem1' => Gem::Version.new('1.2.2') } }
+
+        it { is_expected.to be(false) }
+      end
+
+      context 'the target has a required gem, in a supported version' do
+        let(:gem_versions_in_target) { { 'gem1' => Gem::Version.new('1.2.3') } }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'for a cop with multiple gem requirements' do
+        let(:cop_class) do
+          stub_cop_class('CopSpec::CopWithGemReqs') do
+            requires_gem 'gem1', '>= 1.2.3'
+            requires_gem 'gem2', '>= 4.5.6'
+          end
+        end
+
+        context 'the target satisfies one but not all of the gem requirements' do
+          let(:gem_versions_in_target) do
+            {
+              'gem1' => Gem::Version.new('1.2.3'),
+              'gem2' => Gem::Version.new('4.5.5')
+            }
+          end
+
+          it { is_expected.to be(false) }
+        end
+
+        context 'the target has all the required gems with sufficient versions' do
+          let(:gem_versions_in_target) do
+            {
+              'gem1' => Gem::Version.new('1.2.3'),
+              'gem2' => Gem::Version.new('4.5.6')
+            }
+          end
+
+          it { is_expected.to be(true) }
+        end
+      end
+    end
   end
 
   describe '#safe_autocorrect?' do

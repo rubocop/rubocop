@@ -269,6 +269,7 @@ module RuboCop
       end
 
       def relevant_file?(file)
+        return false unless target_satisfies_all_gem_version_requirements?
         return true unless @config.clusivity_config_for_badge?(self.class.badge)
 
         file == RuboCop::AST::ProcessedSource::STRING_SOURCE_NAME ||

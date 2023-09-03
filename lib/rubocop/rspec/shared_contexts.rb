@@ -110,7 +110,19 @@ RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
   let(:config) do
     hash = { 'AllCops' => all_cops_config, cop_class.cop_name => cur_cop_config }.merge!(other_cops)
 
-    RuboCop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
+    config = RuboCop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
+
+    rails_version_in_gemfile = Gem::Version.new(
+      rails_version || RuboCop::Config::DEFAULT_RAILS_VERSION
+    )
+
+    allow(config).to receive(:gem_versions_in_target).and_return(
+      {
+        'railties' => rails_version_in_gemfile
+      }
+    )
+
+    config
   end
 
   let(:cop) { cop_class.new(config, cop_options) }
