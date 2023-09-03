@@ -263,6 +263,7 @@ module RuboCop
       PathUtil.smart_path(@loaded_path)
     end
 
+    # @return [String, nil]
     def bundler_lock_file_path
       return nil unless loaded_path
 
@@ -286,16 +287,24 @@ module RuboCop
       end
     end
 
+    # Returns target's locked gem versions (i.e. from Gemfile.lock or gems.locked)
+    # @returns [Hash{String => Gem::Version}] The locked gem versions, keyed by the gems' names.
+    def gem_versions_in_target
+      @gem_versions_in_target ||= read_gem_versions_from_target_lockfile
+    end
+
     def inspect # :nodoc:
       "#<#{self.class.name}:#{object_id} @loaded_path=#{loaded_path}>"
     end
 
     private
 
+    # @return [Float, nil] The Rails version as a `major.minor` Float.
     def target_rails_version_from_bundler_lock_file
       @target_rails_version_from_bundler_lock_file ||= read_rails_version_from_bundler_lock_file
     end
 
+    # @return [Float, nil] The Rails version as a `major.minor` Float.
     def read_rails_version_from_bundler_lock_file
       lock_file_path = bundler_lock_file_path
       return nil unless lock_file_path
@@ -307,6 +316,14 @@ module RuboCop
         result = line.match(/^\s+railties\s+\((\d+\.\d+)/)
         return result.captures.first.to_f if result
       end
+    end
+
+    # @returns [Hash{String => Gem::Version}] The locked gem versions, keyed by the gems' names.
+    def read_gem_versions_from_target_lockfile
+      lockfile_path = bundler_lock_file_path
+      return nil unless lockfile_path
+
+      Lockfile.new(lockfile_path).gem_versions
     end
 
     def enable_cop?(qualified_cop_name, cop_options)
