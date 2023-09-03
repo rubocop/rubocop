@@ -176,6 +176,19 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
+  it 'register an offense and corrects when returning a multiline ternary operator expression with safe navigation method call' do
+    expect_offense(<<~RUBY)
+      obj&.do_something cond ?
+                        ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+                        foo :
+                        bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj&.do_something cond ? foo : bar
+    RUBY
+  end
+
   it 'accepts a single line ternary operator expression' do
     expect_no_offenses('a = cond ? b : c')
   end

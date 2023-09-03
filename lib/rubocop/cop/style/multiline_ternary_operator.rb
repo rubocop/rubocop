@@ -39,7 +39,7 @@ module RuboCop
 
         MSG_IF = 'Avoid multi-line ternary operators, use `if` or `unless` instead.'
         MSG_SINGLE_LINE = 'Avoid multi-line ternary operators, use single-line instead.'
-        SINGLE_LINE_TYPES = %i[return break next send].freeze
+        SINGLE_LINE_TYPES = %i[return break next send csend].freeze
 
         def on_if(node)
           return unless offense?(node)
