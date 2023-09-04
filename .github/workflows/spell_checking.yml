@@ -14,7 +14,7 @@ jobs:
     name: Check spelling of all files with codespell
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: codespell-project/actions-codespell@v2
         with:
           check_filenames: true
@@ -24,7 +24,7 @@ jobs:
     name: Check spelling of all files in commit with misspell
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install
         run: wget -O - -q https://raw.githubusercontent.com/client9/misspell/master/install-misspell.sh | sh -s -- -b .
       - name: Misspell
