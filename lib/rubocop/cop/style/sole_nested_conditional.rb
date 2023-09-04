@@ -173,7 +173,9 @@ module RuboCop
         end
 
         def correct_for_comment(corrector, node, if_branch)
-          comments = processed_source.ast_with_comments[if_branch]
+          comments = processed_source.ast_with_comments[if_branch].select do |comment|
+            comment.loc.line < if_branch.condition.first_line
+          end
           comment_text = comments.map(&:text).join("\n") << "\n"
 
           corrector.insert_before(node.loc.keyword, comment_text) unless comments.empty?
