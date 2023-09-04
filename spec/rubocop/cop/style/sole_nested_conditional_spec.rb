@@ -483,6 +483,23 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when comment is in an empty nested `if` body' do
+    expect_offense(<<~RUBY)
+      if foo
+        if bar
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          # Comments.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && bar
+          # Comments.
+        end
+    RUBY
+  end
+
   it 'registers an offense and corrects when `if` foo do_something end `if` bar' do
     expect_offense(<<~RUBY)
       if foo
