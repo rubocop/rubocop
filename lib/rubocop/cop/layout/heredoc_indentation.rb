@@ -25,6 +25,9 @@ module RuboCop
         include Alignment
         include Heredoc
         extend AutoCorrector
+        extend TargetRubyVersion
+
+        minimum_target_ruby_version 2.3
 
         TYPE_MSG = 'Use %<indentation_width>d spaces for indentation in a ' \
                    'heredoc by using `<<~` instead of `%<current_indent_type>s`.'
