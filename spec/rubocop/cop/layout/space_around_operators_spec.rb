@@ -160,6 +160,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     RUBY
   end
 
+  it 'accepts vertical alignment with operator' do
+    expect_no_offenses(<<~RUBY)
+      down? && !migrated.include?(migration.version.to_i)
+      up?   &&  migrated.include?(migration.version.to_i)
+    RUBY
+  end
+
   it 'accepts an operator called with method syntax' do
     expect_no_offenses('Date.today.+(1).to_s')
   end
