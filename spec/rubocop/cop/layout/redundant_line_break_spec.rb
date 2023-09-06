@@ -382,6 +382,13 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
+      it 'accepts a quoted symbol with a single newline' do
+        expect_no_offenses(<<~RUBY)
+          foo(:"
+          ")
+        RUBY
+      end
+
       context 'with a longer max line length' do
         let(:max_line_length) { 82 }
 
