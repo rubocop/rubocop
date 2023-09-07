@@ -1,0 +1,1 @@
+* [#12181](https://github.com/rubocop/rubocop/issues/12181): Fix an incorrect autocorrect for `Lint/UselessAssignment` when variables are assigned with sequential assignment using the comma operator and unreferenced. ([@koic][])
