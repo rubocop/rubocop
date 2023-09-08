@@ -23,6 +23,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterNot, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects newline after !' do
+    expect_offense(<<~RUBY)
+      !
+      ^ Do not leave space between `!` and its argument.
+      something
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !something
+    RUBY
+  end
+
   it 'accepts no space after !' do
     expect_no_offenses('!something')
   end
