@@ -139,13 +139,15 @@ RSpec:
       - expect_no_offenses
       - expect_offense
 
-RSpec/FilePath:
-  Exclude:
-    - spec/rubocop/cop/internal_affairs/redundant_let_rubocop_config_new_spec.rb
-    - spec/rubocop/formatter/junit_formatter_spec.rb
-
 RSpec/PredicateMatcher:
   EnforcedStyle: explicit
+
+RSpec/SpecFilePathFormat:
+  CustomTransform:
+    JUnitFormatter: junit_formatter
+    RedundantLetRuboCopConfigNew: redundant_let_rubocop_config_new
+  Exclude:
+    - spec/rubocop/cop/mixin/enforce_superclass_spec.rb
 
 RSpec/MessageSpies:
   EnforcedStyle: receive
