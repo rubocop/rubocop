@@ -19,22 +19,23 @@ module RuboCop
       #   differently on different classes, and are not guaranteed to
       #   have the same result if reversed.
       #
-      # @example SupportedOperators: ['*', '+', '&'']
+      # @example SupportedOperators: ['*', '+', '&', '|', '^'] (default)
       #   # bad
-      #   1 + x
       #   10 * y
+      #   1 + x
       #   1 & z
+      #   1 | x
+      #   1 ^ x
       #   1 + CONST
       #
       #   # good
-      #   60 * 24
-      #   x + 1
       #   y * 10
+      #   x + 1
       #   z & 1
+      #   x | 1
+      #   x ^ 1
       #   CONST + 1
-      #
-      #   # good
-      #   1 | x
+      #   60 * 24
       #
       class YodaExpression < Base
         extend AutoCorrector
