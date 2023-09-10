@@ -3409,6 +3409,7 @@ Style/CollectionMethods:
   PreferredMethods:
     collect: 'map'
     collect!: 'map!'
+    collect_concat: 'flat_map'
     inject: 'reduce'
     detect: 'find'
     find_all: 'select'
