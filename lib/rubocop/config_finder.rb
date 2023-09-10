@@ -21,6 +21,17 @@ module RuboCop
           DEFAULT_FILE
       end
 
+      def find_project_dotfile(target_dir)
+        if project_root
+          find_last_file_upwards(DOTFILE, target_dir, project_root)
+        else
+          files = files_upwards(DOTFILE, target_dir, Dir.home).to_a
+          # skip configs found in the user's home directory
+          files.pop if files.last && File.dirname(files.last) == Dir.home
+          files.last
+        end
+      end
+
       # Returns the path RuboCop inferred as the root of the project. No file
       # searches will go past this directory.
       def project_root
@@ -35,10 +46,6 @@ module RuboCop
         return unless gems_file
 
         File.dirname(gems_file)
-      end
-
-      def find_project_dotfile(target_dir)
-        find_file_upwards(DOTFILE, target_dir, project_root)
       end
 
       def find_user_dotfile

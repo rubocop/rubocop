@@ -136,7 +136,7 @@ module RuboCop
       end
 
       def add_excludes_from_files(config, config_file)
-        exclusion_file = find_last_file_upwards(DOTFILE, config_file, ConfigFinder.project_root)
+        exclusion_file = ConfigFinder.find_project_dotfile(config_file)
 
         return unless exclusion_file
         return if PathUtil.relative_path(exclusion_file) == PathUtil.relative_path(config_file)

@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Team do
   describe '#inspect_file', :isolated_environment do
     include FileHelper
 
-    let(:file_path) { '/tmp/example.rb' }
+    let(:file_path) { 'example.rb' }
     let(:source) do
       source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
       source.config = config
@@ -175,7 +175,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       let(:error_message) do
         'An error occurred while Style/NumericLiterals cop was inspecting ' \
-          '/tmp/example.rb:1:0.'
+          'example.rb:1:0.'
       end
 
       it 'records Team#errors' do
@@ -198,7 +198,7 @@ RSpec.describe RuboCop::Cop::Team do
         RUBY
       end
 
-      let(:file_path) { '/tmp/Gemfile' }
+      let(:file_path) { 'Gemfile' }
 
       let(:buggy_correction) { ->(_corrector) do raise cause end }
       let(:options) { { autocorrect: true } }
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       let(:error_message) do
         'An error occurred while Bundler/OrderedGems cop was inspecting ' \
-          '/tmp/Gemfile.'
+          'Gemfile.'
       end
 
       it 'records Team#errors' do
