@@ -27,6 +27,8 @@ module RuboCop
         PATTERN
 
         def on_new_investigation
+          return if processed_source.blank?
+
           assertions_using_described_class_msg.each { |node| add_offense(node) }
         end
 

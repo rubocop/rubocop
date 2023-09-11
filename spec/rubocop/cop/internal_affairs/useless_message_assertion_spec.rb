@@ -37,4 +37,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::UselessMessageAssertion, :config d
       end
     RUBY
   end
+
+  it 'does not register an offense and no error when empty file' do
+    expect_no_offenses('', 'example_spec.rb')
+  end
 end
