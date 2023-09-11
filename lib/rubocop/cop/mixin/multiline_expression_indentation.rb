@@ -20,16 +20,17 @@ module RuboCop
         range = offending_range(node, lhs, rhs, style)
         check(range, node, lhs, rhs)
       end
+      alias on_csend on_send
 
       private
 
-      # In a chain of method calls, we regard the top send node as the base
+      # In a chain of method calls, we regard the top call node as the base
       # for indentation of all lines following the first. For example:
       # a.
       #   b c { block }.            <-- b is indented relative to a
       #   d                         <-- d is indented relative to a
       def left_hand_side(lhs)
-        while lhs.parent&.send_type? && lhs.parent.loc.dot && !lhs.parent.assignment_method?
+        while lhs.parent&.call_type? && lhs.parent.loc.dot && !lhs.parent.assignment_method?
           lhs = lhs.parent
         end
         lhs

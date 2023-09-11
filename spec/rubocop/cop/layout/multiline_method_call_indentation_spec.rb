@@ -219,6 +219,113 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           .b
       RUBY
     end
+
+    context 'when using safe navigation operator' do
+      it 'registers an offense and corrects no indentation of second line' do
+        expect_offense(<<~RUBY)
+          a&.
+          b
+          ^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a&.
+            b
+        RUBY
+      end
+
+      it 'registers an offense and corrects 3 spaces indentation of 2nd line' do
+        expect_offense(<<~RUBY)
+          a&.
+             b
+             ^ Use 2 (not 3) spaces for indenting an expression spanning multiple lines.
+          c&.
+             d
+             ^ Use 2 (not 3) spaces for indenting an expression spanning multiple lines.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a&.
+            b
+          c&.
+            d
+        RUBY
+      end
+
+      it 'registers an offense and corrects extra indentation of third line' do
+        expect_offense(<<~RUBY)
+          a&.
+            b&.
+              c
+              ^ Use 2 (not 4) spaces for indenting an expression spanning multiple lines.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a&.
+            b&.
+            c
+        RUBY
+      end
+
+      it 'registers an offense and corrects the emacs ruby-mode 1.1 ' \
+         'indentation of an expression in an array' do
+        expect_offense(<<~RUBY)
+          [
+           a&.
+           b
+           ^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+           a&.
+             b
+          ]
+        RUBY
+      end
+
+      it 'registers an offense and corrects extra indentation of 3rd line in typical RSpec code' do
+        expect_offense(<<~RUBY)
+          expect { Foo.new }&.
+            to change { Bar.count }&.
+                from(1)&.to(2)
+                ^^^^ Use 2 (not 6) spaces for indenting an expression spanning multiple lines.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          expect { Foo.new }&.
+            to change { Bar.count }&.
+            from(1)&.to(2)
+        RUBY
+      end
+
+      it 'registers an offense and corrects proc call without a selector' do
+        expect_offense(<<~RUBY)
+          a
+           &.(args)
+           ^^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a
+            &.(args)
+        RUBY
+      end
+
+      it 'registers an offense and corrects one space indentation of 2nd line' do
+        expect_offense(<<~RUBY)
+          a
+           &.b
+           ^^^ Use 2 (not 1) spaces for indenting an expression spanning multiple lines.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a
+            &.b
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is aligned' do
@@ -252,6 +359,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           authorize scope.includes(:user)
                          .where(name: 'Bob')
                          .order(:name)
+        RUBY
+      end
+
+      it 'accepts methods being aligned with safe navigation method call that is an argument' do
+        expect_no_offenses(<<~RUBY)
+          do_something obj.foo(key: value)
+                          &.bar(arg)
         RUBY
       end
 

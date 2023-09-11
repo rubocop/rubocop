@@ -75,7 +75,7 @@ module RuboCop
         def right_hand_side(send_node)
           dot = send_node.loc.dot
           selector = send_node.loc.selector
-          if send_node.dot? && selector && same_line?(dot, selector)
+          if (send_node.dot? || send_node.safe_navigation?) && selector && same_line?(dot, selector)
             dot.join(selector)
           elsif selector
             selector
@@ -179,7 +179,7 @@ module RuboCop
         # a.b
         #  .c
         def semantic_alignment_base(node, rhs)
-          return unless rhs.source.start_with?('.')
+          return unless rhs.source.start_with?('.', '&.')
 
           node = semantic_alignment_node(node)
           return unless node&.loc&.selector
