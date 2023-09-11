@@ -5,17 +5,21 @@ module RuboCop
     module Style
       # Checks for RuntimeError as the argument of raise/fail.
       #
-      # It checks for code like this:
-      #
       # @example
-      #   # Bad
+      #   # bad
       #   raise RuntimeError, 'message'
-      #
-      #   # Bad
       #   raise RuntimeError.new('message')
       #
-      #   # Good
+      #   # good
       #   raise 'message'
+      #
+      #   # bad - message is not a string
+      #   raise RuntimeError, Object.new
+      #   raise RuntimeError.new(Object.new)
+      #
+      #   # good
+      #   raise Object.new.to_s
+      #
       class RedundantException < Base
         extend AutoCorrector
 
@@ -30,23 +34,39 @@ module RuboCop
           fix_exploded(node) || fix_compact(node)
         end
 
+        private
+
         def fix_exploded(node)
           exploded?(node) do |command, message|
             add_offense(node, message: MSG_1) do |corrector|
-              if node.parenthesized?
-                corrector.replace(node, "#{command}(#{message.source})")
-              else
-                corrector.replace(node, "#{command} #{message.source}")
-              end
+              corrector.replace(node, replaced_exploded(node, command, message))
             end
           end
+        end
+
+        def replaced_exploded(node, command, message)
+          arg = string_message?(message) ? message.source : "#{message.source}.to_s"
+          arg = node.parenthesized? ? "(#{arg})" : " #{arg}"
+          "#{command}#{arg}"
+        end
+
+        def string_message?(message)
+          message.str_type? || message.dstr_type? || message.xstr_type?
         end
 
         def fix_compact(node)
           compact?(node) do |new_call, message|
             add_offense(node, message: MSG_2) do |corrector|
-              corrector.replace(new_call, message.source)
+              corrector.replace(new_call, replaced_compact(message))
             end
+          end
+        end
+
+        def replaced_compact(message)
+          if string_message?(message)
+            message.source
+          else
+            "#{message.source}.to_s"
           end
         end
 
