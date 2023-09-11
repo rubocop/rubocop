@@ -522,6 +522,15 @@ can be replaced by `array1.intersect?(array2)`.
 The `array1.intersect?(array2)` method is faster than
 `(array1 & array2).any?` and is more readable.
 
+In cases like the following, compatibility is not ensured,
+so it will not be detected when using block argument.
+
+[source,ruby]
+----
+([1] & [1,2]).any? { |x| false }    # => false
+[1].intersect?([1,2]) { |x| false } # => true
+----
+
 === Safety
 
 This cop cannot guarantee that `array1` and `array2` are
@@ -16156,25 +16165,26 @@ have the same result if reversed.
 
 === Examples
 
-==== SupportedOperators: ['*', '+', '&'']
+==== SupportedOperators: ['*', '+', '&', '|', '^'] (default)
 
 [source,ruby]
 ----
 # bad
-1 + x
 10 * y
+1 + x
 1 & z
+1 | x
+1 ^ x
 1 + CONST
 
 # good
-60 * 24
-x + 1
 y * 10
+x + 1
 z & 1
+x | 1
+x ^ 1
 CONST + 1
-
-# good
-1 | x
+60 * 24
 ----
 
 === Configurable attributes

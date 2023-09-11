@@ -1330,7 +1330,23 @@ end
 | 0.59
 |===
 
-Enforces empty line after guard clause
+Enforces empty line after guard clause.
+
+This cop allows `# :nocov:` directive after guard clause because
+SimpleCov excludes code from the coverage report by wrapping it in `# :nocov:`:
+
+[source,ruby]
+----
+def foo
+  # :nocov:
+  return if condition
+  # :nocov:
+  bar
+end
+----
+
+Refer to SimpleCov's documentation for more details:
+https://github.com/simplecov-ruby/simplecov#ignoringskipping-code
 
 === Examples
 
@@ -3700,6 +3716,8 @@ opening HEREDOC tag.
 * https://rubystyle.guide#heredoc-argument-closing-parentheses
 
 == Layout/HeredocIndentation
+
+NOTE: Required Ruby version: 2.3
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed

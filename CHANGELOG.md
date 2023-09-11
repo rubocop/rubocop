@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.56.3 (2023-09-11)
+
 ### Bug fixes
 
 * [#12151](https://github.com/rubocop/rubocop/issues/12151): Make `Layout/EmptyLineAfterGuardClause` allow `:nocov:` directive after guard clause. ([@koic][])
