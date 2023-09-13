@@ -82,15 +82,22 @@ module RuboCop
         def autocorrect(corrector, offense_range:, send_node:)
           corrector.replace(
             offense_range,
-            add_safe_navigation_operator(
-              offense_range: offense_range,
-              send_node: send_node
-            )
+            add_safe_navigation_operator(offense_range: offense_range, send_node: send_node)
           )
+
+          corrector.wrap(send_node, '(', ')') if require_parentheses?(send_node)
         end
 
         def brackets?(send_node)
           send_node.method?(:[]) || send_node.method?(:[]=)
+        end
+
+        def require_parentheses?(send_node)
+          return false unless send_node.comparison_method?
+          return false unless (node = send_node.parent)
+
+          (node.respond_to?(:logical_operator?) && node.logical_operator?) ||
+            (node.respond_to?(:comparison_method?) && node.comparison_method?)
         end
       end
     end
