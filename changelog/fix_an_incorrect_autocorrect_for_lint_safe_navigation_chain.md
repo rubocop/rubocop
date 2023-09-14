@@ -1,0 +1,1 @@
+* [#12203](https://github.com/rubocop/rubocop/pull/12203): Fix an incorrect autocorrect for `Lint/SafeNavigationChain` when using safe navigation with comparison operator as an expression of logical operator or comparison operator's operand. ([@koic][])
