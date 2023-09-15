@@ -206,6 +206,12 @@ RSpec.describe 'RuboCop Project', type: :feature do
         expect(entries).to all(match(/^\* \S/))
       end
 
+      it 'has one space between the period and the parentheses enclosing contributor name' do
+        # NOTE: For compatibility with outdated formats, if there's no contributor name,
+        # it checks that the line ends with a period.
+        expect(entries).to all(match(/(\. \(\[|\.\z)/))
+      end
+
       describe 'link to related issue' do
         let(:issues) do
           entries.filter_map do |entry|
