@@ -26,9 +26,7 @@ module RuboCop
       #     expect_no_offenses('...')
       #   end
       class ExampleDescription < Base
-        class << self
-          attr_accessor :descriptions
-        end
+        extend AutoCorrector
 
         MSG = 'Description does not match use of `%<method_name>s`.'
 
@@ -39,22 +37,31 @@ module RuboCop
           expect_no_corrections
         ].to_set.freeze
 
-        EXPECT_NO_OFFENSES_INCORRECT_DESCRIPTIONS = [
-          /^(adds|registers|reports|finds) (an? )?offense/,
-          /^(flags|handles|works)\b/
-        ].freeze
+        EXPECT_NO_OFFENSES_DESCRIPTION_MAPPING = {
+          /\A(adds|registers|reports|finds) (an? )?offense/ => 'does not register an offense',
+          /\A(flags|handles|works)\b/ => 'does not register'
+        }.freeze
 
-        EXPECT_OFFENSE_INCORRECT_DESCRIPTIONS = [
-          /^(does not|doesn't) (register|find|flag|report)/,
-          /^(does not|doesn't) add (a|an|any )?offense/,
-          /^accepts\b/
-        ].freeze
+        EXPECT_OFFENSE_DESCRIPTION_MAPPING = {
+          /\A(does not|doesn't) (register|find|flag|report)/ => 'registers',
+          /\A(does not|doesn't) add (a|an|any )?offense/ => 'registers an offense',
+          /\Aaccepts\b/ => 'registers'
+        }.freeze
 
-        EXPECT_NO_CORRECTIONS_INCORRECT_DESCRIPTIONS = [/^(auto[- ]?)?correct/].freeze
+        EXPECT_NO_CORRECTIONS_DESCRIPTION_MAPPING = {
+          /\A(auto[- ]?)?correct/ => 'does not correct'
+        }.freeze
 
-        EXPECT_CORRECTION_INCORRECT_DESCRIPTIONS = [
-          /\b(does not|doesn't) (auto[- ]?)?correct/
-        ].freeze
+        EXPECT_CORRECTION_DESCRIPTION_MAPPING = {
+          /\b(does not|doesn't) (auto[- ]?)?correct/ => 'autocorrects'
+        }.freeze
+
+        EXAMPLE_DESCRIPTION_MAPPING = {
+          expect_no_offenses: EXPECT_NO_OFFENSES_DESCRIPTION_MAPPING,
+          expect_offense: EXPECT_OFFENSE_DESCRIPTION_MAPPING,
+          expect_no_corrections: EXPECT_NO_CORRECTIONS_DESCRIPTION_MAPPING,
+          expect_correction: EXPECT_CORRECTION_DESCRIPTION_MAPPING
+        }.freeze
 
         # @!method offense_example?(node)
         def_node_matcher :offense_example?, <<~PATTERN
@@ -67,21 +74,34 @@ module RuboCop
 
         def on_send(node)
           parent = node.each_ancestor(:block).first
-          return unless parent && (description = offense_example?(parent))
+          return unless parent && (current_description = offense_example?(parent))
 
           method_name = node.method_name
           message = format(MSG, method_name: method_name)
 
-          regexp_group = self.class.const_get("#{method_name}_incorrect_descriptions".upcase)
-          check_description(description, regexp_group, message)
+          description_map = EXAMPLE_DESCRIPTION_MAPPING[method_name]
+          check_description(current_description, description_map, message)
         end
 
         private
 
-        def check_description(description, regexps, message)
-          return unless regexps.any? { |regexp| regexp.match?(string_contents(description)) }
+        def check_description(current_description, description_map, message)
+          description_text = string_contents(current_description)
+          return unless (new_description = correct_description(description_text, description_map))
 
-          add_offense(description, message: message)
+          add_offense(current_description, message: message) do |corrector|
+            corrector.replace(current_description, "'#{new_description}'")
+          end
+        end
+
+        def correct_description(current_description, description_map)
+          description_map.each do |incorrect_description_pattern, preferred_description|
+            if incorrect_description_pattern.match?(current_description)
+              return current_description.gsub(incorrect_description_pattern, preferred_description)
+            end
+          end
+
+          nil
         end
 
         def string_contents(node)
