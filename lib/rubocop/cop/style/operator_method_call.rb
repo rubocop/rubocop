@@ -54,6 +54,7 @@ module RuboCop
 
         def wrap_in_parentheses_if_chained(corrector, node)
           return unless node.parent&.call_type?
+          return if node.parent.first_argument == node
 
           operator = node.loc.selector
 
