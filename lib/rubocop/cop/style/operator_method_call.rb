@@ -23,6 +23,7 @@ module RuboCop
         MSG = 'Redundant dot detected.'
         RESTRICT_ON_SEND = %i[| ^ & <=> == === =~ > >= < <= << >> + - * / % ** ~ ! != !~].freeze
 
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
         def on_send(node)
           return unless (dot = node.loc.dot)
           return if node.receiver.const_type? || !node.arguments.one?
@@ -33,8 +34,12 @@ module RuboCop
           add_offense(dot) do |corrector|
             wrap_in_parentheses_if_chained(corrector, node)
             corrector.replace(dot, ' ')
+
+            selector = node.loc.selector
+            corrector.insert_after(selector, ' ') if selector.end_pos == rhs.source_range.begin_pos
           end
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
         private
 
