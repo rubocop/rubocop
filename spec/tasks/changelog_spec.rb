@@ -47,11 +47,16 @@ RSpec.describe Changelog do
     CHANGELOG
   end
 
+  let(:duplicate_entry) do
+    Changelog::Entry.new(type: :fix, body: 'Duplicate contributor name entry', user: 'johndoe')
+  end
+
   let(:entries) do
     %i[fix new fix].map.with_index do |type, i|
-      Changelog::Entry.new(type: type,
-                           body: "Do something cool#{'x' * i}", user: "johndoe#{'x' * i}")
-    end
+      Changelog::Entry.new(
+        type: type, body: "Do something cool#{'x' * i}", user: "johndoe#{'x' * i}"
+      )
+    end << duplicate_entry
   end
 
   describe Changelog::Entry do
@@ -163,6 +168,7 @@ RSpec.describe Changelog do
 
       * [#x](https://github.com/rubocop/rubocop/pull/x): Do something cool. ([@johndoe][])
       * [#x](https://github.com/rubocop/rubocop/pull/x): Do something coolxx. ([@johndoexx][])
+      * [#x](https://github.com/rubocop/rubocop/pull/x): Duplicate contributor name entry. ([@johndoe][])
     CHANGELOG
 
     expect(changelog.new_contributor_lines).to eq(
