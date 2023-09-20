@@ -4920,7 +4920,9 @@ Style/RedundantFilterChain:
                   Identifies usages of `any?`, `empty?`, `none?` or `one?` predicate methods chained to
                   `select`/`filter`/`find_all` and change them to use predicate method instead.
   Enabled: pending
+  SafeAutoCorrect: false
   VersionAdded: '1.52'
+  VersionChanged: '<<next>>'
 
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."
