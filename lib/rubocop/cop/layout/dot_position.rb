@@ -32,7 +32,7 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless node.dot? || ampersand_dot?(node)
+          return unless node.dot? || node.safe_navigation?
 
           return correct_style_detected if proper_dot_position?(node)
 
@@ -132,10 +132,6 @@ module RuboCop
 
           # l.(1) has no selector, so we use the opening parenthesis instead
           node.loc.selector || node.loc.begin
-        end
-
-        def ampersand_dot?(node)
-          node.loc.respond_to?(:dot) && node.loc.dot && node.loc.dot.is?('&.')
         end
       end
     end
