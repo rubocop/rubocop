@@ -96,4 +96,13 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
       puts x
     RUBY
   end
+
+  it 'does not register an offense when comment text `# encoding: ISO-8859-1` is embedded within ' \
+     'example code as source code comment' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+
+      # eval('# encoding: ISO-8859-1')
+    RUBY
+  end
 end
