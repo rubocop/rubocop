@@ -261,7 +261,7 @@ module RuboCop
     class SimpleComment < MagicComment
       # Match `encoding` or `coding`
       def encoding
-        extract(/\A\s*\#.*\b#{KEYWORDS[:encoding]}: (#{TOKEN})/io)
+        extract(/\A\s*\#\s*#{KEYWORDS[:encoding]}: (#{TOKEN})/io)
       end
 
       # Rewrite the comment without a given token type

@@ -96,4 +96,14 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
       puts x
     RUBY
   end
+
+  it 'does not register an offense when using `encoding` magic comment inside other comment' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+      # Example:
+      #
+      #   re = eval("# encoding: ascii/")
+      #   re.encoding
+    RUBY
+  end
 end
