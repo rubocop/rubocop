@@ -142,6 +142,9 @@ RSpec:
 RSpec/PredicateMatcher:
   EnforcedStyle: explicit
 
+RSpec/FilePath:
+  Enabled: false
+
 RSpec/SpecFilePathFormat:
   CustomTransform:
     JUnitFormatter: junit_formatter
