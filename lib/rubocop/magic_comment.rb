@@ -7,7 +7,7 @@ module RuboCop
   class MagicComment
     # IRB's pattern for matching magic comment tokens.
     # @see https://github.com/ruby/ruby/blob/b4a55c1/lib/irb/magic-file.rb#L5
-    TOKEN = /[[:alnum:]\-_]+/.freeze
+    TOKEN = '(?<token>[[:alnum:]\-_]+)'
     KEYWORDS = {
       encoding: '(?:en)?coding',
       frozen_string_literal: 'frozen[_-]string[_-]literal',
@@ -129,7 +129,7 @@ module RuboCop
     # @return [String] if pattern matched
     # @return [nil] otherwise
     def extract(pattern)
-      @comment[pattern, 1]
+      @comment[pattern, :token]
     end
 
     # Parent to Vim and Emacs magic comment handling.
@@ -157,10 +157,10 @@ module RuboCop
       # @return [String] extracted value if it is found
       # @return [nil] otherwise
       def match(keyword)
-        pattern = /\A#{keyword}\s*#{self.class::OPERATOR}\s*(#{TOKEN})\z/
+        pattern = /\A#{keyword}\s*#{self.class::OPERATOR}\s*#{TOKEN}\z/
 
         tokens.each do |token|
-          next unless (value = token[pattern, 1])
+          next unless (value = token[pattern, :token])
 
           return value.downcase
         end
@@ -188,7 +188,7 @@ module RuboCop
     # @see https://www.gnu.org/software/emacs/manual/html_node/emacs/Specify-Coding.html
     # @see https://github.com/ruby/ruby/blob/3f306dc/parse.y#L6873-L6892 Emacs handling in parse.y
     class EmacsComment < EditorComment
-      REGEXP    = /-\*-(.+)-\*-/.freeze
+      REGEXP    = /-\*-(?<token>.+)-\*-/.freeze
       FORMAT    = '# -*- %s -*-'
       SEPARATOR = ';'
       OPERATOR  = ':'
@@ -216,7 +216,7 @@ module RuboCop
     #
     #   comment.encoding # => 'ascii-8bit'
     class VimComment < EditorComment
-      REGEXP    = /#\s*vim:\s*(.+)/.freeze
+      REGEXP    = /#\s*vim:\s*(?<token>.+)/.freeze
       FORMAT    = '# vim: %s'
       SEPARATOR = ', '
       OPERATOR  = '='
@@ -259,9 +259,11 @@ module RuboCop
     #   comment2.frozen_string_literal # => nil
     #   comment2.encoding              # => 'utf-8'
     class SimpleComment < MagicComment
+      FSTRING_LITERAL_COMMENT = 'frozen_string_literal:\s*(true|false)'
+
       # Match `encoding` or `coding`
       def encoding
-        extract(/\A\s*\#.*\b#{KEYWORDS[:encoding]}: (#{TOKEN})/io)
+        extract(/\A\s*\#\s*(#{FSTRING_LITERAL_COMMENT})?\s*#{KEYWORDS[:encoding]}: (#{TOKEN})/io)
       end
 
       # Rewrite the comment without a given token type
@@ -283,15 +285,15 @@ module RuboCop
       # Case-insensitive and dashes/underscores are acceptable.
       # @see https://github.com/ruby/ruby/blob/78b95b4/parse.y#L7134-L7138
       def extract_frozen_string_literal
-        extract(/\A\s*#\s*#{KEYWORDS[:frozen_string_literal]}:\s*(#{TOKEN})\s*\z/io)
+        extract(/\A\s*#\s*#{KEYWORDS[:frozen_string_literal]}:\s*#{TOKEN}\s*\z/io)
       end
 
       def extract_shareable_constant_value
-        extract(/\A\s*#\s*#{KEYWORDS[:shareable_constant_value]}:\s*(#{TOKEN})\s*\z/io)
+        extract(/\A\s*#\s*#{KEYWORDS[:shareable_constant_value]}:\s*#{TOKEN}\s*\z/io)
       end
 
       def extract_typed
-        extract(/\A\s*#\s*#{KEYWORDS[:typed]}:\s*(#{TOKEN})\s*\z/io)
+        extract(/\A\s*#\s*#{KEYWORDS[:typed]}:\s*#{TOKEN}\s*\z/io)
       end
     end
   end
