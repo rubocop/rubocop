@@ -1,0 +1,1 @@
+* [#12208](https://github.com/rubocop/rubocop/issues/12208): Fix an incorrect autocorrect for the `--disable-uncorrectable` command line option when registering an offense is outside a percent array. ([@koic][])
