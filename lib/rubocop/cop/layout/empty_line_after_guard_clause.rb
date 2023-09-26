@@ -164,6 +164,8 @@ module RuboCop
 
           if node.if_branch.and_type?
             node.if_branch.children.first
+          elsif use_heredoc_in_condition?(node.condition)
+            node.condition
           else
             node.if_branch.children.last
           end
@@ -178,6 +180,12 @@ module RuboCop
 
         def heredoc?(node)
           node.respond_to?(:heredoc?) && node.heredoc?
+        end
+
+        def use_heredoc_in_condition?(condition)
+          condition.descendants.any? do |descendant|
+            descendant.respond_to?(:heredoc?) && descendant.heredoc?
+          end
         end
 
         def offense_location(node)
