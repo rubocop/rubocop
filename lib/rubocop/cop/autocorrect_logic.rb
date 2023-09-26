@@ -82,7 +82,9 @@ module RuboCop
           node.array_type? && node.percent_literal?
         end
 
-        percent_array.map(&:source_range).find { |range| range.overlaps?(offense_range) }
+        percent_array.map(&:source_range).find do |range|
+          offense_range.begin_pos > range.begin_pos && range.overlaps?(offense_range)
+        end
       end
 
       def range_of_first_line(range)

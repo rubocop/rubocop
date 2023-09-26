@@ -308,6 +308,41 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
           RUBY
         end
       end
+
+      context 'and the offense is outside a percent array' do
+        it 'adds a single one-line disable statement' do
+          create_file('.rubocop.yml', <<~YAML)
+            Metrics/MethodLength:
+              Max: 2
+          YAML
+          create_file('example.rb', <<~RUBY)
+            def foo
+              bar do
+                %w[]
+              end
+            end
+          RUBY
+          expect(exit_code).to eq(0)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<~OUTPUT)
+            == example.rb ==
+            C:  1:  1: [Todo] Metrics/MethodLength: Method has too many lines. [3/2]
+            C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+            C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
+
+            1 file inspected, 3 offenses detected, 3 offenses corrected
+          OUTPUT
+          expect(File.read('example.rb')).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            def foo # rubocop:todo Metrics/MethodLength
+              bar do
+                %w[]
+              end
+            end
+          RUBY
+        end
+      end
     end
 
     context 'when exist offense for Layout/SpaceInsideArrayLiteralBrackets' do
