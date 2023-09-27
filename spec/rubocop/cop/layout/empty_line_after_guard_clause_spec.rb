@@ -482,6 +482,30 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'does not register an offense and corrects when using `return` before guard condition with heredoc' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        return true if <<~TEXT.length > bar
+          hi
+        TEXT
+
+        false
+      end
+    RUBY
+  end
+
+  it 'does not register an offense and corrects when using `raise` before guard condition with heredoc' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        raise if <<~TEXT.length > bar
+          hi
+        TEXT
+
+        baz
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects a guard clause that is a ternary operator' do
     expect_offense(<<~RUBY)
       def foo
