@@ -5186,6 +5186,11 @@ Style/SingleLineBlockParams:
         - acc
         - elem
 
+Style/SingleLineDoEndBlock:
+  Description: 'Checks for single-line `do`...`end` blocks.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/SingleLineMethods:
   Description: 'Avoid single-line methods.'
   StyleGuide: '#no-single-line-methods'
