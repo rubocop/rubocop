@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Team do
 
       let(:file_path) { 'Gemfile' }
 
-      let(:buggy_correction) { ->(_corrector) do raise cause end }
+      let(:buggy_correction) { ->(_corrector) { raise cause } }
       let(:options) { { autocorrect: true } }
 
       let(:cause) { StandardError.new('cause') }
