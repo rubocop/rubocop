@@ -1797,6 +1797,7 @@ this cop may register false positives.
 # bad
 items.collect
 items.collect!
+items.collect_concat
 items.inject
 items.detect
 items.find_all
@@ -1805,6 +1806,7 @@ items.member?
 # good
 items.map
 items.map!
+items.flat_map
 items.reduce
 items.find
 items.select
@@ -1817,7 +1819,7 @@ items.include?
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
+| `{"collect"=>"map", "collect!"=>"map!", "collect_concat"=>"flat_map", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
 | 
 
 | MethodsAcceptingSymbol
@@ -12740,9 +12742,13 @@ end
 | -
 |===
 
-Enforces consistency between 'return nil' and 'return'.
+Enforces consistency between `return nil` and `return`.
 
-Supported styles are: return, return_nil.
+This cop is disabled by default. Because there seems to be a perceived semantic difference
+between `return` and `return nil`. The former can be seen as just halting evaluation,
+while the latter might be used when the return value is of specific concern.
+
+Supported styles are `return` and `return_nil`.
 
 === Examples
 
