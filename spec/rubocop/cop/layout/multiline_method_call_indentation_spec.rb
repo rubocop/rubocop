@@ -693,6 +693,46 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects misaligned methods in multiline block chain' do
+      expect_offense(<<~RUBY)
+        do_something.foo do
+        end.bar
+                    .baz
+                    ^^^^ Align `.baz` with `.bar` on line 2.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something.foo do
+        end.bar
+           .baz
+      RUBY
+    end
+
+    it 'accepts aligned methods in multiline block chain' do
+      expect_no_offenses(<<~RUBY)
+        do_something.foo do
+        end.bar
+           .baz
+      RUBY
+    end
+
+    it 'accepts aligned methods in multiline numbered block chain' do
+      expect_no_offenses(<<~RUBY)
+        do_something.foo do
+          bar(_1)
+        end.baz
+           .qux
+      RUBY
+    end
+
+    it 'accepts aligned methods in multiline block chain with safe navigation operator' do
+      expect_no_offenses(<<~RUBY)
+        do_something.foo do
+        end&.bar
+           &.baz
+      RUBY
+    end
+
     it 'registers an offense and corrects misaligned methods in local variable assignment' do
       expect_offense(<<~RUBY)
         a = b.c.

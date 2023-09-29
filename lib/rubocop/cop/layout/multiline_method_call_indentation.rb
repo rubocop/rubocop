@@ -204,6 +204,10 @@ module RuboCop
           dot_right_above = get_dot_right_above(node)
           return dot_right_above if dot_right_above
 
+          if (multiline_block_chain_node = find_multiline_block_chain_node(node))
+            return multiline_block_chain_node
+          end
+
           node = first_call_has_a_dot(node)
           return if node.loc.dot.line != node.first_line
 
@@ -217,6 +221,13 @@ module RuboCop
 
             dot.line == node.loc.dot.line - 1 && dot.column == node.loc.dot.column
           end
+        end
+
+        def find_multiline_block_chain_node(node)
+          return unless (block_node = node.each_descendant(:block, :numblock).first)
+          return unless block_node.multiline? && block_node.parent.call_type?
+
+          block_node.parent
         end
 
         def first_call_has_a_dot(node)
