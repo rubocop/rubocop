@@ -114,7 +114,7 @@ module RuboCop
             if node.parent&.assignment?
               replace_begin_with_statement(corrector, offense_range, node)
             else
-              corrector.remove(offense_range)
+              remove_begin(corrector, offense_range, node)
             end
 
             if use_modifier_form_after_multiline_begin_block?(node)
@@ -134,6 +134,14 @@ module RuboCop
           corrector.remove(range_between(offense_range.end_pos, first_child.source_range.end_pos))
 
           restore_removed_comments(corrector, offense_range, node, first_child)
+        end
+
+        def remove_begin(corrector, offense_range, node)
+          if node.parent.respond_to?(:endless?) && node.parent.endless?
+            offense_range = range_with_surrounding_space(offense_range, newlines: true)
+          end
+
+          corrector.remove(offense_range)
         end
 
         # Restore comments that occur between "begin" and "first_child".

@@ -579,7 +579,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         end
       RUBY
 
-      expect_correction("def foo = \n  bar\n\n")
+      expect_correction("def foo =  bar\n\n")
     end
 
     it 'accepts when `begin` block has multiple statements' do
