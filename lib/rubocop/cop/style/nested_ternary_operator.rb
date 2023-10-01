@@ -40,7 +40,7 @@ module RuboCop
 
         def if_node(node)
           node = node.parent
-          return node if node.if_type?
+          return node if node.if_type? && node.ternary?
 
           if_node(node)
         end
