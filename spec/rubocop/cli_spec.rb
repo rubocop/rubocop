@@ -220,13 +220,26 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     #       In other words, even if no option is specified, it will be parallelized by default.
     describe 'when parallel static by default' do
       context 'when specifying `--debug` option only`' do
-        it 'fails with an error message' do
+        it 'uses parallel inspection' do
           create_file('example1.rb', <<~RUBY)
             # frozen_string_literal: true
 
             puts 'hello'
           RUBY
           expect(cli.run(['--debug'])).to eq(0)
+          expect($stdout.string.include?('Use parallel by default.')).to be(true)
+        end
+      end
+
+      context 'when specifying configuration file' do
+        it 'uses parallel inspection' do
+          create_file('example1.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts 'hello'
+          RUBY
+          create_empty_file('.rubocop.yml')
+          expect(cli.run(['--debug', '--config', '.rubocop.yml'])).to eq(0)
           expect($stdout.string.include?('Use parallel by default.')).to be(true)
         end
       end
@@ -249,7 +262,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'when setting `UseCache: true`' do
-        it 'fails with an error message' do
+        it 'uses parallel inspection' do
           create_file('example.rb', <<~RUBY)
             # frozen_string_literal: true
 
@@ -265,7 +278,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'when setting `UseCache: false`' do
-        it 'fails with an error message' do
+        it 'does not use parallel inspection' do
           create_file('example.rb', <<~RUBY)
             # frozen_string_literal: true
 
