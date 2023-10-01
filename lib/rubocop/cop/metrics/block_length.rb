@@ -12,6 +12,7 @@ module RuboCop
       # Available are: 'array', 'hash', 'heredoc', and 'method_call'. Each construct
       # will be counted as one line regardless of its actual size.
       #
+      # NOTE: This cop does not apply for `Struct` definitions.
       #
       # NOTE: The `ExcludedMethods` configuration is deprecated and only kept
       # for backwards compatibility. Please use `AllowedMethods` and `AllowedPatterns`
@@ -40,7 +41,6 @@ module RuboCop
       #     )
       #   end                 # 6 points
       #
-      # NOTE: This cop does not apply for `Struct` definitions.
       class BlockLength < Base
         include CodeLength
         include AllowedMethods
