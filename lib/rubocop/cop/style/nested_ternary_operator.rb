@@ -27,23 +27,15 @@ module RuboCop
 
           node.each_descendant(:if).select(&:ternary?).each do |nested_ternary|
             add_offense(nested_ternary) do |corrector|
-              if_node = if_node(nested_ternary)
-              next if part_of_ignored_node?(if_node)
+              next if part_of_ignored_node?(node)
 
-              autocorrect(corrector, if_node)
-              ignore_node(if_node)
+              autocorrect(corrector, node)
+              ignore_node(node)
             end
           end
         end
 
         private
-
-        def if_node(node)
-          node = node.parent
-          return node if node.if_type?
-
-          if_node(node)
-        end
 
         def autocorrect(corrector, if_node)
           replace_loc_and_whitespace(corrector, if_node.loc.question, "\n")
