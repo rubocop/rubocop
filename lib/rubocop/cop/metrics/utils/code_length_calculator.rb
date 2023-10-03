@@ -10,7 +10,7 @@ module RuboCop
           include Util
 
           FOLDABLE_TYPES = %i[array hash heredoc send csend].freeze
-          CLASSLIKE_TYPES = %i[class module sclass].freeze
+          CLASSLIKE_TYPES = %i[class module].freeze
           private_constant :FOLDABLE_TYPES, :CLASSLIKE_TYPES
 
           def initialize(node, processed_source, count_comments: false, foldable_types: [])
@@ -145,7 +145,7 @@ module RuboCop
 
           def extract_body(node)
             case node.type
-            when :class, :module, :block, :numblock, :def, :defs
+            when :class, :module, :sclass, :block, :numblock, :def, :defs
               node.body
             when :casgn
               _scope, _name, value = *node
