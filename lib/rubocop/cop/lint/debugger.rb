@@ -95,8 +95,11 @@ module RuboCop
         def assumed_usage_context?(node)
           # Basically, debugger methods are not used as a method argument without arguments.
           return false unless node.arguments.empty? && node.each_ancestor(:send, :csend).any?
+          return true if assumed_argument?(node)
 
-          node.each_ancestor.none?(&:lambda_or_proc?)
+          node.each_ancestor.none? do |ancestor|
+            ancestor.block_type? || ancestor.numblock_type? || ancestor.lambda_or_proc?
+          end
         end
 
         def chained_method_name(send_node)
@@ -108,6 +111,12 @@ module RuboCop
             receiver = receiver.receiver
           end
           chained_method_name
+        end
+
+        def assumed_argument?(node)
+          parent = node.parent
+
+          parent.call_type? || parent.literal? || parent.pair_type?
         end
       end
     end
