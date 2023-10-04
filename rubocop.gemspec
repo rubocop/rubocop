@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('json', '~> 2.3')
   s.add_runtime_dependency('language_server-protocol', '>= 3.17.0')
   s.add_runtime_dependency('parallel', '~> 1.10')
-  s.add_runtime_dependency('parser', '>= 3.2.2.3')
+  s.add_runtime_dependency('parser', '>= 3.2.2.4')
   s.add_runtime_dependency('rainbow', '>= 2.2.2', '< 4.0')
   s.add_runtime_dependency('regexp_parser', '>= 1.8', '< 3.0')
   s.add_runtime_dependency('rexml', '>= 3.2.5', '< 4.0')
