@@ -3,6 +3,17 @@
 RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
   let(:cop_config) { { 'AllowedMethods' => %w[respond_to?] } }
 
+  it 'registers an offense and corrects when `&.` is used for const receiver' do
+    expect_offense(<<~RUBY)
+      Foo&.do_something
+         ^^^^^^^^^^^^^^ Redundant safe navigation detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Foo.do_something
+    RUBY
+  end
+
   it 'registers an offense and corrects when `&.` is used inside `if` condition' do
     expect_offense(<<~RUBY)
       if foo&.respond_to?(:bar)
