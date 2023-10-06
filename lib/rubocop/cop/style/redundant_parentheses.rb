@@ -126,15 +126,31 @@ module RuboCop
 
         def check(begin_node)
           node = begin_node.children.first
-          return offense(begin_node, 'a keyword') if keyword_with_redundant_parentheses?(node)
-          return offense(begin_node, 'a literal') if disallowed_literal?(begin_node, node)
-          return offense(begin_node, 'a variable') if node.variable?
-          return offense(begin_node, 'a constant') if node.const_type?
 
-          return offense(begin_node, 'an interpolated expression') if interpolation?(begin_node)
+          if (message = find_offense_message(begin_node, node))
+            return offense(begin_node, message)
+          end
 
           check_send(begin_node, node) if node.call_type?
         end
+
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def find_offense_message(begin_node, node)
+          return 'a keyword' if keyword_with_redundant_parentheses?(node)
+          return 'a literal' if disallowed_literal?(begin_node, node)
+          return 'a variable' if node.variable?
+          return 'a constant' if node.const_type?
+          return 'an interpolated expression' if interpolation?(begin_node)
+
+          return if begin_node.chained? || !begin_node.parent.nil?
+
+          if node.and_type? || node.or_type?
+            'a logical expression'
+          elsif node.respond_to?(:comparison_method?) && node.comparison_method?
+            'a comparison expression'
+          end
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         # @!method interpolation?(node)
         def_node_matcher :interpolation?, '[^begin ^^dstr]'

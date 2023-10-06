@@ -160,6 +160,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '({0 => :a}[0])', '{0 => :a}[0]', 'a method call'
   it_behaves_like 'redundant', '(x; y)', 'x; y', 'a method call'
 
+  it_behaves_like 'redundant', '(x && y)', 'x && y', 'a logical expression'
+  it_behaves_like 'redundant', '(x || y)', 'x || y', 'a logical expression'
+  it_behaves_like 'redundant', '(x and y)', 'x and y', 'a logical expression'
+  it_behaves_like 'redundant', '(x or y)', 'x or y', 'a logical expression'
+
+  it_behaves_like 'redundant', '(x == y)', 'x == y', 'a comparison expression'
+  it_behaves_like 'redundant', '(x === y)', 'x === y', 'a comparison expression'
+  it_behaves_like 'redundant', '(x != y)', 'x != y', 'a comparison expression'
+  it_behaves_like 'redundant', '(x > y)', 'x > y', 'a comparison expression'
+  it_behaves_like 'redundant', '(x >= y)', 'x >= y', 'a comparison expression'
+  it_behaves_like 'redundant', '(x < y)', 'x < y', 'a comparison expression'
+  it_behaves_like 'redundant', '(x <= y)', 'x <= y', 'a comparison expression'
+
   it_behaves_like 'redundant', '(!x)', '!x', 'a unary operation'
   it_behaves_like 'redundant', '(~x)', '~x', 'a unary operation'
   it_behaves_like 'redundant', '(-x)', '-x', 'a unary operation'
@@ -480,8 +493,25 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     expect_no_offenses('(a...b)')
   end
 
-  it 'accepts parentheses around operator keywords' do
+  it 'accepts parentheses around logical operator keywords' do
     expect_no_offenses('(1 and 2) and (3 or 4)')
+  end
+
+  it 'accepts parentheses around comparison operator keywords' do
+    # Parentheses are redundant, but respect user's intentions for readability.
+    expect_no_offenses('x && (y == z)')
+  end
+
+  it 'accepts parentheses around a method call with parenthesized logical expression receiver' do
+    expect_no_offenses('(x || y).z')
+  end
+
+  it 'accepts parentheses around a method call with parenthesized comparison expression receiver' do
+    expect_no_offenses('(x == y).zero?')
+  end
+
+  it 'accepts parentheses around single argument separated by semicolon' do
+    expect_no_offenses('x((prepare; perform))')
   end
 
   it 'registers an offense when there is space around the parentheses' do
