@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'fileutils'
 require 'pathname'
 require_relative '../cache_config'
 require_relative '../config_finder'
