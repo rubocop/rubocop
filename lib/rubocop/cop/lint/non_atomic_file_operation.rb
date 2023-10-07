@@ -43,7 +43,6 @@ module RuboCop
       #
       class NonAtomicFileOperation < Base
         extend AutoCorrector
-        include Alignment
 
         MSG_REMOVE_FILE_EXIST_CHECK = 'Remove unnecessary existence check ' \
                                       '`%<receiver>s.%<method_name>s`.'
