@@ -24,6 +24,10 @@ module RuboCop
       #
       # This cop target those features.
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because if `require 'pp'` is removed from one file,
+      #   `NameError` can be encountered when another file uses `PP.pp`.
+      #
       # @example
       #   # bad
       #   require 'unloaded_feature'
