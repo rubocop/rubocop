@@ -72,6 +72,103 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'on if..else with identical leading lines and assign to condition value of method call receiver' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        if x.condition
+          x = do_something
+          foo
+        else
+          x = do_something
+          bar
+        end
+      RUBY
+    end
+  end
+
+  context 'on if..else with identical leading lines and assign to condition value of safe navigation call receiver' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        if x&.condition
+          x = do_something
+          foo
+        else
+          x = do_something
+          bar
+        end
+      RUBY
+    end
+  end
+
+  context 'on if..else with identical leading lines and assign to condition value of method call' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        if x
+          x = do_something
+          foo
+        else
+          x = do_something
+          bar
+        end
+      RUBY
+    end
+  end
+
+  context 'on if..else with identical leading lines and assign to condition local variable' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        x = 42
+
+        if x
+          x = do_something
+          foo
+        else
+          x = do_something
+          bar
+        end
+      RUBY
+    end
+  end
+
+  context 'on if..else with identical leading lines and assign to condition instance variable' do
+    it "doesn't register an offense" do
+      expect_no_offenses(<<~RUBY)
+        if @x
+          @x = do_something
+          foo
+        else
+          @x = do_something
+          bar
+        end
+      RUBY
+    end
+  end
+
+  context 'on if..else with identical trailing lines and assign to condition value' do
+    it 'registers and corrects an offense' do
+      expect_offense(<<~RUBY)
+        if x.condition
+          foo
+          x = do_something
+          ^^^^^^^^^^^^^^^^ Move `x = do_something` out of the conditional.
+        else
+          bar
+          x = do_something
+          ^^^^^^^^^^^^^^^^ Move `x = do_something` out of the conditional.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if x.condition
+          foo
+        else
+          bar
+        end
+        x = do_something
+      RUBY
+    end
+  end
+
   context 'on if..else with identical leading lines, single child branch and last node of the parent' do
     it "doesn't register an offense" do
       expect_no_offenses(<<~RUBY)

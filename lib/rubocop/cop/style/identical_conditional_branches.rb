@@ -136,7 +136,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_branches(node, branches)
           # return if any branch is empty. An empty branch can be an `if`
           # without an `else` or a branch that contains only comments.
@@ -149,9 +149,15 @@ module RuboCop
                     branches.any? { |branch| single_child_branch?(branch) }
 
           heads = branches.map { |branch| head(branch) }
-          check_expressions(node, heads, :before_condition) if duplicated_expressions?(node, heads)
+
+          return unless duplicated_expressions?(node, heads)
+
+          condition_variable = assignable_condition_value(node)
+          return if heads.first.assignment? && condition_variable == heads.first.name.to_s
+
+          check_expressions(node, heads, :before_condition)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def duplicated_expressions?(node, expressions)
           unique_expressions = expressions.uniq
@@ -162,6 +168,14 @@ module RuboCop
 
           lhs = unique_expression.child_nodes.first
           node.condition.child_nodes.none? { |n| n.source == lhs.source if n.variable? }
+        end
+
+        def assignable_condition_value(node)
+          if node.condition.call_type?
+            (receiver = node.condition.receiver) ? receiver.source : node.condition.source
+          elsif node.condition.variable?
+            node.condition.source
+          end
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
