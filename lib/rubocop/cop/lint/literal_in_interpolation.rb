@@ -34,7 +34,7 @@ module RuboCop
           # interpolation should not be removed if the expanded value
           # contains a space character.
           expanded_value = autocorrected_value(final_node)
-          return if in_array_percent_literal?(begin_node) && /\s/.match?(expanded_value)
+          return if in_array_percent_literal?(begin_node) && /\s|\A\z/.match?(expanded_value)
 
           add_offense(final_node) do |corrector|
             return if final_node.dstr_type? # nested, fixed in next iteration
