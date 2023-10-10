@@ -168,7 +168,7 @@ module RuboCop
           # follows, and that the rules for space inside don't apply.
           return true if token2.comment?
 
-          true unless same_line?(token1, token2) && !token1.space_after?
+          !same_line?(token1, token2) || token1.space_after?
         end
       end
     end

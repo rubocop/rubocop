@@ -354,7 +354,7 @@ module RuboCop
           # Don't check indentation if the line doesn't start with the body.
           # For example, lines like "else do_something".
           first_char_pos_on_line = body_node.source_range.source_line =~ /\S/
-          true unless body_node.loc.column == first_char_pos_on_line
+          body_node.loc.column != first_char_pos_on_line
         end
 
         def offending_range(body_node, indentation)
