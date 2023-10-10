@@ -206,6 +206,12 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
       RUBY
     end
 
+    it "accepts interpolation of an empty string literal in #{prefix}[]" do
+      expect_no_offenses(<<~RUBY)
+        #{prefix}[\#{""} is significant]
+      RUBY
+    end
+
     it "accepts interpolation of a symbol literal with space in #{prefix}[]" do
       expect_no_offenses(<<~RUBY)
         #{prefix}[\#{:"this interpolation"} is significant]
