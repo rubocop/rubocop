@@ -115,14 +115,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantException, :config do
     RUBY
   end
 
-  it 'registers an offense for raise with RuntimeError, valiable' do
+  it 'registers an offense for raise with RuntimeError, variable' do
     expect_offense(<<~RUBY)
-      raise RuntimeError, valiable
+      raise RuntimeError, variable
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `RuntimeError` argument can be removed.
     RUBY
 
     expect_correction(<<~RUBY)
-      raise valiable.to_s
+      raise variable.to_s
     RUBY
   end
 end
