@@ -1752,7 +1752,7 @@ end
 
 Checks for blocks without a body.
 Such empty blocks are typically an oversight or we should provide a comment
-be clearer what we're aiming for.
+to clarify what we're aiming for.
 
 Empty lambdas and procs are ignored by default.
 
@@ -4598,9 +4598,9 @@ because it's unknown what kind of string will be expanded as a result:
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.76
-| -
+| 1.57
 |===
 
 Checks for unnecessary `require` statement.
@@ -4623,6 +4623,11 @@ Below are the features that each `TargetRubyVersion` targets.
   * 3.2+ ... `set`
 
 This cop target those features.
+
+=== Safety
+
+This cop's autocorrection is unsafe because if `require 'pp'` is removed from one file,
+`NameError` can be encountered when another file uses `PP.pp`.
 
 === Examples
 
@@ -4649,8 +4654,12 @@ require 'unloaded_feature'
 |===
 
 Checks for redundant safe navigation calls.
-`instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`, and `equal?` methods
-are checked by default. These are customizable with `AllowedMethods` option.
+Use cases where a constant is `nil` are rare and an offense is detected
+when the receiver is a constant.
+
+For all receivers, the `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`,
+and `equal?` methods are checked by default.
+These are customizable with `AllowedMethods` option.
 
 The `AllowedMethods` option specifies nil-safe methods,
 in other words, it is a method that is allowed to skip safe navigation.
@@ -4671,6 +4680,9 @@ will be autocorrected to never return `nil`.
 [source,ruby]
 ----
 # bad
+Const&.do_something
+
+# bad
 do_something if attrs&.respond_to?(:[])
 
 # good
@@ -4680,6 +4692,9 @@ do_something if attrs.respond_to?(:[])
 while node&.is_a?(BeginNode)
   node = node.parent
 end
+
+# good
+Const.do_something
 
 # good
 while node.is_a?(BeginNode)

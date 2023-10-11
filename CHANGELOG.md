@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.57.0 (2023-10-11)
+
 ### New features
 
 * [#12227](https://github.com/rubocop/rubocop/pull/12227): Add new `Style/SingleLineDoEndBlock` cop. ([@koic][])

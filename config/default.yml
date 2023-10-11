@@ -2172,7 +2172,7 @@ Lint/RedundantRequireStatement:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.76'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.57'
 
 Lint/RedundantSafeNavigation:
   Description: 'Checks for redundant safe navigation calls.'
@@ -3358,7 +3358,7 @@ Style/ClassEqualityComparison:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.93'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.57'
   AllowedMethods:
     - ==
     - equal?
@@ -4926,7 +4926,7 @@ Style/RedundantFilterChain:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.52'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.57'
 
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."
@@ -5191,7 +5191,7 @@ Style/SingleLineBlockParams:
 Style/SingleLineDoEndBlock:
   Description: 'Checks for single-line `do`...`end` blocks.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.57'
 
 Style/SingleLineMethods:
   Description: 'Avoid single-line methods.'

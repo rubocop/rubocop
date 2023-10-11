@@ -1419,15 +1419,21 @@ var.kind_of?(String)
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.93
-| -
+| 1.57
 |===
 
 Enforces the use of `Object#instance_of?` instead of class comparison
 for equality.
 `==`, `equal?`, and `eql?` custom method definitions are allowed by default.
 These are customizable with `AllowedMethods` option.
+
+=== Safety
+
+This cop's autocorrection is unsafe because there is no guarantee that
+the constant `Foo` exists when autocorrecting `var.class.name == 'Foo'` to
+`var.instance_of?(Foo)`.
 
 === Examples
 
@@ -4731,12 +4737,24 @@ end
 |===
 
 Enforces the use of a single string formatting utility.
-Valid options include Kernel#format, Kernel#sprintf and String#%.
+Valid options include `Kernel#format`, `Kernel#sprintf`, and `String#%`.
 
-The detection of String#% cannot be implemented in a reliable
+The detection of `String#%` cannot be implemented in a reliable
 manner for all cases, so only two scenarios are considered -
 if the first argument is a string literal and if the second
 argument is an array literal.
+
+Autocorrection will be applied when using argument is a literal or known built-in conversion
+methods such as `to_d`, `to_f`, `to_h`, `to_i`, `to_r`, `to_s`, and `to_sym` on variables,
+provided that their return value is not an array. For example, when using `to_s`,
+`'%s' % [1, 2, 3].to_s` can be autocorrected without any incompatibility:
+
+[source,ruby]
+----
+'%s' % [1, 2, 3]        #=> '1'
+format('%s', [1, 2, 3]) #=> '[1, 2, 3]'
+'%s' % [1, 2, 3].to_s   #=> '[1, 2, 3]'
+----
 
 === Examples
 
@@ -5213,6 +5231,25 @@ end
 # good
 foo || raise('exception') if something
 ok
+
+# bad
+define_method(:test) do
+  if something
+    work
+  end
+end
+
+# good
+define_method(:test) do
+  return unless something
+
+  work
+end
+
+# also good
+define_method(:test) do
+  work if something
+end
 ----
 
 ==== AllowConsecutiveConditionals: false (default)
@@ -11184,6 +11221,12 @@ do_something(**{foo: bar, baz: qux})
 
 # good
 do_something(foo: bar, baz: qux)
+
+# bad
+do_something(**{foo: bar, baz: qux}.merge(options))
+
+# good
+do_something(foo: bar, baz: qux, **options)
 ----
 
 == Style/RedundantEach
@@ -11383,13 +11426,20 @@ require_relative '../foo.so'
 
 | Pending
 | Yes
-| Yes
+| Yes (Unsafe)
 | 1.52
-| -
+| 1.57
 |===
 
 Identifies usages of `any?`, `empty?` or `none?` predicate methods
 chained to `select`/`filter`/`find_all` and change them to use predicate method instead.
+
+=== Safety
+
+This cop's autocorrection is unsafe because `array.select.any?` evaluates all elements
+through the `select` method, while `array.any?` uses short-circuit evaluation.
+In other words, `array.select.any?` guarantees the evaluation of every element,
+but `array.any?` does not necessarily evaluate all of them.
 
 === Examples
 
@@ -11419,6 +11469,9 @@ arr.select { |x| x > 1 }.any?(&:odd?)
 ----
 # good
 arr.select { |x| x > 1 }.many?
+
+# good
+arr.select { |x| x > 1 }.present?
 ----
 
 ==== AllCops:ActiveSupportExtensionsEnabled: true
@@ -11430,6 +11483,12 @@ arr.select { |x| x > 1 }.many?
 
 # good
 arr.many? { |x| x > 1 }
+
+# bad
+arr.select { |x| x > 1 }.present?
+
+# good
+arr.any? { |x| x > 1 }
 ----
 
 == Style/RedundantFreeze
@@ -13456,6 +13515,43 @@ end
 | `{"reduce"=>["acc", "elem"]}`, `{"inject"=>["acc", "elem"]}`
 | Array
 |===
+
+== Style/SingleLineDoEndBlock
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.57
+| -
+|===
+
+Checks for single-line `do`...`end` block.
+
+In practice a single line `do`...`end` is autocorrected when `EnforcedStyle: semantic`
+in `Style/BlockDelimiters`. The autocorrection maintains the `do` ... `end` syntax to
+preserve semantics and does not change it to `{`...`}` block.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+foo do |arg| bar(arg) end
+
+# good
+foo do |arg|
+  bar(arg)
+end
+
+# bad
+->(arg) do bar(arg) end
+
+# good
+->(arg) { bar(arg) }
+----
 
 == Style/SingleLineMethods
 
