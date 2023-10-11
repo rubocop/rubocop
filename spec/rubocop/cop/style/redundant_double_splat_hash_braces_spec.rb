@@ -35,6 +35,83 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
     RUBY
   end
 
+  it 'registers an offense when using double splat hash braces with `merge` method call' do
+    expect_offense(<<~RUBY)
+      do_something(**{foo: bar, baz: qux}.merge(options))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, baz: qux, **options)
+    RUBY
+  end
+
+  it 'registers an offense when using double splat hash braces with `merge!` method call' do
+    expect_offense(<<~RUBY)
+      do_something(**{foo: bar, baz: qux}.merge!(options))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, baz: qux, **options)
+    RUBY
+  end
+
+  it 'registers an offense when using double splat hash braces with `merge` pair arguments method call' do
+    expect_offense(<<~RUBY)
+      do_something(**{foo: bar, baz: qux}.merge(x: y))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, baz: qux, x: y)
+    RUBY
+  end
+
+  it 'registers an offense when using double splat hash braces with `merge` safe navigation method call' do
+    expect_offense(<<~RUBY)
+      do_something(**{foo: bar, baz: qux}&.merge(options))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, baz: qux, **options)
+    RUBY
+  end
+
+  it 'registers an offense when using double splat hash braces with `merge` multiple arguments method call' do
+    expect_offense(<<~RUBY)
+      do_something(**{foo: bar, baz: qux}.merge(options1, options2))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, baz: qux, **options1, **options2)
+    RUBY
+  end
+
+  it 'registers an offense when using double splat hash braces with `merge` method chain' do
+    expect_offense(<<~RUBY)
+      do_something(**{foo: bar, baz: qux}.merge(options1, options2).merge(options3))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, baz: qux, **options1, **options2, **options3)
+    RUBY
+  end
+
+  it 'registers an offense when using double splat hash braces with complex `merge` method chain' do
+    expect_offense(<<~RUBY)
+      do_something(**{foo: bar, baz: qux}.merge(options1, options2)&.merge!(options3))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, baz: qux, **options1, **options2, **options3)
+    RUBY
+  end
+
   it 'does not register an offense when using keyword arguments' do
     expect_no_offenses(<<~RUBY)
       do_something(foo: bar, baz: qux)
@@ -59,9 +136,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
     RUBY
   end
 
-  it 'does not register an offense when using method call for double splat hash braces arguments' do
+  it 'does not register an offense when using method call that is not `merge` for double splat hash braces arguments' do
     expect_no_offenses(<<~RUBY)
-      do_something(**{foo: bar}.merge(options))
+      do_something(**{foo: bar}.invert)
     RUBY
   end
 
