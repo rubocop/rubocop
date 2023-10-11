@@ -79,6 +79,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
     RUBY
   end
 
+  it 'registers an offense when using double splat hash braces with `merge` method call twice' do
+    expect_offense(<<~RUBY)
+      do_something(**{ foo: bar }.merge(options))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+      do_something(**{ baz: qux }.merge(options))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something(foo: bar, **options)
+      do_something(baz: qux, **options)
+    RUBY
+  end
+
   it 'registers an offense when using double splat hash braces with `merge` multiple arguments method call' do
     expect_offense(<<~RUBY)
       do_something(**{foo: bar, baz: qux}.merge(options1, options2))
