@@ -221,4 +221,10 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
       foo = /[A\-z]/
     RUBY
   end
+
+  it 'does not register an offense with nested character class' do
+    expect_no_offenses(<<~RUBY)
+      foo = /[a-[bc]]/
+    RUBY
+  end
 end
