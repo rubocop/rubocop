@@ -162,6 +162,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
     RUBY
   end
 
+  it 'does not register an offense when using method call that is not `merge` for double splat hash braces arguments and nested hashes' do
+    expect_no_offenses(<<~RUBY)
+      do_something(**options.reverse_merge(foo: { bar: baz }))
+    RUBY
+  end
+
   it 'does not register an offense when using hash braces arguments' do
     expect_no_offenses(<<~RUBY)
       do_something({foo: bar, baz: qux})
