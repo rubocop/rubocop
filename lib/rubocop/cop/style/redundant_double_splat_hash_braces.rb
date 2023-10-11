@@ -84,7 +84,7 @@ module RuboCop
         end
 
         def extract_send_methods(kwsplat)
-          @extract_send_methods ||= kwsplat.each_descendant(:send, :csend)
+          kwsplat.each_descendant(:send, :csend)
         end
 
         def convert_to_new_arguments(node)
