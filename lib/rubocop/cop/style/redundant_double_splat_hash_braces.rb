@@ -27,10 +27,11 @@ module RuboCop
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_hash(node)
-          return if !node.braces? || node.pairs.empty? || node.pairs.any?(&:hash_rocket?)
+          return if node.pairs.empty? || node.pairs.any?(&:hash_rocket?)
           return unless (parent = node.parent)
-          return unless (kwsplat = node.each_ancestor(:kwsplat).first)
           return if parent.call_type? && !merge_method?(parent)
+          return unless (kwsplat = node.each_ancestor(:kwsplat).first)
+          return if allowed_double_splat_receiver?(kwsplat)
 
           add_offense(kwsplat) do |corrector|
             autocorrect(corrector, node, kwsplat)
@@ -39,6 +40,14 @@ module RuboCop
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
+
+        def allowed_double_splat_receiver?(kwsplat)
+          return false unless kwsplat.children.first.call_type?
+
+          root_receiver = root_receiver(kwsplat.children.first)
+
+          !root_receiver&.hash_type?
+        end
 
         def autocorrect(corrector, node, kwsplat)
           corrector.remove(kwsplat.loc.operator)
@@ -49,6 +58,15 @@ module RuboCop
           return if merge_methods.empty?
 
           autocorrect_merge_methods(corrector, merge_methods, kwsplat)
+        end
+
+        def root_receiver(node)
+          receiver = node.receiver
+          if receiver&.receiver
+            root_receiver(receiver)
+          else
+            receiver
+          end
         end
 
         def select_merge_method_nodes(kwsplat)
