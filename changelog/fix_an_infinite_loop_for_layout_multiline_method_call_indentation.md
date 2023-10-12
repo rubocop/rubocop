@@ -1,0 +1,1 @@
+* [#12261](https://github.com/rubocop/rubocop/issues/12261): Fix an infinite loop for `Layout/MultilineMethodCallIndentation` when multiline method chain with a block argument and method chain. ([@ydah][])
