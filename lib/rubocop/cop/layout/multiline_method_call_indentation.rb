@@ -227,7 +227,11 @@ module RuboCop
           return unless (block_node = node.each_descendant(:block, :numblock).first)
           return unless block_node.multiline? && block_node.parent.call_type?
 
-          block_node.parent
+          if node.receiver.call_type?
+            node.receiver
+          else
+            block_node.parent
+          end
         end
 
         def first_call_has_a_dot(node)

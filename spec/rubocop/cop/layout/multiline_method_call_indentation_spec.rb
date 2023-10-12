@@ -99,6 +99,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'accepts aligned methods when multiline method chain with a block argument and method chain' do
+      expect_no_offenses(<<~RUBY)
+        a(b)
+          .c(
+            d do
+            end.f
+          )
+      RUBY
+    end
+
     it "doesn't crash on unaligned multiline lambdas" do
       expect_no_offenses(<<~RUBY)
         MyClass.(my_args)
@@ -333,6 +343,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         expect_correction(<<~RUBY)
           a
             &.b
+        RUBY
+      end
+
+      it 'accepts aligned methods when multiline method chain with a block argument and method chain' do
+        expect_no_offenses(<<~RUBY)
+          a&.(b)
+            .c(
+              d do
+              end.f
+            )
         RUBY
       end
     end
