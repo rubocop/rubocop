@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.57.1 (2023-10-13)
+
 ### Bug fixes
 
 * [#12271](https://github.com/rubocop/rubocop/issues/12271): Fix a false positive for `Lint/RedundantSafeNavigation` when using snake case constant receiver. ([@koic][])
