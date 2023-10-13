@@ -42,9 +42,11 @@ module RuboCop
         private
 
         def allowed_double_splat_receiver?(kwsplat)
-          return false unless kwsplat.children.first.call_type?
+          first_child = kwsplat.children.first
+          return true if first_child.block_type? || first_child.numblock_type?
+          return false unless first_child.call_type?
 
-          root_receiver = root_receiver(kwsplat.children.first)
+          root_receiver = root_receiver(first_child)
 
           !root_receiver&.hash_type?
         end
