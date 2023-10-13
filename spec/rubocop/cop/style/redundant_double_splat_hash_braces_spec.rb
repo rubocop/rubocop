@@ -126,6 +126,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
     RUBY
   end
 
+  it 'registers an offense when using double splat hash braces inside block' do
+    expect_offense(<<~RUBY)
+      block do
+        do_something(**{foo: bar, baz: qux})
+                     ^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      block do
+        do_something(foo: bar, baz: qux)
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using keyword arguments' do
     expect_no_offenses(<<~RUBY)
       do_something(foo: bar, baz: qux)
@@ -189,6 +204,24 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
   it 'does not register an offense when using hash literal' do
     expect_no_offenses(<<~RUBY)
       { a: a }
+    RUBY
+  end
+
+  it 'does not register an offense when using double splat within block argument containing a hash literal in an array literal' do
+    expect_no_offenses(<<~RUBY)
+      do_something(**x.do_something { [foo: bar] })
+    RUBY
+  end
+
+  it 'does not register an offense when using double splat within block argument containing a nested hash literal' do
+    expect_no_offenses(<<~RUBY)
+      do_something(**x.do_something { {foo: {bar: baz}} })
+    RUBY
+  end
+
+  it 'does not register an offense when using double splat within numbered block argument containing a nested hash literal' do
+    expect_no_offenses(<<~RUBY)
+      do_something(**x.do_something { {foo: {bar: _1}} })
     RUBY
   end
 end
