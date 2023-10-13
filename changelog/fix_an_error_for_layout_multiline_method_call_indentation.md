@@ -1,1 +1,0 @@
-* [#12265](https://github.com/rubocop/rubocop/issues/12265): Fix an error for `Layout/MultilineMethodCallIndentation` when usingarithmetic operation with block inside a grouped expression. ([@koic][])
