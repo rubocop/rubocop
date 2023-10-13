@@ -3,14 +3,27 @@
 RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
   let(:cop_config) { { 'AllowedMethods' => %w[respond_to?] } }
 
-  it 'registers an offense and corrects when `&.` is used for const receiver' do
+  it 'registers an offense and corrects when `&.` is used for camel case const receiver' do
     expect_offense(<<~RUBY)
-      Foo&.do_something
-         ^^^^^^^^^^^^^^ Redundant safe navigation detected.
+      Const&.do_something
+           ^^^^^^^^^^^^^^ Redundant safe navigation detected.
+      ConstName&.do_something
+               ^^^^^^^^^^^^^^ Redundant safe navigation detected.
+      Const_name&.do_something # It is treated as camel case, similar to the `Naming/ConstantName` cop.
+                ^^^^^^^^^^^^^^ Redundant safe navigation detected.
     RUBY
 
     expect_correction(<<~RUBY)
-      Foo.do_something
+      Const.do_something
+      ConstName.do_something
+      Const_name.do_something # It is treated as camel case, similar to the `Naming/ConstantName` cop.
+    RUBY
+  end
+
+  it 'does not register an offense and corrects when `&.` is used for snake case const receiver' do
+    expect_no_offenses(<<~RUBY)
+      CONST&.do_something
+      CONST_NAME&.do_something
     RUBY
   end
 
