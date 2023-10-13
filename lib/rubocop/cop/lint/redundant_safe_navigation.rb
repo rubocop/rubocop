@@ -4,8 +4,8 @@ module RuboCop
   module Cop
     module Lint
       # Checks for redundant safe navigation calls.
-      # Use cases where a constant is `nil` are rare and an offense is detected
-      # when the receiver is a constant.
+      # Use cases where a constant, named in camel case for classes and modules is `nil` are rare,
+      # and an offense is not detected when the receiver is a snake case constant.
       #
       # For all receivers, the `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`,
       # and `equal?` methods are checked by default.
@@ -26,7 +26,7 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   Const&.do_something
+      #   CamelCaseConst&.do_something
       #
       #   # bad
       #   do_something if attrs&.respond_to?(:[])
@@ -40,7 +40,7 @@ module RuboCop
       #   end
       #
       #   # good
-      #   Const.do_something
+      #   CamelCaseConst.do_something
       #
       #   # good
       #   while node.is_a?(BeginNode)
@@ -67,13 +67,16 @@ module RuboCop
 
         NIL_SPECIFIC_METHODS = (nil.methods - Object.new.methods).to_set.freeze
 
+        SNAKE_CASE = /\A[[:digit:][:upper:]_]+\z/.freeze
+
         # @!method respond_to_nil_specific_method?(node)
         def_node_matcher :respond_to_nil_specific_method?, <<~PATTERN
           (csend _ :respond_to? (sym %NIL_SPECIFIC_METHODS))
         PATTERN
 
+        # rubocop:disable Metrics/AbcSize
         def on_csend(node)
-          unless node.receiver.const_type?
+          unless node.receiver.const_type? && !node.receiver.source.match?(SNAKE_CASE)
             return unless check?(node) && allowed_method?(node.method_name)
             return if respond_to_nil_specific_method?(node)
           end
@@ -81,6 +84,7 @@ module RuboCop
           range = range_between(node.loc.dot.begin_pos, node.source_range.end_pos)
           add_offense(range) { |corrector| corrector.replace(node.loc.dot, '.') }
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 
