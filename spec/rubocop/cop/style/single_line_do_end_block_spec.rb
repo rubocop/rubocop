@@ -9,8 +9,21 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
 
     expect_correction(<<~RUBY)
       foo do
-       bar
-       end
+       bar#{' '}
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using single line `do`...`end` with no body' do
+    expect_offense(<<~RUBY)
+      foo do end
+      ^^^^^^^^^^ Prefer multiline `do`...`end` block.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do
+      #{' '}
+      end
     RUBY
   end
 
@@ -22,8 +35,8 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
 
     expect_correction(<<~RUBY)
       foo do |arg|
-       bar(arg)
-       end
+       bar(arg)#{' '}
+      end
     RUBY
   end
 
@@ -35,8 +48,8 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
 
     expect_correction(<<~RUBY)
       foo do
-       bar(_1)
-       end
+       bar(_1)#{' '}
+      end
     RUBY
   end
 
@@ -65,8 +78,8 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
 
     expect_correction(<<~RUBY)
       ->(arg) do
-       foo arg
-       end
+       foo arg#{' '}
+      end
     RUBY
   end
 
@@ -78,8 +91,8 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
 
     expect_correction(<<~RUBY)
       lambda do |arg|
-       foo(arg)
-       end
+       foo(arg)#{' '}
+      end
     RUBY
   end
 

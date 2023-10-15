@@ -30,6 +30,7 @@ module RuboCop
 
         MSG = 'Prefer multiline `do`...`end` block.'
 
+        # rubocop:disable Metrics/AbcSize
         def on_block(node)
           return if !node.single_line? || node.braces?
 
@@ -42,10 +43,11 @@ module RuboCop
               corrector.remove(node.loc.end)
               corrector.insert_after(node_body.loc.heredoc_end, "\nend")
             else
-              corrector.insert_after(node_body, "\n")
+              corrector.insert_before(node.loc.end, "\n")
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
         alias on_numblock on_block
 
         private
