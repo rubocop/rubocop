@@ -33,6 +33,7 @@ module RuboCop
 
         MSG = 'Use `%<receiver>s[%<argument>s]` instead of `%<original>s`.'
         RESTRICT_ON_SEND = %i[dig].freeze
+        IGNORED_ARGUMENT_TYPES = %i[block_pass forwarded_restarg forwarded_args hash].freeze
 
         # @!method single_argument_dig?(node)
         def_node_matcher :single_argument_dig?, <<~PATTERN
@@ -44,7 +45,7 @@ module RuboCop
 
           expression = single_argument_dig?(node)
           return unless expression
-          return if expression.forwarded_args_type?
+          return if IGNORED_ARGUMENT_TYPES.include?(expression.type)
 
           receiver = node.receiver.source
           argument = expression.source
