@@ -224,4 +224,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
       do_something(**x.do_something { {foo: {bar: _1}} })
     RUBY
   end
+
+  it 'does not register an offense when using double splat with a hash literal enclosed in parenthesized ternary operator' do
+    expect_no_offenses(<<~RUBY)
+      do_something(**(foo ? {bar: bar} : baz))
+    RUBY
+  end
 end
