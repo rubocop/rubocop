@@ -42,7 +42,12 @@ module RuboCop
         def on_class(node)
           check_code_length(node)
         end
-        alias on_sclass on_class
+
+        def on_sclass(node)
+          return if node.each_ancestor(:class).any?
+
+          on_class(node)
+        end
 
         def on_casgn(node)
           parent = node.parent

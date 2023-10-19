@@ -17,6 +17,22 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
     RUBY
   end
 
+  it 'registers an offense when a class with a singleton class definition has more than 5 lines' do
+    expect_offense(<<~RUBY)
+      class Test
+      ^^^^^^^^^^ Class has too many lines. [8/5]
+        class << self
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      end
+    RUBY
+  end
+
   it 'reports the correct beginning and end lines' do
     offenses = expect_offense(<<~RUBY)
       class Test
