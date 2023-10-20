@@ -1,0 +1,1 @@
+* [#12298](https://github.com/rubocop/rubocop/issues/12298): Fix a false positive for `Style/RedundantParentheses` when using a parenthesized hash literal as the first argument in a method call without parentheses. ([@koic][])
