@@ -111,17 +111,19 @@ module RuboCop
 
         def first_arg_begins_with_hash_literal?(node)
           # Don't flag `method ({key: value})` or `method ({key: value}.method)`
-          method_chain_begins_with_hash_literal?(node.children.first) &&
-            first_argument?(node) &&
-            !parentheses?(node.parent)
+          hash_literal = method_chain_begins_with_hash_literal(node.children.first)
+          if (root_method = node.each_ancestor(:send).to_a.last)
+            parenthesized = root_method.parenthesized_call?
+          end
+          hash_literal && first_argument?(node) && !parentheses?(hash_literal) && !parenthesized
         end
 
-        def method_chain_begins_with_hash_literal?(node)
-          return false if node.nil?
-          return true if node.hash_type?
-          return false unless node.send_type?
+        def method_chain_begins_with_hash_literal(node)
+          return if node.nil?
+          return node if node.hash_type?
+          return unless node.send_type?
 
-          method_chain_begins_with_hash_literal?(node.children.first)
+          method_chain_begins_with_hash_literal(node.children.first)
         end
 
         def check(begin_node)
@@ -231,7 +233,13 @@ module RuboCop
         end
 
         def first_argument?(node)
-          first_send_argument?(node) || first_super_argument?(node) || first_yield_argument?(node)
+          if first_send_argument?(node) ||
+             first_super_argument?(node) ||
+             first_yield_argument?(node)
+            return true
+          end
+
+          node.each_ancestor.any? { |ancestor| first_argument?(ancestor) }
         end
 
         # @!method first_send_argument?(node)
