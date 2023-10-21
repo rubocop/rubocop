@@ -300,50 +300,77 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       end
     end
 
-    it 'overwrites an existing todo file' do
-      create_file('example1.rb', ['# frozen_string_literal: true',
-                                  '',
-                                  'x= 0 ',
-                                  '#' * 125,
-                                  'y ',
-                                  'puts x'])
-      create_file('.rubocop_todo.yml', <<~YAML)
-        Layout/LineLength:
-          Enabled: false
-      YAML
-      create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
-      expect(cli.run(['--auto-gen-config'])).to eq(0)
-      expect(File.readlines('.rubocop_todo.yml')[8..].map(&:chomp))
-        .to eq(['# Offense count: 1',
-                '# This cop supports safe autocorrection (--autocorrect).',
-                '# Configuration parameters: AllowForAlignment, ' \
-                'EnforcedStyleForExponentOperator.',
-                '# SupportedStylesForExponentOperator: space, no_space',
-                'Layout/SpaceAroundOperators:',
-                '  Exclude:',
-                "    - 'example1.rb'",
-                '',
-                '# Offense count: 2',
-                '# This cop supports safe autocorrection (--autocorrect).',
-                '# Configuration parameters: AllowInHeredoc.',
-                'Layout/TrailingWhitespace:',
-                '  Exclude:',
-                "    - 'example1.rb'",
-                '',
-                '# Offense count: 1',
-                '# This cop supports safe autocorrection (--autocorrect).',
-                '# Configuration parameters: AllowHeredoc, ' \
-                'AllowURI, URISchemes, IgnoreCopDirectives, ' \
-                'AllowedPatterns.',
-                '# URISchemes: http, https',
-                'Layout/LineLength:',
-                '  Max: 125'])
+    shared_examples 'overwrites todo file' do |description, code|
+      context "when .rubocop.yml contains #{description}" do
+        it 'overwrites an existing todo file' do
+          create_file('example1.rb', ['# frozen_string_literal: true',
+                                      '',
+                                      'x= 0 ',
+                                      '#' * 125,
+                                      'y ',
+                                      'puts x'])
+          create_file('.rubocop_todo.yml', <<~YAML)
+            Layout/LineLength:
+              Enabled: false
+          YAML
+          create_empty_file('other.yml')
+          create_file('.rubocop.yml', code)
+          expect(cli.run(['--auto-gen-config'])).to eq(0)
+          expect(File.readlines('.rubocop_todo.yml')[8..].map(&:chomp))
+            .to eq(['# Offense count: 1',
+                    '# This cop supports safe autocorrection (--autocorrect).',
+                    '# Configuration parameters: AllowForAlignment, ' \
+                    'EnforcedStyleForExponentOperator.',
+                    '# SupportedStylesForExponentOperator: space, no_space',
+                    'Layout/SpaceAroundOperators:',
+                    '  Exclude:',
+                    "    - 'example1.rb'",
+                    '',
+                    '# Offense count: 2',
+                    '# This cop supports safe autocorrection (--autocorrect).',
+                    '# Configuration parameters: AllowInHeredoc.',
+                    'Layout/TrailingWhitespace:',
+                    '  Exclude:',
+                    "    - 'example1.rb'",
+                    '',
+                    '# Offense count: 1',
+                    '# This cop supports safe autocorrection (--autocorrect).',
+                    '# Configuration parameters: AllowHeredoc, ' \
+                    'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+                    'AllowedPatterns.',
+                    '# URISchemes: http, https',
+                    'Layout/LineLength:',
+                    '  Max: 125'])
+          expect(File.readlines('.rubocop.yml').map(&:chomp)).to eq(code)
 
-      # Create new CLI instance to avoid using cached configuration.
-      new_cli = RuboCop::CLI.new
+          # Create new CLI instance to avoid using cached configuration.
+          new_cli = RuboCop::CLI.new
 
-      expect(new_cli.run(['example1.rb'])).to eq(0)
+          expect(new_cli.run(['example1.rb'])).to eq(0)
+        end
+      end
     end
+
+    include_examples 'overwrites todo file',
+                     'only the inherit_from line',
+                     ['inherit_from: .rubocop_todo.yml']
+
+    # Makes the shared example work the same with the conditional as without.
+    ENV['HZPKCEAXTFQLOWB'] = 'true'
+
+    include_examples 'overwrites todo file',
+                     'a single line inherit_from in an ERB conditional',
+                     ['<% if ENV["HZPKCEAXTFQLOWB"] %>',
+                      'inherit_from: .rubocop_todo.yml',
+                      '<% end %>']
+
+    include_examples 'overwrites todo file',
+                     'a multiline inherit_from in an ERB conditional',
+                     ['<% if ENV["HZPKCEAXTFQLOWB"] %>',
+                      'inherit_from:',
+                      '  - .rubocop_todo.yml',
+                      '  - other.yml',
+                      '<% end %>']
 
     it 'honors rubocop:disable comments' do
       create_file('example1.rb', ['#' * 121,
