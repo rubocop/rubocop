@@ -2659,6 +2659,52 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects closing brace placement when last element has a trailing comma before an EOL comment' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      # frozen_string_literal: true
+
+      CONFIG = {
+        allowlist: { 'a' => true, # EOL A
+                     'b' => true, # EOL B
+        },
+        blocklist: { 'c' => true }
+      }.freeze
+
+      my_hash = {
+        'something'  => { :toto => ['titi'],
+                        },
+        'other'      => { :clone => 'yes',
+                          :pp => ['no'],
+                          :qq => 'yolo', # Alright this is valid
+                        },
+        'dry'        => { :ploup => ['plip'] },
+      }
+      puts my_hash
+    RUBY
+
+    status = cli.run(%w[--autocorrect])
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      CONFIG = {
+        allowlist: { 'a' => true, # EOL A
+                     'b' => true }, # EOL B
+        blocklist: { 'c' => true }
+      }.freeze
+
+      my_hash = {
+        'something' => { toto: ['titi'] },
+        'other' => { clone: 'yes',
+                     pp: ['no'],
+                     qq: 'yolo' }, # Alright this is valid
+        'dry' => { ploup: ['plip'] }
+      }
+      puts my_hash
+    RUBY
+    expect(status).to eq(0)
+  end
+
   it 'corrects TrailingCommaIn(Array|Hash)Literal and Multiline(Array|Hash)BraceLayout offenses' do
     create_file('.rubocop.yml', <<~YAML)
       Style/TrailingCommaInArrayLiteral:
