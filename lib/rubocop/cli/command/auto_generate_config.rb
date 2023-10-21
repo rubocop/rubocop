@@ -10,6 +10,7 @@ module RuboCop
 
         AUTO_GENERATED_FILE = '.rubocop_todo.yml'
         YAML_OPTIONAL_DOC_START = /\A---(\s+#|\s*\z)/.freeze
+        PLACEHOLDER = '###rubocop:inherit_here'
 
         PHASE_1 = 'Phase 1 of 2: run Layout/LineLength cop'
         PHASE_2 = 'Phase 2 of 2: run all cops'
@@ -125,15 +126,19 @@ module RuboCop
 
         def existing_configuration(config_file)
           File.read(config_file, encoding: Encoding::UTF_8)
-              .sub(/^inherit_from: *[^\n]+/, '')
-              .sub(/^inherit_from: *(\n *- *[^\n]+)+/, '')
+              .sub(/^inherit_from: *[^\n]+/, PLACEHOLDER)
+              .sub(/^inherit_from: *(\n *- *[^\n]+)+/, PLACEHOLDER)
         end
 
         def write_config_file(file_name, file_string, rubocop_yml_contents)
           lines = /\S/.match?(rubocop_yml_contents) ? rubocop_yml_contents.split("\n", -1) : []
-          doc_start_index = lines.index { |line| YAML_OPTIONAL_DOC_START.match?(line) } || -1
-          lines.insert(doc_start_index + 1, "inherit_from:#{file_string}\n")
-          File.write(file_name, lines.join("\n"))
+          unless rubocop_yml_contents&.include?(PLACEHOLDER)
+            doc_start_index = lines.index { |line| YAML_OPTIONAL_DOC_START.match?(line) } || -1
+            lines.insert(doc_start_index + 1, PLACEHOLDER)
+          end
+          File.write(file_name, lines.join("\n")
+                                     .sub(/#{PLACEHOLDER}\n*/o, "inherit_from:#{file_string}\n\n")
+                                     .sub(/\n\n+\Z/, "\n"))
         end
 
         def relative_path_to_todo_from_options_config
