@@ -75,6 +75,52 @@ RSpec.describe RuboCop::Cop::Style::RedundantFilterChain, :config do
         arr.#{method}(&:odd?).any? { |x| x > 10 }
       RUBY
     end
+
+    context 'when using safe navigation operator' do
+      it "registers an offense when using `##{method}` followed by `#any?`" do
+        expect_offense(<<~RUBY, method: method)
+          arr&.%{method} { |x| x > 1 }&.any?
+               ^{method}^^^^^^^^^^^^^^^^^^^^ Use `any?` instead of `#{method}.any?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          arr&.any? { |x| x > 1 }
+        RUBY
+      end
+
+      it "registers an offense when using `##{method}` followed by `#empty?`" do
+        expect_offense(<<~RUBY, method: method)
+          arr&.%{method} { |x| x > 1 }&.empty?
+               ^{method}^^^^^^^^^^^^^^^^^^^^^^ Use `none?` instead of `#{method}.empty?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          arr&.none? { |x| x > 1 }
+        RUBY
+      end
+
+      it "registers an offense when using `##{method}` followed by `#none?`" do
+        expect_offense(<<~RUBY, method: method)
+          arr&.%{method} { |x| x > 1 }&.none?
+               ^{method}^^^^^^^^^^^^^^^^^^^^^ Use `none?` instead of `#{method}.none?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          arr&.none? { |x| x > 1 }
+        RUBY
+      end
+
+      it "registers an offense when using `##{method}` with block-pass followed by `#none?`" do
+        expect_offense(<<~RUBY, method: method)
+          arr&.%{method}(&:odd?)&.none?
+               ^{method}^^^^^^^^^^^^^^^ Use `none?` instead of `#{method}.none?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          arr&.none?(&:odd?)
+        RUBY
+      end
+    end
   end
 
   it 'does not register an offense when using `#any?`' do

@@ -60,10 +60,10 @@ module RuboCop
 
         # @!method select_predicate?(node)
         def_node_matcher :select_predicate?, <<~PATTERN
-          (send
+          (call
             {
-              (block $(send _ {:select :filter :find_all}) ...)
-              $(send _ {:select :filter :find_all} block_pass_type?)
+              (block $(call _ {:select :filter :find_all}) ...)
+              $(call _ {:select :filter :find_all} block_pass_type?)
             }
             ${:#{RESTRICT_ON_SEND.join(' :')}})
         PATTERN
@@ -87,6 +87,7 @@ module RuboCop
             register_offense(select_node, node)
           end
         end
+        alias on_csend on_send
 
         private
 
