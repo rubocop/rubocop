@@ -44,6 +44,40 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
     end
   end
 
+  context '>= Ruby 3.1', :ruby31 do
+    context 'when using dig with anonymous block argument forwarding' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo(&)
+            { key: 'value' }.dig(&)
+          end
+        RUBY
+      end
+    end
+  end
+
+  context '>= Ruby 3.2', :ruby32 do
+    context 'when using dig with anonymous rest argument forwarding' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo(*)
+            { key: 'value' }.dig(*)
+          end
+        RUBY
+      end
+    end
+
+    context 'when using dig with anonymous keyword argument forwarding' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo(**)
+            { key: 'value' }.dig(**)
+          end
+        RUBY
+      end
+    end
+  end
+
   describe 'dig over a variable as caller' do
     context 'with single argument' do
       it 'registers an offense and corrects unsuitable use of dig' do
