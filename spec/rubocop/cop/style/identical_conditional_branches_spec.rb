@@ -72,6 +72,45 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'on if...else with identical leading lines and using index assign' do
+    it 'registers and corrects an offense' do
+      expect_offense(<<~RUBY)
+        if condition
+          h[:key] = foo
+          ^^^^^^^^^^^^^ Move `h[:key] = foo` out of the conditional.
+          bar
+        else
+          h[:key] = foo
+          ^^^^^^^^^^^^^ Move `h[:key] = foo` out of the conditional.
+          baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        h[:key] = foo
+        if condition
+          bar
+        else
+          baz
+        end
+      RUBY
+    end
+  end
+
+  context 'on if...else with identical leading lines and index assign to condition value' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        if h[:key]
+          h[:key] = foo
+          bar
+        else
+          h[:key] = foo
+          baz
+        end
+      RUBY
+    end
+  end
+
   context 'on if..else with identical leading lines and assign to condition value of method call receiver' do
     it "doesn't register an offense" do
       expect_no_offenses(<<~RUBY)
