@@ -34,7 +34,7 @@ module RuboCop
         MSG = 'Avoid leaving a trailing comma in attribute declarations.'
 
         def on_send(node)
-          return unless node.attribute_accessor? && node.arguments.last.def_type?
+          return unless node.attribute_accessor? && node.last_argument.def_type?
 
           trailing_comma = trailing_comma_range(node)
 

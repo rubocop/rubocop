@@ -67,7 +67,7 @@ module RuboCop
           return unless redundant_argument?(node)
 
           offense_range = argument_range(node)
-          message = format(MSG, arg: node.arguments.first.source)
+          message = format(MSG, arg: node.first_argument.source)
 
           add_offense(offense_range, message: message) do |corrector|
             corrector.remove(offense_range)
@@ -80,7 +80,7 @@ module RuboCop
           redundant_argument = redundant_arg_for_method(node.method_name.to_s)
           return false if redundant_argument.nil?
 
-          node.arguments.first == redundant_argument
+          node.first_argument == redundant_argument
         end
 
         def redundant_arg_for_method(method_name)

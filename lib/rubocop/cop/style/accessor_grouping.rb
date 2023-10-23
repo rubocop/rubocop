@@ -166,7 +166,7 @@ module RuboCop
               *processed_source.ast_with_comments[arg].map(&:text),
               "#{node.method_name} #{arg.source}"
             ]
-            if arg == node.arguments.first
+            if arg == node.first_argument
               lines
             else
               indent = ' ' * node.loc.column

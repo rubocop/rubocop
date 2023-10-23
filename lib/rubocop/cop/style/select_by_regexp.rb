@@ -146,7 +146,7 @@ module RuboCop
           return node.child_nodes.first if node.match_with_lvasgn_type?
 
           if node.receiver.lvar_type? &&
-             (block.numblock_type? || node.receiver.source == block.arguments.first.source)
+             (block.numblock_type? || node.receiver.source == block.first_argument.source)
             node.first_argument
           elsif node.first_argument.lvar_type?
             node.receiver

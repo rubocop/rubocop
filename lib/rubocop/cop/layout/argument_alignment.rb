@@ -79,7 +79,7 @@ module RuboCop
 
         def arguments_with_last_arg_pairs(node)
           items = node.arguments[0..-2]
-          last_arg = node.arguments.last
+          last_arg = node.last_argument
 
           if last_arg.hash_type? && !last_arg.braces?
             items += last_arg.pairs

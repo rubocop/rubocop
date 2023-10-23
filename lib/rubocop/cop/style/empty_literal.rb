@@ -83,7 +83,7 @@ module RuboCop
           parent = node.parent
           return false unless parent && %i[send super zsuper].include?(parent.type)
 
-          node.equal?(parent.arguments.first) && !parentheses?(node.parent)
+          node.equal?(parent.first_argument) && !parentheses?(node.parent)
         end
 
         def replacement_range(node)

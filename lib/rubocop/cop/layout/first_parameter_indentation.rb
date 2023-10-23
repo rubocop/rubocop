@@ -72,7 +72,7 @@ module RuboCop
           return if ignored_node?(def_node)
 
           left_parenthesis = def_node.arguments.loc.begin
-          first_elem = def_node.arguments.first
+          first_elem = def_node.first_argument
           return unless first_elem
           return if same_line?(first_elem, left_parenthesis)
 

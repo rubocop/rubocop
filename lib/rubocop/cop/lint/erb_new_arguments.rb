@@ -106,7 +106,7 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
-          str_arg = node.arguments[0].source
+          str_arg = node.first_argument.source
 
           kwargs = build_kwargs(node)
           overridden_kwargs = override_by_legacy_args(kwargs, node)
@@ -121,11 +121,11 @@ module RuboCop
         end
 
         def build_kwargs(node)
-          return [nil, nil] unless node.arguments.last.hash_type?
+          return [nil, nil] unless node.last_argument.hash_type?
 
           trim_mode_arg, eoutvar_arg = nil
 
-          node.arguments.last.pairs.each do |pair|
+          node.last_argument.pairs.each do |pair|
             case pair.key.source
             when 'trim_mode'
               trim_mode_arg = "trim_mode: #{pair.value.source}"

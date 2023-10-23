@@ -239,7 +239,7 @@ module RuboCop
         def args_parenthesized?(node)
           return false unless node.arguments.one?
 
-          first_node = node.arguments.first
+          first_node = node.first_argument
           first_node.begin_type? && first_node.parenthesized_call?
         end
       end

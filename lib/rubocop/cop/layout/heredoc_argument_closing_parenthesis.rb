@@ -182,7 +182,7 @@ module RuboCop
         end
 
         def add_correct_closing_paren(node, corrector)
-          corrector.insert_after(node.arguments.last, ')')
+          corrector.insert_after(node.last_argument, ')')
         end
 
         def remove_incorrect_closing_paren(node, corrector)
@@ -271,7 +271,7 @@ module RuboCop
         def add_correct_external_trailing_comma(node, corrector)
           return unless external_trailing_comma?(node)
 
-          corrector.insert_after(node.arguments.last, ',')
+          corrector.insert_after(node.last_argument, ',')
         end
 
         def remove_incorrect_external_trailing_comma(node, corrector)

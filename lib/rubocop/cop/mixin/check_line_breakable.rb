@@ -218,7 +218,7 @@ module RuboCop
 
       # @api private
       def already_on_multiple_lines?(node)
-        return node.first_line != node.arguments.last.last_line if node.def_type?
+        return node.first_line != node.last_argument.last_line if node.def_type?
 
         !node.single_line?
       end

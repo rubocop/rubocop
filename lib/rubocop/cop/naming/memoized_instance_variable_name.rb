@@ -203,7 +203,7 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def on_defined?(node)
-          arg = node.arguments.first
+          arg = node.first_argument
           return false unless arg.ivar_type?
 
           method_node, method_name = find_definition(node)
