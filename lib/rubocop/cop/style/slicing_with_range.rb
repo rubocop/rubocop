@@ -39,7 +39,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.arguments.count == 1
-          return unless range_till_minus_one?(node.arguments.first)
+          return unless range_till_minus_one?(node.first_argument)
 
           add_offense(node.first_argument) do |corrector|
             corrector.remove(node.first_argument.end)

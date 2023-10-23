@@ -125,7 +125,7 @@ module RuboCop
           when :==, :eql?, :equal?
             find_target_in_equality_node(node)
           when :===
-            node.arguments.first
+            node.first_argument
           when :include?, :cover?
             find_target_in_include_or_cover_node(node)
           when :match, :match?, :=~
@@ -134,7 +134,7 @@ module RuboCop
         end
 
         def find_target_in_equality_node(node)
-          argument = node.arguments.first
+          argument = node.first_argument
           receiver = node.receiver
           return unless argument && receiver
 
@@ -152,7 +152,7 @@ module RuboCop
         end
 
         def find_target_in_match_node(node)
-          argument = node.arguments.first
+          argument = node.first_argument
           receiver = node.receiver
           return unless receiver
 
@@ -185,7 +185,7 @@ module RuboCop
         def condition_from_send_node(node, target)
           case node.method_name
           when :is_a?
-            node.arguments.first if node.receiver == target
+            node.first_argument if node.receiver == target
           when :==, :eql?, :equal?
             condition_from_equality_node(node, target)
           when :=~, :match, :match?

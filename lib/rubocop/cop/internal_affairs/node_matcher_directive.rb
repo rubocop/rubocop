@@ -40,7 +40,7 @@ module RuboCop
           return if node.arguments.none?
           return unless valid_method_name?(node)
 
-          actual_name = node.arguments.first.value
+          actual_name = node.first_argument.value
           directives = method_directives(node)
           return too_many_directives(node) if directives.size > 1
 
@@ -53,7 +53,7 @@ module RuboCop
         private
 
         def valid_method_name?(node)
-          node.arguments.first.str_type? || node.arguments.first.sym_type?
+          node.first_argument.str_type? || node.first_argument.sym_type?
         end
 
         def method_directives(node)

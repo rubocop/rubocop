@@ -168,12 +168,12 @@ module RuboCop
 
         def find_corresponding_def_node(node)
           if access_modifier_with_symbol?(node)
-            method_name = node.arguments.first.value
+            method_name = node.first_argument.value
             node.parent.each_child_node(:def).find do |child|
               child.method?(method_name)
             end
           else
-            node.arguments.first
+            node.first_argument
           end
         end
 

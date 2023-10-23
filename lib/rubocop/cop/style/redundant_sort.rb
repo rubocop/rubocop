@@ -180,7 +180,7 @@ module RuboCop
         end
 
         def arg_node(node)
-          node.arguments.first
+          node.first_argument
         end
 
         def arg_value(node)
