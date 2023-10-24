@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     end
   end
 
-  %w[var @var @@var VAR $var].each do |var|
+  %w[var @var @@var $var].each do |var|
     it "registers an offense for void var #{var} if not on last line" do
       expect_offense(<<~RUBY, var: var)
         %{var} = 5
@@ -99,6 +99,20 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         top
       RUBY
     end
+  end
+
+  it 'registers an offense for void constant `CONST` if not on last line' do
+    expect_offense(<<~RUBY)
+      CONST = 5
+      CONST
+      ^^^^^ Constant `CONST` used in void context.
+      top
+    RUBY
+
+    expect_correction(<<~RUBY)
+      CONST = 5
+      top
+    RUBY
   end
 
   %w(1 2.0 :test /test/ [1] {}).each do |lit|
@@ -428,6 +442,20 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         ^^ Literal `42` used in void context.
         42
         ^^ Literal `42` used in void context.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.each do |_item|
+      end
+    RUBY
+  end
+
+  it 'registers an offenses for void constant in a `#each` method' do
+    expect_offense(<<~RUBY)
+      array.each do |_item|
+        CONST
+        ^^^^^ Constant `CONST` used in void context.
       end
     RUBY
 
