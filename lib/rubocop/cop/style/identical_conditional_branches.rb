@@ -153,7 +153,15 @@ module RuboCop
           return unless duplicated_expressions?(node, heads)
 
           condition_variable = assignable_condition_value(node)
-          return if heads.first.assignment? && condition_variable == heads.first.name.to_s
+
+          head = heads.first
+          if head.assignment?
+            # The `send` node is used instead of the `indexasgn` node, so `name` cannot be used.
+            # https://github.com/rubocop/rubocop-ast/blob/v1.29.0/lib/rubocop/ast/node/indexasgn_node.rb
+            assigned_value = head.send_type? ? head.receiver.source : head.name.to_s
+
+            return if condition_variable == assigned_value
+          end
 
           check_expressions(node, heads, :before_condition)
         end
