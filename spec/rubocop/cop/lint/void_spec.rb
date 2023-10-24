@@ -451,6 +451,16 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
+  it 'does not register `#each` block with conditional expression' do
+    expect_no_offenses(<<~RUBY)
+      enumerator_as_filter.each do |item|
+        # The `filter` method is used to filter for matches with `42`.
+        # In this case, it's not void.
+        item == 42
+      end
+    RUBY
+  end
+
   context 'Ruby 2.7', :ruby27 do
     it 'registers two offenses for void literals in `#tap` method' do
       expect_offense(<<~RUBY)
