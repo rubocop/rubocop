@@ -57,6 +57,7 @@ module RuboCop
 
         OP_MSG = 'Operator `%<op>s` used in void context.'
         VAR_MSG = 'Variable `%<var>s` used in void context.'
+        CONST_MSG = 'Constant `%<var>s` used in void context.'
         LIT_MSG = 'Literal `%<lit>s` used in void context.'
         SELF_MSG = '`self` used in void context.'
         EXPRESSION_MSG = '`%<expression>s` used in void context.'
@@ -127,15 +128,18 @@ module RuboCop
         def check_var(node)
           return unless node.variable? || node.const_type?
 
-          if node.const_type? && node.special_keyword?
-            add_offense(node, message: format(VAR_MSG, var: node.source)) do |corrector|
-              autocorrect_void_expression(corrector, node)
-            end
+          if node.const_type?
+            template = node.special_keyword? ? VAR_MSG : CONST_MSG
+
+            offense_range = node
+            message = format(template, var: node.source)
           else
-            add_offense(node.loc.name,
-                        message: format(VAR_MSG, var: node.loc.name.source)) do |corrector|
-              autocorrect_void_expression(corrector, node)
-            end
+            offense_range = node.loc.name
+            message = format(VAR_MSG, var: node.loc.name.source)
+          end
+
+          add_offense(offense_range, message: message) do |corrector|
+            autocorrect_void_expression(corrector, node)
           end
         end
 
