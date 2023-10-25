@@ -163,7 +163,13 @@ module RuboCop
           when :keyword
             node
           when :variable
-            alignment_node_for_variable_style(node)
+            align_to = alignment_node_for_variable_style(node)
+
+            while (parent = align_to.parent) && parent.send_type? && same_line?(align_to, parent)
+              align_to = parent
+            end
+
+            align_to
           else
             start_line_range(node)
           end
