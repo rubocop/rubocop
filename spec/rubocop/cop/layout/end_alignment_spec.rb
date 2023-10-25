@@ -438,6 +438,21 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
+    it 'registers an offense when using a conditional statement in a method argument on the same line and `end` with method call is not aligned' do
+      expect_offense(<<~RUBY)
+        do_something case condition
+                     when expr
+                     end.method_call
+                     ^^^ `end` at 3, 13 is not aligned with `do_something case` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something case condition
+                     when expr
+        end.method_call
+      RUBY
+    end
+
     it 'register an offense when using a pattern matching in a method argument and `end` is not aligned', :ruby27 do
       expect_offense(<<~RUBY)
         format(
