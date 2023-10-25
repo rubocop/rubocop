@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'base64'
 require 'cgi'
 require 'erb'
 require 'ostruct'
@@ -124,7 +123,10 @@ module RuboCop
 
         def base64_encoded_logo_image
           image = File.read(LOGO_IMAGE_PATH, binmode: true)
-          Base64.encode64(image)
+
+          # `Base64.encode64` compatible:
+          # https://github.com/ruby/base64/blob/v0.1.1/lib/base64.rb#L27-L40
+          [image].pack('m')
         end
       end
     end
