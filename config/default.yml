@@ -5384,6 +5384,11 @@ Style/TernaryParentheses:
     - require_parentheses_when_complex
   AllowSafeAssignment: true
 
+Style/ToJson:
+  Description: 'Standardize on `to_json` over `JSON.generate`.'
+  Enabled: false
+  VersionAdded: '<<next>>'
+
 Style/TopLevelMethodDefinition:
   Description: 'Looks for top-level method definitions.'
   StyleGuide: '#top-level-methods'
