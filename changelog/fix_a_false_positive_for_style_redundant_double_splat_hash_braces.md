@@ -1,1 +1,0 @@
-* [#12293](https://github.com/rubocop/rubocop/issues/12293): Fix a false positive for `Style/RedundantDoubleSplatHashBraces` when using double splat hash braces with `merge` and method chain. ([@koic][])

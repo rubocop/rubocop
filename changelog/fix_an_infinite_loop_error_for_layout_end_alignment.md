@@ -1,1 +1,0 @@
-* [#12307](https://github.com/rubocop/rubocop/issues/12307): Fix an infinite loop error for `Layout/EndAlignment` when `EnforcedStyleAlignWith: variable` and using a conditional statement in a method argument on the same line and `end` with method call is not aligned. ([@koic][])

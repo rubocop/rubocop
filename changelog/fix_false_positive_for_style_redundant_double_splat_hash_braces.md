@@ -1,1 +1,0 @@
-* [#12286](https://github.com/rubocop/rubocop/issues/12286): Fix false positives for `Style/RedundantDoubleSplatHashBraces` when using double splat with a hash literal enclosed in parenthesized ternary operator. ([@koic][])

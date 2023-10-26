@@ -1,1 +1,0 @@
-* [#12275](https://github.com/rubocop/rubocop/issues/12275): Fix a false positive for `Style/RedundantDoubleSplatHashBraces` when using double splat within block argument containing a hash literal in an array literal. ([@koic][])
