@@ -38,7 +38,7 @@ output by `rubocop -V`, include them as well. Here's an example:
 
 ```
 $ [bundle exec] rubocop -V
-1.57.1 (using Parser 3.2.2.3, rubocop-ast 1.29.0, running on ruby 3.2.2) [x86_64-linux]
+1.57.2 (using Parser 3.2.2.3, rubocop-ast 1.29.0, running on ruby 3.2.2) [x86_64-linux]
   - rubocop-performance 1.18.0
   - rubocop-rspec 2.23.2
 ```

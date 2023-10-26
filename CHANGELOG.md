@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.57.2 (2023-10-26)
+
 ### Bug fixes
 
 * [#12274](https://github.com/rubocop/rubocop/issues/12274): Fix a false positive for `Lint/Void` when `each`'s receiver is an object of `Enumerator` to which `filter` has been applied. ([@koic][])
