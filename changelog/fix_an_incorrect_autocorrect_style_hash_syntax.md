@@ -1,0 +1,1 @@
+* [#12312](https://github.com/rubocop/rubocop/issues/12312): Fix an incorrect autocorrect for `Style/HashSyntax` when braced hash key and value are the same and it is used in `if`...`else`. ([@koic][])

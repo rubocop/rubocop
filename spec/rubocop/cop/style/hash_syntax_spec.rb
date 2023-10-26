@@ -938,6 +938,25 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers and corrects an offense when braced hash key and value are the same and it is used in `if`...`else`' do
+        expect_offense(<<~RUBY)
+          if condition
+            template % {value: value}
+                               ^^^^^ Omit the hash value.
+          else
+            do_something
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if condition
+            template % {value:}
+          else
+            do_something
+          end
+        RUBY
+      end
+
       it 'registers and corrects an offense when hash key and hash value are the same and it in the method body' do
         expect_offense(<<~RUBY)
           def do_something
