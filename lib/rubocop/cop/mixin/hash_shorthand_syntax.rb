@@ -48,18 +48,21 @@ module RuboCop
 
       def register_offense(node, message, replacement) # rubocop:disable Metrics/AbcSize
         add_offense(node.value, message: message) do |corrector|
-          if (def_node = def_node_that_require_parentheses(node))
-            last_argument = def_node.last_argument
-            if last_argument.nil? || !last_argument.hash_type?
-              next corrector.replace(node, replacement)
-            end
-
-            white_spaces = range_between(def_node.selector.end_pos,
-                                         def_node.first_argument.source_range.begin_pos)
-            corrector.replace(white_spaces, '(')
-            corrector.insert_after(last_argument, ')') if node == last_argument.pairs.last
-          end
           corrector.replace(node, replacement)
+
+          next unless (def_node = def_node_that_require_parentheses(node))
+
+          last_argument = def_node.last_argument
+          if last_argument.nil? || !last_argument.hash_type?
+            next corrector.replace(node, replacement)
+          end
+
+          white_spaces = range_between(def_node.selector.end_pos,
+                                       def_node.first_argument.source_range.begin_pos)
+          next if node.parent.braces?
+
+          corrector.replace(white_spaces, '(')
+          corrector.insert_after(last_argument, ')') if node == last_argument.pairs.last
         end
       end
 
