@@ -124,6 +124,23 @@ https://github.com/helix-editor/helix[Helix] is a post-modern modal text editor 
 
 Add the following to your Helix language configuration file (e.g. `~/.config/helix/languages.toml`):
 
+Helix 23.10 or later:
+
+```toml
+[language-server.rubocop]
+command = "bundle"
+args = ["exec", "rubocop", "--lsp"]
+
+[[language]]
+name = "ruby"
+auto-format = true
+language-servers = [
+  { name = "rubocop" }
+]
+```
+
+Before Helix 23.10 or earlier:
+
 ```toml
 [[language]]
 name = "ruby"
