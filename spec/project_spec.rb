@@ -305,6 +305,10 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
       dir = File.expand_path('../changelog', __dir__)
 
+      it 'will not have a directory' do
+        expect(Dir["#{dir}/*"].none? { |path| File.directory?(path) }).to be(true)
+      end
+
       Dir["#{dir}/*.md"].each do |path|
         context "For #{path}" do
           let(:path) { path }
