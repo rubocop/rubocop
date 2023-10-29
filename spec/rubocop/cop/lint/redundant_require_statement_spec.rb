@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
   end
 
   context 'target ruby version >= 2.1', :ruby21 do
-    it 'register an offense and corrects when using requiring `thread` or already redundant features' do
+    it 'registers an offense and corrects when using requiring `thread` or already redundant features' do
       expect_offense(<<~RUBY)
         require 'enumerator'
         ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
   end
 
   context 'target ruby version >= 2.5', :ruby25 do
-    it 'register an offense and corrects when using requiring `pp` or already redundant features' do
+    it 'registers an offense and corrects when using requiring `pp` or already redundant features' do
       expect_offense(<<~RUBY)
         require 'enumerator'
         ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.

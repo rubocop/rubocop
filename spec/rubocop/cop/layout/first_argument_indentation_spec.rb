@@ -545,7 +545,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
       end
 
       context 'for assignment' do
-        it 'register an offense and corrects a correctly indented first ' \
+        it 'registers an offense and corrects a correctly indented first ' \
            'argument and does not care about the second argument' do
           expect_offense(<<~RUBY)
             x = run(

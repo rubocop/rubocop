@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMatchPattern, :config, :ruby27 do
     RUBY
   end
 
-  it 'register an offense for repeated `in` patterns and the same `if` guard is used' do
+  it 'registers an offense for repeated `in` patterns and the same `if` guard is used' do
     expect_offense(<<~RUBY)
       case x
       in foo if condition
@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMatchPattern, :config, :ruby27 do
     RUBY
   end
 
-  it 'register an offense for repeated `in` patterns and the same `unless` guard is used' do
+  it 'registers an offense for repeated `in` patterns and the same `unless` guard is used' do
     expect_offense(<<~RUBY)
       case x
       in foo unless condition

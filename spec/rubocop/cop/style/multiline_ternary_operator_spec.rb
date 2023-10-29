@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'register an offense and corrects when returning a multiline ternary operator expression with `return`' do
+  it 'registers an offense and corrects when returning a multiline ternary operator expression with `return`' do
     expect_offense(<<~RUBY)
       return cond ?
              ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'register an offense and corrects when returning a multiline ternary operator expression with `break`' do
+  it 'registers an offense and corrects when returning a multiline ternary operator expression with `break`' do
     expect_offense(<<~RUBY)
       break cond ?
             ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'register an offense and corrects when returning a multiline ternary operator expression with `next`' do
+  it 'registers an offense and corrects when returning a multiline ternary operator expression with `next`' do
     expect_offense(<<~RUBY)
       next cond ?
            ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'register an offense and corrects when returning a multiline ternary operator expression with method call' do
+  it 'registers an offense and corrects when returning a multiline ternary operator expression with method call' do
     expect_offense(<<~RUBY)
       do_something cond ?
                    ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'register an offense and corrects when returning a multiline ternary operator expression with safe navigation method call' do
+  it 'registers an offense and corrects when returning a multiline ternary operator expression with safe navigation method call' do
     expect_offense(<<~RUBY)
       obj&.do_something cond ?
                         ^^^^^^ Avoid multi-line ternary operators, use single-line instead.

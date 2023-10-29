@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
             RUBY
           end
 
-          it 'register an offense with inline `private_class_method`' do
+          it 'registers an offense with inline `private_class_method`' do
             expect_offense(<<~RUBY)
               private_class_method def self.foo
                                    ^^^^^^^^^^^^ Missing method documentation comment.

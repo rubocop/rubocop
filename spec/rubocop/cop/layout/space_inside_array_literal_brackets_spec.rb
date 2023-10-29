@@ -436,7 +436,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
-    it 'register an offense and corrects when 2 arrays are on one line' do
+    it 'registers an offense and corrects when 2 arrays are on one line' do
       expect_offense(<<~RUBY)
         [ 2, 3, 4 ] - [3, 4 ]
                       ^ #{use_space_message}

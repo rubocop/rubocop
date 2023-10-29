@@ -375,7 +375,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     include_examples 'aligned', 'puts 1; until',          'Test',     '        end'
     include_examples 'aligned', 'puts 1; case',           'a when b', '        end'
 
-    it 'register an offense when using `+` operator method and `end` is not aligned' do
+    it 'registers an offense when using `+` operator method and `end` is not aligned' do
       expect_offense(<<~RUBY)
         variable + if condition
                      foo
@@ -394,7 +394,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
-    it 'register an offense when using `-` operator method and `end` is not aligned' do
+    it 'registers an offense when using `-` operator method and `end` is not aligned' do
       expect_offense(<<~RUBY)
         variable - if condition
                      foo
@@ -413,7 +413,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
-    it 'register an offense when using a conditional statement in a method argument and `end` is not aligned' do
+    it 'registers an offense when using a conditional statement in a method argument and `end` is not aligned' do
       expect_offense(<<~RUBY)
         format(
           case condition
@@ -453,7 +453,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
-    it 'register an offense when using a pattern matching in a method argument and `end` is not aligned', :ruby27 do
+    it 'registers an offense when using a pattern matching in a method argument and `end` is not aligned', :ruby27 do
       expect_offense(<<~RUBY)
         format(
           case pattern

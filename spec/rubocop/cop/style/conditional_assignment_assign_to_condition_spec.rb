@@ -1572,7 +1572,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
         RUBY
       end
 
-      it 'register an offense for multiple assignment in if else' do
+      it 'registers an offense for multiple assignment in if else' do
         expect_offense(<<~RUBY)
           if baz
           ^^^^^^ Use the return of the conditional for variable assignment and comparison.
