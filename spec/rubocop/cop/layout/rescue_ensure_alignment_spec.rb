@@ -688,6 +688,23 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
   end
 
+  context 'rescue in do-end block assigned to object attribute' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        obj.attr = do_something do
+          rescue StandardError
+          ^^^^^^ `rescue` at 2, 2 is not aligned with `obj` at 1, 0.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj.attr = do_something do
+        rescue StandardError
+        end
+      RUBY
+    end
+  end
+
   context 'rescue in do-end block on multi-assignment' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
