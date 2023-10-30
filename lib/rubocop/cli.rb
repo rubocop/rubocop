@@ -174,7 +174,7 @@ module RuboCop
       ConfigLoader.ignore_unrecognized_cops = @options[:ignore_unrecognized_cops]
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     def handle_exiting_options
       return unless Options::EXITING_OPTIONS.any? { |o| @options.key? o }
 
@@ -182,9 +182,10 @@ module RuboCop
       run_command(:show_cops) if @options[:show_cops]
       run_command(:show_docs_url) if @options[:show_docs_url]
       run_command(:lsp) if @options[:lsp]
+      run_command(:json_schema) if @options[:json_schema]
       raise Finished
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
 
     def apply_default_formatter
       # This must be done after the options have already been processed,

@@ -1,0 +1,116 @@
+---
+inherit_from:
+  - ".rubocop_todo.yml"
+  - another_file.yml
+inherit_gem:
+  my-gem:
+    - rubocop-default.yml
+require:
+  - rubocop-rails
+  - rubocop-performance
+  - rubocop-rspec
+  - graphql/rubocop
+  - "<%= 'path' %>"
+inherit_mode:
+  merge:
+    - Include
+    - Exclude
+    - AllowedPatterns
+AllCops:
+  TargetRubyVersion: 3.2.1
+  CacheRootDirectory: "<%= Dir.getwd %>/tmp"
+  MaxFilesInCache: 1000000
+  NewCops: enable
+  RubyInterpreters:
+    - ruby
+  DisabledByDefault: true
+  SuggestExtensions:
+    rubocop-graphql: false
+    rubocop-sequel: false
+  Exclude:
+    - gems/**/*
+    - vendor/**/*
+    - !ruby/regexp /regex\z/
+  ActiveSupportExtensionsEnabled: true
+Metrics:
+  Include:
+    - "lib/*"
+    - !ruby/regexp /lib\z/
+  Exclude:
+    - "lib/*"
+    - !ruby/regexp /lib\z/
+Bundler:
+  Enabled: false
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+Layout/EndOfLine:
+  EnforcedStyle: lf
+Layout/FirstArgumentIndentation:
+  EnforcedStyle: consistent
+Style/SingleLineBlockParams:
+  Enabled: false
+  Methods:
+    - reduce:
+        - a
+        - e
+    - inject:
+        - a
+        - e
+Layout/HashAlignment:
+  EnforcedHashRocketStyle:
+    - key
+    - table
+  EnforcedColonStyle: key
+Layout/HeredocArgumentClosingParenthesis:
+  Enabled: true
+Layout/LineLength:
+  AutoCorrect: false
+  Max: 80
+  Severity: info
+Layout/MultilineArrayLineBreaks:
+  Enabled: true
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: aligned
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
+Layout/BlockAlignment:
+  EnforcedStyleAlignWith: start_of_block
+  Exclude: ~
+  Include: ~
+Naming/MethodParameterName:
+  AllowedNames:
+    - ex
+    - id
+    - ctx
+Naming/RescuedExceptionsVariableName:
+  PreferredName: ex
+Style/CollectionMethods:
+  Enabled: true
+  PreferredMethods:
+    collect: ~
+Style/For:
+  inherit_mode:
+    override:
+      - Exclude
+    merge:
+      - Exclude
+  Exclude:
+    - bar.rb
+Style/GuardClause:
+  MinBodyLength: 4
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  AutoCorrect: false
+  AllowedPatterns:
+    - "^include\\w*"
+    - !ruby/regexp /regex\z/
+  AllowedMethods:
+    - expires_in
+  Exclude:
+    - config/initializers/*
+Style/StringChars:
+  Enabled: false

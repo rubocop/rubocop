@@ -1,0 +1,115 @@
+title: JSON schema for RuboCop configuration files
+$schema: "http://json-schema.org/draft-07/schema#"
+type: object
+properties:
+  require: {$ref: "#/definitions/stringOrStrings"}
+  inherit_from: {$ref: "#/definitions/stringOrStrings"}
+  inherit_gem:
+    type: object
+    additionalProperties: {$ref: "#/definitions/stringOrStrings"}
+  inherit_mode: {$ref: "#/definitions/inheritMode"}
+  AllCops:
+    type: object
+    allOf:
+      - $ref: "#/definitions/sharedProperties"
+      - $ref: "#/definitions/allCopsProperties"
+
+definitions:
+  stringArray:
+    type: array
+    items: {type: string}
+
+  nullableArray:
+    oneOf:
+      - type: array
+      - type: "null"
+
+  stringOrStrings:
+    oneOf:
+      - type: string
+      - $ref: "#/definitions/stringArray"
+
+  severity:
+    type: string
+    enum:
+      - info
+      - refactor
+      - convention
+      - warning
+      - error
+      - fatal
+
+  # top-level or individual cop
+  inheritMode:
+    type: object
+    minProperties: 1
+    propertyNames:
+      enum: [merge, override]
+    additionalProperties:
+      type: array
+      minItems: 1
+      items: {type: string}
+
+  # cop or department or AllCops
+  sharedProperties:
+    properties:
+      # array of string or regex
+      Include: {$ref: "#/definitions/nullableArray"}
+      Exclude: {$ref: "#/definitions/nullableArray"}
+      StyleGuideBaseURL: {type: string, default: "https://rubystyle.guide"}
+      inherit_mode: {$ref: "#/definitions/inheritMode"}
+
+  # cop or department. some of these may not work on department?
+  copProperties:
+    type: object
+    allOf:
+      - $ref: "#/definitions/sharedProperties"
+      - properties:
+          Enabled:
+            oneOf:
+              - type: boolean
+              - {type: "string", enum: [pending]}
+          Severity: {$ref: "#/definitions/severity"}
+          Details: {type: string}
+          StyleGuide: {type: string}
+
+  # properties exclusive to AllCops
+  allCopsProperties:
+    properties:
+      DefaultFormatter: {type: string, default: "progress"}
+      DisplayCopNames: {type: boolean, default: true}
+      DisplayStyleGuide: {type: boolean, default: false}
+      DocumentationBaseURL:
+        type: string
+        default: "https://docs.rubocop.org/rubocop"
+      ExtraDetails: {type: boolean, default: false}
+      StyleGuideCopsOnly: {type: boolean, default: false}
+      EnabledByDefault: {type: boolean, default: false}
+      DisabledByDefault: {type: boolean, default: false}
+      NewCops:
+        type: string
+        default: pending
+        enum:
+          - pending
+          - enable
+          - disable
+      UseCache: {type: boolean, default: true}
+      MaxFilesInCache: {type: integer, default: 20000}
+      CacheRootDirectory: {type: string}
+      AllowSymlinksInCacheRootDirectory: {type: boolean, default: false}
+      TargetRubyVersion:
+        oneOf:
+          - type: number
+          - type: string
+      SuggestExtensions:
+        oneOf:
+          - type: boolean
+          - type: object
+            additionalProperties:
+              oneOf:
+                - type: boolean
+                - $ref: "#/definitions/stringArray"
+      RubyInterpreters:
+        type: array
+        items:
+          type: string

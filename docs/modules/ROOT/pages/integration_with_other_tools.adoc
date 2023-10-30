@@ -88,13 +88,31 @@ provides LightTable integration.
 
 === RubyMine / Intellij IDEA
 
-RuboCop support is https://www.jetbrains.com/help/idea/2017.1/rubocop.html[available] as of the 2017.1 releases.
+RuboCop support is https://www.jetbrains.com/help/idea/2017.1/rubocop.html[available] as of the 2017.1 releases. 
+
+Running `rubocop --json-schema` outputs a JSON Schema that Intellij can use to enable https://www.jetbrains.com/help/idea/json.html[validation and autocompletion] within your `.rubocop.yml` file.
 
 === Visual Studio Code
 
 The https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby[ruby] extension
 provides RuboCop integration for Visual Studio Code. RuboCop is also used for the formatting
 capabilities of this extension.
+
+The https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml[yaml] extension allows validation and autocompletion of your `.rubocop.yml` file itself. Run `rubocop --json-schema > .vscode/rubocop_schema.json` (or similar) to generate a JSON Schema file, and then tell your editor to use it by adding something like the following to your workspace settings:
+
+[source,json]
+----
+"yaml.schemas": {
+  ".vscode/rubocop_schema.json": [".rubocop.yml", ".rubocop_todo.yml"]
+}
+----
+
+If you're using regular expressions or other Ruby objects in your `.rubocop.yml`, you may also need a line like this:
+
+[source,json]
+----
+"yaml.customTags": ["!ruby/regexp scalar"]
+----
 
 === Other Editors
 
