@@ -104,8 +104,8 @@ module RuboCop
               mlhs_node, = *node
               mlhs_node.source_range
             else
-              # It is a wrapper with access modifier.
-              node.child_nodes.first.loc.name
+              # It is a wrapper with receiver of object attribute or access modifier.
+              node.receiver&.source_range || node.child_nodes.first.loc.name
             end
 
           range_between(starting_loc.begin_pos, ending_loc.end_pos).source
