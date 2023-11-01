@@ -59,8 +59,6 @@ module RuboCop
       class CombinableLoops < Base
         extend AutoCorrector
 
-        include RangeHelp
-
         MSG = 'Combine this loop with the previous loop.'
 
         def on_block(node)
@@ -105,11 +103,8 @@ module RuboCop
         end
 
         def combine_with_left_sibling(corrector, node)
-          corrector.replace(
-            node.left_sibling.body,
-            "#{node.left_sibling.body.source}\n#{node.body.source}"
-          )
-          corrector.remove(range_with_surrounding_space(range: node.source_range, side: :left))
+          corrector.remove(node.left_sibling.body.source_range.end.join(node.left_sibling.loc.end))
+          corrector.remove(node.source_range.begin.join(node.body.source_range.begin))
         end
       end
     end
