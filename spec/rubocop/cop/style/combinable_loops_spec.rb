@@ -29,6 +29,22 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'registers an offense when looping over the same data for the third consecutive time' do
+      expect_offense(<<~RUBY)
+        items.each { |item| foo(item) }
+        items.each { |item| bar(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        items.each { |item| baz(item) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { |item| foo(item)
+        bar(item)
+        baz(item) }
+      RUBY
+    end
+
     context 'Ruby 2.7' do
       it 'registers an offense when looping over the same data as previous loop in numblocks' do
         expect_offense(<<~RUBY)
