@@ -165,6 +165,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
     RUBY
   end
 
+  it 'does not register an offense when method call for parenthesized no hash double double splat' do
+    expect_no_offenses(<<~RUBY)
+      do_something(**(options.merge(foo: bar)))
+    RUBY
+  end
+
   it 'does not register an offense when using empty double splat hash braces arguments' do
     expect_no_offenses(<<~RUBY)
       do_something(**{})
