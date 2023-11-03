@@ -8,6 +8,27 @@ RSpec.describe RuboCop::Cop::Style::AutoResourceCleanup, :config do
     RUBY
   end
 
+  it 'registers an offense for Tempfile.open without block' do
+    expect_offense(<<~RUBY)
+      Tempfile.open("filename")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Use the block version of `Tempfile.open`.
+    RUBY
+  end
+
+  it 'registers an offense for ::File.open without block' do
+    expect_offense(<<~RUBY)
+      ::File.open("filename")
+      ^^^^^^^^^^^^^^^^^^^^^^^ Use the block version of `::File.open`.
+    RUBY
+  end
+
+  it 'registers an offense for ::Tempfile.open without block' do
+    expect_offense(<<~RUBY)
+      ::Tempfile.open("filename")
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the block version of `::Tempfile.open`.
+    RUBY
+  end
+
   it 'does not register an offense for File.open with block' do
     expect_no_offenses('File.open("file") { |f| something }')
   end
