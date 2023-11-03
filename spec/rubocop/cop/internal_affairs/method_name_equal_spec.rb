@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEqual, :config do
   it 'registers an offense when using `#method == :do_something`' do
     expect_offense(<<~RUBY)
       node.method_name == :do_something
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `method?(:do_something)` instead of `method_name == :do_something`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `node.method?(:do_something)` instead.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -12,10 +12,21 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEqual, :config do
     RUBY
   end
 
+  it 'registers an offense when using `#method != :do_something`' do
+    expect_offense(<<~RUBY)
+      node.method_name != :do_something
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!node.method?(:do_something)` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !node.method?(:do_something)
+    RUBY
+  end
+
   it 'registers an offense when using `#method == other_node.do_something`' do
     expect_offense(<<~RUBY)
       node.method_name == other_node.do_something
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `method?(other_node.do_something)` instead of `method_name == other_node.do_something`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `node.method?(other_node.do_something)` instead.
     RUBY
 
     expect_correction(<<~RUBY)
