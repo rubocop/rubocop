@@ -534,7 +534,7 @@ module RuboCop
           end
 
           def element_assignment?(node)
-            node.send_type? && node.method_name != :[]=
+            node.send_type? && !node.method?(:[]=)
           end
 
           def extract_branches(node)
