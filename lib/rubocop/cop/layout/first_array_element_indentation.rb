@@ -25,7 +25,7 @@ module RuboCop
       #   # element are on separate lines is indented one step (two spaces) more
       #   # than the position inside the opening parenthesis.
       #
-      #   #bad
+      #   # bad
       #   array = [
       #     :value
       #   ]
@@ -33,7 +33,7 @@ module RuboCop
       #     :no_difference
       #                        ])
       #
-      #   #good
+      #   # good
       #   array = [
       #     :value
       #   ]
@@ -47,7 +47,7 @@ module RuboCop
       #   # separate lines is indented the same as an array literal which is not
       #   # defined inside a method call.
       #
-      #   #bad
+      #   # bad
       #   # consistent
       #   array = [
       #     :value
@@ -56,7 +56,7 @@ module RuboCop
       #                          :its_like_this
       #   ])
       #
-      #   #good
+      #   # good
       #   array = [
       #     :value
       #   ]
@@ -68,13 +68,13 @@ module RuboCop
       #   # The `align_brackets` style enforces that the opening and closing
       #   # brackets are indented to the same position.
       #
-      #   #bad
+      #   # bad
       #   # align_brackets
       #   and_now_for_something = [
       #                             :completely_different
       #   ]
       #
-      #   #good
+      #   # good
       #   # align_brackets
       #   and_now_for_something = [
       #                             :completely_different

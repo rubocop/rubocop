@@ -7,12 +7,12 @@ module RuboCop
       # defining `respond_to_missing?`.
       #
       # @example
-      #   #bad
+      #   # bad
       #   def method_missing(name, *args)
       #     # ...
       #   end
       #
-      #   #good
+      #   # good
       #   def respond_to_missing?(name, include_private)
       #     # ...
       #   end
