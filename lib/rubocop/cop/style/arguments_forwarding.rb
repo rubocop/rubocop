@@ -86,6 +86,10 @@ module RuboCop
         ARGS_MSG = 'Use anonymous positional arguments forwarding (`*`).'
         KWARGS_MSG = 'Use anonymous keyword arguments forwarding (`**`).'
 
+        def self.autocorrect_incompatible_with
+          [Naming::BlockForwarding]
+        end
+
         def on_def(node)
           return unless node.body
 
