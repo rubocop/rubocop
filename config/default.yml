@@ -5190,6 +5190,7 @@ Style/SingleLineBlockParams:
 
 Style/SingleLineDoEndBlock:
   Description: 'Checks for single-line `do`...`end` blocks.'
+  StyleGuide: '#single-line-do-end-block'
   Enabled: pending
   VersionAdded: '1.57'
 
