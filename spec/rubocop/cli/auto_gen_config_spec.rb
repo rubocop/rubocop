@@ -320,8 +320,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             .to eq(['# Offense count: 1',
                     '# This cop supports safe autocorrection (--autocorrect).',
                     '# Configuration parameters: AllowForAlignment, ' \
-                    'EnforcedStyleForExponentOperator.',
+                    'EnforcedStyleForExponentOperator, EnforcedStyleForRationalLiterals.',
                     '# SupportedStylesForExponentOperator: space, no_space',
+                    '# SupportedStylesForRationalLiterals: space, no_space',
                     'Layout/SpaceAroundOperators:',
                     '  Exclude:',
                     "    - 'example1.rb'",
@@ -862,8 +863,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# Offense count: 1',
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowForAlignment, ' \
-         'EnforcedStyleForExponentOperator.',
+         'EnforcedStyleForExponentOperator, EnforcedStyleForRationalLiterals.',
          '# SupportedStylesForExponentOperator: space, no_space',
+         '# SupportedStylesForRationalLiterals: space, no_space',
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",
@@ -964,8 +966,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# Offense count: 1',
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowForAlignment, ' \
-         'EnforcedStyleForExponentOperator.',
+         'EnforcedStyleForExponentOperator, EnforcedStyleForRationalLiterals.',
          '# SupportedStylesForExponentOperator: space, no_space',
+         '# SupportedStylesForRationalLiterals: space, no_space',
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",
@@ -1260,8 +1263,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowForAlignment, ' \
-         'EnforcedStyleForExponentOperator.',
+         'EnforcedStyleForExponentOperator, EnforcedStyleForRationalLiterals.',
          '# SupportedStylesForExponentOperator: space, no_space',
+         '# SupportedStylesForRationalLiterals: space, no_space',
          'Layout/SpaceAroundOperators:',
          '  Exclude:',
          "    - 'example1.rb'",

@@ -8,7 +8,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         'Layout/HashAlignment' => { 'EnforcedHashRocketStyle' => hash_style },
         'Layout/SpaceAroundOperators' => {
           'AllowForAlignment' => allow_for_alignment,
-          'EnforcedStyleForExponentOperator' => exponent_operator_style
+          'EnforcedStyleForExponentOperator' => exponent_operator_style,
+          'EnforcedStyleForRationalLiterals' => rational_literals_style
         },
         'Layout/ExtraSpacing' => {
           'Enabled' => force_equal_sign_alignment,
@@ -20,6 +21,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
   let(:hash_style) { 'key' }
   let(:allow_for_alignment) { true }
   let(:exponent_operator_style) { nil }
+  let(:rational_literals_style) { nil }
   let(:force_equal_sign_alignment) { false }
 
   it 'accepts operator surrounded by tabs' do
@@ -218,6 +220,44 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     expect_no_offenses('x = a * b**2')
   end
 
+  it 'registers an offenses for slash in rational literals with spaces' do
+    expect_offense(<<~RUBY)
+      x = a * b / 42r
+                ^ Space around operator `/` detected.
+      y = a * b/ 42r
+               ^ Space around operator `/` detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = a * b/42r
+      y = a * b/42r
+    RUBY
+  end
+
+  it 'accepts slash in rational literals without spaces' do
+    expect_no_offenses('x = a * b/42r')
+  end
+
+  it 'does not register an offenses for slash in non rational literals without spaces' do
+    expect_no_offenses(<<~RUBY)
+      x = a * b / 42
+    RUBY
+  end
+
+  it 'registers slash in non rational literals without spaces' do
+    expect_offense(<<~RUBY)
+      x = a * b/42
+               ^ Surrounding space missing for operator `/`.
+      y = a * b/ 42
+               ^ Surrounding space missing for operator `/`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = a * b / 42
+      y = a * b / 42
+    RUBY
+  end
+
   context '>= Ruby 2.7', :ruby27 do
     let(:target_ruby_version) { 2.7 }
 
@@ -255,6 +295,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
 
       expect_correction(<<~RUBY)
         x = a * b ** 2
+      RUBY
+    end
+  end
+
+  context 'when EnforcedStyleForRationalLiterals is space' do
+    let(:rational_literals_style) { 'space' }
+
+    it 'registers an offenses for rational literals without spaces' do
+      expect_offense(<<~RUBY)
+        x = a * b/42r
+                 ^ Surrounding space missing for operator `/`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = a * b / 42r
       RUBY
     end
   end

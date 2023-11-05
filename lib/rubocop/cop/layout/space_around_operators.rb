@@ -50,6 +50,20 @@ module RuboCop
       #
       #   # good
       #   a ** b
+      #
+      # @example EnforcedStyleForRationalLiterals: no_space (default)
+      #   # bad
+      #   1 / 48r
+      #
+      #   # good
+      #   1/48r
+      #
+      # @example EnforcedStyleForRationalLiterals: space
+      #   # bad
+      #   1/48r
+      #
+      #   # good
+      #   1 / 48r
       class SpaceAroundOperators < Base
         include PrecedingFollowingAlignment
         include RangeHelp
@@ -64,7 +78,7 @@ module RuboCop
         end
 
         def on_sclass(node)
-          check_operator(:sclass, node.loc.operator, node.source_range)
+          check_operator(:sclass, node.loc.operator, node)
         end
 
         def on_pair(node)
@@ -72,14 +86,14 @@ module RuboCop
 
           return if hash_table_style? && !node.parent.pairs_on_same_line?
 
-          check_operator(:pair, node.loc.operator, node.source_range)
+          check_operator(:pair, node.loc.operator, node)
         end
 
         def on_if(node)
           return unless node.ternary?
 
-          check_operator(:if, node.loc.question, node.if_branch.source_range)
-          check_operator(:if, node.loc.colon, node.else_branch.source_range)
+          check_operator(:if, node.loc.question, node.if_branch)
+          check_operator(:if, node.loc.colon, node.else_branch)
         end
 
         def on_resbody(node)
@@ -87,7 +101,7 @@ module RuboCop
 
           _, variable, = *node
 
-          check_operator(:resbody, node.loc.assoc, variable.source_range)
+          check_operator(:resbody, node.loc.assoc, variable)
         end
 
         def on_send(node)
@@ -96,7 +110,7 @@ module RuboCop
           if node.setter_method?
             on_special_asgn(node)
           elsif regular_operator?(node)
-            check_operator(:send, node.loc.selector, node.first_argument.source_range)
+            check_operator(:send, node.loc.selector, node.first_argument)
           end
         end
 
@@ -105,7 +119,7 @@ module RuboCop
 
           return unless rhs
 
-          check_operator(:assignment, node.loc.operator, rhs.source_range)
+          check_operator(:assignment, node.loc.operator, rhs)
         end
 
         def on_casgn(node)
@@ -113,7 +127,7 @@ module RuboCop
 
           return unless right
 
-          check_operator(:assignment, node.loc.operator, right.source_range)
+          check_operator(:assignment, node.loc.operator, right)
         end
 
         def on_binary(node)
@@ -121,7 +135,7 @@ module RuboCop
 
           return unless rhs
 
-          check_operator(:binary, node.loc.operator, rhs.source_range)
+          check_operator(:binary, node.loc.operator, rhs)
         end
 
         def on_special_asgn(node)
@@ -129,13 +143,13 @@ module RuboCop
 
           return unless right
 
-          check_operator(:special_asgn, node.loc.operator, right.source_range)
+          check_operator(:special_asgn, node.loc.operator, right)
         end
 
         def on_match_pattern(node)
           return if target_ruby_version < 3.0
 
-          check_operator(:match_pattern, node.loc.operator, node.source_range)
+          check_operator(:match_pattern, node.loc.operator, node)
         end
 
         alias on_or       on_binary
@@ -168,7 +182,7 @@ module RuboCop
 
           offense(type, operator, with_space, right_operand) do |msg|
             add_offense(operator, message: msg) do |corrector|
-              autocorrect(corrector, with_space)
+              autocorrect(corrector, with_space, right_operand)
             end
           end
         end
@@ -178,11 +192,15 @@ module RuboCop
           yield msg if msg
         end
 
-        def autocorrect(corrector, range)
-          if range.source.include?('**') && !space_around_exponent_operator?
+        def autocorrect(corrector, range, right_operand)
+          range_source = range.source
+
+          if range_source.include?('**') && !space_around_exponent_operator?
             corrector.replace(range, '**')
-          elsif range.source.end_with?("\n")
-            corrector.replace(range, " #{range.source.strip}\n")
+          elsif range_source.include?('/') && !space_around_slash_operator?(right_operand)
+            corrector.replace(range, '/')
+          elsif range_source.end_with?("\n")
+            corrector.replace(range, " #{range_source.strip}\n")
           else
             enclose_operator_with_space(corrector, range)
           end
@@ -202,14 +220,14 @@ module RuboCop
         end
 
         def offense_message(type, operator, with_space, right_operand)
-          if should_not_have_surrounding_space?(operator)
+          if should_not_have_surrounding_space?(operator, right_operand)
             return if with_space.is?(operator.source)
 
             "Space around operator `#{operator.source}` detected."
           elsif !/^\s.*\s$/.match?(with_space.source)
             "Surrounding space missing for operator `#{operator.source}`."
           elsif excess_leading_space?(type, operator, with_space) ||
-                excess_trailing_space?(right_operand, with_space)
+                excess_trailing_space?(right_operand.source_range, with_space)
             "Operator `#{operator.source}` should be surrounded " \
               'by a single space.'
           end
@@ -247,12 +265,24 @@ module RuboCop
           cop_config['EnforcedStyleForExponentOperator'] == 'space'
         end
 
+        def space_around_slash_operator?(right_operand)
+          return true unless right_operand.rational_type?
+
+          cop_config['EnforcedStyleForRationalLiterals'] == 'space'
+        end
+
         def force_equal_sign_alignment?
           config.for_cop('Layout/ExtraSpacing')['ForceEqualSignAlignment']
         end
 
-        def should_not_have_surrounding_space?(operator)
-          operator.is?('**') ? !space_around_exponent_operator? : false
+        def should_not_have_surrounding_space?(operator, right_operand)
+          if operator.is?('**')
+            !space_around_exponent_operator?
+          elsif operator.is?('/')
+            !space_around_slash_operator?(right_operand)
+          else
+            false
+          end
         end
       end
     end
