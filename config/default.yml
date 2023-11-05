@@ -1351,6 +1351,10 @@ Layout/SpaceAroundOperators:
   SupportedStylesForExponentOperator:
     - space
     - no_space
+  EnforcedStyleForRationalLiterals: no_space
+  SupportedStylesForRationalLiterals:
+    - space
+    - no_space
 
 Layout/SpaceBeforeBlockBraces:
   Description: >-
