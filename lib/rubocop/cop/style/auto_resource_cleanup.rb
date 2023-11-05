@@ -16,31 +16,38 @@ module RuboCop
       #   File.open('file') do |f|
       #     # ...
       #   end
+      #
+      #   # bad
+      #   f = Tempfile.open('temp')
+      #
+      #   # good
+      #   Tempfile.open('temp') do |f|
+      #     # ...
+      #   end
       class AutoResourceCleanup < Base
-        MSG = 'Use the block version of `%<class>s.%<method>s`.'
+        MSG = 'Use the block version of `%<current>s`.'
+        RESTRICT_ON_SEND = %i[open].freeze
 
-        TARGET_METHODS = { File: :open }.freeze
-
-        RESTRICT_ON_SEND = TARGET_METHODS.values.freeze
+        # @!method file_open_method?(node)
+        def_node_matcher :file_open_method?, <<~PATTERN
+          (send (const {nil? cbase} {:File :Tempfile}) :open ...)
+        PATTERN
 
         def on_send(node)
-          TARGET_METHODS.each do |target_class, target_method|
-            next unless node.method?(target_method)
+          return if !file_open_method?(node) || cleanup?(node)
 
-            target_receiver = s(:const, nil, target_class)
-            next if node.receiver != target_receiver
+          current = node.receiver.source_range.begin.join(node.selector.end).source
 
-            next if cleanup?(node)
-
-            add_offense(node, message: format(MSG, class: target_class, method: target_method))
-          end
+          add_offense(node, message: format(MSG, current: current))
         end
 
         private
 
         def cleanup?(node)
-          parent = node.parent
-          node.block_argument? || (parent && (parent.block_type? || !parent.lvasgn_type?))
+          return true if node.block_argument?
+          return false unless (parent = node.parent)
+
+          parent.block_type? || !parent.lvasgn_type?
         end
       end
     end
