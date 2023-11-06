@@ -87,7 +87,7 @@ module RuboCop
         # rubocop:enable Lint/UselessMethodDefinition
 
         def decorated_message(offense)
-          offense.message.gsub(/`(.+?)`/) { "<code>#{Regexp.last_match(1)}</code>" }
+          offense.message.gsub(/`(.+?)`/) { "<code>#{escape(Regexp.last_match(1))}</code>" }
         end
 
         def highlighted_source_line(offense)

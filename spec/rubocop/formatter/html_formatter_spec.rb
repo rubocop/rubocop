@@ -10,10 +10,19 @@ RSpec.describe RuboCop::Formatter::HTMLFormatter, :isolated_environment do
     Dir.chdir(File.basename(project_path)) { example.run }
   end
 
-  # Run without Style/EndOfLine as it gives different results on
-  # different platforms.
-  # Metrics/AbcSize is very strict, exclude it too
-  let(:options) { %w[--except Layout/EndOfLine,Metrics/AbcSize --format html --out] }
+  let(:enabled_cops) do
+    [
+      'Layout/EmptyLinesAroundAccessModifier', 'Layout/IndentationConsistency',
+      'Layout/IndentationWidth', 'Layout/LineLength', 'Lint/UselessAssignment',
+      'Naming/MethodName', 'Style/Documentation', 'Style/EmptyMethod',
+      'Style/FrozenStringLiteralComment', 'Style/RedundantRegexpArgument', 'Style/RegexpLiteral',
+      'Style/RescueModifier', 'Style/SymbolArray'
+    ].join(',')
+  end
+
+  let(:options) do
+    ['--only', enabled_cops, '--format', 'html', '--out']
+  end
 
   let(:actual_html_path) do
     path = File.expand_path('result.html')
