@@ -79,7 +79,7 @@ module RuboCop
       end
 
       def aligned_operator?(range, line)
-        (aligned_identical?(range, line) || aligned_assignment?(range, line))
+        aligned_identical?(range, line) || aligned_assignment?(range, line)
       end
 
       def aligned_words?(range, line)

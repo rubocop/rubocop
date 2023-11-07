@@ -133,7 +133,7 @@ module RuboCop
         end
 
         def percent_array_literal?(node)
-          (percent_w_literal?(node) || percent_w_upper_literal?(node))
+          percent_w_literal?(node) || percent_w_upper_literal?(node)
         end
 
         def heredoc_with_disabled_interpolation?(node)
