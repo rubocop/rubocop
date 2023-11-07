@@ -49,19 +49,13 @@ module RuboCop
 
         private
 
-        def aligned_locations(locs) # rubocop:disable Metrics/AbcSize
+        def aligned_locations(locs)
           return [] if locs.empty?
 
-          aligned = Set[locs.first.line, locs.last.line]
-          locs.each_cons(3) do |before, loc, after|
-            col = loc.column
-            aligned << loc.line if col == before.column || col == after.column
+          aligned = Set.new
+          locs.each_cons(2) do |loc1, loc2|
+            aligned << loc1.line << loc2.line if loc1.column == loc2.column
           end
-
-          # if locs.size > 2 and the size of variable `aligned`
-          # has not increased from its initial value, there are not aligned lines.
-          return [] if locs.size > 2 && aligned.size == 2
-
           aligned
         end
 

@@ -604,6 +604,33 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
     end
   end
 
+  context 'when exactly two comments have extra spaces' do
+    context 'and they are aligned' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          one  # comment one
+          two  # comment two
+        RUBY
+      end
+    end
+
+    context 'and they are not aligned' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          one  # comment one
+             ^ Unnecessary spacing detected.
+          two   # comment two
+             ^^ Unnecessary spacing detected.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          one # comment one
+          two # comment two
+        RUBY
+      end
+    end
+  end
+
   context 'when multiple comments have extra spaces' do
     it 'registers offenses for all comments' do
       expect_offense(<<~RUBY)
