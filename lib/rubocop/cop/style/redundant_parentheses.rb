@@ -17,6 +17,8 @@ module RuboCop
         include Parentheses
         extend AutoCorrector
 
+        ALLOWED_NODE_TYPES = %i[and or send splat kwsplat].freeze
+
         # @!method square_brackets?(node)
         def_node_matcher :square_brackets?, '(send {(send _recv _msg) str array hash} :[] ...)'
 
@@ -144,11 +146,16 @@ module RuboCop
           return 'a constant' if node.const_type?
           return 'an interpolated expression' if interpolation?(begin_node)
 
-          return if begin_node.chained? || !begin_node.parent.nil?
+          return if begin_node.chained?
 
           if node.and_type? || node.or_type?
+            return if ALLOWED_NODE_TYPES.include?(begin_node.parent&.type)
+            return if begin_node.parent&.if_type? && begin_node.parent&.ternary?
+
             'a logical expression'
           elsif node.respond_to?(:comparison_method?) && node.comparison_method?
+            return unless begin_node.parent.nil?
+
             'a comparison expression'
           end
         end
