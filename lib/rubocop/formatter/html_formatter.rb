@@ -2,7 +2,6 @@
 
 require 'cgi'
 require 'erb'
-require 'ostruct'
 
 module RuboCop
   module Formatter
