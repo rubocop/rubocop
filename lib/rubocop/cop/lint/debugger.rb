@@ -66,6 +66,7 @@ module RuboCop
       #   end
       class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
+        BLOCK_TYPES = %i[block numblock kwbegin].freeze
 
         def on_send(node)
           return if !debugger_method?(node) || assumed_usage_context?(node)
@@ -98,7 +99,7 @@ module RuboCop
           return true if assumed_argument?(node)
 
           node.each_ancestor.none? do |ancestor|
-            ancestor.block_type? || ancestor.numblock_type? || ancestor.lambda_or_proc?
+            BLOCK_TYPES.include?(ancestor.type) || ancestor.lambda_or_proc?
           end
         end
 
