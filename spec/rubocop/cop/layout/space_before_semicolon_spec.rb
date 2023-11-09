@@ -45,6 +45,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeSemicolon, :config do
       it 'accepts a space between an opening brace and a semicolon' do
         expect_no_offenses('test { ; }')
       end
+
+      it 'accepts a space between an opening lambda brace and a semicolon' do
+        expect_no_offenses('-> { ; }')
+      end
     end
 
     context 'when EnforcedStyle for SpaceInsideBlockBraces is no_space' do
