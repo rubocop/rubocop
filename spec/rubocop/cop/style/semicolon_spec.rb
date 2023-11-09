@@ -119,6 +119,17 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
+  it 'registers an offense for a semicolon at the beginning of a lambda block' do
+    expect_offense(<<~RUBY)
+      foo -> {; bar }
+              ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo -> { bar }
+    RUBY
+  end
+
   it 'registers an offense for a semicolon at the end of a block' do
     expect_offense(<<~RUBY)
       foo { bar; }
