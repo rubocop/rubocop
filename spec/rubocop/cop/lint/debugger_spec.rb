@@ -68,6 +68,17 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
       RUBY
     end
 
+    it 'registers an offense for a `custom_debugger` call when used within method arguments a `begin`...`end` block' do
+      expect_offense(<<~RUBY)
+        do_something(
+          begin
+            custom_debugger
+            ^^^^^^^^^^^^^^^ Remove debugger entry point `custom_debugger`.
+          end
+        )
+      RUBY
+    end
+
     context 'nested custom configurations' do
       let(:cop_config) { { 'DebuggerMethods' => { 'Custom' => %w[custom_debugger] } } }
 
