@@ -65,7 +65,7 @@ module RuboCop
             lhs, _op, _rhs = *node
             [lhs, attribute]
           else
-            [node, "#{attribute}=".to_sym]
+            [node, :"#{attribute}="]
           end
         end
 

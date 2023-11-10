@@ -19,12 +19,14 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
   it_behaves_like 'offense', '"foo".to_sym', ':foo'
   it_behaves_like 'offense', '"foo_bar".to_sym', ':foo_bar'
   it_behaves_like 'offense', '"foo-bar".to_sym', ':"foo-bar"'
+  it_behaves_like 'offense', '"foo-#{bar}".to_sym', ':"foo-#{bar}"'
 
   # Unnecessary `intern`
   it_behaves_like 'offense', ':foo.intern', ':foo'
   it_behaves_like 'offense', '"foo".intern', ':foo'
   it_behaves_like 'offense', '"foo_bar".intern', ':foo_bar'
   it_behaves_like 'offense', '"foo-bar".intern', ':"foo-bar"'
+  it_behaves_like 'offense', '"foo-#{bar}".intern', ':"foo-#{bar}"'
 
   # Unnecessary quoted symbol
   it_behaves_like 'offense', ':"foo"', ':foo'
@@ -33,12 +35,6 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
   it 'does not register an offense for a normal symbol' do
     expect_no_offenses(<<~RUBY)
       :foo
-    RUBY
-  end
-
-  it 'does not register an offense for a dstr' do
-    expect_no_offenses(<<~'RUBY')
-      "#{foo}".to_sym
     RUBY
   end
 
@@ -124,6 +120,12 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
           { '==': 'bar' }
         RUBY
       end
+
+      it 'does not register an offense for dstr' do
+        expect_no_offenses(<<~'RUBY')
+          { "foo-#{'bar'}": 'baz' }
+        RUBY
+      end
     end
 
     context 'values' do
@@ -152,6 +154,17 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
 
         expect_correction(<<~RUBY)
           { foo: :bar }
+        RUBY
+      end
+
+      it 'registers an offense for dstr' do
+        expect_offense(<<~'RUBY')
+          { foo: "bar-#{'baz'}".to_sym }
+                 ^^^^^^^^^^^^^^^^^^^^^ Unnecessary symbol conversion; use `:"bar-#{'baz'}"` instead.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          { foo: :"bar-#{'baz'}" }
         RUBY
       end
     end
