@@ -256,7 +256,7 @@ module RuboCop
 
         def any_method_definition?(child)
           cop_config.fetch('MethodCreatingMethods', []).any? do |m|
-            matcher_name = "#{m}_method?".to_sym
+            matcher_name = :"#{m}_method?"
             unless respond_to?(matcher_name)
               self.class.def_node_matcher matcher_name, <<~PATTERN
                 {def (send nil? :#{m} ...)}
@@ -279,7 +279,7 @@ module RuboCop
 
         def any_context_creating_methods?(child)
           cop_config.fetch('ContextCreatingMethods', []).any? do |m|
-            matcher_name = "#{m}_block?".to_sym
+            matcher_name = :"#{m}_block?"
             unless respond_to?(matcher_name)
               self.class.def_node_matcher matcher_name, <<~PATTERN
                 ({block numblock} (send {nil? const} {:#{m}} ...) ...)

@@ -19,6 +19,7 @@ module RuboCop
       #   'underscored_string'.to_sym
       #   :'underscored_symbol'
       #   'hyphenated-string'.to_sym
+      #   "string_#{interpolation}".to_sym
       #
       #   # good
       #   :string
@@ -26,6 +27,7 @@ module RuboCop
       #   :underscored_string
       #   :underscored_symbol
       #   :'hyphenated-string'
+      #   :"string_#{interpolation}"
       #
       # @example EnforcedStyle: strict (default)
       #
@@ -75,9 +77,12 @@ module RuboCop
 
         def on_send(node)
           return unless node.receiver
-          return unless node.receiver.str_type? || node.receiver.sym_type?
 
-          register_offense(node, correction: node.receiver.value.to_sym.inspect)
+          if node.receiver.str_type? || node.receiver.sym_type?
+            register_offense(node, correction: node.receiver.value.to_sym.inspect)
+          elsif node.receiver.dstr_type?
+            register_offense(node, correction: ":\"#{node.receiver.value.to_sym}\"")
+          end
         end
 
         def on_sym(node)
