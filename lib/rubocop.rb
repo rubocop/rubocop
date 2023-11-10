@@ -54,6 +54,8 @@ require_relative 'rubocop/cop/generator/configuration_injector'
 require_relative 'rubocop/cop/generator/require_file_injector'
 require_relative 'rubocop/magic_comment'
 
+require_relative 'rubocop/cop/minitest/focus'
+
 require_relative 'rubocop/cop/variable_force'
 require_relative 'rubocop/cop/variable_force/branch'
 require_relative 'rubocop/cop/variable_force/branchable'
