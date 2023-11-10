@@ -150,6 +150,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
   it_behaves_like 'redundant', '(X)', 'X', 'a constant'
 
+  it_behaves_like 'redundant', '(-> { x })', '-> { x }', 'an expression'
+  it_behaves_like 'redundant', '(lambda { x })', 'lambda { x }', 'an expression'
+  it_behaves_like 'redundant', '(proc { x })', 'proc { x }', 'an expression'
+
   it_behaves_like 'redundant', '(x)', 'x', 'a method call'
   it_behaves_like 'redundant', '(x(1, 2))', 'x(1, 2)', 'a method call'
   it_behaves_like 'redundant', '("x".to_sym)', '"x".to_sym', 'a method call'
