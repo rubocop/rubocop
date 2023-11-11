@@ -4906,7 +4906,7 @@ Style/RedundantFetchBlock:
   Description: >-
                   Use `fetch(key, value)` instead of `fetch(key) { value }`
                   when value has Numeric, Rational, Complex, Symbol or String type, `false`, `true`, `nil` or is a constant.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code'
+  Reference: 'https://github.com/fastruby/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code'
   Enabled: true
   Safe: false
   # If enabled, this cop will autocorrect usages of
@@ -5127,7 +5127,7 @@ Style/Sample:
   Description: >-
                   Use `sample` instead of `shuffle.first`,
                   `shuffle.last`, and `shuffle[Integer]`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code'
+  Reference: 'https://github.com/fastruby/fast-ruby#arrayshufflefirst-vs-arraysample-code'
   Enabled: true
   VersionAdded: '0.30'
 
