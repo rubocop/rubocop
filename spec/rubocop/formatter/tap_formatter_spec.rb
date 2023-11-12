@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
   end
 
   describe '#report_file', :config do
-    let(:cop_class) { RuboCop::Cop::Cop }
+    let(:cop_class) { RuboCop::Cop::Base }
     let(:output) { StringIO.new }
 
     before { cop.send(:begin_investigation, processed_source) }
@@ -152,10 +152,10 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
       end
 
       it 'displays text containing the offending source line' do
-        location = source_range(source.index('[')..source.index(']'))
+        range = source_range(source.index('[')..source.index(']'))
 
-        cop.add_offense(nil, location: location, message: 'message 1')
-        formatter.report_file('test', cop.offenses)
+        offenses = cop.add_offense(range, message: 'message 1')
+        formatter.report_file('test', offenses)
 
         expect(output.string)
           .to eq <<~OUTPUT

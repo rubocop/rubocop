@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
   subject(:formatter) { described_class.new(output) }
 
-  let(:cop_class) { RuboCop::Cop::Cop }
+  let(:cop_class) { RuboCop::Cop::Base }
   let(:source) { %w[a b cdefghi].join("\n") }
   let(:output) { StringIO.new }
 
@@ -11,18 +11,12 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
 
   describe '#file_finished' do
     it 'displays parsable text' do
-      cop.add_offense(
-        nil,
-        location: Parser::Source::Range.new(source_buffer, 0, 1),
-        message: 'message 1'
-      )
-      cop.add_offense(
-        nil,
-        location: Parser::Source::Range.new(source_buffer, 9, 10),
-        message: 'message 2'
+      cop.add_offense(Parser::Source::Range.new(source_buffer, 0, 1), message: 'message 1')
+      offenses = cop.add_offense(
+        Parser::Source::Range.new(source_buffer, 9, 10), message: 'message 2'
       )
 
-      formatter.file_finished('test', cop.offenses)
+      formatter.file_finished('test', offenses)
       expect(output.string).to eq <<~OUTPUT
         test:1:1: C: message 1
         test:3:6: C: message 2

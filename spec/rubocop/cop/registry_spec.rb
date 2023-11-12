@@ -17,8 +17,8 @@ RSpec.describe RuboCop::Cop::Registry do
   let(:options) { {} }
 
   before do
-    stub_const('RuboCop::Cop::Test::FirstArrayElementIndentation', Class.new(RuboCop::Cop::Cop))
-    stub_const('RuboCop::Cop::RSpec::Foo', Class.new(RuboCop::Cop::Cop))
+    stub_const('RuboCop::Cop::Test::FirstArrayElementIndentation', Class.new(RuboCop::Cop::Base))
+    stub_const('RuboCop::Cop::RSpec::Foo', Class.new(RuboCop::Cop::Base))
   end
 
   # `RuboCop::Cop::Base` mutates its `registry` when inherited from.

@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Formatter::GitHubActionsFormatter, :config do
   subject(:formatter) { described_class.new(output, formatter_options) }
 
   let(:formatter_options) { {} }
-  let(:cop_class) { RuboCop::Cop::Cop }
+  let(:cop_class) { RuboCop::Cop::Base }
   let(:output) { StringIO.new }
 
   describe '#finished' do
