@@ -138,12 +138,13 @@ module RuboCop
           check_send(begin_node, node) if node.call_type?
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def find_offense_message(begin_node, node)
           return 'a keyword' if keyword_with_redundant_parentheses?(node)
           return 'a literal' if disallowed_literal?(begin_node, node)
           return 'a variable' if node.variable?
           return 'a constant' if node.const_type?
+          return 'an expression' if node.lambda_or_proc?
           return 'an interpolated expression' if interpolation?(begin_node)
 
           return if begin_node.chained?
@@ -159,7 +160,7 @@ module RuboCop
             'a comparison expression'
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         # @!method interpolation?(node)
         def_node_matcher :interpolation?, '[^begin ^^dstr]'
