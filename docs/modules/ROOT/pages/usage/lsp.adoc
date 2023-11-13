@@ -22,6 +22,8 @@ https://github.com/rubocop/vscode-rubocop[vscode-rubocop] integrates RuboCop int
 
 You can install this VS Code extension from the https://marketplace.visualstudio.com/items?itemName=rubocop.vscode-rubocop[Visual Studio Marketplace].
 
+For VS Code-based IDEs like VSCodium or Eclipse Theia, the extension can be installed from the https://open-vsx.org/extension/rubocop/vscode-rubocop[Open VSX Registry].
+
 === Emacs (Eglot)
 
 https://github.com/joaotavora/eglot[Eglot] is a client for Language Server Protocol servers on Emacs.
