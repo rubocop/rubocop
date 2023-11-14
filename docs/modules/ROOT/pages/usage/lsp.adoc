@@ -153,6 +153,23 @@ auto-format = true
 See Helix's official documentation for more information:
 https://docs.helix-editor.com/languages.html
 
+=== Sublime Text
+
+For https://www.sublimetext.com/[Sublime Text] LSP support is available through the https://github.com/sublimelsp/LSP[Sublime-LSP] plugin.
+Add the following to its settings (accessible via `Preferences → Package Settings → LSP → Settings`) to enable RuboCop:
+
+```json
+{
+    "clients": {
+        "rubocop": {
+            "enabled": true,
+            "command": ["bundle", "exec", "rubocop", "--lsp"],
+            "selector": "source.ruby | text.html.ruby | text.html.rails",
+        },
+    },
+}
+```
+
 == Autocorrection
 
 The language server supports `textDocument/formatting` method and is autocorrectable. The autocorrection is safe by default (`rubocop -a`).
