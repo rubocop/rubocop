@@ -1512,6 +1512,21 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 - 'example1.rb'
           YAML
       end
+
+      it 'generates Exclude for expanded EnforcedStyle if it solves all offenses' do
+        create_file('example1.rb', ['# frozen_string_literal: true', '', 'h{}'])
+
+        expect(cli.run(['--auto-gen-config', '--no-auto-gen-enforced-style'])).to eq(0)
+        expect(File.readlines('.rubocop_todo.yml')[10..].join)
+          .to eq(<<~YAML)
+            # Configuration parameters: EnforcedStyle.
+            # SupportedStyles: space, no_space
+            # SupportedStylesForEmptyBraces: space, no_space
+            Layout/SpaceBeforeBlockBraces:
+              Exclude:
+                - 'example1.rb'
+          YAML
+      end
     end
 
     context 'when hash value omission enabled', :ruby31 do
