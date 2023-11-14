@@ -192,8 +192,8 @@ module RuboCop
         # 'Enabled' option will be put into file only if exclude
         # limit is exceeded.
         rejected_keys = ['Enabled']
-        rejected_keys << 'EnforcedStyle' unless auto_gen_enforced_style?
-        cfg.reject { |key| rejected_keys.include?(key) }
+        rejected_keys << /^EnforcedStyle\w*/ unless auto_gen_enforced_style?
+        cfg.reject { |key| include_or_match?(rejected_keys, key) }
       end
 
       def output_offending_files(output_buffer, cfg, cop_name)
@@ -261,6 +261,12 @@ module RuboCop
 
       def no_exclude_limit?
         @options[:no_exclude_limit] == false
+      end
+
+      # Returns true if the given arr include the given elm or if any of the
+      # given arr is a regexp that matches the given elm.
+      def include_or_match?(arr, elm)
+        arr.include?(elm) || arr.any? { |x| x.is_a?(Regexp) && x.match?(elm) }
       end
     end
   end
