@@ -5334,6 +5334,12 @@ Style/StructInheritance:
   VersionAdded: '0.29'
   VersionChanged: '1.20'
 
+Style/SuperWithArgsParentheses:
+  Description: 'Use parentheses for `super` with arguments.'
+  StyleGuide: '#super-with-args'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/SwapValues:
   Description: 'Enforces the use of shorthand-style swapping of 2 variables.'
   StyleGuide: '#values-swapping'

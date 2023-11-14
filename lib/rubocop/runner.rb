@@ -20,7 +20,7 @@ module RuboCop
         message = 'Infinite loop detected'
         message += " in #{path}" if path
         message += " and caused by #{root_cause}" if root_cause
-        super message
+        super(message)
       end
     end
 
