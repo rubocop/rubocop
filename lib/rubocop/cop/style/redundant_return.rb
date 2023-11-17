@@ -58,7 +58,7 @@ module RuboCop
 
         MSG = 'Redundant `return` detected.'
         MULTI_RETURN_MSG = 'To return multiple values, use an array.'
-        RESTRICT_ON_SEND = %i[define_method define_singleton_method lambda proc].freeze
+        RESTRICT_ON_SEND = %i[define_method define_singleton_method lambda].freeze
 
         def on_send(node)
           return unless (parent = node.parent) && parent.block_type?

@@ -152,19 +152,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     RUBY
   end
 
-  it 'reports an offense for proc ending with return' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for proc ending with return' do
+    expect_no_offenses(<<~RUBY)
       proc do
         some_preceding_statements
         return something
-        ^^^^^^ Redundant `return` detected.
-      end
-    RUBY
-
-    expect_correction(<<~RUBY)
-      proc do
-        some_preceding_statements
-        something
       end
     RUBY
   end
