@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
+  let(:cop_config) do
+    {
+      'RedundantRestArgumentNames' => redundant_rest_argument_names,
+      'RedundantKeywordRestArgumentNames' => redundant_keyword_rest_argument_names,
+      'RedundantBlockArgumentNames' => redundant_block_argument_names
+    }
+  end
+  let(:redundant_rest_argument_names) { %w[args arguments] }
+  let(:redundant_keyword_rest_argument_names) { %w[kwargs options opts] }
+  let(:redundant_block_argument_names) { %w[blk block proc] }
+
   context 'TargetRubyVersion <= 2.6', :ruby26 do
     it 'does not register an offense when using restarg with block arg' do
       expect_no_offenses(<<~RUBY)
@@ -160,6 +171,34 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
           bar.(...)
         end
       RUBY
+    end
+
+    context 'when `RedundantBlockArgumentNames: [meaningless_block_name]`' do
+      let(:redundant_block_argument_names) { ['meaningless_block_name'] }
+
+      it 'registers an offense when using restarg and block arg' do
+        expect_offense(<<~RUBY)
+          def foo(*args, &meaningless_block_name)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+            bar(*args, &meaningless_block_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(...)
+            bar(...)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when using restarg and unconfigured block arg' do
+        expect_no_offenses(<<~RUBY)
+          def foo(*args, &block)
+            bar(*args, &block)
+          end
+        RUBY
+      end
     end
 
     it 'does not register an offense when using arguments forwarding' do
@@ -668,6 +707,26 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
           baz(x, ...)
         end
       RUBY
+    end
+
+    context 'AllowOnlyRestArgument: false' do
+      let(:cop_config) { { 'AllowOnlyRestArgument' => false } }
+
+      it 'registers an offense when using only rest arg' do
+        expect_offense(<<~RUBY)
+          def foo(*args)
+                  ^^^^^ Use shorthand syntax `...` for arguments forwarding.
+            bar(*args)
+                ^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(...)
+            bar(...)
+          end
+        RUBY
+      end
     end
   end
 
@@ -1611,6 +1670,90 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         expect_correction(<<~RUBY)
           def foo(...)
             bar(...)
+          end
+        RUBY
+      end
+    end
+
+    context 'when `RedundantRestArgumentNames: [meaningless_restarg_name]`' do
+      let(:redundant_rest_argument_names) { ['meaningless_restarg_name'] }
+
+      it 'registers an offense when using separate arg/kwarg forwarding' do
+        expect_offense(<<~RUBY)
+          def foo(*meaningless_restarg_name, **options)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^ Use anonymous positional arguments forwarding (`*`).
+                                             ^^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+            args_only(*meaningless_restarg_name)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^ Use anonymous positional arguments forwarding (`*`).
+            kwargs_only(**options)
+                        ^^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(*, **)
+            args_only(*)
+            kwargs_only(**)
+          end
+        RUBY
+      end
+
+      it 'registers an offense when using separate unconfigured arg/kwarg forwarding' do
+        expect_offense(<<~RUBY)
+          def foo(*args, **options)
+                         ^^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+            args_only(*args)
+            kwargs_only(**options)
+                        ^^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(*args, **)
+            args_only(*args)
+            kwargs_only(**)
+          end
+        RUBY
+      end
+    end
+
+    context 'when `RedundantKeywordRestArgumentNames: [meaningless_kwrestarg_name]`' do
+      let(:redundant_keyword_rest_argument_names) { ['meaningless_kwrestarg_name'] }
+
+      it 'registers an offense when using separate arg/kwarg forwarding' do
+        expect_offense(<<~RUBY)
+          def foo(*args, **meaningless_kwrestarg_name)
+                  ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+            args_only(*args)
+                      ^^^^^ Use anonymous positional arguments forwarding (`*`).
+            kwargs_only(**meaningless_kwrestarg_name)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(*, **)
+            args_only(*)
+            kwargs_only(**)
+          end
+        RUBY
+      end
+
+      it 'registers an offense when using separate arg/unconfigured kwarg forwarding' do
+        expect_offense(<<~RUBY)
+          def foo(*args, **options)
+                  ^^^^^ Use anonymous positional arguments forwarding (`*`).
+            args_only(*args)
+                      ^^^^^ Use anonymous positional arguments forwarding (`*`).
+            kwargs_only(**options)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(*, **options)
+            args_only(*)
+            kwargs_only(**options)
           end
         RUBY
       end

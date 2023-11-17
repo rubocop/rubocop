@@ -1,0 +1,1 @@
+* [#12296](https://github.com/rubocop/rubocop/issues/12296): Support `RedundantRestArgumentNames`, `RedundantKeywordRestArgumentNames`, and `RedundantBlockArgumentNames` options for `Style/ArgumentsForwarding`. ([@koic][])
