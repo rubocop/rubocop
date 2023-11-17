@@ -3089,7 +3089,19 @@ Style/ArgumentsForwarding:
   Enabled: pending
   AllowOnlyRestArgument: true
   UseAnonymousForwarding: true
+  RedundantRestArgumentNames:
+    - args
+    - arguments
+  RedundantKeywordRestArgumentNames:
+    - kwargs
+    - options
+    - opts
+  RedundantBlockArgumentNames:
+    - blk
+    - block
+    - proc
   VersionAdded: '1.1'
+  VersionChanged: '<<next>>'
 
 Style/ArrayCoercion:
   Description: >-

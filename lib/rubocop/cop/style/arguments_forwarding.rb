@@ -12,7 +12,16 @@ module RuboCop
       #
       # This cop also identifies places where `use_args(*args)`/`use_kwargs(**kwargs)` can be
       # replaced by `use_args(*)`/`use_kwargs(**)`; if desired, this functionality can be disabled
-      # by setting UseAnonymousForwarding: false.
+      # by setting `UseAnonymousForwarding: false`.
+      #
+      # And this cop has `RedundantRestArgumentNames`, `RedundantKeywordRestArgumentNames`,
+      # and `RedundantBlockArgumentNames` options. This configuration is a list of redundant names
+      # that are sufficient for anonymizing meaningless naming.
+      #
+      # Meaningless names that are commonly used can be anonymized by default:
+      # e.g., `*args`, `**options`, `&block`, and so on.
+      #
+      # Names not on this list are likely to be meaningful and are allowed by default.
       #
       # @example
       #   # bad
@@ -72,6 +81,38 @@ module RuboCop
       #     bar(**kwargs)
       #   end
       #
+      # @example RedundantRestArgumentNames: ['args', 'arguments'] (default)
+      #   # bad
+      #   def foo(*args)
+      #     bar(*args)
+      #   end
+      #
+      #   # good
+      #   def foo(*)
+      #     bar(*)
+      #   end
+      #
+      # @example RedundantKeywordRestArgumentNames: ['kwargs', 'options', 'opts'] (default)
+      #   # bad
+      #   def foo(**kwargs)
+      #     bar(**kwargs)
+      #   end
+      #
+      #   # good
+      #   def foo(**)
+      #     bar(**)
+      #   end
+      #
+      # @example RedundantBlockArgumentNames: ['blk', 'block', 'proc'] (default)
+      #   # bad
+      #   def foo(&block)
+      #     bar(&block)
+      #   end
+      #
+      #   # good
+      #   def foo(&)
+      #     bar(&)
+      #   end
       class ArgumentsForwarding < Base
         include RangeHelp
         extend AutoCorrector
@@ -93,13 +134,12 @@ module RuboCop
         def on_def(node)
           return unless node.body
 
-          forwardable_args = extract_forwardable_args(node.arguments)
+          restarg, kwrestarg, blockarg = extract_forwardable_args(node.arguments)
+          forwardable_args = redundant_forwardable_named_args(restarg, kwrestarg, blockarg)
+          send_nodes = node.each_descendant(:send).to_a
 
           send_classifications = classify_send_nodes(
-            node,
-            node.each_descendant(:send).to_a,
-            non_splat_or_block_pass_lvar_references(node.body),
-            forwardable_args
+            node, send_nodes, non_splat_or_block_pass_lvar_references(node.body), forwardable_args
           )
 
           return if send_classifications.empty?
@@ -117,6 +157,14 @@ module RuboCop
 
         def extract_forwardable_args(args)
           [args.find(&:restarg_type?), args.find(&:kwrestarg_type?), args.find(&:blockarg_type?)]
+        end
+
+        def redundant_forwardable_named_args(restarg, kwrestarg, blockarg)
+          restarg_node = redundant_named_arg(restarg, 'RedundantRestArgumentNames', '*')
+          kwrestarg_node = redundant_named_arg(kwrestarg, 'RedundantKeywordRestArgumentNames', '**')
+          blockarg_node = redundant_named_arg(blockarg, 'RedundantBlockArgumentNames', '&')
+
+          [restarg_node, kwrestarg_node, blockarg_node]
         end
 
         def only_forwards_all?(send_classifications)
@@ -190,6 +238,16 @@ module RuboCop
           return unless classification
 
           [classification, classifier.forwarded_rest_arg, classifier.forwarded_kwrest_arg]
+        end
+
+        def redundant_named_arg(arg, config_name, keyword)
+          return nil unless arg
+
+          redundant_arg_names = cop_config.fetch(config_name, []).map do |redundant_arg_name|
+            "#{keyword}#{redundant_arg_name}"
+          end << keyword
+
+          redundant_arg_names.include?(arg.source) ? arg : nil
         end
 
         def register_forward_args_offense(def_arguments_or_send, rest_arg_or_splat)
