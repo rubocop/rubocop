@@ -144,7 +144,7 @@ module RuboCop
         end
 
         def check_literal(node)
-          return if !node.literal? || node.xstr_type? || node.range_type?
+          return if !entirely_literal?(node) || node.xstr_type? || node.range_type?
 
           add_offense(node, message: format(LIT_MSG, lit: node.source)) do |corrector|
             autocorrect_void_expression(corrector, node)
@@ -216,6 +216,19 @@ module RuboCop
                         node.send_node
                       end
           corrector.replace(send_node.loc.selector, suggestion)
+        end
+
+        def entirely_literal?(node)
+          case node.type
+          when :array
+            node.each_value.all? { |value| entirely_literal?(value) }
+          when :hash
+            return false unless node.each_key.all? { |key| entirely_literal?(key) }
+
+            node.each_value.all? { |value| entirely_literal?(value) }
+          else
+            node.literal?
+          end
         end
       end
     end
