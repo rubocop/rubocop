@@ -2,8 +2,8 @@
 
 RSpec.describe 'RuboCop Project', type: :feature do
   let(:cop_names) do
-    RuboCop::Cop::Cop
-      .registry
+    RuboCop::Cop::Registry
+      .global
       .without_department(:Test)
       .without_department(:Test2)
       .without_department(:InternalAffairs)
@@ -291,8 +291,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
 
       let(:existing_cop_names) do
-        RuboCop::Cop::Cop
-          .registry
+        RuboCop::Cop::Registry
+          .global
           .without_department(:Test)
           .without_department(:Test2)
           .cops
