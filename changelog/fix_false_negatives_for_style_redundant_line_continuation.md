@@ -1,0 +1,1 @@
+* [#12402](https://github.com/rubocop/rubocop/issues/12402): Fix false negatives for `Style/RedundantLineContinuation` when redundant line continuations for a block are used, especially without parentheses around first argument. ([@koic][])

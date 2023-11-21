@@ -59,6 +59,25 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'registers an offense when redundant line continuations for a block are used, ' \
+     'especially without parentheses around first argument' do
+    expect_offense(<<~'RUBY')
+      let :foo do \
+                  ^ Redundant line continuation.
+        foo(bar, \
+                 ^ Redundant line continuation.
+            baz)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      let :foo do#{' '}
+        foo(bar,#{' '}
+            baz)
+      end
+    RUBY
+  end
+
   it 'registers an offense when redundant line continuations for method chain' do
     expect_offense(<<~'RUBY')
       foo. \

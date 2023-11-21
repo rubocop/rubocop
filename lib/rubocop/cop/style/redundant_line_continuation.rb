@@ -107,6 +107,8 @@ module RuboCop
 
         def inside_string_literal_or_method_with_argument?(range)
           processed_source.tokens.each_cons(2).any? do |token, next_token|
+            next if token.line == next_token.line
+
             inside_string_literal?(range, token) || method_with_argument?(token, next_token)
           end
         end
