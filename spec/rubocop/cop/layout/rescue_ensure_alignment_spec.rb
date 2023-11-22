@@ -603,6 +603,45 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
   end
 
+  context 'Ruby 2.7', :ruby27 do
+    it 'accepts aligned rescue in do-end numbered block in a method' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          [1, 2, 3].each do
+            _1.to_s
+          rescue StandardError => _exception
+            next
+          end
+        end
+      RUBY
+    end
+
+    context 'rescue with do-end numbered block' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def foo
+            [1, 2, 3].each do
+              _1.to_s
+          rescue StandardError => _exception
+          ^^^^^^ `rescue` at 4, 0 is not aligned with `[1, 2, 3].each do` at 2, 2.
+              next
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            [1, 2, 3].each do
+              _1.to_s
+            rescue StandardError => _exception
+              next
+            end
+          end
+        RUBY
+      end
+    end
+  end
+
   context 'rescue in do-end block assigned to local variable' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
