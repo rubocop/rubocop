@@ -29,7 +29,7 @@ module RuboCop
         MSG = '`%<kw_loc>s` at %<kw_loc_line>d, %<kw_loc_column>d is not ' \
               'aligned with `%<beginning>s` at ' \
               '%<begin_loc_line>d, %<begin_loc_column>d.'
-        ANCESTOR_TYPES = %i[kwbegin def defs class module block].freeze
+        ANCESTOR_TYPES = %i[kwbegin def defs class module block numblock].freeze
         ANCESTOR_TYPES_WITH_ACCESS_MODIFIERS = %i[def defs].freeze
         ALTERNATIVE_ACCESS_MODIFIERS = %i[public_class_method private_class_method].freeze
 
@@ -95,7 +95,7 @@ module RuboCop
         def alignment_source(node, starting_loc)
           ending_loc =
             case node.type
-            when :block, :kwbegin
+            when :block, :numblock, :kwbegin
               node.loc.begin
             when :def, :defs, :class, :module,
                  :lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn
