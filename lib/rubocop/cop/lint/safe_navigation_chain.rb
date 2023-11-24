@@ -45,10 +45,9 @@ module RuboCop
           bad_method?(node) do |safe_nav, method|
             return if nil_methods.include?(method) || PLUS_MINUS_METHODS.include?(node.method_name)
 
-            location =
-              Parser::Source::Range.new(node.source_range.source_buffer,
-                                        safe_nav.source_range.end_pos,
-                                        node.source_range.end_pos)
+            begin_range = node.loc.dot || safe_nav.source_range.end
+            location = begin_range.join(node.source_range.end)
+
             add_offense(location) do |corrector|
               autocorrect(corrector, offense_range: location, send_node: node)
             end
