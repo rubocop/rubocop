@@ -45,6 +45,10 @@ module RuboCop
           }
         PATTERN
 
+        def self.autocorrect_incompatible_with
+          [Layout::SingleLineBlockChain]
+        end
+
         def on_send(node)
           return unless (to_h_node, map_node = map_to_h?(node))
 

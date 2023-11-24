@@ -2706,6 +2706,21 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/MapToHash` and `Layout/SingleLineBlockChain` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      obj.map { |i| foo(i) }.to_h
+         .bar
+    RUBY
+
+    expect(cli.run(['-A', '--only', 'Style/MapToHash,Layout/SingleLineBlockChain'])).to eq(0)
+
+    expect(source_file.read).to eq(<<~RUBY)
+      obj.to_h { |i| foo(i) }
+         .bar
+    RUBY
+  end
+
   it 'does not crash when using `Layout/CaseIndentation` and `Layout/ElseAlignment`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)
