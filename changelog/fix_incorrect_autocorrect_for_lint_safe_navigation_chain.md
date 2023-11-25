@@ -1,0 +1,1 @@
+* [#12409](https://github.com/rubocop/rubocop/issues/12409): Fix an incorrect autocorrect for `Lint/SafeNavigationChain` when ordinary method chain exists after safe navigation leading dot method call. ([@koic][])
