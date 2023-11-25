@@ -129,4 +129,181 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
       foo &&= bar
     RUBY
   end
+
+  it 'registers an offense when using attribute self-assignment' do
+    expect_offense(<<~RUBY)
+      foo.bar = foo.bar
+      ^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using attribute self-assignment with a safe navigation call' do
+    expect_offense(<<~RUBY)
+      foo&.bar = foo&.bar
+      ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using attribute assignment with different attributes' do
+    expect_no_offenses(<<~RUBY)
+      foo.bar = foo.baz
+    RUBY
+  end
+
+  it 'does not register an offense when using attribute assignment with different receivers' do
+    expect_no_offenses(<<~RUBY)
+      bar.foo = baz.foo
+    RUBY
+  end
+
+  it 'does not register an offense when using attribute assignment with extra expression' do
+    expect_no_offenses(<<~RUBY)
+      foo.bar = foo.bar + 1
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same string literals' do
+    expect_offense(<<~RUBY)
+      foo["bar"] = foo["bar"]
+      ^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different string literals' do
+    expect_no_offenses(<<~RUBY)
+      foo["bar"] = foo["baz"]
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same integer literals' do
+    expect_offense(<<~RUBY)
+      foo[1] = foo[1]
+      ^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different integer literals' do
+    expect_no_offenses(<<~RUBY)
+      foo[1] = foo[2]
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same float literals' do
+    expect_offense(<<~RUBY)
+      foo[1.2] = foo[1.2]
+      ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different float literals' do
+    expect_no_offenses(<<~RUBY)
+      foo[1.2] = foo[2.2]
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same constant reference' do
+    expect_offense(<<~RUBY)
+      foo[Foo] = foo[Foo]
+      ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different constant references' do
+    expect_no_offenses(<<~RUBY)
+      foo[Foo] = foo[Bar]
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same symbol literals' do
+    expect_offense(<<~RUBY)
+      foo[:bar] = foo[:bar]
+      ^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different symbol literals' do
+    expect_no_offenses(<<~RUBY)
+      foo[:foo] = foo[:bar]
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same local variables' do
+    expect_offense(<<~RUBY)
+      var = 1
+      foo[var] = foo[var]
+      ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different local variables' do
+    expect_no_offenses(<<~RUBY)
+      var1 = 1
+      var2 = 2
+      foo[var1] = foo[var2]
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same instance variables' do
+    expect_offense(<<~RUBY)
+      foo[@var] = foo[@var]
+      ^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different instance variables' do
+    expect_no_offenses(<<~RUBY)
+      foo[@var1] = foo[@var2]
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same class variables' do
+    expect_offense(<<~RUBY)
+      foo[@@var] = foo[@@var]
+      ^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different class variables' do
+    expect_no_offenses(<<~RUBY)
+      foo[@@var1] = foo[@@var2]
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with same global variables' do
+    expect_offense(<<~RUBY)
+      foo[$var] = foo[$var]
+      ^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when using []= self-assignment with different global variables' do
+    expect_no_offenses(<<~RUBY)
+      foo[$var1] = foo[$var2]
+    RUBY
+  end
+
+  it 'does not register an offense when using []= assignment with method calls' do
+    expect_no_offenses(<<~RUBY)
+      foo[bar] = foo[bar]
+    RUBY
+  end
+
+  it 'does not register an offense when using []= assignment with different receivers' do
+    expect_no_offenses(<<~RUBY)
+      bar["foo"] = baz["foo"]
+    RUBY
+  end
+
+  it 'does not register an offense when using []= assignment with extra expression' do
+    expect_no_offenses(<<~RUBY)
+      foo["bar"] = foo["bar"] + 1
+    RUBY
+  end
+
+  it 'registers an offense when using []= self-assignment with a safe navigation method call' do
+    expect_offense(<<~RUBY)
+      foo&.[]=("bar", foo["bar"])
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
 end
