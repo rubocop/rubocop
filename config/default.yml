@@ -3112,6 +3112,13 @@ Style/ArrayCoercion:
   Enabled: false
   VersionAdded: '0.88'
 
+Style/ArrayFirstLast:
+  Description: 'Use `arr.first` and `arr.last` instead of `arr[0]` and `arr[-1]`.'
+  Reference: '#first-and-last'
+  Enabled: false
+  VersionAdded: '<<next>>'
+  Safe: false
+
 Style/ArrayIntersect:
   Description: 'Use `array1.intersect?(array2)` instead of `(array1 & array2).any?`.'
   Enabled: 'pending'
