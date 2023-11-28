@@ -10,11 +10,18 @@ module RuboCop
       #   foo = foo
       #   foo, bar = foo, bar
       #   Foo = Foo
+      #   hash['foo'] = hash['foo']
+      #   obj.attr = obj.attr
       #
       #   # good
       #   foo = bar
       #   foo, bar = bar, foo
       #   Foo = Bar
+      #   hash['foo'] = hash['bar']
+      #   obj.attr = obj.attr2
+      #
+      #   # good (method calls possibly can return different results)
+      #   hash[foo] = hash[foo]
       #
       class SelfAssignment < Base
         MSG = 'Self-assignment detected.'
@@ -25,6 +32,15 @@ module RuboCop
           cvasgn: :cvar,
           gvasgn: :gvar
         }.freeze
+
+        def on_send(node)
+          if node.method?(:[]=)
+            handle_key_assignment(node) if node.arguments.size == 2
+          elsif node.assignment_method?
+            handle_attribute_assignment(node) if node.arguments.size == 1
+          end
+        end
+        alias on_csend on_send
 
         def on_lvasgn(node)
           lhs, rhs = *node
@@ -71,6 +87,27 @@ module RuboCop
         def rhs_matches_lhs?(rhs, lhs)
           rhs.type == ASSIGNMENT_TYPE_TO_RHS_TYPE[lhs.type] &&
             rhs.children.first == lhs.children.first
+        end
+
+        def handle_key_assignment(node)
+          value_node = node.arguments[1]
+
+          if value_node.send_type? && value_node.method?(:[]) &&
+             node.receiver == value_node.receiver &&
+             !node.first_argument.call_type? &&
+             node.first_argument == value_node.first_argument
+            add_offense(node)
+          end
+        end
+
+        def handle_attribute_assignment(node)
+          first_argument = node.first_argument
+
+          if first_argument.call_type? &&
+             node.receiver == first_argument.receiver &&
+             first_argument.method_name.to_s == node.method_name.to_s.delete_suffix('=')
+            add_offense(node)
+          end
         end
       end
     end
