@@ -17,24 +17,24 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   if some_var = true
+      #   if some_var = value
       #     do_something
       #   end
       #
       #   # good
-      #   if some_var == true
+      #   if some_var == value
       #     do_something
       #   end
       #
       # @example AllowSafeAssignment: true (default)
       #   # good
-      #   if (some_var = true)
+      #   if (some_var = value)
       #     do_something
       #   end
       #
       # @example AllowSafeAssignment: false
       #   # bad
-      #   if (some_var = true)
+      #   if (some_var = value)
       #     do_something
       #   end
       #
