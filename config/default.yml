@@ -1973,6 +1973,11 @@ Lint/LiteralAsCondition:
   Enabled: true
   VersionAdded: '0.51'
 
+Lint/LiteralAssignmentInCondition:
+  Description: 'Checks for literal assignments in the conditions.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/LiteralInInterpolation:
   Description: 'Checks for literals used in interpolation.'
   Enabled: true
