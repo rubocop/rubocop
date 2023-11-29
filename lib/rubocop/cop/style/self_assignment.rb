@@ -16,7 +16,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use self-assignment shorthand `%<method>s=`.'
-        OPS = %i[+ - * ** / | &].freeze
+        OPS = %i[+ - * ** / % ^ << >> | &].freeze
 
         def self.autocorrect_incompatible_with
           [Layout::SpaceAroundOperators]
