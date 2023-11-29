@@ -67,4 +67,16 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
       (x - 0.1) < epsilon
     RUBY
   end
+
+  it 'does not register an offense when comparing against zero' do
+    expect_no_offenses(<<~RUBY)
+      x == 0.0
+      x.to_f == 0
+      x.to_f.abs == 0.0
+      x != 0.0
+      x.to_f != 0
+      x.to_f.zero?
+      x.to_f.nonzero?
+    RUBY
+  end
 end
