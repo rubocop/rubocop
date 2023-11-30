@@ -197,7 +197,7 @@ module RuboCop
         # 'Enabled' option will be put into file only if exclude
         # limit is exceeded.
         rejected_keys = ['Enabled']
-        rejected_keys << /^EnforcedStyle\w*/ unless auto_gen_enforced_style?
+        rejected_keys << /\AEnforcedStyle\w*/ unless auto_gen_enforced_style?
         cfg.reject { |key| include_or_match?(rejected_keys, key) }
       end
 
