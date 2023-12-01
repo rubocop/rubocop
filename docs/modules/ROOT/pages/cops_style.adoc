@@ -334,7 +334,7 @@ NOTE: Required Ruby version: 2.7
 | Yes
 | Yes
 | 1.1
-| -
+| 1.58
 |===
 
 In Ruby 2.7, arguments forwarding has been added.
@@ -346,7 +346,16 @@ In Ruby 3.2, anonymous args/kwargs forwarding has been added.
 
 This cop also identifies places where `use_args(*args)`/`use_kwargs(**kwargs)` can be
 replaced by `use_args(*)`/`use_kwargs(**)`; if desired, this functionality can be disabled
-by setting UseAnonymousForwarding: false.
+by setting `UseAnonymousForwarding: false`.
+
+And this cop has `RedundantRestArgumentNames`, `RedundantKeywordRestArgumentNames`,
+and `RedundantBlockArgumentNames` options. This configuration is a list of redundant names
+that are sufficient for anonymizing meaningless naming.
+
+Meaningless names that are commonly used can be anonymized by default:
+e.g., `*args`, `**options`, `&block`, and so on.
+
+Names not on this list are likely to be meaningful and are allowed by default.
 
 === Examples
 
@@ -426,6 +435,51 @@ def foo(**kwargs)
 end
 ----
 
+==== RedundantRestArgumentNames: ['args', 'arguments'] (default)
+
+[source,ruby]
+----
+# bad
+def foo(*args)
+  bar(*args)
+end
+
+# good
+def foo(*)
+  bar(*)
+end
+----
+
+==== RedundantKeywordRestArgumentNames: ['kwargs', 'options', 'opts'] (default)
+
+[source,ruby]
+----
+# bad
+def foo(**kwargs)
+  bar(**kwargs)
+end
+
+# good
+def foo(**)
+  bar(**)
+end
+----
+
+==== RedundantBlockArgumentNames: ['blk', 'block', 'proc'] (default)
+
+[source,ruby]
+----
+# bad
+def foo(&block)
+  bar(&block)
+end
+
+# good
+def foo(&)
+  bar(&)
+end
+----
+
 === Configurable attributes
 
 |===
@@ -438,6 +492,18 @@ end
 | UseAnonymousForwarding
 | `true`
 | Boolean
+
+| RedundantRestArgumentNames
+| `args`, `arguments`
+| Array
+
+| RedundantKeywordRestArgumentNames
+| `kwargs`, `options`, `opts`
+| Array
+
+| RedundantBlockArgumentNames
+| `blk`, `block`, `proc`
+| Array
 |===
 
 === References
@@ -499,6 +565,49 @@ Array(paths).each { |path| do_something(path) }
 === References
 
 * https://rubystyle.guide#array-coercion
+
+== Style/ArrayFirstLast
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| No
+| Yes (Unsafe)
+| 1.58
+| -
+|===
+
+Identifies usages of `arr[0]` and `arr[-1]` and suggests to change
+them to use `arr.first` and `arr.instead`.
+
+The cop is disabled by default due to safety concerns.
+
+=== Safety
+
+This cop is unsafe because `[0]` or `[-1]` can be called on a Hash,
+which returns a value for `0` or `-1` key, but changing these to use
+`.first` or `.last` will return first/last tuple instead. Also, String
+does not implement `first`/`last` methods.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+arr[0]
+arr[-1]
+
+# good
+arr.first
+arr.last
+arr[0] = 2
+arr[0][-2]
+----
+
+=== References
+
+* #first-and-last
 
 == Style/ArrayIntersect
 
@@ -701,6 +810,14 @@ f = File.open('file')
 
 # good
 File.open('file') do |f|
+  # ...
+end
+
+# bad
+f = Tempfile.open('temp')
+
+# good
+Tempfile.open('temp') do |f|
   # ...
 end
 ----
@@ -5484,10 +5601,16 @@ but not fully resolve, this safety issue.
 ----
 # bad
 hash.keys.each { |k| p k }
-hash.values.each { |v| p v }
+hash.each { |k, unused_value| p k }
 
 # good
 hash.each_key { |k| p k }
+
+# bad
+hash.values.each { |v| p v }
+hash.each { |unused_key, v| p v }
+
+# good
 hash.each_value { |v| p v }
 ----
 
@@ -7903,12 +8026,12 @@ defining `respond_to_missing?`.
 
 [source,ruby]
 ----
-#bad
+# bad
 def method_missing(name, *args)
   # ...
 end
 
-#good
+# good
 def respond_to_missing?(name, include_private)
   # ...
 end
@@ -11379,7 +11502,7 @@ ENV.fetch(:key, VALUE)
 
 === References
 
-* https://github.com/JuanitoFatas/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code
+* https://github.com/fastruby/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code
 
 == Style/RedundantFileExtensionInRequire
 
@@ -13100,7 +13223,7 @@ Identifies usages of `shuffle.first`,
 
 === References
 
-* https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code
+* https://github.com/fastruby/fast-ruby#arrayshufflefirst-vs-arraysample-code
 
 == Style/SelectByRegexp
 
@@ -13555,6 +13678,10 @@ end
 # good
 ->(arg) { bar(arg) }
 ----
+
+=== References
+
+* https://rubystyle.guide#single-line-do-end-block
 
 == Style/SingleLineMethods
 
@@ -14408,6 +14535,37 @@ end
 === References
 
 * https://rubystyle.guide#no-extend-struct-new
+
+== Style/SuperWithArgsParentheses
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Yes
+| 1.58
+| -
+|===
+
+Enforces the presence of parentheses in `super` containing arguments.
+
+`super` is a keyword and is provided as a distinct cop from those designed for method call.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+super name, age
+
+# good
+super(name, age)
+----
+
+=== References
+
+* https://rubystyle.guide#super-with-args
 
 == Style/SwapValues
 

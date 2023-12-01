@@ -354,12 +354,12 @@ the author meant to use an assignment result as a condition.
 [source,ruby]
 ----
 # bad
-if some_var = true
+if some_var = value
   do_something
 end
 
 # good
-if some_var == true
+if some_var == value
   do_something
 end
 ----
@@ -369,7 +369,7 @@ end
 [source,ruby]
 ----
 # good
-if (some_var = true)
+if (some_var = value)
   do_something
 end
 ----
@@ -379,7 +379,7 @@ end
 [source,ruby]
 ----
 # bad
-if (some_var = true)
+if (some_var = value)
   do_something
 end
 ----
@@ -2547,6 +2547,20 @@ is almost never the desired semantics. Comparison via the `==/!=` operators chec
 floating-point value representation to be exactly the same, which is very unlikely
 if you perform any arithmetic operations involving precision loss.
 
+ # good - comparing against zero
+  x == 0.0
+  x != 0.0
+
+  # good
+  (x - 0.1).abs < Float::EPSILON
+
+  # good
+  tolerance = 0.0001
+  (x - 0.1).abs < tolerance
+
+  # Or some other epsilon based type of comparison:
+  # https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
+
 === Examples
 
 [source,ruby]
@@ -2557,16 +2571,6 @@ x != 0.1
 
 # good - using BigDecimal
 x.to_d == 0.1.to_d
-
-# good
-(x - 0.1).abs < Float::EPSILON
-
-# good
-tolerance = 0.0001
-(x - 0.1).abs < tolerance
-
-# Or some other epsilon based type of comparison:
-# https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
 ----
 
 === References
@@ -3102,6 +3106,50 @@ end
 # When using a boolean value for an infinite loop.
 while true
   break if condition
+end
+----
+
+== Lint/LiteralAssignmentInCondition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.58
+| -
+|===
+
+Checks for literal assignments in the conditions of `if`, `while`, and `until`.
+It emulates the following Ruby warning:
+
+[source,console]
+----
+$ ruby -we 'if x = true; end'
+-e:1: warning: found `= literal' in conditional, should be ==
+----
+
+As a lint cop, it cannot be determined if `==` is appropriate as intended,
+therefore this cop does not provide autocorrection.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if x = 42
+  do_something
+end
+
+# good
+if x == 42
+  do_something
+end
+
+# good
+if x = y
+  do_something
 end
 ----
 
@@ -4703,6 +4751,22 @@ end
 
 # good - without `&.` this will always return `true`
 foo&.respond_to?(:to_a)
+
+# bad - for `nil`s conversion methods return default values for the type
+foo&.to_h || {}
+foo&.to_h { |k, v| [k, v] } || {}
+foo&.to_a || []
+foo&.to_i || 0
+foo&.to_f || 0.0
+foo&.to_s || ''
+
+# good
+foo.to_h
+foo.to_h { |k, v| [k, v] }
+foo.to_a
+foo.to_i
+foo.to_f
+foo.to_s
 ----
 
 ==== AllowedMethods: [nil_safe_method]
@@ -5468,11 +5532,18 @@ Checks for self-assignments.
 foo = foo
 foo, bar = foo, bar
 Foo = Foo
+hash['foo'] = hash['foo']
+obj.attr = obj.attr
 
 # good
 foo = bar
 foo, bar = bar, foo
 Foo = Bar
+hash['foo'] = hash['bar']
+obj.attr = obj.attr2
+
+# good (method calls possibly can return different results)
+hash[foo] = hash[foo]
 ----
 
 == Lint/SendWithMixinArgument
@@ -5948,6 +6019,7 @@ all keys to be quoted).
 'underscored_string'.to_sym
 :'underscored_symbol'
 'hyphenated-string'.to_sym
+"string_#{interpolation}".to_sym
 
 # good
 :string
@@ -5955,6 +6027,7 @@ all keys to be quoted).
 :underscored_string
 :underscored_symbol
 :'hyphenated-string'
+:"string_#{interpolation}"
 ----
 
 ==== EnforcedStyle: strict (default)

@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.58.0 (2023-12-01)
+
 ### New features
 
 * [#12420](https://github.com/rubocop/rubocop/pull/12420): Add new `Lint/LiteralAssignmentInCondition` cop. ([@koic][])

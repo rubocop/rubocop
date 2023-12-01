@@ -2792,7 +2792,7 @@ styles are 'consistent' and 'align_brackets'. Here are examples:
 # element are on separate lines is indented one step (two spaces) more
 # than the position inside the opening parenthesis.
 
-#bad
+# bad
 array = [
   :value
 ]
@@ -2800,7 +2800,7 @@ and_in_a_method_call([
   :no_difference
                      ])
 
-#good
+# good
 array = [
   :value
 ]
@@ -2818,7 +2818,7 @@ but_in_a_method_call([
 # separate lines is indented the same as an array literal which is not
 # defined inside a method call.
 
-#bad
+# bad
 # consistent
 array = [
   :value
@@ -2827,7 +2827,7 @@ but_in_a_method_call([
                        :its_like_this
 ])
 
-#good
+# good
 array = [
   :value
 ]
@@ -2843,13 +2843,13 @@ and_in_a_method_call([
 # The `align_brackets` style enforces that the opening and closing
 # brackets are indented to the same position.
 
-#bad
+# bad
 # align_brackets
 and_now_for_something = [
                           :completely_different
 ]
 
-#good
+# good
 # align_brackets
 and_now_for_something = [
                           :completely_different
@@ -6353,6 +6353,28 @@ a**b
 a ** b
 ----
 
+==== EnforcedStyleForRationalLiterals: no_space (default)
+
+[source,ruby]
+----
+# bad
+1 / 48r
+
+# good
+1/48r
+----
+
+==== EnforcedStyleForRationalLiterals: space
+
+[source,ruby]
+----
+# bad
+1/48r
+
+# good
+1 / 48r
+----
+
 === Configurable attributes
 
 |===
@@ -6363,6 +6385,10 @@ a ** b
 | Boolean
 
 | EnforcedStyleForExponentOperator
+| `no_space`
+| `space`, `no_space`
+
+| EnforcedStyleForRationalLiterals
 | `no_space`
 | `space`, `no_space`
 |===

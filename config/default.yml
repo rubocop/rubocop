@@ -1976,7 +1976,7 @@ Lint/LiteralAsCondition:
 Lint/LiteralAssignmentInCondition:
   Description: 'Checks for literal assignments in the conditions.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.58'
 
 Lint/LiteralInInterpolation:
   Description: 'Checks for literals used in interpolation.'
@@ -3106,7 +3106,7 @@ Style/ArgumentsForwarding:
     - block
     - proc
   VersionAdded: '1.1'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.58'
 
 Style/ArrayCoercion:
   Description: >-
@@ -3121,7 +3121,7 @@ Style/ArrayFirstLast:
   Description: 'Use `arr.first` and `arr.last` instead of `arr[0]` and `arr[-1]`.'
   Reference: '#first-and-last'
   Enabled: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.58'
   Safe: false
 
 Style/ArrayIntersect:
@@ -5362,7 +5362,7 @@ Style/SuperWithArgsParentheses:
   Description: 'Use parentheses for `super` with arguments.'
   StyleGuide: '#super-with-args'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.58'
 
 Style/SwapValues:
   Description: 'Enforces the use of shorthand-style swapping of 2 variables.'
