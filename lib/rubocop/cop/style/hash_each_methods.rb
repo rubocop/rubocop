@@ -43,17 +43,17 @@ module RuboCop
 
         # @!method kv_each(node)
         def_node_matcher :kv_each, <<~PATTERN
-          ({block numblock} $(send (send _ ${:keys :values}) :each) ...)
+          ({block numblock} $(call (call _ ${:keys :values}) :each) ...)
         PATTERN
 
         # @!method each_arguments(node)
         def_node_matcher :each_arguments, <<~PATTERN
-          (block (send _ :each)(args $_key $_value) ...)
+          (block (call _ :each)(args $_key $_value) ...)
         PATTERN
 
         # @!method kv_each_with_block_pass(node)
         def_node_matcher :kv_each_with_block_pass, <<~PATTERN
-          (send $(send _ ${:keys :values}) :each (block_pass (sym _)))
+          (call $(call _ ${:keys :values}) :each (block_pass (sym _)))
         PATTERN
 
         # rubocop:disable Metrics/AbcSize
@@ -92,7 +92,9 @@ module RuboCop
           return unless (parent_receiver = target.receiver.receiver)
           return if allowed_receiver?(parent_receiver)
 
-          add_offense(kv_range(target), message: format_message(method)) do |corrector|
+          current = target.receiver.loc.selector.join(target.source_range.end).source
+
+          add_offense(kv_range(target), message: format_message(method, current)) do |corrector|
             correct_key_value_each(target, corrector)
           end
         end
@@ -118,14 +120,15 @@ module RuboCop
           return unless (parent_receiver = node.parent.receiver.receiver)
           return if allowed_receiver?(parent_receiver)
 
-          range = target.loc.selector.with(end_pos: node.parent.loc.selector.end_pos)
-          add_offense(range, message: format_message(method)) do |corrector|
+          range = target.loc.selector.join(node.parent.loc.selector.end)
+
+          add_offense(range, message: format_message(method, range.source)) do |corrector|
             corrector.replace(range, "each_#{method[0..-2]}")
           end
         end
 
-        def format_message(method_name)
-          format(MSG, prefer: "each_#{method_name[0..-2]}", current: "#{method_name}.each")
+        def format_message(method_name, current)
+          format(MSG, prefer: "each_#{method_name[0..-2]}", current: current)
         end
 
         def check_argument(variable)
@@ -148,7 +151,7 @@ module RuboCop
           name = "each_#{node.receiver.method_name.to_s.chop}"
           return correct_implicit(node, corrector, name) unless receiver
 
-          new_source = receiver.source + ".#{name}"
+          new_source = receiver.source + "#{node.loc.dot.source}#{name}"
           corrector.replace(node, new_source)
         end
 
