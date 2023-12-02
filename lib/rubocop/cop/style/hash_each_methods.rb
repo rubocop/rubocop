@@ -64,12 +64,12 @@ module RuboCop
 
           return unless (key, value = each_arguments(node))
 
-          if unused_block_arg_exist?(node, value.source)
+          if unused_block_arg_exist?(node, value)
             message = message('each_key', node.method_name, value.source)
             unused_range = key.source_range.end.join(value.source_range.end)
 
             register_each_args_offense(node, message, 'each_key', unused_range)
-          elsif unused_block_arg_exist?(node, key.source)
+          elsif unused_block_arg_exist?(node, key)
             message = message('each_value', node.method_name, key.source)
             unused_range = key.source_range.begin.join(value.source_range.begin)
 
@@ -99,8 +99,16 @@ module RuboCop
           end
         end
 
-        def unused_block_arg_exist?(node, block_arg_source)
-          node.body.each_descendant(:lvar).map(&:source).none?(block_arg_source)
+        def unused_block_arg_exist?(node, block_arg)
+          lvar_sources = node.body.each_descendant(:lvar).map(&:source)
+
+          if block_arg.mlhs_type?
+            block_arg.each_descendant(:arg).all? do |block_arg|
+              lvar_sources.none?(block_arg.source)
+            end
+          else
+            lvar_sources.none?(block_arg.source)
+          end
         end
 
         def message(prefer, method_name, unused_code)

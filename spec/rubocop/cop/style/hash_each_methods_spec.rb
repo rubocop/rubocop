@@ -73,6 +73,14 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         expect_no_offenses('foo.each { |k, v| do_something(k, v) }')
       end
 
+      it 'does not register an offense when the destructed value block arguments of `Enumerable#each` method are used' do
+        expect_no_offenses('foo.each { |k, (_, v)| do_something(k, v) }')
+      end
+
+      it 'does not register an offense when the destructed key block arguments of `Enumerable#each` method are used' do
+        expect_no_offenses('foo.each { |(_, k), v| do_something(k, v) }')
+      end
+
       it 'does not register an offense when the single block argument of `Enumerable#each` method is used' do
         expect_no_offenses('foo.each { |e| do_something(e) }')
       end
@@ -103,10 +111,32 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
+      it 'registers an offense when the destructed value block argument of `Enumerable#each` method is unused' do
+        expect_offense(<<~RUBY)
+          foo.each { |k, (_, unused_value)| do_something(k) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `each_key` instead of `each` and remove the unused `(_, unused_value)` block argument.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.each_key { |k| do_something(k) }
+        RUBY
+      end
+
       it 'registers an offense when the key block argument of `Enumerable#each` method is unused' do
         expect_offense(<<~RUBY)
           foo.each { |unused_key, v| do_something(v) }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `each_value` instead of `each` and remove the unused `unused_key` block argument.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.each_value { |v| do_something(v) }
+        RUBY
+      end
+
+      it 'registers an offense when the destructed key block argument of `Enumerable#each` method is unused' do
+        expect_offense(<<~RUBY)
+          foo.each { |(_, unused_key), v| do_something(v) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `each_value` instead of `each` and remove the unused `(_, unused_key)` block argument.
         RUBY
 
         expect_correction(<<~RUBY)
