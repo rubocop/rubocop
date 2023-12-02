@@ -102,6 +102,7 @@ module RuboCop
 
         def handle_attribute_assignment(node)
           first_argument = node.first_argument
+          return unless first_argument.respond_to?(:arguments) && first_argument.arguments.empty?
 
           if first_argument.call_type? &&
              node.receiver == first_argument.receiver &&
