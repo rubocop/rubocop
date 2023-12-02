@@ -1,10 +1,18 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::LiteralAssignmentInCondition, :config do
-  it 'registers an offense when assigning literal to local variable in `if` condition' do
+  it 'registers an offense when assigning integer literal to local variable in `if` condition' do
     expect_offense(<<~RUBY)
       if test = 42
               ^^^^ Don't use literal assignment `= 42` in conditional, should be `==` or non-literal operand.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when assigning array literal to local variable in `if` condition' do
+    expect_offense(<<~RUBY)
+      if test = []
+              ^^^^ Don't use literal assignment `= []` in conditional, should be `==` or non-literal operand.
       end
     RUBY
   end
@@ -149,6 +157,14 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAssignmentInCondition, :config do
   it 'does not blow up when empty `unless` condition' do
     expect_no_offenses(<<~RUBY)
       unless ()
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using parallel assignment with splat operator in the block of guard condition' do
+    expect_no_offenses(<<~RUBY)
+      return if do_something do |z|
+        x, y = *z
       end
     RUBY
   end

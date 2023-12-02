@@ -41,9 +41,9 @@ module RuboCop
             next unless asgn_node.loc.operator
 
             rhs = asgn_node.to_a.last
-            next unless rhs.respond_to?(:literal?) && rhs.literal?
+            next if !literal?(rhs) || parallel_assignment_with_splat_operator?(rhs)
 
-            range = asgn_node.loc.operator.join(rhs.source_range.end)
+            range = offense_range(asgn_node, rhs)
 
             add_offense(range, message: format(MSG, literal: rhs.source))
           end
@@ -57,6 +57,18 @@ module RuboCop
           yield node if AST::Node::EQUALS_ASSIGNMENTS.include?(node.type)
 
           node.each_child_node { |child| traverse_node(child, &block) }
+        end
+
+        def literal?(node)
+          node.respond_to?(:literal?) && node.literal?
+        end
+
+        def parallel_assignment_with_splat_operator?(node)
+          node.array_type? && node.values.first&.splat_type?
+        end
+
+        def offense_range(asgn_node, rhs)
+          asgn_node.loc.operator.join(rhs.source_range.end)
         end
       end
     end
