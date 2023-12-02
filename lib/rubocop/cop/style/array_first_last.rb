@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       # Identifies usages of `arr[0]` and `arr[-1]` and suggests to change
-      # them to use `arr.first` and `arr.instead`.
+      # them to use `arr.first` and `arr.last` instead.
       #
       # The cop is disabled by default due to safety concerns.
       #
