@@ -42,6 +42,19 @@ RSpec.describe RuboCop::Cop::Style::MapToHash, :config do
         end
       end
 
+      context "for `&.#{method}.to_h` with block arity 1" do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY, method: method)
+            foo&.#{method} { |x| [x, x * 2] }.to_h
+                 ^{method} Pass a block to `to_h` instead of calling `#{method}&.to_h`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.to_h { |x| [x, x * 2] }
+          RUBY
+        end
+      end
+
       context "for `#{method}&.to_h` with block arity 2" do
         it 'registers an offense and corrects' do
           expect_offense(<<~RUBY, method: method)
