@@ -41,7 +41,7 @@ module RuboCop
             next unless asgn_node.loc.operator
 
             rhs = asgn_node.to_a.last
-            next if !literal?(rhs) || parallel_assignment_with_splat_operator?(rhs)
+            next if !forbidden_literal?(rhs) || parallel_assignment_with_splat_operator?(rhs)
 
             range = offense_range(asgn_node, rhs)
 
@@ -59,7 +59,9 @@ module RuboCop
           node.each_child_node { |child| traverse_node(child, &block) }
         end
 
-        def literal?(node)
+        def forbidden_literal?(node)
+          return false if node.dstr_type? || node.xstr_type?
+
           node.respond_to?(:literal?) && node.literal?
         end
 
