@@ -13,6 +13,17 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
       RUBY
     end
 
+    it 'registers and corrects an offense when using safe navigation `reject` call and comparing with `lvar == :sym`' do
+      expect_offense(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}&.reject { |k, v| k == :bar }
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(:bar)` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}&.except(:bar)
+      RUBY
+    end
+
     it 'registers and corrects an offense when using `reject` and comparing with `:sym == lvar`' do
       expect_offense(<<~RUBY)
         {foo: 1, bar: 2, baz: 3}.reject { |k, v| :bar == k }

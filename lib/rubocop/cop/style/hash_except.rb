@@ -43,7 +43,7 @@ module RuboCop
         # @!method bad_method_with_poro?(node)
         def_node_matcher :bad_method_with_poro?, <<~PATTERN
           (block
-            (send _ _)
+            (call _ _)
             (args
               $(arg _)
               (arg _))
@@ -86,6 +86,7 @@ module RuboCop
             corrector.replace(range, preferred_method)
           end
         end
+        alias on_csend on_send
 
         private
 
