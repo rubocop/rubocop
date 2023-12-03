@@ -87,15 +87,15 @@ module RuboCop
         # @!method redundant_sort?(node)
         def_node_matcher :redundant_sort?, <<~MATCHER
           {
-            (send $(send _ $:sort) ${:last :first})
-            (send $(send _ $:sort) ${:[] :at :slice} {(int 0) (int -1)})
+            (call $(call _ $:sort) ${:last :first})
+            (call $(call _ $:sort) ${:[] :at :slice} {(int 0) (int -1)})
 
-            (send $(send _ $:sort_by _) ${:last :first})
+            (call $(call _ $:sort_by _) ${:last :first})
             (send $(send _ $:sort_by _) ${:[] :at :slice} {(int 0) (int -1)})
 
-            (send ({block numblock} $(send _ ${:sort_by :sort}) ...) ${:last :first})
-            (send
-              ({block numblock} $(send _ ${:sort_by :sort}) ...)
+            (call ({block numblock} $(call _ ${:sort_by :sort}) ...) ${:last :first})
+            (call
+              ({block numblock} $(call _ ${:sort_by :sort}) ...)
               ${:[] :at :slice} {(int 0) (int -1)}
             )
           }
@@ -108,6 +108,7 @@ module RuboCop
 
           register_offense(ancestor, sort_node, sorter, accessor)
         end
+        alias on_csend on_send
 
         private
 
