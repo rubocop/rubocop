@@ -53,7 +53,7 @@ module RuboCop
 
         # @!method reject_method_with_block_pass?(node)
         def_node_matcher :reject_method_with_block_pass?, <<~PATTERN
-          (send !nil? {:reject :delete_if :reject!}
+          (call !nil? {:reject :delete_if :reject!}
             (block_pass
               (sym :nil?)))
         PATTERN
@@ -61,21 +61,21 @@ module RuboCop
         # @!method reject_method?(node)
         def_node_matcher :reject_method?, <<~PATTERN
           (block
-            (send
+            (call
               !nil? {:reject :delete_if :reject!})
             $(args ...)
-            (send
+            (call
               $(lvar _) :nil?))
         PATTERN
 
         # @!method select_method?(node)
         def_node_matcher :select_method?, <<~PATTERN
           (block
-            (send
+            (call
               !nil? {:select :select!})
             $(args ...)
-            (send
-              (send
+            (call
+              (call
                 $(lvar _) :nil?) :!))
         PATTERN
 
@@ -91,6 +91,7 @@ module RuboCop
 
           add_offense(range, message: message) { |corrector| corrector.replace(range, good) }
         end
+        alias on_csend on_send
 
         private
 
