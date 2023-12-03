@@ -73,6 +73,7 @@ module RuboCop
             corrector.remove(offense_range)
           end
         end
+        alias on_csend on_send
 
         private
 
