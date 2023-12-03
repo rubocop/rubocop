@@ -62,6 +62,24 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       RUBY
     end
 
+    it "registers an offense for #{condition} inside of safe navigation `each` call" do
+      expect_offense(<<~RUBY, condition: condition)
+        []&.each do |o|
+          %{condition} o == 1
+          ^{condition}^^^^^^^ Use `next` to skip iteration.
+            puts o
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        []&.each do |o|
+          next #{opposite} o == 1
+          puts o
+        end
+      RUBY
+    end
+
     it "registers an offense for #{condition} inside of each_with_object" do
       expect_offense(<<~RUBY, condition: condition)
         [].each_with_object({}) do |o, a|
