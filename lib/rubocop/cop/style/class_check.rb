@@ -40,6 +40,7 @@ module RuboCop
             corrector.replace(node.loc.selector, replacement)
           end
         end
+        alias on_csend on_send
 
         def message(node)
           if node.method?(:is_a?)
