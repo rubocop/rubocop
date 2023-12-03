@@ -19,6 +19,23 @@ RSpec.describe RuboCop::Cop::Style::MapCompactWithConditionalBlock, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects to safe navigation `select` call with `if` condition' do
+      expect_offense(<<~RUBY)
+        foo&.map do |item|
+             ^^^^^^^^^^^^^ Replace `map { ... }.compact` with `select`.
+          if item.bar?
+            item
+          else
+            next
+          end
+        end&.compact
+      RUBY
+
+      expect_correction <<~RUBY
+        foo&.select { |item| item.bar? }
+      RUBY
+    end
+
     it 'registers an offense and corrects to `select` with multi-line `if` condition' do
       expect_offense(<<~RUBY)
         foo.map do |item|
