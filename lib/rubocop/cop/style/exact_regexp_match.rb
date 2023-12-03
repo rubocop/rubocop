@@ -30,7 +30,7 @@ module RuboCop
 
         # @!method exact_regexp_match(node)
         def_node_matcher :exact_regexp_match, <<~PATTERN
-          (send
+          (call
             _ {:=~ :=== :!~ :match :match?}
             (regexp
               (str $_)
@@ -49,6 +49,7 @@ module RuboCop
             corrector.replace(node, prefer)
           end
         end
+        alias on_csend on_send
 
         private
 
