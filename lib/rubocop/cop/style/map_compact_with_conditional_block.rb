@@ -44,9 +44,9 @@ module RuboCop
 
         # @!method map_and_compact?(node)
         def_node_matcher :map_and_compact?, <<~RUBY
-          (send
+          (call
             (block
-              (send _ :map)
+              (call _ :map)
               (args
                 $(arg _))
               {
@@ -85,6 +85,7 @@ module RuboCop
             end
           end
         end
+        alias on_csend on_send
 
         private
 
