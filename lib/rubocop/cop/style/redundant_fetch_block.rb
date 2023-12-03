@@ -47,7 +47,7 @@ module RuboCop
         # @!method redundant_fetch_block_candidate?(node)
         def_node_matcher :redundant_fetch_block_candidate?, <<~PATTERN
           (block
-            $(send _ :fetch _)
+            $(call _ :fetch _)
             (args)
             ${nil? #basic_literal? #const_type?})
         PATTERN
@@ -61,10 +61,10 @@ module RuboCop
             bad = build_bad_method(send, body)
 
             add_offense(range, message: format(MSG, good: good, bad: bad)) do |corrector|
-              receiver, _, key = send.children
+              _, _, key = send.children
               default_value = body ? body.source : 'nil'
 
-              corrector.replace(node, "#{receiver.source}.fetch(#{key.source}, #{default_value})")
+              corrector.replace(range, "fetch(#{key.source}, #{default_value})")
             end
           end
         end
