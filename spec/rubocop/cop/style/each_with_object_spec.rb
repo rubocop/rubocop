@@ -24,6 +24,17 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject, :config do
     RUBY
   end
 
+  it 'finds inject is safe navigation called with passed in and returned hash' do
+    expect_offense(<<~RUBY)
+      []&.inject({}) { |a, e| a }
+          ^^^^^^ Use `each_with_object` instead of `inject`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      []&.each_with_object({}) { |e, a|  }
+    RUBY
+  end
+
   context 'Ruby 2.7', :ruby27 do
     it 'finds inject and reduce with passed in and returned hash and numblock' do
       expect_offense(<<~RUBY)
@@ -36,6 +47,23 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject, :config do
 
       expect_correction(<<~RUBY)
         [].each_with_object({}) do
+          _2[_1] = 1
+          _2
+        end
+      RUBY
+    end
+
+    it 'finds `reduce` is called with passed in and returned hash and numblock' do
+      expect_offense(<<~RUBY)
+        []&.reduce({}) do
+            ^^^^^^ Use `each_with_object` instead of `reduce`.
+          _1[_2] = 1
+          _1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        []&.each_with_object({}) do
           _2[_1] = 1
           _2
         end
