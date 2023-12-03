@@ -22,20 +22,23 @@ module RuboCop
 
         # @!method lstrip_rstrip(node)
         def_node_matcher :lstrip_rstrip, <<~PATTERN
-          {(send $(send _ $:rstrip) $:lstrip)
-           (send $(send _ $:lstrip) $:rstrip)}
+          {
+            (call $(call _ :rstrip) :lstrip)
+            (call $(call _ :lstrip) :rstrip)
+          }
         PATTERN
 
         def on_send(node)
-          lstrip_rstrip(node) do |first_send, method_one, method_two|
+          lstrip_rstrip(node) do |first_send|
             range = range_between(first_send.loc.selector.begin_pos, node.source_range.end_pos)
-            message = format(MSG, methods: "#{method_one}.#{method_two}")
+            message = format(MSG, methods: range.source)
 
             add_offense(range, message: message) do |corrector|
               corrector.replace(range, 'strip')
             end
           end
         end
+        alias on_csend on_send
       end
     end
   end
