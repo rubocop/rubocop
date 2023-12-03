@@ -46,12 +46,12 @@ module RuboCop
 
         # @!method redundant_sort_by_block(node)
         def_node_matcher :redundant_sort_by_block, <<~PATTERN
-          (block $(send _ :sort_by) (args (arg $_x)) (lvar _x))
+          (block $(call _ :sort_by) (args (arg $_x)) (lvar _x))
         PATTERN
 
         # @!method redundant_sort_by_numblock(node)
         def_node_matcher :redundant_sort_by_numblock, <<~PATTERN
-          (numblock $(send _ :sort_by) 1 (lvar :_1))
+          (numblock $(call _ :sort_by) 1 (lvar :_1))
         PATTERN
 
         def sort_by_range(send, node)
