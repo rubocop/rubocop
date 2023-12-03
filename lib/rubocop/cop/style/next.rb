@@ -66,7 +66,7 @@ module RuboCop
         end
 
         def on_block(node)
-          return unless node.send_node.send_type? && node.send_node.enumerator_method?
+          return unless node.send_node.call_type? && node.send_node.enumerator_method?
 
           check(node)
         end
