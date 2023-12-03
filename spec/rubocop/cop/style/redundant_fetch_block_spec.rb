@@ -17,6 +17,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when using `&.fetch` with Integer in the block' do
+      expect_offense(<<~RUBY)
+        hash&.fetch(:key) { 5 }
+              ^^^^^^^^^^^^^^^^^ Use `fetch(:key, 5)` instead of `fetch(:key) { 5 }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        hash&.fetch(:key, 5)
+      RUBY
+    end
+
     it 'registers an offense and corrects when using `#fetch` with Float in the block' do
       expect_offense(<<~RUBY)
         hash.fetch(:key) { 2.5 }
