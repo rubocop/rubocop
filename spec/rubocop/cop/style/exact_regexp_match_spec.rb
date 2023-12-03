@@ -34,6 +34,17 @@ RSpec.describe RuboCop::Cop::Style::ExactRegexpMatch, :config do
     RUBY
   end
 
+  it 'registers an offense when using `string&.match(/\Astring\z/)`' do
+    expect_offense(<<~'RUBY')
+      string&.match(/\Astring\z/)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      string == 'string'
+    RUBY
+  end
+
   it 'registers an offense when using `string.match?(/\Astring\z/)`' do
     expect_offense(<<~'RUBY')
       string.match?(/\Astring\z/)
