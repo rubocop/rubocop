@@ -45,6 +45,17 @@ RSpec.describe RuboCop::Cop::Style::StringChars, :config do
     RUBY
   end
 
+  it 'registers and corrects an offense when using safe navigation `split(//)` call' do
+    expect_offense(<<~RUBY)
+      string&.split(//)
+              ^^^^^^^^^ Use `chars` instead of `split(//)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      string&.chars
+    RUBY
+  end
+
   it 'does not register an offense when using `chars`' do
     expect_no_offenses(<<~RUBY)
       string.chars

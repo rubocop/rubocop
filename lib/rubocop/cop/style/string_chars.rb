@@ -35,6 +35,7 @@ module RuboCop
             corrector.replace(range, 'chars')
           end
         end
+        alias on_csend on_send
       end
     end
   end
