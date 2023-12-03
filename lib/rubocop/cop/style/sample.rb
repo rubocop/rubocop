@@ -35,7 +35,7 @@ module RuboCop
 
         # @!method sample_candidate?(node)
         def_node_matcher :sample_candidate?, <<~PATTERN
-          (send $(send _ :shuffle $...) ${:#{RESTRICT_ON_SEND.join(' :')}} $...)
+          (call $(call _ :shuffle $...) ${:#{RESTRICT_ON_SEND.join(' :')}} $...)
         PATTERN
 
         def on_send(node)
@@ -52,6 +52,7 @@ module RuboCop
             end
           end
         end
+        alias on_csend on_send
 
         private
 
