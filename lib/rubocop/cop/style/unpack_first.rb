@@ -23,38 +23,35 @@ module RuboCop
 
         minimum_target_ruby_version 2.4
 
-        MSG = 'Use `%<receiver>s.unpack1(%<format>s)` instead of ' \
-              '`%<receiver>s.unpack(%<format>s)%<method>s`.'
+        MSG = 'Use `unpack1(%<format>s)` instead of `%<current>s`.'
         RESTRICT_ON_SEND = %i[first [] slice at].freeze
 
         # @!method unpack_and_first_element?(node)
         def_node_matcher :unpack_and_first_element?, <<~PATTERN
           {
-            (send $(send (...) :unpack $(...)) :first)
-            (send $(send (...) :unpack $(...)) {:[] :slice :at} (int 0))
+            (call $(call (...) :unpack $(...)) :first)
+            (call $(call (...) :unpack $(...)) {:[] :slice :at} (int 0))
           }
         PATTERN
 
         def on_send(node)
           unpack_and_first_element?(node) do |unpack_call, unpack_arg|
-            range = first_element_range(node, unpack_call)
-            message = format(MSG,
-                             receiver: unpack_call.receiver.source,
-                             format: unpack_arg.source,
-                             method: range.source)
-            add_offense(node, message: message) do |corrector|
-              corrector.remove(first_element_range(node, unpack_call))
+            first_element_range = first_element_range(node, unpack_call)
+            offense_range = unpack_call.loc.selector.join(node.source_range.end)
+            message = format(MSG, format: unpack_arg.source, current: offense_range.source)
+
+            add_offense(offense_range, message: message) do |corrector|
+              corrector.remove(first_element_range)
               corrector.replace(unpack_call.loc.selector, 'unpack1')
             end
           end
         end
+        alias on_csend on_send
 
         private
 
         def first_element_range(node, unpack_call)
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    unpack_call.source_range.end_pos,
-                                    node.source_range.end_pos)
+          unpack_call.source_range.end.join(node.source_range.end)
         end
       end
     end
