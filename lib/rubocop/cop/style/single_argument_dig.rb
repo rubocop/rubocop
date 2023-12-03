@@ -37,7 +37,7 @@ module RuboCop
 
         # @!method single_argument_dig?(node)
         def_node_matcher :single_argument_dig?, <<~PATTERN
-          (send _ :dig $!splat)
+          (call _ :dig $!splat)
         PATTERN
 
         def on_send(node)
@@ -60,6 +60,7 @@ module RuboCop
 
           ignore_node(node)
         end
+        alias on_csend on_send
       end
     end
   end
