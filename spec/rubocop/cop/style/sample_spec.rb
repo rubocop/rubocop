@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::Sample, :config do
         [1, 2, 3].#{right}
       RUBY
     end
+
+    it "registers an offense for safe navigation #{wrong} call" do
+      expect_offense(<<~RUBY, wrong: wrong)
+        [1, 2, 3]&.%{wrong}
+                   ^{wrong} Use `#{right}` instead of `#{wrong}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3]&.#{right}
+      RUBY
+    end
   end
 
   shared_examples 'accepts' do |acceptable|
@@ -22,6 +33,8 @@ RSpec.describe RuboCop::Cop::Style::Sample, :config do
 
   it_behaves_like('offense', 'shuffle.first', 'sample')
   it_behaves_like('offense', 'shuffle.last', 'sample')
+  it_behaves_like('offense', 'shuffle&.first', 'sample')
+  it_behaves_like('offense', 'shuffle&.last', 'sample')
   it_behaves_like('offense', 'shuffle[0]', 'sample')
   it_behaves_like('offense', 'shuffle[-1]', 'sample')
   context 'Ruby >= 2.7', :ruby27 do
