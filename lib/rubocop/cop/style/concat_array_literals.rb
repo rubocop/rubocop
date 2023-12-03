@@ -63,6 +63,7 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics
+        alias on_csend on_send
 
         private
 

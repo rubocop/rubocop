@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::ConcatArrayLiterals, :config do
     RUBY
   end
 
+  it 'registers an offense when using safe navigation `concat` with single element array literal argument' do
+    expect_offense(<<~RUBY)
+      arr&.concat([item])
+           ^^^^^^^^^^^^^^ Use `push(item)` instead of `concat([item])`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr&.push(item)
+    RUBY
+  end
+
   it 'registers an offense when using `concat` with multiple elements array literal argument' do
     expect_offense(<<~RUBY)
       arr.concat([foo, bar])
