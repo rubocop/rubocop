@@ -13,6 +13,17 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
           { key: 'value' }[:key]
         RUBY
       end
+
+      it 'registers an offense and corrects unsuitable use of dig with safe navigation operator' do
+        expect_offense(<<~RUBY)
+          { key: 'value' }&.dig(:key)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `{ key: 'value' }[:key]` instead of `{ key: 'value' }&.dig(:key)`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          { key: 'value' }[:key]
+        RUBY
+      end
     end
 
     context 'with multiple arguments' do
