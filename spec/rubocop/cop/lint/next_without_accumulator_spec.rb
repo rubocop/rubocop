@@ -13,6 +13,16 @@ RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator, :config do
         RUBY
       end
 
+      it 'registers an offense for a bare `next` in the block of safe navigation method called' do
+        expect_offense(<<~RUBY)
+          (1..4)&.#{reduce_alias}(0) do |acc, i|
+            next if i.odd?
+            ^^^^ Use `next` with an accumulator argument in a `reduce`.
+            acc + i
+          end
+        RUBY
+      end
+
       it 'accepts next with a value' do
         expect_no_offenses(<<~RUBY)
           (1..4).#{reduce_alias}(0) do |acc, i|
@@ -38,6 +48,16 @@ RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator, :config do
         it 'registers an offense for a bare next' do
           expect_offense(<<~RUBY)
             (1..4).#{reduce_alias}(0) do
+              next if _2.odd?
+              ^^^^ Use `next` with an accumulator argument in a `reduce`.
+              _1 + i
+            end
+          RUBY
+        end
+
+        it 'registers an offense for a bare `next` in the block of safe navigation method call' do
+          expect_offense(<<~RUBY)
+            (1..4)&.#{reduce_alias}(0) do
               next if _2.odd?
               ^^^^ Use `next` with an accumulator argument in a `reduce`.
               _1 + i

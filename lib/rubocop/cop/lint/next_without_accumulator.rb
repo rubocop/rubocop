@@ -34,35 +34,20 @@ module RuboCop
             add_offense(void_next) if void_next
           end
         end
-
-        def on_numblock(node)
-          on_numblock_body_of_reduce(node) do |body|
-            void_next = body.each_node(:next).find do |n|
-              n.children.empty? && parent_numblock_node(n) == node
-            end
-
-            add_offense(void_next) if void_next
-          end
-        end
+        alias on_numblock on_block
 
         private
 
         # @!method on_block_body_of_reduce(node)
         def_node_matcher :on_block_body_of_reduce, <<~PATTERN
-          (block (send _recv {:reduce :inject} !sym) _blockargs $(begin ...))
-        PATTERN
-
-        # @!method on_numblock_body_of_reduce(node)
-        def_node_matcher :on_numblock_body_of_reduce, <<~PATTERN
-          (numblock (send _recv {:reduce :inject} !sym) _argscount $(begin ...))
+          {
+            (block (call _recv {:reduce :inject} !sym) _blockargs $(begin ...))
+            (numblock (call _recv {:reduce :inject} !sym) _argscount $(begin ...))
+          }
         PATTERN
 
         def parent_block_node(node)
-          node.each_ancestor(:block).first
-        end
-
-        def parent_numblock_node(node)
-          node.each_ancestor(:numblock).first
+          node.each_ancestor(:block, :numblock).first
         end
       end
     end
