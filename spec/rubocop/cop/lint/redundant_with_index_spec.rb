@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
     RUBY
   end
 
+  it 'registers an offense for `ary&.each_with_index { |v| v }` and corrects to `ary&.each`' do
+    expect_offense(<<~RUBY)
+      ary&.each_with_index { |v| v }
+           ^^^^^^^^^^^^^^^ Use `each` instead of `each_with_index`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ary&.each { |v| v }
+    RUBY
+  end
+
   it 'registers an offense when using `ary.each.with_index { |v| v }` and corrects to `ary.each`' do
     expect_offense(<<~RUBY)
       ary.each.with_index { |v| v }
@@ -61,6 +72,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
 
       expect_correction(<<~RUBY)
         ary.each { _1 }
+      RUBY
+    end
+
+    it 'registers an offense for `ary&.each_with_index { _1 }` and corrects to `ary&.each`' do
+      expect_offense(<<~RUBY)
+        ary&.each_with_index { _1 }
+             ^^^^^^^^^^^^^^^ Use `each` instead of `each_with_index`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary&.each { _1 }
       RUBY
     end
 

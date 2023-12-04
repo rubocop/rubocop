@@ -56,10 +56,10 @@ module RuboCop
         def_node_matcher :redundant_with_index?, <<~PATTERN
           {
             (block
-              $(send _ {:each_with_index :with_index} ...)
+              $(call _ {:each_with_index :with_index} ...)
               (args (arg _)) ...)
             (numblock
-              $(send _ {:each_with_index :with_index} ...) 1 ...)
+              $(call _ {:each_with_index :with_index} ...) 1 ...)
           }
         PATTERN
 
