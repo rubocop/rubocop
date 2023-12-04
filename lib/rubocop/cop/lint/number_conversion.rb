@@ -91,19 +91,24 @@ module RuboCop
 
         # @!method to_method(node)
         def_node_matcher :to_method, <<~PATTERN
-          (send $_ ${#{METHODS}})
+          (call $_ ${#{METHODS}})
         PATTERN
 
         # @!method to_method_symbol(node)
         def_node_matcher :to_method_symbol, <<~PATTERN
-          {(send _ $_ ${(sym ${#{METHODS}})} ...)
-           (send _ $_ ${(block_pass (sym ${#{METHODS}}))} ...)}
+          (call _ $_ ${
+            {
+              (sym ${#{METHODS}})
+              (block_pass (sym ${#{METHODS}}))
+            }
+          } ...)
         PATTERN
 
         def on_send(node)
           handle_conversion_method(node)
           handle_as_symbol(node)
         end
+        alias on_csend on_send
 
         private
 
