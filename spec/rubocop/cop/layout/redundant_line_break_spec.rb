@@ -28,6 +28,32 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
           ^^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
            .join + []
         RUBY
+
+        expect_correction(<<~RUBY)
+          e.select { |i| i.cond? }.join
+          a = e.select { |i| i.cond? }.join
+          e.select { |i| i.cond? }.join + []
+        RUBY
+      end
+
+      it 'reports an offense for a safe navigation method call chained onto a single line block' do
+        expect_offense(<<~RUBY)
+          e&.select { |i| i.cond? }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+            &.join
+          a = e&.select { |i| i.cond? }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+            &.join
+          e&.select { |i| i.cond? }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
+            &.join + []
+        RUBY
+
+        expect_correction(<<~RUBY)
+          e&.select { |i| i.cond? }&.join
+          a = e&.select { |i| i.cond? }&.join
+          e&.select { |i| i.cond? }&.join + []
+        RUBY
       end
     end
 

@@ -61,8 +61,7 @@ module RuboCop
         end
 
         def allowed_method_call_on_rhs?(node)
-          node&.send_type? &&
-            (node.receiver.nil? || !literal_receiver?(node))
+          node&.send_type? && (node.receiver.nil? || !literal_receiver?(node))
         end
 
         # @!method literal_receiver?(node)
