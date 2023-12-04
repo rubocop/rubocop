@@ -144,6 +144,23 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when `{hash: :literal}.keys.each`' do
+        expect_offense(<<~RUBY)
+          {hash: :literal}.keys.each { |k| p k }
+                           ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {hash: :literal}.each_key { |k| p k }
+        RUBY
+      end
+
+      it 'does not register an offense when `[[1, 2, 3], [4 ,5, 6]].each`' do
+        expect_no_offenses(<<~RUBY)
+          [[1, 2, 3], [4, 5, 6]].each { |a, _| p a }
+        RUBY
+      end
+
       it 'does not register an offense for foo#each_key' do
         expect_no_offenses('foo.each_key { |k| p k }')
       end
