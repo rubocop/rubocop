@@ -33,6 +33,7 @@ module RuboCop
           range = offending_range(node)
           add_offense(range) { |corrector| corrector.insert_before(range, "\n") } if range
         end
+        alias on_csend on_send
 
         private
 
