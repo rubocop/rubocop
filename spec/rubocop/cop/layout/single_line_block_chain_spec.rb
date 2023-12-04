@@ -13,6 +13,18 @@ RSpec.describe RuboCop::Cop::Layout::SingleLineBlockChain, :config do
     RUBY
   end
 
+  it 'registers an offense for safe navigation method call chained on the same line as a block' do
+    expect_offense(<<~RUBY)
+      example.select { |item| item.cond? }&.join('-')
+                                          ^^^^^^ Put method call on a separate line if chained to a single line block.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      example.select { |item| item.cond? }
+      &.join('-')
+    RUBY
+  end
+
   it 'registers an offense for no selector method call chained on the same line as a block' do
     expect_offense(<<~RUBY)
       example.select { |item| item.cond? }.(42)
