@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
     'rubygems_mfa_required' => 'true'
   }
 
-  s.add_runtime_dependency('json', '~> 2.3')
+  s.add_runtime_dependency('json', '~> 2.3', '!= 2.7.0')
   s.add_runtime_dependency('language_server-protocol', '>= 3.17.0')
   s.add_runtime_dependency('parallel', '~> 1.10')
   s.add_runtime_dependency('parser', '>= 3.2.2.4')
