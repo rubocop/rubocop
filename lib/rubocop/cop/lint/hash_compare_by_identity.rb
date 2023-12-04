@@ -35,12 +35,13 @@ module RuboCop
 
         # @!method id_as_hash_key?(node)
         def_node_matcher :id_as_hash_key?, <<~PATTERN
-          (send _ {:key? :has_key? :fetch :[] :[]=} (send _ :object_id) ...)
+          (call _ {:key? :has_key? :fetch :[] :[]=} (send _ :object_id) ...)
         PATTERN
 
         def on_send(node)
           add_offense(node) if id_as_hash_key?(node)
         end
+        alias on_csend on_send
       end
     end
   end
