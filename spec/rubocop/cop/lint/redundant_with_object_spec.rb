@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `ary&.each_with_object { |v| v }`' do
+    expect_offense(<<~RUBY)
+      ary&.each_with_object([]) { |v| v }
+           ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ary&.each { |v| v }
+    RUBY
+  end
+
   it 'registers an offense and corrects when using `ary.each.with_object([]) { |v| v }`' do
     expect_offense(<<~RUBY)
       ary.each.with_object([]) { |v| v }
@@ -77,6 +88,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
 
       expect_correction(<<~RUBY)
         ary.each { _1 }
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using `ary&.each_with_object { _1 }`' do
+      expect_offense(<<~RUBY)
+        ary&.each_with_object([]) { _1 }
+             ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary&.each { _1 }
       RUBY
     end
 
