@@ -23,6 +23,13 @@ RSpec.describe RuboCop::Cop::Lint::HashCompareByIdentity, :config do
     RUBY
   end
 
+  it 'registers an offense when using hash method with `object_id` as a key with safe navigation' do
+    expect_offense(<<~RUBY)
+      hash&.key?(object_id)
+      ^^^^^^^^^^^^^^^^^^^^^ Use `Hash#compare_by_identity` instead of using `object_id` for keys.
+    RUBY
+  end
+
   it 'does not register an offense for hash methods without `object_id` as key' do
     expect_no_offenses(<<~RUBY)
       hash.key?(foo)
