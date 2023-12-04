@@ -22,9 +22,6 @@ module RuboCop
         # @!method square_brackets?(node)
         def_node_matcher :square_brackets?, '(send {(send _recv _msg) str array hash} :[] ...)'
 
-        # @!method range_end?(node)
-        def_node_matcher :range_end?, '^^{irange erange}'
-
         # @!method method_node_and_args(node)
         def_node_matcher :method_node_and_args, '$(call _recv _msg $...)'
 
@@ -64,7 +61,8 @@ module RuboCop
           allowed_ancestor?(node) ||
             allowed_method_call?(node) ||
             allowed_multiple_expression?(node) ||
-            allowed_ternary?(node)
+            allowed_ternary?(node) ||
+            node.parent&.range_type?
         end
 
         def allowed_ancestor?(node)
@@ -229,7 +227,6 @@ module RuboCop
         def method_call_with_redundant_parentheses?(node)
           return false unless node.call_type?
           return false if node.prefix_not?
-          return false if range_end?(node)
 
           send_node, args = method_node_and_args(node)
 

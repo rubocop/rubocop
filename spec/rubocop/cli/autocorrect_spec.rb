@@ -2015,6 +2015,18 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/AmbiguousRange` and offenses and accepts Style/RedundantParentheses' do
+    create_file('example.rb', <<~RUBY)
+      x...(y || z)
+    RUBY
+    expect(
+      cli.run(['--autocorrect-all', '--only', 'Lint/AmbiguousRange,Style/RedundantParentheses'])
+    ).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      x...(y || z)
+    RUBY
+  end
+
   it 'corrects Lint/ParenthesesAsGroupedExpression and offenses and ' \
      'accepts Style/RedundantParentheses' do
     create_file('example.rb', <<~RUBY)
