@@ -69,8 +69,8 @@ module RuboCop
         # @!method reduce_with_block?(node)
         def_node_matcher :reduce_with_block?, <<~PATTERN
           {
-            (block (send _recv {:reduce :inject} ...) args ...)
-            (numblock (send _recv {:reduce :inject} ...) ...)
+            (block (call _recv {:reduce :inject} ...) args ...)
+            (numblock (call _recv {:reduce :inject} ...) ...)
           }
         PATTERN
 
