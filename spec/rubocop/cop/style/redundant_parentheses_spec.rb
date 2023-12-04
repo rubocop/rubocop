@@ -405,6 +405,37 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense for parens around `->` with `do`...`end` block' do
+    expect_offense(<<~RUBY)
+      scope :my_scope, (-> do
+                       ^^^^^^ Don't use parentheses around an expression.
+        where(column: :value)
+      end)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      scope :my_scope, -> do
+        where(column: :value)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for parens around `lambda` with `do`...`end` block' do
+    expect_no_offenses(<<~RUBY)
+      scope :my_scope, (lambda do
+        where(column: :value)
+      end)
+    RUBY
+  end
+
+  it 'does not register an offense for parens around `proc` with `do`...`end` block' do
+    expect_no_offenses(<<~RUBY)
+      scope :my_scope, (proc do
+        where(column: :value)
+      end)
+    RUBY
+  end
+
   it_behaves_like 'plausible', '(-2)**2'
   it_behaves_like 'plausible', '(-2.1)**2'
 

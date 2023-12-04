@@ -144,7 +144,9 @@ module RuboCop
           return 'a literal' if disallowed_literal?(begin_node, node)
           return 'a variable' if node.variable?
           return 'a constant' if node.const_type?
-          return 'an expression' if node.lambda_or_proc?
+          if node.lambda_or_proc? && (node.braces? || node.send_node.lambda_literal?)
+            return 'an expression'
+          end
           return 'an interpolated expression' if interpolation?(begin_node)
 
           return if begin_node.chained?
