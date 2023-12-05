@@ -162,6 +162,18 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
     RUBY
   end
 
+  it 'does not register an offense when using attribute assignment with method call with arguments' do
+    expect_no_offenses(<<~RUBY)
+      foo.bar = foo.bar(arg)
+    RUBY
+  end
+
+  it 'does not register an offense when using attribute assignment with literals' do
+    expect_no_offenses(<<~RUBY)
+      foo.bar = true
+    RUBY
+  end
+
   it 'registers an offense when using []= self-assignment with same string literals' do
     expect_offense(<<~RUBY)
       foo["bar"] = foo["bar"]
