@@ -105,6 +105,17 @@ module RuboCop
         def combine_with_left_sibling(corrector, node)
           corrector.remove(node.left_sibling.body.source_range.end.join(node.left_sibling.loc.end))
           corrector.remove(node.source_range.begin.join(node.body.source_range.begin))
+
+          correct_end_of_block(corrector, node)
+        end
+
+        def correct_end_of_block(corrector, node)
+          return unless node.left_sibling.respond_to?(:braces?)
+          return if node.right_sibling&.block_type? || node.right_sibling&.numblock_type?
+
+          end_of_block = node.left_sibling.braces? ? '}' : ' end'
+          corrector.remove(node.loc.end)
+          corrector.insert_before(node.source_range.end, end_of_block)
         end
       end
     end
