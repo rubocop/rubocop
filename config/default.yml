@@ -1963,6 +1963,12 @@ Lint/InterpolationCheck:
   VersionAdded: '0.50'
   VersionChanged: '1.40'
 
+Lint/ItWithoutArgumentsInBlock:
+  Description: 'Checks uses of `it` calls without arguments in block.'
+  Reference: 'https://bugs.ruby-lang.org/issues/18980'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/LambdaWithoutLiteralBlock:
   Description: 'Checks uses of lambda without a literal block.'
   Enabled: pending
