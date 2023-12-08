@@ -55,8 +55,8 @@ module RuboCop
         # @!method regexp_match?(node)
         def_node_matcher :regexp_match?, <<~PATTERN
           {
-            (block send (args (arg $_)) ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
-            (numblock send $1 ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
+            (block call (args (arg $_)) ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
+            (numblock call $1 ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
           }
         PATTERN
 
@@ -64,9 +64,9 @@ module RuboCop
         # @!method creates_hash?(node)
         def_node_matcher :creates_hash?, <<~PATTERN
           {
-            (send (const _ :Hash) {:new :[]} ...)
-            (block (send (const _ :Hash) :new ...) ...)
-            (send _ { :to_h :to_hash } ...)
+            (call (const _ :Hash) {:new :[]} ...)
+            (block (call (const _ :Hash) :new ...) ...)
+            (call _ { :to_h :to_hash } ...)
           }
         PATTERN
 
@@ -100,6 +100,7 @@ module RuboCop
           register_offense(node, block_node, regexp, replacement)
         end
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        alias on_csend on_send
 
         private
 

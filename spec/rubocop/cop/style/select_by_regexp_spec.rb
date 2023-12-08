@@ -326,6 +326,49 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
         end
       end
     end
+
+    context "with safe navigation #{method}", :ruby23 do
+      it 'registers an offense and corrects for `match?`' do
+        expect_offense(<<~RUBY, method: method)
+          array&.#{method} { |x| x.match? /regexp/ }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array&.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `match?`', :ruby27 do
+        expect_offense(<<~RUBY, method: method)
+          array&.#{method} { _1.match? /regexp/ }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array&.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'does not register an offense when the receiver is `Hash.new`' do
+        expect_no_offenses(<<~RUBY)
+          Hash&.new.#{method} { |x| x.match? /regexp/ }
+          Hash&.new { |hash, key| :default }.#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+
+      it 'does not register an offense when the receiver is `to_h`' do
+        expect_no_offenses(<<~RUBY)
+          foo&.to_h.#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+
+      it 'does not register an offense when the receiver is `to_hash`' do
+        expect_no_offenses(<<~RUBY)
+          foo&.to_hash.#{method} { |x| x.match? /regexp/ }
+        RUBY
+      end
+    end
   end
 
   shared_examples 'regexp mismatch' do |method, correction|
