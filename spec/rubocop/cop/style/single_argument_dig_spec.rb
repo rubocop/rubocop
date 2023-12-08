@@ -14,14 +14,9 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects unsuitable use of dig with safe navigation operator' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense and corrects unsuitable use of dig with safe navigation operator' do
+        expect_no_offenses(<<~RUBY)
           { key: 'value' }&.dig(:key)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `{ key: 'value' }[:key]` instead of `{ key: 'value' }&.dig(:key)`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          { key: 'value' }[:key]
         RUBY
       end
     end
