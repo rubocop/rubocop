@@ -3,8 +3,11 @@
 module RuboCop
   module Cop
     module Style
-      # Sometimes using dig method ends up with just a single
-      # argument. In such cases, dig should be replaced with [].
+      # Sometimes using `dig` method ends up with just a single
+      # argument. In such cases, dig should be replaced with `[]`.
+      #
+      # Since replacing `hash&.dig(:key)` with `hash[:key]` could potentially lead to error,
+      # calls to the `dig` method using safe navigation will be ignored.
       #
       # @safety
       #   This cop is unsafe because it cannot be guaranteed that the receiver
@@ -37,7 +40,7 @@ module RuboCop
 
         # @!method single_argument_dig?(node)
         def_node_matcher :single_argument_dig?, <<~PATTERN
-          (call _ :dig $!splat)
+          (send _ :dig $!splat)
         PATTERN
 
         def on_send(node)
@@ -60,7 +63,6 @@ module RuboCop
 
           ignore_node(node)
         end
-        alias on_csend on_send
       end
     end
   end
