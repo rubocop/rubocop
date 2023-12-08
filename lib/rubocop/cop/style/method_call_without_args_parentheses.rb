@@ -8,6 +8,9 @@ module RuboCop
       # This cop can be customized allowed methods with `AllowedMethods`.
       # By default, there are no methods to allowed.
       #
+      # NOTE: This cop allows the use of `it()` without arguments in blocks,
+      # as in `0.times { it() }`, following `Lint/ItWithoutArgumentsInBlock` cop.
+      #
       # @example
       #   # bad
       #   object.some_method()
@@ -30,15 +33,18 @@ module RuboCop
 
         MSG = 'Do not use parentheses for method calls with no arguments.'
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def on_send(node)
           return unless !node.arguments? && node.parenthesized?
           return if ineligible_node?(node)
           return if default_argument?(node)
           return if allowed_method_name?(node.method_name)
           return if same_name_assignment?(node)
+          return if parenthesized_it_method_in_block?(node)
 
           register_offense(node)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         private
 
@@ -69,6 +75,20 @@ module RuboCop
 
             asgn_node.loc.name.source == node.method_name.to_s
           end
+        end
+
+        # Respects `Lint/ItWithoutArgumentsInBlock` cop and the following Ruby 3.3's warning:
+        #
+        # $ ruby -e '0.times { begin; it; end }'
+        # -e:1: warning: `it` calls without arguments will refer to the first block param in
+        # Ruby 3.4; use it() or self.it
+        #
+        def parenthesized_it_method_in_block?(node)
+          return false unless node.method?(:it)
+          return false unless (block_node = node.each_ancestor(:block).first)
+          return false unless block_node.arguments.empty_and_without_delimiters?
+
+          !node.receiver && node.arguments.empty? && !node.block_literal?
         end
 
         def any_assignment?(node)

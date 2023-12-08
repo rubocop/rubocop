@@ -29,6 +29,51 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     expect_no_offenses('not(something)')
   end
 
+  it 'does not register an offense when using `it()` in the single line block' do
+    # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
+    expect_no_offenses(<<~RUBY)
+      0.times { it() }
+    RUBY
+  end
+
+  it 'does not register an offense when using `it()` in the multiline block' do
+    # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
+    expect_no_offenses(<<~RUBY)
+      0.times do
+        it()
+        it = 1
+        it
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `it` without arguments in `def` body' do
+    expect_offense(<<~RUBY)
+      def foo
+        it()
+          ^^ Do not use parentheses for method calls with no arguments.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `it` without arguments in the block with empty block parameter' do
+    expect_offense(<<~RUBY)
+      0.times { ||
+        it()
+          ^^ Do not use parentheses for method calls with no arguments.
+      }
+    RUBY
+  end
+
+  it 'registers an offense when using `it` without arguments in the block with useless block parameter' do
+    expect_offense(<<~RUBY)
+      0.times { |_n|
+        it()
+          ^^ Do not use parentheses for method calls with no arguments.
+      }
+    RUBY
+  end
+
   context 'when AllowedMethods is enabled' do
     let(:cop_config) { { 'AllowedMethods' => %w[s] } }
 
