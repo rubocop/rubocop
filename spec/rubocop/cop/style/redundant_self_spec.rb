@@ -310,6 +310,51 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `self.it` in the single line block' do
+    # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
+    expect_no_offenses(<<~RUBY)
+      0.times { self.it }
+    RUBY
+  end
+
+  it 'does not register an offense when using `self.it` in the multiline block' do
+    # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
+    expect_no_offenses(<<~RUBY)
+      0.times do
+        self.it
+        it = 1
+        it
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `it` without arguments in `def` body' do
+    expect_offense(<<~RUBY)
+      def foo
+        self.it
+        ^^^^ Redundant `self` detected.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `it` without arguments in the block with empty block parameter' do
+    expect_offense(<<~RUBY)
+      0.times { ||
+        self.it
+        ^^^^ Redundant `self` detected.
+      }
+    RUBY
+  end
+
+  it 'registers an offense when using `it` without arguments in the block with useless block parameter' do
+    expect_offense(<<~RUBY)
+      0.times { |_n|
+        self.it
+        ^^^^ Redundant `self` detected.
+      }
+    RUBY
+  end
+
   context 'with ruby >= 2.7', :ruby27 do
     context 'with pattern matching' do
       it 'accepts a self receiver on an `match-var`' do
