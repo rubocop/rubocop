@@ -17,7 +17,8 @@ module RuboCop
       # protected scope, you cannot send private messages this way.
       #
       # Note we allow uses of `self` with operators because it would be awkward
-      # otherwise.
+      # otherwise. Also allows the use of `self.it` without arguments in blocks,
+      # as in `0.times { self.it }`, following `Lint/ItWithoutArgumentsInBlock` cop.
       #
       # @example
       #
@@ -107,8 +108,8 @@ module RuboCop
         def on_send(node)
           return unless node.self_receiver? && regular_method_call?(node)
           return if node.parent&.mlhs_type?
-
           return if allowed_send_node?(node)
+          return if it_method_in_block?(node)
 
           add_offense(node.receiver) do |corrector|
             corrector.remove(node.receiver)
@@ -153,6 +154,20 @@ module RuboCop
               @local_variables_scopes[ancestor].include?(node.method_name)
             end ||
             KERNEL_METHODS.include?(node.method_name)
+        end
+
+        # Respects `Lint/ItWithoutArgumentsInBlock` cop and the following Ruby 3.3's warning:
+        #
+        # $ ruby -e '0.times { begin; it; end }'
+        # -e:1: warning: `it` calls without arguments will refer to the first block param in
+        # Ruby 3.4; use it() or self.it
+        #
+        def it_method_in_block?(node)
+          return false unless node.method?(:it)
+          return false unless (block_node = node.each_ancestor(:block).first)
+          return false unless block_node.arguments.empty_and_without_delimiters?
+
+          node.arguments.empty? && !node.block_literal?
         end
 
         def regular_method_call?(node)
