@@ -9,6 +9,28 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAssignmentInCondition, :config do
     RUBY
   end
 
+  it 'registers an offense when assigning string literal to local variable in `if` condition' do
+    expect_offense(<<~RUBY)
+      if test = 'foo'
+              ^^^^^^^ Don't use literal assignment `= 'foo'` in conditional, should be `==` or non-literal operand.
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when assigning interpolated string literal to local variable in `if` condition' do
+    expect_no_offenses(<<~'RUBY')
+      if test = "#{foo}"
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when assigning xstring literal to local variable in `if` condition' do
+    expect_no_offenses(<<~RUBY)
+      if test = `echo 'hi'`
+      end
+    RUBY
+  end
+
   it 'registers an offense when assigning array literal to local variable in `if` condition' do
     expect_offense(<<~RUBY)
       if test = []
