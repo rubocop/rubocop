@@ -904,6 +904,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parens in `when` clause is used to pass an argument' do
+      expect_no_offenses(<<-RUBY)
+        case condition
+          when do_something(arg)
+        end
+      RUBY
+    end
+
     it 'autocorrects single-line calls' do
       expect_offense(<<~RUBY)
         top.test(1, 2, foo: bar(3))
