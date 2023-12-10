@@ -86,6 +86,7 @@ module RuboCop
 
           def legitimate_call_with_parentheses?(node) # rubocop:disable Metrics/PerceivedComplexity
             call_in_literals?(node) ||
+              node.parent&.when_type? ||
               call_with_ambiguous_arguments?(node) ||
               call_in_logical_operators?(node) ||
               call_in_optional_arguments?(node) ||
