@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Lint
       # Checks for uses of `Integer#times` that will never yield
-      # (when the integer <= 0) or that will only ever yield once
+      # (when the integer ``<= 0``) or that will only ever yield once
       # (`1.times`).
       #
       # @safety

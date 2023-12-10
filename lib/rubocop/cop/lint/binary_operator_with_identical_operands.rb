@@ -6,10 +6,10 @@ module RuboCop
       # Checks for places where binary operator has identical operands.
       #
       # It covers arithmetic operators: `-`, `/`, `%`;
-      # comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, `<=`;
+      # comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, ``<=``;
       # bitwise operators: `|`, `^`, `&`;
       # boolean operators: `&&`, `||`
-      # and "spaceship" operator - `<=>`.
+      # and "spaceship" operator - ``<=>``.
       #
       # Simple arithmetic operations are allowed by this cop: `+`, `*`, `**`, `<<` and `>>`.
       # Although these can be rewritten in a different way, it should not be necessary to

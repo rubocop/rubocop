@@ -16,7 +16,7 @@ module RuboCop
       #   This cop is unsafe, because `sort...last` and `max` may not return the
       #   same element in all cases.
       #
-      #   In an enumerable where there are multiple elements where `a <=> b == 0`,
+      #   In an enumerable where there are multiple elements where ``a <=> b == 0``,
       #   or where the transformation done by the `sort_by` block has the
       #   same result, `sort.last` and `max` (or `sort_by.last` and `max_by`)
       #   will return different elements. `sort.last` will return the last

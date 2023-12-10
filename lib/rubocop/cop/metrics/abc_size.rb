@@ -10,9 +10,9 @@ module RuboCop
       #
       # Interpreting ABC size:
       #
-      # * <= 17 satisfactory
-      # * 18..30 unsatisfactory
-      # * > 30 dangerous
+      # * ``<= 17`` satisfactory
+      # * `18..30` unsatisfactory
+      # * `>` 30 dangerous
       #
       # You can have repeated "attributes" calls count as a single "branch".
       # For this purpose, attributes are any method with no argument; no attempt

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for overwriting an exception with an exception result by use `rescue =>`.
+      # Checks for overwriting an exception with an exception result by use ``rescue =>``.
       #
       # You intended to write as `rescue StandardError`.
       # However, you have written `rescue => StandardError`.
