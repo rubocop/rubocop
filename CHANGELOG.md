@@ -15,7 +15,7 @@
 
 ### New features
 
-* [#12516](https://github.com/rubocop/rubocop/pull/12516): Add new `Lint/ItWithoutArgumentsInBlock` cop. ([@koic][])
+* [#12518](https://github.com/rubocop/rubocop/pull/12518): Add new `Lint/ItWithoutArgumentsInBlock` cop. ([@koic][])
 
 ### Bug fixes
 
