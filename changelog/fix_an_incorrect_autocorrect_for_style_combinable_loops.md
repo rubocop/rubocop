@@ -1,1 +1,0 @@
-* [#12442](https://github.com/rubocop/rubocop/issues/12442): Fix an incorrect autocorrect for `Style/CombinableLoops` when looping over the same data as previous loop in `do`...`end` and `{`...`}` blocks. ([@koic][])

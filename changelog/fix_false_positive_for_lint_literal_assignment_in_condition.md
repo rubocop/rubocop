@@ -1,1 +1,0 @@
-* [#12432](https://github.com/rubocop/rubocop/pull/12432): Fix a false positive for `Lint/LiteralAssignmentInCondition` when using parallel assignment with splat operator in block of guard condition. ([@koic][])
