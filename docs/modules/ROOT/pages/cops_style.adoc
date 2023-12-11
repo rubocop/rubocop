@@ -7587,6 +7587,9 @@ Checks for unwanted parentheses in parameterless method calls.
 This cop can be customized allowed methods with `AllowedMethods`.
 By default, there are no methods to allowed.
 
+NOTE: This cop allows the use of `it()` without arguments in blocks,
+as in `0.times { it() }`, following `Lint/ItWithoutArgumentsInBlock` cop.
+
 === Examples
 
 [source,ruby]
@@ -10124,8 +10127,8 @@ allow(test_double).to receive(:a).and_return('b')
 |===
 
 Checks for redundant dot before operator method call.
-The target operator methods are `|`, `^`, `&`, `<=>`, `==`, `===`, `=~`, `>`, `>=`, `<`,
-`<=`, `<<`, `>>`, `+`, `-`, `*`, `/`, `%`, `**`, `~`, `!`, `!=`, and `!~`.
+The target operator methods are `|`, `^`, `&`, ``<=>``, `==`, `===`, `=~`, `>`, `>=`, `<`,
+``<=``, `<<`, `>>`, `+`, `-`, `*`, `/`, `%`, `**`, `~`, `!`, `!=`, and `!~`.
 
 === Examples
 
@@ -12268,7 +12271,8 @@ Note, with using explicit self you can only send messages with public or
 protected scope, you cannot send private messages this way.
 
 Note we allow uses of `self` with operators because it would be awkward
-otherwise.
+otherwise. Also allows the use of `self.it` without arguments in blocks,
+as in `0.times { self.it }`, following `Lint/ItWithoutArgumentsInBlock` cop.
 
 === Examples
 
@@ -12402,7 +12406,7 @@ after which only the first or last element is used.
 This cop is unsafe, because `sort...last` and `max` may not return the
 same element in all cases.
 
-In an enumerable where there are multiple elements where `a <=> b == 0`,
+In an enumerable where there are multiple elements where ``a <=> b == 0``,
 or where the transformation done by the `sort_by` block has the
 same result, `sort.last` and `max` (or `sort_by.last` and `max_by`)
 will return different elements. `sort.last` will return the last
@@ -13558,8 +13562,11 @@ explicit_receiver.raise
 | -
 |===
 
-Sometimes using dig method ends up with just a single
-argument. In such cases, dig should be replaced with [].
+Sometimes using `dig` method ends up with just a single
+argument. In such cases, dig should be replaced with `[]`.
+
+Since replacing `hash&.dig(:key)` with `hash[:key]` could potentially lead to error,
+calls to the `dig` method using safe navigation will be ignored.
 
 === Safety
 

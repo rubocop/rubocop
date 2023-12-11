@@ -1967,7 +1967,7 @@ Lint/ItWithoutArgumentsInBlock:
   Description: 'Checks uses of `it` calls without arguments in block.'
   Reference: 'https://bugs.ruby-lang.org/issues/18980'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.59'
 
 Lint/LambdaWithoutLiteralBlock:
   Description: 'Checks uses of lambda without a literal block.'

@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.59.0 (2023-12-11)
+
 ### New features
 
 * [#12516](https://github.com/rubocop/rubocop/pull/12516): Add new `Lint/ItWithoutArgumentsInBlock` cop. ([@koic][])

@@ -253,6 +253,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintineffectiveaccessmodifier[Lint/IneffectiveAccessModifier]
 * xref:cops_lint.adoc#lintinheritexception[Lint/InheritException]
 * xref:cops_lint.adoc#lintinterpolationcheck[Lint/InterpolationCheck]
+* xref:cops_lint.adoc#lintitwithoutargumentsinblock[Lint/ItWithoutArgumentsInBlock]
 * xref:cops_lint.adoc#lintlambdawithoutliteralblock[Lint/LambdaWithoutLiteralBlock]
 * xref:cops_lint.adoc#lintliteralascondition[Lint/LiteralAsCondition]
 * xref:cops_lint.adoc#lintliteralassignmentincondition[Lint/LiteralAssignmentInCondition]

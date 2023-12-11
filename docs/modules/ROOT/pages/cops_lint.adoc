@@ -440,10 +440,10 @@ BigDecimal(123.456, 3)
 Checks for places where binary operator has identical operands.
 
 It covers arithmetic operators: `-`, `/`, `%`;
-comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, `<=`;
+comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, ``<=``;
 bitwise operators: `|`, `^`, `&`;
 boolean operators: `&&`, `||`
-and "spaceship" operator - `<=>`.
+and "spaceship" operator - ``<=>``.
 
 Simple arithmetic operations are allowed by this cop: `+`, `*`, `**`, `<<` and `>>`.
 Although these can be rewritten in a different way, it should not be necessary to
@@ -693,7 +693,7 @@ end
 | -
 |===
 
-Checks for overwriting an exception with an exception result by use `rescue =>`.
+Checks for overwriting an exception with an exception result by use ``rescue =>``.
 
 You intended to write as `rescue StandardError`.
 However, you have written `rescue => StandardError`.
@@ -3027,6 +3027,46 @@ foo = 'something with #{interpolation} inside'
 foo = "something with #{interpolation} inside"
 ----
 
+== Lint/ItWithoutArgumentsInBlock
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.59
+| -
+|===
+
+Emulates the following Ruby warning in Ruby 3.3.
+
+[source,ruby]
+----
+$ ruby -e '0.times { it }'
+-e:1: warning: `it` calls without arguments will refer to the first block param in Ruby 3.4;
+use it() or self.it
+----
+
+`it` calls without arguments will refer to the first block param in Ruby 3.4.
+So use `it()` or `self.it` to ensure compatibility.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+do_something { it }
+
+# good
+do_something { it() }
+do_something { self.it }
+----
+
+=== References
+
+* https://bugs.ruby-lang.org/issues/18980
+
 == Lint/LambdaWithoutLiteralBlock
 
 |===
@@ -3999,7 +4039,7 @@ fails. Cop prefer parsing with number class instead.
 
 Conversion with `Integer`, `Float`, etc. will raise an `ArgumentError`
 if given input that is not numeric (eg. an empty string), whereas
-`to_i`, etc. will try to convert regardless of input (`''.to_i => 0`).
+`to_i`, etc. will try to convert regardless of input (``''.to_i => 0``).
 As such, this cop is disabled by default because it's not necessarily
 always correct to raise if a value is not numeric.
 
@@ -7489,7 +7529,7 @@ end
 |===
 
 Checks for uses of `Integer#times` that will never yield
-(when the integer <= 0) or that will only ever yield once
+(when the integer ``<= 0``) or that will only ever yield once
 (`1.times`).
 
 === Safety
