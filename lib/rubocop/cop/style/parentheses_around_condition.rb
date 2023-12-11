@@ -81,6 +81,7 @@ module RuboCop
           cond = node.condition
 
           control_op_condition(cond) do |first_child, rest_children|
+            return if require_parentheses?(node, first_child)
             return if semicolon_separated_expressions?(first_child, rest_children)
             return if modifier_op?(first_child)
             return if parens_allowed?(cond)
@@ -90,6 +91,13 @@ module RuboCop
               ParenthesesCorrector.correct(corrector, cond)
             end
           end
+        end
+
+        def require_parentheses?(node, condition_body)
+          return false if !node.while_type? && !node.until_type?
+          return false if !condition_body.block_type? && !condition_body.numblock_type?
+
+          condition_body.send_node.block_literal? && condition_body.keywords?
         end
 
         def semicolon_separated_expressions?(first_exp, rest_exps)
