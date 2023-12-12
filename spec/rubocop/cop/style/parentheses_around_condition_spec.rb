@@ -102,6 +102,100 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
     RUBY
   end
 
+  it 'does not register an offense when using a method call with `do`...`end` block as a condition in `while` loop' do
+    expect_no_offenses(<<~RUBY)
+      while (foo do
+            end)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using a method call with `do`...`end` block as a condition in `until` loop' do
+    expect_no_offenses(<<~RUBY)
+      until (foo do
+            end)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using a method call with `do`...`end` numbered block as a condition in `while` loop' do
+    expect_no_offenses(<<~RUBY)
+      while (foo do
+              _1
+            end)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using a method call with `do`...`end` numbered block as a condition in `until` loop' do
+    expect_no_offenses(<<~RUBY)
+      until (foo do
+              _1
+            end)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using method call with `{`...`}` block as a `while` condition' do
+    expect_offense(<<~RUBY)
+      while (foo {
+            ^^^^^^ Don't use parentheses around the condition of a `while`.
+            })
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      while foo {
+            }
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using method call with `{`...`}` block as a `until` condition' do
+    expect_offense(<<~RUBY)
+      until (foo {
+            ^^^^^^ Don't use parentheses around the condition of an `until`.
+            })
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      until foo {
+            }
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using method call with `do`...`end` block as a `if` condition' do
+    expect_offense(<<~RUBY)
+      if (foo do
+         ^^^^^^^ Don't use parentheses around the condition of an `if`.
+         end)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo do
+         end
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using method call with `{`...`}` block as a `if` condition' do
+    expect_offense(<<~RUBY)
+      if (foo {
+         ^^^^^^ Don't use parentheses around the condition of an `if`.
+         })
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo {
+         }
+      end
+    RUBY
+  end
+
   it 'does not register an offense when parentheses in multiple expressions separated by semicolon' do
     expect_no_offenses(<<~RUBY)
       if (foo; bar)
