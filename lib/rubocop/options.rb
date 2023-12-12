@@ -364,10 +364,6 @@ module RuboCop
         raise OptionArgumentError, '-C/--cache argument must be true or false'
       end
 
-      if display_only_fail_level_offenses_with_autocorrect?
-        raise OptionArgumentError, '--autocorrect cannot be used with ' \
-                                   '--display-only-fail-level-offenses.'
-      end
       validate_auto_gen_config
       validate_autocorrect
       validate_display_only_failed
@@ -458,10 +454,6 @@ module RuboCop
     def only_includes_redundant_disable?
       @options.key?(:only) &&
         (@options[:only] & %w[Lint/RedundantCopDisableDirective RedundantCopDisableDirective]).any?
-    end
-
-    def display_only_fail_level_offenses_with_autocorrect?
-      @options.key?(:display_only_fail_level_offenses) && @options.key?(:autocorrect)
     end
 
     def except_syntax?
