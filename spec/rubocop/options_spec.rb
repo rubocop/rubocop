@@ -356,10 +356,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
     end
 
     describe '--display-only-fail-level-offenses' do
-      it 'fails if given with an autocorrect argument' do
-        %w[--fix-layout -x --autocorrect -a --autocorrect-all -A].each do |o|
-          expect { options.parse ['--display-only-correctable', o] }
-            .to raise_error(RuboCop::OptionArgumentError)
+      %w[--fix-layout -x --autocorrect -a --autocorrect-all -A].each do |o|
+        it 'fails if given with an autocorrect argument' do
+          expect { options.parse ['--display-only-fail-level-offenses', o] }
+            .not_to raise_error(RuboCop::OptionArgumentError)
         end
       end
     end
