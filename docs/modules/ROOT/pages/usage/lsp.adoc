@@ -111,7 +111,7 @@ Below is an example of additional setting for autocorrecting on save:
 
 ```lua
 vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "ruby",
+  pattern = "*.rb",
   callback = function()
     vim.lsp.buf.format()
   end,
