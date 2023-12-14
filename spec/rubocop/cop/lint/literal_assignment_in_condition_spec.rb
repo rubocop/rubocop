@@ -31,10 +31,55 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAssignmentInCondition, :config do
     RUBY
   end
 
-  it 'registers an offense when assigning array literal to local variable in `if` condition' do
+  it 'registers an offense when assigning empty array literal to local variable in `if` condition' do
     expect_offense(<<~RUBY)
       if test = []
               ^^^^ Don't use literal assignment `= []` in conditional, should be `==` or non-literal operand.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when assigning array literal with only literal elements to local variable in `if` condition' do
+    expect_offense(<<~RUBY)
+      if test = [1, 2, 3]
+              ^^^^^^^^^^^ Don't use literal assignment `= [1, 2, 3]` in conditional, should be `==` or non-literal operand.
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when assigning array literal with non-literal elements to local variable in `if` condition' do
+    expect_no_offenses(<<~RUBY)
+      if test = [42, x, y]
+      end
+    RUBY
+  end
+
+  it 'registers an offense when assigning empty hash literal to local variable in `if` condition' do
+    expect_offense(<<~RUBY)
+      if test = {}
+              ^^^^ Don't use literal assignment `= {}` in conditional, should be `==` or non-literal operand.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when assigning hash literal with only literal elements to local variable in `if` condition' do
+    expect_offense(<<~RUBY)
+      if test = {x: :y}
+              ^^^^^^^^^ Don't use literal assignment `= {x: :y}` in conditional, should be `==` or non-literal operand.
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when assigning hash literal with non-literal key to local variable in `if` condition' do
+    expect_no_offenses(<<~RUBY)
+      if test = {x => :y}
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when assigning hash literal with non-literal value to local variable in `if` condition' do
+    expect_no_offenses(<<~RUBY)
+      if test = {x: y}
       end
     RUBY
   end
