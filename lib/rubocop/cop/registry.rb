@@ -240,12 +240,12 @@ module RuboCop
         self
       end
 
-      def select(&block)
-        cops.select(&block)
+      def select(...)
+        cops.select(...)
       end
 
-      def each(&block)
-        cops.each(&block)
+      def each(...)
+        cops.each(...)
       end
 
       # @param [String] cop_name

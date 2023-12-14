@@ -142,8 +142,8 @@ module RuboCop
             @assignments = assignments
           end
 
-          def tsort_each_node(&block)
-            @assignments.each(&block)
+          def tsort_each_node(...)
+            @assignments.each(...)
           end
 
           def tsort_each_child(assignment)
