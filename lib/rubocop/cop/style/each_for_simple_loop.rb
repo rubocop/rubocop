@@ -52,7 +52,7 @@ module RuboCop
         # @!method each_range(node)
         def_node_matcher :each_range, <<~PATTERN
           (block
-            (send
+            (call
               (begin
                 (${irange erange}
                   (int $_) (int $_)))
@@ -64,7 +64,7 @@ module RuboCop
         # @!method each_range_with_zero_origin?(node)
         def_node_matcher :each_range_with_zero_origin?, <<~PATTERN
           (block
-            (send
+            (call
               (begin
                 ({irange erange}
                   (int 0) (int _)))
@@ -76,7 +76,7 @@ module RuboCop
         # @!method each_range_without_block_argument?(node)
         def_node_matcher :each_range_without_block_argument?, <<~PATTERN
           (block
-            (send
+            (call
               (begin
                 ({irange erange}
                   (int _) (int _)))
