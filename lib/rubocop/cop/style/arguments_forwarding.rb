@@ -340,7 +340,7 @@ module RuboCop
           end
 
           def classification
-            return nil unless forwarded_rest_arg || forwarded_kwrest_arg
+            return nil unless forwarded_rest_arg || forwarded_kwrest_arg || forwarded_block_arg
 
             if can_forward_all?
               :all
@@ -424,8 +424,15 @@ module RuboCop
           def no_additional_args?
             forwardable_count = [@rest_arg, @kwrest_arg, @block_arg].compact.size
 
+            return false if missing_rest_arg_or_kwrest_arg?
+
             @def_node.arguments.size == forwardable_count &&
               @send_node.arguments.size == forwardable_count
+          end
+
+          def missing_rest_arg_or_kwrest_arg?
+            (@rest_arg_name && !forwarded_rest_arg) ||
+              (@kwrest_arg_name && !forwarded_kwrest_arg)
           end
         end
       end
