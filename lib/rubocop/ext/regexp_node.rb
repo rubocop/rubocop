@@ -54,16 +54,21 @@ module RuboCop
         return enum_for(__method__, named: named) unless block_given?
 
         parsed_tree&.traverse do |event, exp, _index|
-          yield(exp) if event == :enter &&
-                        named == exp.respond_to?(:name) &&
-                        exp.respond_to?(:capturing?) &&
-                        exp.capturing?
+          yield(exp) if named_capturing?(exp, event, named)
         end
 
         self
       end
 
       private
+
+      def named_capturing?(exp, event, named)
+        event == :enter &&
+          named == exp.respond_to?(:name) &&
+          !exp.text.start_with?('(?<=') &&
+          exp.respond_to?(:capturing?) &&
+          exp.capturing?
+      end
 
       def with_interpolations_blanked
         # Ignore the trailing regopt node
