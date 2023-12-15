@@ -42,6 +42,21 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     RUBY
   end
 
+  it 'registers an offense for lvar assignment in case condition' do
+    expect_offense(<<~RUBY)
+      case test = 10
+                ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+      when nil
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case (test = 10)
+      when nil
+      end
+    RUBY
+  end
+
   it 'registers an offense for ivar assignment in condition' do
     expect_offense(<<~RUBY)
       if @test = 10
