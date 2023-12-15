@@ -14,6 +14,12 @@ RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes, :config do
     RUBY
   end
 
+  it 'does not register offense to a regexp with look behind' do
+    expect_no_offenses(<<~RUBY)
+      /(?<=>)(<br>)(?=><)/
+    RUBY
+  end
+
   it 'does not register offense to a regexp with numbered capture only' do
     expect_no_offenses(<<~RUBY)
       /(foo)(bar)/
