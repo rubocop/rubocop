@@ -850,4 +850,109 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     it_behaves_like 'allowed parentheses', '1..2', 'a range literal'
     it_behaves_like 'allowed parentheses', '1', 'an int literal'
   end
+
+  context 'when `AllowInMultilineConditions: true` of `Style/ParenthesesAroundCondition`' do
+    let(:other_cops) do
+      {
+        'Style/ParenthesesAroundCondition' => {
+          'Enabled' => enabled, 'AllowInMultilineConditions' => true
+        }
+      }
+    end
+
+    context 'when `Style/ParenthesesAroundCondition` is enabled' do
+      let(:enabled) { true }
+
+      context 'when single line conditions' do
+        it_behaves_like 'redundant', '(x && y)', 'x && y', 'a logical expression'
+        it_behaves_like 'redundant', '(x || y)', 'x || y', 'a logical expression'
+        it_behaves_like 'redundant', '(x and y)', 'x and y', 'a logical expression'
+        it_behaves_like 'redundant', '(x or y)', 'x or y', 'a logical expression'
+      end
+
+      context 'when multiline conditions' do
+        it_behaves_like 'plausible', <<~RUBY
+          (x &&
+           y)
+        RUBY
+        it_behaves_like 'plausible', <<~RUBY
+          (x ||
+           y)
+        RUBY
+        it_behaves_like 'plausible', <<~RUBY
+          (x and
+           y)
+        RUBY
+        it_behaves_like 'plausible', <<~RUBY
+          (x or
+           y)
+        RUBY
+      end
+    end
+
+    context 'when `Style/ParenthesesAroundCondition` is disabled' do
+      let(:enabled) { false }
+
+      context 'when single line conditions' do
+        it_behaves_like 'redundant', '(x && y)', 'x && y', 'a logical expression'
+        it_behaves_like 'redundant', '(x || y)', 'x || y', 'a logical expression'
+        it_behaves_like 'redundant', '(x and y)', 'x and y', 'a logical expression'
+        it_behaves_like 'redundant', '(x or y)', 'x or y', 'a logical expression'
+      end
+
+      context 'when multiline conditions' do
+        it 'registers an offense when using `&&`' do
+          expect_offense(<<~RUBY)
+            (x &&
+            ^^^^^ Don't use parentheses around a logical expression.
+             y)
+          RUBY
+
+          expect_correction(<<~RUBY)
+            x &&
+             y
+          RUBY
+        end
+
+        it 'registers an offense when using `||`' do
+          expect_offense(<<~RUBY)
+            (x ||
+            ^^^^^ Don't use parentheses around a logical expression.
+             y)
+          RUBY
+
+          expect_correction(<<~RUBY)
+            x ||
+             y
+          RUBY
+        end
+
+        it 'registers an offense when using `and`' do
+          expect_offense(<<~RUBY)
+            (x and
+            ^^^^^^ Don't use parentheses around a logical expression.
+             y)
+          RUBY
+
+          expect_correction(<<~RUBY)
+            x and
+             y
+          RUBY
+        end
+
+        it 'registers an offense when using `or`' do
+          expect_offense(<<~RUBY)
+            (x or
+            ^^^^^ Don't use parentheses around a logical expression.
+             y)
+          RUBY
+
+          expect_correction(<<~RUBY)
+            x or
+             y
+          RUBY
+        end
+      end
+    end
+  end
 end

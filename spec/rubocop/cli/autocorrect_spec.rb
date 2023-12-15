@@ -206,6 +206,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not correct `AllowInMultilineConditions: true` of `Style/ParenthesesAroundCondition` with `Style/RedundantParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/ParenthesesAroundCondition:
+        AllowInMultilineConditions: true
+    YAML
+    source = <<~RUBY
+      if (foo &&
+          bar)
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run(['--autocorrect', '--only',
+                    'Style/ParenthesesAroundCondition,' \
+                    'Style/RedundantParentheses'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      if (foo &&
+          bar)
+      end
+    RUBY
+  end
+
   it 'corrects `EnforcedShorthandSyntax: always` of `Style/HashSyntax` with `Style/RedundantParentheses` when using Ruby 3.1' do
     create_file('.rubocop.yml', <<~YAML)
       AllCops:
