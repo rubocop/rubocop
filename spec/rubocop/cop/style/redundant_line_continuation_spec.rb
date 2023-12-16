@@ -114,6 +114,80 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when required line continuations for multiline leading dot method chain with an empty line' do
+    expect_no_offenses(<<~'RUBY')
+      obj
+       .foo(42) \
+
+       .bar
+    RUBY
+  end
+
+  it 'does not register an offense when required line continuations for multiline leading dot safe navigation method chain with an empty line' do
+    expect_no_offenses(<<~'RUBY')
+      obj
+       &.foo(42) \
+
+       .bar
+    RUBY
+  end
+
+  it 'does not register an offense when required line continuations for multiline leading dot method chain with a blank line' do
+    expect_no_offenses(<<~RUBY)
+      obj
+       .foo(42) \\
+      #{' '}
+       .bar
+    RUBY
+  end
+
+  it 'registers an offense when redundant line continuations for multiline leading dot method chain without an empty line' do
+    expect_offense(<<~'RUBY')
+      obj
+       .foo(42) \
+                ^ Redundant line continuation.
+       .bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj
+       .foo(42)#{' '}
+       .bar
+    RUBY
+  end
+
+  it 'registers an offense when redundant line continuations for multiline trailing dot method chain with an empty line' do
+    expect_offense(<<~'RUBY')
+      obj.
+       foo(42). \
+                ^ Redundant line continuation.
+
+       bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.
+       foo(42).#{' '}
+
+       bar
+    RUBY
+  end
+
+  it 'registers an offense when redundant line continuations for multiline trailing dot method chain without an empty line' do
+    expect_offense(<<~'RUBY')
+      obj.
+       foo(42). \
+                ^ Redundant line continuation.
+       bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.
+       foo(42).#{' '}
+       bar
+    RUBY
+  end
+
   it 'registers an offense when redundant line continuations for array' do
     expect_offense(<<~'RUBY')
       [foo, \

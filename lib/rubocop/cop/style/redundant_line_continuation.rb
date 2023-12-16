@@ -94,7 +94,8 @@ module RuboCop
           !ends_with_backslash_without_comment?(range.source_line) ||
             string_concatenation?(range.source_line) ||
             start_with_arithmetic_operator?(processed_source[range.line]) ||
-            inside_string_literal_or_method_with_argument?(range)
+            inside_string_literal_or_method_with_argument?(range) ||
+            leading_dot_method_chain_with_blank_line?(range)
         end
 
         def ends_with_backslash_without_comment?(source_line)
@@ -111,6 +112,12 @@ module RuboCop
 
             inside_string_literal?(range, token) || method_with_argument?(token, next_token)
           end
+        end
+
+        def leading_dot_method_chain_with_blank_line?(range)
+          return false unless range.source_line.strip.start_with?('.', '&.')
+
+          processed_source[range.line].strip.empty?
         end
 
         def redundant_line_continuation?(range)
