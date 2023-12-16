@@ -67,6 +67,28 @@ module RuboCop
       #     private :bar, :baz
       #
       #   end
+      #
+      # @example AllowModifiersOnAttrs: true (default)
+      #   # good
+      #   class Foo
+      #
+      #     public attr_reader :bar
+      #     protected attr_writer :baz
+      #     private attr_accessor :qux
+      #     private attr :quux
+      #
+      #   end
+      #
+      # @example AllowModifiersOnAttrs: false
+      #   # bad
+      #   class Foo
+      #
+      #     public attr_reader :bar
+      #     protected attr_writer :baz
+      #     private attr_accessor :qux
+      #     private attr :quux
+      #
+      #   end
       class AccessModifierDeclarations < Base
         extend AutoCorrector
 
@@ -92,10 +114,17 @@ module RuboCop
           (send nil? {:private :protected :public :module_function} (sym _))
         PATTERN
 
+        # @!method access_modifier_with_attr?(node)
+        def_node_matcher :access_modifier_with_attr?, <<~PATTERN
+          (send nil? {:private :protected :public :module_function}
+            (send nil? {:attr :attr_reader :attr_writer :attr_accessor} _))
+        PATTERN
+
         def on_send(node)
           return unless node.access_modifier?
           return if ALLOWED_NODE_TYPES.include?(node.parent&.type)
           return if allow_modifiers_on_symbols?(node)
+          return if allow_modifiers_on_attrs?(node)
 
           if offense?(node)
             add_offense(node.loc.selector) do |corrector|
@@ -126,6 +155,10 @@ module RuboCop
 
         def allow_modifiers_on_symbols?(node)
           cop_config['AllowModifiersOnSymbols'] && access_modifier_with_symbol?(node)
+        end
+
+        def allow_modifiers_on_attrs?(node)
+          cop_config['AllowModifiersOnAttrs'] && access_modifier_with_attr?(node)
         end
 
         def offense?(node)
