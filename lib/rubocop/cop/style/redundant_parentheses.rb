@@ -150,6 +150,7 @@ module RuboCop
           return if begin_node.chained?
 
           if node.and_type? || node.or_type?
+            return if node.multiline? && allow_in_multiline_conditions?
             return if ALLOWED_NODE_TYPES.include?(begin_node.parent&.type)
             return if begin_node.parent&.if_type? && begin_node.parent&.ternary?
 
@@ -164,6 +165,13 @@ module RuboCop
 
         # @!method interpolation?(node)
         def_node_matcher :interpolation?, '[^begin ^^dstr]'
+
+        def allow_in_multiline_conditions?
+          parentheses_around_condition_config = config.for_cop('Style/ParenthesesAroundCondition')
+          return false unless parentheses_around_condition_config['Enabled']
+
+          !!parentheses_around_condition_config['AllowInMultilineConditions']
+        end
 
         def check_send(begin_node, node)
           return check_unary(begin_node, node) if node.unary_operation?
