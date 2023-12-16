@@ -8,7 +8,7 @@ module RuboCop
     # The parameter name given is transformed into a method name (eg. `Max`
     # becomes `self.max=` and `MinDigits` becomes `self.min_digits=`).
     def exclude_limit(parameter_name, method_name: transform(parameter_name))
-      define_method("#{method_name}=") do |value|
+      define_method(:"#{method_name}=") do |value|
         cfg = config_to_allow_offenses
         cfg[:exclude_limit] ||= {}
         current_max = cfg[:exclude_limit][parameter_name]

@@ -17,7 +17,7 @@ module RuboCop
     # @api private
     class Routes
       def self.handle(name, &block)
-        define_method("handle_#{name}", &block)
+        define_method(:"handle_#{name}", &block)
       end
 
       private_class_method :handle

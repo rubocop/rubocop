@@ -62,7 +62,7 @@ module RuboCop
         private
 
         def message(node)
-          self.class.const_get("#{literal_type(node).upcase}_MSG")
+          self.class.const_get(:"#{literal_type(node).upcase}_MSG")
         end
 
         def literal_type(node)
