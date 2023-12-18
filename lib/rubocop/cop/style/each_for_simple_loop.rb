@@ -46,7 +46,7 @@ module RuboCop
         private
 
         def offending?(node)
-          each_range_with_zero_origin?(node) || each_range_without_block_argument?(node)
+          each_range_without_block_argument?(node)
         end
 
         # @!method each_range(node)
@@ -56,18 +56,6 @@ module RuboCop
               (begin
                 (${irange erange}
                   (int $_) (int $_)))
-              :each)
-            (args ...)
-            ...)
-        PATTERN
-
-        # @!method each_range_with_zero_origin?(node)
-        def_node_matcher :each_range_with_zero_origin?, <<~PATTERN
-          (block
-            (send
-              (begin
-                ({irange erange}
-                  (int 0) (int _)))
               :each)
             (args ...)
             ...)
