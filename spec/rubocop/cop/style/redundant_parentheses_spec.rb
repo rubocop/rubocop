@@ -508,6 +508,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense when the use of parentheses around `&&` expressions in assignment' do
+    expect_offense(<<~RUBY)
+      var = (foo && bar)
+            ^^^^^^^^^^^^ Don't use parentheses around a logical expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var = foo && bar
+    RUBY
+  end
+
+  it 'registers an offense when the use of parentheses around `||` expressions in assignment' do
+    expect_offense(<<~RUBY)
+      var = (foo || bar)
+            ^^^^^^^^^^^^ Don't use parentheses around a logical expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      var = foo || bar
+    RUBY
+  end
+
+  it 'accepts the use of parentheses around `or` expressions in assignment' do
+    expect_no_offenses('var = (foo or bar)')
+  end
+
+  it 'accepts the use of parentheses around `and` expressions in assignment' do
+    expect_no_offenses('var = (foo and bar)')
+  end
+
   it 'accepts parentheses around a method call with unparenthesized arguments' do
     expect_no_offenses('(a 1, 2) && (1 + 1)')
   end
