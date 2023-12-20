@@ -51,7 +51,7 @@ module RuboCop
       class InvertibleUnlessCondition < Base
         extend AutoCorrector
 
-        MSG = 'Favor `if` with inverted condition over `unless`.'
+        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
 
         def on_if(node)
           return unless node.unless?
@@ -59,7 +59,10 @@ module RuboCop
           condition = node.condition
           return unless invertible?(condition)
 
-          add_offense(node) do |corrector|
+          message = format(MSG, prefer: "#{node.inverse_keyword} #{preferred_condition(condition)}",
+                                current: "#{node.keyword} #{condition.source}")
+
+          add_offense(node, message: message) do |corrector|
             corrector.replace(node.loc.keyword, node.inverse_keyword)
             autocorrect(corrector, condition)
           end
@@ -86,6 +89,40 @@ module RuboCop
           argument = node.first_argument
           node.method?(:<) &&
             (argument.const_type? && argument.short_name.to_s.upcase != argument.short_name.to_s)
+        end
+
+        def preferred_condition(node)
+          case node.type
+          when :begin    then "(#{preferred_condition(node.children.first)})"
+          when :send     then preferred_send_condition(node)
+          when :or, :and then preferred_logical_condition(node)
+          end
+        end
+
+        def preferred_send_condition(node)
+          receiver_source = node.receiver.source
+          return receiver_source if node.method?(:!)
+
+          inverse_method_name = inverse_methods[node.method_name]
+          return "#{receiver_source}.#{inverse_method_name}" unless node.arguments?
+
+          argument_list = node.arguments.map(&:source).join(', ')
+          if node.operator_method?
+            return "#{receiver_source} #{inverse_method_name} #{argument_list}"
+          end
+
+          if node.parenthesized?
+            return "#{receiver_source}.#{inverse_method_name}(#{argument_list})"
+          end
+
+          "#{receiver_source}.#{inverse_method_name} #{argument_list}"
+        end
+
+        def preferred_logical_condition(node)
+          preferred_lhs = preferred_condition(node.lhs)
+          preferred_rhs = preferred_condition(node.rhs)
+
+          "#{preferred_lhs} #{node.inverse_operator} #{preferred_rhs}"
         end
 
         def autocorrect(corrector, node)
