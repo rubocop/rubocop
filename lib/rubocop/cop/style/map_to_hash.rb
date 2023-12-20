@@ -37,8 +37,8 @@ module RuboCop
         MSG = 'Pass a block to `to_h` instead of calling `%<method>s%<dot>sto_h`.'
         RESTRICT_ON_SEND = %i[to_h].freeze
 
-        # @!method map_to_h?(node)
-        def_node_matcher :map_to_h?, <<~PATTERN
+        # @!method map_to_h(node)
+        def_node_matcher :map_to_h, <<~PATTERN
           {
             $(call ({block numblock} $(call _ {:map :collect}) ...) :to_h)
             $(call $(call _ {:map :collect} (block_pass sym)) :to_h)
@@ -50,9 +50,9 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless (to_h_node, map_node = map_to_h?(node))
+          return unless (to_h_node, map_node = map_to_h(node))
 
-          message = format(MSG, method: map_node.loc.selector.source, dot: map_node.loc.dot.source)
+          message = format(MSG, method: map_node.loc.selector.source, dot: to_h_node.loc.dot.source)
           add_offense(map_node.loc.selector, message: message) do |corrector|
             # If the `to_h` call already has a block, do not autocorrect.
             next if to_h_node.block_node
@@ -68,7 +68,6 @@ module RuboCop
           removal_range = range_between(to_h.loc.dot.begin_pos, to_h.loc.selector.end_pos)
 
           corrector.remove(range_with_surrounding_space(removal_range, side: :left))
-          corrector.replace(map.loc.dot, '.') if to_h.dot?
           corrector.replace(map.loc.selector, 'to_h')
         end
       end
