@@ -56,6 +56,7 @@ module RuboCop
             end
           end
         end
+        alias on_csend on_send
 
         private
 
@@ -64,7 +65,7 @@ module RuboCop
           return if node.last_argument&.block_pass_type?
 
           if node.method?(:each) && !node.parent&.block_type?
-            ancestor_node = node.each_ancestor(:send).detect do |ancestor|
+            ancestor_node = node.each_ancestor(:send, :csend).detect do |ancestor|
               ancestor.receiver == node &&
                 (RESTRICT_ON_SEND.include?(ancestor.method_name) || ancestor.method?(:reverse_each))
             end
@@ -83,10 +84,12 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def range(node)
-          if node.method?(:each)
-            node.loc.dot.join(node.loc.selector)
+          return node.selector unless node.method?(:each)
+
+          if node.parent.call_type?
+            node.selector.join(node.parent.loc.dot)
           else
-            node.loc.selector
+            node.loc.dot.join(node.selector)
           end
         end
 
