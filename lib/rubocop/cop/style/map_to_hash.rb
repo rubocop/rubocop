@@ -64,12 +64,17 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/AbcSize
         def autocorrect(corrector, to_h, map)
           removal_range = range_between(to_h.loc.dot.begin_pos, to_h.loc.selector.end_pos)
 
           corrector.remove(range_with_surrounding_space(removal_range, side: :left))
+          if (map_dot = map.loc.dot)
+            corrector.replace(map_dot, to_h.loc.dot.source)
+          end
           corrector.replace(map.loc.selector, 'to_h')
         end
+        # rubocop:enable Metrics/AbcSize
       end
     end
   end

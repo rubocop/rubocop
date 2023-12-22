@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::MapToHash, :config do
           RUBY
 
           expect_correction(<<~RUBY)
-            foo&.to_h { |x| [x, x * 2] }
+            foo.to_h { |x| [x, x * 2] }
           RUBY
         end
       end
