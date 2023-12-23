@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pathname'
-
 # FIXME: Moving Rails department code to RuboCop Rails will remove
 # the following rubocop:disable comment.
 # rubocop:disable Metrics/ClassLength
