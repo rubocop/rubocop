@@ -5,7 +5,10 @@ module RuboCop
     module Layout
       # Checks the indentation of the first element in an array literal
       # where the opening bracket and the first element are on separate lines.
-      # The other elements' indentations are handled by the ArrayAlignment cop.
+      # The other elements' indentations are handled by `Layout/ArrayAlignment` cop.
+      #
+      # This cop will respect `Layout/ArrayAlignment` and will not work when
+      # `EnforcedStyle: with_fixed_indentation` is specified for `Layout/ArrayAlignment`.
       #
       # By default, array literals that are arguments in a method call with
       # parentheses, and where the opening square bracket of the array is on the
@@ -93,6 +96,8 @@ module RuboCop
         end
 
         def on_send(node)
+          return if style != :consistent && enforce_first_argument_with_fixed_indentation?
+
           each_argument_node(node, :array) do |array_node, left_parenthesis|
             check(array_node, left_parenthesis)
           end
@@ -173,6 +178,16 @@ module RuboCop
             'Indent the right bracket the same as the start of the line ' \
             'where the left bracket is.'
           end
+        end
+
+        def enforce_first_argument_with_fixed_indentation?
+          return false unless array_alignment_config['Enabled']
+
+          array_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def array_alignment_config
+          config.for_cop('Layout/ArrayAlignment')
         end
       end
     end

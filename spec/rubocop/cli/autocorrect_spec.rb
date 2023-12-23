@@ -2396,6 +2396,34 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArrayAlignment` and ' \
+     '`Layout/FirstArrayElementIndentation`' do
+    create_file('example.rb', <<~RUBY)
+      puts([
+        'foo',
+        'bar'
+      ])
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ArrayAlignment:
+        EnforcedStyle: with_fixed_indentation
+    YAML
+
+    expect(
+      cli.run(
+        ['--autocorrect', '--only', 'Layout/ArrayAlignment,Layout/FirstArrayElementIndentation']
+      )
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      puts([
+        'foo',
+        'bar'
+      ])
+    RUBY
+  end
+
   it 'does not crash Lint/SafeNavigationWithEmpty and offenses and accepts Style/SafeNavigation ' \
      'when checking `foo&.empty?` in a conditional' do
     create_file('example.rb', <<~RUBY)
