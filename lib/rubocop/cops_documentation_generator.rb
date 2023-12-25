@@ -262,7 +262,6 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       ////
 
       = #{department}
-
     HEADER
     selected_cops.each { |cop| content << print_cop_with_doc(cop) }
     content << footer_for_department(department)
