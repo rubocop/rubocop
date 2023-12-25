@@ -128,17 +128,6 @@ module RuboCop
           node.method?(:eval) ? node.arguments.size >= 2 : true
         end
 
-        # FIXME: It's a Style/ConditionalAssignment's false positive.
-        # rubocop:disable Style/ConditionalAssignment
-        def with_lineno?(node)
-          if node.method?(:eval)
-            node.arguments.size == 4
-          else
-            node.arguments.size == 3
-          end
-        end
-        # rubocop:enable Style/ConditionalAssignment
-
         def add_offense_for_incorrect_line(method_name, line_node, sign, line_diff)
           expected = expected_line(sign, line_diff)
           message = format(MSG_INCORRECT_LINE,
