@@ -158,7 +158,10 @@ module RuboCop
           if head.assignment?
             # The `send` node is used instead of the `indexasgn` node, so `name` cannot be used.
             # https://github.com/rubocop/rubocop-ast/blob/v1.29.0/lib/rubocop/ast/node/indexasgn_node.rb
-            assigned_value = head.send_type? ? head.receiver.source : head.name.to_s
+            #
+            # FIXME: It would be better to update `RuboCop::AST::OpAsgnNode` or its subclasses to
+            # handle `self.foo ||= value` as a solution, instead of using `head.node_parts[0].to_s`.
+            assigned_value = head.send_type? ? head.receiver.source : head.node_parts[0].to_s
 
             return if condition_variable == assigned_value
           end

@@ -111,6 +111,31 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'on if...else with identical leading lines and assign to `self.foo`' do
+    it 'registers and corrects an offense' do
+      expect_offense(<<~RUBY)
+        if something
+          self.foo ||= default
+          ^^^^^^^^^^^^^^^^^^^^ Move `self.foo ||= default` out of the conditional.
+          do_x
+        else
+          self.foo ||= default
+          ^^^^^^^^^^^^^^^^^^^^ Move `self.foo ||= default` out of the conditional.
+          do_y
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        self.foo ||= default
+        if something
+          do_x
+        else
+          do_y
+        end
+      RUBY
+    end
+  end
+
   context 'on if..else with identical leading lines and assign to condition value of method call receiver' do
     it "doesn't register an offense" do
       expect_no_offenses(<<~RUBY)
