@@ -51,21 +51,29 @@ module RuboCop
           [Lint::AmbiguousOperator, Style::ArgumentsForwarding]
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def on_def(node)
           return if node.arguments.empty?
 
           last_argument = node.last_argument
           return if expected_block_forwarding_style?(node, last_argument)
 
-          register_offense(last_argument, node)
-
+          invalid_syntax = false
           node.each_descendant(:block_pass) do |block_pass_node|
             next if block_pass_node.children.first&.sym_type? ||
                     last_argument.source != block_pass_node.source
 
+            if block_pass_node.each_ancestor(:block, :numblock).any?
+              invalid_syntax = true
+              next
+            end
+
             register_offense(block_pass_node, node)
           end
+
+          register_offense(last_argument, node) unless invalid_syntax
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
         alias on_defs on_def
 
         private
