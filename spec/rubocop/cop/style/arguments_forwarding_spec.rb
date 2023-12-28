@@ -1548,21 +1548,53 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when forwarding to a method in block' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense when rest arguments forwarding to a method in block' do
+      expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
-                ^^^^^ Use anonymous positional arguments forwarding (`*`).
           do_something do
             bar(*args, &block)
-                ^^^^^ Use anonymous positional arguments forwarding (`*`).
           end
         end
       RUBY
+    end
 
-      expect_correction(<<~RUBY)
-        def foo(*, &block)
+    it 'does not register an offense when rest arguments forwarding to a method in numbered block' do
+      expect_no_offenses(<<~RUBY)
+        def foo(*args, &block)
           do_something do
-            bar(*, &block)
+            bar(*args, &block)
+            baz(_1)
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when keyword rest arguments forwarding to a method in block' do
+      expect_no_offenses(<<~RUBY)
+        def foo(**kwargs, &block)
+          do_something do
+            bar(**kwargs, &block)
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when keyword rest arguments forwarding to a method in numbered block' do
+      expect_no_offenses(<<~RUBY)
+        def foo(**kwargs, &block)
+          do_something do
+            bar(**kwargs, &block)
+            baz(_1)
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when rest arguments and keyword rest arguments forwarding to a method in block' do
+      expect_no_offenses(<<~RUBY)
+        def foo(*args, **kwargs)
+          block_method do
+            bar(*args, **kwargs)
           end
         end
       RUBY

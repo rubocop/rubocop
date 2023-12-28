@@ -186,12 +186,12 @@ module RuboCop
           rest_arg, kwrest_arg, _block_arg = *forwardable_args
 
           send_classifications.each do |send_node, _c, forward_rest, forward_kwrest|
-            if forward_rest
+            if outside_block?(forward_rest)
               register_forward_args_offense(def_node.arguments, rest_arg)
               register_forward_args_offense(send_node, forward_rest)
             end
 
-            if forward_kwrest
+            if outside_block?(forward_kwrest)
               register_forward_kwargs_offense(!forward_rest, def_node.arguments, kwrest_arg)
               register_forward_kwargs_offense(!forward_rest, send_node, forward_kwrest)
             end
@@ -248,6 +248,12 @@ module RuboCop
           end << keyword
 
           redundant_arg_names.include?(arg.source) ? arg : nil
+        end
+
+        def outside_block?(node)
+          return false unless node
+
+          node.each_ancestor(:block, :numblock).none?
         end
 
         def register_forward_args_offense(def_arguments_or_send, rest_arg_or_splat)
