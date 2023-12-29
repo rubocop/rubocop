@@ -107,7 +107,7 @@ module RuboCop
           return false unless line.end_with?("\\\n")
 
           # Ensure backslash isn't part of a token spanning to the next line.
-          node.children.none? { |c| c.first_line == line_num && c.multiline? }
+          node.children.none? { |c| (c.first_line...c.last_line).cover?(line_num) && c.multiline? }
         end
 
         def autocorrect(corrector, offense_range, insert_pos, spaces)
