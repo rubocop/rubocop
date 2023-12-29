@@ -23,6 +23,7 @@ module RuboCop
       #   # bad
       #   open(something)
       #   open("| #{something}")
+      #   open("| foo")
       #   URI.open(something)
       #
       #   # good
@@ -32,7 +33,6 @@ module RuboCop
       #
       #   # good (literal strings)
       #   open("foo.text")
-      #   open("| foo")
       #   URI.open("http://example.com")
       class Open < Base
         MSG = 'The use of `%<receiver>sopen` is a serious security risk.'
@@ -40,7 +40,7 @@ module RuboCop
 
         # @!method open?(node)
         def_node_matcher :open?, <<~PATTERN
-          (send ${nil? (const {nil? cbase} :URI)} :open $!str ...)
+          (send ${nil? (const {nil? cbase} :URI)} :open $_ ...)
         PATTERN
 
         def on_send(node)
