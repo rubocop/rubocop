@@ -97,6 +97,16 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
         end
       end
 
+      context 'when self assigning to a block argument in `for`' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            for item in items
+              do_something { |arg| arg = arg }
+            end
+          RUBY
+        end
+      end
+
       context 'when binding is used' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
