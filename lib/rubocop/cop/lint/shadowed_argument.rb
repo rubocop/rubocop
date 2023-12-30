@@ -123,6 +123,7 @@ module RuboCop
 
             # Shorthand assignments always use their arguments
             next false if assignment_node.shorthand_asgn?
+            next false unless assignment_node.parent
 
             node_within_block_or_conditional =
               node_within_block_or_conditional?(assignment_node.parent, argument.scope.node)
