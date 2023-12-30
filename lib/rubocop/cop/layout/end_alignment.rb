@@ -83,7 +83,11 @@ module RuboCop
         end
 
         def on_sclass(node)
-          check_other_alignment(node)
+          if node.parent&.assignment?
+            check_asgn_alignment(node.parent, node)
+          else
+            check_other_alignment(node)
+          end
         end
 
         def on_module(node)
