@@ -4289,6 +4289,13 @@ Style/MapCompactWithConditionalBlock:
   Enabled: pending
   VersionAdded: '1.30'
 
+Style/MapIntoArray:
+  Description: 'Checks for usages of `each` with `<<`, `push`, or `append` which can be replaced by `map`.'
+  StyleGuide: '#functional-code'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Safe: false
+
 Style/MapToHash:
   Description: 'Prefer `to_h` with a block over `map.to_h`.'
   Enabled: pending
