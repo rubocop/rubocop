@@ -128,6 +128,12 @@ RSpec.shared_context 'mock console output' do
   end
 end
 
+RSpec.shared_context 'lsp mode' do
+  before do
+    allow(cop).to receive(:lsp_mode?).and_return(true)
+  end
+end
+
 RSpec.shared_context 'ruby 2.0' do
   let(:ruby_version) { 2.0 }
 end
