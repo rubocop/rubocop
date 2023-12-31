@@ -17,9 +17,12 @@ module RuboCop
         private
 
         def add_offense_from_diagnostic(diagnostic, ruby_version)
-          message =
-            "#{diagnostic.message}\n(Using Ruby #{ruby_version} parser; " \
-            'configure using `TargetRubyVersion` parameter, under `AllCops`)'
+          message = if lsp_mode?
+                      diagnostic.message
+                    else
+                      "#{diagnostic.message}\n(Using Ruby #{ruby_version} parser; " \
+                        'configure using `TargetRubyVersion` parameter, under `AllCops`)'
+                    end
           add_offense(diagnostic.location, message: message, severity: diagnostic.level)
         end
 

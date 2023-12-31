@@ -481,6 +481,12 @@ module RuboCop
           range.end_pos + @current_offset
         )
       end
+
+      # This experimental feature has been under consideration for a while.
+      # @api private
+      def lsp_mode?
+        ARGV.include?('--lsp')
+      end
     end
   end
 end
