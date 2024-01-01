@@ -1546,6 +1546,30 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       end
     end
 
+    context 'when there is code conforming to chosen enforced style and code not conforming to any supported style' do
+      it 'generates an Exclude list' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            DisabledByDefault: true
+
+          Naming/MethodName:
+            Enabled: true
+        YAML
+
+        create_file('bad.rb', ['def Bad', 'end'])
+        create_file('good.rb', ['def good', 'end'])
+
+        expect(cli.run(['--auto-gen-config'])).to eq(0)
+        expect(File.readlines('.rubocop_todo.yml')[10..].join)
+          .to eq(<<~YAML)
+            # SupportedStyles: snake_case, camelCase
+            Naming/MethodName:
+              Exclude:
+                - 'bad.rb'
+          YAML
+      end
+    end
+
     it 'can be called when there are no files to inspection' do
       expect(cli.run(['--auto-gen-config'])).to eq(0)
     end

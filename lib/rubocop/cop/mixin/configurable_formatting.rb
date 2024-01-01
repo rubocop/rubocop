@@ -18,6 +18,7 @@ module RuboCop
         alternative_styles.each do |alternative|
           return unexpected_style_detected(alternative) if valid_name?(node, name, alternative)
         end
+        unrecognized_style_detected
       end
 
       def valid_name?(node, name, given_style = style)
