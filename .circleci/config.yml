@@ -132,6 +132,29 @@ jobs:
     steps:
       *rubocop_steps
 
+  # Ruby 3.3
+  ruby-3.3-spec:
+    docker:
+      - image: cimg/ruby:3.3
+    environment:
+      <<: *common_env
+    steps:
+      *spec_steps
+  ruby-3.3-ascii_spec:
+    docker:
+      - image: cimg/ruby:3.3
+    environment:
+      <<: *common_env
+    steps:
+      *ascii_spec_steps
+  ruby-3.3-rubocop:
+    docker:
+      - image: cimg/ruby:3.3
+    environment:
+      <<: *common_env
+    steps:
+      *rubocop_steps
+
   # ruby-head (nightly snapshot build)
   ruby-head-spec:
     docker:
@@ -159,7 +182,7 @@ jobs:
   cc-setup:
     docker:
       # Specify the latest version to prevent "cimg/ruby:latest not found: manifest unknown: manifest unknown" error.
-      - image: cimg/ruby:3.2
+      - image: cimg/ruby:3.3
     environment:
       <<: *common_env
     steps:
@@ -178,7 +201,7 @@ jobs:
   cc-upload-coverage:
     docker:
       # Specify the latest version to prevent "cimg/ruby:latest not found: manifest unknown: manifest unknown" error.
-      - image: cimg/ruby:3.2
+      - image: cimg/ruby:3.3
         environment:
           CC_TEST_REPORTER_ID: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
     environment:
@@ -189,14 +212,14 @@ jobs:
       - run:
           name: Upload coverage results to Code Climate
           command: |
-            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 4 --output tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 5 --output tmp/codeclimate.total.json
             ./tmp/cc-test-reporter upload-coverage --input tmp/codeclimate.total.json
 
   # Miscellaneous tasks
   documentation-checks:
     docker:
       # Specify the latest version to prevent "cimg/ruby:latest not found: manifest unknown: manifest unknown" error.
-      - image: cimg/ruby:3.2
+      - image: cimg/ruby:3.3
     environment:
       <<: *common_env
     steps:
@@ -232,6 +255,11 @@ workflows:
             - cc-setup
       - ruby-3.2-ascii_spec
       - ruby-3.2-rubocop
+      - ruby-3.3-spec:
+          requires:
+            - cc-setup
+      - ruby-3.3-ascii_spec
+      - ruby-3.3-rubocop
       - ruby-head-spec:
           requires:
             - cc-setup
@@ -244,3 +272,4 @@ workflows:
             - ruby-3.0-spec
             - ruby-3.1-spec
             - ruby-3.2-spec
+            - ruby-3.3-spec
