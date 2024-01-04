@@ -70,26 +70,26 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'will report registered offenses' do
+  it 'reports registered offenses' do
     cop.add_offense(nil, location: location, message: 'message')
 
     expect(cop.offenses.empty?).to be(false)
   end
 
-  it 'will set default severity' do
+  it 'sets default severity' do
     cop.add_offense(nil, location: location, message: 'message')
 
     expect(cop.offenses.first.severity).to eq(:convention)
   end
 
-  it 'will set custom severity if present' do
+  it 'sets custom severity if present' do
     cop.config[cop.name] = { 'Severity' => 'warning' }
     cop.add_offense(nil, location: location, message: 'message')
 
     expect(cop.offenses.first.severity).to eq(:warning)
   end
 
-  it 'will warn if custom severity is invalid' do
+  it 'warns if custom severity is invalid' do
     cop.config[cop.name] = { 'Severity' => 'superbad' }
     expect { cop.add_offense(nil, location: location, message: 'message') }
       .to output(/Warning: Invalid severity 'superbad'./).to_stderr
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     context 'ignore_disable_comments is false' do
       let(:cop_options) { { ignore_disable_comments: false } }
 
-      it 'will set offense as disabled' do
+      it 'sets offense as disabled' do
         expect(offense_status).to eq :disabled
       end
     end
@@ -116,7 +116,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     context 'ignore_disable_comments is true' do
       let(:cop_options) { { ignore_disable_comments: true } }
 
-      it 'will not set offense as disabled' do
+      it 'does not set offense as disabled' do
         expect(offense_status).not_to eq :disabled
       end
     end

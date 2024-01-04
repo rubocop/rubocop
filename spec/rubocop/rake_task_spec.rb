@@ -98,7 +98,7 @@ RSpec.describe RuboCop::RakeTask do
       Rake::Task['rubocop'].execute
     end
 
-    it 'will not error when result is not 0 and fail_on_error is false' do
+    it 'does not error when result is not 0 and fail_on_error is false' do
       described_class.new { |task| task.fail_on_error = false }
 
       cli = instance_double(RuboCop::CLI, run: 1)
