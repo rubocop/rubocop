@@ -31,19 +31,31 @@ module RuboCop
 
         minimum_target_ruby_version 2.6
 
-        MSG = 'Prefer ary[n..] over ary[n..-1].'
+        MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
         RESTRICT_ON_SEND = %i[[]].freeze
 
         # @!method range_till_minus_one?(node)
         def_node_matcher :range_till_minus_one?, '(irange !nil? (int -1))'
 
         def on_send(node)
-          return unless node.arguments.count == 1
-          return unless range_till_minus_one?(node.first_argument)
+          return unless node.arguments.one?
 
-          add_offense(node.first_argument) do |corrector|
-            corrector.remove(node.first_argument.end)
+          range_node = node.first_argument
+          return unless range_till_minus_one?(range_node)
+
+          prefer = preferred_method(range_node)
+          selector = node.loc.selector
+          message = format(MSG, prefer: prefer, current: selector.source)
+
+          add_offense(selector, message: message) do |corrector|
+            corrector.remove(range_node.end)
           end
+        end
+
+        private
+
+        def preferred_method(range_node)
+          "[#{range_node.begin.source}#{range_node.loc.operator.source}]"
         end
       end
     end

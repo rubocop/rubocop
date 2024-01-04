@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Style::SlicingWithRange, :config do
     it 'reports an offense for slicing to ..-1' do
       expect_offense(<<~RUBY)
         ary[1..-1]
-            ^^^^^ Prefer ary[n..] over ary[n..-1].
+           ^^^^^^^ Prefer `[1..]` over `[1..-1]`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Style::SlicingWithRange, :config do
     it 'reports an offense for slicing from expression to ..-1' do
       expect_offense(<<~RUBY)
         ary[fetch_start(true).first..-1]
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer ary[n..] over ary[n..-1].
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `[fetch_start(true).first..]` over `[fetch_start(true).first..-1]`.
       RUBY
 
       expect_correction(<<~RUBY)
