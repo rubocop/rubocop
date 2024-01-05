@@ -5237,7 +5237,7 @@ Style/SingleLineMethods:
   AllowIfMethodIsEmpty: true
 
 Style/SlicingWithRange:
-  Description: 'Checks array slicing is done with endless ranges when suitable.'
+  Description: 'Checks array slicing is done with redundant, endless, and beginless ranges when suitable.'
   Enabled: true
   VersionAdded: '0.83'
   Safe: false
