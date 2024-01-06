@@ -34,6 +34,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
   let(:expected_heading_command) { 'rubocop --auto-gen-config' }
 
   let(:expected_heading_timestamp) { "on #{Time.now} " }
+  let(:config_store) { instance_double(RuboCop::ConfigStore) }
+  let(:options) { { config_store: config_store } }
 
   around do |example|
     original_stdout = $stdout
@@ -55,14 +57,15 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     RuboCop::ConfigLoader.clear_options
 
     allow(Time).to receive(:now).and_return(Time.now)
+    allow(config_store).to receive(:for_pwd).and_return(instance_double(RuboCop::Config))
   end
 
   context 'when any offenses are detected' do
     before do
       formatter.started(['test_a.rb', 'test_b.rb'])
-      formatter.file_started('test_a.rb', {})
+      formatter.file_started('test_a.rb', options)
       formatter.file_finished('test_a.rb', offenses)
-      formatter.file_started('test_b.rb', {})
+      formatter.file_started('test_b.rb', options)
       formatter.file_finished('test_b.rb', [offenses.first])
       formatter.finished(['test_a.rb', 'test_b.rb'])
     end
@@ -101,9 +104,9 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       YAML
 
       formatter.started(['test_a.rb', 'test_b.rb'])
-      formatter.file_started('test_a.rb', {})
+      formatter.file_started('test_a.rb', options)
       formatter.file_finished('test_a.rb', offenses)
-      formatter.file_started('test_b.rb', {})
+      formatter.file_started('test_b.rb', options)
       formatter.file_finished('test_b.rb', [offenses.first])
 
       allow(RuboCop::ConfigLoader.default_configuration).to receive(:[]).and_return({})
@@ -138,7 +141,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       formatter.started(filenames)
 
       filenames.each do |filename|
-        formatter.file_started(filename, {})
+        formatter.file_started(filename, options)
 
         if filename == filenames.last
           formatter.file_finished(filename, [offenses.first])
@@ -189,7 +192,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       formatter.started(filenames)
 
       filenames.each do |filename|
-        formatter.file_started(filename, {})
+        formatter.file_started(filename, options)
 
         if filename == filenames.last
           formatter.file_finished(filename, [offenses.first])
@@ -245,7 +248,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       stub_cop_class('Test::Cop3') { extend RuboCop::Cop::AutoCorrector }
 
       formatter.started(['test_autocorrect.rb'])
-      formatter.file_started('test_autocorrect.rb', {})
+      formatter.file_started('test_autocorrect.rb', options)
       formatter.file_finished('test_autocorrect.rb', offenses)
       formatter.finished(['test_autocorrect.rb'])
     end
