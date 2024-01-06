@@ -218,15 +218,13 @@ module RuboCop
           send(style, node) # call require_parentheses or omit_parentheses
         end
         alias on_csend on_send
-        alias on_super on_send
         alias on_yield on_send
 
         private
 
         def args_begin(node)
           loc = node.loc
-          selector =
-            node.super_type? || node.yield_type? ? loc.keyword : loc.selector
+          selector = node.yield_type? ? loc.keyword : loc.selector
 
           resize_by = args_parenthesized?(node) ? 2 : 1
           selector.end.resize(resize_by)

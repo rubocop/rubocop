@@ -142,17 +142,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'registers an offense for superclass call without parens' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for superclass call without parens' do
+      expect_no_offenses(<<~RUBY)
         def foo
           super a
-          ^^^^^^^ Use parentheses for method calls with arguments.
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        def foo
-          super(a)
         end
       RUBY
     end
@@ -526,17 +519,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'registers an offense for superclass call with parens' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for superclass call with parens' do
+      expect_no_offenses(<<~RUBY)
         def foo
           super(a)
-               ^^^ Omit parentheses for method calls with arguments.
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        def foo
-          super a
         end
       RUBY
     end
