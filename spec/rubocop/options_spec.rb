@@ -502,7 +502,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
       context 'Specify --autocorrect and --autocorrect-all' do
         it 'emits a warning and sets some autocorrect options' do
-          expect { options.parse options.parse %w[--autocorrect --autocorrect-all] }.to raise_error(
+          expect { options.parse %w[--autocorrect --autocorrect-all] }.to raise_error(
             RuboCop::OptionArgumentError,
             /Error: Both safe and unsafe autocorrect options are specified, use only one./
           )
