@@ -82,6 +82,10 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
 
     context 'when using non-word delimiters' do
       it 'registers an offense' do
+        # FIXME: Pending until the following error in Parser 3.3.0.1 is resolved.
+        # https://github.com/whitequark/parser/pull/987
+        pending 'Prevents an error when using heredoc with non-word delimiters.'
+
         expect_offense(<<~RUBY)
           <<-'+'
             foo
