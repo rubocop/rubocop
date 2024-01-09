@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# Disable colors in specs
 require 'rainbow'
+
+# Disable colors in specs
 Rainbow.enabled = false
 
 require 'rubocop'

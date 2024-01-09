@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'English'
+
 before_us = $LOADED_FEATURES.dup
+
 require 'rainbow'
 
 require 'forwardable'
@@ -198,6 +200,7 @@ require_relative 'rubocop/cop/layout/empty_comment'
 require_relative 'rubocop/cop/layout/empty_line_after_guard_clause'
 require_relative 'rubocop/cop/layout/empty_line_after_magic_comment'
 require_relative 'rubocop/cop/layout/empty_line_after_multiline_condition'
+require_relative 'rubocop/cop/layout/empty_line_after_requires'
 require_relative 'rubocop/cop/layout/empty_line_between_defs'
 require_relative 'rubocop/cop/layout/empty_lines_around_access_modifier'
 require_relative 'rubocop/cop/layout/empty_lines_around_arguments'
