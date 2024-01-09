@@ -124,6 +124,15 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
+  it 'does not register an offense when using a method call as a ternary operator condition with a line break ' \
+     'between receiver and method' do
+    # NOTE: Redundant line break is corrected by `Layout/RedundantLineBreak`.
+    expect_no_offenses(<<~RUBY)
+      do_something(arg
+                     .foo ? bar : baz)
+    RUBY
+  end
+
   it 'registers an offense and corrects when returning a multiline ternary operator expression with `return`' do
     expect_offense(<<~RUBY)
       return cond ?
