@@ -164,7 +164,6 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
     end
 
     it 'registers an offense and corrects' do
-      # FIXME
       expect_offense(<<~RUBY)
          # comment 1
          # comment 2
