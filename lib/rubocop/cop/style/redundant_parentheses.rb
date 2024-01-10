@@ -53,7 +53,7 @@ module RuboCop
         def ignore_syntax?(node)
           return false unless (parent = node.parent)
 
-          parent.while_post_type? || parent.until_post_type? ||
+          parent.while_post_type? || parent.until_post_type? || parent.match_with_lvasgn_type? ||
             like_method_argument_parentheses?(parent)
         end
 
