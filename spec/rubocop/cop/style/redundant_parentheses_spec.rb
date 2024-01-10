@@ -574,6 +574,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     expect_no_offenses('a...(b || c)')
   end
 
+  it 'accepts regexp literal attempts to match against a parenthesized condition' do
+    expect_no_offenses('/regexp/ =~ (b || c)')
+  end
+
+  it 'accepts variable attempts to match against a parenthesized condition' do
+    expect_no_offenses('regexp =~ (b || c)')
+  end
+
   it 'registers parentheses around `||` logical operator keywords in method definition' do
     expect_offense(<<~RUBY)
       def foo
