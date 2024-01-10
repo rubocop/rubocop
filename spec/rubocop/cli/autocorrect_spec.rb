@@ -2971,6 +2971,21 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop error for `Style/MultilineTernaryOperator`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      do_something(arg
+                     .foo ? bar : baz)
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only Style/MultilineTernaryOperator])
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      do_something(arg
+                     .foo ? bar : baz)
+    RUBY
+  end
+
   it 'respects `Lint/ConstantResolution` over `Style/RedundantConstantBase` when enabling`Lint/ConstantResolution`' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

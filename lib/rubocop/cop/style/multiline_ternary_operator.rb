@@ -54,12 +54,10 @@ module RuboCop
         private
 
         def offense?(node)
-          node.ternary? && node.multiline?
+          node.ternary? && node.multiline? && node.source != replacement(node)
         end
 
         def autocorrect(corrector, node)
-          return unless offense?(node)
-
           corrector.replace(node, replacement(node))
           return unless (parent = node.parent)
           return unless (comments_in_condition = comments_in_condition(node))
