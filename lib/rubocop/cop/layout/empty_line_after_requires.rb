@@ -17,26 +17,26 @@ module RuboCop
       #
       #   foo
       #
-      # @example EnforcedStyle: beginning_of_file_only (default)
+      # @example EnforcedStyle: top_level (default)
       #   # good
-      #   foo
-      #
-      #   require 'a'
-      #   bar
+      #   if condition
+      #     require 'a'
+      #     foo
+      #   end
       #
       # @example EnforcedStyle: all
       #   # bad
-      #   foo
-      #
-      #   require 'a'
-      #   bar
+      #   if condition
+      #     require 'a'
+      #     foo
+      #   end
       #
       #   # good
-      #   foo
+      #   if condition
+      #     require 'a'
       #
-      #   require 'a'
-      #
-      #   bar
+      #     foo
+      #   end
       #
       # @example RequireMethodNames: ['require', 'require_relative'] (default)
       #   # good
@@ -69,9 +69,9 @@ module RuboCop
 
         def on_send(node)
           return unless require?(node)
-          return if ignorable_beginning_of_file_requires?(node)
           return if continuous_require?(node)
           return if empty_line_after?(node)
+          return if style == :top_level && !top_level?(node)
 
           add_offense(node) do |corrector|
             corrector.insert_after(node, "\n")
@@ -84,30 +84,6 @@ module RuboCop
           cop_config.fetch('RequireMethodNames').include?(method_name.to_s)
         end
 
-        def ignorable_beginning_of_file_requires?(node)
-          style == :beginning_of_file_only && !beginning_of_file_requires?(node)
-        end
-
-        def beginning_of_file_requires?(node)
-          top_level_scope?(node) && beginning_lines_in_scope?(node)
-        end
-
-        def top_level_scope?(node)
-          node.parent == processed_source.ast
-        end
-
-        def beginning_lines_in_scope?(node)
-          node.left_siblings.none? do |sibling|
-            any_empty_line_between?(sibling, node)
-          end
-        end
-
-        def any_empty_line_between?(node1, node2)
-          processed_source[node1.loc.line...node2.loc.line - 1].any? do |line|
-            line.strip.empty?
-          end
-        end
-
         def continuous_require?(node)
           require?(node.right_sibling)
         end
@@ -115,6 +91,10 @@ module RuboCop
         def empty_line_after?(node)
           next_line = processed_source[node.loc.line]
           next_line.nil? || next_line.strip.empty?
+        end
+
+        def top_level?(node)
+          node.parent == processed_source.ast
         end
       end
     end

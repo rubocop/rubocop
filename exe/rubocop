@@ -4,6 +4,7 @@
 $LOAD_PATH.unshift("#{__dir__}/../lib")
 
 require 'rubocop/server'
+
 server_cli = RuboCop::Server::CLI.new
 exit_status = server_cli.run
 exit exit_status if server_cli.exit?

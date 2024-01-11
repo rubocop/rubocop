@@ -584,10 +584,10 @@ Layout/EmptyLineAfterRequires:
   Description: 'Add an empty line after requires.'
   Enabled: pending
   VersionAdded: '<<next>>'
-  EnforcedStyle: beginning_of_file_only
+  EnforcedStyle: top_level
   SupportedStyles:
-    - all
-    - beginning_of_file_only
+    - always
+    - top_level
   RequireMethodNames:
     - require
     - require_relative

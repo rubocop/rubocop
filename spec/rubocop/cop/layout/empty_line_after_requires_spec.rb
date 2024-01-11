@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterRequires, :config do
-  context 'when EnforcedStyle is beginning_of_file_only' do
+  context 'when EnforcedStyle is top_level' do
     let(:cop_config) do
-      { 'EnforcedStyle' => 'beginning_of_file_only' }
+      { 'EnforcedStyle' => 'top_level' }
     end
 
-    context 'when empty line is put after requires at the beginning of the file' do
+    context 'when empty line is put after requires at top level' do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
           require 'a'
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterRequires, :config do
       end
     end
 
-    context 'when empty line is not put after requires at the beginning of the file' do
+    context 'when empty line is not put after requires at top level' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
           require 'a'
@@ -35,40 +35,42 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterRequires, :config do
       end
     end
 
-    context 'when empty line is put after requires not at the beginning of the file' do
+    context 'when empty line is not put after requires not at top level' do
       it 'registers no offense' do
         expect_no_offenses(<<~RUBY)
-          foo
-
-          require 'a'
-          require 'b'
-          bar
+          if condition
+            require 'a'
+            require 'b'
+            bar
+          end
         RUBY
       end
     end
   end
 
-  context 'when EnforcedStyle is all' do
+  context 'when EnforcedStyle is always' do
     let(:cop_config) do
-      { 'EnforcedStyle' => 'all' }
+      { 'EnforcedStyle' => 'always' }
     end
 
-    context 'when empty line is put after requires not at the beginning of the file' do
+    context 'when empty line is put after requires not at top level' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
-          foo
-          require 'a'
-          require 'b'
-          ^^^^^^^^^^^ Add an empty line after requires.
-          bar
+          if condition
+            require 'a'
+            require 'b'
+            ^^^^^^^^^^^ Add an empty line after requires.
+            bar
+          end
         RUBY
 
         expect_correction(<<~RUBY)
-          foo
-          require 'a'
-          require 'b'
+          if condition
+            require 'a'
+            require 'b'
 
-          bar
+            bar
+          end
         RUBY
       end
     end

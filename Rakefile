@@ -9,6 +9,7 @@ task release: 'changelog:check_clean' # Before task is required
 
 require 'bundler'
 require 'bundler/gem_tasks'
+
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -16,6 +17,7 @@ rescue Bundler::BundlerError => e
   warn 'Run `bundle install` to install missing gems'
   exit e.status_code
 end
+
 require 'rake'
 require 'rubocop/rake_task'
 
@@ -27,6 +29,7 @@ RuboCop::RakeTask.new(:internal_investigation)
 task default: %i[documentation_syntax_check spec ascii_spec internal_investigation]
 
 require 'yard'
+
 YARD::Rake::YardocTask.new
 
 desc 'Benchmark a cop on given source file/dir'
