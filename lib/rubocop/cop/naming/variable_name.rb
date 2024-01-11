@@ -24,7 +24,7 @@ module RuboCop
       #   # good (with EnforcedStyle: snake_case)
       #   fooBar = 1
       #
-      # @example AllowedPatterns: ['_v\d+\z']
+      # @example AllowedPatterns: ['_v\\d+\\z']
       #   # good (with EnforcedStyle: camelCase)
       #   :release_v1
       #
