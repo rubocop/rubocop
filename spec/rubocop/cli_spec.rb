@@ -2073,7 +2073,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
           'string'
         RUBY
+
         create_empty_file('Gemfile')
+        create_empty_file('Gemfile.lock')
       end
 
       after do
