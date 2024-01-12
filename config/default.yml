@@ -4712,6 +4712,7 @@ Style/OperatorMethodCall:
 
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
+  StyleGuide: '#keyword-arguments-vs-option-hashes'
   Enabled: false
   VersionAdded: '0.33'
   VersionChanged: '0.34'
