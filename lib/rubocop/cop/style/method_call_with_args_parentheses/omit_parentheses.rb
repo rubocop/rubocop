@@ -127,23 +127,31 @@ module RuboCop
 
           def call_with_ambiguous_arguments?(node) # rubocop:disable Metrics/PerceivedComplexity
             call_with_braced_block?(node) ||
+              call_in_argument_with_block?(node) ||
               call_as_argument_or_chain?(node) ||
               call_in_match_pattern?(node) ||
               hash_literal_in_arguments?(node) ||
               node.descendants.any? do |n|
-                n.forwarded_args_type? || ambiguous_literal?(n) || logical_operator?(n) ||
-                  call_with_braced_block?(n)
+                n.forwarded_args_type? || n.block_type? ||
+                  ambiguous_literal?(n) || logical_operator?(n)
               end
           end
 
           def call_with_braced_block?(node)
-            (node.send_type? || node.super_type?) && node.block_node&.braces?
+            (node.call_type? || node.super_type?) && node.block_node&.braces?
+          end
+
+          def call_in_argument_with_block?(node)
+            parent = node.parent&.block_type? && node.parent&.parent
+            return false unless parent
+
+            parent.call_type? || parent.super_type? || parent.yield_type?
           end
 
           def call_as_argument_or_chain?(node)
             node.parent &&
-              ((node.parent.send_type? && !assigned_before?(node.parent, node)) ||
-              node.parent.csend_type? || node.parent.super_type? || node.parent.yield_type?)
+              (node.parent.call_type? || node.parent.super_type? || node.parent.yield_type?) &&
+              !assigned_before?(node.parent, node)
           end
 
           def call_in_match_pattern?(node)

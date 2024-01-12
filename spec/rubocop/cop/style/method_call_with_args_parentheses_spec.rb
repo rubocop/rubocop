@@ -771,7 +771,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo(1) { 2 }')
     end
 
-    it 'accepts parens in array literal calls' do
+    it 'accepts parens in array literal calls with blocks' do
       expect_no_offenses(<<~RUBY)
         [
           foo.bar.quux(:args) do
@@ -1041,6 +1041,46 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         expect_no_offenses(<<~RUBY)
           test(
             foo: bar
+          )
+        RUBY
+      end
+
+      it 'accepts parens in argument calls with blocks' do
+        expect_no_offenses(<<~RUBY)
+          foo(
+            bar.new(quux) do
+              pass
+            end
+          )
+        RUBY
+      end
+
+      it 'accepts parens in argument csend with blocks' do
+        expect_no_offenses(<<~RUBY)
+          foo(
+            bar&.new(quux) do
+              pass
+            end
+          )
+        RUBY
+      end
+
+      it 'accepts parens in super argument call with blocks' do
+        expect_no_offenses(<<~RUBY)
+          super(
+            bar.new(quux) do
+              pass
+            end
+          )
+        RUBY
+      end
+
+      it 'accepts parens in yield argument call with blocks' do
+        expect_no_offenses(<<~RUBY)
+          yield(
+            bar.new(quux) do
+              pass
+            end
           )
         RUBY
       end
