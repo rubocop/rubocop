@@ -5239,6 +5239,7 @@ Style/SingleLineMethods:
 
 Style/SlicingWithRange:
   Description: 'Checks array slicing is done with redundant, endless, and beginless ranges when suitable.'
+  StyleGuide: '#slicing-with-ranges'
   Enabled: true
   VersionAdded: '0.83'
   Safe: false
