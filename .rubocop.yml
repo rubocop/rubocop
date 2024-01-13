@@ -147,6 +147,7 @@ RSpec/FilePath:
 
 RSpec/SpecFilePathFormat:
   CustomTransform:
+    GitHubActionsFormatter: github_actions_formatter
     JUnitFormatter: junit_formatter
     RedundantLetRuboCopConfigNew: redundant_let_rubocop_config_new
   Exclude:

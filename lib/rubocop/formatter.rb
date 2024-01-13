@@ -14,7 +14,7 @@ module RuboCop
     require_relative 'formatter/emacs_style_formatter'
     require_relative 'formatter/file_list_formatter'
     require_relative 'formatter/fuubar_style_formatter'
-    require_relative 'formatter/git_hub_actions_formatter'
+    require_relative 'formatter/github_actions_formatter'
     require_relative 'formatter/html_formatter'
     require_relative 'formatter/json_formatter'
     require_relative 'formatter/junit_formatter'
