@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.60.0 (2024-01-15)
+
 ### Bug fixes
 
 * [#12603](https://github.com/rubocop/rubocop/issues/12603): Fix an infinite loop error for `Style/MultilineTernaryOperator` when using a method call as a ternary operator condition with a line break between receiver and method. ([@koic][])
