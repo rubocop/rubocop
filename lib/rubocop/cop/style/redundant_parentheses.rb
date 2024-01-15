@@ -54,7 +54,7 @@ module RuboCop
           return false unless (parent = node.parent)
 
           parent.while_post_type? || parent.until_post_type? || parent.match_with_lvasgn_type? ||
-            like_method_argument_parentheses?(parent)
+            like_method_argument_parentheses?(parent) || multiline_control_flow_statements?(node)
         end
 
         def allowed_expression?(node)
@@ -102,6 +102,13 @@ module RuboCop
 
           node.arguments.one? && !node.parenthesized? &&
             !node.arithmetic_operation? && node.first_argument.begin_type?
+        end
+
+        def multiline_control_flow_statements?(node)
+          return false unless (parent = node.parent)
+          return false if parent.single_line?
+
+          parent.return_type? || parent.next_type? || parent.break_type?
         end
 
         def empty_parentheses?(node)
