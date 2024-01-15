@@ -1,1 +1,0 @@
-* [#12549](https://github.com/rubocop/rubocop/issues/12549): Fix a false positive for `Style/RedundantLineContinuation` when line continuations for multiline leading dot method chain with a blank line. ([@koic][])

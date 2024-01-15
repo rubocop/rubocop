@@ -1,1 +1,0 @@
-* [#12580](https://github.com/rubocop/rubocop/pull/12580): Fix an infinite loop error for `Layout/EndAlignment` when misaligned in singleton class assignments with `EnforcedStyleAlignWith: variable`. ([@koic][])

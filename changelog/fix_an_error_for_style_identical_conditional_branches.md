@@ -1,1 +1,0 @@
-* [#12569](https://github.com/rubocop/rubocop/issues/12569): Fix an error for `Style/IdenticalConditionalBranches` when using `if`...`else` with identical leading lines that assign to `self.foo`. ([@koic][])

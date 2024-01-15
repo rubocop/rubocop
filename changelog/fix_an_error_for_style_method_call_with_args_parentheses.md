@@ -1,1 +1,0 @@
-* [#12437](https://github.com/rubocop/rubocop/issues/12437): Fix an infinite loop error for `EnforcedStyle: omit_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/SuperWithArgsParentheses`. ([@koic][])

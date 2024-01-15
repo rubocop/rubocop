@@ -1,1 +1,0 @@
-* [#12556](https://github.com/rubocop/rubocop/issues/12556): Fix false positives for `Style/RedundantParentheses` when parentheses are used around a semantic operator in expressions within assignments. ([@koic][])
