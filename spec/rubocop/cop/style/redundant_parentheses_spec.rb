@@ -793,6 +793,63 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'accepts parentheses in `return` with multiline style argument' do
+    expect_no_offenses(<<~RUBY)
+      return (
+        42
+      )
+    RUBY
+  end
+
+  it 'registers an offense when parentheses in `return` with single style argument' do
+    expect_offense(<<~RUBY)
+      return (42)
+             ^^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      return 42
+    RUBY
+  end
+
+  it 'accepts parentheses in `next` with multiline style argument' do
+    expect_no_offenses(<<~RUBY)
+      next (
+        42
+      )
+    RUBY
+  end
+
+  it 'registers an offense when parentheses in `next` with single style argument' do
+    expect_offense(<<~RUBY)
+      next (42)
+           ^^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      next 42
+    RUBY
+  end
+
+  it 'accepts parentheses in `break` with multiline style argument' do
+    expect_no_offenses(<<~RUBY)
+      break (
+        42
+      )
+    RUBY
+  end
+
+  it 'registers an offense when parentheses in `break` with single style argument' do
+    expect_offense(<<~RUBY)
+      break (42)
+            ^^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      break 42
+    RUBY
+  end
+
   it 'registers an offense and corrects when method arguments are unnecessarily parenthesized' do
     expect_offense(<<~RUBY)
       foo(
