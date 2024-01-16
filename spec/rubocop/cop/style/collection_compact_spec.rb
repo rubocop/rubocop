@@ -146,6 +146,45 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `grep_v(nil)`' do
+    expect_offense(<<~RUBY)
+      array.grep_v(nil)
+            ^^^^^^^^^^^ Use `compact` instead of `grep_v(nil)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.compact
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `grep_v(NilClass)`' do
+    expect_offense(<<~RUBY)
+      array.grep_v(NilClass)
+            ^^^^^^^^^^^^^^^^ Use `compact` instead of `grep_v(NilClass)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.compact
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `grep_v(::NilClass)`' do
+    expect_offense(<<~RUBY)
+      array.grep_v(::NilClass)
+            ^^^^^^^^^^^^^^^^^^ Use `compact` instead of `grep_v(::NilClass)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array.compact
+    RUBY
+  end
+
+  it 'does not register an offense and corrects when using `grep_v(pattern)`' do
+    expect_no_offenses(<<~RUBY)
+      array.grep_v(pattern)
+    RUBY
+  end
+
   it 'does not register an offense when using `reject` to not to rejecting nils' do
     expect_no_offenses(<<~RUBY)
       array.reject { |e| e.odd? }

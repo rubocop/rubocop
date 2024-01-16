@@ -23,6 +23,8 @@ module RuboCop
       #   array.reject { |e| e.nil? }
       #   array.delete_if { |e| e.nil? }
       #   array.select { |e| !e.nil? }
+      #   array.grep_v(nil)
+      #   array.grep_v(NilClass)
       #
       #   # good
       #   array.compact
@@ -46,7 +48,7 @@ module RuboCop
         extend TargetRubyVersion
 
         MSG = 'Use `%<good>s` instead of `%<bad>s`.'
-        RESTRICT_ON_SEND = %i[reject delete_if reject! select select!].freeze
+        RESTRICT_ON_SEND = %i[reject delete_if reject! select select! grep_v].freeze
         TO_ENUM_METHODS = %i[to_enum lazy].freeze
 
         minimum_target_ruby_version 2.4
@@ -79,6 +81,11 @@ module RuboCop
                 $(lvar _) :nil?) :!))
         PATTERN
 
+        # @!method grep_v_with_nil?(node)
+        def_node_matcher :grep_v_with_nil?, <<~PATTERN
+          (send _ :grep_v {(nil) (const {nil? cbase} :NilClass)})
+        PATTERN
+
         def on_send(node)
           return unless (range = offense_range(node))
           return if allowed_receiver?(node.receiver)
@@ -95,8 +102,9 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def offense_range(node)
-          if reject_method_with_block_pass?(node)
+          if reject_method_with_block_pass?(node) || grep_v_with_nil?(node)
             range(node, node)
           else
             block_node = node.parent
@@ -110,6 +118,7 @@ module RuboCop
             range(node, block_node)
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def to_enum_method?(node)
           return false unless node.receiver.send_type?
