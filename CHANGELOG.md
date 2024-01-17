@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.60.1 (2024-01-17)
+
 ### Bug fixes
 
 * [#12625](https://github.com/rubocop/rubocop/pull/12625): Fix an error when server cache dir has read-only file system. ([@Strzesia][])
