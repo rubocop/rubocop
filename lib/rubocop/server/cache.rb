@@ -117,7 +117,7 @@ module RuboCop
 
         def pid_running?
           Process.kill(0, pid_path.read.to_i) == 1
-        rescue Errno::ESRCH, Errno::ENOENT, Errno::EACCES
+        rescue Errno::ESRCH, Errno::ENOENT, Errno::EACCES, Errno::EROFS
           false
         end
 

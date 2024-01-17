@@ -292,6 +292,15 @@ RSpec.describe RuboCop::Server::Cache do
         end
         expect(described_class.pid_running?).to be(false)
       end
+
+      it 'works properly when the file system is read-only' do
+        expect(described_class).to receive(:pid_path).and_wrap_original do |method|
+          result = method.call
+          allow(result).to receive(:read).and_raise(Errno::EROFS)
+          result
+        end
+        expect(described_class.pid_running?).to be(false)
+      end
     end
   end
 end
