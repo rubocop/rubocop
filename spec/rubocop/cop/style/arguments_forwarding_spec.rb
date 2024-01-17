@@ -197,6 +197,14 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'does not register an offense when naming block arg `&`', :ruby31 do
+      expect_no_offenses(<<~RUBY)
+        def foo(&)
+          bar(&)
+        end
+      RUBY
+    end
+
     context 'when `RedundantBlockArgumentNames: [meaningless_block_name]`' do
       let(:redundant_block_argument_names) { ['meaningless_block_name'] }
 
