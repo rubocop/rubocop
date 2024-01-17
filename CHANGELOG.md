@@ -11,6 +11,16 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12625](https://github.com/rubocop/rubocop/pull/12625): Fix an error when server cache dir has read-only file system. ([@Strzesia][])
+* [#12618](https://github.com/rubocop/rubocop/issues/12618): Fix false positives for `Style/ArgumentsForwarding` when using block argument forwarding with other arguments. ([@koic][])
+* [#12614](https://github.com/rubocop/rubocop/issues/12614): Fix false positiveis for `Style/RedundantParentheses` when parentheses in control flow keyword with multiline style argument. ([@koic][])
+
+### Changes
+
+* [#12617](https://github.com/rubocop/rubocop/issues/12617): Make `Style/CollectionCompact` aware of `grep_v` with nil. ([@koic][])
+
 ## 1.60.0 (2024-01-15)
 
 ### Bug fixes
@@ -7553,3 +7563,4 @@
 [@earlopain]: https://github.com/earlopain
 [@kpost]: https://github.com/kpost
 [@marocchino]: https://github.com/marocchino
+[@Strzesia]: https://github.com/Strzesia
