@@ -173,6 +173,30 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'does not register an offense when using block arg', :ruby30 do
+      expect_no_offenses(<<~RUBY)
+        def foo(&block)
+          bar(&block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using block arg', :ruby31 do
+      expect_offense(<<~RUBY)
+        def foo(&block)
+                ^^^^^^ Use anonymous block arguments forwarding (`&`).
+          bar(&block)
+              ^^^^^^ Use anonymous block arguments forwarding (`&`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(&)
+          bar(&)
+        end
+      RUBY
+    end
+
     context 'when `RedundantBlockArgumentNames: [meaningless_block_name]`' do
       let(:redundant_block_argument_names) { ['meaningless_block_name'] }
 
@@ -784,6 +808,38 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       expect_correction(<<~RUBY)
         def foo(...)
           bar(...)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using block arg forwarding with positional arguments forwarding' do
+      expect_offense(<<~RUBY)
+        def baz(qux, quuz, &block)
+                           ^^^^^^ Use anonymous block arguments forwarding (`&`).
+          bar(qux, quuz, &block)
+                         ^^^^^^ Use anonymous block arguments forwarding (`&`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def baz(qux, quuz, &)
+          bar(qux, quuz, &)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using block arg forwarding with no forwarding arguments' do
+      expect_offense(<<~RUBY)
+        def before_transition(options = {}, &block)
+                                            ^^^^^^ Use anonymous block arguments forwarding (`&`).
+          add_callback(type: :before, callback_class: Callback, from: options[:from], to: options[:to], &block)
+                                                                                                        ^^^^^^ Use anonymous block arguments forwarding (`&`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def before_transition(options = {}, &)
+          add_callback(type: :before, callback_class: Callback, from: options[:from], to: options[:to], &)
         end
       RUBY
     end
@@ -1728,6 +1784,14 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         expect_no_offenses(<<~RUBY)
           def foo(**kwargs)
             bar(**kwargs)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when using only block arg' do
+        expect_no_offenses(<<~RUBY)
+          def foo(&block)
+            bar(&block)
           end
         RUBY
       end
