@@ -28,6 +28,7 @@ group :test do
   # FIXME: This `bigdecimal` dependency can be removed when https://github.com/jnunemaker/crack/pull/75
   # is merged and released. It's a workaround until then.
   gem 'bigdecimal', platform: :mri
+  gem 'json_schemer', require: false
   gem 'webmock', require: false
 end
 

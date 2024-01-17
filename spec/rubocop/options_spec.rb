@@ -192,6 +192,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --show-docs-url [COP1,COP2,...]
                                                Display url to documentation for the given
                                                cops, or base url by default.
+                  --json-schema                Output a JSON Schema for the for the current
+                                               directory's RuboCop configuration file.
 
           General Options:
                   --init                       Generate a .rubocop.yml file in the current directory.

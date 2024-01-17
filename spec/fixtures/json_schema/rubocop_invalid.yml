@@ -1,0 +1,39 @@
+---
+inherit_from:
+  a: ".rubocop_todo.yml"
+inherit_gem:
+  - my-gem: rubocop-default.yml
+inherit_mode:
+  merge:
+    - Include
+    - Exclude
+    - AllowedPatterns
+AllCops:
+  a: 1
+  TargetRubyVersion: 3.2
+  adsf: 1
+  MaxFilesInCache: adf
+  NewCops: enable
+  DisabledByDefault: 1
+
+  SuggestExtensions: true
+  Exclude:
+    - gems/**/*
+    - vendor/**/*
+    - !ruby/regexp /regex\z/
+Bundler:
+  Enabled: 1
+Layout/ArgumentAlignment:
+  EnforcedStyle: blah
+
+Naming/MethodParameterName:
+  Severity: test
+  AllowedNames:
+    - ex
+    - 1
+    - id
+    - ctx
+Naming/RescuedExceptionsVariableName:
+  PreferredName:
+    - ex
+adsf: 1

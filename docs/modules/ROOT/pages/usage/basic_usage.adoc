@@ -216,6 +216,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--init`
 | Generate a .rubocop.yml file in the current directory.
 
+| `--json-schema`
+| Outputs a https://json-schema.org/[JSON Schema] for your `.rubocop.yml` file, to enable autocompletion and validation in your editor (see xref:integration_with_other_tools.adoc#visual-studio-code[Integrations]).
+
 | `-l/--lint`
 | Run only lint cops.
 
