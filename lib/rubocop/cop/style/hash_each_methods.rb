@@ -56,7 +56,6 @@ module RuboCop
           (call $(call _ ${:keys :values}) :each (block_pass (sym _)))
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
         def on_block(node)
           return unless handleable?(node)
 
@@ -66,12 +65,22 @@ module RuboCop
 
           return unless (key, value = each_arguments(node))
 
-          if unused_block_arg_exist?(node, value)
+          check_unused_block_args(node, key, value)
+        end
+        alias on_numblock on_block
+
+        # rubocop:disable Metrics/AbcSize
+        def check_unused_block_args(node, key, value)
+          value_unused = unused_block_arg_exist?(node, value)
+          key_unused = unused_block_arg_exist?(node, key)
+          return if value_unused && key_unused
+
+          if value_unused
             message = message('each_key', node.method_name, value.source)
             unused_range = key.source_range.end.join(value.source_range.end)
 
             register_each_args_offense(node, message, 'each_key', unused_range)
-          elsif unused_block_arg_exist?(node, key)
+          elsif key_unused
             message = message('each_value', node.method_name, key.source)
             unused_range = key.source_range.begin.join(value.source_range.begin)
 
@@ -79,8 +88,6 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/AbcSize
-
-        alias on_numblock on_block
 
         def on_block_pass(node)
           kv_each_with_block_pass(node.parent) do |target, method|
