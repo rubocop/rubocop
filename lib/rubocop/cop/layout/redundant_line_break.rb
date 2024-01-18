@@ -85,7 +85,11 @@ module RuboCop
 
         def offense?(node)
           node.multiline? && !too_long?(node) && suitable_as_single_line?(node) &&
-            !configured_to_not_be_inspected?(node)
+            !index_access_call_chained?(node) && !configured_to_not_be_inspected?(node)
+        end
+
+        def index_access_call_chained?(node)
+          node.send_type? && node.method?(:[]) && node.children.first.method?(:[])
         end
 
         def configured_to_not_be_inspected?(node)
