@@ -4835,8 +4835,9 @@ Style/RaiseArgs:
   Description: 'Checks the arguments passed to raise/fail.'
   StyleGuide: '#exception-class-messages'
   Enabled: true
+  Safe: false
   VersionAdded: '0.14'
-  VersionChanged: '1.2'
+  VersionChanged: '<<next>>'
   EnforcedStyle: exploded
   SupportedStyles:
     - compact # raise Exception.new(msg)

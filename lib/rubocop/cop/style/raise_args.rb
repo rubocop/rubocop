@@ -16,6 +16,9 @@ module RuboCop
       # The exploded style has an `AllowedCompactTypes` configuration
       # option that takes an Array of exception name Strings.
       #
+      # @safety
+      #   This cop is unsafe because `raise Foo` calls `Foo.exception`, not `Foo.new`.
+      #
       # @example EnforcedStyle: exploded (default)
       #   # bad
       #   raise StandardError.new('message')
