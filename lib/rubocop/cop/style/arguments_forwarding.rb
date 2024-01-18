@@ -104,7 +104,7 @@ module RuboCop
       #   end
       #
       # @example RedundantBlockArgumentNames: ['blk', 'block', 'proc'] (default)
-      #   # bad
+      #   # bad - But it is good with `EnforcedStyle: explicit` set for `Naming/BlockForwarding`.
       #   def foo(&block)
       #     bar(&block)
       #   end
@@ -291,7 +291,7 @@ module RuboCop
         end
 
         def register_forward_block_arg_offense(add_parens, def_arguments_or_send, block_arg)
-          return if target_ruby_version <= 3.0 || block_arg.source == '&'
+          return if target_ruby_version <= 3.0 || block_arg.source == '&' || explicit_block_name?
 
           add_offense(block_arg, message: BLOCK_MSG) do |corrector|
             add_parens_if_missing(def_arguments_or_send, corrector) if add_parens
@@ -468,6 +468,13 @@ module RuboCop
             (@rest_arg_name && !forwarded_rest_arg) ||
               (@kwrest_arg_name && !forwarded_kwrest_arg)
           end
+        end
+
+        def explicit_block_name?
+          block_forwarding_config = config.for_cop('Naming/BlockForwarding')
+          return false unless block_forwarding_config['Enabled']
+
+          block_forwarding_config['EnforcedStyle'] == 'explicit'
         end
       end
     end
