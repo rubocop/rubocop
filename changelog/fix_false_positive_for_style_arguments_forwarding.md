@@ -1,0 +1,1 @@
+* [#12628](https://github.com/rubocop/rubocop/pull/12628): Fix a false positive for `Style/ArgumentsForwarding` when using block arg forwarding with positional arguments forwarding to within block. ([@koic][])

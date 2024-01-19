@@ -836,6 +836,26 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'registers an offense when using block arg forwarding with positional arguments forwarding to within block' do
+      expect_offense(<<~RUBY)
+        def baz(qux, quuz, &block)
+                           ^^^^^^ Use anonymous block arguments forwarding (`&`).
+          with_block do
+            bar(qux, quuz, &block)
+                           ^^^^^^ Use anonymous block arguments forwarding (`&`).
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def baz(qux, quuz, &)
+          with_block do
+            bar(qux, quuz, &)
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense when using block arg forwarding with no forwarding arguments' do
       expect_offense(<<~RUBY)
         def before_transition(options = {}, &block)
