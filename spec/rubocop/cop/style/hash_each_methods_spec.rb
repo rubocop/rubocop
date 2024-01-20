@@ -105,6 +105,10 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         expect_no_offenses('foo.each { |*k, v| do_something(*k, v) }')
       end
 
+      it 'does not register an offense when both arguments of `Enumerable#each` are unused' do
+        expect_no_offenses('foo.each { |k, v| do_something }')
+      end
+
       it 'registers an offense when the rest value block argument of `Enumerable#each` method is unused' do
         expect_offense(<<~RUBY)
           foo.each { |k, *v| do_something(*v) }
