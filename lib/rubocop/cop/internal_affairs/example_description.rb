@@ -63,10 +63,10 @@ module RuboCop
           expect_correction: EXPECT_CORRECTION_DESCRIPTION_MAPPING
         }.freeze
 
-        # @!method offense_example?(node)
-        def_node_matcher :offense_example?, <<~PATTERN
+        # @!method offense_example(node)
+        def_node_matcher :offense_example, <<~PATTERN
           (block
-            (send _ {:it :specify} $_description)
+            (send _ {:it :specify} $...)
             _args
             `(send nil? %RESTRICT_ON_SEND ...)
           )
@@ -74,7 +74,7 @@ module RuboCop
 
         def on_send(node)
           parent = node.each_ancestor(:block).first
-          return unless parent && (current_description = offense_example?(parent))
+          return unless parent && (current_description = offense_example(parent)&.first)
 
           method_name = node.method_name
           message = format(MSG, method_name: method_name)
