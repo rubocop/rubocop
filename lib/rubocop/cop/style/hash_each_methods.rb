@@ -71,6 +71,8 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize
         def check_unused_block_args(node, key, value)
+          return if node.body.nil?
+
           value_unused = unused_block_arg_exist?(node, value)
           key_unused = unused_block_arg_exist?(node, key)
           return if value_unused && key_unused
