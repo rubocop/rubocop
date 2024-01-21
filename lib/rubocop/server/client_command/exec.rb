@@ -17,7 +17,6 @@ module RuboCop
       class Exec < Base
         def run
           ensure_server!
-          Cache.status_path.delete if Cache.status_path.file?
           read_stdin = ARGV.include?('-s') || ARGV.include?('--stdin')
           send_request(
             command: 'exec',
