@@ -216,14 +216,14 @@ Normally, RuboCop extracts one Ruby code from one Ruby file, however there are m
 Ruby extractor must be a callable object that takes a `RuboCop::ProcessedSource` and returns an `Array` of `Hash` that contains Ruby source codes and their offsets from original source code, or returns `nil` for unrelated file.
 
 [source,ruby]
----
+----
 ruby_extractor.call(processed_source)
----
+----
 
 An example returned value from a Ruby extractor would be as follows:
 
-[source]
----
+[source,ruby]
+----
 [
   {
     offset: 2,
@@ -232,16 +232,16 @@ An example returned value from a Ruby extractor would be as follows:
   {
     offset: 10,
     processed_source: #<RuboCop::ProcessedSource>
-  },
+  }
 ]
----
+----
 
 On the extension side, the code would be something like this:
 
 [source,ruby]
----
+----
 RuboCop::Runner.ruby_extractors.unshift(ruby_extractor)
----
+----
 
 `RuboCop::Runners.ruby_extractors` is processed from the beginning and ends when one of them returns a non-nil value. By default, there is a Ruby extractor that returns the given Ruby source code with offset 0, so you can unshift any Ruby extractor before it.
 
