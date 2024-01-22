@@ -854,7 +854,7 @@ RSpec.describe RuboCop::ConfigLoader do
             .to output(
               a_string_including(
                 '.rubocop.yml: Custom/Loop has the ' \
-                "wrong namespace - should be Lint\n"
+                "wrong namespace - replace it with Lint/Loop\n"
               )
             ).to_stderr
         end

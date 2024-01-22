@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Registry do
 
     it 'emits a warning when namespace is incorrect' do
       warning = '/app/.rubocop.yml: Style/MethodLength has the wrong ' \
-                "namespace - should be Metrics\n"
+                "namespace - replace it with Metrics/MethodLength\n"
       qualified = nil
 
       expect do
