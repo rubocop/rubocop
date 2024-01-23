@@ -610,7 +610,7 @@ AllCops:
 
 Otherwise, RuboCop will then check your project for a series of files where
 the version may be specified already. The files that will be looked for are
-`.ruby-version`, `.tool-versions`, `Gemfile.lock`, and `*.gemspec`.
+`*.gemspec`, `.ruby-version`, `.tool-versions`, and `Gemfile.lock`.
 If Gemspec file has an array for `required_ruby_version`, the lowest version will be used.
 If none of the files are found a default version value will be used.
 
