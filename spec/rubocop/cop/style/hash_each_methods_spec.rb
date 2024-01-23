@@ -179,6 +179,54 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `assoc`' do
+        expect_no_offenses(<<~RUBY)
+          foo.assoc(key).each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `flatten`' do
+        expect_no_offenses(<<~RUBY)
+          foo.flatten.each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `rassoc`' do
+        expect_no_offenses(<<~RUBY)
+          foo.rassoc(value).each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `sort`' do
+        expect_no_offenses(<<~RUBY)
+          foo.sort.each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `sort_by`' do
+        expect_no_offenses(<<~RUBY)
+          foo.sort_by { |k, v| v }.each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `sort_by` with numblock' do
+        expect_no_offenses(<<~RUBY)
+          foo.sort_by { _2 }.each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `to_a`' do
+        expect_no_offenses(<<~RUBY)
+          foo.to_a.each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `to_a` with safe navigation' do
+        expect_no_offenses(<<~RUBY)
+          foo&.to_a.each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
       it 'registers an offense when the destructed key block argument of `Enumerable#each` method is unused' do
         expect_offense(<<~RUBY)
           foo.each { |(_, unused_key), v| do_something(v) }
