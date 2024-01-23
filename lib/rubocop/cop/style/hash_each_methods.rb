@@ -40,6 +40,7 @@ module RuboCop
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
         UNUSED_BLOCK_ARG_MSG = "#{MSG.chop} and remove the unused `%<unused_code>s` block argument."
+        ARRAY_CONVERTER_METHODS = %i[assoc flatten rassoc sort sort_by to_a].freeze
 
         # @!method kv_each(node)
         def_node_matcher :kv_each, <<~PATTERN
@@ -100,6 +101,7 @@ module RuboCop
         private
 
         def handleable?(node)
+          return false if use_array_converter_method_as_preceding?(node)
           return false unless (root_receiver = root_receiver(node))
 
           !root_receiver.literal? || root_receiver.hash_type?
@@ -150,6 +152,16 @@ module RuboCop
           add_offense(range, message: format_message(method, range.source)) do |corrector|
             corrector.replace(range, "each_#{method[0..-2]}")
           end
+        end
+
+        def use_array_converter_method_as_preceding?(node)
+          return false unless (preceding_method = node.children.first.children.first)
+          unless preceding_method.call_type? ||
+                 preceding_method.block_type? || preceding_method.numblock_type?
+            return false
+          end
+
+          ARRAY_CONVERTER_METHODS.include?(preceding_method.method_name)
         end
 
         def root_receiver(node)
