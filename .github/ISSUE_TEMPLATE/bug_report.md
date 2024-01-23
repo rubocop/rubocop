@@ -1,6 +1,7 @@
 ---
 name: Bug Report
 about: Report an issue with RuboCop you've discovered.
+labels: bug
 ---
 
 *Be clear, concise and precise in your description of the problem.
