@@ -475,7 +475,7 @@ end
 
 [source,ruby]
 ----
-# bad
+# bad - But it is good with `EnforcedStyle: explicit` set for `Naming/BlockForwarding`.
 def foo(&block)
   bar(&block)
 end
