@@ -27,7 +27,7 @@ group :test do
   gem 'base64'
   # FIXME: This `bigdecimal` dependency can be removed when https://github.com/jnunemaker/crack/pull/75
   # is merged and released. It's a workaround until then.
-  gem 'bigdecimal', platform: %i[mri windows]
+  gem 'bigdecimal', platform: :mri
   gem 'webmock', require: false
 end
 
