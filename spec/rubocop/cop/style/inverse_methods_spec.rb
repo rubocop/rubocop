@@ -209,6 +209,30 @@ RSpec.describe RuboCop::Cop::Style::InverseMethods, :config do
     end
   end
 
+  it 'allows comparing for relational comparison operator (`<`) with safe navigation operator' do
+    expect_no_offenses(<<~RUBY)
+      !nullable&.<(0)
+    RUBY
+  end
+
+  it 'allows comparing for relational comparison operator (`<=`) with safe navigation operator' do
+    expect_no_offenses(<<~RUBY)
+      !nullable&.<=(0)
+    RUBY
+  end
+
+  it 'allows comparing for relational comparison operator (`>`) with safe navigation operator' do
+    expect_no_offenses(<<~RUBY)
+      !nullable&.>(0)
+    RUBY
+  end
+
+  it 'allows comparing for relational comparison operator (`>=`) with safe navigation operator' do
+    expect_no_offenses(<<~RUBY)
+      !nullable&.>=(0)
+    RUBY
+  end
+
   it 'allows comparing camel case constants on the right' do
     expect_no_offenses(<<~RUBY)
       klass = self.class
