@@ -17,7 +17,7 @@ module RuboCop
         private
 
         def add_offense_from_diagnostic(diagnostic, ruby_version)
-          message = if lsp_mode?
+          message = if Base.lsp_mode?
                       diagnostic.message
                     else
                       "#{diagnostic.message}\n(Using Ruby #{ruby_version} parser; " \

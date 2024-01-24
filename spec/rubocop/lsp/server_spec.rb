@@ -5,6 +5,10 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
 
   subject(:result) { run_server_on_requests(*requests) }
 
+  after do
+    RuboCop::Cop::Base.disable_lsp_mode
+  end
+
   let(:messages) { result[0] }
   let(:stderr) { result[1].string }
 
