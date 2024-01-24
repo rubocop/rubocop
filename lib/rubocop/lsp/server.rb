@@ -20,6 +20,8 @@ module RuboCop
     # @api private
     class Server
       def initialize(config_store)
+        RuboCop::Cop::Base.enable_lsp_mode
+
         @reader = LanguageServer::Protocol::Transport::Io::Reader.new($stdin)
         @writer = LanguageServer::Protocol::Transport::Io::Writer.new($stdout)
         @runtime = RuboCop::Lsp::Runtime.new(config_store)

@@ -130,7 +130,11 @@ end
 
 RSpec.shared_context 'lsp mode' do
   before do
-    allow(cop).to receive(:lsp_mode?).and_return(true)
+    RuboCop::Cop::Base.enable_lsp_mode
+  end
+
+  after do
+    RuboCop::Cop::Base.disable_lsp_mode
   end
 end
 
