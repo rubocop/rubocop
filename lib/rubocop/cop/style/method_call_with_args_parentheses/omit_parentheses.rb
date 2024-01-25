@@ -132,7 +132,7 @@ module RuboCop
               call_in_match_pattern?(node) ||
               hash_literal_in_arguments?(node) ||
               node.descendants.any? do |n|
-                n.forwarded_args_type? || n.block_type? ||
+                n.forwarded_args_type? || n.block_type? || n.numblock_type? ||
                   ambiguous_literal?(n) || logical_operator?(n)
               end
           end

@@ -771,6 +771,18 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo(1) { 2 }')
     end
 
+    it 'accepts parens around argument values with blocks' do
+      expect_no_offenses(<<~RUBY)
+        Foo::Bar.find(pending.things.map { |t| t['code'] }.first)
+      RUBY
+    end
+
+    it 'accepts parens around argument values with numblocks', :ruby27 do
+      expect_no_offenses(<<~RUBY)
+        Foo::Bar.find(pending.things.map { _1['code'] })
+      RUBY
+    end
+
     it 'accepts parens in array literal calls with blocks' do
       expect_no_offenses(<<~RUBY)
         [
@@ -1016,6 +1028,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
 
       it 'accepts no parens in the last call if previous calls with parens' do
         expect_no_offenses('foo().bar(3).wait 4')
+      end
+
+      it 'accept parens when previously chained sends have numblocks', :ruby27 do
+        expect_no_offenses(<<~RUBY)
+          [a, b].map { _1.call 'something' }.uniq.join(' - ')
+        RUBY
       end
 
       it 'accepts parens in the last call if any previous calls with parentheses' do
