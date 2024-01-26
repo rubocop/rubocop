@@ -2668,6 +2668,11 @@ Lint/Void:
 
 #################### Metrics ###############################
 
+Lint/VoidValueExpression:
+  Description: 'TODO: Write a description of the cop.'
+  Enabled: true
+  VersionAdded: '<<next>>'
+
 Metrics/AbcSize:
   Description: >-
                  A calculated magnitude based on number of assignments,
