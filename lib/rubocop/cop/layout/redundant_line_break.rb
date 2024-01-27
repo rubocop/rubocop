@@ -89,7 +89,9 @@ module RuboCop
         end
 
         def index_access_call_chained?(node)
-          node.send_type? && node.method?(:[]) && node.children.first.method?(:[])
+          return false unless node.send_type? && node.method?(:[])
+
+          node.children.first.send_type? && node.children.first.method?(:[])
         end
 
         def configured_to_not_be_inspected?(node)
