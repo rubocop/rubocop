@@ -315,7 +315,10 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           end.to raise_error(
             described_class::InfiniteCorrectionLoop,
             "Infinite loop detected in #{source_file_path} and caused by " \
-            'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
+            'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop ' \
+            '\n\nPlease update to the latest RuboCop version if not already in use, ' \
+            '\nand report a bug if the issue still occurs on this version. ' \
+            '\n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
           )
         end
       end
@@ -335,7 +338,10 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           end.to raise_error(
             described_class::InfiniteCorrectionLoop,
             "Infinite loop detected in #{source_file_path} and caused by " \
-            'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
+            'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop ' \
+            '\n\nPlease update to the latest RuboCop version if not already in use, ' \
+            '\nand report a bug if the issue still occurs on this version. ' \
+            '\n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
           )
         end
       end
@@ -372,7 +378,10 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             described_class::InfiniteCorrectionLoop,
             "Infinite loop detected in #{source_file_path} and caused by " \
             'Test/ClassMustBeAModuleCop, Test/AtoB ' \
-            '-> Test/ModuleMustBeAClassCop, Test/BtoA'
+            '-> Test/ModuleMustBeAClassCop, Test/BtoA ' \
+            '\n\nPlease update to the latest RuboCop version if not already in use, ' \
+            '\nand report a bug if the issue still occurs on this version. ' \
+            '\n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
           )
         end
       end
@@ -406,7 +415,10 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             end.to raise_error(
               described_class::InfiniteCorrectionLoop,
               "Infinite loop detected in #{source_file_path} and caused by " \
-              'Test/AtoB -> Test/BtoC -> Test/CtoA'
+              'Test/AtoB -> Test/BtoC -> Test/CtoA ' \
+              '\n\nPlease update to the latest RuboCop version if not already in use, ' \
+              '\nand report a bug if the issue still occurs on this version. ' \
+              '\n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
             )
           end
         end
