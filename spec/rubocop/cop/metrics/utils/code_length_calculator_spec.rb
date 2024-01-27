@@ -19,6 +19,29 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
         expect(length).to eq(5)
       end
 
+      context 'block comments' do
+        it 'does not count block comments in the middle of a method definition' do
+          source = parse_source(<<~RUBY)
+            def testting
+              a = 1
+              # This is a comment
+            =begin
+            kkkkkk = 92
+            =end
+              # ANOTHER comment
+            =begin
+            a = 6
+            =end
+              b = 2
+            end
+          RUBY
+
+          # source is a ProcessedSource, and node is source.ast
+          length = described_class.new(source.ast, source).calculate
+          expect(length).to eq(2)
+        end
+      end
+
       it 'does not count blank lines' do
         source = parse_source(<<~RUBY)
           def test

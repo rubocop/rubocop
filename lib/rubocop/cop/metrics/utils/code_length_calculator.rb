@@ -79,7 +79,27 @@ module RuboCop
                   body.source.lines
                 end
 
-              source.count { |line| !irrelevant_line?(line) }
+              source = clean_block_comments(source, false) if true
+              source.count { |line| !irrelevant_line?(line) } # This filters out the comments
+            end
+          end
+
+          def clean_block_comments(lines, inside_block_comment)
+            return [] if lines.empty?
+
+            head = lines.shift
+            if inside_block_comment
+              if head[..3] == '=end'
+                return [] + clean_block_comments(lines, false)
+              else
+                return [] + clean_block_comments(lines, true)
+              end
+            else
+              if head[..5] == '=begin'
+                return [] + clean_block_comments(lines, true)
+              else
+                return [head] + clean_block_comments(lines, false)
+              end
             end
           end
 
