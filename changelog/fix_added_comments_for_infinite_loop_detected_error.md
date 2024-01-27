@@ -1,0 +1,1 @@
+* [#12547](https://github.com/rubocop/rubocop/issues/12547): Added a comment recommending upgrading to the latest version of Rubocop in the error text when an Infinite loop detected error occurs. ([@Hiroto-Iizuka][])
