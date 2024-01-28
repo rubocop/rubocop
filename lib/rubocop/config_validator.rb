@@ -18,6 +18,7 @@ module RuboCop
     # @api private
     CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect].to_set.freeze
     CONFIG_CHECK_DEPARTMENTS = %w[pending override_department].freeze
+    CONFIG_CHECK_AUTOCORRECTS = %w[always contextual disabled].freeze
     private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
 
     def_delegators :@config, :smart_loaded_path, :for_all_cops
@@ -248,23 +249,31 @@ module RuboCop
       end
     end
 
+    # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
     def check_cop_config_value(hash, parent = nil)
       hash.each do |key, value|
         check_cop_config_value(value, key) if value.is_a?(Hash)
 
         next unless CONFIG_CHECK_KEYS.include?(key) && value.is_a?(String)
 
-        next if key == 'Enabled' && CONFIG_CHECK_DEPARTMENTS.include?(value)
+        if key == 'Enabled' && !CONFIG_CHECK_DEPARTMENTS.include?(value)
+          supposed_values = 'a boolean'
+        elsif key == 'AutoCorrect' && !CONFIG_CHECK_AUTOCORRECTS.include?(value)
+          supposed_values = '`always`, `contextual`, `disabled`, or a boolean'
+        else
+          next
+        end
 
-        raise ValidationError, msg_not_boolean(parent, key, value)
+        raise ValidationError, param_error_message(parent, key, value, supposed_values)
       end
     end
+    # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
     # FIXME: Handling colors in exception messages like this is ugly.
-    def msg_not_boolean(parent, key, value)
+    def param_error_message(parent, key, value, supposed_values)
       "#{Rainbow('').reset}" \
         "Property #{Rainbow(key).yellow} of #{Rainbow(parent).yellow} cop " \
-        "is supposed to be a boolean and #{Rainbow(value).yellow} is not."
+        "is supposed to be #{supposed_values} and #{Rainbow(value).yellow} is not."
     end
   end
 end

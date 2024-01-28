@@ -556,7 +556,9 @@ Layout/ElseAlignment:
 Layout/EmptyComment:
   Description: 'Checks empty comment.'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.53'
+  VersionChanged: '<<next>>'
   AllowBorderComment: true
   AllowMarginComment: true
 
@@ -1825,16 +1827,18 @@ Lint/EmptyClass:
 Lint/EmptyConditionalBody:
   Description: 'Checks for the presence of `if`, `elsif` and `unless` branches without a body.'
   Enabled: true
+  AutoCorrect: contextual
   SafeAutoCorrect: false
   AllowComments: true
   VersionAdded: '0.89'
-  VersionChanged: '1.34'
+  VersionChanged: '<<next>>'
 
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.10'
-  VersionChanged: '0.48'
+  VersionChanged: '<<next>>'
 
 Lint/EmptyExpression:
   Description: 'Checks for empty expressions.'
@@ -1856,8 +1860,9 @@ Lint/EmptyInPattern:
 Lint/EmptyInterpolation:
   Description: 'Checks for empty string interpolation.'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.20'
-  VersionChanged: '0.45'
+  VersionChanged: '<<next>>'
 
 Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
@@ -2395,7 +2400,9 @@ Lint/TopLevelReturnWithArgument:
 Lint/TrailingCommaInAttributeDeclaration:
   Description: 'Checks for trailing commas in attribute declarations.'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.90'
+  VersionChanged: '<<next>>'
 
 Lint/TripleQuotes:
   Description: 'Checks for useless triple quote constructs.'
@@ -2455,8 +2462,9 @@ Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.21'
-  VersionChanged: '0.22'
+  VersionChanged: '<<next>>'
   IgnoreEmptyBlocks: true
   AllowUnusedKeywordArguments: false
 
@@ -2464,8 +2472,9 @@ Lint/UnusedMethodArgument:
   Description: 'Checks for unused method arguments.'
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.21'
-  VersionChanged: '0.81'
+  VersionChanged: '<<next>>'
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
   IgnoreNotImplementedMethods: true
@@ -2489,8 +2498,9 @@ Lint/UriRegexp:
 Lint/UselessAccessModifier:
   Description: 'Checks for useless access modifiers.'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.20'
-  VersionChanged: '0.83'
+  VersionChanged: '<<next>>'
   ContextCreatingMethods: []
   MethodCreatingMethods: []
 
@@ -2498,8 +2508,9 @@ Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.11'
-  VersionChanged: '1.51'
+  VersionChanged: '<<next>>'
   SafeAutoCorrect: false
 
 Lint/UselessElseWithoutRescue:
@@ -2511,8 +2522,9 @@ Lint/UselessElseWithoutRescue:
 Lint/UselessMethodDefinition:
   Description: 'Checks for useless method definitions.'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.90'
-  VersionChanged: '0.91'
+  VersionChanged: '<<next>>'
   Safe: false
 
 Lint/UselessRescue:
@@ -2535,13 +2547,17 @@ Lint/UselessSetterCall:
 Lint/UselessTimes:
   Description: 'Checks for useless `Integer#times` calls.'
   Enabled: true
-  VersionAdded: '0.91'
   Safe: false
+  AutoCorrect: contextual
+  VersionAdded: '0.91'
+  VersionChanged: '<<next>>'
 
 Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.9'
+  VersionChanged: '<<next>>'
   CheckForMethodsWithNoSideEffects: false
 
 #################### Metrics ###############################
@@ -3701,8 +3717,9 @@ Style/EmptyCaseCondition:
 Style/EmptyElse:
   Description: 'Avoid empty else-clauses.'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.28'
-  VersionChanged: '0.32'
+  VersionChanged: '<<next>>'
   EnforcedStyle: both
   # empty - warn only on empty `else`
   # nil - warn on `else` with nil in it
@@ -3716,7 +3733,9 @@ Style/EmptyElse:
 Style/EmptyHeredoc:
   Description: 'Checks for using empty heredoc to reduce redundancy.'
   Enabled: pending
+  AutoCorrect: contextual
   VersionAdded: '1.32'
+  VersionChanged: '<<next>>'
 
 Style/EmptyLambdaParameter:
   Description: 'Omit parens for empty lambda parameters.'
@@ -3734,7 +3753,9 @@ Style/EmptyMethod:
   Description: 'Checks the formatting of empty method definitions.'
   StyleGuide: '#no-single-line-methods'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.46'
+  VersionChanged: '<<next>>'
   EnforcedStyle: compact
   SupportedStyles:
     - compact
@@ -4978,10 +4999,11 @@ Style/RedundantHeredocDelimiterQuotes:
 Style/RedundantInitialize:
   Description: 'Checks for redundant `initialize` methods.'
   Enabled: pending
+  AutoCorrect: contextual
   Safe: false
   AllowComments: true
   VersionAdded: '1.27'
-  VersionChanged: '1.28'
+  VersionChanged: '<<next>>'
 
 Style/RedundantInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'

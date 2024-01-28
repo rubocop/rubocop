@@ -1820,6 +1820,29 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'configuration of `AutoCorrect`' do
+    context 'when setting `AutoCorrect: disabled` for `Style/StringLiterals`' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Style/StringLiterals:
+            AutoCorrect: disabled
+        YAML
+      end
+
+      it 'does not suggest `1 offense autocorrectable` for `Style/StringLiterals`' do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          a = "Hello"
+        RUBY
+
+        expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+        expect($stdout.string.lines.to_a.last).to eq(
+          "1 file inspected, 2 offenses detected, 1 offense autocorrectable\n"
+        )
+      end
+    end
+
+    # For backward compatibility, `false` is treated the same as `'disabled'`.
     context 'when setting `AutoCorrect: false` for `Style/StringLiterals`' do
       before do
         create_file('.rubocop.yml', <<~YAML)

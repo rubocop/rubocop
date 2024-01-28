@@ -100,10 +100,10 @@ RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
   let(:cur_cop_config) do
     RuboCop::ConfigLoader
       .default_configuration.for_cop(cop_class)
-      .merge({
-               'Enabled' => true, # in case it is 'pending'
-               'AutoCorrect' => true # in case defaults set it to false
-             })
+      .merge(
+        'Enabled' => true, # in case it is 'pending'
+        'AutoCorrect' => 'always' # in case defaults set it to 'disabled' or false
+      )
       .merge(cop_config)
   end
 
