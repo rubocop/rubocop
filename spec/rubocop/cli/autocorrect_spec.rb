@@ -1077,7 +1077,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', source)
     create_file('.rubocop.yml', <<~YAML)
       Layout/DefEndAlignment:
-        AutoCorrect: true
+        AutoCorrect: always
     YAML
     expect(cli.run(['--autocorrect-all'])).to eq(0)
     corrected = <<~RUBY
@@ -1869,7 +1869,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       AllCops:
         TargetRubyVersion: 2.7
       Style/Semicolon:
-        AutoCorrect: false
+        AutoCorrect: disabled
     YAML
     create_file('example.rb', src)
     exit_status = cli.run(
@@ -1942,7 +1942,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('example.rb', 'puts "Hello", 123456')
     create_file('.rubocop.yml', <<~YAML)
       Style/StringLiterals:
-        AutoCorrect: false
+        AutoCorrect: disabled
     YAML
     expect(cli.run(%w[--autocorrect-all])).to eq(1)
     expect($stderr.string).to eq('')
@@ -2852,7 +2852,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     create_file('.rubocop.yml', <<~YAML)
       Layout/BeginEndAlignment:
         EnforcedStyleAlignWith: start_of_line
-        AutoCorrect: true
+        AutoCorrect: always
 
       Layout/CaseIndentation:
         EnforcedStyle: end

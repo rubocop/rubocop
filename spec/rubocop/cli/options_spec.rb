@@ -2006,11 +2006,11 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       end
     end
 
-    context 'when setting `AutoCorrect: false` for `Style/StringLiterals`' do
+    context 'when setting `AutoCorrect: disabled` for `Style/StringLiterals`' do
       before do
         create_file('.rubocop.yml', <<~YAML)
           Style/StringLiterals:
-            AutoCorrect: false
+            AutoCorrect: disabled
         YAML
       end
 

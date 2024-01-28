@@ -1709,6 +1709,24 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'does not set `always`, `contextual`, `disabled`, or boolean to `AutoCorrect`' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          Layout/EmptyComment:
+            AutoCorrect: unknown
+        YAML
+      end
+
+      it 'gets a warning message' do
+        expect do
+          load_file
+        end.to raise_error(
+          RuboCop::ValidationError,
+          /supposed to be `always`, `contextual`, `disabled`, or a boolean and unknown is not/
+        )
+      end
+    end
+
     context 'does not set `pending`, `disable`, or `enable` to `NewCops`' do
       before do
         create_file(configuration_path, <<~YAML)

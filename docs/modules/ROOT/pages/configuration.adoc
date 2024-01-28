@@ -567,13 +567,46 @@ These details will only be seen when RuboCop is run with the `--extra-details` f
 
 === AutoCorrect
 
-Cops that support the `--autocorrect` option can have that support
-disabled. For example:
+Cops that support the `--autocorrect` option offer flexible settings for autocorrection.
+These settings can be specified in the configuration file as follows:
+
+- `always`
+- `contextual`
+- `disabled`
+
+==== `always (Default)`
+
+This setting enables autocorrection always by default. For backward compatibility, `true` is treated the same as `always`.
 
 [source,yaml]
 ----
 Style/PerlBackrefs:
-  AutoCorrect: false
+  AutoCorrect: always # or true
+----
+
+==== `contextual`
+
+This setting enables autocorrection when launched from the `rubocop` command, but it is not available through LSP.
+e.g., `rubocop --lsp` or a program where `RuboCop::LSP.enable` has been applied.
+
+Inspections via the command line are treated as code that has been finalized.
+
+[source,yaml]
+----
+Style/PerlBackrefs:
+  AutoCorrect: contextual
+----
+
+This setting prevents autocorrection during editing in the editor.
+
+==== `disabled`
+
+This setting disables autocorrection. For backward compatibility, `false` is treated the same as `disabled`.
+
+[source,yaml]
+----
+Style/PerlBackrefs:
+  AutoCorrect: disabled # or false
 ----
 
 == Common configuration parameters

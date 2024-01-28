@@ -195,6 +195,51 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     end
   end
 
+  describe 'format by default (safe autocorrect) with an `AutoCorrect: contextual` cop' do
+    let(:empty_comment) { "##{eol}" }
+
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: empty_comment,
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [{ text: empty_comment }],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests, but does not autocorrect with `Layout/EmptyComment` as an `AutoCorrect: contextual` cop' do
+      expect(stderr).to eq('')
+      format_result = messages.last
+      expect(format_result).to eq(jsonrpc: '2.0', id: 20, result: [])
+    end
+  end
+
   describe 'format with `safeAutocorrect: true`' do
     let(:requests) do
       [

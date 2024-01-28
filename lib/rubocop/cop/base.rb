@@ -305,6 +305,17 @@ module RuboCop
         @current_original = original
       end
 
+      # @api private
+      def always_autocorrect?
+        # `true` is the same as `'always'` for backward compatibility.
+        ['always', true].include?(cop_config.fetch('AutoCorrect', 'always'))
+      end
+
+      # @api private
+      def contextual_autocorrect?
+        cop_config.fetch('AutoCorrect', 'always') == 'contextual'
+      end
+
       def inspect # :nodoc:
         "#<#{self.class.name}:#{object_id} @config=#{@config} @options=#{@options}>"
       end
@@ -389,7 +400,7 @@ module RuboCop
       def use_corrector(range, corrector)
         if autocorrect?
           attempt_correction(range, corrector)
-        elsif corrector && cop_config.fetch('AutoCorrect', true)
+        elsif corrector && (always_autocorrect? || (contextual_autocorrect? && !LSP.enabled?))
           :uncorrected
         else
           :unsupported

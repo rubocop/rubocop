@@ -97,7 +97,9 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       'Version Changed'
     ]
     autocorrect = if cop.support_autocorrect?
-                    "Yes#{' (Unsafe)' unless cop.new(config).safe_autocorrect?}"
+                    context = cop.new.always_autocorrect? ? 'Always' : 'Command-line only'
+
+                    "#{context}#{' (Unsafe)' unless cop.new(config).safe_autocorrect?}"
                   else
                     'No'
                   end
