@@ -79,8 +79,8 @@ module RuboCop
                   body.source.lines
                 end
 
-              source = clean_block_comments(source, false) if true
-              source.count { |line| !irrelevant_line?(line) } # This filters out the comments
+              source = clean_block_comments(source, false) unless count_comments?
+              source.count { |line| !irrelevant_line?(line) }
             end
           end
 
@@ -112,10 +112,13 @@ module RuboCop
                                   line_numbers_of_inner_nodes(node, :module, :class)
 
             # OPTIMIZE: too much loops over the target_line_numbers array
-            clean_block_comments(
-              target_line_numbers.map { |line_number| @processed_source[line_number] }, false
-            )
-              .reduce(0) do |length, source_line|
+            if count_comments?
+              target_line_numbers.map { |line_number| @processed_source[line_number] }
+            else
+              clean_block_comments(
+                target_line_numbers.map { |line_number| @processed_source[line_number] }, false
+              )
+            end.reduce(0) do |length, source_line|
               next length if irrelevant_line?(source_line) # TARGET
 
               length + 1

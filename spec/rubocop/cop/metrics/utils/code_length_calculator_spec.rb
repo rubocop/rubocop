@@ -36,7 +36,6 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
             end
           RUBY
 
-          # source is a ProcessedSource, and node is source.ast
           length = described_class.new(source.ast, source).calculate
           expect(length).to eq(2)
         end
