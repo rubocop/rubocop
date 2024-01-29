@@ -1,0 +1,1 @@
+* [#12658](https://github.com/rubocop/rubocop/pull/12658): Fixes bug in `Metrics/MethodLength` cop: the cop does not count block comments even though count comments setting is turned on. ([@KarlHeitmann][])
