@@ -336,6 +336,24 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
     end
 
     context 'when class' do
+      context 'when contains block comment' do
+        it 'calculates class length' do
+          source = parse_source(<<~RUBY)
+            class Test
+              a = 1
+            =begin
+                z = 9
+            =end
+              # a = 2
+              a = 3
+            end
+          RUBY
+
+          length = described_class.new(source.ast, source).calculate
+          expect(length).to eq(2)
+        end
+      end
+
       it 'calculates class length' do
         source = parse_source(<<~RUBY)
           class Test
