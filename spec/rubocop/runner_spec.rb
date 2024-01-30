@@ -318,7 +318,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop ' \
             '\n\nPlease update to the latest RuboCop version if not already in use, ' \
             '\nand report a bug if the issue still occurs on this version. ' \
-            '\n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
+            '\n\nPlease check the latest version at https://rubygems.org/gems/rubocop'
           )
         end
       end
@@ -341,7 +341,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop ' \
             '\n\nPlease update to the latest RuboCop version if not already in use, ' \
             '\nand report a bug if the issue still occurs on this version. ' \
-            '\n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
+            '\n\nPlease check the latest version at https://rubygems.org/gems/rubocop'
           )
         end
       end
@@ -381,7 +381,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             '-> Test/ModuleMustBeAClassCop, Test/BtoA ' \
             '\n\nPlease update to the latest RuboCop version if not already in use, ' \
             '\nand report a bug if the issue still occurs on this version. ' \
-            '\n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
+            '\n\nPlease check the latest version at https://rubygems.org/gems/rubocop'
           )
         end
       end
@@ -418,7 +418,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
               'Test/AtoB -> Test/BtoC -> Test/CtoA ' \
               '\n\nPlease update to the latest RuboCop version if not already in use, ' \
               '\nand report a bug if the issue still occurs on this version. ' \
-              '\n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
+              '\n\nPlease check the latest version at https://rubygems.org/gems/rubocop'
             )
           end
         end
