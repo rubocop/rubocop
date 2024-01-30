@@ -11,6 +11,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12661](https://github.com/rubocop/rubocop/pull/12661): Fix error when running `Style/InvertibleUnlessCondition` on node with no receiver. ([@shioyama][])
+
 ## 1.60.2 (2024-01-24)
 
 ### Bug fixes
@@ -7579,3 +7583,4 @@
 [@kpost]: https://github.com/kpost
 [@marocchino]: https://github.com/marocchino
 [@Strzesia]: https://github.com/Strzesia
+[@shioyama]: https://github.com/shioyama
