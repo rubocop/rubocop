@@ -22,7 +22,7 @@ module RuboCop
         message += " and caused by #{root_cause}" if root_cause
         message += ' \n\nPlease update to the latest RuboCop version if not already in use,'
         message += ' \nand report a bug if the issue still occurs on this version.'
-        message += ' \n\nPlease check the latest version at "https://rubygems.org/gems/rubocop"'
+        message += ' \n\nPlease check the latest version at https://rubygems.org/gems/rubocop'
         super(message)
       end
     end
