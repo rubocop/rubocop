@@ -114,4 +114,14 @@ RSpec.describe RuboCop::Cop::Style::InvertibleUnlessCondition, :config do
       foo if !condition
     RUBY
   end
+
+  it 'registers correct offense when there is no receiver' do
+    expect_offense(<<~RUBY)
+      module Bar
+        unless include?(Kernel)
+        ^^^^^^^^^^^^^^^^^^^^^^^ Prefer `if exclude?(Kernel)` over `unless include?(Kernel)`.
+        end
+      end
+    RUBY
+  end
 end

@@ -100,22 +100,24 @@ module RuboCop
         end
 
         def preferred_send_condition(node)
-          receiver_source = node.receiver.source
-          return receiver_source if node.method?(:!)
+          receiver_source = node.receiver&.source
+
+          return receiver_source if receiver_source && node.method?(:!)
 
           inverse_method_name = inverse_methods[node.method_name]
-          return "#{receiver_source}.#{inverse_method_name}" unless node.arguments?
+          inverse_method_source = [receiver_source, inverse_method_name].compact.join('.')
+
+          return inverse_method_source unless node.arguments?
 
           argument_list = node.arguments.map(&:source).join(', ')
+
           if node.operator_method?
-            return "#{receiver_source} #{inverse_method_name} #{argument_list}"
+            "#{receiver_source} #{inverse_method_name} #{argument_list}"
+          elsif node.parenthesized?
+            "#{inverse_method_source}(#{argument_list})"
+          else
+            "#{inverse_method_source} #{argument_list}"
           end
-
-          if node.parenthesized?
-            return "#{receiver_source}.#{inverse_method_name}(#{argument_list})"
-          end
-
-          "#{receiver_source}.#{inverse_method_name} #{argument_list}"
         end
 
         def preferred_logical_condition(node)
