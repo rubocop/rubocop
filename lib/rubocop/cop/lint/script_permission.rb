@@ -46,14 +46,14 @@ module RuboCop
           message = format_message_from(processed_source)
 
           add_offense(comment, message: message) do
-            autocorrect(comment) if autocorrect_requested?
+            autocorrect if autocorrect_requested?
           end
         end
 
         private
 
-        def autocorrect(comment)
-          FileUtils.chmod('+x', comment.source_range.source_buffer.name)
+        def autocorrect
+          FileUtils.chmod('+x', processed_source.file_path)
         end
 
         def executable?(processed_source)
