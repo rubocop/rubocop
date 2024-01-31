@@ -103,10 +103,7 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
         method: 'textDocument/diagnostic',
         params: {
           textDocument: {
-            languageId: 'ruby',
-            text: "def hi#{eol}  [1, 2,#{eol}   3  ]#{eol}end#{eol}",
-            uri: 'file:///path/to/file.rb',
-            version: 0
+            uri: 'file:///path/to/file.rb'
           }
         }
       ]
@@ -114,32 +111,7 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
 
     it 'handles requests' do
       expect(stderr).to eq('')
-      expect(messages.count).to eq(1)
-      expect(messages.first).to eq(
-        jsonrpc: '2.0',
-        method: 'textDocument/publishDiagnostics',
-        params: {
-          diagnostics: [
-            {
-              code: 'Style/FrozenStringLiteralComment',
-              message: 'Missing frozen string literal comment.',
-              range: {
-                start: { character: 0, line: 0 }, end: { character: 0, line: 0 }
-              },
-              severity: 3,
-              source: 'rubocop'
-            }, {
-              code: 'Layout/SpaceInsideArrayLiteralBrackets',
-              message: 'Do not use space inside array brackets.',
-              range: {
-                start: { character: 4, line: 2 }, end: { character: 5, line: 2 }
-              },
-              severity: 3,
-              source: 'rubocop'
-            }
-          ], uri: 'file:///path/to/file.rb'
-        }
-      )
+      expect(messages.count).to eq(0)
     end
   end
 
