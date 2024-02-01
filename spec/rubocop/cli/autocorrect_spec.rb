@@ -1623,14 +1623,14 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
     expect($stdout.string).to eq(<<~RESULT)
 
-      4   Layout/TrailingWhitespace
-      3   Style/Semicolon
-      2   Layout/IndentationConsistency
-      2   Style/SingleLineMethods
-      1   Layout/DefEndAlignment
-      1   Layout/EmptyLineBetweenDefs
-      1   Style/DefWithParentheses
-      1   Style/TrailingBodyOnMethodDefinition
+      4   Layout/TrailingWhitespace [Safe Correctable]
+      3   Style/Semicolon [Safe Correctable]
+      2   Layout/IndentationConsistency [Safe Correctable]
+      2   Style/SingleLineMethods [Safe Correctable]
+      1   Layout/DefEndAlignment [Safe Correctable]
+      1   Layout/EmptyLineBetweenDefs [Safe Correctable]
+      1   Style/DefWithParentheses [Safe Correctable]
+      1   Style/TrailingBodyOnMethodDefinition [Safe Correctable]
       --
       15  Total in 1 files
 
@@ -1737,8 +1737,8 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect($stdout.string)
       .to eq(<<~RESULT)
 
-        4  Layout/SpaceAfterComma
-        2  Style/WordArray
+        4  Layout/SpaceAfterComma [Safe Correctable]
+        2  Style/WordArray [Safe Correctable]
         --
         6  Total in 1 files
 

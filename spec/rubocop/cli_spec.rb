@@ -436,7 +436,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'offenses', '-A', 'example.rb'])).to eq(0)
         expect($stdout.string).to eq(<<~RESULT)
 
-          1  Style/FrozenStringLiteralComment
+          1  Style/FrozenStringLiteralComment [Unsafe Correctable]
           --
           1  Total in 1 files
 
@@ -730,7 +730,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             expect($stdout.string).to eq(<<~RESULT)
 
-              1  Style/AndOr
+              1  Style/AndOr [Unsafe Correctable]
               --
               1  Total in 1 files
 
@@ -746,8 +746,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             expect($stdout.string).to eq(<<~RESULT)
 
-              3  Layout/LineLength
-              1  Style/AndOr
+              3  Layout/LineLength [Safe Correctable]
+              1  Style/AndOr [Unsafe Correctable]
               --
               4  Total in 1 files
 
@@ -767,7 +767,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             expect($stdout.string).to eq(<<~RESULT)
 
-              3  Layout/LineLength
+              3  Layout/LineLength [Safe Correctable]
               --
               3  Total in 1 files
 
@@ -783,8 +783,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
             expect($stdout.string).to eq(<<~RESULT)
 
-              3  Layout/LineLength
-              1  Style/AndOr
+              3  Layout/LineLength [Safe Correctable]
+              1  Style/AndOr [Unsafe Correctable]
               --
               4  Total in 1 files
 
@@ -1078,7 +1078,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(<<~RESULT)
 
-          1  Layout/TrailingWhitespace
+          1  Layout/TrailingWhitespace [Safe Correctable]
           --
           1  Total in 1 files
 

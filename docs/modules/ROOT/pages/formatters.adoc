@@ -305,17 +305,17 @@ cops and the number of offenses found for each by running:
 ----
 $ rubocop --format offenses
 
-36   Layout/LineLength
-18   Style/StringLiterals
+36   Layout/LineLength [Safe Correctable]
+18   Style/StringLiterals [Safe Correctable]
 13   Style/Documentation
-10   Style/ExpandPathArguments
-8    Style/EmptyMethod
-6    Layout/IndentationConsistency
+10   Style/ExpandPathArguments [Safe Correctable]
+8    Style/EmptyMethod [Safe Correctable]
+6    Layout/IndentationConsistency [Safe Correctable]
 4    Lint/SuppressedException
-3    Layout/EmptyLinesAroundAccessModifier
-2    Layout/ExtraSpacing
-1    Layout/AccessModifierIndentation
-1    Style/ClassAndModuleChildren
+3    Layout/EmptyLinesAroundAccessModifier [Safe Correctable]
+2    Layout/ExtraSpacing [Safe Correctable]
+1    Layout/AccessModifierIndentation [Safe Correctable]
+1    Style/ClassAndModuleChildren [Unsafe Correctable]
 --
 102  Total in 31 files
 ----
