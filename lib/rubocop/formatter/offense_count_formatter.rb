@@ -61,8 +61,7 @@ module RuboCop
 
         column_width = total_count.to_s.length + 2
         per_cop_counts.each do |cop_name, count|
-          output.puts "#{count.to_s.ljust(column_width)}#{cop_name}" \
-                      "#{@style_guide_links[cop_name]}\n"
+          output.puts "#{count.to_s.ljust(column_width)}#{cop_information(cop_name)}"
         end
         output.puts '--'
         output.puts "#{total_count}  Total in #{offending_files_count} files"
@@ -77,6 +76,17 @@ module RuboCop
 
       def total_offense_count(offense_counts)
         offense_counts.values.sum
+      end
+
+      def cop_information(cop_name)
+        cop = RuboCop::Cop::Registry.global.find_by_cop_name(cop_name).new
+
+        if cop.correctable?
+          safety = cop.safe_autocorrect? ? 'Safe' : 'Unsafe'
+          correctable = Rainbow(" [#{safety} Correctable]").yellow
+        end
+
+        "#{cop_name}#{correctable}#{@style_guide_links[cop_name]}"
       end
     end
   end

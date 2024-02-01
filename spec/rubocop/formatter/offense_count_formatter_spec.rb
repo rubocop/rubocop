@@ -38,16 +38,18 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
 
   describe '#report_summary' do
     context 'when an offense is detected' do
-      let(:cop_counts) { { 'OffendedCop' => 3 } }
+      let(:cop_counts) { { 'Style/FrozenStringLiteralComment' => 3 } }
 
       before { formatter.started(files) }
 
       it 'shows the cop and the offense count' do
         formatter.report_summary(cop_counts, 2)
-        expect(output.string.include?(<<~OUTPUT)).to be(true)
-          3  OffendedCop
+        expect(output.string).to eq(<<~OUTPUT)
+
+          3  Style/FrozenStringLiteralComment [Unsafe Correctable]
           --
           3  Total in 2 files
+
         OUTPUT
       end
     end
@@ -58,7 +60,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
       let(:files) { super().take(1) }
 
       let(:offenses) do
-        %w[CopB CopA CopC CopC].map do |cop|
+        %w[Style/AndOr Style/HashSyntax Naming/ConstantName Naming/ConstantName].map do |cop|
           instance_double(RuboCop::Cop::Offense, cop_name: cop)
         end
       end
@@ -78,9 +80,9 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
           formatter.finished(files)
           expect(output.string).to eq(<<~OUTPUT)
 
-            2  CopC
-            1  CopA
-            1  CopB
+            2  Naming/ConstantName
+            1  Style/AndOr [Unsafe Correctable]
+            1  Style/HashSyntax [Safe Correctable]
             --
             4  Total in 1 files
 
@@ -95,9 +97,9 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
           formatter.finished(files)
           expect(output.string).to eq(<<~OUTPUT)
 
-            2  CopC (https://rubystyle.guide#no-good-CopC)
-            1  CopA (https://rubystyle.guide#no-good-CopA)
-            1  CopB (https://rubystyle.guide#no-good-CopB)
+            2  Naming/ConstantName (https://rubystyle.guide#no-good-Naming/ConstantName)
+            1  Style/AndOr [Unsafe Correctable] (https://rubystyle.guide#no-good-Style/AndOr)
+            1  Style/HashSyntax [Safe Correctable] (https://rubystyle.guide#no-good-Style/HashSyntax)
             --
             4  Total in 1 files
 
@@ -108,7 +110,7 @@ RSpec.describe RuboCop::Formatter::OffenseCountFormatter do
 
     context 'when output tty is true' do
       let(:offenses) do
-        %w[CopB CopA CopC CopC].map do |cop|
+        %w[Style/AndOr Style/HashSyntax Naming/ConstantName Naming/ConstantName].map do |cop|
           instance_double(RuboCop::Cop::Offense, cop_name: cop)
         end
       end

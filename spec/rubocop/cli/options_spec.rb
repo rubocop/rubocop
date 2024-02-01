@@ -780,12 +780,12 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect(cli.run(%w[-f offenses --only Layout example.rb])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
 
-          1  Layout/CommentIndentation
-          1  Layout/IndentationStyle
-          1  Layout/IndentationWidth
-          1  Layout/LineLength
-          1  Layout/SpaceAroundOperators
-          1  Layout/TrailingWhitespace
+          1  Layout/CommentIndentation [Safe Correctable]
+          1  Layout/IndentationStyle [Safe Correctable]
+          1  Layout/IndentationWidth [Safe Correctable]
+          1  Layout/LineLength [Safe Correctable]
+          1  Layout/SpaceAroundOperators [Safe Correctable]
+          1  Layout/TrailingWhitespace [Safe Correctable]
           --
           6  Total in 1 files
 
@@ -804,13 +804,13 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect($stdout.string)
           .to eq(<<~RESULT)
 
-            1  Layout/CommentIndentation
-            1  Layout/IndentationStyle
-            1  Layout/IndentationWidth
-            1  Layout/LineLength
-            1  Layout/TrailingWhitespace
-            1  Style/FrozenStringLiteralComment
-            1  Style/NumericLiterals
+            1  Layout/CommentIndentation [Safe Correctable]
+            1  Layout/IndentationStyle [Safe Correctable]
+            1  Layout/IndentationWidth [Safe Correctable]
+            1  Layout/LineLength [Safe Correctable]
+            1  Layout/TrailingWhitespace [Safe Correctable]
+            1  Style/FrozenStringLiteralComment [Unsafe Correctable]
+            1  Style/NumericLiterals [Safe Correctable]
             --
             7  Total in 1 files
 
@@ -943,10 +943,10 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           .to eq(<<~RESULT)
 
             1  Lint/MissingCopEnableDirective
-            1  Lint/RedundantCopDisableDirective
-            1  Migration/DepartmentName
-            1  Style/FrozenStringLiteralComment
-            1  Style/NumericPredicate
+            1  Lint/RedundantCopDisableDirective [Safe Correctable]
+            1  Migration/DepartmentName [Safe Correctable]
+            1  Style/FrozenStringLiteralComment [Unsafe Correctable]
+            1  Style/NumericPredicate [Unsafe Correctable]
             --
             5  Total in 1 files
 
@@ -963,15 +963,15 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect($stdout.string)
           .to eq(<<~RESULT)
 
-            1  Layout/IndentationStyle
-            1  Layout/IndentationWidth
-            1  Layout/SpaceAroundOperators
-            1  Layout/TrailingWhitespace
+            1  Layout/IndentationStyle [Safe Correctable]
+            1  Layout/IndentationWidth [Safe Correctable]
+            1  Layout/SpaceAroundOperators [Safe Correctable]
+            1  Layout/TrailingWhitespace [Safe Correctable]
             1  Lint/MissingCopEnableDirective
-            1  Lint/UselessAssignment
-            1  Migration/DepartmentName
-            1  Style/FrozenStringLiteralComment
-            1  Style/NumericPredicate
+            1  Lint/UselessAssignment [Unsafe Correctable]
+            1  Migration/DepartmentName [Safe Correctable]
+            1  Style/FrozenStringLiteralComment [Unsafe Correctable]
+            1  Style/NumericPredicate [Unsafe Correctable]
             --
             9  Total in 1 files
 
@@ -991,7 +991,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         expect($stderr.string).to eq('')
         expect(without_option.split($RS) - with_option.split($RS))
-          .to eq(['1  Style/IfUnlessModifier', '7  Total in 1 files'])
+          .to eq(['1  Style/IfUnlessModifier [Safe Correctable]', '7  Total in 1 files'])
       end
     end
 
@@ -1013,10 +1013,10 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           expect($stdout.string)
             .to eq(<<~RESULT)
 
-              1  Layout/IndentationWidth
-              1  Layout/TrailingWhitespace
-              1  Style/FrozenStringLiteralComment
-              1  Style/NumericLiterals
+              1  Layout/IndentationWidth [Safe Correctable]
+              1  Layout/TrailingWhitespace [Safe Correctable]
+              1  Style/FrozenStringLiteralComment [Unsafe Correctable]
+              1  Style/NumericLiterals [Safe Correctable]
               --
               4  Total in 1 files
 

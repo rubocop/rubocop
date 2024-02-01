@@ -1022,7 +1022,9 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
         $stdout = StringIO.new
         expect(cli.run(['--format', 'offenses'])).to eq(1)
-        expect($stdout.string.lines.grep(%r{/})).to eq(["1  Layout/TrailingWhitespace\n"])
+        expect($stdout.string.lines.grep(%r{/})).to eq(
+          ["1  Layout/TrailingWhitespace [Safe Correctable]\n"]
+        )
       end
 
       shared_examples 'leaves out Excludes' do |merge_style, config|

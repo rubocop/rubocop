@@ -131,8 +131,8 @@ RSpec.describe RuboCop::RakeTask do
       expect($stdout.string).to eq(<<~RESULT)
         Running RuboCop...
 
-        1  Style/FrozenStringLiteralComment
-        1  Style/SpecialGlobalVars
+        1  Style/FrozenStringLiteralComment [Unsafe Correctable]
+        1  Style/SpecialGlobalVars [Unsafe Correctable]
         --
         2  Total in 1 files
 
