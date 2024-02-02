@@ -104,7 +104,7 @@ module RuboCop
         def correct_other_branches(corrector, node)
           return unless require_other_branches_correction?(node)
 
-          if node.else_branch&.if_type?
+          if node.else_branch&.if_type? && !node.else_branch.modifier_form?
             # Replace an orphaned `elsif` with `if`
             corrector.replace(node.else_branch.loc.keyword, 'if')
           else
