@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
       RUBY
     end
 
-    it 'does not register registers an offense for alias in a def' do
+    it 'does not register an offense for alias in a def' do
       expect_no_offenses(<<~RUBY)
         def foo
           alias :ala :bala
