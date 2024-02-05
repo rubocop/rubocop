@@ -5,7 +5,8 @@ module RuboCop
     module Lint
       # Checks for redundant safe navigation calls.
       # Use cases where a constant, named in camel case for classes and modules is `nil` are rare,
-      # and an offense is not detected when the receiver is a snake case constant.
+      # and an offense is not detected when the receiver is a constant. The detection also applies
+      # to literal receivers, except for `nil`.
       #
       # For all receivers, the `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`,
       # and `equal?` methods are checked by default.
@@ -105,7 +106,7 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize
         def on_csend(node)
-          unless node.receiver.const_type? && !node.receiver.source.match?(SNAKE_CASE)
+          unless assume_receiver_instance_exists?(node.receiver)
             return unless check?(node) && allowed_method?(node.method_name)
             return if respond_to_nil_specific_method?(node)
           end
@@ -130,6 +131,12 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize
 
         private
+
+        def assume_receiver_instance_exists?(receiver)
+          return true if receiver.const_type? && !receiver.source.match?(SNAKE_CASE)
+
+          receiver.literal? && !receiver.nil_type?
+        end
 
         def check?(node)
           parent = node.parent
