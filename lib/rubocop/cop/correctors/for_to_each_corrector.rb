@@ -15,6 +15,8 @@ module RuboCop
       end
 
       def call(corrector)
+        offending_range = for_node.source_range.begin.join(end_range)
+
         corrector.replace(offending_range, correction)
       end
 
@@ -40,11 +42,11 @@ module RuboCop
         collection_node.range_type? || collection_node.or_type? || collection_node.and_type?
       end
 
-      def end_position
+      def end_range
         if for_node.do?
-          keyword_begin.end_pos
+          keyword_begin.end
         else
-          collection_end.end_pos
+          collection_end.end
         end
       end
 
@@ -58,16 +60,6 @@ module RuboCop
         else
           collection_node.source_range
         end
-      end
-
-      def offending_range
-        replacement_range(end_position)
-      end
-
-      def replacement_range(end_pos)
-        Parser::Source::Range.new(for_node.source_range.source_buffer,
-                                  for_node.source_range.begin_pos,
-                                  end_pos)
       end
     end
   end

@@ -460,9 +460,8 @@ module RuboCop
 
         def assignment(node)
           *_, condition = *node
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    node.source_range.begin_pos,
-                                    condition.source_range.begin_pos)
+
+          node.source_range.begin.join(condition.source_range.begin)
         end
 
         def correct_if_branches(corrector, cop, node)

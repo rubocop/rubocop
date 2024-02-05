@@ -156,15 +156,11 @@ module RuboCop
         end
 
         def not_to_receiver(node, method_call)
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    node.loc.selector.begin_pos,
-                                    method_call.source_range.begin_pos)
+          node.loc.selector.begin.join(method_call.source_range.begin)
         end
 
         def end_parentheses(node, method_call)
-          Parser::Source::Range.new(node.source_range.source_buffer,
-                                    method_call.source_range.end_pos,
-                                    node.source_range.end_pos)
+          method_call.source_range.end.join(node.source_range.end)
         end
 
         # When comparing classes, `!(Integer < Numeric)` is not the same as

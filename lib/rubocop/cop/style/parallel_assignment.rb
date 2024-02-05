@@ -289,9 +289,7 @@ module RuboCop
           private
 
           def modifier_range(node)
-            Parser::Source::Range.new(node.source_range.source_buffer,
-                                      node.loc.keyword.begin_pos,
-                                      node.source_range.end_pos)
+            node.loc.keyword.join(node.source_range.end)
           end
         end
       end

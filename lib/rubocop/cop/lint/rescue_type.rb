@@ -59,9 +59,7 @@ module RuboCop
 
         def autocorrect(corrector, node)
           rescued, _, _body = *node
-          range = Parser::Source::Range.new(node.source_range.source_buffer,
-                                            node.loc.keyword.end_pos,
-                                            rescued.source_range.end_pos)
+          range = node.loc.keyword.end.join(rescued.source_range.end)
 
           corrector.replace(range, correction(*rescued))
         end
