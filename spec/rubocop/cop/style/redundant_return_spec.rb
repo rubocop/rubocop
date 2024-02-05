@@ -601,4 +601,52 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
       RUBY
     end
   end
+
+  context 'when return is inside a in-branch' do
+    it 'registers an offense and autocorrects' do
+      expect_offense(<<~RUBY)
+        def func
+          some_preceding_statements
+          case x
+          in y then return 1
+                    ^^^^^^ Redundant `return` detected.
+          in z then return 2
+                    ^^^^^^ Redundant `return` detected.
+          in q
+          else
+            return 3
+            ^^^^^^ Redundant `return` detected.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          some_preceding_statements
+          case x
+          in y then 1
+          in z then 2
+          in q
+          else
+            3
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when case match nodes are empty' do
+    it 'accepts empty in nodes' do
+      expect_no_offenses(<<~RUBY)
+        def func
+          case x
+          in y then 1
+          in z # do nothing
+          else
+            3
+          end
+        end
+      RUBY
+    end
+  end
 end

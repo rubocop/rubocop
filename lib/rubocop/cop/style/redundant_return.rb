@@ -113,6 +113,7 @@ module RuboCop
           case node.type
           when :return then check_return_node(node)
           when :case   then check_case_node(node)
+          when :case_match then check_case_match_node(node)
           when :if     then check_if_node(node)
           when :rescue then check_rescue_node(node)
           when :resbody then check_resbody_node(node)
@@ -137,6 +138,11 @@ module RuboCop
 
         def check_case_node(node)
           node.when_branches.each { |when_node| check_branch(when_node.body) }
+          check_branch(node.else_branch)
+        end
+
+        def check_case_match_node(node)
+          node.in_pattern_branches.each { |in_pattern_node| check_branch(in_pattern_node.body) }
           check_branch(node.else_branch)
         end
 
