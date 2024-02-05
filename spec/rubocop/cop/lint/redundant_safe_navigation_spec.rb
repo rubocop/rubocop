@@ -58,6 +58,56 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when `&.` is used for string literals' do
+    expect_offense(<<~RUBY)
+      '2012-03-02 16:05:37'&.to_time
+                           ^^^^^^^^^ Redundant safe navigation detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      '2012-03-02 16:05:37'.to_time
+    RUBY
+  end
+
+  it 'registers an offense and corrects when `&.` is used for integer literals' do
+    expect_offense(<<~RUBY)
+      42&.minutes
+        ^^^^^^^^^ Redundant safe navigation detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      42.minutes
+    RUBY
+  end
+
+  it 'registers an offense and corrects when `&.` is used for array literals' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]&.join(', ')
+               ^^^^^^^^^^^^ Redundant safe navigation detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3].join(', ')
+    RUBY
+  end
+
+  it 'registers an offense and corrects when `&.` is used for hash literals' do
+    expect_offense(<<~RUBY)
+      {k: :v}&.count
+             ^^^^^^^ Redundant safe navigation detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {k: :v}.count
+    RUBY
+  end
+
+  it 'does not register an offense and corrects when `&.` is used for `nil` literal' do
+    expect_no_offenses(<<~RUBY)
+      nil&.to_i
+    RUBY
+  end
+
   %i[while until].each do |loop_type|
     it 'registers an offense and corrects when `&.` is used inside `#{loop_type}` condition' do
       expect_offense(<<~RUBY, loop_type: loop_type)
