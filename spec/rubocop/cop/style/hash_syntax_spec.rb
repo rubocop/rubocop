@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         end
       end
 
-      it 'registers an offense when symbol keys have strings in them' do
+      it 'registers an offense when symbol keys have strings in them', :ruby22 do
         expect_offense(<<~RUBY)
           x = { :"string" => 0 }
                 ^^^^^^^^^^^^ Use the new Ruby 1.9 hash syntax.

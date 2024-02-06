@@ -195,6 +195,7 @@ module RuboCop
           acceptable_19_syntax_symbol?(pair.key.source)
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def acceptable_19_syntax_symbol?(sym_name)
           sym_name.delete_prefix!(':')
 
@@ -209,9 +210,12 @@ module RuboCop
           # Most hash keys can be matched against a simple regex.
           return true if /\A[_a-z]\w*[?!]?\z/i.match?(sym_name)
 
-          # For more complicated hash keys, let the parser validate the syntax.
-          parse("{ #{sym_name}: :foo }").valid_syntax?
+          return false if target_ruby_version <= 2.1
+
+          (sym_name.start_with?("'") && sym_name.end_with?("'")) ||
+            (sym_name.start_with?('"') && sym_name.end_with?('"'))
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def check(pairs, delim, msg)
           pairs.each do |pair|
