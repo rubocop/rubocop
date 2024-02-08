@@ -12,7 +12,7 @@ require_relative 'severity'
 # https://github.com/standardrb/standard/blob/main/LICENSE.txt
 #
 module RuboCop
-  module Lsp
+  module LSP
     # Routes for Language Server Protocol of RuboCop.
     # @api private
     class Routes

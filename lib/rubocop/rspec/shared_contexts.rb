@@ -128,13 +128,13 @@ RSpec.shared_context 'mock console output' do
   end
 end
 
-RSpec.shared_context 'lsp mode' do
+RSpec.shared_context 'lsp' do
   before do
-    RuboCop::Cop::Base.enable_lsp_mode
+    RuboCop::LSP.enable
   end
 
   after do
-    RuboCop::Cop::Base.disable_lsp_mode
+    RuboCop::LSP.disable
   end
 end
 

@@ -7,11 +7,11 @@ module RuboCop
     module Command
       # Start Language Server Protocol of RuboCop.
       # @api private
-      class Lsp < Base
+      class LSP < Base
         self.command_name = :lsp
 
         def run
-          RuboCop::Lsp::Server.new(@config_store).start
+          RuboCop::LSP::Server.new(@config_store).start
         end
       end
     end

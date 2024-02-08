@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'language_server-protocol'
+require_relative '../lsp'
 require_relative 'logger'
 require_relative 'routes'
 require_relative 'runtime'
@@ -15,16 +16,16 @@ require_relative 'runtime'
 # https://github.com/standardrb/standard/blob/main/LICENSE.txt
 #
 module RuboCop
-  module Lsp
+  module LSP
     # Language Server Protocol of RuboCop.
     # @api private
     class Server
       def initialize(config_store)
-        RuboCop::Cop::Base.enable_lsp_mode
+        RuboCop::LSP.enable
 
         @reader = LanguageServer::Protocol::Transport::Io::Reader.new($stdin)
         @writer = LanguageServer::Protocol::Transport::Io::Writer.new($stdout)
-        @runtime = RuboCop::Lsp::Runtime.new(config_store)
+        @runtime = RuboCop::LSP::Runtime.new(config_store)
         @routes = Routes.new(self)
       end
 

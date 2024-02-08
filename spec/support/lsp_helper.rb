@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-module LspHelper
+module LSPHelper
   def run_server_on_requests(*requests)
     stdin = StringIO.new(requests.map { |request| to_jsonrpc(request) }.join)
 
     RuboCop::Server::Helper.redirect(stdin: stdin) do
       config_store = RuboCop::ConfigStore.new
 
-      RuboCop::Lsp::Server.new(config_store).start
+      RuboCop::LSP::Server.new(config_store).start
     end
 
     messages = parse_jsonrpc_messages($stdout)

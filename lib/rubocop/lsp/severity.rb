@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RuboCop
-  module Lsp
+  module LSP
     # Severity for Language Server Protocol of RuboCop.
     # @api private
     class Severity
