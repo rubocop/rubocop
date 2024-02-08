@@ -259,3 +259,12 @@ user             17414   0.0  0.2  5557716 144376   ??  Ss    4:48PM   0:02.13 /
 ```
 
 NOTE: `rubocop --lsp` is for starting LSP client, so users don't manually execute it.
+
+== Language Server Development
+
+RuboCop provides APIs for developers of original language server or tools analogous to LSP, using RuboCop as the backend, instead of the RuboCop's built-in LSP.
+
+- `RuboCop::LSP.enable` enables LSP mode, customizing for LSP-specific features such as autocorrection and short offense message.
+- `RuboCop::LSP.disable` disables LSP mode, which can be particularly useful for testing.
+
+When implementing custom cops, `RuboCop::LSP.enabled?` can be used to achieve behavior that considers these states.

@@ -84,24 +84,6 @@ module RuboCop
         false
       end
 
-      ### LSP
-
-      # This experimental feature has been under consideration for a while.
-      # @api private
-      def self.lsp_mode?
-        !!@lsp_mode
-      end
-
-      # This experimental feature has been under consideration for a while.
-      def self.enable_lsp_mode
-        @lsp_mode = true
-      end
-
-      # This experimental feature has been under consideration for a while.
-      def self.disable_lsp_mode
-        @lsp_mode = false
-      end
-
       ### Naming
 
       def self.badge

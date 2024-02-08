@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
-  include LspHelper
+RSpec.describe RuboCop::LSP::Server, :isolated_environment do
+  include LSPHelper
 
   subject(:result) { run_server_on_requests(*requests) }
 
   after do
-    RuboCop::Cop::Base.disable_lsp_mode
+    RuboCop::LSP.disable
   end
 
   let(:messages) { result[0] }
@@ -1240,7 +1240,7 @@ RSpec.describe RuboCop::Lsp::Server, :isolated_environment do
 
   context 'when an internal error occurs' do
     before do
-      allow_any_instance_of(RuboCop::Lsp::Routes).to receive(:for).with('initialize').and_raise # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(RuboCop::LSP::Routes).to receive(:for).with('initialize').and_raise # rubocop:disable RSpec/AnyInstance
     end
 
     let(:requests) do

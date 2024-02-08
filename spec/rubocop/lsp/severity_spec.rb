@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Lsp::Severity do
+RSpec.describe RuboCop::LSP::Severity do
   describe '.find_by' do
     subject(:lsp_severity) { described_class.find_by(rubocop_severity) }
 
