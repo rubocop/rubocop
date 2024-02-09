@@ -27,6 +27,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'shows help text' do
+        # FIXME: Update to behavior in accordance with the inquiry results of
+        #        https://bugs.ruby-lang.org/issues/20252
+        skip 'Adjust to the behavior expected of optparse in Ruby 3.4.' if RUBY_VERSION >= '3.4'
+
         begin
           options.parse(['--help'])
         rescue SystemExit # rubocop:disable Lint/SuppressedException
