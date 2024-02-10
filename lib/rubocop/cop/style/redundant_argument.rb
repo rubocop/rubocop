@@ -81,14 +81,14 @@ module RuboCop
           redundant_argument = redundant_arg_for_method(node.method_name.to_s)
           return false if redundant_argument.nil?
 
-          node.first_argument == redundant_argument
+          node.first_argument.source.sub(/\A'/, '"').sub(/'\z/, '"') == redundant_argument
         end
 
         def redundant_arg_for_method(method_name)
           arg = cop_config['Methods'].fetch(method_name) { return }
 
           @mem ||= {}
-          @mem[method_name] ||= parse(arg.inspect).ast
+          @mem[method_name] ||= arg.inspect
         end
 
         def argument_range(node)
