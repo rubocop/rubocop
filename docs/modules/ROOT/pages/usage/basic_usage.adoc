@@ -267,6 +267,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `-s/--stdin`
 | Pipe source from STDIN. This is useful for editor integration. Takes one argument, a path, relative to the root of the project. RuboCop will use this path to determine which cops are enabled (via eg. Include/Exclude), and so that certain cops like Naming/FileName can be checked.
 
+| `--editor-mode`
+| Optimize real-time feedback in editors, adjusting behaviors for editing experience. Editors that run RuboCop directly (e.g., by shelling out) encounter the same issues as with `--lsp`. This option is designed for such editors.
+
 | `-S/--display-style-guide`
 | Display style guide URLs in offense messages.
 

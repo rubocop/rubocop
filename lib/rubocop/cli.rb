@@ -12,7 +12,7 @@ module RuboCop
     STATUS_INTERRUPTED = Signal.list['INT'] + 128
     DEFAULT_PARALLEL_OPTIONS = %i[
       color config debug display_style_guide display_time display_only_fail_level_offenses
-      display_only_failed except extra_details fail_level fix_layout format
+      display_only_failed editor_mode except extra_details fail_level fix_layout format
       ignore_disable_comments lint only only_guide_cops require safe
       autocorrect safe_autocorrect autocorrect_all
     ].freeze
@@ -151,6 +151,7 @@ module RuboCop
 
     def act_on_options
       set_options_to_config_loader
+      handle_editor_mode
 
       @config_store.options_config = @options[:config] if @options[:config]
       @config_store.force_default_config! if @options[:force_default_config]
@@ -172,6 +173,10 @@ module RuboCop
       ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
       ConfigLoader.ignore_unrecognized_cops = @options[:ignore_unrecognized_cops]
+    end
+
+    def handle_editor_mode
+      RuboCop::LSP.enable if @options[:editor_mode]
     end
 
     # rubocop:disable Metrics/CyclomaticComplexity
