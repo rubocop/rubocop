@@ -587,7 +587,7 @@ Style/PerlBackrefs:
 ==== `contextual`
 
 This setting enables autocorrection when launched from the `rubocop` command, but it is not available through LSP.
-e.g., `rubocop --lsp` or a program where `RuboCop::LSP.enable` has been applied.
+e.g., `rubocop --lsp`, `rubocop --editor-mode`, or a program where `RuboCop::LSP.enable` has been applied.
 
 Inspections via the command line are treated as code that has been finalized.
 

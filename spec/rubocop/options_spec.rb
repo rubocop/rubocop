@@ -68,6 +68,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                files are present in the directory tree.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
                                                reports. This is useful for editor integration.
+                  --editor-mode                Optimize real-time feedback in editors,
+                                               adjusting behaviors for editing experience.
               -P, --[no-]parallel              Use available CPUs to execute inspection in
                                                parallel. Default is true.
                   --raise-cop-error            Raise cop-related errors with cause and location.
@@ -260,6 +262,13 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         msg = 'Incompatible cli options: [:verbose_version, :show_cops]'
         expect { options.parse %w[-V --show-cops] }
           .to raise_error(RuboCop::OptionArgumentError, msg)
+      end
+
+      it 'rejects using `--lsp` with `--editor-mode`' do
+        msg = 'Do not specify `--editor-mode` as it is redundant in `--lsp`.'
+        expect do
+          options.parse %w[--lsp --editor-mode]
+        end.to raise_error(RuboCop::OptionArgumentError, msg)
       end
 
       it 'mentions all incompatible options when more than two are used' do

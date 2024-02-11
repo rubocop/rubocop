@@ -2230,6 +2230,76 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--editor-mode' do
+    let(:target_file) { 'example.rb' }
+
+    before do
+      create_file(target_file, <<~RUBY)
+        def empty_method
+        end
+      RUBY
+
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          SuggestExtensions: false
+
+        Layout/EmptyLineAfterMagicComment:
+          AutoCorrect: contextual
+      YAML
+    end
+
+    after { RuboCop::LSP.disable }
+
+    context 'when using `--editor-mode`' do
+      it 'registers an offense, but does not correct for `Layout/EmptyLineAfterMagicComment` with `AutoCorrect: contextual`' do
+        status_code = cli.run(['--editor-mode', '-a', '--only', 'Style/EmptyMethod', target_file])
+
+        expect(status_code).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(File.read('example.rb')).to eq(<<~RUBY)
+          def empty_method
+          end
+        RUBY
+        expect($stdout.string).to eq(<<~RESULT)
+          Inspecting 1 file
+          C
+
+          Offenses:
+
+          example.rb:1:1: C: Style/EmptyMethod: Put empty method definitions on a single line.
+          def empty_method ...
+          ^^^^^^^^^^^^^^^^
+
+          1 file inspected, 1 offense detected
+        RESULT
+      end
+    end
+
+    context 'when not using `--editor-mode`' do
+      it 'registers an offense and corrects for `Layout/EmptyLineAfterMagicComment` with `AutoCorrect: contextual`' do
+        status_code = cli.run(['-a', '--only', 'Style/EmptyMethod', target_file])
+
+        expect(status_code).to eq(0)
+        expect($stderr.string).to eq('')
+        expect(File.read('example.rb')).to eq(<<~RUBY)
+          def empty_method; end
+        RUBY
+        expect($stdout.string).to eq(<<~RESULT)
+          Inspecting 1 file
+          C
+
+          Offenses:
+
+          example.rb:1:1: C: [Corrected] Style/EmptyMethod: Put empty method definitions on a single line.
+          def empty_method ...
+          ^^^^^^^^^^^^^^^^
+
+          1 file inspected, 1 offense detected, 1 offense corrected
+        RESULT
+      end
+    end
+  end
+
   describe '--require', :restore_registry do
     context 'when adding an extension' do
       before do

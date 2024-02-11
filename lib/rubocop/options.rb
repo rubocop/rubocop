@@ -95,6 +95,7 @@ module RuboCop
         option(opts, '--ignore-unrecognized-cops')
         option(opts, '--force-default-config')
         option(opts, '-s', '--stdin FILE')
+        option(opts, '--editor-mode')
         option(opts, '-P', '--[no-]parallel')
         option(opts, '--raise-cop-error')
         add_severity_option(opts)
@@ -369,6 +370,7 @@ module RuboCop
       validate_display_only_failed
       validate_display_only_failed_and_display_only_correctable
       validate_display_only_correctable_and_autocorrect
+      validate_lsp_and_editor_mode
       disable_parallel_when_invalid_option_combo
 
       return if incompatible_options.size <= 1
@@ -414,6 +416,13 @@ module RuboCop
 
       raise OptionArgumentError,
             format('--display-only-failed cannot be used together with other display options.')
+    end
+
+    def validate_lsp_and_editor_mode
+      return if !@options.key?(:lsp) || !@options.key?(:editor_mode)
+
+      raise OptionArgumentError,
+            format('Do not specify `--editor-mode` as it is redundant in `--lsp`.')
     end
 
     def validate_autocorrect
@@ -609,6 +618,8 @@ module RuboCop
                                          'parallel. Default is true.'],
       stdin:                            ['Pipe source from STDIN, using FILE in offense',
                                          'reports. This is useful for editor integration.'],
+      editor_mode:                      ['Optimize real-time feedback in editors,',
+                                         'adjusting behaviors for editing experience.'],
       init:                             'Generate a .rubocop.yml file in the current directory.',
       server:                           ['If a server process has not been started yet, start',
                                          'the server process and execute inspection with server.',
