@@ -89,7 +89,7 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
 
   %i[rm_r rmtree].each do |remove_method|
     it 'does not register an offense when use `FileTest.exist?` before remove recursive file' do
-      expect_no_offenses(<<~RUBY, remove_method: remove_method)
+      expect_no_offenses(<<~RUBY)
         if FileTest.exist?(path)
           FileUtils.#{remove_method}(path)
         end

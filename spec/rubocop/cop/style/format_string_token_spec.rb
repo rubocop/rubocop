@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
         end
       else
         it 'does not register offenses for annotated style' do
-          expect_no_offenses(<<~RUBY, annotated: annotated, template: template)
+          expect_no_offenses(<<~RUBY)
             <<-HEREDOC
             foo %{template} + bar %{annotated}
             HEREDOC
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
             "a\#{b}#{template} c\#{d}#{annotated_to_template} e\#{f}"
           RUBY
         else
-          expect_no_offenses(<<~'RUBY', annotated: annotated, template: template)
+          expect_no_offenses(<<~'RUBY')
             "a#{b}%{template} c#{d}%{annotated} e#{f}"
           RUBY
         end

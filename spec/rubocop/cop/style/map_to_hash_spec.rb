@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Style::MapToHash, :config do
 
       context "`#{method}` without `to_h`" do
         it 'does not register an offense' do
-          expect_no_offenses(<<~RUBY, method: method)
+          expect_no_offenses(<<~RUBY)
             foo.#{method} { |x| x * 2 }
           RUBY
         end

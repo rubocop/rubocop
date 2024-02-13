@@ -598,13 +598,13 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator, :config do
 
       context 'argument count' do
         it 'ignores when there are not enough block arguments' do
-          expect_no_offenses(<<~RUBY, method: method)
+          expect_no_offenses(<<~RUBY)
             (1..4).#{method}(0) { |acc| acc.foo }
           RUBY
         end
 
         it 'ignores when there is a splat argument' do
-          expect_no_offenses(<<~RUBY, method: method)
+          expect_no_offenses(<<~RUBY)
             values.#{method}(0) { |*x| x[0] + x[1] }
           RUBY
         end
