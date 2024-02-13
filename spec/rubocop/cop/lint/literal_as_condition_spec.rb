@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
 
     context '>= Ruby 2.7', :ruby27 do
       it "accepts an offense for literal #{lit} in case match with a match var" do
-        expect_no_offenses(<<~RUBY, lit: lit)
+        expect_no_offenses(<<~RUBY)
           case %{lit}
           in x then top
           end

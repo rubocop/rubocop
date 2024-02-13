@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
       end
 
       it 'does not register an offense when using #{access_modifier} in a block' do
-        expect_no_offenses(<<~RUBY, access_modifier: access_modifier)
+        expect_no_offenses(<<~RUBY)
           module MyModule
             singleton_methods.each { |method| #{access_modifier}(method) }
           end

@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     end
 
     it "does not register an offense when receiver is a hash literal and using `#{method}` with a block" do
-      expect_no_offenses(<<~RUBY, method: method)
+      expect_no_offenses(<<~RUBY)
         {foo: 42}.#{method} {|item| item.foo }
       RUBY
     end
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     end
 
     it "does not register an offense when receiver is a array literal and using `#{method}` with a block" do
-      expect_no_offenses(<<~RUBY, method: method)
+      expect_no_offenses(<<~RUBY)
         [1, 2, 3].#{method} {|item| item.foo }
       RUBY
     end
@@ -372,7 +372,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       end
 
       it "does not register an offense when receiver is a hash literal and using `#{method}` with a numblock" do
-        expect_no_offenses(<<~RUBY, method: method)
+        expect_no_offenses(<<~RUBY)
           {foo: 42}.#{method} { _1.foo }
         RUBY
       end
@@ -391,7 +391,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       end
 
       it "does not register an offense when receiver is a array literal and using `#{method}` with a numblock" do
-        expect_no_offenses(<<~RUBY, method: method)
+        expect_no_offenses(<<~RUBY)
           [1, 2, 3].#{method} { _1.foo }
         RUBY
       end
