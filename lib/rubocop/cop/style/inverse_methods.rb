@@ -76,9 +76,9 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          inverse_candidate?(node) do |method_call, lhs, method, rhs|
+          inverse_candidate?(node) do |_method_call, lhs, method, rhs|
             return unless inverse_methods.key?(method)
-            return if negated?(node) || relational_comparison_with_safe_navigation?(method_call)
+            return if negated?(node)
             return if part_of_ignored_node?(node)
             return if possible_class_hierarchy_check?(lhs, rhs, method)
 
@@ -153,10 +153,6 @@ module RuboCop
 
         def negated?(node)
           node.parent.respond_to?(:method?) && node.parent.method?(:!)
-        end
-
-        def relational_comparison_with_safe_navigation?(node)
-          node.csend_type? && CLASS_COMPARISON_METHODS.include?(node.method_name)
         end
 
         def not_to_receiver(node, method_call)
