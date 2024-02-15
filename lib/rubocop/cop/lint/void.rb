@@ -100,7 +100,12 @@ module RuboCop
           expressions = *node
           expressions.pop unless in_void_context?(node)
           expressions.each do |expr|
-            check_void_op(expr)
+            check_void_op(expr) do
+              block_node = node.each_ancestor(:block).first
+
+              block_node&.method?(:each)
+            end
+
             check_expression(expr)
           end
         end
