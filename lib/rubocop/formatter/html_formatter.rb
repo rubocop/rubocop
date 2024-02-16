@@ -51,8 +51,8 @@ module RuboCop
         context = ERBContext.new(files, summary)
 
         template = File.read(TEMPLATE_PATH, encoding: Encoding::UTF_8)
-        erb = ERB.new(template, trim_mode: '-')
-        html = erb.result(context.binding)
+        erb = ERB.new(template)
+        html = erb.result(context.binding).lines.map { (_1 =~ /^\s*$/).nil? ? _1 : "\n" }.join
 
         output.write html
       end
@@ -125,11 +125,13 @@ module RuboCop
           context = CSSContext.new
           template = File.read(CSS_PATH, encoding: Encoding::UTF_8)
           erb = ERB.new(template, trim_mode: '-')
-          css = erb.result(context.binding).lines.map { |line| "      " + line }.join
-          css
+          erb.result(context.binding).lines.map do |line|
+            line == "\n" ? line : "      #{line}"
+          end.join
         end
       end
 
+      # This class provides helper methods used in the ERB CSS template.
       class CSSContext
         SEVERITY_COLORS = {
           refactor:   Color.new(0xED, 0x9C, 0x28, 1.0),
@@ -139,10 +141,12 @@ module RuboCop
           fatal:      Color.new(0xD2, 0x32, 0x2D, 1.0)
         }.freeze
 
+        # Make Kernel#binding public.
+        # rubocop:disable Lint/UselessMethodDefinition
         def binding
           super
         end
-
+        # rubocop:enable Lint/UselessMethodDefinition
       end
     end
   end

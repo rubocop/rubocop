@@ -3,200 +3,200 @@
   <head>
     <meta charset='UTF-8' />
     <title>RuboCop Inspection Report</title>
-    
     <style>
-    * {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    }
+      * {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
 
-    body, html {
-    font-size: 62.5%;
-    }
-    body {
-    background-color: #ecedf0;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    margin: 0;
-    }
-    code {
-    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-    font-size: 85%;
-    }
-    #header {
-    background: #f9f9f9;
-    color: #333;
-    border-bottom: 3px solid #ccc;
-    height: 50px;
-    padding: 0;
-    }
-    #header .logo {
-    float: left;
-    margin: 5px 12px 7px 20px;
-    width: 38px;
-    height: 38px;
-    }
-    #header .title {
-    display: inline-block;
-    float: left;
-    height: 50px;
-    font-size: 2.4rem;
-    letter-spacing: normal;
-    line-height: 50px;
-    margin: 0;
-    }
+      body, html {
+        font-size: 62.5%;
+      }
+      body {
+        background-color: #ecedf0;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        margin: 0;
+      }
+      code {
+        font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        font-size: 85%;
+      }
+      #header {
+        background: #f9f9f9;
+        color: #333;
+        border-bottom: 3px solid #ccc;
+        height: 50px;
+        padding: 0;
+      }
+      #header .logo {
+        float: left;
+        margin: 5px 12px 7px 20px;
+        width: 38px;
+        height: 38px;
+      }
+      #header .title {
+        display: inline-block;
+        float: left;
+        height: 50px;
+        font-size: 2.4rem;
+        letter-spacing: normal;
+        line-height: 50px;
+        margin: 0;
+      }
 
-    .information, #offenses {
-    width: 100%;
-    padding: 20px;
-    color: #333;
-    }
-    #offenses {
-    padding: 0 20px;
-    }
+      .information, #offenses {
+        width: 100%;
+        padding: 20px;
+        color: #333;
+      }
+      #offenses {
+        padding: 0 20px;
+      }
 
-    .information .infobox {
-    border-left: 3px solid;
-    border-radius: 4px;
-    background-color: #fff;
-    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    padding: 15px;
-    border-color: #0088cc;
-    font-size: 1.4rem;
-    }
-    .information .infobox .info-title {
-    font-size: 1.8rem;
-    line-height: 2.2rem;
-    margin: 0 0 0.5em;
-    }
-    .information .offenses-list li {
-    line-height: 1.8rem
-    }
-    .information .offenses-list {
-    padding-left: 20px;
-    margin-bottom: 0;
-    }
+      .information .infobox {
+        border-left: 3px solid;
+        border-radius: 4px;
+        background-color: #fff;
+        -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        padding: 15px;
+        border-color: #0088cc;
+        font-size: 1.4rem;
+      }
+      .information .infobox .info-title {
+        font-size: 1.8rem;
+        line-height: 2.2rem;
+        margin: 0 0 0.5em;
+      }
+      .information .offenses-list li {
+        line-height: 1.8rem
+      }
+      .information .offenses-list {
+        padding-left: 20px;
+        margin-bottom: 0;
+      }
 
-    #offenses .offense-box {
-    border-radius: 4px;
-    margin-bottom: 20px;
-    background-color: #fff;
-    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    }
-    .fixed .box-title {
-    position: fixed;
-    top: 0;
-    z-index: 10;
-    width: 100%;
-    }
-    .box-title-placeholder {
-    display: none;
-    }
-    .fixed .box-title-placeholder {
-    display: block;
-    }
-    #offenses .offense-box .box-title h3, #offenses .offense-box .box-title-placeholder h3 {
-    color: #33353f;
-    background-color: #f6f6f6;
-    font-size: 2rem;
-    line-height: 2rem;
-    display: block;
-    padding: 15px;
-    border-radius: 5px;
-    margin: 0;
-    }
-    #offenses .offense-box .offense-reports  {
-    padding: 0 15px;
-    }
-    #offenses .offense-box .offense-reports .report {
-    border-bottom: 1px dotted #ddd;
-    padding: 15px 0px;
-    position: relative;
-    font-size: 1.3rem;
-    }
-    #offenses .offense-box .offense-reports .report:last-child {
-    border-bottom: none;
-    }
-    #offenses .offense-box .offense-reports .report pre code {
-    display: block;
-    background: #000;
-    color: #fff;
-    padding: 10px 15px;
-    border-radius: 5px;
-    line-height: 1.6rem;
-    }
-    #offenses .offense-box .offense-reports .report .location {
-    font-weight: bold;
-    }
-    #offenses .offense-box .offense-reports .report .message code {
-    padding: 0.3em;
-    background-color: rgba(0,0,0,0.07);
-    border-radius: 3px;
-    }
-    .severity {
-    text-transform: capitalize;
-    font-weight: bold;
-    }
-    .highlight {
-    padding: 2px;
-    border-radius: 2px;
-    font-weight: bold;
-    }
+      #offenses .offense-box {
+        border-radius: 4px;
+        margin-bottom: 20px;
+        background-color: #fff;
+        -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+      }
+      .fixed .box-title {
+        position: fixed;
+        top: 0;
+        z-index: 10;
+        width: 100%;
+      }
+      .box-title-placeholder {
+        display: none;
+      }
+      .fixed .box-title-placeholder {
+        display: block;
+      }
+      #offenses .offense-box .box-title h3, #offenses .offense-box .box-title-placeholder h3 {
+        color: #33353f;
+        background-color: #f6f6f6;
+        font-size: 2rem;
+        line-height: 2rem;
+        display: block;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 0;
+      }
+      #offenses .offense-box .offense-reports  {
+        padding: 0 15px;
+      }
+      #offenses .offense-box .offense-reports .report {
+        border-bottom: 1px dotted #ddd;
+        padding: 15px 0px;
+        position: relative;
+        font-size: 1.3rem;
+      }
+      #offenses .offense-box .offense-reports .report:last-child {
+        border-bottom: none;
+      }
+      #offenses .offense-box .offense-reports .report pre code {
+        display: block;
+        background: #000;
+        color: #fff;
+        padding: 10px 15px;
+        border-radius: 5px;
+        line-height: 1.6rem;
+      }
+      #offenses .offense-box .offense-reports .report .location {
+        font-weight: bold;
+      }
+      #offenses .offense-box .offense-reports .report .message code {
+        padding: 0.3em;
+        background-color: rgba(0,0,0,0.07);
+        border-radius: 3px;
+      }
+      .severity {
+        text-transform: capitalize;
+        font-weight: bold;
+      }
+      .highlight {
+        padding: 2px;
+        border-radius: 2px;
+        font-weight: bold;
+      }
 
-    .severity.refactor {
-    color: rgba(237, 156, 40, 1.0);
-    }
-    .highlight.refactor {
-    background-color: rgba(237, 156, 40, 0.6);
-    border: 1px solid rgba(237, 156, 40, 0.4);
-    }
+      .severity.refactor {
+        color: rgba(237, 156, 40, 1.0);
+      }
+      .highlight.refactor {
+        background-color: rgba(237, 156, 40, 0.6);
+        border: 1px solid rgba(237, 156, 40, 0.4);
+      }
 
-    .severity.convention {
-    color: rgba(237, 156, 40, 1.0);
-    }
-    .highlight.convention {
-    background-color: rgba(237, 156, 40, 0.6);
-    border: 1px solid rgba(237, 156, 40, 0.4);
-    }
+      .severity.convention {
+        color: rgba(237, 156, 40, 1.0);
+      }
+      .highlight.convention {
+        background-color: rgba(237, 156, 40, 0.6);
+        border: 1px solid rgba(237, 156, 40, 0.4);
+      }
 
-    .severity.warning {
-    color: rgba(150, 40, 239, 1.0);
-    }
-    .highlight.warning {
-    background-color: rgba(150, 40, 239, 0.6);
-    border: 1px solid rgba(150, 40, 239, 0.4);
-    }
+      .severity.warning {
+        color: rgba(150, 40, 239, 1.0);
+      }
+      .highlight.warning {
+        background-color: rgba(150, 40, 239, 0.6);
+        border: 1px solid rgba(150, 40, 239, 0.4);
+      }
 
-    .severity.error {
-    color: rgba(210, 50, 45, 1.0);
-    }
-    .highlight.error {
-    background-color: rgba(210, 50, 45, 0.6);
-    border: 1px solid rgba(210, 50, 45, 0.4);
-    }
+      .severity.error {
+        color: rgba(210, 50, 45, 1.0);
+      }
+      .highlight.error {
+        background-color: rgba(210, 50, 45, 0.6);
+        border: 1px solid rgba(210, 50, 45, 0.4);
+      }
 
-    .severity.fatal {
-    color: rgba(210, 50, 45, 1.0);
-    }
-    .highlight.fatal {
-    background-color: rgba(210, 50, 45, 0.6);
-    border: 1px solid rgba(210, 50, 45, 0.4);
-    }
+      .severity.fatal {
+        color: rgba(210, 50, 45, 1.0);
+      }
+      .highlight.fatal {
+        background-color: rgba(210, 50, 45, 0.6);
+        border: 1px solid rgba(210, 50, 45, 0.4);
+      }
 
-    footer {
-    margin-bottom: 20px;
-    margin-right: 20px;
-    font-size: 1.3rem;
-    color: #777;
-    text-align: right;
-    }
-    .extra-code {
-      color: #ED9C28
-    }
+      footer {
+        margin-bottom: 20px;
+        margin-right: 20px;
+        font-size: 1.3rem;
+        color: #777;
+        text-align: right;
+      }
+      .extra-code {
+        color: #ED9C28
+      }
+
+
     </style>
-
     <script>
     (function() {
       // floating headers. requires classList support.
@@ -370,316 +370,316 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
           23 offenses detected:
         </div>
         <ul class="offenses-list">
-          
-            
+
+
             <li>
               <a href="#offense_app/controllers/application_controller.rb">
                 app/controllers/application_controller.rb - 2 offenses
               </a>
             </li>
-          
-            
+
+
             <li>
               <a href="#offense_app/controllers/books_controller.rb">
                 app/controllers/books_controller.rb - 14 offenses
               </a>
             </li>
-          
-            
+
+
             <li>
               <a href="#offense_app/models/book.rb">
                 app/models/book.rb - 7 offenses
               </a>
             </li>
-          
+
         </ul>
       </div>
     </div>
     <div id="offenses">
-      
-      
+
+
       <div class="offense-box" id="offense_app/controllers/application_controller.rb">
         <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/controllers/application_controller.rb - 2 offenses</h3></div>
         <div class="offense-reports">
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #1</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/Documentation: Missing top-level documentation comment for <code>class ApplicationController</code>.</span>
             </div>
-            
+
             <pre><code><span class="highlight convention">class ApplicationController</span> &lt; ActionController::Base</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #1</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
             </div>
-            
+
             <pre><code><span class="highlight convention">c</span>lass ApplicationController &lt; ActionController::Base</code></pre>
-            
+
           </div>
-          
+
         </div>
       </div>
-      
-      
-      
+
+
+
       <div class="offense-box" id="offense_app/controllers/books_controller.rb">
         <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/controllers/books_controller.rb - 14 offenses</h3></div>
         <div class="offense-reports">
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #1</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/Documentation: Missing top-level documentation comment for <code>class BooksController</code>.</span>
             </div>
-            
+
             <pre><code><span class="highlight convention">class BooksController</span> &lt; ApplicationController</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #1</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
             </div>
-            
+
             <pre><code><span class="highlight convention">c</span>lass BooksController &lt; ApplicationController</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #2</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/SymbolArray: Use <code>%i</code> or <code>%I</code> for an array of symbols.</span>
             </div>
-            
+
             <pre><code>  before_action :set_book, only: <span class="highlight convention">[:show, :edit, :update, :destroy]</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #12</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/EmptyMethod: Put empty method definitions on a single line.</span>
             </div>
-            
+
             <pre><code>  <span class="highlight convention">def show</span> <span class="extra-code">...</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #21</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/EmptyMethod: Put empty method definitions on a single line.</span>
             </div>
-            
+
             <pre><code>  <span class="highlight convention">def edit</span> <span class="extra-code">...</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #31</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/LineLength: Line is too long. [121/120]</span>
             </div>
-            
+
             <pre><code>        format.html { redirect_to @book, notice: &#39;Book was successfully created.&#39; } # aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<span class="highlight convention">a</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #45</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/LineLength: Line is too long. [121/120]</span>
             </div>
-            
+
             <pre><code>        format.html { redirect_to @book, notice: &#39;Book was successfully updated.&#39; } # aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<span class="highlight convention">a</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #59</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/LineLength: Line is too long. [121/120]</span>
             </div>
-            
+
             <pre><code>      format.html { redirect_to books_url, notice: &#39;Book was successfully destroyed.&#39; } # aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<span class="highlight convention">a</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #64</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/EmptyLinesAroundAccessModifier: Keep a blank line before and after <code>private</code>.</span>
             </div>
-            
+
             <pre><code>  <span class="highlight convention">private</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #66</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.</span>
             </div>
-            
+
             <pre><code><span class="highlight convention">    </span>def set_book</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #66</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/IndentationConsistency: Inconsistent indentation detected.</span>
             </div>
-            
+
             <pre><code>    <span class="highlight convention">def set_book</span> <span class="extra-code">...</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #70</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/LineLength: Line is too long. [121/120]</span>
             </div>
-            
+
             <pre><code>    # Never trust parameters from the scary internet, only allow the allow list through. aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<span class="highlight convention">a</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #71</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/IndentationWidth: Use 2 (not 4) spaces for indentation.</span>
             </div>
-            
+
             <pre><code><span class="highlight convention">    </span>def book_params</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #71</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Layout/IndentationConsistency: Inconsistent indentation detected.</span>
             </div>
-            
+
             <pre><code>    <span class="highlight convention">def book_params</span> <span class="extra-code">...</span></code></pre>
-            
+
           </div>
-          
+
         </div>
       </div>
-      
-      
-      
+
+
+
       <div class="offense-box" id="offense_app/models/book.rb">
         <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/models/book.rb - 7 offenses</h3></div>
         <div class="offense-reports">
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #1</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/Documentation: Missing top-level documentation comment for <code>class Book</code>.</span>
             </div>
-            
+
             <pre><code><span class="highlight convention">class Book</span> &lt; ActiveRecord::Base</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #1</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/FrozenStringLiteralComment: Missing frozen string literal comment.</span>
             </div>
-            
+
             <pre><code><span class="highlight convention">c</span>lass Book &lt; ActiveRecord::Base</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #2</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Naming/MethodName: Use snake_case for method names.</span>
             </div>
-            
+
             <pre><code>  def <span class="highlight convention">someMethod</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #3</span> –
               <span class="severity warning">warning:</span>
               <span class="message">Lint/UselessAssignment: Useless assignment to variable - <code>foo</code>.</span>
             </div>
-            
+
             <pre><code>    <span class="highlight warning">foo</span> = bar = baz</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #4</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/RedundantRegexpArgument: Use string <code>&quot;&amp;amp;&amp;lt;&quot;</code> as argument instead of regexp <code>/&amp;amp;&amp;lt;/</code>.</span>
             </div>
-            
+
             <pre><code>    qux(quux.scan(<span class="highlight convention">/&amp;amp;&amp;lt;/</span>))</code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #5</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/RescueModifier: Avoid using <code>rescue</code> in its modifier form.</span>
             </div>
-            
+
             <pre><code>    <span class="highlight convention">Regexp.new(/\A&lt;p&gt;(.*)&lt;\/p&gt;\Z/m).match(full_document)[1] rescue full_document</span></code></pre>
-            
+
           </div>
-          
+
           <div class="report">
             <div class="meta">
               <span class="location">Line #5</span> –
               <span class="severity convention">convention:</span>
               <span class="message">Style/RegexpLiteral: Use <code>%r</code> around regular expression.</span>
             </div>
-            
+
             <pre><code>    Regexp.new(<span class="highlight convention">/\A&lt;p&gt;(.*)&lt;\/p&gt;\Z/m</span>).match(full_document)[1] rescue full_document</code></pre>
-            
+
           </div>
-          
+
         </div>
       </div>
-      
-      
+
+
     </div>
     <footer>
       Generated by <a href="https://github.com/rubocop/rubocop">RuboCop</a>
