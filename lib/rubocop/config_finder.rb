@@ -17,8 +17,8 @@ module RuboCop
       attr_writer :project_root
 
       def find_config_path(target_dir)
-        find_project_dotfile(target_dir) || find_user_dotfile || find_user_xdg_config ||
-          DEFAULT_FILE
+        find_project_dotfile(target_dir) || find_project_root_dot_config ||
+          find_user_dotfile || find_user_xdg_config || DEFAULT_FILE
       end
 
       # Returns the path RuboCop inferred as the root of the project. No file
@@ -39,6 +39,14 @@ module RuboCop
 
       def find_project_dotfile(target_dir)
         find_file_upwards(DOTFILE, target_dir, project_root)
+      end
+
+      def find_project_root_dot_config
+        return unless project_root
+
+        file = File.join(project_root, '.config', DOTFILE)
+
+        file if File.exist?(file)
       end
 
       def find_user_dotfile

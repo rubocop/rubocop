@@ -29,6 +29,29 @@ RSpec.describe RuboCop::ConfigLoader do
 
       before { create_empty_file('dir/example.rb') }
 
+      context 'but a config file exists in .config directory of the project root' do
+        before do
+          create_empty_file('Gemfile')
+          create_empty_file('.config/.rubocop.yml')
+        end
+
+        it 'returns the path to the file in home directory' do
+          expect(configuration_file_for).to end_with('.config/.rubocop.yml')
+        end
+      end
+
+      context 'but a config file exists in both .config of the project root and home directories' do
+        before do
+          create_empty_file('Gemfile')
+          create_empty_file('.config/.rubocop.yml')
+          create_empty_file('~/.rubocop.yml')
+        end
+
+        it 'returns the path to the file in home directory' do
+          expect(configuration_file_for).to end_with('.config/.rubocop.yml')
+        end
+      end
+
       context 'but a config file exists in home directory' do
         before { create_empty_file('~/.rubocop.yml') }
 
