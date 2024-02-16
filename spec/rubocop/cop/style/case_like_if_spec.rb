@@ -59,6 +59,26 @@ RSpec.describe RuboCop::Cop::Style::CaseLikeIf, :config do
     RUBY
   end
 
+  it 'registers an offense when using `==` with literal and using ternary operator' do
+    expect_offense(<<~RUBY)
+      if foo == 1
+      ^^^^^^^^^^^ Convert `if-elsif` to `case-when`.
+      elsif foo == 2
+      else
+        foo == 3 ? bar : baz
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case foo
+      when 1
+      when 2
+      else
+        foo == 3 ? bar : baz
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `==` with method call with arguments' do
     expect_no_offenses(<<~RUBY)
       if x == foo(1)

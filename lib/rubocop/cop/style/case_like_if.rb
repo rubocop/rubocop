@@ -230,7 +230,7 @@ module RuboCop
 
         def branch_conditions(node)
           conditions = []
-          while node&.if_type?
+          while node&.if_type? && !node.ternary?
             conditions << node.condition
             node = node.else_branch
           end
