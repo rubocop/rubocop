@@ -47,7 +47,11 @@ module RuboCop
           message = enforce_single_line_ternary_operator?(node) ? MSG_SINGLE_LINE : MSG_IF
 
           add_offense(node, message: message) do |corrector|
+            next if part_of_ignored_node?(node)
+
             autocorrect(corrector, node)
+
+            ignore_node(node)
           end
         end
 
