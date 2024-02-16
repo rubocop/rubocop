@@ -50,6 +50,28 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when nesting multiline ternary operators' do
+    expect_offense(<<~RUBY)
+      cond_a? ? foo :
+      ^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+        cond_b? ? bar :
+        ^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
+          cond_c? ? baz : qux
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if cond_a?
+        foo
+      else
+        if cond_b?
+        bar
+      else
+        cond_c? ? baz : qux
+      end
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when everything is on a separate line' do
     expect_offense(<<~RUBY)
       a = cond ?
