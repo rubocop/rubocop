@@ -46,15 +46,17 @@ module RuboCop
         private
 
         def check_method_node(node)
-          return unless preferred_method(node)
+          return unless preferred_method?(node)
 
           message = message(node)
           add_offense(node.loc.selector, message: message) do |corrector|
-            corrector.replace(node.loc.selector, style.to_s)
+            prefer = style == :then && node.receiver.nil? ? 'self.then' : style
+
+            corrector.replace(node.loc.selector, prefer)
           end
         end
 
-        def preferred_method(node)
+        def preferred_method?(node)
           case style
           when :then
             node.method?(:yield_self)
