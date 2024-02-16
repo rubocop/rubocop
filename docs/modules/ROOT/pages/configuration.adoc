@@ -29,10 +29,12 @@ RuboCop will start looking for the configuration file in the directory
 where the inspected file is and continue its way up to the root directory.
 
 If it cannot be found until reaching the project's root directory, then it will
-be searched for in the user's global config locations, which consists of a
+be searched for in the https://dot-config.github.io[.config directory of the project root]
+and the user's global config locations. The user's global config locations consist of a
 dotfile or a config file inside the https://specifications.freedesktop.org/basedir-spec/latest/index.html[XDG Base Directory
 specification].
 
+* `.config/.rubocop.yml` of the project root
 * `~/.rubocop.yml`
 * `$XDG_CONFIG_HOME/rubocop/config.yml` (expands to `~/.config/rubocop/config.yml`
 if `$XDG_CONFIG_HOME` is not set)
@@ -46,6 +48,7 @@ files:
 * `/path/to/project/lib/utils/.rubocop.yml`
 * `/path/to/project/lib/.rubocop.yml`
 * `/path/to/project/.rubocop.yml`
+* `/path/to/project/.config/.rubocop.yml`
 * `/.rubocop.yml`
 * `~/.rubocop.yml`
 * `~/.config/rubocop/config.yml`
