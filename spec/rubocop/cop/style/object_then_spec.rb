@@ -36,6 +36,17 @@ RSpec.describe RuboCop::Cop::Style::ObjectThen, :config do
           obj.then { _1.test }
         RUBY
       end
+
+      it 'registers an offense for `yield_self` without receiver' do
+        expect_offense(<<~RUBY)
+          yield_self { |obj| obj.test }
+          ^^^^^^^^^^ Prefer `then` over `yield_self`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          self.then { |obj| obj.test }
+        RUBY
+      end
     end
 
     it 'registers an offense for yield_self with proc param' do
