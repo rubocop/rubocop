@@ -44,9 +44,11 @@ module RuboCop
       def find_project_root_dot_config
         return unless project_root
 
-        file = File.join(project_root, '.config', DOTFILE)
+        dotfile = File.join(project_root, '.config', DOTFILE)
+        return dotfile if File.exist?(dotfile)
 
-        file if File.exist?(file)
+        xdg_config = File.join(project_root, '.config', 'rubocop', XDG_CONFIG)
+        xdg_config if File.exist?(xdg_config)
       end
 
       def find_user_dotfile

@@ -34,7 +34,7 @@ and the user's global config locations. The user's global config locations consi
 dotfile or a config file inside the https://specifications.freedesktop.org/basedir-spec/latest/index.html[XDG Base Directory
 specification].
 
-* `.config/.rubocop.yml` of the project root
+* `.config/.rubocop.yml` or `.config/rubocop/config.yml` at the project root
 * `~/.rubocop.yml`
 * `$XDG_CONFIG_HOME/rubocop/config.yml` (expands to `~/.config/rubocop/config.yml`
 if `$XDG_CONFIG_HOME` is not set)
@@ -49,6 +49,7 @@ files:
 * `/path/to/project/lib/.rubocop.yml`
 * `/path/to/project/.rubocop.yml`
 * `/path/to/project/.config/.rubocop.yml`
+* `/path/to/project/.config/rubocop/config.yml`
 * `/.rubocop.yml`
 * `~/.rubocop.yml`
 * `~/.config/rubocop/config.yml`

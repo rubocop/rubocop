@@ -29,26 +29,61 @@ RSpec.describe RuboCop::ConfigLoader do
 
       before { create_empty_file('dir/example.rb') }
 
-      context 'but a config file exists in .config directory of the project root' do
+      context 'but a config file exists in .config/.rubocop.yml of the project root' do
         before do
           create_empty_file('Gemfile')
           create_empty_file('.config/.rubocop.yml')
         end
 
-        it 'returns the path to the file in home directory' do
+        it 'returns the path to the file in .config directory' do
           expect(configuration_file_for).to end_with('.config/.rubocop.yml')
         end
       end
 
-      context 'but a config file exists in both .config of the project root and home directories' do
+      context 'but a config file exists in both .config/.rubocop.yml of the project root and home directory' do
         before do
           create_empty_file('Gemfile')
           create_empty_file('.config/.rubocop.yml')
           create_empty_file('~/.rubocop.yml')
         end
 
-        it 'returns the path to the file in home directory' do
+        it 'returns the path to the file in .config directory' do
           expect(configuration_file_for).to end_with('.config/.rubocop.yml')
+        end
+      end
+
+      context 'but a config file exists in .config/rubocop/config.yml of the project root' do
+        before do
+          create_empty_file('Gemfile')
+          create_empty_file('.config/rubocop/config.yml')
+        end
+
+        it 'returns the path to the file in .config/rubocop directory' do
+          expect(configuration_file_for).to end_with('.config/rubocop/config.yml')
+        end
+      end
+
+      context 'but a config file exists in both .config/.rubocop.yml and .config/rubocop/config.yml of the project root' do
+        before do
+          create_empty_file('Gemfile')
+          create_empty_file('.config/.rubocop.yml')
+          create_empty_file('.config/rubocop/config.yml')
+        end
+
+        it 'returns the path to the file in .config directory' do
+          expect(configuration_file_for).to end_with('.config/.rubocop.yml')
+        end
+      end
+
+      context 'but a config file exists in both .config//rubocop/config.yml of the project root and home directory' do
+        before do
+          create_empty_file('Gemfile')
+          create_empty_file('.config/rubocop/config.yml')
+          create_empty_file('~/.rubocop.yml')
+        end
+
+        it 'returns the path to the file in .config/rubocop directory' do
+          expect(configuration_file_for).to end_with('.config/rubocop/config.yml')
         end
       end
 
