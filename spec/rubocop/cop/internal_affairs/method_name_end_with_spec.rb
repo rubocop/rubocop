@@ -8,12 +8,17 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEndWith, :config do
     RUBY
   end
 
-  it 'registers an offense if `method_name` is a variable and there is potentially usage of `assignment_method?`' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense if `method_name` is a variable' do
+    expect_no_offenses(<<~RUBY)
       def assignment_method?(method_name)
         method_name.to_s.end_with?('=')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `assignment_method?` instead of `method_name.to_s.end_with?('=')`.
       end
+    RUBY
+  end
+
+  it 'does not register an offense when using `method_name` without receiver' do
+    expect_no_offenses(<<~RUBY)
+      method_name.to_s.end_with?('=')
     RUBY
   end
 

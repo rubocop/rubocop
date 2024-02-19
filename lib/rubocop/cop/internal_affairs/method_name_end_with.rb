@@ -30,6 +30,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `%<method_name>s` instead of `%<method_suffix>s`.'
+        RESTRICT_ON_SEND = %i[end_with?].freeze
         SUGGEST_METHOD_FOR_SUFFIX = {
           '=' => 'assignment_method?',
           '!' => 'bang_method?',
@@ -51,6 +52,8 @@ module RuboCop
 
         def on_send(node)
           method_name_end_with?(node) do |method_name_node, end_with_arg|
+            next unless method_name_node.receiver
+
             range = range(method_name_node, node)
             message = format(
               MSG,
