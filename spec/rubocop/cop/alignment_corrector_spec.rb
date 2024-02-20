@@ -69,7 +69,8 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
         it_behaves_like 'heredoc indenter', '<<DOC', 20
       end
 
-      context 'with heredoc in backticks (<<``)' do
+      # FIXME: https://github.com/ruby/prism/issues/2498
+      context 'with heredoc in backticks (<<``)', broken_on: :prism do
         it_behaves_like 'heredoc indenter', '<<`DOC`', 20
       end
     end

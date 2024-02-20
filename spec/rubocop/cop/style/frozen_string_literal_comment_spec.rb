@@ -1043,7 +1043,7 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
     end
   end
 
-  context 'target_ruby_version < 2.3', :ruby22 do
+  context 'target_ruby_version < 2.3', :ruby22, unsupported_on: :prism do
     it 'accepts freezing a string' do
       expect_no_offenses('"x".freeze')
     end

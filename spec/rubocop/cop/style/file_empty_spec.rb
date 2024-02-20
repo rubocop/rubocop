@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::Style::FileEmpty, :config do
     end
   end
 
-  context 'target ruby version < 2.4', :ruby23 do
+  context 'target ruby version < 2.4', :ruby23, unsupported_on: :prism do
     it 'does not register an offense for `File.zero?`' do
       expect_no_offenses("File.zero?('path/to/file')")
     end

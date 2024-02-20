@@ -124,7 +124,8 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
       end
 
-      context 'when using back tick delimiters' do
+      # FIXME: https://github.com/ruby/prism/issues/2498
+      context 'when using back tick delimiters', broken_on: :prism do
         it 'registers an offense and corrects with a lowercase delimiter' do
           expect_offense(<<~RUBY)
             <<-`sql`
@@ -174,7 +175,9 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
       end
 
-      context 'when using blank heredoc delimiters' do
+      # FIXME: `<<''` is a syntax error. This test was added because Parser gem can parse it,
+      # but this will be removed after https://github.com/whitequark/parser/issues/996 is resolved.
+      context 'when using blank heredoc delimiters', unsupported_on: :prism do
         it 'does not register an offense' do
           expect_no_offenses(<<~RUBY)
             <<''

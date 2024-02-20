@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::VariableForce::Assignment do
   include RuboCop::AST::Sexp
 
-  let(:ast) { RuboCop::ProcessedSource.new(source, ruby_version).ast }
+  let(:ast) { RuboCop::ProcessedSource.new(source, ruby_version, parser_engine: parser_engine).ast }
 
   let(:source) do
     <<~RUBY

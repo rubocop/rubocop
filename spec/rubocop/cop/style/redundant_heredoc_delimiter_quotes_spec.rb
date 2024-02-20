@@ -61,7 +61,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantHeredocDelimiterQuotes, :config do
     RUBY
   end
 
-  it 'does not register an offense when using the redundant heredoc delimiter backquotes' do
+  # FIXME: https://github.com/ruby/prism/issues/2498
+  it 'does not register an offense when using the redundant heredoc delimiter backquotes', broken_on: :prism do
     expect_no_offenses(<<~RUBY)
       do_something(<<~`EOS`)
         command
@@ -162,7 +163,9 @@ RSpec.describe RuboCop::Cop::Style::RedundantHeredocDelimiterQuotes, :config do
     RUBY
   end
 
-  it 'does not register an offense when using the blank heredoc delimiter' do
+  # FIXME: `<<''` is a syntax error in Ruby. This test was added because Parser gem can parse it,
+  # but this will be removed after https://github.com/whitequark/parser/issues/996 is resolved.
+  it 'does not register an offense when using the blank heredoc delimiter', unsupported_on: :prism do
     expect_no_offenses(<<~RUBY)
       <<''
     RUBY

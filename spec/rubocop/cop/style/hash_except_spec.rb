@@ -684,7 +684,7 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
     end
   end
 
-  context 'Ruby 2.7 or lower', :ruby27 do
+  context 'Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
     it 'does not register an offense when using `reject` and comparing with `lvar == :key`' do
       expect_no_offenses(<<~RUBY)
         {foo: 1, bar: 2, baz: 3}.reject { |k, v| k == :bar }

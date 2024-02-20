@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SlicingWithRange, :config do
-  context '<= Ruby 2.5', :ruby25 do
+  context '<= Ruby 2.5', :ruby25, unsupported_on: :prism do
     it 'reports no offense for array slicing end with `-1`' do
       expect_no_offenses(<<~RUBY)
         ary[1..-1]

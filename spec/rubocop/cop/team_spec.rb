@@ -90,7 +90,9 @@ RSpec.describe RuboCop::Cop::Team do
 
     let(:file_path) { 'example.rb' }
     let(:source) do
-      source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
+      source = RuboCop::ProcessedSource.from_file(
+        file_path, ruby_version, parser_engine: parser_engine
+      )
       source.config = config
       source.registry = RuboCop::Cop::Registry.new(cop_classes.cops)
       source
@@ -109,7 +111,8 @@ RSpec.describe RuboCop::Cop::Team do
 
       let(:cop_names) { offenses.map(&:cop_name) }
 
-      it 'returns Parser warning offenses' do
+      # FIXME: https://github.com/ruby/prism/issues/2513
+      it 'returns Parser warning offenses', broken_on: :prism do
         expect(cop_names.include?('Lint/AmbiguousOperator')).to be(true)
       end
 
@@ -118,7 +121,8 @@ RSpec.describe RuboCop::Cop::Team do
       end
 
       context 'when a cop has no interest in the file' do
-        it 'returns all offenses except the ones of the cop' do
+        # FIXME: https://github.com/ruby/prism/issues/2513
+        it 'returns all offenses except the ones of the cop', broken_on: :prism do
           allow_any_instance_of(RuboCop::Cop::Layout::LineLength)
             .to receive(:excluded_file?).and_return(true)
 

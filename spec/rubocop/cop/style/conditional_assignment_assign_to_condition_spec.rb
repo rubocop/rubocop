@@ -132,7 +132,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     expect_no_offenses('bar = foo? ? "a" : "b"')
   end
 
-  it 'registers an offense for assignment in ternary operation using strings' do
+  # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+  # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+  it 'registers an offense for assignment in ternary operation using strings', broken_on: :prism do
     expect_offense(<<~RUBY)
       foo? ? bar = "a" : bar = "b"
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -189,7 +191,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
   end
 
   shared_examples 'comparison methods' do |method|
-    it 'registers an offense for comparison methods in ternary operations' do
+    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+    it 'registers an offense for comparison methods in ternary operations', broken_on: :prism do
       source = "foo? ? bar #{method} 1 : bar #{method} 2"
       expect_offense(<<~RUBY, source: source)
         %{source}
@@ -562,7 +566,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
   end
 
   shared_examples 'all variable types' do |variable, add_parens: false|
-    it 'registers an offense assigning any variable type in ternary' do
+    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+    it 'registers an offense assigning any variable type in ternary', broken_on: :prism do
       source = "foo? ? #{variable} = 1 : #{variable} = 2"
       expect_offense(<<~RUBY, source: source)
         %{source}
@@ -661,7 +667,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
 
     variable_types.each do |type, name|
       context "for a #{type} lval" do
-        it "registers an offense for assignment using #{assignment} in ternary" do
+        # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+        # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+        it "registers an offense for assignment using #{assignment} in ternary", broken_on: :prism do
           source = "foo? ? #{name} #{assignment} 1 : #{name} #{assignment} 2"
           expect_offense(<<~RUBY, source: source)
             %{source}
@@ -1230,7 +1238,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
   end
 
   describe 'autocorrect' do
-    it 'corrects =~ in ternary operations' do
+    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+    it 'corrects =~ in ternary operations', broken_on: :prism do
       expect_offense(<<~RUBY)
         foo? ? bar =~ /a/ : bar =~ /b/
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -2238,7 +2248,9 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
                           })
     end
 
-    it 'allows assignment in ternary operation' do
+    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+    it 'allows assignment in ternary operation', broken_on: :prism do
       expect_no_offenses('foo? ? bar = "a" : bar = "b"')
     end
   end

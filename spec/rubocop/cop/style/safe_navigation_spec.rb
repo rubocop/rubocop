@@ -1191,7 +1191,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     end
   end
 
-  context 'when Ruby <= 2.2', :ruby22 do
+  context 'when Ruby <= 2.2', :ruby22, unsupported_on: :prism do
     it 'does not register an offense when a method call that nil responds to safe guarded by an object check' do
       expect_no_offenses('foo.bar if foo')
     end

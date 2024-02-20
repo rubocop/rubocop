@@ -136,12 +136,13 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
         described_class.ruby_extractors.shift
       end
 
+      # rubocop:disable Layout/LineLength
       let(:custom_ruby_extractor) do
         lambda do |_processed_source|
           [
             {
               offset: 1,
-              processed_source: RuboCop::ProcessedSource.new(<<~RUBY, 3.1, 'dummy.rb')
+              processed_source: RuboCop::ProcessedSource.new(<<~RUBY, 3.3, 'dummy.rb', parser_engine: parser_engine)
                 # frozen_string_literal: true
 
                 def valid_code; end
@@ -149,11 +150,12 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             },
             {
               offset: 2,
-              processed_source: RuboCop::ProcessedSource.new(source, 3.1, 'dummy.rb')
+              processed_source: RuboCop::ProcessedSource.new(source, 3.3, 'dummy.rb', parser_engine: parser_engine)
             }
           ]
         end
       end
+      # rubocop:enable Layout/LineLength
 
       let(:source) do
         <<~RUBY

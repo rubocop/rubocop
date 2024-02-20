@@ -258,7 +258,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
     end
   end
 
-  context 'Ruby <= 3.0', :ruby30 do
+  context 'Ruby <= 3.0', :ruby30, unsupported_on: :prism do
     it 'does not register an offense and corrects when using `to_enum.reject` on array to reject nils' do
       expect_no_offenses(<<~RUBY)
         array.to_enum.reject { |e| e.nil? }
@@ -276,7 +276,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
     end
   end
 
-  context 'when Ruby <= 2.3', :ruby23 do
+  context 'when Ruby <= 2.3', :ruby23, unsupported_on: :prism do
     it 'does not register an offense when using `reject` on hash to reject nils' do
       expect_no_offenses(<<~RUBY)
         hash.reject { |k, v| v.nil? }

@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Lint::NumberedParameterAssignment, :config do
   # NOTE: Assigning to numbered parameter (from `_1` to `_9`) cause an error in Ruby 3.0.
-  context 'when Ruby 2.7 or lower', :ruby27 do
+  context 'when Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
     (1..9).to_a.each do |number|
       it "registers an offense when using `_#{number}` numbered parameter" do
         expect_offense(<<~RUBY)

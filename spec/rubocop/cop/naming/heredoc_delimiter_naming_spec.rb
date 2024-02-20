@@ -61,7 +61,8 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
       end
     end
 
-    context 'when using back tick delimiters' do
+    # FIXME: https://github.com/ruby/prism/issues/2498
+    context 'when using back tick delimiters', broken_on: :prism do
       it 'registers an offense with a non-meaningful delimiter' do
         expect_offense(<<~RUBY)
           <<-`END`
@@ -91,7 +92,9 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterNaming, :config do
       end
     end
 
-    context 'when using blank heredoc delimiters' do
+    # FIXME: `<<~''` is a syntax error in Ruby. This test was added because Parser gem can parse it,
+    # but this will be removed after https://github.com/whitequark/parser/issues/996 is resolved.
+    context 'when using blank heredoc delimiters', unsupported_on: :prism do
       it 'registers an offense with a non-meaningful delimiter' do
         expect_offense(<<~RUBY)
           <<~''

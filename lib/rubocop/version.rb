@@ -5,7 +5,7 @@ module RuboCop
   module Version
     STRING = '1.61.0'
 
-    MSG = '%<version>s (using Parser %<parser_version>s, ' \
+    MSG = '%<version>s (using %<parser_version>s, ' \
           'rubocop-ast %<rubocop_ast_version>s, ' \
           'running on %<ruby_engine>s %<ruby_version>s)%<server_mode>s [%<ruby_platform>s]'
 
@@ -20,7 +20,7 @@ module RuboCop
     # @api private
     def self.version(debug: false, env: nil)
       if debug
-        verbose_version = format(MSG, version: STRING, parser_version: Parser::VERSION,
+        verbose_version = format(MSG, version: STRING, parser_version: parser_version,
                                       rubocop_ast_version: RuboCop::AST::Version::STRING,
                                       ruby_engine: RUBY_ENGINE, ruby_version: RUBY_VERSION,
                                       server_mode: server_mode,
@@ -36,6 +36,21 @@ module RuboCop
         VERSIONS
       else
         STRING
+      end
+    end
+
+    # @api private
+    def self.parser_version
+      config_path = ConfigFinder.find_config_path(Dir.pwd)
+      yaml = YAML.safe_load(
+        File.read(config_path), permitted_classes: [Regexp, Symbol], aliases: true
+      )
+
+      if yaml.dig('AllCops', 'ParserEngine') == 'parser_prism'
+        require 'prism'
+        "Prism #{Prism::VERSION}"
+      else
+        "Parser #{Parser::VERSION}"
       end
     end
 

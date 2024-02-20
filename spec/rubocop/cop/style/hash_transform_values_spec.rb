@@ -297,13 +297,13 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
     end
   end
 
-  context 'below Ruby 2.4', :ruby23 do
+  context 'below Ruby 2.4', :ruby23, unsupported_on: :prism do
     it 'does not flag even if transform_values could be used' do
       expect_no_offenses('x.each_with_object({}) {|(k, v), h| h[k] = foo(v)}')
     end
   end
 
-  context 'below Ruby 2.6', :ruby25 do
+  context 'below Ruby 2.6', :ruby25, unsupported_on: :prism do
     it 'does not flag _.to_h{...}' do
       expect_no_offenses(<<~RUBY)
         x.to_h {|k, v| [k, foo(v)]}

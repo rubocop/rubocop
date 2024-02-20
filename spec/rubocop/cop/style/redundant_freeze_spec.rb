@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
       end
     end
 
-    context 'Ruby 2.7 or lower', :ruby27 do
+    context 'Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
       context 'when the frozen string literal comment is missing' do
         it_behaves_like 'mutable objects', '"#{a}"'
       end
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
         it_behaves_like 'immutable objects', '(1...5)'
       end
 
-      context 'Ruby 2.7 or lower', :ruby27 do
+      context 'Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
         it_behaves_like 'mutable objects', '/./'
         it_behaves_like 'mutable objects', '(1..5)'
         it_behaves_like 'mutable objects', '(1...5)'

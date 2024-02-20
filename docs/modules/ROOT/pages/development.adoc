@@ -372,6 +372,26 @@ This works because the correcting a file is implemented by repeating investigati
 
 Note that `expect_correction` in `Cop` specs only asserts the result after one pass.
 
+=== Run tests
+
+RuboCop supports two parser engines: the Parser gem and Prism. By default, tests are executed with the Parser:
+
+```console
+$ bundle exec rake spec
+```
+
+To run all tests with the experimental support for Prism, use `bundle exec prism_spec`, and to execute tests for individual files,
+specify the environment variable `PARSER_ENGINE=parser_prism`.
+
+e.g., `PARSER_ENGINE=parser_prism spec/rubocop/cop/style/hash_syntax_spec.rb`
+
+`bundle exec rake` runs tests for both Parser gem and Prism parsers.
+
+But `ascii_spec` rake task does not run by default. Because `ascii_spec` task has not been failing for a while.
+However, `ascii_spec` task will continue to be checked in CI.
+
+In CI, all tests required for merging are executed. Please investigate if anything fails.
+
 === Configuration
 
 Each cop can hold a configuration and you can refer to `cop_config` in the

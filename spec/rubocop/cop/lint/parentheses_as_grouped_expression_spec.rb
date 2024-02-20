@@ -12,8 +12,9 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects for predicate method call with space ' \
-     'before the parenthesis' do
+  # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+  # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+  it 'registers an offense and corrects for predicate method call with space before the parenthesis', broken_on: :prism do
     expect_offense(<<~RUBY)
       is? (x)
          ^ `(x)` interpreted as grouped expression.

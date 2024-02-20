@@ -109,7 +109,9 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
       RUBY
     end
 
-    it 'registers an offense for boolean literal on left' do
+    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+    it 'registers an offense for boolean literal on left', broken_on: :prism do
       expect_offense(<<~RUBY)
         false == active?
         ^^^^^^^^^^^^^^^^ Reverse the order of the operands `false == active?`.
@@ -350,7 +352,9 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
       RUBY
     end
 
-    it 'registers an offense for boolean literal on right' do
+    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+    it 'registers an offense for boolean literal on right', broken_on: :prism do
       expect_offense(<<~RUBY)
         active? == false
         ^^^^^^^^^^^^^^^^ Reverse the order of the operands `active? == false`.

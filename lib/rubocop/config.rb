@@ -62,7 +62,7 @@ module RuboCop
 
     def_delegators :@hash, :[], :[]=, :delete, :dig, :each, :key?, :keys, :each_key,
                    :fetch, :map, :merge, :replace, :to_h, :to_hash, :transform_values
-    def_delegators :@validator, :validate, :target_ruby_version
+    def_delegators :@validator, :validate, :target_ruby_version, :parser_engine
 
     def to_s
       @to_s ||= @hash.to_s

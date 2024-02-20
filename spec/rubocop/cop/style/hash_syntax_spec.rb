@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_no_offenses('{}')
       end
 
-      context 'ruby < 2.2', :ruby21 do
+      context 'ruby < 2.2', :ruby21, unsupported_on: :prism do
         it 'accepts hash rockets when symbol keys have string in them' do
           expect_no_offenses('x = { :"string" => 0 }')
         end
@@ -478,7 +478,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      context 'ruby < 2.2', :ruby21 do
+      context 'ruby < 2.2', :ruby21, unsupported_on: :prism do
         it 'accepts hash rockets when keys have whitespaces in them' do
           expect_no_offenses('x = { :"t o" => 0, :b => 1 }')
         end
@@ -658,7 +658,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      context 'ruby < 2.2', :ruby21 do
+      context 'ruby < 2.2', :ruby21, unsupported_on: :prism do
         it 'accepts hash rockets when keys have whitespaces in them' do
           expect_no_offenses('x = { :"t o" => 0, :b => 1 }')
         end
@@ -1496,7 +1496,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
     end
 
-    context 'Ruby <= 3.0', :ruby30 do
+    context 'Ruby <= 3.0', :ruby30, unsupported_on: :prism do
       it 'does not register an offense when hash key and hash value are the same' do
         expect_no_offenses(<<~RUBY)
           {foo: foo, bar: bar}
@@ -1667,7 +1667,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       end
     end
 
-    context 'Ruby <= 3.0', :ruby30 do
+    context 'Ruby <= 3.0', :ruby30, unsupported_on: :prism do
       it 'does not register an offense when all hash key and hash values are the same' do
         expect_no_offenses(<<~RUBY)
           {foo: foo, bar: bar}

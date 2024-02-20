@@ -127,7 +127,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'until', '1 until""', '1 until ""'
   it_behaves_like 'missing before', 'when', 'case ""when a; end', 'case "" when a; end'
   it_behaves_like 'missing after', 'when', 'case a when""; end', 'case a when ""; end'
-  context '>= Ruby 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+  # FIXME: https://github.com/ruby/prism/pull/2525
+  context '>= Ruby 2.7', :ruby27, broken_on: :prism do
     # TODO: `case ""in a; end` is syntax error in Ruby 3.0.1.
     #       This syntax is confirmed: https://bugs.ruby-lang.org/issues/17925
     #       The answer will determine whether to enable or discard the test in the future.

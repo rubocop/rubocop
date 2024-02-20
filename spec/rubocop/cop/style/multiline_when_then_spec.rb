@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
-  it 'registers an offense for empty when statement with then' do
+  # FIXME: https://github.com/ruby/prism/issues/2508
+  it 'registers an offense for empty when statement with then', broken_on: :prism do
     expect_offense(<<~RUBY)
       case foo
       when bar then
@@ -133,7 +134,8 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
     RUBY
   end
 
-  it 'registers an offense when one line for multiple candidate values of `when`' do
+  # FIXME: https://github.com/ruby/prism/issues/2508
+  it 'registers an offense when one line for multiple candidate values of `when`', broken_on: :prism do
     expect_offense(<<~RUBY)
       case foo
       when bar, baz then

@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::ObjectThen, :config do
   context 'EnforcedStyle: then' do
     let(:cop_config) { { 'EnforcedStyle' => 'then' } }
 
-    context 'Ruby 2.5', :ruby25 do
+    context 'Ruby 2.5', :ruby25, unsupported_on: :prism do
       it 'accepts yield_self with block' do
         expect_no_offenses(<<~RUBY)
           obj.yield_self { |e| e.test }

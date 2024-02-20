@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Security::YAMLLoad, :config do
     expect_no_offenses('Module::YAML.load("foo")')
   end
 
-  context 'Ruby <= 3.0', :ruby30 do
+  context 'Ruby <= 3.0', :ruby30, unsupported_on: :prism do
     it 'registers an offense and corrects load with a literal string' do
       expect_offense(<<~RUBY)
         YAML.load("--- !ruby/object:Foo {}")

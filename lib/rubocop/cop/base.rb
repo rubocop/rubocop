@@ -232,6 +232,10 @@ module RuboCop
         @config.target_ruby_version
       end
 
+      def parser_engine
+        @config.parser_engine
+      end
+
       def target_rails_version
         @config.target_rails_version
       end
@@ -254,7 +258,7 @@ module RuboCop
 
       # There should be very limited reasons for a Cop to do it's own parsing
       def parse(source, path = nil)
-        ProcessedSource.new(source, target_ruby_version, path)
+        ProcessedSource.new(source, target_ruby_version, path, parser_engine: parser_engine)
       end
 
       # @api private
