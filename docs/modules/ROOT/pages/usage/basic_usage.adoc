@@ -168,6 +168,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `-D/--[no-]display-cop-names`
 | Displays cop names in offense messages. Default is true.
 
+| `--display-time`
+| Display elapsed time in seconds.
+
 | `--display-only-fail-level-offenses`
 | Only output offense messages at the specified `--fail-level` or above.
 
