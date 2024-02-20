@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
     end
 
-    context 'Ruby 2.7 or lower', :ruby27 do
+    context 'Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
       context 'when the frozen string literal comment is missing' do
         it_behaves_like 'mutable objects', '"#{a}"'
       end
@@ -348,7 +348,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
     end
 
-    context 'Ruby 2.7 or lower', :ruby27 do
+    context 'Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
       context 'when assigning a regexp' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)

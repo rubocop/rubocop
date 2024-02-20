@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Style::DataInheritance, :config do
     end
   end
 
-  context 'Ruby <= 3.1', :ruby31 do
+  context 'Ruby <= 3.1', :ruby31, unsupported_on: :prism do
     it 'accepts extending instance of `Data.define`' do
       expect_no_offenses(<<~RUBY)
         class Person < Data.define(:first_name, :last_name)

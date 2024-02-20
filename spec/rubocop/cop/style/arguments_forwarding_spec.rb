@@ -12,7 +12,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
   let(:redundant_keyword_rest_argument_names) { %w[kwargs options opts] }
   let(:redundant_block_argument_names) { %w[blk block proc] }
 
-  context 'TargetRubyVersion <= 2.6', :ruby26 do
+  context 'TargetRubyVersion <= 2.6', :ruby26, unsupported_on: :prism do
     it 'does not register an offense when using restarg with block arg' do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
   end
 
   context 'TargetRubyVersion >= 2.7', :ruby27 do
-    it 'registers an offense when using restarg and block arg' do
+    it 'registers an offense when using restarg and block arg', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
                 ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when passing restarg and block arg in defs' do
+    it 'registers an offense when passing restarg and block arg in defs', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def self.foo(*args, &block)
                      ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when the parentheses of arguments are omitted' do
+    it 'registers an offense when the parentheses of arguments are omitted', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo *args, &block
                 ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when forwarding to a method in block' do
+    it 'registers an offense when forwarding to a method in block', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
                 ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -147,7 +147,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when delegating' do
+    it 'registers an offense when delegating', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
                 ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when using restarg and block arg for `.()` call' do
+    it 'registers an offense when using restarg and block arg for `.()` call', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo(*args, &block)
                 ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when using block arg', :ruby30 do
+    it 'does not register an offense when using block arg', :ruby30, unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(&block)
           bar(&block)
@@ -208,7 +208,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     context 'when `RedundantBlockArgumentNames: [meaningless_block_name]`' do
       let(:redundant_block_argument_names) { ['meaningless_block_name'] }
 
-      it 'registers an offense when using restarg and block arg' do
+      it 'registers an offense when using restarg and block arg', unsupported_on: :prism do
         expect_offense(<<~RUBY)
           def foo(*args, &meaningless_block_name)
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -224,7 +224,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         RUBY
       end
 
-      it 'does not register an offense when using restarg and unconfigured block arg' do
+      it 'does not register an offense when using restarg and unconfigured block arg', unsupported_on: :prism do
         expect_no_offenses(<<~RUBY)
           def foo(*args, &block)
             bar(*args, &block)
@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when different arguments are used' do
+    it 'does not register an offense when different arguments are used', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           bar(*args)
@@ -291,7 +291,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when different splat argument names are used' do
+    it 'does not register an offense when different splat argument names are used', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           bar(*arguments, &block)
@@ -299,7 +299,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when different kwrest argument names are used' do
+    it 'does not register an offense when different kwrest argument names are used', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(**kwargs, &block)
           bar(**kwarguments, &block)
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when the restarg is overwritten' do
+    it 'does not register an offense when the restarg is overwritten', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, **kwargs, &block)
           args = new_args
@@ -316,7 +316,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when the kwarg is overwritten' do
+    it 'does not register an offense when the kwarg is overwritten', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, **kwargs, &block)
           kwargs = new_kwargs
@@ -325,7 +325,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when the block arg is overwritten' do
+    it 'does not register an offense when the block arg is overwritten', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, **kwargs, &block)
           block = new_block
@@ -334,7 +334,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when using the restarg outside forwarding method arguments' do
+    it 'does not register an offense when using the restarg outside forwarding method arguments', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, **kwargs, &block)
           args.do_something
@@ -343,7 +343,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when assigning the restarg outside forwarding method arguments' do
+    it 'does not register an offense when assigning the restarg outside forwarding method arguments', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           var = args
@@ -352,7 +352,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when referencing the restarg outside forwarding method arguments' do
+    it 'does not register an offense when referencing the restarg outside forwarding method arguments', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           args
@@ -361,7 +361,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when not always passing the block as well as restarg' do
+    it 'does not register an offense when not always passing the block as well as restarg', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           bar(*args, &block)
@@ -370,7 +370,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when not always passing the block as well as kwrestarg' do
+    it 'does not register an offense when not always passing the block as well as kwrestarg', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(**kwargs, &block)
           bar(**kwargs, &block)
@@ -379,7 +379,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when not always forwarding all' do
+    it 'does not register an offense when not always forwarding all', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, **kwargs, &block)
           bar(*args, **kwargs, &block)
@@ -389,7 +389,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when always forwarding the block but not other args' do
+    it 'does not register an offense when always forwarding the block but not other args', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           bar(*args, &block)
@@ -405,7 +405,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense with arg destructuring' do
+    it 'does not register an offense with arg destructuring', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo((bar, baz), **kwargs)
           forwarded(bar, baz, **kwargs)
@@ -413,7 +413,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense with an additional kwarg' do
+    it 'does not register an offense with an additional kwarg', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(first:, **kwargs, &block)
           forwarded(**kwargs, &block)
@@ -424,7 +424,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     context 'AllowOnlyRestArgument: true' do
       let(:cop_config) { { 'AllowOnlyRestArgument' => true } }
 
-      it 'does not register an offense when using only rest arg' do
+      it 'does not register an offense when using only rest arg', unsupported_on: :prism do
         expect_no_offenses(<<~RUBY)
           def foo(*args)
             bar(*args)
@@ -432,7 +432,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         RUBY
       end
 
-      it 'does not register an offense when using only kwrest arg' do
+      it 'does not register an offense when using only kwrest arg', unsupported_on: :prism do
         expect_no_offenses(<<~RUBY)
           def foo(**kwargs)
             bar(**kwargs)
@@ -476,7 +476,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     context 'AllowOnlyRestArgument: false' do
       let(:cop_config) { { 'AllowOnlyRestArgument' => false } }
 
-      it 'registers an offense when using only rest arg' do
+      it 'registers an offense when using only rest arg', unsupported_on: :prism do
         expect_offense(<<~RUBY)
           def foo(*args)
                   ^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -492,7 +492,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         RUBY
       end
 
-      it 'registers an offense when using only kwrest arg' do
+      it 'registers an offense when using only kwrest arg', unsupported_on: :prism do
         expect_offense(<<~RUBY)
           def foo(**kwargs)
                   ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -508,7 +508,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         RUBY
       end
 
-      it 'does not register an offense with default positional arguments' do
+      it 'does not register an offense with default positional arguments', unsupported_on: :prism do
         expect_no_offenses(<<~RUBY)
           def foo(arg=1, *args)
             bar(*args)
@@ -516,7 +516,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         RUBY
       end
 
-      it 'does not register an offense with default keyword arguments' do
+      it 'does not register an offense with default keyword arguments', unsupported_on: :prism do
         expect_no_offenses(<<~RUBY)
           def foo(*args, arg: 1)
             bar(*args)
@@ -589,7 +589,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       end
     end
 
-    it 'does not register an offense for restarg when passing block to separate call' do
+    it 'does not register an offense for restarg when passing block to separate call', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, &block)
           bar(*args).baz(&block)
@@ -597,7 +597,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense for restarg and kwrestarg when passing block to separate call' do
+    it 'does not register an offense for restarg and kwrestarg when passing block to separate call', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, **kwargs, &block)
           bar(*args, **kwargs).baz(&block)
@@ -605,7 +605,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense for restarg/kwrestarg/block passed to separate methods' do
+    it 'does not register an offense for restarg/kwrestarg/block passed to separate methods', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(*args, **kwargs, &block)
           bar(first(*args), second(**kwargs), third(&block))
@@ -613,7 +613,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense if an additional positional parameter is present' do
+    it 'does not register an offense if an additional positional parameter is present', unsupported_on: :prism do
       # Technically, forward-all supports leading additional arguments in Ruby >= 2.7.3, but for
       # simplicity we do not correct for any Ruby < 3.0
       # https://github.com/rubocop/rubocop/issues/12087#issuecomment-1662972732
@@ -652,7 +652,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense if kwargs are forwarded with a positional parameter' do
+    it 'does not register an offense if kwargs are forwarded with a positional parameter', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(m, **kwargs, &block)
           bar(m, **kwargs, &block)
@@ -660,7 +660,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense if args are forwarded with a positional parameter last' do
+    it 'does not register an offense if args are forwarded with a positional parameter last', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(m, *args, &block)
           bar(*args, m, &block)
@@ -668,7 +668,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense if args/kwargs are forwarded with a positional parameter' do
+    it 'does not register an offense if args/kwargs are forwarded with a positional parameter', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(m, *args, **kwargs, &block)
           bar(m, *args, **kwargs, &block)
@@ -692,7 +692,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when forwarding args/kwargs with an additional arg' do
+    it 'does not register an offense when forwarding args/kwargs with an additional arg', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def self.get(*args, **kwargs, &block)
           CanvasHttp.request(Net::HTTP::Get, *args, **kwargs, &block)
@@ -716,7 +716,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense when forwarding args with an additional arg' do
+    it 'does not register an offense when forwarding args with an additional arg', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def post(*args, &block)
           future_on(executor, *args, &block)
@@ -751,7 +751,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
   end
 
   context 'TargetRubyVersion >= 3.0', :ruby30 do
-    it 'does not register an offense if args are forwarded with a positional parameter last' do
+    it 'does not register an offense if args are forwarded with a positional parameter last', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(m, *args, &block)
           bar(*args, m, &block)
@@ -759,7 +759,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense with an additional required kwarg that is not forwarded' do
+    it 'does not register an offense with an additional required kwarg that is not forwarded', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(first:, **kwargs, &block)
           forwarded(**kwargs, &block)
@@ -767,7 +767,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense with an additional required kwarg that is forwarded' do
+    it 'does not register an offense with an additional required kwarg that is forwarded', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(first:, **kwargs, &block)
           forwarded(first: first, **kwargs, &block)
@@ -775,7 +775,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense with an additional optional kwarg that is not forwarded' do
+    it 'does not register an offense with an additional optional kwarg that is not forwarded', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(first: nil, **kwargs, &block)
           forwarded(**kwargs, &block)
@@ -783,7 +783,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense with an additional optional kwarg that is forwarded' do
+    it 'does not register an offense with an additional optional kwarg that is forwarded', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(first: nil, **kwargs, &block)
           forwarded(first: first, **kwargs, &block)
@@ -791,7 +791,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense if args/kwargs are forwarded with a positional parameter last' do
+    it 'does not register an offense if args/kwargs are forwarded with a positional parameter last', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(m, *args, **kwargs, &block)
           bar(*args, m, **kwargs, &block)
@@ -840,7 +840,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense if args/kwargs are forwarded with additional pre-kwarg' do
+    it 'does not register an offense if args/kwargs are forwarded with additional pre-kwarg', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(m, *args, **kwargs, &block)
           bar(m, *args, extra: :kwarg, **kwargs, &block)
@@ -848,7 +848,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'does not register an offense if args/kwargs are forwarded with additional post-kwarg' do
+    it 'does not register an offense if args/kwargs are forwarded with additional post-kwarg', unsupported_on: :prism do
       expect_no_offenses(<<~RUBY)
         def foo(m, *args, **kwargs, &block)
           bar(m, *args, **kwargs, extra: :kwarg, &block)
@@ -856,7 +856,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when forwarding args after dropping an additional arg' do
+    it 'registers an offense when forwarding args after dropping an additional arg', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo(x, *args, &block)
                    ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -872,7 +872,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when forwarding args with a leading default arg' do
+    it 'registers an offense when forwarding args with a leading default arg', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo(x, y = 42, *args, &block)
                            ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -888,7 +888,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when forwarding args with an additional arg' do
+    it 'registers an offense when forwarding args with an additional arg', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def post(*args, &block)
                  ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -920,7 +920,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when forwarding kwargs/block arg' do
+    it 'registers an offense when forwarding kwargs/block arg', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo(**kwargs, &block)
                 ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -936,7 +936,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when forwarding kwargs/block arg and an additional arg' do
+    it 'registers an offense when forwarding kwargs/block arg and an additional arg', unsupported_on: :prism do
       expect_offense(<<~RUBY)
         def foo(x, **kwargs, &block)
                    ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -955,7 +955,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     context 'AllowOnlyRestArgument: false' do
       let(:cop_config) { { 'AllowOnlyRestArgument' => false } }
 
-      it 'registers an offense when using only rest arg' do
+      it 'registers an offense when using only rest arg', unsupported_on: :prism do
         expect_offense(<<~RUBY)
           def foo(*args)
                   ^^^^^ Use shorthand syntax `...` for arguments forwarding.
@@ -989,7 +989,7 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
     end
   end
 
-  context 'TargetRubyVersion 3.1', :ruby31 do
+  context 'TargetRubyVersion 3.1', :ruby31, unsupported_on: :prism do
     it 'registers an offense when using restarg and anonymous block arg' do
       expect_offense(<<~RUBY)
         def foo(*args, &)

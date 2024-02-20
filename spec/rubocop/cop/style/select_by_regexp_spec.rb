@@ -482,7 +482,7 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     include_examples('regexp mismatch', 'find_all', 'grep_v')
   end
 
-  context 'when Ruby <= 2.2', :ruby22 do
+  context 'when Ruby <= 2.2', :ruby22, unsupported_on: :prism do
     include_examples('regexp match', 'select', 'grep')
     include_examples('regexp match', 'find_all', 'grep')
     include_examples('regexp mismatch', 'reject', 'grep')

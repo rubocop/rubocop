@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Style::YAMLFileRead, :config do
     end
   end
 
-  context 'when Ruby <= 2.7', :ruby27 do
+  context 'when Ruby <= 2.7', :ruby27, unsupported_on: :prism do
     it 'registers an offense when using `YAML.load` with `File.read` argument' do
       expect_offense(<<~RUBY)
         YAML.load(File.read(path))

@@ -401,7 +401,7 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
     # $ ruby-parse --27 -e 'foo in bar'
     # (match-pattern (send nil :foo) (match-var :bar))
     #
-    context 'with one line pattern matching', :ruby27 do
+    context 'with one line pattern matching', :ruby27, unsupported_on: :prism do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           (foo in bar) ? a : b
@@ -414,7 +414,8 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
     # $ ruby-parse --30 -e 'foo in bar'
     # (match-pattern-p (send nil :foo) (match-var :bar))
     #
-    context 'with one line pattern matching', :ruby30 do
+    # FIXME: https://github.com/ruby/prism/pull/2525
+    context 'with one line pattern matching', :ruby30, broken_on: :prism do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           (foo in bar) ? a : b

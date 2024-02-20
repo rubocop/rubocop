@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantDirGlobSort, :config do
     end
   end
 
-  context 'when Ruby 2.7 or lower', :ruby27 do
+  context 'when Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
     it 'does not register an offense and correction when using `Dir.glob.sort`' do
       expect_no_offenses(<<~RUBY)
         Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))

@@ -362,7 +362,8 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when xstr heredoc constant is defined after public method' do
+  # FIXME: https://github.com/ruby/prism/issues/2498
+  it 'registers an offense and corrects when xstr heredoc constant is defined after public method', broken_on: :prism do
     expect_offense(<<~RUBY)
       class Foo
         def do_something

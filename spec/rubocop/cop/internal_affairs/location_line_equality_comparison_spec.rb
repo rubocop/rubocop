@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::InternalAffairs::LocationLineEqualityComparison, :config do
+# FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+# the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+# rubocop:disable Layout/LineLength
+RSpec.describe RuboCop::Cop::InternalAffairs::LocationLineEqualityComparison, :config, broken_on: :prism do
+  # rubocop:enable Layout/LineLength
   it 'registers and corrects an offense when comparing `#loc.line` with LHS and RHS' do
     expect_offense(<<~RUBY)
       node.loc.line == node.parent.loc.line

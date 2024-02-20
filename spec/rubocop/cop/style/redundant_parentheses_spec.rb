@@ -905,7 +905,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
   context 'pin operator', :ruby31 do
     shared_examples 'redundant parentheses' do |variable, description|
-      it "registers an offense and corrects #{description}" do
+      # FIXME: https://github.com/ruby/prism/issues/2499
+      it "registers an offense and corrects #{description}", broken_on: :prism do
         expect_offense(<<~RUBY, variable: variable)
           var = 0
           foo in { bar: ^(%{variable}) }

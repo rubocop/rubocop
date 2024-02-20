@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::ErbNewArguments, :config do
-  context '<= Ruby 2.5', :ruby25 do
+  context '<= Ruby 2.5', :ruby25, unsupported_on: :prism do
     it 'does not register an offense when using `ERB.new` with non-keyword arguments' do
       expect_no_offenses(<<~RUBY)
         ERB.new(str, nil, '-', '@output_buffer')

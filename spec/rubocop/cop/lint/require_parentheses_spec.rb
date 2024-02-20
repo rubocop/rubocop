@@ -10,7 +10,9 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
     RUBY
   end
 
-  it 'registers an offense for missing parentheses around expression with || operator' do
+  # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+  # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+  it 'registers an offense for missing parentheses around expression with || operator', broken_on: :prism do
     expect_offense(<<~RUBY)
       day_is? 'tuesday' || true
       ^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.

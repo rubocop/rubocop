@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         end
       end
 
-      context 'when target ruby version is 2.2 or lower', :ruby22 do
+      context 'when target ruby version is 2.2 or lower', :ruby22, unsupported_on: :prism do
         it 'does not register an offense' do
           expect_no_offenses('number > 0')
         end
@@ -193,7 +193,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         end
       end
 
-      context 'when target ruby version is 2.2 or lower', :ruby22 do
+      context 'when target ruby version is 2.2 or lower', :ruby22, unsupported_on: :prism do
         it 'does not register an offense' do
           expect_no_offenses('number < 0')
         end
@@ -328,7 +328,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             end
           end
 
-          context 'when target ruby version is 2.2 or lower', :ruby22 do
+          context 'when target ruby version is 2.2 or lower', :ruby22, unsupported_on: :prism do
             it 'does not register an offense' do
               expect_no_offenses('exclude { number > 0 }')
             end
@@ -349,7 +349,7 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             end
           end
 
-          context 'when target ruby version is 2.2 or lower', :ruby22 do
+          context 'when target ruby version is 2.2 or lower', :ruby22, unsupported_on: :prism do
             it 'does not register an offense' do
               expect_no_offenses('exclude { number > 0 }')
             end

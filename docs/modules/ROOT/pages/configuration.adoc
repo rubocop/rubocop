@@ -645,11 +645,57 @@ AllCops:
   TargetRubyVersion: 2.5
 ----
 
+NOTE: When `ParserEngine: parser_prism` is specified, the values that can be assigned to `TargetRubyVersion` must be `3.3` or higher.
+
 Otherwise, RuboCop will then check your project for a series of files where
 the version may be specified already. The files that will be looked for are
 `*.gemspec`, `.ruby-version`, `.tool-versions`, and `Gemfile.lock`.
 If Gemspec file has an array for `required_ruby_version`, the lowest version will be used.
 If none of the files are found a default version value will be used.
+
+== Setting the parser engine
+
+NOTE: The parser engine configuration was introduced in RuboCop 1.62. This experimental feature has been under consideration for a while.
+
+RuboCop allows switching the backend parser by specifying either `parser_whitequark` or `parser_prism` for the `ParserEngine`.
+
+Here are the parsers used as backends for each value:
+
+- `ParserEngine: parser_whitequark` ... https://github.com/whitequark/parser
+- `ParserEngine: parser_prism` ... https://github.com/ruby/prism (`Prism::Translation::Parser`)
+
+By default, `parser_whitequark` is implicitly used.
+
+`parser_whitequark` can analyze source code from Ruby 2.0 and above:
+
+[source,yaml]
+----
+AllCops:
+  ParserEngine: parser_whitequark
+----
+
+`parser_prism` can analyze source code from Ruby 3.3 and above:
+
+[source,yaml]
+----
+AllCops:
+  ParserEngine: parser_prism
+  TargetRubyVersion: 3.3
+----
+
+`parser_prism` tends to perform analysis faster than `parser_whitequark`.
+
+CAUTION: Since the use of Prism is experimental, it is not included in RuboCop's runtime dependencies.
+If running through Bundler, please first add `gem 'prism'` to your Gemfile:
+
+[source,ruby]
+----
+gem 'prism'
+----
+
+There are some incompatibilities with `parser_whitequark`, making it still considered experimental.
+For known issues, please refer to the Prism issues:
+https://github.com/ruby/prism/issues?q=is%3Aissue+is%3Aopen+label%3Arubocop
 
 == Automatically Generated Configuration
 

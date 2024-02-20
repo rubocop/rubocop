@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
     RUBY
   end
 
-  context 'Ruby <= 2.5', :ruby25 do
+  context 'Ruby <= 2.5', :ruby25, unsupported_on: :prism do
     it 'does not register an offense when using `Net::HTTPServerException`' do
       expect_no_offenses(<<~RUBY)
         Net::HTTPServerException
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
     end
   end
 
-  context 'Ruby <= 2.7', :ruby27 do
+  context 'Ruby <= 2.7', :ruby27, unsupported_on: :prism do
     it 'does not register an offense when using `Random::DEFAULT`' do
       expect_no_offenses(<<~RUBY)
         Random::DEFAULT

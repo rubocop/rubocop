@@ -76,6 +76,22 @@ jobs:
       - name: internal_investigation
         run: bundle exec rake internal_investigation
 
+  prism:
+    runs-on: ubuntu-latest
+    name: Prism
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          # Specify the minimum Ruby version 2.7 required for Prism to run.
+          ruby-version: 2.7
+          bundler-cache: true
+      - name: spec
+        env:
+          PARSER_ENGINE: parser_prism
+        run: bundle exec rake prism_spec
+
   rspec4:
     runs-on: ubuntu-latest
     name: RSpec 4

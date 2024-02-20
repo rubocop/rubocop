@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
-  context 'when TargetRubyVersion <= 3.0', :ruby30 do
+  context 'when TargetRubyVersion <= 3.0', :ruby30, unsupported_on: :prism do
     it 'does not register an offense when using `(array1 & array2).any?`' do
       expect_no_offenses(<<~RUBY)
         (array1 & array2).any?

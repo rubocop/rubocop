@@ -256,7 +256,7 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
     end
   end
 
-  context 'below Ruby 2.5', :ruby24 do
+  context 'below Ruby 2.5', :ruby24, unsupported_on: :prism do
     it 'does not flag even if transform_keys could be used' do
       expect_no_offenses('x.each_with_object({}) {|(k, v), h| h[foo(k)] = v}')
     end
@@ -311,7 +311,7 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
     end
   end
 
-  context 'below Ruby 2.6', :ruby25 do
+  context 'below Ruby 2.6', :ruby25, unsupported_on: :prism do
     it 'does not flag _.to_h{...}' do
       expect_no_offenses(<<~RUBY)
         x.to_h {|k, v| [k.to_sym, v]}

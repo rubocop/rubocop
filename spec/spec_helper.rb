@@ -59,6 +59,10 @@ RSpec.configure do |config|
   end
 
   config.filter_run_excluding broken_on: :jruby if ENV.fetch('GITHUB_JOB', nil) == 'jruby'
+  config.filter_run_excluding broken_on: :prism if ENV['PARSER_ENGINE'] == 'parser_prism'
+
+  # Prism supports Ruby 3.3+ parsing.
+  config.filter_run_excluding unsupported_on: :prism if ENV['PARSER_ENGINE'] == 'parser_prism'
 end
 
 module ::RSpec

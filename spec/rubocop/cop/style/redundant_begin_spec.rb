@@ -344,7 +344,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  context '< Ruby 2.5', :ruby24 do
+  context '< Ruby 2.5', :ruby24, unsupported_on: :prism do
     it 'accepts a do-end block with a begin-end' do
       expect_no_offenses(<<~RUBY)
         do_something do

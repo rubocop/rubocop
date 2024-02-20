@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Run test with Ruby 2.6 because this cop cannot handle invalid syntax in Ruby 2.7+.
-RSpec.describe RuboCop::Cop::Lint::CircularArgumentReference, :config, :ruby26 do
+RSpec.describe RuboCop::Cop::Lint::CircularArgumentReference, :config, :ruby26, unsupported_on: :prism do # rubocop:disable Layout/LineLength
   describe 'circular argument references in ordinal arguments' do
     context 'when the method contains a circular argument reference' do
       it 'registers an offense' do

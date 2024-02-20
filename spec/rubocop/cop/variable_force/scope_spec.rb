@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Scope do
 
   subject(:scope) { described_class.new(scope_node) }
 
-  let(:ast) { RuboCop::ProcessedSource.new(source, ruby_version).ast }
+  let(:ast) { RuboCop::ProcessedSource.new(source, ruby_version, parser_engine: parser_engine).ast }
 
   let(:scope_node) { ast.each_node(scope_node_type).first }
 

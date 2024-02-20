@@ -168,3 +168,8 @@ desc 'Run RSpec code examples with ASCII encoding'
 task :ascii_spec do
   RuboCop::SpecRunner.new(external_encoding: 'ASCII').run_specs
 end
+
+desc 'Run RSpec code examples with Prism'
+task :prism_spec do
+  sh('PARSER_ENGINE=parser_prism bundle exec rake spec')
+end

@@ -5,7 +5,10 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
   let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 5, 'AllowHeredoc' => allow_heredoc } } }
 
   shared_examples 'all heredoc type' do |quote|
-    context "quoted by #{quote}" do
+    # FIXME: https://github.com/ruby/prism/issues/2498
+    # Once the above will be resolved, the `options` can be removed.
+    options = quote == '`' ? { broken_on: :prism } : {}
+    context "quoted by #{quote}", options do
       it 'does not register an offense when not indented but with whitespace, with `-`' do
         expect_no_offenses(<<-RUBY)
           def foo
@@ -255,7 +258,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
     [nil, "'", '"', '`'].each { |quote| include_examples 'all heredoc type', quote }
   end
 
-  context 'when Ruby <= 2.2', :ruby22 do
+  context 'when Ruby <= 2.2', :ruby22, unsupported_on: :prism do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
         <<-RUBY2

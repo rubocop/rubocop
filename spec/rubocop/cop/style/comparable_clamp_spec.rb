@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Cop::Style::ComparableClamp, :config do
     end
   end
 
-  context 'target ruby version <= 2.3', :ruby23 do
+  context 'target ruby version <= 2.3', :ruby23, unsupported_on: :prism do
     it 'does not register an offense when using `[[x, low].max, high].min`' do
       expect_no_offenses(<<~RUBY)
         [[x, low].max, high].min

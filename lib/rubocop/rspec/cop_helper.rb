@@ -6,7 +6,11 @@ require 'tempfile'
 module CopHelper
   extend RSpec::SharedContext
 
-  let(:ruby_version) { RuboCop::TargetRuby::DEFAULT_VERSION }
+  let(:ruby_version) do
+    # The minimum version Prism can parse is 3.3.
+    ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : RuboCop::TargetRuby::DEFAULT_VERSION
+  end
+  let(:parser_engine) { ENV.fetch('PARSER_ENGINE', :parser_whitequark).to_sym }
   let(:rails_version) { false }
 
   def inspect_source(source, file = nil)
@@ -28,7 +32,9 @@ module CopHelper
       file = file.path
     end
 
-    processed_source = RuboCop::ProcessedSource.new(source, ruby_version, file)
+    processed_source = RuboCop::ProcessedSource.new(
+      source, ruby_version, file, parser_engine: parser_engine
+    )
     processed_source.config = configuration
     processed_source.registry = registry
     processed_source

@@ -39,7 +39,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     RUBY
   end
 
-  it 'registers an offense for long line before __END__ but not after' do
+  # FIXME: https://github.com/ruby/prism/issues/2510
+  it 'registers an offense for long line before __END__ but not after', broken_on: :prism do
     maximum_string = '#' * 80
     expect_offense(<<~RUBY, maximum_string: maximum_string)
       #{maximum_string}#{'#' * 70}

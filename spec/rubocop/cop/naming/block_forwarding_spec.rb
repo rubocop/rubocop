@@ -252,7 +252,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
       end
     end
 
-    context 'Ruby < 3.0', :ruby30 do
+    context 'Ruby < 3.0', :ruby30, unsupported_on: :prism do
       it 'does not register an offense when not using anonymous block forwarding' do
         expect_no_offenses(<<~RUBY)
           def foo(&block)

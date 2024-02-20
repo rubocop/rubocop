@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Lint::RefinementImportMethods, :config do
     end
   end
 
-  context 'Ruby <= 3.0', :ruby30 do
+  context 'Ruby <= 3.0', :ruby30, unsupported_on: :prism do
     it 'does not register an offense when using `include` in `refine` block' do
       expect_no_offenses(<<~RUBY)
         refine Foo do

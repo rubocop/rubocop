@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Lint::NonDeterministicRequireOrder, :config do
       end
     end
 
-    context 'when Ruby 2.7 or lower', :ruby27 do
+    context 'when Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
       context 'with unsorted index' do
         it 'registers an offense and autocorrects to add .sort when the block has `require`' do
           expect_offense(<<~RUBY)

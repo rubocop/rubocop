@@ -318,7 +318,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
       it_behaves_like 'convert to endless method'
     end
 
-    context 'prior to ruby 3.0', :ruby27 do
+    context 'prior to ruby 3.0', :ruby27, unsupported_on: :prism do
       let(:endless_method_config) { { 'EnforcedStyle' => 'allow_always' } }
 
       it 'corrects to a multiline method' do

@@ -467,15 +467,21 @@ module RuboCop
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def get_processed_source(file)
       config = @config_store.for_file(file)
       ruby_version = config.target_ruby_version
+      parser_engine = config.parser_engine
 
       processed_source = if @options[:stdin]
-                           ProcessedSource.new(@options[:stdin], ruby_version, file)
+                           ProcessedSource.new(
+                             @options[:stdin], ruby_version, file, parser_engine: parser_engine
+                           )
                          else
                            begin
-                             ProcessedSource.from_file(file, ruby_version)
+                             ProcessedSource.from_file(
+                               file, ruby_version, parser_engine: parser_engine
+                             )
                            rescue Errno::ENOENT
                              raise RuboCop::Error, "No such file or directory: #{file}"
                            end
@@ -484,6 +490,7 @@ module RuboCop
       processed_source.registry = mobilized_cop_classes(config)
       processed_source
     end
+    # rubocop:enable Metrics/MethodLength
 
     # A Cop::Team instance is stateful and may change when inspecting.
     # The "standby" team for a given config is an initialized but

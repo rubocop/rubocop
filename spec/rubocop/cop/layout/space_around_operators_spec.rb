@@ -162,7 +162,9 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     RUBY
   end
 
-  it 'accepts vertical alignment with operator' do
+  # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+  # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+  it 'accepts vertical alignment with operator', broken_on: :prism do
     expect_no_offenses(<<~RUBY)
       down? && !migrated.include?(migration.version.to_i)
       up?   &&  migrated.include?(migration.version.to_i)

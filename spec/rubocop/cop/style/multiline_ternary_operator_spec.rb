@@ -50,7 +50,9 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when nesting multiline ternary operators' do
+  # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
+  # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
+  it 'registers an offense and corrects when nesting multiline ternary operators', broken_on: :prism do
     expect_offense(<<~RUBY)
       cond_a? ? foo :
       ^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.

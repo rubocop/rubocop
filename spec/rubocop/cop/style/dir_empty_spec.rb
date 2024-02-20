@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::DirEmpty, :config do
     end
   end
 
-  context 'target ruby version < 2.4', :ruby23 do
+  context 'target ruby version < 2.4', :ruby23, unsupported_on: :prism do
     it 'does not register an offense for `Dir.entries.size == 2`' do
       expect_no_offenses('Dir.entries("path/to/dir").size == 2')
     end
