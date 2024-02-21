@@ -54,14 +54,13 @@ module RuboCop
           method_name_end_with?(node) do |method_name_node, end_with_arg|
             next unless method_name_node.receiver
 
+            preferred_method = SUGGEST_METHOD_FOR_SUFFIX[end_with_arg.value]
             range = range(method_name_node, node)
-            message = format(
-              MSG,
-              method_name: SUGGEST_METHOD_FOR_SUFFIX[end_with_arg.value],
-              method_suffix: range.source
-            )
+            message = format(MSG, method_name: preferred_method, method_suffix: range.source)
 
-            add_offense(range, message: message)
+            add_offense(range, message: message) do |corrector|
+              corrector.replace(range, preferred_method)
+            end
           end
         end
         alias on_csend on_send
