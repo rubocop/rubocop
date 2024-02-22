@@ -77,10 +77,9 @@ module RuboCop
       #
       class RedundantSafeNavigation < Base
         include AllowedMethods
-        include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Redundant safe navigation detected.'
+        MSG = 'Redundant safe navigation detected, use `.` instead.'
         MSG_LITERAL = 'Redundant safe navigation with default literal detected.'
 
         NIL_SPECIFIC_METHODS = (nil.methods - Object.new.methods).to_set.freeze
@@ -111,19 +110,18 @@ module RuboCop
             return if respond_to_nil_specific_method?(node)
           end
 
-          range = range_between(node.loc.dot.begin_pos, node.source_range.end_pos)
-          add_offense(range) { |corrector| corrector.replace(node.loc.dot, '.') }
+          range = node.loc.dot
+          add_offense(range) { |corrector| corrector.replace(range, '.') }
         end
 
         def on_or(node)
           conversion_with_default?(node) do |send_node|
-            range = range_between(send_node.loc.dot.begin_pos, node.source_range.end_pos)
+            range = send_node.loc.dot.begin.join(node.source_range.end)
 
             add_offense(range, message: MSG_LITERAL) do |corrector|
               corrector.replace(send_node.loc.dot, '.')
 
-              range_with_default = range_between(node.lhs.source_range.end.begin_pos,
-                                                 node.source_range.end.end_pos)
+              range_with_default = node.lhs.source_range.end.begin.join(node.source_range.end)
               corrector.remove(range_with_default)
             end
           end
