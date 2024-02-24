@@ -180,6 +180,59 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment, :config do
     RUBY
   end
 
+  context 'when inside an `in` branch' do
+    it 'registers an offense and autocorrects' do
+      expect_offense(<<~RUBY)
+        def func
+          some_preceding_statements
+          case x
+          in y
+            res = 1
+            ^^^^^^^ Redundant assignment before returning detected.
+            res
+          in z
+            2
+          in q
+          else
+            res = 3
+            ^^^^^^^ Redundant assignment before returning detected.
+            res
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          some_preceding_statements
+          case x
+          in y
+            1
+           #{trailing_whitespace}
+          in z
+            2
+          in q
+          else
+            3
+           #{trailing_whitespace}
+          end
+        end
+      RUBY
+    end
+  end
+
+  it 'accepts empty `in` nodes' do
+    expect_no_offenses(<<~RUBY)
+      def func
+        case x
+        in y then 1
+        in z # do nothing
+        else
+          3
+        end
+      end
+    RUBY
+  end
+
   it 'accepts empty method body' do
     expect_no_offenses(<<~RUBY)
       def func
