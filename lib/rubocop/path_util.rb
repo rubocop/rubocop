@@ -44,7 +44,7 @@ module RuboCop
       end
     end
 
-    # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def match_path?(pattern, path)
       case pattern
       when String
@@ -52,6 +52,10 @@ module RuboCop
           if pattern == path
             true
           elsif glob?(pattern)
+            # File name matching doesn't really work with relative patterns the start with "..". We
+            # get around that problem by converting the pattern to an absolute path.
+            pattern = File.expand_path(pattern) if pattern.start_with?('..')
+
             File.fnmatch?(pattern, path, File::FNM_PATHNAME | File::FNM_EXTGLOB)
           end
 
@@ -66,7 +70,7 @@ module RuboCop
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)

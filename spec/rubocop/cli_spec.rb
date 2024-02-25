@@ -1113,6 +1113,31 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                                                     abs('regexp')])
     end
 
+    context 'when a .rubocop.yml is included from an ancestor directory' do
+      before do
+        create_file('child/grandkid/.rubocop.yml', <<~YAML)
+          inherit_from:
+            - ../../.rubocop.yml
+        YAML
+      end
+
+      context 'and it specifies an Include pattern' do
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              Include:
+                - "**/*.rbi"
+          YAML
+        end
+
+        it 'finds files included through inheritance' do
+          create_file('child/grandkid/file.rbi', 'x=0')
+          Dir.chdir('child/grandkid') { expect(cli.run(['-L'])).to eq(0) }
+          expect($stdout.string).to eq("file.rbi\n")
+        end
+      end
+    end
+
     it 'ignores excluded files' do
       create_file('example.rb', ['x = 0', 'puts x'])
       create_file('regexp.rb', ['x = 0', 'puts x'])
