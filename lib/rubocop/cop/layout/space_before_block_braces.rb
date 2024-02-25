@@ -80,31 +80,31 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         def check_empty(left_brace, space_plus_brace, used_style)
           if style_for_empty_braces == used_style
-            if config_to_allow_offenses['EnforcedStyleForEmptyBraces'] &&
-               config_to_allow_offenses['EnforcedStyleForEmptyBraces'].to_sym != used_style
-              config_to_allow_offenses.clear
-              config_to_allow_offenses['Enabled'] = false
-            end
+            handle_different_styles_for_empty_braces(used_style)
             return
           elsif !config_to_allow_offenses.key?('Enabled')
             config_to_allow_offenses['EnforcedStyleForEmptyBraces'] = used_style.to_s
           end
 
           if style_for_empty_braces == :space
-            add_offense(left_brace, message: MISSING_MSG) do |corrector|
-              autocorrect(corrector, left_brace)
-            end
+            range = left_brace
+            msg = MISSING_MSG
           else
-            space = range_between(space_plus_brace.begin_pos, left_brace.begin_pos)
-            add_offense(space, message: DETECTED_MSG) do |corrector|
-              autocorrect(corrector, space)
-            end
+            range = range_between(space_plus_brace.begin_pos, left_brace.begin_pos)
+            msg = DETECTED_MSG
+          end
+          add_offense(range, message: msg) { |corrector| autocorrect(corrector, range) }
+        end
+
+        def handle_different_styles_for_empty_braces(used_style)
+          if config_to_allow_offenses['EnforcedStyleForEmptyBraces'] &&
+             config_to_allow_offenses['EnforcedStyleForEmptyBraces'].to_sym != used_style
+            config_to_allow_offenses.clear
+            config_to_allow_offenses['Enabled'] = false
           end
         end
-        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         def check_non_empty(left_brace, space_plus_brace, used_style)
           case used_style
