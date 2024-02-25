@@ -80,10 +80,18 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         def check_empty(left_brace, space_plus_brace, used_style)
-          return if style_for_empty_braces == used_style
-
-          config_to_allow_offenses['EnforcedStyleForEmptyBraces'] = used_style.to_s
+          if style_for_empty_braces == used_style
+            if config_to_allow_offenses['EnforcedStyleForEmptyBraces'] &&
+               config_to_allow_offenses['EnforcedStyleForEmptyBraces'].to_sym != used_style
+              config_to_allow_offenses.clear
+              config_to_allow_offenses['Enabled'] = false
+            end
+            return
+          elsif !config_to_allow_offenses.key?('Enabled')
+            config_to_allow_offenses['EnforcedStyleForEmptyBraces'] = used_style.to_s
+          end
 
           if style_for_empty_braces == :space
             add_offense(left_brace, message: MISSING_MSG) do |corrector|
@@ -96,6 +104,7 @@ module RuboCop
             end
           end
         end
+        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         def check_non_empty(left_brace, space_plus_brace, used_style)
           case used_style
