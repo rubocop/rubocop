@@ -99,23 +99,23 @@ module RuboCop
           end
         end
 
-        def preferred_send_condition(node)
-          receiver_source = node.receiver.source
+        def preferred_send_condition(node) # rubocop:disable Metrics/CyclomaticComplexity
+          receiver_source = node.receiver&.source
           return receiver_source if node.method?(:!)
 
+          receive = receiver_source ? "#{receiver_source}." : '' # receiver may be implicit (self)
+
           inverse_method_name = inverse_methods[node.method_name]
-          return "#{receiver_source}.#{inverse_method_name}" unless node.arguments?
+          return "#{receive}#{inverse_method_name}" unless node.arguments?
 
           argument_list = node.arguments.map(&:source).join(', ')
           if node.operator_method?
             return "#{receiver_source} #{inverse_method_name} #{argument_list}"
           end
 
-          if node.parenthesized?
-            return "#{receiver_source}.#{inverse_method_name}(#{argument_list})"
-          end
+          return "#{receive}#{inverse_method_name}(#{argument_list})" if node.parenthesized?
 
-          "#{receiver_source}.#{inverse_method_name} #{argument_list}"
+          "#{receive}#{inverse_method_name} #{argument_list}"
         end
 
         def preferred_logical_condition(node)

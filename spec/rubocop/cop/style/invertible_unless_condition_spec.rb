@@ -91,6 +91,39 @@ RSpec.describe RuboCop::Cop::Style::InvertibleUnlessCondition, :config do
     end
   end
 
+  it 'registers an offense and corrects methods without arguments called with implicit receivers' do
+    expect_offense(<<~RUBY)
+      foo unless odd?
+      ^^^^^^^^^^^^^^^ Prefer `if even?` over `unless odd?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo if even?
+    RUBY
+  end
+
+  it 'registers an offense and corrects parenthesized methods with arguments called with implicit receivers' do
+    expect_offense(<<~RUBY)
+      foo unless include?(value)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `if exclude?(value)` over `unless include?(value)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo if exclude?(value)
+    RUBY
+  end
+
+  it 'registers an offense and corrects unparenthesized methods with arguments called with implicit receivers' do
+    expect_offense(<<~RUBY)
+      foo unless include? value
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `if exclude? value` over `unless include? value`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo if exclude? value
+    RUBY
+  end
+
   it 'does not register an offense when using explicit begin condition' do
     expect_no_offenses(<<~RUBY)
       foo unless begin x != y end
