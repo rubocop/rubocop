@@ -26,7 +26,8 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
   end
 
   shared_examples 'accepts' do |style, variable|
-    it "accepts #{variable} in #{style}" do
+    # `_1 = 1` is a deprecated valid syntax in Ruby 2.7, but an invalid syntax in Ruby 3.0+.
+    it "accepts #{variable} in #{style}", :ruby27 do
       expect_no_offenses("#{variable} = 1")
     end
   end
