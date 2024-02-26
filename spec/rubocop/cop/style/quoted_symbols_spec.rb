@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
     end
 
     it 'accepts double quotes with escape sequences' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~'RUBY')
         :"a\nb"
       RUBY
     end
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
     end
 
     it 'accepts double quotes with escape sequences' do
-      expect_no_offenses(<<~RUBY)
+      expect_no_offenses(<<~'RUBY')
         :"a\nb"
       RUBY
     end
