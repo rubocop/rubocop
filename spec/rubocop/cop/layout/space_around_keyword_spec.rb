@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'accept after', '{', 'loop{}'
 
   # Layout/SpaceBeforeComma, Layout/SpaceAfterComma
-  it_behaves_like 'accept around', ',', 'a 1,next,1'
+  it_behaves_like 'accept around', ',', 'a 1,foo,1'
 
   # Layout/SpaceBeforeComment
   it_behaves_like 'accept after', '#', 'next#comment'
