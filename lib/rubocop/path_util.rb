@@ -52,7 +52,7 @@ module RuboCop
           if pattern == path
             true
           elsif glob?(pattern)
-            # File name matching doesn't really work with relative patterns the start with "..". We
+            # File name matching doesn't really work with relative patterns that start with "..". We
             # get around that problem by converting the pattern to an absolute path.
             pattern = File.expand_path(pattern) if pattern.start_with?('..')
 
