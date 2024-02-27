@@ -181,12 +181,22 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
       end
     RUBY
     expect_no_offenses(<<~RUBY)
-      def x # rubocop:disable Metrics/MethodLength
+      def x # rubocop:disable  Metrics/MethodLength
         y
       end
     RUBY
     expect_no_offenses(<<~RUBY)
-      def x # rubocop:todo Metrics/MethodLength
+      def x # rubocop: disable Metrics/MethodLength
+        y
+      end
+    RUBY
+    expect_no_offenses(<<~RUBY)
+      def x # rubocop :todo Metrics/MethodLength
+        y
+      end
+    RUBY
+    expect_no_offenses(<<~RUBY)
+      def x # rubocop:  todo Metrics/MethodLength
         y
       end
     RUBY

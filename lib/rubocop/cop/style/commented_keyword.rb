@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../../directive_comment'
+
 module RuboCop
   module Cop
     module Style
@@ -49,8 +51,9 @@ module RuboCop
         KEYWORDS = %w[begin class def end module].freeze
         KEYWORD_REGEXES = KEYWORDS.map { |w| /^\s*#{w}\s/ }.freeze
 
-        ALLOWED_COMMENTS = %w[:nodoc: :yields: rubocop:disable rubocop:todo].freeze
-        ALLOWED_COMMENT_REGEXES = ALLOWED_COMMENTS.map { |c| /#\s*#{c}/ }.freeze
+        ALLOWED_COMMENTS = %w[:nodoc: :yields:].freeze
+        ALLOWED_COMMENT_REGEXES = (ALLOWED_COMMENTS.map { |c| /#\s*#{c}/ } +
+                                   [DirectiveComment::DIRECTIVE_COMMENT_REGEXP]).freeze
 
         REGEXP = /(?<keyword>\S+).*#/.freeze
 
