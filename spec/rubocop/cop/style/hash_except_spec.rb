@@ -493,6 +493,17 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
           RUBY
         end
 
+        it 'registers an offense when using `reject` and `include?`' do
+          expect_offense(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.reject { |k, v| [:bar].include?(k) }
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(:bar)` instead.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {foo: 1, bar: 2, baz: 3}.except(:bar)
+          RUBY
+        end
+
         it 'does not register an offense when using `reject` and calling `include?` method on a key' do
           expect_no_offenses(<<~RUBY)
             {foo: 1, bar: 2, baz: 3}.reject { |k, v| k.include?('oo') }
@@ -629,6 +640,48 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
         RUBY
       end
     end
+
+    it 'does not register an offense when using `reject` and comparing with `lvar != :key`' do
+      expect_no_offenses(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}.reject { |k, v| k != :bar }
+      RUBY
+    end
+
+    it 'does not register an offense when using `reject` and comparing with `:key != lvar`' do
+      expect_no_offenses(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}.reject { |k, v| :bar != key }
+      RUBY
+    end
+
+    it 'does not register an offense when using `select` and comparing with `lvar == :key`' do
+      expect_no_offenses(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}.select { |k, v| k == :bar }
+      RUBY
+    end
+
+    it 'does not register an offense when using `select` and comparing with `:key == lvar`' do
+      expect_no_offenses(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}.select { |k, v| :bar == key }
+      RUBY
+    end
+
+    it 'does not register an offense when not using key block argument`' do
+      expect_no_offenses(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}.reject { |k, v| do_something != :bar }
+      RUBY
+    end
+
+    it 'does not register an offense when not using block`' do
+      expect_no_offenses(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}.reject
+      RUBY
+    end
+
+    it 'does not register an offense when using `Hash#except`' do
+      expect_no_offenses(<<~RUBY)
+        {foo: 1, bar: 2, baz: 3}.except(:bar)
+      RUBY
+    end
   end
 
   context 'Ruby 2.7 or lower', :ruby27 do
@@ -655,53 +708,5 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
         {foo: 1, bar: 2, baz: 3}.select { |k, v| :bar != k }
       RUBY
     end
-  end
-
-  it 'does not register an offense when using `reject` and comparing with `lvar != :key`' do
-    expect_no_offenses(<<~RUBY)
-      {foo: 1, bar: 2, baz: 3}.reject { |k, v| k != :bar }
-    RUBY
-  end
-
-  it 'does not register an offense when using `reject` and comparing with `:key != lvar`' do
-    expect_no_offenses(<<~RUBY)
-      {foo: 1, bar: 2, baz: 3}.reject { |k, v| :bar != key }
-    RUBY
-  end
-
-  it 'does not register an offense when using `select` and comparing with `lvar == :key`' do
-    expect_no_offenses(<<~RUBY)
-      {foo: 1, bar: 2, baz: 3}.select { |k, v| k == :bar }
-    RUBY
-  end
-
-  it 'does not register an offense when using `select` and comparing with `:key == lvar`' do
-    expect_no_offenses(<<~RUBY)
-      {foo: 1, bar: 2, baz: 3}.select { |k, v| :bar == key }
-    RUBY
-  end
-
-  it 'does not register an offense when not using key block argument`' do
-    expect_no_offenses(<<~RUBY)
-      {foo: 1, bar: 2, baz: 3}.reject { |k, v| do_something != :bar }
-    RUBY
-  end
-
-  it 'does not register an offense when using `reject` and `include?`' do
-    expect_no_offenses(<<~RUBY)
-      {foo: 1, bar: 2, baz: 3}.reject { |k, v| [:bar].include?(k) }
-    RUBY
-  end
-
-  it 'does not register an offense when not using block`' do
-    expect_no_offenses(<<~RUBY)
-      {foo: 1, bar: 2, baz: 3}.reject
-    RUBY
-  end
-
-  it 'does not register an offense when using `Hash#except`' do
-    expect_no_offenses(<<~RUBY)
-      {foo: 1, bar: 2, baz: 3}.except(:bar)
-    RUBY
   end
 end
