@@ -1,0 +1,1 @@
+* [#12714](https://github.com/rubocop/rubocop/issues/12714): Fix an error for `Gemspec/RequiredRubyVersion` when `required_ruby_version` is specified with `Gem::Requirement.new` and is higher than `TargetRubyVersion`. ([@koic][])

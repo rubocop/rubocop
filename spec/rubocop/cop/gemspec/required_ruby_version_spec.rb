@@ -40,6 +40,15 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       RUBY
     end
 
+    it 'registers an offense when `required_ruby_version` is specified with `Gem::Requirement.new` and is higher than `TargetRubyVersion`' do
+      expect_offense(<<~RUBY)
+        Gem::Specification.new do |spec|
+          spec.required_ruby_version = Gem::Requirement.new('< 3.4')
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `required_ruby_version` and `TargetRubyVersion` (2.7, which may be specified in .rubocop.yml) should be equal.
+        end
+      RUBY
+    end
+
     it 'recognizes a Gem::Requirement with multiple requirements and does not register an offense' do
       expect_no_offenses(<<~RUBY)
         Gem::Specification.new do |spec|

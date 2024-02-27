@@ -110,6 +110,8 @@ module RuboCop
             end
           end
 
+          return unless required_ruby_version
+
           required_ruby_version.str_content.scan(/\d/).first(2).join('.')
         end
 
