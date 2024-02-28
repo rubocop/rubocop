@@ -188,9 +188,12 @@ module RuboCop
 
           send_classifications.each do |send_node, _c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
             if !forward_rest && !forward_kwrest
-              register_forward_block_arg_offense(!forward_rest, node.arguments, block_arg)
-              register_forward_block_arg_offense(!forward_rest, send_node, forward_block_arg)
-
+              # Prevents `anonymous block parameter is also used within block (SyntaxError)` occurs
+              # in Ruby 3.3.0.
+              if outside_block?(forward_block_arg)
+                register_forward_block_arg_offense(!forward_rest, node.arguments, block_arg)
+                register_forward_block_arg_offense(!forward_rest, send_node, forward_block_arg)
+              end
               registered_block_arg_offense = true
               break
             else
@@ -222,6 +225,8 @@ module RuboCop
               register_forward_kwargs_offense(!forward_rest, send_node, forward_kwrest)
             end
 
+            # Prevents `anonymous block parameter is also used within block (SyntaxError)` occurs
+            # in Ruby 3.3.0.
             if outside_block?(forward_block_arg)
               register_forward_block_arg_offense(!forward_rest, def_node.arguments, block_arg)
               register_forward_block_arg_offense(!forward_rest, send_node, forward_block_arg)
