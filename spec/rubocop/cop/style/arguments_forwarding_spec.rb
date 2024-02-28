@@ -836,21 +836,12 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when using block arg forwarding with positional arguments forwarding to within block' do
-      expect_offense(<<~RUBY)
+    # `anonymous block parameter is also used within block (SyntaxError)` occurs in Ruby 3.3.0:
+    it 'does not register an offense when using block arg forwarding with positional arguments forwarding to within block' do
+      expect_no_offenses(<<~RUBY)
         def baz(qux, quuz, &block)
-                           ^^^^^^ Use anonymous block arguments forwarding (`&`).
           with_block do
             bar(qux, quuz, &block)
-                           ^^^^^^ Use anonymous block arguments forwarding (`&`).
-          end
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        def baz(qux, quuz, &)
-          with_block do
-            bar(qux, quuz, &)
           end
         end
       RUBY
