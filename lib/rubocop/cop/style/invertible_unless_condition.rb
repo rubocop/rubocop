@@ -105,19 +105,22 @@ module RuboCop
           receiver_source = node.receiver&.source
           return receiver_source if node.method?(:!)
 
-          receive = receiver_source ? "#{receiver_source}." : '' # receiver may be implicit (self)
+          # receiver may be implicit (self)
+          dotted_receiver_source = receiver_source ? "#{receiver_source}." : ''
 
           inverse_method_name = inverse_methods[node.method_name]
-          return "#{receive}#{inverse_method_name}" unless node.arguments?
+          return "#{dotted_receiver_source}#{inverse_method_name}" unless node.arguments?
 
           argument_list = node.arguments.map(&:source).join(', ')
           if node.operator_method?
             return "#{receiver_source} #{inverse_method_name} #{argument_list}"
           end
 
-          return "#{receive}#{inverse_method_name}(#{argument_list})" if node.parenthesized?
+          if node.parenthesized?
+            return "#{dotted_receiver_source}#{inverse_method_name}(#{argument_list})"
+          end
 
-          "#{receive}#{inverse_method_name} #{argument_list}"
+          "#{dotted_receiver_source}#{inverse_method_name} #{argument_list}"
         end
 
         def preferred_logical_condition(node)
