@@ -8,6 +8,12 @@ module RuboCop
       # This cop identifies places where `do_something(*args, &block)`
       # can be replaced by `do_something(...)`.
       #
+      # In Ruby 3.1, anonymous block forwarding has been added.
+      #
+      # This cop identifies places where `do_something(&block)` can be replaced
+      # by `do_something(&)`; if desired, this functionality can be disabled
+      # by setting `UseAnonymousForwarding: false`.
+      #
       # In Ruby 3.2, anonymous args/kwargs forwarding has been added.
       #
       # This cop also identifies places where `use_args(*args)`/`use_kwargs(**kwargs)` can be
@@ -41,22 +47,25 @@ module RuboCop
       #
       # @example UseAnonymousForwarding: true (default, only relevant for Ruby >= 3.2)
       #   # bad
-      #   def foo(*args, **kwargs)
+      #   def foo(*args, **kwargs, &block)
       #     args_only(*args)
       #     kwargs_only(**kwargs)
+      #     block_only(&block)
       #   end
       #
       #   # good
-      #   def foo(*, **)
+      #   def foo(*, **, &)
       #     args_only(*)
       #     kwargs_only(**)
+      #     block_only(&)
       #   end
       #
       # @example UseAnonymousForwarding: false (only relevant for Ruby >= 3.2)
       #   # good
-      #   def foo(*args, **kwargs)
+      #   def foo(*args, **kwargs, &block)
       #     args_only(*args)
       #     kwargs_only(**kwargs)
+      #     block_only(&block)
       #   end
       #
       # @example AllowOnlyRestArgument: true (default, only relevant for Ruby < 3.2)
@@ -196,12 +205,13 @@ module RuboCop
         end
         # rubocop:enable Metrics/MethodLength
 
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def add_post_ruby_32_offenses(def_node, send_classifications, forwardable_args)
           return unless use_anonymous_forwarding?
 
-          rest_arg, kwrest_arg, _block_arg = *forwardable_args
+          rest_arg, kwrest_arg, block_arg = *forwardable_args
 
-          send_classifications.each do |send_node, _c, forward_rest, forward_kwrest, _forward_block_arg| # rubocop:disable Layout/LineLength
+          send_classifications.each do |send_node, _c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
             if outside_block?(forward_rest)
               register_forward_args_offense(def_node.arguments, rest_arg)
               register_forward_args_offense(send_node, forward_rest)
@@ -211,8 +221,14 @@ module RuboCop
               register_forward_kwargs_offense(!forward_rest, def_node.arguments, kwrest_arg)
               register_forward_kwargs_offense(!forward_rest, send_node, forward_kwrest)
             end
+
+            if outside_block?(forward_block_arg)
+              register_forward_block_arg_offense(!forward_rest, def_node.arguments, block_arg)
+              register_forward_block_arg_offense(!forward_rest, send_node, forward_block_arg)
+            end
           end
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         def non_splat_or_block_pass_lvar_references(body)
           body.each_descendant(:lvar, :lvasgn).filter_map do |lvar|
