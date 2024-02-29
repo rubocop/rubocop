@@ -1,0 +1,1 @@
+* [#12726](https://github.com/rubocop/rubocop/issues/12726): Fix a false positive for `Style/RedundantLineContinuation` when using line concatenation and calling a method with keyword arguments without parentheses. ([@koic][])

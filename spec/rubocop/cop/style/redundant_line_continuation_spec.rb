@@ -299,6 +299,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when using line concatenation and calling a method with keyword arguments without parentheses' do
+    expect_no_offenses(<<~'RUBY')
+      foo.bar do_something \
+        key: value
+    RUBY
+  end
+
   it 'does not register an offense when using line concatenation and calling a method without parentheses in multiple expression block' do
     expect_no_offenses(<<~'RUBY')
       foo do
