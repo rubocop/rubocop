@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.61.0 (2024-02-29)
+
 ### New features
 
 * [#12682](https://github.com/rubocop/rubocop/issues/12682): Add `--editor-mode` CLI option. ([@koic][])

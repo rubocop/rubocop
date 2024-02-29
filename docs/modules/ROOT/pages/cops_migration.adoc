@@ -13,7 +13,7 @@
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.75
 | -
 |===

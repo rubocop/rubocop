@@ -429,7 +429,7 @@ gem 'rubocop', tag: 'v1.17.0'
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.50
 | 1.40
 |===
@@ -504,7 +504,7 @@ source 'http://rubygems.org'
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.46
 | 0.47
 |===

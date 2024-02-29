@@ -78,7 +78,7 @@ binding.eval(something)
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.22
 | -
 |===
@@ -118,7 +118,7 @@ IO.read('| command') # Allow intentional command invocation.
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.43
 | 1.22
 |===
@@ -243,7 +243,7 @@ URI.open("http://example.com")
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.47
 | -
 |===

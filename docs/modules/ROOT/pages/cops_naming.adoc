@@ -151,7 +151,7 @@ FOÖ = "foo"
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.50
 | 1.2
 |===
@@ -183,7 +183,7 @@ NOTE: Required Ruby version: 3.1
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.24
 | -
 |===
@@ -501,7 +501,7 @@ anything/using_snake_case.rake
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.50
 | 1.2
 |===
@@ -612,7 +612,7 @@ EOS
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 1.18
 | 1.49
 |===
@@ -753,7 +753,7 @@ TeslaVehicle
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.53
 | 1.2
 |===
@@ -1181,7 +1181,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.67
 | 0.68
 |===

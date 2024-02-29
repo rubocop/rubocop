@@ -98,7 +98,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.30
 | 1.40
 |===
@@ -319,7 +319,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.51
 | -
 |===
@@ -417,7 +417,7 @@ spec.add_dependency 'rspec'
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.23
 | 1.40
 |===

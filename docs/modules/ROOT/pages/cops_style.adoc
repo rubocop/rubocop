@@ -13,7 +13,7 @@
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.57
 | 0.81
 |===
@@ -123,7 +123,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.87
 | -
 |===
@@ -199,7 +199,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.36
 |===
@@ -260,7 +260,7 @@ alias_method :bar, :foo
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.9
 | 1.21
 |===
@@ -338,7 +338,7 @@ NOTE: Required Ruby version: 2.7
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.1
 | 1.58
 |===
@@ -347,6 +347,12 @@ In Ruby 2.7, arguments forwarding has been added.
 
 This cop identifies places where `do_something(*args, &block)`
 can be replaced by `do_something(...)`.
+
+In Ruby 3.1, anonymous block forwarding has been added.
+
+This cop identifies places where `do_something(&block)` can be replaced
+by `do_something(&)`; if desired, this functionality can be disabled
+by setting `UseAnonymousForwarding: false`.
 
 In Ruby 3.2, anonymous args/kwargs forwarding has been added.
 
@@ -388,15 +394,17 @@ end
 [source,ruby]
 ----
 # bad
-def foo(*args, **kwargs)
+def foo(*args, **kwargs, &block)
   args_only(*args)
   kwargs_only(**kwargs)
+  block_only(&block)
 end
 
 # good
-def foo(*, **)
+def foo(*, **, &)
   args_only(*)
   kwargs_only(**)
+  block_only(&)
 end
 ----
 
@@ -405,9 +413,10 @@ end
 [source,ruby]
 ----
 # good
-def foo(*args, **kwargs)
+def foo(*args, **kwargs, &block)
   args_only(*args)
   kwargs_only(**kwargs)
+  block_only(&block)
 end
 ----
 
@@ -523,7 +532,7 @@ end
 
 | Disabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.88
 | -
 |===
@@ -579,7 +588,7 @@ Array(paths).each { |path| do_something(path) }
 
 | Disabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.58
 | -
 |===
@@ -624,7 +633,7 @@ NOTE: Required Ruby version: 3.1
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.40
 | -
 |===
@@ -693,7 +702,7 @@ array1.intersect?(array2)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.20
 | 0.31
 |===
@@ -767,7 +776,7 @@ in comments. You could set an array of allowed non-ascii chars in
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.12
 |===
@@ -835,7 +844,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.25
 | -
 |===
@@ -917,7 +926,7 @@ BEGIN { test }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.87
 | -
 |===
@@ -948,7 +957,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.23
 |===
@@ -981,7 +990,7 @@ of comments...
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.30
 | 0.35
 |===
@@ -1222,7 +1231,7 @@ things.map { |thing|
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.89
 |===
@@ -1301,7 +1310,7 @@ self.class === something
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.88
 | 1.48
 |===
@@ -1382,7 +1391,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | -
 |===
@@ -1421,7 +1430,7 @@ That's a good use case of ? literal so it doesn't count it as an offense.
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.19
 | -
 |===
@@ -1486,7 +1495,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.24
 | -
 |===
@@ -1542,7 +1551,7 @@ var.kind_of?(String)
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.93
 | 1.57
 |===
@@ -1635,7 +1644,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.20
 |===
@@ -1673,7 +1682,7 @@ end
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.89
 | -
 |===
@@ -1828,7 +1837,7 @@ NOTE: Required Ruby version: 2.4
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.2
 | 1.3
 |===
@@ -1897,7 +1906,7 @@ params.reject(&:nil?)
 
 | Disabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.9
 | 1.7
 |===
@@ -1969,7 +1978,7 @@ items.include?
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | -
 |===
@@ -2003,7 +2012,7 @@ Marshal.dump(obj)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -2039,7 +2048,7 @@ end
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.90
 | -
 |===
@@ -2109,7 +2118,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.30
 | -
 |===
@@ -2234,7 +2243,7 @@ folders = %x(find . -type d).split
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.10
 | 1.20
 |===
@@ -2330,7 +2339,7 @@ annotation.
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.51
 | 1.19
 |===
@@ -2387,7 +2396,7 @@ NOTE: Required Ruby version: 2.4
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.44
 | -
 |===
@@ -2431,7 +2440,7 @@ x.clamp(low, high)
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.41
 | -
 |===
@@ -2466,14 +2475,14 @@ list.push(qux, quux, corge)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.36
 | 0.47
 |===
 
 Check for `if` and `case` statements where each branch is used for
-assignment to the same variable when using the return of the
-condition can be used instead.
+both the assignment and comparison of the same variable
+when using the return of the condition can be used instead.
 
 === Examples
 
@@ -2674,7 +2683,7 @@ end
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.30
 | -
 |===
@@ -2717,7 +2726,7 @@ NOTE: Required Ruby version: 3.2
 
 | Pending
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.49
 | 1.51
 |===
@@ -2759,7 +2768,7 @@ end
 
 | Disabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.51
 | 0.92
 |===
@@ -2839,7 +2848,7 @@ something.to_time
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.12
 |===
@@ -2898,7 +2907,7 @@ NOTE: Required Ruby version: 2.0
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.50
 | -
 |===
@@ -2930,7 +2939,7 @@ NOTE: Required Ruby version: 2.4
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.48
 | -
 |===
@@ -2958,7 +2967,7 @@ Dir.empty?('path/to/dir')
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.82
 | 1.9
 |===
@@ -3333,7 +3342,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.73
 | -
 |===
@@ -3367,7 +3376,7 @@ end
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.19
 | 1.2
 |===
@@ -3462,7 +3471,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.41
 | -
 |===
@@ -3500,7 +3509,7 @@ This check only applies if the block takes no parameters.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.22
 | 0.42
 |===
@@ -3530,7 +3539,7 @@ parameter is assigned to within the block.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -3565,7 +3574,7 @@ a { do_something }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.40
 | -
 |===
@@ -3613,9 +3622,9 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Command-line only
 | 0.28
-| 0.32
+| 1.61
 |===
 
 Checks for empty else-clauses, possibly including comments and/or an
@@ -3780,9 +3789,9 @@ end
 
 | Pending
 | Yes
-| Yes
+| Command-line only
 | 1.32
-| -
+| 1.61
 |===
 
 Checks for using empty heredoc to reduce redundancy.
@@ -3825,7 +3834,7 @@ do_something('')
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -3855,7 +3864,7 @@ redundant.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.12
 |===
@@ -3889,9 +3898,9 @@ s = ''
 
 | Enabled
 | Yes
-| Yes
+| Command-line only
 | 0.46
-| -
+| 1.61
 |===
 
 Checks for the formatting of empty method definitions.
@@ -3967,7 +3976,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.50
 |===
@@ -3995,7 +4004,7 @@ Checks ensures source files have no utf-8 encoding comments.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.81
 |===
@@ -4026,7 +4035,7 @@ NOTE: Required Ruby version: 3.0
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.8
 | -
 |===
@@ -4109,7 +4118,7 @@ def my_method() = x.foo
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.29
 | -
 |===
@@ -4150,7 +4159,7 @@ ENV.fetch('HOME', default)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -4218,7 +4227,7 @@ eval code
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.12
 | 0.29
 |===
@@ -4250,7 +4259,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.51
 | -
 |===
@@ -4284,7 +4293,7 @@ string != 'string'
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | -
 |===
@@ -4337,7 +4346,7 @@ Pathname.new(__dir__).expand_path
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.89
 | 1.8
 |===
@@ -4486,7 +4495,7 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.28
 | -
 |===
@@ -4537,7 +4546,7 @@ NOTE: Required Ruby version: 2.4
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.48
 | -
 |===
@@ -4575,7 +4584,7 @@ FileTest.empty?('path/to/file')
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.24
 | -
 |===
@@ -4629,7 +4638,7 @@ File.binread(filename)
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.24
 | -
 |===
@@ -4686,7 +4695,7 @@ File.binwrite(filename, content)
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.72
 | 1.9
 |===
@@ -4780,7 +4789,7 @@ a.fdiv(b)
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.13
 | 1.26
 |===
@@ -4856,7 +4865,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.19
 | 0.49
 |===
@@ -4940,7 +4949,7 @@ puts '%10s' % 'hoge'
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.0
 |===
@@ -5084,7 +5093,7 @@ NOTE: Required Ruby version: 2.3
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.36
 | 0.79
 |===
@@ -5200,7 +5209,7 @@ end
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.89
 | -
 |===
@@ -5297,7 +5306,7 @@ $stdin.read
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.20
 | 1.31
 |===
@@ -5447,7 +5456,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.88
 | -
 |===
@@ -5509,7 +5518,7 @@ EnforcedStyle.
 
 | Pending
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.10
 | 1.55
 |===
@@ -5586,7 +5595,7 @@ Hash[*ary]
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.80
 | 1.16
 |===
@@ -5654,7 +5663,7 @@ NOTE: Required Ruby version: 3.0
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.7
 | 1.39
 |===
@@ -5762,7 +5771,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 1.24
 |===
@@ -5939,7 +5948,7 @@ NOTE: Required Ruby version: 2.5
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.80
 | 0.90
 |===
@@ -5981,7 +5990,7 @@ NOTE: Required Ruby version: 2.4
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.80
 | 0.90
 |===
@@ -6019,7 +6028,7 @@ Hash[{a: 1, b: 2}.collect { |k, v| [k, foo(v)] }]
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.36
 | 1.19
 |===
@@ -6141,7 +6150,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.36
 | 1.3
 |===
@@ -6230,7 +6239,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.30
 |===
@@ -6308,7 +6317,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.39
 | 0.87
 |===
@@ -6343,7 +6352,7 @@ end
 
 | Pending
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.9
 | -
 |===
@@ -6432,7 +6441,7 @@ num.nonzero? ? true : false
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.83
 |===
@@ -6491,7 +6500,7 @@ NOTE: Required Ruby version: 2.7
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.16
 | -
 |===
@@ -6526,7 +6535,7 @@ end
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.26
 | 0.61
 |===
@@ -6595,7 +6604,7 @@ end
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.48
 | -
 |===
@@ -6664,7 +6673,7 @@ end
 
 | Disabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.44
 | 1.50
 |===
@@ -6702,12 +6711,14 @@ foo unless !bar
 foo unless x != y
 foo unless x >= 10
 foo unless x.even?
+foo unless odd?
 
 # good
 foo if bar
 foo if x == y
 foo if x < 10
 foo if x.odd?
+foo if even?
 
 # bad (complex condition)
 foo unless x != y || x.even?
@@ -6779,7 +6790,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.90
 | 1.7
 |===
@@ -6827,7 +6838,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.40
 |===
@@ -6911,7 +6922,7 @@ f = ->(x) do
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.13
 | 0.14
 |===
@@ -6963,7 +6974,7 @@ lambda.(x, y)
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.18
 | 0.64
 |===
@@ -7008,7 +7019,7 @@ some_str = 'ala' \
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.35
 | -
 |===
@@ -7163,7 +7174,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.30
 | -
 |===
@@ -7214,7 +7225,7 @@ NOTE: Required Ruby version: 2.6
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.24
 | -
 |===
@@ -7255,7 +7266,7 @@ something.to_h { |v| [v, v * 2] }
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.42
 | -
 |===
@@ -7292,7 +7303,7 @@ something.to_set { |i| i * 2 }
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.47
 | 1.7
 |===
@@ -7585,7 +7596,7 @@ Array 1
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.47
 | 0.55
 |===
@@ -7689,7 +7700,7 @@ foo.c
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.16
 | 1.7
 |===
@@ -7821,7 +7832,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.50
 | -
 |===
@@ -7848,7 +7859,7 @@ return foo.minmax
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.42
 | -
 |===
@@ -7895,7 +7906,7 @@ a <= b ? a : b
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.30
 | 0.38
 |===
@@ -8063,7 +8074,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.48
 | 0.49
 |===
@@ -8181,7 +8192,7 @@ end
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.11
 | 0.65
 |===
@@ -8355,7 +8366,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.45
 | -
 |===
@@ -8386,7 +8397,7 @@ Checks for uses of if/unless modifiers with multiple-lines bodies.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.26
 |===
@@ -8422,7 +8433,7 @@ NOTE: Required Ruby version: 2.7
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.16
 | -
 |===
@@ -8466,7 +8477,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.44
 | 0.48
 |===
@@ -8526,7 +8537,7 @@ foo ||= (
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.59
 | 1.7
 |===
@@ -8556,7 +8567,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.86
 |===
@@ -8606,7 +8617,7 @@ return cond ? b : c
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.73
 | -
 |===
@@ -8651,7 +8662,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.1
 |===
@@ -8743,7 +8754,7 @@ foo if a == 'a' || a == 'b'
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.34
 | 1.8
 |===
@@ -8854,7 +8865,7 @@ CONST = [1, 2, 3]
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.20
 | 0.48
 |===
@@ -8960,7 +8971,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.2
 | -
 |===
@@ -9000,7 +9011,7 @@ x ? do_something_else : do_something
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.69
 | -
 |===
@@ -9096,7 +9107,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.20
 | -
 |===
@@ -9138,7 +9149,7 @@ NOTE: Required Ruby version: 3.1
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.26
 | -
 |===
@@ -9164,7 +9175,7 @@ File.dirname(path, 2)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.35
 | -
 |===
@@ -9194,7 +9205,7 @@ something if b && a
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.36
 | 0.77
 |===
@@ -9242,7 +9253,7 @@ method1(foo arg)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.86
 |===
@@ -9275,7 +9286,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.22
 | 0.35
 |===
@@ -9359,7 +9370,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.12
 | 0.59
 |===
@@ -9418,7 +9429,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.3
 | 1.15
 |===
@@ -9463,7 +9474,7 @@ Proc.new { nil if x }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.20
 | 0.22
 |===
@@ -9539,7 +9550,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.20
 |===
@@ -9668,7 +9679,7 @@ hash.each { use_only_hash_value_as_numbered_parameter(_2) }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.41
 | -
 |===
@@ -9735,7 +9746,7 @@ num = 01234
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.48
 |===
@@ -9822,7 +9833,7 @@ only correct to the standard pattern of an `_` every 3 digits.
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.42
 | 0.59
 |===
@@ -9961,7 +9972,7 @@ NOTE: Required Ruby version: 2.6
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.28
 | -
 |===
@@ -10014,7 +10025,7 @@ obj.yield_self { |x| x.do_something }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.90
 |===
@@ -10129,7 +10140,7 @@ allow(test_double).to receive(:a).and_return('b')
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.37
 | -
 |===
@@ -10317,7 +10328,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.50
 | -
 |===
@@ -10361,7 +10372,7 @@ name ||= 'Bozhidar'
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.32
 | -
 |===
@@ -10399,7 +10410,7 @@ c = 3
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.56
 |===
@@ -10499,7 +10510,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.19
 | 0.48
 |===
@@ -10550,7 +10561,7 @@ default.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.25
 | -
 |===
@@ -10605,7 +10616,7 @@ Checks for usage of the %Q() syntax when %q() would do.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.13
 | -
 |===
@@ -10636,7 +10647,7 @@ puts Regexp.last_match(1)
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.41
 | 0.70
 |===
@@ -10701,7 +10712,7 @@ Hash#has_value?
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.18
 |===
@@ -10731,7 +10742,7 @@ p = proc { |n| puts n }
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.16
 | -
 |===
@@ -10790,10 +10801,10 @@ style to use for symbols that require quotes.
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Enabled
-| Yes
-| Yes
+| No
+| Always (Unsafe)
 | 0.14
-| 1.2
+| 1.61
 |===
 
 Checks the args passed to `fail` and `raise`. For exploded
@@ -10808,6 +10819,10 @@ passed multiple arguments.
 
 The exploded style has an `AllowedCompactTypes` configuration
 option that takes an Array of exception name Strings.
+
+=== Safety
+
+This cop is unsafe because `raise Foo` calls `Foo.exception`, not `Foo.new`.
 
 === Examples
 
@@ -10870,7 +10885,7 @@ fail 'message'
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -10911,7 +10926,7 @@ rand(1...7)
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.4
 | 1.55
 |===
@@ -10990,7 +11005,7 @@ A.foo
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.52
 | -
 |===
@@ -11024,7 +11039,7 @@ Array.new(3) { 'foo' }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.87
 | -
 |===
@@ -11074,7 +11089,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.10
 | 0.21
 |===
@@ -11153,7 +11168,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.76
 | -
 |===
@@ -11181,7 +11196,7 @@ Checks for usage of the %W() syntax when %w() would do.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.76
 | -
 |===
@@ -11226,7 +11241,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.50
 | -
 |===
@@ -11264,7 +11279,7 @@ x != y
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.40
 | -
 |===
@@ -11318,7 +11333,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.53
 | -
 |===
@@ -11343,7 +11358,7 @@ require_relative 'path/to/feature'
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.41
 | -
 |===
@@ -11374,7 +11389,7 @@ do_something(foo: bar, baz: qux, **options)
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.38
 | -
 |===
@@ -11418,7 +11433,7 @@ array.each_with_object { |v, o| do_something(v, o) }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.14
 | 0.29
 |===
@@ -11455,7 +11470,7 @@ raise Object.new.to_s
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.86
 | -
 |===
@@ -11526,7 +11541,7 @@ ENV.fetch(:key, VALUE)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.88
 | -
 |===
@@ -11567,7 +11582,7 @@ require_relative '../foo.so'
 
 | Pending
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.52
 | 1.57
 |===
@@ -11639,7 +11654,7 @@ arr.any? { |x| x > 1 }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.34
 | 0.66
 |===
@@ -11669,7 +11684,7 @@ CONST = 1
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.45
 | -
 |===
@@ -11707,9 +11722,9 @@ EOS
 
 | Pending
 | No
-| Yes (Unsafe)
+| Command-line only (Unsafe)
 | 1.27
-| 1.28
+| 1.61
 |===
 
 Checks for `initialize` methods that are redundant.
@@ -11831,7 +11846,7 @@ end
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.76
 | 1.30
 |===
@@ -11881,7 +11896,7 @@ y << 'b'   # raise `FrozenError`.
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.49
 | -
 |===
@@ -11958,7 +11973,7 @@ some_method \
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.36
 | -
 |===
@@ -11983,7 +11998,7 @@ x if y.z.nil?
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.76
 | -
 |===
@@ -12016,7 +12031,7 @@ question = '"What did you say?"'
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.53
 | -
 |===
@@ -12062,7 +12077,7 @@ a deterministic regexp to a string.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.85
 | -
 |===
@@ -12102,7 +12117,7 @@ r = /[ab]/
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.52
 | -
 |===
@@ -12131,7 +12146,7 @@ Regexp.compile('regexp')
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.85
 | -
 |===
@@ -12177,7 +12192,7 @@ Checks for redundant escapes inside Regexp literals.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.10
 | 0.14
 |===
@@ -12264,7 +12279,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.10
 | 0.13
 |===
@@ -12323,7 +12338,7 @@ end
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.90
 | -
 |===
@@ -12365,7 +12380,7 @@ self.foo += ary
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.19
 | -
 |===
@@ -12399,7 +12414,7 @@ foo = bar unless condition
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.76
 | 1.22
 |===
@@ -12489,7 +12504,7 @@ arr.max_by(&:foo)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.36
 | -
 |===
@@ -12518,7 +12533,7 @@ array.sort
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.37
 | -
 |===
@@ -12566,7 +12581,7 @@ STR
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.30
 |===
@@ -12706,7 +12721,7 @@ x =~ /home\//
 
 | Disabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.40
 | -
 |===
@@ -12783,7 +12798,7 @@ require 'a'
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.34
 |===
@@ -12838,7 +12853,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -12938,7 +12953,7 @@ end
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.50
 | -
 |===
@@ -13000,7 +13015,7 @@ end
 
 | Pending
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.53
 | -
 |===
@@ -13089,7 +13104,7 @@ NOTE: Required Ruby version: 2.3
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.43
 | 1.27
 |===
@@ -13203,7 +13218,7 @@ foo.bar > 2 if foo
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.30
 | -
 |===
@@ -13248,7 +13263,7 @@ Identifies usages of `shuffle.first`,
 
 | Pending
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.22
 | -
 |===
@@ -13305,7 +13320,7 @@ array.grep_v(regexp)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.19
 | 0.29
 |===
@@ -13334,7 +13349,7 @@ x += 1
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.19
 |===
@@ -13427,7 +13442,7 @@ quuz.public_send(:fred)
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.11
 | 0.37
 |===
@@ -13569,7 +13584,7 @@ explicit_receiver.raise
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.89
 | -
 |===
@@ -13614,7 +13629,7 @@ keys = %i[key1 key2]
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.16
 | 1.6
 |===
@@ -13668,7 +13683,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.57
 | -
 |===
@@ -13709,7 +13724,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 1.8
 |===
@@ -13777,7 +13792,7 @@ NOTE: Required Ruby version: 2.6
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.83
 | -
 |===
@@ -13838,7 +13853,7 @@ items[0..42]   # Ruby 2.7+
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.89
 | 1.5
 |===
@@ -13916,7 +13931,7 @@ end if condition_a
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.13
 | 0.36
 |===
@@ -14043,7 +14058,7 @@ puts $*
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.35
 | -
 |===
@@ -14096,7 +14111,7 @@ There are two different styles. Defaults to `require_parentheses`.
 
 | Disabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.3
 | -
 |===
@@ -14157,7 +14172,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.51
 | -
 |===
@@ -14188,7 +14203,7 @@ warn('hello')
 
 | Pending
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.12
 | -
 |===
@@ -14224,7 +14239,7 @@ string.chars
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.89
 | 1.18
 |===
@@ -14308,7 +14323,7 @@ Pathname.new('/') + 'test'
 
 | Disabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.52
 | 0.75
 |===
@@ -14343,7 +14358,7 @@ there are instances when string keys are required.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.36
 |===
@@ -14407,7 +14422,7 @@ Checks if uses of quotes match the configured preference.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.27
 | -
 |===
@@ -14476,7 +14491,7 @@ regexp = /Tests #{success ? "PASS" : "FAIL"}/
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.34
 | 0.34
 |===
@@ -14514,7 +14529,7 @@ from the String class.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.36
 | -
 |===
@@ -14541,7 +14556,7 @@ Identifies places where `lstrip.rstrip` can be replaced by
 
 | Enabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.29
 | 1.20
 |===
@@ -14583,7 +14598,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.58
 | -
 |===
@@ -14614,7 +14629,7 @@ super(name, age)
 
 | Pending
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.1
 | -
 |===
@@ -14652,7 +14667,7 @@ NOTE: Required Ruby version: 2.0
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.49
 |===
@@ -14727,7 +14742,7 @@ array of 2 or fewer elements.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.30
 | -
 |===
@@ -14752,7 +14767,7 @@ Checks symbol literal syntax.
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.26
 | 1.40
 |===
@@ -14936,7 +14951,7 @@ something.map { |s| s.upcase }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.42
 | 0.46
 |===
@@ -15097,7 +15112,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | -
 |===
@@ -15125,7 +15140,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -15166,7 +15181,7 @@ def endless_method = do_stuff
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | -
 |===
@@ -15194,7 +15209,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.36
 | -
 |===
@@ -15316,7 +15331,7 @@ method(
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | -
 |===
@@ -15435,7 +15450,7 @@ a = [
 
 | Disabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.81
 | -
 |===
@@ -15509,7 +15524,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | -
 |===
@@ -15624,7 +15639,7 @@ a = {
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -15670,7 +15685,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.31
 | 0.35
 |===
@@ -15729,7 +15744,7 @@ a, b, _something = foo()
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 1.15
 |===
@@ -15904,7 +15919,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | -
 |===
@@ -16020,7 +16035,7 @@ NOTE: Required Ruby version: 2.4
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.54
 | -
 |===
@@ -16049,7 +16064,7 @@ which can be replaced with the shorter method `unpack1`.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.20
 |===
@@ -16082,7 +16097,7 @@ Checks for variable interpolation (like "#@ivar").
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | -
 |===
@@ -16117,7 +16132,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | -
 |===
@@ -16163,7 +16178,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 0.30
 |===
@@ -16218,7 +16233,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.9
 | 1.19
 |===
@@ -16327,7 +16342,7 @@ array of 2 or fewer elements.
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.53
 | -
 |===
@@ -16363,7 +16378,7 @@ YAML.safe_load_file(path)       # Ruby 3.0 and newer
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.49
 | 0.75
 |===
@@ -16480,7 +16495,7 @@ bar > 10
 
 | Disabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 1.42
 | 1.43
 |===
@@ -16541,7 +16556,7 @@ CONST + 1
 
 | Enabled
 | No
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.37
 | 0.39
 |===

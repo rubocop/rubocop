@@ -13,7 +13,7 @@
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -83,7 +83,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.68
 | 0.77
 |===
@@ -164,7 +164,7 @@ foo :bar,
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.77
 |===
@@ -235,7 +235,7 @@ array = [1, 2, 3,
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.45
 |===
@@ -280,7 +280,7 @@ value =
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.91
 | -
 |===
@@ -351,7 +351,7 @@ foo ||= begin
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | -
 |===
@@ -447,7 +447,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -485,7 +485,7 @@ blah { |i|
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.16
 |===
@@ -638,7 +638,7 @@ end
 
 | Disabled
 | Yes
-| Yes (Unsafe)
+| Always (Unsafe)
 | 0.52
 | 1.53
 |===
@@ -809,7 +809,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.57
 | -
 |===
@@ -866,7 +866,7 @@ foo arg,
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -945,7 +945,7 @@ some_method(a,
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.24
 |===
@@ -1022,7 +1022,7 @@ a = 1 # A really long comment
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | 0.83
 |===
@@ -1062,7 +1062,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | -
 |===
@@ -1129,7 +1129,7 @@ private def foo
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -1185,7 +1185,7 @@ something.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -1228,9 +1228,9 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Command-line only
 | 0.53
-| -
+| 1.61
 |===
 
 Checks empty comment.
@@ -1331,7 +1331,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.56
 | 0.59
 |===
@@ -1395,7 +1395,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -1433,7 +1433,7 @@ end
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.90
 | -
 |===
@@ -1501,7 +1501,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.23
 |===
@@ -1672,7 +1672,7 @@ class ErrorC < BaseError; end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -1706,7 +1706,7 @@ some_method
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -1778,7 +1778,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -1829,7 +1829,7 @@ some_method(
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.83
 | 0.84
 |===
@@ -1932,7 +1932,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -1970,7 +1970,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -2025,7 +2025,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.53
 |===
@@ -2139,7 +2139,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -2214,7 +2214,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -2251,7 +2251,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -2337,7 +2337,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.53
 | -
 |===
@@ -2359,7 +2359,9 @@ start of the line where the matching keyword appears.
 This `Layout/EndAlignment` cop aligns with keywords (e.g. `if`, `while`, `case`)
 by default. On the other hand, `Layout/BeginEndAlignment` cop aligns with
 `EnforcedStyleAlignWith: start_of_line` by default due to `||= begin` tends
-to align with the start of the line. These style can be configured by each cop.
+to align with the start of the line. `Layout/DefEndAlignment` cop also aligns with
+`EnforcedStyleAlignWith: start_of_line` by default.
+These style can be configured by each cop.
 
 === Examples
 
@@ -2521,7 +2523,7 @@ puts 'Hello' # Return character is CR+LF on all platforms.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -2580,7 +2582,7 @@ some_object.method(arg)    # this is some comment
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.68
 | 0.77
 |===
@@ -2766,7 +2768,7 @@ second_param
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.68
 | 0.77
 |===
@@ -2886,7 +2888,7 @@ and_now_for_something = [
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -2954,7 +2956,7 @@ multi-line array.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.68
 | 0.77
 |===
@@ -3101,7 +3103,7 @@ takes_multi_pairs_hash(x: {
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -3172,7 +3174,7 @@ multi-line hash.
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -3263,7 +3265,7 @@ method(
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -3344,7 +3346,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.77
 |===
@@ -3420,7 +3422,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.16
 |===
@@ -3664,7 +3666,7 @@ do_something({foo: 1,
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.68
 | -
 |===
@@ -3733,7 +3735,7 @@ NOTE: Required Ruby version: 2.3
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.85
 |===
@@ -3771,7 +3773,7 @@ RUBY
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -3924,7 +3926,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.82
 |===
@@ -3993,7 +3995,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -4071,7 +4073,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -4101,7 +4103,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.73
 |===
@@ -4192,7 +4194,7 @@ or rackup options.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.57
 | 0.77
 |===
@@ -4232,7 +4234,7 @@ end
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.31
 | 1.45
 |===
@@ -4302,7 +4304,7 @@ instead of trailing spaces.
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.31
 | -
 |===
@@ -4359,7 +4361,7 @@ preceding text by exactly one space (default) or zero spaces.
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.18
 | -
 |===
@@ -4465,7 +4467,7 @@ my_hash = {
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.25
 | 1.4
 |===
@@ -4570,7 +4572,7 @@ bar: "0000000000", baz: "0000000000"}
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -4692,7 +4694,7 @@ line as the last element of the array.
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.67
 | -
 |===
@@ -4764,7 +4766,7 @@ starts on a separate line.
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -4862,7 +4864,7 @@ foo =
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -4924,7 +4926,7 @@ blah { |
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -5045,7 +5047,7 @@ line as the last element of the hash.
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.67
 | -
 |===
@@ -5116,7 +5118,7 @@ starts on a separate line.
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 0.67
 | -
 |===
@@ -5197,7 +5199,7 @@ foo(
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -5319,7 +5321,7 @@ foo(a,
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -5403,7 +5405,7 @@ myvariable = Thing
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -5537,7 +5539,7 @@ end
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 1.32
 | -
 |===
@@ -5619,7 +5621,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -5692,7 +5694,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.77
 |===
@@ -5798,7 +5800,7 @@ end
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 1.13
 | -
 |===
@@ -5873,7 +5875,7 @@ foo(a) { |x| puts x }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -5907,7 +5909,7 @@ end
 
 | Disabled
 | Yes
-| Yes
+| Always
 | 1.14
 | -
 |===
@@ -5939,7 +5941,7 @@ end.join('-')
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -5970,7 +5972,7 @@ def f(a:, b: 2); {a: 3}; end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6001,7 +6003,7 @@ Checks for comma (,) not followed by some kind of space.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6032,7 +6034,7 @@ def method=(y) end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6061,7 +6063,7 @@ Checks for space after `!`.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6090,7 +6092,7 @@ x = 1; y = 2
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6144,7 +6146,7 @@ not by this cop.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6205,7 +6207,7 @@ end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6242,7 +6244,7 @@ something = 123 if test
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.82
 | -
 |===
@@ -6289,7 +6291,7 @@ RuboCop::Cop::Base
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6413,7 +6415,7 @@ a ** b
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.52
 |===
@@ -6496,7 +6498,7 @@ foo.map{ |a|
 
 | Pending
 | Yes
-| Yes
+| Always
 | 1.7
 | -
 |===
@@ -6526,7 +6528,7 @@ collection[index_or_key]
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6555,7 +6557,7 @@ each { |a, b| }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6581,7 +6583,7 @@ same line.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6625,7 +6627,7 @@ something 'hello'
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6650,7 +6652,7 @@ x = 1; y = 2
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6699,7 +6701,7 @@ a = -> (x, y) { x + y }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | -
 |===
@@ -6811,7 +6813,7 @@ bar = [ ]
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6839,7 +6841,7 @@ Note that blank percent literals (e.g. `%i( )`) are checked by
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -6966,7 +6968,7 @@ some_array.each {   }
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -7082,7 +7084,7 @@ foo = {
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.22
 |===
@@ -7173,7 +7175,7 @@ g((( 3 + 5 ) * f ) ** x, 5 )
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -7219,7 +7221,7 @@ Checks for unnecessary additional spaces inside the delimiters of
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -7254,7 +7256,7 @@ Checks for spaces inside range literals.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.52
 | 0.53
 |===
@@ -7351,7 +7353,7 @@ foo[ ]
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | -
 |===
@@ -7403,7 +7405,7 @@ Checks for whitespace within string interpolations.
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 0.77
 |===
@@ -7473,7 +7475,7 @@ class Foo; end
 
 | Enabled
 | Yes
-| Yes
+| Always
 | 0.49
 | 1.0
 |===

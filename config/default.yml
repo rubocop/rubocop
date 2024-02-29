@@ -558,7 +558,7 @@ Layout/EmptyComment:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.53'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   AllowBorderComment: true
   AllowMarginComment: true
 
@@ -1831,14 +1831,14 @@ Lint/EmptyConditionalBody:
   SafeAutoCorrect: false
   AllowComments: true
   VersionAdded: '0.89'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
 
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.10'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
 
 Lint/EmptyExpression:
   Description: 'Checks for empty expressions.'
@@ -1862,7 +1862,7 @@ Lint/EmptyInterpolation:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.20'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
 
 Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
@@ -2402,7 +2402,7 @@ Lint/TrailingCommaInAttributeDeclaration:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.90'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
 
 Lint/TripleQuotes:
   Description: 'Checks for useless triple quote constructs.'
@@ -2464,7 +2464,7 @@ Lint/UnusedBlockArgument:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.21'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   IgnoreEmptyBlocks: true
   AllowUnusedKeywordArguments: false
 
@@ -2474,7 +2474,7 @@ Lint/UnusedMethodArgument:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.21'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
   IgnoreNotImplementedMethods: true
@@ -2500,7 +2500,7 @@ Lint/UselessAccessModifier:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.20'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   ContextCreatingMethods: []
   MethodCreatingMethods: []
 
@@ -2510,7 +2510,7 @@ Lint/UselessAssignment:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.11'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   SafeAutoCorrect: false
 
 Lint/UselessElseWithoutRescue:
@@ -2524,7 +2524,7 @@ Lint/UselessMethodDefinition:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.90'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   Safe: false
 
 Lint/UselessRescue:
@@ -2550,14 +2550,14 @@ Lint/UselessTimes:
   Safe: false
   AutoCorrect: contextual
   VersionAdded: '0.91'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
 
 Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   CheckForMethodsWithNoSideEffects: false
 
 #################### Metrics ###############################
@@ -3719,7 +3719,7 @@ Style/EmptyElse:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.28'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   EnforcedStyle: both
   # empty - warn only on empty `else`
   # nil - warn on `else` with nil in it
@@ -3735,7 +3735,7 @@ Style/EmptyHeredoc:
   Enabled: pending
   AutoCorrect: contextual
   VersionAdded: '1.32'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
 
 Style/EmptyLambdaParameter:
   Description: 'Omit parens for empty lambda parameters.'
@@ -3755,7 +3755,7 @@ Style/EmptyMethod:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.46'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   EnforcedStyle: compact
   SupportedStyles:
     - compact
@@ -4858,7 +4858,7 @@ Style/RaiseArgs:
   Enabled: true
   Safe: false
   VersionAdded: '0.14'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
   EnforcedStyle: exploded
   SupportedStyles:
     - compact # raise Exception.new(msg)
@@ -5003,7 +5003,7 @@ Style/RedundantInitialize:
   Safe: false
   AllowComments: true
   VersionAdded: '1.27'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.61'
 
 Style/RedundantInterpolation:
   Description: 'Checks for strings that are just an interpolated expression.'
