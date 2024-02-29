@@ -185,3 +185,7 @@ end
 RSpec.shared_context 'ruby 3.3' do
   let(:ruby_version) { 3.3 }
 end
+
+RSpec.shared_context 'ruby 3.4' do
+  let(:ruby_version) { 3.4 }
+end
