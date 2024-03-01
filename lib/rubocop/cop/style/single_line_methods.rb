@@ -8,8 +8,8 @@ module RuboCop
       #
       # Endless methods added in Ruby 3.0 are also accepted by this cop.
       #
-      # If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow_single_line` or
-      # `allow_always`, single-line methods will be autocorrected to endless
+      # If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow_single_line`, `allow_always`,
+      # or `require_always`, single-line methods will be autocorrected to endless
       # methods if there is only one statement in the body.
       #
       # @example
