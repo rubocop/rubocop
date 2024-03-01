@@ -109,7 +109,7 @@ module RuboCop
           version_from_array(right_hand_side)
         elsif gem_requirement_versions
           gem_requirement_versions.map(&:value)
-        else
+        elsif right_hand_side.str_type?
           right_hand_side.value
         end
       end
