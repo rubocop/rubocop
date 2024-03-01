@@ -21,8 +21,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
   describe 'option' do
     describe '-h/--help' do
-      it 'exits cleanly' do
+      it 'exits cleanly `-h`' do
         expect { options.parse ['-h'] }.to exit_with_code(0)
+      end
+
+      it 'exits cleanly `--help`' do
         expect { options.parse ['--help'] }.to exit_with_code(0)
       end
 

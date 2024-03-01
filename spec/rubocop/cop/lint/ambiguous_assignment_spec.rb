@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::AmbiguousAssignment, :config do
-  RuboCop::Cop::Lint::AmbiguousAssignment::MISTAKES.each_key do |mistake|
+  described_class::MISTAKES.each_key do |mistake|
     operator = mistake[1]
 
     %i[x @x @@x $x X].each do |lhs|

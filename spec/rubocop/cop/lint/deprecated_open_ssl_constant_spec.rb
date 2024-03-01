@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
     RUBY
   end
 
-  RuboCop::Cop::Lint::DeprecatedOpenSSLConstant::NO_ARG_ALGORITHM.each do |algorithm_name|
+  described_class::NO_ARG_ALGORITHM.each do |algorithm_name|
     it 'registers an offense with cipher constant and no arguments and corrects' do
       expect_offense(<<~RUBY, algorithm_name: algorithm_name)
         OpenSSL::Cipher::#{algorithm_name}.new
