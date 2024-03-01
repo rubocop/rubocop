@@ -42,39 +42,39 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           content = <<~HEREDOC
             Gem::Specification.new do |s|
               s.name = 'test'
-              s.required_ruby_version = '>= 2.7.2'
+              s.required_ruby_version = '>= 3.2.2'
               s.licenses = ['MIT']
             end
           HEREDOC
 
           create_file(gemspec_file_path, content)
-          expect(target_ruby.version).to eq 2.7
+          expect(target_ruby.version).to eq 3.2
         end
 
         it 'sets target_ruby from exclusive range' do
           content = <<~HEREDOC
             Gem::Specification.new do |s|
               s.name = 'test'
-              s.required_ruby_version = '> 2.7.8'
+              s.required_ruby_version = '> 3.2.2'
               s.licenses = ['MIT']
             end
           HEREDOC
 
           create_file(gemspec_file_path, content)
-          expect(target_ruby.version).to eq 2.7
+          expect(target_ruby.version).to eq 3.2
         end
 
         it 'sets target_ruby from approximate version' do
           content = <<~HEREDOC
             Gem::Specification.new do |s|
               s.name = 'test'
-              s.required_ruby_version = '~> 2.7.0'
+              s.required_ruby_version = '~> 3.2.0'
               s.licenses = ['MIT']
             end
           HEREDOC
 
           create_file(gemspec_file_path, content)
-          expect(target_ruby.version).to eq 2.7
+          expect(target_ruby.version).to eq 3.2
         end
       end
 
@@ -163,26 +163,41 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           content = <<~HEREDOC
             Gem::Specification.new do |s|
               s.name = 'test'
-              s.required_ruby_version = ['<=3.0.4', '>=2.7.5']
+              s.required_ruby_version = ['<=3.3.0', '>=3.1.3']
               s.licenses = ['MIT']
             end
           HEREDOC
 
           create_file(gemspec_file_path, content)
-          expect(target_ruby.version).to eq 2.7
+          expect(target_ruby.version).to eq 3.1
         end
 
         it 'sets target_ruby from required_ruby_version with many requirements' do
           content = <<~HEREDOC
             Gem::Specification.new do |s|
               s.name = 'test'
-              s.required_ruby_version = ['<=3.1.0', '>2.6.8', '~>2.7.1']
+              s.required_ruby_version = ['<=3.3.0', '>3.1.1', '~>3.2.1']
               s.licenses = ['MIT']
             end
           HEREDOC
 
           create_file(gemspec_file_path, content)
-          expect(target_ruby.version).to eq 2.7
+          expect(target_ruby.version).to eq 3.2
+        end
+      end
+
+      context 'when file reads the required_ruby_version from another file' do
+        it 'uses the default target ruby version' do
+          content = <<~HEREDOC
+            Gem::Specification.new do |s|
+              s.name = 'test'
+              s.required_ruby_version = Gem::Requirement.new(">= \#{File.read('.ruby-version').rstrip}")
+              s.licenses = ['MIT']
+            end
+          HEREDOC
+
+          create_file(gemspec_file_path, content)
+          expect(target_ruby.version).to eq default_version
         end
       end
 
