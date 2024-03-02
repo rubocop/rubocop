@@ -62,8 +62,15 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
   subject(:target_finder) { described_class.new(config_store, options) }
 
   let(:config_store) { RuboCop::ConfigStore.new }
-  let(:options) { { force_exclusion: force_exclusion, debug: debug } }
+  let(:options) do
+    {
+      force_exclusion: force_exclusion,
+      ignore_parent_exclusion: ignore_parent_exclusion,
+      debug: debug
+    }
+  end
   let(:force_exclusion) { false }
+  let(:ignore_parent_exclusion) { false }
   let(:debug) { false }
 
   before do
@@ -144,8 +151,26 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       context "when it's forced to adhere file exclusion configuration" do
         let(:force_exclusion) { true }
 
-        it 'excludes them' do
-          expect(found_basenames).to eq(['ruby2.rb'])
+        context 'when parent exclusion is in effect' do
+          before do
+            create_file('dir2/.rubocop.yml', <<~YAML)
+              require:
+                - unloadable_extension
+            YAML
+          end
+
+          it 'excludes only files that are excluded on top level and does not load ' \
+             'other configuration files unnecessarily' do
+            expect(found_basenames).to eq(['ruby2.rb', 'executable'])
+          end
+        end
+
+        context 'when parent exclusion is ignored' do
+          let(:ignore_parent_exclusion) { true }
+
+          it 'excludes files that are excluded on any level' do
+            expect(found_basenames).to eq(['ruby2.rb'])
+          end
         end
       end
     end
