@@ -16,6 +16,10 @@ module RuboCop
       @options[:force_exclusion]
     end
 
+    def ignore_parent_exclusion?
+      @options[:ignore_parent_exclusion]
+    end
+
     def debug?
       @options[:debug]
     end
@@ -181,7 +185,7 @@ module RuboCop
       ruby_file?(file) || configured_include?(file)
     end
 
-    def process_explicit_path(path, mode)
+    def process_explicit_path(path, mode) # rubocop:disable Metrics/CyclomaticComplexity
       files = path.include?('*') ? Dir[path] : [path]
 
       if mode == :only_recognized_file_types || force_exclusion?
@@ -191,7 +195,11 @@ module RuboCop
       return files unless force_exclusion?
 
       files.reject do |file|
-        config = @config_store.for(file)
+        # When --ignore-parent-exclusion is given, we must look at the configuration associated with
+        # the file, but in the default case when --ignore-parent-exclusion is not given, can safely
+        # look only at the configuration for the current directory, since it's only the Exclude
+        # parameters we're going to check.
+        config = @config_store.for(ignore_parent_exclusion? ? file : '.')
         config.file_to_exclude?(file)
       end
     end
