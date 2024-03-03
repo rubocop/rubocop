@@ -251,23 +251,40 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       end
     end
 
-    context 'if a cop crashes' do
+    context 'when results should not be saved to the cache' do
       before do
         # The cache responds that it's not valid, which means that new results
-        # should normally be collected and saved...
+        # should normally be collected and saved.
         cache = instance_double(RuboCop::ResultCache, 'valid?' => false)
-        # ... but there's a crash in one cop.
-        runner.errors = ['An error occurred in ...']
 
         allow(RuboCop::ResultCache).to receive(:new) { cache }
       end
 
-      let(:source) { '' }
+      context 'if a cop crashes' do
+        before { runner.errors = ['An error occurred in ...'] }
 
-      it 'does not call ResultCache#save' do
-        # The double doesn't define #save, so we'd get an error if it were
-        # called.
-        expect(runner.run([])).to be true
+        let(:source) { '' }
+
+        it 'does not call ResultCache#save' do
+          # The double doesn't define #save, so we'd get an error if it were
+          # called.
+          expect(runner.run([])).to be true
+        end
+      end
+
+      context 'if a warning is emitted for a file' do
+        include_context 'cli spec behavior'
+
+        let(:source) { 'x = 3 # rubocop:disable UselessAssignment' }
+
+        it 'does not call ResultCache#save' do
+          # The double doesn't define #save, so we'd get an error if it were called.
+          expect(runner.run([])).to be false
+
+          expect($stderr.string.chomp).to eq('example.rb: Warning: no department given for ' \
+                                             'UselessAssignment. Run `rubocop -a --only ' \
+                                             'Migration/DepartmentName` to fix.')
+        end
       end
     end
 
