@@ -48,9 +48,7 @@ RSpec.describe RuboCop::Cop::Registry do
 
     it 'disallows it if done too late' do
       expect(registry.cops.include?(cop_class)).to be(true)
-      # rubocop:disable RSpec/RepeatedSubjectCall
       expect { registry.dismiss(cop_class) }.to raise_error(RuntimeError)
-      # rubocop:enable RSpec/RepeatedSubjectCall
     end
 
     it 'allows re-listing' do

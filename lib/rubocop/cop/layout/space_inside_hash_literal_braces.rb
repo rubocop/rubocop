@@ -116,7 +116,7 @@ module RuboCop
 
         def incorrect_style_detected(token1, token2,
                                      expect_space, is_empty_braces)
-          brace = (token1.text == '{' ? token1 : token2).pos
+          brace = (token1.left_brace? ? token1 : token2).pos
           range = expect_space ? brace : space_range(brace)
           detected_style = expect_space ? 'no_space' : 'space'
 
