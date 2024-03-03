@@ -194,7 +194,7 @@ module RuboCop
 
       if real_run_needed
         offenses = yield
-        save_in_cache(cache, offenses)
+        save_in_cache(cache, offenses) unless Cop::Registry.global.warnings?(file)
       end
 
       offenses

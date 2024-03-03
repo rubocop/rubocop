@@ -81,7 +81,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           1 file inspected, 2 offenses detected, 1 offense autocorrectable
       RESULT
       expect($stderr.string).to eq(<<~RESULT)
-        #{abs('.rubocop.yml')}: Warning: no department given for EndOfLine.
+        .rubocop.yml: Warning: no department given for EndOfLine.
       RESULT
     end
   end
@@ -547,7 +547,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                    'end'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stderr.string)
-        .to eq(['example.rb: Style/LineLength has the wrong ' \
+        .to eq(['example.rb: Warning: Style/LineLength has the wrong ' \
                 'namespace - replace it with Layout/LineLength',
                 ''].join("\n"))
       # 2 real cops were disabled, and 1 that was incorrect
@@ -590,8 +590,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                      'y("123") # rubocop:disable StringLiterals'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stderr.string).to eq(<<~OUTPUT)
-          #{abs('example.rb')}: Warning: no department given for LineLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
-          #{abs('example.rb')}: Warning: no department given for StringLiterals. Run `rubocop -a --only Migration/DepartmentName` to fix.
+          example.rb: Warning: no department given for LineLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
+          example.rb: Warning: no department given for StringLiterals. Run `rubocop -a --only Migration/DepartmentName` to fix.
         OUTPUT
         expect($stdout.string)
           .to eq(<<~RESULT)
@@ -764,8 +764,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             create_file('.rubocop.yml', config)
             expect(cli.run(['--format', 'emacs'])).to eq(1)
             expect($stderr.string).to eq(<<~OUTPUT)
-              #{abs('example.rb')}: Warning: no department given for LineLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
-              #{abs('example.rb')}: Warning: no department given for ClassLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
+              example.rb: Warning: no department given for LineLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
+              example.rb: Warning: no department given for ClassLength. Run `rubocop -a --only Migration/DepartmentName` to fix.
             OUTPUT
             expect($stdout.string)
               .to eq(<<~RESULT)

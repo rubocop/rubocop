@@ -16,7 +16,7 @@ module RuboCop
     end
 
     # Registry that tracks all cops by their badge and department.
-    class Registry
+    class Registry # rubocop:disable Metrics/ClassLength
       include Enumerable
 
       def self.all
@@ -46,7 +46,7 @@ module RuboCop
         global.qualify_badge(badge).first == badge
       end
 
-      attr_reader :options
+      attr_reader :options, :warnings
 
       def initialize(cops = [], options = {})
         @registry = {}
@@ -58,6 +58,7 @@ module RuboCop
 
         @enabled_cache = {}.compare_by_identity
         @disabled_cache = {}.compare_by_identity
+        @warnings = {}
       end
 
       def enlist(cop)
@@ -132,7 +133,7 @@ module RuboCop
       # @return [String] Qualified cop name
       def qualified_cop_name(name, path, warn: true)
         badge = Badge.parse(name)
-        print_warning(name, path) if warn && department_missing?(badge, name)
+        print_department_missing_warning(name, path) if warn && department_missing?(badge, name)
         return name if registered?(badge)
 
         potential_badges = qualify_badge(badge)
@@ -148,12 +149,12 @@ module RuboCop
         !badge.qualified? && unqualified_cop_names.include?(name)
       end
 
-      def print_warning(name, path)
-        message = "#{path}: Warning: no department given for #{name}."
+      def print_department_missing_warning(name, path)
+        message = "no department given for #{name}."
         if path.end_with?('.rb')
           message += ' Run `rubocop -a --only Migration/DepartmentName` to fix.'
         end
-        warn message
+        emit_warning(path, message)
       end
 
       def unqualified_cop_names
@@ -274,6 +275,10 @@ module RuboCop
         attr_reader :global
       end
 
+      def warnings?(path)
+        @warnings[path]
+      end
+
       private
 
       def initialize_copy(reg)
@@ -297,16 +302,18 @@ module RuboCop
       end
 
       def resolve_badge(given_badge, real_badge, source_path, warn: true)
-        unless given_badge.match?(real_badge)
-          path = PathUtil.smart_path(source_path)
-
-          if warn
-            warn("#{path}: #{given_badge} has the wrong namespace - " \
-                 "replace it with #{given_badge.with_department(real_badge.department)}")
-          end
+        if warn && !given_badge.match?(real_badge)
+          emit_warning(source_path,
+                       "#{given_badge} has the wrong namespace - " \
+                       "replace it with #{given_badge.with_department(real_badge.department)}")
         end
 
         real_badge.to_s
+      end
+
+      def emit_warning(path, message)
+        Registry.global.warnings[path] = true
+        warn "#{PathUtil.smart_path(path)}: Warning: #{message}"
       end
 
       def registered?(badge)

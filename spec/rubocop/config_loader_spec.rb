@@ -1019,7 +1019,7 @@ RSpec.describe RuboCop::ConfigLoader do
           expect { described_class.configuration_from_file('.rubocop.yml') }
             .to output(
               a_string_including(
-                '.rubocop.yml: Custom/Loop has the ' \
+                '.rubocop.yml: Warning: Custom/Loop has the ' \
                 "wrong namespace - replace it with Lint/Loop\n"
               )
             ).to_stderr
