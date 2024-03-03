@@ -30,6 +30,23 @@ module RuboCop
       parser.dependencies.values.concat(parser.specs.flat_map(&:dependencies))
     end
 
+    # Returns the locked versions of gems from this lockfile.
+    # @param [Boolean] include_transitive_dependencies: When false, only direct dependencies
+    #   are returned, i.e. those listed explicitly in the `Gemfile`.
+    # @returns [Hash{String => Gem::Version}] The locked gem versions, keyed by the gems' names.
+    def gem_versions(include_transitive_dependencies: true)
+      return {} unless parser
+
+      all_gem_versions = parser.specs.to_h { |spec| [spec.name, spec.version] }
+
+      if include_transitive_dependencies
+        all_gem_versions
+      else
+        direct_dep_names = parser.dependencies.keys
+        all_gem_versions.slice(*direct_dep_names)
+      end
+    end
+
     # Whether this lockfile includes the named gem, directly or indirectly.
     # @param [String] name
     # @return [Boolean]
