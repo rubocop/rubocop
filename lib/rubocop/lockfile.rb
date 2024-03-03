@@ -5,14 +5,16 @@ module RuboCop
   # Does not actually resolve gems, just parses the lockfile.
   # @api private
   class Lockfile
-    # Gems that the bundle depends on
+    # Gems that the bundle directly depends on.
+    # @return [Array<Bundler::Dependency>, nil]
     def dependencies
       return [] unless parser
 
       parser.dependencies.values
     end
 
-    # All activated gems, including transitive dependencies
+    # All activated gems, including transitive dependencies.
+    # @return [Array<Bundler::Dependency>, nil]
     def gems
       return [] unless parser
 
@@ -21,12 +23,16 @@ module RuboCop
       parser.dependencies.values.concat(parser.specs.flat_map(&:dependencies))
     end
 
+    # Whether this lockfile includes the named gem, directly or indirectly.
+    # @param [String] name
+    # @return [Boolean]
     def includes_gem?(name)
       gems.any? { |gem| gem.name == name }
     end
 
     private
 
+    # @return [Bundler::LockfileParser, nil]
     def parser
       return unless defined?(Bundler) && Bundler.default_lockfile
       return @parser if defined?(@parser)
