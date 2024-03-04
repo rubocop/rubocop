@@ -212,7 +212,7 @@ module RuboCop
 
       # Parsed representation of code annotated with the `^^^ Message` style
       class AnnotatedSource
-        ANNOTATION_PATTERN = /\A\s*(\^+|\^{}) /.freeze
+        ANNOTATION_PATTERN = /\A\s*(\^+|\^{}) ?/.freeze
         ABBREV = "[...]\n"
 
         # @param annotated_source [String] string passed to the matchers
