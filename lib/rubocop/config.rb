@@ -62,7 +62,7 @@ module RuboCop
 
     def_delegators :@hash, :[], :[]=, :delete, :dig, :each, :key?, :keys, :each_key,
                    :fetch, :map, :merge, :replace, :to_h, :to_hash, :transform_values
-    def_delegators :@validator, :validate, :target_ruby_version, :parser_engine
+    def_delegators :@validator, :validate, :target_ruby_version
 
     def to_s
       @to_s ||= @hash.to_s
@@ -242,6 +242,10 @@ module RuboCop
         else
           Dir.pwd
         end
+    end
+
+    def parser_engine
+      @parser_engine ||= for_all_cops.fetch('ParserEngine', :parser_whitequark).to_sym
     end
 
     def target_rails_version

@@ -96,7 +96,9 @@ module RuboCop
       end
 
       def version_from_gemspec_file(file)
-        processed_source = ProcessedSource.from_file(file, DEFAULT_VERSION)
+        processed_source = ProcessedSource.from_file(
+          file, DEFAULT_VERSION, parser_engine: @config.parser_engine
+        )
         required_ruby_version(processed_source.ast).first
       end
 

@@ -63,10 +63,6 @@ module RuboCop
       target_ruby.version
     end
 
-    def parser_engine
-      for_all_cops.fetch('ParserEngine', :parser_whitequark).to_sym
-    end
-
     def validate_section_presence(name)
       return unless @config.key?(name) && @config[name].nil?
 
