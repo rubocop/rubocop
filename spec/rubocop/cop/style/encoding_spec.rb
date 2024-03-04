@@ -33,6 +33,15 @@ RSpec.describe RuboCop::Cop::Style::Encoding, :config do
     RUBY
   end
 
+  it 'registers an offense when magic encoding with mixed case present' do
+    expect_offense(<<~RUBY)
+      # Encoding: UTF-8
+      ^^^^^^^^^^^^^^^^^ Unnecessary utf-8 encoding comment.
+    RUBY
+
+    expect_correction('')
+  end
+
   it 'registers an offense when encoding present on 2nd line after shebang' do
     expect_offense(<<~RUBY)
       #!/usr/bin/env ruby

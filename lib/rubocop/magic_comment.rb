@@ -268,7 +268,7 @@ module RuboCop
 
       # Rewrite the comment without a given token type
       def without(type)
-        if @comment.match?(/\A#\s*#{self.class::KEYWORDS[type.to_sym]}/)
+        if @comment.match?(/\A#\s*#{self.class::KEYWORDS[type.to_sym]}/io)
           ''
         else
           @comment
