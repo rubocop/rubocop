@@ -22,13 +22,13 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
 
     it 'does not read .ruby-version' do
       expect(File).not_to receive(:file?).with('.ruby-version')
-      target_ruby.version
+      expect(target_ruby.version).to eq 2.5
     end
 
     it 'does not read Gemfile.lock or gems.locked' do
       expect(File).not_to receive(:file?).with('Gemfile')
       expect(File).not_to receive(:file?).with('gems.locked')
-      target_ruby.version
+      expect(target_ruby.version).to eq 2.5
     end
   end
 
@@ -203,7 +203,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           expect(described_class::ToolVersionsFile).not_to receive(:new)
           expect(described_class::BundlerLockFile).not_to receive(:new)
           expect(described_class::Default).not_to receive(:new)
-          target_ruby.version
+          expect(target_ruby.version).to eq 2.7
         end
       end
 
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           expect(described_class::ToolVersionsFile).to receive(:new).and_call_original
           expect(described_class::BundlerLockFile).to receive(:new).and_call_original
           expect(described_class::Default).to receive(:new).and_call_original
-          target_ruby.version
+          expect(target_ruby.version).to eq default_version
         end
       end
     end
@@ -291,7 +291,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         expect(File).not_to receive(:file?).with('.tool-versions')
         expect(File).not_to receive(:file?).with('Gemfile')
         expect(File).not_to receive(:file?).with('gems.locked')
-        target_ruby.version
+        expect(target_ruby.version).to eq default_version
       end
     end
 
@@ -320,7 +320,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         it 'does not read Gemfile.lock, gems.locked' do
           expect(File).not_to receive(:file?).with(/Gemfile/)
           expect(File).not_to receive(:file?).with(/gems\.locked/)
-          target_ruby.version
+          expect(target_ruby.version).to eq default_version
         end
       end
 
@@ -335,7 +335,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         it 'does not read Gemfile.lock, gems.locked' do
           expect(File).not_to receive(:file?).with(/Gemfile/)
           expect(File).not_to receive(:file?).with(/gems\.locked/)
-          target_ruby.version
+          expect(target_ruby.version).to eq default_version
         end
       end
     end
