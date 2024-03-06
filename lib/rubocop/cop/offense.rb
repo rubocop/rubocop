@@ -140,7 +140,8 @@ module RuboCop
       # @return [Parser::Source::Range]
       #   the range of the code that is highlighted
       def highlighted_area
-        Parser::Source::Range.new(source_line, column, column + column_length)
+        range = location.source_buffer.line_range(line)
+        range.with(begin_pos: column, end_pos: column + column_length)
       end
 
       # @api private
