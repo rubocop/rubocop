@@ -76,7 +76,9 @@ module RuboCop
         PATTERN
 
         def on_new_investigation
-          add_global_offense(MISSING_MSG) unless required_ruby_version?(processed_source.ast)
+          return if processed_source.ast && required_ruby_version?(processed_source.ast)
+
+          add_global_offense(MISSING_MSG)
         end
 
         def on_send(node)
