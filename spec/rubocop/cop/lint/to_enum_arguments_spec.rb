@@ -113,6 +113,14 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
     RUBY
   end
 
+  it 'does not register an offense when enumerator is created for another method in no arguments method definition' do
+    expect_no_offenses(<<~RUBY)
+      def m
+        return to_enum(:not_m) unless block_given?
+      end
+    RUBY
+  end
+
   it 'registers an offense when enumerator is created for `__method__` with missing arguments' do
     expect_offense(<<~RUBY)
       def m(x)
