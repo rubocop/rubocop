@@ -227,4 +227,10 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
       foo = /[a-[bc]]/
     RUBY
   end
+
+  it 'does not register an offense with invalid byte sequence in UTF-8' do
+    expect_no_offenses(<<~'RUBY')
+      foo = /[\–]/
+    RUBY
+  end
 end

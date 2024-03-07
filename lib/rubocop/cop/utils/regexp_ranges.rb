@@ -88,7 +88,7 @@ module RuboCop
         end
 
         def escaped_octal?(expr)
-          expr.text =~ /^\\[0-7]$/
+          expr.text.valid_encoding? && expr.text =~ /^\\[0-7]$/
         end
 
         def octal_digit?(char)
