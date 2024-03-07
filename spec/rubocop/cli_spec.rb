@@ -368,6 +368,42 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         $stdout.string.include?('F:  1:  7: Lint/Syntax: unexpected token tINTEGER')
       ).to be(true)
     end
+
+    it '`Lint/Syntax` must be enabled when disabled by directive comment' do
+      create_file('example.rb', <<~RUBY)
+        # rubocop:disable Lint/Syntax
+        1 /// 2
+      RUBY
+
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+      expect(
+        $stdout.string.include?('F:  2:  7: Lint/Syntax: unexpected token tINTEGER')
+      ).to be(true)
+    end
+
+    it '`Lint/Syntax` must be enabled when disabled by directive department comment' do
+      create_file('example.rb', <<~RUBY)
+        # rubocop:disable Lint
+        1 /// 2
+      RUBY
+
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+      expect(
+        $stdout.string.include?('F:  2:  7: Lint/Syntax: unexpected token tINTEGER')
+      ).to be(true)
+    end
+
+    it '`Lint/Syntax` must be enabled when disabled by directive all comment' do
+      create_file('example.rb', <<~RUBY)
+        # rubocop:disable all
+        1 /// 2
+      RUBY
+
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+      expect(
+        $stdout.string.include?('F:  2:  7: Lint/Syntax: unexpected token tINTEGER')
+      ).to be(true)
+    end
   end
 
   describe 'rubocop:disable comment' do
