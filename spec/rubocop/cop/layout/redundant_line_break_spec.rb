@@ -172,6 +172,44 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
+      it 'registers an offense when using `&&` before a backslash newline' do
+        expect_offense(<<~RUBY)
+          foo && \\
+          ^^^^^^^^ Redundant line break detected.
+            bar
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar
+        RUBY
+      end
+
+      it 'does not register an offense when using `&&` after a backslash newline' do
+        expect_no_offenses(<<~RUBY)
+          foo \\
+            && bar
+        RUBY
+      end
+
+      it 'registers an offense when using `||` before a backslash newline' do
+        expect_offense(<<~RUBY)
+          foo || \\
+          ^^^^^^^^ Redundant line break detected.
+            bar
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo || bar
+        RUBY
+      end
+
+      it 'does not register an offense when using `||` after a backslash newline' do
+        expect_no_offenses(<<~RUBY)
+          foo \\
+            || bar
+        RUBY
+      end
+
       context 'with LineLength Max 100' do
         let(:max_line_length) { 100 }
 

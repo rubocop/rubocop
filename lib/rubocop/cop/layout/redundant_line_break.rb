@@ -84,8 +84,14 @@ module RuboCop
         end
 
         def offense?(node)
-          node.multiline? && !too_long?(node) && suitable_as_single_line?(node) &&
-            !index_access_call_chained?(node) && !configured_to_not_be_inspected?(node)
+          return false if !node.multiline? || too_long?(node) || !suitable_as_single_line?(node)
+          return require_backslash?(node) if node.and_type? || node.or_type?
+
+          !index_access_call_chained?(node) && !configured_to_not_be_inspected?(node)
+        end
+
+        def require_backslash?(node)
+          processed_source.lines[node.loc.operator.line - 1].end_with?('\\')
         end
 
         def index_access_call_chained?(node)
