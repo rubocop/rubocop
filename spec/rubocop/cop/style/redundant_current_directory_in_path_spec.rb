@@ -63,4 +63,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantCurrentDirectoryInPath, :config do
       do_something
     RUBY
   end
+
+  it 'does not register an offense when a `require_relative` with no arguments is used' do
+    expect_no_offenses(<<~RUBY)
+      require_relative
+    RUBY
+  end
 end

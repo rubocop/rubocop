@@ -22,10 +22,11 @@ module RuboCop
 
         def on_send(node)
           return unless node.method?(:require_relative)
-          return unless node.first_argument.str_content&.start_with?(CURRENT_DIRECTORY_PATH)
-          return unless (index = node.first_argument.source.index(CURRENT_DIRECTORY_PATH))
+          return unless (first_argument = node.first_argument)
+          return unless first_argument.str_content&.start_with?(CURRENT_DIRECTORY_PATH)
+          return unless (index = first_argument.source.index(CURRENT_DIRECTORY_PATH))
 
-          begin_pos = node.first_argument.source_range.begin.begin_pos + index
+          begin_pos = first_argument.source_range.begin.begin_pos + index
           range = range_between(begin_pos, begin_pos + 2)
 
           add_offense(range) do |corrector|
