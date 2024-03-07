@@ -188,10 +188,25 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
 
       context 'when file reads the required_ruby_version from another file' do
         it 'uses the default target ruby version' do
-          content = <<~HEREDOC
+          content = <<~'HEREDOC'
             Gem::Specification.new do |s|
               s.name = 'test'
-              s.required_ruby_version = Gem::Requirement.new(">= \#{File.read('.ruby-version').rstrip}")
+              s.required_ruby_version = Gem::Requirement.new(">= #{File.read('.ruby-version').rstrip}")
+              s.licenses = ['MIT']
+            end
+          HEREDOC
+
+          create_file(gemspec_file_path, content)
+          expect(target_ruby.version).to eq default_version
+        end
+      end
+
+      context 'when file reads the required_ruby_version from another file in an array' do
+        it 'uses the default target ruby version' do
+          content = <<~'HEREDOC'
+            Gem::Specification.new do |s|
+              s.name = 'test'
+              s.required_ruby_version = [">= #{File.read('.ruby-version').rstrip}"]
               s.licenses = ['MIT']
             end
           HEREDOC
