@@ -193,4 +193,10 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       RUBY
     end
   end
+
+  it 'registers an offense when the file is empty' do
+    expect_offense(<<~RUBY, 'bar.gemspec')
+      ^{} `required_ruby_version` should be specified.
+    RUBY
+  end
 end
