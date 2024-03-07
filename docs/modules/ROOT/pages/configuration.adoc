@@ -647,11 +647,33 @@ AllCops:
 
 NOTE: When `ParserEngine: parser_prism` is specified, the values that can be assigned to `TargetRubyVersion` must be `3.3` or higher.
 
-Otherwise, RuboCop will then check your project for a series of files where
-the version may be specified already. The files that will be looked for are
+If a `TargetRubyVersion` is not specified in your config, then RuboCop will
+check your project for a series of other files where the Ruby version may be
+specified already. The files that will be checked are (in this order):
 `*.gemspec`, `.ruby-version`, `.tool-versions`, and `Gemfile.lock`.
-If Gemspec file has an array for `required_ruby_version`, the lowest version will be used.
-If none of the files are found a default version value will be used.
+
+If a target Ruby version cannot be found via any of the above sources, then a
+default target Ruby version will be used.
+
+=== Finding target Ruby in a `*.gemspec` file
+
+In order for RuboCop to parse a `*.gemspec` file's `required_ruby_version`, the
+Ruby version must be specified using one of these syntaxes:
+
+1. a string range, e.g. `'~> 3.2.0'` or `'>= 3.2.2'`
+2. an array of strings, e.g. `['>= 3.0.0', '< 3.4.0']`
+3. a `Gem::Requirement`, e.g. `Gem::Requirement.new('>= 3.1.2')`
+
+If a `*.gemspec` file specifies a range of supported Ruby versions via any of
+these means, then the greater of the following Ruby versions will be used:
+
+- the lowest Ruby version that is compatible with your specified range
+- the lowest version of Ruby that is still supported by your version of RuboCop
+
+If a `*.gemspec` file defines its `required_ruby_version` dynamically (e.g. by
+reading from a `.ruby-version` file, via an environment variable, referencing a
+constant or local variable, etc), then RuboCop will _not_ detect that Ruby
+version, and will instead try to find a target Ruby version elsewhere.
 
 == Setting the parser engine
 
