@@ -40,7 +40,7 @@ module RuboCop
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
         UNUSED_BLOCK_ARG_MSG = "#{MSG.chop} and remove the unused `%<unused_code>s` block argument."
-        ARRAY_CONVERTER_METHODS = %i[assoc flatten rassoc sort sort_by to_a].freeze
+        ARRAY_CONVERTER_METHODS = %i[assoc chunk flatten rassoc sort sort_by to_a].freeze
 
         # @!method kv_each(node)
         def_node_matcher :kv_each, <<~PATTERN

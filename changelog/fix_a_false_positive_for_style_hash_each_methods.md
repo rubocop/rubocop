@@ -1,0 +1,1 @@
+* [#12761](https://github.com/rubocop/rubocop/issues/12761): Fix a false positive for `Style/HashEachMethods` when the key block argument of `Enumerable#each` method is unused after `chunk`. ([@koic][])
