@@ -222,5 +222,177 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
         PATTERN
       RUBY
     end
+
+    it 'removes `@!scope class` YARD directive if it is not a class method' do
+      expect_offense(<<~RUBY, method: method)
+        # @!method foo?(node)
+        # @!scope class
+        #{method} :foo?, <<~PATTERN
+        ^{method}^^^^^^^^^^^^^^^^^^ Do not use the `@!scope class` YARD directive if it is not a class method.
+          (str)
+        PATTERN
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @!method foo?(node)
+        #{method} :foo?, <<~PATTERN
+          (str)
+        PATTERN
+      RUBY
+    end
+
+    it 'removes the receiver from the YARD directive if it is not a class method' do
+      expect_offense(<<~RUBY, method: method)
+        # @!method self.foo?(node)
+        #{method} :foo?, <<~PATTERN
+        ^{method}^^^^^^^^^^^^^^^^^^ `@!method` YARD directive has invalid method name, use `foo?` instead of `self.foo?`.
+          (str)
+        PATTERN
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @!method foo?(node)
+        #{method} :foo?, <<~PATTERN
+          (str)
+        PATTERN
+      RUBY
+    end
+
+    it 'removes the receiver from the YARD directive and the scope directive if it is not a class method' do
+      expect_offense(<<~RUBY, method: method)
+        # @!method self.foo?(node)
+        # @!scope class
+        #{method} :foo?, <<~PATTERN
+        ^{method}^^^^^^^^^^^^^^^^^^ Do not use the `@!scope class` YARD directive if it is not a class method.
+          (str)
+        PATTERN
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @!method foo?(node)
+        #{method} :foo?, <<~PATTERN
+          (str)
+        PATTERN
+      RUBY
+    end
+
+    it 'registers an offense when the directive has the wrong name without self' do
+      expect_offense(<<~RUBY, method: method)
+        # @!method self.bar?(node)
+        #{method} :foo?, <<~PATTERN
+        ^{method}^^^^^^^^^^^^^^^^^^ `@!method` YARD directive has invalid method name, use `foo?` instead of `self.bar?`.
+          (str)
+        PATTERN
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # @!method foo?(node)
+        #{method} :foo?, <<~PATTERN
+          (str)
+        PATTERN
+      RUBY
+    end
+
+    context 'when using class methods' do
+      it 'registers an offense when the directive is missing' do
+        expect_offense(<<~RUBY, method: method)
+          #{method} :"self.foo?", <<~PATTERN
+          ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
+            (str)
+          PATTERN
+
+          #{method} "self.bar?", <<~PATTERN
+          ^{method}^^^^^^^^^^^^^^^^^^^^^^^^ Precede `#{method}` with a `@!method` YARD directive.
+            (str)
+          PATTERN
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # @!method foo?(node)
+          # @!scope class
+          #{method} :"self.foo?", <<~PATTERN
+            (str)
+          PATTERN
+
+          # @!method bar?(node)
+          # @!scope class
+          #{method} "self.bar?", <<~PATTERN
+            (str)
+          PATTERN
+        RUBY
+      end
+
+      it 'registers an offense when the directive has the wrong name' do
+        expect_offense(<<~RUBY, method: method)
+          # @!method self.bar?(node)
+          #{method} :"self.foo?", <<~PATTERN
+          ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^ Follow the `@!method` YARD directive with `@!scope class` if it is a class method.
+            (str)
+          PATTERN
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # @!method foo?(node)
+          # @!scope class
+          #{method} :"self.foo?", <<~PATTERN
+            (str)
+          PATTERN
+        RUBY
+      end
+
+      it 'registers an offense when the method has the wrong name without self' do
+        expect_offense(<<~RUBY, method: method)
+          # @!method bar?(node)
+          #{method} :"self.foo?", <<~PATTERN
+          ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^ Follow the `@!method` YARD directive with `@!scope class` if it is a class method.
+            (str)
+          PATTERN
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # @!method foo?(node)
+          # @!scope class
+          #{method} :"self.foo?", <<~PATTERN
+            (str)
+          PATTERN
+        RUBY
+      end
+
+      it 'registers an offense when the method directive contains self and the scope directive is missing' do
+        expect_offense(<<~RUBY, method: method)
+          # @!method self.foo?(node)
+          #{method} 'self.foo?', <<~PATTERN
+          ^{method}^^^^^^^^^^^^^^^^^^^^^^^^ Follow the `@!method` YARD directive with `@!scope class` if it is a class method.
+            (str)
+          PATTERN
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # @!method foo?(node)
+          # @!scope class
+          #{method} 'self.foo?', <<~PATTERN
+            (str)
+          PATTERN
+        RUBY
+      end
+
+      it 'registers no offenses when it is correctly specified' do
+        expect_no_offenses(<<~RUBY)
+          # @!method foo?(node)
+          # @!scope class
+          #{method} :"self.foo?", <<~PATTERN
+            (str)
+          PATTERN
+        RUBY
+      end
+
+      it 'registers no offenses when the receiver is not self' do
+        expect_no_offenses(<<~RUBY)
+          #{method} :"x.foo?", <<~PATTERN
+            (str)
+          PATTERN
+        RUBY
+      end
+    end
   end
 end
