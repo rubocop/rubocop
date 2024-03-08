@@ -185,6 +185,12 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
+      it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `chunk`' do
+        expect_no_offenses(<<~RUBY)
+          foo.chunk { |i| i.do_something }.each { |unused_key, v| do_something(v) }
+        RUBY
+      end
+
       it 'does not register an offense when the key block argument of `Enumerable#each` method is unused after `flatten`' do
         expect_no_offenses(<<~RUBY)
           foo.flatten.each { |unused_key, v| do_something(v) }
