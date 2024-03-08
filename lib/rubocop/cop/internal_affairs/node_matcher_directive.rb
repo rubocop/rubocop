@@ -26,10 +26,18 @@ module RuboCop
         MSG = 'Precede `%<method>s` with a `@!method` YARD directive.'
         MSG_WRONG_NAME = '`@!method` YARD directive has invalid method name, ' \
                          'use `%<expected>s` instead of `%<actual>s`.'
+        MSG_MISSING_SCOPE_SELF = 'Follow the `@!method` YARD directive with ' \
+                                 '`@!scope class` if it is a class method.'
+        MSG_WRONG_SCOPE_SELF = 'Do not use the `@!scope class` YARD directive if it ' \
+                               'is not a class method.'
         MSG_TOO_MANY = 'Multiple `@!method` YARD directives found for this matcher.'
 
         RESTRICT_ON_SEND = %i[def_node_matcher def_node_search].to_set.freeze
-        REGEXP = /^\s*#\s*@!method\s+(?<method_name>[a-z0-9_]+[?!]?)(?:\((?<args>.*)\))?/.freeze
+        REGEXP_METHOD = /
+          ^\s*\#\s*
+          @!method\s+(?<receiver>self\.)?(?<method_name>[a-z0-9_]+[?!]?)(?:\((?<args>.*)\))?
+        /x.freeze
+        REGEXP_SCOPE = /^\s*\#\s*@!scope class/.freeze
 
         # @!method pattern_matcher?(node)
         def_node_matcher :pattern_matcher?, <<~PATTERN
@@ -40,14 +48,15 @@ module RuboCop
           return if node.arguments.none?
           return unless valid_method_name?(node)
 
-          actual_name = node.first_argument.value
+          actual_name = node.first_argument.value.to_s
+
+          # Ignore cases where the method has a receiver that isn't self
+          return if actual_name.include?('.') && !actual_name.start_with?('self.')
+
           directives = method_directives(node)
           return too_many_directives(node) if directives.size > 1
 
-          directive = directives.first
-          return if directive_correct?(directive, actual_name)
-
-          register_offense(node, directive, actual_name)
+          process_directive(node, actual_name, directives.first)
         end
 
         private
@@ -58,44 +67,108 @@ module RuboCop
 
         def method_directives(node)
           comments = processed_source.ast_with_comments[node]
-
-          comments.filter_map do |comment|
-            match = comment.text.match(REGEXP)
+          group_comments(comments).filter_map do |comment_method, comment_scope|
+            match = comment_method.text.match(REGEXP_METHOD)
             next unless match
 
-            { node: comment, method_name: match[:method_name], args: match[:args] }
+            {
+              node_method: comment_method,
+              node_scope: comment_scope,
+              method_name: match[:method_name],
+              args: match[:args],
+              receiver: match[:receiver],
+              has_scope_directive: comment_scope&.text&.match?(REGEXP_SCOPE)
+            }
           end
+        end
+
+        def group_comments(comments)
+          result = []
+          comments.each.with_index do |comment, index|
+            # Grab the scope directive if it is preceded by a method directive
+            if comment.text.include?('@!method')
+              result << if (next_comment = comments[index + 1])&.text&.include?('@!scope')
+                          [comment, next_comment]
+                        else
+                          [comment, nil]
+                        end
+            end
+          end
+          result
         end
 
         def too_many_directives(node)
           add_offense(node, message: MSG_TOO_MANY)
         end
 
-        def directive_correct?(directive, actual_name)
-          directive && directive[:method_name] == actual_name.to_s
+        def process_directive(node, actual_name, directive)
+          return unless (offense_type = directive_offense_type(directive, actual_name))
+
+          register_offense(offense_type, node, directive, actual_name)
         end
 
-        def register_offense(node, directive, actual_name)
-          message = formatted_message(directive, actual_name, node.method_name)
+        def directive_offense_type(directive, actual_name)
+          return :missing_directive unless directive
+
+          return :wrong_scope if wrong_scope(directive, actual_name)
+          return :no_scope if no_scope(directive, actual_name)
+
+          # The method directive being prefixed by 'self.' is always an offense.
+          # The matched method_name does not contain the receiver but the
+          # def_node_match method name may so it must be removed.
+          actual_name_without_receiver = actual_name.delete_prefix('self.')
+          if directive[:method_name] != actual_name_without_receiver || directive[:receiver]
+            :wrong_name
+          end
+        end
+
+        def wrong_scope(directive, actual_name)
+          !actual_name.start_with?('self.') && directive[:has_scope_directive]
+        end
+
+        def no_scope(directive, actual_name)
+          actual_name.start_with?('self.') && !directive[:has_scope_directive]
+        end
+
+        def register_offense(offense_type, node, directive, actual_name)
+          message = formatted_message(offense_type, directive, actual_name, node.method_name)
 
           add_offense(node, message: message) do |corrector|
-            if directive
-              correct_directive(corrector, directive, actual_name)
-            else
-              insert_directive(corrector, node, actual_name)
+            case offense_type
+            when :wrong_name
+              correct_method_directive(corrector, directive, actual_name)
+            when :wrong_scope
+              remove_scope_directive(corrector, directive)
+            when :no_scope
+              insert_scope_directive(corrector, directive[:node_method])
+            when :missing_directive
+              insert_method_directive(corrector, node, actual_name)
             end
           end
         end
 
-        def formatted_message(directive, actual_name, method_name)
-          if directive
-            format(MSG_WRONG_NAME, expected: actual_name, actual: directive[:method_name])
-          else
+        # rubocop:disable Metrics/MethodLength
+        def formatted_message(offense_type, directive, actual_name, method_name)
+          case offense_type
+          when :wrong_name
+            # Add the receiver to the name when showing an offense
+            current_name = if directive[:receiver]
+                             directive[:receiver] + directive[:method_name]
+                           else
+                             directive[:method_name]
+                           end
+            format(MSG_WRONG_NAME, expected: actual_name, actual: current_name)
+          when :wrong_scope
+            MSG_WRONG_SCOPE_SELF
+          when :no_scope
+            MSG_MISSING_SCOPE_SELF
+          when :missing_directive
             format(MSG, method: method_name)
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
-        def insert_directive(corrector, node, actual_name)
+        def insert_method_directive(corrector, node, actual_name)
           # If the pattern matcher uses arguments (`%1`, `%2`, etc.), include them in the directive
           arguments = pattern_arguments(node.arguments[1].source)
 
@@ -105,6 +178,14 @@ module RuboCop
           directive = "\n#{directive}" if add_newline?(node)
 
           corrector.insert_before(range, directive)
+        end
+
+        def insert_scope_directive(corrector, node)
+          range = range_with_surrounding_space(node.source_range, side: :left, newlines: false)
+          indentation = range.source.match(/^\s*/)[0]
+          directive = "\n#{indentation}# @!scope class"
+
+          corrector.insert_after(node, directive)
         end
 
         def pattern_arguments(pattern)
@@ -134,12 +215,21 @@ module RuboCop
           end
         end
 
-        def correct_directive(corrector, directive, actual_name)
-          correct = "@!method #{actual_name}"
-          regexp = /@!method\s+#{Regexp.escape(directive[:method_name])}/
+        def correct_method_directive(corrector, directive, actual_name)
+          correct = "@!method #{actual_name.delete_prefix('self.')}"
+          current_name = (directive[:receiver] || '') + directive[:method_name]
+          regexp = /@!method\s+#{Regexp.escape(current_name)}/
 
-          replacement = directive[:node].text.gsub(regexp, correct)
-          corrector.replace(directive[:node], replacement)
+          replacement = directive[:node_method].text.gsub(regexp, correct)
+          corrector.replace(directive[:node_method], replacement)
+        end
+
+        def remove_scope_directive(corrector, directive)
+          range = range_by_whole_lines(
+            directive[:node_scope].source_range,
+            include_final_newline: true
+          )
+          corrector.remove(range)
         end
       end
     end
