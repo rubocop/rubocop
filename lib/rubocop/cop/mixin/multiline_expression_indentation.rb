@@ -189,7 +189,7 @@ module RuboCop
         case node.type
         when :casgn   then _scope, _lhs, rhs = *node
         when :op_asgn then _lhs, _op, rhs = *node
-        when :send    then rhs = node.last_argument
+        when :send, :csend then rhs = node.last_argument
         else               _lhs, rhs = *node
         end
         rhs

@@ -355,6 +355,19 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
             )
         RUBY
       end
+
+      it "doesn't crash on multiline method calls with safe navigation and assignment" do
+        expect_offense(<<~RUBY)
+          MyClass.
+          foo&.bar = 'baz'
+          ^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          MyClass.
+            foo&.bar = 'baz'
+        RUBY
+      end
     end
   end
 
