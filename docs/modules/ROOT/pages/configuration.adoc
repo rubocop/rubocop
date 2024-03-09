@@ -645,7 +645,8 @@ AllCops:
   TargetRubyVersion: 2.5
 ----
 
-NOTE: When `ParserEngine: parser_prism` is specified, the values that can be assigned to `TargetRubyVersion` must be `3.3` or higher.
+NOTE: When `ParserEngine: parser_prism` is specified, `TargetRubyVersion` must
+be set to `3.3` or higher.
 
 If a `TargetRubyVersion` is not specified in your config, then RuboCop will
 check your project for a series of other files where the Ruby version may be
@@ -677,9 +678,11 @@ version, and will instead try to find a target Ruby version elsewhere.
 
 == Setting the parser engine
 
-NOTE: The parser engine configuration was introduced in RuboCop 1.62. This experimental feature has been under consideration for a while.
+NOTE: The parser engine configuration was introduced in RuboCop 1.62. This
+experimental feature has been under consideration for a while.
 
-RuboCop allows switching the backend parser by specifying either `parser_whitequark` or `parser_prism` for the `ParserEngine`.
+RuboCop allows switching the backend parser by specifying either
+`parser_whitequark` or `parser_prism` as the value for the `ParserEngine`.
 
 Here are the parsers used as backends for each value:
 
@@ -707,17 +710,20 @@ AllCops:
 
 `parser_prism` tends to perform analysis faster than `parser_whitequark`.
 
-CAUTION: Since the use of Prism is experimental, it is not included in RuboCop's runtime dependencies.
-If running through Bundler, please first add `gem 'prism'` to your Gemfile:
+IMPORTANT: Since the support for Prism is experimental, it is not included in
+RuboCop's runtime dependencies.  If running RuboCop through Bundler, please add
+`gem 'prism'` to your `Gemfile`:
 
 [source,ruby]
 ----
 gem 'prism'
 ----
 
-There are some incompatibilities with `parser_whitequark`, making it still considered experimental.
-For known issues, please refer to the Prism issues:
-https://github.com/ruby/prism/issues?q=is%3Aissue+is%3Aopen+label%3Arubocop
+There are some incompatibilities with `parser_whitequark` in `parser_prism`,
+which is the main reason why the support for it is considered experimental.
+We're working with Prism's team to address those.  You can track the outstanding
+known issues in Prism that affect RuboCop
+https://github.com/ruby/prism/issues?q=is%3Aissue+is%3Aopen+label%3Arubocop[here].
 
 == Automatically Generated Configuration
 
