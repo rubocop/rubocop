@@ -118,6 +118,20 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     RUBY
   end
 
+  it 'registers an offense when the file is comments only' do
+    expect_offense(<<~RUBY)
+      # frozen_string_literal: true
+      # Hello!
+      ^ Add an empty line after magic comments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # frozen_string_literal: true
+
+      # Hello!
+    RUBY
+  end
+
   it 'accepts code that separates the comment from the code with a newline' do
     expect_no_offenses(<<~RUBY)
       # frozen_string_literal: true
