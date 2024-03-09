@@ -38,6 +38,7 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/AbcSize
         def autocorrect(corrector, node, begin_of_arguments)
           arguments = node.arguments
           joined_arguments = arguments.map(&:source).join(', ')
@@ -49,9 +50,17 @@ module RuboCop
             corrector.remove(range_by_whole_lines(arguments.loc.end, include_final_newline: true))
           end
 
-          corrector.remove(arguments_range(node))
+          arguments_range = arguments_range(node)
+          # If the method name isn't on the same line as def, move it directly after def
+          if arguments_range.first_line != opening_line(node)
+            corrector.remove(node.loc.name)
+            corrector.insert_after(node.loc.keyword, " #{node.loc.name.source}")
+          end
+
+          corrector.remove(arguments_range)
           corrector.insert_after(begin_of_arguments, joined_arguments)
         end
+        # rubocop:enable Metrics/AbcSize
 
         def last_line_source_of_arguments(arguments)
           processed_source[arguments.last_line - 1].strip
