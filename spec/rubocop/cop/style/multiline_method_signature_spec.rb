@@ -47,8 +47,29 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
 
         expect_correction(<<~RUBY)
+          def foo
+          (bar)
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when closing paren is on the following line' \
+         'and multiple line breaks after `def` keyword' do
+        expect_offense(<<~RUBY)
           def
-          foo(bar)
+          ^^^ Avoid multi-line method signatures.
+
+
+          foo(bar
+              )
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+
+
+          (bar)
           end
         RUBY
       end
