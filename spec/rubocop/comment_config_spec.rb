@@ -140,13 +140,11 @@ RSpec.describe RuboCop::CommentConfig do
       expect(loop_disabled_lines.include?(20)).to be(false)
     end
 
-    it 'supports disabling all cops except Lint/RedundantCopDisableDirective with keyword all' do
+    it 'supports disabling all cops except Lint/RedundantCopDisableDirective and Lint/Syntax with keyword all' do
       expected_part = (7..8).to_a
 
-      cops = RuboCop::Cop::Registry.all.reject do |klass|
-        klass == RuboCop::Cop::Lint::RedundantCopDisableDirective
-      end
-
+      excluded = [RuboCop::Cop::Lint::RedundantCopDisableDirective, RuboCop::Cop::Lint::Syntax]
+      cops = RuboCop::Cop::Registry.all - excluded
       cops.each do |cop|
         disabled_lines = disabled_lines_of_cop(cop)
         expect(disabled_lines & expected_part).to eq(expected_part)
