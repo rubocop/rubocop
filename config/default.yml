@@ -2151,6 +2151,11 @@ Lint/PercentSymbolArray:
   Enabled: true
   VersionAdded: '0.41'
 
+Lint/PossibleAssignmentToNil:
+  Description: 'Checks if the left hand side of an assignment can evaluate to nil.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/RaiseException:
   Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
   StyleGuide: '#raise-exception'
