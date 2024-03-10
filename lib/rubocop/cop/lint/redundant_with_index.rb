@@ -34,6 +34,7 @@ module RuboCop
         MSG_WITH_INDEX = 'Remove redundant `with_index`.'
 
         def on_block(node)
+          return unless node.receiver
           return unless (send = redundant_with_index?(node))
 
           range = with_index_range(send)
