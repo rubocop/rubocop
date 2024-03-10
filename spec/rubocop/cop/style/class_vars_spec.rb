@@ -28,4 +28,8 @@ RSpec.describe RuboCop::Cop::Style::ClassVars, :config do
   it 'does not register an offense for class variable usage' do
     expect_no_offenses('@@test.test(20)')
   end
+
+  it 'registers no offense for class variable set without arguments' do
+    expect_no_offenses('class_variable_set')
+  end
 end
