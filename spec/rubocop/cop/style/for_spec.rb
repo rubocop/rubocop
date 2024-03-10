@@ -488,6 +488,14 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'registers no offense when there is no receiver' do
+      expect_no_offenses(<<~RUBY)
+        each do |n|
+          puts n
+        end
+      RUBY
+    end
+
     it 'registers multiple offenses' do
       expect_offense(<<~RUBY)
         for n in [1, 2, 3] do
