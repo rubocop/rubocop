@@ -124,6 +124,62 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
     end
   end
 
+  context 'with the DebuggerRequires configuration' do
+    let(:cop_config) do
+      {
+        'DebuggerRequires' => {
+          'my_debugger' => %w[my_debugger],
+          'other_debugger' => %w[other_debugger/start]
+        }
+      }
+    end
+
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        require 'my_debugger'
+        ^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `require 'my_debugger'`.
+      RUBY
+    end
+
+    it 'registers no offense for a require without arguments' do
+      expect_no_offenses('require')
+    end
+
+    it 'registers no offense for a require with multiple arguments' do
+      expect_no_offenses('require "my_debugger", "something_else"')
+    end
+
+    it 'registers no offense for a require with non-string arguments' do
+      expect_no_offenses('require my_debugger')
+    end
+
+    context 'when a require group is disabled with nil' do
+      before { cop_config['DebuggerRequires']['my_debugger'] = nil }
+
+      it 'does not register an offense for a require call' do
+        expect_no_offenses('require "my_debugger"')
+      end
+
+      it 'does register an offense for another group' do
+        expect_offense(<<~RUBY)
+          require 'other_debugger/start'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `require 'other_debugger/start'`.
+        RUBY
+      end
+    end
+
+    context 'when the config is specified as an array' do
+      let(:cop_config) { { 'DebuggerRequires' => %w[start_debugging] } }
+
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          require 'start_debugging'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `require 'start_debugging'`.
+        RUBY
+      end
+    end
+  end
+
   context 'built-in methods' do
     it 'registers an offense for a irb binding call' do
       expect_offense(<<~RUBY)
