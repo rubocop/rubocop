@@ -116,8 +116,7 @@ module RuboCop
           # The method directive being prefixed by 'self.' is always an offense.
           # The matched method_name does not contain the receiver but the
           # def_node_match method name may so it must be removed.
-          actual_name_without_receiver = actual_name.delete_prefix('self.')
-          if directive[:method_name] != actual_name_without_receiver || directive[:receiver]
+          if directive[:method_name] != remove_receiver(actual_name) || directive[:receiver]
             :wrong_name
           end
         end
@@ -157,7 +156,8 @@ module RuboCop
                            else
                              directive[:method_name]
                            end
-            format(MSG_WRONG_NAME, expected: actual_name, actual: current_name)
+            # The correct name will never include a receiver, remove it
+            format(MSG_WRONG_NAME, expected: remove_receiver(actual_name), actual: current_name)
           when :wrong_scope
             MSG_WRONG_SCOPE_SELF
           when :no_scope
@@ -167,6 +167,10 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/MethodLength
+
+        def remove_receiver(current)
+          current.delete_prefix('self.')
+        end
 
         def insert_method_directive(corrector, node, actual_name)
           # If the pattern matcher uses arguments (`%1`, `%2`, etc.), include them in the directive
@@ -216,7 +220,7 @@ module RuboCop
         end
 
         def correct_method_directive(corrector, directive, actual_name)
-          correct = "@!method #{actual_name.delete_prefix('self.')}"
+          correct = "@!method #{remove_receiver(actual_name)}"
           current_name = (directive[:receiver] || '') + directive[:method_name]
           regexp = /@!method\s+#{Regexp.escape(current_name)}/
 
