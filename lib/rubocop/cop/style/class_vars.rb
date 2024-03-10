@@ -54,9 +54,9 @@ module RuboCop
         end
 
         def on_send(node)
-          add_offense(
-            node.first_argument, message: format(MSG, class_var: node.first_argument.source)
-          )
+          return unless (first_argument = node.first_argument)
+
+          add_offense(first_argument, message: format(MSG, class_var: first_argument.source))
         end
       end
     end
