@@ -44,6 +44,8 @@ module RuboCop
         def_node_matcher :nil_check?, '(send _ :nil?)'
 
         def on_send(node)
+          return unless node.receiver
+
           style_check?(node) do
             add_offense(node.loc.selector) do |corrector|
               new_code = if prefer_comparison?
