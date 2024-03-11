@@ -393,6 +393,25 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
           PATTERN
         RUBY
       end
+
+      it 'gives the correct message for "self." prefix on @!method when @!scope is correctly "class"' do
+        expect_offense(<<~RUBY, method: method)
+          # @!method self.foo?(node)
+          # @!scope class
+          #{method} 'self.foo?', <<~PATTERN
+          ^{method}^^^^^^^^^^^^^^^^^^^^^^^^ `@!method` YARD directive has invalid method name, use `foo?` instead of `self.foo?`.
+            (str)
+          PATTERN
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # @!method foo?(node)
+          # @!scope class
+          #{method} 'self.foo?', <<~PATTERN
+            (str)
+          PATTERN
+        RUBY
+      end
     end
   end
 end
