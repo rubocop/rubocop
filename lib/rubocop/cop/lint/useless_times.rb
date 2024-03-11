@@ -64,7 +64,7 @@ module RuboCop
             remove_node(corrector, node)
           elsif !proc_name.empty?
             autocorrect_block_pass(corrector, node, proc_name)
-          else
+          elsif node.block_type?
             autocorrect_block(corrector, node)
           end
         end

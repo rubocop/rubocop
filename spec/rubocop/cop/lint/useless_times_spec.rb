@@ -292,6 +292,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
 
         expect_no_corrections
       end
+
+      it 'registers no offense for 1.times without block' do
+        expect_offense(<<~RUBY)
+          1.times
+          ^^^^^^^ Useless call to `1.times` detected.
+        RUBY
+
+        expect_no_corrections
+      end
     end
   end
 end
