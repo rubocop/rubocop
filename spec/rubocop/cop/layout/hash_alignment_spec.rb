@@ -1319,11 +1319,11 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     end
   end
 
-  it 'register no offense for superclass call without args' do
+  it 'registers no offense for superclass call without args' do
     expect_no_offenses('super')
   end
 
-  it 'register no offense for yield without args' do
+  it 'registers no offense for yield without args' do
     expect_no_offenses('yield')
   end
 

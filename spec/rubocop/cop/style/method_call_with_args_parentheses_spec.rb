@@ -150,15 +150,15 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
-    it 'register no offense for superclass call without args' do
+    it 'registers no offense for superclass call without args' do
       expect_no_offenses('super')
     end
 
-    it 'register no offense for yield without args' do
+    it 'registers no offense for yield without args' do
       expect_no_offenses('yield')
     end
 
-    it 'register no offense for superclass call with parens' do
+    it 'registers no offense for superclass call with parens' do
       expect_no_offenses('super(a)')
     end
 
