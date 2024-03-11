@@ -169,12 +169,13 @@ module RuboCop
 
         return if @last_corrector.empty?
 
-        # In order to print a nice diff, e.g. what source got corrected to,
-        # we need to run the actual corrections
-
+        # This is just here for a pretty diff if the source actually got changed
         new_source = @last_corrector.rewrite
-
         expect(new_source).to eq(@processed_source.buffer.source)
+
+        # There is an infinite loop if a corrector is present that did not make
+        # any changes. It will cause the same offense/correction on the next loop.
+        raise RuboCop::Runner::InfiniteCorrectionLoop.new(@processed_source.path, [@offenses])
       end
 
       def expect_no_offenses(source, file = nil)
