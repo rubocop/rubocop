@@ -86,7 +86,7 @@ module RuboCop
         def range(node)
           return node.selector unless node.method?(:each)
 
-          if node.parent.call_type?
+          if node.parent&.call_type?
             node.selector.join(node.parent.loc.dot)
           else
             node.loc.dot.join(node.selector)

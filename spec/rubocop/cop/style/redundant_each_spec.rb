@@ -115,6 +115,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
     RUBY
   end
 
+  it 'registers an offense when using `reverse_each.each` without a block' do
+    expect_offense(<<~RUBY)
+      context.reverse_each.each
+                          ^^^^^ Remove redundant `each`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      context.reverse_each
+    RUBY
+  end
+
   it 'registers an offense when using `reverse_each&.each`' do
     expect_offense(<<~RUBY)
       context.reverse_each&.each { |i| do_something(i) }
