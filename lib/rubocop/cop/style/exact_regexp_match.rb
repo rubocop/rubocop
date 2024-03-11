@@ -38,12 +38,13 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless (receiver = node.receiver)
           return unless (regexp = exact_regexp_match(node))
 
           parsed_regexp = Regexp::Parser.parse(regexp)
           return unless exact_match_pattern?(parsed_regexp)
 
-          prefer = "#{node.receiver.source} #{new_method(node)} '#{parsed_regexp[1].text}'"
+          prefer = "#{receiver.source} #{new_method(node)} '#{parsed_regexp[1].text}'"
 
           add_offense(node, message: format(MSG, prefer: prefer)) do |corrector|
             corrector.replace(node, prefer)
