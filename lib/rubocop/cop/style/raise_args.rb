@@ -80,7 +80,7 @@ module RuboCop
 
         def correction_exploded_to_compact(node)
           exception_node, *message_nodes = *node.arguments
-          return node.source if message_nodes.size > 1
+          return if message_nodes.size > 1
 
           argument = message_nodes.first.source
           exception_class = exception_node.receiver&.source || exception_node.source
