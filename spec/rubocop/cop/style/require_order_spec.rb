@@ -216,7 +216,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when conditional with multiple unsorted `require` is used between `require`' do
-    it 'registers no offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         require 'd'
         if foo

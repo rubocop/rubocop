@@ -45,6 +45,7 @@ module RuboCop
         EXPECT_OFFENSE_DESCRIPTION_MAPPING = {
           /\A(does not|doesn't) (register|find|flag|report)/ => 'registers',
           /\A(does not|doesn't) add (a|an|any )?offense/ => 'registers an offense',
+          /\Aregisters no offense/ => 'registers an offense',
           /\Aaccepts\b/ => 'registers'
         }.freeze
 
