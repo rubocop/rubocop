@@ -45,6 +45,10 @@ RSpec.describe RuboCop::Cop::Style::ExactRegexpMatch, :config do
     RUBY
   end
 
+  it 'does not register an offense when using match without receiver' do
+    expect_no_offenses('match(/\\Astring\\z/)')
+  end
+
   it 'registers an offense when using `string.match?(/\Astring\z/)`' do
     expect_offense(<<~'RUBY')
       string.match?(/\Astring\z/)
