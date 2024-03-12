@@ -142,6 +142,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
           'boogers'
       RUBY
     end
+
+    it 'autocorrects safely for multiline strings containing double quotes' do
+      expect_offense(<<~RUBY)
+        %Q(
+        ^^^ Use `%Q` only for strings that contain both single [...]
+          Quoth the Raven "Nevermore."
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        '
+          Quoth the Raven "Nevermore."
+        '
+      RUBY
+    end
   end
 
   it 'accepts a heredoc string that contains %q' do

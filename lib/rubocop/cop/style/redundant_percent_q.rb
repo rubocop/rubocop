@@ -53,7 +53,7 @@ module RuboCop
           return if interpolated_quotes?(node) || allowed_percent_q?(node)
 
           add_offense(node) do |corrector|
-            delimiter = /^%Q[^"]+$|'/.match?(node.source) ? QUOTE : SINGLE_QUOTE
+            delimiter = /\A%Q[^"]+\z|'/.match?(node.source) ? QUOTE : SINGLE_QUOTE
 
             corrector.replace(node.loc.begin, delimiter)
             corrector.replace(node.loc.end, delimiter)
