@@ -142,6 +142,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
           'boogers'
       RUBY
     end
+
+    it 'autocorrects safely for strings containing Ruby 1.6 hash syntax' do
+      expect_offense(<<~'RUBY')
+        %Q(
+        ^^^ Use `%Q` only for strings that contain both single [...]
+          { "foo" => "bar" }
+        )
+          'boogers'
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        '
+          { "foo" => "bar" }
+        '
+          'boogers'
+      RUBY
+    end
   end
 
   it 'accepts a heredoc string that contains %q' do
