@@ -140,6 +140,7 @@ module RuboCop
 
         def autocorrect_hash_rockets(corrector, parent)
           parent.children.each do |pair_node|
+            next unless pair_node.type == :pair
             key = pair_node.key.value
             value = pair_node.value.source
             corrector.replace(pair_node, "#{key}: #{value}")
