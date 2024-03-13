@@ -304,5 +304,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
         do_something(foo: bar, baz: qux)
       RUBY
     end
+
+    it 'registers an offense when using double splat in double splat hash braces' do
+      expect_offense(<<~RUBY)
+      do_something(**{:foo => bar, **options})
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+    RUBY
+
+      expect_correction(<<~RUBY)
+      do_something(foo: bar, **options)
+    RUBY
+    end
   end
 end
