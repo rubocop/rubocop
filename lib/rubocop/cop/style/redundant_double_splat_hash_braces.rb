@@ -27,7 +27,7 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_hash(node)
-          return if node.pairs.empty? || node.pairs.any?(&:hash_rocket?)
+          return if node.pairs.empty? || allowed_hash_rocket(node)
           return unless (parent = node.parent)
           return unless parent.call_type? || parent.kwsplat_type?
           return unless mergeable?(parent)
@@ -53,6 +53,7 @@ module RuboCop
         end
 
         def autocorrect(corrector, node, kwsplat)
+          autocorrect_hash_rockets(corrector, node) unless exempt_hash_rocket_pairs
           corrector.remove(kwsplat.loc.operator)
           corrector.remove(opening_brace(node))
           corrector.remove(closing_brace(node))
@@ -126,6 +127,23 @@ module RuboCop
           return true unless (parent = node.parent)
 
           mergeable?(parent)
+        end
+
+        def exempt_hash_rocket_pairs
+          return true if cop_config['ExemptHashRocketPairs'].nil?
+          cop_config['ExemptHashRocketPairs']
+        end
+
+        def allowed_hash_rocket(node)
+          exempt_hash_rocket_pairs && node.pairs.any?(&:hash_rocket?)
+        end
+
+        def autocorrect_hash_rockets(corrector, parent)
+          parent.children.each do |pair_node|
+            key_without_leading_colon = pair_node.key.source.delete_prefix(':')
+            value = pair_node.value.source
+            corrector.replace(pair_node, "#{key_without_leading_colon}: #{value}")
+          end
         end
       end
     end
