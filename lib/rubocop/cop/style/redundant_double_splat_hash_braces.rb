@@ -114,7 +114,9 @@ module RuboCop
 
           node.arguments.map do |arg|
             if arg.hash_type?
-              arg.source
+              arg.pairs.map do |pair|
+                convert_hash_rocket_to_json_style(pair)
+              end.join(' ')
             else
               "**#{arg.source}"
             end
@@ -135,16 +137,20 @@ module RuboCop
         end
 
         def allowed_hash_rocket(node)
-          exempt_hash_rocket_pairs && node.pairs.any?(&:hash_rocket?)
+          return true if exempt_hash_rocket_pairs && node.pairs.any?(&:hash_rocket?)
+          node.pairs.map(&:key).any? { |key| !key.literal? }
         end
 
         def autocorrect_hash_rockets(corrector, parent)
           parent.children.each do |pair_node|
             next unless pair_node.type == :pair
-            key = pair_node.key.value
-            value = pair_node.value.source
-            corrector.replace(pair_node, "#{key}: #{value}")
+            corrector.replace(pair_node, convert_hash_rocket_to_json_style(pair_node))
           end
+        end
+
+        def convert_hash_rocket_to_json_style(pair_node)
+          key = pair_node.key.literal? ? pair_node.key.value : pair_node.key.source
+          "#{key}: #{pair_node.value.source}"
         end
       end
     end
