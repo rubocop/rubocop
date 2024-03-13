@@ -140,9 +140,9 @@ module RuboCop
 
         def autocorrect_hash_rockets(corrector, parent)
           parent.children.each do |pair_node|
-            key_without_leading_colon = pair_node.key.source.delete_prefix(':')
+            key = pair_node.key.value
             value = pair_node.value.source
-            corrector.replace(pair_node, "#{key_without_leading_colon}: #{value}")
+            corrector.replace(pair_node, "#{key}: #{value}")
           end
         end
       end

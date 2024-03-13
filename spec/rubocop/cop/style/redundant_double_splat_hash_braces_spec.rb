@@ -161,6 +161,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when using mixed hash double splat hash braces arguments' do
+      expect_offense(<<~RUBY)
+        block do
+          do_something(**{:foo => bar, baz: qux})
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        block do
+          do_something(foo: bar, baz: qux)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using hash rocket double splat hash braces arguments when key is a string' do
+      expect_offense(<<~RUBY)
+        block do
+          do_something(**{'foo' => bar, "baz" => qux})
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant double splat and braces, use keyword arguments directly.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        block do
+          do_something(foo: bar, baz: qux)
+        end
+      RUBY
+    end
   end
 
   it 'does not register an offense when using keyword arguments' do
