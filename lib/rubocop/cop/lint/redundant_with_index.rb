@@ -33,8 +33,10 @@ module RuboCop
         MSG_EACH_WITH_INDEX = 'Use `each` instead of `each_with_index`.'
         MSG_WITH_INDEX = 'Remove redundant `with_index`.'
 
+        # rubocop:disable Metrics/AbcSize
         def on_block(node)
           return unless node.receiver
+          return if node.method?(:with_index) && !node.receiver.receiver
           return unless (send = redundant_with_index?(node))
 
           range = with_index_range(send)
@@ -48,6 +50,7 @@ module RuboCop
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         alias on_numblock on_block
 

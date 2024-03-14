@@ -101,6 +101,10 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
       expect_no_offenses('ary.each_with_index { _1; _2 }')
     end
 
+    it 'accepts with_index with receiver and a block' do
+      expect_no_offenses('ary.with_index { |v| v }')
+    end
+
     it 'accepts with_index without receiver with a block' do
       expect_no_offenses('with_index { |v| v }')
     end
