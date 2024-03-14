@@ -185,6 +185,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
 
   it 'does not register an offense when using hash rocket double splat hash braces arguments' do
     expect_no_offenses(<<~RUBY)
+      do_something(**{:foo => bar})
+    RUBY
+  end
+
+  it 'does not register an offense when using hash rocket double splat hash braces arguments with send node' do
+    expect_no_offenses(<<~RUBY)
       do_something(**{foo => bar})
     RUBY
   end

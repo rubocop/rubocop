@@ -4952,7 +4952,7 @@ Style/RedundantDoubleSplatHashBraces:
   Description: 'Checks for redundant uses of double splat hash braces.'
   Enabled: pending
   VersionAdded: '1.41'
-  ExemptHashRocketPairs: false
+  ExemptHashRocketPairs: true
 
 Style/RedundantEach:
   Description: 'Checks for redundant `each`.'
