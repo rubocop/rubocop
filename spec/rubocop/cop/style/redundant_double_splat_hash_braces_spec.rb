@@ -244,9 +244,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
   end
 
   context 'when exempt hash rocket pairs is false' do
-    let(:cop_config) {
-      { 'ExemptHashRocketPairs' => false }
-    }
+    let(:cop_config) { { 'ExemptHashRocketPairs' => false } }
 
     it 'register an offense when using hash rocket double splat hash braces arguments' do
       expect_offense(<<~RUBY)
