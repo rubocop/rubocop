@@ -25,7 +25,7 @@ module RuboCop
         MSG = 'Remove the redundant double splat and braces, use keyword arguments directly.'
         MERGE_METHODS = %i[merge merge!].freeze
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_hash(node)
           return if node.pairs.empty? || allowed_hash_rocket(node)
           return unless (parent = node.parent)
@@ -38,7 +38,7 @@ module RuboCop
             autocorrect(corrector, node, kwsplat)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
