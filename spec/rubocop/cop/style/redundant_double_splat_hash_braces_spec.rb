@@ -485,6 +485,5 @@ RSpec.describe RuboCop::Cop::Style::RedundantDoubleSplatHashBraces, :config do
         do_something(**(foo ? {:bar => bar} : baz))
       RUBY
     end
-
   end
 end
