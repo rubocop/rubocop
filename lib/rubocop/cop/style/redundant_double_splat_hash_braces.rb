@@ -132,7 +132,6 @@ module RuboCop
         end
 
         def exempt_hash_rocket_pairs
-          return true if cop_config['ExemptHashRocketPairs'].nil?
           cop_config['ExemptHashRocketPairs']
         end
 
