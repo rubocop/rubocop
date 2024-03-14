@@ -137,12 +137,14 @@ module RuboCop
 
         def allowed_hash_rocket(node)
           return true if exempt_hash_rocket_pairs && node.pairs.any?(&:hash_rocket?)
+
           node.pairs.map(&:key).any? { |key| !key.literal? }
         end
 
         def autocorrect_hash_rockets(corrector, parent)
           parent.children.each do |pair_node|
-            next unless pair_node.type == :pair
+            next unless pair_node.pair_type?
+
             corrector.replace(pair_node, convert_hash_rocket_to_json_style(pair_node))
           end
         end
