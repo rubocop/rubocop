@@ -155,6 +155,8 @@ module RuboCop
 
         def check_line(node, code)
           line_node = node.last_argument
+          return if line_node.variable? || (line_node.send_type? && !line_node.method?(:+))
+
           line_diff = line_difference(line_node, code)
           if line_diff.zero?
             add_offense_for_same_line(node, line_node)
