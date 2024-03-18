@@ -315,4 +315,22 @@ RSpec.describe RuboCop::Cop::Style::EvalWithLocation, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when using eval with a line number from a method call' do
+    expect_no_offenses(<<~RUBY)
+      module_eval(<<~CODE, __FILE__, lineno)
+        do_something
+      CODE
+    RUBY
+  end
+
+  it 'does not register an offense when using eval with a line number from a variable' do
+    expect_no_offenses(<<~RUBY)
+      lineno = calc
+
+      module_eval(<<~CODE, __FILE__, lineno)
+        do_something
+      CODE
+    RUBY
+  end
 end
