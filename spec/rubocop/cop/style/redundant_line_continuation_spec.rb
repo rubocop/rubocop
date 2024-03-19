@@ -484,6 +484,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when line continuations with `&&` in assignments' do
+    expect_no_offenses(<<~'RUBY')
+      foo = bar\
+        && baz
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with `||` in assignments' do
+    expect_no_offenses(<<~'RUBY')
+      foo = bar\
+        || baz
+    RUBY
+  end
+
   it 'does not register an offense when line continuations with `&&` in method definition' do
     expect_no_offenses(<<~'RUBY')
       def do_something

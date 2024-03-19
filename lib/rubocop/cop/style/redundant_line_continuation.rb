@@ -124,10 +124,10 @@ module RuboCop
           return true unless (node = find_node_for_line(range.line))
           return false if argument_newline?(node)
 
-          continuation_node = node.parent || node
+          continuation_node = node.assignment? ? node.expression : (node.parent || node)
           return false if allowed_type?(node) || allowed_type?(continuation_node)
 
-          continuation_node.source.include?("\n") || continuation_node.source.include?("\\\n")
+          continuation_node.source.match?(/(\n|\\\n")/)
         end
 
         def inside_string_literal?(range, token)
