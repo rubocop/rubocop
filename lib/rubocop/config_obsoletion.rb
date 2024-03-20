@@ -52,7 +52,7 @@ module RuboCop
     def load_rules # rubocop:disable Metrics/AbcSize
       rules = LOAD_RULES_CACHE[self.class.files] ||=
         self.class.files.each_with_object({}) do |filename, hash|
-          hash.merge!(YAML.safe_load(File.read(filename))) do |_key, first, second|
+          hash.merge!(YAML.safe_load(File.read(filename)) || {}) do |_key, first, second|
             case first
             when Hash
               first.merge(second)

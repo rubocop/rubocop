@@ -567,6 +567,12 @@ RSpec.describe RuboCop::ConfigObsoletion do
         YAML
       end
 
+      let(:file_with_comments_only) do
+        create_file('obsoletions3.yml', <<~YAML)
+          # Placeholder for eventual obsoletions, so we can hook up the file regardless
+        YAML
+      end
+
       let(:expected_message) do
         <<~OUTPUT.chomp
           The `Style/FlipFlop` cop has been moved to `Lint/FlipFlop`.
@@ -585,6 +591,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
       it 'includes obsoletions from all sources' do
         described_class.files << file_with_renamed_config
         described_class.files << file_with_removed_and_split_config
+        described_class.files << file_with_comments_only
 
         begin
           config_obsoletion.reject_obsolete!
