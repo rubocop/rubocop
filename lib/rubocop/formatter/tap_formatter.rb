@@ -53,14 +53,10 @@ module RuboCop
           message: message(offense)
         )
 
-        begin
-          return unless valid_line?(offense)
+        return unless valid_line?(offense)
 
-          report_line(offense.location)
-          report_highlighted_area(offense.highlighted_area)
-        rescue IndexError
-          # range is not on a valid line; perhaps the source file is empty
-        end
+        report_line(offense.location)
+        report_highlighted_area(offense.highlighted_area)
       end
 
       def annotate_message(msg)

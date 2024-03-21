@@ -111,6 +111,7 @@ module RuboCop
         source
       end
 
+      # rubocop:disable Metrics/AbcSize
       def expect_offense(source, file = nil, severity: nil, chomp: false, **replacements)
         expected_annotations = parse_annotations(source, **replacements)
         source = expected_annotations.plain_source
@@ -123,8 +124,15 @@ module RuboCop
         expect(actual_annotations).to eq(expected_annotations), ''
         expect(@offenses.map(&:severity).uniq).to eq([severity]) if severity
 
+        # Validate that all offenses have a range that formatters can display
+        expect do
+          @offenses.each { |offense| offense.location.source_line }
+        end.not_to raise_error, 'One of the offenses has a misconstructed range, for ' \
+                                'example if the offense is on line 1 and the source is empty'
+
         @offenses
       end
+      # rubocop:enable Metrics/AbcSize
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
       def expect_correction(correction, loop: true, source: nil)

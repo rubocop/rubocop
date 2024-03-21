@@ -28,17 +28,26 @@ module RuboCop
         def on_new_investigation
           return if notice.empty? || notice_found?(processed_source)
 
-          add_offense(offense_range, message: format(MSG, notice: notice)) do |corrector|
-            verify_autocorrect_notice!
-
-            token = insert_notice_before(processed_source)
-            range = token.nil? ? range_between(0, 0) : token.pos
-
-            corrector.insert_before(range, "#{autocorrect_notice}\n")
+          verify_autocorrect_notice!
+          message = format(MSG, notice: notice)
+          if processed_source.blank?
+            add_global_offense(message)
+          else
+            offense_range = source_range(processed_source.buffer, 1, 0)
+            add_offense(offense_range, message: message) do |corrector|
+              autocorrect(corrector)
+            end
           end
         end
 
         private
+
+        def autocorrect(corrector)
+          token = insert_notice_before(processed_source)
+          range = token.nil? ? range_between(0, 0) : token.pos
+
+          corrector.insert_before(range, "#{autocorrect_notice}\n")
+        end
 
         def notice
           cop_config['Notice']
@@ -46,10 +55,6 @@ module RuboCop
 
         def autocorrect_notice
           cop_config['AutocorrectNotice']
-        end
-
-        def offense_range
-          source_range(processed_source.buffer, 1, 0)
         end
 
         def verify_autocorrect_notice!
