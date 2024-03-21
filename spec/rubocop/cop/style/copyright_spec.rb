@@ -93,12 +93,10 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
       expect_offense(<<~RUBY)
-        ^ Include a copyright notice matching [...]
+        ^{} Include a copyright notice matching [...]
       RUBY
 
-      expect_correction(<<~RUBY)
-        # Copyright (c) 2015 Acme Inc.
-      RUBY
+      expect_no_corrections
     end
   end
 
