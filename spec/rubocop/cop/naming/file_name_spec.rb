@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY, '/some/dir/testCase.rb')
         print 1
-        ^ The name of this source file (`testCase.rb`) should use snake_case.
+        ^{} The name of this source file (`testCase.rb`) should use snake_case.
       RUBY
     end
   end
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY, '/some/dir/testCase')
         print 1
-        ^ The name of this source file (`testCase`) should use snake_case.
+        ^{} The name of this source file (`testCase`) should use snake_case.
       RUBY
     end
   end
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY, '/some/dir/test-case')
           #!/usr/bin/env ruby
-          ^ The name of this source file (`test-case`) should use snake_case.
+          ^{} The name of this source file (`test-case`) should use snake_case.
           print 1
         RUBY
       end
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
           it 'registers an offense' do
             expect_offense(<<~RUBY, "/some/dir/#{dir}/file/test_case.rb")
               print 1
-              ^ `test_case.rb` should define a class or module called `File::TestCase`.
+              ^{} `test_case.rb` should define a class or module called `File::TestCase`.
             RUBY
           end
         end
@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
         it 'registers an offense' do
           expect_offense(<<~RUBY, '/some/other/dir/test_case.rb')
             print 1
-            ^ `test_case.rb` should define a class or module called `TestCase`.
+            ^{} `test_case.rb` should define a class or module called `TestCase`.
           RUBY
         end
       end
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
         it 'registers an offense' do
           expect_offense(<<~RUBY, '/some/other/dir/test_case.rb')
             print 1
-            ^ `test_case.rb` should define a class or module called `TestCase`.
+            ^{} `test_case.rb` should define a class or module called `TestCase`.
           RUBY
         end
       end
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     context 'on an empty file' do
       it 'registers an offense' do
         expect_offense(<<~RUBY, '/lib/rubocop/blah.rb')
-          ^ `blah.rb` should define a class or module called `Rubocop::Blah`.
+          ^{} `blah.rb` should define a class or module called `Rubocop::Blah`.
         RUBY
       end
     end
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     context 'on an empty file with a space in its filename' do
       it 'registers an offense' do
         expect_offense(<<~RUBY, 'a file.rb')
-          ^ The name of this source file (`a file.rb`) should use snake_case.
+          ^{} The name of this source file (`a file.rb`) should use snake_case.
         RUBY
       end
     end
@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
           it 'registers an offense' do
             expect_offense(<<~RUBY, "/some/dir/#{dir}/c/b.rb")
               # b.rb
-              ^ `b.rb` should define a class or module called `C::B`.
+              ^{} `b.rb` should define a class or module called `C::B`.
               #{source}
             RUBY
           end
@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
         it 'registers an offense' do
           expect_offense(<<~RUBY, '/some/dir/e.rb')
             # start of file
-            ^ `e.rb` should define a class or module called `E`.
+            ^{} `e.rb` should define a class or module called `E`.
             #{source}
           RUBY
         end
@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY, '/lib/image_collection.rb')
           begin
-          ^ `image_collection.rb` should define a class or module called `ImageCollection`.
+          ^{} `image_collection.rb` should define a class or module called `ImageCollection`.
             class PictureCollection
             end
           end
@@ -316,7 +316,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY, '/lib/image_collection.rb')
           PictureCollection = Struct.new
-          ^ `image_collection.rb` should define a class or module called `ImageCollection`.
+          ^{} `image_collection.rb` should define a class or module called `ImageCollection`.
         RUBY
       end
     end
@@ -324,7 +324,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     context 'on an empty file' do
       it 'registers an offense' do
         expect_offense(<<~RUBY, '/lib/rubocop/foo.rb')
-          ^ `foo.rb` should define a class or module called `Foo`.
+          ^{} `foo.rb` should define a class or module called `Foo`.
         RUBY
       end
     end
@@ -406,7 +406,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY, 'z.rb')
           print 1
-          ^ `z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.
+          ^{} `z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.
         RUBY
       end
     end

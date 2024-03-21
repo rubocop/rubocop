@@ -207,8 +207,7 @@ module RuboCop
             message = create_multiple_word_message_for_file(words)
           end
 
-          range = source_range(processed_source.buffer, 1, 0)
-          add_offense(range, message: message)
+          add_global_offense(message)
         end
 
         def create_single_word_message_for_file(word)
