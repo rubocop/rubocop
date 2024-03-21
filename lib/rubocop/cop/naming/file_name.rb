@@ -57,7 +57,7 @@ module RuboCop
           file_path = processed_source.file_path
           return if config.file_to_exclude?(file_path) || config.allowed_camel_case_file?(file_path)
 
-          for_bad_filename(file_path) { |range, msg| add_offense(range, message: msg) }
+          for_bad_filename(file_path)
         end
 
         private
@@ -71,7 +71,7 @@ module RuboCop
             msg = other_message(basename) unless bad_filename_allowed?
           end
 
-          yield source_range(processed_source.buffer, 1, 0), msg if msg
+          add_global_offense(msg) if msg
         end
 
         def perform_class_and_module_naming_checks(file_path, basename)
