@@ -129,6 +129,34 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when line continuations with `if` modifier' do
+    expect_no_offenses(<<~'RUBY')
+      bar \
+        if foo
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with `unless` modifier' do
+    expect_no_offenses(<<~'RUBY')
+      bar \
+        unless foo
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with `while` modifier' do
+    expect_no_offenses(<<~'RUBY')
+      bar \
+        while foo
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with `until` modifier' do
+    expect_no_offenses(<<~'RUBY')
+      bar \
+        until foo
+    RUBY
+  end
+
   it 'does not register an offense when required line continuations for multiline leading dot method chain with an empty line' do
     expect_no_offenses(<<~'RUBY')
       obj
