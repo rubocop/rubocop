@@ -51,29 +51,25 @@ module RuboCop
           [Lint::AmbiguousOperator, Style::ArgumentsForwarding]
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         def on_def(node)
           return if node.arguments.empty?
 
           last_argument = node.last_argument
           return if expected_block_forwarding_style?(node, last_argument)
 
-          invalid_syntax = false
-          node.each_descendant(:block_pass) do |block_pass_node|
-            next if block_pass_node.children.first&.sym_type? ||
-                    last_argument.source != block_pass_node.source
+          forwarded_args = node.each_descendant(:block_pass).with_object([]) do |block_pass, result|
+            return nil if invalidates_syntax?(block_pass)
+            next unless block_argument_name_matched?(block_pass, last_argument)
 
-            if block_pass_node.each_ancestor(:block, :numblock).any?
-              invalid_syntax = true
-              next
-            end
-
-            register_offense(block_pass_node, node)
+            result << block_pass
           end
 
-          register_offense(last_argument, node) unless invalid_syntax
+          forwarded_args.each do |forwarded_arg|
+            register_offense(forwarded_arg, node)
+          end
+
+          register_offense(last_argument, node)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
         alias on_defs on_def
 
         private
@@ -86,6 +82,29 @@ module RuboCop
           else
             !anonymous_block_argument?(last_argument)
           end
+        end
+
+        def block_argument_name_matched?(block_pass_node, last_argument)
+          return false if block_pass_node.children.first&.sym_type?
+
+          last_argument.source == block_pass_node.source
+        end
+
+        # Prevents the following syntax error:
+        #
+        # # foo.rb
+        # def foo(&)
+        #   block_method do
+        #     bar(&)
+        #   end
+        # end
+        #
+        # $ ruby -vc foo.rb
+        # ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [x86_64-darwin22]
+        # foo.rb: foo.rb:4: anonymous block parameter is also used within block (SyntaxError)
+        #
+        def invalidates_syntax?(block_pass_node)
+          block_pass_node.each_ancestor(:block, :numblock).any?
         end
 
         def use_kwarg_in_method_definition?(node)
