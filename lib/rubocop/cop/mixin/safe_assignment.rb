@@ -14,7 +14,7 @@ module RuboCop
       def_node_matcher :empty_condition?, '(begin)'
 
       # @!method setter_method?(node)
-      def_node_matcher :setter_method?, '[(send ...) setter_method?]'
+      def_node_matcher :setter_method?, '[({send csend} ...) setter_method?]'
 
       # @!method safe_assignment?(node)
       def_node_matcher :safe_assignment?, '(begin {equals_asgn? #setter_method?})'
