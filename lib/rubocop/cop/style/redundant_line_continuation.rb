@@ -120,15 +120,17 @@ module RuboCop
           processed_source[range.line].strip.empty?
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def redundant_line_continuation?(range)
           return true unless (node = find_node_for_line(range.line))
-          return false if argument_newline?(node)
+          return false if modifier_form?(node) || argument_newline?(node)
 
           continuation_node = node.assignment? ? node.expression : (node.parent || node)
           return false if allowed_type?(node) || allowed_type?(continuation_node)
 
           continuation_node.source.match?(/(\n|\\\n")/)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def inside_string_literal?(range, token)
           ALLOWED_STRING_TOKENS.include?(token.type) && token.pos.overlaps?(range)
@@ -140,6 +142,12 @@ module RuboCop
         #     argument
         def method_with_argument?(current_token, next_token)
           current_token.type == :tIDENTIFIER && ARGUMENT_TYPES.include?(next_token.type)
+        end
+
+        def modifier_form?(node)
+          return false unless node.if_type? || node.while_type? || node.until_type?
+
+          node.modifier_form?
         end
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
