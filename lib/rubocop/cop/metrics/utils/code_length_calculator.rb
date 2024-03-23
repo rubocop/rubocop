@@ -79,7 +79,23 @@ module RuboCop
                   body.source.lines
                 end
 
+              source = clean_block_comments(source, false) unless count_comments?
               source.count { |line| !irrelevant_line?(line) }
+            end
+          end
+
+          def clean_block_comments(lines, inside_block_comment)
+            return [] if lines.empty?
+
+            head = lines.shift
+            if inside_block_comment
+              return [] + clean_block_comments(lines, false) if head[..3] == '=end'
+
+              [] + clean_block_comments(lines, true)
+            else
+              return [] + clean_block_comments(lines, true) if head[..5] == '=begin'
+
+              [head] + clean_block_comments(lines, false)
             end
           end
 
@@ -95,9 +111,15 @@ module RuboCop
             target_line_numbers = body_line_numbers -
                                   line_numbers_of_inner_nodes(node, :module, :class)
 
-            target_line_numbers.reduce(0) do |length, line_number|
-              source_line = @processed_source[line_number]
-              next length if irrelevant_line?(source_line)
+            # OPTIMIZE: too much loops over the target_line_numbers array
+            if count_comments?
+              target_line_numbers.map { |line_number| @processed_source[line_number] }
+            else
+              clean_block_comments(
+                target_line_numbers.map { |line_number| @processed_source[line_number] }, false
+              )
+            end.reduce(0) do |length, source_line|
+              next length if irrelevant_line?(source_line) # TARGET
 
               length + 1
             end
