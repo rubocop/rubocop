@@ -182,6 +182,19 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     RUBY
   end
 
+  it 'registers an offense for assignment methods with safe navigation operator' do
+    expect_offense(<<~RUBY)
+      if test&.method = 10
+                      ^ Use `==` if you meant to do a comparison or wrap the expression in parentheses to indicate you meant to assign in a condition.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (test&.method = 10)
+      end
+    RUBY
+  end
+
   it 'does not blow up for empty if condition' do
     expect_no_offenses(<<~RUBY)
       if ()
