@@ -3083,6 +3083,7 @@ Style/AccessModifierDeclarations:
     - inline
     - group
   AllowModifiersOnSymbols: true
+  AllowModifiersOnAttrs: true
   SafeAutoCorrect: false
 
 Style/AccessorGrouping:
