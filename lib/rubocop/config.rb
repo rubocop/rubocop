@@ -263,6 +263,7 @@ module RuboCop
       PathUtil.smart_path(@loaded_path)
     end
 
+    # @return [String, nil]
     def bundler_lock_file_path
       return nil unless loaded_path
 
@@ -286,27 +287,49 @@ module RuboCop
       end
     end
 
+    # Returns target's locked gem versions (i.e. from Gemfile.lock or gems.locked)
+    # @returns [Hash{String => Gem::Version}] The locked gem versions, keyed by the gems' names.
+    def gem_versions_in_target
+      @gem_versions_in_target ||= read_gem_versions_from_target_lockfile
+    end
+
     def inspect # :nodoc:
       "#<#{self.class.name}:#{object_id} @loaded_path=#{loaded_path}>"
     end
 
     private
 
+    # @return [Float, nil] The Rails version as a `major.minor` Float.
     def target_rails_version_from_bundler_lock_file
       @target_rails_version_from_bundler_lock_file ||= read_rails_version_from_bundler_lock_file
     end
 
+    # @return [Float, nil] The Rails version as a `major.minor` Float.
     def read_rails_version_from_bundler_lock_file
-      lock_file_path = bundler_lock_file_path
-      return nil unless lock_file_path
+      return nil unless gem_versions_in_target
 
-      File.foreach(lock_file_path) do |line|
-        # If Rails (or one of its frameworks) is in Gemfile.lock or gems.lock, there should be
-        # a line like:
-        #         railties (X.X.X)
-        result = line.match(/^\s+railties\s+\((\d+\.\d+)/)
-        return result.captures.first.to_f if result
-      end
+      # Look for `railties` instead of `rails`, to support apps that only use a subset of `rails`
+      # See https://github.com/rubocop/rubocop/pull/11289
+      rails_version_in_target = gem_versions_in_target['railties']
+      return nil unless rails_version_in_target
+
+      gem_version_to_major_minor_float(rails_version_in_target)
+    end
+
+    # @param [Gem::Version] gem_version an object like `Gem::Version.new("7.1.2.3")`
+    # @return [Float] The major and minor version, like `7.1`
+    def gem_version_to_major_minor_float(gem_version)
+      segments = gem_version.canonical_segments
+      # segments.fetch(0).to_f + (segments.fetch(1, 0.0).to_f / 10)
+      Float("#{segments.fetch(0)}.#{segments.fetch(1, 0)}")
+    end
+
+    # @returns [Hash{String => Gem::Version}] The locked gem versions, keyed by the gems' names.
+    def read_gem_versions_from_target_lockfile
+      lockfile_path = bundler_lock_file_path
+      return nil unless lockfile_path
+
+      Lockfile.new(lockfile_path).gem_versions
     end
 
     def enable_cop?(qualified_cop_name, cop_options)

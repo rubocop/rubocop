@@ -372,6 +372,60 @@ This works because the correcting a file is implemented by repeating investigati
 
 Note that `expect_correction` in `Cop` specs only asserts the result after one pass.
 
+=== Limit by Ruby or Gem versions
+
+Some cops apply changes that only apply in particular contexts, such as if the user has a minimum Ruby version. There are helpers that let you constrain your cops automatically, to only run where applicable.
+
+==== Requiring a minimum Ruby version
+
+If your cop uses new Ruby syntax or standard library APIs, it should only autocorrect if the user has the target Ruby version, which you set with https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/TargetRubyVersion#minimum_target_ruby_version-instance_metho[`TargetRubyVersion#minimum_target_ruby_version`].
+
+For example, the `Performance/SelectMap` cop requires Ruby 2.7, which introduced `Enumerable#filter_map`:
+
+```ruby
+module RuboCop::Cop::Performance::SelectMap < Base
+  extend TargetRubyVersion
+
+  minimum_target_ruby_version 2.7
+
+  # ...
+end
+```
+
+This cop won't autocorrect on Ruby 2.6 or older, and it won't even report an offense (since there's no better alternative to recommend instead).
+
+==== Requiring a gem
+
+If your cop depends on the presence of a gem, you can declare that with https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Base#requires_gem-class_method[`RuboCop::Cop::Base.requires_gem`].
+
+For example, to declare that `MyCop` should only apply if the bundle is using `my-gem` with a version between `1.2.3` and `4.5.6`:
+
+```Ruby
+class MyCop < Base
+  requires_gem "my-gem", ">= 1.2.3", "< 4.5.6"
+
+  # ...
+end
+```
+
+You can specify any gem requirement using https://guides.rubygems.org/patterns/#declaring-dependencies[the same syntax as your `Gemfile`].
+
+==== Special case: Rails
+
+Historically, many cops in `rubocop-rails` aren't actually specific to Rails itself, but some of its components (e.g. `ActiveSupport`). These dependencies are declared with https://www.rubydoc.info/gems/rubocop-rails/RuboCop/Cop/TargetRailsVersion#minimum_target_rails_version-instance_method[`TargetRailsVersion.minimum_target_rails_version`].
+
+For example, the `Rails/Pluck` cop requires ActiveSupport 6.0, which introduces `Enumerable#pluck`:
+
+```ruby
+module RuboCop::Cop::Rails::Pluck < Base
+  extend TargetRailsVersion
+
+  minimum_target_rails_version 6.0
+
+  #...
+end
+```
+
 === Run tests
 
 RuboCop supports two parser engines: the Parser gem and Prism. By default, tests are executed with the Parser:
@@ -493,7 +547,7 @@ we strive to make this consistent. PRs improving RuboCop documentation are very 
 
 == Testing your cop in a real codebase
 
-Generally, is a good practice to check if your cop is working properly over a
+It's generally good practice to check if your cop is working properly over a
 significant codebase (e.g. Rails or some big project you're working on) to
 guarantee it's working in a range of different syntaxes.
 

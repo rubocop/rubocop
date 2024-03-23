@@ -825,6 +825,56 @@ RSpec.describe RuboCop::Config do
     end
   end
 
+  describe '#gem_versions_in_target', :isolated_environment do
+    ['Gemfile.lock', 'gems.locked'].each do |file_name|
+      let(:base_path) { configuration.base_dir_for_path_parameters }
+      let(:lockfile_path) { File.join(base_path, file_name) }
+
+      context "and #{file_name} exists" do
+        it 'returns the locked gem versions' do
+          content =
+            <<~LOCKFILE
+              GEM
+                remote: https://rubygems.org/
+                specs:
+                  a (1.1.1)
+                  b (2.2.2)
+                  c (3.3.3)
+                  d (4.4.4)
+                    a (= 1.1.1)
+                    b (>= 1.1.1, < 3.3.3)
+                    c (~> 3.3)
+
+              PLATFORMS
+                ruby
+
+              DEPENDENCIES
+                rails (= 4.1.0)
+
+              BUNDLED WITH
+                2.4.19
+            LOCKFILE
+
+          expected = {
+            'a' => Gem::Version.new('1.1.1'),
+            'b' => Gem::Version.new('2.2.2'),
+            'c' => Gem::Version.new('3.3.3'),
+            'd' => Gem::Version.new('4.4.4')
+          }
+
+          create_file(lockfile_path, content)
+          expect(configuration.gem_versions_in_target).to eq expected
+        end
+      end
+    end
+
+    context 'and neither Gemfile.lock nor gems.locked exist' do
+      it 'returns nil' do
+        expect(configuration.gem_versions_in_target.nil?).to be(true)
+      end
+    end
+  end
+
   describe '#for_department', :restore_registry do
     let(:hash) do
       {

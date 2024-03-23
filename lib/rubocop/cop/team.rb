@@ -174,6 +174,9 @@ module RuboCop
       end
 
       def support_target_rails_version?(cop)
+        # In this case, the rails version was already checked by `#excluded_file?`
+        return true if defined?(RuboCop::Rails::TargetRailsVersion::USES_REQUIRES_GEM_API)
+
         return true unless cop.class.respond_to?(:support_target_rails_version?)
 
         cop.class.support_target_rails_version?(cop.target_rails_version)
