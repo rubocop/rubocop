@@ -72,7 +72,7 @@ module RuboCop
         ALLOWED_STRING_TOKENS = %i[tSTRING tSTRING_CONTENT].freeze
         ARGUMENT_TYPES = %i[
           kFALSE kNIL kSELF kTRUE tCONSTANT tCVAR tFLOAT tGVAR tIDENTIFIER tINTEGER tIVAR
-          tLABEL tLBRACK tLCURLY tLPAREN_ARG tSTRING tSTRING_BEG tSYMBOL tXSTRING_BEG
+          tLBRACK tLCURLY tLPAREN_ARG tSTRING tSTRING_BEG tSYMBOL tXSTRING_BEG
         ].freeze
 
         def on_new_investigation
@@ -120,17 +120,13 @@ module RuboCop
           processed_source[range.line].strip.empty?
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         def redundant_line_continuation?(range)
           return true unless (node = find_node_for_line(range.line))
-          return false if modifier_form?(node) || argument_newline?(node)
+          return false if argument_newline?(node)
 
-          continuation_node = node.assignment? ? node.expression : (node.parent || node)
-          return false if allowed_type?(node) || allowed_type?(continuation_node)
-
-          continuation_node.source.match?(/(\n|\\\n")/)
+          source = node.parent ? node.parent.source : node.source
+          parse(source.gsub("\\\n", "\n")).valid_syntax?
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def inside_string_literal?(range, token)
           ALLOWED_STRING_TOKENS.include?(token.type) && token.pos.overlaps?(range)
@@ -144,37 +140,27 @@ module RuboCop
           current_token.type == :tIDENTIFIER && ARGUMENT_TYPES.include?(next_token.type)
         end
 
-        def modifier_form?(node)
-          return false unless node.if_type? || node.while_type? || node.until_type?
-
-          node.modifier_form?
-        end
-
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize
         def argument_newline?(node)
           node = node.to_a.last if node.assignment?
           return false if node.parenthesized_call?
 
           node = node.children.first if node.root? && node.begin_type?
 
-          if argument_is_method?(node) || node.begin_type?
-            argument_newline?(node.children.first)
+          if argument_is_method?(node)
+            argument_newline?(node.first_argument)
           else
             return false unless method_call_with_arguments?(node)
 
-            !same_line?(node, node.first_argument)
+            node.loc.selector.line != node.first_argument.loc.line
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize
 
         def find_node_for_line(line)
           processed_source.ast.each_node do |node|
             return node if same_line?(node, line)
           end
-        end
-
-        def allowed_type?(node)
-          node.and_type? || node.or_type? || (node.if_type? && node.ternary?)
         end
 
         def same_line?(node, line)
