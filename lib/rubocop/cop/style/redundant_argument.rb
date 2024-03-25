@@ -81,7 +81,13 @@ module RuboCop
           redundant_argument = redundant_arg_for_method(node.method_name.to_s)
           return false if redundant_argument.nil?
 
-          node.first_argument.source.sub(/\A'/, '"').sub(/'\z/, '"') == redundant_argument
+          target_argument = if node.first_argument.respond_to?(:value)
+                              node.first_argument.value
+                            else
+                              node.first_argument
+                            end
+
+          argument_matched?(target_argument, redundant_argument)
         end
 
         def redundant_arg_for_method(method_name)
@@ -97,6 +103,23 @@ module RuboCop
           else
             range_with_surrounding_space(node.first_argument.source_range, newlines: false)
           end
+        end
+
+        def argument_matched?(target_argument, redundant_argument)
+          argument = if target_argument.is_a?(AST::Node)
+                       target_argument.source
+                     elsif exclude_cntrl_character?(target_argument, redundant_argument)
+                       target_argument.inspect
+                     else
+                       target_argument.to_s
+                     end
+
+          argument == redundant_argument
+        end
+
+        def exclude_cntrl_character?(target_argument, redundant_argument)
+          !target_argument.to_s.sub(/\A'/, '"').sub(/'\z/, '"').match?(/[[:cntrl:]]/) ||
+            !redundant_argument.match?(/[[:cntrl:]]/)
         end
       end
     end
