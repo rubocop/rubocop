@@ -36,7 +36,7 @@ module RuboCop
             next if skip_expression?(expr)
 
             node_start = node.source_range.begin_pos
-            find_occurences(expr.text).each do |index|
+            find_occurrences(expr.text).each do |index|
               pos = expr.ts + index
               yield range_between(node_start + pos, node_start + pos + 1)
             end
@@ -47,15 +47,15 @@ module RuboCop
           expr.type != :literal || expr.token != :literal || !expr.text.include?(METACHARACTER)
         end
 
-        def find_occurences(text)
-          occurences = []
-          return occurences unless (index = text.index(METACHARACTER))
+        def find_occurrences(text)
+          occurrences = []
+          return occurrences unless (index = text.index(METACHARACTER))
 
           until index.nil?
-            occurences << (index + 1)
+            occurrences << (index + 1)
             index = text.index(METACHARACTER, index + 1)
           end
-          occurences
+          occurrences
         end
       end
     end
