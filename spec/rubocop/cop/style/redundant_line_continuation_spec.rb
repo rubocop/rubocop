@@ -544,6 +544,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when multi-line continuations with &' do
+    expect_no_offenses(<<~'RUBY')
+      foo \
+        & bar \
+        & baz
+    RUBY
+  end
+
+  it 'does not register an offense when multi-line continuations with |' do
+    expect_no_offenses(<<~'RUBY')
+      foo \
+        | bar \
+        | baz
+    RUBY
+  end
+
   it 'does not register an offense when line continuations with ternary operator' do
     expect_no_offenses(<<~'RUBY')
       foo \
