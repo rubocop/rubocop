@@ -115,6 +115,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
     RUBY
   end
 
+  it 'does not register an offense when single-quoted strings for newline cntrl character' do
+    expect_no_offenses(<<~'RUBY')
+      foo.chomp('\n')
+      foo.chomp!('\n')
+    RUBY
+  end
+
   it 'does not register an offense when method called with no arguments' do
     expect_no_offenses(<<~RUBY)
       foo.join
