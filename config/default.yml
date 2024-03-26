@@ -2426,6 +2426,11 @@ Lint/UnderscorePrefixedVariableName:
   VersionAdded: '0.21'
   AllowKeywordBlockArguments: false
 
+Lint/UnescapedClosingSquareBracketRegex:
+  Description: 'Checks for unescaped closing square bracket metacharacter in Regexp character classes.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UnexpectedBlockArity:
   Description: 'Looks for blocks that have fewer arguments that the calling method expects.'
   Enabled: pending
