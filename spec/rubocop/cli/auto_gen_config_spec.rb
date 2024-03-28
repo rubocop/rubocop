@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'timeout'
-
 RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubocop:disable RSpec/DescribeClass
   subject(:cli) { RuboCop::CLI.new }
 
