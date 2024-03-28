@@ -165,6 +165,8 @@ AllCops:
     rubocop-factory_bot: [factory_bot, factory_bot_rails]
   # Enable/Disable checking the methods extended by Active Support.
   ActiveSupportExtensionsEnabled: false
+  # Used by rubocop-rails to set the version of Rails used by the inspected code
+  TargetRailsVersion: ~
 
 #################### Bundler ###############################
 
