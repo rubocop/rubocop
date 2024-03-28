@@ -3401,6 +3401,7 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: nested
   SupportedStyles:
     - nested
+    - namespace
     - compact
 
 Style/ClassCheck:
