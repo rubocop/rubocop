@@ -79,7 +79,7 @@ module RuboCop
         private_constant :REPLACEMENT_METHODS
 
         def on_send(node)
-          return if node.arguments? || node.block_node
+          return if node.arguments? || node.block_literal?
 
           select_predicate?(node) do |select_node, filter_method|
             return if RAILS_METHODS.include?(filter_method) && !active_support_extensions_enabled?

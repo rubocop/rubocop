@@ -44,7 +44,7 @@ module RuboCop
           message = format(MSG, method: map_node.loc.selector.source)
           add_offense(map_node.loc.selector, message: message) do |corrector|
             # If the `to_set` call already has a block, do not autocorrect.
-            next if to_set_node.block_node
+            next if to_set_node.block_literal?
 
             autocorrect(corrector, to_set_node, map_node)
           end
