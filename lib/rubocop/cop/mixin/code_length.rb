@@ -36,7 +36,7 @@ module RuboCop
         length = calculator.calculate
         return if length <= max_length
 
-        location = node.casgn_type? ? node.loc.name : node.source_range
+        location = location(node)
 
         add_offense(location, message: message(length, max_length)) { self.max = length }
       end
@@ -53,6 +53,17 @@ module RuboCop
           count_comments: count_comments?,
           foldable_types: count_as_one
         )
+      end
+
+      def location(node)
+        return node.loc.name if node.casgn_type?
+
+        if LSP.enabled?
+          end_range = node.loc.respond_to?(:name) ? node.loc.name : node.loc.begin
+          node.source_range.begin.join(end_range)
+        else
+          node.source_range
+        end
       end
     end
   end

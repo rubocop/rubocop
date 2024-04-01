@@ -49,13 +49,13 @@ module RuboCop
 
         return unless complexity > max
 
-        msg = format(self.class::MSG,
-                     method: method_name,
-                     complexity: complexity,
-                     abc_vector: abc_vector,
-                     max: max)
+        msg = format(
+          self.class::MSG,
+          method: method_name, complexity: complexity, abc_vector: abc_vector, max: max
+        )
+        location = location(node)
 
-        add_offense(node, message: msg) { self.max = complexity.ceil }
+        add_offense(location, message: msg) { self.max = complexity.ceil }
       end
 
       def complexity(body)
@@ -68,6 +68,15 @@ module RuboCop
           end
         end
         score
+      end
+
+      def location(node)
+        if LSP.enabled?
+          end_range = node.loc.respond_to?(:name) ? node.loc.name : node.loc.begin
+          node.source_range.begin.join(end_range)
+        else
+          node.source_range
+        end
       end
     end
   end

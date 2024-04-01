@@ -150,6 +150,25 @@ RSpec.describe RuboCop::Cop::Metrics::ClassLength, :config do
     end
   end
 
+  context 'with `--lsp` option', :lsp do
+    it 'reports the correct beginning and end lines' do
+      offenses = expect_offense(<<~RUBY)
+        class Test
+        ^^^^^^^^^^ Class has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+
+      offense = offenses.first
+      expect(offense.location.last_line).to eq(1)
+    end
+  end
+
   context 'when CountComments is disabled' do
     it 'accepts classes that only contain comments' do
       expect_no_offenses(<<~RUBY)

@@ -49,12 +49,14 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     end
 
     it 'registers an offense for an unless modifier' do
-      expect_offense(<<~RUBY)
+      offenses = expect_offense(<<~RUBY)
         def method_name
         ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
           call_foo unless some_condition
         end
       RUBY
+      offense = offenses.first
+      expect(offense.location.last_line).to eq(3)
     end
 
     it 'registers an offense for an elsif block' do
@@ -317,6 +319,19 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
           end
         end
       RUBY
+    end
+
+    context 'with `--lsp` option', :lsp do
+      it 'registers an offense for an unless modifier' do
+        offenses = expect_offense(<<~RUBY)
+          def method_name
+          ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+            call_foo unless some_condition
+          end
+        RUBY
+        offense = offenses.first
+        expect(offense.location.last_line).to eq(1)
+      end
     end
   end
 
