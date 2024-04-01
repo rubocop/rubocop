@@ -226,6 +226,21 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
+  context 'with `--lsp` option', :lsp do
+    it 'reports the correct beginning and end lines' do
+      offenses = expect_offense(<<~RUBY)
+        something do
+        ^^^^^^^^^^^^ Block has too many lines. [3/2]
+          a = _1
+          a = _2
+          a = _3
+        end
+      RUBY
+      offense = offenses.first
+      expect(offense.location.last_line).to eq(1)
+    end
+  end
+
   context 'when CountComments is enabled' do
     before { cop_config['CountComments'] = true }
 

@@ -28,12 +28,14 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     it 'registers an offense for an assignment of a local variable' do
-      expect_offense(<<~RUBY)
+      offenses = expect_offense(<<~RUBY)
         def method_name
         ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 0, 0> 1/0]
           x = 1
         end
       RUBY
+      offense = offenses.first
+      expect(offense.location.last_line).to eq(3)
     end
 
     it 'registers an offense for an assignment of an element' do
@@ -85,6 +87,19 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
           object&.do_something
         end
       RUBY
+    end
+
+    context 'with `--lsp` option', :lsp do
+      it 'registers an offense for an assignment of a local variable' do
+        offenses = expect_offense(<<~RUBY)
+          def method_name
+          ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 0, 0> 1/0]
+            x = 1
+          end
+        RUBY
+        offense = offenses.first
+        expect(offense.location.last_line).to eq(1)
+      end
     end
 
     context 'when method is in list of allowed methods' do
