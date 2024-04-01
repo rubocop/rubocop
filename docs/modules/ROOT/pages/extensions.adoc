@@ -88,6 +88,8 @@ Thread-safety analysis
 Capybara-specific analysis
 * https://github.com/rubocop/rubocop-factory_bot[rubocop-factory_bot] -
 factory_bot-specific analysis
+* https://github.com/rubocop/rubocop-rspec_rails[rubocop-rspec_rails] -
+RSpec Rails-specific analysis
 
 ==== Third-party Extensions
 
