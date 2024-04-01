@@ -156,13 +156,14 @@ AllCops:
   # included.
   SuggestExtensions:
     rubocop-rails: [rails]
-    rubocop-rspec: [rspec, rspec-rails]
+    rubocop-rspec: [rspec]
     rubocop-minitest: [minitest]
     rubocop-sequel: [sequel]
     rubocop-rake: [rake]
     rubocop-graphql: [graphql]
     rubocop-capybara: [capybara]
     rubocop-factory_bot: [factory_bot, factory_bot_rails]
+    rubocop-rspec_rails: [rspec-rails]
   # Enable/Disable checking the methods extended by Active Support.
   ActiveSupportExtensionsEnabled: false
 
