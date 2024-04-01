@@ -25,27 +25,27 @@ module RuboCop
       #
       # @example EnforcedStyle: format (default)
       #   # bad
-      #   puts sprintf('%10s', 'hoge')
-      #   puts '%10s' % 'hoge'
+      #   puts sprintf('%10s', 'foo')
+      #   puts '%10s' % 'foo'
       #
       #   # good
-      #   puts format('%10s', 'hoge')
+      #   puts format('%10s', 'foo')
       #
       # @example EnforcedStyle: sprintf
       #   # bad
-      #   puts format('%10s', 'hoge')
-      #   puts '%10s' % 'hoge'
+      #   puts format('%10s', 'foo')
+      #   puts '%10s' % 'foo'
       #
       #   # good
-      #   puts sprintf('%10s', 'hoge')
+      #   puts sprintf('%10s', 'foo')
       #
       # @example EnforcedStyle: percent
       #   # bad
-      #   puts format('%10s', 'hoge')
-      #   puts sprintf('%10s', 'hoge')
+      #   puts format('%10s', 'foo')
+      #   puts sprintf('%10s', 'foo')
       #
       #   # good
-      #   puts '%10s' % 'hoge'
+      #   puts '%10s' % 'foo'
       #
       class FormatString < Base
         include ConfigurableEnforcedStyle
