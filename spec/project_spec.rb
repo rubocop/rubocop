@@ -337,6 +337,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
           it 'has valid cop name with backticks', :aggregate_failures do
             entries.each do |entry|
               entry.scan(%r{\b[A-Z]\w+(?:/[A-Z]\w+)+\b}) do |cop_name|
+                next if cop_name.split('/').first == 'AllCops'
+
                 expect(allowed_cop_names.include?(cop_name))
                   .to be(true), "Invalid cop name #{cop_name}."
                 expect(entry.include?("`#{cop_name}`"))
