@@ -72,3 +72,6 @@ bin/*
 
 # For stackprof or others
 tmp/*
+
+# For vscode:
+.vscode
