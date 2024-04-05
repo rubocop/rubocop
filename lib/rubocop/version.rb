@@ -11,7 +11,7 @@ module RuboCop
 
     CANONICAL_FEATURE_NAMES = {
       'Rspec' => 'RSpec', 'Graphql' => 'GraphQL', 'Md' => 'Markdown', 'Factory_bot' => 'FactoryBot',
-      'Thread_safety' => 'ThreadSafety'
+      'Thread_safety' => 'ThreadSafety', 'Rspec_rails' => 'RSpecRails'
     }.freeze
     EXTENSION_PATH_NAMES = {
       'rubocop-md' => 'markdown', 'rubocop-factory_bot' => 'factory_bot'
