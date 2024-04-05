@@ -318,6 +318,20 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
       RUBY
     end
 
+    it 'registers an offense for save_page' do
+      expect_offense(<<~RUBY)
+        save_page
+        ^^^^^^^^^ Remove debugger entry point `save_page`.
+      RUBY
+    end
+
+    it 'registers an offense for save_screenshot' do
+      expect_offense(<<~RUBY)
+        save_screenshot
+        ^^^^^^^^^^^^^^^ Remove debugger entry point `save_screenshot`.
+      RUBY
+    end
+
     context 'with an argument' do
       it 'registers an offense for save_and_open_page' do
         expect_offense(<<~RUBY)
@@ -330,6 +344,50 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
         expect_offense(<<~RUBY)
           save_and_open_screenshot foo
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_and_open_screenshot foo`.
+        RUBY
+      end
+
+      it 'registers an offense for save_page' do
+        expect_offense(<<~RUBY)
+          save_page foo
+          ^^^^^^^^^^^^^ Remove debugger entry point `save_page foo`.
+        RUBY
+      end
+
+      it 'registers an offense for save_screenshot' do
+        expect_offense(<<~RUBY)
+          save_screenshot foo
+          ^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `save_screenshot foo`.
+        RUBY
+      end
+    end
+
+    context 'with a page receiver' do
+      it 'registers an offense for save_and_open_page' do
+        expect_offense(<<~RUBY)
+          page.save_and_open_page
+          ^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `page.save_and_open_page`.
+        RUBY
+      end
+
+      it 'registers an offense for save_and_open_screenshot' do
+        expect_offense(<<~RUBY)
+          page.save_and_open_screenshot
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `page.save_and_open_screenshot`.
+        RUBY
+      end
+
+      it 'registers an offense for save_page' do
+        expect_offense(<<~RUBY)
+          page.save_page
+          ^^^^^^^^^^^^^^ Remove debugger entry point `page.save_page`.
+        RUBY
+      end
+
+      it 'registers an offense for save_screenshot' do
+        expect_offense(<<~RUBY)
+          page.save_screenshot
+          ^^^^^^^^^^^^^^^^^^^^ Remove debugger entry point `page.save_screenshot`.
         RUBY
       end
     end
