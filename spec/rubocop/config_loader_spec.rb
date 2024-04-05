@@ -1013,7 +1013,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowedPatterns' => []
             }
           )
-        expect { expect(configuration_from_file.to_h).to eq(config) }.to output('').to_stderr
+        expect { expect(configuration_from_file.to_h).to eq(config) }.not_to output.to_stderr
       end
     end
 
@@ -1210,7 +1210,7 @@ RSpec.describe RuboCop::ConfigLoader do
           expect do
             expect(configuration_from_file['Metrics/MethodLength']
                     .to_set.superset?(expected.to_set)).to be(true)
-          end.to output('').to_stderr
+          end.not_to output.to_stderr
 
           expected = { 'Enabled' => true, # gemtwo/config/default.yml
                        'Max' => 72,              # gemtwo/config/strict.yml
@@ -1246,7 +1246,7 @@ RSpec.describe RuboCop::ConfigLoader do
           expect do
             expect(configuration_from_file['Metrics/MethodLength']
                     .to_set.superset?(expected.to_set)).to be(true)
-          end.to output('').to_stderr
+          end.not_to output.to_stderr
 
           expected = { 'Enabled' => true, # gemtwo/config/default.yml
                        'Max' => 72,              # gemtwo/config/strict.yml
@@ -1314,7 +1314,7 @@ RSpec.describe RuboCop::ConfigLoader do
       end
 
       it 'creates the cached file alongside the owning file' do
-        expect { configuration_from_file }.to output('').to_stderr
+        expect { configuration_from_file }.not_to output.to_stderr
         expect(File.exist?(cache_file)).to be true
       end
     end
