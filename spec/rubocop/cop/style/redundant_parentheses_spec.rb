@@ -910,7 +910,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
         expect_offense(<<~RUBY, variable: variable)
           var = 0
           foo in { bar: ^(%{variable}) }
-                         ^^{variable}^ Don\x27t use parentheses around a variable.
+                         ^^{variable}^ Don't use parentheses around a variable.
         RUBY
 
         expect_correction(<<~RUBY)
