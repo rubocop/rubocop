@@ -124,8 +124,7 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         end
       end
 
-      # FIXME: https://github.com/ruby/prism/issues/2498
-      context 'when using back tick delimiters', broken_on: :prism do
+      context 'when using back tick delimiters' do
         it 'registers an offense and corrects with a lowercase delimiter' do
           expect_offense(<<~RUBY)
             <<-`sql`

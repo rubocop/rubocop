@@ -53,8 +53,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '(__FILE__)', '__FILE__', 'a keyword'
   it_behaves_like 'redundant', '(__LINE__)', '__LINE__', 'a keyword'
   it_behaves_like 'redundant', '(__ENCODING__)', '__ENCODING__', 'a keyword'
-  it_behaves_like 'redundant', '(redo)', 'redo', 'a keyword'
-  it_behaves_like 'redundant', '(retry)', 'retry', 'a keyword'
+
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'redundant', '(redo)', 'redo', 'a keyword'
+    it_behaves_like 'redundant', '(retry)', 'retry', 'a keyword'
+  end
+
   it_behaves_like 'redundant', '(self)', 'self', 'a keyword'
 
   context 'ternaries' do
@@ -118,12 +122,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     end
   end
 
-  it_behaves_like 'keyword with return value', 'break'
-  it_behaves_like 'keyword with return value', 'next'
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'keyword with return value', 'break'
+    it_behaves_like 'keyword with return value', 'next'
+    it_behaves_like 'keyword with arguments', 'yield'
+  end
+
   it_behaves_like 'keyword with return value', 'return'
 
   it_behaves_like 'keyword with arguments', 'super'
-  it_behaves_like 'keyword with arguments', 'yield'
 
   it_behaves_like 'redundant', '(defined?(:A))', 'defined?(:A)', 'a keyword'
   it_behaves_like 'plausible', '(defined? :A)'
@@ -769,12 +776,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'accepts parentheses in yield call with hash' do
-    expect_no_offenses(<<~RUBY)
-      yield ({
-        foo: bar,
-      })
-    RUBY
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it 'accepts parentheses in yield call with hash' do
+      expect_no_offenses(<<~RUBY)
+        yield ({
+          foo: bar,
+        })
+      RUBY
+    end
   end
 
   it 'accepts parentheses in super call with multiline style argument' do
@@ -785,12 +794,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'accepts parentheses in yield call with multiline style argument' do
-    expect_no_offenses(<<~RUBY)
-      yield (
-        42
-      )
-    RUBY
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it 'accepts parentheses in yield call with multiline style argument' do
+      expect_no_offenses(<<~RUBY)
+        yield (
+          42
+        )
+      RUBY
+    end
   end
 
   it 'accepts parentheses in `return` with multiline style argument' do
@@ -812,42 +823,44 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'accepts parentheses in `next` with multiline style argument' do
-    expect_no_offenses(<<~RUBY)
-      next (
-        42
-      )
-    RUBY
-  end
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it 'accepts parentheses in `next` with multiline style argument' do
+      expect_no_offenses(<<~RUBY)
+        next (
+          42
+        )
+      RUBY
+    end
 
-  it 'registers an offense when parentheses in `next` with single style argument' do
-    expect_offense(<<~RUBY)
-      next (42)
-           ^^^^ Don't use parentheses around a literal.
-    RUBY
+    it 'registers an offense when parentheses in `next` with single style argument' do
+      expect_offense(<<~RUBY)
+        next (42)
+             ^^^^ Don't use parentheses around a literal.
+      RUBY
 
-    expect_correction(<<~RUBY)
-      next 42
-    RUBY
-  end
+      expect_correction(<<~RUBY)
+        next 42
+      RUBY
+    end
 
-  it 'accepts parentheses in `break` with multiline style argument' do
-    expect_no_offenses(<<~RUBY)
-      break (
-        42
-      )
-    RUBY
-  end
+    it 'accepts parentheses in `break` with multiline style argument' do
+      expect_no_offenses(<<~RUBY)
+        break (
+          42
+        )
+      RUBY
+    end
 
-  it 'registers an offense when parentheses in `break` with single style argument' do
-    expect_offense(<<~RUBY)
-      break (42)
-            ^^^^ Don't use parentheses around a literal.
-    RUBY
+    it 'registers an offense when parentheses in `break` with single style argument' do
+      expect_offense(<<~RUBY)
+        break (42)
+              ^^^^ Don't use parentheses around a literal.
+      RUBY
 
-    expect_correction(<<~RUBY)
-      break 42
-    RUBY
+      expect_correction(<<~RUBY)
+        break 42
+      RUBY
+    end
   end
 
   it 'registers an offense and corrects when method arguments are unnecessarily parenthesized' do
@@ -905,8 +918,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
   context 'pin operator', :ruby31 do
     shared_examples 'redundant parentheses' do |variable, description|
-      # FIXME: https://github.com/ruby/prism/issues/2499
-      it "registers an offense and corrects #{description}", broken_on: :prism do
+      it "registers an offense and corrects #{description}" do
         expect_offense(<<~RUBY, variable: variable)
           var = 0
           foo in { bar: ^(%{variable}) }

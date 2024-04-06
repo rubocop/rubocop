@@ -381,9 +381,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
   end
 
   context 'when complex condition' do
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers and corrects an offense when using `if foo? && bar && baz?` with boolean literal branches', broken_on: :prism do
+    it 'registers and corrects an offense when using `if foo? && bar && baz?` with boolean literal branches' do
       expect_offense(<<~RUBY)
         if foo? && bar && baz?
         ^^ Remove redundant `if` with boolean literal branches.
@@ -408,9 +406,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
       RUBY
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers and corrects an offense when using `if foo? || bar && baz?` with boolean literal branches', broken_on: :prism do
+    it 'registers and corrects an offense when using `if foo? || bar && baz?` with boolean literal branches' do
       expect_offense(<<~RUBY)
         if foo? || bar && baz?
         ^^ Remove redundant `if` with boolean literal branches.
@@ -425,9 +421,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
       RUBY
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers and corrects an offense when using `if foo? || (bar && baz)?` with boolean literal branches', broken_on: :prism do
+    it 'registers and corrects an offense when using `if foo? || (bar && baz)?` with boolean literal branches' do
       expect_offense(<<~RUBY)
         if foo? || (bar && baz?)
         ^^ Remove redundant `if` with boolean literal branches.
@@ -489,9 +483,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
   end
 
   context 'when condition is a logical operator and all operands are predicate methods' do
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers and corrects an offense when using `if foo? && bar?` with boolean literal branches', broken_on: :prism do
+    it 'registers and corrects an offense when using `if foo? && bar?` with boolean literal branches' do
       expect_offense(<<~RUBY)
         if foo? && bar?
         ^^ Remove redundant `if` with boolean literal branches.
@@ -521,9 +513,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
       RUBY
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers and corrects an offense when using `unless foo? || bar?` with boolean literal branches', broken_on: :prism do
+    it 'registers and corrects an offense when using `unless foo? || bar?` with boolean literal branches' do
       expect_offense(<<~RUBY)
         unless foo? || bar?
         ^^^^^^ Remove redundant `unless` with boolean literal branches.
@@ -553,9 +543,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
       RUBY
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers and corrects an offense when using `if foo? && bar? && baz?` with boolean literal branches', broken_on: :prism do
+    it 'registers and corrects an offense when using `if foo? && bar? && baz?` with boolean literal branches' do
       expect_offense(<<~RUBY)
         if foo? && bar? && baz?
         ^^ Remove redundant `if` with boolean literal branches.
@@ -570,9 +558,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
       RUBY
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers and corrects an offense when using `if foo? && bar? || baz?` with boolean literal branches', broken_on: :prism do
+    it 'registers and corrects an offense when using `if foo? && bar? || baz?` with boolean literal branches' do
       expect_offense(<<~RUBY)
         if foo? && bar? || baz?
         ^^ Remove redundant `if` with boolean literal branches.

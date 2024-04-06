@@ -63,8 +63,7 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
       RUBY
     end
 
-    # FIXME: https://github.com/ruby/prism/issues/2506
-    it 'accepts double quotes with line breaks', broken_on: :prism do
+    it 'accepts double quotes with line breaks' do
       expect_no_offenses(<<~RUBY)
         :"a
           bc"
@@ -217,16 +216,14 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
       RUBY
     end
 
-    # FIXME: https://github.com/ruby/prism/issues/2506
-    it 'accepts single quotes with line breaks', broken_on: :prism do
+    it 'accepts single quotes with line breaks' do
       expect_no_offenses(<<~RUBY)
         :'a
           bc'
       RUBY
     end
 
-    # FIXME: https://github.com/ruby/prism/issues/2506
-    it 'accepts double quotes with line breaks', broken_on: :prism do
+    it 'accepts double quotes with line breaks' do
       expect_no_offenses(<<~RUBY)
         :'a
           bc'

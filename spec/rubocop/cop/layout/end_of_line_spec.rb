@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
       expect_no_offenses('x=0')
     end
 
-    it 'does not register offenses after __END__', broken_on: :prism do
+    it 'does not register offenses after __END__' do
       expect_no_offenses(<<~RUBY)
         x=0\r
         __END__

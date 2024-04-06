@@ -1120,17 +1120,6 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'registers an offense in chained calls with dispatch keywords' do
-        expect_offense(<<~RUBY)
-          yield(:foo, bar: bar).baz
-                           ^^^ Omit the hash value.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          yield(:foo, bar:).baz
-        RUBY
-      end
-
       it 'registers an offense when without parentheses call expr follows after nested method call' do
         # Add parentheses to prevent syntax errors shown in the URL: https://bugs.ruby-lang.org/issues/18396
         expect_offense(<<~RUBY)
@@ -1252,43 +1241,56 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
-      it 'registers an offense when one line `if` condition follows yield (with parentheses)' do
-        expect_offense(<<~RUBY)
-          yield(value: value) unless foo
-                       ^^^^^ Omit the hash value.
-        RUBY
+      context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
+        it 'registers an offense in chained calls with dispatch keywords' do
+          expect_offense(<<~RUBY)
+            yield(:foo, bar: bar).baz
+                             ^^^ Omit the hash value.
+          RUBY
 
-        expect_correction(<<~RUBY)
-          yield(value:) unless foo
-        RUBY
-      end
+          expect_correction(<<~RUBY)
+            yield(:foo, bar:).baz
+          RUBY
+        end
 
-      it 'registers an offense in yield followed by ivar assignment (without parentheses)' do
-        expect_offense(<<~RUBY)
-          yield value: value, other: other
-                                     ^^^^^ Omit the hash value.
-                       ^^^^^ Omit the hash value.
-          @ivar = ivar
-        RUBY
+        it 'registers an offense when one line `if` condition follows yield (with parentheses)' do
+          expect_offense(<<~RUBY)
+            yield(value: value) unless foo
+                         ^^^^^ Omit the hash value.
+          RUBY
 
-        expect_correction(<<~RUBY)
-          yield(value:, other:)
-          @ivar = ivar
-        RUBY
-      end
+          expect_correction(<<~RUBY)
+            yield(value:) unless foo
+          RUBY
+        end
 
-      it 'registers an offense in yield followed by expr without parentheses' do
-        expect_offense(<<~RUBY)
-          yield value: value, other: other
-                                     ^^^^^ Omit the hash value.
-                       ^^^^^ Omit the hash value.
-          foo baz
-        RUBY
+        it 'registers an offense in yield followed by ivar assignment (without parentheses)' do
+          expect_offense(<<~RUBY)
+            yield value: value, other: other
+                                       ^^^^^ Omit the hash value.
+                         ^^^^^ Omit the hash value.
+            @ivar = ivar
+          RUBY
 
-        expect_correction(<<~RUBY)
-          yield(value:, other:)
-          foo baz
-        RUBY
+          expect_correction(<<~RUBY)
+            yield(value:, other:)
+            @ivar = ivar
+          RUBY
+        end
+
+        it 'registers an offense in yield followed by expr without parentheses' do
+          expect_offense(<<~RUBY)
+            yield value: value, other: other
+                                       ^^^^^ Omit the hash value.
+                         ^^^^^ Omit the hash value.
+            foo baz
+          RUBY
+
+          expect_correction(<<~RUBY)
+            yield(value:, other:)
+            foo baz
+          RUBY
+        end
       end
 
       it 'does not register an offense when one line `if` condition follows (without parentheses)' do

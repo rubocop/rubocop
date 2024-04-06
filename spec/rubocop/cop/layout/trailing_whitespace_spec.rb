@@ -42,8 +42,7 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/ruby/prism/issues/2510
-  it 'registers offenses before __END__ but not after', broken_on: :prism do
+  it 'registers offenses before __END__ but not after' do
     expect_offense(<<~RUBY)
       x = 0\t
            ^ Trailing whitespace detected.

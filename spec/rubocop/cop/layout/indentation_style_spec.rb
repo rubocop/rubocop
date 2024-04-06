@@ -45,8 +45,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
       RUBY
     end
 
-    # FIXME: https://github.com/ruby/prism/issues/2510
-    it 'registers offenses before __END__ but not after', broken_on: :prism do
+    it 'registers offenses before __END__ but not after' do
       expect_offense(<<~RUBY)
         \tx = 0
         ^ Tab detected in indentation.
@@ -138,8 +137,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
       RUBY
     end
 
-    # FIXME: https://github.com/ruby/prism/issues/2510
-    it 'registers offenses before __END__ but not after', broken_on: :prism do
+    it 'registers offenses before __END__ but not after' do
       expect_offense(<<~RUBY)
           x = 0
         ^^ Space detected in indentation.

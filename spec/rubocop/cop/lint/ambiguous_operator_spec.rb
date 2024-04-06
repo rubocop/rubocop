@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# FIXME: https://github.com/ruby/prism/issues/2513 and https://github.com/ruby/prism/issues/2514
-RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator, :config, broken_on: :prism do
+RSpec.describe RuboCop::Cop::Lint::AmbiguousOperator, :config do
   context 'with `+` unary operator in the first argument' do
     context 'without parentheses' do
       context 'without whitespaces on the right of the operator' do

@@ -338,8 +338,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         }
       end
 
-      # FIXME: https://github.com/ruby/prism/issues/2515
-      it 'registers an offense for strings with line breaks in them', broken_on: :prism do
+      it 'registers an offense for strings with line breaks in them' do
         expect_offense(<<~RUBY)
           "--
           ^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.

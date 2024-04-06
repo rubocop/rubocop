@@ -163,15 +163,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect_no_offenses('return if any? { |x| x }')
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'accepts a single line block with {} if used in a logical or', broken_on: :prism do
+    it 'accepts a single line block with {} if used in a logical or' do
       expect_no_offenses('any? { |c| c } || foo')
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'accepts a single line block with {} if used in a logical and', broken_on: :prism do
+    it 'accepts a single line block with {} if used in a logical and' do
       expect_no_offenses('any? { |c| c } && foo')
     end
 

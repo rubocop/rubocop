@@ -2,9 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
   shared_examples 'all variable types' do |variable|
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers an offense assigning any variable type to ternary', broken_on: :prism do
+    it 'registers an offense assigning any variable type to ternary' do
       expect_offense(<<~RUBY, variable: variable)
         %{variable} = foo? ? 1 : 2
         ^{variable}^^^^^^^^^^^^^^^ Assign variables inside of conditionals
@@ -167,9 +165,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
   end
 
   shared_examples 'all assignment types' do |assignment|
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers an offense for any assignment to ternary', broken_on: :prism do
+    it 'registers an offense for any assignment to ternary' do
       expect_offense(<<~RUBY, assignment: assignment)
         bar %{assignment} (foo? ? 1 : 2)
         ^^^^^{assignment}^^^^^^^^^^^^^^^ Assign variables inside of conditionals
@@ -702,9 +698,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'corrects assignment to a ternary operator', broken_on: :prism do
+    it 'corrects assignment to a ternary operator' do
       expect_offense(<<~RUBY)
         bar = foo? ? 1 : 2
         ^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals
@@ -796,9 +790,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       expect_no_offenses('bar << foo? ? 1 : 2')
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers an offense for assignment using a method that ends with an equal sign', broken_on: :prism do
+    it 'registers an offense for assignment using a method that ends with an equal sign' do
       expect_offense(<<~RUBY)
         self.attributes = foo? ? 1 : 2
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals

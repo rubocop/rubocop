@@ -76,8 +76,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
   describe 'heredoc commands' do
     let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
 
-    # FIXME: https://github.com/ruby/prism/issues/2498
-    it 'is ignored', broken_on: :prism do
+    it 'is ignored' do
       expect_no_offenses(<<~RUBY)
         <<`COMMAND`
           ls

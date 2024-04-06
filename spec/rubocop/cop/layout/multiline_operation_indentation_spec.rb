@@ -551,11 +551,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
         RUBY
       end
 
-      it "accepts indentation of next #{keyword} condition" do
-        expect_no_offenses(<<~RUBY)
-          next #{keyword} 5 ||
-            7
-        RUBY
+      context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
+        it "accepts indentation of next #{keyword} condition" do
+          expect_no_offenses(<<~RUBY)
+            next #{keyword} 5 ||
+              7
+          RUBY
+        end
       end
     end
 

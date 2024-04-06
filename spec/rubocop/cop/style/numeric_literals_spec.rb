@@ -116,8 +116,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/ruby/prism/issues/2501
-  it 'autocorrects numbers with spaces between leading minus and numbers', broken_on: :prism do
+  it 'autocorrects numbers with spaces between leading minus and numbers' do
     expect_offense(<<~RUBY)
       a = -
           ^ Use underscores(_) as thousands separator and separate every 3 digits with them.
