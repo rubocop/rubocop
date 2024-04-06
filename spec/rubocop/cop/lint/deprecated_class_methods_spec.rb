@@ -62,9 +62,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
   end
 
   context 'prefer `block_given?` over `iterator?`' do
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'registers an offense and corrects iterator?', broken_on: :prism do
+    it 'registers an offense and corrects iterator?' do
       expect_offense(<<~RUBY)
         iterator?
         ^^^^^^^^^ `iterator?` is deprecated in favor of `block_given?`.
@@ -75,9 +73,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
       RUBY
     end
 
-    # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-    # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-    it 'does not register an offense for block_given?', broken_on: :prism do
+    it 'does not register an offense for block_given?' do
       expect_no_offenses('block_given?')
     end
 

@@ -25,22 +25,24 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects `next` guard clause not followed by empty line' do
-    expect_offense(<<~RUBY)
-      def foo
-        next unless need_next? # comment
-        ^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
-        foobar
-      end
-    RUBY
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it 'registers an offense and corrects `next` guard clause not followed by empty line' do
+      expect_offense(<<~RUBY)
+        def foo
+          next unless need_next? # comment
+          ^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+          foobar
+        end
+      RUBY
 
-    expect_correction(<<~RUBY)
-      def foo
-        next unless need_next? # comment
+      expect_correction(<<~RUBY)
+        def foo
+          next unless need_next? # comment
 
-        foobar
-      end
-    RUBY
+          foobar
+        end
+      RUBY
+    end
   end
 
   it 'registers an offense and corrects a guard clause is before `begin`' do
@@ -528,42 +530,44 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects a method starting with end_' do
-    expect_offense(<<~RUBY)
-      def foo
-        next unless need_next?
-        ^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
-        end_this!
-      end
-    RUBY
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it 'registers an offense and corrects a method starting with end_' do
+      expect_offense(<<~RUBY)
+        def foo
+          next unless need_next?
+          ^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+          end_this!
+        end
+      RUBY
 
-    expect_correction(<<~RUBY)
-      def foo
-        next unless need_next?
+      expect_correction(<<~RUBY)
+        def foo
+          next unless need_next?
 
-        end_this!
-      end
-    RUBY
-  end
+          end_this!
+        end
+      RUBY
+    end
 
-  it 'registers an offense and corrects only the last guard clause' do
-    expect_offense(<<~RUBY)
-      def foo
-        next if foo?
-        next if bar?
-        ^^^^^^^^^^^^ Add empty line after guard clause.
-        foobar
-      end
-    RUBY
+    it 'registers an offense and corrects only the last guard clause' do
+      expect_offense(<<~RUBY)
+        def foo
+          next if foo?
+          next if bar?
+          ^^^^^^^^^^^^ Add empty line after guard clause.
+          foobar
+        end
+      RUBY
 
-    expect_correction(<<~RUBY)
-      def foo
-        next if foo?
-        next if bar?
+      expect_correction(<<~RUBY)
+        def foo
+          next if foo?
+          next if bar?
 
-        foobar
-      end
-    RUBY
+          foobar
+        end
+      RUBY
+    end
   end
 
   it 'registers no offenses using heredoc with `and return` before guard condition with empty line' do

@@ -61,8 +61,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantHeredocDelimiterQuotes, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/ruby/prism/issues/2498
-  it 'does not register an offense when using the redundant heredoc delimiter backquotes', broken_on: :prism do
+  it 'does not register an offense when using the redundant heredoc delimiter backquotes' do
     expect_no_offenses(<<~RUBY)
       do_something(<<~`EOS`)
         command

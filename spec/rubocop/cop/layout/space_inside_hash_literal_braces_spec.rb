@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# FIXME: https://github.com/ruby/prism/issues/2467
-RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config, broken_on: :prism do
+RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
   let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
   context 'with space inside empty braces not allowed' do

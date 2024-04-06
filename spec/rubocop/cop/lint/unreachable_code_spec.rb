@@ -15,6 +15,9 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
   end
 
   %w[return next break retry redo throw raise fail exit exit! abort].each do |t|
+    # The syntax using `retry` is not supported in Ruby 3.3 and later.
+    next if t == 'retry' && ENV['PARSER_ENGINE'] == 'parser_prism'
+
     it "registers an offense for `#{t}` before other statements" do
       expect_offense(wrap(<<~RUBY))
         #{t}

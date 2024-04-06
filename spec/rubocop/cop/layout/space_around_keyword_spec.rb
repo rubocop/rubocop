@@ -48,9 +48,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing before', 'and', '1and 2', '1 and 2'
   it_behaves_like 'missing after', 'and', '1 and(2)', '1 and (2)'
   it_behaves_like 'missing after', 'begin', 'begin"" end', 'begin "" end'
-  it_behaves_like 'missing after', 'break', 'break""', 'break ""'
-  it_behaves_like 'accept after', '(', 'break(1)'
+
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'missing after', 'break', 'break""', 'break ""'
+    it_behaves_like 'accept after', '(', 'break(1)'
+  end
+
   it_behaves_like 'missing after', 'case', 'case"" when 1; end', 'case "" when 1; end'
+
   context '>= Ruby 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
     it_behaves_like 'missing after', 'case', 'case""; in 1; end', 'case ""; in 1; end'
   end
@@ -102,8 +107,12 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'ensure', 'begin ensure"" end', 'begin ensure "" end'
 
   it_behaves_like 'missing after', 'if', 'if""; end', 'if ""; end'
-  it_behaves_like 'missing after', 'next', 'next""', 'next ""'
-  it_behaves_like 'accept after', '(', 'next(1)'
+
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'missing after', 'next', 'next""', 'next ""'
+    it_behaves_like 'accept after', '(', 'next(1)'
+  end
+
   it_behaves_like 'missing after', 'not', 'not""', 'not ""'
   it_behaves_like 'accept after', '(', 'not(1)'
   it_behaves_like 'missing before', 'or', '1or 2', '1 or 2'
@@ -127,8 +136,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'until', '1 until""', '1 until ""'
   it_behaves_like 'missing before', 'when', 'case ""when a; end', 'case "" when a; end'
   it_behaves_like 'missing after', 'when', 'case a when""; end', 'case a when ""; end'
-  # FIXME: https://github.com/ruby/prism/pull/2525
-  context '>= Ruby 2.7', :ruby27, broken_on: :prism do
+
+  context '>= Ruby 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
     # TODO: `case ""in a; end` is syntax error in Ruby 3.0.1.
     #       This syntax is confirmed: https://bugs.ruby-lang.org/issues/17925
     #       The answer will determine whether to enable or discard the test in the future.
@@ -146,8 +155,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
 
   it_behaves_like 'missing before', 'while', '1while ""', '1 while ""'
   it_behaves_like 'missing after', 'while', '1 while""', '1 while ""'
-  it_behaves_like 'missing after', 'yield', 'yield""', 'yield ""'
-  it_behaves_like 'accept after', '(', 'yield(1)'
+
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'missing after', 'yield', 'yield""', 'yield ""'
+    it_behaves_like 'accept after', '(', 'yield(1)'
+  end
 
   it_behaves_like 'accept after', '+', '+begin end'
   it_behaves_like 'missing after', 'begin', 'begin+1 end', 'begin +1 end'
@@ -155,20 +167,30 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   # Common exceptions
   it_behaves_like 'accept after', '\\', "test do\\\nend"
   it_behaves_like 'accept after', '\n', "test do\nend"
-  it_behaves_like 'accept around', '()', '(next)'
-  it_behaves_like 'accept before', '!', '!yield'
-  it_behaves_like 'accept after', '.', 'yield.method'
-  it_behaves_like 'accept before', '!', '!yield.method'
+
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'accept around', '()', '(next)'
+    it_behaves_like 'accept before', '!', '!yield'
+    it_behaves_like 'accept after', '.', 'yield.method'
+    it_behaves_like 'accept before', '!', '!yield.method'
+  end
+
   it_behaves_like 'accept before', '!', '!super.method'
   it_behaves_like 'accept after', '::', 'super::ModuleName'
 
   context '&.' do
     it_behaves_like 'accept after', '&.', 'super&.foo'
-    it_behaves_like 'accept after', '&.', 'yield&.foo'
+
+    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
+      it_behaves_like 'accept after', '&.', 'yield&.foo'
+    end
   end
 
   it_behaves_like 'accept after', '[', 'super[1]'
-  it_behaves_like 'accept after', '[', 'yield[1]'
+
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it_behaves_like 'accept after', '[', 'yield[1]'
+  end
 
   # Layout/SpaceAroundBlockParameters
   it_behaves_like 'accept before', '|', 'loop { |x|break }'
@@ -198,8 +220,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   # Layout/SpaceBeforeComma, Layout/SpaceAfterComma
   it_behaves_like 'accept around', ',', 'a 1,foo,1'
 
-  # Layout/SpaceBeforeComment
-  it_behaves_like 'accept after', '#', 'next#comment'
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    # Layout/SpaceBeforeComment
+    it_behaves_like 'accept after', '#', 'next#comment'
+  end
 
   # Layout/SpaceBeforeSemicolon, Layout/SpaceAfterSemicolon
   it_behaves_like 'accept around', ';', 'test do;end'

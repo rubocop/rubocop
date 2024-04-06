@@ -61,26 +61,28 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
     RUBY
   end
 
-  it 'accepts modifier while true if loop {} would change semantics' do
-    expect_no_offenses(<<~RUBY)
-      a = next_value or break while true
-      p a
-    RUBY
-  end
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
+    it 'accepts modifier while true if loop {} would change semantics' do
+      expect_no_offenses(<<~RUBY)
+        a = next_value or break while true
+        p a
+      RUBY
+    end
 
-  it 'registers an offense for modifier until false if loop {} would not change semantics' do
-    expect_offense(<<~RUBY)
-      a = nil
-      a = next_value or break until false
-                              ^^^^^ Use `Kernel#loop` for infinite loops.
-      p a
-    RUBY
+    it 'registers an offense for modifier until false if loop {} would not change semantics' do
+      expect_offense(<<~RUBY)
+        a = nil
+        a = next_value or break until false
+                                ^^^^^ Use `Kernel#loop` for infinite loops.
+        p a
+      RUBY
 
-    expect_correction(<<~RUBY)
-      a = nil
-      loop { a = next_value or break }
-      p a
-    RUBY
+      expect_correction(<<~RUBY)
+        a = nil
+        loop { a = next_value or break }
+        p a
+      RUBY
+    end
   end
 
   it 'registers an offense for until false if loop {} would work because of ' \

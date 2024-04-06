@@ -8,11 +8,7 @@ gem 'asciidoctor'
 gem 'bump', require: false
 gem 'bundler', '>= 1.15.0', '< 3.0'
 gem 'memory_profiler', platform: :mri
-# FIXME: This is a workaround for incompatibilities between Prism 0.24.0 and 0.25.0.
-# To upgrade to Prism 0.25+, it is necessary to investigate the following build error
-# and provide feedback to Prism:
-# https://github.com/rubocop/rubocop/actions/runs/8578707777/job/23512878899
-gem 'prism', '0.24.0'
+gem 'prism', '>= 0.25.0'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.21.0'

@@ -30,8 +30,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/ruby/prism/issues/2515
-  it 'does not register an offense for empty lines in a string', broken_on: :prism do
+  it 'does not register an offense for empty lines in a string' do
     expect_no_offenses(<<~RUBY)
       result = "test
 
@@ -41,8 +40,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLines, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/ruby/prism/issues/2512
-  it 'does not register an offense for heredocs with empty lines inside', broken_on: :prism do
+  it 'does not register an offense for heredocs with empty lines inside' do
     expect_no_offenses(<<~RUBY)
       str = <<-TEXT
       line 1

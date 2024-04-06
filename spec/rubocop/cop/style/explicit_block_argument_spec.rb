@@ -184,12 +184,14 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
     RUBY
   end
 
-  it 'does not register an offense when code is called outside of a method' do
-    expect_no_offenses(<<~RUBY)
-      render("partial") do
-        yield
-      end
-    RUBY
+  context 'target ruby version <= 3.2', :ruby32, unsupported_on: :prism do
+    it 'does not register an offense when code is called outside of a method' do
+      expect_no_offenses(<<~RUBY)
+        render("partial") do
+          yield
+        end
+      RUBY
+    end
   end
 
   it 'does not add extra parens when correcting' do

@@ -50,9 +50,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  # FIXME: `undefined method `[]' for nil` occurs Prism 0.24.0. It has been resolved in
-  # the development line. This will be resolved in Prism > 0.24.0 and higher releases.
-  it 'registers an offense and corrects when nesting multiline ternary operators', broken_on: :prism do
+  it 'registers an offense and corrects when nesting multiline ternary operators' do
     expect_offense(<<~RUBY)
       cond_a? ? foo :
       ^^^^^^^^^^^^^^^ Avoid multi-line ternary operators, use `if` or `unless` instead.
@@ -170,30 +168,32 @@ RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when returning a multiline ternary operator expression with `break`' do
-    expect_offense(<<~RUBY)
-      break cond ?
-            ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
-            foo :
-            bar
-    RUBY
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
+    it 'registers an offense and corrects when returning a multiline ternary operator expression with `break`' do
+      expect_offense(<<~RUBY)
+        break cond ?
+              ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+              foo :
+              bar
+      RUBY
 
-    expect_correction(<<~RUBY)
-      break cond ? foo : bar
-    RUBY
-  end
+      expect_correction(<<~RUBY)
+        break cond ? foo : bar
+      RUBY
+    end
 
-  it 'registers an offense and corrects when returning a multiline ternary operator expression with `next`' do
-    expect_offense(<<~RUBY)
-      next cond ?
-           ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
-           foo :
-           bar
-    RUBY
+    it 'registers an offense and corrects when returning a multiline ternary operator expression with `next`' do
+      expect_offense(<<~RUBY)
+        next cond ?
+             ^^^^^^ Avoid multi-line ternary operators, use single-line instead.
+             foo :
+             bar
+      RUBY
 
-    expect_correction(<<~RUBY)
-      next cond ? foo : bar
-    RUBY
+      expect_correction(<<~RUBY)
+        next cond ? foo : bar
+      RUBY
+    end
   end
 
   it 'registers an offense and corrects when returning a multiline ternary operator expression with method call' do

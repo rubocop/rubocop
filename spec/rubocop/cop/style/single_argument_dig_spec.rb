@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
     end
   end
 
-  context '>= Ruby 3.2', :ruby32 do
+  context 'Ruby <= 3.2', :ruby32 do
     context 'when using dig with anonymous rest argument forwarding' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)

@@ -121,10 +121,12 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperatorPrecedence, :config do
     RUBY
   end
 
-  it 'allows an operator with `and`' do
-    expect_no_offenses(<<~RUBY)
-      array << i and next
-    RUBY
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
+    it 'allows an operator with `and`' do
+      expect_no_offenses(<<~RUBY)
+        array << i and next
+      RUBY
+    end
   end
 
   it 'allows an operator with `or`' do
