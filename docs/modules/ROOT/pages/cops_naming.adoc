@@ -462,7 +462,7 @@ anything/using_snake_case.rake
 | Name | Default value | Configurable values
 
 | Exclude
-| `[]`
+| `Rakefile.rb`
 | Array
 
 | ExpectMatchingDefinition

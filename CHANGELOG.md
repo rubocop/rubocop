@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.63.0 (2024-04-08)
+
 ### New features
 
 * [#11878](https://github.com/rubocop/rubocop/issues/11878): Add new `Style/MapIntoArray` cop. ([@ymap][])

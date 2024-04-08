@@ -1658,7 +1658,7 @@ Lint/Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
   VersionAdded: '0.14'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.63'
   DebuggerMethods:
     # Groups are available so that a specific group can be disabled in
     # a user's configuration, but are otherwise not significant.
@@ -4293,7 +4293,7 @@ Style/MapIntoArray:
   Description: 'Checks for usages of `each` with `<<`, `push`, or `append` which can be replaced by `map`.'
   StyleGuide: '#functional-code'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.63'
   Safe: false
 
 Style/MapToHash:

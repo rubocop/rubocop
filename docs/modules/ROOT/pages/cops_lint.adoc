@@ -825,7 +825,7 @@ Login
 | Yes
 | No
 | 0.14
-| 1.46
+| 1.63
 |===
 
 Checks for debug calls (such as `debugger` or `binding.pry`) that should
@@ -853,6 +853,11 @@ Lint/Debugger:
     MyDebugger:
       MyDebugger.debug_this
 ----
+
+Some gems also ship files that will start a debugging session when required,
+for example `require 'debug/start'` from `ruby/debug`. These requires can
+be configured through `DebuggerRequires`. It has the same structure as
+`DebuggerMethods`, which you can read about above.
 
 === Examples
 
@@ -898,13 +903,26 @@ def some_method
 end
 ----
 
+==== DebuggerRequires: [my_debugger/start]
+
+[source,ruby]
+----
+# bad (ok during development)
+
+require 'my_debugger/start'
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
 
 | DebuggerMethods
-| `{"Kernel"=>["binding.irb", "Kernel.binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["save_and_open_page", "save_and_open_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue", "pry"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
+| `{"Kernel"=>["binding.irb", "Kernel.binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["page.save_and_open_page", "page.save_and_open_screenshot", "page.save_page", "page.save_screenshot", "save_and_open_page", "save_and_open_screenshot", "save_page", "save_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue", "pry"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
+| 
+
+| DebuggerRequires
+| `{"debug.rb"=>["debug/open", "debug/open_nonstop", "debug/start"]}`
 | 
 |===
 

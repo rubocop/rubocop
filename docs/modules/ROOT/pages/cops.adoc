@@ -495,6 +495,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylelineendconcatenation[Style/LineEndConcatenation]
 * xref:cops_style.adoc#stylemagiccommentformat[Style/MagicCommentFormat]
 * xref:cops_style.adoc#stylemapcompactwithconditionalblock[Style/MapCompactWithConditionalBlock]
+* xref:cops_style.adoc#stylemapintoarray[Style/MapIntoArray]
 * xref:cops_style.adoc#stylemaptohash[Style/MapToHash]
 * xref:cops_style.adoc#stylemaptoset[Style/MapToSet]
 * xref:cops_style.adoc#stylemethodcallwithargsparentheses[Style/MethodCallWithArgsParentheses]
