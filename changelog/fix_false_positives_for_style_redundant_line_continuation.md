@@ -1,1 +1,0 @@
-* [#12797](https://github.com/rubocop/rubocop/issues/12797): Fix false positives for `Style/RedundantLineContinuation` when using line continuations with `&&` or `||` operator in assignment. ([@koic][])
