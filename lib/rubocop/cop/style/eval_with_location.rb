@@ -141,7 +141,7 @@ module RuboCop
         end
 
         def check_file(node, file_node)
-          return true if special_file_keyword?(file_node)
+          return if special_file_keyword?(file_node)
 
           message = format(MSG_INCORRECT_FILE,
                            method_name: node.method_name,
