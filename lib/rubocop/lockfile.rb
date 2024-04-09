@@ -59,12 +59,15 @@ module RuboCop
     # @return [Bundler::LockfileParser, nil]
     def parser
       return @parser if defined?(@parser)
-      return unless @lockfile_path
 
-      lockfile = Bundler.read_file(@lockfile_path)
-      @parser = lockfile ? Bundler::LockfileParser.new(lockfile) : nil
-    rescue Bundler::BundlerError
-      nil
+      @parser = if defined?(::Bundler) && @lockfile_path
+                  begin
+                    lockfile = ::Bundler.read_file(@lockfile_path)
+                    lockfile ? ::Bundler::LockfileParser.new(lockfile) : nil
+                  rescue ::Bundler::BundlerError
+                    nil
+                  end
+                end
     end
   end
 end
