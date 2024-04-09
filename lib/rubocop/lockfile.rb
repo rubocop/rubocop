@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+begin
+  require 'bundler'
+rescue LoadError
+  nil
+end
+
 module RuboCop
   # Encapsulation of a lockfile for use when checking for gems.
   # Does not actually resolve gems, just parses the lockfile.
