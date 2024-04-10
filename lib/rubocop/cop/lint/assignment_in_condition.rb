@@ -88,7 +88,9 @@ module RuboCop
         end
 
         def skip_children?(asgn_node)
-          empty_condition?(asgn_node) || (safe_assignment_allowed? && safe_assignment?(asgn_node))
+          (asgn_node.call_type? && !asgn_node.assignment_method?) ||
+            empty_condition?(asgn_node) ||
+            (safe_assignment_allowed? && safe_assignment?(asgn_node))
         end
 
         def traverse_node(node, &block)

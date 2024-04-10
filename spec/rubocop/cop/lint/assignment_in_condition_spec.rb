@@ -209,6 +209,12 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     RUBY
   end
 
+  it 'does not register an offense for assignment in method call' do
+    expect_no_offenses(<<~RUBY)
+      return unless %i[asc desc].include?(order = params[:order])
+    RUBY
+  end
+
   context 'safe assignment is allowed' do
     it 'accepts = in condition surrounded with braces' do
       expect_no_offenses(<<~RUBY)
