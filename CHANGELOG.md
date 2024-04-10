@@ -11,6 +11,11 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12828](https://github.com/rubocop/rubocop/pull/12828): Fix a false positive for `Lint/AssignmentInCondition` if assigning inside a method call. ([@earlopain][])
+* [#12823](https://github.com/rubocop/rubocop/issues/12823): Fixed "uninitialized constant `RuboCop::Lockfile::Bundler`", caused when running RuboCop without `bundler exec` on codebases that use `rubocop-rails`. ([@amomchilov][])
+
 ## 1.63.0 (2024-04-08)
 
 ### New features
