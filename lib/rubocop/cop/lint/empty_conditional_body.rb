@@ -146,7 +146,7 @@ module RuboCop
             node.source_range.with(end_pos: node.condition.source_range.end_pos)
           elsif all_branches_body_missing?(node)
             if_node = node.ancestors.detect(&:if?)
-            node.source_range.with(end_pos: if_node.loc.end.end_pos)
+            node.source_range.join(if_node.loc.end.end)
           else
             node.source_range
           end

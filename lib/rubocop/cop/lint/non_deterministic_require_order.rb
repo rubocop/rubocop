@@ -130,7 +130,7 @@ module RuboCop
         # @return [Parser::Source::Range]
         #
         def last_arg_range(node)
-          node.last_argument.source_range.with(begin_pos: node.arguments[-2].source_range.end_pos)
+          node.last_argument.source_range.join(node.arguments[-2].source_range.end)
         end
 
         def unsorted_dir_loop?(node)
