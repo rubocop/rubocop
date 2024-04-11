@@ -205,6 +205,18 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'does not register an offense when using block arg in nested method definitions', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def foo(x)
+          class << x
+            def bar(y, &)
+              baz.qux(&)
+            end
+          end
+        end
+      RUBY
+    end
+
     context 'when `RedundantBlockArgumentNames: [meaningless_block_name]`' do
       let(:redundant_block_argument_names) { ['meaningless_block_name'] }
 
