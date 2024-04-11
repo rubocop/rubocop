@@ -312,7 +312,8 @@ module RuboCop
         end
 
         def register_forward_block_arg_offense(add_parens, def_arguments_or_send, block_arg)
-          return if target_ruby_version <= 3.0 || block_arg.source == '&' || explicit_block_name?
+          return if target_ruby_version <= 3.0 ||
+                    block_arg.nil? || block_arg.source == '&' || explicit_block_name?
 
           add_offense(block_arg, message: BLOCK_MSG) do |corrector|
             add_parens_if_missing(def_arguments_or_send, corrector) if add_parens
