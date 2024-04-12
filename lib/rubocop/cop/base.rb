@@ -186,7 +186,9 @@ module RuboCop
       def add_global_offense(message = nil, severity: nil)
         severity = find_severity(nil, severity)
         message = find_message(nil, message)
-        current_offenses << Offense.new(severity, Offense::NO_LOCATION, message, name, :unsupported)
+        range = Offense::NO_LOCATION
+        status = enabled_line?(range.line) ? :unsupported : :disabled
+        current_offenses << Offense.new(severity, range, message, name, status)
       end
 
       # Adds an offense on the specified range (or node with an expression)
