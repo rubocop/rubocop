@@ -20,8 +20,8 @@ module RuboCop
       #
       # [source,ruby]
       # ----
-      # @dest = []
-      # src.each { |e| @dest << e * 2 } # `src` method may mutate `@dest`
+      # ret = []
+      # src.each { |e| ret << e * 2 } # `<<` method may mutate `ret`
       #
       # dest = []
       # src.each { |e| dest << transform(e, dest) } # `transform` method may mutate `dest`
