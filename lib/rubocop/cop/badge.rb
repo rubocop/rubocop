@@ -49,6 +49,10 @@ module RuboCop
       end
 
       def match?(other)
+        # Prevents the following error:
+        # https://github.com/rubocop/rubocop/actions/runs/8656558784/job/23737409762
+        return false if other.nil?
+
         cop_name == other.cop_name && (!qualified? || department == other.department)
       end
 
