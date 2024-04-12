@@ -98,13 +98,6 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'supports disabling cops with multiple levels in department name' do
-      # Workaround for the following build error:
-      # https://app.circleci.com/pipelines/github/rubocop/rubocop/11035/workflows/d1f7575e-614f-437b-9d83-494fc94c78b4/jobs/309630
-      #
-      # Fix to the rubocop-rspec_rails monkey patch is required.
-      # https://github.com/rubocop/rubocop-rspec_rails/pull/14
-      skip 'Fix to the rubocop-rspec-rails monkey patch is required.'
-
       disabled_lines = disabled_lines_of_cop('RSpec/Rails/HttpStatus')
       expected_part = (51..53).to_a
       expect(disabled_lines & expected_part).to eq(expected_part)
