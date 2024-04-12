@@ -404,6 +404,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         $stdout.string.include?('F:  2:  7: Lint/Syntax: unexpected token tINTEGER')
       ).to be(true)
     end
+
+    it '`Naming/FileName` must be be disabled for global offenses' do
+      create_file('Example.rb', <<~RUBY)
+        # rubocop:disable Naming/FileName
+      RUBY
+
+      expect(cli.run(['--format', 'simple', 'Example.rb'])).to eq(1)
+      expect($stdout.string.include?('Naming/FileName:')).to be(false)
+    end
+
+    it '`Naming/FileName` must be be enabled if directive comment is on unrelated line' do
+      create_file('Example.rb', <<~RUBY)
+        # Prelude
+        # rubocop:disable Naming/FileName
+      RUBY
+
+      expect(cli.run(['--format', 'simple', 'Example.rb'])).to eq(1)
+      expect($stdout.string.include?('C:  1:  1: Naming/FileName:')).to be(true)
+    end
   end
 
   describe 'rubocop:disable comment' do
