@@ -297,7 +297,7 @@ module RuboCop
       end
 
       def resolve_badge(given_badge, real_badge, source_path)
-        unless given_badge.match?(real_badge)
+        if real_badge && !given_badge.match?(real_badge)
           path = PathUtil.smart_path(source_path)
           warn "#{path}: #{given_badge} has the wrong namespace - " \
                "replace it with #{given_badge.with_department(real_badge.department)}"
