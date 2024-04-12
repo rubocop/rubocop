@@ -392,7 +392,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
   end
 
   context 'when Regex is set' do
-    let(:cop_config) { { 'Regex' => /\A[aeiou]\z/i } }
+    let(:cop_config) { { 'Regex' => '\A[aeiou]\z' } }
 
     context 'with a matching name' do
       it 'does not register an offense' do
@@ -406,7 +406,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
       it 'registers an offense' do
         expect_offense(<<~RUBY, 'z.rb')
           print 1
-          ^{} `z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.
+          ^{} `z.rb` should match `\\A[aeiou]\\z`.
         RUBY
       end
     end
