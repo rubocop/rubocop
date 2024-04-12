@@ -90,6 +90,46 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when using `case-in-else` with all break branches' do
+      expect_offense(<<~RUBY)
+        while x > 0
+        ^^^^^^^^^^^ This loop will have at most one iteration.
+          case x
+          in 1
+            break
+          else
+            raise MyError
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `case` match without `else`' do
+      expect_no_offenses(<<~RUBY)
+        while x > 0
+          case x
+          in 1
+            break
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `case-in-else` and not all branches are breaking' do
+      expect_no_offenses(<<~RUBY)
+        while x > 0
+          case x
+          in 1
+            break
+          in 2
+            do_something
+          else
+            raise MyError
+          end
+        end
+      RUBY
+    end
   end
 
   context 'with preceding continue statements' do
@@ -123,6 +163,21 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
 
           case x
           when 1
+            break
+          else
+            raise MyError
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `case-in-else` with all break branches' do
+      expect_no_offenses(<<~RUBY)
+        while x > 0
+          redo if x.odd?
+
+          case x
+          in 1
             break
           else
             raise MyError

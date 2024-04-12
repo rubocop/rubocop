@@ -160,7 +160,7 @@ module RuboCop
             break_statement && !preceded_by_continue_statement?(break_statement)
           when :if
             check_if(node)
-          when :case
+          when :case, :case_match
             check_case(node)
           else
             false
@@ -178,7 +178,13 @@ module RuboCop
           return false unless else_branch
           return false unless break_statement?(else_branch)
 
-          node.when_branches.all? { |branch| branch.body && break_statement?(branch.body) }
+          branches = if node.case_type?
+                       node.when_branches
+                     else
+                       node.in_pattern_branches
+                     end
+
+          branches.all? { |branch| branch.body && break_statement?(branch.body) }
         end
 
         def preceded_by_continue_statement?(break_statement)
