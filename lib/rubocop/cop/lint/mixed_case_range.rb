@@ -47,8 +47,10 @@ module RuboCop
 
         def on_regexp(node)
           each_unsafe_regexp_range(node) do |loc|
+            next unless (replacement = regexp_range(loc.source))
+
             add_offense(loc) do |corrector|
-              corrector.replace(loc, rewrite_regexp_range(loc.source))
+              corrector.replace(loc, replacement)
             end
           end
         end
@@ -99,10 +101,13 @@ module RuboCop
           end
         end
 
-        def rewrite_regexp_range(source)
+        def regexp_range(source)
           open, close = source.split('-')
-          first = [open, range_for(open).end]
-          second = [range_for(close).begin, close]
+          return unless (open_range = range_for(open))
+          return unless (close_range = range_for(close))
+
+          first = [open, open_range.end]
+          second = [close_range.begin, close]
           "#{first.uniq.join('-')}#{second.uniq.join('-')}"
         end
       end
