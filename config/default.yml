@@ -1703,7 +1703,6 @@ Lint/Debugger:
   DebuggerRequires:
     debug.rb:
       - debug/open
-      - debug/open_nonstop
       - debug/start
 
 Lint/DeprecatedClassMethods:
