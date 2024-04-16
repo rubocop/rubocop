@@ -5240,6 +5240,13 @@ Style/Send:
   Enabled: false
   VersionAdded: '0.33'
 
+Style/SendWithLiteralMethodName:
+  Description: 'Detects the use of the `public_send` method with a static method name argument.'
+  Enabled: pending
+  Safe: false
+  AllowSend: true
+  VersionAdded: '<<next>>'
+
 Style/SignalException:
   Description: 'Checks for proper usage of fail and raise.'
   StyleGuide: '#prefer-raise-over-fail'
