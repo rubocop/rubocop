@@ -11,6 +11,18 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12843](https://github.com/rubocop/rubocop/issues/12843): Fix an error for `Lint/MixedCaseRange` when a character between `Z` and `a` is used in the regexp range. ([@koic][])
+* [#12846](https://github.com/rubocop/rubocop/issues/12846): Fix an error for `RuboCop::Lockfile` when there is no Bundler environment. ([@koic][])
+* [#12832](https://github.com/rubocop/rubocop/issues/12832): Fix an error for `Style/ArgumentsForwarding` when using block arg in nested method definitions. ([@koic][])
+* [#12841](https://github.com/rubocop/rubocop/pull/12841): Fix false negatives for `Lint/UnreachableLoop` when using pattern matching. ([@koic][])
+* [#12835](https://github.com/rubocop/rubocop/issues/12835): Allow global offenses to be disabled by directive comments. ([@earlopain][])
+
+### Changes
+
+* [#12845](https://github.com/rubocop/rubocop/pull/12845): Exclude `debug/open_nonstop` from `Lint/Debugger` by default. ([@koic][])
+
 ## 1.63.1 (2024-04-10)
 
 ### Bug fixes
