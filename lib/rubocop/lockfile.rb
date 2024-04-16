@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-begin
-  require 'bundler'
-rescue LoadError
-  nil
-end
-
 module RuboCop
   # Encapsulation of a lockfile for use when checking for gems.
   # Does not actually resolve gems, just parses the lockfile.
@@ -13,7 +7,7 @@ module RuboCop
   class Lockfile
     # @param [String, Pathname, nil] lockfile_path
     def initialize(lockfile_path = nil)
-      lockfile_path ||= defined?(Bundler) ? Bundler.default_lockfile : nil
+      lockfile_path ||= Bundler.default_lockfile if bundler_lock_parser_defined?
 
       @lockfile_path = lockfile_path
     end
@@ -66,14 +60,18 @@ module RuboCop
     def parser
       return @parser if defined?(@parser)
 
-      @parser = if defined?(::Bundler) && @lockfile_path
+      @parser = if @lockfile_path
                   begin
                     lockfile = ::Bundler.read_file(@lockfile_path)
-                    lockfile ? ::Bundler::LockfileParser.new(lockfile) : nil
+                    ::Bundler::LockfileParser.new(lockfile) if lockfile
                   rescue ::Bundler::BundlerError
                     nil
                   end
                 end
+    end
+
+    def bundler_lock_parser_defined?
+      Object.const_defined?(:Bundler) && Bundler.const_defined?(:LockfileParser)
     end
   end
 end
