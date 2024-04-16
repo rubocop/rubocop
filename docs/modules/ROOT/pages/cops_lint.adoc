@@ -922,7 +922,7 @@ require 'my_debugger/start'
 | 
 
 | DebuggerRequires
-| `{"debug.rb"=>["debug/open", "debug/open_nonstop", "debug/start"]}`
+| `{"debug.rb"=>["debug/open", "debug/start"]}`
 | 
 |===
 
