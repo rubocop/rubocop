@@ -48,10 +48,18 @@ module RuboCop
       source_buffer = Parser::Source::Buffer.new(@filename)
       source_buffer.source = File.read(@filename, encoding: Encoding::UTF_8)
       offenses.map! do |o|
-        location = Parser::Source::Range.new(source_buffer,
-                                             o['location']['begin_pos'],
-                                             o['location']['end_pos'])
+        location = location_from_source_buffer(o, source_buffer)
         Cop::Offense.new(o['severity'], location, o['message'], o['cop_name'], o['status'].to_sym)
+      end
+    end
+
+    def location_from_source_buffer(offense, source_buffer)
+      begin_pos = offense['location']['begin_pos']
+      end_pos = offense['location']['end_pos']
+      if begin_pos.zero? && end_pos.zero?
+        Cop::Offense::NO_LOCATION
+      else
+        Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
       end
     end
   end
