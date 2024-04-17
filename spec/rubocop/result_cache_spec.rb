@@ -113,6 +113,19 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           expect(cache.load[0].status).to eq(:new_status)
         end
       end
+
+      context 'a global offense' do
+        let(:no_location) { RuboCop::Cop::Offense::NO_LOCATION }
+        let(:global_offense) do
+          RuboCop::Cop::Offense.new(:warning, no_location, 'empty file', 'Lint/EmptyFile',
+                                    :unsupported)
+        end
+
+        it 'serializes the range correctly' do
+          cache.save([global_offense])
+          expect(cache.load[0].location).to eq(no_location)
+        end
+      end
     end
 
     context 'when no option is given' do
