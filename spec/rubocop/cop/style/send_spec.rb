@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::Send, :config do
     context 'and with a receiver' do
       it 'registers an offense for an invocation with args' do
         expect_offense(<<~RUBY)
-          Object.send(:inspect)
+          Object.send(foo)
                  ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
         RUBY
       end
@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::Style::Send, :config do
       context 'when using safe navigation operator' do
         it 'registers an offense for an invocation with args' do
           expect_offense(<<~RUBY)
-            Object&.send(:inspect)
+            Object&.send(foo)
                     ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
           RUBY
         end
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::Cop::Style::Send, :config do
     context 'and without a receiver' do
       it 'registers an offense for an invocation with args' do
         expect_offense(<<~RUBY)
-          send(:inspect)
+          send(foo)
           ^^^^ Prefer `Object#__send__` or `Object#public_send` to `send`.
         RUBY
       end
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::Send, :config do
   context 'with __send__' do
     context 'and with a receiver' do
       it 'does not register an offense for an invocation with args' do
-        expect_no_offenses('Object.__send__(:inspect)')
+        expect_no_offenses('Object.__send__(foo)')
       end
 
       it 'does not register an offense for an invocation without args' do
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Style::Send, :config do
 
     context 'and without a receiver' do
       it 'does not register an offense for an invocation with args' do
-        expect_no_offenses('__send__(:inspect)')
+        expect_no_offenses('__send__(foo)')
       end
 
       it 'does not register an offense for an invocation without args' do
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::Send, :config do
   context 'with public_send' do
     context 'and with a receiver' do
       it 'does not register an offense for an invocation with args' do
-        expect_no_offenses('Object.public_send(:inspect)')
+        expect_no_offenses('Object.public_send(foo)')
       end
 
       it 'does not register an offense for an invocation without args' do
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::Send, :config do
 
     context 'and without a receiver' do
       it 'does not register an offense for an invocation with args' do
-        expect_no_offenses('public_send(:inspect)')
+        expect_no_offenses('public_send(foo)')
       end
 
       it 'does not register an offense for an invocation without args' do
