@@ -254,8 +254,8 @@ Run `rubocop --lsp` command from LSP client.
 When the language server is started, the command displays the language server's PID:
 
 ```console
-$ ps aux | grep rubocop
-user             17414   0.0  0.2  5557716 144376   ??  Ss    4:48PM   0:02.13 /Users/user/.rbenv/versions/3.2.2/lib/ruby/gems/3.2.0/bin/rubocop --lsp
+$ ps aux | grep 'rubocop --lsp'
+user             17414   0.0  0.2  5557716 144376   ??  Ss    4:48PM   0:02.13 rubocop --lsp /Users/user/src/github.com/rubocop/rubocop
 ```
 
 NOTE: `rubocop --lsp` is for starting LSP client, so users don't manually execute it.
