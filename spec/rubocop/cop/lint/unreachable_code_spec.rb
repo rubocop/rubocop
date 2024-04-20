@@ -97,6 +97,24 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
       RUBY
     end
 
+    it "registers an offense for `#{t}` in all `case` pattern branches" do
+      expect_offense(wrap(<<~RUBY))
+        case cond
+        in 1
+          something
+          #{t}
+        in 2
+          something2
+          #{t}
+        else
+          something3
+          #{t}
+        end
+        bar
+        ^^^ Unreachable code detected.
+      RUBY
+    end
+
     it "accepts code with conditional `#{t}`" do
       expect_no_offenses(wrap(<<~RUBY))
         #{t} if cond
@@ -176,6 +194,20 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
           something
           #{t}
         when 2
+          something2
+          #{t}
+        end
+        bar
+      RUBY
+    end
+
+    it "accepts `#{t}` is in `case` pattern branch without else" do
+      expect_no_offenses(wrap(<<~RUBY))
+        case cond
+        in 1
+          something
+          #{t}
+        in 2
           something2
           #{t}
         end

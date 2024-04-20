@@ -71,7 +71,7 @@ module RuboCop
             expressions.any? { |expr| flow_expression?(expr) }
           when :if
             check_if(node)
-          when :case
+          when :case, :case_match
             check_case(node)
           else
             false
@@ -89,7 +89,9 @@ module RuboCop
           return false unless else_branch
           return false unless flow_expression?(else_branch)
 
-          node.when_branches.all? { |branch| branch.body && flow_expression?(branch.body) }
+          branches = node.case_type? ? node.when_branches : node.in_pattern_branches
+
+          branches.all? { |branch| branch.body && flow_expression?(branch.body) }
         end
       end
     end
