@@ -39,6 +39,21 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         expect_no_corrections
       end
     end
+
+    context 'allow access modifiers on attrs' do
+      let(:cop_config) { { 'AllowModifiersOnAttrs' => true } }
+
+      it 'accepts when argument to #{access_modifier} is a attr_*' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            #{access_modifier} attr_reader :foo
+            #{access_modifier} attr_writer :bar
+            #{access_modifier} attr_accessor :baz
+            #{access_modifier} attr :qux
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when `group` is configured' do
@@ -198,6 +213,31 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           RUBY
 
           expect_no_corrections
+        end
+      end
+
+      %w[attr attr_reader attr_writer attr_accessor].each do |attr_method|
+        context "when method is modified by inline modifier with disallowed #{attr_method}" do
+          let(:cop_config) do
+            { 'AllowModifiersOnAttrs' => false }
+          end
+
+          it 'registers and autocorrects an offense' do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              class Test
+                #{access_modifier} #{attr_method} :foo
+                ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              class Test
+              #{access_modifier}
+
+              #{attr_method} :foo
+              end
+            RUBY
+          end
         end
       end
 
