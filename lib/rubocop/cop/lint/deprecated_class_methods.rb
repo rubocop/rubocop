@@ -52,7 +52,7 @@ module RuboCop
         # @!method deprecated_class_method?(node)
         def_node_matcher :deprecated_class_method?, <<~PATTERN
           {
-            (send (const {cbase nil?} {:ENV}) {:clone :dup :freeze})
+            (send (const {cbase nil?} :ENV) {:clone :dup :freeze})
             (send (const {cbase nil?} {:File :Dir}) :exists? _)
             (send (const {cbase nil?} :Socket) {:gethostbyaddr :gethostbyname} ...)
             (send nil? :attr _ boolean)
