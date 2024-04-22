@@ -11,6 +11,16 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12857](https://github.com/rubocop/rubocop/pull/12857): Fix false negatives for `Lint/UnreachableCode` when using pattern matching. ([@koic][])
+* [#12852](https://github.com/rubocop/rubocop/issues/12852): Fix an error for `Lint/EmptyFile` in formatters when using cache. ([@earlopain][])
+* [#12848](https://github.com/rubocop/rubocop/issues/12848): Fix an error that occurs in `RuboCop::Lockfile` when the constant Bundler is uninitialized. ([@koic][])
+
+### Changes
+
+* [#12855](https://github.com/rubocop/rubocop/pull/12855): Set custom program name for the built-in LSP server. ([@koic][])
+
 ## 1.63.2 (2024-04-16)
 
 ### Bug fixes
