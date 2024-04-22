@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.63.3 (2024-04-22)
+
 ### Bug fixes
 
 * [#12857](https://github.com/rubocop/rubocop/pull/12857): Fix false negatives for `Lint/UnreachableCode` when using pattern matching. ([@koic][])
