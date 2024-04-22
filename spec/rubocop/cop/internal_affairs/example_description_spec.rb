@@ -77,6 +77,21 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
       RUBY
     end
 
+    it 'registers an offense when given an improper description for `register`' do
+      expect_offense(<<~RUBY)
+        it 'register the case' do
+           ^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_offense`.
+          expect_offense('code')
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        it 'registers the case' do
+          expect_offense('code')
+        end
+      RUBY
+    end
+
     it 'does not register an offense when given a proper description' do
       expect_no_offenses(<<~RUBY)
         it 'finds an offense' do

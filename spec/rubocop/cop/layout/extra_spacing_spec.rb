@@ -461,7 +461,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'register offenses and correct consecutive operator assignments which are not aligned' do
+    it 'registers offenses and correct consecutive operator assignments which are not aligned' do
       expect_offense(<<~RUBY)
         a += 1
         bb = 2
@@ -512,7 +512,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'register offenses and correct consecutive attribute assignments which are not aligned' do
+    it 'registers offenses and correct consecutive attribute assignments which are not aligned' do
       expect_offense(<<~RUBY)
         a.attr = 1
         bb &&= 2
@@ -538,7 +538,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
       RUBY
     end
 
-    it 'register offenses and correct complex nested assignments' do
+    it 'registers offenses and correct complex nested assignments' do
       expect_offense(<<~RUBY)
         def batch
           @areas = params[:param].map {

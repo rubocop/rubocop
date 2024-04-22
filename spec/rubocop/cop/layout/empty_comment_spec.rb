@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     RUBY
   end
 
-  it 'register offenses and correct multiple empty comments next to code' do
+  it 'registers offenses and correct multiple empty comments next to code' do
     expect_offense(<<~RUBY)
       def foo #
               ^ Source code comment is empty.
@@ -159,7 +159,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     RUBY
   end
 
-  it 'register offenses and correct multiple aligned empty comments next to code' do
+  it 'registers offenses and correct multiple aligned empty comments next to code' do
     expect_offense(<<~RUBY)
       def foo     #
                   ^ Source code comment is empty.

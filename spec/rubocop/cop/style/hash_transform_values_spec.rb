@@ -238,7 +238,7 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
       RUBY
     end
 
-    it 'register and corrects an offense _.to_h{...} when value is a hash literal and is enclosed in braces' do
+    it 'registers and corrects an offense _.to_h{...} when value is a hash literal and is enclosed in braces' do
       expect_offense(<<~RUBY)
         {a: 1, b: 2}.to_h { |key, val| [key, { value: val }] }
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.
@@ -249,7 +249,7 @@ RSpec.describe RuboCop::Cop::Style::HashTransformValues, :config do
       RUBY
     end
 
-    it 'register and corrects an offense _.to_h{...} when value is a hash literal and is not enclosed in braces' do
+    it 'registers and corrects an offense _.to_h{...} when value is a hash literal and is not enclosed in braces' do
       expect_offense(<<~RUBY)
         {a: 1, b: 2}.to_h { |key, val| [key, value: val] }
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `transform_values` over `to_h {...}`.

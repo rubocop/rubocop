@@ -280,7 +280,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'register and correct multiple offenses for multiple sets of ref brackets' do
+    it 'registers and correct multiple offenses for multiple sets of ref brackets' do
       expect_offense(<<~RUBY)
         b[ :key]["foo"  ][   0 ]
           ^ Do not use space inside reference brackets.

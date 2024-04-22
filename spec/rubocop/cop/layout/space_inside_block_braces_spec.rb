@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     RUBY
   end
 
-  it 'register offenses and correct both braces without inner space' do
+  it 'registers offenses and correct both braces without inner space' do
     expect_offense(<<~RUBY)
       a {}
       b { }

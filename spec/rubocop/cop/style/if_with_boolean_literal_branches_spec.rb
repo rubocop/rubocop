@@ -436,7 +436,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithBooleanLiteralBranches, :config do
       RUBY
     end
 
-    it 'register and corrects an offense when using `if (foo? || bar) && baz?` with boolean literal branches' do
+    it 'registers and corrects an offense when using `if (foo? || bar) && baz?` with boolean literal branches' do
       expect_offense(<<~RUBY)
         if (foo? || bar) && baz?
         ^^ Remove redundant `if` with boolean literal branches.
