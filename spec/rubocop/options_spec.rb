@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                cops. Only valid for --format junit.
                   --display-only-fail-level-offenses
                                                Only output offense messages at
-                                               the specified --fail-level or above
+                                               the specified --fail-level or above.
                   --display-only-correctable   Only output correctable offense messages.
                   --display-only-safe-correctable
                                                Only output safe-correctable offense messages
@@ -213,8 +213,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           expected_help += <<~OUTPUT
 
             Profiling Options:
-                    --profile                    Profile rubocop
-                    --memory                     Profile rubocop memory usage
+                    --profile                    Profile rubocop.
+                    --memory                     Profile rubocop memory usage.
           OUTPUT
         end
 
