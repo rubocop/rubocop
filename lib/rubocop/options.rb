@@ -573,7 +573,7 @@ module RuboCop
                                          'cops. Only valid for --format junit.'],
       display_only_fail_level_offenses:
                                         ['Only output offense messages at',
-                                         'the specified --fail-level or above'],
+                                         'the specified --fail-level or above.'],
       display_only_correctable:         ['Only output correctable offense messages.'],
       display_only_safe_correctable:    ['Only output safe-correctable offense messages',
                                          'when combined with --display-only-correctable.'],
@@ -636,8 +636,8 @@ module RuboCop
       raise_cop_error:                  ['Raise cop-related errors with cause and location.',
                                          'This is used to prevent cops from failing silently.',
                                          'Default is false.'],
-      profile:                          'Profile rubocop',
-      memory:                           'Profile rubocop memory usage'
+      profile:                          'Profile rubocop.',
+      memory:                           'Profile rubocop memory usage.'
     }.freeze
   end
   # rubocop:enable Metrics/ModuleLength
