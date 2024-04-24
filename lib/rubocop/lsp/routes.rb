@@ -73,9 +73,7 @@ module RuboCop
       end
 
       handle 'textDocument/diagnostic' do |request|
-        doc = request[:params][:textDocument]
-        result = diagnostic(doc[:uri], doc[:text])
-        @server.write(result)
+        # no-op, diagnostics are handled in textDocument/didChange
       end
 
       handle 'textDocument/didChange' do |request|
