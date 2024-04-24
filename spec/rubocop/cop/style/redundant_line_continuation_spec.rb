@@ -114,6 +114,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when line continuations involve `return` with a return value' do
+    expect_no_offenses(<<~'RUBY')
+      return \
+        foo
+    RUBY
+  end
+
+  it 'registers an offense when line continuations involve `return` with a parenthesized return value' do
+    expect_offense(<<~'RUBY')
+      return(\
+             ^ Redundant line continuation.
+        foo
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      return(
+        foo
+      )
+    RUBY
+  end
+
   it 'registers an offense when line continuations with `if`' do
     expect_offense(<<~'RUBY')
       if foo \
