@@ -137,7 +137,9 @@ module RuboCop
         #   do_something \
         #     argument
         def method_with_argument?(current_token, next_token)
-          current_token.type == :tIDENTIFIER && ARGUMENT_TYPES.include?(next_token.type)
+          return false if current_token.type != :tIDENTIFIER && current_token.type != :kRETURN
+
+          ARGUMENT_TYPES.include?(next_token.type)
         end
 
         # rubocop:disable Metrics/AbcSize
