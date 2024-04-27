@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+begin
+  # We might not be running with `bundle exec`, so we need to pull in Bundler ourselves,
+  # in order to use `Bundler::LockfileParser`.
+  require 'bundler'
+rescue LoadError
+  nil
+end
+
 module RuboCop
   # Encapsulation of a lockfile for use when checking for gems.
   # Does not actually resolve gems, just parses the lockfile.
@@ -7,7 +15,11 @@ module RuboCop
   class Lockfile
     # @param [String, Pathname, nil] lockfile_path
     def initialize(lockfile_path = nil)
-      lockfile_path ||= Bundler.default_lockfile if bundler_lock_parser_defined?
+      lockfile_path ||= begin
+        ::Bundler.default_lockfile if bundler_lock_parser_defined?
+      rescue ::Bundler::GemfileNotFound
+        nil # We might not be a folder with a Gemfile, but that's okay.
+      end
 
       @lockfile_path = lockfile_path
     end
