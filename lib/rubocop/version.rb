@@ -42,9 +42,9 @@ module RuboCop
     # @api private
     def self.parser_version
       config_path = ConfigFinder.find_config_path(Dir.pwd)
-      yaml = YAML.safe_load(
-        File.read(config_path), permitted_classes: [Regexp, Symbol], aliases: true
-      )
+      yaml = Util.silence_warnings do
+        ConfigLoader.load_yaml_configuration(config_path)
+      end
 
       if yaml.dig('AllCops', 'ParserEngine') == 'parser_prism'
         require 'prism'

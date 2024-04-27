@@ -408,6 +408,20 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect(output.include?(pending_cop_warning)).to be(false)
       end
     end
+
+    context 'when the config contains erb' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          <% if true %>
+          <% end %>
+        YAML
+      end
+
+      it 'exits cleanly' do
+        expect(cli.run(['-V'])).to eq(0)
+        expect($stdout.string.include?(RuboCop::Version::STRING)).to be(true)
+      end
+    end
   end
 
   describe '--only' do
