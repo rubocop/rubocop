@@ -11,6 +11,13 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12871](https://github.com/rubocop/rubocop/pull/12871): Fix an error for `rubocop -V` when `.rubocop.yml` contains ERB. ([@earlopain][])
+* [#12862](https://github.com/rubocop/rubocop/issues/12862): Fix a false positive for `Style/RedundantLineContinuation` when line continuations involve `return` with a return value. ([@koic][])
+* [#12664](https://github.com/rubocop/rubocop/pull/12664): Fix handling of `textDocument/diagnostic`. ([@muxcmux][])
+* [#12865](https://github.com/rubocop/rubocop/issues/12865): Fix Rails Cops, which weren't reporting any violations unless running with `bundle exec`. ([@amomchilov][])
+
 ## 1.63.3 (2024-04-22)
 
 ### Bug fixes
@@ -7736,3 +7743,4 @@
 [@amomchilov]: https://github.com/amomchilov
 [@Hiroto-Iizuka]: https://github.com/Hiroto-Iizuka
 [@boardfish]: https://github.com/boardfish
+[@muxcmux]: https://github.com/muxcmux
