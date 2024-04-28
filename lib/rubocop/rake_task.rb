@@ -44,7 +44,7 @@ module RuboCop
     def run_cli(verbose, options)
       # We lazy-load RuboCop so that the task doesn't dramatically impact the
       # load time of your Rakefile.
-      require 'rubocop'
+      require_relative '../rubocop'
 
       cli = CLI.new
       puts 'Running RuboCop...' if verbose
