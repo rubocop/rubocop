@@ -72,6 +72,25 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     RUBY
   end
 
+  context 'when the `CountAsOne` config is invalid' do
+    before do
+      cop_config['CountAsOne'] = 'config'
+    end
+
+    let(:source) { <<~RUBY }
+      something do
+      ^^^^^^^^^^^^ Block has too many lines. [3/2]
+        a = 1
+        a = 2
+        a = 3
+      end
+    RUBY
+
+    it 'raises `RuboCop::Warning`' do
+      expect { expect_offense(source) }.to raise_error(RuboCop::Warning)
+    end
+  end
+
   context 'when using numbered parameter', :ruby27 do
     it 'rejects a block with more than 5 lines' do
       expect_offense(<<~RUBY)

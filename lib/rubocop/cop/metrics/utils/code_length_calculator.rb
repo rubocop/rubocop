@@ -51,8 +51,8 @@ module RuboCop
               when :method_call
                 ->(node) { node.call_type? }
               else
-                raise ArgumentError, "Unknown foldable type: #{type.inspect}. " \
-                                     "Valid foldable types are: #{FOLDABLE_TYPES.join(', ')}."
+                raise Warning, "Unknown foldable type: #{type.inspect}. " \
+                               "Valid foldable types are: #{FOLDABLE_TYPES.join(', ')}."
               end
             end
           end
