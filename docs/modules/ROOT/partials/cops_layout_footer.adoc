@@ -1,17 +1,16 @@
-
-== AllowMultilineFinalElement
+==  AllowMultilineFinalElement
 
 `AllowMultilineFinalElement` is a boolean option (`false` by default) that
 is available on the following Layout cops:
 
-  * FirstArrayElementLineBreak
-  * FirstHashElementLineBreak
-  * FirstMethodArgumentLineBreak
-  * FirstMethodParameterLineBreak
-  * MultilineArrayLineBreaks
-  * MultilineHashKeyLineBreaks
-  * MultilineMethodArgumentLineBreaks
-  * MultilineMethodParameterLineBreaks
+* FirstArrayElementLineBreak
+* FirstHashElementLineBreak
+* FirstMethodArgumentLineBreak
+* FirstMethodParameterLineBreak
+* MultilineArrayLineBreaks
+* MultilineHashKeyLineBreaks
+* MultilineMethodArgumentLineBreaks
+* MultilineMethodParameterLineBreaks
 
 Those cops ignore their respective expressions if all or the elements of
 the expression are on the same line. If `AllowMultilineFinalElement` is
@@ -38,64 +37,64 @@ by their respective cops, but that are considered ok when setting
 
 # FirstArrayElementLineBreak and MultilineArrayLineBreaks
 
-  # Array of error containing a single error
-  errors = [{
-    error: "Something went wrong",
-    error_code: error_code,
-  }]
+# Array of error containing a single error
+errors = [{
+  error: "Something went wrong",
+  error_code: error_code,
+}]
 
-  # Array of flags, with last flag computed
-  flags = [:a, :b, foo(
-    bar,
-    baz
-  )]
+# Array of flags, with last flag computed
+flags = [:a, :b, foo(
+  bar,
+  baz
+)]
 
 # FirstHashElementLineBreak and MultilineHashKeyLineBreaks
-  hash = { foo: 1, bar: 2, baz: {
-    c: 1,
-    d: 2
-  }}
+hash = { foo: 1, bar: 2, baz: {
+  c: 1,
+  d: 2
+}}
 
 # FirstMethodArgumentLineBreak and MultilineMethodArgumentLineBreaks
-  single_argument_hash_method_call({
-    a: 1,
-    b: 2,
-    c: 3
-  })
+single_argument_hash_method_call({
+  a: 1,
+  b: 2,
+  c: 3
+})
 
-  # Call some method, with a long last argument, that is a hash
-  write_log(:error,  {
-    "job_class" => job.class.name,
-    "resource" => resource.id,
-    "message" => "Something wrong happened here",
-  })
+# Call some method, with a long last argument, that is a hash
+write_log(:error,  {
+  "job_class" => job.class.name,
+  "resource" => resource.id,
+  "message" => "Something wrong happened here",
+})
 
-  # Rails before action with long last argument
-  before_action :load_something, only: [
-    :show,
-    :list,
-    :some_other_long_action_name,
-  ]
+# Rails before action with long last argument
+before_action :load_something, only: [
+  :show,
+  :list,
+  :some_other_long_action_name,
+]
 
-  # Rails validation with inline callback
-  validate :name, presence: true, on: [:create, :activate], if: -> {
-    active? && some_relationship.any?
-  }
+# Rails validation with inline callback
+validate :name, presence: true, on: [:create, :activate], if: -> {
+  active? && some_relationship.any?
+}
 
-  # Rails after commit hook, with some Sorbet bindings
-  after_commit :geolocate, unless: -> {
-    T.bind(self, Address)
-    archived? || invalid?
-  }
+# Rails after commit hook, with some Sorbet bindings
+after_commit :geolocate, unless: -> {
+  T.bind(self, Address)
+  archived? || invalid?
+}
 
 # FirstMethodParameterLineBreak and MultilineMethodParameterLineBreaks
 
-  # Method with a long last parameter default value
-  def foo(foo, bar, baz = {
-    a: 1,
-    b: 2,
-    c: 3
-  })
-    do_something
-  end
+# Method with a long last parameter default value
+def foo(foo, bar, baz = {
+  a: 1,
+  b: 2,
+  c: 3
+})
+  do_something
+end
 ----
