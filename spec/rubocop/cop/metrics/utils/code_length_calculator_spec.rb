@@ -469,7 +469,7 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
 
       expect do
         described_class.new(source.ast, source, foldable_types: %i[unknown]).calculate
-      end.to raise_error(ArgumentError, /Unknown foldable type/)
+      end.to raise_error(RuboCop::Warning, /Unknown foldable type/)
     end
   end
 end
