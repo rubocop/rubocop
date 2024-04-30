@@ -1,0 +1,1 @@
+* [#12877](https://github.com/rubocop/rubocop/pull/12877): Fix an infinite loop error for `Layout/FirstArgumentIndentation` when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArrayAlignment`. ([@koic][])

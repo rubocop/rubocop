@@ -92,6 +92,8 @@ module RuboCop
               'in an array, relative to %<base_description>s.'
 
         def on_array(node)
+          return if style != :consistent && enforce_first_argument_with_fixed_indentation?
+
           check(node, nil) if node.loc.begin
         end
 
