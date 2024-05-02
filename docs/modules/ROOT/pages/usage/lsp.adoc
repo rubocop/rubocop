@@ -247,6 +247,31 @@ For detailed instructions on setting the parameter, please refer to the configur
 
 NOTE: The `layoutMode` parameter was introduced in RuboCop 1.55.
 
+== Enable YJIT
+
+YJIT, a Ruby JIT compiler, has been supported since Ruby 3.1.
+In an LSP client, you can enable YJIT by launching `rubocop --lsp` with the `RUBY_YJIT_ENABLE=1` environment variable using the `env` command:
+
+```sh
+env RUBY_YJIT_ENABLE=1 bundle exec rubocop --lsp
+```
+
+Below is an example for Emacs's Eglot:
+
+```lisp
+(add-to-list 'eglot-server-programs '(ruby-mode . ("env" "RUBY_YJIT_ENABLE=1" "bundle" "exec" "rubocop" "--lsp")))
+```
+
+The console of the LSP client will display `+YJIT`:
+
+```console
+RuboCop 1.63.4 language server +YJIT initialized, PID 13501
+```
+
+For more details, please refer to the respective LSP configuration documentation.
+In some cases, like with vscode-rubocop, it may be available as a built-in option:
+https://github.com/rubocop/vscode-rubocop#rubocopyjitenabled
+
 == Run as a Language Server
 
 Run `rubocop --lsp` command from LSP client.

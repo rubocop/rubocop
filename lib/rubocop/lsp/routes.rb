@@ -60,8 +60,9 @@ module RuboCop
 
       handle 'initialized' do |_request|
         version = RuboCop::Version::STRING
+        yjit = Object.const_defined?('RubyVM::YJIT') && RubyVM::YJIT.enabled? ? ' +YJIT' : ''
 
-        Logger.log("RuboCop #{version} language server initialized, PID #{Process.pid}")
+        Logger.log("RuboCop #{version} language server#{yjit} initialized, PID #{Process.pid}")
       end
 
       handle 'shutdown' do |request|
