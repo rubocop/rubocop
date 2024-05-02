@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
           expect_offense(<<~RUBY)
             # >> 2
               42
-              ^^ Indent this node
+              ^^ Indent this node.
           RUBY
 
           expect_correction(<<~RUBY, loop: false)
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
           expect_offense(<<~RUBY)
             # << 3
                 42
-                ^^ Indent this node
+                ^^ Indent this node.
           RUBY
 
           expect_correction(<<~RUBY, loop: false)
@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
         expect_offense(<<~RUBY)
           # >> #{column_delta}
           begin
-          ^^^^^ Indent this node
+          ^^^^^ Indent this node.
             #{start_heredoc}
           a
           b
@@ -80,7 +80,7 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
         expect_offense(<<~RUBY)
           # >> 2
           begin
-          ^^^^^ Indent this node
+          ^^^^^ Indent this node.
             <<DOC
           single line
           DOC
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
         expect_offense(<<~RUBY)
           # >> 2
           begin
-          ^^^^^ Indent this node
+          ^^^^^ Indent this node.
             dstr =
           'a
           b

@@ -214,7 +214,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use the return of the conditional for variable assignment and comparison.'
-        ASSIGN_TO_CONDITION_MSG = 'Assign variables inside of conditionals'
+        ASSIGN_TO_CONDITION_MSG = 'Assign variables inside of conditionals.'
         VARIABLE_ASSIGNMENT_TYPES = %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
         ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES + %i[and_asgn or_asgn op_asgn masgn].freeze
         LINE_LENGTH = 'Layout/LineLength'

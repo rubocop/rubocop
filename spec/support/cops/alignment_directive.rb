@@ -10,7 +10,7 @@ module RuboCop
       class AlignmentDirective < RuboCop::Cop::Base
         extend AutoCorrector
 
-        MSG = 'Indent this node'
+        MSG = 'Indent this node.'
 
         def on_new_investigation
           processed_source.ast_with_comments.each do |node, comments|

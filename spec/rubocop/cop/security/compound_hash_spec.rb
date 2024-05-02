@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Security::CompoundHash, :config do
     expect_offense(<<~RUBY)
       def hash
         [1].hash
-        ^^^^^^^^ Delegate hash directly without wrapping in an array when only using a single value
+        ^^^^^^^^ Delegate hash directly without wrapping in an array when only using a single value.
       end
     RUBY
   end
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Security::CompoundHash, :config do
   it 'registers an offense if .hash is called on any elements of a hashed array' do
     expect_offense(<<~RUBY)
       [1, 2.hash, 3].hash
-          ^^^^^^ Calling .hash on elements of a hashed array is redundant
+          ^^^^^^ Calling .hash on elements of a hashed array is redundant.
     RUBY
   end
 
