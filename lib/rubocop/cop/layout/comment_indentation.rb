@@ -160,7 +160,7 @@ module RuboCop
         end
 
         def two_alternatives?(line)
-          /^\s*(else|elsif|when|rescue|ensure)\b/.match?(line)
+          /^\s*(else|elsif|when|in|rescue|ensure)\b/.match?(line)
         end
       end
     end
