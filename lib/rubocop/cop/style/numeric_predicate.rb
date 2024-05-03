@@ -118,12 +118,14 @@ module RuboCop
 
           return unless numeric && operator && replacement_supported?(operator)
 
-          [numeric, replacement(numeric, operator)]
+          [numeric, replacement(node, numeric, operator)]
         end
 
-        def replacement(numeric, operation)
+        def replacement(node, numeric, operation)
           if style == :predicate
             [parenthesized_source(numeric), REPLACEMENTS.invert[operation.to_s]].join('.')
+          elsif negated?(node)
+            "(#{numeric.source} #{REPLACEMENTS[operation.to_s]} 0)"
           else
             [numeric.source, REPLACEMENTS[operation.to_s], 0].join(' ')
           end
@@ -155,6 +157,12 @@ module RuboCop
 
             [numeric, comparison]
           end
+        end
+
+        def negated?(node)
+          return false unless (parent = node.parent)
+
+          parent.send_type? && parent.method?(:!)
         end
 
         # @!method predicate(node)
