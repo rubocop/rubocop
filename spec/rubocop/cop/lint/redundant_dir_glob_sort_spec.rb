@@ -87,26 +87,26 @@ RSpec.describe RuboCop::Cop::Lint::RedundantDirGlobSort, :config do
   end
 
   context 'when Ruby 2.7 or lower', :ruby27, unsupported_on: :prism do
-    it 'does not register an offense and correction when using `Dir.glob.sort`' do
+    it 'does not register an offense when using `Dir.glob.sort`' do
       expect_no_offenses(<<~RUBY)
         Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
       RUBY
     end
 
-    it 'does not register an offense and correction when using `::Dir.glob.sort`' do
+    it 'does not register an offense when using `::Dir.glob.sort`' do
       expect_no_offenses(<<~RUBY)
         ::Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
       RUBY
     end
 
-    it 'does not register an offense and correction when using `Dir[].sort.each do`' do
+    it 'does not register an offense when using `Dir[].sort.each do`' do
       expect_no_offenses(<<~RUBY)
         Dir['./lib/**/*.rb'].sort.each do |file|
         end
       RUBY
     end
 
-    it 'does not register an offense and correction when using `Dir[].sort.each(&do_something)`' do
+    it 'does not register an offense when using `Dir[].sort.each(&do_something)`' do
       expect_no_offenses(<<~RUBY)
         Dir['./lib/**/*.rb'].sort.each(&method(:require))
       RUBY

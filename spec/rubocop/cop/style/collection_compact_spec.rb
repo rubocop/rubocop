@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
     RUBY
   end
 
-  it 'does not register an offense and corrects when using `grep_v(pattern)`' do
+  it 'does not register an offense when using `grep_v(pattern)`' do
     expect_no_offenses(<<~RUBY)
       array.grep_v(pattern)
     RUBY
@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
   end
 
   context 'when without receiver' do
-    it 'does not register an offense and corrects when using `reject` on array to reject nils' do
+    it 'does not register an offense when using `reject` on array to reject nils' do
       expect_no_offenses(<<~RUBY)
         reject { |e| e.nil? }
         delete_if { |e| e.nil? }
@@ -208,7 +208,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
       RUBY
     end
 
-    it 'does not register an offense and corrects when using `select/select!` to reject nils' do
+    it 'does not register an offense when using `select/select!` to reject nils' do
       expect_no_offenses(<<~RUBY)
         select { |e| !e.nil? }
         select! { |k, v| !v.nil? }
@@ -231,7 +231,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
       RUBY
     end
 
-    it 'does not register an offense and corrects when using `to_enum.delete_if` on array to reject nils' do
+    it 'does not register an offense when using `to_enum.delete_if` on array to reject nils' do
       expect_no_offenses(<<~RUBY)
         array.to_enum.delete_if { |e| e.nil? }
       RUBY
@@ -251,7 +251,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
       RUBY
     end
 
-    it 'does not register an offense and corrects when using `lazy.delete_if` on array to reject nils' do
+    it 'does not register an offense when using `lazy.delete_if` on array to reject nils' do
       expect_no_offenses(<<~RUBY)
         array.lazy.delete_if { |e| e.nil? }
       RUBY
@@ -259,7 +259,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
   end
 
   context 'Ruby <= 3.0', :ruby30, unsupported_on: :prism do
-    it 'does not register an offense and corrects when using `to_enum.reject` on array to reject nils' do
+    it 'does not register an offense when using `to_enum.reject` on array to reject nils' do
       expect_no_offenses(<<~RUBY)
         array.to_enum.reject { |e| e.nil? }
         array.to_enum.delete_if { |e| e.nil? }
@@ -267,7 +267,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
       RUBY
     end
 
-    it 'does not register an offense and corrects when using `lazy.reject` on array to reject nils' do
+    it 'does not register an offense when using `lazy.reject` on array to reject nils' do
       expect_no_offenses(<<~RUBY)
         array.lazy.reject { |e| e.nil? }
         array.lazy.delete_if { |e| e.nil? }

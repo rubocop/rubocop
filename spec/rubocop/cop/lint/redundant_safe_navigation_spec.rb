@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
-  it 'does not register an offense and corrects when `&.` is used for snake case const receiver' do
+  it 'does not register an offense when `&.` is used for snake case const receiver' do
     expect_no_offenses(<<~RUBY)
       CONST&.do_something
       CONST_NAME&.do_something
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
-  it 'does not register an offense and corrects when `&.` is used for `nil` literal' do
+  it 'does not register an offense when `&.` is used for `nil` literal' do
     expect_no_offenses(<<~RUBY)
       nil&.to_i
     RUBY

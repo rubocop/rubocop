@@ -128,7 +128,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
     end
 
     context 'when requiring `pp`' do
-      it 'does not register an offense and corrects when using `PP.pp`' do
+      it 'does not register an offense when using `PP.pp`' do
         expect_no_offenses(<<~RUBY)
           require 'pp'
 
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         RUBY
       end
 
-      it 'does not register an offense and corrects when using `::PP.pp`' do
+      it 'does not register an offense when using `::PP.pp`' do
         expect_no_offenses(<<~RUBY)
           require 'pp'
 
@@ -144,7 +144,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         RUBY
       end
 
-      it 'does not register an offense and corrects when using `pretty_inspect`' do
+      it 'does not register an offense when using `pretty_inspect`' do
         expect_no_offenses(<<~RUBY)
           require 'pp'
 
@@ -152,7 +152,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         RUBY
       end
 
-      it 'does not register an offense and corrects when using `pretty_print`' do
+      it 'does not register an offense when using `pretty_print`' do
         expect_no_offenses(<<~RUBY)
           require 'pp'
 
@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         RUBY
       end
 
-      it 'does not register an offense and corrects when using `pretty_print_cycle`' do
+      it 'does not register an offense when using `pretty_print_cycle`' do
         expect_no_offenses(<<~RUBY)
           require 'pp'
 
@@ -168,7 +168,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         RUBY
       end
 
-      it 'does not register an offense and corrects when using `pretty_print_inspect`' do
+      it 'does not register an offense when using `pretty_print_inspect`' do
         expect_no_offenses(<<~RUBY)
           require 'pp'
 
@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         RUBY
       end
 
-      it 'does not register an offense and corrects when using `pretty_print_instance_variables`' do
+      it 'does not register an offense when using `pretty_print_instance_variables`' do
         expect_no_offenses(<<~RUBY)
           require 'pp'
 
@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
   end
 
   context 'target ruby version < 3.1', :ruby30, unsupported_on: :prism do
-    it 'does not register an offense and corrects when using requiring `fiber`' do
+    it 'does not register an offense when using requiring `fiber`' do
       expect_no_offenses(<<~RUBY)
         require 'fiber'
       RUBY

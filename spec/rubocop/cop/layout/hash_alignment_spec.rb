@@ -1361,7 +1361,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
 
     context 'when using hash value omission', :ruby31 do
       context 'and aligned keys' do
-        it 'does not register an offense and corrects' do
+        it 'does not register an offense' do
           expect_no_offenses(<<~RUBY)
             foo ab: 1,
                 c:

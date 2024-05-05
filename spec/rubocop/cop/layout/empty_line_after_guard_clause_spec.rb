@@ -484,7 +484,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'does not register an offense and corrects when using `return` before guard condition with heredoc' do
+  it 'does not register an offense when using `return` before guard condition with heredoc' do
     expect_no_offenses(<<~RUBY)
       def foo
         return true if <<~TEXT.length > bar
@@ -496,7 +496,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  it 'does not register an offense and corrects when using `raise` before guard condition with heredoc' do
+  it 'does not register an offense when using `raise` before guard condition with heredoc' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise if <<~TEXT.length > bar
