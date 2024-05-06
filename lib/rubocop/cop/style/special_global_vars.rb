@@ -58,7 +58,7 @@ module RuboCop
       #
       # @example EnforcedStyle: use_builtin_english_names
       #
-      # Like `use_perl_names` but allows builtin global vars.
+      #   Like `use_perl_names` but allows builtin global vars.
       #
       #   # good
       #   puts $LOAD_PATH
