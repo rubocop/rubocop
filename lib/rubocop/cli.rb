@@ -57,6 +57,10 @@ module RuboCop
     rescue RuboCop::Error => e
       warn Rainbow("Error: #{e.message}").red
       STATUS_ERROR
+    rescue Interrupt
+      warn ''
+      warn 'Exiting...'
+      STATUS_INTERRUPTED
     rescue Finished
       STATUS_SUCCESS
     rescue OptionParser::InvalidOption => e
