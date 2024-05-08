@@ -8,6 +8,10 @@ gem 'asciidoctor'
 gem 'bump', require: false
 gem 'bundler', '>= 1.15.0', '< 3.0'
 gem 'memory_profiler', platform: :mri
+# FIXME: This is a workaround to prevent the following warning in YARD:
+# https://github.com/lsegal/yard/pull/1545
+# Please remove this dependency when the issue is resolved.
+gem 'ostruct'
 # FIXME: This is a workaround for incompatibilities between Prism 0.25.0 and 0.26.0.
 # To upgrade to Prism 0.26+, it is necessary to investigate the following build error
 # and provide feedback to Prism:
