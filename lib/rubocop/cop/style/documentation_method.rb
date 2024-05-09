@@ -95,6 +95,17 @@ module RuboCop
       #     end
       #   end
       #
+      # @example AllowedMethods: ['method_missing', 'respond_to_missing?']
+      #
+      #    # good
+      #    class Foo
+      #      def method_missing(name, *args)
+      #      end
+      #
+      #      def respond_to_missing?(symbol, include_private)
+      #      end
+      #    end
+      #
       class DocumentationMethod < Base
         include DocumentationComment
         include DefNode
@@ -119,12 +130,21 @@ module RuboCop
         def check(node)
           return if non_public?(node) && !require_for_non_public_methods?
           return if documentation_comment?(node)
+          return if method_allowed?(node)
 
           add_offense(node)
         end
 
         def require_for_non_public_methods?
           cop_config['RequireForNonPublicMethods']
+        end
+
+        def method_allowed?(node)
+          allowed_methods.include?(node.method_name)
+        end
+
+        def allowed_methods
+          @allowed_methods ||= cop_config.fetch('AllowedMethods', []).map(&:to_sym)
         end
       end
     end
