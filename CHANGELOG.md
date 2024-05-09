@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.63.5 (2024-05-09)
+
 ### Bug fixes
 
 * [#12877](https://github.com/rubocop/rubocop/pull/12877): Fix an infinite loop error for `Layout/FirstArgumentIndentation` when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArrayAlignment`. ([@koic][])
