@@ -993,6 +993,19 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
           end
         end
       end
+
+      describe 'when AllowedMethods is configured' do
+        before { config['Style/DocumentationMethod'] = { 'AllowedMethods' => ['method_missing'] } }
+
+        it 'ignores the methods in the config' do
+          expect_no_offenses(<<~RUBY)
+            class Foo
+              def method_missing(name, *args)
+              end
+            end
+          RUBY
+        end
+      end
     end
   end
 end

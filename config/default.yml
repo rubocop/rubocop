@@ -3687,6 +3687,7 @@ Style/DocumentationMethod:
   Description: 'Checks for missing documentation comment for public methods.'
   Enabled: false
   VersionAdded: '0.43'
+  AllowedMethods: []
   Exclude:
     - 'spec/**/*'
     - 'test/**/*'
