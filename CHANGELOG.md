@@ -11,6 +11,13 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12877](https://github.com/rubocop/rubocop/pull/12877): Fix an infinite loop error for `Layout/FirstArgumentIndentation` when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArrayAlignment`. ([@koic][])
+* [#12873](https://github.com/rubocop/rubocop/issues/12873): Fix an error for `Metrics/BlockLength` when the `CountAsOne` config is invalid. ([@koic][])
+* [#12881](https://github.com/rubocop/rubocop/pull/12881): Fix incorrect autocorrect when `Style/NumericPredicate` is used with negations. ([@fatkodima][])
+* [#12882](https://github.com/rubocop/rubocop/pull/12882): Fix `Layout/CommentIndentation` for comment-only pattern matching. ([@nekketsuuu][])
+
 ## 1.63.4 (2024-04-28)
 
 ### Bug fixes
@@ -7746,3 +7753,4 @@
 [@Hiroto-Iizuka]: https://github.com/Hiroto-Iizuka
 [@boardfish]: https://github.com/boardfish
 [@muxcmux]: https://github.com/muxcmux
+[@nekketsuuu]: https://github.com/nekketsuuu
