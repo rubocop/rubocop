@@ -61,7 +61,7 @@ module RuboCop
           raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
 
           regex = Regexp.new(notice)
-          return if autocorrect_notice&.match?(regex)
+          return if autocorrect_notice.gsub(/^# */, '').match?(regex)
 
           raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must match Notice /#{notice}/"
         end
@@ -77,26 +77,28 @@ module RuboCop
           return false if token_index >= processed_source.tokens.size
 
           token = processed_source.tokens[token_index]
-          token.comment? && /^#!.*$/.match?(token.text)
+          token.comment? && /\A#!.*\z/.match?(token.text)
         end
 
         def encoding_token?(processed_source, token_index)
           return false if token_index >= processed_source.tokens.size
 
           token = processed_source.tokens[token_index]
-          token.comment? && /^#.*coding\s?[:=]\s?(?:UTF|utf)-8/.match?(token.text)
+          token.comment? && /\A#.*coding\s?[:=]\s?(?:UTF|utf)-8/.match?(token.text)
         end
 
         def notice_found?(processed_source)
-          notice_found = false
-          notice_regexp = Regexp.new(notice)
+          notice_regexp = Regexp.new(notice.lines.map(&:strip).join)
+          multiline_notice = +''
           processed_source.tokens.each do |token|
             break unless token.comment?
 
-            notice_found = notice_regexp.match?(token.text)
-            break if notice_found
+            multiline_notice << token.text.sub(/\A# */, '')
+
+            break if notice_regexp.match?(token.text)
           end
-          notice_found
+
+          multiline_notice.match?(notice_regexp)
         end
       end
     end
