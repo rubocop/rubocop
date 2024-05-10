@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def always_multiline?
-          @config.for_cop('Style/OneLineConditional')['AlwaysCorrectToMultiline']
+          cop_config['AlwaysCorrectToMultiline']
         end
 
         def cannot_replace_to_ternary?(node)
