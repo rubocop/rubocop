@@ -57,7 +57,7 @@ module RuboCop
         def_node_matcher :each_block_with_push?, <<-PATTERN
           [
             ^({begin kwbegin} ...)
-            ({block numblock} (send _ :each) _
+            ({block numblock} (send !{nil? self} :each) _
               (send (lvar _) {:<< :push :append} _))
           ]
         PATTERN

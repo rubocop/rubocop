@@ -147,6 +147,20 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
+  it 'does not register an offense and corrects when using `each` without receiver with `<<` to build an array' do
+    expect_no_offenses(<<~RUBY)
+      dest = []
+      each { |e| dest << e * 2 }
+    RUBY
+  end
+
+  it 'does not register an offense and corrects when using `each` with `self` receiver with `<<` to build an array' do
+    expect_no_offenses(<<~RUBY)
+      dest = []
+      self.each { |e| dest << e * 2 }
+    RUBY
+  end
+
   it 'does not register an offense when the parent node of an `each` call is not a begin node' do
     expect_no_offenses(<<~RUBY)
       [
