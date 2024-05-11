@@ -32,6 +32,59 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     RUBY
   end
 
+  context 'when multiline copyright notice' do
+    let(:cop_config) do
+      {
+        'Notice' => <<~'COPYRIGHT'
+          Copyright (\(c\) )?2015 Acme Inc.
+
+          License details\.\.\.
+        COPYRIGHT
+      }
+    end
+
+    it 'does not register an offense when the multiline copyright notice is present' do
+      cop_config['AutocorrectNotice'] = <<~COPYRIGHT
+        # Copyright (c) 2015 Acme Inc.
+        #
+        # License details...
+      COPYRIGHT
+
+      expect_no_offenses(<<~RUBY)
+        # Copyright 2015 Acme Inc.
+        #
+        # License details...
+        class Foo
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the multiline copyright notice is missing' do
+      cop_config['AutocorrectNotice'] = <<~COPYRIGHT
+        # Copyright (c) 2015 Acme Inc.
+        #
+        # License details...
+      COPYRIGHT
+
+      expect_offense(<<~RUBY)
+        # Comment
+        ^ Include a copyright notice matching [...]
+        class Foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Copyright (c) 2015 Acme Inc.
+        #
+        # License details...
+
+        # Comment
+        class Foo
+        end
+      RUBY
+    end
+  end
+
   context 'when the copyright notice is missing' do
     let(:source) { <<~RUBY }
       # test
