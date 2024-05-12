@@ -125,6 +125,12 @@ module RuboCop
         end
 
         uri = request[:params][:arguments][0][:uri]
+        formatted = nil
+
+        # The `workspace/executeCommand` is an LSP method triggered by intentional user actions,
+        # so the user's intention for autocorrection is respected.
+        LSP.disable { formatted = format_file(uri, command: command) }
+
         @server.write(
           id: request[:id],
           method: 'workspace/applyEdit',
@@ -132,7 +138,7 @@ module RuboCop
             label: label,
             edit: {
               changes: {
-                uri => format_file(uri, command: command)
+                uri => formatted
               }
             }
           }
