@@ -319,9 +319,8 @@ module RuboCop
     # @param [Gem::Version] gem_version an object like `Gem::Version.new("7.1.2.3")`
     # @return [Float] The major and minor version, like `7.1`
     def gem_version_to_major_minor_float(gem_version)
-      segments = gem_version.canonical_segments
-      # segments.fetch(0).to_f + (segments.fetch(1, 0.0).to_f / 10)
-      Float("#{segments.fetch(0)}.#{segments.fetch(1, 0)}")
+      segments = gem_version.segments
+      Float("#{segments[0]}.#{segments[1]}")
     end
 
     # @returns [Hash{String => Gem::Version}] The locked gem versions, keyed by the gems' names.

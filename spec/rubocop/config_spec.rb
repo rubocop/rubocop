@@ -875,6 +875,72 @@ RSpec.describe RuboCop::Config do
     end
   end
 
+  describe '#target_rails_version', :isolated_environment do
+    let(:base_path) { configuration.base_dir_for_path_parameters }
+    let(:lockfile_path) { File.join(base_path, 'Gemfile.lock') }
+
+    context 'when bundler is loaded' do
+      context 'when a lockfile with railties exists' do
+        it 'returns the correct target rails version' do
+          content = <<~LOCKFILE
+            GEM
+              remote: https://rubygems.org/
+              specs:
+                rails (7.1.3.2)
+                  railties (= 7.1.3.2)
+                railties (7.1.3.2)
+
+            DEPENDENCIES
+              rails (= 7.1.3.2)
+          LOCKFILE
+
+          create_file(lockfile_path, content)
+          expect(configuration.target_rails_version).to eq 7.1
+        end
+      end
+
+      context 'when a lockfile with railties from a prerelease exists' do
+        it 'returns the correct target rails version' do
+          content = <<~LOCKFILE
+            GEM
+              remote: https://rubygems.org/
+              specs:
+                rails (8.0.0.alpha)
+                  railties (= 8.0.0.alpha)
+                railties (8.0.0.alpha)
+
+            DEPENDENCIES
+              rails (= 8.0.0.alpha)
+          LOCKFILE
+
+          create_file(lockfile_path, content)
+          expect(configuration.target_rails_version).to eq 8.0
+        end
+      end
+    end
+
+    context 'when bundler is not loaded' do
+      before { hide_const('Bundler') }
+
+      it 'falls back to the default rails version' do
+        content = <<~LOCKFILE
+          GEM
+            remote: https://rubygems.org/
+            specs:
+              rails (7.1.3.2)
+                railties (= 7.1.3.2)
+              railties (7.1.3.2)
+
+          DEPENDENCIES
+            rails (= 7.1.3.2)
+        LOCKFILE
+
+        create_file(lockfile_path, content)
+        expect(configuration.target_rails_version).to eq RuboCop::Config::DEFAULT_RAILS_VERSION
+      end
+    end
+  end
+
   describe '#for_department', :restore_registry do
     let(:hash) do
       {
