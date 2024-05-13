@@ -3339,6 +3339,12 @@ Style/BlockDelimiters:
   # the `line_count_based` style.
   BracesRequiredMethods: []
 
+Style/CStyleIncrementDecrement:
+  Description: 'Use `counter += 1` and `counter -= 1` instead of `++counter` and `--counter`.'
+  StyleGuide: '#c-style-increment-and-decrement'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/CaseEquality:
   Description: 'Avoid explicit use of the case equality operator(===).'
   StyleGuide: '#no-case-equality'
