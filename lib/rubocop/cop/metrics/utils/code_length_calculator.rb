@@ -43,13 +43,13 @@ module RuboCop
             types.map do |type|
               case type
               when :array
-                ->(node) { node.array_type? }
+                lambda(&:array_type?)
               when :hash
-                ->(node) { node.hash_type? }
+                lambda(&:hash_type?)
               when :heredoc
                 ->(node) { heredoc_node?(node) }
               when :method_call
-                ->(node) { node.call_type? }
+                lambda(&:call_type?)
               else
                 raise Warning, "Unknown foldable type: #{type.inspect}. " \
                                "Valid foldable types are: #{FOLDABLE_TYPES.join(', ')}."
