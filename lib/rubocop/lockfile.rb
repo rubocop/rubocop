@@ -72,7 +72,7 @@ module RuboCop
     def parser
       return @parser if defined?(@parser)
 
-      @parser = if @lockfile_path && bundler_lock_parser_defined?
+      @parser = if @lockfile_path && File.exist?(@lockfile_path) && bundler_lock_parser_defined?
                   begin
                     lockfile = ::Bundler.read_file(@lockfile_path)
                     ::Bundler::LockfileParser.new(lockfile) if lockfile
