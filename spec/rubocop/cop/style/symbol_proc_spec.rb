@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     RUBY
   end
 
+  it 'registers an offense for a block with parameterless method call on param and no space between method name and opening brace' do
+    expect_offense(<<~RUBY)
+      foo.map{ |a| a.nil? }
+             ^^^^^^^^^^^^^^ Pass `&:nil?` as an argument to `map` instead of a block.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.map(&:nil?)
+    RUBY
+  end
+
   it 'registers an offense for safe navigation operator' do
     expect_offense(<<~RUBY)
       coll&.map { |e| e.upcase }
@@ -38,20 +49,76 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('something { |x, y| x.method }')
   end
 
-  it 'accepts lambda with 1 argument' do
-    expect_no_offenses('->(x) { x.method }')
+  context 'when `AllCops/ActiveSupportExtensionsEnabled: true`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => true })
+    end
+
+    it 'accepts lambda with 1 argument' do
+      expect_no_offenses('->(x) { x.method }')
+    end
+
+    it 'accepts proc with 1 argument' do
+      expect_no_offenses('proc { |x| x.method }')
+    end
+
+    it 'accepts Proc.new with 1 argument' do
+      expect_no_offenses('Proc.new { |x| x.method }')
+    end
+
+    it 'accepts ::Proc.new with 1 argument' do
+      expect_no_offenses('::Proc.new { |x| x.method }')
+    end
   end
 
-  it 'accepts proc with 1 argument' do
-    expect_no_offenses('proc { |x| x.method }')
-  end
+  context 'when `AllCops/ActiveSupportExtensionsEnabled: false`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => false })
+    end
 
-  it 'accepts Proc.new with 1 argument' do
-    expect_no_offenses('Proc.new { |x| x.method }')
-  end
+    it 'registers lambda `->` with 1 argument' do
+      expect_offense(<<~RUBY)
+        ->(x) { x.method }
+              ^^^^^^^^^^^^ Pass `&:method` as an argument to `lambda` instead of a block.
+      RUBY
 
-  it 'accepts ::Proc.new with 1 argument' do
-    expect_no_offenses('::Proc.new { |x| x.method }')
+      expect_correction(<<~RUBY)
+        lambda(&:method)
+      RUBY
+    end
+
+    it 'registers proc with 1 argument' do
+      expect_offense(<<~RUBY)
+        proc { |x| x.method }
+             ^^^^^^^^^^^^^^^^ Pass `&:method` as an argument to `proc` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        proc(&:method)
+      RUBY
+    end
+
+    it 'registers Proc.new with 1 argument' do
+      expect_offense(<<~RUBY)
+        Proc.new { |x| x.method }
+                 ^^^^^^^^^^^^^^^^ Pass `&:method` as an argument to `new` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Proc.new(&:method)
+      RUBY
+    end
+
+    it 'registers ::Proc.new with 1 argument' do
+      expect_offense(<<~RUBY)
+        ::Proc.new { |x| x.method }
+                   ^^^^^^^^^^^^^^^^ Pass `&:method` as an argument to `new` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ::Proc.new(&:method)
+      RUBY
+    end
   end
 
   context 'when AllowedMethods is enabled' do
@@ -412,24 +479,86 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       expect_no_offenses('something { _1 + _2 }')
     end
 
-    it 'accepts lambda with 1 numbered parameter' do
-      expect_no_offenses('-> { _1.method }')
+    context 'when `AllCops/ActiveSupportExtensionsEnabled: true`' do
+      let(:config) do
+        RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => true })
+      end
+
+      it 'accepts lambda with 1 numbered parameter' do
+        expect_no_offenses('-> { _1.method }')
+      end
+
+      it 'accepts proc with 1 numbered parameter' do
+        expect_no_offenses('proc { _1.method }')
+      end
+
+      it 'accepts block with only second numbered parameter' do
+        expect_no_offenses('something { _2.first }')
+      end
+
+      it 'accepts Proc.new with 1 numbered parameter' do
+        expect_no_offenses('Proc.new { _1.method }')
+      end
+
+      it 'accepts ::Proc.new with 1 numbered parameter' do
+        expect_no_offenses('::Proc.new { _1.method }')
+      end
     end
 
-    it 'accepts proc with 1 numbered parameter' do
-      expect_no_offenses('proc { _1.method }')
-    end
+    context 'when `AllCops/ActiveSupportExtensionsEnabled: false`' do
+      let(:config) do
+        RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => false })
+      end
 
-    it 'accepts block with only second numbered parameter' do
-      expect_no_offenses('something { _2.first }')
-    end
+      it 'registers lambda with 1 numbered parameter' do
+        expect_offense(<<~RUBY)
+          -> { _1.method }
+             ^^^^^^^^^^^^^ Pass `&:method` as an argument to `lambda` instead of a block.
+        RUBY
 
-    it 'accepts Proc.new with 1 numbered parameter' do
-      expect_no_offenses('Proc.new { _1.method }')
-    end
+        expect_correction(<<~RUBY)
+          lambda(&:method)
+        RUBY
+      end
 
-    it 'accepts ::Proc.new with 1 numbered parameter' do
-      expect_no_offenses('::Proc.new { _1.method }')
+      it 'registers proc with 1 numbered parameter' do
+        expect_offense(<<~RUBY)
+          proc { _1.method }
+               ^^^^^^^^^^^^^ Pass `&:method` as an argument to `proc` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          proc(&:method)
+        RUBY
+      end
+
+      it 'does not register block with only second numbered parameter' do
+        expect_no_offenses(<<~RUBY)
+          something { _2.first }
+        RUBY
+      end
+
+      it 'registers Proc.new with 1 numbered parameter' do
+        expect_offense(<<~RUBY)
+          Proc.new { _1.method }
+                   ^^^^^^^^^^^^^ Pass `&:method` as an argument to `new` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Proc.new(&:method)
+        RUBY
+      end
+
+      it 'registers ::Proc.new with 1 numbered parameter' do
+        expect_offense(<<~RUBY)
+          ::Proc.new { _1.method }
+                     ^^^^^^^^^^^^^ Pass `&:method` as an argument to `new` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ::Proc.new(&:method)
+        RUBY
+      end
     end
 
     context 'AllowComments: true' do
