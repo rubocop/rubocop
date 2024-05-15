@@ -67,13 +67,14 @@ module RuboCop
       end
 
       def ignore_mixed_hash_shorthand_syntax?(hash_node)
-        target_ruby_version <= 3.0 || enforced_shorthand_syntax != 'consistent' ||
+        target_ruby_version <= 3.0 ||
+          !%w[consistent consistent_either].include?(enforced_shorthand_syntax) ||
           !hash_node.hash_type?
       end
 
       def ignore_hash_shorthand_syntax?(pair_node)
         target_ruby_version <= 3.0 || enforced_shorthand_syntax == 'either' ||
-          enforced_shorthand_syntax == 'consistent' ||
+          %w[consistent consistent_either].include?(enforced_shorthand_syntax) ||
           !pair_node.parent.hash_type?
       end
 
@@ -172,6 +173,11 @@ module RuboCop
         hash_value_type_breakdown[:value_needed]&.any?
       end
 
+      def ignore_explicit_ommitable_hash_shorthand_syntax?(hash_value_type_breakdown)
+        hash_value_type_breakdown.keys == [:value_omittable] &&
+          enforced_shorthand_syntax == 'consistent_either'
+      end
+
       def each_omitted_value_pair(hash_value_type_breakdown, &block)
         hash_value_type_breakdown[:value_omitted]&.each(&block)
       end
@@ -198,6 +204,7 @@ module RuboCop
 
       def no_mixed_shorthand_syntax_check(hash_value_type_breakdown)
         return if hash_with_values_that_cant_be_omitted?(hash_value_type_breakdown)
+        return if ignore_explicit_ommitable_hash_shorthand_syntax?(hash_value_type_breakdown)
 
         each_omittable_value_pair(hash_value_type_breakdown) do |pair_node|
           hash_key_source = pair_node.key.source
