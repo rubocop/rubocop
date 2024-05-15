@@ -1606,7 +1606,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
     end
   end
 
-  context 'configured to disallow mixing of implicit and explicit hash literal value' do
+  context 'configured to disallow mixing of implicit and explicit hash literal value, but prefers shorthand syntax whenever possible' do
     let(:cop_config) do
       {
         'EnforcedStyle' => 'ruby19',
@@ -1671,6 +1671,72 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
     context 'Ruby <= 3.0', :ruby30, unsupported_on: :prism do
       it 'does not register an offense when all hash key and hash values are the same' do
+        expect_no_offenses(<<~RUBY)
+          {foo: foo, bar: bar}
+        RUBY
+      end
+    end
+  end
+
+  context 'configured to disallow mixing of implicit and explicit hash literal value' do
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'ruby19',
+        'SupportedStyles' => %w[ruby19 hash_rockets],
+        'EnforcedShorthandSyntax' => 'consistent_either'
+      }
+    end
+
+    context 'Ruby >= 3.1', :ruby31 do
+      it 'does not register an offense when all hash values are omitted' do
+        expect_no_offenses(<<~RUBY)
+          {foo:, bar:}
+        RUBY
+      end
+
+      it 'registers an offense when some hash values are omitted but they can all be omitted' do
+        expect_offense(<<~RUBY)
+          {foo:, bar: bar}
+                      ^^^ Do not mix explicit and implicit hash values. Omit the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo:, bar:}
+        RUBY
+      end
+
+      it 'registers an offense when some hash values are omitted but they cannot all be omitted' do
+        expect_offense(<<~RUBY)
+          {foo:, bar: baz}
+           ^^^ Do not mix explicit and implicit hash values. Include the hash value.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {foo: foo, bar: baz}
+        RUBY
+      end
+
+      it 'does not register an offense when all hash values are present, but no values can be omitted' do
+        expect_no_offenses(<<~RUBY)
+          {foo: bar, bar: foo}
+        RUBY
+      end
+
+      it 'does not register an offense when all hash values are present, but only some values can be omitted' do
+        expect_no_offenses(<<~RUBY)
+          {foo: baz, bar: bar}
+        RUBY
+      end
+
+      it 'does not register an offense when all hash values are present, but can all be omitted' do
+        expect_no_offenses(<<~RUBY)
+          {foo: foo, bar: bar}
+        RUBY
+      end
+    end
+
+    context 'Ruby <= 3.0', :ruby30, unsupported_on: :prism do
+      it 'does not register an offense when hash key and hash value are the same' do
         expect_no_offenses(<<~RUBY)
           {foo: foo, bar: bar}
         RUBY
