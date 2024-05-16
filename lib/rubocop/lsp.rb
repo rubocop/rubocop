@@ -22,8 +22,15 @@ module RuboCop
     # Disable LSP.
     #
     # @return [void]
-    def disable
-      @enabled = false
+    def disable(&block)
+      if block
+        original = @enabled
+        @enabled = false
+        yield
+        @enabled = original
+      else
+        @enabled = false
+      end
     end
   end
 end
