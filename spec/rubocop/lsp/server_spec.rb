@@ -41,8 +41,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
         result: {
           capabilities: {
             textDocumentSync: { openClose: true, change: 1 },
-            documentFormattingProvider: true,
-            diagnosticProvider: { interFileDependencies: false, workspaceDiagnostics: false }
+            documentFormattingProvider: true
           }
         }
       )
@@ -93,25 +92,6 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
           ], uri: 'file:///path/to/file.rb'
         }
       )
-    end
-  end
-
-  describe 'diagnotic route' do
-    let(:requests) do
-      [
-        jsonrpc: '2.0',
-        method: 'textDocument/diagnostic',
-        params: {
-          textDocument: {
-            uri: 'file:///path/to/file.rb'
-          }
-        }
-      ]
-    end
-
-    it 'handles requests' do
-      expect(stderr).to eq('')
-      expect(messages.count).to eq(0)
     end
   end
 

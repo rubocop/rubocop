@@ -45,10 +45,6 @@ module RuboCop
           result: LanguageServer::Protocol::Interface::InitializeResult.new(
             capabilities: LanguageServer::Protocol::Interface::ServerCapabilities.new(
               document_formatting_provider: true,
-              diagnostic_provider: LanguageServer::Protocol::Interface::DiagnosticOptions.new(
-                inter_file_dependencies: false,
-                workspace_diagnostics: false
-              ),
               text_document_sync: LanguageServer::Protocol::Interface::TextDocumentSyncOptions.new(
                 change: LanguageServer::Protocol::Constant::TextDocumentSyncKind::FULL,
                 open_close: true
@@ -71,10 +67,6 @@ module RuboCop
           @server.write(id: request[:id], result: nil)
           Logger.log('Exiting...')
         end
-      end
-
-      handle 'textDocument/diagnostic' do |request|
-        # no-op, diagnostics are handled in textDocument/didChange
       end
 
       handle 'textDocument/didChange' do |request|
