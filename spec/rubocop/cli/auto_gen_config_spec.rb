@@ -1354,33 +1354,68 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
     end
 
     describe 'when --no-exclude-limit is given' do
-      before do
-        offending_files_count.times do |i|
-          create_file("example#{i}.rb", [' '])
-        end
-      end
-
       let(:offending_files_count) do
         RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS + 1
       end
 
-      it 'always prefers Exclude to Enabled' do
-        expect(cli.run(['--auto-gen-config', '--no-exclude-limit'])).to eq(0)
-        lines = File.readlines('.rubocop_todo.yml')
-        expect(lines[1]).to eq("# `rubocop --auto-gen-config --no-exclude-limit`\n")
-        expect(lines[9..12].join).to eq(
-          <<~YAML
-            # This cop supports safe autocorrection (--autocorrect).
-            # Configuration parameters: AllowInHeredoc.
-            Layout/TrailingWhitespace:
-              Exclude:
+      context 'for a cop without Max configuration' do
+        before do
+          offending_files_count.times do |i|
+            create_file("example#{i}.rb", [' '])
+          end
+        end
+
+        it 'always prefers Exclude to Enabled' do
+          expect(cli.run(['--auto-gen-config', '--no-exclude-limit'])).to eq(0)
+          lines = File.readlines('.rubocop_todo.yml')
+          expect(lines[1]).to eq("# `rubocop --auto-gen-config --no-exclude-limit`\n")
+          expect(lines[9..12].join).to eq(
+            <<~YAML
+              # This cop supports safe autocorrection (--autocorrect).
+              # Configuration parameters: AllowInHeredoc.
+              Layout/TrailingWhitespace:
+                Exclude:
+            YAML
+          )
+          expect(lines[13..]).to eq(
+            Array.new(offending_files_count) do |i|
+              "    - 'example#{i}.rb'\n"
+            end.sort
+          )
+        end
+      end
+
+      context 'for a cop with Max config' do
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              DisabledByDefault: true
+            Metrics/ClassLength:
+              Enabled: true
           YAML
-        )
-        expect(lines[13..]).to eq(
-          Array.new(offending_files_count) do |i|
-            "    - 'example#{i}.rb'\n"
-          end.sort
-        )
+          offending_files_count.times do |i|
+            max_lines = RuboCop::ConfigLoader.default_configuration['Metrics/ClassLength']['Max']
+            create_file("example#{i}.rb", ['class Foo', *Array.new(max_lines + 1, '  bar'), 'end'])
+          end
+        end
+
+        it 'always prefers Exclude to Enabled' do
+          expect(cli.run(['--auto-gen-config', '--auto-gen-only-exclude',
+                          '--no-exclude-limit'])).to eq(0)
+          lines = File.readlines('.rubocop_todo.yml')
+          expect(lines[9..11].join).to eq(
+            <<~YAML
+              # Configuration parameters: CountComments, Max, CountAsOne.
+              Metrics/ClassLength:
+                Exclude:
+            YAML
+          )
+          expect(lines[12..]).to eq(
+            Array.new(offending_files_count) do |i|
+              "    - 'example#{i}.rb'\n"
+            end.sort
+          )
+        end
       end
     end
 

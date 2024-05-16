@@ -116,18 +116,22 @@ module RuboCop
       def set_max(cfg, cop_name)
         return unless cfg[:exclude_limit]
 
-        max_set_in_user_config =
-          @config_for_pwd.for_cop(cop_name)['Max'] != default_config(cop_name)['Max']
-        if !max_set_in_user_config &&
-           # In case auto_gen_only_exclude is set, only modify the maximum if the files are not
-           # excluded one by one.
-           (!@options[:auto_gen_only_exclude] ||
-            @files_with_offenses[cop_name].size > @exclude_limit)
-          cfg.merge!(cfg[:exclude_limit])
-        end
+        cfg.merge!(cfg[:exclude_limit]) if should_set_max?(cop_name)
 
         # Remove already used exclude_limit.
         cfg.reject! { |key| key == :exclude_limit }
+      end
+
+      def should_set_max?(cop_name)
+        max_set_in_user_config =
+          @config_for_pwd.for_cop(cop_name)['Max'] != default_config(cop_name)['Max']
+
+        max_allowed = !max_set_in_user_config && !no_exclude_limit?
+        return false unless max_allowed
+
+        # In case auto_gen_only_exclude is set, only modify the maximum if the files are not
+        # excluded one by one.
+        !@options[:auto_gen_only_exclude] || @files_with_offenses[cop_name].size > @exclude_limit
       end
 
       def output_cop_comments(output_buffer, cfg, cop_name, offense_count)
