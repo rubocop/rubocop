@@ -1488,6 +1488,38 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           RESULT
         end
       end
+
+      context 'with a custom cop without DocumentationBaseURL specified' do
+        let(:arguments) { ['Layout/IndentationStyle,Test/AlignmentDirective'] }
+
+        it 'skips the cop without documentation url' do
+          cmd
+          expect(stdout).to eq(<<~RESULT)
+            https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+
+          RESULT
+        end
+      end
+
+      context 'with a custom cop with DocumentationBaseURL specified' do
+        let(:arguments) { ['Layout/IndentationStyle,Test/AlignmentDirective'] }
+
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            Test:
+              DocumentationBaseURL: https://example.com
+          YAML
+        end
+
+        it 'builds the doc urls' do
+          cmd
+          expect(stdout).to eq(<<~RESULT)
+            https://docs.rubocop.org/rubocop/cops_layout.html#layoutindentationstyle
+            https://example.com/cops_test.html#testalignmentdirective
+
+          RESULT
+        end
+      end
     end
   end
 

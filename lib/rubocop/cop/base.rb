@@ -60,12 +60,15 @@ module RuboCop
         []
       end
 
-      # Cops (other than builtin) are encouraged to implement this
+      # Returns an url to view this cops documentation online.
+      # Requires 'DocumentationBaseURL' to be set for your department.
+      # Will follow the convention of RuboCops own documentation structure,
+      # overwrite this method to accommodate your custom layout.
       # @return [String, nil]
       #
       # @api public
-      def self.documentation_url
-        Documentation.url_for(self) if builtin?
+      def self.documentation_url(config = nil)
+        Documentation.url_for(self, config)
       end
 
       def self.inherited(subclass)
@@ -397,16 +400,6 @@ module RuboCop
       end
 
       ### Actually private methods
-
-      # rubocop:disable Layout/ClassStructure
-      def self.builtin?
-        return false unless (m = instance_methods(false).first) # any custom method will do
-
-        path, _line = instance_method(m).source_location
-        path.start_with?(__dir__)
-      end
-      private_class_method :builtin?
-      # rubocop:enable Layout/ClassStructure
 
       def reset_investigation
         @currently_disabled_lines = @current_offenses = @processed_source = @current_corrector = nil
