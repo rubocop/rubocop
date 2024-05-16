@@ -156,7 +156,7 @@ AllCops:
   # included.
   SuggestExtensions:
     rubocop-rails: [rails]
-    rubocop-rspec: [rspec]
+    rubocop-rspec: [rspec, rspec-rails]
     rubocop-minitest: [minitest]
     rubocop-sequel: [sequel]
     rubocop-rake: [rake]
