@@ -49,18 +49,49 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   end
 
   describe '.documentation_url' do
-    subject(:url) { cop_class.documentation_url }
+    context 'without passing a config' do
+      subject(:url) { cop_class.documentation_url }
 
-    describe 'for a builtin cop class' do
-      let(:cop_class) { RuboCop::Cop::Layout::BlockEndNewline }
+      describe 'for a builtin cop class' do
+        let(:cop_class) { RuboCop::Cop::Layout::BlockEndNewline }
 
-      it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength
+        it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength
+      end
+
+      describe 'for a custom cop class without DocumentationBaseURL', :restore_registry do
+        let(:cop_class) { stub_cop_class('Some::Cop') { def foo; end } }
+
+        it { is_expected.to be_nil }
+      end
     end
 
-    describe 'for a custom cop class', :restore_registry do
-      let(:cop_class) { stub_cop_class('Some::Cop') { def foo; end } }
+    context 'when passing a config' do
+      subject(:url) { cop_class.documentation_url(config) }
 
-      it { is_expected.to be_nil }
+      describe 'for a builtin cop class' do
+        let(:cop_class) { RuboCop::Cop::Layout::BlockEndNewline }
+
+        it { is_expected.to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutblockendnewline' } # rubocop:disable Layout/LineLength
+      end
+
+      describe 'for a custom cop class without DocumentationBaseURL', :restore_registry do
+        let(:cop_class) { stub_cop_class('Some::Cop') { def foo; end } }
+
+        it { is_expected.to be_nil }
+      end
+
+      describe 'for a custom cop class with DocumentationBaseURL', :restore_registry do
+        let(:cop_class) { stub_cop_class('Rails::Exit') { def foo; end } }
+        let(:config) do
+          RuboCop::Config.new(
+            'Rails' => {
+              'DocumentationBaseURL' => 'https://docs.rubocop.org/rubocop-rails'
+            }
+          )
+        end
+
+        it { is_expected.to eq 'https://docs.rubocop.org/rubocop-rails/cops_rails.html#railsexit' }
+      end
     end
   end
 

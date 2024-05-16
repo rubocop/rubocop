@@ -26,10 +26,10 @@ module RuboCop
 
           cops_array.each do |cop_name|
             cop = registry_hash[cop_name]
-
             next if cop.empty?
 
-            puts Cop::Documentation.url_for(cop.first, @config)
+            url = Cop::Documentation.url_for(cop.first, @config)
+            puts url if url
           end
 
           puts
