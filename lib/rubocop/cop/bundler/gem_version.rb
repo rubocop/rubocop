@@ -90,13 +90,11 @@ module RuboCop
           Array(cop_config['AllowedGems'])
         end
 
-        def message(range)
-          gem_specification = range.source
-
+        def message(_range)
           if required_style?
-            format(REQUIRED_MSG, gem_specification: gem_specification)
+            REQUIRED_MSG
           elsif forbidden_style?
-            format(FORBIDDEN_MSG, gem_specification: gem_specification)
+            FORBIDDEN_MSG
           end
         end
 

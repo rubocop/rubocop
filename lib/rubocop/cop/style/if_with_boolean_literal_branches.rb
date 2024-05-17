@@ -112,9 +112,11 @@ module RuboCop
         end
 
         def message(node, keyword)
-          message_template = node.elsif? ? MSG_FOR_ELSIF : MSG
-
-          format(message_template, keyword: keyword)
+          if node.elsif?
+            MSG_FOR_ELSIF
+          else
+            format(MSG, keyword: keyword)
+          end
         end
 
         def return_boolean_value?(condition)
