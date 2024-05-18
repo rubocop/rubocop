@@ -12,11 +12,7 @@ gem 'memory_profiler', platform: :mri
 # https://github.com/lsegal/yard/pull/1545
 # Please remove this dependency when the issue is resolved.
 gem 'ostruct'
-# FIXME: This is a workaround for incompatibilities between Prism 0.25.0 and 0.26.0.
-# To upgrade to Prism 0.26+, it is necessary to investigate the following build error
-# and provide feedback to Prism:
-# https://github.com/rubocop/rubocop/actions/runs/8748485587/job/24008584735?pr=12855
-gem 'prism', '0.25.0'
+gem 'prism'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.21.0'

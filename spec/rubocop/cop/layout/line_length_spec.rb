@@ -259,7 +259,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     context 'and only certain heredoc delimiters are permitted' do
       let(:cop_config) { { 'Max' => 80, 'AllowHeredoc' => %w[SQL OK], 'AllowedPatterns' => [] } }
 
-      it 'rejects long lines in heredocs with not permitted delimiters' do
+      # FIXME: https://github.com/rubocop/rubocop/issues/12869
+      it 'rejects long lines in heredocs with not permitted delimiters', broken_on: :prism do
         expect_offense(<<-RUBY)
           foo(<<-DOC, <<-SQL, <<-FOO)
             1st offense: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
