@@ -372,6 +372,44 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         42
       RUBY
     end
+
+    context 'when using ActiveSupport extensions' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => true },
+          'AllCops' => { 'ActiveSupportExtensionsEnabled' => true }
+        )
+      end
+
+      it 'registers an offense for ActiveSupport-specific methods' do
+        expect_offense(<<~RUBY)
+          x.deep_stringify_keys
+          ^^^^^^^^^^^^^^^^^^^^^ Method `#deep_stringify_keys` used in void context. Did you mean `#deep_stringify_keys!`?
+          top(x)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x.deep_stringify_keys!
+          top(x)
+        RUBY
+      end
+    end
+
+    context 'when not using ActiveSupport extensions' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => true },
+          'AllCops' => { 'ActiveSupportExtensionsEnabled' => false }
+        )
+      end
+
+      it 'does not register an offense for ActiveSupport-specific methods' do
+        expect_no_offenses(<<~RUBY)
+          x.deep_stringify_keys
+          top(x)
+        RUBY
+      end
+    end
   end
 
   context 'when not checking for methods with no side effects' do

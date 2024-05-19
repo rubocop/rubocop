@@ -67,17 +67,28 @@ module RuboCop
         UNARY_OPERATORS = %i[+@ -@ ~ !].freeze
         OPERATORS = (BINARY_OPERATORS + UNARY_OPERATORS).freeze
         VOID_CONTEXT_TYPES = %i[def for block].freeze
-        NONMUTATING_METHODS_WITH_BANG_VERSION = %i[capitalize chomp chop compact
-                                                   delete_prefix delete_suffix downcase
-                                                   encode flatten gsub lstrip merge next
-                                                   reject reverse rotate rstrip scrub select
-                                                   shuffle slice sort sort_by squeeze strip sub
-                                                   succ swapcase tr tr_s transform_values
-                                                   unicode_normalize uniq upcase].freeze
+
+        NONMUTATING_NATIVE_METHODS_WITH_BANG_VERSION = %i[
+          capitalize chomp chop compact
+          delete_prefix delete_suffix downcase
+          encode filter flatten gsub lstrip merge next
+          reject reverse rotate rstrip scrub select
+          shuffle slice sort sort_by squeeze strip sub
+          succ swapcase tr tr_s transform_keys
+          transform_values unicode_normalize uniq upcase
+        ].freeze
+
+        NONMUTATING_ACTIVE_SUPPORT_METHODS_WITH_BANG_VERSION = %i[
+          compact_blank deep_merge deep_stringify_keys deep_symbolize_keys
+          deep_transform_keys deep_transform_values except indent reverse_merge
+          squish stringify_keys symbolize_keys with_defaults
+        ].freeze
+
         METHODS_REPLACEABLE_BY_EACH = %i[collect map].freeze
 
-        NONMUTATING_METHODS = (NONMUTATING_METHODS_WITH_BANG_VERSION +
-                               METHODS_REPLACEABLE_BY_EACH).freeze
+        private_constant :NONMUTATING_NATIVE_METHODS_WITH_BANG_VERSION,
+                         :NONMUTATING_ACTIVE_SUPPORT_METHODS_WITH_BANG_VERSION,
+                         :METHODS_REPLACEABLE_BY_EACH
 
         def on_block(node)
           return unless node.body && !node.body.begin_type?
@@ -172,11 +183,21 @@ module RuboCop
           end
         end
 
+        def nonmutating_methods
+          @nonmutating_methods ||= begin
+            methods = METHODS_REPLACEABLE_BY_EACH + NONMUTATING_NATIVE_METHODS_WITH_BANG_VERSION
+            if active_support_extensions_enabled?
+              methods += NONMUTATING_ACTIVE_SUPPORT_METHODS_WITH_BANG_VERSION
+            end
+            methods
+          end
+        end
+
         def check_nonmutating(node)
           return if !node.send_type? && !node.block_type? && !node.numblock_type?
 
           method_name = node.method_name
-          return unless NONMUTATING_METHODS.include?(method_name)
+          return unless nonmutating_methods.include?(method_name)
 
           suggestion = if METHODS_REPLACEABLE_BY_EACH.include?(method_name)
                          'each'
