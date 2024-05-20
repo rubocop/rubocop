@@ -173,7 +173,7 @@ module RuboCop
         hash_value_type_breakdown[:value_needed]&.any?
       end
 
-      def ignore_explicit_ommitable_hash_shorthand_syntax?(hash_value_type_breakdown)
+      def ignore_explicit_omissible_hash_shorthand_syntax?(hash_value_type_breakdown)
         hash_value_type_breakdown.keys == [:value_omittable] &&
           enforced_shorthand_syntax == 'consistent_either'
       end
@@ -204,7 +204,7 @@ module RuboCop
 
       def no_mixed_shorthand_syntax_check(hash_value_type_breakdown)
         return if hash_with_values_that_cant_be_omitted?(hash_value_type_breakdown)
-        return if ignore_explicit_ommitable_hash_shorthand_syntax?(hash_value_type_breakdown)
+        return if ignore_explicit_omissible_hash_shorthand_syntax?(hash_value_type_breakdown)
 
         each_omittable_value_pair(hash_value_type_breakdown) do |pair_node|
           hash_key_source = pair_node.key.source
