@@ -64,15 +64,3 @@ RSpec.configure do |config|
   # Prism supports Ruby 3.3+ parsing.
   config.filter_run_excluding unsupported_on: :prism if ENV['PARSER_ENGINE'] == 'parser_prism'
 end
-
-module ::RSpec
-  module Core
-    class ExampleGroup
-      # Override `failure_count` from test-queue to prevent RSpec deprecation notice
-      # Treating `metadata[:execution_result]` as a hash is deprecated.
-      def self.failure_count
-        examples.map { |e| e.execution_result.status == 'failed' }.length
-      end
-    end
-  end
-end
