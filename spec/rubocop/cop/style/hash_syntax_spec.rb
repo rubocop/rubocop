@@ -1683,7 +1683,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       {
         'EnforcedStyle' => 'ruby19',
         'SupportedStyles' => %w[ruby19 hash_rockets],
-        'EnforcedShorthandSyntax' => 'consistent_either'
+        'EnforcedShorthandSyntax' => 'either_consistent'
       }
     end
 

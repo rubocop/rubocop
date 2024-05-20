@@ -68,13 +68,13 @@ module RuboCop
 
       def ignore_mixed_hash_shorthand_syntax?(hash_node)
         target_ruby_version <= 3.0 ||
-          !%w[consistent consistent_either].include?(enforced_shorthand_syntax) ||
+          !%w[consistent either_consistent].include?(enforced_shorthand_syntax) ||
           !hash_node.hash_type?
       end
 
       def ignore_hash_shorthand_syntax?(pair_node)
         target_ruby_version <= 3.0 || enforced_shorthand_syntax == 'either' ||
-          %w[consistent consistent_either].include?(enforced_shorthand_syntax) ||
+          %w[consistent either_consistent].include?(enforced_shorthand_syntax) ||
           !pair_node.parent.hash_type?
       end
 
@@ -175,7 +175,7 @@ module RuboCop
 
       def ignore_explicit_omissible_hash_shorthand_syntax?(hash_value_type_breakdown)
         hash_value_type_breakdown.keys == [:value_omittable] &&
-          enforced_shorthand_syntax == 'consistent_either'
+          enforced_shorthand_syntax == 'either_consistent'
       end
 
       def each_omitted_value_pair(hash_value_type_breakdown, &block)
