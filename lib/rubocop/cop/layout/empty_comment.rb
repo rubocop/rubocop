@@ -106,7 +106,9 @@ module RuboCop
         end
 
         def concat_consecutive_comments(comments)
-          consecutive_comments = comments.chunk_while { |i, j| i.loc.line.succ == j.loc.line }
+          consecutive_comments = comments.chunk_while do |i, j|
+            i.loc.line.succ == j.loc.line && i.loc.column == j.loc.column
+          end
 
           consecutive_comments.map do |chunk|
             joined_text = chunk.map { |c| comment_text(c) }.join
