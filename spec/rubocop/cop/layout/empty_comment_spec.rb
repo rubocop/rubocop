@@ -38,6 +38,23 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using an empty comment next to code after comment line' do
+    expect_offense(<<~RUBY)
+      # comment
+      def foo #
+              ^ Source code comment is empty.
+        something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
+      def foo
+        something
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using comment text' do
     expect_no_offenses(<<~RUBY)
       # Description of `Foo` class.
