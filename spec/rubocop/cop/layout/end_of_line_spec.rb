@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
+  include EncodingHelper
+
   shared_examples 'all configurations' do
     it 'accepts an empty file' do
       expect_no_offenses('')
@@ -93,10 +95,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
 
     context 'and the default external encoding is US_ASCII' do
       around do |example|
-        orig_encoding = Encoding.default_external
-        Encoding.default_external = Encoding::US_ASCII
-        example.run
-        Encoding.default_external = orig_encoding
+        with_default_external_encoding(Encoding::US_ASCII) { example.run }
       end
 
       it 'does not crash on UTF-8 encoded non-ascii characters' do
@@ -155,10 +154,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
 
     context 'and the default external encoding is US_ASCII' do
       around do |example|
-        orig_encoding = Encoding.default_external
-        Encoding.default_external = Encoding::US_ASCII
-        example.run
-        Encoding.default_external = orig_encoding
+        with_default_external_encoding(Encoding::US_ASCII) { example.run }
       end
 
       it 'does not crash on UTF-8 encoded non-ascii characters' do

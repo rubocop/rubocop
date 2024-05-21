@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::ResultCache, :isolated_environment do
+  include EncodingHelper
   include FileHelper
 
   subject(:cache) { described_class.new(file, team, options, config_store, cache_root) }
@@ -296,9 +297,9 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      before { Encoding.default_internal = Encoding::UTF_8 }
-
-      after { Encoding.default_internal = nil }
+      around do |example|
+        with_default_internal_encoding(Encoding::UTF_8) { example.run }
+      end
 
       it 'writes non UTF-8 encodable data to file with no exception' do
         expect { cache.save(offenses) }.not_to raise_error
