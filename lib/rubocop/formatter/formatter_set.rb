@@ -27,6 +27,7 @@ module RuboCop
         '[t]ap'         => 'TapFormatter',
         '[w]orst'       => 'WorstOffendersFormatter'
       }.freeze
+      BUILTIN_FORMATTER_NAMES = BUILTIN_FORMATTERS_FOR_KEYS.keys.map { |key| key.delete('[]') }
 
       FORMATTER_APIS = %i[started finished].freeze
 
@@ -88,7 +89,12 @@ module RuboCop
           /^\[#{specified_key}\]/.match?(key) || specified_key == key.delete('[]')
         end
 
-        raise %(No formatter for "#{specified_key}") if matching_keys.empty?
+        if matching_keys.empty?
+          similar_name = NameSimilarity.find_similar_name(specified_key, BUILTIN_FORMATTER_NAMES)
+          suggestion = %( Did you mean? "#{similar_name}") if similar_name
+
+          raise Rainbow(%(Formatter "#{specified_key}" not found.#{suggestion})).red
+        end
 
         raise %(Cannot determine formatter for "#{specified_key}") if matching_keys.size > 1
 
