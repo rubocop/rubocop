@@ -1715,7 +1715,16 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       context 'when unknown format name is specified' do
         it 'aborts with error message' do
           expect(cli.run(['--format', 'unknown', 'example.rb'])).to eq(2)
-          expect($stderr.string.include?('No formatter for "unknown"')).to be(true)
+          expect($stderr.string.include?('Formatter "unknown" not found')).to be(true)
+        end
+      end
+
+      context 'when wrong similar format name is specified' do
+        it 'aborts with error message' do
+          expect(cli.run(['--format', 'quite', 'example.rb'])).to eq(2)
+          expect(
+            $stderr.string.include?('Formatter "quite" not found. Did you mean? "quiet"')
+          ).to be(true)
         end
       end
     end
