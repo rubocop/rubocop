@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../spec/support/encoding_helper'
 require 'rspec/core'
 require 'test_queue'
 require 'test_queue/runner/rspec'
@@ -19,13 +20,13 @@ module RuboCop
   # The specs will be run in parallel if the system implements `fork`.
   # If ENV['COVERAGE'] is truthy, code coverage will be measured.
   class SpecRunner
+    include EncodingHelper
+
     attr_reader :rspec_args
 
     def initialize(rspec_args = %w[spec --force-color], parallel: true,
                    external_encoding: 'UTF-8', internal_encoding: nil)
       @rspec_args = ENV['GITHUB_ACTIONS'] == 'true' ? %w[spec --no-color] : rspec_args
-      @previous_external_encoding = Encoding.default_external
-      @previous_internal_encoding = Encoding.default_internal
 
       @temporary_external_encoding = external_encoding
       @temporary_internal_encoding = internal_encoding
@@ -46,13 +47,10 @@ module RuboCop
 
     private
 
-    def with_encoding
-      Encoding.default_external = @temporary_external_encoding
-      Encoding.default_internal = @temporary_internal_encoding
-      yield
-    ensure
-      Encoding.default_external = @previous_external_encoding
-      Encoding.default_internal = @previous_internal_encoding
+    def with_encoding(&block)
+      with_default_external_encoding(@temporary_external_encoding) do
+        with_default_internal_encoding(@temporary_internal_encoding, &block)
+      end
     end
 
     def parallel_runner_klass

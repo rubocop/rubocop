@@ -3,6 +3,8 @@
 require 'timeout'
 
 RSpec.describe RuboCop::Cop::Style::WordArray, :config do
+  include EncodingHelper
+
   before do
     # Reset data which is shared by all instances of WordArray
     described_class.largest_brackets = -Float::INFINITY
@@ -60,10 +62,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
 
     context 'when the default external encoding is UTF-8' do
       around do |example|
-        orig_encoding = Encoding.default_external
-        Encoding.default_external = Encoding::UTF_8
-        example.run
-        Encoding.default_external = orig_encoding
+        with_default_external_encoding(Encoding::UTF_8) { example.run }
       end
 
       it 'registers an offense for arrays of unicode word characters' do
@@ -80,10 +79,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
 
     context 'when the default external encoding is US-ASCII' do
       around do |example|
-        orig_encoding = Encoding.default_external
-        Encoding.default_external = Encoding::US_ASCII
-        example.run
-        Encoding.default_external = orig_encoding
+        with_default_external_encoding(Encoding::US_ASCII) { example.run }
       end
 
       it 'registers an offense for arrays of unicode word characters' do
