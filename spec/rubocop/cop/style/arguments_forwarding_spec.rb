@@ -664,6 +664,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'registers an offense if an additional positional parameter is present in method forwarding with safe navigation', :ruby30 do
+      expect_offense(<<~RUBY)
+        def method_missing(m, *args, **kwargs, &block)
+                              ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          obj.foo(m, *args, **kwargs, &block)
+                     ^^^^^^^^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def method_missing(m, ...)
+          obj.foo(m, ...)
+        end
+      RUBY
+    end
+
     it 'registers an offense if an additional positional parameter is present in `super`', :ruby30 do
       expect_offense(<<~RUBY)
         def method_missing(m, *args, **kwargs, &block)
@@ -1477,6 +1493,24 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       expect_correction(<<~RUBY)
         def foo(m, *, &)
           bar(*, m, &)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when args are forwarded with a positional parameter last in method forwarding with safe navigation' do
+      expect_offense(<<~RUBY)
+        def foo(m, *args, &block)
+                   ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                          ^^^^^^ Use anonymous block arguments forwarding (`&`).
+          obj&.bar(*args, m, &block)
+                   ^^^^^ Use anonymous positional arguments forwarding (`*`).
+                             ^^^^^^ Use anonymous block arguments forwarding (`&`).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(m, *, &)
+          obj&.bar(*, m, &)
         end
       RUBY
     end
