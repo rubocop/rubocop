@@ -29,6 +29,8 @@ module RuboCop
       #
       # Names not on this list are likely to be meaningful and are allowed by default.
       #
+      # This cop handles not only method forwarding but also forwarding to `super`.
+      #
       # @example
       #   # bad
       #   def foo(*args, &block)
@@ -146,7 +148,7 @@ module RuboCop
 
           restarg, kwrestarg, blockarg = extract_forwardable_args(node.arguments)
           forwardable_args = redundant_forwardable_named_args(restarg, kwrestarg, blockarg)
-          send_nodes = node.each_descendant(:send).to_a
+          send_nodes = node.each_descendant(:send, :super).to_a
 
           send_classifications = classify_send_nodes(
             node, send_nodes, non_splat_or_block_pass_lvar_references(node.body), forwardable_args
