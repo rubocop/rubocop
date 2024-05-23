@@ -5424,6 +5424,11 @@ Style/StructInheritance:
   VersionAdded: '0.29'
   VersionChanged: '1.20'
 
+Style/SuperArguments:
+  Description: 'Call `super` without arguments and parentheses when the signature is identical.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/SuperWithArgsParentheses:
   Description: 'Use parentheses for `super` with arguments.'
   StyleGuide: '#super-with-args'
