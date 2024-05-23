@@ -56,6 +56,17 @@ RSpec.describe RuboCop::Cop::Style::SendWithLiteralMethodName, :config do
     RUBY
   end
 
+  it 'registers an offense when using `public_send` with method name with underscore' do
+    expect_offense(<<~RUBY)
+      obj.public_send("name_with_underscore")
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `name_with_underscore` method call directly instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.name_with_underscore
+    RUBY
+  end
+
   it 'does not register an offense when using `public_send` with variable argument' do
     expect_no_offenses(<<~RUBY)
       obj.public_send(variable)
@@ -66,6 +77,38 @@ RSpec.describe RuboCop::Cop::Style::SendWithLiteralMethodName, :config do
     expect_no_offenses(<<~'RUBY')
       obj.public_send("#{interpolated}string")
     RUBY
+  end
+
+  it 'does not register an offense when using `public_send` with method name with space' do
+    expect_no_offenses(<<~RUBY)
+      obj.public_send("name with space")
+    RUBY
+  end
+
+  it 'does not register an offense when using `public_send` with method name with hyphen' do
+    expect_no_offenses(<<~RUBY)
+      obj.public_send("name-with-hyphen")
+    RUBY
+  end
+
+  it 'does not register an offense when using `public_send` with method name with brackets' do
+    expect_no_offenses(<<~RUBY)
+      obj.public_send("{brackets}")
+    RUBY
+  end
+
+  it 'does not register an offense when using `public_send` with method name with square brackets' do
+    expect_no_offenses(<<~RUBY)
+      obj.public_send("[square_brackets]")
+    RUBY
+  end
+
+  it 'does not register an offense when using `public_send` with reserved word argument' do
+    described_class::RESERVED_WORDS.each do |reserved_word|
+      expect_no_offenses(<<~RUBY)
+        obj.public_send(:#{reserved_word})
+      RUBY
+    end
   end
 
   it 'does not register an offense when using `public_send` with integer literal argument' do
