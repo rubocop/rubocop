@@ -43,8 +43,14 @@ module RuboCop
         MSG = 'Use `%<method_name>s` method call directly instead.'
         RESTRICT_ON_SEND = %i[public_send send __send__].freeze
         STATIC_METHOD_NAME_NODE_TYPES = %i[sym str].freeze
+        METHOD_NAME_PATTERN = /\A[a-zA-Z_][a-zA-Z0-9_]*[!?=]?\z/.freeze
+        RESERVED_WORDS = %i[
+          BEGIN END alias and begin break case class def defined? do else elsif end ensure
+          false for if in module next nil not or redo rescue retry return self super then true
+          undef unless until when while yield
+        ].freeze
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return if allow_send? && !node.method?(:public_send)
           return unless (first_argument = node.first_argument)
@@ -52,6 +58,7 @@ module RuboCop
 
           offense_range = offense_range(node)
           method_name = first_argument.value
+          return if !METHOD_NAME_PATTERN.match?(method_name) || RESERVED_WORDS.include?(method_name)
 
           add_offense(offense_range, message: format(MSG, method_name: method_name)) do |corrector|
             if node.arguments.one?
@@ -62,7 +69,7 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
