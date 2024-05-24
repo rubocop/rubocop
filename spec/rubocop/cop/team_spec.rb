@@ -188,6 +188,30 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
+    context 'when a cops joining forces callback raises an error' do
+      include_context 'mock console output'
+      before do
+        allow_any_instance_of(RuboCop::Cop::Lint::ShadowedArgument)
+          .to receive(:after_leaving_scope).and_raise(exception_message)
+
+        create_file(file_path, 'foo { |bar| bar = 42 }')
+      end
+
+      let(:options) { { debug: true } }
+      let(:exception_message) { 'my message' }
+      let(:error_message) do
+        'An error occurred while Lint/ShadowedArgument cop was inspecting example.rb.'
+      end
+
+      it 'records Team#errors' do
+        team.inspect_file(source)
+
+        expect(team.errors).to eq([error_message])
+        expect($stderr.string.include?(error_message)).to be(true)
+        expect($stdout.string.include?(exception_message)).to be(true)
+      end
+    end
+
     context 'when a correction raises an error' do
       include_context 'mock console output'
 

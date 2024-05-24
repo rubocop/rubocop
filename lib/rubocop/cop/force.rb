@@ -4,6 +4,16 @@ module RuboCop
   module Cop
     # A scaffold for concrete forces.
     class Force
+      # @api private
+      class HookError < StandardError
+        attr_reader :joining_cop
+
+        def initialize(joining_cop)
+          super
+          @joining_cop = joining_cop
+        end
+      end
+
       attr_reader :cops
 
       def self.all
@@ -32,6 +42,8 @@ module RuboCop
           next unless cop.respond_to?(method_name)
 
           cop.public_send(method_name, *args)
+        rescue StandardError
+          raise HookError, cop
         end
       end
 
