@@ -240,6 +240,8 @@ module RuboCop
 
           if cause.is_a?(Warning)
             handle_warning(cause, location)
+          elsif cause.is_a?(Force::HookError)
+            handle_error(cause.cause, location, cause.joining_cop)
           else
             handle_error(cause, location, error.cop)
           end
