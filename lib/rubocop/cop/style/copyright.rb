@@ -58,12 +58,13 @@ module RuboCop
         end
 
         def verify_autocorrect_notice!
-          raise Warning, AUTOCORRECT_EMPTY_WARNING if autocorrect_notice.empty?
+          raise Warning, "#{cop_name}: #{AUTOCORRECT_EMPTY_WARNING}" if autocorrect_notice.empty?
 
           regex = Regexp.new(notice)
           return if autocorrect_notice.gsub(/^# */, '').match?(regex)
 
-          raise Warning, "AutocorrectNotice '#{autocorrect_notice}' must match Notice /#{notice}/"
+          message = "AutocorrectNotice '#{autocorrect_notice}' must match Notice /#{notice}/"
+          raise Warning, "#{cop_name}: #{message}"
         end
 
         def insert_notice_before(processed_source)
