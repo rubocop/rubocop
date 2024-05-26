@@ -37,7 +37,7 @@
 
 * [#12908](https://github.com/rubocop/rubocop/pull/12908): Add rubocop-rspec back to suggested extensions when rspec-rails is in use. ([@pirj][])
 * [#12884](https://github.com/rubocop/rubocop/issues/12884): Align output from `cop.documentation_url` with `--show-docs-url` when passing a config as argument. ([@earlopain][])
-* [#12890](https://github.com/rubocop/rubocop/issues/12890): Support `ActiveSupportExtensionsEnabled` for `Style/SymbolProc`. ([@koic][])
+* [#12905](https://github.com/rubocop/rubocop/pull/12905): Support `ActiveSupportExtensionsEnabled` for `Style/SymbolProc`. ([@koic][])
 * [#12897](https://github.com/rubocop/rubocop/pull/12897): Respect user's intentions with `workspace/executeCommand` LSP method. ([@koic][])
 
 ## 1.63.5 (2024-05-09)
