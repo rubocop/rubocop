@@ -25,8 +25,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        NO_SPACE_MSG = 'Space inside string interpolation detected.'
-        SPACE_MSG = 'Missing space inside string interpolation detected.'
+        MSG = '%<command>s space inside string interpolation.'
 
         def on_interpolation(begin_node)
           return if begin_node.multiline?
@@ -36,9 +35,9 @@ module RuboCop
           return if empty_brackets?(left, right, tokens: tokens)
 
           if style == :no_space
-            no_space_offenses(begin_node, left, right, NO_SPACE_MSG)
+            no_space_offenses(begin_node, left, right, MSG)
           else
-            space_offenses(begin_node, left, right, SPACE_MSG)
+            space_offenses(begin_node, left, right, MSG)
           end
         end
 

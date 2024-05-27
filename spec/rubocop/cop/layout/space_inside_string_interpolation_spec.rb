@@ -8,22 +8,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       it 'registers offenses and autocorrects' do
         expect_offense(<<~'RUBY')
           "#{ var}"
-             ^ Space inside string interpolation detected.
+             ^ Do not use space inside string interpolation.
           "#{var }"
-                ^ Space inside string interpolation detected.
+                ^ Do not use space inside string interpolation.
           "#{   var   }"
-             ^^^ Space inside string interpolation detected.
-                   ^^^ Space inside string interpolation detected.
+             ^^^ Do not use space inside string interpolation.
+                   ^^^ Do not use space inside string interpolation.
           "#{var	}"
-                ^ Space inside string interpolation detected.
+                ^ Do not use space inside string interpolation.
           "#{	var	}"
-             ^ Space inside string interpolation detected.
-                 ^ Space inside string interpolation detected.
+             ^ Do not use space inside string interpolation.
+                 ^ Do not use space inside string interpolation.
           "#{	var}"
-             ^ Space inside string interpolation detected.
+             ^ Do not use space inside string interpolation.
           "#{ 	 var 	 	}"
-             ^^^ Space inside string interpolation detected.
-                   ^^^^ Space inside string interpolation detected.
+             ^^^ Do not use space inside string interpolation.
+                   ^^^^ Do not use space inside string interpolation.
         RUBY
 
         expect_correction(<<~'RUBY')
@@ -40,11 +40,11 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       it 'finds interpolations in string-like contexts' do
         expect_offense(<<~'RUBY')
           /regexp #{ var}/
-                    ^ Space inside string interpolation detected.
+                    ^ Do not use space inside string interpolation.
           `backticks #{ var}`
-                       ^ Space inside string interpolation detected.
+                       ^ Do not use space inside string interpolation.
           :"symbol #{ var}"
-                     ^ Space inside string interpolation detected.
+                     ^ Do not use space inside string interpolation.
         RUBY
 
         expect_correction(<<~'RUBY')
@@ -59,8 +59,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       it 'registers offenses and autocorrects' do
         expect_offense(<<~'RUBY')
           "#{ var }"
-             ^ Space inside string interpolation detected.
-                 ^ Space inside string interpolation detected.
+             ^ Do not use space inside string interpolation.
+                 ^ Do not use space inside string interpolation.
         RUBY
 
         expect_correction(<<~'RUBY')
@@ -72,8 +72,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     it 'does not touch spaces inside the interpolated expression' do
       expect_offense(<<~'RUBY')
         "#{ a; b }"
-           ^ Space inside string interpolation detected.
-                ^ Space inside string interpolation detected.
+           ^ Do not use space inside string interpolation.
+                ^ Do not use space inside string interpolation.
       RUBY
 
       expect_correction(<<~'RUBY')
@@ -122,15 +122,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       it 'registers offenses and autocorrects' do
         expect_offense(<<~'RUBY')
           "#{ var}"
-                 ^ Missing space inside string interpolation detected.
+                 ^ Use space inside string interpolation.
           "#{var }"
-           ^^ Missing space inside string interpolation detected.
+           ^^ Use space inside string interpolation.
           "#{   var   }"
           "#{var	}"
-           ^^ Missing space inside string interpolation detected.
+           ^^ Use space inside string interpolation.
           "#{	var	}"
           "#{	var}"
-                 ^ Missing space inside string interpolation detected.
+                 ^ Use space inside string interpolation.
           "#{ 	 var 	 	}"
         RUBY
 
@@ -151,8 +151,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
       it 'registers offenses and autocorrects' do
         expect_offense(<<~'RUBY')
           "#{var}"
-           ^^ Missing space inside string interpolation detected.
-                ^ Missing space inside string interpolation detected.
+           ^^ Use space inside string interpolation.
+                ^ Use space inside string interpolation.
         RUBY
 
         expect_correction(<<~'RUBY')
