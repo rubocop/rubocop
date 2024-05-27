@@ -217,4 +217,35 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
       end
     RUBY
   end
+
+  context 'block reassignment' do
+    it 'registers no offense when the block argument is reassigned' do
+      expect_no_offenses(<<~RUBY)
+        def test(&blk)
+          blk = proc {}
+          super(&blk)
+        end
+      RUBY
+    end
+
+    it 'registers no offense when the block argument is reassigned in a nested block' do
+      expect_no_offenses(<<~RUBY)
+        def test(&blk)
+          if foo
+            blk = proc {} if bar
+          end
+          super(&blk)
+        end
+      RUBY
+    end
+
+    it 'registers no offense when the block argument is or-assigned' do
+      expect_no_offenses(<<~RUBY)
+        def test(&blk)
+          blk ||= proc {}
+          super(&blk)
+        end
+      RUBY
+    end
+  end
 end

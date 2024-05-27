@@ -26,10 +26,19 @@ module RuboCop
       #   def method(*args, **kwargs)
       #     super()
       #   end
+      #
+      #   # good - assigning to the block variable before calling super
+      #   def method(&block)
+      #     # Assigning to the block variable would pass the old value to super,
+      #     # under this circumstance the block must be referenced explicitly.
+      #     block ||= proc { 'fallback behavior' }
+      #     super(&block)
+      #   end
       class SuperArguments < Base
         extend AutoCorrector
 
         DEF_TYPES = %i[def defs].freeze
+        ASSIGN_TYPES = %i[or_asgn lvasgn].freeze
 
         MSG = 'Call `super` without arguments and parentheses when the signature is identical.'
 
@@ -41,7 +50,8 @@ module RuboCop
             break node if DEF_TYPES.include?(node.type)
           end
           return unless def_node
-          return unless arguments_identical?(def_node.arguments.argument_list, super_node.arguments)
+          return unless arguments_identical?(def_node, def_node.arguments.argument_list,
+                                             super_node.arguments)
 
           add_offense(super_node) { |corrector| corrector.replace(super_node, 'super') }
         end
@@ -49,7 +59,7 @@ module RuboCop
         private
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        def arguments_identical?(def_args, super_args)
+        def arguments_identical?(def_node, def_args, super_args)
           super_args = preprocess_super_args(super_args)
           return false if def_args.size != super_args.size
 
@@ -58,7 +68,7 @@ module RuboCop
             next if positional_rest_arg_same(def_arg, super_arg)
             next if keyword_arg_same?(def_arg, super_arg)
             next if keyword_rest_arg_same?(def_arg, super_arg)
-            next if block_arg_same?(def_arg, super_arg)
+            next if block_arg_same?(def_node, def_arg, super_arg)
             next if forward_arg_same?(def_arg, super_arg)
 
             return false
@@ -104,12 +114,21 @@ module RuboCop
           def_arg.name == lvar_node.children.first
         end
 
-        def block_arg_same?(def_arg, super_arg)
+        def block_arg_same?(def_node, def_arg, super_arg)
           return false unless def_arg.blockarg_type? && super_arg.block_pass_type?
           # anonymous forwarding
           return true if (block_pass_child = super_arg.children.first).nil? && def_arg.name.nil?
 
-          def_arg.name == block_pass_child.children.first
+          block_arg_name = block_pass_child.children.first
+          def_arg.name == block_arg_name && !block_reassigned?(def_node, block_arg_name)
+        end
+
+        # Reassigning the block argument will still pass along the original block to super
+        # https://bugs.ruby-lang.org/issues/20505
+        def block_reassigned?(def_node, block_arg_name)
+          def_node.each_node(*ASSIGN_TYPES).any? do |assign_node|
+            assign_node.name == block_arg_name
+          end
         end
 
         def forward_arg_same?(def_arg, super_arg)
