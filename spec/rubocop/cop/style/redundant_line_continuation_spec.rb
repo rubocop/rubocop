@@ -136,6 +136,33 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when line continuations involve `break` with a return value' do
+    expect_no_offenses(<<~'RUBY')
+      foo do
+        break \
+          bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations involve `next` with a return value' do
+    expect_no_offenses(<<~'RUBY')
+      foo do
+        next \
+          bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations involve `yield` with a return value' do
+    expect_no_offenses(<<~'RUBY')
+      def foo
+        yield \
+          bar
+      end
+    RUBY
+  end
+
   it 'registers an offense when line continuations with `if`' do
     expect_offense(<<~'RUBY')
       if foo \
