@@ -76,7 +76,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
               code: 'Style/FrozenStringLiteralComment',
               message: 'Missing frozen string literal comment.',
               range: {
-                start: { character: 0, line: 0 }, end: { character: 0, line: 0 }
+                start: { character: 0, line: 0 }, end: { character: 1, line: 0 }
               },
               severity: 3,
               source: 'rubocop'
@@ -84,7 +84,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
               code: 'Layout/SpaceInsideArrayLiteralBrackets',
               message: 'Do not use space inside array brackets.',
               range: {
-                start: { character: 4, line: 2 }, end: { character: 5, line: 2 }
+                start: { character: 4, line: 2 }, end: { character: 6, line: 2 }
               },
               severity: 3,
               source: 'rubocop'

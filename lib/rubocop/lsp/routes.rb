@@ -235,7 +235,7 @@ module RuboCop
       def to_range(location)
         {
           start: { character: location[:start_column] - 1, line: location[:start_line] - 1 },
-          end: { character: location[:last_column] - 1, line: location[:last_line] - 1 }
+          end: { character: location[:last_column], line: location[:last_line] - 1 }
         }
       end
     end
