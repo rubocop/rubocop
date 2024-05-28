@@ -1,5 +1,3 @@
-###
-# Please keep /.mergify.yml synced!
 version: 2
 
 common_env: &common_env
