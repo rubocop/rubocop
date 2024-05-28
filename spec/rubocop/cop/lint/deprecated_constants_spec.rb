@@ -15,7 +15,8 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
         'Struct::Passwd' => { 'Alternative' => 'Etc::Passwd', 'DeprecatedVersion' => '3.0' },
         'Triple::Nested::Constant' => { 'Alternative' => 'Value', 'DeprecatedVersion' => '2.4' },
         'Have::No::Alternative' => { 'DeprecatedVersion' => '2.4' },
-        'Have::No::DeprecatedVersion' => { 'Alternative' => 'Value' }
+        'Have::No::DeprecatedVersion' => { 'Alternative' => 'Value' },
+        'Struct::DeprecatedInFile' => { 'Exclude' => ['app/models/not_deprecated.rb'] }
       }
     }
   end
@@ -213,6 +214,19 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
   it 'does not register an offense when using `__ENCODING__' do
     expect_no_offenses(<<~RUBY)
       __ENCODING__
+    RUBY
+  end
+
+  it 'registers an offense when Exclude is specified' do
+    expect_offense(<<~RUBY, 'app/models/deprecated.rb')
+      Struct::DeprecatedInFile
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `Struct::DeprecatedInFile`.
+    RUBY
+  end
+
+  it 'does not register an offense when Exclude is specified and file is excluded' do
+    expect_no_offenses(<<~RUBY, 'app/models/not_deprecated.rb')
+      Struct::DeprecatedInFile
     RUBY
   end
 end

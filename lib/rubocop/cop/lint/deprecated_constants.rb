@@ -13,6 +13,8 @@ module RuboCop
       #     'DEPRECATED_CONSTANT':
       #       Alternative: 'alternative_value'
       #       DeprecatedVersion: 'deprecated_version'
+      #       Exclude:
+      #         - 'path/to/exclude'
       #
       # By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException, `Random::DEFAULT`,
       # `Struct::Group`, and `Struct::Passwd` are configured.
@@ -43,7 +45,7 @@ module RuboCop
         SUGGEST_GOOD_MSG = 'Use `%<good>s` instead of `%<bad>s`%<deprecated_message>s.'
         DO_NOT_USE_MSG = 'Do not use `%<bad>s`%<deprecated_message>s.'
 
-        def on_const(node)
+        def on_const(node) # rubocop:disable Metrics/AbcSize
           # FIXME: Workaround for "`undefined method `expression' for nil:NilClass`" when processing
           #        `__ENCODING__`. It is better to be able to work without this condition.
           #        Maybe further investigation of RuboCop AST will lead to an essential solution.
@@ -55,6 +57,8 @@ module RuboCop
           alternative = deprecated_constant['Alternative']
           version = deprecated_constant['DeprecatedVersion']
           return if target_ruby_version < version.to_f
+
+          return if exclude_file?(deprecated_constant['Exclude'])
 
           add_offense(node, message: message(alternative, node.source, version)) do |corrector|
             corrector.replace(node, alternative)
@@ -81,6 +85,14 @@ module RuboCop
 
         def deprecated_constants
           cop_config.fetch('DeprecatedConstants', {})
+        end
+
+        def exclude_file?(exclude_paths)
+          return false unless exclude_paths
+
+          relative_file_path = config.path_relative_to_config(processed_source.file_path)
+
+          exclude_paths.any? { |pattern| match_path?(pattern, relative_file_path) }
         end
       end
     end
