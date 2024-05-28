@@ -58,6 +58,20 @@ jobs:
       - name: internal_investigation
         run: bundle exec rake internal_investigation
 
+  documentation_check:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+          bundler-cache: true
+      - name: Check documentation syntax
+        run: bundle exec rake documentation_syntax_check
+
   jruby:
     name: JRuby 9.4
     runs-on: ubuntu-latest

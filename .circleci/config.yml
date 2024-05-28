@@ -215,25 +215,10 @@ jobs:
             ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json --parts 5 --output tmp/codeclimate.total.json
             ./tmp/cc-test-reporter upload-coverage --input tmp/codeclimate.total.json
 
-  # Miscellaneous tasks
-  documentation-checks:
-    docker:
-      # Specify the latest version to prevent "cimg/ruby:latest not found: manifest unknown: manifest unknown" error.
-      - image: cimg/ruby:3.3
-    environment:
-      <<: *common_env
-    steps:
-      - checkout
-      - run: bundle install
-      - run:
-          name: Check documentation syntax
-          command: bundle exec rake documentation_syntax_check
-
 workflows:
   version: 2
   build:
     jobs:
-      - documentation-checks
       - cc-setup
       - ruby-2.7-spec:
           requires:
