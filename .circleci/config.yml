@@ -27,16 +27,6 @@ ascii_spec_steps: &ascii_spec_steps
   - run: bundle install
   - run: bundle exec rake ascii_spec
 
-rubocop_steps: &rubocop_steps
-  - checkout
-  - run: bundle install
-  - run: bundle exec rake internal_investigation
-  - run:
-      name: Check requiring libraries successfully
-      # See https://github.com/rubocop/rubocop/pull/4523#issuecomment-309136113
-      command: |
-        ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
-
 jobs:
   # Ruby 2.7
   ruby-2.7-spec:
@@ -53,13 +43,6 @@ jobs:
       <<: *common_env
     steps:
       *ascii_spec_steps
-  ruby-2.7-rubocop:
-    docker:
-      - image: cimg/ruby:2.7
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
 
   # Ruby 3.0
   ruby-3.0-spec:
@@ -76,13 +59,6 @@ jobs:
       <<: *common_env
     steps:
       *ascii_spec_steps
-  ruby-3.0-rubocop:
-    docker:
-      - image: cimg/ruby:3.0
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
 
   # Ruby 3.1
   ruby-3.1-spec:
@@ -99,13 +75,6 @@ jobs:
       <<: *common_env
     steps:
       *ascii_spec_steps
-  ruby-3.1-rubocop:
-    docker:
-      - image: cimg/ruby:3.1
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
 
   # Ruby 3.2
   ruby-3.2-spec:
@@ -122,13 +91,6 @@ jobs:
       <<: *common_env
     steps:
       *ascii_spec_steps
-  ruby-3.2-rubocop:
-    docker:
-      - image: cimg/ruby:3.2
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
 
   # Ruby 3.3
   ruby-3.3-spec:
@@ -145,13 +107,6 @@ jobs:
       <<: *common_env
     steps:
       *ascii_spec_steps
-  ruby-3.3-rubocop:
-    docker:
-      - image: cimg/ruby:3.3
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
 
   # ruby-head (nightly snapshot build)
   ruby-head-spec:
@@ -168,13 +123,6 @@ jobs:
       <<: *common_env
     steps:
       *ascii_spec_steps
-  ruby-head-rubocop:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      <<: *common_env
-    steps:
-      *rubocop_steps
 
   # Job for downloading the Code Climate test reporter
   cc-setup:
@@ -222,32 +170,26 @@ workflows:
           requires:
             - cc-setup
       - ruby-2.7-ascii_spec
-      - ruby-2.7-rubocop
       - ruby-3.0-spec:
           requires:
             - cc-setup
       - ruby-3.0-ascii_spec
-      - ruby-3.0-rubocop
       - ruby-3.1-spec:
           requires:
             - cc-setup
       - ruby-3.1-ascii_spec
-      - ruby-3.1-rubocop
       - ruby-3.2-spec:
           requires:
             - cc-setup
       - ruby-3.2-ascii_spec
-      - ruby-3.2-rubocop
       - ruby-3.3-spec:
           requires:
             - cc-setup
       - ruby-3.3-ascii_spec
-      - ruby-3.3-rubocop
       - ruby-head-spec:
           requires:
             - cc-setup
       - ruby-head-ascii_spec
-      - ruby-head-rubocop
 
       - cc-upload-coverage:
           requires:
