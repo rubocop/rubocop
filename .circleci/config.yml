@@ -22,11 +22,6 @@ spec_steps: &spec_steps
       paths:
         - codeclimate.*.json
 
-ascii_spec_steps: &ascii_spec_steps
-  - checkout
-  - run: bundle install
-  - run: bundle exec rake ascii_spec
-
 jobs:
   # Ruby 2.7
   ruby-2.7-spec:
@@ -36,13 +31,6 @@ jobs:
       <<: *common_env
     steps:
       *spec_steps
-  ruby-2.7-ascii_spec:
-    docker:
-      - image: cimg/ruby:2.7
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
 
   # Ruby 3.0
   ruby-3.0-spec:
@@ -52,13 +40,6 @@ jobs:
       <<: *common_env
     steps:
       *spec_steps
-  ruby-3.0-ascii_spec:
-    docker:
-      - image: cimg/ruby:3.0
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
 
   # Ruby 3.1
   ruby-3.1-spec:
@@ -68,13 +49,6 @@ jobs:
       <<: *common_env
     steps:
       *spec_steps
-  ruby-3.1-ascii_spec:
-    docker:
-      - image: cimg/ruby:3.1
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
 
   # Ruby 3.2
   ruby-3.2-spec:
@@ -84,13 +58,6 @@ jobs:
       <<: *common_env
     steps:
       *spec_steps
-  ruby-3.2-ascii_spec:
-    docker:
-      - image: cimg/ruby:3.2
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
 
   # Ruby 3.3
   ruby-3.3-spec:
@@ -100,13 +67,6 @@ jobs:
       <<: *common_env
     steps:
       *spec_steps
-  ruby-3.3-ascii_spec:
-    docker:
-      - image: cimg/ruby:3.3
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
 
   # ruby-head (nightly snapshot build)
   ruby-head-spec:
@@ -116,13 +76,6 @@ jobs:
       <<: *common_env
     steps:
       *spec_steps
-  ruby-head-ascii_spec:
-    docker:
-      - image: rubocophq/circleci-ruby-snapshot:latest
-    environment:
-      <<: *common_env
-    steps:
-      *ascii_spec_steps
 
   # Job for downloading the Code Climate test reporter
   cc-setup:
@@ -169,27 +122,21 @@ workflows:
       - ruby-2.7-spec:
           requires:
             - cc-setup
-      - ruby-2.7-ascii_spec
       - ruby-3.0-spec:
           requires:
             - cc-setup
-      - ruby-3.0-ascii_spec
       - ruby-3.1-spec:
           requires:
             - cc-setup
-      - ruby-3.1-ascii_spec
       - ruby-3.2-spec:
           requires:
             - cc-setup
-      - ruby-3.2-ascii_spec
       - ruby-3.3-spec:
           requires:
             - cc-setup
-      - ruby-3.3-ascii_spec
       - ruby-head-spec:
           requires:
             - cc-setup
-      - ruby-head-ascii_spec
 
       - cc-upload-coverage:
           requires:
