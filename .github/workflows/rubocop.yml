@@ -45,6 +45,33 @@ jobs:
           bundler-cache: true
       - name: spec
         run: bundle exec rake spec
+
+  ascii_spec:
+    name: Ascii Spec - ${{ matrix.os }} ${{ matrix.ruby }}
+    runs-on: ${{ matrix.os }}-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, windows]
+        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', 'head']
+        include:
+          - os: ubuntu
+            ruby: jruby-9.4
+          - os: windows
+            ruby: mingw
+        exclude:
+          - os: windows
+            ruby: head
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
       - name: ascii_spec
         run: bundle exec rake ascii_spec
 
@@ -112,8 +139,6 @@ jobs:
           bundler-cache: true
       - name: spec
         run: bundle exec rake spec
-      - name: ascii_spec
-        run: bundle exec rake ascii_spec
 
   prism:
     runs-on: ubuntu-latest
