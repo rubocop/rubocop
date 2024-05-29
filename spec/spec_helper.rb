@@ -4,6 +4,9 @@
 require 'rainbow'
 Rainbow.enabled = false
 
+require_relative 'support/strict_warnings'
+StrictWarnings.enable!
+
 require 'rubocop'
 require 'rubocop/cop/internal_affairs'
 require 'rubocop/server'
