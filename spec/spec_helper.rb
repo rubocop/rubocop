@@ -57,11 +57,8 @@ RSpec.configure do |config|
 
   config.after(:suite) { RuboCop::Cop::Registry.reset! }
 
-  if %w[ruby-head-ascii_spec ruby-head-spec].include? ENV.fetch('CIRCLE_JOB', nil)
-    config.filter_run_excluding broken_on: :ruby_head
-  end
-
-  config.filter_run_excluding broken_on: :jruby if ENV.fetch('GITHUB_JOB', nil) == 'jruby'
+  config.filter_run_excluding broken_on: :ruby_head if ENV['CI_RUBY_VERSION'] == 'head'
+  config.filter_run_excluding broken_on: :jruby if RUBY_ENGINE == 'jruby'
   config.filter_run_excluding broken_on: :prism if ENV['PARSER_ENGINE'] == 'parser_prism'
 
   # Prism supports Ruby 3.3+ parsing.
