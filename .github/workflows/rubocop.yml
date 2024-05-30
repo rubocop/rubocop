@@ -40,6 +40,9 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+      - name: Check requiring libraries successfully
+        # See https://github.com/rubocop/rubocop/pull/4523#issuecomment-309136113
+        run: ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
       - name: Set up Coverage
         # Only collect coverage data on ubuntu runners with CRuby
         if: matrix.os == 'ubuntu' && !startsWith(matrix.ruby, 'jruby-')
@@ -139,9 +142,6 @@ jobs:
           bundler-cache: true
       - name: internal_investigation
         run: bundle exec rake internal_investigation
-      - name: Check requiring libraries successfully
-        # See https://github.com/rubocop/rubocop/pull/4523#issuecomment-309136113
-        run: ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
 
   documentation_check:
     name: Documentation Check
