@@ -31,10 +31,8 @@ jobs:
         run: |
           # Work around `Layout/EndOfLine: Carriage return character detected`
           git config --system core.autocrlf false
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true

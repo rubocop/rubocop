@@ -33,10 +33,8 @@ jobs:
             ruby: head
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
@@ -65,8 +63,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         name: Download Coverage Artifacts
         with:
@@ -98,10 +95,8 @@ jobs:
             ruby: head
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
@@ -114,10 +109,8 @@ jobs:
     name: Documentation Check
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
           bundler-cache: true
@@ -129,8 +122,7 @@ jobs:
     name: Prism
     steps:
       - uses: actions/checkout@v4
-      - name: set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
           # Specify the minimum Ruby version 2.7 required for Prism to run.
           ruby-version: 2.7
@@ -155,8 +147,7 @@ jobs:
             gem 'rspec-mocks', github: 'rspec/rspec-mocks', branch: '4-0-dev'
             gem 'rspec-support', github: 'rspec/rspec-support', branch: '4-0-dev'
           EOF
-      - name: set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
           bundler-cache: true
