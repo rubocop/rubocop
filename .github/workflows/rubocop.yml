@@ -18,9 +18,6 @@ jobs:
   spec:
     name: Spec - ${{ matrix.os }} ${{ matrix.ruby }}
     runs-on: ${{ matrix.os }}-latest
-    env:
-      # See https://github.com/tmm1/test-queue#environment-variables
-      TEST_QUEUE_WORKERS: 2
     strategy:
       fail-fast: false
       matrix:
