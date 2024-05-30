@@ -70,7 +70,8 @@ jobs:
           pattern: coverage-*
       - uses: paambaati/codeclimate-action@v6
         env:
-          CC_TEST_REPORTER_ID: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        if: ${{ env.CC_TEST_REPORTER_ID != '' }}
         with:
           coverageLocations: |
             ${{github.workspace}}/coverage-*/.resultset.json:simplecov
