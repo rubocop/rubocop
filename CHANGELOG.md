@@ -11,6 +11,14 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#12951](https://github.com/rubocop/rubocop/pull/12951): Fix an error for `Style/Copyright` when `AutocorrectNotice` is missing. ([@koic][])
+* [#12932](https://github.com/rubocop/rubocop/pull/12932): Fix end position of diagnostic for LSP. ([@ksss][])
+* [#12926](https://github.com/rubocop/rubocop/issues/12926): Fix a false positive for `Style/SuperArguments` when the methods block argument is reassigned before `super`. ([@earlopain][])
+* [#12931](https://github.com/rubocop/rubocop/issues/12931): Fix false positives for `Style/RedundantLineContinuation` when line continuations involve `break`, `next`, or `yield` with a return value. ([@koic][])
+* [#12924](https://github.com/rubocop/rubocop/issues/12924): Fix false positives for `Style/SendWithLiteralMethodName` when `public_send` argument is a method name that cannot be autocorrected. ([@koic][])
+
 ## 1.64.0 (2024-05-23)
 
 ### New features
@@ -7787,3 +7795,4 @@
 [@nekketsuuu]: https://github.com/nekketsuuu
 [@pawelma]: https://github.com/pawelma
 [@krororo]: https://github.com/krororo
+[@ksss]: https://github.com/ksss

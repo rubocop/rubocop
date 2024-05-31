@@ -1,1 +1,0 @@
-* [#12924](https://github.com/rubocop/rubocop/issues/12924): Fix false positives for `Style/SendWithLiteralMethodName` when `public_send` argument is a method name that cannot be autocorrected. ([@koic][])

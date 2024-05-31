@@ -1,1 +1,0 @@
-* [#12931](https://github.com/rubocop/rubocop/issues/12931): Fix false positives for `Style/RedundantLineContinuation` when line continuations involve `break`, `next`, or `yield` with a return value. ([@koic][])
