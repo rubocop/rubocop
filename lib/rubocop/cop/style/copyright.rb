@@ -58,7 +58,9 @@ module RuboCop
         end
 
         def verify_autocorrect_notice!
-          raise Warning, "#{cop_name}: #{AUTOCORRECT_EMPTY_WARNING}" if autocorrect_notice.empty?
+          if autocorrect_notice.nil? || autocorrect_notice.empty?
+            raise Warning, "#{cop_name}: #{AUTOCORRECT_EMPTY_WARNING}"
+          end
 
           regex = Regexp.new(notice)
           return if autocorrect_notice.gsub(/^# */, '').match?(regex)
