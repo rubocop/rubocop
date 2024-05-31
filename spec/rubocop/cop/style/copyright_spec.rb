@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     end
 
     it 'fails to autocorrect if no AutocorrectNotice is given' do
-      # cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
+      cop_config['AutocorrectNotice'] = nil
       expect { expect_offense(source) }.to raise_error(RuboCop::Warning, %r{Style/Copyright:})
     end
   end
