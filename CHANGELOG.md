@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.64.1 (2024-05-31)
+
 ### Bug fixes
 
 * [#12951](https://github.com/rubocop/rubocop/pull/12951): Fix an error for `Style/Copyright` when `AutocorrectNotice` is missing. ([@koic][])
