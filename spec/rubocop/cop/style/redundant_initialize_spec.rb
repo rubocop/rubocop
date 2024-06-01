@@ -176,7 +176,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
     RUBY
   end
 
-  it 'does not register an offense for an empty `initialize` method with a argument forwarding`', :ruby27 do
+  it 'does not register an offense for an empty `initialize` method with an argument forwarding`', :ruby27 do
     expect_no_offenses(<<~RUBY)
       def initialize(...)
       end

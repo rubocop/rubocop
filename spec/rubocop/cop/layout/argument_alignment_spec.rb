@@ -619,7 +619,7 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       end
     end
 
-    it 'does not register an offense when using aligned braced hash as a argument' do
+    it 'does not register an offense when using aligned braced hash as an argument' do
       expect_no_offenses(<<~RUBY)
         do_something(
           {

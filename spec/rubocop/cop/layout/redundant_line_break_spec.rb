@@ -395,7 +395,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
           RUBY
         end
 
-        it 'registers an offense and corrects with a arguments on multiple lines' do
+        it 'registers an offense and corrects with arguments on multiple lines' do
           expect_offense(<<~RUBY)
             foo(x,
             ^^^^^^ Redundant line break detected.
