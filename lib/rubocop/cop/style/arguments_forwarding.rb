@@ -148,7 +148,7 @@ module RuboCop
 
           restarg, kwrestarg, blockarg = extract_forwardable_args(node.arguments)
           forwardable_args = redundant_forwardable_named_args(restarg, kwrestarg, blockarg)
-          send_nodes = node.each_descendant(:send, :csend, :super).to_a
+          send_nodes = node.each_descendant(:send, :csend, :super, :yield).to_a
 
           send_classifications = classify_send_nodes(
             node, send_nodes, non_splat_or_block_pass_lvar_references(node.body), forwardable_args
