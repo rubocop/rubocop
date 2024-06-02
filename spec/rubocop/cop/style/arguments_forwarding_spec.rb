@@ -552,6 +552,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         RUBY
       end
 
+      it 'registers an offense when using only rest arg in `yield`', :ruby32 do
+        expect_offense(<<~RUBY)
+          def foo(*args)
+                  ^^^^^ Use anonymous positional arguments forwarding (`*`).
+            yield(*args)
+                  ^^^^^ Use anonymous positional arguments forwarding (`*`).
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(*)
+            yield(*)
+          end
+        RUBY
+      end
+
       it 'registers an offense when using only kwrest arg', :ruby32 do
         expect_offense(<<~RUBY)
           def foo(**kwargs)
