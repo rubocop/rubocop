@@ -19,7 +19,7 @@ RSpec.describe RuboCop::FeatureLoader do
     end
 
     let(:expect_feature_loader) do
-      expect_any_instance_of(described_class) # rubocop:disable RSpec/AnyInstance
+      expect_any_instance_of(described_class) # rubocop:disable RSpec/AnyInstance, RSpec/ExpectInLet
     end
 
     context 'with normally loadable feature' do
