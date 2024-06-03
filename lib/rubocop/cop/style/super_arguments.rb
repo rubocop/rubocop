@@ -3,8 +3,25 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for redundant argument forwarding when calling super
-      # with arguments identical to the method definition.
+      # Checks for redundant argument forwarding when calling super with arguments identical to
+      # the method definition.
+      #
+      # Using zero arity `super` within a `define_method` block results in `RuntimeError`:
+      #
+      # [source,ruby]
+      # ----
+      # def m
+      #   define_method(:foo) { super() } # => OK
+      # end
+      #
+      # def m
+      #   define_method(:foo) { super }   # => RuntimeError
+      # end
+      # ----
+      #
+      # Furthermore, any arguments accompanied by a block may potentially be delegating to
+      # `define_method`, therefore, `super` used within these blocks will be allowed.
+      # This approach might result in false negatives, yet ensuring safe detection takes precedence.
       #
       # @example
       #   # bad
@@ -44,8 +61,10 @@ module RuboCop
 
         def on_super(super_node)
           def_node = super_node.ancestors.find do |node|
-            # You can't implicitly call super when dynamically defining methods
-            break if define_method?(node)
+            # When defining dynamic methods, implicitly calling `super` is not possible.
+            # Since there is a possibility of delegation to `define_method`,
+            # `super` used within the block is always allowed.
+            break if node.block_type?
 
             break node if DEF_TYPES.include?(node.type)
           end
@@ -133,12 +152,6 @@ module RuboCop
 
         def forward_arg_same?(def_arg, super_arg)
           def_arg.forward_arg_type? && super_arg.forwarded_args_type?
-        end
-
-        def define_method?(node)
-          return false unless node.block_type?
-
-          node.method?(:define_method) || node.method?(:define_singleton_method)
         end
 
         def preprocess_super_args(super_args)

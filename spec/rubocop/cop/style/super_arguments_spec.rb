@@ -170,12 +170,11 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
     end
   end
 
-  it 'registers an offense when the scope changes because of a block' do
-    expect_offense(<<~RUBY)
+  it 'does not register offense when calling super in a block' do
+    expect_no_offenses(<<~RUBY)
       def foo(a)
-        bar do
+        delegate_to_define_method do
           super(a)
-          ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
         end
       end
     RUBY
