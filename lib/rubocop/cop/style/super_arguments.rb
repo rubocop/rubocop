@@ -6,6 +6,11 @@ module RuboCop
       # Checks for redundant argument forwarding when calling super
       # with arguments identical to the method definition.
       #
+      # @safety
+      #   This cop is unsafe because super can't be implicitly called in the context of
+      #   `define_method` and `define_singleton_method`. Because of Ruby's dynamic nature any
+      #   entered block may change to this context, which will then raise an error at runtime.
+
       # @example
       #   # bad
       #   def method(*args, **kwargs)
@@ -25,6 +30,11 @@ module RuboCop
       #   # good - forwarding no arguments
       #   def method(*args, **kwargs)
       #     super()
+      #   end
+      #
+      #   # good - calling super in `define_method`
+      #   define_method(:method) do |foo|
+      #     super(foo)
       #   end
       #
       #   # good - assigning to the block variable before calling super
