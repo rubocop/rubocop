@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3'
+          ruby-version: ruby # Latest stable CRuby version
           bundler-cache: true
       - name: internal_investigation
         run: bundle exec rake internal_investigation
