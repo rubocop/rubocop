@@ -49,6 +49,7 @@ jobs:
           if-no-files-found: error
 
   spec-windows:
+    needs: spec-ubuntu # Don't spend CI resources on slow Windows specs if CI won't pass anyway.
     name: Spec - windows ${{ matrix.ruby }}
     runs-on: windows-latest
     strategy:
