@@ -9,33 +9,14 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
+
 jobs:
   lint-ruby:
-    name: Ruby - ${{ matrix.os }} ${{ matrix.ruby }}
-    runs-on: ${{ matrix.os }}-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu, windows]
-        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', 'head']
-        include:
-          - os: ubuntu
-            ruby: jruby-9.4
-          - os: windows
-            ruby: mingw
-        exclude:
-          - os: windows
-            ruby: head
     steps:
-      - name: Windows Specific
-        if: matrix.os == 'windows'
-        run: |
-          # Work around `Layout/EndOfLine: Carriage return character detected`
-          git config --system core.autocrlf false
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby }}
+          ruby-version: '3.3'
           bundler-cache: true
       - name: internal_investigation
         run: bundle exec rake internal_investigation
