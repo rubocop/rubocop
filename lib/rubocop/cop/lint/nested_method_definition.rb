@@ -102,7 +102,7 @@ module RuboCop
 
         def on_def(node)
           subject, = *node
-          return if node.defs_type? && subject.lvar_type?
+          return if node.defs_type? && subject.variable?
 
           def_ancestor = node.each_ancestor(:def, :defs).first
           return unless def_ancestor
