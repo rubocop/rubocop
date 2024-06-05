@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', 'head', 'jruby-9.4']
+        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', 'head']
 
     steps:
       - uses: actions/checkout@v4
@@ -32,21 +32,28 @@ jobs:
       - name: Check requiring libraries successfully
         # See https://github.com/rubocop/rubocop/pull/4523#issuecomment-309136113
         run: ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
-      - name: Set up Coverage
-        # Only collect coverage data on ubuntu runners with CRuby
-        if: ${{ !startsWith(matrix.ruby, 'jruby-') }}
-        run: echo "COVERAGE=true" >> $GITHUB_ENV
       - name: spec
         env:
           CI_RUBY_VERSION: ${{ matrix.ruby }}
-        run: bundle exec rake spec
+        run: COVERAGE=true bundle exec rake spec
       - name: Upload Coverage Artifact
-        if: ${{ !startsWith(matrix.ruby, 'jruby-') }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-ubuntu-${{ matrix.ruby }}
           path: coverage/.resultset.json
           if-no-files-found: error
+
+  spec-jruby:
+    name: Spec - JRuby
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 'jruby' # Latest stable JRuby version
+          bundler-cache: true
+      - name: spec
+        run: bundle exec rake spec
 
   spec-windows:
     needs: spec-ubuntu # Don't spend CI resources on slow Windows specs if CI won't pass anyway.
