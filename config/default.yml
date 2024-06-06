@@ -2081,6 +2081,12 @@ Lint/NextWithoutAccumulator:
   Enabled: true
   VersionAdded: '0.36'
 
+Lint/NoReturnFromBlock:
+  Description: 'Do not `return` inside blocks.'
+  Enabled: pending
+  VersionAdded: '1.64'
+  AllowReturnFromBlock: true
+
 Lint/NoReturnInBeginEndBlocks:
   Description: 'Do not `return` inside `begin..end` blocks in assignment contexts.'
   Enabled: pending

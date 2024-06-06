@@ -267,6 +267,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintnestedmethoddefinition[Lint/NestedMethodDefinition]
 * xref:cops_lint.adoc#lintnestedpercentliteral[Lint/NestedPercentLiteral]
 * xref:cops_lint.adoc#lintnextwithoutaccumulator[Lint/NextWithoutAccumulator]
+* xref:cops_lint.adoc#lintnoreturnfromblock[Lint/NoReturnFromBlock]
 * xref:cops_lint.adoc#lintnoreturninbeginendblocks[Lint/NoReturnInBeginEndBlocks]
 * xref:cops_lint.adoc#lintnonatomicfileoperation[Lint/NonAtomicFileOperation]
 * xref:cops_lint.adoc#lintnondeterministicrequireorder[Lint/NonDeterministicRequireOrder]
