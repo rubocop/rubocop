@@ -37,8 +37,6 @@ RSpec.describe RuboCop::Cop::Lint::NoReturnFromBlock, :config do
   end
 
   context 'when AllowReturnFromBlock is true' do
-    let(:cop_config) { { 'AllowReturnFromBlock' => true } }
-
     it 'does not register an offense for a block with a return statement' do
       expect_no_offenses(<<~RUBY)
         items.each do |item|
