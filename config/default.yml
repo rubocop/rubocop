@@ -2617,8 +2617,9 @@ Metrics/BlockNesting:
   StyleGuide: '#three-is-the-number-thou-shalt-count'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '0.47'
+  VersionChanged: '<<next>>'
   CountBlocks: false
+  CountModifierForms: false
   Max: 3
 
 Metrics/ClassLength:
