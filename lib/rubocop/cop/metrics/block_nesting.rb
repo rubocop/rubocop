@@ -3,12 +3,12 @@
 module RuboCop
   module Cop
     module Metrics
-      # Checks for excessive nesting of conditional and looping
-      # constructs.
+      # Checks for excessive nesting of conditional and looping constructs.
       #
-      # You can configure if blocks are considered using the `CountBlocks`
-      # option. When set to `false` (the default) blocks are not counted
-      # towards the nesting level. Set to `true` to count blocks as well.
+      # You can configure if blocks are considered using the `CountBlocks` and `CountModifierForms`
+      # options. When both are set to `false` (the default) blocks and modifier forms are not
+      # counted towards the nesting level. Set them to `true` to include these in the nesting level
+      # calculation as well.
       #
       # The maximum level of nesting allowed is configurable.
       class BlockNesting < Base
@@ -27,7 +27,7 @@ module RuboCop
 
         def check_nesting_level(node, max, current_level)
           if consider_node?(node)
-            current_level += 1 unless node.if_type? && node.elsif?
+            current_level += 1 if count_if_block?(node)
             if current_level > max
               self.max = current_level
               unless part_of_ignored_node?(node)
@@ -41,6 +41,14 @@ module RuboCop
           end
         end
 
+        def count_if_block?(node)
+          return true unless node.if_type?
+          return false if node.elsif?
+          return count_modifier_forms? if node.modifier_form?
+
+          true
+        end
+
         def consider_node?(node)
           return true if NESTING_BLOCKS.include?(node.type)
 
@@ -52,7 +60,11 @@ module RuboCop
         end
 
         def count_blocks?
-          cop_config['CountBlocks']
+          cop_config.fetch('CountBlocks', false)
+        end
+
+        def count_modifier_forms?
+          cop_config.fetch('CountModifierForms', false)
         end
       end
     end

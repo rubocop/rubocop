@@ -314,4 +314,48 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
       end
     end
   end
+
+  context 'when CountModifierForms is false' do
+    let(:cop_config) { { 'Max' => 2, 'CountModifierForms' => false } }
+
+    it 'accepts nested modifier forms' do
+      expect_no_offenses(<<~RUBY)
+        if a
+          if b
+            puts 'hello' if c
+          end
+        end
+      RUBY
+    end
+
+    it 'registers nested if expressions' do
+      expect_offense(<<~RUBY)
+        if a
+          if b
+            if c
+            ^^^^ Avoid more than 2 levels of block nesting.
+              puts 'hello'
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when CountModifierForms is true' do
+    let(:cop_config) { { 'Max' => 2, 'CountModifierForms' => true } }
+
+    context 'nested modifier forms' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          if a
+            if b
+              puts 'hello' if c
+              ^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+            end
+          end
+        RUBY
+      end
+    end
+  end
 end
