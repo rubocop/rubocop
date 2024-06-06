@@ -1,1 +1,1 @@
-* [#x](https://github.com/rubocop/rubocop/pull/x): Implement NoReturnFromBlock rule [#4064](https://github.com/rubocop/rubocop/issues/4064). ([@toddnestor][https://github.com/toddnestor])
+* [#12971](https://github.com/rubocop/rubocop/pull/12971): Implement NoReturnFromBlock rule [#4064](https://github.com/rubocop/rubocop/issues/4064). ([@toddnestor][])
