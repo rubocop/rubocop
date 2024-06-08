@@ -12,7 +12,7 @@ gem 'memory_profiler', platform: :mri
 # https://github.com/lsegal/yard/pull/1545
 # Please remove this dependency when the issue is resolved.
 gem 'ostruct'
-gem 'prism'
+gem 'prism', '>= 0.30.0'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.21.0'

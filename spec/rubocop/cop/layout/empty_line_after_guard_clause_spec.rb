@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+  context 'Ruby <= 3.2', :ruby32 do
     it 'registers an offense and corrects `next` guard clause not followed by empty line' do
       expect_offense(<<~RUBY)
         def foo
@@ -117,10 +117,8 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/rubocop/rubocop/issues/12869
   it 'registers an offense and corrects a next guard clause not followed by ' \
-     'empty line when guard clause is after heredoc ' \
-     'including string interpolation', broken_on: :prism do
+     'empty line when guard clause is after heredoc including string interpolation' do
     expect_offense(<<~'RUBY')
       raise(<<-FAIL) unless true
         #{1 + 1}
@@ -459,8 +457,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/rubocop/rubocop/issues/12869
-  it 'accepts a guard clause that is after a multiline heredoc with chained calls', broken_on: :prism do
+  it 'accepts a guard clause that is after a multiline heredoc with chained calls' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise ArgumentError, <<~END.squish.it.good unless guard
@@ -473,8 +470,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/rubocop/rubocop/issues/12869
-  it 'accepts a guard clause that is after a multiline heredoc nested argument call', broken_on: :prism do
+  it 'accepts a guard clause that is after a multiline heredoc nested argument call' do
     expect_no_offenses(<<~RUBY)
       def foo
         raise ArgumentError, call(<<~END.squish) unless guard
@@ -533,7 +529,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
     it 'registers an offense and corrects a method starting with end_' do
       expect_offense(<<~RUBY)
         def foo
@@ -573,8 +569,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     end
   end
 
-  # FIXME: https://github.com/rubocop/rubocop/issues/12869
-  it 'registers no offenses using heredoc with `and return` before guard condition with empty line', broken_on: :prism do
+  it 'registers no offenses using heredoc with `and return` before guard condition with empty line' do
     expect_no_offenses(<<~RUBY)
       def foo
         puts(<<~MSG) and return if bar
@@ -587,8 +582,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  # FIXME: https://github.com/rubocop/rubocop/issues/12869
-  it 'registers an offense and corrects using heredoc with `and return` before guard condition', broken_on: :prism do
+  it 'registers an offense and corrects using heredoc with `and return` before guard condition' do
     expect_offense(<<~RUBY)
       def foo
         puts(<<~MSG) and return if bar
