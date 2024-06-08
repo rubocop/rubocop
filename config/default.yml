@@ -1900,6 +1900,11 @@ Lint/ErbNewArguments:
   Enabled: true
   VersionAdded: '0.56'
 
+Lint/ExplicitPublicAccessModifier:
+  Description: 'Avoid `public` access modifier.'
+  Enabled: true
+  VersionAdded: '<<next>>'
+
 Lint/FlipFlop:
   Description: 'Checks for flip-flops.'
   StyleGuide: '#no-flip-flops'
