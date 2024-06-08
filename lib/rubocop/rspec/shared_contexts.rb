@@ -4,34 +4,36 @@ require 'tmpdir'
 
 RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLength
   around do |example|
-    Dir.mktmpdir do |tmpdir|
-      original_home = Dir.home
-      original_xdg_config_home = ENV.fetch('XDG_CONFIG_HOME', nil)
+    Bundler.with_unbundled_env do
+      Dir.mktmpdir do |tmpdir|
+        original_home = Dir.home
+        original_xdg_config_home = ENV.fetch('XDG_CONFIG_HOME', nil)
 
-      # Make sure to expand all symlinks in the path first. Otherwise we may
-      # get mismatched pathnames when loading config files later on.
-      tmpdir = File.realpath(tmpdir)
-      # Make upwards search for .rubocop.yml files stop at this directory.
-      RuboCop::FileFinder.root_level = tmpdir
+        # Make sure to expand all symlinks in the path first. Otherwise we may
+        # get mismatched pathnames when loading config files later on.
+        tmpdir = File.realpath(tmpdir)
+        # Make upwards search for .rubocop.yml files stop at this directory.
+        RuboCop::FileFinder.root_level = tmpdir
 
-      virtual_home = File.expand_path(File.join(tmpdir, 'home'))
-      Dir.mkdir(virtual_home)
-      ENV['HOME'] = virtual_home
-      ENV.delete('XDG_CONFIG_HOME')
+        virtual_home = File.expand_path(File.join(tmpdir, 'home'))
+        Dir.mkdir(virtual_home)
+        ENV['HOME'] = virtual_home
+        ENV.delete('XDG_CONFIG_HOME')
 
-      base_dir = example.metadata[:project_inside_home] ? virtual_home : tmpdir
-      root = example.metadata[:root]
-      working_dir = root ? File.join(base_dir, 'work', root) : File.join(base_dir, 'work')
+        base_dir = example.metadata[:project_inside_home] ? virtual_home : tmpdir
+        root = example.metadata[:root]
+        working_dir = root ? File.join(base_dir, 'work', root) : File.join(base_dir, 'work')
 
-      begin
-        FileUtils.mkdir_p(working_dir)
+        begin
+          FileUtils.mkdir_p(working_dir)
 
-        Dir.chdir(working_dir) { example.run }
-      ensure
-        ENV['HOME'] = original_home
-        ENV['XDG_CONFIG_HOME'] = original_xdg_config_home
+          Dir.chdir(working_dir) { example.run }
+        ensure
+          ENV['HOME'] = original_home
+          ENV['XDG_CONFIG_HOME'] = original_xdg_config_home
 
-        RuboCop::FileFinder.root_level = nil
+          RuboCop::FileFinder.root_level = nil
+        end
       end
     end
   end

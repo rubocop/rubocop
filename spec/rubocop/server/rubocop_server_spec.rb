@@ -7,11 +7,6 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
 
   include_context 'cli spec behavior'
 
-  before do
-    # Makes sure the project dir of rubocop server is the isolated_environment
-    create_empty_file('Gemfile')
-  end
-
   after do
     `ruby -I . "#{rubocop}" --stop-server`
   end
@@ -56,12 +51,15 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
           '--stdin', 'example.rb',
           stdin_data: 'puts 0'
         )
+
         expect(status.success?).to be true
+
         expect(stdout).to eq(<<~RUBY)
           # frozen_string_literal: true
 
           puts 0
         RUBY
+
         expect(stderr)
           .to include('[Corrected] Style/FrozenStringLiteralComment')
           .and include('[Corrected] Layout/EmptyLineAfterMagicComment')
@@ -79,6 +77,7 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
             'ruby', '-I', '.',
             rubocop, '--server', '--format=json', '--stdin', 'example.rb', stdin_data: 'puts 0'
           )
+
           expect(stdout).not_to start_with 'RuboCop server starting on '
         end
       end
