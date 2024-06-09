@@ -52,7 +52,9 @@ module RuboCop
 
         template = File.read(TEMPLATE_PATH, encoding: Encoding::UTF_8)
         erb = ERB.new(template)
-        html = erb.result(context.binding).lines.map { (_1 =~ /^\s*$/).nil? ? _1 : "\n" }.join
+        html = erb.result(context.binding).lines.map do |line|
+          line.match?(/\A\s*\z/) ? "\n" : line
+        end.join
 
         output.write html
       end
