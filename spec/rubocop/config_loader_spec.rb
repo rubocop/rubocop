@@ -1221,6 +1221,30 @@ RSpec.describe RuboCop::ConfigLoader do
               .to_set.superset?(expected.to_set)
           ).to be(true)
         end
+
+        # Workaround for https://github.com/rubocop/rubocop/issues/12978,
+        # there should already be no gemfile in the temp directory
+        context 'when no gemfile exists' do
+          around do |example|
+            # No bundler env and reset cached gemfile path
+            Bundler.with_unbundled_env do
+              old_values = Bundler.instance_variables.to_h do |name|
+                [name, Bundler.instance_variable_get(name)]
+              end
+              Bundler.instance_variables.each { |name| Bundler.remove_instance_variable(name) }
+              example.call
+            ensure
+              Bundler.instance_variables.each { |name| Bundler.remove_instance_variable(name) }
+              old_values.each do |name, value|
+                Bundler.instance_variable_set(name, value)
+              end
+            end
+          end
+
+          it 'loads' do
+            expect { configuration_from_file }.not_to raise_error
+          end
+        end
       end
 
       context 'and the gem is bundled' do
