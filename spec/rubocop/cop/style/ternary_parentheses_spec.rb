@@ -47,17 +47,15 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         RUBY
       end
 
-      context 'target ruby version <= 3.2', :ruby32, unsupported_on: :prism do
-        it 'registers an offense for yield in condition' do
-          expect_offense(<<~RUBY)
-            foo = yield ? a : b
-                  ^^^^^^^^^^^^^ Use parentheses for ternary conditions.
-          RUBY
+      it 'registers an offense for yield in condition' do
+        expect_offense(<<~RUBY)
+          foo = yield ? a : b
+                ^^^^^^^^^^^^^ Use parentheses for ternary conditions.
+        RUBY
 
-          expect_correction(<<~RUBY)
-            foo = (yield) ? a : b
-          RUBY
-        end
+        expect_correction(<<~RUBY)
+          foo = (yield) ? a : b
+        RUBY
       end
 
       it 'registers an offense for accessor in condition' do
@@ -250,17 +248,15 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         RUBY
       end
 
-      context 'target ruby version <= 3.2', :ruby32, unsupported_on: :prism do
-        it 'registers an offense for yield in condition' do
-          expect_offense(<<~RUBY)
-            foo = (yield) ? a : b
-                  ^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
-          RUBY
+      it 'registers an offense for yield in condition' do
+        expect_offense(<<~RUBY)
+          foo = (yield) ? a : b
+                ^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+        RUBY
 
-          expect_correction(<<~RUBY)
-            foo = yield ? a : b
-          RUBY
-        end
+        expect_correction(<<~RUBY)
+          foo = yield ? a : b
+        RUBY
       end
 
       it 'registers an offense for accessor in condition' do
@@ -547,17 +543,15 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         RUBY
       end
 
-      context 'target ruby version <= 3.2', :ruby32, unsupported_on: :prism do
-        it 'registers an offense for yield in condition' do
-          expect_offense(<<~RUBY)
-            foo = (yield) ? a : b
-                  ^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
-          RUBY
+      it 'registers an offense for yield in condition' do
+        expect_offense(<<~RUBY)
+          foo = (yield) ? a : b
+                ^^^^^^^^^^^^^^^ Only use parentheses for ternary expressions with complex conditions.
+        RUBY
 
-          expect_correction(<<~RUBY)
-            foo = yield ? a : b
-          RUBY
-        end
+        expect_correction(<<~RUBY)
+          foo = yield ? a : b
+        RUBY
       end
 
       it 'registers an offense for accessor in condition' do

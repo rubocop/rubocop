@@ -529,44 +529,42 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
-  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-    it 'registers an offense and corrects a method starting with end_' do
-      expect_offense(<<~RUBY)
-        def foo
-          next unless need_next?
-          ^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
-          end_this!
-        end
-      RUBY
+  it 'registers an offense and corrects a method starting with end_' do
+    expect_offense(<<~RUBY)
+      def foo
+        next unless need_next?
+        ^^^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        end_this!
+      end
+    RUBY
 
-      expect_correction(<<~RUBY)
-        def foo
-          next unless need_next?
+    expect_correction(<<~RUBY)
+      def foo
+        next unless need_next?
 
-          end_this!
-        end
-      RUBY
-    end
+        end_this!
+      end
+    RUBY
+  end
 
-    it 'registers an offense and corrects only the last guard clause' do
-      expect_offense(<<~RUBY)
-        def foo
-          next if foo?
-          next if bar?
-          ^^^^^^^^^^^^ Add empty line after guard clause.
-          foobar
-        end
-      RUBY
+  it 'registers an offense and corrects only the last guard clause' do
+    expect_offense(<<~RUBY)
+      def foo
+        next if foo?
+        next if bar?
+        ^^^^^^^^^^^^ Add empty line after guard clause.
+        foobar
+      end
+    RUBY
 
-      expect_correction(<<~RUBY)
-        def foo
-          next if foo?
-          next if bar?
+    expect_correction(<<~RUBY)
+      def foo
+        next if foo?
+        next if bar?
 
-          foobar
-        end
-      RUBY
-    end
+        foobar
+      end
+    RUBY
   end
 
   it 'registers no offenses using heredoc with `and return` before guard condition with empty line' do

@@ -643,119 +643,117 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   shared_examples 'on if nodes which exit current scope' do |kw|
-    context 'target ruby version <= 3.2', :ruby32, unsupported_on: :prism do
-      it "registers an error with #{kw} in the if branch" do
-        expect_offense(<<~RUBY)
-          if something
-          ^^ Use a guard clause (`#{kw} if something`) instead of wrapping the code inside a conditional expression.
-            #{kw}
-          else
-            puts "hello"
-          end
-        RUBY
+    it "registers an error with #{kw} in the if branch" do
+      expect_offense(<<~RUBY)
+        if something
+        ^^ Use a guard clause (`#{kw} if something`) instead of wrapping the code inside a conditional expression.
+          #{kw}
+        else
+          puts "hello"
+        end
+      RUBY
 
-        expect_correction(<<~RUBY)
-          #{kw} if something
-           #{trailing_whitespace}
+      expect_correction(<<~RUBY)
+        #{kw} if something
+         #{trailing_whitespace}
 
-            puts "hello"
+          puts "hello"
 
-        RUBY
-      end
+      RUBY
+    end
 
-      it "registers an error with #{kw} in the else branch" do
-        expect_offense(<<~RUBY)
-          if something
-          ^^ Use a guard clause (`#{kw} unless something`) instead of wrapping the code inside a conditional expression.
-           puts "hello"
-          else
-            #{kw}
-          end
-        RUBY
+    it "registers an error with #{kw} in the else branch" do
+      expect_offense(<<~RUBY)
+        if something
+        ^^ Use a guard clause (`#{kw} unless something`) instead of wrapping the code inside a conditional expression.
+         puts "hello"
+        else
+          #{kw}
+        end
+      RUBY
 
-        expect_correction(<<~RUBY)
-          #{kw} unless something
-           puts "hello"
+      expect_correction(<<~RUBY)
+        #{kw} unless something
+         puts "hello"
 
-           #{trailing_whitespace}
+         #{trailing_whitespace}
 
-        RUBY
-      end
+      RUBY
+    end
 
-      it "doesn't register an error if condition has multiple lines" do
-        expect_no_offenses(<<~RUBY)
-          if something &&
-               something_else
-            #{kw}
-          else
-            puts "hello"
-          end
-        RUBY
-      end
+    it "doesn't register an error if condition has multiple lines" do
+      expect_no_offenses(<<~RUBY)
+        if something &&
+             something_else
+          #{kw}
+        else
+          puts "hello"
+        end
+      RUBY
+    end
 
-      it "does not report an offense if #{kw} is inside elsif" do
-        expect_no_offenses(<<~RUBY)
-          if something
-            a
-          elsif something_else
-            #{kw}
-          end
-        RUBY
-      end
+    it "does not report an offense if #{kw} is inside elsif" do
+      expect_no_offenses(<<~RUBY)
+        if something
+          a
+        elsif something_else
+          #{kw}
+        end
+      RUBY
+    end
 
-      it "does not report an offense if #{kw} is inside then body of if..elsif..end" do
-        expect_no_offenses(<<~RUBY)
-          if something
-            #{kw}
-          elsif something_else
-            a
-          end
-        RUBY
-      end
+    it "does not report an offense if #{kw} is inside then body of if..elsif..end" do
+      expect_no_offenses(<<~RUBY)
+        if something
+          #{kw}
+        elsif something_else
+          a
+        end
+      RUBY
+    end
 
-      it "does not report an offense if #{kw} is inside if..elsif..else..end" do
-        expect_no_offenses(<<~RUBY)
-          if something
-            a
-          elsif something_else
-            b
-          else
-            #{kw}
-          end
-        RUBY
-      end
+    it "does not report an offense if #{kw} is inside if..elsif..else..end" do
+      expect_no_offenses(<<~RUBY)
+        if something
+          a
+        elsif something_else
+          b
+        else
+          #{kw}
+        end
+      RUBY
+    end
 
-      it "doesn't register an error if control flow expr has multiple lines" do
-        expect_no_offenses(<<~RUBY)
-          if something
-            #{kw} 'blah blah blah' \\
-                  'blah blah blah'
-          else
-            puts "hello"
-          end
-        RUBY
-      end
+    it "doesn't register an error if control flow expr has multiple lines" do
+      expect_no_offenses(<<~RUBY)
+        if something
+          #{kw} 'blah blah blah' \\
+                'blah blah blah'
+        else
+          puts "hello"
+        end
+      RUBY
+    end
 
-      it 'registers an error if non-control-flow branch has multiple lines' do
-        expect_offense(<<~RUBY)
-          if something
-          ^^ Use a guard clause (`#{kw} if something`) instead of wrapping the code inside a conditional expression.
-            #{kw}
-          else
-            puts "hello" \\
-                 "blah blah blah"
-          end
-        RUBY
+    it 'registers an error if non-control-flow branch has multiple lines' do
+      expect_offense(<<~RUBY)
+        if something
+        ^^ Use a guard clause (`#{kw} if something`) instead of wrapping the code inside a conditional expression.
+          #{kw}
+        else
+          puts "hello" \\
+               "blah blah blah"
+        end
+      RUBY
 
-        expect_correction(<<~RUBY)
-          #{kw} if something
-           #{trailing_whitespace}
+      expect_correction(<<~RUBY)
+        #{kw} if something
+         #{trailing_whitespace}
 
-            puts "hello" \\
-                 "blah blah blah"
+          puts "hello" \\
+               "blah blah blah"
 
-        RUBY
-      end
+      RUBY
     end
   end
 

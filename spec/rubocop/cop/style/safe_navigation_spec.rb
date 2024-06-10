@@ -195,10 +195,7 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
       it_behaves_like 'safe guarding logical break keywords', 'raise'
       it_behaves_like 'safe guarding logical break keywords', 'return'
       it_behaves_like 'safe guarding logical break keywords', 'throw'
-
-      context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-        it_behaves_like 'safe guarding logical break keywords', 'yield'
-      end
+      it_behaves_like 'safe guarding logical break keywords', 'yield'
 
       it 'registers an offense for a method call that nil responds to ' \
          'safe guarded by an object check' do
