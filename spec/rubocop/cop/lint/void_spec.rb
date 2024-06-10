@@ -99,6 +99,19 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         top
       RUBY
     end
+
+    it "registers an offense for void var #{var} with guard clause if not on last line" do
+      expect_offense(<<~RUBY, var: var)
+        %{var} = 5
+        %{var} unless condition
+        ^{var} Variable `#{var}` used in void context.
+        top
+      RUBY
+
+      # `var unless condition` might indicate missing `return` in `return var unless condition`,
+      # so for convenience, the code will not be autocorrected by deletion.
+      expect_no_corrections
+    end
   end
 
   it 'registers an offense for void constant `CONST` if not on last line' do
@@ -115,6 +128,19 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
+  it 'registers an offense for void constant `CONST` with guard condition if not on last line' do
+    expect_offense(<<~RUBY)
+      CONST = 5
+      CONST unless condition
+      ^^^^^ Constant `CONST` used in void context.
+      top
+    RUBY
+
+    # `CONST unless condition` might indicate missing `return` in `return CONST unless condition`,
+    # so for convenience, the code will not be autocorrected by deletion.
+    expect_no_corrections
+  end
+
   %w(1 2.0 :test /test/ [1] {}).each do |lit|
     it "registers an offense for void lit #{lit} if not on last line" do
       expect_offense(<<~RUBY, lit: lit)
@@ -127,6 +153,18 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         #{''}
         top
       RUBY
+    end
+
+    it "registers an offense for void lit #{lit} with guard condition if not on last line" do
+      expect_offense(<<~RUBY, lit: lit)
+        %{lit} unless condition
+        ^{lit} Literal `#{lit}` used in void context.
+        top
+      RUBY
+
+      # `42 unless condition` might indicate missing `return` in `return 42 unless condition`,
+      # so for convenience, the code will not be autocorrected by deletion.
+      expect_no_corrections
     end
   end
 
