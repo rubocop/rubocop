@@ -102,10 +102,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
 
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'puts 1'
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'defined? :A'
-
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      it_behaves_like 'if/then/else/end with constructs changing precedence', 'yield a'
-    end
+    it_behaves_like 'if/then/else/end with constructs changing precedence', 'yield a'
 
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'super b'
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'not a'
@@ -126,18 +123,16 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      it 'registers and corrects an offense with ternary operator without adding parentheses for ' \
-         'if/then/else/end that contains method calls with parenthesized arguments' do
-        expect_offense(<<~RUBY)
-          if a(0) then puts(1) else yield(2) end
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
-        RUBY
+    it 'registers and corrects an offense with ternary operator without adding parentheses for ' \
+       'if/then/else/end that contains method calls with parenthesized arguments' do
+      expect_offense(<<~RUBY)
+        if a(0) then puts(1) else yield(2) end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+      RUBY
 
-        expect_correction(<<~RUBY)
-          a(0) ? puts(1) : yield(2)
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        a(0) ? puts(1) : yield(2)
+      RUBY
     end
 
     it 'registers and corrects an offense with ternary operator without adding parentheses for ' \
@@ -166,10 +161,11 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       end
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
       it_behaves_like 'if/then/else/end with keyword', 'retry'
-      it_behaves_like 'if/then/else/end with keyword', 'break'
     end
+
+    it_behaves_like 'if/then/else/end with keyword', 'break'
 
     it_behaves_like 'if/then/else/end with keyword', 'self'
     it_behaves_like 'if/then/else/end with keyword', 'raise'
@@ -344,9 +340,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'puts 1'
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'defined? :A'
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      it_behaves_like 'if/then/else/end with constructs changing precedence', 'yield a'
-    end
+    it_behaves_like 'if/then/else/end with constructs changing precedence', 'yield a'
 
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'super b'
     it_behaves_like 'if/then/else/end with constructs changing precedence', 'not a'
@@ -371,22 +365,20 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      it 'registers and corrects an offense with multi-line construct without adding parentheses for ' \
-         'if/then/else/end that contains method calls with parenthesized arguments' do
-        expect_offense(<<~RUBY)
-          if a(0) then puts(1) else yield(2) end
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
-        RUBY
+    it 'registers and corrects an offense with multi-line construct without adding parentheses for ' \
+       'if/then/else/end that contains method calls with parenthesized arguments' do
+      expect_offense(<<~RUBY)
+        if a(0) then puts(1) else yield(2) end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+      RUBY
 
-        expect_correction(<<~RUBY)
-          if a(0)
-            puts(1)
-          else
-            yield(2)
-          end
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        if a(0)
+          puts(1)
+        else
+          yield(2)
+        end
+      RUBY
     end
 
     it 'registers and corrects an offense with multi-line construct without adding parentheses for ' \
@@ -423,10 +415,11 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       end
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
       it_behaves_like 'if/then/else/end with keyword', 'retry'
-      it_behaves_like 'if/then/else/end with keyword', 'break'
     end
+
+    it_behaves_like 'if/then/else/end with keyword', 'break'
 
     it_behaves_like 'if/then/else/end with keyword', 'self'
     it_behaves_like 'if/then/else/end with keyword', 'raise'

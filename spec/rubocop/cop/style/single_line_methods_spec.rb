@@ -240,22 +240,20 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
-      context 'target ruby version <= 3.2', :ruby32, unsupported_on: :prism do
-        it 'does not to an endless class method definition when using `break`' do
-          expect_correction(<<~RUBY.strip, source: 'def foo(argument) break bar(argument); end')
-            def foo(argument)#{trailing_whitespace}
-              break bar(argument);#{trailing_whitespace}
-            end
-          RUBY
-        end
+      it 'does not to an endless class method definition when using `break`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(argument) break bar(argument); end')
+          def foo(argument)#{trailing_whitespace}
+            break bar(argument);#{trailing_whitespace}
+          end
+        RUBY
+      end
 
-        it 'does not to an endless class method definition when using `next`' do
-          expect_correction(<<~RUBY.strip, source: 'def foo(argument) next bar(argument); end')
-            def foo(argument)#{trailing_whitespace}
-              next bar(argument);#{trailing_whitespace}
-            end
-          RUBY
-        end
+      it 'does not to an endless class method definition when using `next`' do
+        expect_correction(<<~RUBY.strip, source: 'def foo(argument) next bar(argument); end')
+          def foo(argument)#{trailing_whitespace}
+            next bar(argument);#{trailing_whitespace}
+          end
+        RUBY
       end
 
       # NOTE: Setter method cannot be defined in the endless method definition.

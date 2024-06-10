@@ -154,10 +154,8 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('super')
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-      it 'registers no offense for yield without args' do
-        expect_no_offenses('yield')
-      end
+    it 'registers no offense for yield without args' do
+      expect_no_offenses('yield')
     end
 
     it 'registers no offense for superclass call with parens' do
@@ -838,15 +836,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo &block')
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-      it 'accepts parens in yield argument method calls' do
-        expect_no_offenses('yield File.basepath(path)')
-        expect_no_offenses('yield path, File.basepath(path)')
-      end
+    it 'accepts parens in yield argument method calls' do
+      expect_no_offenses('yield File.basepath(path)')
+      expect_no_offenses('yield path, File.basepath(path)')
+    end
 
-      it 'accepts parens in super calls with braced blocks' do
-        expect_no_offenses('super(foo(bar)) { yield }')
-      end
+    it 'accepts parens in super calls with braced blocks' do
+      expect_no_offenses('super(foo(bar)) { yield }')
     end
 
     it 'accepts parens in super without args' do
@@ -1097,16 +1093,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         RUBY
       end
 
-      context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-        it 'accepts parens in yield argument call with blocks' do
-          expect_no_offenses(<<~RUBY)
-            yield(
-              bar.new(quux) do
-                pass
-              end
-            )
-          RUBY
-        end
+      it 'accepts parens in yield argument call with blocks' do
+        expect_no_offenses(<<~RUBY)
+          yield(
+            bar.new(quux) do
+              pass
+            end
+          )
+        RUBY
       end
     end
 

@@ -120,32 +120,30 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-      it 'registers an offense and corrects misaligned keys in implicit hash for yield' do
-        expect_offense(<<~RUBY)
-          yield(a: 0,
-            b: 1)
-            ^^^^ Align the keys of a hash literal if they span more than one line.
-        RUBY
+    it 'registers an offense and corrects misaligned keys in implicit hash for yield' do
+      expect_offense(<<~RUBY)
+        yield(a: 0,
+          b: 1)
+          ^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
 
-        expect_correction(<<~RUBY)
-          yield(a: 0,
-                b: 1)
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        yield(a: 0,
+              b: 1)
+      RUBY
+    end
 
-      it 'registers an offense and corrects misaligned keys in explicit hash for yield' do
-        expect_offense(<<~RUBY)
-          yield({a: 0,
-            b: 1})
-            ^^^^ Align the keys of a hash literal if they span more than one line.
-        RUBY
+    it 'registers an offense and corrects misaligned keys in explicit hash for yield' do
+      expect_offense(<<~RUBY)
+        yield({a: 0,
+          b: 1})
+          ^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
 
-        expect_correction(<<~RUBY)
-          yield({a: 0,
-                 b: 1})
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        yield({a: 0,
+               b: 1})
+      RUBY
     end
 
     context 'when using hash value omission', :ruby31 do
@@ -303,20 +301,18 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-      it 'accepts misaligned keys in implicit hash for yield' do
-        expect_no_offenses(<<~RUBY)
-          yield(a: 0,
-            b: 1)
-        RUBY
-      end
+    it 'accepts misaligned keys in implicit hash for yield' do
+      expect_no_offenses(<<~RUBY)
+        yield(a: 0,
+          b: 1)
+      RUBY
+    end
 
-      it 'accepts misaligned keys in explicit hash for yield' do
-        expect_no_offenses(<<~RUBY)
-          yield({a: 0,
-            b: 1})
-        RUBY
-      end
+    it 'accepts misaligned keys in explicit hash for yield' do
+      expect_no_offenses(<<~RUBY)
+        yield({a: 0,
+          b: 1})
+      RUBY
     end
   end
 
@@ -363,26 +359,24 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-      it 'accepts misaligned keys in implicit hash for yield' do
-        expect_no_offenses(<<~RUBY)
-          yield(a: 0,
-            b: 1)
-        RUBY
-      end
+    it 'accepts misaligned keys in implicit hash for yield' do
+      expect_no_offenses(<<~RUBY)
+        yield(a: 0,
+          b: 1)
+      RUBY
+    end
 
-      it 'registers an offense and corrects misaligned keys in explicit hash for yield' do
-        expect_offense(<<~RUBY)
-          yield({a: 0,
-            b: 1})
-            ^^^^ Align the keys of a hash literal if they span more than one line.
-        RUBY
+    it 'registers an offense and corrects misaligned keys in explicit hash for yield' do
+      expect_offense(<<~RUBY)
+        yield({a: 0,
+          b: 1})
+          ^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
 
-        expect_correction(<<~RUBY)
-          yield({a: 0,
-                 b: 1})
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        yield({a: 0,
+               b: 1})
+      RUBY
     end
   end
 
@@ -451,26 +445,24 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-      it 'registers an offense and corrects misaligned keys in implicit hash for yield' do
-        expect_offense(<<~RUBY)
-          yield(a: 0,
-            b: 1)
-            ^^^^ Align the keys of a hash literal if they span more than one line.
-        RUBY
+    it 'registers an offense and corrects misaligned keys in implicit hash for yield' do
+      expect_offense(<<~RUBY)
+        yield(a: 0,
+          b: 1)
+          ^^^^ Align the keys of a hash literal if they span more than one line.
+      RUBY
 
-        expect_correction(<<~RUBY)
-          yield(a: 0,
-                b: 1)
-        RUBY
-      end
+      expect_correction(<<~RUBY)
+        yield(a: 0,
+              b: 1)
+      RUBY
+    end
 
-      it 'accepts misaligned keys in explicit hash for yield' do
-        expect_no_offenses(<<~RUBY)
-          yield({a: 0,
-            b: 1})
-        RUBY
-      end
+    it 'accepts misaligned keys in explicit hash for yield' do
+      expect_no_offenses(<<~RUBY)
+        yield({a: 0,
+          b: 1})
+      RUBY
     end
   end
 
@@ -1331,10 +1323,8 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     expect_no_offenses('super')
   end
 
-  context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
-    it 'registers no offense for yield without args' do
-      expect_no_offenses('yield')
-    end
+  it 'registers no offense for yield without args' do
+    expect_no_offenses('yield')
   end
 
   context 'with `EnforcedColonStyle`: `table`' do
