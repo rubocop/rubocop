@@ -6,7 +6,7 @@ require 'yaml'
 module RuboCop
   # A help class for ConfigLoader that handles configuration resolution.
   # @api private
-  class ConfigLoaderResolver
+  class ConfigLoaderResolver # rubocop:disable Metrics/ClassLength
     def resolve_requires(path, hash)
       config_dir = File.dirname(path)
       hash.delete('require').tap do |loaded_features|
@@ -267,8 +267,12 @@ module RuboCop
 
     def gem_config_path(gem_name, relative_config_path)
       if defined?(Bundler)
-        gem = Bundler.load.specs[gem_name].first
-        gem_path = gem.full_gem_path if gem
+        begin
+          gem = Bundler.load.specs[gem_name].first
+          gem_path = gem.full_gem_path if gem
+        rescue Bundler::GemfileNotFound
+          # No Gemfile found. Bundler may be loaded manually
+        end
       end
 
       gem_path ||= Gem::Specification.find_by_name(gem_name).gem_dir
