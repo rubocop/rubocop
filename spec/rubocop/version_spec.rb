@@ -153,10 +153,7 @@ RSpec.describe RuboCop::Version do
           /- rubocop-rspec \d+\.\d+\.\d+/,
           /- rubocop-graphql \d+\.\d+\.\d+/,
           /- rubocop-md \d+\.\d+\.\d+/,
-          /- rubocop-thread_safety \d+\.\d+\.\d+/,
-          /- rubocop-capybara \d+\.\d+\.\d+/,
-          /- rubocop-factory_bot \d+\.\d+\.\d+/,
-          /- rubocop-rspec_rails \d+\.\d+\.\d+/
+          /- rubocop-thread_safety \d+\.\d+\.\d+/
         )
       end
     end
