@@ -17,7 +17,7 @@ gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.21.0'
 gem 'rubocop-rake', '~> 0.6.0'
-gem 'rubocop-rspec', '>= 2.31.0'
+gem 'rubocop-rspec', '~> 2.31.0'
 # This is a workaround to prevent the following error in rubocop-rspec_rails 2.28.3:
 # https://github.com/rubocop/rubocop/actions/runs/8656558784/job/23737409762
 # Please remove this dependency when the issue is resolved.
