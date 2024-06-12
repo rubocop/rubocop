@@ -7,6 +7,20 @@ module RuboCop
       # Since the `send` method can be used to call private methods, by default,
       # only the `public_send` method is detected.
       #
+      # NOTE: Writer methods with names ending in `=` are always permitted because their
+      # behavior differs as follows:
+      #
+      # [source,ruby]
+      # ----
+      # def foo=(foo)
+      #   @foo = foo
+      #   42
+      # end
+      #
+      # foo(1)         # => 1
+      # send(:foo=, 1) # => 42
+      # ----
+      #
       # @safety
       #   This cop is not safe because it can incorrectly detect based on the receiver.
       #   Additionally, when `AllowSend` is set to `true`, it cannot determine whether
@@ -43,7 +57,7 @@ module RuboCop
         MSG = 'Use `%<method_name>s` method call directly instead.'
         RESTRICT_ON_SEND = %i[public_send send __send__].freeze
         STATIC_METHOD_NAME_NODE_TYPES = %i[sym str].freeze
-        METHOD_NAME_PATTERN = /\A[a-zA-Z_][a-zA-Z0-9_]*[!?=]?\z/.freeze
+        METHOD_NAME_PATTERN = /\A[a-zA-Z_][a-zA-Z0-9_]*[!?]?\z/.freeze
         RESERVED_WORDS = %i[
           BEGIN END alias and begin break case class def defined? do else elsif end ensure
           false for if in module next nil not or redo rescue retry return self super then true
