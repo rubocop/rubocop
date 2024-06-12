@@ -597,5 +597,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
         end
       RUBY
     end
+
+    it 'accepts when `begin` block includes `rescue` clause' do
+      expect_no_offenses(<<~RUBY)
+        def func = begin
+          foo
+        rescue
+          bar
+        end
+      RUBY
+    end
   end
 end
