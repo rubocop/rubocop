@@ -17,7 +17,7 @@ module RuboCop
       #   42
       # end
       #
-      # foo(1)         # => 1
+      # self.foo = 1   # => 1
       # send(:foo=, 1) # => 42
       # ----
       #
