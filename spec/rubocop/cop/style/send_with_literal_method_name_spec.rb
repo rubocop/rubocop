@@ -91,6 +91,12 @@ RSpec.describe RuboCop::Cop::Style::SendWithLiteralMethodName, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `public_send` with writer method name' do
+    expect_no_offenses(<<~RUBY)
+      obj.public_send("name=")
+    RUBY
+  end
+
   it 'does not register an offense when using `public_send` with method name with brackets' do
     expect_no_offenses(<<~RUBY)
       obj.public_send("{brackets}")
