@@ -13,6 +13,7 @@ RSpec.configure do |config|
   config.include HostEnvironmentSimulatorHelper
   config.include_context 'config', :config
   config.include_context 'isolated environment', :isolated_environment
+  config.include_context 'isolated bundler', :isolated_bundler
   config.include_context 'lsp', :lsp
   config.include_context 'maintain registry', :restore_registry
   config.include_context 'ruby 2.0', :ruby20

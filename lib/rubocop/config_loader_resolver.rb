@@ -272,6 +272,8 @@ module RuboCop
           gem_path = gem.full_gem_path if gem
         rescue Bundler::GemfileNotFound
           # No Gemfile found. Bundler may be loaded manually
+        rescue Bundler::GitError
+          # The Gemfile exists but contains an uninstalled git source
         end
       end
 
