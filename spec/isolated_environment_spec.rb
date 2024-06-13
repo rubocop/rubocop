@@ -23,4 +23,11 @@ RSpec.describe 'isolated environment', :isolated_environment, type: :feature do
     # A return value of 0 means that the erroneous config file was not read.
     expect(cli.run([])).to eq(0)
   end
+
+  context 'bundler is isolated', :isolated_bundler do
+    it 'has a Gemfile path in the temporary directory' do
+      create_empty_file('Gemfile')
+      expect(Bundler::SharedHelpers.root.to_s).to eq(Dir.pwd)
+    end
+  end
 end
