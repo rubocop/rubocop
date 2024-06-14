@@ -306,7 +306,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     filename = "#{department_to_basename(department)}.adoc"
     content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
     cops_of_department(department).each do |cop|
-      anchor = cop.cop_name.sub('/', '').downcase
+      anchor = cop.cop_name.delete('/').downcase
       content << "* xref:#{filename}##{anchor}[#{cop.cop_name}]\n"
     end
 
