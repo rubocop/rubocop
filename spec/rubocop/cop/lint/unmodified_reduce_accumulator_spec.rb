@@ -16,6 +16,12 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator, :config do
       RUBY
     end
 
+    it "does not affect #{method} called with an empty block" do
+      expect_no_offenses(<<~RUBY)
+        values.#{method}(:+) { |result, value| }
+      RUBY
+    end
+
     context "given a #{method} block" do
       it 'does not register an offense when returning a literal' do
         expect_no_offenses(<<~RUBY)

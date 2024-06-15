@@ -113,6 +113,7 @@ module RuboCop
         PATTERN
 
         def on_block(node)
+          return unless node.body
           return unless reduce_with_block?(node)
           return unless node.argument_list.length >= 2
 
