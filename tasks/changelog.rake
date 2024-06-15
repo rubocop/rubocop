@@ -9,7 +9,7 @@ namespace :changelog do
       ref_type = :pull if args[:id]
       path = Changelog::Entry.new(type: type, ref_id: args[:id], ref_type: ref_type).write
       cmd = "git add #{path}"
-      system cmd, exception: true
+      sh cmd
       puts "Entry '#{path}' created and added to git index"
     end
   end
@@ -21,7 +21,7 @@ namespace :changelog do
     Changelog.new.merge!.and_delete!
     cmd = "git commit -a -m 'Update Changelog'"
     puts cmd
-    system cmd, exception: true
+    sh cmd
   end
 
   desc 'Check for no pending changelog entries'

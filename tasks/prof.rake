@@ -14,7 +14,7 @@ namespace :prof do
 
     path = args.fetch(:path, '.')
     cmd = "exe/rubocop --profile #{path}"
-    system cmd, exception: true
+    sh cmd
   end
 
   desc 'Run RuboCop on itself only if dump does not exist'
@@ -40,6 +40,6 @@ namespace :prof do
     end
     cmd = "stackprof #{dump_path} --walk --method '#{method}'"
     puts cmd
-    system cmd, exception: true
+    sh cmd
   end
 end
