@@ -30,6 +30,36 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     it "accepts void op #{op} by itself without a begin block" do
       expect_no_offenses("a #{op} b")
     end
+
+    it "registers an offense for parenthesized void op #{op} if not on last line" do
+      expect_offense(<<~RUBY, op: op)
+        (a %{op} b)
+           ^{op} Operator `#{op}` used in void context.
+        ((a %{op} b))
+            ^{op} Operator `#{op}` used in void context.
+        (((a %{op} b)))
+      RUBY
+
+      # NOTE: Redundant parentheses in `(var)` are left to `Style/RedundantParentheses` to fix.
+      expect_correction(<<~RUBY)
+        (a
+        b)
+        ((a
+        b))
+        (((a #{op} b)))
+      RUBY
+    end
+
+    it "accepts parenthesized void op #{op} if on last line" do
+      expect_no_offenses(<<~RUBY)
+        something
+        (a #{op} b)
+      RUBY
+    end
+
+    it "accepts parenthesized void op #{op} by itself without a begin block" do
+      expect_no_offenses("(a #{op} b)")
+    end
   end
 
   sign_unary_operators = %i[+ -]
