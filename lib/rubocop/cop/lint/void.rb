@@ -123,6 +123,7 @@ module RuboCop
         end
 
         def check_void_op(node, &block)
+          node = node.children.first while node.begin_type?
           return unless node.send_type? && OPERATORS.include?(node.method_name)
           return if block && yield(node)
 
