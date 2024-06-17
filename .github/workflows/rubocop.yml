@@ -91,7 +91,7 @@ jobs:
         name: Download Coverage Artifacts
         with:
           pattern: coverage-*
-      - uses: paambaati/codeclimate-action@v6
+      - uses: paambaati/codeclimate-action@v8
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         if: ${{ env.CC_TEST_REPORTER_ID != '' }}
