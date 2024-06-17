@@ -2196,7 +2196,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(File).to exist(cpu_profile)
       end
 
-      it 'creates memory profile file' do
+      # FIXME: https://github.com/rubocop/rubocop/actions/runs/9542192514/job/26296594698
+      # It is necessary to investigate and resolve the error that occurred with Ruby 3.4-dev in
+      # https://github.com/rubocop/rubocop/pull/12999.
+      it 'creates memory profile file', broken_on: :ruby_head do
         expect(cli.run(['--profile', '--memory', 'example1.rb'])).to eq(0)
         expect($stdout.string.include?('Building memory report...')).to be(true)
         expect(File).to exist(memory_profile)
