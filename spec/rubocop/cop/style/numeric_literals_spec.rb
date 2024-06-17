@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
         RUBY
 
         expect(min_digits).to eq(21)
-        expect(enabled.nil?).to be(true)
+        expect(enabled).to be_nil
       end
 
       it 'sets the right value if one is disabled inline' do
@@ -194,7 +194,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
         RUBY
 
         expect(min_digits).to eq(13)
-        expect(enabled.nil?).to be(true)
+        expect(enabled).to be_nil
       end
     end
 
@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
         RUBY
 
         expect(enabled).to be(false)
-        expect(min_digits.nil?).to be(true)
+        expect(min_digits).to be_nil
       end
 
       it 'does not disable the cop if the line is disabled' do
@@ -214,8 +214,8 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
           1234_5678_90 # rubocop:disable Style/NumericLiterals
         RUBY
 
-        expect(enabled.nil?).to be(true)
-        expect(min_digits.nil?).to be(true)
+        expect(enabled).to be_nil
+        expect(min_digits).to be_nil
       end
     end
   end

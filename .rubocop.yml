@@ -142,7 +142,8 @@ RSpec:
       - expect_offense
 
 RSpec/PredicateMatcher:
-  EnforcedStyle: explicit
+  # Also consider `be(true)` and `be(false)` as offenses, instead of only `be_truthy` and `be_falsy`
+  Strict: false
 
 RSpec/SpecFilePathFormat:
   CustomTransform:

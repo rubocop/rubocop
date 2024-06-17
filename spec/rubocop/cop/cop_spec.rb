@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   before { cop.send(:begin_investigation, processed_source) }
 
   it 'initially has 0 offenses' do
-    expect(cop.offenses.empty?).to be(true)
+    expect(cop.offenses).to be_empty
   end
 
   describe '.qualified_cop_name' do
@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   it 'reports registered offenses' do
     cop.add_offense(nil, location: location, message: 'message')
 
-    expect(cop.offenses.empty?).to be(false)
+    expect(cop.offenses).not_to be_empty
   end
 
   it 'sets default severity' do
@@ -220,7 +220,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
       it 'is not specified (set to nil)' do
         cop.add_offense(nil, location: location, message: 'message')
-        expect(cop.offenses.first.corrected?).to be(false)
+        expect(cop.offenses.first).not_to be_corrected
       end
 
       context 'when autocorrect is requested' do
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is not specified (set to nil)' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to be(false)
+          expect(cop.offenses.first).not_to be_corrected
         end
 
         context 'when disable_uncorrectable is enabled' do
@@ -243,7 +243,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
           it 'is set to true' do
             cop.add_offense(node, location: location, message: 'message')
-            expect(cop.offenses.first.corrected?).to be(true)
+            expect(cop.offenses.first).to be_corrected
             expect(cop.offenses.first.status).to be(:corrected_with_todo)
           end
         end
@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to true' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to be(true)
+          expect(cop.offenses.first).to be_corrected
         end
       end
 
@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to false' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to be(false)
+          expect(cop.offenses.first).not_to be_corrected
         end
       end
 
@@ -286,7 +286,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it 'is set to false' do
           cop.add_offense(nil, location: location, message: 'message')
-          expect(cop.offenses.first.corrected?).to be(false)
+          expect(cop.offenses.first).not_to be_corrected
         end
       end
     end

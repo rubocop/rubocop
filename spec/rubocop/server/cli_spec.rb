@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
           puts x
         RUBY
         expect(cli.run(['--server', '--format', 'simple', 'example.rb'])).to eq(0)
-        expect(cli.exit?).to be(false)
+        expect(cli).not_to be_exit
         expect($stdout.string).to start_with 'RuboCop server starting on '
         expect($stderr.string).to eq ''
       end
@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
           puts x
         RUBY
         expect(cli.run(['--no-server', '--format', 'simple', 'example.rb'])).to eq(0)
-        expect(cli.exit?).to be(false)
+        expect(cli).not_to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq ''
       end
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using `--start-server` option' do
       it 'returns exit status 0 and display an information message' do
         expect(cli.run(['--start-server'])).to eq(0)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to start_with 'RuboCop server starting on '
         expect($stderr.string).to eq ''
       end
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using `--start-server` option with `--no-detach`' do
       it 'returns exit status 0 and display an information message' do
         expect(cli.run(['--start-server', '--no-detach'])).to eq(0)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to match(/RuboCop server starting on/)
         expect($stderr.string).to eq ''
       end
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using `--stop-server` option' do
       it 'returns exit status 0 and display a warning message' do
         expect(cli.run(['--stop-server'])).to eq(0)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq "RuboCop server is not running.\n"
       end
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using `--restart-server` option' do
       it 'returns exit status 0 and display an information and a warning messages' do
         expect(cli.run(['--restart-server'])).to eq(0)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to start_with 'RuboCop server starting on '
         expect($stderr.string).to eq "RuboCop server is not running.\n"
       end
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using `--restart-server` option with `--no-detach`' do
       it 'returns exit status 0 and display an information message' do
         expect(cli.run(['--restart-server', '--no-detach'])).to eq(0)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to match(/RuboCop server starting on/)
         expect($stderr.string).to eq "RuboCop server is not running.\n"
       end
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using `--server-status` option' do
       it 'returns exit status 0 and display an information message' do
         expect(cli.run(['--server-status'])).to eq(0)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq "RuboCop server is not running.\n"
         expect($stderr.string).to eq ''
       end
@@ -107,9 +107,9 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
           puts x
         RUBY
         expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
-        expect(cli.exit?).to be(false)
-        expect($stdout.string.blank?).to be(true)
-        expect($stderr.string.blank?).to be(true)
+        expect(cli).not_to be_exit
+        expect($stdout.string).to be_blank
+        expect($stderr.string).to be_blank
       end
     end
 
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
           puts x
         RUBY
         expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
-        expect(cli.exit?).to be(false)
+        expect(cli).not_to be_exit
         expect($stdout.string).to start_with 'RuboCop server starting on '
         expect($stderr.string).to eq ''
       end
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
           puts x
         RUBY
         expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
-        expect(cli.exit?).to be(false)
+        expect(cli).not_to be_exit
         expect($stdout.string).to start_with 'RuboCop server starting on '
         expect($stderr.string).to eq ''
       end
@@ -163,7 +163,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
           puts x
         RUBY
         expect(cli.run(['--server', '--no-server', '--format', 'simple', 'example.rb'])).to eq(2)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq "--server, --no-server cannot be specified together.\n"
       end
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using exclusive `--restart-server` option' do
       it 'returns exit status 2 and display an error message' do
         expect(cli.run(['--restart-server', '--format', 'simple'])).to eq(2)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq "--restart-server cannot be combined with --format.\n"
       end
@@ -181,7 +181,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using exclusive `--start-server` option' do
       it 'returns exit status 2 and display an error message' do
         expect(cli.run(['--start-server', '--format', 'simple'])).to eq(2)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq "--start-server cannot be combined with --format.\n"
       end
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using exclusive `--stop-server` option' do
       it 'returns exit status 2 and display an error message' do
         expect(cli.run(['--stop-server', '--format', 'simple'])).to eq(2)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq "--stop-server cannot be combined with --format.\n"
       end
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using exclusive `--server-status` option' do
       it 'returns exit status 2 and display an error message' do
         expect(cli.run(['--server-status', '--format', 'simple'])).to eq(2)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq "--server-status cannot be combined with --format.\n"
       end
@@ -208,7 +208,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using server option with `--no-detach` option' do
       it 'returns exit status 2 and display an error message' do
         expect(cli.run(['--server-status', '--no-detach'])).to eq(2)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq "--server-status cannot be combined with --no-detach.\n"
       end
@@ -217,7 +217,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using server option with `--cache-root path` option' do
       it 'returns exit status 0 and display an error message' do
         expect(cli.run(['--server-status', '--cache-root', '/tmp'])).to eq(0)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq "RuboCop server is not running.\n"
         expect($stderr.string).not_to eq "--server-status cannot be combined with other options.\n"
       end
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using server option with `--cache-root=path` option' do
       it 'returns exit status 0 and display an information message' do
         expect(cli.run(['--server-status', '--cache-root=/tmp'])).to eq(0)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq "RuboCop server is not running.\n"
         expect($stderr.string).not_to eq "--server-status cannot be combined with other options.\n"
       end
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
     context 'when using `--server` option' do
       it 'returns exit status 2 and display an error message' do
         expect(cli.run(['--server', '--format', 'simple'])).to eq(2)
-        expect(cli.exit?).to be(true)
+        expect(cli).to be_exit
         expect($stdout.string).to eq ''
         expect($stderr.string).to eq "RuboCop server is not supported by this Ruby.\n"
       end

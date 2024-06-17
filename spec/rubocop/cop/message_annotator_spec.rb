@@ -66,7 +66,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
       end
 
       it 'adds style guide url' do
-        expect(annotate.include?('http://example.org/styleguide')).to be(true)
+        expect(annotate).to include('http://example.org/styleguide')
       end
     end
 
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
 
       it 'combines correctly with a target-based setting' do
         config['Cop/Cop'] = { 'StyleGuide' => '#target_based_url' }
-        expect(annotate.include?('http://example.org/styleguide#target_based_url')).to be(true)
+        expect(annotate).to include('http://example.org/styleguide#target_based_url')
       end
 
       context 'when a department other than AllCops is specified' do
@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
 
       it 'can use a path-based setting' do
         config['Cop/Cop'] = { 'StyleGuide' => 'cop/path/rule#target_based_url' }
-        expect(annotate.include?('http://example.org/cop/path/rule#target_based_url')).to be(true)
+        expect(annotate).to include('http://example.org/cop/path/rule#target_based_url')
       end
 
       it 'can accept relative paths if base has a full path' do
@@ -143,13 +143,12 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
           'StyleGuideBaseURL' => 'https://github.com/rubocop/ruby-style-guide/'
         }
         config['Cop/Cop'] = { 'StyleGuide' => '../rails-style-guide#target_based_url' }
-        expect(annotate.include?('https://github.com/rubocop/rails-style-guide#target_based_url'))
-          .to be(true)
+        expect(annotate).to include('https://github.com/rubocop/rails-style-guide#target_based_url')
       end
 
       it 'allows absolute URLs in the cop config' do
         config['Cop/Cop'] = { 'StyleGuide' => 'http://other.org#absolute_url' }
-        expect(annotate.include?('http://other.org#absolute_url')).to be(true)
+        expect(annotate).to include('http://other.org#absolute_url')
       end
     end
   end
@@ -161,7 +160,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
     end
 
     it 'returns an empty array without StyleGuide URL' do
-      expect(urls.empty?).to be(true)
+      expect(urls).to be_empty
     end
 
     it 'returns style guide url when it is specified' do
@@ -177,7 +176,7 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
     it 'returns an empty array if the reference url is blank' do
       config['Cop/Cop'] = { 'Reference' => '' }
 
-      expect(urls.empty?).to be(true)
+      expect(urls).to be_empty
     end
 
     it 'returns multiple reference urls' do

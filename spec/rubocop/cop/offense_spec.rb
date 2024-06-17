@@ -16,8 +16,8 @@ RSpec.describe RuboCop::Cop::Offense do
     expect(offense.line).to eq(1)
     expect(offense.message).to eq('message')
     expect(offense.cop_name).to eq('CopName')
-    expect(offense.correctable?).to be_truthy
-    expect(offense.corrected?).to be_truthy
+    expect(offense).to be_correctable
+    expect(offense).to be_corrected
     expect(offense.highlighted_area.source).to eq('a')
   end
 
@@ -39,13 +39,13 @@ RSpec.describe RuboCop::Cop::Offense do
   end
 
   it 'is frozen' do
-    expect(offense.frozen?).to be(true)
+    expect(offense).to be_frozen
   end
 
   %i[severity location message cop_name].each do |a|
     describe "##{a}" do
       it 'is frozen' do
-        expect(offense.public_send(a).frozen?).to be(true)
+        expect(offense.public_send(a)).to be_frozen
       end
     end
   end

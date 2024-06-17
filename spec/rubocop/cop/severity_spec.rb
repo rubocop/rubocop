@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Severity do
   end
 
   it 'is frozen' do
-    expect(convention.frozen?).to be(true)
+    expect(convention).to be_frozen
   end
 
   describe '#code' do

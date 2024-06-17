@@ -37,14 +37,14 @@ RSpec.describe RuboCop::Cop::Utils::FormatString do
   describe '#named_interpolation?' do
     shared_examples 'named format sequence' do |format_string|
       it 'detects named format sequence' do
-        expect(described_class.new(format_string).named_interpolation?).to be_truthy
+        expect(described_class.new(format_string)).to be_named_interpolation
       end
 
       it 'does not detect escaped named format sequence' do
         escaped = format_string.gsub('%', '%%')
 
-        expect(described_class.new(escaped).named_interpolation?).to be_falsey
-        expect(described_class.new("prefix:#{escaped}").named_interpolation?).to be_falsey
+        expect(described_class.new(escaped)).not_to be_named_interpolation
+        expect(described_class.new("prefix:#{escaped}")).not_to be_named_interpolation
       end
     end
 
@@ -57,37 +57,37 @@ RSpec.describe RuboCop::Cop::Utils::FormatString do
   describe '#valid?' do
     it 'returns true when there are only unnumbered formats' do
       fs = described_class.new('%s %d')
-      expect(fs.valid?).to be true
+      expect(fs).to be_valid
     end
 
     it 'returns true when there are only numbered formats' do
       fs = described_class.new('%1$s %2$d')
-      expect(fs.valid?).to be true
+      expect(fs).to be_valid
     end
 
     it 'returns true when there are only named formats' do
       fs = described_class.new('%{foo}s')
-      expect(fs.valid?).to be true
+      expect(fs).to be_valid
     end
 
     it 'returns true when there are only named with escaped `%` formats' do
       fs = described_class.new('%%%{foo}d')
-      expect(fs.valid?).to be true
+      expect(fs).to be_valid
     end
 
     it 'returns false when there are unnumbered and numbered formats' do
       fs = described_class.new('%s %1$d')
-      expect(fs.valid?).to be false
+      expect(fs).not_to be_valid
     end
 
     it 'returns false when there are unnumbered and named formats' do
       fs = described_class.new('%s %{foo}d')
-      expect(fs.valid?).to be false
+      expect(fs).not_to be_valid
     end
 
     it 'returns false when there are numbered and named formats' do
       fs = described_class.new('%1$s %{foo}d')
-      expect(fs.valid?).to be false
+      expect(fs).not_to be_valid
     end
   end
 end

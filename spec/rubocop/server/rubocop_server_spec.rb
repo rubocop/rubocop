@@ -56,7 +56,7 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
           '--stdin', 'example.rb',
           stdin_data: 'puts 0'
         )
-        expect(status.success?).to be true
+        expect(status).to be_success
         expect(stdout).to eq(<<~RUBY)
           # frozen_string_literal: true
 

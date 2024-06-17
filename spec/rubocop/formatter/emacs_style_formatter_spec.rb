@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
 
       it 'prints [Corrected] along with message' do
         formatter.file_finished(file, [offense])
-        expect(output.string.include?(': [Corrected] This is a message.')).to be(true)
+        expect(output.string).to include(': [Corrected] This is a message.')
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
 
       it 'prints [Todo] along with message' do
         formatter.file_finished(file, [offense])
-        expect(output.string.include?(': [Todo] This is a message.')).to be(true)
+        expect(output.string).to include(': [Todo] This is a message.')
       end
     end
 
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
   describe '#finished' do
     it 'does not report summary' do
       formatter.finished(['/path/to/file'])
-      expect(output.string.empty?).to be(true)
+      expect(output.string).to be_empty
     end
   end
 end

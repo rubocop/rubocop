@@ -22,7 +22,7 @@ RSpec.describe RuboCop::RemoteConfig do
   describe '.file' do
     it 'downloads the file if the file does not exist' do
       expect(remote_config).to eq(cached_file_path)
-      expect(File.exist?(cached_file_path)).to be_truthy
+      expect(File).to exist(cached_file_path)
     end
 
     it 'does not download the file if cache lifetime has not been reached' do
@@ -52,7 +52,7 @@ RSpec.describe RuboCop::RemoteConfig do
 
       it 'downloads the file if the file does not exist' do
         expect(remote_config).to eq(cached_file_path)
-        expect(File.exist?(cached_file_path)).to be_truthy
+        expect(File).to exist(cached_file_path)
       end
 
       it 'does not download the file if cache lifetime has not been reached' do
@@ -97,7 +97,7 @@ RSpec.describe RuboCop::RemoteConfig do
 
       it 'downloads the file if the file does not exist' do
         expect(remote_config).to eq(cached_file_path)
-        expect(File.exist?(cached_file_path)).to be_truthy
+        expect(File).to exist(cached_file_path)
       end
 
       it 'does not download the file if cache lifetime has not been reached' do
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::RemoteConfig do
 
       it 'follows the redirect and downloads the file' do
         expect(remote_config).to eq(cached_file_path)
-        expect(File.exist?(cached_file_path)).to be_truthy
+        expect(File).to exist(cached_file_path)
       end
     end
 

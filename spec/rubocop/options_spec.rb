@@ -289,8 +289,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         it 'ignores --parallel' do
           msg = '-P/--parallel is being ignored because it is not compatible with --cache false'
           options.parse %w[--parallel --cache false]
-          expect($stdout.string.include?(msg)).to be(true)
-          expect(options.instance_variable_get(:@options).key?(:parallel)).to be(false)
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get(:@options)).not_to be_key(:parallel)
         end
       end
 
@@ -298,24 +298,24 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         context 'combined with --fix-layout' do
           it 'allows --parallel' do
             options.parse %w[--parallel --fix-layout]
-            expect($stdout.string.include?('-P/--parallel is being ignored')).to be(false)
-            expect(options.instance_variable_get(:@options).key?(:parallel)).to be(true)
+            expect($stdout.string).not_to include('-P/--parallel is being ignored')
+            expect(options.instance_variable_get(:@options)).to be_key(:parallel)
           end
         end
 
         context 'combined with --autocorrect' do
           it 'allows --parallel' do
             options.parse %w[--parallel --autocorrect]
-            expect($stdout.string.include?('-P/--parallel is being ignored')).to be(false)
-            expect(options.instance_variable_get(:@options).key?(:parallel)).to be(true)
+            expect($stdout.string).not_to include('-P/--parallel is being ignored')
+            expect(options.instance_variable_get(:@options)).to be_key(:parallel)
           end
         end
 
         context 'combined with --autocorrect-all' do
           it 'allows --parallel' do
             options.parse %w[--parallel --autocorrect-all]
-            expect($stdout.string.include?('-P/--parallel is being ignored')).to be(false)
-            expect(options.instance_variable_get(:@options).key?(:parallel)).to be(true)
+            expect($stdout.string).not_to include('-P/--parallel is being ignored')
+            expect(options.instance_variable_get(:@options)).to be_key(:parallel)
           end
         end
       end
@@ -324,8 +324,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         it 'ignores --parallel' do
           msg = '-P/--parallel is being ignored because it is not compatible with --auto-gen-config'
           options.parse %w[--parallel --auto-gen-config]
-          expect($stdout.string.include?(msg)).to be(true)
-          expect(options.instance_variable_get(:@options).key?(:parallel)).to be(false)
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get(:@options)).not_to be_key(:parallel)
         end
       end
 
@@ -333,17 +333,17 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         it 'ignores --parallel' do
           msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'
           options.parse %w[--parallel --fail-fast]
-          expect($stdout.string.include?(msg)).to be(true)
-          expect(options.instance_variable_get(:@options).key?(:parallel)).to be(false)
+          expect($stdout.string).to include(msg)
+          expect(options.instance_variable_get(:@options)).not_to be_key(:parallel)
         end
       end
 
       context 'combined with two incompatible arguments' do
         it 'ignores --parallel and lists both incompatible arguments' do
           options.parse %w[--parallel --fail-fast --autocorrect]
-          expect($stdout.string.include?('-P/--parallel is being ignored because it is not ' \
-                                         'compatible with -F/--fail-fast')).to be(true)
-          expect(options.instance_variable_get(:@options).key?(:parallel)).to be(false)
+          expect($stdout.string).to include('-P/--parallel is being ignored because it is not ' \
+                                            'compatible with -F/--fail-fast')
+          expect(options.instance_variable_get(:@options)).not_to be_key(:parallel)
         end
       end
     end
@@ -491,7 +491,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if given alone without argument' do
-        expect { options.parse %w[--exclude-limit] }.to raise_error(OptionParser::MissingArgument)
+        expect do
+          options.parse %w[--exclude-limit]
+        end.to raise_error(OptionParser::MissingArgument)
       end
 
       it 'fails if given first without argument' do
@@ -500,7 +502,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if given without --auto-gen-config' do
-        expect { options.parse %w[--exclude-limit 10] }.to raise_error(RuboCop::OptionArgumentError)
+        expect do
+          options.parse %w[--exclude-limit 10]
+        end.to raise_error(RuboCop::OptionArgumentError)
       end
     end
 
@@ -548,7 +552,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       let(:config_regeneration) do
         instance_double(RuboCop::ConfigRegeneration, options: todo_options)
       end
-      let(:todo_options) { { auto_gen_config: true, exclude_limit: '100', offense_counts: false } }
+      let(:todo_options) do
+        { auto_gen_config: true, exclude_limit: '100', offense_counts: false }
+      end
 
       before do
         allow(RuboCop::ConfigRegeneration).to receive(:new).and_return(config_regeneration)
@@ -627,7 +633,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
 
       it 'fails if more than one path is given' do
-        expect { options.parse %w[--stdin foo bar] }.to raise_error(RuboCop::OptionArgumentError)
+        expect do
+          options.parse %w[--stdin foo bar]
+        end.to raise_error(RuboCop::OptionArgumentError)
       end
     end
 
@@ -636,9 +644,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       describe '--auto-correct' do
         it 'emits a warning and sets the correct options instead' do
           options.parse %w[--auto-correct]
-          expect($stderr.string.include?('--auto-correct is deprecated; use --autocorrect'))
-            .to be(true)
-          expect(options.instance_variable_get(:@options).key?(:auto_correct)).to be(false)
+          expect($stderr.string).to include('--auto-correct is deprecated; use --autocorrect')
+          expect(options.instance_variable_get(:@options)).not_to be_key(:auto_correct)
           expect_autocorrect_options_for_autocorrect
         end
       end
@@ -646,9 +653,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       describe '--safe-auto-correct' do
         it 'emits a warning and sets the correct options instead' do
           options.parse %w[--safe-auto-correct]
-          expect($stderr.string.include?('--safe-auto-correct is deprecated; use --autocorrect'))
-            .to be(true)
-          expect(options.instance_variable_get(:@options).key?(:safe_auto_correct)).to be(false)
+          expect($stderr.string).to include('--safe-auto-correct is deprecated; use --autocorrect')
+          expect(options.instance_variable_get(:@options)).not_to be_key(:safe_auto_correct)
           expect_autocorrect_options_for_autocorrect
         end
       end
@@ -656,40 +662,38 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       describe '--auto-correct-all' do
         it 'emits a warning and sets the correct options instead' do
           options.parse %w[--auto-correct-all]
-          expect($stderr.string.include?('--auto-correct-all is deprecated; ' \
-                                         'use --autocorrect-all')).to be(true)
-          expect(options.instance_variable_get(:@options).key?(:auto_correct_all)).to be(false)
+          expect($stderr.string).to include('--auto-correct-all is deprecated; ' \
+                                            'use --autocorrect-all')
+          expect(options.instance_variable_get(:@options)).not_to be_key(:auto_correct_all)
           expect_autocorrect_options_for_autocorrect_all
         end
       end
     end
     # rubocop:enable Naming/InclusiveLanguage
 
-    # rubocop:disable Metrics/AbcSize
     def expect_autocorrect_options_for_fix_layout
       options_keys = options.instance_variable_get(:@options).keys
-      expect(options_keys.include?(:fix_layout)).to be(true)
-      expect(options_keys.include?(:autocorrect)).to be(true)
-      expect(options_keys.include?(:safe_autocorrect)).to be(false)
-      expect(options_keys.include?(:autocorrect_all)).to be(false)
+      expect(options_keys).to include(:fix_layout)
+      expect(options_keys).to include(:autocorrect)
+      expect(options_keys).not_to include(:safe_autocorrect)
+      expect(options_keys).not_to include(:autocorrect_all)
     end
 
     def expect_autocorrect_options_for_autocorrect
       options_keys = options.instance_variable_get(:@options).keys
-      expect(options_keys.include?(:fix_layout)).to be(false)
-      expect(options_keys.include?(:autocorrect)).to be(true)
-      expect(options_keys.include?(:safe_autocorrect)).to be(true)
-      expect(options_keys.include?(:autocorrect_all)).to be(false)
+      expect(options_keys).not_to include(:fix_layout)
+      expect(options_keys).to include(:autocorrect)
+      expect(options_keys).to include(:safe_autocorrect)
+      expect(options_keys).not_to include(:autocorrect_all)
     end
 
     def expect_autocorrect_options_for_autocorrect_all
       options_keys = options.instance_variable_get(:@options).keys
-      expect(options_keys.include?(:fix_layout)).to be(false)
-      expect(options_keys.include?(:autocorrect)).to be(true)
-      expect(options_keys.include?(:safe_autocorrect)).to be(false)
-      expect(options_keys.include?(:autocorrect_all)).to be(true)
+      expect(options_keys).not_to include(:fix_layout)
+      expect(options_keys).to include(:autocorrect)
+      expect(options_keys).not_to include(:safe_autocorrect)
+      expect(options_keys).to include(:autocorrect_all)
     end
-    # rubocop:enable Metrics/AbcSize
   end
 
   describe 'options precedence' do

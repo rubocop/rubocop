@@ -15,30 +15,30 @@ RSpec.describe RuboCop::RakeTask do
     it 'creates a rubocop task and a rubocop auto_correct task' do
       described_class.new
 
-      expect(Rake::Task.task_defined?(:rubocop)).to be true
-      expect(Rake::Task.task_defined?('rubocop:auto_correct')).to be true
+      expect(Rake::Task).to be_task_defined(:rubocop)
+      expect(Rake::Task).to be_task_defined('rubocop:auto_correct')
     end
 
     it 'creates a named task and a named auto_correct task' do
       described_class.new(:lint_lib)
 
-      expect(Rake::Task.task_defined?(:lint_lib)).to be true
-      expect(Rake::Task.task_defined?('lint_lib:auto_correct')).to be true
+      expect(Rake::Task).to be_task_defined(:lint_lib)
+      expect(Rake::Task).to be_task_defined('lint_lib:auto_correct')
     end
     # rubocop:enable Naming/InclusiveLanguage
 
     it 'creates a rubocop task and a rubocop autocorrect task' do
       described_class.new
 
-      expect(Rake::Task.task_defined?(:rubocop)).to be true
-      expect(Rake::Task.task_defined?('rubocop:autocorrect')).to be true
+      expect(Rake::Task).to be_task_defined(:rubocop)
+      expect(Rake::Task).to be_task_defined('rubocop:autocorrect')
     end
 
     it 'creates a named task and a named autocorrect task' do
       described_class.new(:lint_lib)
 
-      expect(Rake::Task.task_defined?(:lint_lib)).to be true
-      expect(Rake::Task.task_defined?('lint_lib:autocorrect')).to be true
+      expect(Rake::Task).to be_task_defined(:lint_lib)
+      expect(Rake::Task).to be_task_defined('lint_lib:autocorrect')
     end
   end
 

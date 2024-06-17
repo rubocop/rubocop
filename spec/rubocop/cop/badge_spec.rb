@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Badge do
     badge1 = described_class.new(%w[Foo Bar])
     badge2 = described_class.new(%w[Foo Bar])
 
-    expect(Set.new([badge1, badge2]).one?).to be(true)
+    expect(Set.new([badge1, badge2])).to be_one
   end
 
   it 'can be converted to a string with the Department/CopName format' do
@@ -70,15 +70,15 @@ RSpec.describe RuboCop::Cop::Badge do
 
   describe '#qualified?' do
     it 'says `CopName` is not qualified' do
-      expect(described_class.parse('Bar').qualified?).to be(false)
+      expect(described_class.parse('Bar')).not_to be_qualified
     end
 
     it 'says `Department/CopName` is qualified' do
-      expect(described_class.parse('Department/Bar').qualified?).to be(true)
+      expect(described_class.parse('Department/Bar')).to be_qualified
     end
 
     it 'says `Deep/Department/CopName` is qualified' do
-      expect(described_class.parse('Deep/Department/Bar').qualified?).to be(true)
+      expect(described_class.parse('Deep/Department/Bar')).to be_qualified
     end
   end
 

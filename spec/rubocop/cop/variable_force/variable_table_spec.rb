@@ -54,8 +54,8 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
     it 'adds variable to current scope with its name as key' do
       node = s(:lvasgn, :foo)
       variable_table.declare_variable(:foo, node)
-      expect(variable_table.current_scope.variables.key?(:foo)).to be(true)
-      expect(variable_table.scope_stack[-2].variables.empty?).to be(true)
+      expect(variable_table.current_scope.variables).to be_key(:foo)
+      expect(variable_table.scope_stack[-2].variables).to be_empty
       variable = variable_table.current_scope.variables[:foo]
       expect(variable.declaration_node).to equal(node)
     end
@@ -95,8 +95,8 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
           it 'returns the current scope variable' do
             found_variable = variable_table.find_variable(:bar)
             expect(found_variable.name).to equal(:bar)
-            expect(variable_table.current_scope.variables.value?(found_variable)).to be(true)
-            expect(variable_table.scope_stack[-2].variables.value?(found_variable)).to be(false)
+            expect(variable_table.current_scope.variables).to be_value(found_variable)
+            expect(variable_table.scope_stack[-2].variables).not_to be_value(found_variable)
           end
         end
       end
@@ -128,7 +128,7 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
           context 'when the direct outer scope is not block' do
             it 'returns nil' do
               found_variable = variable_table.find_variable(:baz)
-              expect(found_variable.nil?).to be(true)
+              expect(found_variable).to be_nil
             end
           end
         end
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
         context 'and does not exist in all outer scopes' do
           it 'returns nil' do
             found_variable = variable_table.find_variable(:non)
-            expect(found_variable.nil?).to be(true)
+            expect(found_variable).to be_nil
           end
         end
       end
@@ -159,8 +159,8 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
           it 'returns the current scope variable' do
             found_variable = variable_table.find_variable(:foo)
             expect(found_variable.name).to equal(:foo)
-            expect(variable_table.current_scope.variables.value?(found_variable)).to be(true)
-            expect(variable_table.scope_stack[-2].variables.value?(found_variable)).to be(false)
+            expect(variable_table.current_scope.variables).to be_value(found_variable)
+            expect(variable_table.scope_stack[-2].variables).not_to be_value(found_variable)
           end
         end
       end
@@ -169,14 +169,14 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
         context 'but exists in the direct outer scope' do
           it 'returns nil' do
             found_variable = variable_table.find_variable(:bar)
-            expect(found_variable.nil?).to be(true)
+            expect(found_variable).to be_nil
           end
         end
 
         context 'and does not exist in all outer scopes' do
           it 'returns nil' do
             found_variable = variable_table.find_variable(:non)
-            expect(found_variable.nil?).to be(true)
+            expect(found_variable).to be_nil
           end
         end
       end
@@ -186,7 +186,7 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
   describe '#find_variable with an empty scope stack' do
     it 'returns nil' do
       found_variable = variable_table.find_variable(:unknown)
-      expect(found_variable.nil?).to be(true)
+      expect(found_variable).to be_nil
     end
   end
 
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::VariableForce::VariableTable do
 
     context 'when there are no variables' do
       it 'returns empty array' do
-        expect(variable_table.accessible_variables.empty?).to be(true)
+        expect(variable_table.accessible_variables).to be_empty
       end
     end
 

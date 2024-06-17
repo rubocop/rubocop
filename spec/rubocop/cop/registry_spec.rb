@@ -32,8 +32,8 @@ RSpec.describe RuboCop::Cop::Registry do
     klass = RuboCop::Cop::Metrics::AbcSize
     copy = registry.dup
     copy.enlist(klass)
-    expect(copy.cops.include?(klass)).to be(true)
-    expect(registry.cops.include?(klass)).to be(false)
+    expect(copy.cops).to include(klass)
+    expect(registry.cops).not_to include(klass)
   end
 
   context 'when dismissing a cop class' do
@@ -43,19 +43,19 @@ RSpec.describe RuboCop::Cop::Registry do
 
     it 'allows it if done rapidly' do
       registry.dismiss(cop_class)
-      expect(registry.cops.include?(cop_class)).to be(false)
+      expect(registry.cops).not_to include(cop_class)
     end
 
     it 'disallows it if done too late' do
-      expect(registry.cops.include?(cop_class)).to be(true)
+      expect(registry.cops).to include(cop_class)
       expect { registry.dismiss(cop_class) }.to raise_error(RuntimeError)
     end
 
     it 'allows re-listing' do
       registry.dismiss(cop_class)
-      expect(registry.cops.include?(cop_class)).to be(false)
+      expect(registry.cops).not_to include(cop_class)
       registry.enlist(cop_class)
-      expect(registry.cops.include?(cop_class)).to be(true)
+      expect(registry.cops).to include(cop_class)
     end
   end
 
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Registry do
     end
 
     it 'returns false for cops not included in the store' do
-      expect(registry.contains_cop_matching?(['Style/NotReal'])).to be(false)
+      expect(registry).not_to be_contains_cop_matching(['Style/NotReal'])
     end
   end
 
@@ -204,14 +204,14 @@ RSpec.describe RuboCop::Cop::Registry do
 
     it 'selects only safe cops if :safe passed' do
       options[:safe] = true
-      expect(enabled_cops.include?(RuboCop::Cop::RSpec::Foo)).to be(false)
+      expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
     end
 
     context 'when new cops are introduced' do
       let(:config) { RuboCop::Config.new('Lint/BooleanSymbol' => { 'Enabled' => 'pending' }) }
 
       it 'does not include them' do
-        expect(enabled_cops.include?(RuboCop::Cop::Lint::BooleanSymbol)).to be(false)
+        expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
       end
 
       it 'overrides config if :only includes the cop' do
@@ -223,7 +223,7 @@ RSpec.describe RuboCop::Cop::Registry do
         let(:options) { { disable_pending_cops: true } }
 
         it 'does not include them' do
-          expect(enabled_cops.include?(RuboCop::Cop::Lint::BooleanSymbol)).to be(false)
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
 
         context 'when specifying `NewCops: enable` option in .rubocop.yml' do
@@ -236,7 +236,7 @@ RSpec.describe RuboCop::Cop::Registry do
 
           it 'does not include them because command-line option takes ' \
              'precedence over .rubocop.yml' do
-            expect(enabled_cops.include?(RuboCop::Cop::Lint::BooleanSymbol)).to be(false)
+            expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
           end
         end
       end
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Registry do
         let(:options) { { enable_pending_cops: true } }
 
         it 'includes them' do
-          expect(enabled_cops.include?(RuboCop::Cop::Lint::BooleanSymbol)).to be(true)
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
 
         context 'when specifying `NewCops: disable` option in .rubocop.yml' do
@@ -257,7 +257,7 @@ RSpec.describe RuboCop::Cop::Registry do
           end
 
           it 'includes them because command-line option takes precedence over .rubocop.yml' do
-            expect(enabled_cops.include?(RuboCop::Cop::Lint::BooleanSymbol)).to be(true)
+            expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
           end
         end
       end
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::Registry do
         end
 
         it 'does not include them' do
-          expect(enabled_cops.include?(RuboCop::Cop::Lint::BooleanSymbol)).to be(false)
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
       end
 
@@ -284,7 +284,7 @@ RSpec.describe RuboCop::Cop::Registry do
         end
 
         it 'does not include them' do
-          expect(enabled_cops.include?(RuboCop::Cop::Lint::BooleanSymbol)).to be(false)
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
       end
 
@@ -297,7 +297,7 @@ RSpec.describe RuboCop::Cop::Registry do
         end
 
         it 'includes them' do
-          expect(enabled_cops.include?(RuboCop::Cop::Lint::BooleanSymbol)).to be(true)
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
       end
     end
@@ -318,11 +318,11 @@ RSpec.describe RuboCop::Cop::Registry do
 
   describe '#department?' do
     it 'returns true for department name' do
-      expect(registry.department?('Lint')).to be true
+      expect(registry).to be_department('Lint')
     end
 
     it 'returns false for other names' do
-      expect(registry.department?('Foo')).to be false
+      expect(registry).not_to be_department('Foo')
     end
   end
 

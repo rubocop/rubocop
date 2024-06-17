@@ -17,7 +17,7 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
     end
 
     it 'returns nil when file is not found' do
-      expect(finder.find_file_upwards('file2', 'dir').nil?).to be(true)
+      expect(finder.find_file_upwards('file2', 'dir')).to be_nil
     end
   end
 
@@ -27,7 +27,7 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
     end
 
     it 'returns nil when file is not found' do
-      expect(finder.find_last_file_upwards('xyz', 'dir').nil?).to be(true)
+      expect(finder.find_last_file_upwards('xyz', 'dir')).to be_nil
     end
   end
 end
