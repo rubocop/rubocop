@@ -7,6 +7,10 @@ gemspec
 gem 'asciidoctor'
 gem 'bump', require: false
 gem 'bundler', '>= 1.15.0', '< 3.0'
+# FIXME: This is a workaround to prevent the following warning in YARD:
+# https://github.com/lsegal/yard/pull/1546
+# Please remove this dependency when the issue is resolved.
+gem 'logger'
 gem 'memory_profiler', platform: :mri
 # FIXME: This is a workaround to prevent the following warning in YARD:
 # https://github.com/lsegal/yard/pull/1545
