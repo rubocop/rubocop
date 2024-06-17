@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Generator::RequireFileInjector do
       injector.inject
 
       expect(File.read(root_file_path)).to eq source
-      expect(stdout.string.empty?).to be(true)
+      expect(stdout.string).to be_empty
     end
   end
 

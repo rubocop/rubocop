@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Commissioner do
 
       expect(offenses).to eq []
       expect(errors.size).to eq(1)
-      expect(errors[0].cause.instance_of?(RuntimeError)).to be(true)
+      expect(errors[0].cause).to be_an_instance_of(RuntimeError)
       expect(errors[0].line).to eq 2
       expect(errors[0].column).to eq 0
     end

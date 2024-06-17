@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
     let(:summary) { formatter.output_hash[:summary] }
 
     it 'sets target file count in summary' do
-      expect(summary[:target_file_count].nil?).to be(true)
+      expect(summary[:target_file_count]).to be_nil
       formatter.started(%w[/path/to/file1 /path/to/file2])
       expect(summary[:target_file_count]).to eq(2)
     end
@@ -47,10 +47,10 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
     end
 
     it 'adds value of #hash_for_file to #output_hash[:files]' do
-      expect(formatter.output_hash[:files].empty?).to be(true)
+      expect(formatter.output_hash[:files]).to be_empty
 
       formatter.file_started(files[0], {})
-      expect(formatter.output_hash[:files].empty?).to be(true)
+      expect(formatter.output_hash[:files]).to be_empty
       formatter.file_finished(files[0], [])
       expect(formatter.output_hash[:files]).to eq([1])
 
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
     let(:summary) { formatter.output_hash[:summary] }
 
     it 'sets inspected file count in summary' do
-      expect(summary[:inspected_file_count].nil?).to be(true)
+      expect(summary[:inspected_file_count]).to be_nil
       formatter.finished(%w[/path/to/file1 /path/to/file2])
       expect(summary[:inspected_file_count]).to eq(2)
     end

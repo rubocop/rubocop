@@ -120,24 +120,24 @@ RSpec.describe RuboCop::CommentConfig do
     it 'just ignores unpaired enabling directives' do
       void_disabled_lines = disabled_lines_of_cop('Lint/Void')
       expected_part = (25..source.size).to_a
-      expect((void_disabled_lines & expected_part).empty?).to be(true)
+      expect((void_disabled_lines & expected_part)).to be_empty
     end
 
     it 'supports disabling single line with a directive at end of line' do
       eval_disabled_lines = disabled_lines_of_cop('Security/Eval')
-      expect(eval_disabled_lines.include?(12)).to be(true)
-      expect(eval_disabled_lines.include?(13)).to be(false)
+      expect(eval_disabled_lines).to include(12)
+      expect(eval_disabled_lines).not_to include(13)
     end
 
     it 'handles indented single line' do
       line_length_disabled_lines = disabled_lines_of_cop('Layout/LineLength')
-      expect(line_length_disabled_lines.include?(16)).to be(true)
-      expect(line_length_disabled_lines.include?(18)).to be(false)
+      expect(line_length_disabled_lines).to include(16)
+      expect(line_length_disabled_lines).not_to include(18)
     end
 
     it 'does not confuse a comment directive embedded in a string literal with a real comment' do
       loop_disabled_lines = disabled_lines_of_cop('Loop')
-      expect(loop_disabled_lines.include?(20)).to be(false)
+      expect(loop_disabled_lines).not_to include(20)
     end
 
     it 'supports disabling all cops except Lint/RedundantCopDisableDirective and Lint/Syntax with keyword all' do
@@ -153,7 +153,7 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'does not confuse a cop name including "all" with all cops' do
       alias_disabled_lines = disabled_lines_of_cop('Alias')
-      expect(alias_disabled_lines.include?(23)).to be(false)
+      expect(alias_disabled_lines).not_to include(23)
     end
 
     it 'can handle double disable of one cop' do
@@ -161,11 +161,11 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'supports disabling cops with multiple uppercase letters' do
-      expect(disabled_lines_of_cop('RSpec/Example').include?(47)).to be(true)
+      expect(disabled_lines_of_cop('RSpec/Example')).to include(47)
     end
 
     it 'supports disabling cops with numbers in their name' do
-      expect(disabled_lines_of_cop('Custom2/Number9').include?(48)).to be(true)
+      expect(disabled_lines_of_cop('Custom2/Number9')).to include(48)
     end
 
     it 'supports disabling cops on a comment line with an EOL comment' do
@@ -210,7 +210,7 @@ RSpec.describe RuboCop::CommentConfig do
     it 'has keys as instances of Parser::Source::Comment for extra enabled comments' do
       key = extra.keys.first
 
-      expect(key.is_a?(Parser::Source::Comment)).to be true
+      expect(key).to be_a(Parser::Source::Comment)
       expect(key.text).to eq '# rubocop:enable Metrics/MethodLength, Security/Eval'
     end
 
@@ -236,7 +236,7 @@ RSpec.describe RuboCop::CommentConfig do
     context 'when line contains only comment' do
       [1, 5].each do |line_number|
         it 'returns true' do
-          expect(comment_config.comment_only_line?(line_number)).to be true
+          expect(comment_config).to be_comment_only_line(line_number)
         end
       end
     end
@@ -244,7 +244,7 @@ RSpec.describe RuboCop::CommentConfig do
     context 'when line is empty' do
       [6].each do |line_number|
         it 'returns true' do
-          expect(comment_config.comment_only_line?(line_number)).to be true
+          expect(comment_config).to be_comment_only_line(line_number)
         end
       end
     end
@@ -252,7 +252,7 @@ RSpec.describe RuboCop::CommentConfig do
     context 'when line contains only code' do
       [2, 3, 4, 7].each do |line_number|
         it 'returns false' do
-          expect(comment_config.comment_only_line?(line_number)).to be false
+          expect(comment_config).not_to be_comment_only_line(line_number)
         end
       end
     end
@@ -260,7 +260,7 @@ RSpec.describe RuboCop::CommentConfig do
     context 'when line contains code and comment' do
       [8].each do |line_number|
         it 'returns false' do
-          expect(comment_config.comment_only_line?(line_number)).to be false
+          expect(comment_config).not_to be_comment_only_line(line_number)
         end
       end
     end

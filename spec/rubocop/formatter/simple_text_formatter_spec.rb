@@ -20,7 +20,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       let(:file) { File.expand_path('spec/spec_helper.rb') }
 
       it 'prints as relative path' do
-        expect(output.string.include?('== spec/spec_helper.rb ==')).to be(true)
+        expect(output.string).to include('== spec/spec_helper.rb ==')
       end
     end
 
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       end
 
       it 'prints as absolute path' do
-        expect(output.string.include?("== #{file} ==")).to be(true)
+        expect(output.string).to include("== #{file} ==")
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       let(:status) { :unsupported }
 
       it 'prints message as-is' do
-        expect(output.string.include?(': This is a message with colored text.')).to be(true)
+        expect(output.string).to include(': This is a message with colored text.')
       end
     end
 
@@ -48,8 +48,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       let(:status) { :uncorrected }
 
       it 'prints message as-is' do
-        expect(output.string.include?(': [Correctable] This is a message with colored text.'))
-          .to be(true)
+        expect(output.string).to include(': [Correctable] This is a message with colored text.')
       end
     end
 
@@ -57,8 +56,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       let(:status) { :corrected }
 
       it 'prints [Corrected] along with message' do
-        expect(output.string.include?(': [Corrected] This is a message with colored text.'))
-          .to be(true)
+        expect(output.string).to include(': [Corrected] This is a message with colored text.')
       end
     end
 
@@ -66,7 +64,7 @@ RSpec.describe RuboCop::Formatter::SimpleTextFormatter do
       let(:status) { :corrected_with_todo }
 
       it 'prints [Todo] along with message' do
-        expect(output.string.include?(': [Todo] This is a message with colored text.')).to be(true)
+        expect(output.string).to include(': [Todo] This is a message with colored text.')
       end
     end
   end

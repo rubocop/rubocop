@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
         RUBY
 
         expect_no_corrections
-        expect(file.stat.executable?).to be_truthy
+        expect(file.stat).to be_executable
       end
 
       context 'if autocorrection is off' do
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
           RUBY
 
           expect_no_corrections
-          expect(file.stat.executable?).to be false
+          expect(file.stat).not_to be_executable
         end
       end
     end

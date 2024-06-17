@@ -281,7 +281,7 @@ RSpec.describe RuboCop::Server::Cache do
           described_class.dir.rmtree # server stopping behavior
           result
         end
-        expect(described_class.pid_running?).to be(false)
+        expect(described_class).not_to be_pid_running
       end
 
       it 'works properly when insufficient permissions to server cache dir are granted' do
@@ -290,7 +290,7 @@ RSpec.describe RuboCop::Server::Cache do
           described_class.dir.chmod(0o644) # Make insufficient permissions.
           result
         end
-        expect(described_class.pid_running?).to be(false)
+        expect(described_class).not_to be_pid_running
       end
 
       it 'works properly when the file system is read-only' do
@@ -299,7 +299,7 @@ RSpec.describe RuboCop::Server::Cache do
           allow(result).to receive(:read).and_raise(Errno::EROFS)
           result
         end
-        expect(described_class.pid_running?).to be(false)
+        expect(described_class).not_to be_pid_running
       end
     end
   end

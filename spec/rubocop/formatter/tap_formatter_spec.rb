@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
       let(:offenses) { [] }
 
       it 'prints "ok"' do
-        expect(output.string.include?('ok 1')).to be(true)
+        expect(output.string).to include('ok 1')
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
       end
 
       it 'prints "not ok"' do
-        expect(output.string.include?('not ok 1')).to be(true)
+        expect(output.string).to include('not ok 1')
       end
     end
   end
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
 
       it 'reports all detected offenses for all failed files' do
         formatter.finished(files)
-        expect(output.string.include?(<<~OUTPUT)).to be(true)
+        expect(output.string).to include(<<~OUTPUT)
           1..3
           not ok 1 - lib/rubocop.rb
           # lib/rubocop.rb:2:3: C: [Correctable] foo
@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
 
       it 'does not report offenses' do
         formatter.finished(files)
-        expect(output.string.include?('not ok')).to be(false)
+        expect(output.string).not_to include('not ok')
       end
     end
   end

@@ -6,7 +6,7 @@ RSpec.describe RuboCop::LSP, :lsp do
       before { described_class.enable }
 
       it 'returns true' do
-        expect(described_class.enabled?).to be(true)
+        expect(described_class).to be_enabled
       end
     end
 
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::LSP, :lsp do
       before { described_class.disable }
 
       it 'returns false' do
-        expect(described_class.enabled?).to be(false)
+        expect(described_class).not_to be_enabled
       end
     end
 

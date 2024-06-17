@@ -977,7 +977,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
 
     it 'handles requests' do
       expect(stderr).to eq('')
-      expect(messages.empty?).to be(true)
+      expect(messages).to be_empty
     end
   end
 

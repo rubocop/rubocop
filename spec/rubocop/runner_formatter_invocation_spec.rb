@@ -69,7 +69,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       describe 'the passed files paths' do
         it 'is frozen' do
           expect(formatter).to receive(method_name) do |all_files|
-            all_files.each { |path| expect(path.frozen?).to be(true) }
+            expect(all_files).to all(be_frozen)
           end
 
           run
@@ -131,7 +131,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       describe 'the passed path' do
         it 'is frozen' do
           expect(formatter).to receive(method_name).exactly(3).times do |path|
-            expect(path.frozen?).to be(true)
+            expect(path).to be_frozen
           end
 
           run
@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           when '5_offenses.rb'
             expect(offenses.size).to eq(5)
           when 'no_offense.rb'
-            expect(offenses.empty?).to be(true)
+            expect(offenses).to be_empty
           else
             raise
           end

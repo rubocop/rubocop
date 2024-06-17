@@ -346,8 +346,8 @@ RSpec.describe RuboCop::Cop::Generator do
       expect(File).to receive(:write).with('spec/rubocop/cop/plugin/style/fake_cop_spec.rb',
                                            an_instance_of(String))
       generator.write_spec
-      expect(stdout.string.include?("[create] spec/rubocop/cop/plugin/style/fake_cop_spec.rb\n"))
-        .to be(true)
+      expect(stdout.string)
+        .to include("[create] spec/rubocop/cop/plugin/style/fake_cop_spec.rb\n")
     end
   end
 

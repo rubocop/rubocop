@@ -21,7 +21,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         it 'prints a warning' do
           cli.run ['-P']
-          expect($stderr.string.include?('Process.fork is not supported by this Ruby')).to be(true)
+          expect($stderr.string).to include('Process.fork is not supported by this Ruby')
         end
       end
     else
@@ -30,10 +30,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         it 'fails with an error message' do
           cli.run %w[-P]
-          expect($stderr.string.include?('-P/--parallel uses caching to speed up execution, ' \
-                                         'so combining with AllCops: UseCache: false is not ' \
-                                         'allowed.'))
-            .to be(true)
+          expect($stderr.string)
+            .to include('-P/--parallel uses caching to speed up execution, so ' \
+                        'combining with AllCops: UseCache: false is not allowed.')
         end
       end
 
@@ -117,7 +116,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           options = '--no-server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
           output = `ruby -I . "#{rubocop}" #{options}`
           expect(output).not_to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
-          expect(output.include?(<<~RESULT)).to be(true)
+          expect(output).to include(<<~RESULT)
             Inspecting 1 file
             C
 
@@ -207,7 +206,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
             0 files inspected, no offenses detected
           RESULT
-          expect(stderr.include?("RuboCop server is not supported by this Ruby.\n")).to be(false)
+          expect(stderr).not_to include("RuboCop server is not supported by this Ruby.\n")
           expect(status.exitstatus).to eq 0
         end
       end
@@ -216,7 +215,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         it 'displays an warning message' do
           stdout, stderr, status = Open3.capture3("ruby -I . \"#{rubocop}\" --start-server")
           expect(stdout).to eq ''
-          expect(stderr.include?("RuboCop server is not supported by this Ruby.\n")).to be(true)
+          expect(stderr).to include("RuboCop server is not supported by this Ruby.\n")
           expect(status.exitstatus).to eq 2
         end
       end
@@ -227,12 +226,12 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     context 'when there are no files' do
       it 'prints nothing with -L' do
         cli.run ['-L']
-        expect($stdout.string.empty?).to be(true)
+        expect($stdout.string).to be_empty
       end
 
       it 'prints nothing with --list-target-files' do
         cli.run ['--list-target-files']
-        expect($stdout.string.empty?).to be(true)
+        expect($stdout.string).to be_empty
       end
     end
 
@@ -291,7 +290,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
   describe '-V' do
     it 'exits cleanly' do
       expect(cli.run(['-V'])).to eq(0)
-      expect($stdout.string.include?(RuboCop::Version::STRING)).to be(true)
+      expect($stdout.string).to include(RuboCop::Version::STRING)
       expect($stdout.string).to match(/Parser \d+\.\d+\.\d+/)
       expect($stdout.string).to match(/rubocop-ast \d+\.\d+\.\d+/)
     end
@@ -309,7 +308,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         # Run in different process that requiring rubocop-performance and rubocop-rspec
         # does not affect other testing processes.
         output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
-        expect(output.include?(RuboCop::Version::STRING)).to be(true)
+        expect(output).to include(RuboCop::Version::STRING)
         expect(output).to match(/Parser \d+\.\d+\.\d+/)
         expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
         expect(output).to match(/rubocop-performance \d+\.\d+\.\d+/)
@@ -335,7 +334,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         # Run in different process that requiring rubocop-performance and rubocop-rspec
         # does not affect other testing processes.
         output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
-        expect(output.include?(RuboCop::Version::STRING)).to be(true)
+        expect(output).to include(RuboCop::Version::STRING)
         expect(output).to match(/Parser \d+\.\d+\.\d+/)
         expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
         expect(output).to match(/rubocop-performance \d+\.\d+\.\d+/)
@@ -359,7 +358,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       it 'shows with version of each extension cop once' do
         output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
-        expect(output.include?(RuboCop::Version::STRING)).to be(true)
+        expect(output).to include(RuboCop::Version::STRING)
         expect(output).to match(/Parser \d+\.\d+\.\d+/)
         expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
         expect(output).to match(
@@ -402,10 +401,10 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       it 'does not show warnings for pending cops' do
         output = `ruby -I . "#{rubocop}" --require redirect.rb -V`
-        expect(output.include?(RuboCop::Version::STRING)).to be(true)
+        expect(output).to include(RuboCop::Version::STRING)
         expect(output).to match(/Parser \d+\.\d+\.\d+/)
         expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
-        expect(output.include?(pending_cop_warning)).to be(false)
+        expect(output).not_to include(pending_cop_warning)
       end
     end
 
@@ -419,7 +418,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       it 'exits cleanly' do
         expect(cli.run(['-V'])).to eq(0)
-        expect($stdout.string.include?(RuboCop::Version::STRING)).to be(true)
+        expect($stdout.string).to include(RuboCop::Version::STRING)
       end
     end
   end
@@ -448,36 +447,35 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       it 'exits with error if an incorrect cop name is passed' do
         create_file('example.rb', ['if x== 0 ', "\ty", 'end'])
         expect(cli.run(['--only', 'Style/123'])).to eq(2)
-        expect($stderr.string.include?('Unrecognized cop or department: Style/123.')).to be(true)
+        expect($stderr.string).to include('Unrecognized cop or department: Style/123.')
       end
 
       it 'displays correction candidate if an incorrect cop name is given' do
         create_file('example.rb', ['x'])
         expect(cli.run(['--only', 'Style/BlockComment'])).to eq(2)
-        expect($stderr.string.include?('Unrecognized cop or department: Style/BlockComment.'))
-          .to be(true)
-        expect($stderr.string.include?('Did you mean? Style/BlockComments')).to be(true)
+        expect($stderr.string).to include('Unrecognized cop or department: Style/BlockComment.')
+        expect($stderr.string).to include('Did you mean? Style/BlockComments')
       end
 
       it 'exits with error if an empty string is given' do
         create_file('example.rb', 'x')
         expect(cli.run(['--only', ''])).to eq(2)
-        expect($stderr.string.include?('Unrecognized cop or department: .')).to be(true)
+        expect($stderr.string).to include('Unrecognized cop or department: .')
       end
 
       it '`Lint/Syntax` must be enabled even if `--only` is given `Style/StringLiterals` only' do
         create_file('example.rb', '1 /// 2')
         expect(cli.run(['--only', 'Style/StringLiterals', 'example.rb'])).to eq(1)
         expect(
-          $stdout.string.include?('example.rb:1:7: F: Lint/Syntax: unexpected token tINTEGER')
-        ).to be(true)
+          $stdout.string
+        ).to include('example.rb:1:7: F: Lint/Syntax: unexpected token tINTEGER')
       end
 
       %w[Syntax Lint/Syntax].each do |name|
         it "only checks syntax if #{name} is given" do
           create_file('example.rb', 'x ')
           expect(cli.run(['--only', name])).to eq(0)
-          expect($stdout.string.include?('no offenses detected')).to be(true)
+          expect($stdout.string).to include('no offenses detected')
         end
       end
 
@@ -486,10 +484,10 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         it "exits with error if cop name #{name} is passed" do
           create_file('example.rb', ['if x== 0 ', "\ty", 'end'])
           expect(cli.run(['--only', 'RedundantCopDisableDirective'])).to eq(2)
-          expect($stderr.string.include?(
-                   'Lint/RedundantCopDisableDirective cannot be used with --only.'
-                 ))
-            .to be(true)
+          expect($stderr.string)
+            .to include(
+              'Lint/RedundantCopDisableDirective cannot be used with --only.'
+            )
         end
       end
 
@@ -590,8 +588,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               remaining_range = pending_cop_warning.length..-(inspected_output.length + 1)
               pending_cops = output[remaining_range]
 
-              expect(pending_cops.include?("Style/SomeCop: # new in 0.80\n  Enabled: true"))
-                .to be(true)
+              expect(pending_cops)
+                .to include("Style/SomeCop: # new in 0.80\n  Enabled: true")
 
               manual_url = output[remaining_range].split("\n").last
 
@@ -609,8 +607,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
               remaining_range = pending_cop_warning.length..-(inspected_output.length + 1)
               pending_cops = output[remaining_range]
 
-              expect(pending_cops.include?("Style/SomeCop: # new in N/A\n  Enabled: true"))
-                .to be(true)
+              expect(pending_cops)
+                .to include("Style/SomeCop: # new in N/A\n  Enabled: true")
 
               manual_url = output[remaining_range].split("\n").last
 
@@ -918,28 +916,27 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       it 'exits with error if the cop name is incorrect' do
         create_file('example.rb', ['if x== 0 ', "\ty", 'end'])
         expect(cli.run(['--except', 'Style/123'])).to eq(2)
-        expect($stderr.string.include?('Unrecognized cop or department: Style/123.')).to be(true)
+        expect($stderr.string).to include('Unrecognized cop or department: Style/123.')
       end
 
       it 'exits with error if an empty string is given' do
         create_file('example.rb', 'x')
         expect(cli.run(['--except', ''])).to eq(2)
-        expect($stderr.string.include?('Unrecognized cop or department: .')).to be(true)
+        expect($stderr.string).to include('Unrecognized cop or department: .')
       end
 
       it 'displays correction candidate if an incorrect cop name is given' do
         create_file('example.rb', 'x')
         expect(cli.run(['--except', 'Style/BlockComment'])).to eq(2)
-        expect($stderr.string.include?('Unrecognized cop or department: Style/BlockComment.'))
-          .to be(true)
-        expect($stderr.string.include?('Did you mean? Style/BlockComments')).to be(true)
+        expect($stderr.string).to include('Unrecognized cop or department: Style/BlockComment.')
+        expect($stderr.string).to include('Did you mean? Style/BlockComments')
       end
 
       %w[Syntax Lint/Syntax].each do |name|
         it "exits with error if #{name} is given" do
           create_file('example.rb', 'x ')
           expect(cli.run(['--except', name])).to eq(2)
-          expect($stderr.string.include?('Syntax checking cannot be turned off.')).to be(true)
+          expect($stderr.string).to include('Syntax checking cannot be turned off.')
         end
       end
     end
@@ -1291,15 +1288,15 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       it 'prints all available cops and their description' do
         cops.each do |cop|
-          expect(stdout.include?(cop.cop_name)).to be(true)
+          expect(stdout).to include(cop.cop_name)
           # Because of line breaks, we will only find the beginning.
-          expect(stdout.include?(short_description_of_cop(cop)[0..60])).to be(true)
+          expect(stdout).to include(short_description_of_cop(cop)[0..60])
         end
       end
 
       it 'prints all departments' do
         registry.departments.each do |department|
-          expect(stdout.include?(department.to_s)).to be(true)
+          expect(stdout).to include(department.to_s)
         end
       end
 
@@ -1311,13 +1308,13 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
           # all cops in their department listing
           registry.with_department(current).each do |cop|
-            expect(slice.any? { |l| l.include? cop.cop_name }).to be_truthy
+            expect(slice).to be_any { |l| l.include? cop.cop_name }
           end
 
           # no cop in wrong department listing
           departments.each do |department|
             registry.with_department(department).each do |cop|
-              expect(slice.any? { |l| l.include? cop.cop_name }).to be_falsey
+              expect(slice).not_to be_any { |l| l.include? cop.cop_name }
             end
           end
         end
@@ -1532,7 +1529,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       context 'when simple format is specified' do
         it 'outputs with simple format' do
           cli.run(['--format', 'simple', 'example.rb'])
-          expect($stdout.string.include?(<<~RESULT)).to be(true)
+          expect($stdout.string).to include(<<~RESULT)
             == #{target_file} ==
             C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
             C:  1:121: Layout/LineLength: Line is too long. [130/120]
@@ -1715,16 +1712,14 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       context 'when unknown format name is specified' do
         it 'aborts with error message' do
           expect(cli.run(['--format', 'unknown', 'example.rb'])).to eq(2)
-          expect($stderr.string.include?('Formatter "unknown" not found')).to be(true)
+          expect($stderr.string).to include('Formatter "unknown" not found')
         end
       end
 
       context 'when wrong similar format name is specified' do
         it 'aborts with error message' do
           expect(cli.run(['--format', 'quite', 'example.rb'])).to eq(2)
-          expect(
-            $stderr.string.include?('Formatter "quite" not found. Did you mean? "quiet"')
-          ).to be(true)
+          expect($stderr.string).to include('Formatter "quite" not found. Did you mean? "quiet"')
         end
       end
     end
@@ -1767,14 +1762,14 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         it 'aborts with error message' do
           args = '--format UnknownFormatter example.rb'
           expect(cli.run(args.split)).to eq(2)
-          expect($stderr.string.include?('UnknownFormatter')).to be(true)
+          expect($stderr.string).to include('UnknownFormatter')
         end
       end
     end
 
     it 'can be used multiple times' do
       cli.run(['--format', 'simple', '--format', 'emacs', 'example.rb'])
-      expect($stdout.string.include?(<<~RESULT)).to be(true)
+      expect($stdout.string).to include(<<~RESULT)
         == #{target_file} ==
         C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         C:  1:121: Layout/LineLength: Line is too long. [130/120]
@@ -1791,7 +1786,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
     it 'redirects output to the specified file' do
       cli.run(['--out', 'output.txt', target_file])
-      expect(File.read('output.txt').include?('Line is too long.')).to be(true)
+      expect(File.read('output.txt')).to include('Line is too long.')
     end
 
     it 'is applied to the previously specified formatter' do
@@ -1826,8 +1821,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
     def expect_offense_detected
       expect($stderr.string).to eq('')
-      expect($stdout.string.include?('1 file inspected, 1 offense detected')).to be(true)
-      expect($stdout.string.include?('Layout/IndentationWidth')).to be(true)
+      expect($stdout.string).to include('1 file inspected, 1 offense detected')
+      expect($stdout.string).to include('Layout/IndentationWidth')
     end
 
     it 'fails when option is less than the severity level' do
@@ -1870,8 +1865,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                         '--only', 'Layout/LineLength',
                         target_file])).to eq(0)
         expect($stderr.string).to eq('')
-        expect($stdout.string.include?('1 file inspected, 1 offense detected')).to be(true)
-        expect($stdout.string.include?('Layout/LineLength')).to be(true)
+        expect($stdout.string).to include('1 file inspected, 1 offense detected')
+        expect($stdout.string).to include('Layout/LineLength')
       end
     end
 
@@ -1901,8 +1896,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                         '--only', 'Layout/IndentationWidth',
                         target_file])).to eq 0
         expect($stderr.string).to eq('')
-        expect($stdout.string.include?('1 file inspected, no offenses detected')).to be(true)
-        expect($stdout.string.include?('Layout/IndentationWidth')).to be(false)
+        expect($stdout.string).to include('1 file inspected, no offenses detected')
+        expect($stdout.string).not_to include('Layout/IndentationWidth')
       end
 
       context 'with disabled line' do
@@ -1917,9 +1912,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                           '--display-only-fail-level-offenses',
                           target_file])).to eq 0
           expect($stderr.string).to eq('')
-          expect($stdout.string.include?('1 file inspected, no offenses detected')).to be(true)
-          expect($stdout.string.include?('Layout/IndentationWidth')).to be(false)
-          expect($stdout.string.include?('Lint/RedundantCopDisableDirective')).to be(false)
+          expect($stdout.string).to include('1 file inspected, no offenses detected')
+          expect($stdout.string).not_to include('Layout/IndentationWidth')
+          expect($stdout.string).not_to include('Lint/RedundantCopDisableDirective')
         end
 
         it "still checks unprinted offense if they're a redundant disable" do
@@ -1933,8 +1928,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                           '--display-only-fail-level-offenses',
                           target_file])).to eq 1
           expect($stderr.string).to eq('')
-          expect($stdout.string.include?('1 file inspected, 1 offense detected')).to be(true)
-          expect($stdout.string.include?('RedundantCopDisableDirective')).to be(true)
+          expect($stdout.string).to include('1 file inspected, 1 offense detected')
+          expect($stdout.string).to include('RedundantCopDisableDirective')
         end
       end
     end
@@ -2168,7 +2163,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       $stdin = StringIO.new('p $/')
       argv   = ['--only=Style/SpecialGlobalVars', '--format=simple', '--stdin']
       expect(cli.run(argv)).to eq(2)
-      expect($stderr.string.include?('missing argument: --stdin')).to be(true)
+      expect($stderr.string).to include('missing argument: --stdin')
     ensure
       $stdin = STDIN
     end
@@ -2181,7 +2176,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                 'fake1.rb',
                 'fake2.rb']
       expect(cli.run(argv)).to eq(2)
-      expect($stderr.string.include?('-s/--stdin requires exactly one path')).to be(true)
+      expect($stderr.string).to include('-s/--stdin requires exactly one path')
     ensure
       $stdin = STDIN
     end

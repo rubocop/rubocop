@@ -84,12 +84,12 @@ RSpec.describe RuboCop::Formatter::AutoGenConfigFormatter do
 
       it 'does not report offenses' do
         formatter.finished(files)
-        expect(output.string.include?('Offenses:')).to be(false)
+        expect(output.string).not_to include('Offenses:')
       end
 
       it 'outputs report summary' do
         formatter.finished(files)
-        expect(output.string.include?(<<~OUTPUT)).to be(true)
+        expect(output.string).to include(<<~OUTPUT)
           3 files inspected, 1 offense detected, 1 offense autocorrectable
         OUTPUT
       end
@@ -105,13 +105,13 @@ RSpec.describe RuboCop::Formatter::AutoGenConfigFormatter do
 
       it 'does not report offenses' do
         formatter.finished(files)
-        expect(output.string.include?('Offenses:')).to be(false)
+        expect(output.string).not_to include('Offenses:')
       end
     end
 
     it 'calls #report_summary' do
       formatter.finished(files)
-      expect(output.string.include?(<<~OUTPUT)).to be(true)
+      expect(output.string).to include(<<~OUTPUT)
         3 files inspected, no offenses detected
       OUTPUT
     end

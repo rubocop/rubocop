@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints message as-is' do
         formatter.report_file(file, [offense])
-        expect(output.string.include?(': This is a message.')).to be(true)
+        expect(output.string).to include(': This is a message.')
       end
     end
 
@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints message as-is' do
         formatter.report_file(file, [offense])
-        expect(output.string.include?(': [Correctable] This is a message.')).to be(true)
+        expect(output.string).to include(': [Correctable] This is a message.')
       end
     end
 
@@ -102,7 +102,7 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
 
       it 'prints [Corrected] along with message' do
         formatter.report_file(file, [offense])
-        expect(output.string.include?(': [Corrected] This is a message.')).to be(true)
+        expect(output.string).to include(': [Corrected] This is a message.')
       end
     end
 
