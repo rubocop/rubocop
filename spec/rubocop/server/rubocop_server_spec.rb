@@ -32,9 +32,8 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
 
         options = '--server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
         expect(`ruby -I . "#{rubocop}" #{options}`).to start_with('RuboCop server starting on')
-        # Emulating RuboCop updates. `0.99.9` is a version value for testing that
-        # will never be used in the real world RuboCop version.
-        RuboCop::Server::Cache.write_version_file('0.99.9')
+        # Emulating the SHA1 value of Gemfile.lock.
+        RuboCop::Server::Cache.write_version_file('615dfedabfe01face6557b935510309ae550f74f')
 
         expect(`ruby -I . "#{rubocop}" --server-status`).to match(/RuboCop server .* is running/)
         _stdout, stderr, _status = Open3.capture3("ruby -I . \"#{rubocop}\" #{options}")

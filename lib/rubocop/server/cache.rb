@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'digest'
 require 'pathname'
 require_relative '../cache_config'
 require_relative '../config_finder'
@@ -19,6 +20,7 @@ module RuboCop
     # @api private
     class Cache
       GEMFILE_NAMES = %w[Gemfile gems.rb].freeze
+      LOCKFILE_NAMES = %w[Gemfile.lock gems.locked].freeze
 
       class << self
         attr_accessor :cache_root_path
@@ -39,6 +41,14 @@ module RuboCop
 
         def project_dir_cache_key
           @project_dir_cache_key ||= project_dir[1..].tr('/', '+')
+        end
+
+        def restart_key
+          lockfile_path = LOCKFILE_NAMES.map do |lockfile_name|
+            Pathname(project_dir).join(lockfile_name)
+          end.find(&:exist?)
+
+          Digest::SHA1.hexdigest(lockfile_path&.read || RuboCop::Version::STRING)
         end
 
         def dir

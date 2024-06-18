@@ -34,7 +34,7 @@ module RuboCop
               exit 0
             end
 
-            Cache.write_version_file(RuboCop::Version::STRING)
+            Cache.write_version_file(Cache.restart_key)
 
             host = ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1')
             port = ENV.fetch('RUBOCOP_SERVER_PORT', 0)
