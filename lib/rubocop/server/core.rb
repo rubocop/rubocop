@@ -27,7 +27,8 @@ module RuboCop
         self.class.token
       end
 
-      def start(host, port, detach: true)
+      def start(host, port, detach: true, idle_timeout: nil)
+        @idle_timeout = idle_timeout
         $PROGRAM_NAME = "rubocop --server #{Cache.project_dir}"
 
         require_relative '../../rubocop'
@@ -58,7 +59,20 @@ module RuboCop
 
       def process_input
         Cache.write_pid_file do
-          read_socket(@server.accept) until @server.closed?
+          until @server.closed?
+            begin
+              socket = @server.accept_nonblock
+            rescue IO::WaitReadable, Errno::EINTR
+              if @server.wait_readable(@idle_timeout).nil?
+                output_stream&.puts 'RuboCop server terminating due to idle timeout.'
+                break
+              end
+
+              retry
+            end
+
+            read_socket(socket)
+          end
         end
       end
 
@@ -71,15 +85,18 @@ module RuboCop
         true
       end
 
+      def output_stream
+        # JSON format does not expected output message when IDE integration with server mode.
+        # See: https://github.com/rubocop/rubocop/issues/11164
+        return nil if use_json_format?
+
+        ARGV.include?('--stderr') ? $stderr : $stdout
+      end
+
       def start_server(host, port)
         @server = TCPServer.open(host, port)
 
-        # JSON format does not expected output message when IDE integration with server mode.
-        # See: https://github.com/rubocop/rubocop/issues/11164
-        return if use_json_format?
-
-        output_stream = ARGV.include?('--stderr') ? $stderr : $stdout
-        output_stream.puts "RuboCop server starting on #{@server.addr[3]}:#{@server.addr[1]}."
+        output_stream&.puts "RuboCop server starting on #{@server.addr[3]}:#{@server.addr[1]}."
       end
 
       def read_socket(socket)
