@@ -346,6 +346,16 @@ RSpec.describe 'RuboCop Project', type: :feature do
               end
             end
           end
+
+          it 'has cops in backticks with department', :aggregate_failures do
+            cop_names_without_department = allowed_cop_names.map { |name| name.split('/').last }
+            entries.each do |entry|
+              entry.scan(/`([A-Z]\w+)`/) do |cop_name, *|
+                expect(cop_names_without_department.include?(cop_name))
+                  .to be(false), "Missing department for #{cop_name}."
+              end
+            end
+          end
         end
       end
     end
