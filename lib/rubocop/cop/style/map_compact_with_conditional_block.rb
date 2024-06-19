@@ -4,11 +4,15 @@ module RuboCop
   module Cop
     module Style
       # Prefer `select` or `reject` over `map { ... }.compact`.
+      # This cop also handles `filter_map { ... }`, similar to `map { ... }.compact`.
       #
       # @example
       #
       #   # bad
       #   array.map { |e| some_condition? ? e : next }.compact
+      #
+      #   # bad
+      #   array.filter_map { |e| some_condition? ? e : next }
       #
       #   # bad
       #   array.map do |e|
@@ -40,54 +44,72 @@ module RuboCop
       class MapCompactWithConditionalBlock < Base
         extend AutoCorrector
 
-        MSG = 'Replace `map { ... }.compact` with `%<method>s`.'
+        MSG = 'Replace `%<current>s` with `%<method>s`.'
+        RESTRICT_ON_SEND = %i[compact filter_map].freeze
 
-        # @!method map_and_compact?(node)
-        def_node_matcher :map_and_compact?, <<~RUBY
-          (call
-            (block
-              (call _ :map)
-              (args
-                $(arg _))
-              {
-                (if $_ $(lvar _) {next nil?})
-                (if $_ {next nil?} $(lvar _))
-                (if $_ (next $(lvar _)) {next nil nil?})
-                (if $_ {next nil nil?} (next $(lvar _)))
-                (begin
-                  {
-                    (if $_ next nil?)
-                    (if $_ nil? next)
-                  }
-                  $(lvar _))
-                (begin
-                  {
-                    (if $_ (next $(lvar _)) nil?)
-                    (if $_ nil? (next $(lvar _)))
-                  }
-                  (nil))
-              }) :compact)
+        # @!method conditional_block(node)
+        def_node_matcher :conditional_block, <<~RUBY
+          (block
+            (call _ {:map :filter_map})
+            (args
+              $(arg _))
+            {
+              (if $_ $(lvar _) {next nil?})
+              (if $_ {next nil?} $(lvar _))
+              (if $_ (next $(lvar _)) {next nil nil?})
+              (if $_ {next nil nil?} (next $(lvar _)))
+              (begin
+                {
+                  (if $_ next nil?)
+                  (if $_ nil? next)
+                }
+                $(lvar _))
+              (begin
+                {
+                  (if $_ (next $(lvar _)) nil?)
+                  (if $_ nil? (next $(lvar _)))
+                }
+                (nil))
+            })
         RUBY
 
         def on_send(node)
-          map_and_compact?(node) do |block_argument_node, condition_node, return_value_node|
-            return unless returns_block_argument?(block_argument_node, return_value_node)
-            return if condition_node.parent.elsif?
+          map_candidate = node.children.first
+          if (block_argument, condition, return_value = conditional_block(map_candidate))
+            return unless node.method?(:compact) && node.arguments.empty?
 
-            method = truthy_branch?(return_value_node) ? 'select' : 'reject'
-            range = range(node)
+            range = map_with_compact_range(node)
+          elsif (block_argument, condition, return_value = conditional_block(node.parent))
+            return unless node.method?(:filter_map)
 
-            add_offense(range, message: format(MSG, method: method)) do |corrector|
-              corrector.replace(
-                range,
-                "#{method} { |#{block_argument_node.source}| #{condition_node.source} }"
-              )
-            end
+            range = filter_map_range(node)
+          else
+            return
           end
+
+          inspect(node, block_argument, condition, return_value, range)
         end
         alias on_csend on_send
 
         private
+
+        def inspect(node, block_argument_node, condition_node, return_value_node, range)
+          return unless returns_block_argument?(block_argument_node, return_value_node)
+          return if condition_node.parent.elsif?
+
+          method = truthy_branch?(return_value_node) ? 'select' : 'reject'
+          current = current(node)
+
+          add_offense(range, message: format(MSG, current: current, method: method)) do |corrector|
+            return if part_of_ignored_node?(node) || ignored_node?(node)
+
+            corrector.replace(
+              range, "#{method} { |#{block_argument_node.source}| #{condition_node.source} }"
+            )
+
+            ignore_node(node)
+          end
+        end
 
         def returns_block_argument?(block_argument_node, return_value_node)
           block_argument_node.name == return_value_node.children.first
@@ -123,10 +145,22 @@ module RuboCop
           end
         end
 
-        def range(node)
-          map_node = node.receiver.send_node
+        def current(node)
+          if node.method?(:compact)
+            map_or_filter_map_method = node.children.first
 
-          map_node.loc.selector.join(node.source_range.end)
+            "#{map_or_filter_map_method.method_name} { ... }.compact"
+          else
+            'filter_map { ... }'
+          end
+        end
+
+        def map_with_compact_range(node)
+          node.receiver.send_node.loc.selector.begin.join(node.source_range.end)
+        end
+
+        def filter_map_range(node)
+          node.loc.selector.join(node.parent.source_range.end)
         end
       end
     end
