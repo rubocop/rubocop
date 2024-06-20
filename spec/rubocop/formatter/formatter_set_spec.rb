@@ -77,19 +77,14 @@ RSpec.describe RuboCop::Formatter::FormatterSet do
   end
 
   describe '#close_output_files' do
+    include_context 'mock console output'
+
     before do
       2.times do
         output_path = Tempfile.new('').path
         formatter_set.add_formatter('simple', output_path)
       end
       formatter_set.add_formatter('simple')
-    end
-
-    around do |example|
-      $stdout = StringIO.new
-      example.run
-    ensure
-      $stdout = STDOUT
     end
 
     it 'closes all output files' do

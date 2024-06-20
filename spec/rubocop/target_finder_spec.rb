@@ -604,15 +604,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     end
 
     context 'when an exception is raised while reading file' do
-      around do |example|
-        original_stderr = $stderr
-        $stderr = StringIO.new
-        begin
-          example.run
-        ensure
-          $stderr = original_stderr
-        end
-      end
+      include_context 'mock console output'
 
       before { allow_any_instance_of(File).to receive(:readline).and_raise(EOFError) }
 

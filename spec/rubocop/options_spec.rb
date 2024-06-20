@@ -5,15 +5,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
   subject(:options) { described_class.new }
 
-  before do
-    $stdout = StringIO.new
-    $stderr = StringIO.new
-  end
-
-  after do
-    $stdout = STDOUT
-    $stderr = STDERR
-  end
+  include_context 'mock console output'
 
   def abs(path)
     File.expand_path(path)

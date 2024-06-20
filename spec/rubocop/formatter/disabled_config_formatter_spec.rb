@@ -6,6 +6,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
   subject(:formatter) { described_class.new(output) }
 
+  include_context 'mock console output'
+
   let(:output) do
     io = StringIO.new
 
@@ -36,19 +38,6 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
   let(:expected_heading_timestamp) { "on #{Time.now} " }
   let(:config_store) { instance_double(RuboCop::ConfigStore) }
   let(:options) { { config_store: config_store } }
-
-  around do |example|
-    original_stdout = $stdout
-    original_stderr = $stderr
-
-    $stdout = StringIO.new
-    $stderr = StringIO.new
-
-    example.run
-
-    $stdout = original_stdout
-    $stderr = original_stderr
-  end
 
   before do
     stub_cop_class('Test::Cop1')
