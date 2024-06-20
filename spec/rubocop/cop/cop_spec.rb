@@ -11,9 +11,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   end
 
   describe '.qualified_cop_name' do
-    before { $stderr = StringIO.new }
-
-    after { $stderr = STDERR }
+    include_context 'mock console output'
 
     it 'adds namespace if the cop name is found in exactly one namespace' do
       expect(described_class.qualified_cop_name('LineLength', '--only')).to eq('Layout/LineLength')

@@ -7,8 +7,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
     let(:offenses) { [] }
     let(:cop) { cop_class.new(config, cop_options, offenses) }
 
-    before { $stderr = StringIO.new } # rubocop:disable RSpec/ExpectOutput
-
     context 'when there are no disabled lines' do
       let(:source) { '' }
 
@@ -203,6 +201,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           end
 
           context 'multiple cops, with abbreviated names' do
+            include_context 'mock console output'
+
             context 'one of them has offenses' do
               let(:offenses) do
                 [

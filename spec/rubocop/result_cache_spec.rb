@@ -189,6 +189,8 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
 
       context 'when a symlink is present in the cache location' do
+        include_context 'mock console output'
+
         let(:cache2) { described_class.new(file, team, options, config_store, cache_root) }
 
         let(:attack_target_dir) { Dir.mktmpdir }
@@ -203,12 +205,10 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           path = result.first
           FileUtils.rm_rf(path)
           FileUtils.ln_s(attack_target_dir, path)
-          $stderr = StringIO.new
         end
 
         after do
           FileUtils.rm_rf(attack_target_dir)
-          $stderr = STDERR
         end
 
         context 'and symlink attack protection is enabled' do
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     end
 
     shared_examples 'invalid cache location' do |error, message|
-      before { $stderr = StringIO.new }
+      include_context 'mock console output'
 
       it 'doesn\'t raise an exception' do
         allow(FileUtils).to receive(:mkdir_p).with(start_with(cache_root)).and_raise(error)
@@ -317,8 +317,6 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
             #{message}
         WARN
       end
-
-      after { $stderr = STDERR }
     end
 
     context 'when the @path is not writable' do
@@ -330,15 +328,14 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   end
 
   describe '.cleanup' do
+    include_context 'mock console output'
+
     before do
       cfg = RuboCop::Config.new('AllCops' => { 'MaxFilesInCache' => 1 })
       allow(config_store).to receive(:for_pwd).and_return(cfg)
       allow(config_store).to receive(:for_file).with('other.rb').and_return(cfg)
       create_file('other.rb', ['x = 1'])
-      $stdout = StringIO.new
     end
-
-    after { $stdout = STDOUT }
 
     it 'removes the oldest files in the cache if needed' do
       cache.save(offenses)

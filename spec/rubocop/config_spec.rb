@@ -25,16 +25,15 @@ RSpec.describe RuboCop::Config do
     let(:configuration_path) { '.rubocop.yml' }
 
     context 'when the configuration includes any unrecognized cop name' do
+      include_context 'mock console output'
+
       before do
         create_file(configuration_path, <<~YAML)
           LyneLenth:
             Enabled: true
             Max: 100
         YAML
-        $stderr = StringIO.new
       end
-
-      after { $stderr = STDERR }
 
       it 'raises an validation error' do
         expect { configuration }.to raise_error(
@@ -46,6 +45,8 @@ RSpec.describe RuboCop::Config do
 
     context 'when the configuration includes any unrecognized cop name and given `--ignore-unrecognized-cops` option' do
       context 'there is unrecognized cop' do
+        include_context 'mock console output'
+
         before do
           create_file(configuration_path, <<~YAML)
             LyneLenth:
@@ -53,12 +54,10 @@ RSpec.describe RuboCop::Config do
               Max: 100
           YAML
           RuboCop::ConfigLoader.ignore_unrecognized_cops = true
-          $stderr = StringIO.new
         end
 
         after do
           RuboCop::ConfigLoader.ignore_unrecognized_cops = nil
-          $stderr = STDERR
         end
 
         it 'prints a warning about the cop' do
@@ -70,18 +69,18 @@ RSpec.describe RuboCop::Config do
       end
 
       context 'there are no unrecognized cops' do
+        include_context 'mock console output'
+
         before do
           create_file(configuration_path, <<~YAML)
             Layout/LineLength:
               Enabled: true
           YAML
           RuboCop::ConfigLoader.ignore_unrecognized_cops = true
-          $stderr = StringIO.new
         end
 
         after do
           RuboCop::ConfigLoader.ignore_unrecognized_cops = nil
-          $stderr = STDERR
         end
 
         it 'does not print any warnings' do
@@ -128,16 +127,15 @@ RSpec.describe RuboCop::Config do
     end
 
     context 'when the configuration includes any unrecognized parameter' do
+      include_context 'mock console output'
+
       before do
         create_file(configuration_path, <<~YAML)
           Layout/LineLength:
             Enabled: true
             Min: 10
         YAML
-        $stderr = StringIO.new
       end
-
-      after { $stderr = STDERR }
 
       it 'prints a warning message' do
         configuration # ConfigLoader.load_file will validate config
@@ -524,9 +522,7 @@ RSpec.describe RuboCop::Config do
   end
 
   describe '#file_to_exclude?' do
-    before { $stderr = StringIO.new }
-
-    after { $stderr = STDERR }
+    include_context 'mock console output'
 
     let(:hash) { { 'AllCops' => { 'Exclude' => ["#{Dir.pwd}/log/**/*", '**/bar.rb'] } } }
 
@@ -655,11 +651,9 @@ RSpec.describe RuboCop::Config do
     let(:loaded_path) { 'example/.rubocop.yml' }
 
     context 'when a deprecated configuration is detected' do
+      include_context 'mock console output'
+
       let(:hash) { { 'AllCops' => { 'Includes' => [] } } }
-
-      before { $stderr = StringIO.new }
-
-      after { $stderr = STDERR }
 
       it 'prints a warning message for the loaded path' do
         configuration.check
