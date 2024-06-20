@@ -19,6 +19,40 @@ RSpec.describe RuboCop::Cop::Style::MapCompactWithConditionalBlock, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects to `select` with `if` condition when using `filter_map`' do
+      expect_offense(<<~RUBY)
+        foo.filter_map do |item|
+            ^^^^^^^^^^^^^^^^^^^^ Replace `filter_map { ... }` with `select`.
+          if item.bar?
+            item
+          else
+            next
+          end
+        end
+      RUBY
+
+      expect_correction <<~RUBY
+        foo.select { |item| item.bar? }
+      RUBY
+    end
+
+    it 'registers an offense and corrects to `select` with `if` condition when using `filter_map` with redundant `compact`' do
+      expect_offense(<<~RUBY)
+        foo.filter_map do |item|
+            ^^^^^^^^^^^^^^^^^^^^ Replace `filter_map { ... }.compact` with `select`.
+          if item.bar?
+            item
+          else
+            next
+          end
+        end.compact
+      RUBY
+
+      expect_correction <<~RUBY
+        foo.select { |item| item.bar? }
+      RUBY
+    end
+
     it 'registers an offense and corrects to safe navigation `select` call with `if` condition' do
       expect_offense(<<~RUBY)
         foo&.map do |item|
@@ -313,6 +347,30 @@ RSpec.describe RuboCop::Cop::Style::MapCompactWithConditionalBlock, :config do
             next
           end
         end
+      RUBY
+    end
+
+    it 'does not register an offense when `map` is used with methods other than `compact`' do
+      expect_no_offenses(<<~RUBY)
+        foo.map do |item|
+          if item.bar?
+            item
+          else
+            next
+          end
+        end.do_something
+      RUBY
+    end
+
+    it 'does not register an offense when using `map` with custom `compact`' do
+      expect_no_offenses(<<~RUBY)
+        foo.map do |item|
+          if item.bar?
+            item
+          else
+            next
+          end
+        end.compact(arg)
       RUBY
     end
 
