@@ -146,6 +146,11 @@ module RuboCop
         # https://bugs.ruby-lang.org/issues/20505
         def block_reassigned?(def_node, block_arg_name)
           def_node.each_node(*ASSIGN_TYPES).any? do |assign_node|
+            # TODO: Since `Symbol#name` is supported from Ruby 3.0, the inheritance check for
+            # `AST::Node` can be removed when requiring Ruby 3.0+.
+            lhs = assign_node.node_parts[0]
+            next if lhs.is_a?(AST::Node) && !lhs.respond_to?(:name)
+
             assign_node.name == block_arg_name
           end
         end
