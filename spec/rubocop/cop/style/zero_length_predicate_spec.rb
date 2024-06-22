@@ -13,6 +13,17 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
       RUBY
     end
 
+    it 'registers an offense for `array&.length == 0`' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3]&.length == 0
+        ^^^^^^^^^^^^^^^^^^^^^^ Use `empty?` instead of `length == 0`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3]&.empty?
+      RUBY
+    end
+
     it 'registers an offense for `array.size == 0`' do
       expect_offense(<<~RUBY)
         [1, 2, 3].size == 0
@@ -32,6 +43,28 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
 
       expect_correction(<<~RUBY)
         [1, 2, 3].empty?
+      RUBY
+    end
+
+    it 'registers an offense for `array&.length.zero?`' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3]&.length.zero?
+                   ^^^^^^^^^^^^ Use `empty?` instead of `length.zero?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3]&.empty?
+      RUBY
+    end
+
+    it 'registers an offense for `array&.length&.zero?`' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3]&.length&.zero?
+                   ^^^^^^^^^^^^^ Use `empty?` instead of `length&.zero?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3]&.empty?
       RUBY
     end
 
@@ -79,6 +112,17 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
       RUBY
     end
 
+    it 'registers an offense for `array&.length < 1`' do
+      expect_offense(<<~RUBY)
+        array&.length < 1
+        ^^^^^^^^^^^^^^^^^ Use `empty?` instead of `length < 1`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array&.empty?
+      RUBY
+    end
+
     it 'registers an offense for `array.size < 1`' do
       expect_offense(<<~RUBY)
         [1, 2, 3].size < 1
@@ -101,6 +145,17 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
       RUBY
     end
 
+    it 'registers an offense for `1 > array&.length`' do
+      expect_offense(<<~RUBY)
+        1 > array&.length
+        ^^^^^^^^^^^^^^^^^ Use `empty?` instead of `1 > length`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array&.empty?
+      RUBY
+    end
+
     it 'registers an offense for `1 > array.size`' do
       expect_offense(<<~RUBY)
         1 > [1, 2, 3].size
@@ -120,6 +175,17 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
 
       expect_correction(<<~RUBY)
         ![1, 2, 3].empty?
+      RUBY
+    end
+
+    it 'registers an offense for `array&.length > 0`' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3]&.length > 0
+        ^^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `length > 0`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ![1, 2, 3]&.empty?
       RUBY
     end
 
