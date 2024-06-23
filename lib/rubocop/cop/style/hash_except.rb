@@ -73,8 +73,9 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          method_name = node.method_name
           block = node.parent
-          return unless bad_method?(block) && semantically_except_method?(node, block)
+          return unless bad_method?(method_name, block) && semantically_except_method?(node, block)
 
           except_key = except_key(block)
           return if except_key.nil? || !safe_to_register_offense?(block, except_key)
@@ -91,7 +92,7 @@ module RuboCop
         private
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        def bad_method?(block)
+        def bad_method?(method_name, block)
           if active_support_extensions_enabled?
             bad_method_with_active_support?(block) do |key_arg, send_node|
               if send_node.method?(:in?) && send_node.receiver&.source != key_arg.source
@@ -103,6 +104,8 @@ module RuboCop
             end
           else
             bad_method_with_poro?(block) do |key_arg, send_node|
+              return false if method_name == :reject && block.body.method?(:!)
+
               !send_node.method?(:include?) || send_node.first_argument&.source == key_arg.source
             end
           end
