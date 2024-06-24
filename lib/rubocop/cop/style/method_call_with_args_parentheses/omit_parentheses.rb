@@ -18,6 +18,7 @@ module RuboCop
             return if inside_endless_method_def?(node)
             return if require_parentheses_for_hash_value_omission?(node)
             return if syntax_like_method_call?(node)
+            return if method_call_before_constant_resolution?(node)
             return if super_call_without_arguments?(node)
             return if legitimate_call_with_parentheses?(node)
             return if allowed_camel_case_method_call?(node)
@@ -61,6 +62,10 @@ module RuboCop
 
           def syntax_like_method_call?(node)
             node.implicit_call? || node.operator_method?
+          end
+
+          def method_call_before_constant_resolution?(node)
+            node.parent&.const_type?
           end
 
           def super_call_without_arguments?(node)

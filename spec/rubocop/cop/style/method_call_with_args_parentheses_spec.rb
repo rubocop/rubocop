@@ -703,6 +703,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parenthesized method calls before constant resolution' do
+      expect_no_offenses(<<~RUBY)
+        do_something(arg)::CONST
+      RUBY
+    end
+
     it 'accepts parens in single-line inheritance' do
       expect_no_offenses(<<-RUBY)
         class Point < Struct.new(:x, :y); end
