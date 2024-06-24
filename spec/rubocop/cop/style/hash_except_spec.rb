@@ -99,14 +99,9 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
     end
 
     context 'using `include?`' do
-      it 'registers and corrects an offense when using `reject` and calling `include?` method with symbol array' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when using `reject` and calling `!include?` method with symbol array' do
+        expect_no_offenses(<<~RUBY)
           {foo: 1, bar: 2, baz: 3}.reject { |k, v| !%i[foo bar].include?(k) }
-                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(:foo, :bar)` instead.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          {foo: 1, bar: 2, baz: 3}.except(:foo, :bar)
         RUBY
       end
 
@@ -154,31 +149,20 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
         RUBY
       end
 
-      it 'registers and corrects an offense when using `reject` and calling `include?` method with variable' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when using `reject` and calling `!include?` method with variable' do
+        expect_no_offenses(<<~RUBY)
           array = [:foo, :bar]
           {foo: 1, bar: 2, baz: 3}.reject { |k, v| !array.include?(k) }
-                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          array = [:foo, :bar]
-          {foo: 1, bar: 2, baz: 3}.except(*array)
         RUBY
       end
 
-      it 'registers and corrects an offense when using `reject` and calling `include?` method with method call' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when using `reject` and calling `!include?` method with method call' do
+        expect_no_offenses(<<~RUBY)
           {foo: 1, bar: 2, baz: 3}.reject { |k, v| !array.include?(k) }
-                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `except(*array)` instead.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          {foo: 1, bar: 2, baz: 3}.except(*array)
         RUBY
       end
 
-      it 'does not register an offense when using `reject` and calling `include?` method with symbol array and second block value' do
+      it 'does not register an offense when using `reject` and calling `!include?` method with symbol array and second block value' do
         expect_no_offenses(<<~RUBY)
           {foo: 1, bar: 2, baz: 3}.reject { |k, v| ![1, 2].include?(v) }
         RUBY
