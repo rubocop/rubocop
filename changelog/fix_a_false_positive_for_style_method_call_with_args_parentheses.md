@@ -1,0 +1,1 @@
+* [#13018](https://github.com/rubocop/rubocop/issues/13018): Fix a false positive for `Style/MethodCallWithArgsParentheses` when `EnforcedStyle: omit_parentheses` is set and parenthesized method call is used before constant resolution. ([@koic][])
