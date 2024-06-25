@@ -415,10 +415,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
   end
 
   context 'when a referenced variable is reassigned in a block' do
-    it 'accepts' do
-      expect_no_offenses(<<~RUBY)
+    it 'registers an offense for the unreferenced assignment' do
+      expect_offense(<<~RUBY)
         def some_method
           foo = 1
+          ^^^ Useless assignment to variable - `foo`.
           puts foo
           1.times do
             foo = 2
