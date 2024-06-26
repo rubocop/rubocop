@@ -122,6 +122,25 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
     RUBY
   end
 
+  it 'registers an offense when the hash argument is or-assigned' do
+    expect_offense(<<~RUBY)
+      def foo(options, &block)
+        options[:key] ||= default
+
+        super(options, &block)
+        ^^^^^^^^^^^^^^^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo(options, &block)
+        options[:key] ||= default
+
+        super
+      end
+    RUBY
+  end
+
   it 'registers no offense when calling super in a dsl method' do
     expect_no_offenses(<<~RUBY)
       describe 'example' do
