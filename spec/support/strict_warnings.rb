@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# NOTE: Prevents the cause from being obscured by `uninitialized constant StrictWarnings::StringIO`
+# when there is a warning or syntax error in the product code.
+require 'stringio'
+
 # Ensure that RuboCop runs warning-free. This hooks into Ruby's `warn`
 # method and raises when an unexpected warning is encountered.
 module StrictWarnings
