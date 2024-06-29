@@ -59,7 +59,7 @@ module RuboCop
           if case_node.condition
             check_case(case_node)
           else
-            case_node.each_when do |when_node|
+            case_node.when_branches.each do |when_node|
               next unless when_node.conditions.all?(&:literal?)
 
               range = when_conditions_range(when_node)

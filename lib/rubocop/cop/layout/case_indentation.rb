@@ -121,7 +121,7 @@ module RuboCop
           return if case_node.single_line?
           return if enforced_style_end? && end_and_last_conditional_same_line?(case_node)
 
-          case_node.each_when { |when_node| check_when(when_node, 'when') }
+          case_node.when_branches.each { |when_node| check_when(when_node, 'when') }
         end
 
         def on_case_match(case_match_node)

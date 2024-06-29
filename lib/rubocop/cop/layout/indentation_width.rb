@@ -136,7 +136,7 @@ module RuboCop
         alias on_until on_while
 
         def on_case(case_node)
-          case_node.each_when do |when_node|
+          case_node.when_branches.each do |when_node|
             check_indentation(when_node.loc.keyword, when_node.body)
           end
 

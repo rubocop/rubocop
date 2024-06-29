@@ -50,7 +50,7 @@ module RuboCop
         MSG = 'Avoid `when` branches without a body.'
 
         def on_case(node)
-          node.each_when do |when_node|
+          node.when_branches.each do |when_node|
             next if when_node.body
             next if cop_config['AllowComments'] && contains_comments?(when_node)
 

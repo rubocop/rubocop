@@ -80,7 +80,7 @@ module RuboCop
         alias on_until_post on_while_post
 
         def on_case(node)
-          node.each_when do |when_node|
+          node.when_branches.each do |when_node|
             last_condition = when_node.conditions.last
 
             next if !multiline_when_condition?(when_node) ||
