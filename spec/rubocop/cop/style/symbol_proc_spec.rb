@@ -87,6 +87,19 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       RUBY
     end
 
+    it 'registers lambda `->` with 1 argument and multiline `do`...`end` block' do
+      expect_offense(<<~RUBY)
+        ->(arg) do
+                ^^ Pass `&:do_something` as an argument to `lambda` instead of a block.
+          arg.do_something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        lambda(&:do_something)
+      RUBY
+    end
+
     it 'registers proc with 1 argument' do
       expect_offense(<<~RUBY)
         proc { |x| x.method }
