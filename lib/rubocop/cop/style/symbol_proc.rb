@@ -223,7 +223,14 @@ module RuboCop
         end
 
         def autocorrect_without_args(corrector, node)
-          autocorrect_lambda_block(corrector, node) if node.send_node.lambda_literal?
+          if node.send_node.lambda_literal?
+            if node.send_node.loc.selector.source == '->'
+              corrector.replace(node, "lambda(&:#{node.body.method_name})")
+              return
+            else
+              autocorrect_lambda_block(corrector, node)
+            end
+          end
 
           corrector.replace(block_range_with_space(node), "(&:#{node.body.method_name})")
         end
