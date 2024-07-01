@@ -17,29 +17,29 @@ module RuboCop
       # split across lines. These include arrays, hashes, and
       # method calls with argument lists.
       #
-      # If autocorrection is enabled, the following Layout cops
+      # If autocorrection is enabled, the following cops
       # are recommended to further format the broken lines.
       # (Many of these are enabled by default.)
       #
-      # * ArgumentAlignment
-      # * ArrayAlignment
-      # * BlockAlignment
-      # * BlockDelimiters
-      # * BlockEndNewline
-      # * ClosingParenthesisIndentation
-      # * FirstArgumentIndentation
-      # * FirstArrayElementIndentation
-      # * FirstHashElementIndentation
-      # * FirstParameterIndentation
-      # * HashAlignment
-      # * IndentationWidth
-      # * MultilineArrayLineBreaks
-      # * MultilineBlockLayout
-      # * MultilineHashBraceLayout
-      # * MultilineHashKeyLineBreaks
-      # * MultilineMethodArgumentLineBreaks
-      # * MultilineMethodParameterLineBreaks
-      # * ParameterAlignment
+      # * `Layout/ArgumentAlignment`
+      # * `Layout/ArrayAlignment`
+      # * `Layout/BlockAlignment`
+      # * `Layout/BlockEndNewline`
+      # * `LayoutClosingParenthesisIndentation`
+      # * `LayoutFirstArgumentIndentation`
+      # * `LayoutFirstArrayElementIndentation`
+      # * `LayoutFirstHashElementIndentation`
+      # * `LayoutFirstParameterIndentation`
+      # * `LayoutHashAlignment`
+      # * `LayoutIndentationWidth`
+      # * `LayoutMultilineArrayLineBreaks`
+      # * `LayoutMultilineBlockLayout`
+      # * `LayoutMultilineHashBraceLayout`
+      # * `LayoutMultilineHashKeyLineBreaks`
+      # * `LayoutMultilineMethodArgumentLineBreaks`
+      # * `LayoutMultilineMethodParameterLineBreaks`
+      # * `Layout/ParameterAlignment`
+      # * `Style/BlockDelimiters`
       #
       # Together, these cops will pretty print hashes, arrays,
       # method calls, etc. For example, let's say the max columns
