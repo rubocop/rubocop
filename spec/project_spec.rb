@@ -40,8 +40,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     it 'has a nicely formatted description for all cops' do
       cop_names.each do |name|
         description = config.dig(name, 'Description')
-        expect(description.nil?).to(be(false),
-                                    "`Description` configuration is required for `#{name}`.")
+        expect(description).not_to(be_nil, "`Description` configuration is required for `#{name}`.")
         expect(description).not_to include("\n")
 
         start_with_subject = description.match(/\AThis cop (?<verb>.+?) .*/)
@@ -56,8 +55,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
     it 'requires a nicely formatted `VersionAdded` metadata for all cops' do
       cop_names.each do |name|
         version = config.dig(name, 'VersionAdded')
-        expect(version.nil?).to(be(false),
-                                "`VersionAdded` configuration is required for `#{name}`.")
+        expect(version).not_to(be_nil, "`VersionAdded` configuration is required for `#{name}`.")
         expect(version).to(match(version_regexp),
                            "#{version} should be format ('X.Y' or '<<next>>') for #{name}.")
       end
@@ -339,10 +337,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
               entry.scan(%r{\b[A-Z]\w+(?:/[A-Z]\w+)+\b}) do |cop_name|
                 next if cop_name.split('/').first == 'AllCops'
 
-                expect(allowed_cop_names.include?(cop_name))
-                  .to be(true), "Invalid cop name #{cop_name}."
-                expect(entry.include?("`#{cop_name}`"))
-                  .to be(true), "Missing backticks for #{cop_name}."
+                expect(allowed_cop_names).to include(cop_name), "Invalid cop name #{cop_name}."
+                expect(entry).to include("`#{cop_name}`"), "Missing backticks for #{cop_name}."
               end
             end
           end
@@ -351,8 +347,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
             cop_names_without_department = allowed_cop_names.map { |name| name.split('/').last }
             entries.each do |entry|
               entry.scan(/`([A-Z]\w+)`/) do |cop_name, *|
-                expect(cop_names_without_department.include?(cop_name))
-                  .to be(false), "Missing department for #{cop_name}."
+                expect(cop_names_without_department)
+                  .not_to include(cop_name), "Missing department for #{cop_name}."
               end
             end
           end
@@ -363,9 +359,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
     it 'has link definitions for all implicit links' do
       implicit_link_names = changelog.scan(/\[([^\]]+)\]\[\]/).flatten.uniq
       implicit_link_names.each do |name|
-        expect(changelog.include?("[#{name}]: http"))
-          .to be(true), "missing a link for #{name}. " \
-                        'Please add this link to the bottom of the file.'
+        expect(changelog)
+          .to include("[#{name}]: http"), "missing a link for #{name}. " \
+                                          'Please add this link to the bottom of the file.'
       end
     end
 
