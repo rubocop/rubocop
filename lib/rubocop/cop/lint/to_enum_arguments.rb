@@ -49,15 +49,8 @@ module RuboCop
           return unless def_node
 
           enum_conversion_call?(node) do |method_node, arguments|
-            next if method_node.call_type? &&
-                    !method_node.method?(:__method__) && !method_node.method?(:__callee__)
-
-            valid = if method_name?(method_node, def_node.method_name)
-                      arguments_match?(arguments, def_node)
-                    else
-                      def_node.arguments.empty?
-                    end
-            return if valid
+            next if !method_name?(method_node, def_node.method_name) ||
+                    arguments_match?(arguments, def_node)
 
             add_offense(node)
           end
