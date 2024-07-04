@@ -17,6 +17,8 @@ renamed:
   Layout/LeadingBlankLines: Layout/LeadingEmptyLines
   Layout/Tab: Layout/IndentationStyle
   Layout/TrailingBlankLines: Layout/TrailingEmptyLines
+  # TODO: Please uncomment in RuboCop 2.0.
+  # Lint/AmbiguousOperatorPrecedence: Style/ExplicitOperatorPrecedence
   Lint/BlockAlignment: Layout/BlockAlignment
   Lint/DefEndAlignment: Layout/DefEndAlignment
   Lint/DuplicatedKey: Lint/DuplicateHashKey
