@@ -31,14 +31,14 @@ Gem::Specification.new do |s|
     'rubygems_mfa_required' => 'true'
   }
 
-  s.add_runtime_dependency('json', '~> 2.3')
-  s.add_runtime_dependency('language_server-protocol', '>= 3.17.0')
-  s.add_runtime_dependency('parallel', '~> 1.10')
-  s.add_runtime_dependency('parser', '>= 3.3.0.2')
-  s.add_runtime_dependency('rainbow', '>= 2.2.2', '< 4.0')
-  s.add_runtime_dependency('regexp_parser', '>= 2.4', '< 3.0')
-  s.add_runtime_dependency('rexml', '>= 3.2.5', '< 4.0')
-  s.add_runtime_dependency('rubocop-ast', '>= 1.31.1', '< 2.0')
-  s.add_runtime_dependency('ruby-progressbar', '~> 1.7')
-  s.add_runtime_dependency('unicode-display_width', '>= 2.4.0', '< 3.0')
+  s.add_dependency('json', '~> 2.3')
+  s.add_dependency('language_server-protocol', '>= 3.17.0')
+  s.add_dependency('parallel', '~> 1.10')
+  s.add_dependency('parser', '>= 3.3.0.2')
+  s.add_dependency('rainbow', '>= 2.2.2', '< 4.0')
+  s.add_dependency('regexp_parser', '>= 2.4', '< 3.0')
+  s.add_dependency('rexml', '>= 3.2.5', '< 4.0')
+  s.add_dependency('rubocop-ast', '>= 1.31.1', '< 2.0')
+  s.add_dependency('ruby-progressbar', '~> 1.7')
+  s.add_dependency('unicode-display_width', '>= 2.4.0', '< 3.0')
 end
