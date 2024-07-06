@@ -44,6 +44,10 @@ module RuboCop
         write_port_and_token_files
 
         pid = fork do
+          if defined?(RubyVM::YJIT.enable)
+            RubyVM::YJIT.enable
+          end
+
           Process.daemon(true)
           $stderr.reopen(Cache.stderr_path, 'w')
           process_input
