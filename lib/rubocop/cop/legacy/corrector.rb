@@ -12,13 +12,23 @@ module RuboCop
           if corr.is_a?(CorrectionsProxy)
             merge!(corr.send(:corrector))
           else
-            # warn "Corrector.new with corrections is deprecated." unless corr.empty? TODO
+            unless corr.empty?
+              warn Rainbow(<<~WARNING).yellow, uplevel: 1
+                `Corrector.new` with corrections is deprecated.
+                See https://docs.rubocop.org/rubocop/v1_upgrade_notes.html
+              WARNING
+            end
+
             corr.each { |c| corrections << c }
           end
         end
 
         def corrections
-          # warn "#corrections is deprecated. Open an issue if you have a valid usecase." TODO
+          warn Rainbow(<<~WARNING).yellow, uplevel: 1
+            `Corrector#corrections` is deprecated. Open an issue if you have a valid usecase.
+            See https://docs.rubocop.org/rubocop/v1_upgrade_notes.html
+          WARNING
+
           CorrectionsProxy.new(self)
         end
       end

@@ -65,8 +65,12 @@ module RuboCop
         inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
       end
 
-      # @deprecated Use processed_source.comment_at_line(line)
+      # @deprecated Use processed_source.line_with_comment?(line)
       def end_of_line_comment(line)
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `end_of_line_comment` is deprecated. Use `processed_source.line_with_comment?` instead.
+        WARNING
+
         processed_source.line_with_comment?(line)
       end
 

@@ -18,14 +18,26 @@ module RuboCop
       end
 
       # @deprecated Use allowed_line? instead
-      alias ignored_line? allowed_line?
+      def ignored_line?
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `ignored_line?` is deprecated. Use `allowed_line?` instead.
+        WARNING
+
+        allowed_line?
+      end
 
       def matches_allowed_pattern?(line)
         allowed_patterns.any? { |pattern| Regexp.new(pattern).match?(line) }
       end
 
-      # @deprecated Use matches_allowed_pattern?? instead
-      alias matches_ignored_pattern? matches_allowed_pattern?
+      # @deprecated Use matches_allowed_pattern? instead
+      def matches_ignored_pattern?
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `matches_ignored_pattern?` is deprecated. Use `matches_allowed_pattern?` instead.
+        WARNING
+
+        matches_allowed_pattern?
+      end
 
       def allowed_patterns
         # Since there could be a pattern specified in the default config, merge the two

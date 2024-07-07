@@ -164,7 +164,7 @@ module RuboCop
       # searches will go past this directory.
       # @deprecated Use `RuboCop::ConfigFinder.project_root` instead.
       def project_root
-        warn Rainbow(<<~WARNING).yellow
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
           `RuboCop::ConfigLoader.project_root` is deprecated and will be removed in RuboCop 2.0. \
           Use `RuboCop::ConfigFinder.project_root` instead.
         WARNING

@@ -37,16 +37,28 @@ module RuboCop
 
       # @deprecated Use Registry.global
       def self.registry
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `Cop.registry` is deprecated. Use `Registry.global` instead.
+        WARNING
+
         Registry.global
       end
 
       # @deprecated Use Registry.all
       def self.all
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `Cop.all` is deprecated. Use `Registry.all` instead.
+        WARNING
+
         Registry.all
       end
 
       # @deprecated Use Registry.qualified_cop_name
       def self.qualified_cop_name(name, origin)
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `Cop.qualified_cop_name` is deprecated. Use `Registry.qualified_cop_name` instead.
+        WARNING
+
         Registry.qualified_cop_name(name, origin)
       end
 
@@ -74,13 +86,19 @@ module RuboCop
 
       # @deprecated Use class method
       def support_autocorrect?
-        # warn 'deprecated, use cop.class.support_autocorrect?' TODO
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `support_autocorrect?` is deprecated. Use `cop.class.support_autocorrect?`.
+        WARNING
+
         self.class.support_autocorrect?
       end
 
       # @deprecated
       def corrections
-        # warn 'Cop#corrections is deprecated' TODO
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `Cop#corrections` is deprecated.
+        WARNING
+
         return [] unless @last_corrector
 
         Legacy::CorrectionsProxy.new(@last_corrector)

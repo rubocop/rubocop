@@ -4,11 +4,15 @@ module RuboCop
   module Cop
     # Handles `Max` configuration parameters, especially setting them to an
     # appropriate value with --auto-gen-config.
-    # @deprecated Use `exclude_limit ParameterName` instead.
+    # @deprecated Use `exclude_limit <ParameterName>` instead.
     module ConfigurableMax
       private
 
       def max=(value)
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `max=` is deprecated. Use `exclude_limit <ParameterName>` instead.
+        WARNING
+
         cfg = config_to_allow_offenses
         cfg[:exclude_limit] ||= {}
         current_max = cfg[:exclude_limit][max_parameter_name]
