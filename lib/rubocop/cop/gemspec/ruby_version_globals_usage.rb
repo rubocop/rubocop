@@ -14,15 +14,15 @@ module RuboCop
       #   # bad
       #   Gem::Specification.new do |spec|
       #     if RUBY_VERSION >= '3.0'
-      #       spec.add_runtime_dependency 'gem_a'
+      #       spec.add_dependency 'gem_a'
       #     else
-      #       spec.add_runtime_dependency 'gem_b'
+      #       spec.add_dependency 'gem_b'
       #     end
       #   end
       #
       #   # good
       #   Gem::Specification.new do |spec|
-      #     spec.add_runtime_dependency 'gem_a'
+      #     spec.add_dependency 'gem_a'
       #   end
       #
       class RubyVersionGlobalsUsage < Base
