@@ -18,6 +18,10 @@ module RuboCop
 
       # @deprecated Use ResbodyNode#exceptions instead
       def rescued_exceptions(resbody)
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `rescued_exceptions` is deprecated. Use `ResbodyNode#exceptions` instead.
+        WARNING
+
         rescue_group, = *resbody
         if rescue_group
           rescue_group.values

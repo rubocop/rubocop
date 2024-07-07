@@ -15,7 +15,13 @@ module RuboCop
       end
 
       # @deprecated Use allowed_method? instead
-      alias ignored_method? allowed_method?
+      def ignored_method?
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `ignored_method?` is deprecated. Use `allowed_method?` instead.
+        WARNING
+
+        allowed_method?
+      end
 
       # @api public
       def allowed_methods

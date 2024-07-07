@@ -74,6 +74,10 @@ module RuboCop
       # @deprecated. Use investigate
       # @return Array<offenses>
       def inspect_file(processed_source)
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `inspect_file` is deprecated. Use `investigate` instead.
+        WARNING
+
         investigate(processed_source).offenses
       end
 
@@ -108,6 +112,10 @@ module RuboCop
 
       # @deprecated
       def forces
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          `forces` is deprecated.
+        WARNING
+
         @forces ||= self.class.forces_for(cops)
       end
 
