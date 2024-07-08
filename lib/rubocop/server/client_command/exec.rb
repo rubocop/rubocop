@@ -54,7 +54,7 @@ module RuboCop
           end
 
           status = Cache.status_path.read
-          raise "RuboCop server: '#{status}' is not a valid status!" if (status =~ /^\d+$/).nil?
+          raise "RuboCop server: '#{status}' is not a valid status!" unless /\A\d+\z/.match?(status)
 
           status.to_i
         end
