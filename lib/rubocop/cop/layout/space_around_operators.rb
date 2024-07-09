@@ -180,6 +180,9 @@ module RuboCop
           with_space = range_with_surrounding_space(operator)
           return if with_space.source.start_with?("\n")
 
+          comment = processed_source.comment_at_line(operator.line)
+          return if comment && with_space.last_column == comment.loc.column
+
           offense(type, operator, with_space, right_operand) do |msg|
             add_offense(operator, message: msg) do |corrector|
               autocorrect(corrector, with_space, right_operand)

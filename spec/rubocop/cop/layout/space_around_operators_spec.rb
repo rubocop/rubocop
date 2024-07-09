@@ -40,6 +40,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     expect_no_offenses('x = 2/3r')
   end
 
+  it 'accepts multiple spaces between an operator and a tailing comment' do
+    expect_no_offenses(<<~RUBY)
+      foo +  # comment
+        bar
+    RUBY
+  end
+
   it 'accepts scope operator' do
     expect_no_offenses('@io.class == Zlib::GzipWriter')
   end
