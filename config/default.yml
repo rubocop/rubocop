@@ -267,7 +267,7 @@ Gemspec/AddRuntimeDependency:
   StyleGuide: '#add_dependency_vs_add_runtime_dependency'
   Reference: https://github.com/rubygems/rubygems/issues/7799#issuecomment-2192720316
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.65'
   Include:
     - '**/*.gemspec'
 
@@ -2626,7 +2626,7 @@ Metrics/BlockNesting:
   StyleGuide: '#three-is-the-number-thou-shalt-count'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.65'
   CountBlocks: false
   CountModifierForms: false
   Max: 3

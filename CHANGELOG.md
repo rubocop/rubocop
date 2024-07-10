@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.65.0 (2024-07-10)
+
 ### New features
 
 * [#13030](https://github.com/rubocop/rubocop/pull/13030): Add new `Gemspec/AddRuntimeDependency` cop. ([@koic][])

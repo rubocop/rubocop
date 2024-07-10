@@ -86,6 +86,7 @@ In the following section you find all available cops:
 
 === Department xref:cops_gemspec.adoc[Gemspec]
 
+* xref:cops_gemspec.adoc#gemspecaddruntimedependency[Gemspec/AddRuntimeDependency]
 * xref:cops_gemspec.adoc#gemspecdependencyversion[Gemspec/DependencyVersion]
 * xref:cops_gemspec.adoc#gemspecdeprecatedattributeassignment[Gemspec/DeprecatedAttributeAssignment]
 * xref:cops_gemspec.adoc#gemspecdevelopmentdependencies[Gemspec/DevelopmentDependencies]

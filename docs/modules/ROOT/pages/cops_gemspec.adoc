@@ -6,6 +6,51 @@
 
 = Gemspec
 
+== Gemspec/AddRuntimeDependency
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.65
+| -
+|===
+
+Prefer `add_dependency` over `add_runtime_dependency` as the latter is
+considered soft-deprecated.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Gem::Specification.new do |spec|
+  spec.add_runtime_dependency('rubocop')
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.add_dependency('rubocop')
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Include
+| `+**/*.gemspec+`
+| Array
+|===
+
+=== References
+
+* https://rubystyle.guide#add_dependency_vs_add_runtime_dependency
+* https://github.com/rubygems/rubygems/issues/7799#issuecomment-2192720316
+
 == Gemspec/DependencyVersion
 
 |===
@@ -293,8 +338,8 @@ end
 
 # good
 Gem::Specification.new do |spec|
-  spec.add_runtime_dependency('parallel', '~> 1.10')
-  spec.add_runtime_dependency('parser', '>= 2.3.3.1', '< 3.0')
+  spec.add_dependency('parallel', '~> 1.10')
+  spec.add_dependency('parser', '>= 2.3.3.1', '< 3.0')
 end
 ----
 
@@ -606,15 +651,15 @@ to execute `rake release` and not user's ruby version.
 # bad
 Gem::Specification.new do |spec|
   if RUBY_VERSION >= '3.0'
-    spec.add_runtime_dependency 'gem_a'
+    spec.add_dependency 'gem_a'
   else
-    spec.add_runtime_dependency 'gem_b'
+    spec.add_dependency 'gem_b'
   end
 end
 
 # good
 Gem::Specification.new do |spec|
-  spec.add_runtime_dependency 'gem_a'
+  spec.add_dependency 'gem_a'
 end
 ----
 
