@@ -15,6 +15,11 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
         class B; 'ghi' 'jkl'; end
                  ^^^^^^^^^^^ Combine 'ghi' and 'jkl' into a single string literal, rather than using implicit string concatenation.
       RUBY
+
+      expect_correction(<<~RUBY)
+        class A; "abc" + "def"; end
+        class B; 'ghi' + 'jkl'; end
+      RUBY
     end
   end
 
@@ -36,6 +41,14 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
           "ab
           ^^^ Combine "ab\nc" and "de\nf" into a single string literal, [...]
         c" "de
+        f"
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def method
+          "ab
+        c" + "de
         f"
         end
       RUBY
@@ -61,6 +74,10 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
         array = ["abc" "def"]
                  ^^^^^^^^^^^ Combine "abc" and "def" into a single string literal, rather than using implicit string concatenation. Or, if they were intended to be separate array elements, separate them with a comma.
       RUBY
+
+      expect_correction(<<~RUBY)
+        array = ["abc" + "def"]
+      RUBY
     end
   end
 
@@ -69,6 +86,10 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
       expect_offense(<<~RUBY)
         method("abc" "def")
                ^^^^^^^^^^^ Combine "abc" and "def" into a single string literal, rather than using implicit string concatenation. Or, if they were intended to be separate method arguments, separate them with a comma.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        method("abc" + "def")
       RUBY
     end
   end
