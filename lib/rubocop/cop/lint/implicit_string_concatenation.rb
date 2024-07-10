@@ -23,27 +23,34 @@ module RuboCop
       #     'Item 2'
       #   ]
       class ImplicitStringConcatenation < Base
-        MSG = 'Combine %<string1>s and %<string2>s into a single string ' \
+        extend AutoCorrector
+
+        MSG = 'Combine %<lhs>s and %<rhs>s into a single string ' \
               'literal, rather than using implicit string concatenation.'
         FOR_ARRAY = ' Or, if they were intended to be separate array ' \
                     'elements, separate them with a comma.'
         FOR_METHOD = ' Or, if they were intended to be separate method ' \
                      'arguments, separate them with a comma.'
 
+        # rubocop:disable Metrics/AbcSize
         def on_dstr(node)
-          each_bad_cons(node) do |child_node1, child_node2|
-            range   = child_node1.source_range.join(child_node2.source_range)
-            message = format(MSG,
-                             string1: display_str(child_node1),
-                             string2: display_str(child_node2))
+          each_bad_cons(node) do |lhs_node, rhs_node|
+            range = lhs_node.source_range.join(rhs_node.source_range)
+            message = format(MSG, lhs: display_str(lhs_node), rhs: display_str(rhs_node))
             if node.parent&.array_type?
               message << FOR_ARRAY
             elsif node.parent&.send_type?
               message << FOR_METHOD
             end
-            add_offense(range, message: message)
+
+            add_offense(range, message: message) do |corrector|
+              preferred  = "#{lhs_node.source} + #{rhs_node.source}"
+
+              corrector.replace(range, preferred)
+            end
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 
