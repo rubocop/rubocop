@@ -54,10 +54,6 @@ module RuboCop
 
           same_line?(when_node, when_node.body)
         end
-
-        def accept_node_type?(node)
-          node&.array_type? || node&.hash_type?
-        end
       end
     end
   end
