@@ -117,6 +117,25 @@ module RuboCop
           (send nil? {:module_function :ruby2_keywords} ...)
         PATTERN
 
+        # @!method sig_node?(node)
+        def_node_matcher(:sig_node?, <<~PATTERN)
+          (block (send
+            {nil? #with_runtime? #without_runtime?}
+            :sig
+            (sym :final)?
+          ) (args) ...)
+        PATTERN
+
+        # @!method with_runtime?(node)
+        def_node_matcher(:with_runtime?, <<~PATTERN)
+          (const (const {nil? cbase} :T) :Sig)
+        PATTERN
+
+        # @!method without_runtime?(node)
+        def_node_matcher(:without_runtime?, <<~PATTERN)
+          (const (const (const {nil? cbase} :T) :Sig) :WithoutRuntime)
+        PATTERN
+
         def on_def(node)
           return if node.method?(:initialize)
 
@@ -129,7 +148,7 @@ module RuboCop
 
         def check(node)
           return if non_public?(node) && !require_for_non_public_methods?
-          return if documentation_comment?(node)
+          return if documentation_comment?(node_to_check_for_documentation(node))
           return if method_allowed?(node)
 
           add_offense(node)
@@ -145,6 +164,12 @@ module RuboCop
 
         def allowed_methods
           @allowed_methods ||= cop_config.fetch('AllowedMethods', []).map(&:to_sym)
+        end
+
+        def node_to_check_for_documentation(node)
+          previous_node = node.left_siblings.last
+
+          previous_node && sig_node?(previous_node) ? previous_node : node
         end
       end
     end
