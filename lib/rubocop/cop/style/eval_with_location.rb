@@ -17,6 +17,18 @@ module RuboCop
       # will not attempt to automatically add a binding, or add filename and
       # line values.
       #
+      # NOTE: This cop works only when a string literal is given as a code string.
+      # No offense is reported if a string variable is given as below:
+      #
+      # [source,ruby]
+      # ----
+      # code = <<-RUBY
+      #   def do_something
+      #   end
+      # RUBY
+      # eval code # not checked.
+      # ----
+      #
       # @example
       #   # bad
       #   eval <<-RUBY
@@ -41,17 +53,6 @@ module RuboCop
       #     def do_something
       #     end
       #   RUBY
-      #
-      # This cop works only when a string literal is given as a code string.
-      # No offense is reported if a string variable is given as below:
-      #
-      # @example
-      #   # not checked
-      #   code = <<-RUBY
-      #     def do_something
-      #     end
-      #   RUBY
-      #   eval code
       #
       class EvalWithLocation < Base
         extend AutoCorrector
