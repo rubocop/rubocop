@@ -159,7 +159,13 @@ module RuboCop
           node_to_check = condition&.block_type? ? condition.send_node : condition
           return unless wrap_condition?(node_to_check)
 
-          corrector.wrap(condition, '(', ')')
+          if condition.call_type?
+            source = parenthesized_method_arguments(condition)
+
+            corrector.replace(condition, source)
+          else
+            corrector.wrap(condition, '(', ')')
+          end
         end
 
         def correct_for_outer_condition_modify_form_style(corrector, node, if_branch)
@@ -236,7 +242,20 @@ module RuboCop
         end
 
         def replace_condition(condition)
-          wrap_condition?(condition) ? "(#{condition.source})" : condition.source
+          return condition.source unless wrap_condition?(condition)
+
+          if condition.call_type?
+            parenthesized_method_arguments(condition)
+          else
+            "(#{condition.source})"
+          end
+        end
+
+        def parenthesized_method_arguments(node)
+          method_call = node.source_range.begin.join(node.loc.selector.end).source
+          arguments = node.first_argument.source_range.begin.join(node.source_range.end).source
+
+          "#{method_call}(#{arguments})"
         end
 
         def allow_modifier?
