@@ -54,7 +54,7 @@ module RuboCop
         private
 
         def traverse_node(node, &block)
-          yield node if AST::Node::EQUALS_ASSIGNMENTS.include?(node.type)
+          yield node if node.equals_asgn?
 
           node.each_child_node { |child| traverse_node(child, &block) }
         end
