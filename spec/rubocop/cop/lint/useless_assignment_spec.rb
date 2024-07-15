@@ -1718,6 +1718,56 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a pattern match variable is assigned with `in` and referenced in a block', :ruby27 do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          foo in { bar: bar }
+          baz { bar -= 1 }
+          foo
+        end
+      RUBY
+    end
+  end
+
+  context 'when a pattern match variable is assigned with `in` and unreferenced in a block', :ruby27 do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          foo in { bar: bar }
+          baz { qux -= 1 }
+                ^^^ Useless assignment to variable - `qux`. Use `-` instead of `-=`.
+          foo
+        end
+      RUBY
+    end
+  end
+
+  context 'when a pattern match variable is assigned with `=>` and referenced in a block', :ruby30 do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          foo => { bar: bar }
+          baz { bar -= 1 }
+          foo
+        end
+      RUBY
+    end
+  end
+
+  context 'when a pattern match variable is assigned with `=>` and unreferenced in a block', :ruby30 do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          foo => { bar: bar }
+          baz { qux -= 1 }
+                ^^^ Useless assignment to variable - `qux`. Use `-` instead of `-=`.
+          foo
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned in begin and referenced outside' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
