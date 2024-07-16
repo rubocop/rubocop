@@ -70,7 +70,7 @@ module RuboCop
         # template file, we convert it to location info in the original file.
         range = range_for_original(range)
 
-        if block.nil? && !support_autocorrect?
+        if block.nil? && !self.class.support_autocorrect?
           super(range, message: message, severity: severity)
         else
           super(range, message: message, severity: severity) do |corrector|
@@ -154,7 +154,7 @@ module RuboCop
       end
 
       def correction_lambda
-        return unless support_autocorrect?
+        return unless self.class.support_autocorrect?
 
         dedupe_on_node(@v0_argument) { autocorrect(@v0_argument) }
       end
