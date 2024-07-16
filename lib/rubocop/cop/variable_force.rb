@@ -27,7 +27,10 @@ module RuboCop
     class VariableForce < Force # rubocop:disable Metrics/ClassLength
       VARIABLE_ASSIGNMENT_TYPE = :lvasgn
       REGEXP_NAMED_CAPTURE_TYPE = :match_with_lvasgn
-      VARIABLE_ASSIGNMENT_TYPES = [VARIABLE_ASSIGNMENT_TYPE, REGEXP_NAMED_CAPTURE_TYPE].freeze
+      PATTERN_MATCH_VARIABLE_TYPE = :match_var
+      VARIABLE_ASSIGNMENT_TYPES = [
+        VARIABLE_ASSIGNMENT_TYPE, REGEXP_NAMED_CAPTURE_TYPE, PATTERN_MATCH_VARIABLE_TYPE
+      ].freeze
 
       ARGUMENT_DECLARATION_TYPES = [
         :arg, :optarg, :restarg,
@@ -112,6 +115,7 @@ module RuboCop
       NODE_HANDLER_METHOD_NAMES = [
         [VARIABLE_ASSIGNMENT_TYPE, :process_variable_assignment],
         [REGEXP_NAMED_CAPTURE_TYPE, :process_regexp_named_captures],
+        [PATTERN_MATCH_VARIABLE_TYPE, :process_pattern_match_variable],
         [MULTIPLE_ASSIGNMENT_TYPE, :process_variable_multiple_assignment],
         [VARIABLE_REFERENCE_TYPE, :process_variable_referencing],
         [RESCUE_TYPE, :process_rescue],
@@ -171,6 +175,14 @@ module RuboCop
         process_node(regexp_node)
 
         variable_names.each { |name| variable_table.assign_to_variable(name, node) }
+
+        skip_children!
+      end
+
+      def process_pattern_match_variable(node)
+        name = node.children.first
+
+        variable_table.declare_variable(name, node) unless variable_table.variable_exist?(name)
 
         skip_children!
       end
