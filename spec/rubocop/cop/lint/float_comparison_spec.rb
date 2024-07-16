@@ -68,6 +68,12 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
     RUBY
   end
 
+  it 'does not register an offense when comparing with rational literal' do
+    expect_no_offenses(<<~RUBY)
+      value == 0.2r
+    RUBY
+  end
+
   it 'does not register an offense when comparing against zero' do
     expect_no_offenses(<<~RUBY)
       x == 0.0
