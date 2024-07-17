@@ -3232,6 +3232,13 @@ Style/BisectedAttrAccessor:
   Enabled: true
   VersionAdded: '0.87'
 
+Style/BitwisePredicate:
+  Description: 'Prefer bitwise predicate methods over direct comparison operations.'
+  StyleGuide: '#bitwise-predicate-methods'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/BlockComments:
   Description: 'Do not use block comments.'
   StyleGuide: '#no-block-comments'
