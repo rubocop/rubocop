@@ -279,6 +279,23 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
         RUBY
       end
     end
+
+    context 'when SkipableLines is enabled' do
+      before { cop_config['SkipableLines'] = [/\bputs\b/]  }
+
+      it 'does not count matching lines' do
+        expect_no_offenses(<<~RUBY)
+          def m
+            a = 1
+            puts '2'
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when `CountAsOne` is not empty' do
