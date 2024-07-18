@@ -245,7 +245,7 @@ Refactored for better separation of concern, being reusable, better result repor
 === Misc API changes
 
 * internal API clarified for Commissioner. It calls `begin_investigation` and receives the results in `complete_investigation`.
-* New method `add_global_offense` for offenses that are not attached to a location in particular; it's used for Syntax errors only right now.
+* New method `add_global_offense` for offenses that are not attached to a location in particular.
 * `#offenses`: No longer accessible.
 * Callbacks `investigate(processed_source)` and `investigate_post_walk(processed_source)` are renamed `on_new_investigation` and `on_investigation_end` and don't accept an argument; all `on_` callbacks should rely on `processed_source`.
 * `#find_location` is deprecated.
