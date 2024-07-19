@@ -304,3 +304,17 @@ autocorrected do not cause RuboCop to fail.)
 default, this is any offense which is not autocorrected.)
 * `2` if RuboCop terminates abnormally due to invalid configuration, invalid CLI
 options, or an internal error.
+
+== Parallel Processing
+
+RuboCop enables the `--parallel` option by default. This option allows for
+parallel processing using the number of available CPUs based on `Etc.nprocessors`.
+If the default number of parallel processes causes excessive consumption of CPU and memory,
+you can adjust the number of parallel processes using the `$PARALLEL_PROCESSOR_COUNT` environment variable.
+Here is how to set the parallel processing to use two CPUs:
+
+```console
+$ PARALLEL_PROCESSOR_COUNT=2 bundle exec rubocop
+```
+
+Alternatively, specifying `--no-parallel` will disable parallel processing.

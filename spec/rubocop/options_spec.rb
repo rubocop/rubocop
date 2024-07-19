@@ -63,6 +63,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                adjusting behaviors for editing experience.
               -P, --[no-]parallel              Use available CPUs to execute inspection in
                                                parallel. Default is true.
+                                               You can specify the number of parallel processes using
+                                               the $PARALLEL_PROCESSOR_COUNT environment variable.
                   --raise-cop-error            Raise cop-related errors with cause and location.
                                                This is used to prevent cops from failing silently.
                                                Default is false.
