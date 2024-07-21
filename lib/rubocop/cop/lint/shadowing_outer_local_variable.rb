@@ -12,12 +12,12 @@ module RuboCop
       # because `Ractor` should not access outer variables.
       # eg. following style is encouraged:
       #
-      #   [source,ruby]
-      #   ----
-      #   worker_id, pipe = env
-      #   Ractor.new(worker_id, pipe) do |worker_id, pipe|
-      #   end
-      #   ----
+      # [source,ruby]
+      # ----
+      # worker_id, pipe = env
+      # Ractor.new(worker_id, pipe) do |worker_id, pipe|
+      # end
+      # ----
       #
       # @example
       #
