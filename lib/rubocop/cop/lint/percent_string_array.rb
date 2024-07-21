@@ -22,13 +22,9 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   %w('foo', "bar")
       #
-      # @example
-      #
       #   # good
-      #
       #   %w(foo bar)
       class PercentStringArray < Base
         include PercentLiteral

@@ -17,8 +17,6 @@ module RuboCop
       #     do_something(x.pop)
       #   end
       #
-      # @example
-      #
       #   # bad
       #   until x.empty? do
       #     do_something(x.pop)

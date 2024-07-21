@@ -28,16 +28,12 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   def some_method
       #     some_var = 1
       #     do_something
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def some_method
       #     some_var = 1
       #     do_something(some_var)

@@ -15,15 +15,11 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   if day.is? :tuesday && month == :jan
       #     # ...
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   if day.is?(:tuesday) && month == :jan
       #     # ...
       #   end

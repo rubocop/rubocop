@@ -19,8 +19,6 @@ module RuboCop
       #   # good
       #   true
       #
-      # @example
-      #
       #   # bad
       #   :false
       #

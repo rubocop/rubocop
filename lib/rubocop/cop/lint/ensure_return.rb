@@ -13,7 +13,6 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   def foo
       #     do_something
       #   ensure
@@ -21,10 +20,7 @@ module RuboCop
       #     return self
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def foo
       #     do_something
       #     self
@@ -32,8 +28,7 @@ module RuboCop
       #     cleanup
       #   end
       #
-      #   # also good
-      #
+      #   # good
       #   def foo
       #     begin
       #       do_something

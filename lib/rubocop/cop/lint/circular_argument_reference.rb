@@ -11,39 +11,26 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   def bake(pie: pie)
       #     pie.heat_up
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def bake(pie:)
       #     pie.refrigerate
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def bake(pie: self.pie)
       #     pie.feed_to(user)
       #   end
       #
-      # @example
-      #
       #   # bad
-      #
       #   def cook(dry_ingredients = dry_ingredients)
       #     dry_ingredients.reduce(&:+)
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def cook(dry_ingredients = self.dry_ingredients)
       #     dry_ingredients.combine
       #   end

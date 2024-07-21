@@ -12,15 +12,11 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   x&.foo.bar
       #   x&.foo + bar
       #   x&.foo[bar]
       #
-      # @example
-      #
       #   # good
-      #
       #   x&.foo&.bar
       #   x&.foo || bar
       class SafeNavigationChain < Base

@@ -14,25 +14,15 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   format('A value: %s and another: %i', a_value)
       #
-      # @example
-      #
       #   # good
-      #
       #   format('A value: %s and another: %i', a_value, another)
       #
-      # @example
-      #
       #   # bad
-      #
       #   format('Unnumbered format: %s and numbered: %2$s', a_value, another)
       #
-      # @example
-      #
       #   # good
-      #
       #   format('Numbered format: %1$s and numbered %2$s', a_value, another)
       class FormatParameterMismatch < Base
         # http://rubular.com/r/CvpbxkcTzy

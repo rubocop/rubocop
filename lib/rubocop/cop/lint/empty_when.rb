@@ -14,8 +14,6 @@ module RuboCop
       #   when baz
       #   end
       #
-      # @example
-      #
       #   # good
       #   case condition
       #   when foo

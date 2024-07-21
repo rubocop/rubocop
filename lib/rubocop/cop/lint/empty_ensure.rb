@@ -3,40 +3,30 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for empty `ensure` blocks
+      # Checks for empty `ensure` blocks.
       #
       # @example
       #
       #   # bad
-      #
       #   def some_method
       #     do_something
       #   ensure
       #   end
       #
-      # @example
-      #
       #   # bad
-      #
       #   begin
       #     do_something
       #   ensure
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def some_method
       #     do_something
       #   ensure
       #     do_something_else
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   begin
       #     do_something
       #   ensure

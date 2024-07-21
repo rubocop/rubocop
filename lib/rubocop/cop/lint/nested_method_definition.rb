@@ -17,16 +17,12 @@ module RuboCop
       #     end
       #   end
       #
-      # @example
-      #
       #   # good
       #
       #   def foo
       #     bar = -> { puts 'hello' }
       #     bar.call
       #   end
-      #
-      # @example
       #
       #   # good
       #
@@ -46,8 +42,6 @@ module RuboCop
       #       end
       #     end
       #   end
-      #
-      # @example
       #
       #   # good
       #

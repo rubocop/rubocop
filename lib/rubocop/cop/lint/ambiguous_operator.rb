@@ -14,8 +14,6 @@ module RuboCop
       #   # a `*` method invocation (i.e. `do_something.*(some_array)`).
       #   do_something *some_array
       #
-      # @example
-      #
       #   # good
       #
       #   # With parentheses, there's no ambiguity.

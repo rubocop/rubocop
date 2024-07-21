@@ -17,8 +17,7 @@ module RuboCop
       # ----
       #
       # @example
-      #   ## text mode
-      #   # bad
+      #   # bad - text mode
       #   File.open(filename, 'w').write(content)
       #   File.open(filename, 'w') do |f|
       #     f.write(content)
@@ -27,9 +26,7 @@ module RuboCop
       #   # good
       #   File.write(filename, content)
       #
-      # @example
-      #   ## binary mode
-      #   # bad
+      #   # bad - binary mode
       #   File.open(filename, 'wb').write(content)
       #   File.open(filename, 'wb') do |f|
       #     f.write(content)

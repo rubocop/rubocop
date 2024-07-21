@@ -9,7 +9,6 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   case x
       #   when 'first'
       #     do_something
@@ -17,10 +16,7 @@ module RuboCop
       #     do_something_else
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   case x
       #   when 'first'
       #     do_something

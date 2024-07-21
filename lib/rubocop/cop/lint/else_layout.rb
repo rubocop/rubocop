@@ -21,8 +21,6 @@ module RuboCop
       #     do_that
       #   end
       #
-      # @example
-      #
       #   # good
       #
       #   # This code is compatible with the bad case. It will be autocorrected like this.

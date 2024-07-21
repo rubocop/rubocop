@@ -19,8 +19,6 @@ module RuboCop
       #     return 42
       #   end
       #
-      # @example
-      #
       #   # good
       #   def initialize
       #     foo

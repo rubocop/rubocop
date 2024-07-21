@@ -17,16 +17,12 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   def something
       #     x = Something.new
       #     x.attr = 5
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def something
       #     x = Something.new
       #     x.attr = 5

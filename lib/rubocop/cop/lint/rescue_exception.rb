@@ -8,17 +8,13 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   begin
       #     do_something
       #   rescue Exception
       #     handle_exception
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   begin
       #     do_something
       #   rescue ArgumentError

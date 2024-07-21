@@ -14,13 +14,9 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   foo = 'something with #{interpolation} inside'
       #
-      # @example
-      #
       #   # good
-      #
       #   foo = "something with #{interpolation} inside"
       class InterpolationCheck < Base
         extend AutoCorrector

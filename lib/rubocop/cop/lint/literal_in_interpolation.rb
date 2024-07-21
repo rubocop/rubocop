@@ -8,13 +8,9 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   "result is #{10}"
       #
-      # @example
-      #
       #   # good
-      #
       #   "result is 10"
       class LiteralInInterpolation < Base
         include Interpolation

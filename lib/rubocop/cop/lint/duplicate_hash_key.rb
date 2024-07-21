@@ -11,13 +11,9 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   hash = { food: 'apple', food: 'orange' }
       #
-      # @example
-      #
       #   # good
-      #
       #   hash = { food: 'apple', other_food: 'orange' }
       class DuplicateHashKey < Base
         include Duplication

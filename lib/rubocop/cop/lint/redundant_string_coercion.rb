@@ -9,16 +9,12 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   "result is #{something.to_s}"
       #   print something.to_s
       #   puts something.to_s
       #   warn something.to_s
       #
-      # @example
-      #
       #   # good
-      #
       #   "result is #{something}"
       #   print something
       #   puts something

@@ -44,7 +44,6 @@ module RuboCop
       #   # good
       #   foo == bar
       #
-      # @example
       #   # bad
       #   if foo.do_something?
       #     true

@@ -28,8 +28,6 @@ module RuboCop
       #   # good (without parentheses it's a syntax error)
       #   def foo() do_something end
       #
-      # @example
-      #
       #   # bad
       #   def Baz.foo()
       #     do_something

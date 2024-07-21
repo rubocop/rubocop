@@ -9,7 +9,6 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   def foo
       #     1
       #   end
@@ -18,20 +17,14 @@ module RuboCop
       #     2
       #   end
       #
-      # @example
-      #
       #   # bad
-      #
       #   def foo
       #     1
       #   end
       #
       #   alias foo bar
       #
-      # @example
-      #
       #   # good
-      #
       #   def foo
       #     1
       #   end
@@ -40,10 +33,7 @@ module RuboCop
       #     2
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def foo
       #     1
       #   end

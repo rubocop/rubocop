@@ -10,17 +10,13 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   begin
       #     do_something
       #   else
       #     do_something_else # This will never be run.
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   begin
       #     do_something
       #   rescue

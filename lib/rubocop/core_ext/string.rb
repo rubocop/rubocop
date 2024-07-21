@@ -9,12 +9,8 @@ class String
     # @return [Boolean] true is the string is blank, false otherwise
     #
     # @example
-    #   ''.blank? #=> true
-    #
-    # @example
-    #   '    '.blank? #=> true
-    #
-    # @example
+    #   ''.blank?       #=> true
+    #   '    '.blank?   #=> true
     #   '  test'.blank? #=> false
     def blank?
       empty? || lstrip.empty?

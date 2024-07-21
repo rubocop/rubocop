@@ -8,14 +8,10 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   1.is_a?(Fixnum)
       #   1.is_a?(Bignum)
       #
-      # @example
-      #
       #   # good
-      #
       #   1.is_a?(Integer)
       class UnifiedInteger < Base
         extend AutoCorrector

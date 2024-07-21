@@ -14,8 +14,6 @@ module RuboCop
       #   # bad
       #   some_method a { |val| puts val }
       #
-      # @example
-      #
       #   # good
       #   # With parentheses, there's no ambiguity.
       #   some_method(a { |val| puts val })

@@ -10,13 +10,9 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   float = 3.0e400
       #
-      # @example
-      #
       #   # good
-      #
       #   float = 42.9
       class FloatOutOfRange < Base
         MSG = 'Float out of range.'

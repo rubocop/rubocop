@@ -44,8 +44,6 @@ module RuboCop
       #     do_something
       #   end
       #
-      # @example
-      #
       #   # bad (ok during development)
       #
       #   # using byebug
@@ -53,8 +51,6 @@ module RuboCop
       #     byebug
       #     do_something
       #   end
-      #
-      # @example
       #
       #   # good
       #

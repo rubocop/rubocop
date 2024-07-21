@@ -8,13 +8,9 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   "result is #{}"
       #
-      # @example
-      #
       #   # good
-      #
       #   "result is #{some_result}"
       class EmptyInterpolation < Base
         include Interpolation

@@ -12,13 +12,9 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   %i(:foo, :bar)
       #
-      # @example
-      #
       #   # good
-      #
       #   %i(foo bar)
       class PercentSymbolArray < Base
         include PercentLiteral

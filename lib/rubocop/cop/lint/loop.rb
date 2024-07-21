@@ -19,17 +19,6 @@ module RuboCop
       #     do_something
       #   end while some_condition
       #
-      # @example
-      #
-      #   # bad
-      #
-      #   # using until
-      #   begin
-      #     do_something
-      #   end until some_condition
-      #
-      # @example
-      #
       #   # good
       #
       #   # while replacement
@@ -38,7 +27,12 @@ module RuboCop
       #     break unless some_condition
       #   end
       #
-      # @example
+      #   # bad
+      #
+      #   # using until
+      #   begin
+      #     do_something
+      #   end until some_condition
       #
       #   # good
       #

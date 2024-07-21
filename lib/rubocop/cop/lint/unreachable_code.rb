@@ -10,14 +10,12 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   def some_method
       #     return
       #     do_something
       #   end
       #
       #   # bad
-      #
       #   def some_method
       #     if cond
       #       return
@@ -27,10 +25,7 @@ module RuboCop
       #     do_something
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def some_method
       #     do_something
       #   end

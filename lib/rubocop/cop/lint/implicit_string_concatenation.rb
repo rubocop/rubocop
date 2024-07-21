@@ -9,13 +9,9 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   array = ['Item 1' 'Item 2']
       #
-      # @example
-      #
       #   # good
-      #
       #   array = ['Item 1Item 2']
       #   array = ['Item 1' + 'Item 2']
       #   array = [

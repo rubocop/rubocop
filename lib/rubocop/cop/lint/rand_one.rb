@@ -9,16 +9,12 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   rand 1
       #   Kernel.rand(-1)
       #   rand 1.0
       #   rand(-1.0)
       #
-      # @example
-      #
       #   # good
-      #
       #   0 # just use 0 instead
       class RandOne < Base
         MSG = '`%<method>s` always returns `0`. Perhaps you meant `rand(2)` or `rand`?'

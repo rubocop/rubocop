@@ -14,14 +14,16 @@ module RuboCop
       #
       # When comment enables all cops at once `rubocop:enable all`
       # that cop checks whether any cop was actually enabled.
+      #
       # @example
+      #
       #   # bad
       #   foo = 1
       #   # rubocop:enable Layout/LineLength
       #
       #   # good
       #   foo = 1
-      # @example
+      #
       #   # bad
       #   # rubocop:disable Style/StringLiterals
       #   foo = "1"

@@ -6,8 +6,7 @@ module RuboCop
       # Favor `File.(bin)read` convenience methods.
       #
       # @example
-      #   ## text mode
-      #   # bad
+      #   # bad - text mode
       #   File.open(filename).read
       #   File.open(filename, &:read)
       #   File.open(filename) { |f| f.read }
@@ -23,9 +22,7 @@ module RuboCop
       #   # good
       #   File.read(filename)
       #
-      # @example
-      #   ## binary mode
-      #   # bad
+      #   # bad - binary mode
       #   File.open(filename, 'rb').read
       #   File.open(filename, 'rb', &:read)
       #   File.open(filename, 'rb') do |f|

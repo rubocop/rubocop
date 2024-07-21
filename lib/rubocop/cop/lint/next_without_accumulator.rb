@@ -8,16 +8,12 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   result = (1..4).reduce(0) do |acc, i|
       #     next if i.odd?
       #     acc + i
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   result = (1..4).reduce(0) do |acc, i|
       #     next acc if i.odd?
       #     acc + i

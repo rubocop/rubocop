@@ -9,27 +9,17 @@ module RuboCop
       #
       # @example
       #
-      #   # Example for OpenSSL::Cipher instantiation.
-      #
       #   # bad
       #   OpenSSL::Cipher::AES.new(128, :GCM)
       #
       #   # good
       #   OpenSSL::Cipher.new('aes-128-gcm')
       #
-      # @example
-      #
-      #   # Example for OpenSSL::Digest instantiation.
-      #
       #   # bad
       #   OpenSSL::Digest::SHA256.new
       #
       #   # good
       #   OpenSSL::Digest.new('SHA256')
-      #
-      # @example
-      #
-      #   # Example for ::Digest inherited class methods.
       #
       #   # bad
       #   OpenSSL::Digest::SHA256.digest('foo')

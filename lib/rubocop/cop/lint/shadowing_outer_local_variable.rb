@@ -22,7 +22,6 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   def some_method
       #     foo = 1
       #
@@ -31,10 +30,7 @@ module RuboCop
       #     end
       #   end
       #
-      # @example
-      #
       #   # good
-      #
       #   def some_method
       #     foo = 1
       #

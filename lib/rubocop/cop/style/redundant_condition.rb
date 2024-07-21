@@ -12,7 +12,6 @@ module RuboCop
       #   # good
       #   a = b || c
       #
-      # @example
       #   # bad
       #   if b
       #     b

@@ -16,7 +16,6 @@ module RuboCop
       #   # good
       #   5.times { }
       #
-      # @example
       #   # bad
       #   (0...10).each {}
       #
