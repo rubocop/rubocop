@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 require 'English'
+
+# fileutils is autoloaded by pathname,
+# but must be explicitly loaded here for inclusion in `$LOADED_FEATURES`.
+require 'fileutils'
+
 before_us = $LOADED_FEATURES.dup
 require 'rainbow'
 
