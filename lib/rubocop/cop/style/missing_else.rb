@@ -168,10 +168,6 @@ module RuboCop
           config.for_cop('Style/UnlessElse')
         end
 
-        def empty_else_cop_enabled?
-          empty_else_config.fetch('Enabled')
-        end
-
         def empty_else_style
           return unless empty_else_config.key?('EnforcedStyle')
 
