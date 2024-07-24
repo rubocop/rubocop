@@ -147,4 +147,16 @@ RSpec.describe RuboCop::Cop::Style::InvertibleUnlessCondition, :config do
       foo if !condition
     RUBY
   end
+
+  it 'does not register an offense when using empty braces with `unless`' do
+    expect_no_offenses(<<~RUBY)
+      foo unless ()
+    RUBY
+  end
+
+  it 'does not register an offense when using empty braces with inverted `if`' do
+    expect_no_offenses(<<~RUBY)
+      foo if !()
+    RUBY
+  end
 end

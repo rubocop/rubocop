@@ -72,8 +72,8 @@ module RuboCop
 
         private
 
-        def invertible?(node)
-          case node.type
+        def invertible?(node) # rubocop:disable Metrics/CyclomaticComplexity
+          case node&.type
           when :begin
             invertible?(node.children.first)
           when :send
