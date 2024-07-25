@@ -5057,6 +5057,11 @@ Style/RedundantInterpolation:
   VersionAdded: '0.76'
   VersionChanged: '1.30'
 
+Style/RedundantInterpolationUnfreeze:
+  Description: 'Checks for redundant unfreezing of interpolated strings.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantLineContinuation:
   Description: 'Check for redundant line continuation.'
   Enabled: pending
