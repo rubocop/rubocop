@@ -57,7 +57,7 @@ module RuboCop
         def check_for_unused_assignments(variable)
           return if variable.should_be_unused?
 
-          variable.assignments.each do |assignment|
+          variable.assignments.reverse_each do |assignment|
             next if assignment.used? || part_of_ignored_node?(assignment.node)
 
             message = message_for_useless_assignment(assignment)

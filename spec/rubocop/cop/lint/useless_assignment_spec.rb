@@ -1215,6 +1215,23 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when same name variables are assigned using chained assignment' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          foo = foo = do_something
+          ^^^ Useless assignment to variable - `foo`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo = do_something
+        end
+      RUBY
+    end
+  end
+
   context 'when variables are assigned with sequential assignment using the comma operator and unreferenced' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
