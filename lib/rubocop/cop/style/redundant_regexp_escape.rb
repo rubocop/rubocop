@@ -95,30 +95,14 @@ module RuboCop
           delimiters.include?(char)
         end
 
-        if Gem::Version.new(Regexp::Parser::VERSION) >= Gem::Version.new('2.0')
-          def each_escape(node)
-            node.parsed_tree&.traverse&.reduce(0) do |char_class_depth, (event, expr)|
-              yield(expr.text[1], expr.ts, !char_class_depth.zero?) if expr.type == :escape
+        def each_escape(node)
+          node.parsed_tree&.traverse&.reduce(0) do |char_class_depth, (event, expr)|
+            yield(expr.text[1], expr.ts, !char_class_depth.zero?) if expr.type == :escape
 
-              if expr.type == :set
-                char_class_depth + (event == :enter ? 1 : -1)
-              else
-                char_class_depth
-              end
-            end
-          end
-        # Please remove this `else` branch when support for regexp_parser 1.8 will be dropped.
-        # It's for compatibility with regexp_parser 1.8 and will never be maintained.
-        else
-          def each_escape(node)
-            node.parsed_tree&.traverse&.reduce(0) do |char_class_depth, (event, expr)|
-              yield(expr.text[1], expr.start_index, !char_class_depth.zero?) if expr.type == :escape
-
-              if expr.type == :set
-                char_class_depth + (event == :enter ? 1 : -1)
-              else
-                char_class_depth
-              end
+            if expr.type == :set
+              char_class_depth + (event == :enter ? 1 : -1)
+            else
+              char_class_depth
             end
           end
         end
