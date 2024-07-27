@@ -6,6 +6,9 @@ module RuboCop
       # Checks the indentation of the first line of the
       # right-hand-side of a multi-line assignment.
       #
+      # The indentation of the remaining lines can be corrected with
+      # other cops such as `Layout/IndentationConsistency` and `Layout/EndAlignment`.
+      #
       # @example
       #   # bad
       #   value =
@@ -19,8 +22,6 @@ module RuboCop
       #       'bar'
       #     end
       #
-      # The indentation of the remaining lines can be corrected with
-      # other cops such as `IndentationConsistency` and `EndAlignment`.
       class AssignmentIndentation < Base
         include CheckAssignment
         include Alignment
