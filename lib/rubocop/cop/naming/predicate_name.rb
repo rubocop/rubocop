@@ -93,6 +93,16 @@ module RuboCop
         end
         alias on_defs on_def
 
+        def validate_config
+          forbidden_prefixes.each do |forbidden_prefix|
+            next if predicate_prefixes.include?(forbidden_prefix)
+
+            raise ValidationError, <<~MSG.chomp
+              The `Naming/PredicateName` cop is misconfigured. Prefix #{forbidden_prefix} must be included in NamePrefix because it is included in ForbiddenPrefixes.
+            MSG
+          end
+        end
+
         private
 
         def allowed_method_name?(method_name, prefix)
