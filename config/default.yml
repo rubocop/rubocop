@@ -2559,6 +2559,11 @@ Lint/UselessMethodDefinition:
   VersionChanged: '1.61'
   Safe: false
 
+Lint/UselessNumericOperation:
+  Description: 'Checks for useless numeric operations.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UselessRescue:
   Description: 'Checks for useless `rescue`s.'
   Enabled: pending
