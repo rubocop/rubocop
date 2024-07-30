@@ -47,7 +47,11 @@ module RuboCop
           check_zero_length_comparison(node)
           check_nonzero_length_comparison(node)
         end
-        alias on_csend on_send
+
+        def on_csend(node)
+          check_zero_length_predicate(node)
+          check_zero_length_comparison(node)
+        end
 
         private
 
