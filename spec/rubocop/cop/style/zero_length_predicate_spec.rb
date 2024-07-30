@@ -178,14 +178,9 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
       RUBY
     end
 
-    it 'registers an offense for `array&.length > 0`' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for `array&.length > 0`' do
+      expect_no_offenses(<<~RUBY)
         [1, 2, 3]&.length > 0
-        ^^^^^^^^^^^^^^^^^^^^^ Use `!empty?` instead of `length > 0`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        ![1, 2, 3]&.empty?
       RUBY
     end
 
