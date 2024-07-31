@@ -26,6 +26,17 @@ RSpec.describe RuboCop::Cop::Style::GlobalStdStream, :config do
     RUBY
   end
 
+  it 'registers an offense when using redundant constant base' do
+    expect_offense(<<~RUBY)
+      ::STDOUT.puts('hello')
+      ^^^^^^^^ Use `$stdout` instead of `STDOUT`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      $stdout.puts('hello')
+    RUBY
+  end
+
   it 'does not register an offense when using non std stream const' do
     expect_no_offenses(<<~RUBY)
       SOME_CONST.puts('hello')
@@ -41,6 +52,16 @@ RSpec.describe RuboCop::Cop::Style::GlobalStdStream, :config do
   it 'does not register an offense when assigning other const to std stream gvar' do
     expect_no_offenses(<<~RUBY)
       $stdin = SOME_CONST
+    RUBY
+  end
+
+  it 'does not register an offense when using namespaced constant' do
+    expect_no_offenses(<<~RUBY)
+      Foo::STDOUT.puts('hello')
+      Foo::Bar::STDOUT.puts('hello')
+      ::Foo::STDOUT.puts('hello')
+      ::Foo::BaR::STDOUT.puts('hello')
+      foo::STDOUT.puts('hello')
     RUBY
   end
 end
