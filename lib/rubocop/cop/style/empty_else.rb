@@ -143,7 +143,7 @@ module RuboCop
         private
 
         def check(node)
-          return if cop_config['AllowComments'] && comment_in_else?(node.loc)
+          return if cop_config['AllowComments'] && comment_in_else?(node)
 
           empty_check(node) if empty_style?
           nil_check(node) if nil_style?
@@ -171,16 +171,16 @@ module RuboCop
 
         def autocorrect(corrector, node)
           return false if autocorrect_forbidden?(node.type.to_s)
-          return false if comment_in_else?(node.loc)
+          return false if comment_in_else?(node)
 
           end_pos = base_node(node).loc.end.begin_pos
           corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
         end
 
-        def comment_in_else?(loc)
-          return false if loc.else.nil? || loc.end.nil?
+        def comment_in_else?(node)
+          node = node.parent while node.if_type? && node.elsif?
 
-          processed_source.contains_comment?(loc.else.join(loc.end))
+          processed_source.contains_comment?(node.loc.else.join(node.source_range.end))
         end
 
         def base_node(node)

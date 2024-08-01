@@ -553,7 +553,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
         end
       end
 
-      context 'with not comment and nil else-clause' do
+      context 'with no comment and nil else-clause' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             if condition
@@ -589,10 +589,67 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
           RUBY
         end
       end
+
+      context 'with no comment and empty else-clause after `elsif`' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if condition
+              foo
+            elsif condition2
+              bar
+            else
+            ^^^^ Redundant `else`-clause.
+            end
+          RUBY
+        end
+      end
+
+      context 'with no comment and nil else-clause after `elsif`' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if condition
+              foo
+            elsif condition2
+              bar
+            else
+            ^^^^ Redundant `else`-clause.
+              nil
+            end
+          RUBY
+        end
+      end
+
+      context 'with comment and empty else-clause after `elsif`' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            if condition
+              foo
+            elsif condition2
+              bar
+            else
+              # some comment
+            end
+          RUBY
+        end
+      end
+
+      context 'with comment and nil else-clause after `elsif`' do
+        it "doesn't register an offense" do
+          expect_no_offenses(<<~RUBY)
+            if condition
+              foo
+            elsif condition2
+              bar
+            else
+              nil # some comment
+            end
+          RUBY
+        end
+      end
     end
 
     context 'given an unless-statement' do
-      context 'with not comment and empty else-clause' do
+      context 'with no comment and empty else-clause' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             unless condition
@@ -604,7 +661,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
         end
       end
 
-      context 'with not comment and nil else-clause' do
+      context 'with no comment and nil else-clause' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             unless condition
@@ -643,7 +700,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
     end
 
     context 'given a case statement' do
-      context 'with not comment and empty else-clause' do
+      context 'with no comment and empty else-clause' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             case a
@@ -656,7 +713,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
         end
       end
 
-      context 'with not comment and nil else-clause' do
+      context 'with no comment and nil else-clause' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
             case a
