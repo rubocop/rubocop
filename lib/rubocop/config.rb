@@ -171,6 +171,10 @@ module RuboCop
       for_all_cops['ActiveSupportExtensionsEnabled']
     end
 
+    def string_literals_frozen_by_default?
+      for_all_cops['StringLiteralsFrozenByDefault']
+    end
+
     def file_to_include?(file)
       relative_file_path = path_relative_to_config(file)
 

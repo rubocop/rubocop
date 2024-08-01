@@ -273,6 +273,10 @@ module RuboCop
         @config.active_support_extensions_enabled?
       end
 
+      def string_literals_frozen_by_default?
+        @config.string_literals_frozen_by_default?
+      end
+
       def relevant_file?(file)
         return false unless target_satisfies_all_gem_version_requirements?
         return true unless @config.clusivity_config_for_badge?(self.class.badge)

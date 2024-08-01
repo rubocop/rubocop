@@ -166,6 +166,11 @@ AllCops:
     rubocop-rspec_rails: [rspec-rails]
   # Enable/Disable checking the methods extended by Active Support.
   ActiveSupportExtensionsEnabled: false
+  # Future version of Ruby will freeze string literals by default.
+  # This allows to opt in early, for example when enabled through RUBYOPT.
+  # For now this will behave as if set to false but in future ruby versions
+  # (likely 4.0) it will be true by default.
+  StringLiteralsFrozenByDefault: ~
 
 #################### Bundler ###############################
 

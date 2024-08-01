@@ -49,6 +49,50 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
     expect_no_offenses('TOP_TEST = Something.new.freeze')
   end
 
+  context 'when `AllCops/StringLiteralsFrozenByDefault: true`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'StringLiteralsFrozenByDefault' => true })
+    end
+
+    context 'when the frozen string literal comment is missing' do
+      it_behaves_like 'immutable objects', '""'
+    end
+
+    context 'when the frozen string literal comment is true' do
+      let(:prefix) { '# frozen_string_literal: true' }
+
+      it_behaves_like 'immutable objects', '""'
+    end
+
+    context 'when the frozen string literal comment is false' do
+      let(:prefix) { '# frozen_string_literal: false' }
+
+      it_behaves_like 'mutable objects', '""'
+    end
+  end
+
+  context 'when `AllCops/StringLiteralsFrozenByDefault: false`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'StringLiteralsFrozenByDefault' => false })
+    end
+
+    context 'when the frozen string literal comment is missing' do
+      it_behaves_like 'mutable objects', '""'
+    end
+
+    context 'when the frozen string literal comment is true' do
+      let(:prefix) { '# frozen_string_literal: true' }
+
+      it_behaves_like 'immutable objects', '""'
+    end
+
+    context 'when the frozen string literal comment is false' do
+      let(:prefix) { '# frozen_string_literal: false' }
+
+      it_behaves_like 'mutable objects', '""'
+    end
+  end
+
   context 'when the receiver is a string literal' do
     # TODO : It is not yet decided when frozen string will be the default.
     # It has been abandoned in the Ruby 3.0 period, but may default in
