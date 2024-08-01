@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
   end
 
   describe 'Empty String', :config do
-    let(:other_cops) { { 'Style/FrozenStringLiteral' => { 'Enabled' => false } } }
+    let(:other_cops) { { 'Style/FrozenStringLiteralComment' => { 'Enabled' => false } } }
 
     it 'registers an offense for String.new()' do
       expect_offense(<<~RUBY)
@@ -287,8 +287,8 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       end
     end
 
-    context 'when Style/FrozenStringLiteral is enabled' do
-      let(:other_cops) { { 'Style/FrozenStringLiteral' => { 'Enabled' => true } } }
+    context 'when Style/FrozenStringLiteralComment is enabled' do
+      let(:other_cops) { { 'Style/FrozenStringLiteralComment' => { 'Enabled' => true } } }
 
       context 'and there is no magic comment' do
         it 'does not register an offense' do
@@ -300,6 +300,87 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
 
       context 'and there is a frozen_string_literal: false comment' do
         it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            # frozen_string_literal: false
+            test = String.new
+                   ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # frozen_string_literal: false
+            test = ''
+          RUBY
+        end
+      end
+    end
+
+    context 'when `AllCops/StringLiteralsFrozenByDefault: true`' do
+      let(:config) do
+        RuboCop::Config.new('AllCops' => { 'StringLiteralsFrozenByDefault' => true })
+      end
+
+      context 'when the frozen string literal comment is missing' do
+        it 'registers no offense' do
+          expect_no_offenses(<<~RUBY)
+            test = String.new
+          RUBY
+        end
+      end
+
+      context 'when the frozen string literal comment is true' do
+        it 'registers no offense' do
+          expect_no_offenses(<<~RUBY)
+            # frozen_string_literal: true
+              test = String.new
+          RUBY
+        end
+      end
+
+      context 'when the frozen string literal comment is false' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            # frozen_string_literal: false
+            test = String.new
+                   ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # frozen_string_literal: false
+            test = ''
+          RUBY
+        end
+      end
+    end
+
+    context 'when `AllCops/StringLiteralsFrozenByDefault: false`' do
+      let(:config) do
+        RuboCop::Config.new('AllCops' => { 'StringLiteralsFrozenByDefault' => false })
+      end
+
+      context 'when the frozen string literal comment is missing' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            test = String.new
+                   ^^^^^^^^^^ Use string literal `''` instead of `String.new`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            test = ''
+          RUBY
+        end
+      end
+
+      context 'when the frozen string literal comment is true' do
+        it 'registers no offense' do
+          expect_no_offenses(<<~RUBY)
+            # frozen_string_literal: true
+              test = String.new
+          RUBY
+        end
+      end
+
+      context 'when the frozen string literal comment is false' do
+        it 'registers an offense' do
           expect_offense(<<~RUBY)
             # frozen_string_literal: false
             test = String.new
