@@ -116,6 +116,22 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when expression with more comparisons precedes an expression with less comparisons' do
+    expect_offense(<<~RUBY)
+      a = 1
+      a == 1 || a == 2 || a == 3
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+      a == 1 || a == 2
+      ^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = 1
+      [1, 2, 3].include?(a)
+      [1, 2].include?(a)
+    RUBY
+  end
+
   it 'does not register an offense for comparing multiple literal strings' do
     expect_no_offenses(<<~RUBY)
       if "a" == "a" || "a" == "c"

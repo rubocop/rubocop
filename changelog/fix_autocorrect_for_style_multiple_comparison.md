@@ -1,0 +1,1 @@
+* [#13087](https://github.com/rubocop/rubocop/pull/13087): Fix an incorrect autocorrect for `Style/MultipleComparison` when expression with more comparisons precedes an expression with less comparisons. ([@fatkodima][])

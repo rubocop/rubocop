@@ -56,12 +56,10 @@ module RuboCop
               'in a conditional, use `Array#include?` instead.'
 
         def on_new_investigation
-          @last_comparison = nil
+          reset_comparison
         end
 
         def on_or(node)
-          reset_comparison if switch_comparison?(node)
-
           root_of_or_node = root_of_or_node(node)
 
           return unless node == root_of_or_node
@@ -74,9 +72,9 @@ module RuboCop
             prefer_method = "[#{elements}].include?(#{variables_in_node(node).first})"
 
             corrector.replace(node, prefer_method)
-          end
 
-          @last_comparison = node
+            reset_comparison
+          end
         end
 
         private
@@ -145,12 +143,6 @@ module RuboCop
           else
             or_node
           end
-        end
-
-        def switch_comparison?(node)
-          return true if @last_comparison.nil?
-
-          @last_comparison.descendants.none?(node)
         end
 
         def reset_comparison
