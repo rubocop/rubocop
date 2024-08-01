@@ -976,6 +976,21 @@ Rails:
   DocumentationBaseURL: https://docs.rubocop.org/rubocop-rails
 ----
 
+By default, documentation is expected to be served as HTML but if you prefer
+to use something else like markdown you can set `DocumentationExtension`.
+
+With markdown as the documentation format you are able to host it directly through
+GitHub without having to own a domain or using GitHub Pages. The `rubocop-sorbet`
+extension is an example of this, its docs are available
+https://github.com/Shopify/rubocop-sorbet/blob/main/manual[here].
+
+[source,yaml]
+----
+Sorbet:
+  DocumentationBaseURL: https://github.com/Shopify/rubocop-sorbet/blob/main/manual
+  DocumentationExtension: .md
+----
+
 == Enable checking Active Support extensions
 
 Some cops for checking specified methods (e.g. `Style/HashExcept`) supports Active Support extensions.
