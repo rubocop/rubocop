@@ -90,6 +90,20 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it { is_expected.to eq 'https://docs.rubocop.org/rubocop-rails/cops_rails.html#railsexit' }
       end
+
+      describe 'for a custom cop class with DocumentationExtension', :restore_registry do
+        let(:cop_class) { stub_cop_class('Sorbet::FalseSigil') { def foo; end } }
+        let(:config) do
+          RuboCop::Config.new(
+            'Sorbet' => {
+              'DocumentationBaseURL' => 'https://github.com/Shopify/rubocop-sorbet/blob/main/manual',
+              'DocumentationExtension' => '.md'
+            }
+          )
+        end
+
+        it { is_expected.to eq 'https://github.com/Shopify/rubocop-sorbet/blob/main/manual/cops_sorbet.md#sorbetfalsesigil' }
+      end
     end
   end
 

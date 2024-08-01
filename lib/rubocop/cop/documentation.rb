@@ -16,8 +16,9 @@ module RuboCop
         base = department_to_basename(cop_class.department)
         fragment = cop_class.cop_name.downcase.gsub(/[^a-z]/, '')
         base_url = base_url_for(cop_class, config)
+        extension = extension_for(cop_class, config)
 
-        "#{base_url}/#{base}.html##{fragment}" if base_url
+        "#{base_url}/#{base}#{extension}##{fragment}" if base_url
       end
 
       # @api private
@@ -32,8 +33,24 @@ module RuboCop
       end
 
       # @api private
+      def extension_for(cop_class, config)
+        if config
+          department_name = cop_class.department
+          extension = config.for_department(department_name)['DocumentationExtension']
+          return extension if extension
+        end
+
+        default_extension
+      end
+
+      # @api private
       def default_base_url
         'https://docs.rubocop.org/rubocop'
+      end
+
+      # @api private
+      def default_extension
+        '.html'
       end
 
       # @api private

@@ -82,6 +82,8 @@ AllCops:
   StyleGuideBaseURL: https://rubystyle.guide
   # Documentation URLs will be constructed using the base URL.
   DocumentationBaseURL: https://docs.rubocop.org/rubocop
+  # Documentation URLs will end with this extension.
+  DocumentationExtension: .html
   # Extra details are not displayed in offense messages by default. Change
   # behavior by overriding ExtraDetails, or by giving the
   # `-E/--extra-details` option.
