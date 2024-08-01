@@ -61,10 +61,7 @@ By default, there are no methods to allowed.
 ----
 # bad
 some_method a { |val| puts val }
-----
 
-[source,ruby]
-----
 # good
 # With parentheses, there's no ambiguity.
 some_method(a { |val| puts val })
@@ -151,10 +148,7 @@ method invocation without parentheses.
 # The `*` is interpreted as a splat operator but it could possibly be
 # a `*` method invocation (i.e. `do_something.*(some_array)`).
 do_something *some_array
-----
 
-[source,ruby]
-----
 # good
 
 # With parentheses, there's no ambiguity.
@@ -320,10 +314,7 @@ a method invocation without parentheses.
 # but it could possibly be `/` method invocations.
 # (i.e. `do_something./(pattern)./(i)`)
 do_something /pattern/i
-----
 
-[source,ruby]
-----
 # good
 
 # With parentheses, there's no ambiguity.
@@ -520,10 +511,7 @@ changed to actual booleans.
 
 # good
 true
-----
 
-[source,ruby]
-----
 # bad
 :false
 
@@ -553,43 +541,26 @@ This cop mirrors a warning produced by MRI since 2.2.
 [source,ruby]
 ----
 # bad
-
 def bake(pie: pie)
   pie.heat_up
 end
-----
 
-[source,ruby]
-----
 # good
-
 def bake(pie:)
   pie.refrigerate
 end
-----
 
-[source,ruby]
-----
 # good
-
 def bake(pie: self.pie)
   pie.feed_to(user)
 end
-----
 
-[source,ruby]
-----
 # bad
-
 def cook(dry_ingredients = dry_ingredients)
   dry_ingredients.reduce(&:+)
 end
-----
 
-[source,ruby]
-----
 # good
-
 def cook(dry_ingredients = self.dry_ingredients)
   dry_ingredients.combine
 end
@@ -870,10 +841,7 @@ def some_method
   binding.pry
   do_something
 end
-----
 
-[source,ruby]
-----
 # bad (ok during development)
 
 # using byebug
@@ -881,10 +849,7 @@ def some_method
   byebug
   do_something
 end
-----
 
-[source,ruby]
-----
 # good
 
 def some_method
@@ -1048,29 +1013,17 @@ instead.
 
 [source,ruby]
 ----
-# Example for OpenSSL::Cipher instantiation.
-
 # bad
 OpenSSL::Cipher::AES.new(128, :GCM)
 
 # good
 OpenSSL::Cipher.new('aes-128-gcm')
-----
-
-[source,ruby]
-----
-# Example for OpenSSL::Digest instantiation.
 
 # bad
 OpenSSL::Digest::SHA256.new
 
 # good
 OpenSSL::Digest.new('SHA256')
-----
-
-[source,ruby]
-----
-# Example for ::Digest inherited class methods.
 
 # bad
 OpenSSL::Digest::SHA256.digest('foo')
@@ -1277,19 +1230,14 @@ used in case 'when' expressions.
 [source,ruby]
 ----
 # bad
-
 case x
 when 'first'
   do_something
 when 'first'
   do_something_else
 end
-----
 
-[source,ruby]
-----
 # good
-
 case x
 when 'first'
   do_something
@@ -1353,14 +1301,9 @@ This cop mirrors a warning in Ruby 2.2.
 [source,ruby]
 ----
 # bad
-
 hash = { food: 'apple', food: 'orange' }
-----
 
-[source,ruby]
-----
 # good
-
 hash = { food: 'apple', other_food: 'orange' }
 ----
 
@@ -1522,7 +1465,6 @@ definitions.
 [source,ruby]
 ----
 # bad
-
 def foo
   1
 end
@@ -1530,23 +1472,15 @@ end
 def foo
   2
 end
-----
 
-[source,ruby]
-----
 # bad
-
 def foo
   1
 end
 
 alias foo bar
-----
 
-[source,ruby]
-----
 # good
-
 def foo
   1
 end
@@ -1554,12 +1488,8 @@ end
 def bar
   2
 end
-----
 
-[source,ruby]
-----
 # good
-
 def foo
   1
 end
@@ -1696,14 +1626,9 @@ It's definitely a bug.
 [source,ruby]
 ----
 # bad
-
 sum = numbers.each_with_object(0) { |e, a| a += e }
-----
 
-[source,ruby]
-----
 # good
-
 num = 0
 sum = numbers.each_with_object(num) { |e, a| a += e }
 ----
@@ -1739,10 +1664,7 @@ if something
 else do_this
   do_that
 end
-----
 
-[source,ruby]
-----
 # good
 
 # This code is compatible with the bad case. It will be autocorrected like this.
@@ -2069,45 +1991,32 @@ end
 | 1.61
 |===
 
-Checks for empty `ensure` blocks
+Checks for empty `ensure` blocks.
 
 === Examples
 
 [source,ruby]
 ----
 # bad
-
 def some_method
   do_something
 ensure
 end
-----
 
-[source,ruby]
-----
 # bad
-
 begin
   do_something
 ensure
 end
-----
 
-[source,ruby]
-----
 # good
-
 def some_method
   do_something
 ensure
   do_something_else
 end
-----
 
-[source,ruby]
-----
 # good
-
 begin
   do_something
 ensure
@@ -2293,14 +2202,9 @@ Checks for empty interpolation.
 [source,ruby]
 ----
 # bad
-
 "result is #{}"
-----
 
-[source,ruby]
-----
 # good
-
 "result is #{some_result}"
 ----
 
@@ -2328,10 +2232,7 @@ when bar
   do_something
 when baz
 end
-----
 
-[source,ruby]
-----
 # good
 case condition
 when foo
@@ -2401,19 +2302,14 @@ If you want to rescue some (or all) exceptions, best to do it explicitly
 [source,ruby]
 ----
 # bad
-
 def foo
   do_something
 ensure
   cleanup
   return self
 end
-----
 
-[source,ruby]
-----
 # good
-
 def foo
   do_something
   self
@@ -2421,8 +2317,7 @@ ensure
   cleanup
 end
 
-# also good
-
+# good
 def foo
   begin
     do_something
@@ -2622,14 +2517,9 @@ that big. If you need a float that big, something is wrong with you.
 [source,ruby]
 ----
 # bad
-
 float = 3.0e400
-----
 
-[source,ruby]
-----
 # good
-
 float = 42.9
 ----
 
@@ -2658,28 +2548,15 @@ the same format string.
 [source,ruby]
 ----
 # bad
-
 format('A value: %s and another: %i', a_value)
-----
 
-[source,ruby]
-----
 # good
-
 format('A value: %s and another: %i', a_value, another)
-----
 
-[source,ruby]
-----
 # bad
-
 format('Unnumbered format: %s and numbered: %2$s', a_value, another)
-----
 
-[source,ruby]
-----
 # good
-
 format('Numbered format: %1$s and numbered %2$s', a_value, another)
 ----
 
@@ -2826,14 +2703,9 @@ which are on the same line.
 [source,ruby]
 ----
 # bad
-
 array = ['Item 1' 'Item 2']
-----
 
-[source,ruby]
-----
 # good
-
 array = ['Item 1Item 2']
 array = ['Item 1' + 'Item 2']
 array = [
@@ -2908,7 +2780,6 @@ used for that.
 [source,ruby]
 ----
 # bad
-
 class C
   private
 
@@ -2916,12 +2787,8 @@ class C
     puts 'hi'
   end
 end
-----
 
-[source,ruby]
-----
 # good
-
 class C
   def self.method
     puts 'hi'
@@ -2929,12 +2796,8 @@ class C
 
   private_class_method :method
 end
-----
 
-[source,ruby]
-----
 # good
-
 class C
   class << self
     private
@@ -3040,14 +2903,9 @@ the expression `foo`.
 [source,ruby]
 ----
 # bad
-
 foo = 'something with #{interpolation} inside'
-----
 
-[source,ruby]
-----
 # good
-
 foo = "something with #{interpolation} inside"
 ----
 
@@ -3236,14 +3094,9 @@ Checks for interpolated literals.
 [source,ruby]
 ----
 # bad
-
 "result is #{10}"
-----
 
-[source,ruby]
-----
 # good
-
 "result is 10"
 ----
 
@@ -3277,20 +3130,7 @@ loop body raises a `StopIteration` exception (which `Kernel#loop` rescues).
 begin
   do_something
 end while some_condition
-----
 
-[source,ruby]
-----
-# bad
-
-# using until
-begin
-  do_something
-end until some_condition
-----
-
-[source,ruby]
-----
 # good
 
 # while replacement
@@ -3298,10 +3138,14 @@ loop do
   do_something
   break unless some_condition
 end
-----
 
-[source,ruby]
-----
+# bad
+
+# using until
+begin
+  do_something
+end until some_condition
+
 # good
 
 # until replacement
@@ -3620,20 +3464,14 @@ def foo
   def bar
   end
 end
-----
 
-[source,ruby]
-----
 # good
 
 def foo
   bar = -> { puts 'hello' }
   bar.call
 end
-----
 
-[source,ruby]
-----
 # good
 
 # `class_eval`, `instance_eval`, `module_eval`, `class_exec`, `instance_exec`, and
@@ -3652,10 +3490,7 @@ def foo
     end
   end
 end
-----
 
-[source,ruby]
-----
 # good
 
 def foo
@@ -3796,17 +3631,12 @@ Don't omit the accumulator when calling `next` in a `reduce` block.
 [source,ruby]
 ----
 # bad
-
 result = (1..4).reduce(0) do |acc, i|
   next if i.odd?
   acc + i
 end
-----
 
-[source,ruby]
-----
 # good
-
 result = (1..4).reduce(0) do |acc, i|
   next acc if i.odd?
   acc + i
@@ -3835,18 +3665,13 @@ method, possibly leading to unexpected behavior.
 [source,ruby]
 ----
 # bad
-
 @some_variable ||= begin
   return some_value if some_condition_is_met
 
   do_something
 end
-----
 
-[source,ruby]
-----
 # good
-
 @some_variable ||= begin
   if some_condition_is_met
     some_value
@@ -3856,7 +3681,6 @@ end
 end
 
 # good
-
 some_variable = if some_condition_is_met
                   return if another_condition_is_met
 
@@ -4392,14 +4216,9 @@ and that might have been done purposely.
 [source,ruby]
 ----
 # bad
-
 %w('foo', "bar")
-----
 
-[source,ruby]
-----
 # good
-
 %w(foo bar)
 ----
 
@@ -4426,14 +4245,9 @@ rather than meant to be part of the resulting symbols.
 [source,ruby]
 ----
 # bad
-
 %i(:foo, :bar)
-----
 
-[source,ruby]
-----
 # good
-
 %i(foo bar)
 ----
 
@@ -4521,17 +4335,12 @@ Such calls always return `0`.
 [source,ruby]
 ----
 # bad
-
 rand 1
 Kernel.rand(-1)
 rand 1.0
 rand(-1.0)
-----
 
-[source,ruby]
-----
 # good
-
 0 # just use 0 instead
 ----
 
@@ -4598,10 +4407,7 @@ foo = 1
 
 # good
 foo = 1
-----
 
-[source,ruby]
-----
 # bad
 # rubocop:disable Style/StringLiterals
 foo = "1"
@@ -4868,7 +4674,7 @@ do_something if attrs&.not_nil_safe_method(:[])
 | 1.7
 |===
 
-Checks for unneeded usages of splat expansion
+Checks for unneeded usages of splat expansion.
 
 === Examples
 
@@ -4972,17 +4778,12 @@ which is redundant.
 [source,ruby]
 ----
 # bad
-
 "result is #{something.to_s}"
 print something.to_s
 puts something.to_s
 warn something.to_s
-----
 
-[source,ruby]
-----
 # good
-
 "result is #{something}"
 print something
 puts something
@@ -5173,16 +4974,11 @@ an operand of &&/||.
 [source,ruby]
 ----
 # bad
-
 if day.is? :tuesday && month == :jan
   # ...
 end
-----
 
-[source,ruby]
-----
 # good
-
 if day.is?(:tuesday) && month == :jan
   # ...
 end
@@ -5286,18 +5082,13 @@ Checks for `rescue` blocks targeting the Exception class.
 [source,ruby]
 ----
 # bad
-
 begin
   do_something
 rescue Exception
   handle_exception
 end
-----
 
-[source,ruby]
-----
 # good
-
 begin
   do_something
 rescue ArgumentError
@@ -5386,10 +5177,7 @@ end
 def foo=(bar)
   return 42
 end
-----
 
-[source,ruby]
-----
 # good
 def initialize
   foo
@@ -5427,16 +5215,11 @@ This cop checks for the problem outlined above.
 [source,ruby]
 ----
 # bad
-
 x&.foo.bar
 x&.foo + bar
 x&.foo[bar]
-----
 
-[source,ruby]
-----
 # good
-
 x&.foo&.bar
 x&.foo || bar
 ----
@@ -5839,19 +5622,18 @@ NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
 because `Ractor` should not access outer variables.
 eg. following style is encouraged:
 
-  [source,ruby]
-  ----
-  worker_id, pipe = env
-  Ractor.new(worker_id, pipe) do |worker_id, pipe|
-  end
-  ----
+[source,ruby]
+----
+worker_id, pipe = env
+Ractor.new(worker_id, pipe) do |worker_id, pipe|
+end
+----
 
 === Examples
 
 [source,ruby]
 ----
 # bad
-
 def some_method
   foo = 1
 
@@ -5859,12 +5641,8 @@ def some_method
     do_something(foo)
   end
 end
-----
 
-[source,ruby]
-----
 # good
-
 def some_method
   foo = 1
 
@@ -6517,15 +6295,10 @@ Checks for using Fixnum or Bignum constant.
 [source,ruby]
 ----
 # bad
-
 1.is_a?(Fixnum)
 1.is_a?(Bignum)
-----
 
-[source,ruby]
-----
 # good
-
 1.is_a?(Integer)
 ----
 
@@ -6625,14 +6398,12 @@ statement in non-final position in `begin` (implicit) blocks.
 [source,ruby]
 ----
 # bad
-
 def some_method
   return
   do_something
 end
 
 # bad
-
 def some_method
   if cond
     return
@@ -6641,12 +6412,8 @@ def some_method
   end
   do_something
 end
-----
 
-[source,ruby]
-----
 # good
-
 def some_method
   do_something
 end
@@ -7247,17 +7014,12 @@ local variable. For example, replacing `a ||= 1` to `a || 1` may cause
 [source,ruby]
 ----
 # bad
-
 def some_method
   some_var = 1
   do_something
 end
-----
 
-[source,ruby]
-----
 # good
-
 def some_method
   some_var = 1
   do_something(some_var)
@@ -7289,18 +7051,13 @@ NOTE: This syntax is no longer valid on Ruby 2.6 or higher.
 [source,ruby]
 ----
 # bad
-
 begin
   do_something
 else
   do_something_else # This will never be run.
 end
-----
 
-[source,ruby]
-----
 # good
-
 begin
   do_something
 rescue
@@ -7523,17 +7280,12 @@ return value will be changed.
 [source,ruby]
 ----
 # bad
-
 def something
   x = Something.new
   x.attr = 5
 end
-----
 
-[source,ruby]
-----
 # good
-
 def something
   x = Something.new
   x.attr = 5

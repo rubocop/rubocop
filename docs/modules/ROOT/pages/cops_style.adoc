@@ -2932,10 +2932,7 @@ def foo = do_something
 
 # good (without parentheses it's a syntax error)
 def foo() do_something end
-----
 
-[source,ruby]
-----
 # bad
 def Baz.foo()
   do_something
@@ -3562,10 +3559,7 @@ This check only applies if the block takes no parameters.
 
 # good
 5.times { }
-----
 
-[source,ruby]
-----
 # bad
 (0...10).each {}
 
@@ -4249,8 +4243,17 @@ values. However, if `eval` is called without a binding argument, the cop
 will not attempt to automatically add a binding, or add filename and
 line values.
 
-This cop works only when a string literal is given as a code string.
+NOTE: This cop works only when a string literal is given as a code string.
 No offense is reported if a string variable is given as below:
+
+[source,ruby]
+----
+code = <<-RUBY
+  def do_something
+  end
+RUBY
+eval code # not checked.
+----
 
 === Examples
 
@@ -4279,16 +4282,6 @@ C.class_eval <<-RUBY, __FILE__, __LINE__ + 1
   def do_something
   end
 RUBY
-----
-
-[source,ruby]
-----
-# not checked
-code = <<-RUBY
-  def do_something
-  end
-RUBY
-eval code
 ----
 
 == Style/EvenOdd
@@ -4666,8 +4659,7 @@ Favor `File.(bin)read` convenience methods.
 
 [source,ruby]
 ----
-## text mode
-# bad
+# bad - text mode
 File.open(filename).read
 File.open(filename, &:read)
 File.open(filename) { |f| f.read }
@@ -4682,12 +4674,8 @@ end
 
 # good
 File.read(filename)
-----
 
-[source,ruby]
-----
-## binary mode
-# bad
+# bad - binary mode
 File.open(filename, 'rb').read
 File.open(filename, 'rb', &:read)
 File.open(filename, 'rb') do |f|
@@ -4731,8 +4719,7 @@ end
 
 [source,ruby]
 ----
-## text mode
-# bad
+# bad - text mode
 File.open(filename, 'w').write(content)
 File.open(filename, 'w') do |f|
   f.write(content)
@@ -4740,12 +4727,8 @@ end
 
 # good
 File.write(filename, content)
-----
 
-[source,ruby]
-----
-## binary mode
-# bad
+# bad - binary mode
 File.open(filename, 'wb').write(content)
 File.open(filename, 'wb') do |f|
   f.write(content)
@@ -6494,10 +6477,7 @@ foo == bar ? true : false
 
 # good
 foo == bar
-----
 
-[source,ruby]
-----
 # bad
 if foo.do_something?
   true
@@ -7471,7 +7451,7 @@ something.to_set { |i| i * 2 }
 |===
 
 Enforces the presence (default) or absence of parentheses in
-method calls containing parameters.
+method calls containing arguments.
 
 In the default style (require_parentheses), macro methods are allowed.
 Additional methods can be added to the `AllowedMethods` or
@@ -11374,10 +11354,7 @@ a = b ? b : c
 
 # good
 a = b || c
-----
 
-[source,ruby]
-----
 # bad
 if b
   b
@@ -16484,10 +16461,7 @@ end
 while x.any?
   do_something(x.pop)
 end
-----
 
-[source,ruby]
-----
 # bad
 until x.empty? do
   do_something(x.pop)
@@ -16530,10 +16504,7 @@ end
 
 # good
 x += 1 while x < 10
-----
 
-[source,ruby]
-----
 # bad
 until x > 10
   x += 1

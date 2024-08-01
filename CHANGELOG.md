@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.65.1 (2024-08-01)
+
 ### New features
 
 * [#13068](https://github.com/rubocop/rubocop/pull/13068): Add config validation to `Naming/PredicateName` to check that all `ForbiddenPrefixes` are being checked. ([@maxjacobson][])
