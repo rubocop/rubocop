@@ -44,7 +44,9 @@ module RuboCop
         PATTERN
 
         def on_const(node)
-          const_name = node.children[1]
+          return if namespaced?(node)
+
+          const_name = node.short_name
           return unless STD_STREAMS.include?(const_name)
 
           gvar_name = gvar_name(const_name).to_sym
@@ -59,6 +61,10 @@ module RuboCop
 
         def message(const_name)
           format(MSG, gvar_name: gvar_name(const_name), const_name: const_name)
+        end
+
+        def namespaced?(node)
+          !node.namespace.nil? && (node.relative? || !node.namespace.cbase_type?)
         end
 
         def gvar_name(const_name)
