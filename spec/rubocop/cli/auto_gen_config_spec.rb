@@ -1338,6 +1338,34 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       YAML
     end
 
+    it 'does not duplicate `Layout/LineLength` with --auto-gen-only-exclude when it is disabled inline and other offense' do
+      create_file('example1.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        # Documentation comment
+        class Foo
+          def foo
+            puts #{'a' * 150}
+          end
+
+          # rubocop:disable Layout/LineLength
+          def bar
+            puts #{'a' * 150}
+          end
+          # rubocop:enable Layout/LineLength
+        end
+      RUBY
+
+      expect(cli.run(['--auto-gen-config', '--auto-gen-only-exclude'])).to eq(0)
+      actual = File.read('.rubocop_todo.yml').split($RS)
+
+      expect(actual.grep(/^[^#]/).join($RS)).to eq(<<~YAML.chomp)
+        Layout/LineLength:
+          Exclude:
+            - 'example1.rb'
+      YAML
+    end
+
     it 'includes --auto-gen-only-exclude in the command comment when given' do
       create_file('example1.rb', ['$!'])
       expect(cli.run(['--auto-gen-config', '--auto-gen-only-exclude',
