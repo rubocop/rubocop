@@ -51,7 +51,6 @@ module RuboCop
       #   # defined inside a method call.
       #
       #   # bad
-      #   # consistent
       #   array = [
       #     :value
       #   ]
@@ -72,13 +71,11 @@ module RuboCop
       #   # brackets are indented to the same position.
       #
       #   # bad
-      #   # align_brackets
       #   and_now_for_something = [
       #                             :completely_different
       #   ]
       #
       #   # good
-      #   # align_brackets
       #   and_now_for_something = [
       #                             :completely_different
       #                           ]
