@@ -86,9 +86,9 @@ RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
 
   let(:cop_class) do
     unless described_class.is_a?(Class) && described_class < RuboCop::Cop::Base
-      raise 'Specify which cop class to use (e.g `let(:cop_class) { RuboCop::Cop::Base }`, ' \
-            'or RuboCop::Cop::Cop for legacy)'
+      raise 'Specify which cop class to use (e.g `let(:cop_class) { RuboCop::Cop::Base }`)'
     end
+
     described_class
   end
 
