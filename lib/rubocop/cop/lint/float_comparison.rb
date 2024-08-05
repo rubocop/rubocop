@@ -66,9 +66,7 @@ module RuboCop
         end
 
         def literal_zero?(node)
-          # TODO: https://github.com/rubocop/rubocop-ast/pull/304 is released,
-          # replace this condition with `node&.numeric_type? && node.value.zero?`.
-          node&.numeric_type? && node.node_parts[0].zero?
+          node&.numeric_type? && node.value.zero?
         end
 
         # rubocop:disable Metrics/PerceivedComplexity
