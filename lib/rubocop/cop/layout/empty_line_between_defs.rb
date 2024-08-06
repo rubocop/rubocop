@@ -149,7 +149,8 @@ module RuboCop
           newline_pos = source_buffer.source.index("\n", end_pos)
 
           # Handle the case when multiple one-liners are on the same line.
-          newline_pos = end_pos + 1 if newline_pos > node.source_range.begin_pos
+          begin_pos = node.source_range.begin_pos
+          newline_pos = begin_pos - 1 if newline_pos > begin_pos
 
           if count > maximum_empty_lines
             autocorrect_remove_lines(corrector, newline_pos, count)
