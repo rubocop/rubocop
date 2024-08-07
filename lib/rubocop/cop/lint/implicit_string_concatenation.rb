@@ -92,6 +92,8 @@ module RuboCop
         end
 
         def str_content(node)
+          return unless node.respond_to?(:str_type?)
+
           if node.str_type?
             node.children[0]
           else

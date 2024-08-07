@@ -47,6 +47,21 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
     end
   end
 
+  context 'when implicitly concatenating a string literal with a line break and string interpolation' do
+    it 'registers an offense' do
+      expect_offense(<<~'RUBY')
+        'single-quoted string'"string
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine 'single-quoted string' and "string\n" into a single string literal, rather than using implicit string concatenation.
+        #{interpolation}"
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        'single-quoted string' + "string
+        #{interpolation}"
+      RUBY
+    end
+  end
+
   context 'when the string literals contain newlines' do
     it 'registers an offense' do
       expect_offense(<<~'RUBY')
