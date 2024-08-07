@@ -1,0 +1,1 @@
+* [#13092](https://github.com/rubocop/rubocop/pull/13092): Fix an incorrect autocorrect for `Layout/EmptyLineBetweenDefs` when two method definitions are on the same line separated by a semicolon. ([@koic][])

@@ -225,6 +225,23 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     RUBY
   end
 
+  it 'registers an offense when two method definitions are on the same line separated by a semicolon' do
+    expect_offense(<<~RUBY)
+      def a
+      end;def b
+          ^^^^^ Expected 1 empty line between method definitions; found 0.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def a
+      end;
+
+      def b
+      end
+    RUBY
+  end
+
   it 'autocorrects when there are too many new lines' do
     expect_offense(<<~RUBY)
       def a; end
