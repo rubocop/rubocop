@@ -19,6 +19,7 @@ module RuboCop
       class EmptyLiteral < Base
         include FrozenStringLiteral
         include RangeHelp
+        include StringLiteralsHelp
         extend AutoCorrector
 
         ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'
@@ -65,18 +66,6 @@ module RuboCop
           elsif str_node(node) && !frozen_strings?
             format(STR_MSG, prefer: preferred_string_literal)
           end
-        end
-
-        def preferred_string_literal
-          enforce_double_quotes? ? '""' : "''"
-        end
-
-        def enforce_double_quotes?
-          string_literals_config['EnforcedStyle'] == 'double_quotes'
-        end
-
-        def string_literals_config
-          config.for_cop('Style/StringLiterals')
         end
 
         def first_argument_unparenthesized?(node)
