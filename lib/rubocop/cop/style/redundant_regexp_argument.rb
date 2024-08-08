@@ -33,6 +33,7 @@ module RuboCop
       #   'foo'.sub('f', 'x')
       #   'foo'.sub!('f', 'x')
       class RedundantRegexpArgument < Base
+        include StringLiteralsHelp
         extend AutoCorrector
 
         MSG = 'Use string `%<prefer>s` as argument instead of regexp `%<current>s`.'
@@ -71,8 +72,10 @@ module RuboCop
           if new_argument.include?('"')
             new_argument.gsub!("'", "\\\\'")
             quote = "'"
-          else
+          elsif new_argument.include?('\\')
             quote = '"'
+          else
+            quote = enforce_double_quotes? ? '"' : "'"
           end
 
           "#{quote}#{new_argument}#{quote}"
