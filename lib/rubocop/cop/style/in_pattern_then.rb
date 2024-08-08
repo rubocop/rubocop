@@ -44,11 +44,15 @@ module RuboCop
         private
 
         def alternative_pattern_source(pattern)
+          collect_alternative_patterns(pattern).join(' | ')
+        end
+
+        def collect_alternative_patterns(pattern)
           return pattern.children.map(&:source) unless pattern.children.first.match_alt_type?
 
-          pattern_sources = alternative_pattern_source(pattern.children.first)
+          pattern_sources = collect_alternative_patterns(pattern.children.first)
 
-          (pattern_sources << pattern.children[1].source).join(' | ')
+          pattern_sources << pattern.children[1].source
         end
       end
     end

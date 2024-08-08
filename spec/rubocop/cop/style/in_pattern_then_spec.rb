@@ -47,6 +47,21 @@ RSpec.describe RuboCop::Cop::Style::InPatternThen, :config do
       RUBY
     end
 
+    it 'registers an offense for `in b | c | d | e;` (alternative pattern)' do
+      expect_offense(<<~RUBY)
+        case a
+        in b | c | d | e; f
+                        ^ Do not use `in b | c | d | e;`. Use `in b | c | d | e then` instead.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case a
+        in b | c | d | e then f
+        end
+      RUBY
+    end
+
     it 'registers an offense for `in b, c | d;`' do
       expect_offense(<<~RUBY)
         case a
