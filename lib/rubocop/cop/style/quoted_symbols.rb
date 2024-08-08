@@ -98,8 +98,6 @@ module RuboCop
 
         def style
           return super unless super == :same_as_string_literals
-
-          string_literals_config = config.for_cop('Style/StringLiterals')
           return :single_quotes unless string_literals_config['Enabled']
 
           string_literals_config['EnforcedStyle'].to_sym

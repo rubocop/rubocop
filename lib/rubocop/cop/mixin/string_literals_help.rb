@@ -16,6 +16,18 @@ module RuboCop
           !/" | \\[^'\\] | \#[@{$]/x.match?(src)
         end
       end
+
+      def preferred_string_literal
+        enforce_double_quotes? ? '""' : "''"
+      end
+
+      def enforce_double_quotes?
+        string_literals_config['EnforcedStyle'] == 'double_quotes'
+      end
+
+      def string_literals_config
+        config.for_cop('Style/StringLiterals')
+      end
     end
   end
 end

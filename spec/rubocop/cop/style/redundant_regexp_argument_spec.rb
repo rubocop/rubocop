@@ -5,22 +5,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     it "registers an offense and corrects when the method is `#{method}`" do
       expect_offense(<<~RUBY, method: method)
         'foo'.#{method}(/f/)
-              _{method} ^^^ Use string `"f"` as argument instead of regexp `/f/`.
+              _{method} ^^^ Use string `'f'` as argument instead of regexp `/f/`.
       RUBY
 
       expect_correction(<<~RUBY)
-        'foo'.#{method}("f")
+        'foo'.#{method}('f')
       RUBY
     end
 
     it "registers an offense and corrects when the method with safe navigation operator is `#{method}`" do
       expect_offense(<<~RUBY, method: method)
         'foo'&.#{method}(/f/)
-               _{method} ^^^ Use string `"f"` as argument instead of regexp `/f/`.
+               _{method} ^^^ Use string `'f'` as argument instead of regexp `/f/`.
       RUBY
 
       expect_correction(<<~RUBY)
-        'foo'&.#{method}("f")
+        'foo'&.#{method}('f')
       RUBY
     end
   end
@@ -61,11 +61,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
   it 'registers an offense and corrects when using escaping characters' do
     expect_offense(<<~'RUBY')
       'a,b,c'.split(/\./)
-                    ^^^^ Use string `"."` as argument instead of regexp `/\./`.
+                    ^^^^ Use string `'.'` as argument instead of regexp `/\./`.
     RUBY
 
     expect_correction(<<~RUBY)
-      'a,b,c'.split(".")
+      'a,b,c'.split('.')
     RUBY
   end
 
@@ -127,11 +127,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
   it 'registers an offense and corrects when using two or more spaces regexp' do
     expect_offense(<<~RUBY)
       'foo         bar'.split(/  /)
-                              ^^^^ Use string `"  "` as argument instead of regexp `/  /`.
+                              ^^^^ Use string `'  '` as argument instead of regexp `/  /`.
     RUBY
 
     expect_correction(<<~RUBY)
-      'foo         bar'.split("  ")
+      'foo         bar'.split('  ')
     RUBY
   end
 
@@ -167,5 +167,46 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     expect_no_offenses(<<~RUBY)
       'foo         bar'.split(/ /)
     RUBY
+  end
+
+  context 'when `Style/StringLiterals` is configured with `single_quotes`' do
+    let(:other_cops) { { 'Style/StringLiterals' => { 'EnforcedStyle' => 'single_quotes' } } }
+
+    it 'registers an offense and corrects to single quoted string when using non-backquoted regexp' do
+      expect_offense(<<~RUBY)
+        'foo'.split(/f/)
+                    ^^^ Use string `'f'` as argument instead of regexp `/f/`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        'foo'.split('f')
+      RUBY
+    end
+
+    it 'registers an offense and corrects to double quoted string when using backquoted regexp' do
+      expect_offense(<<~'RUBY')
+        'foo'.split(/\n/)
+                    ^^^^ Use string `"\n"` as argument instead of regexp `/\n/`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        'foo'.split("\n")
+      RUBY
+    end
+  end
+
+  context 'when `Style/StringLiterals` is configured with `double_quotes`' do
+    let(:other_cops) { { 'Style/StringLiterals' => { 'EnforcedStyle' => 'double_quotes' } } }
+
+    it 'registers an offense and corrects to double quoted string when using non-backquoted regexp' do
+      expect_offense(<<~RUBY)
+        'foo'.split(/f/)
+                    ^^^ Use string `"f"` as argument instead of regexp `/f/`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        'foo'.split("f")
+      RUBY
+    end
   end
 end

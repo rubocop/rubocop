@@ -36,6 +36,7 @@ module RuboCop
       class EmptyHeredoc < Base
         include Heredoc
         include RangeHelp
+        include StringLiteralsHelp
         extend AutoCorrector
 
         MSG = 'Use an empty string literal instead of heredoc.'
@@ -52,20 +53,6 @@ module RuboCop
             corrector.remove(range_by_whole_lines(heredoc_body, include_final_newline: true))
             corrector.remove(range_by_whole_lines(heredoc_end, include_final_newline: true))
           end
-        end
-
-        private
-
-        def preferred_string_literal
-          enforce_double_quotes? ? '""' : "''"
-        end
-
-        def enforce_double_quotes?
-          string_literals_config['EnforcedStyle'] == 'double_quotes'
-        end
-
-        def string_literals_config
-          config.for_cop('Style/StringLiterals')
         end
       end
     end
