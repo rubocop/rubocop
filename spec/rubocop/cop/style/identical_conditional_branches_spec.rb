@@ -405,6 +405,40 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'on case with identical leading lines when handling nil case branches' do
+    it 'registers and corrects an offense' do
+      expect_no_offenses(<<~RUBY)
+        case something
+        when :a
+          nil
+        when :b
+          do_x
+          x1
+        else
+          do_x
+          x2
+        end
+      RUBY
+    end
+  end
+
+  context 'on case with identical leading lines when handling empty case branches' do
+    it 'registers and corrects an offense' do
+      expect_no_offenses(<<~RUBY)
+        case something
+        when :a
+          ()
+        when :b
+          do_x
+          x1
+        else
+          do_x
+          x2
+        end
+      RUBY
+    end
+  end
+
   context 'on case with identical leading lines, single child branch and last node of the parent' do
     it "doesn't register an offense" do
       expect_no_offenses(<<~RUBY)
