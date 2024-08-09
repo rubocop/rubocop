@@ -24,6 +24,14 @@ module RuboCop
         cop_config['CountComments']
       end
 
+      def skipable_lines_patterns
+        cop_config['SkipableLines']
+      end
+
+      def is_skipable_line?(source_line)
+        skipable_lines_patterns.any? { |pattern| Regexp.new(pattern).match?(source_line) }
+      end
+
       def count_as_one
         Array(cop_config['CountAsOne']).map(&:to_sym)
       end
@@ -43,7 +51,7 @@ module RuboCop
 
       # Returns true for lines that shall not be included in the count.
       def irrelevant_line(source_line)
-        source_line.blank? || (!count_comments? && comment_line?(source_line))
+        source_line.blank? || (!count_comments? && comment_line?(source_line)) || (is_skipable_line?(source_line))
       end
 
       def build_code_length_calculator(node)
@@ -51,6 +59,7 @@ module RuboCop
           node,
           processed_source,
           count_comments: count_comments?,
+          skipable_lines_patterns: skipable_lines_patterns,
           foldable_types: count_as_one
         )
       end
