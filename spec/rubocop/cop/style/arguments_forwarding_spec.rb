@@ -1012,6 +1012,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'registers an offense when forwarding kwargs/block arg with non-matching additional args', unsupported_on: :prism do
+      expect_offense(<<~RUBY)
+        def foo(**kwargs, &block)
+                ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(baz, 'qux', quux&.corge, @grault, 42, **kwargs, &block)
+                                                    ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          bar(baz, 'qux', quux&.corge, @grault, 42, ...)
+        end
+      RUBY
+    end
+
     context 'AllowOnlyRestArgument: false' do
       let(:cop_config) { { 'AllowOnlyRestArgument' => false } }
 
