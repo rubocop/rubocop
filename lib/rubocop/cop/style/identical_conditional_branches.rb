@@ -155,7 +155,7 @@ module RuboCop
           condition_variable = assignable_condition_value(node)
 
           head = heads.first
-          if head.assignment?
+          if head.respond_to?(:assignment?) && head.assignment?
             # The `send` node is used instead of the `indexasgn` node, so `name` cannot be used.
             # https://github.com/rubocop/rubocop-ast/blob/v1.29.0/lib/rubocop/ast/node/indexasgn_node.rb
             #
