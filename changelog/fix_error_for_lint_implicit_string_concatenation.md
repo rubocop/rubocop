@@ -1,0 +1,1 @@
+* [#13107](https://github.com/rubocop/rubocop/issues/13107): Fix an error for `Lint/ImplicitStringConcatenation` when there are multiple adjacent string interpolation literals on the same line. ([@koic][])

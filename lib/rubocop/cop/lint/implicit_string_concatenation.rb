@@ -40,9 +40,9 @@ module RuboCop
             end
 
             add_offense(range, message: message) do |corrector|
-              preferred  = "#{lhs_node.source} + #{rhs_node.source}"
+              range = lhs_node.source_range.end.join(rhs_node.source_range.begin)
 
-              corrector.replace(range, preferred)
+              corrector.replace(range, ' + ')
             end
           end
         end

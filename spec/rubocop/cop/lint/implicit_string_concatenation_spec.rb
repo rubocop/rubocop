@@ -36,6 +36,20 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
     end
   end
 
+  context 'on adjacent string interpolation literals on the same line with multiple concatenations' do
+    it 'registers an offense' do
+      expect_offense(<<~'RUBY')
+        "foo""string#{interpolation}""bar"
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine "string#{interpolation}" and "bar" into a single string literal, rather than using implicit string concatenation.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine "foo" and "string#{interpolation}" into a single string literal, rather than using implicit string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "foo" + "string#{interpolation}" + "bar"
+      RUBY
+    end
+  end
+
   context 'on adjacent string literals on different lines' do
     it 'does not register an offense' do
       expect_no_offenses(<<~'RUBY')
