@@ -334,13 +334,18 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/AbcSize
         def arguments_range(node, first_node)
-          arguments = node.arguments.reject { |arg| ADDITIONAL_ARG_TYPES.include?(arg.type) }
+          arguments = node.arguments.reject do |arg|
+            next true if ADDITIONAL_ARG_TYPES.include?(arg.type) || arg.variable? || arg.call_type?
+
+            arg.literal? && arg.each_descendant(:kwsplat).none?
+          end
 
           start_node = first_node || arguments.first
-
-          range_between(start_node.source_range.begin_pos, arguments.last.source_range.end_pos)
+          start_node.source_range.begin.join(arguments.last.source_range.end)
         end
+        # rubocop:enable Metrics/AbcSize
 
         def allow_only_rest_arguments?
           cop_config.fetch('AllowOnlyRestArgument', true)
