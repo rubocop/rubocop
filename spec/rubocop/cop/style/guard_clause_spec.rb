@@ -823,6 +823,27 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           RUBY
         end
       end
+
+      context 'with an empty `if` node and `raise` in else' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if foo?
+            ^^ Use a guard clause (`unless foo?; raise 'very long and detailed description of the error that makes it too long to fit on one line'; end`) instead of wrapping the code inside a conditional expression.
+            else
+              raise 'very long and detailed description of the error that makes it too long to fit on one line'
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            unless foo?
+              raise 'very long and detailed description of the error that makes it too long to fit on one line'
+            end
+
+             #{trailing_whitespace}
+
+          RUBY
+        end
+      end
     end
   end
 

@@ -277,6 +277,8 @@ module RuboCop
         end
 
         def trivial?(node)
+          return false unless node.if_branch
+
           node.branches.one? && !node.if_branch.if_type? && !node.if_branch.begin_type?
         end
 
