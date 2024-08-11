@@ -80,7 +80,7 @@ module RuboCop
         right_hand_side = version_from_gemspec_file(file)
         return if right_hand_side.nil?
 
-        find_default_minimal_known_ruby(right_hand_side)
+        find_minimal_known_ruby(right_hand_side)
       end
 
       def gemspec_filename
@@ -118,12 +118,14 @@ module RuboCop
         array.children.map(&:value)
       end
 
-      def find_default_minimal_known_ruby(right_hand_side)
+      def find_minimal_known_ruby(right_hand_side)
         version = version_from_right_hand_side(right_hand_side)
+        return unless version
+
         requirement = Gem::Requirement.new(version)
 
         KNOWN_RUBIES.detect do |v|
-          v >= DEFAULT_VERSION && requirement.satisfied_by?(Gem::Version.new("#{v}.99"))
+          requirement.satisfied_by?(Gem::Version.new("#{v}.99"))
         end
       end
     end
