@@ -1,0 +1,1 @@
+* [#13111](https://github.com/rubocop/rubocop/pull/13111): Fix an error for `Style/GuardClause` when if clause is empty and correction would not fit on single line because of `Layout/LineLength`. ([@earlopain][])
