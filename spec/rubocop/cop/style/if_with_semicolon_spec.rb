@@ -107,5 +107,23 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when a nested `if` with a semicolon is used' do
+      expect_offense(<<~RUBY)
+        if cond; run
+        ^^^^^^^^^^^^ Do not use `if cond;` - use a newline instead.
+          if cond; run
+          ^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+         run
+          cond ? run : nil
+        end
+      RUBY
+    end
   end
 end
