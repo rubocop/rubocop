@@ -18,6 +18,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG_IF_ELSE = 'Do not use `if %<expr>s;` - use `if/else` instead.'
+        MSG_NEWLINE = 'Do not use `if %<expr>s;` - use a newline instead.'
         MSG_TERNARY = 'Do not use `if %<expr>s;` - use a ternary operator instead.'
 
         def on_normal_if_unless(node)
@@ -26,16 +27,32 @@ module RuboCop
           beginning = node.loc.begin
           return unless beginning&.is?(';')
 
-          message = node.else_branch&.if_type? ? MSG_IF_ELSE : MSG_TERNARY
+          message = message(node)
 
-          add_offense(node, message: format(message, expr: node.condition.source)) do |corrector|
-            corrector.replace(node, autocorrect(node))
+          add_offense(node, message: message) do |corrector|
+            if node.if_branch&.begin_type?
+              corrector.replace(node.loc.begin, "\n")
+            else
+              corrector.replace(node, replacement(node))
+            end
           end
         end
 
         private
 
-        def autocorrect(node)
+        def message(node)
+          template = if node.if_branch&.begin_type?
+                       MSG_NEWLINE
+                     elsif node.else_branch&.if_type?
+                       MSG_IF_ELSE
+                     else
+                       MSG_TERNARY
+                     end
+
+          format(template, expr: node.condition.source)
+        end
+
+        def replacement(node)
           return correct_elsif(node) if node.else_branch&.if_type?
 
           then_code = node.if_branch ? node.if_branch.source : 'nil'
