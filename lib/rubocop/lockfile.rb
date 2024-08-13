@@ -16,7 +16,7 @@ module RuboCop
     # @param [String, Pathname, nil] lockfile_path
     def initialize(lockfile_path = nil)
       lockfile_path ||= begin
-        ::Bundler.default_lockfile if bundler_lock_parser_defined?
+        ::Bundler.default_lockfile if use_bundler_lock_parser?
       rescue ::Bundler::GemfileNotFound
         nil # We might not be a folder with a Gemfile, but that's okay.
       end
@@ -72,7 +72,7 @@ module RuboCop
     def parser
       return @parser if defined?(@parser)
 
-      @parser = if @lockfile_path && File.exist?(@lockfile_path) && bundler_lock_parser_defined?
+      @parser = if @lockfile_path && File.exist?(@lockfile_path) && use_bundler_lock_parser?
                   begin
                     lockfile = ::Bundler.read_file(@lockfile_path)
                     ::Bundler::LockfileParser.new(lockfile) if lockfile
@@ -82,8 +82,10 @@ module RuboCop
                 end
     end
 
-    def bundler_lock_parser_defined?
-      Object.const_defined?(:Bundler) && Bundler.const_defined?(:LockfileParser)
+    def use_bundler_lock_parser?
+      return false unless Object.const_defined?(:Bundler)
+
+      Bundler.const_defined?(:LockfileParser) && Bundler::VERSION >= '2.0'
     end
   end
 end
