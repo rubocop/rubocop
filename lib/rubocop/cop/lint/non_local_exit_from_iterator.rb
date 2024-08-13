@@ -14,7 +14,10 @@ module RuboCop
       # * the return is not contained in an inner scope, e.g. a lambda or a
       # method definition.
       #
-      # @example
+      # Setting `AllowReturnValue` to `false` overrides the default behavior
+      # for the first condition.
+      #
+      # @example AllowReturnValue: true (default)
       #
       #   class ItemApi
       #     rescue_from ValidationError do |e| # non-iteration block with arg
@@ -38,13 +41,21 @@ module RuboCop
       #     end
       #   end
       #
+      # @example AllowReturnValue: false
+      #
+      # class ItemAPI
+      #  def find_name
+      #   items.each do |item|
+      #     return item.name if item.id == 'foo' # warned
+      #   end
+      # end
       class NonLocalExitFromIterator < Base
         MSG = 'Non-local exit from iterator, without return value. ' \
               '`next`, `break`, `Array#find`, `Array#any?`, etc. ' \
               'is preferred.'
 
         def on_return(return_node)
-          return if return_value?(return_node)
+          return if return_value?(return_node) && allow_return_value?
 
           return_node.each_ancestor(:block, :def, :defs) do |node|
             break if scoped_node?(node)
@@ -80,6 +91,10 @@ module RuboCop
         def_node_matcher :define_method?, <<~PATTERN
           (send _ {:define_method :define_singleton_method} _)
         PATTERN
+
+        def allow_return_value?
+          cop_config['AllowReturnValue']
+        end
       end
     end
   end

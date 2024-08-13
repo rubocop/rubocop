@@ -119,6 +119,22 @@ RSpec.describe RuboCop::Cop::Lint::NonLocalExitFromIterator, :config do
     RUBY
   end
 
+  context 'when AllowReturnValue is set to false' do
+    let(:cop_config) { { 'AllowReturnValue' => false } }
+
+    it 'registers an offense, even when returning a value' do
+      expect_offense(<<~RUBY)
+        def find_first_sold_out_item(items)
+          items.each do |item|
+            return item if item.stock == 0
+            ^^^^^^ Non-local exit from iterator, [...]
+            item.foobar!
+          end
+        end
+      RUBY
+    end
+  end
+
   it 'allows return in define_method' do
     expect_no_offenses(<<~RUBY)
       [:method_one, :method_two].each do |method_name|
