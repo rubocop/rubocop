@@ -34,6 +34,7 @@ module RuboCop
       #   end
       class LiteralAsCondition < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Literal `%<literal>s` appeared as a condition.'
 
@@ -98,10 +99,40 @@ module RuboCop
 
         def check_for_literal(node)
           cond = condition(node)
-          if cond.literal?
-            add_offense(cond)
+          if cond.truthy_literal?
+            autocorrect_redundant_truthy_condition(node, cond)
+          elsif cond.falsey_literal?
+            autocorrect_redundant_falsey_condition(node, cond)
           else
             check_node(cond)
+          end
+        end
+
+        def autocorrect_redundant_truthy_condition(node, cond)
+          if node.if_type?
+            add_offense(cond) do |corrector|
+              corrector.replace(node, node.if_branch.source)
+            end
+          elsif node.while_type? || node.while_post_type?
+            add_offense(cond) do |corrector|
+              corrector.replace(cond, 'true')
+            end
+          else
+            add_offense(cond)
+          end
+        end
+
+        def autocorrect_redundant_falsey_condition(node, cond)
+          if node.if_type? && node.unless?
+            add_offense(cond) do |corrector|
+              corrector.replace(node, node.if_branch.source)
+            end
+          elsif node.until_type? || node.until_post_type?
+            add_offense(cond) do |corrector|
+              corrector.replace(cond, 'false')
+            end
+          else
+            add_offense(cond)
           end
         end
 
