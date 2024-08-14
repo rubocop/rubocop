@@ -58,7 +58,7 @@ module RuboCop
           [
             ^({begin kwbegin} ...)
             ({block numblock} (send !{nil? self} :each) _
-              (send (lvar _) {:<< :push :append} _))
+              (send (lvar _) {:<< :push :append} {send lvar begin}))
           ]
         PATTERN
 

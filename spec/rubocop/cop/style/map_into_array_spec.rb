@@ -208,6 +208,13 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
+  it 'does not register an offense when pushing splat' do
+    expect_no_offenses(<<~RUBY)
+      dest = []
+      src.each { |e| dest.push(*e) }
+    RUBY
+  end
+
   context 'new method name for replacement' do
     context 'when `Style/CollectionMethods` is configured for `map`' do
       let(:other_cops) do
