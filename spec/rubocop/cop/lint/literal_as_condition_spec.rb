@@ -2,48 +2,118 @@
 
 RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
   %w(1 2.0 [1] {} :sym :"#{a}").each do |lit|
-    it "registers an offense for literal #{lit} in if" do
+    it "registers an offense for truthy literal #{lit} in if" do
       expect_offense(<<~RUBY, lit: lit)
         if %{lit}
            ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        top
+      RUBY
     end
 
-    it "registers an offense for literal #{lit} in while" do
+    it "registers an offense for truthy literal #{lit} in modifier if" do
+      expect_offense(<<~RUBY, lit: lit)
+        top if %{lit}
+               ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top
+      RUBY
+    end
+
+    it "registers an offense for truthy literal #{lit} in ternary" do
+      expect_offense(<<~RUBY, lit: lit)
+        %{lit} ? top : bar
+        ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top
+      RUBY
+    end
+
+    it "registers an offense for truthy literal #{lit} in unless" do
+      expect_offense(<<~RUBY, lit: lit)
+        unless %{lit}
+               ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+      RUBY
+    end
+
+    it "registers an offense for truthy literal #{lit} in modifier unless" do
+      expect_offense(<<~RUBY, lit: lit)
+        top unless %{lit}
+                   ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+      RUBY
+    end
+
+    it "registers an offense for truthy literal #{lit} in while" do
       expect_offense(<<~RUBY, lit: lit)
         while %{lit}
               ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
-    end
 
-    it "registers an offense for literal #{lit} in post-loop while" do
-      expect_offense(<<~RUBY, lit: lit)
-        begin
+      expect_correction(<<~RUBY)
+        while true
           top
-        end while(%{lit})
-                  ^{lit} Literal `#{lit}` appeared as a condition.
+        end
       RUBY
     end
 
-    it "registers an offense for literal #{lit} in until" do
+    it "registers an offense for truthy literal #{lit} in post-loop while" do
+      expect_offense(<<~RUBY, lit: lit)
+        begin
+          top
+        end while %{lit}
+                  ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          top
+        end while true
+      RUBY
+    end
+
+    it "registers an offense for truthy literal #{lit} in until" do
       expect_offense(<<~RUBY, lit: lit)
         until %{lit}
               ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+
+      RUBY
     end
 
-    it "registers an offense for literal #{lit} in post-loop until" do
+    it "registers an offense for truthy literal #{lit} in post-loop until" do
       expect_offense(<<~RUBY, lit: lit)
         begin
           top
         end until %{lit}
                   ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top
       RUBY
     end
 
@@ -54,6 +124,8 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
         when x then top
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it "registers an offense for literal #{lit} in a when " \
@@ -64,6 +136,8 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
              ^{lit} Literal `#{lit}` appeared as a condition.
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it "accepts literal #{lit} in a when of a case with something after case keyword" do
@@ -90,6 +164,8 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
           in CONST then top
           end
         RUBY
+
+        expect_no_corrections
       end
 
       it "accepts literal #{lit} in a when of a case match" do
@@ -101,19 +177,31 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       end
     end
 
-    it "registers an offense for literal #{lit} in &&" do
+    it "registers an offense for truthy literal #{lit} in &&" do
       expect_offense(<<~RUBY, lit: lit)
         if x && %{lit}
                 ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        if x
+          top
+        end
+      RUBY
     end
 
-    it "registers an offense for literal #{lit} in complex cond" do
+    it "registers an offense for truthy literal #{lit} in complex cond" do
       expect_offense(<<~RUBY, lit: lit)
         if x && !(a && %{lit}) && y && z
                        ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if x && !(a) && y && z
           top
         end
       RUBY
@@ -126,12 +214,20 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
           top
         end
       RUBY
+
+      expect_no_corrections
     end
 
-    it "registers an offense for literal #{lit} in complex !" do
+    it "registers an offense for truthy literal #{lit} in complex !" do
       expect_offense(<<~RUBY, lit: lit)
         if !(x && (y && %{lit}))
                         ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if !(x && (y))
           top
         end
       RUBY
@@ -158,6 +254,8 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
         !%{lit}
          ^{lit} Literal `#{lit}` appeared as a condition.
       RUBY
+
+      expect_no_corrections
     end
 
     it "registers an offense for `not #{lit}`" do
@@ -165,6 +263,8 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
         not(%{lit})
             ^{lit} Literal `#{lit}` appeared as a condition.
       RUBY
+
+      expect_no_corrections
     end
   end
 
@@ -191,6 +291,8 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       when [1, 2, 5] then top
       end
     RUBY
+
+    expect_no_corrections
   end
 
   it 'accepts dstr literal in case' do
@@ -225,6 +327,8 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
         in [1, 2, 5] then top
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'accepts an offense for case match with a match var' do
@@ -272,6 +376,170 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
     expect_no_offenses(<<~RUBY)
       begin
         break if condition
+      end until false
+    RUBY
+  end
+
+  %w[nil false].each do |lit|
+    it "registers an offense for falsey literal #{lit} in `if`" do
+      expect_offense(<<~RUBY, lit: lit)
+        if %{lit}
+           ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in if-else" do
+      expect_offense(<<~RUBY, lit: lit)
+        if %{lit}
+           ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        else
+          foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in if-elsif" do
+      expect_offense(<<~RUBY, lit: lit)
+        if %{lit}
+           ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        elsif condition
+          foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if condition
+          foo
+        end
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in modifier `if`" do
+      expect_offense(<<~RUBY, lit: lit)
+        top if %{lit}
+               ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in ternary" do
+      expect_offense(<<~RUBY, lit: lit)
+        %{lit} ? top : bar
+        ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        bar
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in `unless`" do
+      expect_offense(<<~RUBY, lit: lit)
+        unless %{lit}
+               ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in modifier `unless`" do
+      expect_offense(<<~RUBY, lit: lit)
+        top unless %{lit}
+                   ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in `while`" do
+      expect_offense(<<~RUBY, lit: lit)
+        while %{lit}
+              ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in post-loop `while`" do
+      expect_offense(<<~RUBY, lit: lit)
+        begin
+          top
+        end while %{lit}
+                  ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in complex post-loop `while`" do
+      expect_offense(<<~RUBY, lit: lit)
+        begin
+          top
+          foo
+        end while %{lit}
+                  ^{lit} Literal `#{lit}` appeared as a condition.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top
+        foo
+      RUBY
+    end
+  end
+
+  it 'registers an offense for `nil` literal in `until`' do
+    expect_offense(<<~RUBY)
+      until nil
+            ^^^ Literal `nil` appeared as a condition.
+        top
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      until false
+        top
+      end
+    RUBY
+  end
+
+  it 'registers an offense for `nil` literal in post-loop `until`' do
+    expect_offense(<<~RUBY)
+      begin
+        top
+      end until nil
+                ^^^ Literal `nil` appeared as a condition.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        top
       end until false
     RUBY
   end
