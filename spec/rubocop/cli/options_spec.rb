@@ -1077,9 +1077,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       expect($stdout.string)
         .to eq(<<~RESULT)
           == example.rb ==
-          W:  1:  4: Lint/LiteralAsCondition: Literal 0 appeared as a condition.
+          W:  1:  4: [Correctable] Lint/LiteralAsCondition: Literal 0 appeared as a condition.
 
-          1 file inspected, 1 offense detected
+          1 file inspected, 1 offense detected, 1 offense autocorrectable
         RESULT
     end
   end
