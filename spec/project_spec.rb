@@ -4,10 +4,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
   let(:cop_names) do
     RuboCop::Cop::Registry
       .global
-      .without_department(:Test)
-      .without_department(:Test2)
       .without_department(:InternalAffairs)
-      .cops
+      .reject { |cop| cop.cop_name.start_with?('Test/') }
       .map(&:cop_name)
   end
 
@@ -291,9 +289,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
       let(:existing_cop_names) do
         RuboCop::Cop::Registry
           .global
-          .without_department(:Test)
-          .without_department(:Test2)
-          .cops
+          .reject { |cop| cop.cop_name.start_with?('Test/') }
           .map(&:cop_name)
       end
 
