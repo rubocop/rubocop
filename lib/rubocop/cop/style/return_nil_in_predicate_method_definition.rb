@@ -3,7 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # Checks if `return` or `return nil` is used in predicate method definitions.
+      # Checks if `return` or `return nil` is used in predicate method definitions,
+      # or if `nil` is implicitly returned from a predicate.
       #
       # @safety
       #   Autocorrection is marked as unsafe because the change of the return value
@@ -29,6 +30,32 @@ module RuboCop
       #     return false if condition
       #
       #     do_something?
+      #   end
+      #
+      # @example
+      #   # bad
+      #   def foo?
+      #     nil
+      #   end
+      #
+      #   # good
+      #   def foo?
+      #     false
+      #   end
+      #
+      # @example
+      #   # bad
+      #   def foo?
+      #     bar?
+      #   rescue
+      #     nil
+      #   end
+      #
+      #   # good
+      #   def foo?
+      #     bar?
+      #   rescue
+      #     false
       #   end
       #
       # @example AllowedMethods: ['foo?']
@@ -68,20 +95,36 @@ module RuboCop
             register_offense(return_node, 'return false') if return_nil?(return_node)
           end
 
-          return unless (nil_node = nil_node_at_the_end_of_method_body(body))
-
-          register_offense(nil_node, 'false')
+          terminal_nil_nodes(body).each do |nil_node|
+            register_offense(nil_node, 'false')
+          end
         end
         alias on_defs on_def
 
         private
 
-        def nil_node_at_the_end_of_method_body(body)
-          return body if body.nil_type?
-          return unless body.begin_type?
-          return unless (last_child = body.children.last)
+        def terminal_nil_nodes_in_begin(node)
+          terminal_nil_nodes(node.children.last)
+        end
 
-          last_child if last_child.is_a?(AST::Node) && last_child.nil_type?
+        def terminal_nil_nodes_in_ensure(node)
+          terminal_nil_nodes(node.node_parts[0])
+        end
+
+        def terminal_nil_nodes_in_rescue(node)
+          terminal_nil_nodes(node.body) + node.branches.flat_map { |body| terminal_nil_nodes(body) }
+        end
+
+        def terminal_nil_nodes(node)
+          return [] unless node
+
+          case node.type
+          when :nil then [node]
+          when :begin then terminal_nil_nodes_in_begin(node)
+          when :ensure then terminal_nil_nodes_in_ensure(node)
+          when :rescue then terminal_nil_nodes_in_rescue(node)
+          else []
+          end
         end
 
         def register_offense(offense_node, replacement)

@@ -74,6 +74,89 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
       RUBY
     end
 
+    it 'registers an offense when using `nil` before `rescue`' do
+      expect_offense(<<~RUBY)
+        def foo?
+          bar
+          nil
+          ^^^ Return `false` instead of `nil` in predicate methods.
+        rescue
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo?
+          bar
+          false
+        rescue
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using `nil` before `ensure`' do
+      expect_offense(<<~RUBY)
+        def foo?
+          bar
+          nil
+          ^^^ Return `false` instead of `nil` in predicate methods.
+        ensure
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo?
+          bar
+          false
+        ensure
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using `nil` inside `rescue`' do
+      expect_offense(<<~RUBY)
+        def foo?
+        rescue
+          bar
+          nil
+          ^^^ Return `false` instead of `nil` in predicate methods.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo?
+        rescue
+          bar
+          false
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using `nil` in each `rescue` branch' do
+      expect_offense(<<~RUBY)
+        def foo?
+        rescue ArgumentError
+          bar
+          nil
+          ^^^ Return `false` instead of `nil` in predicate methods.
+        rescue
+          bar
+          nil
+          ^^^ Return `false` instead of `nil` in predicate methods.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo?
+        rescue ArgumentError
+          bar
+          false
+        rescue
+          bar
+          false
+        end
+      RUBY
+    end
+
     it 'does not register an offense when using `return true`' do
       expect_no_offenses(<<~RUBY)
         def foo?
@@ -160,6 +243,15 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
         def foo?
           return false unless condition
         rescue
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when `ensure` ends in `nil`' do
+      expect_no_offenses(<<~RUBY)
+        def foo?
+        ensure
+          nil
         end
       RUBY
     end
