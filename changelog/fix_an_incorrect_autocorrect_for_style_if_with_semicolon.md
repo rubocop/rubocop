@@ -1,0 +1,1 @@
+* [#13116](https://github.com/rubocop/rubocop/pull/13116): Fix an incorrect autocorrect for `Style/IfWithSemicolon` when a single-line `if/;/end` has an argument in the then body expression. ([@koic][])

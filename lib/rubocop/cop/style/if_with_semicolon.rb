@@ -55,8 +55,8 @@ module RuboCop
         def replacement(node)
           return correct_elsif(node) if node.else_branch&.if_type?
 
-          then_code = node.if_branch ? node.if_branch.source : 'nil'
-          else_code = node.else_branch ? node.else_branch.source : 'nil'
+          then_code = node.if_branch ? build_expression(node.if_branch) : 'nil'
+          else_code = node.else_branch ? build_expression(node.else_branch) : 'nil'
 
           "#{node.condition.source} ? #{then_code} : #{else_code}"
         end
@@ -69,6 +69,17 @@ module RuboCop
             end
           RUBY
         end
+
+        # rubocop:disable Metrics/AbcSize
+        def build_expression(expr)
+          return expr.source if !expr.call_type? || expr.parenthesized? || expr.arguments.empty?
+
+          method = expr.source_range.begin.join(expr.loc.selector.end)
+          arguments = expr.first_argument.source_range.begin.join(expr.source_range.end)
+
+          "#{method.source}(#{arguments.source})"
+        end
+        # rubocop:enable Metrics/AbcSize
 
         def build_else_branch(second_condition)
           result = <<~RUBY
