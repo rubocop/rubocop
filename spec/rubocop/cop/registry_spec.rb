@@ -124,18 +124,34 @@ RSpec.describe RuboCop::Cop::Registry do
       expect(qualified).to eql('Metrics/MethodLength')
     end
 
-    it 'raises an error when a cop name is ambiguous' do
-      cop_name = 'FirstArrayElementIndentation'
-      expect { registry.qualified_cop_name(cop_name, origin) }
-        .to raise_error(RuboCop::Cop::AmbiguousCopName)
-        .with_message(
-          'Ambiguous cop name `FirstArrayElementIndentation` used in ' \
-          '/app/.rubocop.yml needs department qualifier. Did you mean ' \
-          'Layout/FirstArrayElementIndentation or ' \
-          'Test/FirstArrayElementIndentation?'
-        )
-        .and output('/app/.rubocop.yml: Warning: no department given for ' \
-                    "FirstArrayElementIndentation.\n").to_stderr
+    context 'when cops share the same class name' do
+      let(:cops) do
+        [
+          RuboCop::Cop::Test::SameNameInMultipleNamespace,
+          RuboCop::Cop::Test::Foo::SameNameInMultipleNamespace,
+          RuboCop::Cop::Test::Bar::SameNameInMultipleNamespace
+        ]
+      end
+
+      it 'raises an error when a cop name is ambiguous' do
+        cop_name = 'SameNameInMultipleNamespace'
+        expect { registry.qualified_cop_name(cop_name, origin) }
+          .to raise_error(RuboCop::Cop::AmbiguousCopName)
+          .with_message(
+            'Ambiguous cop name `SameNameInMultipleNamespace` used in ' \
+            '/app/.rubocop.yml needs department qualifier. Did you mean ' \
+            'Test/SameNameInMultipleNamespace or ' \
+            'Test/Foo/SameNameInMultipleNamespace or ' \
+            'Test/Bar/SameNameInMultipleNamespace?'
+          )
+          .and output('/app/.rubocop.yml: Warning: no department given for ' \
+                      "SameNameInMultipleNamespace.\n").to_stderr
+      end
+
+      it 'qualifies names when the cop is unambiguous' do
+        qualified = registry.qualified_cop_name('Test/SameNameInMultipleNamespace', origin)
+        expect(qualified).to eql('Test/SameNameInMultipleNamespace')
+      end
     end
 
     it 'returns the provided name if no namespace is found' do

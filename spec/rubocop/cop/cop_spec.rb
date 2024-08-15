@@ -10,40 +10,9 @@ RSpec.describe RuboCop::Cop::Cop, :config do
     expect(cop.offenses).to be_empty
   end
 
-  describe '.qualified_cop_name' do
-    include_context 'mock console output'
-
-    it 'adds namespace if the cop name is found in exactly one namespace' do
-      expect(described_class.qualified_cop_name('LineLength', '--only')).to eq('Layout/LineLength')
-    end
-
-    it 'returns the given cop name if it is not found in any namespace' do
-      expect(described_class.qualified_cop_name('UnknownCop', '--only')).to eq('UnknownCop')
-    end
-
-    it 'returns the given cop name if it already has a namespace' do
-      expect(described_class.qualified_cop_name('Layout/LineLength', '--only'))
-        .to eq('Layout/LineLength')
-    end
-
-    it 'returns the cop name in a different namespace if the provided namespace is incorrect' do
-      expect(described_class.qualified_cop_name('Style/LineLength', '--only'))
-        .to eq('Layout/LineLength')
-    end
-
-    # `Rails/SafeNavigation` was extracted to rubocop-rails gem,
-    # there were no cop whose names overlapped.
-    it 'raises an error if the cop name is in more than one namespace' do
-      expect { described_class.qualified_cop_name('SameNameInMultipleNamespace', '--only') }
-        .to raise_error(RuboCop::Cop::AmbiguousCopName)
-    end
-
-    it 'returns the given cop name if it already has a namespace even when ' \
-       'the cop exists in multiple namespaces' do
-      qualified_cop_name = described_class.qualified_cop_name('Style/SafeNavigation', '--only')
-
-      expect(qualified_cop_name).to eq('Style/SafeNavigation')
-    end
+  it 'qualified_cop_name is deprecated' do
+    expect { described_class.qualified_cop_name('Layout/LineLength', '--only') }
+      .to output(/`Cop.qualified_cop_name` is deprecated/).to_stderr
   end
 
   describe '.documentation_url' do
