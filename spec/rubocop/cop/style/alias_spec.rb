@@ -133,6 +133,15 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
       RUBY
     end
 
+    it 'does not register an offense for multiple alias in a def' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          alias :foo :bar
+          alias :baz :qux
+        end
+      RUBY
+    end
+
     it 'does not register an offense for `alias` with interpolated symbol argument' do
       expect_no_offenses(<<~'RUBY')
         alias :"string#{interpolation}" :symbol
