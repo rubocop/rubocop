@@ -628,6 +628,22 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
+  it 'registers two offenses for void literals in a class setter method' do
+    expect_offense(<<~RUBY)
+      def self.foo=(rhs)
+        42
+        ^^ Literal `42` used in void context.
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def self.foo=(rhs)
+      end
+    RUBY
+  end
+
   it 'registers two offenses for void literals in a `#each` method' do
     expect_offense(<<~RUBY)
       array.each do |_item|
@@ -701,6 +717,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
           _1
           ^^ Variable `_1` used in void context.
           42
+          ^^ Literal `42` used in void context.
         end
       RUBY
 
@@ -709,6 +726,22 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         end
       RUBY
     end
+  end
+
+  it 'registers two offenses for void literals in `#tap` method with a numbered block' do
+    expect_offense(<<~RUBY)
+      foo.tap do
+        _1
+        ^^ Variable `_1` used in void context.
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.tap do
+      end
+    RUBY
   end
 
   it 'accepts empty block' do
@@ -745,6 +778,44 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
 
     expect_correction(<<~RUBY)
       for _item in array do
+      end
+    RUBY
+  end
+
+  it 'registers two offense for void literals in an `ensure`' do
+    expect_offense(<<~RUBY)
+      def foo
+      ensure
+        bar
+        42
+        ^^ Literal `42` used in void context.
+        42
+        ^^ Literal `42` used in void context.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+      ensure
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense when the body of `ensure` is a literal' do
+    expect_offense(<<~RUBY)
+      def foo
+        bar
+      ensure
+        [1, 2, [3]]
+        ^^^^^^^^^^^ Literal `[1, 2, [3]]` used in void context.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        bar
+      ensure
       end
     RUBY
   end
