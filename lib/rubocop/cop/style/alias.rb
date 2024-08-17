@@ -80,7 +80,7 @@ module RuboCop
         def alias_method_possible?(node)
           scope_type(node) != :instance_eval &&
             node.children.none?(&:gvar_type?) &&
-            node&.parent&.type != :def
+            node.each_ancestor(:def).none?
         end
 
         def add_offense_for_args(node, &block)
