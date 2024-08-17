@@ -63,6 +63,20 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnMethodDefinition, :config do
     RUBY
   end
 
+  it 'registers an offense when an expression precedes a method definition on the same line with a semicolon' do
+    expect_offense(<<~RUBY)
+      foo;def some_method; body
+                           ^^^^ Place the first line of a multi-line method definition's body on its own line.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo;def some_method#{trailing_whitespace}
+            body
+      end
+    RUBY
+  end
+
   it 'accepts a method with one line of body' do
     expect_no_offenses(<<~RUBY)
       def some_method

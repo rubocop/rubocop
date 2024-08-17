@@ -51,6 +51,8 @@ module RuboCop
         def semicolon(node)
           @semicolon ||= {}.compare_by_identity
           @semicolon[node] ||= processed_source.sorted_tokens.select(&:semicolon?).find do |token|
+            next if token.pos.end_pos <= node.source_range.begin_pos
+
             same_line?(token, node.body) && trailing_class_definition?(token, node.body)
           end
         end

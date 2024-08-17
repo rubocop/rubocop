@@ -1,0 +1,1 @@
+* [#13132](https://github.com/rubocop/rubocop/pull/13132): Fix incorrect autocorrect for `Style/TrailingBodyOnMethodDefinition` when an expression precedes a method definition on the same line with a semicolon. ([@koic][])
