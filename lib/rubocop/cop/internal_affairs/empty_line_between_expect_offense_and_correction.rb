@@ -38,7 +38,8 @@ module RuboCop
         CORRECTION_EXPECTATION_METHODS = %i[expect_correction expect_no_corrections].freeze
 
         def on_send(node)
-          return unless (next_sibling = node.right_sibling) && next_sibling.send_type?
+          return unless (next_sibling = node.right_sibling)
+          return unless next_sibling.respond_to?(:send_type?) && next_sibling.send_type?
 
           method_name = next_sibling.method_name
           return unless CORRECTION_EXPECTATION_METHODS.include?(method_name)

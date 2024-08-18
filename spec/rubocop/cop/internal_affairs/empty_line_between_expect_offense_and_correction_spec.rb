@@ -90,4 +90,10 @@ RSpec.describe RuboCop::Cop::InternalAffairs::EmptyLineBetweenExpectOffenseAndCo
       expect_no_corrections
     RUBY
   end
+
+  it 'does not register an offense for `expect_offense` with unexpected syntax' do
+    expect_no_offenses(<<~RUBY)
+      expect_offense << a
+    RUBY
+  end
 end
