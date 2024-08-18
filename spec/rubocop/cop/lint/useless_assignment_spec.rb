@@ -321,9 +321,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         ^^^ Useless assignment to variable - `foo`. Use `||` instead of `||=`.
       RUBY
 
-      expect_correction(<<~RUBY)
-        foo || 1
-      RUBY
+      expect_no_corrections
     end
   end
 
@@ -1149,12 +1147,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         end
       RUBY
 
-      expect_correction(<<~RUBY)
-        def some_method
-          foo = do_something_returns_object_or_nil
-          foo || 1
-        end
-      RUBY
+      expect_no_corrections
     end
   end
 
@@ -1169,13 +1162,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         end
       RUBY
 
-      expect_correction(<<~RUBY)
-        def some_method
-          foo = do_something_returns_object_or_nil
-          foo || 1
-          some_return_value
-        end
-      RUBY
+      expect_no_corrections
     end
   end
 
