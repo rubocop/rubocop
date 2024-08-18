@@ -16,14 +16,13 @@ module RuboCop
       # reassignments and properly handles varied cases such as branch, loop,
       # rescue, ensure, etc.
       #
+      # This cop's autocorrection avoids cases like `a ||= 1` because removing assignment from
+      # operator assignment can cause NameError if this assignment has been used to declare
+      # a local variable. For example, replacing `a ||= 1` with `a || 1` may cause
+      # "undefined local variable or method `a' for main:Object (NameError)".
+      #
       # NOTE: Given the assignment `foo = 1, bar = 2`, removing unused variables
       # can lead to a syntax error, so this case is not autocorrected.
-      #
-      # @safety
-      #   This cop's autocorrection is unsafe because removing assignment from
-      #   operator assignment can cause NameError if this assignment has been used to declare
-      #   local variable. For example, replacing `a ||= 1` to `a || 1` may cause
-      #   "undefined local variable or method `a' for main:Object (NameError)".
       #
       # @example
       #
@@ -53,24 +52,32 @@ module RuboCop
           scope.variables.each_value { |variable| check_for_unused_assignments(variable) }
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
         def check_for_unused_assignments(variable)
           return if variable.should_be_unused?
 
           variable.assignments.reverse_each do |assignment|
-            next if assignment.used? || part_of_ignored_node?(assignment.node)
+            assignment_node = assignment.node
+            next if assignment.used? || part_of_ignored_node?(assignment_node)
 
             message = message_for_useless_assignment(assignment)
             range = offense_range(assignment)
 
             add_offense(range, message: message) do |corrector|
-              autocorrect(corrector, assignment) unless sequential_assignment?(assignment.node)
+              # In cases like `x = 1, y = 2`, where removing a variable would cause a syntax error,
+              # and where changing `x ||= 1` to `x = 1` would cause `NameError`,
+              # the autocorrect will be skipped, even if the variable is unused.
+              if sequential_assignment?(assignment_node) || assignment_node.parent&.or_asgn_type?
+                next
+              end
+
+              autocorrect(corrector, assignment)
             end
 
-            ignore_node(assignment.node) if chained_assignment?(assignment.node)
+            ignore_node(assignment_node) if chained_assignment?(assignment_node)
           end
         end
-        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
         def message_for_useless_assignment(assignment)
           variable = assignment.variable
