@@ -245,14 +245,22 @@ module RuboCop
         def entirely_literal?(node)
           case node.type
           when :array
-            node.each_value.all? { |value| entirely_literal?(value) }
+            all_values_entirely_literal?(node)
           when :hash
-            return false unless node.each_key.all? { |key| entirely_literal?(key) }
-
-            node.each_value.all? { |value| entirely_literal?(value) }
+            all_keys_entirely_literal?(node) && all_values_entirely_literal?(node)
+          when :send, :csend
+            node.method?(:freeze) && node.receiver && entirely_literal?(node.receiver)
           else
             node.literal?
           end
+        end
+
+        def all_keys_entirely_literal?(node)
+          node.each_key.all? { |key| entirely_literal?(key) }
+        end
+
+        def all_values_entirely_literal?(node)
+          node.each_value.all? { |value| entirely_literal?(value) }
         end
       end
     end
