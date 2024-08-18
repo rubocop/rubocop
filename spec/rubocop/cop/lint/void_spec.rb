@@ -493,6 +493,54 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
+  it 'registers an offense for a frozen literal in a method definition' do
+    expect_offense(<<~RUBY)
+      def something
+        'foo'.freeze
+        ^^^^^^^^^^^^ Literal `'foo'.freeze` used in void context.
+        baz
+      end
+    RUBY
+  end
+
+  it 'registers an offense for a literal frozen via safe navigation in a method definition' do
+    expect_offense(<<~RUBY)
+      def something
+        'foo'&.freeze
+        ^^^^^^^^^^^^^ Literal `'foo'&.freeze` used in void context.
+        baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for frozen non-literal in a method definition' do
+    expect_no_offenses(<<~RUBY)
+      def something
+        foo.freeze
+        baz
+      end
+    RUBY
+  end
+
+  it 'registers an offense for a nested array literal composed of frozen and unfrozen literals in a method definition' do
+    expect_offense(<<~RUBY)
+      def something
+        [1, ['foo'.freeze]]
+        ^^^^^^^^^^^^^^^^^^^ Literal `[1, ['foo'.freeze]]` used in void context.
+        baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for a nested array literal that includes frozen non-literal value elements in a method definition' do
+    expect_no_offenses(<<~RUBY)
+      def something
+        [1, [foo.freeze]]
+        baz
+      end
+    RUBY
+  end
+
   it 'does not register an offense for a hash literal that includes non-literal value elements in a method definition' do
     expect_no_offenses(<<~RUBY)
       def something
