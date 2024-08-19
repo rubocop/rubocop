@@ -697,6 +697,18 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
+  it 'corrects when assignments include __FILE__' do
+    expect_offense(<<~RUBY)
+      a, b = c, __FILE__
+      ^^^^^^^^^^^^^^^^^^ Do not use parallel assignment.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = c
+      b = __FILE__
+    RUBY
+  end
+
   it 'allows more left variables than right variables' do
     expect_no_offenses(<<~RUBY)
       a, b, c, d = 1, 2

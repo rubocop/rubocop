@@ -211,15 +211,16 @@ module RuboCop
           protected
 
           def assignment
-            @new_elements.map { |lhs, rhs| "#{lhs.source} = #{source(rhs)}" }
+            @new_elements.map { |lhs, rhs| "#{lhs.source} = #{source(rhs, rhs.loc)}" }
           end
 
           private
 
-          def source(node)
-            if node.str_type? && node.loc.begin.nil?
+          def source(node, loc)
+            # __FILE__ is treated as a StrNode but has no begin
+            if node.str_type? && loc.respond_to?(:begin) && loc.begin.nil?
               "'#{node.source}'"
-            elsif node.sym_type? && node.loc.begin.nil?
+            elsif node.sym_type? && loc.begin.nil?
               ":#{node.source}"
             else
               node.source
