@@ -39,9 +39,9 @@ module RuboCop
           splat block_pass forwarded_restarg forwarded_kwrestarg forwarded_args
         ].freeze
 
+        # rubocop:disable Metrics/AbcSize
         def on_if(node)
-          return if node.elsif_conditional?
-          return unless offense?(node)
+          return if node.modifier_form? || node.elsif_conditional? || !offense?(node)
 
           message = message(node)
 
@@ -57,6 +57,7 @@ module RuboCop
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 

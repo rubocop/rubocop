@@ -178,14 +178,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects when using modifier if' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when using modifier `if`' do
+        expect_no_offenses(<<~RUBY)
           bar if bar
-          ^^^^^^^^^^ This condition is not needed.
         RUBY
+      end
 
-        expect_correction(<<~RUBY)
-          bar
+      it 'does not register an offense when using modifier `unless`' do
+        expect_no_offenses(<<~RUBY)
+          bar unless bar
         RUBY
       end
 
