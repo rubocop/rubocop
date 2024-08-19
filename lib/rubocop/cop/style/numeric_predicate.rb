@@ -8,8 +8,8 @@ module RuboCop
       # These can be replaced by their respective predicate methods.
       # This cop can also be configured to do the reverse.
       #
-      # This cop can be customized allowed methods with `AllowedMethods`.
-      # By default, there are no methods to allowed.
+      # This cop's allowed methods can be customized with `AllowedMethods`.
+      # By default, there are no allowed methods.
       #
       # This cop disregards `#nonzero?` as its value is truthy or falsey,
       # but not `true` and `false`, and thus not always interchangeable with
