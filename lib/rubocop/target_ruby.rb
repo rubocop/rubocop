@@ -99,6 +99,8 @@ module RuboCop
         processed_source = ProcessedSource.from_file(
           file, DEFAULT_VERSION, parser_engine: @config.parser_engine
         )
+        return unless processed_source.valid_syntax?
+
         required_ruby_version(processed_source.ast).first
       end
 

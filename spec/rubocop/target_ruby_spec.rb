@@ -269,6 +269,19 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           expect(target_ruby.version).to eq default_version
         end
       end
+
+      context 'when file contains a syntax error' do
+        it 'uses the default target ruby version' do
+          content = <<~HEREDOC
+            Gem::Specification.new do |s|
+              s.required_ruby_version = '>= 3.3.0'' # invalid syntax
+            end
+          HEREDOC
+
+          create_file(gemspec_file_path, content)
+          expect(target_ruby.version).to eq default_version
+        end
+      end
     end
 
     context 'when .ruby-version is present' do
