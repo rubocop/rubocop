@@ -12,9 +12,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::UndefinedConfig, :config, :isolate
         Defined: true
     YAML
 
-    allow(RuboCop::ConfigLoader).to receive(:default_configuration).and_return(
-      RuboCop::ConfigLoader.load_file('config/default.yml', check: false)
-    )
+    stub_const('RuboCop::Cop::InternalAffairs::UndefinedConfig::CONFIG',
+               RuboCop::ConfigLoader.load_yaml_configuration('config/default.yml'))
   end
 
   it 'does not register an offense for implicit configuration keys' do
