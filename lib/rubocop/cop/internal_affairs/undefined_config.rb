@@ -5,12 +5,22 @@ module RuboCop
     module InternalAffairs
       # Looks for references to a cop configuration key that isn't defined in config/default.yml.
       class UndefinedConfig < Base
+        # `FileFinder` is a private API not intended to be used by cops,
+        # but it's fine for `InternalAffairs`.
+        extend FileFinder
+
         ALLOWED_CONFIGURATIONS = %w[
           Safe SafeAutoCorrect AutoCorrect Severity StyleGuide Details Reference Include Exclude
         ].freeze
         RESTRICT_ON_SEND = %i[[] fetch].freeze
         MSG = '`%<name>s` is not defined in the configuration for `%<cop>s` ' \
               'in `config/default.yml`.'
+        CONFIG_PATH = find_file_upwards('config/default.yml', Dir.pwd)
+        CONFIG = if CONFIG_PATH
+                   ConfigLoader.load_yaml_configuration(CONFIG_PATH)
+                 else
+                   {}
+                 end
 
         # @!method cop_class_def(node)
         def_node_search :cop_class_def, <<~PATTERN
@@ -31,7 +41,7 @@ module RuboCop
           cop_class = cop_class_def(processed_source.ast).first
           return unless (@cop_class_name = extract_cop_name(cop_class))
 
-          @config_for_cop = RuboCop::ConfigLoader.default_configuration.for_cop(@cop_class_name)
+          @config_for_cop = CONFIG[@cop_class_name] || {}
         end
 
         def on_send(node)
