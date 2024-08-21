@@ -40,6 +40,7 @@ module RuboCop
         MSG_WRITER = 'Do not prefix writer method names with `set_`.'
 
         def on_def(node)
+          return unless proper_attribute_name?(node)
           return unless bad_reader_name?(node) || bad_writer_name?(node)
 
           message = message(node)
@@ -56,6 +57,10 @@ module RuboCop
           elsif bad_writer_name?(node)
             MSG_WRITER
           end
+        end
+
+        def proper_attribute_name?(node)
+          !node.method_name.to_s.end_with?('!', '?', '=')
         end
 
         def bad_reader_name?(node)
