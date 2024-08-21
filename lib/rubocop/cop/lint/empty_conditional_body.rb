@@ -67,18 +67,30 @@ module RuboCop
 
         MSG = 'Avoid `%<keyword>s` branches without a body.'
 
+        # rubocop:disable Metrics/AbcSize
         def on_if(node)
           return if node.body || same_line?(node.loc.begin, node.loc.end)
           return if cop_config['AllowComments'] && contains_comments?(node)
 
-          add_offense(node, message: format(MSG, keyword: node.keyword)) do |corrector|
+          range = offense_range(node)
+
+          add_offense(range, message: format(MSG, keyword: node.keyword)) do |corrector|
             next if node.parent&.call_type?
 
             autocorrect(corrector, node)
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
+
+        def offense_range(node)
+          if node.loc.else
+            node.source_range.begin.join(node.loc.else.begin)
+          else
+            node.source_range
+          end
+        end
 
         def autocorrect(corrector, node)
           remove_comments(corrector, node)
@@ -93,13 +105,22 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/AbcSize
         def remove_empty_branch(corrector, node)
-          if empty_if_branch?(node) && else_branch?(node)
-            corrector.remove(branch_range(node))
-          else
-            corrector.remove(deletion_range(branch_range(node)))
-          end
+          range = if empty_if_branch?(node) && else_branch?(node)
+                    branch_range(node)
+                  elsif same_line?(node, else_kw_loc = node.loc.else)
+                    node.source_range.begin.join(else_kw_loc.begin)
+                  elsif node.parent&.loc.respond_to?(:end) &&
+                        same_line?(node, end_loc = node.parent.loc.end)
+                    node.source_range.begin.join(end_loc.begin)
+                  else
+                    deletion_range(branch_range(node))
+                  end
+
+          corrector.remove(range)
         end
+        # rubocop:enable Metrics/AbcSize
 
         def correct_other_branches(corrector, node)
           return unless require_other_branches_correction?(node)
