@@ -70,7 +70,7 @@ module RuboCop
       #   def_node_matcher(:is_even) { |value| }
       #
       #   # good
-      #   # def_node_matcher(:even?) { |value| }
+      #   def_node_matcher(:even?) { |value| }
       #
       class PredicateName < Base
         include AllowedMethods
