@@ -8,10 +8,11 @@ module RuboCop
       # The maximum allowed length is configurable.
       #
       # You can set constructs you want to fold with `CountAsOne`.
-      # Available are: 'array', 'hash', 'heredoc', and 'method_call'. Each construct
-      # will be counted as one line regardless of its actual size.
       #
-      # @example CountAsOne: ['array', 'heredoc', 'method_call']
+      # Available are: 'array', 'hash', 'heredoc', and 'method_call'.
+      # Each construct will be counted as one line regardless of its actual size.
+      #
+      # @example CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
       #
       #   module M
       #     ARRAY = [         # +1
@@ -19,7 +20,7 @@ module RuboCop
       #       2
       #     ]
       #
-      #     HASH = {          # +3
+      #     HASH = {          # +1
       #       key: 'value'
       #     }
       #
@@ -32,7 +33,7 @@ module RuboCop
       #       1,
       #       2
       #     )
-      #   end                 # 6 points
+      #   end                 # 4 points
       #
       class ModuleLength < Base
         include CodeLength
