@@ -239,8 +239,7 @@ module RuboCop
     end
 
     def remote_file?(uri)
-      regex = URI::DEFAULT_PARSER.make_regexp(%w[http https])
-      /\A#{regex}\z/.match?(uri)
+      uri.start_with?('http://', 'https://')
     end
 
     def handle_disabled_by_default(config, new_default_configuration)
