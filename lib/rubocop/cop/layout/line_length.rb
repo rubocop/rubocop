@@ -25,20 +25,20 @@ module RuboCop
       # * `Layout/ArrayAlignment`
       # * `Layout/BlockAlignment`
       # * `Layout/BlockEndNewline`
-      # * `LayoutClosingParenthesisIndentation`
-      # * `LayoutFirstArgumentIndentation`
-      # * `LayoutFirstArrayElementIndentation`
-      # * `LayoutFirstHashElementIndentation`
-      # * `LayoutFirstParameterIndentation`
-      # * `LayoutHashAlignment`
-      # * `LayoutIndentationWidth`
-      # * `LayoutMultilineArrayLineBreaks`
-      # * `LayoutMultilineBlockLayout`
-      # * `LayoutMultilineHashBraceLayout`
-      # * `LayoutMultilineHashKeyLineBreaks`
-      # * `LayoutMultilineMethodArgumentLineBreaks`
-      # * `LayoutMultilineMethodParameterLineBreaks`
-      # * `Layout/ParameterAlignment`
+      # * `Layout/ClosingParenthesisIndentation`
+      # * `Layout/FirstArgumentIndentation`
+      # * `Layout/FirstArrayElementIndentation`
+      # * `Layout/FirstHashElementIndentation`
+      # * `Layout/FirstParameterIndentation`
+      # * `Layout/HashAlignment`
+      # * `Layout/IndentationWidth`
+      # * `Layout/MultilineArrayLineBreaks`
+      # * `Layout/MultilineBlockLayout`
+      # * `Layout/MultilineHashBraceLayout`
+      # * `Layout/MultilineHashKeyLineBreaks`
+      # * `Layout/MultilineMethodArgumentLineBreaks`
+      # * `Layout/MultilineMethodParameterLineBreaks`
+      # * `Layout//ParameterAlignment`
       # * `Style/BlockDelimiters`
       #
       # Together, these cops will pretty print hashes, arrays,
