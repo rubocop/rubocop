@@ -91,8 +91,13 @@ module RuboCop
       end
 
       def uri_regexp
-        @uri_regexp ||=
-          URI::DEFAULT_PARSER.make_regexp(config.for_cop('Layout/LineLength')['URISchemes'])
+        @uri_regexp ||= begin
+          # Ruby 3.4 changes the default parser to RFC3986 which warns on make_regexp.
+          # Additionally, the RFC2396_PARSER alias is only available on 3.4 for now.
+          # Extra info at https://github.com/ruby/uri/issues/118
+          parser = defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::DEFAULT_PARSER
+          parser.make_regexp(config.for_cop('Layout/LineLength')['URISchemes'])
+        end
       end
 
       def valid_uri?(uri_ish_string)

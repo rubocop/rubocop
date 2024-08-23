@@ -39,6 +39,16 @@ RSpec.describe RuboCop::RemoteConfig do
       assert_requested :get, remote_config_url
     end
 
+    context 'when the remote URL is not a valid URI' do
+      let(:remote_config_url) { 'http://example.com/rübocop.yml' }
+
+      it 'raises a configuration error' do
+        expect do
+          remote_config
+        end.to raise_error(RuboCop::ConfigNotFoundError, /is not a valid URI/)
+      end
+    end
+
     context 'when remote URL is configured with token auth' do
       let(:token) { 'personal_access_token' }
       let(:remote_config_url) { "http://#{token}@example.com/rubocop.yml" }

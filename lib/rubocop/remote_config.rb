@@ -12,7 +12,11 @@ module RuboCop
     CACHE_LIFETIME = 24 * 60 * 60
 
     def initialize(url, base_dir)
-      @uri = URI.parse(url)
+      begin
+        @uri = URI.parse(url)
+      rescue URI::InvalidURIError
+        raise ConfigNotFoundError, "Failed to resolve configuration: '#{url}' is not a valid URI"
+      end
       @base_dir = base_dir
     end
 
