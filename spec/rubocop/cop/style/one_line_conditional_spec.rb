@@ -53,6 +53,12 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       expect_no_offenses('if cond then run end')
     end
 
+    it 'does not register an offense when using if/then/else/end with multiple expressions in the `then` body' do
+      expect_no_offenses(<<~RUBY)
+        if cond then x; y else z end
+      RUBY
+    end
+
     it 'registers and corrects an offense with ternary operator for unless/then/else/end' do
       expect_offense(<<~RUBY)
         unless cond then run else dont end
