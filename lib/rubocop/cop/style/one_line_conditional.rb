@@ -42,7 +42,7 @@ module RuboCop
         def on_normal_if_unless(node)
           return unless node.single_line?
           return unless node.else_branch
-          return if node.elsif?
+          return if node.elsif? || node.if_branch&.begin_type?
 
           message = message(node)
           add_offense(node, message: message) do |corrector|
