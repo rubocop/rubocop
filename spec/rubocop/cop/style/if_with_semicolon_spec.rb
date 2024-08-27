@@ -100,6 +100,18 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense when using multiple expressions in the `else` branch' do
+    expect_offense(<<~RUBY)
+      if cond; foo else bar'arg'; baz end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use `if/else` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if cond
+       foo else bar'arg'; baz end
+    RUBY
+  end
+
   it 'can handle modifier conditionals' do
     expect_no_offenses(<<~RUBY)
       class Hash
