@@ -30,11 +30,7 @@ module RuboCop
           message = message(node)
 
           add_offense(node, message: message) do |corrector|
-            if node.if_branch&.begin_type?
-              corrector.replace(node.loc.begin, "\n")
-            else
-              corrector.replace(node, replacement(node))
-            end
+            autocorrect(corrector, node)
           end
         end
 
@@ -43,13 +39,21 @@ module RuboCop
         def message(node)
           template = if node.if_branch&.begin_type?
                        MSG_NEWLINE
-                     elsif node.else_branch&.if_type?
+                     elsif node.else_branch&.if_type? || node.else_branch&.begin_type?
                        MSG_IF_ELSE
                      else
                        MSG_TERNARY
                      end
 
           format(template, expr: node.condition.source)
+        end
+
+        def autocorrect(corrector, node)
+          if node.if_branch&.begin_type? || node.else_branch&.begin_type?
+            corrector.replace(node.loc.begin, "\n")
+          else
+            corrector.replace(node, replacement(node))
+          end
         end
 
         def replacement(node)
