@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rexml/document'
-
 #
 # This code is based on https://github.com/mikian/rubocop-junit-formatter.
 #
@@ -15,13 +13,18 @@ module RuboCop
   module Formatter
     # This formatter formats the report data in JUnit format.
     class JUnitFormatter < BaseFormatter
+      ESCAPE_MAP = {
+        '"' => '&quot;',
+        "'" => '&apos;',
+        '<' => '&lt;',
+        '>' => '&gt;',
+        '&' => '&amp;'
+      }.freeze
+
       def initialize(output, options = {})
         super
 
-        @document = REXML::Document.new.tap { |document| document << REXML::XMLDecl.new }
-        testsuites = REXML::Element.new('testsuites', @document)
-        testsuite = REXML::Element.new('testsuite', testsuites)
-        @testsuite = testsuite.tap { |element| element.add_attributes('name' => 'rubocop') }
+        @test_case_elements = []
 
         reset_count
       end
@@ -44,6 +47,33 @@ module RuboCop
         end
       end
 
+      # rubocop:disable Layout/LineLength,Metrics/AbcSize,Metrics/MethodLength
+      def finished(_inspected_files)
+        output.puts %(<?xml version='1.0'?>)
+        output.puts %(<testsuites>)
+        output.puts %(  <testsuite name='rubocop' tests='#{@inspected_file_count}' failures='#{@offense_count}'>)
+
+        @test_case_elements.each do |test_case_element|
+          if test_case_element.failures.empty?
+            output.puts %(    <testcase classname='#{xml_escape test_case_element.classname}' name='#{test_case_element.name}'/>)
+          else
+            output.puts %(    <testcase classname='#{xml_escape test_case_element.classname}' name='#{test_case_element.name}'>)
+            test_case_element.failures.each do |failure_element|
+              output.puts %(      <failure type='#{failure_element.type}' message='#{xml_escape failure_element.message}'>)
+              output.puts %(        #{xml_escape failure_element.text})
+              output.puts %(      </failure>)
+            end
+            output.puts %(    </testcase>)
+          end
+        end
+
+        output.puts %(  </testsuite>)
+        output.puts %(</testsuites>)
+      end
+      # rubocop:enable Layout/LineLength,Metrics/AbcSize,Metrics/MethodLength
+
+      private
+
       def relevant_for_output?(options, target_offenses)
         !options[:display_only_failed] || target_offenses.any?
       end
@@ -53,11 +83,11 @@ module RuboCop
       end
 
       def add_testcase_element_to_testsuite_element(file, target_offenses, cop)
-        REXML::Element.new('testcase', @testsuite).tap do |testcase|
-          testcase.attributes['classname'] = classname_attribute_value(file)
-          testcase.attributes['name'] = cop.cop_name
-
-          add_failure_to(testcase, target_offenses, cop.cop_name)
+        @test_case_elements << TestCaseElement.new(
+          classname: classname_attribute_value(file),
+          name: cop.cop_name
+        ).tap do |test_case_element|
+          add_failure_to(test_case_element, target_offenses, cop.cop_name)
         end
       end
 
@@ -68,13 +98,6 @@ module RuboCop
         @classname_attribute_value_cache[file]
       end
 
-      def finished(_inspected_files)
-        @testsuite.add_attributes('tests' => @inspected_file_count, 'failures' => @offense_count)
-        @document.write(output, 2)
-      end
-
-      private
-
       def reset_count
         @inspected_file_count = 0
         @offense_count = 0
@@ -84,11 +107,35 @@ module RuboCop
         # One failure per offense. Zero failures is a passing test case,
         # for most surefire/nUnit parsers.
         offenses.each do |offense|
-          REXML::Element.new('failure', testcase).tap do |failure|
-            failure.attributes['type'] = cop_name
-            failure.attributes['message'] = offense.message
-            failure.add_text(offense.location.to_s)
-          end
+          testcase.failures << FailureElement.new(
+            type: cop_name,
+            message: offense.message,
+            text: offense.location.to_s
+          )
+        end
+      end
+
+      def xml_escape(string)
+        string.gsub(Regexp.union(ESCAPE_MAP.keys), ESCAPE_MAP)
+      end
+
+      class TestCaseElement # :nodoc:
+        attr_reader :classname, :name, :failures
+
+        def initialize(classname:, name:)
+          @classname = classname
+          @name = name
+          @failures = []
+        end
+      end
+
+      class FailureElement # :nodoc:
+        attr_reader :type, :message, :text
+
+        def initialize(type:, message:, text:)
+          @type = type
+          @message = message
+          @text = text
         end
       end
     end
