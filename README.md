@@ -5,7 +5,7 @@
 ----------
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](https://badge.fury.io/rb/rubocop)
-[![Actions Status](https://github.com/rubocop/rubocop/workflows/CI/badge.svg?branch=master)](https://github.com/rubocop/rubocop/actions?query=workflow%3ACI)
+[![CI](https://github.com/rubocop/rubocop/actions/workflows/rubocop.yml/badge.svg)](https://github.com/rubocop/rubocop/actions/workflows/rubocop.yml)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/test_coverage)](https://codeclimate.com/github/rubocop/rubocop/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d2d67f728e88ea84ac69/maintainability)](https://codeclimate.com/github/rubocop/rubocop/maintainability)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-7289da.svg?sanitize=true)](https://discord.gg/wJjWvGRDmm)
@@ -23,8 +23,8 @@ RuboCop is extremely flexible and most aspects of its behavior can be tweaked vi
 
 ----------
 [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/bbatsov)
-[![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-backers)
-[![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-sponsors)
+[![OpenCollective](https://opencollective.com/rubocop/backers/badge.svg)](#open-collective-for-individuals)
+[![OpenCollective](https://opencollective.com/rubocop/sponsors/badge.svg)](#open-collective-for-organizations)
 [![Tidelift](https://tidelift.com/badges/package/rubygems/rubocop)](https://tidelift.com/subscription/pkg/rubygems-rubocop?utm_source=rubygems-rubocop&utm_medium=referral&utm_campaign=readme)
 
 Working on RuboCop is often fun, but it also requires a great deal of time and energy.
