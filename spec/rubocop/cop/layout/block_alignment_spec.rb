@@ -390,6 +390,12 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end)
         ^^^ `end` at 3, 2 is not aligned with `arr.all? do |o|` at 1, 7 or `expect(arr.all? do |o|` at 1, 0.
     RUBY
+
+    expect_correction(<<~RUBY)
+      expect(arr.all? do |o|
+        o.valid?
+      end)
+    RUBY
   end
 
   it 'accepts end aligned with an op-asgn (+=, -=)' do
@@ -407,6 +413,12 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 3, 2 is not aligned with `rb` at 1, 0.
     RUBY
+
+    expect_correction(<<~RUBY)
+      rb += files.select do |file|
+        file << something
+      end
+    RUBY
   end
 
   it 'accepts end aligned with an and-asgn (&&=)' do
@@ -422,6 +434,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 2, 2 is not aligned with `variable &&= test do |ala|` at 1, 0.
     RUBY
+
+    expect_correction(<<~RUBY)
+      variable &&= test do |ala|
+      end
+    RUBY
   end
 
   it 'accepts end aligned with an or-asgn (||=)' do
@@ -436,6 +453,11 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       variable ||= test do |ala|
         end
         ^^^ `end` at 2, 2 is not aligned with `variable ||= test do |ala|` at 1, 0.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      variable ||= test do |ala|
+      end
     RUBY
   end
 
@@ -462,6 +484,12 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
         ^^^ `end` at 3, 2 is not aligned with `var1, var2` at 1, 0.
     RUBY
+
+    expect_correction(<<~RUBY)
+      var1, var2 = lambda do |test|
+        [1, 2]
+      end
+    RUBY
   end
 
   context 'when multiple similar-looking blocks have misaligned ends' do
@@ -473,6 +501,13 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         b = test do
          end
          ^^^ `end` at 4, 1 is not aligned with `b = test do` at 3, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = test do
+        end
+        b = test do
+        end
       RUBY
     end
   end
@@ -502,7 +537,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         def get_gems_by_name
           @gems ||= Hash[*get_latest_gems.map { |gem|
                            [gem.name, gem, gem.full_name, gem]
-                         }.flatten]
+          }.flatten]
         end
       RUBY
     end
@@ -533,7 +568,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         def abc
           @abc ||= A[~xyz { |x|
                        x
-                     }.flatten]
+          }.flatten]
         end
       RUBY
     end
@@ -564,7 +599,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         def abc
           @abc ||= A[!xyz { |x|
                        x
-                     }.flatten]
+          }.flatten]
         end
       RUBY
     end
@@ -595,7 +630,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         def abc
           @abc ||= A[-xyz { |x|
                        x
-                     }.flatten]
+          }.flatten]
         end
       RUBY
     end
