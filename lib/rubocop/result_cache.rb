@@ -222,19 +222,13 @@ module RuboCop
       options.to_s.gsub(/[^a-z]+/i, '_')
     end
 
-    # The external dependency checksums are cached per RuboCop team so that
-    # the checksums don't need to be recomputed for each file.
-    def team_checksum(team)
-      @checksum_by_team ||= {}.compare_by_identity
-      @checksum_by_team[team] ||= team.external_dependency_checksum
-    end
-
     # We combine team and options into a single "context" checksum to avoid
     # making file names that are too long for some filesystems to handle.
     # This context is for anything that's not (1) the RuboCop executable
     # checksum or (2) the inspected file checksum.
     def context_checksum(team, options)
-      Digest::SHA1.hexdigest([team_checksum(team), relevant_options_digest(options)].join)
+      keys = [team.external_dependency_checksum, relevant_options_digest(options)]
+      Digest::SHA1.hexdigest(keys.join)
     end
   end
 end

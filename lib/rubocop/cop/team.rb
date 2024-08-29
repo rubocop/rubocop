@@ -120,8 +120,12 @@ module RuboCop
       end
 
       def external_dependency_checksum
-        keys = cops.filter_map(&:external_dependency_checksum)
-        Digest::SHA1.hexdigest(keys.join)
+        # The external dependency checksums are cached per RuboCop team so that
+        # the checksums don't need to be recomputed for each file.
+        @external_dependency_checksum ||= begin
+          keys = cops.filter_map(&:external_dependency_checksum)
+          Digest::SHA1.hexdigest(keys.join)
+        end
       end
 
       private
