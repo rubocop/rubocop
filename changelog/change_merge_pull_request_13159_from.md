@@ -1,0 +1,1 @@
+* [#13166](https://github.com/rubocop/rubocop/pull/13166): Add `MixedOffenseSafety` mixin to support both safe and unsafe offenses in a cop, extend `Style/FileEmpty` cop to take advantage of this. ([@zopolis4][])

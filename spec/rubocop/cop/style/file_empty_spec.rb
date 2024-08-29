@@ -175,6 +175,29 @@ RSpec.describe RuboCop::Cop::Style::FileEmpty, :config do
     it 'does not register an offense for non-offending methods' do
       expect_no_offenses('File.exist?("path/to/file")')
     end
+
+    context 'when only safe cops are requested' do
+      let(:cop_options) { { safe: true } }
+
+      it 'registers an offense for `File.zero?`' do
+        expect_offense(<<~RUBY)
+          File.zero?('path/to/file')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.empty?('path/to/file')` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          File.empty?('path/to/file')
+        RUBY
+      end
+
+      it 'does not register an offense for `File.size.zero?`' do
+        expect_no_offenses('File.size("path/to/file").zero?')
+      end
+
+      it 'does not register an offense for `File.read.empty?`' do
+        expect_no_offenses('File.read("path/to/file").empty?')
+      end
+    end
   end
 
   context 'target ruby version < 2.4', :ruby23, unsupported_on: :prism do

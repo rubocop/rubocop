@@ -3884,7 +3884,7 @@ Style/FileEmpty:
   Description: >-
                  Prefer to use `File.empty?('path/to/file')` when checking if a file is empty.
   Enabled: pending
-  Safe: false
+  Safe: 'mixed'
   VersionAdded: '1.48'
 
 Style/FileRead:

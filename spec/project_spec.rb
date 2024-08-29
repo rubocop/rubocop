@@ -141,7 +141,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
       end
     end
 
-    it 'is expected that all cops documented with `@safety` are `Safe: false` or `SafeAutoCorrect: false`' do
+    it 'is expected that all cops documented with `@safety` are `Safe: false`, `Safe: mixed`,' \
+       '`SafeAutoCorrect: false`, or `SafeAutoCorrect: mixed`' do
       require 'yard'
 
       YARD::Registry.load!
@@ -158,11 +159,15 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
       unsafe_cop_names.each do |cop_name|
         cop_config = config[cop_name]
-        unsafe = cop_config['Safe'] == false || cop_config['SafeAutoCorrect'] == false
+        cop_safe_config = (cop_config['Safe'] == false) || (cop_config['Safe'] == 'mixed')
+        cop_safe_autocorrect_config = \
+          (cop_config['SafeAutoCorrect'] == false) || (cop_config['SafeAutoCorrect'] == 'mixed')
+        unsafe = cop_safe_config || cop_safe_autocorrect_config
 
         expect(unsafe).to(
           be(true),
-          "`#{cop_name}` cop should be set `Safe: false` or `SafeAutoCorrect: false` " \
+          "`#{cop_name}` cop should be set `Safe: false`, `Safe: mixed`," \
+          '`SafeAutoCorrect: false`, or `SafeAutoCorrect: mixed` ' \
           'because `@safety` YARD tag exists.'
         )
       end
