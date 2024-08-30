@@ -4,8 +4,6 @@ module RuboCop
   module Cop
     # Representation of an annotation comment in source code (eg. `# TODO: blah blah blah`).
     class AnnotationComment
-      extend Forwardable
-
       attr_reader :comment, :margin, :keyword, :colon, :space, :note
 
       # @param [Parser::Source::Comment] comment

@@ -3,9 +3,7 @@
 module RuboCop
   # Handles validation of configuration, for example cop names, parameter
   # names, and Ruby versions.
-  class ConfigValidator
-    extend Forwardable
-
+  class ConfigValidator # rubocop:disable Metrics/ClassLength
     # @api private
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode AutoCorrect StyleGuide Details].freeze
     # @api private
@@ -21,12 +19,18 @@ module RuboCop
     CONFIG_CHECK_AUTOCORRECTS = %w[always contextual disabled].freeze
     private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
 
-    def_delegators :@config, :smart_loaded_path, :for_all_cops
-
     def initialize(config)
       @config = config
       @config_obsoletion = ConfigObsoletion.new(config)
       @target_ruby = TargetRuby.new(config)
+    end
+
+    def smart_loaded_path
+      @config.smart_loaded_path
+    end
+
+    def for_all_cops
+      @config.for_all_cops
     end
 
     def validate
