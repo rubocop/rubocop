@@ -105,19 +105,24 @@ module RuboCop
 
         # Value object to extract source ranges for the different parts of a magic comment
         class CommentRange
-          extend Forwardable
-
           DIRECTIVE_REGEXP = Regexp.union(MagicComment::KEYWORDS.map do |_, v|
             Regexp.new(v, Regexp::IGNORECASE)
           end).freeze
 
           VALUE_REGEXP = Regexp.new("(?:#{DIRECTIVE_REGEXP}:\s*)(.*?)(?=;|$)")
 
-          def_delegators :@comment, :text, :loc
           attr_reader :comment
 
           def initialize(comment)
             @comment = comment
+          end
+
+          def text
+            @comment.text
+          end
+
+          def loc
+            @comment.loc
           end
 
           # A magic comment can contain one directive (normal style) or

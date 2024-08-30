@@ -9,7 +9,6 @@ require 'fileutils'
 before_us = $LOADED_FEATURES.dup
 require 'rainbow'
 
-require 'forwardable'
 require 'regexp_parser'
 require 'set'
 require 'unicode/display_width'
