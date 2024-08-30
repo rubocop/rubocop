@@ -1825,7 +1825,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       {}
     RUBY
     expect($stdout.string).to eq(<<~RESULT)
-      #{abs('example.rb')}:1:1: C: [Corrected] Style/EmptyLiteral: Use hash literal `{}` instead of `Hash.new`.
+      #{abs('example.rb')}:1:1: C: [Corrected] Style/EmptyLiteral: Use hash literal `{}` instead of `Hash.new()`.
       #{abs('example.rb')}:1:9: C: [Corrected] Style/MethodCallWithoutArgsParentheses: Do not use parentheses for method calls with no arguments.
     RESULT
   end

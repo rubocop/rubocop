@@ -9,7 +9,9 @@ module RuboCop
       # @example
       #   # bad
       #   a = Array.new
+      #   a = Array[]
       #   h = Hash.new
+      #   h = Hash[]
       #   s = String.new
       #
       #   # good
@@ -22,17 +24,17 @@ module RuboCop
         include StringLiteralsHelp
         extend AutoCorrector
 
-        ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'
-        HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'
+        ARR_MSG = 'Use array literal `[]` instead of `%<current>s`.'
+        HASH_MSG = 'Use hash literal `{}` instead of `%<current>s`.'
         STR_MSG = 'Use string literal `%<prefer>s` instead of `String.new`.'
 
-        RESTRICT_ON_SEND = %i[new].freeze
+        RESTRICT_ON_SEND = %i[new [] Array Hash].freeze
 
         # @!method array_node(node)
-        def_node_matcher :array_node, '(send (const {nil? cbase} :Array) :new)'
+        def_node_matcher :array_node, '(send (const {nil? cbase} :Array) :new (array)?)'
 
         # @!method hash_node(node)
-        def_node_matcher :hash_node, '(send (const {nil? cbase} :Hash) :new)'
+        def_node_matcher :hash_node, '(send (const {nil? cbase} :Hash) :new (array)?)'
 
         # @!method str_node(node)
         def_node_matcher :str_node, '(send (const {nil? cbase} :String) :new)'
@@ -48,6 +50,22 @@ module RuboCop
           }
         PATTERN
 
+        # @!method array_with_index(node)
+        def_node_matcher :array_with_index, <<~PATTERN
+          {
+            (send (const {nil? cbase} :Array) :[])
+            (send nil? :Array (array))
+          }
+        PATTERN
+
+        # @!method hash_with_index(node)
+        def_node_matcher :hash_with_index, <<~PATTERN
+          {
+            (send (const {nil? cbase} :Hash) :[])
+            (send nil? :Hash (array))
+          }
+        PATTERN
+
         def on_send(node)
           return unless (message = offense_message(node))
 
@@ -60,9 +78,9 @@ module RuboCop
 
         def offense_message(node)
           if offense_array_node?(node)
-            ARR_MSG
+            format(ARR_MSG, current: node.source)
           elsif offense_hash_node?(node)
-            HASH_MSG
+            format(HASH_MSG, current: node.source)
           elsif str_node(node) && !frozen_strings?
             format(STR_MSG, prefer: preferred_string_literal)
           end
@@ -89,12 +107,12 @@ module RuboCop
         end
 
         def offense_array_node?(node)
-          array_node(node) && !array_with_block(node.parent)
+          (array_node(node) && !array_with_block(node.parent)) || array_with_index(node)
         end
 
         def offense_hash_node?(node)
           # If Hash.new takes a block, it can't be changed to {}.
-          hash_node(node) && !hash_with_block(node.parent)
+          (hash_node(node) && !hash_with_block(node.parent)) || hash_with_index(node)
         end
 
         def correction(node)
