@@ -63,7 +63,16 @@ module RuboCop
         PATTERN
 
         # @!method empty_array_asgn?(node)
-        def_node_matcher :empty_array_asgn?, '(lvasgn _ (array))'
+        def_node_matcher :empty_array_asgn?, <<~PATTERN
+          (
+            lvasgn _ {
+              (array)
+              (send (const {nil? cbase} :Array) :[])
+              (send (const {nil? cbase} :Array) :new (array)?)
+              (send nil? :Array (array))
+            }
+          )
+        PATTERN
 
         # @!method lvar_ref?(node, name)
         def_node_matcher :lvar_ref?, '(lvar %1)'

@@ -215,6 +215,42 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
+  context 'destination initializer' do
+    shared_examples 'corrects' do |initializer:|
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          dest = #{initializer}
+          src.each { |e| dest << e * 2 }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          dest = src.map { |e| e * 2 }
+        RUBY
+      end
+    end
+
+    context '[]' do
+      it_behaves_like 'corrects', initializer: '[]'
+    end
+
+    context 'Array.new' do
+      it_behaves_like 'corrects', initializer: 'Array.new'
+    end
+
+    context 'Array[]' do
+      it_behaves_like 'corrects', initializer: 'Array[]'
+    end
+
+    context 'Array([])' do
+      it_behaves_like 'corrects', initializer: 'Array([])'
+    end
+
+    context 'Array.new([])' do
+      it_behaves_like 'corrects', initializer: 'Array.new([])'
+    end
+  end
+
   context 'new method name for replacement' do
     context 'when `Style/CollectionMethods` is configured for `map`' do
       let(:other_cops) do
