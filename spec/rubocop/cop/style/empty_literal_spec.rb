@@ -2,37 +2,26 @@
 
 RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
   describe 'Empty Array' do
-    it 'registers an offense for Array.new()' do
-      expect_offense(<<~RUBY)
-        test = Array.new()
-               ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
-      RUBY
+    shared_examples 'registers_and_corrects' do |initializer:|
+      it "registers an offense for #{initializer}" do
+        expect_offense(<<~RUBY)
+          test = #{initializer}
+                 #{'^' * initializer.length} Use array literal `[]` instead of `#{initializer}`.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        test = []
-      RUBY
+        expect_correction(<<~RUBY)
+          test = []
+        RUBY
+      end
     end
 
-    it 'registers an offense for Array.new' do
-      expect_offense(<<~RUBY)
-        test = Array.new
-               ^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        test = []
-      RUBY
-    end
-
-    it 'registers an offense for ::Array.new' do
-      expect_offense(<<~RUBY)
-        test = ::Array.new
-               ^^^^^^^^^^^ Use array literal `[]` instead of `Array.new`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        test = []
-      RUBY
+    context 'initializer resulting in an empty array literal' do
+      it_behaves_like 'registers_and_corrects', initializer: 'Array.new()'
+      it_behaves_like 'registers_and_corrects', initializer: 'Array.new'
+      it_behaves_like 'registers_and_corrects', initializer: '::Array.new()'
+      it_behaves_like 'registers_and_corrects', initializer: 'Array.new([])'
+      it_behaves_like 'registers_and_corrects', initializer: 'Array[]'
+      it_behaves_like 'registers_and_corrects', initializer: 'Array([])'
     end
 
     it 'does not register an offense for Array.new(3)' do
@@ -61,40 +50,45 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
     it 'does not register Array.new with block in other block' do
       expect_no_offenses('puts { Array.new { 1 } }')
     end
+
+    it 'does not register an offense for Array[3]' do
+      expect_no_offenses('Array[3]')
+    end
+
+    it 'does not register an offense for Array [3]' do
+      expect_no_offenses('Array [3]')
+    end
   end
 
   describe 'Empty Hash' do
-    it 'registers an offense for Hash.new()' do
-      expect_offense(<<~RUBY)
-        test = Hash.new()
-               ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
-      RUBY
+    shared_examples 'registers_and_corrects' do |initializer:|
+      it "registers an offense for #{initializer}" do
+        expect_offense(<<~RUBY)
+          test = #{initializer}
+                 #{'^' * initializer.length} Use hash literal `{}` instead of `#{initializer}`.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        test = {}
-      RUBY
+        expect_correction(<<~RUBY)
+          test = {}
+        RUBY
+      end
     end
 
-    it 'registers an offense for Hash.new' do
-      expect_offense(<<~RUBY)
-        test = Hash.new
-               ^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        test = {}
-      RUBY
+    context 'initializer resulting in an empty hash literal' do
+      it_behaves_like 'registers_and_corrects', initializer: 'Hash.new()'
+      it_behaves_like 'registers_and_corrects', initializer: 'Hash.new'
+      it_behaves_like 'registers_and_corrects', initializer: '::Hash.new()'
+      it_behaves_like 'registers_and_corrects', initializer: 'Hash.new([])'
+      it_behaves_like 'registers_and_corrects', initializer: 'Hash[]'
+      it_behaves_like 'registers_and_corrects', initializer: 'Hash([])'
     end
 
-    it 'registers an offense for ::Hash.new' do
-      expect_offense(<<~RUBY)
-        test = ::Hash.new
-               ^^^^^^^^^^ Use hash literal `{}` instead of `Hash.new`.
-      RUBY
+    it 'does not register an offense for Hash[3,4]' do
+      expect_no_offenses('Hash[3,4]')
+    end
 
-      expect_correction(<<~RUBY)
-        test = {}
-      RUBY
+    it 'does not register an offense for Hash [3,4]' do
+      expect_no_offenses('Hash [3,4]')
     end
 
     it 'does not register an offense for Hash.new(3)' do
