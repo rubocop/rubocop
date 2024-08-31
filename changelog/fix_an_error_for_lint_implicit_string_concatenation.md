@@ -1,1 +1,0 @@
-* [#13093](https://github.com/rubocop/rubocop/issues/13093): Fix an error for `Lint/ImplicitStringConcatenation` when implicitly concatenating a string literal with a line break and string interpolation. ([@koic][])
