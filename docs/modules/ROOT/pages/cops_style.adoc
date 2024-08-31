@@ -3943,7 +3943,9 @@ would be a literal, like an empty array, hash, or string.
 ----
 # bad
 a = Array.new
+a = Array[]
 h = Hash.new
+h = Hash[]
 s = String.new
 
 # good
@@ -5016,8 +5018,8 @@ which are passed as arguments to those methods:
 The reason is that _unannotated_ format is very similar
 to encoded URLs or Date/Time formatting strings.
 
-This cop can be customized allowed methods with `AllowedMethods`.
-By default, there are no methods to allowed.
+This cop's allowed methods can be customized with `AllowedMethods`.
+By default, there are no allowed methods.
 
 It is allowed to contain unannotated token
 if the number of them is less than or equals to
@@ -7745,8 +7747,8 @@ Array 1
 
 Checks for unwanted parentheses in parameterless method calls.
 
-This cop can be customized allowed methods with `AllowedMethods`.
-By default, there are no methods to allowed.
+This cop's allowed methods can be customized with `AllowedMethods`.
+By default, there are no allowed methods.
 
 NOTE: This cop allows the use of `it()` without arguments in blocks,
 as in `0.times { it() }`, following `Lint/ItWithoutArgumentsInBlock` cop.
@@ -9985,8 +9987,8 @@ Checks for usage of comparison operators (`==`,
 These can be replaced by their respective predicate methods.
 This cop can also be configured to do the reverse.
 
-This cop can be customized allowed methods with `AllowedMethods`.
-By default, there are no methods to allowed.
+This cop's allowed methods can be customized with `AllowedMethods`.
+By default, there are no allowed methods.
 
 This cop disregards `#nonzero?` as its value is truthy or falsey,
 but not `true` and `false`, and thus not always interchangeable with
@@ -12028,6 +12030,40 @@ y << 'b'   # raise `FrozenError`.
 @var
 ----
 
+== Style/RedundantInterpolationUnfreeze
+
+NOTE: Required Ruby version: 3.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.66
+| -
+|===
+
+Before Ruby 3.0, interpolated strings followed the frozen string literal
+magic comment which sometimes made it necessary to explicitly unfreeze them.
+Ruby 3.0 changed interpolated strings to always be unfrozen which makes
+unfreezing them redundant.
+
+ "#{foo} bar"
+
+=== Examples
+
+[source,ruby]
+----
+# bad
++"#{foo} bar"
+
+# bad
+"#{foo} bar".dup
+
+# good
+----
+
 == Style/RedundantLineContinuation
 
 |===
@@ -13262,9 +13298,9 @@ of the method is. If this is converted to safe navigation,
 `foo&.bar` can start returning `nil` as well as what the method
 returns.
 
-The default for `MaxChainLength` is `2`
+The default for `MaxChainLength` is `2`.
 We have limited the cop to not register an offense for method chains
-that exceed this option is set.
+that exceed this option's value.
 
 === Safety
 

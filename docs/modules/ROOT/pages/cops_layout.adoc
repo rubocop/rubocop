@@ -369,7 +369,7 @@ start of the line where the `do` appeared.
 start of the line where the expression started.
 
 `either` (which is the default) : the `end` is allowed to be in either
-location. The autofixer will default to `start_of_line`.
+location. The autocorrect will default to `start_of_line`.
 
 === Examples
 
@@ -2825,7 +2825,6 @@ but_in_a_method_call([
 # defined inside a method call.
 
 # bad
-# consistent
 array = [
   :value
 ]
@@ -2850,13 +2849,11 @@ and_in_a_method_call([
 # brackets are indented to the same position.
 
 # bad
-# align_brackets
 and_now_for_something = [
                           :completely_different
 ]
 
 # good
-# align_brackets
 and_now_for_something = [
                           :completely_different
                         ]
@@ -4487,20 +4484,20 @@ are recommended to further format the broken lines.
 * `Layout/ArrayAlignment`
 * `Layout/BlockAlignment`
 * `Layout/BlockEndNewline`
-* `LayoutClosingParenthesisIndentation`
-* `LayoutFirstArgumentIndentation`
-* `LayoutFirstArrayElementIndentation`
-* `LayoutFirstHashElementIndentation`
-* `LayoutFirstParameterIndentation`
-* `LayoutHashAlignment`
-* `LayoutIndentationWidth`
-* `LayoutMultilineArrayLineBreaks`
-* `LayoutMultilineBlockLayout`
-* `LayoutMultilineHashBraceLayout`
-* `LayoutMultilineHashKeyLineBreaks`
-* `LayoutMultilineMethodArgumentLineBreaks`
-* `LayoutMultilineMethodParameterLineBreaks`
-* `Layout/ParameterAlignment`
+* `Layout/ClosingParenthesisIndentation`
+* `Layout/FirstArgumentIndentation`
+* `Layout/FirstArrayElementIndentation`
+* `Layout/FirstHashElementIndentation`
+* `Layout/FirstParameterIndentation`
+* `Layout/HashAlignment`
+* `Layout/IndentationWidth`
+* `Layout/MultilineArrayLineBreaks`
+* `Layout/MultilineBlockLayout`
+* `Layout/MultilineHashBraceLayout`
+* `Layout/MultilineHashKeyLineBreaks`
+* `Layout/MultilineMethodArgumentLineBreaks`
+* `Layout/MultilineMethodParameterLineBreaks`
+* `Layout//ParameterAlignment`
 * `Style/BlockDelimiters`
 
 Together, these cops will pretty print hashes, arrays,

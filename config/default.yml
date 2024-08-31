@@ -2543,7 +2543,7 @@ Lint/UselessAssignment:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.11'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.66'
 
 Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
@@ -2562,7 +2562,7 @@ Lint/UselessMethodDefinition:
 Lint/UselessNumericOperation:
   Description: 'Checks for useless numeric operations.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.66'
 
 Lint/UselessRescue:
   Description: 'Checks for useless `rescue`s.'
@@ -5065,7 +5065,7 @@ Style/RedundantInterpolation:
 Style/RedundantInterpolationUnfreeze:
   Description: 'Checks for redundant unfreezing of interpolated strings.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.66'
 
 Style/RedundantLineContinuation:
   Description: 'Check for redundant line continuation.'

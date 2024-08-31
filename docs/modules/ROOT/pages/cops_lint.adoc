@@ -6981,9 +6981,9 @@ end
 
 | Enabled
 | Yes
-| Command-line only (Unsafe)
+| Command-line only
 | 0.11
-| 1.61
+| 1.66
 |===
 
 Checks for every useless assignment to local variable in every
@@ -6999,15 +6999,13 @@ Currently this cop has advanced logic that detects unreferenced
 reassignments and properly handles varied cases such as branch, loop,
 rescue, ensure, etc.
 
+This cop's autocorrection avoids cases like `a ||= 1` because removing assignment from
+operator assignment can cause NameError if this assignment has been used to declare
+a local variable. For example, replacing `a ||= 1` with `a || 1` may cause
+"undefined local variable or method `a' for main:Object (NameError)".
+
 NOTE: Given the assignment `foo = 1, bar = 2`, removing unused variables
 can lead to a syntax error, so this case is not autocorrected.
-
-=== Safety
-
-This cop's autocorrection is unsafe because removing assignment from
-operator assignment can cause NameError if this assignment has been used to declare
-local variable. For example, replacing `a ||= 1` to `a || 1` may cause
-"undefined local variable or method `a' for main:Object (NameError)".
 
 === Examples
 
@@ -7114,6 +7112,47 @@ end
 def method(*args)
   super(:extra_arg, *args)
 end
+----
+
+== Lint/UselessNumericOperation
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.66
+| -
+|===
+
+Certain numeric operations have no impact, being:
+Adding or subtracting 0, multiplying or dividing by 1 or raising to the power of 1.
+These are probably leftover from debugging, or are mistakes.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+x + 0
+x - 0
+x * 1
+x / 1
+x ** 1
+
+# good
+x
+
+# bad
+x += 0
+x -= 0
+x *= 1
+x /= 1
+x **= 1
+
+# good
+x = x
 ----
 
 == Lint/UselessRescue
