@@ -142,4 +142,46 @@ RSpec.describe RuboCop::Cop::Naming::AccessorMethodName, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense for no args method name starts with `get_` and ends with `!`' do
+    expect_no_offenses(<<~RUBY)
+      def get_attribute!
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for no args method name starts with `get_` and ends with `?`' do
+    expect_no_offenses(<<~RUBY)
+      def get_attribute?
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for no args method name starts with `get_` and ends with `=`' do
+    expect_no_offenses(<<~RUBY)
+      def get_attribute=
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for one arg method name starts with `set_` and ends with `!`' do
+    expect_no_offenses(<<~RUBY)
+      def set_attribute!(attribute)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for one arg method name starts with `set_` and ends with `?`' do
+    expect_no_offenses(<<~RUBY)
+      def set_attribute?(attribute)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for one arg method name starts with `set_` and ends with `=`' do
+    expect_no_offenses(<<~RUBY)
+      def set_attribute=(attribute)
+      end
+    RUBY
+  end
 end
