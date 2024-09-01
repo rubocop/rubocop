@@ -293,6 +293,12 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeMatcherDirective, :config do
       RUBY
     end
 
+    it 'registers no offense without second argument' do
+      expect_no_offenses(<<~RUBY)
+        #{method} :foo?
+      RUBY
+    end
+
     context 'when using class methods' do
       it 'registers an offense when the directive is missing' do
         expect_offense(<<~RUBY, method: method)
