@@ -34,7 +34,7 @@ module RuboCop
         def_node_matcher :array_node, '(send (const {nil? cbase} :Array) :new (array)?)'
 
         # @!method hash_node(node)
-        def_node_matcher :hash_node, '(send (const {nil? cbase} :Hash) :new (array)?)'
+        def_node_matcher :hash_node, '(send (const {nil? cbase} :Hash) :new)'
 
         # @!method str_node(node)
         def_node_matcher :str_node, '(send (const {nil? cbase} :String) :new)'
