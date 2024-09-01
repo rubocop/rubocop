@@ -179,6 +179,7 @@ module RuboCop
 
         def comment_in_else?(node)
           node = node.parent while node.if_type? && node.elsif?
+          return false unless node.else?
 
           processed_source.contains_comment?(node.loc.else.join(node.source_range.end))
         end
