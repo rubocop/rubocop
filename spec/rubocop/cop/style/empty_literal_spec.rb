@@ -78,7 +78,6 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       it_behaves_like 'registers_and_corrects', initializer: 'Hash.new()'
       it_behaves_like 'registers_and_corrects', initializer: 'Hash.new'
       it_behaves_like 'registers_and_corrects', initializer: '::Hash.new()'
-      it_behaves_like 'registers_and_corrects', initializer: 'Hash.new([])'
       it_behaves_like 'registers_and_corrects', initializer: 'Hash[]'
       it_behaves_like 'registers_and_corrects', initializer: 'Hash([])'
     end
@@ -105,6 +104,10 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
 
     it 'does not register an offense for ::Hash.new { block }' do
       expect_no_offenses('test = ::Hash.new { block }')
+    end
+
+    it 'does not register an offense for Hash.new([])' do
+      expect_no_offenses('Hash.new([])')
     end
 
     context 'Ruby 2.7', :ruby27 do
