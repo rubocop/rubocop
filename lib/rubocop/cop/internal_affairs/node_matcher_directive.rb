@@ -45,7 +45,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return if node.arguments.none?
+          return unless node.arguments.count == 2
           return unless valid_method_name?(node)
 
           actual_name = node.first_argument.value.to_s
