@@ -214,5 +214,137 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
         bar
       RUBY
     end
+
+    # These are keywords and cannot be redefined.
+    next if %w[return next break retry redo].include? t
+
+    it "registers an offense for `#{t}` after `instance_eval`" do
+      expect_offense <<~RUBY
+        class Dummy
+          def #{t}; end
+        end
+
+        d = Dummy.new
+        d.instance_eval do
+          #{t}
+          bar
+        end
+
+        #{t}
+        bar
+        ^^^ Unreachable code detected.
+      RUBY
+    end
+
+    it "registers an offense for `#{t}` with nested redefinition" do
+      expect_offense <<~RUBY
+        def foo
+          def #{t}; end
+        end
+
+        #{t}
+        bar
+        ^^^ Unreachable code detected.
+      RUBY
+    end
+
+    it "accepts `#{t}` if redefined" do
+      expect_no_offenses(wrap(<<~RUBY))
+        def #{t}; end
+        #{t}
+        bar
+      RUBY
+    end
+
+    it "accepts `#{t}` if redefined even if it's called recursively" do
+      expect_no_offenses(wrap(<<~RUBY))
+        def #{t}
+          #{t}
+          bar
+        end
+
+        #{t}
+        bar
+      RUBY
+    end
+
+    it "accepts `#{t}` if called in `instance_eval`" do
+      expect_no_offenses <<~RUBY
+        class Dummy
+          def #{t}; end
+        end
+
+        d = Dummy.new
+        d.instance_eval do
+          #{t}
+          bar
+        end
+      RUBY
+    end
+
+    it "accepts `#{t}` if called in nested `instance_eval`" do
+      expect_no_offenses <<~RUBY
+        class Dummy
+          def #{t}; end
+        end
+
+        d = Dummy.new
+        d.instance_eval do
+          d2 = Dummy.new
+          d2.instance_eval do
+            #{t}
+            bar
+          end
+        end
+      RUBY
+    end
+
+    it "registers an offense for redefined `#{t}` if it is called on Kernel" do
+      expect_offense <<~RUBY
+        def #{t}; end
+
+        Kernel.#{t}
+        foo
+        ^^^ Unreachable code detected.
+      RUBY
+    end
+
+    it "accepts redefined `#{t}` if it is called on a class other than Kernel" do
+      expect_no_offenses <<~RUBY
+        def #{t}; end
+
+        Dummy.#{t}
+        foo
+      RUBY
+    end
+
+    it "registers an offense for `#{t}` inside `instance_eval` if it is called on Kernel" do
+      expect_offense <<~RUBY
+        class Dummy
+          def #{t}; end
+        end
+
+        d = Dummy.new
+        d.instance_eval do
+          Kernel.#{t}
+          foo
+          ^^^ Unreachable code detected.
+        end
+      RUBY
+    end
+
+    it "accepts `#{t}` inside `instance_eval` if it is called on a class other than Kernel" do
+      expect_no_offenses <<~RUBY
+        class Dummy
+          def #{t}; end
+        end
+
+        d = Dummy.new
+        d.instance_eval do
+          Dummy.#{t}
+          foo
+        end
+      RUBY
+    end
   end
 end
