@@ -16,7 +16,7 @@ module RuboCop
       #   "#{foo} bar".dup
       #
       #   # good
-      #  "#{foo} bar"
+      #   "#{foo} bar"
       #
       class RedundantInterpolationUnfreeze < Base
         include FrozenStringLiteral
