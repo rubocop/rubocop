@@ -374,6 +374,10 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
           it_behaves_like 'corrects', template: 'begin; %s end'
         end
       end
+
+      context 'in an ensure' do
+        it_behaves_like 'corrects', template: 'begin; ensure; %s end'
+      end
     end
 
     context 'in a block' do
@@ -404,6 +408,18 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
       context 'at the end' do
         it_behaves_like 'skip correcting', template: 'def foo; %s end'
       end
+
+      context 'in a constructor' do
+        it_behaves_like 'corrects', template: 'def initialize; %s; end'
+      end
+
+      context 'in an assignment method' do
+        it_behaves_like 'corrects', template: 'def foo=(value); %s; end'
+      end
+    end
+
+    context 'in a for loop' do
+      it_behaves_like 'corrects', template: 'for i in foo; %s; end'
     end
   end
 end

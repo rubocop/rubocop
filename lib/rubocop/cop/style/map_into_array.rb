@@ -147,10 +147,8 @@ module RuboCop
             false
           when :begin, :kwbegin
             !node.right_sibling && return_value_used?(parent)
-          when :block, :numblock
-            !parent.void_context?
           else
-            true
+            !parent.respond_to?(:void_context?) || !parent.void_context?
           end
         end
 
