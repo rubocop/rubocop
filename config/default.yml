@@ -1634,7 +1634,7 @@ Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
-  VersionChanged: '1.7'
+  VersionChanged: '<<next>>'
 
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'
@@ -2145,6 +2145,11 @@ Lint/NumberedParameterAssignment:
   Description: 'Checks for uses of numbered parameter assignment.'
   Enabled: pending
   VersionAdded: '1.9'
+
+Lint/NumericOperationWithConstantResult:
+  Description: 'Checks for numeric operations with constant results.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
 
 Lint/OrAssignmentToConstant:
   Description: 'Checks unintended or-assignment to constant.'

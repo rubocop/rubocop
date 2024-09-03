@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands, :config do
-  %i[== != === <=> =~ && || - > >= < <= / % | ^].each do |operator|
+  %i[== != === <=> =~ && || > >= < <= | ^].each do |operator|
     it "registers an offense for `#{operator}` with duplicate operands" do
       expect_offense(<<~RUBY, operator: operator)
         y = a.x(arg) %{operator} a.x(arg)
@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands, :config 
     end
   end
 
-  %i[+ * ** << >>].each do |operator|
+  %i[- + * / ** << >>].each do |operator|
     it "does not register an offense for `#{operator}` with duplicate operands" do
       expect_no_offenses(<<~RUBY)
         y = a.x(arg) #{operator} a.x(arg)
