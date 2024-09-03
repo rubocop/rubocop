@@ -16,6 +16,7 @@ module RuboCop
       return unless tree
 
       traverse(tree, &on_duplicated)
+      tree
     end
 
     def self.traverse(tree, &on_duplicated)

@@ -1768,6 +1768,32 @@ RSpec.describe RuboCop::ConfigLoader do
       expect(configuration.to_h).to eq({})
     end
 
+    it 'rejects non-allowed yaml types' do
+      create_file(configuration_path, <<~YAML)
+        foo: !ruby/object:Rational
+          numerator: 1
+          denominator: 2
+      YAML
+
+      expect { load_file }.to raise_error(Psych::DisallowedClass, /Rational/)
+    end
+
+    it 'allows yaml anchors' do
+      create_file(configuration_path, <<~YAML)
+        Style/Alias: &anchor
+          Enabled: false
+        Style/Encoding:
+          <<: *anchor
+      YAML
+
+      expect(load_file.to_h).to eq(
+        {
+          'Style/Alias' => { 'Enabled' => false },
+          'Style/Encoding' => { 'Enabled' => false }
+        }
+      )
+    end
+
     context 'set neither true nor false to value to Enabled' do
       before do
         create_file(configuration_path, <<~YAML)
