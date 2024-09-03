@@ -203,5 +203,57 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
         end
       RUBY
     end
+
+    it 'registers an offense and corrects when using nested single-line if/;/end in block of if body' do
+      expect_offense(<<~RUBY)
+        if foo?; bar { if qux?; quux else end } end
+                       ^^^^^^^^^^^^^^^^^^^^^^ Do not use `if qux?;` - use a ternary operator instead.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if foo?;` - use `if/else` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo?
+         bar { qux? ? quux : nil } end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using nested single-line if/;/end in the block of else body' do
+      expect_offense(<<~RUBY)
+        if foo?; bar else baz { if qux?; quux else end } end
+                                ^^^^^^^^^^^^^^^^^^^^^^ Do not use `if qux?;` - use a ternary operator instead.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if foo?;` - use `if/else` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo?
+         bar else baz { qux? ? quux : nil } end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using nested single-line if/;/end in numblock of if body' do
+      expect_offense(<<~RUBY)
+        if foo?; bar { if _1; quux else end } end
+                       ^^^^^^^^^^^^^^^^^^^^ Do not use `if _1;` - use a ternary operator instead.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if foo?;` - use `if/else` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo?
+         bar { _1 ? quux : nil } end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using nested single-line if/;/end in the numblock of else body' do
+      expect_offense(<<~RUBY)
+        if foo?; bar else baz { if _1; quux else end } end
+                                ^^^^^^^^^^^^^^^^^^^^ Do not use `if _1;` - use a ternary operator instead.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if foo?;` - use `if/else` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo?
+         bar else baz { _1 ? quux : nil } end
+      RUBY
+    end
   end
 end

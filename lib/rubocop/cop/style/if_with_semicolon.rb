@@ -36,10 +36,12 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def message(node)
           template = if node.if_branch&.begin_type?
                        MSG_NEWLINE
-                     elsif node.else_branch&.if_type? || node.else_branch&.begin_type?
+                     elsif node.else_branch&.if_type? || node.else_branch&.begin_type? ||
+                           use_block_in_branches?(node)
                        MSG_IF_ELSE
                      else
                        MSG_TERNARY
@@ -47,13 +49,18 @@ module RuboCop
 
           format(template, expr: node.condition.source)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def autocorrect(corrector, node)
-          if node.if_branch&.begin_type? || node.else_branch&.begin_type?
+          if node.branches.compact.any?(&:begin_type?) || use_block_in_branches?(node)
             corrector.replace(node.loc.begin, "\n")
           else
             corrector.replace(node, replacement(node))
           end
+        end
+
+        def use_block_in_branches?(node)
+          node.branches.compact.any? { |branch| branch.block_type? || branch.numblock_type? }
         end
 
         def replacement(node)
