@@ -61,8 +61,13 @@ module RuboCop
 
         def on_or(node)
           root_of_or_node = root_of_or_node(node)
-
           return unless node == root_of_or_node
+
+          if or_root_changed?(root_of_or_node)
+            reset_comparison
+            @current_or_root = root_of_or_node
+          end
+
           return unless nested_variable_comparison?(root_of_or_node)
           return if @allowed_method_comparison
           return if @compared_elements.size < comparisons_threshold
@@ -72,8 +77,6 @@ module RuboCop
             prefer_method = "[#{elements}].include?(#{variables_in_node(node).first})"
 
             corrector.replace(node, prefer_method)
-
-            reset_comparison
           end
         end
 
@@ -91,6 +94,10 @@ module RuboCop
         def_node_matcher :simple_comparison_rhs?, <<~PATTERN
           (send $_ :== $lvar)
         PATTERN
+
+        def or_root_changed?(or_node)
+          !@current_or_root.equal?(or_node)
+        end
 
         def nested_variable_comparison?(node)
           return false unless nested_comparison?(node)
@@ -146,6 +153,7 @@ module RuboCop
         end
 
         def reset_comparison
+          @current_or_root = nil
           @compared_elements = []
           @allowed_method_comparison = false
         end
