@@ -18,7 +18,7 @@ module RuboCop
       #   # good - using BigDecimal
       #   x.to_d == 0.1.to_d
       #
-      #  # good - comparing against zero
+      #   # good - comparing against zero
       #   x == 0.0
       #   x != 0.0
       #
