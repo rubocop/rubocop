@@ -70,6 +70,18 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
+    it 'registers and corrects an offense with ternary operator for nested if/then/else/end' do
+      expect_offense(<<~RUBY)
+        if cond then foo else if cond2; bar else baz end; end
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? foo : (if cond2; bar else baz end)
+      RUBY
+    end
+
     it 'does not register an offense for unless/then/else/end with empty else' do
       expect_no_offenses('unless cond then run else end')
     end
@@ -295,6 +307,22 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
           run
         else
           dont
+        end
+      RUBY
+    end
+
+    it 'registers and corrects an offense with ternary operator for nested if/then/else/end' do
+      expect_offense(<<~RUBY)
+        if cond then foo else if cond2; bar else baz end; end
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+          foo
+        else
+          if cond2; bar else baz end
         end
       RUBY
     end
