@@ -438,4 +438,103 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
       end
     end
   end
+
+  context 'with IgnoreDuplicateElseBranch: true' do
+    let(:cop_config) { { 'IgnoreDuplicateElseBranch' => true } }
+
+    it 'allows duplicate `else` branch for `if-elsif`' do
+      expect_no_offenses(<<~RUBY)
+        if x
+          foo
+        elsif y
+          bar
+        else
+          bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate `if-else`' do
+      expect_offense(<<~RUBY)
+        if x
+          foo
+        else
+        ^^^^ Duplicate branch body detected.
+          foo
+        end
+      RUBY
+    end
+
+    it 'allows duplicate `else` branch for `case` with multiple `when` branches' do
+      expect_no_offenses(<<~RUBY)
+        case x
+        when foo
+          do_foo
+        when bar
+          do_bar
+        else
+          do_bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate `else` branch for `case` with single `when` branch' do
+      expect_offense(<<~RUBY)
+        case x
+        when foo
+          do_foo
+        else
+        ^^^^ Duplicate branch body detected.
+          do_foo
+        end
+      RUBY
+    end
+
+    it 'allows duplicate `else` branch for `case` with multiple `match` branches' do
+      expect_no_offenses(<<~RUBY)
+        case x
+        in foo then do_foo
+        in bar then do_bar
+        else do_bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate `else` branch for `case` with single `match` branch' do
+      expect_offense(<<~RUBY)
+        case x
+        in foo then do_foo
+        else do_foo
+        ^^^^ Duplicate branch body detected.
+        end
+      RUBY
+    end
+
+    it 'allows duplicate `else` branch for `rescue` with multiple `resbody` branches' do
+      expect_no_offenses(<<~RUBY)
+        begin
+          x
+        rescue FooError
+          foo
+        rescue BarError
+          bar
+        else
+          bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate `else` branch for `rescue` with single `resbody` branch' do
+      expect_offense(<<~RUBY)
+        begin
+          x
+        rescue FooError
+          foo
+        else
+        ^^^^ Duplicate branch body detected.
+          foo
+        end
+      RUBY
+    end
+  end
 end

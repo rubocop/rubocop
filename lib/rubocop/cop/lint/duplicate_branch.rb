@@ -15,6 +15,9 @@ module RuboCop
       # With `IgnoreConstantBranches: true`, branches are not registered
       # as offenses if they return a constant value.
       #
+      # With `IgnoreDuplicateElseBranch: true`, in conditionals with multiple branches,
+      # duplicate 'else' branches are not registered as offenses.
+      #
       # @example
       #   # bad
       #   if foo
@@ -83,20 +86,36 @@ module RuboCop
       #   else MEDIUM_SIZE
       #   end
       #
+      # @example IgnoreDuplicateElseBranch: true
+      #   # good
+      #   if foo
+      #     do_foo
+      #   elsif bar
+      #     do_bar
+      #   else
+      #     do_foo
+      #   end
+      #
       class DuplicateBranch < Base
         MSG = 'Duplicate branch body detected.'
 
         def on_branching_statement(node)
-          branches(node).each_with_object(Set.new) do |branch, previous|
-            next unless consider_branch?(branch)
+          branches = branches(node)
+          branches.each_with_object(Set.new) do |branch, previous|
+            next unless consider_branch?(branches, branch)
 
             add_offense(offense_range(branch)) unless previous.add?(branch)
           end
         end
-        alias on_if on_branching_statement
         alias on_case on_branching_statement
         alias on_case_match on_branching_statement
         alias on_rescue on_branching_statement
+
+        def on_if(node)
+          # Ignore 'elsif' nodes, because we don't want to check them separately whether
+          # the 'else' branch is duplicated. We want to check only on the outermost conditional.
+          on_branching_statement(node) unless node.elsif?
+        end
 
         private
 
@@ -118,9 +137,13 @@ module RuboCop
           node.branches.compact
         end
 
-        def consider_branch?(branch)
+        def consider_branch?(branches, branch)
           return false if ignore_literal_branches? && literal_branch?(branch)
           return false if ignore_constant_branches? && const_branch?(branch)
+
+          if ignore_duplicate_else_branches? && duplicate_else_branch?(branches, branch)
+            return false
+          end
 
           true
         end
@@ -131,6 +154,10 @@ module RuboCop
 
         def ignore_constant_branches?
           cop_config.fetch('IgnoreConstantBranches', false)
+        end
+
+        def ignore_duplicate_else_branches?
+          cop_config.fetch('IgnoreDuplicateElseBranch', false)
         end
 
         def literal_branch?(branch) # rubocop:disable Metrics/CyclomaticComplexity
@@ -146,6 +173,14 @@ module RuboCop
 
         def const_branch?(branch)
           branch.const_type?
+        end
+
+        def duplicate_else_branch?(branches, branch)
+          return false unless (parent = branch.parent)
+
+          branches.size > 2 &&
+            branch.equal?(branches.last) &&
+            parent.respond_to?(:else?) && parent.else?
         end
       end
     end
