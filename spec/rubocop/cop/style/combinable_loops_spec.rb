@@ -60,6 +60,16 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'registers an offense and does not correct when looping over the same data with different block variable names' do
+      expect_offense(<<~RUBY)
+        items.each { |item| foo(item) }
+        items.each { |x| bar(x) }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'registers an offense when looping over the same data for the third consecutive time with numbered blocks' do
       expect_offense(<<~RUBY)
         items.each { foo(_1) }
