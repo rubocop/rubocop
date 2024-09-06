@@ -46,7 +46,11 @@ module RuboCop
 
           message = message(node)
           add_offense(node, message: message) do |corrector|
+            next if part_of_ignored_node?(node)
+
             autocorrect(corrector, node)
+
+            ignore_node(node)
           end
         end
 
