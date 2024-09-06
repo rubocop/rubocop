@@ -46,7 +46,7 @@ module RuboCop
 
         # Only process spec files
         def relevant_file?(file)
-          file.end_with?('_spec.rb')
+          file.end_with?('_spec.rb') && super
         end
       end
     end

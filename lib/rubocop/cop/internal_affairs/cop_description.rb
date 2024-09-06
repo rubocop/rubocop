@@ -114,7 +114,7 @@ module RuboCop
         end
 
         def relevant_file?(file)
-          file.match?(%r{/cop/.*\.rb\z})
+          file.match?(%r{/cop/.*\.rb\z}) && super
         end
       end
     end
