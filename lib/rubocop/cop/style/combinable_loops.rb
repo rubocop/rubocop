@@ -7,6 +7,9 @@ module RuboCop
       # can be combined into a single loop. It is very likely that combining them
       # will make the code more efficient and more concise.
       #
+      # NOTE: Autocorrection is not applied when the block variable names differ in separate loops,
+      # as it is impossible to determine which variable name should be prioritized.
+      #
       # @safety
       #   The cop is unsafe, because the first loop might modify state that the
       #   second loop depends on; these two aren't combinable.
@@ -61,6 +64,7 @@ module RuboCop
 
         MSG = 'Combine this loop with the previous loop.'
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def on_block(node)
           return unless node.parent&.begin_type?
           return unless collection_looping_method?(node)
@@ -68,9 +72,12 @@ module RuboCop
           return unless node.body && node.left_sibling.body
 
           add_offense(node) do |corrector|
+            next unless node.arguments == node.left_sibling.arguments
+
             combine_with_left_sibling(corrector, node)
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         alias on_numblock on_block
 
