@@ -5,6 +5,19 @@ module RuboCop
     module Style
       # Checks for unnecessary conditional expressions.
       #
+      # NOTE: Since the intention of the comment cannot be automatically determined,
+      # autocorrection is not applied when a comment is used, as shown below:
+      #
+      # [source,ruby]
+      # -----
+      # if b
+      #   # Important note.
+      #   b
+      # else
+      #   c
+      # end
+      # -----
+      #
       # @example
       #   # bad
       #   a = b ? b : c
@@ -30,6 +43,7 @@ module RuboCop
       #   end
       #
       class RedundantCondition < Base
+        include CommentsHelp
         include RangeHelp
         extend AutoCorrector
 
@@ -39,25 +53,15 @@ module RuboCop
           splat block_pass forwarded_restarg forwarded_kwrestarg forwarded_args
         ].freeze
 
-        # rubocop:disable Metrics/AbcSize
         def on_if(node)
           return if node.modifier_form? || node.elsif_conditional? || !offense?(node)
 
           message = message(node)
 
           add_offense(range_of_offense(node), message: message) do |corrector|
-            if node.ternary? && !branches_have_method?(node)
-              correct_ternary(corrector, node)
-            elsif redundant_condition?(node)
-              corrector.replace(node, node.if_branch.source)
-            else
-              corrected = make_ternary_form(node)
-
-              corrector.replace(node, corrected)
-            end
+            autocorrect(corrector, node)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 
@@ -66,6 +70,20 @@ module RuboCop
             REDUNDANT_CONDITION
           else
             MSG
+          end
+        end
+
+        def autocorrect(corrector, node)
+          return if node.each_descendant.any? { |descendant| contains_comments?(descendant) }
+
+          if node.ternary? && !branches_have_method?(node)
+            correct_ternary(corrector, node)
+          elsif redundant_condition?(node)
+            corrector.replace(node, node.if_branch.source)
+          else
+            corrected = make_ternary_form(node)
+
+            corrector.replace(node, corrected)
           end
         end
 
