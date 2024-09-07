@@ -7,15 +7,7 @@ gemspec
 gem 'asciidoctor'
 gem 'bump', require: false
 gem 'bundler', '>= 1.15.0', '< 3.0'
-# FIXME: This is a workaround to prevent the following warning in YARD:
-# https://github.com/lsegal/yard/pull/1546
-# Please remove this dependency when the issue is resolved.
-gem 'logger'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
-# FIXME: This is a workaround to prevent the following warning in YARD:
-# https://github.com/lsegal/yard/pull/1545
-# Please remove this dependency when the issue is resolved.
-gem 'ostruct'
 gem 'prism', '~> 1.0.0'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
