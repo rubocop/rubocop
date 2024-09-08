@@ -81,16 +81,14 @@ module RuboCop
           RUBY
         end
 
-        # rubocop:disable Metrics/AbcSize
         def build_expression(expr)
-          return expr.source if !expr.call_type? || expr.parenthesized? || expr.arguments.empty?
+          return expr.source unless require_argument_parentheses?(expr)
 
           method = expr.source_range.begin.join(expr.loc.selector.end)
           arguments = expr.first_argument.source_range.begin.join(expr.source_range.end)
 
           "#{method.source}(#{arguments.source})"
         end
-        # rubocop:enable Metrics/AbcSize
 
         def build_else_branch(second_condition)
           result = <<~RUBY
@@ -110,6 +108,12 @@ module RuboCop
           end
 
           result
+        end
+
+        def require_argument_parentheses?(node)
+          return false unless node.call_type?
+
+          !node.parenthesized? && node.arguments.any? && !node.method?(:[]) && !node.method?(:[]=)
         end
       end
     end

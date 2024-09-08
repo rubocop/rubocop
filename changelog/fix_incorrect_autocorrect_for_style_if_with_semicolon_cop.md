@@ -1,0 +1,1 @@
+* [#13208](https://github.com/rubocop/rubocop/pull/13208): Fix an incorrect autocorrect for `Style/IfWithSemicolon` when single-line `if/;/end` when the then body contains a method call with `[]` or `[]=`. ([@koic][])

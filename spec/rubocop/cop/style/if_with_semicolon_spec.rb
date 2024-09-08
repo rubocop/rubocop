@@ -100,6 +100,28 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects a single-line `if/;/end` when the then body contains a method call with `[]`' do
+    expect_offense(<<~RUBY)
+      if cond; foo[key] else bar end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? foo[key] : bar
+    RUBY
+  end
+
+  it 'registers an offense and corrects a single-line `if/;/end` when the then body contains a method call with `[]=`' do
+    expect_offense(<<~RUBY)
+      if cond; foo[key] = value else bar end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? foo[key] = value : bar
+    RUBY
+  end
+
   it 'registers an offense when using multiple expressions in the `else` branch' do
     expect_offense(<<~RUBY)
       if cond; foo else bar'arg'; baz end
