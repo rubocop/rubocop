@@ -23,7 +23,7 @@ https://www.codefactor.io[CodeFactor] reports various code metrics like duplicat
 
 == Codety
 
-https://github.com/codetyio/codety-scanner[Codety Scanner] is a comprehensive code scanner designed to detect code issues for 20+ programming languages and IaC frameworks, it embeds 5000+ code analysis rules and can detect code smells, unexpected secrets/tokens, vulnerable code, performance issues, style violations, etc. Codety Scanner is open source and is free for personal and commercial use, Codety Scanner's source code is contributed and maintained by Codety Inc.
+https://github.com/codetyio/codety-scanner[Codety Scanner] is a comprehensive code scanner designed to detect code issues for 20+ programming languages and IaC frameworks, it embeds 5000+ code analysis rules(include RuboCop rules) and can detect code smells, unexpected secrets/tokens, vulnerable code, performance issues, style violations, etc. Codety Scanner is open source and is free for personal and commercial use, Codety Scanner's source code is contributed and maintained by Codety Inc.
 
 == Hound
 
