@@ -234,11 +234,11 @@ module RuboCop
         end
 
         def autocorrect_heredoc_argument(corrector, node, heredoc_branch, leave_branch, guard)
+          remove_whole_lines(corrector, node.loc.end)
           return unless node.else?
 
           remove_whole_lines(corrector, leave_branch.source_range)
           remove_whole_lines(corrector, node.loc.else)
-          remove_whole_lines(corrector, node.loc.end)
           remove_whole_lines(corrector, range_of_branch_to_remove(node, guard))
           corrector.insert_after(
             heredoc_branch.last_argument.loc.heredoc_end, "\n#{leave_branch.source}"
