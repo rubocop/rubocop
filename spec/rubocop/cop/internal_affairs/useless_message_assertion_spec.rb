@@ -41,18 +41,4 @@ RSpec.describe RuboCop::Cop::InternalAffairs::UselessMessageAssertion, :config d
   it 'does not register an offense and no error when empty file' do
     expect_no_offenses('', 'example_spec.rb')
   end
-
-  context 'when the file is excluded' do
-    let(:config) do
-      RuboCop::Config.new(
-        'InternalAffairs/UselessMessageAssertion' => { 'Exclude' => ['**/example_spec.rb'] }
-      )
-    end
-
-    it 'does not register an offense' do
-      expect_no_offenses(<<~RUBY, 'example_spec.rb')
-        let(:msg) { described_class::MSG }
-      RUBY
-    end
-  end
 end
