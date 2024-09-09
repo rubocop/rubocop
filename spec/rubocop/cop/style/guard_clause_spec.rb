@@ -455,7 +455,6 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           raise <<~MESSAGE
             oops
           MESSAGE
-        end
       end
     RUBY
   end
