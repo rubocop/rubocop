@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::InternalAffairs::CopDescription, :config do
-  before do
-    allow_any_instance_of(described_class).to receive(:relevant_file?).and_return(true) # rubocop:disable RSpec/AnyInstance
-  end
-
   context 'The description starts with `This cop ...`' do
     it 'registers an offense and corrects if using just a verb' do
       expect_offense(<<~RUBY)
@@ -144,35 +140,6 @@ RSpec.describe RuboCop::Cop::InternalAffairs::CopDescription, :config do
         module RuboCop
           module Cop
             module Lint
-              class Foo < Base
-              end
-            end
-          end
-        end
-      RUBY
-    end
-  end
-
-  context 'when the file is excluded' do
-    before do
-      allow_any_instance_of(described_class).to receive(:relevant_file?).and_call_original # rubocop:disable RSpec/AnyInstance
-    end
-
-    let(:config) do
-      RuboCop::Config.new(
-        'InternalAffairs/CopDescription' => { 'Exclude' => ['**/example_cop.rb'] }
-      )
-    end
-
-    it 'does not register an offense' do
-      expect_no_offenses(<<~RUBY, 'lib/rubocop/cop/example_cop.rb')
-        module RuboCop
-          module Cop
-            module Lint
-              #
-              # Checks some problem
-              #
-              # ...
               class Foo < Base
               end
             end

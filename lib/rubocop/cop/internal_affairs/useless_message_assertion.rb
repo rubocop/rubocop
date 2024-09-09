@@ -43,11 +43,6 @@ module RuboCop
             node.ancestors.any? { |ancestor| rspec_expectation_on_msg?(ancestor) }
           end
         end
-
-        # Only process spec files
-        def relevant_file?(file)
-          file.end_with?('_spec.rb') && super
-        end
       end
     end
   end

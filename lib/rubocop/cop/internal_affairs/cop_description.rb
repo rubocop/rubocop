@@ -112,10 +112,6 @@ module RuboCop
           body = comment_body(comment_line)
           node.source.index(body)
         end
-
-        def relevant_file?(file)
-          file.match?(%r{/cop/.*\.rb\z}) && super
-        end
       end
     end
   end
