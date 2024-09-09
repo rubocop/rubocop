@@ -22,6 +22,24 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           end
         RUBY
       end
+
+      it 'accepts when argument to #{access_modifier} is splat with a `%i` array literal' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            foo
+            #{access_modifier} *%i[bar baz]
+          end
+        RUBY
+      end
+
+      it 'accepts when argument to #{access_modifier} is splat with a constant' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            foo
+            #{access_modifier} *METHOD_NAMES
+          end
+        RUBY
+      end
     end
 
     context 'do not allow access modifiers on symbols' do
@@ -32,6 +50,30 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           class Foo
             foo
             %{access_modifier} :bar
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense when argument to #{access_modifier} is splat with a `%i` array literal' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class Foo
+            foo
+            %{access_modifier} *%i[bar baz]
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense when argument to #{access_modifier} is splat with a constant' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class Foo
+            foo
+            %{access_modifier} *METHOD_NAMES
             ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
           end
         RUBY
