@@ -468,6 +468,46 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
             end
         RUBY
       end
+
+      it 'registers an offense in case_match multi-line branches' do
+        expect_offense(<<~RUBY)
+          case match
+          in :pattern1
+            foo(value:)
+               ^^^^^^^^ Omit parentheses for method calls with arguments.
+          in :pattern2
+            bar(value:)
+               ^^^^^^^^ Omit parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case match
+          in :pattern1
+            foo value:
+          in :pattern2
+            bar value:
+          end
+        RUBY
+      end
+
+      it 'does not register an offense in case_match single-line branches' do
+        expect_no_offenses(<<~RUBY)
+          case match
+          in :pattern1 then foo(value:)
+          in :pattern2 then bar(value:)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense in case single-line branches' do
+        expect_no_offenses(<<~RUBY)
+          case match
+          when /pattern1/ then foo(value:)
+          when /pattern2/ then bar(value:)
+          end
+        RUBY
+      end
     end
 
     context 'anonymous rest arguments in 3.2', :ruby32 do
