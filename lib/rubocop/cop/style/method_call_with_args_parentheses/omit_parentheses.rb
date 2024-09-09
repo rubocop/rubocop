@@ -47,11 +47,11 @@ module RuboCop
             node.each_ancestor(:def, :defs).any?(&:endless?) && node.arguments.any?
           end
 
-          def require_parentheses_for_hash_value_omission?(node)
+          def require_parentheses_for_hash_value_omission?(node) # rubocop:disable Metrics/PerceivedComplexity
             return false unless (last_argument = node.last_argument)
             return false if !last_argument.hash_type? || !last_argument.pairs.last&.value_omission?
 
-            node.parent&.conditional? || !last_expression?(node)
+            node.parent&.conditional? || node.parent&.single_line? || !last_expression?(node)
           end
 
           # Require hash value omission be enclosed in parentheses to prevent the following issue:
