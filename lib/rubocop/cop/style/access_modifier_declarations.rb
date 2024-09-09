@@ -68,6 +68,8 @@ module RuboCop
       #   class Foo
       #
       #     private :bar, :baz
+      #     private *%i[qux quux]
+      #     private *METHOD_NAMES
       #
       #   end
       #
@@ -76,6 +78,8 @@ module RuboCop
       #   class Foo
       #
       #     private :bar, :baz
+      #     private *%i[qux quux]
+      #     private *METHOD_NAMES
       #
       #   end
       #
@@ -128,7 +132,9 @@ module RuboCop
 
         # @!method access_modifier_with_symbol?(node)
         def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
-          (send nil? {:private :protected :public :module_function} (sym _))
+          (send nil? {:private :protected :public :module_function}
+            {(sym _) (splat {#percent_symbol_array? const})}
+          )
         PATTERN
 
         # @!method access_modifier_with_attr?(node)
@@ -168,6 +174,10 @@ module RuboCop
               insert_inline_modifier(corrector, grouped_def_node, node.method_name)
             end
           end
+        end
+
+        def percent_symbol_array?(node)
+          node.array_type? && node.percent_literal?(:symbol)
         end
 
         def allow_modifiers_on_symbols?(node)
@@ -218,7 +228,7 @@ module RuboCop
 
         def find_corresponding_def_node(node)
           if access_modifier_with_symbol?(node)
-            method_name = node.first_argument.value
+            method_name = node.first_argument.respond_to?(:value) && node.first_argument.value
             node.parent.each_child_node(:def).find do |child|
               child.method?(method_name)
             end
