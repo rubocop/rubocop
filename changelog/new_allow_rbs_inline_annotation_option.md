@@ -1,0 +1,1 @@
+* [#13223](https://github.com/rubocop/rubocop/pull/13223): Add `AllowRBSInlineAnnotation` config option to `Layout/LeadingCommentSpace` to support RBS::Inline style annotation comments. ([@tk0miya][])

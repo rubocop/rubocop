@@ -221,4 +221,42 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
       end
     end
   end
+
+  describe 'RBS::Inline annotation' do
+    context 'when config option is disabled' do
+      let(:cop_config) { { 'AllowRBSInlineAnnotation' => false } }
+
+      it 'registers an offense and corrects using RBS::Inline annotation' do
+        expect_offense(<<~RUBY)
+          include Enumerable #[Integer]
+                             ^^^^^^^^^^ Missing space after `#`.
+
+          attr_reader :name #: String
+                            ^^^^^^^^^ Missing space after `#`.
+          attr_reader :age  #: Integer?
+                            ^^^^^^^^^^^ Missing space after `#`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          include Enumerable # [Integer]
+
+          attr_reader :name # : String
+          attr_reader :age  # : Integer?
+        RUBY
+      end
+    end
+
+    context 'when config option is enabled' do
+      let(:cop_config) { { 'AllowRBSInlineAnnotation' => true } }
+
+      it 'does not register an offense when using RBS::Inline annotation' do
+        expect_no_offenses(<<~RUBY)
+          include Enumerable #[Integer]
+
+          attr_reader :name #: String
+          attr_reader :age  #: Integer?
+        RUBY
+      end
+    end
+  end
 end
