@@ -10,6 +10,9 @@ module RuboCop
       # NOTE: If there is a method call before the accessor method it is always allowed
       # as it might be intended like Sorbet.
       #
+      # NOTE: If there is a RBS::Inline annotation comment just after the accessor method
+      # it is always allowed.
+      #
       # @example EnforcedStyle: grouped (default)
       #   # bad
       #   class Foo
@@ -92,7 +95,7 @@ module RuboCop
           comment_line?(processed_source[node.first_line - 2])
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def groupable_accessor?(node)
           return true unless (previous_expression = node.left_siblings.last)
 
@@ -105,11 +108,16 @@ module RuboCop
 
           return true unless previous_expression.send_type?
 
+          # Accessors with RBS::Inline annotations shouldn't be groupable.
+          return false if processed_source.comments.any? do |c|
+            same_line?(c, previous_expression) && c.text.start_with?('#:')
+          end
+
           previous_expression.attribute_accessor? ||
             previous_expression.access_modifier? ||
             node.first_line - previous_expression.last_line > 1 # there is a space between nodes
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def class_send_elements(class_node)
           class_def = class_node.body
