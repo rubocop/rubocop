@@ -133,6 +133,23 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     expect_no_offenses('a( (b) )')
   end
 
+  it 'accepts parenthesis for compound range literals' do
+    expect_no_offenses(<<-RUBY)
+      rand (a - b)..(c - d)
+    RUBY
+  end
+
+  it 'does not accepts parenthesis for simple range literals' do
+    expect_offense(<<~RUBY)
+      rand (1..10)
+          ^ `(1..10)` interpreted as grouped expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      rand(1..10)
+    RUBY
+  end
+
   it 'does not register an offense for a call with multiple arguments' do
     expect_no_offenses('assert_equal (0..1.9), acceleration.domain')
   end
