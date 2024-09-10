@@ -236,4 +236,43 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense for RBS::Inline annotation for method definition' do
+    expect_no_offenses(<<~RUBY)
+      def x #: String
+      end
+
+      class Y
+        def y #: String
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for RBS::Inline annotation for non method definition' do
+    expect_offense(<<~RUBY)
+      class X #: String
+              ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end #: String
+          ^^^^^^^^^ Do not place comments on the same line as the `end` keyword.
+      module Y #: String
+               ^^^^^^^^^ Do not place comments on the same line as the `module` keyword.
+      end
+      begin #: String
+            ^^^^^^^^^ Do not place comments on the same line as the `begin` keyword.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      #: String
+      class X
+      end
+      #: String
+      module Y
+      end
+      #: String
+      begin
+      end
+    RUBY
+  end
 end

@@ -10,7 +10,7 @@ module RuboCop
       #
       # Note that some comments
       # (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
-      # are allowed.
+      # and RBS::Inline annotation comments are allowed.
       #
       # Autocorrection removes comments from `end` keyword and keeps comments
       # for `class`, `module`, `def` and `begin` above the keyword.
@@ -82,12 +82,18 @@ module RuboCop
 
         def offensive?(comment)
           line = source_line(comment)
+          return false if rbs_inline_annotation?(line, comment)
+
           KEYWORD_REGEXES.any? { |r| r.match?(line) } &&
             ALLOWED_COMMENT_REGEXES.none? { |r| r.match?(line) }
         end
 
         def source_line(comment)
           comment.source_range.source_line
+        end
+
+        def rbs_inline_annotation?(line, comment)
+          comment.text.start_with?('#:') && line.start_with?(/\A\s*def\s/)
         end
       end
     end
