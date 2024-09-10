@@ -7,6 +7,8 @@ module RuboCop
         # Style omit_parentheses
         # rubocop:disable Metrics/ModuleLength, Metrics/CyclomaticComplexity
         module OmitParentheses
+          include RangeHelp
+
           TRAILING_WHITESPACE_REGEX = /\s+\Z/.freeze
           OMIT_MSG = 'Omit parentheses for method calls with arguments.'
           private_constant :OMIT_MSG
@@ -30,10 +32,13 @@ module RuboCop
           end
 
           def autocorrect(corrector, node)
+            range = args_begin(node)
             if parentheses_at_the_end_of_multiline_call?(node)
-              corrector.replace(args_begin(node), ' \\')
+              # Whitespace after line continuation (`\ `) is a syntax error
+              with_whitespace = range_with_surrounding_space(range, side: :right, newlines: false)
+              corrector.replace(with_whitespace, ' \\')
             else
-              corrector.replace(args_begin(node), ' ')
+              corrector.replace(range, ' ')
             end
             corrector.remove(node.loc.end)
           end

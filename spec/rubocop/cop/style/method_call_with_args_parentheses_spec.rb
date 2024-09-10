@@ -978,7 +978,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        foo \\#{trailing_whitespace}
+        foo \\
           bar: 3
 
       RUBY
