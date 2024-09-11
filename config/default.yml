@@ -5269,6 +5269,13 @@ Style/SafeNavigation:
   # Maximum length of method chains for register an offense.
   MaxChainLength: 2
 
+Style/SafeNavigationChainLength:
+  Description: 'Enforces safe navigation chains length to not exceed the configured maximum.'
+  StyleGuide: '#safe-navigation'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Max: 2
+
 Style/Sample:
   Description: >-
                   Use `sample` instead of `shuffle.first`,
