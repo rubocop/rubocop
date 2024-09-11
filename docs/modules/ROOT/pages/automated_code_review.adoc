@@ -21,6 +21,10 @@ https://codeclimate.com/[Code Climate] provides automated code review for test c
 
 https://www.codefactor.io[CodeFactor] reports various code metrics like duplication, churn, and problems for code style, performance, complexity, and many others. CodeFactor is free for open source. It supports analysis and autocorrection for RuboCop.
 
+== Codety
+
+https://www.codety.io[Codety] detects code issues for 30+ programming languages and IaC frameworks, Codety Scanner is open source and it embeds 6,000+ code analysis rules(including RuboCop rules).
+
 == Hound
 
 https://houndci.com/[Hound] comments on style violations in GitHub pull requests, allowing you and your team to better review and maintain a clean codebase.
