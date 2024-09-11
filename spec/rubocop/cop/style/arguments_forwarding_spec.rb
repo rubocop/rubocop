@@ -932,18 +932,10 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
-    it 'registers an offense when forwarding args with a leading default arg', unsupported_on: :prism do
-      expect_offense(<<~RUBY)
+    it 'registers no offense when forwarding args with a leading default arg', unsupported_on: :prism do
+      expect_no_offenses(<<~RUBY)
         def foo(x, y = 42, *args, &block)
-                           ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
           bar(x, y, *args, &block)
-                    ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        def foo(x, y = 42, ...)
-          bar(x, y, ...)
         end
       RUBY
     end
@@ -1110,6 +1102,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       expect_correction(<<~RUBY)
         def baz(qux, quuz, &)
           bar(qux, quuz, &)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when forwarding args with a leading default arg', unsupported_on: :prism do
+      expect_offense(<<~RUBY)
+        def foo(x, y = 42, *args, &block)
+                           ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(x, y, *args, &block)
+                    ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(x, y = 42, ...)
+          bar(x, y, ...)
         end
       RUBY
     end

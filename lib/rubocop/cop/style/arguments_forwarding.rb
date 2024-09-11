@@ -414,16 +414,24 @@ module RuboCop
 
           private
 
+          # rubocop:disable Metrics/CyclomaticComplexity
           def can_forward_all?
             return false if any_arg_referenced?
-            return false if ruby_32_missing_rest_or_kwest?
+            return false if ruby_30_or_lower_optarg?
+            return false if ruby_32_or_higher_missing_rest_or_kwest?
             return false unless offensive_block_forwarding?
             return false if additional_kwargs_or_forwarded_kwargs?
 
             no_additional_args? || (target_ruby_version >= 3.0 && no_post_splat_args?)
           end
+          # rubocop:enable Metrics/CyclomaticComplexity
 
-          def ruby_32_missing_rest_or_kwest?
+          # def foo(a = 41, ...) is a syntax error in 3.0.
+          def ruby_30_or_lower_optarg?
+            target_ruby_version <= 3.0 && @def_node.arguments.any?(&:optarg_type?)
+          end
+
+          def ruby_32_or_higher_missing_rest_or_kwest?
             target_ruby_version >= 3.2 && !forwarded_rest_and_kwrest_args
           end
 
