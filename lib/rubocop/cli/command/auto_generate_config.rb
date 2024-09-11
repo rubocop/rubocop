@@ -151,16 +151,15 @@ module RuboCop
         end
 
         def relative_path_to_todo_from_options_config
-          return AUTO_GENERATED_FILE if !@options[:config] || options_config_in_root?
+          return AUTO_GENERATED_FILE unless @options[:config]
 
-          base = Pathname.new('.')
-          config_dir = Pathname.new(File.dirname(@options[:config]))
+          base = Pathname.new(Dir.pwd)
+          config_dir = Pathname.new(@options[:config]).realpath.dirname
+
+          # Don't have the path start with `/`
+          return AUTO_GENERATED_FILE if config_dir == base
 
           "#{base.relative_path_from(config_dir)}/#{AUTO_GENERATED_FILE}"
-        end
-
-        def options_config_in_root?
-          File.dirname(@options[:config]) == '.'
         end
       end
     end
