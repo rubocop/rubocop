@@ -47,8 +47,10 @@ module RuboCop
           lockfile_path = LOCKFILE_NAMES.map do |lockfile_name|
             Pathname(project_dir).join(lockfile_name)
           end.find(&:exist?)
+          version_data = lockfile_path&.read || RuboCop::Version::STRING
+          config_data = Pathname(ConfigFinder.find_config_path(Dir.pwd)).read
 
-          Digest::SHA1.hexdigest(lockfile_path&.read || RuboCop::Version::STRING)
+          Digest::SHA1.hexdigest(version_data + config_data)
         end
 
         def dir
