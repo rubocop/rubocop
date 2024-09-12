@@ -540,6 +540,22 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect(cli.run(%w[--auto-gen-config --config dir/cop_config.yml])).to eq(0)
       end
 
+      context 'when --config is used with an absolute path' do
+        it 'can generate a todo list' do
+          create_file('example1.rb', ['$x = 0 ', '#' * 90, 'y ', 'puts x'])
+          create_empty_file('.rubocop.yml')
+          config_path = File.absolute_path('.rubocop.yml')
+          expect(cli.run(['--auto-gen-config', '--config', config_path])).to eq(0)
+          expect(Dir['.*']).to include('.rubocop_todo.yml')
+
+          # Check that paths are relativised correctly
+          expect(File.read('.rubocop_todo.yml')).to include(" - 'example1.rb'")
+          expect(File.read('.rubocop.yml')).to include('inherit_from: .rubocop_todo.yml')
+          # Checks that the command can be run again with config modified by itself.
+          expect(cli.run(['--auto-gen-config', '--config', config_path])).to eq(0)
+        end
+      end
+
       it 'can generate a todo list if default .rubocop.yml exists' do
         create_file('example1.rb', ['def foo', '  # bar', '  end'])
         create_file('.rubocop.yml', <<~YAML)
