@@ -14,16 +14,19 @@ module RuboCop
 
         def on_new_investigation
           processed_source.ast_with_comments.each do |node, comments|
-            next unless comments.find { |c| @column_delta = delta(c) }
-
-            add_offense(node) { |corrector| autocorrect(corrector, node) }
+            comments.each do |c|
+              if (delta = delta(c))
+                add_offense(node) { |corrector| autocorrect(corrector, node, c, delta) }
+              end
+            end
           end
         end
 
         private
 
-        def autocorrect(corrector, node)
-          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        def autocorrect(corrector, node, comment, delta)
+          AlignmentCorrector.correct(corrector, processed_source, node, delta)
+          corrector.replace(comment, '#')
         end
 
         def delta(comment)
