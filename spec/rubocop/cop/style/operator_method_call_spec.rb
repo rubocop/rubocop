@@ -75,51 +75,6 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
       RUBY
     end
 
-    it 'registers an offense when using named block forwarding' do
-      expect_offense(<<~RUBY)
-        def foo(&block)
-          bar.#{operator_method}(&block)
-             ^ Redundant dot detected.
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        def foo(&block)
-          bar #{operator_method}(&block)
-        end
-      RUBY
-    end
-
-    it 'registers an offense when using named rest arguments forwarding' do
-      expect_offense(<<~RUBY)
-        def foo(*args)
-          bar.#{operator_method}(*args)
-             ^ Redundant dot detected.
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        def foo(*args)
-          bar #{operator_method}(*args)
-        end
-      RUBY
-    end
-
-    it 'registers an offense when using named keyword rest arguments forwarding' do
-      expect_offense(<<~RUBY)
-        def foo(**options)
-          bar.#{operator_method}(**options)
-             ^ Redundant dot detected.
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        def foo(**options)
-          bar #{operator_method}(**options)
-        end
-      RUBY
-    end
-
     it 'does not register an offense when using multiple arguments' do
       expect_no_offenses(<<~RUBY)
         foo.#{operator_method}(bar, baz)
@@ -205,6 +160,14 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
     RUBY
   end
 
+  it 'does not register an offense when using named block forwarding' do
+    expect_no_offenses(<<~RUBY)
+      def foo(&blk)
+        bar.==(&blk)
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using anonymous block forwarding', :ruby31 do
     expect_no_offenses(<<~RUBY)
       def foo(&)
@@ -213,10 +176,26 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
     RUBY
   end
 
+  it 'does not register an offense when using named rest arguments forwarding' do
+    expect_no_offenses(<<~RUBY)
+      def foo(*args)
+        bar.==(*args)
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using anonymous rest arguments forwarding', :ruby32 do
     expect_no_offenses(<<~RUBY)
       def foo(*)
         bar.==(*)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when named anonymous keyword rest arguments forwarding' do
+    expect_no_offenses(<<~RUBY)
+      def foo(**kwargs)
+        bar.==(**kwargs)
       end
     RUBY
   end

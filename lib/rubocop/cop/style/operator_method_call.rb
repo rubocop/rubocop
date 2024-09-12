@@ -22,6 +22,9 @@ module RuboCop
 
         MSG = 'Redundant dot detected.'
         RESTRICT_ON_SEND = %i[| ^ & <=> == === =~ > >= < <= << >> + - * / % ** ~ ! != !~].freeze
+        INVALID_SYNTAX_ARG_TYPES = %i[
+          splat kwsplat forwarded_args forwarded_restarg forwarded_kwrestarg block_pass
+        ].freeze
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
         def on_send(node)
@@ -29,7 +32,9 @@ module RuboCop
           return if node.receiver.const_type? || !node.arguments.one?
 
           _lhs, _op, rhs = *node
-          return if !rhs || method_call_with_parenthesized_arg?(rhs) || anonymous_forwarding?(rhs)
+          if !rhs || method_call_with_parenthesized_arg?(rhs) || invalid_syntax_argument?(rhs)
+            return
+          end
 
           add_offense(dot) do |corrector|
             wrap_in_parentheses_if_chained(corrector, node)
@@ -50,11 +55,10 @@ module RuboCop
           argument.children.first && argument.parent.parenthesized?
         end
 
-        def anonymous_forwarding?(argument)
-          return true if argument.forwarded_args_type? || argument.forwarded_restarg_type?
-          return true if argument.hash_type? && argument.children.first&.forwarded_kwrestarg_type?
+        def invalid_syntax_argument?(argument)
+          type = argument.hash_type? ? argument.children.first&.type : argument.type
 
-          argument.block_pass_type? && argument.source == '&'
+          INVALID_SYNTAX_ARG_TYPES.include?(type)
         end
 
         def wrap_in_parentheses_if_chained(corrector, node)
