@@ -169,6 +169,7 @@ module RuboCop
         raise 'Expected correction but no corrections were made' if new_source == source
 
         expect(new_source).to eq(correction)
+        expect(@processed_source).to be_valid_syntax, 'Expected correction to be valid syntax'
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
 

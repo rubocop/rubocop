@@ -53,6 +53,8 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
     end
 
     it "registers an offense when using `foo.#{operator_method}(bar)`" do
+      skip('https://github.com/rubocop/rubocop/issues/13225') if operator_method == :/
+
       expect_offense(<<~RUBY, operator_method: operator_method)
         foo.#{operator_method}(bar)
            ^ Redundant dot detected.
