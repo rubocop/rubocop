@@ -448,6 +448,36 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     end
   end
 
+  context 'multiline `if` that fits on one line and using dot method call with hash value omission syntax', :ruby31 do
+    it 'corrects it to normal form1' do
+      expect_offense(<<~RUBY)
+        if condition
+        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          obj.(attr:)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj.(attr:) if condition
+      RUBY
+    end
+  end
+
+  context 'multiline `if` that fits on one line and using safe navigation dot method call with hash value omission syntax', :ruby31 do
+    it 'corrects it to normal form1' do
+      expect_offense(<<~RUBY)
+        if condition
+        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          obj&.(attr:)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj&.(attr:) if condition
+      RUBY
+    end
+  end
+
   context 'using `defined?` in the condition' do
     it 'registers for argument value is defined' do
       expect_offense(<<~RUBY)

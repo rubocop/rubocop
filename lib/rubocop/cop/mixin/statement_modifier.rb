@@ -5,7 +5,6 @@ module RuboCop
     # Common functionality for modifier cops.
     module StatementModifier
       include LineLengthHelp
-      include RangeHelp
 
       private
 
@@ -65,7 +64,9 @@ module RuboCop
       end
 
       def method_source(if_body)
-        range_between(if_body.source_range.begin_pos, if_body.loc.selector.end_pos).source
+        end_range = if_body.implicit_call? ? if_body.loc.dot.end : if_body.loc.selector
+
+        if_body.source_range.begin.join(end_range).source
       end
 
       def first_line_comment(node)
