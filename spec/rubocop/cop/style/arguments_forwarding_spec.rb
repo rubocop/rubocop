@@ -568,6 +568,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
         RUBY
       end
 
+      it 'registers an offense when using only rest arg in brackets', :ruby32 do
+        expect_offense(<<~RUBY)
+          def foo(*args)
+                  ^^^^^ Use anonymous positional arguments forwarding (`*`).
+            bar[*args]
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(*)
+            bar[*]
+          end
+        RUBY
+      end
+
       it 'registers an offense when using only kwrest arg', :ruby32 do
         expect_offense(<<~RUBY)
           def foo(**kwargs)
