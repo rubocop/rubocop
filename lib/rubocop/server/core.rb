@@ -2,6 +2,7 @@
 
 require 'securerandom'
 require 'socket'
+require 'stringio'
 
 #
 # This code is based on https://github.com/fohte/rubocop-daemon.
