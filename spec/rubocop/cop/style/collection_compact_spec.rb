@@ -249,6 +249,52 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
     end
   end
 
+  context 'Ruby >= 2.6', :ruby26, unsupported_on: :prism do
+    it 'registers an offense and corrects when using `filter/filter!` to reject nils' do
+      expect_offense(<<~RUBY)
+        array.filter { |e| !e.nil? }
+              ^^^^^^^^^^^^^^^^^^^^^^ Use `compact` instead of `filter { |e| !e.nil? }`.
+        hash.filter! { |k, v| !v.nil? }
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `compact!` instead of `filter! { |k, v| !v.nil? }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.compact
+        hash.compact!
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using safe navigation `filter/filter!` call to reject nils' do
+      expect_offense(<<~RUBY)
+        array&.filter { |e| e&.nil?&.! }
+               ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `compact` instead of `filter { |e| e&.nil?&.! }`.
+        hash&.filter! { |k, v| v&.nil?&.! }
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `compact!` instead of `filter! { |k, v| v&.nil?&.! }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array&.compact
+        hash&.compact!
+      RUBY
+    end
+
+    it 'does not register an offense when using `filter/filter!` to reject nils without a receiver' do
+      expect_no_offenses(<<~RUBY)
+        filter { |e| !e.nil? }
+        filter! { |k, v| !v.nil? }
+      RUBY
+    end
+  end
+
+  context 'Ruby <= 2.5', :ruby25, unsupported_on: :prism do
+    it 'does not register an offense when using `filter/filter!`' do
+      expect_no_offenses(<<~RUBY)
+        array.filter { |e| !e.nil? }
+        hash.filter! { |k, v| !v.nil? }
+      RUBY
+    end
+  end
+
   context 'when Ruby <= 2.3', :ruby23, unsupported_on: :prism do
     it 'does not register an offense when using `reject` on hash to reject nils' do
       expect_no_offenses(<<~RUBY)
