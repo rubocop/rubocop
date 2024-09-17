@@ -215,4 +215,45 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
       RUBY
     end
   end
+
+  %w[1 :symbol true].each do |t|
+    it "registers an offense for code gated by `return if #{t}`" do
+      expect_offense(wrap(<<~RUBY))
+        return if #{t}
+        bar
+        ^^^ Unreachable code detected.
+      RUBY
+    end
+
+    it "does not register an offense for code gated by `return unless #{t}`" do
+      expect_no_offenses(wrap(<<~RUBY))
+        return unless #{t}
+        bar
+      RUBY
+    end
+  end
+
+  %w[false nil].each do |t|
+    it "registers an offense for code gated by `return unless #{t}`" do
+      expect_offense(wrap(<<~RUBY))
+        return unless #{t}
+        bar
+        ^^^ Unreachable code detected.
+      RUBY
+    end
+
+    it "does not register an offense for code gated by `return if #{t}`" do
+      expect_no_offenses(wrap(<<~RUBY))
+        return if #{t}
+        bar
+      RUBY
+    end
+  end
+
+  it 'does not register an offense for non flow expressions' do
+    expect_no_offenses(wrap(<<~RUBY))
+      foo if true
+      bar
+    RUBY
+  end
 end
