@@ -18,6 +18,34 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantSourceRange, :config do
     RUBY
   end
 
+  it 'registers an offense when using `add_offense(node.source_range)`' do
+    expect_offense(<<~RUBY)
+      add_offense(node.source_range)
+                       ^^^^^^^^^^^^ Remove the redundant `source_range`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      add_offense(node)
+    RUBY
+  end
+
+  it 'registers an offense when using `add_offense(node.source_range, message: message)`' do
+    expect_offense(<<~RUBY)
+      add_offense(node.source_range, message: message)
+                       ^^^^^^^^^^^^ Remove the redundant `source_range`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      add_offense(node, message: message)
+    RUBY
+  end
+
+  it 'does not register an offense when using `add_offense(node)`' do
+    expect_no_offenses(<<~RUBY)
+      add_offense(node)
+    RUBY
+  end
+
   it 'registers an offense when using `corrector.replace(node.source_range, content)`' do
     expect_offense(<<~RUBY)
       add_offense do |corrector|

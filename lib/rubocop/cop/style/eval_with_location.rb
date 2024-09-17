@@ -136,7 +136,7 @@ module RuboCop
                            actual: line_node.source,
                            expected: expected)
 
-          add_offense(line_node.source_range, message: message) do |corrector|
+          add_offense(line_node, message: message) do |corrector|
             corrector.replace(line_node, expected)
           end
         end

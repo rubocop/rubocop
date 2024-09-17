@@ -91,7 +91,7 @@ module RuboCop
               next if !argument || argument.hash_type?
 
               add_offense(
-                argument.source_range, message: message(i, argument.source)
+                argument, message: message(i, argument.source)
               ) do |corrector|
                 autocorrect(corrector, node)
               end

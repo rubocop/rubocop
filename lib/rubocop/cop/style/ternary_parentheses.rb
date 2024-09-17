@@ -75,7 +75,7 @@ module RuboCop
 
           message = message(node)
 
-          add_offense(node.source_range, message: message) do |corrector|
+          add_offense(node, message: message) do |corrector|
             autocorrect(corrector, node)
           end
         end
