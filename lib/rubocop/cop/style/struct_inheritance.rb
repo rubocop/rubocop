@@ -33,7 +33,7 @@ module RuboCop
         def on_class(node)
           return unless struct_constructor?(node.parent_class)
 
-          add_offense(node.parent_class.source_range) do |corrector|
+          add_offense(node.parent_class) do |corrector|
             corrector.remove(range_with_surrounding_space(node.loc.keyword, newlines: false))
             corrector.replace(node.loc.operator, '=')
 

@@ -39,7 +39,7 @@ module RuboCop
             next if allowed_omission?(nested)
 
             message = format(MSG, source: nested.source)
-            add_offense(nested.source_range, message: message) do |corrector|
+            add_offense(nested, message: message) do |corrector|
               autocorrect(corrector, nested)
             end
           end

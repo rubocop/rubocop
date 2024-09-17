@@ -43,7 +43,7 @@ module RuboCop
 
           return unless bad_rhs?(rhs)
 
-          add_offense(node.source_range) do |corrector|
+          add_offense(node) do |corrector|
             if style == :keyword
               keyword_autocorrect(rhs, corrector)
             else

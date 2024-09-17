@@ -14,6 +14,12 @@ module RuboCop
       #   node.source
       #
       #   # bad
+      #   add_offense(node.source_range)
+      #
+      #   # good
+      #   add_offense(node)
+      #
+      #   # bad
       #   add_offense(node) { |corrector| corrector.replace(node.source_range, prefer) }
       #   add_offense(node) { |corrector| corrector.insert_before(node.source_range, prefer) }
       #   add_offense(node) { |corrector| corrector.insert_before_multi(node.source_range, prefer) }
@@ -34,7 +40,7 @@ module RuboCop
 
         MSG = 'Remove the redundant `source_range`.'
         RESTRICT_ON_SEND = %i[
-          source
+          source add_offense
           replace remove insert_before insert_before_multi insert_after insert_after_multi swap
         ].freeze
 
@@ -42,6 +48,7 @@ module RuboCop
         def_node_matcher :redundant_source_range, <<~PATTERN
           {
             (send $(send _ :source_range) :source)
+            (send nil? :add_offense $(send _ :source_range) ...)
             (send _ {
               :replace :insert_before :insert_before_multi :insert_after :insert_after_multi
             } $(send _ :source_range) _)
