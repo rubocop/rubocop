@@ -9,11 +9,17 @@ module RuboCop
     # For performance reasons, Team will first dispatch cops & forces in two groups,
     # first the ones needed for autocorrection (if any), then the rest
     # (unless autocorrections happened).
+    # rubocop:disable Metrics/ClassLength
     class Team
       # @return [Team]
       def self.new(cop_or_classes, config, options = {})
         # Support v0 api:
-        return mobilize(cop_or_classes, config, options) if cop_or_classes.first.is_a?(Class)
+        if cop_or_classes.first.is_a?(Class)
+          warn Rainbow(<<~WARNING).yellow, uplevel: 1
+            `Team.new` with cop classes is deprecated. Use `Team.mobilize` instead.
+          WARNING
+          return mobilize(cop_or_classes, config, options)
+        end
 
         super
       end
@@ -279,5 +285,6 @@ module RuboCop
         end
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end
