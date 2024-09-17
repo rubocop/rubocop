@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'language_server-protocol'
-require_relative '../lsp'
 require_relative 'logger'
 require_relative 'routes'
 require_relative 'runtime'

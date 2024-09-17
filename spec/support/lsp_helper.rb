@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rubocop/lsp/server'
+
 module LSPHelper
   def run_server_on_requests(*requests)
     stdin = StringIO.new(requests.map { |request| to_jsonrpc(request) }.join)
