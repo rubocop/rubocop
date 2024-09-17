@@ -5,37 +5,27 @@ module RuboCop
   # @api private
   module YAMLDuplicationChecker
     def self.check(yaml_string, filename, &on_duplicated)
-      # Ruby 2.6+
-      tree = if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
-               # Specify filename to display helpful message when it raises
-               # an error.
-               YAML.parse(yaml_string, filename: filename)
-             else
-               YAML.parse(yaml_string, filename)
-             end
-      return unless tree
-
-      traverse(tree, &on_duplicated)
-      tree
+      handler = DuplicationCheckHandler.new(&on_duplicated)
+      parser = Psych::Parser.new(handler)
+      parser.parse(yaml_string, filename)
+      parser.handler.root.children[0]
     end
 
-    def self.traverse(tree, &on_duplicated)
-      case tree
-      when Psych::Nodes::Mapping
-        tree.children.each_slice(2).with_object([]) do |(key, value), keys|
-          exist = keys.find { |key2| key2.value == key.value }
-          yield(exist, key) if exist
-          keys << key
-          traverse(value, &on_duplicated)
-        end
-      else
-        children = tree.children
-        return unless children
+    class DuplicationCheckHandler < Psych::TreeBuilder # :nodoc:
+      def initialize(&block)
+        super()
+        @block = block
+      end
 
-        children.each { |c| traverse(c, &on_duplicated) }
+      def end_mapping
+        mapping_node = super
+        mapping_node.children.each_slice(2).with_object([]) do |(key, _value), keys|
+          exist = keys.find { |key2| key2.value == key.value }
+          @block.call(exist, key) if exist
+          keys << key
+        end
+        mapping_node
       end
     end
-
-    private_class_method :traverse
   end
 end
