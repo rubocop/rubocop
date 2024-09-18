@@ -19,10 +19,13 @@ module RuboCop
 
       def end_mapping
         mapping_node = super
-        mapping_node.children.each_slice(2).with_object([]) do |(key, _value), keys|
-          exist = keys.find { |key2| key2.value == key.value }
-          @block.call(exist, key) if exist
-          keys << key
+        # OPTIMIZE: Use a hash for faster lookup since there can
+        # be quite a few keys at the top-level.
+        keys = {}
+        mapping_node.children.each_slice(2) do |key, _value|
+          duplicate = keys[key.value]
+          @block.call(duplicate, key) if duplicate
+          keys[key.value] = key
         end
         mapping_node
       end
