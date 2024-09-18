@@ -322,8 +322,12 @@ module RuboCop
       # @api private
       def self.callbacks_needed
         @callbacks_needed ||= public_instance_methods.select do |m|
-          m.start_with?(/on_|after_/) &&
-            !Base.method_defined?(m) # exclude standard "callbacks" like 'on_begin_investigation'
+          # OPTIMIZE: Check method existence first to make fewer `start_with?` calls.
+          # At the time of writing this comment, this excludes 98 of ~104 methods.
+          # `start_with?` with two string arguments instead of a regex is faster
+          # in this specific case as well.
+          !Base.method_defined?(m) && # exclude standard "callbacks" like 'on_begin_investigation'
+            m.start_with?('on_', 'after_')
         end
       end
       # rubocop:enable Layout/ClassStructure
