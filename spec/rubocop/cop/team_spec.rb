@@ -56,13 +56,13 @@ RSpec.describe RuboCop::Cop::Team do
   describe '#autocorrect?' do
     subject { team.autocorrect? }
 
-    context 'when the option argument of .new is omitted' do
-      subject { described_class.new(cop_classes, config).autocorrect? }
+    context 'when the option argument of .mobilize is omitted' do
+      subject { described_class.mobilize(cop_classes, config).autocorrect? }
 
       it { is_expected.to be_falsey }
     end
 
-    context 'when { autocorrect: true } is passed to .new' do
+    context 'when { autocorrect: true } is passed to .mobilize' do
       let(:options) { { autocorrect: true } }
 
       it { is_expected.to be_truthy }
@@ -72,13 +72,13 @@ RSpec.describe RuboCop::Cop::Team do
   describe '#debug?' do
     subject { team.debug? }
 
-    context 'when the option argument of .new is omitted' do
-      subject { described_class.new(cop_classes, config).debug? }
+    context 'when the option argument of .mobilize is omitted' do
+      subject { described_class.mobilize(cop_classes, config).debug? }
 
       it { is_expected.to be_falsey }
     end
 
-    context 'when { debug: true } is passed to .new' do
+    context 'when { debug: true } is passed to .mobilize' do
       let(:options) { { debug: true } }
 
       it { is_expected.to be_truthy }
@@ -389,7 +389,9 @@ RSpec.describe RuboCop::Cop::Team do
   describe '.new' do
     it 'calls mobilize when passed classes' do
       expect(described_class).to receive(:mobilize).with(cop_classes, config, options)
-      described_class.new(cop_classes, config, options)
+      expect do
+        described_class.new(cop_classes, config, options)
+      end.to output(/Use `Team.mobilize` instead/).to_stderr
     end
 
     it 'accepts cops directly classes' do
