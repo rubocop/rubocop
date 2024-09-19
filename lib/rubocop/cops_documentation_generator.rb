@@ -6,14 +6,38 @@ require 'fileutils'
 # @api private
 class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   include ::RuboCop::Cop::Documentation
+  CopData = Struct.new(
+    :cop, :description, :example_objects, :safety_objects, :see_objects, :config
+  )
+
+  STRUCTURE = {
+    name:                  ->(data) { h2(data.cop.cop_name) },
+    required_ruby_version: ->(data) { required_ruby_version(data.cop) },
+    properties:            ->(data) { properties(data.cop) },
+    description:           ->(data) { "#{data.description}\n" },
+    safety:                ->(data) { safety_object(data.safety_objects) },
+    examples:              ->(data) { examples(data.example_objects) },
+    configuration:         ->(data) { configurations(data.cop.department, data.config) },
+    references:            ->(data) { references(data.cop, data.see_objects) }
+  }.freeze
+
   # This class will only generate documentation for cops that belong to one of
   # the departments given in the `departments` array. E.g. if we only wanted
   # documentation for Lint cops:
   #
   #   CopsDocumentationGenerator.new(departments: ['Lint']).call
   #
-  def initialize(departments: [])
+  # You can append additional information:
+  #
+  #   callback = ->(data) { required_rails_version(data.cop) }
+  #   CopsDocumentationGenerator.new(extra_info: { ruby_version: callback }).call
+  #
+  # This will insert the string returned from the lambda _after_ the section from RuboCop itself.
+  # See `CopsDocumentationGenerator::STRUCTURE` for available sections.
+  #
+  def initialize(departments: [], extra_info: {})
     @departments = departments.map(&:to_sym).sort!
+    @extra_info = extra_info
     @cops = RuboCop::Cop::Registry.global
     @config = RuboCop::ConfigLoader.default_configuration
     @docs_path = "#{Dir.pwd}/docs/modules/ROOT/pages/"
@@ -37,24 +61,21 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     cops.with_department(department).sort!
   end
 
-  def cops_body(cop, description, examples_objects, safety_objects, see_objects, pars) # rubocop:disable Metrics/AbcSize, Metrics/ParameterLists
-    check_examples_to_have_the_default_enforced_style!(examples_objects, cop)
+  def cops_body(data)
+    check_examples_to_have_the_default_enforced_style!(data.example_objects, data.cop)
 
-    content = h2(cop.cop_name)
-    content << required_ruby_version(cop)
-    content << properties(cop)
-    content << "#{description}\n"
-    content << safety_object(safety_objects) if safety_objects.any? { |s| !s.text.blank? }
-    content << examples(examples_objects) if examples_objects.any?
-    content << configurations(cop.department, pars)
-    content << references(cop, see_objects)
+    content = +''
+    STRUCTURE.each do |section, block|
+      content << instance_exec(data, &block)
+      content << @extra_info[section].call(data) if @extra_info[section]
+    end
     content
   end
 
-  def check_examples_to_have_the_default_enforced_style!(examples_object, cop)
-    return if examples_object.none?
+  def check_examples_to_have_the_default_enforced_style!(example_objects, cop)
+    return if example_objects.none?
 
-    examples_describing_enforced_style = examples_object.map(&:name).grep(/EnforcedStyle:/)
+    examples_describing_enforced_style = example_objects.map(&:name).grep(/EnforcedStyle:/)
     return if examples_describing_enforced_style.none?
 
     if examples_describing_enforced_style.index { |name| name.match?('default') }.nonzero?
@@ -66,16 +87,20 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     raise "Specify the default EnforcedStyle for #{cop.cop_name}"
   end
 
-  def examples(examples_object)
-    examples_object.each_with_object(h3('Examples').dup) do |example, content|
+  def examples(example_objects)
+    return '' if example_objects.none?
+
+    example_objects.each_with_object(h3('Examples').dup) do |example, content|
       content << "\n" unless content.end_with?("\n\n")
       content << h4(example.name) unless example.name == ''
       content << code_example(example)
     end
   end
 
-  def safety_object(safety_object_objects)
-    safety_object_objects.each_with_object(h3('Safety').dup) do |safety_object, content|
+  def safety_object(safety_objects)
+    return '' if safety_objects.all? { |s| s.text.blank? }
+
+    safety_objects.each_with_object(h3('Safety').dup) do |safety_object, content|
       next if safety_object.text.blank?
 
       content << "\n" unless content.end_with?("\n\n")
@@ -283,14 +308,16 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     ]
     pars = cop_config.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
-    examples_object = safety_object = see_object = []
+    example_objects = safety_objects = see_objects = []
     cop_code(cop) do |code_object|
       description = code_object.docstring unless code_object.docstring.blank?
-      examples_object = code_object.tags('example')
-      safety_object = code_object.tags('safety')
-      see_object = code_object.tags('see')
+      example_objects = code_object.tags('example')
+      safety_objects = code_object.tags('safety')
+      see_objects = code_object.tags('see')
     end
-    cops_body(cop, description, examples_object, safety_object, see_object, pars)
+    data = CopData.new(cop: cop, description: description, example_objects: example_objects,
+                       safety_objects: safety_objects, see_objects: see_objects, config: pars)
+    cops_body(data)
   end
 
   def cop_code(cop)
