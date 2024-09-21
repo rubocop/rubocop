@@ -233,9 +233,13 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
     context 'when cop supports autocorrection', :restore_registry do
       let(:cop_class) do
-        stub_cop_class('RuboCop::Cop::Test::StubCop', inherit: described_class) do
-          def autocorrect(node); end
-        end
+        cop_class = nil
+        expect do # rubocop:disable RSpec/ExpectInLet
+          cop_class = stub_cop_class('RuboCop::Cop::Test::StubCop', inherit: described_class) do
+            def autocorrect(node); end
+          end
+        end.to output(/Inheriting from `RuboCop::Cop::Cop` is deprecated/).to_stderr
+        cop_class
       end
 
       context 'when offense was corrected' do

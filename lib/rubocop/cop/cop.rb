@@ -22,6 +22,14 @@ module RuboCop
         end
       end
 
+      def self.inherited(_subclass)
+        super
+        warn Rainbow(<<~WARNING).yellow, uplevel: 1
+          Inheriting from `RuboCop::Cop::Cop` is deprecated. Use `RuboCop::Cop::Base` instead.
+          For more information, see https://docs.rubocop.org/rubocop/v1_upgrade_notes.html.
+        WARNING
+      end
+
       def self.support_autocorrect?
         method_defined?(:autocorrect)
       end
