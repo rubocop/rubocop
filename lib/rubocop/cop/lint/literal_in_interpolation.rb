@@ -173,7 +173,7 @@ module RuboCop
 
         def ends_heredoc_line?(node)
           grandparent = node.parent.parent
-          return false unless grandparent&.dstr_type? && grandparent&.heredoc?
+          return false unless grandparent&.dstr_type? && grandparent.heredoc?
 
           line = processed_source.lines[node.last_line - 1]
           line.size == node.loc.last_column + 1
@@ -184,7 +184,7 @@ module RuboCop
           return false unless parent.dstr_type? || parent.dsym_type?
 
           grandparent = parent.parent
-          grandparent&.array_type? && grandparent&.percent_literal?
+          grandparent&.array_type? && grandparent.percent_literal?
         end
       end
     end

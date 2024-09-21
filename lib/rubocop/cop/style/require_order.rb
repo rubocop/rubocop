@@ -103,7 +103,7 @@ module RuboCop
             next unless sibling.is_a?(AST::Node)
 
             sibling = sibling_node(sibling)
-            break unless sibling&.send_type? && sibling&.method?(node.method_name)
+            break unless sibling&.send_type? && sibling.method?(node.method_name)
             break unless sibling.arguments? && !sibling.receiver
             break unless in_same_section?(sibling, node)
             break unless node.first_argument.str_type? && sibling.first_argument.str_type?
