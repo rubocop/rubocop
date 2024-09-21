@@ -22,7 +22,7 @@ module RuboCop
         private
 
         def ternary_condition?(node)
-          node.parent&.if_type? && node.parent&.ternary?
+          node.parent&.if_type? && node.parent.ternary?
         end
 
         def next_char_is_question_mark?(node)
