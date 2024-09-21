@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'stringio'
+
 #
 # This code is based on https://github.com/standardrb/standard.
 #
