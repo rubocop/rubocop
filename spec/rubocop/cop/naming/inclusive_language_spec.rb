@@ -168,6 +168,25 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
       end
     end
 
+    context 'flagged term with one suggestion in array' do
+      let(:cop_config) do
+        { 'FlaggedTerms' => {
+          'whitelist' => { 'Suggestions' => %w[allowlist] }
+        } }
+      end
+
+      it 'includes both suggestions in the offense message' do
+        expect_offense(<<~RUBY)
+          whitelist = %w(user1 user2)
+          ^^^^^^^^^ Consider replacing 'whitelist' with 'allowlist'.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          allowlist = %w(user1 user2)
+        RUBY
+      end
+    end
+
     context 'flagged term with two suggestions' do
       let(:cop_config) do
         { 'FlaggedTerms' => {
