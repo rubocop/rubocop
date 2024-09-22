@@ -65,6 +65,102 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using an if statement' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each do |e|
+      ^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+        dest << if cond?
+          e
+        else
+          e * 2
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map do |e|
+        if cond?
+          e
+        else
+          e * 2
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using a case statement' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each do |e|
+      ^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+        dest << case foo
+        when 1
+          e
+        else
+          e * 2
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map do |e|
+        case foo
+        when 1
+          e
+        else
+          e * 2
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using a begin block' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each do |e|
+      ^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+        dest << begin
+          foo
+          e * 2
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map do |e|
+        begin
+          foo
+          e * 2
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using an array literal' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each { |e| dest << [1, e] }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map { |e| [1, e] }
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using a literal' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each { |e| dest << true }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map { |e| true }
+    RUBY
+  end
+
   it 'registers an offense and corrects when using a numblock' do
     expect_offense(<<~RUBY)
       dest = []
@@ -212,6 +308,42 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     expect_no_offenses(<<~RUBY)
       dest = []
       src.each { |e| dest.push(*e) }
+    RUBY
+  end
+
+  it 'does not register an offense when pushing anonymously-forwarded block', :ruby31 do
+    expect_no_offenses(<<~RUBY)
+      def foo(&)
+        dest = []
+        src.each { |e| dest.push(&) }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when pushing anonymously-forwarded restarg', :ruby32 do
+    expect_no_offenses(<<~RUBY)
+      def foo(*)
+        dest = []
+        src.each { |e| dest.push(*) }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when pushing anonymously-forwarded kwrestarg', :ruby32, unsupported_on: :prism do
+    expect_no_offenses(<<~RUBY)
+      def foo(**)
+        dest = []
+        src.each { |e| dest.push(**) }
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when pushing anonymously-forwarded args' do
+    expect_no_offenses(<<~RUBY)
+      def foo(...)
+        dest = []
+        src.each { |e| dest.push(...) }
+      end
     RUBY
   end
 
