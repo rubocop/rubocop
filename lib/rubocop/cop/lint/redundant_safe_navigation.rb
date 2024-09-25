@@ -131,7 +131,7 @@ module RuboCop
         private
 
         def assume_receiver_instance_exists?(receiver)
-          return true if receiver.const_type? && !receiver.source.match?(SNAKE_CASE)
+          return true if receiver.const_type? && !receiver.short_name.match?(SNAKE_CASE)
 
           receiver.literal? && !receiver.nil_type?
         end
