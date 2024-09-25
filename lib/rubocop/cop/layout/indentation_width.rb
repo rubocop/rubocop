@@ -3,13 +3,12 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks for indentation that doesn't use the specified number
-      # of spaces.
+      # Checks for indentation that doesn't use the specified number of spaces.
+      # The indentation width can be configured using the `Width` setting. The default width is 2.
       #
-      # See also the IndentationConsistency cop which is the companion to this
-      # one.
+      # See also the `Layout/IndentationConsistency` cop which is the companion to this one.
       #
-      # @example
+      # @example Width: 2 (default)
       #   # bad
       #   class A
       #    def test
