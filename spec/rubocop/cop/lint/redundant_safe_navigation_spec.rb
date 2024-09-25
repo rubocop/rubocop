@@ -27,6 +27,30 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when `&.` is used for namespaced camel case const receiver' do
+    expect_offense(<<~RUBY)
+      FOO::Const&.do_something
+                ^^ Redundant safe navigation detected, use `.` instead.
+      bar::ConstName&.do_something
+                    ^^ Redundant safe navigation detected, use `.` instead.
+      BAZ::Const_name&.do_something # It is treated as camel case, similar to the `Naming/ConstantName` cop.
+                     ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      FOO::Const.do_something
+      bar::ConstName.do_something
+      BAZ::Const_name.do_something # It is treated as camel case, similar to the `Naming/ConstantName` cop.
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used for namespaced snake case const receiver' do
+    expect_no_offenses(<<~RUBY)
+      FOO::CONST&.do_something
+      bar::CONST_NAME&.do_something
+    RUBY
+  end
+
   it 'registers an offense and corrects when `&.` is used inside `if` condition' do
     expect_offense(<<~RUBY)
       if foo&.respond_to?(:bar)
