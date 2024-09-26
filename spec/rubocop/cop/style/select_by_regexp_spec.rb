@@ -478,6 +478,77 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     end
   end
 
+  shared_examples 'regexp mismatch with safe navigation' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+
+    context "with #{method}" do
+      it 'registers an offense and corrects for `blockvar !~ regexp`' do
+        expect_offense(<<~RUBY, method: method)
+          array&.#{method} { |x| x !~ /regexp/ }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array&.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `blockvar !~ lvar`' do
+        expect_offense(<<~RUBY, method: method)
+          lvar = /regexp/
+          array&.#{method} { |x| x !~ lvar }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lvar = /regexp/
+          array&.#{correction}(lvar)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `regexp !~ blockvar`' do
+        expect_offense(<<~RUBY, method: method)
+          array&.#{method} { |x| /regexp/ !~ x }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array&.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `lvar !~ blockvar`' do
+        expect_offense(<<~RUBY, method: method)
+          lvar = /regexp/
+          array&.#{method} { |x| lvar !~ x }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lvar = /regexp/
+          array&.#{correction}(lvar)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when there is no explicit regexp' do
+        expect_offense(<<~RUBY, method: method)
+          array&.#{method} { |x| x !~ y }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^ #{message}
+          array&.#{method} { |x| x !~ REGEXP }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^ #{message}
+          array&.#{method} { |x| x !~ foo.bar.baz(quux) }
+          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array&.#{correction}(y)
+          array&.#{correction}(REGEXP)
+          array&.#{correction}(foo.bar.baz(quux))
+        RUBY
+      end
+    end
+  end
+
   context 'when Ruby >= 2.7', :ruby27 do
     include_examples('regexp match with `numblock`s', 'select', 'grep')
     include_examples('regexp match with `numblock`s', 'find_all', 'grep')
@@ -494,11 +565,14 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     include_examples('regexp match', 'find_all', 'grep')
     include_examples('regexp match with safe navigation', 'find_all', 'grep')
     include_examples('regexp mismatch', 'reject', 'grep')
+    include_examples('regexp mismatch with safe navigation', 'reject', 'grep')
 
     include_examples('regexp match', 'reject', 'grep_v')
     include_examples('regexp match with safe navigation', 'reject', 'grep_v')
     include_examples('regexp mismatch', 'select', 'grep_v')
+    include_examples('regexp mismatch with safe navigation', 'select', 'grep_v')
     include_examples('regexp mismatch', 'find_all', 'grep_v')
+    include_examples('regexp mismatch with safe navigation', 'find_all', 'grep_v')
   end
 
   context 'when Ruby <= 2.2', :ruby22, unsupported_on: :prism do
