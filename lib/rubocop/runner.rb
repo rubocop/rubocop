@@ -362,6 +362,9 @@ module RuboCop
       self.class.ruby_extractors.find do |ruby_extractor|
         result = ruby_extractor.call(processed_source)
         break result if result
+      rescue StandardError
+        raise Error, "Ruby extractor #{ruby_extractor.source_location[0]} failed to process " \
+                     "#{processed_source.path}."
       end
     end
 
