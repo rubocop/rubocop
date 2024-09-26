@@ -1832,6 +1832,11 @@ Lint/DuplicateRescueException:
   Enabled: true
   VersionAdded: '0.89'
 
+Lint/DuplicateSetEnumerables:
+  Description: 'Check for duplicate enumerables in set'
+  Enabled: pending
+  VersionAdded: '1.66.1'
+
 Lint/EachWithObjectArgument:
   Description: 'Check for immutable argument given to each_with_object.'
   Enabled: true
