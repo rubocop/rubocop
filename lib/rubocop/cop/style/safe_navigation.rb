@@ -81,7 +81,7 @@ module RuboCop
       #   foo.baz = bar if foo
       #   foo.baz + bar if foo
       #   foo.bar > 2 if foo
-      class SafeNavigation < Base
+      class SafeNavigation < Base # rubocop:disable Metrics/ClassLength
         include NilMethods
         include RangeHelp
         extend AutoCorrector
@@ -124,47 +124,112 @@ module RuboCop
         # @!method not_nil_check?(node)
         def_node_matcher :not_nil_check?, '(send (send $_ :nil?) :!)'
 
+        # @!method and_inside_begin?(node)
+        def_node_matcher :and_inside_begin?, '`(begin and ...)'
+
+        # @!method strip_begin(node)
+        def_node_matcher :strip_begin, '{ (begin $!begin) $!(begin) }'
+
         def on_if(node)
           return if allowed_if_condition?(node)
 
-          check_node(node)
+          checked_variable, receiver, method_chain, _method = extract_parts_from_if(node)
+          return unless offending_node?(node, checked_variable, method_chain, receiver)
+
+          body = extract_if_body(node)
+          method_call = receiver.parent
+
+          removal_ranges = [begin_range(node, body), end_range(node, body)]
+
+          report_offense(node, method_chain, method_call, *removal_ranges) do |corrector|
+            corrector.insert_before(method_call.loc.dot, '&') unless method_call.safe_navigation?
+          end
         end
 
-        def on_and(node)
-          check_node(node)
+        def on_and(node) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+          collect_and_clauses(node).each do |(lhs, lhs_operator_range), (rhs, _rhs_operator_range)|
+            lhs_not_nil_check = not_nil_check?(lhs)
+            lhs_receiver = lhs_not_nil_check || lhs
+            rhs_receiver = find_matching_receiver_invocation(strip_begin(rhs), lhs_receiver)
+
+            next if !cop_config['ConvertCodeThatCanStartToReturnNil'] && lhs_not_nil_check
+            next unless offending_node?(node, lhs_receiver, rhs, rhs_receiver)
+
+            # Since we are evaluating every clause in potentially a complex chain of `and` nodes,
+            # we need to ensure that there isn't an object check happening
+            lhs_method_chain = find_method_chain(lhs_receiver)
+            next unless lhs_method_chain == lhs_receiver || lhs_not_nil_check
+
+            report_offense(
+              node,
+              rhs, rhs_receiver,
+              range_with_surrounding_space(range: lhs.source_range, side: :right),
+              range_with_surrounding_space(range: lhs_operator_range, side: :right),
+              offense_range: range_between(lhs.source_range.begin_pos, rhs.source_range.end_pos)
+            )
+          end
+        end
+
+        def report_offense(node, rhs, rhs_receiver, *removal_ranges, offense_range: node)
+          add_offense(offense_range) do |corrector|
+            removal_ranges.each { |range| corrector.remove(range) }
+            yield corrector if block_given?
+
+            handle_comments(corrector, node, rhs)
+
+            add_safe_nav_to_all_methods_in_chain(corrector, rhs_receiver, rhs)
+          end
         end
 
         private
 
-        def check_node(node)
-          checked_variable, receiver, method_chain, method = extract_parts(node)
-          return if receiver != checked_variable || receiver.nil?
-          return if use_var_only_in_unless_modifier?(node, checked_variable)
-          return if chain_length(method_chain, method) > max_chain_length
-          return if unsafe_method_used?(method_chain, method)
-          return if method_chain.method?(:empty?)
+        def find_method_chain(node)
+          return node unless node&.parent&.call_type?
 
-          add_offense(node) { |corrector| autocorrect(corrector, node) }
+          find_method_chain(node.parent)
+        end
+
+        def collect_and_clauses(node)
+          # Collect the lhs, operator and rhs of all `and` nodes
+          # `and` nodes can be nested and can contain `begin` nodes
+          # This gives us a source-ordered list of clauses that is then used to look
+          # for matching receivers as well as operator locations for offense and corrections
+          node.each_descendant(:and)
+              .inject(and_parts(node)) { |nodes, and_node| concat_nodes(nodes, and_node) }
+              .sort_by { |a| a.is_a?(RuboCop::AST::Node) ? a.source_range.begin_pos : a.begin_pos }
+              .each_slice(2)
+              .each_cons(2)
+        end
+
+        def concat_nodes(nodes, and_node)
+          return nodes if and_node.each_ancestor(:block).any?
+
+          nodes.concat(and_parts(and_node))
+        end
+
+        def and_parts(node)
+          parts = [node.loc.operator]
+          parts << node.rhs unless and_inside_begin?(node.rhs)
+          parts << node.lhs unless node.lhs.and_type? || and_inside_begin?(node.lhs)
+          parts
+        end
+
+        def offending_node?(node, lhs_receiver, rhs, rhs_receiver) # rubocop:disable Metrics/CyclomaticComplexity
+          return false if lhs_receiver != rhs_receiver || rhs_receiver.nil?
+          return false if use_var_only_in_unless_modifier?(node, lhs_receiver)
+          return false if chain_length(rhs, rhs_receiver) > max_chain_length
+          return false if unsafe_method_used?(rhs, rhs_receiver.parent)
+          return false if rhs.send_type? && rhs.method?(:empty?)
+
+          true
         end
 
         def use_var_only_in_unless_modifier?(node, variable)
           node.if_type? && node.unless? && !method_called?(variable)
         end
 
-        def autocorrect(corrector, node)
-          body = extract_body(node)
-          method_call = method_call(node)
-
-          corrector.remove(begin_range(node, body))
-          corrector.remove(end_range(node, body))
-          corrector.insert_before(method_call.loc.dot, '&') unless method_call.safe_navigation?
-          handle_comments(corrector, node, method_call)
-
-          add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
-        end
-
-        def extract_body(node)
-          if node.if_type? && node.ternary?
+        def extract_if_body(node)
+          if node.ternary?
             node.branches.find { |branch| !branch.nil_type? }
           else
             node.node_parts[1]
@@ -201,20 +266,6 @@ module RuboCop
           node.else? || node.elsif?
         end
 
-        def method_call(node)
-          _checked_variable, matching_receiver, = extract_parts(node)
-          matching_receiver.parent
-        end
-
-        def extract_parts(node)
-          case node.type
-          when :if
-            extract_parts_from_if(node)
-          when :and
-            extract_parts_from_and(node)
-          end
-        end
-
         def extract_parts_from_if(node)
           variable, receiver =
             if node.ternary?
@@ -228,16 +279,6 @@ module RuboCop
           matching_receiver = nil if receiver && LOGIC_JUMP_KEYWORDS.include?(receiver.type)
 
           [checked_variable, matching_receiver, receiver, method]
-        end
-
-        def extract_parts_from_and(node)
-          checked_variable, rhs = *node
-          if cop_config['ConvertCodeThatCanStartToReturnNil']
-            checked_variable = not_nil_check?(checked_variable) || checked_variable
-          end
-
-          checked_variable, matching_receiver, method = extract_common_parts(rhs, checked_variable)
-          [checked_variable, matching_receiver, rhs, method]
         end
 
         def extract_common_parts(method_chain, checked_variable)
@@ -259,7 +300,7 @@ module RuboCop
         end
 
         def chain_length(method_chain, method)
-          method.each_ancestor(:send).inject(1) do |total, ancestor|
+          method.each_ancestor(:send).inject(0) do |total, ancestor|
             break total + 1 if ancestor == method_chain
 
             total + 1
@@ -310,6 +351,7 @@ module RuboCop
           start_method.each_ancestor do |ancestor|
             break unless %i[send block].include?(ancestor.type)
             next unless ancestor.send_type?
+            next if ancestor.safe_navigation?
 
             corrector.insert_before(ancestor.loc.dot, '&')
 
