@@ -507,7 +507,9 @@ Style:
   Enabled: true
 ----
 
-All cops in the `Style` department are then enabled.
+All cops in the `Style` department are then enabled. In this case, only the cops
+in the `Style` department that are enabled by default will be enabled.
+The cops in the `Style` department that are disabled by default will remain disabled.
 
 If a department is disabled, cops in that department can still be individually
 enabled, and that setting overrides the setting for its department in the same
