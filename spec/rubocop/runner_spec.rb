@@ -121,101 +121,115 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       end
     end
 
-    context 'with available custom ruby extractor' do
-      before do
+    context 'custom ruby extractors' do
+      around do |example|
         described_class.ruby_extractors.unshift(custom_ruby_extractor)
 
-        # Make Style/EndOfLine give same output regardless of platform.
+        # Ignore platform differences.
         create_file('.rubocop.yml', <<~YAML)
           Layout/EndOfLine:
-            EnforcedStyle: lf
+            Enabled: false
         YAML
-      end
 
-      after do
+        example.call
+      ensure
         described_class.ruby_extractors.shift
       end
 
-      # rubocop:disable Layout/LineLength
-      let(:custom_ruby_extractor) do
-        lambda do |_processed_source|
-          [
-            {
-              offset: 1,
-              processed_source: RuboCop::ProcessedSource.new(<<~RUBY, 3.3, 'dummy.rb', parser_engine: parser_engine)
-                # frozen_string_literal: true
+      context 'when the extractor matches' do
+        # rubocop:disable Layout/LineLength
+        let(:custom_ruby_extractor) do
+          lambda do |_processed_source|
+            [
+              {
+                offset: 1,
+                processed_source: RuboCop::ProcessedSource.new(<<~RUBY, 3.3, 'dummy.rb', parser_engine: parser_engine)
+                  # frozen_string_literal: true
 
-                def valid_code; end
-              RUBY
-            },
-            {
-              offset: 2,
-              processed_source: RuboCop::ProcessedSource.new(source, 3.3, 'dummy.rb', parser_engine: parser_engine)
-            }
-          ]
+                  def valid_code; end
+                RUBY
+              },
+              {
+                offset: 2,
+                processed_source: RuboCop::ProcessedSource.new(source, 3.3, 'dummy.rb', parser_engine: parser_engine)
+              }
+            ]
+          end
+        end
+        # rubocop:enable Layout/LineLength
+
+        let(:source) do
+          <<~RUBY
+            # frozen_string_literal: true
+
+            def INVALID_CODE; end
+          RUBY
+        end
+
+        it 'sends the offense to a formatter' do
+          runner.run([])
+          expect(formatter_output).to eq <<~RESULT
+            Inspecting 1 file
+            C
+
+            Offenses:
+
+            example.rb:3:7: C: Naming/MethodName: Use snake_case for method names.
+            def INVALID_CODE; end
+                  ^^^^^^^^^^^^
+
+            1 file inspected, 1 offense detected
+          RESULT
         end
       end
-      # rubocop:enable Layout/LineLength
 
-      let(:source) do
-        <<~RUBY
+      context 'when the extractor does not match' do
+        let(:custom_ruby_extractor) do
+          lambda do |_processed_source|
+          end
+        end
+
+        let(:source) { <<~RUBY }
           # frozen_string_literal: true
 
           def INVALID_CODE; end
         RUBY
-      end
 
-      it 'sends the offense to a formatter' do
-        runner.run([])
-        expect(formatter_output).to eq <<~RESULT
-          Inspecting 1 file
-          C
+        it 'sends the offense to a formatter' do
+          runner.run([])
+          expect(formatter_output).to eq <<~RESULT
+            Inspecting 1 file
+            C
 
-          Offenses:
+            Offenses:
 
-          example.rb:3:7: C: Naming/MethodName: Use snake_case for method names.
-          def INVALID_CODE; end
+            example.rb:3:5: C: Naming/MethodName: Use snake_case for method names.
+            def INVALID_CODE; end
                 ^^^^^^^^^^^^
 
-          1 file inspected, 1 offense detected
-        RESULT
-      end
-    end
-
-    context 'with unavailable custom ruby extractor' do
-      before do
-        described_class.ruby_extractors.unshift(custom_ruby_extractor)
-      end
-
-      after do
-        described_class.ruby_extractors.shift
-      end
-
-      let(:custom_ruby_extractor) do
-        lambda do |_processed_source|
+            1 file inspected, 1 offense detected
+          RESULT
         end
       end
 
-      let(:source) { <<~RUBY }
-        # frozen_string_literal: true
+      context 'when the extractor crashes' do
+        let(:custom_ruby_extractor) do
+          lambda do |_processed_source|
+            raise 'Oh no!'
+          end
+        end
 
-        def INVALID_CODE; end
-      RUBY
+        let(:source) { <<~RUBY }
+          # frozen_string_literal: true
 
-      it 'sends the offense to a formatter' do
-        runner.run([])
-        expect(formatter_output).to eq <<~RESULT
-          Inspecting 1 file
-          C
+          def foo; end
+        RUBY
 
-          Offenses:
-
-          example.rb:3:5: C: Naming/MethodName: Use snake_case for method names.
-          def INVALID_CODE; end
-              ^^^^^^^^^^^^
-
-          1 file inspected, 1 offense detected
-        RESULT
+        it 'raises an error with the crashing extractor/file' do
+          expect do
+            runner.run([])
+          end.to raise_error(RuboCop::Error, /runner_spec\.rb failed to process .*example\.rb/)
+        end
       end
     end
 
