@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Style::ComparableClamp, :config do
       RUBY
     end
 
-    it 'does not register and corrects an offense when using `if x < low` / `elsif high < x` / `else` and all return values are the same' do
+    it 'does not register an offense when using `if x < low` / `elsif high < x` / `else` and all return values are the same' do
       expect_no_offenses(<<~RUBY)
         if x < low
           x

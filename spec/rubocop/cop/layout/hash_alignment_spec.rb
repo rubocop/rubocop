@@ -236,7 +236,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         RUBY
       end
 
-      it 'does not register and corrects an offense when using aligned keyword arguments' do
+      it 'does not register an offense when using aligned keyword arguments' do
         expect_no_offenses(<<~RUBY)
           config.fog_credentials_as_kwargs(
             provider:,

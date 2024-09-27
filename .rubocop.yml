@@ -125,6 +125,12 @@ Naming/InclusiveLanguage:
     'register no offense':
       Suggestions:
         - registers no offense
+    'does not register and corrects':
+      Suggestions:
+        does not register
+    'does not register an offense and corrects':
+      Suggestions:
+        does not register an offense
   Exclude:
     - lib/rubocop/cop/naming/inclusive_language.rb
     - lib/rubocop/cop/mixin/auto_corrector.rb
