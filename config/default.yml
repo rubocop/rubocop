@@ -1833,6 +1833,11 @@ Lint/DuplicateRescueException:
   Enabled: true
   VersionAdded: '0.89'
 
+Lint/DuplicateSetElement:
+  Description: 'Checks for duplicate elements in Set.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/EachWithObjectArgument:
   Description: 'Check for immutable argument given to each_with_object.'
   Enabled: true
