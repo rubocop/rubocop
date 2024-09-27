@@ -70,9 +70,8 @@ module RuboCop
 
         def top_conditional_ancestor(node)
           parent = node.parent
-          unless parent &&
-                 (parent.operator_keyword? ||
-                  (parent.begin_type? && parent.parent && parent.parent.operator_keyword?))
+          unless parent&.operator_keyword? ||
+                 (parent&.begin_type? && parent.parent&.operator_keyword?)
             return node
           end
 

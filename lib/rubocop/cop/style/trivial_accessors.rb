@@ -179,7 +179,7 @@ module RuboCop
         end
 
         def looks_like_trivial_reader?(node)
-          !node.arguments? && node.body && node.body.ivar_type?
+          !node.arguments? && node.body&.ivar_type?
         end
 
         def trivial_writer?(node)
