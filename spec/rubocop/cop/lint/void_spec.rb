@@ -304,7 +304,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        #{''}
+
         top
       RUBY
     end

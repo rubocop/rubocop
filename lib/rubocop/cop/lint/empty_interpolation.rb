@@ -19,7 +19,9 @@ module RuboCop
         MSG = 'Empty interpolation detected.'
 
         def on_interpolation(begin_node)
-          return unless begin_node.children.empty?
+          node_children = begin_node.children.dup
+          node_children.delete_if { |e| e&.nil_type? || (e&.basic_literal? && e&.value&.empty?) }
+          return unless node_children.empty?
 
           add_offense(begin_node) { |corrector| corrector.remove(begin_node) }
         end
