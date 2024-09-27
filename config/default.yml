@@ -1904,7 +1904,7 @@ Lint/EmptyInterpolation:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.20'
-  VersionChanged: '1.61'
+  VersionChanged: '<<next>>'
 
 Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
@@ -3828,6 +3828,12 @@ Style/EmptyMethod:
   SupportedStyles:
     - compact
     - expanded
+
+Style/EmptyStringInsideInterpolation:
+  Description: 'Checks for empty strings being assigned inside string interpolation.'
+  StyleGuide: '#empty-strings-in-interpolation'
+  Enabled: pending
+  VersionAdded: '<<next>>'
 
 Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
