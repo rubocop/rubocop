@@ -166,7 +166,7 @@ module RuboCop
       return unless duplicate_setting?(base_hash, derived_hash, key, opts[:inherited_file])
 
       inherit_mode = opts[:inherit_mode]['merge'] || opts[:inherit_mode]['override']
-      return if base_hash[key].is_a?(Array) && inherit_mode && inherit_mode.include?(key)
+      return if base_hash[key].is_a?(Array) && inherit_mode&.include?(key)
 
       puts "#{PathUtil.smart_path(opts[:file])}: " \
            "#{opts[:cop_name]}:#{key} overrides " \
@@ -194,11 +194,11 @@ module RuboCop
     end
 
     def should_merge?(mode, key)
-      mode && mode['merge'] && mode['merge'].include?(key)
+      mode && mode['merge']&.include?(key)
     end
 
     def should_override?(mode, key)
-      mode && mode['override'] && mode['override'].include?(key)
+      mode && mode['override']&.include?(key)
     end
 
     def merge_hashes?(base_hash, derived_hash, key)

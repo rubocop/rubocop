@@ -32,7 +32,7 @@ module RuboCop
       end
 
       def parentheses?(node)
-        node.loc.respond_to?(:end) && node.loc.end && node.loc.end.is?(')')
+        node.loc.respond_to?(:end) && node.loc.end&.is?(')')
       end
 
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
