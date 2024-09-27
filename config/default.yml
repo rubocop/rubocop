@@ -1895,7 +1895,12 @@ Lint/EmptyInterpolation:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.20'
-  VersionChanged: '1.61'
+  VersionChanged: '<<next>>'
+
+Lint/EmptyStringInsideInterpolation:
+  Description: 'Checks for empty strings being assigned inside string interpolation.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
 
 Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
