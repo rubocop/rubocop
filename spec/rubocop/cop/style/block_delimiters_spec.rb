@@ -644,6 +644,28 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
     end
+
+    context 'with a single line do-end block with an inline `rescue` without a semicolon before `rescue`' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          foo do next unless bar rescue StandardError; end
+              ^^ Prefer `{...}` over `do...end` for single-line blocks.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo { next unless bar rescue StandardError; }
+        RUBY
+      end
+    end
+
+    context 'with a single line do-end block with an inline `rescue` with a semicolon before `rescue`' do
+      it 'does not register an offense' do
+        # NOTE: `foo { next unless bar; rescue StandardError; }` is a syntax error.
+        expect_no_offenses(<<~RUBY)
+          foo do next unless bar; rescue StandardError; end
+        RUBY
+      end
+    end
   end
 
   context 'EnforcedStyle: braces_for_chaining' do

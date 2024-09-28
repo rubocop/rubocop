@@ -341,8 +341,9 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def proper_block_style?(node)
-          return true if require_braces?(node)
+          return true if require_braces?(node) || require_do_end?(node)
           return special_method_proper_block_style?(node) if special_method?(node.method_name)
 
           case style
@@ -352,6 +353,7 @@ module RuboCop
           when :always_braces       then braces_style?(node)
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def require_braces?(node)
           return false unless node.braces?
@@ -359,6 +361,13 @@ module RuboCop
           node.each_ancestor(:send).any? do |send|
             send.arithmetic_operation? && node.source_range.end_pos < send.loc.selector.begin_pos
           end
+        end
+
+        def require_do_end?(node)
+          return false if node.braces? || node.multiline?
+          return false unless (resbody = node.each_descendant(:resbody).first)
+
+          resbody.children.first&.array_type?
         end
 
         def special_method?(method_name)
