@@ -27,7 +27,7 @@ module RuboCop
       #   so the correction may not be actually equivalent.
       #
       # @example
-      #   # bad (select or find_all)
+      #   # bad (select, filter, or find_all)
       #   array.select { |x| x.match? /regexp/ }
       #   array.select { |x| /regexp/.match?(x) }
       #   array.select { |x| x =~ /regexp/ }
@@ -47,9 +47,11 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Prefer `%<replacement>s` to `%<original_method>s` with a regexp match.'
-        RESTRICT_ON_SEND = %i[select find_all reject].freeze
-        REPLACEMENTS = { select: 'grep', find_all: 'grep', reject: 'grep_v' }.freeze
-        OPPOSITE_REPLACEMENTS = { select: 'grep_v', find_all: 'grep_v', reject: 'grep' }.freeze
+        RESTRICT_ON_SEND = %i[select filter find_all reject].freeze
+        REPLACEMENTS = { select: 'grep', filter: 'grep', find_all: 'grep', reject: 'grep_v' }.freeze
+        OPPOSITE_REPLACEMENTS = {
+          select: 'grep_v', filter: 'grep_v', find_all: 'grep_v', reject: 'grep'
+        }.freeze
         REGEXP_METHODS = %i[match? =~ !~].to_set.freeze
 
         # @!method regexp_match?(node)
@@ -84,8 +86,9 @@ module RuboCop
           }
         PATTERN
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
+          return if target_ruby_version < 2.6 && node.method?(:filter)
           return unless (block_node = node.block_node)
           return if block_node.body&.begin_type?
           return if receiver_allowed?(block_node.receiver)
@@ -99,7 +102,7 @@ module RuboCop
 
           register_offense(node, block_node, regexp, replacement)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         alias on_csend on_send
 
         private
