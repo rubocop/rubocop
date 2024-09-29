@@ -128,6 +128,12 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRange, :config do
             RUBY
           end
 
+          it 'does not register an offense for rational literals' do
+            expect_no_offenses(<<~RUBY)
+              1/10r#{operator}1/3r
+            RUBY
+          end
+
           it 'requires parens when calling a method on a basic literal' do
             expect_offense(<<~RUBY, operator: operator)
               1#{operator}2.to_a

@@ -57,6 +57,7 @@ module RuboCop
       #   # good
       #   (a.foo)..(b.bar)
       class AmbiguousRange < Base
+        include RationalLiteral
         extend AutoCorrector
 
         MSG = 'Wrap complex range boundaries with parentheses to avoid ambiguity.'
@@ -79,12 +80,14 @@ module RuboCop
           yield range.end if range.end
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def acceptable?(node)
           node.begin_type? ||
-            node.literal? ||
+            node.literal? || rational_literal?(node) ||
             node.variable? || node.const_type? || node.self_type? ||
             (node.call_type? && acceptable_call?(node))
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def acceptable_call?(node)
           return true if node.unary_operation?
