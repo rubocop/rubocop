@@ -179,6 +179,12 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     RUBY
   end
 
+  it 'allows mixed `||` and `&&` inside begin node' do
+    expect_no_offenses(<<~RUBY)
+      x? && (y? || z? && w?)
+    RUBY
+  end
+
   # See https://github.com/rubocop/rubocop/issues/8781
   it 'does not move comments that are inside an inner block' do
     expect_offense(<<~RUBY)
