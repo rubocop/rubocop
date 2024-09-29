@@ -33,6 +33,9 @@ module StrictWarnings
     # Ignore warnings from dev/rc ruby versions. Things are subject to change and
     # contributors should not be bothered by them with red CI.
     return if RUBY_PATCHLEVEL == -1
+    # Don't raise for warnings during development. It's expected that
+    # some code will warn like "unused variable" while iterating.
+    return unless ENV['CI']
 
     raise WarningError, message
   end
