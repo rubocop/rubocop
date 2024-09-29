@@ -552,11 +552,35 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
   context 'when Ruby >= 2.7', :ruby27 do
     include_examples('regexp match with `numblock`s', 'select', 'grep')
     include_examples('regexp match with `numblock`s', 'find_all', 'grep')
+    include_examples('regexp match with `numblock`s', 'filter', 'grep')
     include_examples('regexp mismatch with `numblock`s', 'reject', 'grep')
 
     include_examples('regexp match with `numblock`s', 'reject', 'grep_v')
     include_examples('regexp mismatch with `numblock`s', 'select', 'grep_v')
     include_examples('regexp mismatch with `numblock`s', 'find_all', 'grep_v')
+    include_examples('regexp mismatch with `numblock`s', 'filter', 'grep_v')
+  end
+
+  context 'when Ruby >= 2.6', :ruby26 do
+    include_examples('regexp match', 'filter', 'grep')
+    include_examples('regexp match with safe navigation', 'filter', 'grep')
+
+    include_examples('regexp mismatch', 'filter', 'grep_v')
+    include_examples('regexp mismatch with safe navigation', 'filter', 'grep_v')
+  end
+
+  context 'when Ruby <= 2.5', :ruby25, unsupported_on: :prism do
+    it 'does not register an offense when `filter` with regexp match' do
+      expect_no_offenses(<<~RUBY)
+        array.filter { |x| x =~ /regexp/ }
+      RUBY
+    end
+
+    it 'does not register an offense when `filter` with regexp mismatch' do
+      expect_no_offenses(<<~RUBY)
+        array.filter { |x| x !~ /regexp/ }
+      RUBY
+    end
   end
 
   context 'when Ruby >= 2.3', :ruby23 do
