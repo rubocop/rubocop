@@ -11,13 +11,13 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   )
 
   STRUCTURE = {
-    name:                  ->(data) { h2(data.cop.cop_name) },
+    name:                  ->(data) { cop_header(data.cop) },
     required_ruby_version: ->(data) { required_ruby_version(data.cop) },
     properties:            ->(data) { properties(data.cop) },
     description:           ->(data) { "#{data.description}\n" },
-    safety:                ->(data) { safety_object(data.safety_objects) },
-    examples:              ->(data) { examples(data.example_objects) },
-    configuration:         ->(data) { configurations(data.cop.department, data.config) },
+    safety:                ->(data) { safety_object(data.safety_objects, data.cop) },
+    examples:              ->(data) { examples(data.example_objects, data.cop) },
+    configuration:         ->(data) { configurations(data.cop.department, data.config, data.cop) },
     references:            ->(data) { references(data.cop, data.see_objects) }
   }.freeze
 
@@ -87,20 +87,20 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     raise "Specify the default EnforcedStyle for #{cop.cop_name}"
   end
 
-  def examples(example_objects)
+  def examples(example_objects, cop)
     return '' if example_objects.none?
 
-    example_objects.each_with_object(h3('Examples').dup) do |example, content|
+    example_objects.each_with_object(cop_subsection('Examples', cop).dup) do |example, content|
       content << "\n" unless content.end_with?("\n\n")
-      content << h4(example.name) unless example.name == ''
+      content << example_header(example.name, cop) unless example.name == ''
       content << code_example(example)
     end
   end
 
-  def safety_object(safety_objects)
+  def safety_object(safety_objects, cop)
     return '' if safety_objects.all? { |s| s.text.blank? }
 
-    safety_objects.each_with_object(h3('Safety').dup) do |safety_object, content|
+    safety_objects.each_with_object(cop_subsection('Safety', cop).dup) do |safety_object, content|
       next if safety_object.text.blank?
 
       content << "\n" unless content.end_with?("\n\n")
@@ -140,22 +140,25 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
   # rubocop:enable Metrics/MethodLength
 
-  def h2(title)
+  def cop_header(cop)
     content = +"\n"
-    content << "== #{title}\n"
+    content << "[##{to_anchor(cop.cop_name)}]\n"
+    content << "== #{cop.cop_name}\n"
     content << "\n"
     content
   end
 
-  def h3(title)
+  def cop_subsection(title, cop)
     content = +"\n"
+    content << "[##{to_anchor(title)}-#{to_anchor(cop.cop_name)}]\n"
     content << "=== #{title}\n"
     content << "\n"
     content
   end
 
-  def h4(title)
-    content = +"==== #{title}\n"
+  def example_header(title, cop)
+    content = "[##{to_anchor(title)}-#{to_anchor(cop.cop_name)}]\n"
+    content << +"==== #{title}\n"
     content << "\n"
     content
   end
@@ -167,7 +170,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content
   end
 
-  def configurations(department, pars)
+  def configurations(department, pars, cop)
     return '' if pars.empty?
 
     header = ['Name', 'Default value', 'Configurable values']
@@ -182,7 +185,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       [configuration_name(department, name), default, configurable]
     end
 
-    h3('Configurable attributes') + to_table(header, content)
+    cop_subsection('Configurable attributes', cop) + to_table(header, content)
   end
 
   def configuration_name(department, name)
@@ -260,7 +263,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     urls = RuboCop::Cop::MessageAnnotator.new(config, cop.name, cop_config, {}).urls
     return '' if urls.empty? && see_objects.empty?
 
-    content = h3('References')
+    content = cop_subsection('References', cop)
     content << urls.map { |url| "* #{url}" }.join("\n")
     content << "\n" unless urls.empty?
     content << see_objects.map { |see| "* #{see.name}" }.join("\n")
@@ -333,7 +336,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     filename = "#{department_to_basename(department)}.adoc"
     content = +"=== Department xref:#{filename}[#{type_title}]\n\n"
     cops_of_department(department).each do |cop|
-      anchor = cop.cop_name.delete('/').downcase
+      anchor = to_anchor(cop.cop_name)
       content << "* xref:#{filename}##{anchor}[#{cop.cop_name}]\n"
     end
 
@@ -364,5 +367,14 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     return 'Disabled' unless status
 
     status == 'pending' ? 'Pending' : 'Enabled'
+  end
+
+  # HTML anchor are somewhat limited in what characters they can contain, just
+  # accept a known-good subset. As long as it's consistent it doesn't matter.
+  #
+  # Style/AccessModifierDeclarations => styleaccessmodifierdeclarations
+  # OnlyFor: [] (default) => onlyfor_-__-_default_
+  def to_anchor(title)
+    title.delete('/').tr(' ', '-').gsub(/[^a-zA-Z0-9-]/, '_').downcase
   end
 end
