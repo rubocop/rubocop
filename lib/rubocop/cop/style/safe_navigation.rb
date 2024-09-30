@@ -290,7 +290,7 @@ module RuboCop
         end
 
         def find_matching_receiver_invocation(method_chain, checked_variable)
-          return nil unless method_chain
+          return nil unless method_chain.respond_to?(:receiver)
 
           receiver = method_chain.receiver
 
