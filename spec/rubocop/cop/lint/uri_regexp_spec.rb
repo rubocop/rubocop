@@ -13,81 +13,96 @@ RSpec.describe RuboCop::Cop::Lint::UriRegexp, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects using `URI.regexp` with argument' do
-    expect_offense(<<~RUBY)
-      URI.regexp('http://example.com')
-          ^^^^^^ `URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp('http://example.com')`.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      URI::DEFAULT_PARSER.make_regexp('http://example.com')
-    RUBY
-  end
-
-  it 'registers an offense and corrects using `::URI.regexp` with argument' do
-    expect_offense(<<~RUBY)
-      ::URI.regexp('http://example.com')
-            ^^^^^^ `::URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp('http://example.com')`.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      ::URI::DEFAULT_PARSER.make_regexp('http://example.com')
-    RUBY
-  end
-
-  it 'registers an offense and corrects using `URI.regexp` without argument' do
-    expect_offense(<<~RUBY)
-      URI.regexp
-          ^^^^^^ `URI.regexp` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      URI::DEFAULT_PARSER.make_regexp
-    RUBY
-  end
-
-  it 'registers an offense and corrects using `::URI.regexp` without argument' do
-    expect_offense(<<~RUBY)
-      ::URI.regexp
-            ^^^^^^ `::URI.regexp` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp`.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      ::URI::DEFAULT_PARSER.make_regexp
-    RUBY
-  end
-
-  context 'array argument' do
-    it 'registers an offense and corrects using `URI.regexp` with literal arrays' do
+  context 'Ruby <= 3.3', :ruby33 do
+    it 'registers an offense and corrects using `URI.regexp` with argument' do
       expect_offense(<<~RUBY)
-        URI.regexp(['http', 'https'])
-            ^^^^^^ `URI.regexp(['http', 'https'])` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp(['http', 'https'])`.
+        URI.regexp('http://example.com')
+            ^^^^^^ `URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp('http://example.com')`.
       RUBY
 
       expect_correction(<<~RUBY)
-        URI::DEFAULT_PARSER.make_regexp(['http', 'https'])
+        URI::DEFAULT_PARSER.make_regexp('http://example.com')
       RUBY
     end
 
-    it 'registers an offense and corrects using `URI.regexp` with %w arrays' do
+    it 'registers an offense and corrects using `::URI.regexp` with argument' do
       expect_offense(<<~RUBY)
-        URI.regexp(%w[http https])
-            ^^^^^^ `URI.regexp(%w[http https])` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp(%w[http https])`.
+        ::URI.regexp('http://example.com')
+              ^^^^^^ `::URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp('http://example.com')`.
       RUBY
 
       expect_correction(<<~RUBY)
-        URI::DEFAULT_PARSER.make_regexp(%w[http https])
+        ::URI::DEFAULT_PARSER.make_regexp('http://example.com')
       RUBY
     end
 
-    it 'registers an offense and corrects using `URI.regexp` with %i arrays' do
+    it 'registers an offense and corrects using `URI.regexp` without argument' do
       expect_offense(<<~RUBY)
-        URI.regexp(%i[http https])
-            ^^^^^^ `URI.regexp(%i[http https])` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp(%i[http https])`.
+        URI.regexp
+            ^^^^^^ `URI.regexp` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
       RUBY
 
       expect_correction(<<~RUBY)
-        URI::DEFAULT_PARSER.make_regexp(%i[http https])
+        URI::DEFAULT_PARSER.make_regexp
+      RUBY
+    end
+
+    it 'registers an offense and corrects using `::URI.regexp` without argument' do
+      expect_offense(<<~RUBY)
+        ::URI.regexp
+              ^^^^^^ `::URI.regexp` is obsolete and should not be used. Instead, use `::URI::DEFAULT_PARSER.make_regexp`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ::URI::DEFAULT_PARSER.make_regexp
+      RUBY
+    end
+
+    context 'array argument' do
+      it 'registers an offense and corrects using `URI.regexp` with literal arrays' do
+        expect_offense(<<~RUBY)
+          URI.regexp(['http', 'https'])
+              ^^^^^^ `URI.regexp(['http', 'https'])` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp(['http', 'https'])`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          URI::DEFAULT_PARSER.make_regexp(['http', 'https'])
+        RUBY
+      end
+
+      it 'registers an offense and corrects using `URI.regexp` with %w arrays' do
+        expect_offense(<<~RUBY)
+          URI.regexp(%w[http https])
+              ^^^^^^ `URI.regexp(%w[http https])` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp(%w[http https])`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          URI::DEFAULT_PARSER.make_regexp(%w[http https])
+        RUBY
+      end
+
+      it 'registers an offense and corrects using `URI.regexp` with %i arrays' do
+        expect_offense(<<~RUBY)
+          URI.regexp(%i[http https])
+              ^^^^^^ `URI.regexp(%i[http https])` is obsolete and should not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp(%i[http https])`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          URI::DEFAULT_PARSER.make_regexp(%i[http https])
+        RUBY
+      end
+    end
+  end
+
+  context 'Ruby >= 3.4', :ruby34 do
+    it 'registers an offense and corrects using `URI.regexp` with argument' do
+      expect_offense(<<~RUBY)
+        URI.regexp('http://example.com')
+            ^^^^^^ `URI.regexp('http://example.com')` is obsolete and should not be used. Instead, use `URI::RFC2396_PARSER.make_regexp('http://example.com')`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        URI::RFC2396_PARSER.make_regexp('http://example.com')
       RUBY
     end
   end
