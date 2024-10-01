@@ -4319,6 +4319,7 @@ Style/MapIntoArray:
   StyleGuide: '#functional-code'
   Enabled: pending
   VersionAdded: '1.63'
+  VersionChanged: '<<next>>'
   Safe: false
 
 Style/MapToHash:
