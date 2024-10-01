@@ -122,7 +122,7 @@ module RuboCop
         end
 
         def redundant_line_continuation?(range)
-          return true unless (node = find_node_for_line(range.line))
+          return true unless (node = find_node_for_line(range.last_line))
           return false if argument_newline?(node)
 
           source = node.parent ? node.parent.source : node.source
@@ -160,9 +160,9 @@ module RuboCop
         end
         # rubocop:enable Metrics/AbcSize
 
-        def find_node_for_line(line)
+        def find_node_for_line(last_line)
           processed_source.ast.each_node do |node|
-            return node if same_line?(node, line)
+            return node if node.respond_to?(:expression) && node.expression&.last_line == last_line
           end
         end
 

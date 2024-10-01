@@ -547,6 +547,30 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when line continuations with comparison operator and the LHS is wrapped in parentheses' do
+    expect_no_offenses(<<~'RUBY')
+      (
+        42) \
+        == bar
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with comparison operator and the LHS is wrapped in brackets' do
+    expect_no_offenses(<<~'RUBY')
+      [
+        42] \
+        == bar
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with comparison operator and the LHS is wrapped in braces' do
+    expect_no_offenses(<<~'RUBY')
+      {
+        k: :v} \
+        == bar
+    RUBY
+  end
+
   it 'does not register an offense when line continuations with &&' do
     expect_no_offenses(<<~'RUBY')
       foo \
@@ -639,6 +663,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
       foo == other.foo \
         || bar == other.bar \
         || baz == other.baz
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with `&&` in method definition and before a destructuring assignment' do
+    expect_no_offenses(<<~'RUBY')
+      var, = *foo
+
+      bar \
+        && baz
     RUBY
   end
 
