@@ -13,8 +13,10 @@ module RuboCop
       # return value of `Enumerable#map` is an `Array`. They are not autocorrected
       # when a return value could be used because these types differ.
       #
-      # NOTE: It only detects when the mapping destination is a local variable
-      # initialized as an empty array and referred to only by the pushing operation.
+      # NOTE: It only detects when the mapping destination is either:
+      # * a local variable initialized as an empty array and referred to only by the
+      # pushing operation;
+      # * or, if it is the single block argument to a `[].tap` block.
       # This is because, if not, it's challenging to statically guarantee that the
       # mapping destination variable remains an empty array:
       #
@@ -42,6 +44,14 @@ module RuboCop
       #   # good
       #   dest = src.map { |e| e * 2 }
       #
+      #   # bad
+      #   [].tap do |dest|
+      #     src.each { |e| dest << e * 2 }
+      #   end
+      #
+      #   # good
+      #   dest = src.map { |e| e * 2 }
+      #
       #   # good - contains another operation
       #   dest = []
       #   src.each { |e| dest << e * 2; puts e }
@@ -56,7 +66,7 @@ module RuboCop
         # @!method each_block_with_push?(node)
         def_node_matcher :each_block_with_push?, <<-PATTERN
           [
-            ^({begin kwbegin} ...)
+            ^({begin kwbegin block} ...)
             ({block numblock} (send !{nil? self} :each) _
               (send (lvar _) {:<< :push :append} {send lvar begin}))
           ]
@@ -71,6 +81,16 @@ module RuboCop
               (send (const {nil? cbase} :Array) :new (array)?)
               (send nil? :Array (array))
             }
+          )
+        PATTERN
+
+        # @!method empty_array_tap(node)
+        def_node_matcher :empty_array_tap, <<~PATTERN
+          ^^$(
+            block
+              (send (array) :tap)
+              (args (arg _))
+              ...
           )
         PATTERN
 
@@ -89,9 +109,14 @@ module RuboCop
           return unless each_block_with_push?(node)
 
           dest_var = find_dest_var(node)
-          return unless (asgn = find_closest_assignment(node, dest_var))
-          return unless empty_array_asgn?(asgn)
-          return unless dest_used_only_for_mapping?(node, dest_var, asgn)
+
+          if offending_empty_array_tap?(node, dest_var)
+            asgn = dest_var.declaration_node
+          else
+            return unless (asgn = find_closest_assignment(node, dest_var))
+            return unless empty_array_asgn?(asgn)
+            return unless dest_used_only_for_mapping?(node, dest_var, asgn)
+          end
 
           register_offense(node, dest_var, asgn)
         end
@@ -106,6 +131,15 @@ module RuboCop
 
           candidates = @scopes.lazy.filter_map { |s| s.variables[name] }
           candidates.find { |v| v.references.any? { |n| n.node.equal?(node) } }
+        end
+
+        def offending_empty_array_tap?(node, dest_var)
+          return false unless (tap_block_node = empty_array_tap(dest_var.declaration_node))
+
+          # A `tap` block only offends if the array push is the only thing in it;
+          # otherwise we cannot guarantee that the block variable is still an empty
+          # array when pushed to.
+          tap_block_node.body == node
         end
 
         def find_closest_assignment(block, dest_var)
@@ -127,7 +161,13 @@ module RuboCop
             next if return_value_used?(block)
 
             corrector.replace(block.send_node.selector, new_method_name)
-            remove_assignment(corrector, asgn)
+
+            if (tap_block_node = empty_array_tap(dest_var.declaration_node))
+              remove_tap(corrector, block, tap_block_node)
+            else
+              remove_assignment(corrector, asgn)
+            end
+
             correct_push_node(corrector, block.body)
             correct_return_value_handling(corrector, block, dest_var)
           end
@@ -157,6 +197,12 @@ module RuboCop
           range = range_with_surrounding_space(range, side: :right, newlines: false)
 
           corrector.remove(range)
+        end
+
+        def remove_tap(corrector, node, block_node)
+          range = range_between(block_node.source_range.begin_pos, node.source_range.begin_pos)
+          corrector.remove(range)
+          corrector.remove(range_with_surrounding_space(block_node.loc.end, side: :left))
         end
 
         def correct_push_node(corrector, push_node)
