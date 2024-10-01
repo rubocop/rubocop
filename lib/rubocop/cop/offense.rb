@@ -97,8 +97,8 @@ module RuboCop
       # @!attribute [r] correctable?
       #
       # @return [Boolean]
-      #   whether this offense can be automatically corrected via
-      #   autocorrect or a todo.
+      #   whether this offense can be automatically corrected via autocorrect.
+      #   This includes todo comments, for example when requested with `--disable-uncorrectable`.
       def correctable?
         @status != :unsupported
       end
