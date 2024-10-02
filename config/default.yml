@@ -3828,6 +3828,11 @@ Style/EndlessMethod:
     - allow_always
     - disallow
 
+Style/EndlessMethodOperatorPrecedence:
+  Description: 'Checks for endless methods inside operators of lower precedence.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/EnvHome:
   Description: "Checks for consistent usage of `ENV['HOME']`."
   Enabled: pending
