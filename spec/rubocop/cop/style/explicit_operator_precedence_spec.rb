@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::AmbiguousOperatorPrecedence, :config do
+RSpec.describe RuboCop::Cop::Style::ExplicitOperatorPrecedence, :config do
   it 'does not register an offense when there is only one operator in the expression' do
     expect_no_offenses(<<~RUBY)
       a + b

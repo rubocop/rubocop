@@ -1597,6 +1597,7 @@ Lint/AmbiguousOperatorPrecedence:
                  ambiguous precedence.
   Enabled: pending
   VersionAdded: '1.21'
+  VersionRemoved: '2.0'
 
 Lint/AmbiguousRange:
   Description: Checks for ranges with ambiguous boundaries.
@@ -3869,6 +3870,14 @@ Style/ExplicitBlockArgument:
   Enabled: true
   VersionAdded: '0.89'
   VersionChanged: '1.8'
+
+Style/ExplicitOperatorPrecedence:
+  Description: >-
+                 Checks for expressions containing multiple binary operations with
+                 implicit precedence.
+  Enabled: pending
+  VersionAdded: '1.21'
+  VersionChanged: '<<next>>'
 
 Style/ExponentialNotation:
   Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
