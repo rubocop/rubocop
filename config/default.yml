@@ -3143,6 +3143,11 @@ Style/Alias:
     - prefer_alias
     - prefer_alias_method
 
+Style/AmbiguousEndlessMethodDefinition:
+  Description: 'Checks for endless methods inside operators of lower precedence.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/AndOr:
   Description: 'Use &&/|| instead of and/or.'
   StyleGuide: '#no-and-or-or'

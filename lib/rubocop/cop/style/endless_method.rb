@@ -48,6 +48,7 @@ module RuboCop
       #
       class EndlessMethod < Base
         include ConfigurableEnforcedStyle
+        include EndlessMethodRewriter
         extend TargetRubyVersion
         extend AutoCorrector
 
@@ -80,20 +81,6 @@ module RuboCop
           return unless node.endless?
 
           add_offense(node) { |corrector| correct_to_multiline(corrector, node) }
-        end
-
-        def correct_to_multiline(corrector, node)
-          replacement = <<~RUBY.strip
-            def #{node.method_name}#{arguments(node)}
-              #{node.body.source}
-            end
-          RUBY
-
-          corrector.replace(node, replacement)
-        end
-
-        def arguments(node, missing = '')
-          node.arguments.any? ? node.arguments.source : missing
         end
       end
     end
