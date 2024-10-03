@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousOperatorPrecedence, :config do
 
   it 'allows an operator with `and`' do
     expect_no_offenses(<<~RUBY)
-      array << i and next
+      array << i and return
     RUBY
   end
 

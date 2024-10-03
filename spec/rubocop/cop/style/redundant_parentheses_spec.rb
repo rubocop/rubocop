@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
-  shared_examples 'redundant' do |expr, correct, type|
-    it "registers an offense for parentheses around #{type}" do
+  shared_examples 'redundant' do |expr, correct, type, options|
+    it "registers an offense for parentheses around #{type}", *options do
       expect_offense(<<~RUBY, expr: expr)
         %{expr}
         ^{expr} Don't use parentheses around #{type}.
@@ -14,17 +14,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     end
   end
 
-  shared_examples 'plausible' do |expr|
-    it 'accepts parentheses when arguments are unparenthesized' do
+  shared_examples 'plausible' do |expr, options|
+    it 'accepts parentheses when arguments are unparenthesized', *options do
       expect_no_offenses(expr)
     end
   end
 
-  shared_examples 'keyword with return value' do |keyword|
-    it_behaves_like 'redundant', "(#{keyword})", keyword, 'a keyword'
-    it_behaves_like 'redundant', "(#{keyword}())", "#{keyword}()", 'a keyword'
-    it_behaves_like 'redundant', "(#{keyword}(1))", "#{keyword}(1)", 'a keyword'
-    it_behaves_like 'plausible', "(#{keyword} 1, 2)"
+  shared_examples 'keyword with return value' do |keyword, options|
+    it_behaves_like 'redundant', "(#{keyword})", keyword, 'a keyword', options
+    it_behaves_like 'redundant', "(#{keyword}())", "#{keyword}()", 'a keyword', options
+    it_behaves_like 'redundant', "(#{keyword}(1))", "#{keyword}(1)", 'a keyword', options
+    it_behaves_like 'plausible', "(#{keyword} 1, 2)", options
   end
 
   shared_examples 'keyword with arguments' do |keyword|
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '(__FILE__)', '__FILE__', 'a keyword'
   it_behaves_like 'redundant', '(__LINE__)', '__LINE__', 'a keyword'
   it_behaves_like 'redundant', '(__ENCODING__)', '__ENCODING__', 'a keyword'
-  it_behaves_like 'redundant', '(redo)', 'redo', 'a keyword'
+  it_behaves_like 'redundant', '(redo)', 'redo', 'a keyword', [:ruby32, { unsupported_on: :prism }]
 
   context 'Ruby <= 3.2', :ruby32, unsupported_on: :prism do
     it_behaves_like 'redundant', '(retry)', 'retry', 'a keyword'
@@ -122,8 +122,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     end
   end
 
-  it_behaves_like 'keyword with return value', 'break'
-  it_behaves_like 'keyword with return value', 'next'
+  it_behaves_like 'keyword with return value', 'break', [:ruby32, { unsupported_on: :prism }]
+  it_behaves_like 'keyword with return value', 'next', [:ruby32, { unsupported_on: :prism }]
   it_behaves_like 'keyword with arguments', 'yield'
 
   it_behaves_like 'keyword with return value', 'return'
@@ -817,7 +817,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'accepts parentheses in `next` with multiline style argument' do
+  it 'accepts parentheses in `next` with multiline style argument', :ruby32, unsupported_on: :prism do
     expect_no_offenses(<<~RUBY)
       next (
         42
@@ -825,7 +825,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'registers an offense when parentheses in `next` with single style argument' do
+  it 'registers an offense when parentheses in `next` with single style argument', :ruby32, unsupported_on: :prism do
     expect_offense(<<~RUBY)
       next (42)
            ^^^^ Don't use parentheses around a literal.
@@ -836,7 +836,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'accepts parentheses in `break` with multiline style argument' do
+  it 'accepts parentheses in `break` with multiline style argument', :ruby32, unsupported_on: :prism do
     expect_no_offenses(<<~RUBY)
       break (
         42
@@ -844,7 +844,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'registers an offense when parentheses in `break` with single style argument' do
+  it 'registers an offense when parentheses in `break` with single style argument', :ruby32, unsupported_on: :prism do
     expect_offense(<<~RUBY)
       break (42)
             ^^^^ Don't use parentheses around a literal.

@@ -402,8 +402,8 @@ RSpec.describe RuboCop::Cop::Style::MapCompactWithConditionalBlock, :config do
 
     it 'does not register offenses if there are multiple guard clauses' do
       expect_no_offenses(<<~RUBY)
-        next unless item.bar?
-        next unless item.baz?
+        return unless item.bar?
+        return unless item.baz?
 
         item
       RUBY
