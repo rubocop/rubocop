@@ -641,8 +641,8 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
   end
 
-  shared_examples 'on if nodes which exit current scope' do |kw|
-    it "registers an error with #{kw} in the if branch" do
+  shared_examples 'on if nodes which exit current scope' do |kw, options|
+    it "registers an error with #{kw} in the if branch", *options do
       expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause (`#{kw} if something`) instead of wrapping the code inside a conditional expression.
@@ -661,7 +661,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "registers an error with #{kw} in the else branch" do
+    it "registers an error with #{kw} in the else branch", *options do
       expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause (`#{kw} unless something`) instead of wrapping the code inside a conditional expression.
@@ -680,7 +680,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "doesn't register an error if condition has multiple lines" do
+    it "doesn't register an error if condition has multiple lines", *options do
       expect_no_offenses(<<~RUBY)
         if something &&
              something_else
@@ -691,7 +691,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "does not report an offense if #{kw} is inside elsif" do
+    it "does not report an offense if #{kw} is inside elsif", *options do
       expect_no_offenses(<<~RUBY)
         if something
           a
@@ -701,7 +701,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "does not report an offense if #{kw} is inside then body of if..elsif..end" do
+    it "does not report an offense if #{kw} is inside then body of if..elsif..end", *options do
       expect_no_offenses(<<~RUBY)
         if something
           #{kw}
@@ -711,7 +711,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "does not report an offense if #{kw} is inside if..elsif..else..end" do
+    it "does not report an offense if #{kw} is inside if..elsif..else..end", *options do
       expect_no_offenses(<<~RUBY)
         if something
           a
@@ -723,7 +723,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "doesn't register an error if control flow expr has multiple lines" do
+    it "doesn't register an error if control flow expr has multiple lines", *options do
       expect_no_offenses(<<~RUBY)
         if something
           #{kw} 'blah blah blah' \\
@@ -734,7 +734,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it 'registers an error if non-control-flow branch has multiple lines' do
+    it 'registers an error if non-control-flow branch has multiple lines', *options do
       expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause (`#{kw} if something`) instead of wrapping the code inside a conditional expression.
@@ -870,8 +870,12 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   include_examples('on if nodes which exit current scope', 'return')
-  include_examples('on if nodes which exit current scope', 'next')
-  include_examples('on if nodes which exit current scope', 'break')
+  include_examples(
+    'on if nodes which exit current scope', 'next', [:ruby32, { unsupported_on: :prism }]
+  )
+  include_examples(
+    'on if nodes which exit current scope', 'break', [:ruby32, { unsupported_on: :prism }]
+  )
   include_examples('on if nodes which exit current scope', 'raise "error"')
 
   context 'method in module' do

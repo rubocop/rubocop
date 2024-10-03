@@ -165,9 +165,9 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
-    shared_examples 'if/then/else/end with keyword' do |keyword|
+    shared_examples 'if/then/else/end with keyword' do |keyword, options|
       it 'registers and corrects an offense with ternary operator when one of the branches of ' \
-         "if/then/else/end contains `#{keyword}` keyword" do
+         "if/then/else/end contains `#{keyword}` keyword", *options do
         expect_offense(<<~RUBY, keyword: keyword)
           if true then %{keyword} else 7 end
           ^^^^^^^^^^^^^^{keyword}^^^^^^^^^^^ #{if_offense_message}
@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       it_behaves_like 'if/then/else/end with keyword', 'retry'
     end
 
-    it_behaves_like 'if/then/else/end with keyword', 'break'
+    it_behaves_like 'if/then/else/end with keyword', 'break', [:ruby32, { unsupported_on: :prism }]
 
     it_behaves_like 'if/then/else/end with keyword', 'self'
     it_behaves_like 'if/then/else/end with keyword', 'raise'
@@ -431,9 +431,9 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
-    shared_examples 'if/then/else/end with keyword' do |keyword|
+    shared_examples 'if/then/else/end with keyword' do |keyword, options|
       it 'registers and corrects an offense with multi-line construct when one of the branches ' \
-         "of if/then/else/end contains `#{keyword}` keyword" do
+         "of if/then/else/end contains `#{keyword}` keyword", *options do
         expect_offense(<<~RUBY, keyword: keyword)
           if true then %{keyword} else 7 end
           ^^^^^^^^^^^^^^{keyword}^^^^^^^^^^^ #{if_offense_message}
@@ -453,7 +453,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       it_behaves_like 'if/then/else/end with keyword', 'retry'
     end
 
-    it_behaves_like 'if/then/else/end with keyword', 'break'
+    it_behaves_like 'if/then/else/end with keyword', 'break', [:ruby32, { unsupported_on: :prism }]
 
     it_behaves_like 'if/then/else/end with keyword', 'self'
     it_behaves_like 'if/then/else/end with keyword', 'raise'

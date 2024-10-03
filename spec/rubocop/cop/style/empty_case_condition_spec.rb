@@ -356,7 +356,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
       end
     end
 
-    context 'when using `break` before empty case condition' do
+    context 'when using `break` before empty case condition', :ruby32, unsupported_on: :prism do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           break case
@@ -369,7 +369,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
       end
     end
 
-    context 'when using `next` before empty case condition' do
+    context 'when using `next` before empty case condition', :ruby32, unsupported_on: :prism do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           next case

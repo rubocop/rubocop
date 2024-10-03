@@ -240,7 +240,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
-      it 'does not to an endless class method definition when using `break`' do
+      it 'does not to an endless class method definition when using `break`', :ruby32, unsupported_on: :prism do
         expect_correction(<<~RUBY.strip, source: 'def foo(argument) break bar(argument); end')
           def foo(argument)#{trailing_whitespace}
             break bar(argument);#{trailing_whitespace}
@@ -248,7 +248,7 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
-      it 'does not to an endless class method definition when using `next`' do
+      it 'does not to an endless class method definition when using `next`', :ruby32, unsupported_on: :prism do
         expect_correction(<<~RUBY.strip, source: 'def foo(argument) next bar(argument); end')
           def foo(argument)#{trailing_whitespace}
             next bar(argument);#{trailing_whitespace}

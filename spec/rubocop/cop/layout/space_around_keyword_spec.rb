@@ -13,8 +13,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
     end
   end
 
-  shared_examples 'missing after' do |highlight, expr, correct|
-    it "registers an offense for missing space after keyword in `#{expr}` and autocorrects" do
+  shared_examples 'missing after' do |highlight, expr, correct, options|
+    it "registers an offense for missing space after keyword in `#{expr}` and autocorrects", *options do
       h_index = expr.index(highlight)
       expect_offense(<<~RUBY)
         #{expr}
@@ -31,14 +31,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
     end
   end
 
-  shared_examples 'accept after' do |after, expr|
-    it "accepts `#{after}` after keyword in `#{expr}`" do
+  shared_examples 'accept after' do |after, expr, options|
+    it "accepts `#{after}` after keyword in `#{expr}`", *options do
       expect_no_offenses(expr)
     end
   end
 
-  shared_examples 'accept around' do |after, expr|
-    it "accepts `#{after}` around keyword in `#{expr}`" do
+  shared_examples 'accept around' do |after, expr, options|
+    it "accepts `#{after}` around keyword in `#{expr}`", *options do
       expect_no_offenses(expr)
     end
   end
@@ -49,8 +49,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'and', '1 and(2)', '1 and (2)'
   it_behaves_like 'missing after', 'begin', 'begin"" end', 'begin "" end'
 
-  it_behaves_like 'missing after', 'break', 'break""', 'break ""'
-  it_behaves_like 'accept after', '(', 'break(1)'
+  it_behaves_like 'missing after', 'break', 'break""', 'break ""', [:ruby32, { unsupported_on: :prism }]
+  it_behaves_like 'accept after', '(', 'break(1)', [:ruby32, { unsupported_on: :prism }]
 
   it_behaves_like 'missing after', 'case', 'case"" when 1; end', 'case "" when 1; end'
 
@@ -106,8 +106,8 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
 
   it_behaves_like 'missing after', 'if', 'if""; end', 'if ""; end'
 
-  it_behaves_like 'missing after', 'next', 'next""', 'next ""'
-  it_behaves_like 'accept after', '(', 'next(1)'
+  it_behaves_like 'missing after', 'next', 'next""', 'next ""', [:ruby32, { unsupported_on: :prism }]
+  it_behaves_like 'accept after', '(', 'next(1)', [:ruby32, { unsupported_on: :prism }]
 
   it_behaves_like 'missing after', 'not', 'not""', 'not ""'
   it_behaves_like 'accept after', '(', 'not(1)'
@@ -162,7 +162,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'accept after', '\\', "test do\\\nend"
   it_behaves_like 'accept after', '\n', "test do\nend"
 
-  it_behaves_like 'accept around', '()', '(next)'
+  it_behaves_like 'accept around', '()', '(next)', [:ruby32, { unsupported_on: :prism }]
   it_behaves_like 'accept before', '!', '!yield'
   it_behaves_like 'accept after', '.', 'yield.method'
   it_behaves_like 'accept before', '!', '!yield.method'
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'accept around', ',', 'a 1,foo,1'
 
   # Layout/SpaceBeforeComment
-  it_behaves_like 'accept after', '#', 'next#comment'
+  it_behaves_like 'accept after', '#', 'next#comment', [:ruby32, { unsupported_on: :prism }]
 
   # Layout/SpaceBeforeSemicolon, Layout/SpaceAfterSemicolon
   it_behaves_like 'accept around', ';', 'test do;end'
