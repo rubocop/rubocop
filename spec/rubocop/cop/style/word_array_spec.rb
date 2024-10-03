@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
   context 'when EnforcedStyle is percent' do
     let(:cop_config) do
       { 'MinSize' => 0,
-        'WordRegex' => /\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/,
+        'WordRegex' => /\A(?:\p{Word}|\p{Word}\P{Z}\p{Word}|\n|\t)+\z/,
         'EnforcedStyle' => 'percent' }
     end
 
@@ -49,14 +49,14 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
-    it 'registers an offense for arrays of strings containing hyphens' do
+    it 'registers an offense for arrays of strings containing hyphens, slashes, and other non-whitespace characters' do
       expect_offense(<<~RUBY)
-        ['foo', 'bar', 'foo-bar']
-        ^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+        ['foo', 'bar', 'foo-bar', 'foo/bar', 'foo#bar', 'foo?bar', 'foo@bar']
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
       RUBY
 
       expect_correction(<<~RUBY)
-        %w(foo bar foo-bar)
+        %w(foo bar foo-bar foo/bar foo#bar foo?bar foo@bar)
       RUBY
     end
 
@@ -404,7 +404,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
   context 'when EnforcedStyle is array' do
     let(:cop_config) do
       { 'MinSize' => 0,
-        'WordRegex' => /\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/,
+        'WordRegex' => /\A(?:\p{Word}|\p{Word}\P{Z}\p{Word}|\n|\t)+\z/,
         'EnforcedStyle' => 'brackets' }
     end
 
@@ -665,7 +665,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
   context 'with non-default MinSize' do
     let(:cop_config) do
       { 'MinSize' => 2,
-        'WordRegex' => /\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/,
+        'WordRegex' => /\A(?:\p{Word}|\p{Word}\P{Z}\p{Word}|\n|\t)+\z/,
         'EnforcedStyle' => 'percent' }
     end
 

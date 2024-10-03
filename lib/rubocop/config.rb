@@ -272,7 +272,7 @@ module RuboCop
       return nil unless loaded_path
 
       base_path = base_dir_for_path_parameters
-      ['Gemfile.lock', 'gems.locked'].each do |file_name|
+      %w[Gemfile.lock gems.locked].each do |file_name|
         path = find_file_upwards(file_name, base_path)
         return path if path
       end
