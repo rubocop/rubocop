@@ -68,6 +68,13 @@ module RuboCop
       #     %w[two Two]
       #   ]
       #
+      # @example UseExtendedWords: true
+      #   # good
+      #   %w(foo bar foo-bar foo/bar foo#bar foo?bar foo@bar)
+      #
+      #   # bad
+      #   ['foo', 'bar', 'foo-bar', 'foo/bar', 'foo#bar', 'foo?bar', 'foo@bar']
+      #
       class WordArray < Base
         include ArrayMinSize
         include ArraySyntax
@@ -132,7 +139,11 @@ module RuboCop
         end
 
         def word_regex
-          Regexp.new(cop_config['WordRegex'])
+          if cop_config['UseExtendedWords']
+            Regexp.new(cop_config['ExtendedWordRegex'])
+          else
+            Regexp.new(cop_config['WordRegex'])
+          end
         end
 
         def build_bracketed_array(node)

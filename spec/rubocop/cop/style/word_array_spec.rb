@@ -684,4 +684,21 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect_no_offenses('["one"]')
     end
   end
+
+  context 'when UseExtendedWords is enabled' do
+    let(:cop_config) do
+      { 'UseExtendedWords' => true }
+    end
+
+    it 'registers an offense for arrays of strings containing hyphens, slashes, and other non-whitespace characters' do
+      expect_offense(<<~RUBY)
+        ['foo', 'bar', 'foo-bar', 'foo/bar', 'foo#bar', 'foo?bar', 'foo@bar']
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %w(foo bar foo-bar foo/bar foo#bar foo?bar foo@bar)
+      RUBY
+    end
+  end
 end

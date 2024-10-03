@@ -5801,6 +5801,12 @@ Style/WordArray:
   MinSize: 2
   # The regular expression `WordRegex` decides what is considered a word.
   WordRegex: !ruby/regexp '/\A(?:\p{Word}|\p{Word}-\p{Word}|\n|\t)+\z/'
+  # The `UseExtendedWords` option considers all non-whitespace characters
+  # to be part of a word. Enabling this option will ignore the `WordRegex`
+  # option in favour of `ExtendedWordRegex`.
+  UseExtendedWords: false
+  # The regular expression `ExtendedWordRegex` decides what is considered an extended word.
+  ExtendedWordRegex: !ruby/regexp '/\A(?:\p{Word}|\p{Word}\P{Z}\p{Word}|\n|\t)+\z/'
 
 Style/YAMLFileRead:
   Description: 'Checks for the use of `YAML.load`, `YAML.safe_load`, and `YAML.parse` with `File.read` argument.'
