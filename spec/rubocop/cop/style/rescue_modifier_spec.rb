@@ -18,6 +18,86 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
     RUBY
   end
 
+  it 'registers an offense when using modifier rescue for method call with heredoc argument' do
+    expect_offense(<<~RUBY)
+      method(<<~EOS) rescue handle
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+        str
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        method(<<~EOS)
+        str
+      EOS
+      rescue
+        handle
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using modifier rescue for safe navigation method call with heredoc argument' do
+    expect_offense(<<~RUBY)
+      obj&.method(<<~EOS) rescue handle
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+        str
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        obj&.method(<<~EOS)
+        str
+      EOS
+      rescue
+        handle
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using modifier rescue for method call with heredoc argument and variable' do
+    expect_offense(<<~RUBY)
+      method(<<~EOS, var) rescue handle
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+        str
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        method(<<~EOS, var)
+        str
+      EOS
+      rescue
+        handle
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using modifier rescue for method call with multiple heredoc arguments' do
+    expect_offense(<<~RUBY)
+      method(<<~EOS1, <<~EOS2) rescue handle
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+        str1
+      EOS1
+        str2
+      EOS2
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        method(<<~EOS1, <<~EOS2)
+        str1
+      EOS1
+        str2
+      EOS2
+      rescue
+        handle
+      end
+    RUBY
+  end
+
   it 'registers an offense for modifier rescue around parallel assignment', :ruby26, unsupported_on: :prism do
     expect_offense(<<~RUBY)
       a, b = 1, 2 rescue nil
