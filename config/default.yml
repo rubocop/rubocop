@@ -176,6 +176,15 @@ AllCops:
 
 #################### Bundler ###############################
 
+Bundler/DebugRequire:
+  Description: 'Enforces that if `gem "debug"` is present, `require: "debug/prelude"` or `require: false` is specified.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Include:
+    - '**/*.gemfile'
+    - '**/Gemfile'
+    - '**/gems.rb'
+
 Bundler/DuplicatedGem:
   Description: 'Checks for duplicate gem entries in Gemfile.'
   Enabled: true

@@ -165,6 +165,7 @@ require_relative 'rubocop/cop/correctors/space_corrector'
 require_relative 'rubocop/cop/correctors/string_literal_corrector'
 require_relative 'rubocop/cop/correctors/unused_arg_corrector'
 
+require_relative 'rubocop/cop/bundler/debug_require'
 require_relative 'rubocop/cop/bundler/duplicated_gem'
 require_relative 'rubocop/cop/bundler/duplicated_group'
 require_relative 'rubocop/cop/bundler/gem_comment'
