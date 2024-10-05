@@ -672,6 +672,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             create_file('.rubocop.yml', <<~YAML)
               require: rubocop_ext
 
+              Bundler:
+                Enabled: false
               Lint:
                 Enabled: false
               Style:
