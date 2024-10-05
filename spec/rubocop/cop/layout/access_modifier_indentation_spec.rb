@@ -341,6 +341,12 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation, :config do
       RUBY
     end
 
+    it 'does not register an offense when the access modifier is on the same line as the class definition' do
+      expect_no_offenses(<<~RUBY)
+        class A; private; def foo; end; end
+      RUBY
+    end
+
     context 'when 4 spaces per indent level are used' do
       let(:indentation_width) { 4 }
 
