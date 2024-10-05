@@ -59,7 +59,11 @@ module RuboCop
           modifiers = body.each_child_node(:send).select(&:bare_access_modifier?)
           end_range = node.loc.end
 
-          modifiers.each { |modifier| check_modifier(modifier, end_range) }
+          modifiers.each do |modifier|
+            next if same_line?(node, modifier)
+
+            check_modifier(modifier, end_range)
+          end
         end
 
         def check_modifier(send_node, end_range)
