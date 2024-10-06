@@ -4256,6 +4256,14 @@ Style/IpAddresses:
     - '**/gems.rb'
     - '**/*.gemspec'
 
+Style/KeywordArgumentsMerging:
+  Description: >-
+                 When passing an existing hash as keyword arguments, provide additional arguments
+                 directly rather than using `merge`.
+  StyleGuide: '#merging-keyword-arguments'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/KeywordParametersOrder:
   Description: 'Enforces that optional keyword parameters are placed at the end of the parameters list.'
   StyleGuide: '#keyword-parameters-order'
