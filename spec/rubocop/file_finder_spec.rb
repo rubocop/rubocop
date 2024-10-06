@@ -40,4 +40,34 @@ RSpec.describe RuboCop::FileFinder, :isolated_environment do
       expect(finder.find_last_file_upwards('xyz', 'dir')).to be_nil
     end
   end
+
+  describe '#traverse_directories_upwards' do
+    subject(:match_paths) do
+      matches = []
+      finder.traverse_directories_upwards(start_dir, stop_dir) do |dir|
+        matches << dir.expand_path.to_s
+      end
+      matches
+    end
+
+    let(:start_dir) { 'dir' }
+
+    context 'when not specifying the stop dir' do
+      let(:stop_dir) { nil }
+
+      it 'returns directories' do
+        expect(match_paths).to eq(
+          [File.expand_path(start_dir), File.expand_path('.'), File.expand_path('..')]
+        )
+      end
+    end
+
+    context 'when specifying the stop dir' do
+      let(:stop_dir) { "#{Dir.pwd}/dir" }
+
+      it 'respects the stop dir parameter' do
+        expect(match_paths).to eq([File.expand_path(start_dir)])
+      end
+    end
+  end
 end

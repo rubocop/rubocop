@@ -282,6 +282,42 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           expect(target_ruby.version).to eq default_version
         end
       end
+
+      context 'when the gemspec is not named the same as the directory' do
+        let(:gemspec_file_path) { File.join(base_path, 'whatever.gemspec') }
+
+        it 'sets target_ruby from the version' do
+          content = <<~HEREDOC
+            Gem::Specification.new do |s|
+              s.name = 'test'
+              s.required_ruby_version = '~> 3.2.0'
+              s.licenses = ['MIT']
+            end
+          HEREDOC
+
+          create_file(gemspec_file_path, content)
+          expect(target_ruby.version).to eq 3.2
+        end
+      end
+
+      context 'when there are multiple gemspecs in the same directory' do
+        let(:first_gemspec_file_path) { File.join(base_path, 'first.gemspec') }
+        let(:second_gemspec_file_path) { File.join(base_path, 'second.gemspec') }
+
+        it 'takes neither' do
+          content = <<~HEREDOC
+            Gem::Specification.new do |s|
+              s.name = 'test'
+              s.required_ruby_version = '~> 3.2.0'
+              s.licenses = ['MIT']
+            end
+          HEREDOC
+
+          create_file(first_gemspec_file_path, content)
+          create_file(second_gemspec_file_path, content)
+          expect(target_ruby.version).to eq default_version
+        end
+      end
     end
 
     context 'when .ruby-version is present' do
