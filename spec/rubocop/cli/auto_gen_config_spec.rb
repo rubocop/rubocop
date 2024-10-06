@@ -1619,6 +1619,8 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           AllCops:
             NewCops: enable
             TargetRubyVersion: 3.1
+          Style/HashSyntax:
+            EnforcedShorthandSyntax: always
         YAML
         create_file('example1.rb', ['# frozen_string_literal: true', '', '{ a: a }'])
 

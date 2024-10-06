@@ -68,7 +68,7 @@ module RuboCop
       #   {a: 1, b: 2}
       #   {:c => 3, 'd' => 4}
       #
-      # @example EnforcedShorthandSyntax: always (default)
+      # @example EnforcedShorthandSyntax: always
       #
       #   # bad
       #   {foo: foo, bar: bar}
@@ -84,7 +84,7 @@ module RuboCop
       #   # good
       #   {foo: foo, bar: bar}
       #
-      # @example EnforcedShorthandSyntax: either
+      # @example EnforcedShorthandSyntax: either (default)
       #
       #   # good
       #   {foo: foo, bar: bar}
