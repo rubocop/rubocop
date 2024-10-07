@@ -1,0 +1,1 @@
+* [#13225](https://github.com/rubocop/rubocop/issues/13225): Avoid syntax error when correcting `Style/OperatorMethodCall` with `/` operations followed by a parenthesized argument. ([@dvandersluis][])

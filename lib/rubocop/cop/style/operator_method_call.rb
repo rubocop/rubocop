@@ -41,7 +41,7 @@ module RuboCop
             corrector.replace(dot, ' ')
 
             selector = node.loc.selector
-            corrector.insert_after(selector, ' ') if selector.end_pos == rhs.source_range.begin_pos
+            corrector.insert_after(selector, ' ') if insert_space_after?(node)
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
@@ -70,6 +70,21 @@ module RuboCop
           ParenthesesCorrector.correct(corrector, node)
           corrector.insert_after(operator, ' ')
           corrector.wrap(node, '(', ')')
+        end
+
+        def insert_space_after?(node)
+          _lhs, op, rhs = *node
+          selector = node.loc.selector
+
+          return true if selector.end_pos == rhs.source_range.begin_pos
+          return false if node.parent&.call_type? # if chained, a space is already added
+
+          # For `/` operations, if the RHS starts with a `(` without space,
+          # add one to avoid a syntax error.
+          range = selector.end.join(rhs.source_range.begin)
+          return true if op == :/ && range.source == '('
+
+          false
         end
       end
     end
