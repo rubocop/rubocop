@@ -3,7 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # Checks if `return` or `return nil` is used in predicate method definitions.
+      # Checks for predicate method definitions that return `nil`.
+      # A predicate method should only return a boolean value.
       #
       # @safety
       #   Autocorrection is marked as unsafe because the change of the return value
@@ -29,6 +30,24 @@ module RuboCop
       #     return false if condition
       #
       #     do_something?
+      #   end
+      #
+      #   # bad
+      #   def foo?
+      #     if condition
+      #       nil
+      #     else
+      #       true
+      #     end
+      #   end
+      #
+      #   # good
+      #   def foo?
+      #     if condition
+      #       false
+      #     else
+      #       true
+      #     end
       #   end
       #
       # @example AllowedMethods: ['foo?']
@@ -64,30 +83,53 @@ module RuboCop
           return if allowed_method?(node.method_name) || matches_allowed_pattern?(node.method_name)
           return unless (body = node.body)
 
-          body.each_descendant(:return) do |return_node|
-            register_offense(return_node, 'return false') if return_nil?(return_node)
-          end
+          body.each_descendant(:return) { |return_node| handle_return(return_node) }
 
-          return unless (nil_node = nil_node_at_the_end_of_method_body(body))
-
-          register_offense(nil_node, 'false')
+          handle_implicit_return_values(body)
         end
         alias on_defs on_def
 
         private
 
-        def nil_node_at_the_end_of_method_body(body)
-          return body if body.nil_type?
-          return unless body.begin_type?
-          return unless (last_child = body.children.last)
+        def last_node_of_type(node, type)
+          return unless node
+          return node if node_type?(node, type)
+          return unless node.begin_type?
+          return unless (last_child = node.children.last)
 
-          last_child if last_child.is_a?(AST::Node) && last_child.nil_type?
+          last_child if last_child.is_a?(AST::Node) && node_type?(last_child, type)
+        end
+
+        def node_type?(node, type)
+          node.type == type.to_sym
         end
 
         def register_offense(offense_node, replacement)
           add_offense(offense_node) do |corrector|
             corrector.replace(offense_node, replacement)
           end
+        end
+
+        def handle_implicit_return_values(node)
+          handle_if(last_node_of_type(node, :if))
+          handle_nil(last_node_of_type(node, :nil))
+        end
+
+        def handle_return(return_node)
+          register_offense(return_node, 'return false') if return_nil?(return_node)
+        end
+
+        def handle_nil(nil_node)
+          return unless nil_node
+
+          register_offense(nil_node, 'false')
+        end
+
+        def handle_if(if_node)
+          return unless if_node
+
+          handle_implicit_return_values(if_node.if_branch)
+          handle_implicit_return_values(if_node.else_branch)
         end
       end
     end

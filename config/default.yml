@@ -5215,6 +5215,7 @@ Style/ReturnNilInPredicateMethodDefinition:
   AllowedMethods: []
   AllowedPatterns: []
   VersionAdded: '1.53'
+  VersionChanged: '<<next>>'
 
 Style/SafeNavigation:
   Description: >-

@@ -163,6 +163,94 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
         end
       RUBY
     end
+
+    context 'conditional implicit return nil' do
+      it 'registers an offense when in `if` branch' do
+        expect_offense(<<~RUBY)
+          def foo?
+            if bar
+              nil
+              ^^^ Return `false` instead of `nil` in predicate methods.
+            else
+              true
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo?
+            if bar
+              false
+            else
+              true
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when in `else` branch' do
+        expect_offense(<<~RUBY)
+          def foo?
+            if bar
+              true
+            else
+              nil
+              ^^^ Return `false` instead of `nil` in predicate methods.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo?
+            if bar
+              true
+            else
+              false
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when in nested `if`' do
+        expect_offense(<<~RUBY)
+          def foo?
+            if bar
+              if baz
+                true
+              else
+                nil
+                ^^^ Return `false` instead of `nil` in predicate methods.
+              end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo?
+            if bar
+              if baz
+                true
+              else
+                false
+              end
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the `if` statement is not an implicit return' do
+        expect_no_offenses(<<~RUBY)
+          def foo?
+            if bar
+              true
+            else
+              nil
+            end
+            baz
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when defining predicate class method' do
@@ -213,6 +301,94 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
         end
       RUBY
     end
+
+    context 'conditional implicit return nil' do
+      it 'registers an offense when in `if` branch' do
+        expect_offense(<<~RUBY)
+          def self.foo?
+            if bar
+              nil
+              ^^^ Return `false` instead of `nil` in predicate methods.
+            else
+              true
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo?
+            if bar
+              false
+            else
+              true
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when in `else` branch' do
+        expect_offense(<<~RUBY)
+          def self.foo?
+            if bar
+              true
+            else
+              nil
+              ^^^ Return `false` instead of `nil` in predicate methods.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo?
+            if bar
+              true
+            else
+              false
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when in nested `if`' do
+        expect_offense(<<~RUBY)
+          def self.foo?
+            if bar
+              if baz
+                true
+              else
+                nil
+                ^^^ Return `false` instead of `nil` in predicate methods.
+              end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo?
+            if bar
+              if baz
+                true
+              else
+                false
+              end
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the `if` statement is not an implicit return' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo?
+            if bar
+              true
+            else
+              nil
+            end
+            baz
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when not defining predicate method' do
@@ -222,6 +398,18 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
           return if condition
 
           bar?
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using `if`' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          if bar
+            nil
+          else
+            true
+          end
         end
       RUBY
     end
@@ -250,6 +438,18 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
           end
         RUBY
       end
+
+      it 'does not register an offense when returning nil in an `if`' do
+        expect_no_offenses(<<~RUBY)
+          def foo?
+            if bar
+              nil
+            else
+              true
+            end
+          end
+        RUBY
+      end
     end
 
     context 'when defining predicate class method' do
@@ -269,6 +469,18 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
             return nil if condition
 
             bar?
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when returning nil in an `if`' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo?
+            if bar
+              nil
+            else
+              true
+            end
           end
         RUBY
       end
@@ -298,6 +510,18 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
           end
         RUBY
       end
+
+      it 'does not register an offense when returning nil in an `if`' do
+        expect_no_offenses(<<~RUBY)
+          def foo?
+            if bar
+              nil
+            else
+              true
+            end
+          end
+        RUBY
+      end
     end
 
     context 'when defining predicate class method' do
@@ -317,6 +541,18 @@ RSpec.describe RuboCop::Cop::Style::ReturnNilInPredicateMethodDefinition, :confi
             return nil if condition
 
             bar?
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when returning nil in an `if`' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo?
+            if bar
+              nil
+            else
+              true
+            end
           end
         RUBY
       end
