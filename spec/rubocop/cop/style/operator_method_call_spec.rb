@@ -52,18 +52,18 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
       RUBY
     end
 
-    it "registers an offense when using `foo.#{operator_method}(bar)`" do
-      skip('https://github.com/rubocop/rubocop/issues/13225') if operator_method == :/
+    unless operator_method == :/
+      it "registers an offense when using `foo.#{operator_method}(bar)`" do
+        expect_offense(<<~RUBY, operator_method: operator_method)
+          foo.#{operator_method}(bar)
+             ^ Redundant dot detected.
+        RUBY
 
-      expect_offense(<<~RUBY, operator_method: operator_method)
-        foo.#{operator_method}(bar)
-           ^ Redundant dot detected.
-      RUBY
-
-      # Redundant parentheses in `(bar)` are left to `Style/RedundantParentheses` to fix.
-      expect_correction(<<~RUBY)
-        foo #{operator_method}(bar)
-      RUBY
+        # Redundant parentheses in `(bar)` are left to `Style/RedundantParentheses` to fix.
+        expect_correction(<<~RUBY)
+          foo #{operator_method}(bar)
+        RUBY
+      end
     end
 
     it "registers an offense when chaining `foo.bar.#{operator_method}(baz).round(2)`" do
@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
     end
   end
 
-  it 'registers an offense when using `foo.+({})`' do
+  it 'registers an offense when using `foo.==({})`' do
     expect_offense(<<~RUBY)
       foo.==({})
          ^ Redundant dot detected.
@@ -103,6 +103,28 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
 
     expect_correction(<<~RUBY)
       foo + @bar.to_s
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `foo./(bar)`' do
+    expect_offense(<<~RUBY)
+      foo./(bar)
+         ^ Redundant dot detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo / (bar)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `foo./ (bar)`' do
+    expect_offense(<<~RUBY)
+      foo./ (bar)
+         ^ Redundant dot detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo / (bar)
     RUBY
   end
 
