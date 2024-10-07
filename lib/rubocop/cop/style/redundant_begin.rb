@@ -68,6 +68,10 @@ module RuboCop
 
         MSG = 'Redundant `begin` block detected.'
 
+        def self.autocorrect_incompatible_with
+          [Style::BlockDelimiters]
+        end
+
         # @!method offensive_kwbegins(node)
         def_node_search :offensive_kwbegins, <<~PATTERN
           [(kwbegin ...) !#allowable_kwbegin?]
