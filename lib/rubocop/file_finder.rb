@@ -23,15 +23,20 @@ module RuboCop
       last_file
     end
 
+    def traverse_directories_upwards(start_dir, stop_dir = nil)
+      Pathname.new(start_dir).expand_path.ascend do |dir|
+        yield(dir)
+        dir = dir.to_s
+        break if dir == stop_dir || dir == FileFinder.root_level
+      end
+    end
+
     private
 
     def traverse_files_upwards(filename, start_dir, stop_dir)
-      Pathname.new(start_dir).expand_path.ascend do |dir|
+      traverse_directories_upwards(start_dir, stop_dir) do |dir|
         file = dir + filename
         yield(file.to_s) if file.exist?
-
-        dir = dir.to_s
-        break if dir == stop_dir || dir == FileFinder.root_level
       end
     end
   end

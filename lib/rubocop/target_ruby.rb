@@ -53,8 +53,6 @@ module RuboCop
     class GemspecFile < Source
       extend NodePattern::Macros
 
-      GEMSPEC_EXTENSION = '.gemspec'
-
       # @!method required_ruby_version(node)
       def_node_search :required_ruby_version, <<~PATTERN
         (send _ :required_ruby_version= $_)
@@ -68,7 +66,7 @@ module RuboCop
       PATTERN
 
       def name
-        "`required_ruby_version` parameter (in #{gemspec_filename})"
+        "`required_ruby_version` parameter (in #{gemspec_filepath})"
       end
 
       private
@@ -83,16 +81,18 @@ module RuboCop
         find_minimal_known_ruby(right_hand_side)
       end
 
-      def gemspec_filename
-        @gemspec_filename ||= begin
-          basename = Pathname.new(@config.base_dir_for_path_parameters).basename.to_s
-          "#{basename}#{GEMSPEC_EXTENSION}"
-        end
-      end
-
       def gemspec_filepath
-        @gemspec_filepath ||=
-          @config.find_file_upwards(gemspec_filename, @config.base_dir_for_path_parameters)
+        return @gemspec_filepath if defined?(@gemspec_filepath)
+
+        @gemspec_filepath =
+          @config.traverse_directories_upwards(@config.base_dir_for_path_parameters) do |dir|
+            # NOTE: Can't use `dir.glob` because of JRuby 9.4.8.0 incompatibility:
+            # https://github.com/jruby/jruby/issues/8358
+            candidates = Pathname.glob("#{dir}/*.gemspec")
+            # Bundler will use a gemspec whatever the filename is, as long as its the only one in
+            # the folder.
+            break candidates.first if candidates.one?
+          end
       end
 
       def version_from_gemspec_file(file)
