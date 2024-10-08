@@ -214,6 +214,7 @@ module RuboCop
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def add_post_ruby_32_offenses(def_node, send_classifications, forwardable_args)
           return unless use_anonymous_forwarding?
+          return if send_inside_block?(send_classifications)
 
           rest_arg, kwrest_arg, block_arg = *forwardable_args
 
@@ -354,6 +355,12 @@ module RuboCop
 
         def use_anonymous_forwarding?
           cop_config.fetch('UseAnonymousForwarding', false)
+        end
+
+        def send_inside_block?(send_classifications)
+          send_classifications.any? do |send_node, *|
+            send_node.each_ancestor(:block, :numblock).any?
+          end
         end
 
         def add_parens_if_missing(node, corrector)
