@@ -2338,7 +2338,7 @@ Lint/SafeNavigationConsistency:
                  for all method calls on that same object.
   Enabled: true
   VersionAdded: '0.55'
-  VersionChanged: '<<next>>'
+  VersionChanged: '0.77'
   AllowedMethods:
     - present?
     - blank?
@@ -5226,7 +5226,7 @@ Style/SafeNavigation:
                   be `nil` or truthy, but never `false`.
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: '1.27'
+  VersionChanged: '<<next>>'
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false
