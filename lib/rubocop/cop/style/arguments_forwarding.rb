@@ -180,7 +180,8 @@ module RuboCop
         end
 
         def only_forwards_all?(send_classifications)
-          send_classifications.all? { |_, c, _, _| c == :all }
+          all_classifications = %i[all all_anonymous].freeze
+          send_classifications.all? { |_, c, _, _| all_classifications.include?(c) }
         end
 
         # rubocop:disable Metrics/MethodLength
@@ -188,8 +189,8 @@ module RuboCop
           _rest_arg, _kwrest_arg, block_arg = *forwardable_args
           registered_block_arg_offense = false
 
-          send_classifications.each do |send_node, _c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
-            if !forward_rest && !forward_kwrest
+          send_classifications.each do |send_node, c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
+            if !forward_rest && !forward_kwrest && c != :all_anonymous
               # Prevents `anonymous block parameter is also used within block (SyntaxError)` occurs
               # in Ruby 3.3.0.
               if outside_block?(forward_block_arg)
@@ -375,6 +376,23 @@ module RuboCop
           # @!method forwarded_block_arg?(node, block_name)
           def_node_matcher :forwarded_block_arg?, '(block_pass {(lvar %1) nil?})'
 
+          # @!method def_all_anonymous_args?(node)
+          def_node_matcher :def_all_anonymous_args?, <<~PATTERN
+            (
+              def _
+              (args ... (restarg) (kwrestarg) (blockarg nil?))
+              _
+            )
+          PATTERN
+
+          # @!method send_all_anonymous_args?(node)
+          def_node_matcher :send_all_anonymous_args?, <<~PATTERN
+            (
+              send _ _
+              ... (forwarded_restarg) (hash (forwarded_kwrestarg)) (block_pass nil?)
+            )
+          PATTERN
+
           def initialize(def_node, send_node, referenced_lvars, forwardable_args, **config)
             @def_node = def_node
             @send_node = send_node
@@ -406,7 +424,9 @@ module RuboCop
           def classification
             return nil unless forwarded_rest_arg || forwarded_kwrest_arg || forwarded_block_arg
 
-            if can_forward_all?
+            if ruby_32_only_anonymous_forwarding?
+              :all_anonymous
+            elsif can_forward_all?
               :all
             else
               :rest_or_kwrest
@@ -430,6 +450,10 @@ module RuboCop
           # def foo(a = 41, ...) is a syntax error in 3.0.
           def ruby_30_or_lower_optarg?
             target_ruby_version <= 3.0 && @def_node.arguments.any?(&:optarg_type?)
+          end
+
+          def ruby_32_only_anonymous_forwarding?
+            def_all_anonymous_args?(@def_node) && send_all_anonymous_args?(@send_node)
           end
 
           def ruby_32_or_higher_missing_rest_or_kwest?
