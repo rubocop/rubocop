@@ -2508,6 +2508,21 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    context 'UseAnonymousForwarding: true' do
+      let(:cop_config) { { 'UseAnonymousForwarding' => true } }
+
+      it 'does not register an offense when a forwarded argument is used within a block' do
+        expect_no_offenses(<<~RUBY)
+          def foo(*args)
+            bar(*args)
+            baz do |x|
+              x.foo(*args)
+            end
+          end
+        RUBY
+      end
+    end
+
     context 'UseAnonymousForwarding: false' do
       let(:cop_config) { { 'UseAnonymousForwarding' => false } }
 
