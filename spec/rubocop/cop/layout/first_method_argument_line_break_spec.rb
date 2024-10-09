@@ -141,4 +141,15 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak, :config do
       RUBY
     end
   end
+
+  context 'AllowedMethods' do
+    let(:cop_config) { { 'AllowedMethods' => %w[something] } }
+
+    it 'does not register an offense for an allowed method' do
+      expect_no_offenses(<<~RUBY)
+        something(3, bar: 1,
+        baz: 2)
+      RUBY
+    end
+  end
 end
