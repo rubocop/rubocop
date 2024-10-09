@@ -431,7 +431,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
     end
 
     context 'when .ruby-version is not present' do
-      ['Gemfile.lock', 'gems.locked'].each do |file_name|
+      %w[Gemfile.lock gems.locked].each do |file_name|
         context "and #{file_name} exists" do
           let(:base_path) { configuration.base_dir_for_path_parameters }
           let(:lock_file_path) { File.join(base_path, file_name) }
@@ -596,7 +596,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
     end
 
     context 'when .ruby-version is not in a parent directory' do
-      ['Gemfile.lock', 'gems.locked'].each do |file_name|
+      %w[Gemfile.lock gems.locked].each do |file_name|
         context "when #{file_name} is in a parent directory" do
           it 'does' do
             content = <<~HEREDOC

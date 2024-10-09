@@ -11,12 +11,12 @@ RSpec.describe RuboCop::Formatter::HTMLFormatter, :isolated_environment do
   end
 
   let(:enabled_cops) do
-    [
-      'Layout/EmptyLinesAroundAccessModifier', 'Layout/IndentationConsistency',
-      'Layout/IndentationWidth', 'Layout/LineLength', 'Lint/UselessAssignment',
-      'Naming/MethodName', 'Style/Documentation', 'Style/EmptyMethod',
-      'Style/FrozenStringLiteralComment', 'Style/RedundantRegexpArgument', 'Style/RegexpLiteral',
-      'Style/RescueModifier', 'Style/SymbolArray'
+    %w[
+      Layout/EmptyLinesAroundAccessModifier Layout/IndentationConsistency
+      Layout/IndentationWidth Layout/LineLength Lint/UselessAssignment
+      Naming/MethodName Style/Documentation Style/EmptyMethod
+      Style/FrozenStringLiteralComment Style/RedundantRegexpArgument Style/RegexpLiteral
+      Style/RescueModifier Style/SymbolArray
     ].join(',')
   end
 

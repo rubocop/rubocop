@@ -53,10 +53,10 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
     shared_examples 'sends all file paths' do |method_name|
       it 'sends all file paths' do
-        expected_paths = [
-          '2_offense.rb',
-          '5_offenses.rb',
-          'no_offense.rb'
+        expected_paths = %w[
+          2_offense.rb
+          5_offenses.rb
+          no_offense.rb
         ].map { |path| File.expand_path(path) }.sort
 
         expect(formatter).to receive(method_name) do |all_files|
