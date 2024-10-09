@@ -7,6 +7,7 @@ module RuboCop
 
     MSG = '%<version>s (using %<parser_version>s, ' \
           'rubocop-ast %<rubocop_ast_version>s, ' \
+          'analyzing as Ruby %<target_ruby_version>s, ' \
           'running on %<ruby_engine>s %<ruby_version>s)%<server_mode>s [%<ruby_platform>s]'
 
     CANONICAL_FEATURE_NAMES = {
@@ -22,6 +23,7 @@ module RuboCop
       if debug
         verbose_version = format(MSG, version: STRING, parser_version: parser_version,
                                       rubocop_ast_version: RuboCop::AST::Version::STRING,
+                                      target_ruby_version: TargetRuby.new(Config.new).version,
                                       ruby_engine: RUBY_ENGINE, ruby_version: RUBY_VERSION,
                                       server_mode: server_mode,
                                       ruby_platform: RUBY_PLATFORM)
