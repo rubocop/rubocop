@@ -141,7 +141,7 @@ module RuboCop
 
         def expressions_per_line(exprs)
           # create a map matching lines to the number of expressions on them
-          exprs_lines = exprs.map(&:first_line)
+          exprs_lines = exprs.map(&:last_line)
           exprs_lines.group_by(&:itself)
         end
 
