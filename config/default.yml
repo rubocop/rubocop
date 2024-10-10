@@ -2630,6 +2630,7 @@ Metrics/BlockLength:
   CountComments: false  # count full line comments?
   Max: 25
   CountAsOne: []
+  SkipableLines: []
   AllowedMethods:
     # By default, exclude the `#refine` method, as it tends to have larger
     # associated blocks.
@@ -2656,6 +2657,7 @@ Metrics/ClassLength:
   CountComments: false  # count full line comments?
   Max: 100
   CountAsOne: []
+  SkipableLines: []
 
 Metrics/CollectionLiteralLength:
   Description: 'Checks for `Array` or `Hash` literals with many entries.'
@@ -2686,6 +2688,7 @@ Metrics/MethodLength:
   CountAsOne: []
   AllowedMethods: []
   AllowedPatterns: []
+  SkipableLines: []
 
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
@@ -2695,6 +2698,7 @@ Metrics/ModuleLength:
   CountComments: false  # count full line comments?
   Max: 100
   CountAsOne: []
+  SkipableLines: []
 
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
