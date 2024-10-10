@@ -28,7 +28,7 @@ module RuboCop
         FOR_METHOD = ' Or, if they were intended to be separate method ' \
                      'arguments, separate them with a comma.'
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
         def on_dstr(node)
           each_bad_cons(node) do |lhs_node, rhs_node|
             range = lhs_node.source_range.join(rhs_node.source_range)
@@ -40,13 +40,19 @@ module RuboCop
             end
 
             add_offense(range, message: message) do |corrector|
-              range = lhs_node.source_range.end.join(rhs_node.source_range.begin)
+              if lhs_node.value == ''
+                corrector.remove(lhs_node)
+              elsif rhs_node.value == ''
+                corrector.remove(rhs_node)
+              else
+                range = lhs_node.source_range.end.join(rhs_node.source_range.begin)
 
-              corrector.replace(range, ' + ')
+                corrector.replace(range, ' + ')
+              end
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         private
 
