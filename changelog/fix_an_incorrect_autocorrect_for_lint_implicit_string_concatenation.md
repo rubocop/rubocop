@@ -1,0 +1,1 @@
+* [#13316](https://github.com/rubocop/rubocop/issues/13316): Fix an incorrect autocorrect for `Lint/ImplicitStringConcatenation` with `Lint/TripleQuotes` when string literals with triple quotes are used. ([@koic][])
