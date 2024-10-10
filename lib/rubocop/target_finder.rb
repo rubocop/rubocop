@@ -105,6 +105,9 @@ module RuboCop
 
     def combined_exclude_glob_patterns(base_dir)
       exclude = @config_store.for(base_dir).for_all_cops['Exclude'] || []
+      # base_dir can be relative path, so convert it to absoute here.
+      # see issue https://github.com/rubocop/rubocop/issues/13022
+      base_dir = File.expand_path(base_dir)
       patterns = exclude.select { |pattern| pattern.is_a?(String) && pattern.end_with?('/**/*') }
                         .map { |pattern| pattern.sub("#{base_dir}/", '') }
       "#{base_dir}/{#{patterns.join(',')}}"
