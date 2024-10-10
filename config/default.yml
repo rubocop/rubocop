@@ -861,6 +861,7 @@ Layout/FirstMethodArgumentLineBreak:
   Enabled: false
   VersionAdded: '0.49'
   AllowMultilineFinalElement: false
+  AllowedMethods: []
 
 Layout/FirstMethodParameterLineBreak:
   Description: >-
