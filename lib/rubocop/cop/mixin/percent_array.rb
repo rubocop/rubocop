@@ -15,7 +15,7 @@ module RuboCop
         parent = node.parent
 
         parent&.send_type? && parent.arguments.include?(node) &&
-          !parent.parenthesized? && parent&.block_literal?
+          !parent.parenthesized? && parent.block_literal?
       end
 
       # Override to determine values that are invalid in a percent array

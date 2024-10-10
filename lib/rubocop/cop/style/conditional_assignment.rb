@@ -73,7 +73,7 @@ module RuboCop
           elsif_branches << node.if_branch
 
           else_branch = node.else_branch
-          if else_branch&.if_type? && else_branch&.elsif?
+          if else_branch&.if_type? && else_branch.elsif?
             expand_elsif(else_branch, elsif_branches)
           else
             elsif_branches << else_branch

@@ -94,7 +94,7 @@ module RuboCop
         end
 
         def use_hash_key_assignment?(else_branch)
-          else_branch&.send_type? && else_branch&.method?(:[]=)
+          else_branch&.send_type? && else_branch.method?(:[]=)
         end
 
         def use_hash_key_access?(node)

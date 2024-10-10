@@ -160,7 +160,7 @@ module RuboCop
             return if node.semantic_operator? && begin_node.parent
             return if node.multiline? && allow_in_multiline_conditions?
             return if ALLOWED_NODE_TYPES.include?(begin_node.parent&.type)
-            return if begin_node.parent&.if_type? && begin_node.parent&.ternary?
+            return if begin_node.parent&.if_type? && begin_node.parent.ternary?
 
             'a logical expression'
           elsif node.respond_to?(:comparison_method?) && node.comparison_method?

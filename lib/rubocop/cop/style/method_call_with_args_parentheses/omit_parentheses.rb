@@ -132,7 +132,7 @@ module RuboCop
           end
 
           def call_in_single_line_inheritance?(node)
-            node.parent&.class_type? && node.parent&.single_line?
+            node.parent&.class_type? && node.parent.single_line?
           end
 
           def call_with_ambiguous_arguments?(node) # rubocop:disable Metrics/PerceivedComplexity
@@ -152,7 +152,7 @@ module RuboCop
           end
 
           def call_in_argument_with_block?(node)
-            parent = node.parent&.block_type? && node.parent&.parent
+            parent = node.parent&.block_type? && node.parent.parent
             return false unless parent
 
             parent.call_type? || parent.super_type? || parent.yield_type?
@@ -216,7 +216,7 @@ module RuboCop
 
           def unary_literal?(node)
             (node.numeric_type? && node.sign?) ||
-              (node.parent&.send_type? && node.parent&.unary_operation?)
+              (node.parent&.send_type? && node.parent.unary_operation?)
           end
 
           def assigned_before?(node, target)

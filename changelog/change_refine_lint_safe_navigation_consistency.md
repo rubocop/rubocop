@@ -1,0 +1,1 @@
+* [#9816](https://github.com/rubocop/rubocop/issues/9816): Refine `Lint/SafeNavigationConsistency` cop to check that the safe navigation operator is applied consistently and without excess or deficiency. ([@koic][])

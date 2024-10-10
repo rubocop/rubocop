@@ -141,7 +141,7 @@ module RuboCop
         end
 
         def in_percent_literal_array?(node)
-          node.parent&.array_type? && node.parent&.percent_literal?
+          node.parent&.array_type? && node.parent.percent_literal?
         end
 
         def correct_hash_key(node)

@@ -135,7 +135,7 @@ module RuboCop
 
           parent = next_sibling.parent
 
-          parent&.if_type? && parent&.else?
+          parent&.if_type? && parent.else?
         end
 
         def next_sibling_empty_or_guard_clause?(node)
