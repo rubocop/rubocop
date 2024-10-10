@@ -42,6 +42,20 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
+  it 'registers an offense when using a semicolon between a closing parenthesis after a line break and a consequent expression' do
+    expect_offense(<<~RUBY)
+      foo(
+        bar); baz
+            ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(
+        bar)
+       baz
+    RUBY
+  end
+
   it 'accepts semicolon before end if so configured' do
     expect_no_offenses('def foo(a) z(3); end')
   end
