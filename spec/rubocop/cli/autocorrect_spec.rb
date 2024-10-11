@@ -3175,6 +3175,36 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Lint/ImplicitStringConcatenation` with `Lint/TripleQuotes` offenses' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      """string"""
+    RUBY
+    status = cli.run(%w[--autocorrect --only Lint/ImplicitStringConcatenation,Lint/TripleQuotes])
+    expect($stdout.string).to eq(<<~RESULT)
+      Inspecting 1 file
+      W
+
+      Offenses:
+
+      example.rb:1:1: W: [Corrected] Lint/ImplicitStringConcatenation: Combine "" and "string" into a single string literal, rather than using implicit string concatenation.
+      """string"""
+      ^^^^^^^^^^
+      example.rb:1:1: W: [Corrected] Lint/TripleQuotes: Delimiting a string with multiple quotes has no effect, use a single quote instead.
+      """string"""
+      ^^^^^^^^^^^^
+      example.rb:1:3: W: [Corrected] Lint/ImplicitStringConcatenation: Combine "string" and "" into a single string literal, rather than using implicit string concatenation.
+      """string"""
+        ^^^^^^^^^^
+
+      1 file inspected, 3 offenses detected, 3 offenses corrected
+    RESULT
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      "string"
+    RUBY
+  end
+
   it 'corrects `Style/AccessModifierDeclarations` offenses when multiple groupable access modifiers are defined' do
     source_file = Pathname('example.rb')
     create_file(source_file, <<~RUBY)

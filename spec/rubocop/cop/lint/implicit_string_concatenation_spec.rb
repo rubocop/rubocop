@@ -50,6 +50,20 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
     end
   end
 
+  context 'on adjacent string literals with triple quotes' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        """string"""
+          ^^^^^^^^^^ Combine "string" and "" into a single string literal, rather than using implicit string concatenation.
+        ^^^^^^^^^^ Combine "" and "string" into a single string literal, rather than using implicit string concatenation.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "string"
+      RUBY
+    end
+  end
+
   context 'on adjacent string literals on different lines' do
     it 'does not register an offense' do
       expect_no_offenses(<<~'RUBY')
