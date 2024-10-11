@@ -269,7 +269,53 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         expect_no_offenses('foo.each_value { |v| p v }')
       end
 
-      context 'Ruby 2.7' do
+      it 'does not register an offense if the hash is written to in `keys.each`' do
+        expect_no_offenses(<<~'RUBY')
+          foo.keys.each do |key|
+            foo["#{key}_copy"] = value
+          end
+        RUBY
+      end
+
+      it 'does not register an offense if the hash is written to in `values.each`' do
+        expect_no_offenses(<<~'RUBY')
+          foo.values.each do |value|
+            foo["#{value}_copy"] = value
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects if another hash is written to in `keys.each`' do
+        expect_offense(<<~'RUBY')
+          foo.keys.each do |key|
+              ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+            bar["#{key}_copy"] = value
+          end
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          foo.each_key do |key|
+            bar["#{key}_copy"] = value
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects if another hash is written to in `values.each`' do
+        expect_offense(<<~'RUBY')
+          foo.values.each do |value|
+              ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
+            bar["#{value}_copy"] = value
+          end
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          foo.each_value do |value|
+            bar["#{value}_copy"] = value
+          end
+        RUBY
+      end
+
+      context 'Ruby 2.7', :ruby27 do
         it 'registers offense, autocorrects foo#keys.each to foo#each_key with numblock' do
           expect_offense(<<~RUBY)
             foo.keys.each { p _1 }
