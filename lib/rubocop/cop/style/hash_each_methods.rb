@@ -57,6 +57,11 @@ module RuboCop
           (call $(call _ ${:keys :values}) :each (block_pass (sym _)))
         PATTERN
 
+        # @!method hash_mutated?(node, receiver)
+        def_node_matcher :hash_mutated?, <<~PATTERN
+          `(send %1 :[]= ...)
+        PATTERN
+
         def on_block(node)
           return unless handleable?(node)
 
@@ -103,6 +108,7 @@ module RuboCop
         def handleable?(node)
           return false if use_array_converter_method_as_preceding?(node)
           return false unless (root_receiver = root_receiver(node))
+          return false if hash_mutated?(node, root_receiver)
 
           !root_receiver.literal? || root_receiver.hash_type?
         end
