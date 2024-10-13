@@ -40,9 +40,6 @@ module RuboCop
       #     cleanup
       #   end
       class EnsureReturn < Base
-        extend AutoCorrector
-        include RangeHelp
-
         MSG = 'Do not return from an `ensure` block.'
 
         def on_ensure(node)
