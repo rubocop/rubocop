@@ -1,1 +1,0 @@
-* [#13302](https://github.com/rubocop/rubocop/issues/13302): Fix incompatible autocorrect between `Style/RedundantBegin` and `Style/BlockDelimiters` with `EnforcedStyle: braces_for_chaining`. ([@earlopain][])

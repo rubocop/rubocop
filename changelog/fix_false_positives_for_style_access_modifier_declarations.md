@@ -1,1 +1,0 @@
-* [#13213](https://github.com/rubocop/rubocop/issues/13213): Fix false positives for `Style/AccessModifierDeclarations` when `AllowModifiersOnAttrs: true` and using splat with a percent symbol array, or with a constant. ([@koic][])

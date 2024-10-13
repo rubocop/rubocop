@@ -1,1 +1,0 @@
-* [#13145](https://github.com/rubocop/rubocop/issues/13145): Fix false positives for `Style/RedundantLineContinuation` when line continuations with comparison operator and the LHS is wrapped in parentheses. ([@koic][])
