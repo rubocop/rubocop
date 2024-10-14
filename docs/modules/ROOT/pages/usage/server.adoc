@@ -49,7 +49,7 @@ user             16060   0.0  0.0  5078568   2264   ??  S     7:54AM   0:00.00 r
 user             16337   0.0  0.0  5331560   2396   ??  S    23:51PM   0:00.00 rubocop --server /Users/user/src/github.com/rubocop/rubocop-rails
 ```
 
-When you run `bundle update` or update a local config file (e.g., `.rubocop.yml`), and then run `rubocop`, the server process will automatically restart.
+When you run `bundle update` or update a local config file (e.g., `.rubocop.yml` or `.rubocop_todo.yml`), and then run `rubocop`, the server process will automatically restart.
 
 ```console
 $ rubocop --server
