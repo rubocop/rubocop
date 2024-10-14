@@ -43,15 +43,18 @@ module RuboCop
           @project_dir_cache_key ||= project_dir[1..].tr('/', '+')
         end
 
+        # rubocop:disable Metrics/AbcSize
         def restart_key
           lockfile_path = LOCKFILE_NAMES.map do |lockfile_name|
             Pathname(project_dir).join(lockfile_name)
           end.find(&:exist?)
           version_data = lockfile_path&.read || RuboCop::Version::STRING
           config_data = Pathname(ConfigFinder.find_config_path(Dir.pwd)).read
+          todo_data = (rubocop_todo = Pathname('.rubocop_todo.yml')).exist? ? rubocop_todo.read : ''
 
-          Digest::SHA1.hexdigest(version_data + config_data)
+          Digest::SHA1.hexdigest(version_data + config_data + todo_data)
         end
+        # rubocop:enable Metrics/AbcSize
 
         def dir
           Pathname.new(File.join(cache_path, project_dir_cache_key)).tap do |d|
