@@ -56,6 +56,7 @@ module RuboCop
 
         REQUIRED_MSG = 'Gem version specification is required.'
         FORBIDDEN_MSG = 'Gem version specification is forbidden.'
+        RESTRICT_ON_SEND = %i[gem].freeze
         VERSION_SPECIFICATION_REGEX = /^\s*[~<>=]*\s*[0-9.]+/.freeze
 
         # @!method includes_version_specification?(node)
