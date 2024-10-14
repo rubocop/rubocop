@@ -7,7 +7,8 @@ module RuboCop
     extend SimpleForwardable
 
     # @api private
-    COMMON_PARAMS = %w[Exclude Include Severity inherit_mode AutoCorrect StyleGuide Details].freeze
+    COMMON_PARAMS = %w[Exclude Include Severity inherit_mode AutoCorrect StyleGuide Details
+                       Enabled].freeze
     # @api private
     INTERNAL_PARAMS = %w[Description StyleGuide
                          VersionAdded VersionChanged VersionRemoved
