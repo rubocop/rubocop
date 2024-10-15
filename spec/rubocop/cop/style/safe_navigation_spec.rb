@@ -1396,6 +1396,37 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     RUBY
   end
 
+  it 'registers an offense but does not autocorrect when the RHS of `and` is an `or` node containing an `and`' do
+    expect_offense(<<~RUBY)
+      foo && (foo.bar? || (foo.baz? && foo.quux?))
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense when the RHS of `and` is a nested `and` node' do
+    expect_offense(<<~RUBY)
+      foo && (foo.bar? && (foo.baz? && foo.quux?))
+      ^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (foo&.bar? && (foo.baz? && foo.quux?))
+    RUBY
+  end
+
+  it 'registers an offense when the RHS of `and` is an `and` node containing `or`' do
+    expect_offense(<<~RUBY)
+      foo && (foo.bar? && (foo.baz? || foo.quux?))
+      ^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (foo&.bar? && (foo.baz? || foo.quux?))
+    RUBY
+  end
+
   context 'respond_to?' do
     it 'allows method calls safeguarded by a respond_to check' do
       expect_no_offenses('foo.bar if foo.respond_to?(:bar)')
