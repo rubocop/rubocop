@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fileutils'
+require 'yard'
 
 # Class for generating documentation of all cops departments
 # @api private
@@ -295,7 +296,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     HEADER
     selected_cops.each { |cop| content << print_cop_with_doc(cop) }
     content << footer_for_department(department)
-    file_name = "#{docs_path}/#{department_to_basename(department)}.adoc"
+    file_name = "#{docs_path}#{department_to_basename(department)}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
       file.write("#{content.strip}\n")
