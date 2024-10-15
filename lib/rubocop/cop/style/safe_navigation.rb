@@ -21,6 +21,11 @@ module RuboCop
       # We have limited the cop to not register an offense for method chains
       # that exceed this option's value.
       #
+      # NOTE: This cop will recognize offenses but not autocorrect code when the
+      # right hand side (RHS) of the `&&` statement is an `||` statement
+      # (eg. `foo && (foo.bar? || foo.baz?)`). It can be corrected
+      # manually by removing the `foo &&` and adding `&.` to each `foo` on the RHS.
+      #
       # @safety
       #   Autocorrection is unsafe because if a value is `false`, the resulting
       #   code will have different behavior or raise an error.
@@ -121,6 +126,9 @@ module RuboCop
           }
         PATTERN
 
+        # @!method and_with_rhs_or?(node)
+        def_node_matcher :and_with_rhs_or?, '(and _ {or (begin or)})'
+
         # @!method not_nil_check?(node)
         def_node_matcher :not_nil_check?, '(send (send $_ :nil?) :!)'
 
@@ -172,6 +180,10 @@ module RuboCop
 
         def report_offense(node, rhs, rhs_receiver, *removal_ranges, offense_range: node)
           add_offense(offense_range) do |corrector|
+            # If the RHS is an `or` we cannot safely autocorrect because in order to remove
+            # the non-nil check we need to add safe-navs to all clauses where the receiver is used
+            next if and_with_rhs_or?(node)
+
             removal_ranges.each { |range| corrector.remove(range) }
             yield corrector if block_given?
 
