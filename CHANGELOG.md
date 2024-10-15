@@ -67,6 +67,7 @@
 * [#13281](https://github.com/rubocop/rubocop/pull/13281): Support Ruby 3.4 for `Lint/UriRegexp` to avoid obsolete API. ([@koic][])
 * [#13229](https://github.com/rubocop/rubocop/issues/13229): Update `Style/MapIntoArray` to be able to handle arrays created using `[].tap`. ([@dvandersluis][])
 * [#13305](https://github.com/rubocop/rubocop/pull/13305): Update `Style/ReturnNilInPredicateMethodDefinition` to detect implicit `nil` returns inside `if`. ([@dvandersluis][])
+* [#13327](https://github.com/rubocop/rubocop/pull/13327): Make server mode aware of auto-restart for .rubocop_todo.yml update. ([@koic][])
 
 ## 1.66.1 (2024-09-04)
 
