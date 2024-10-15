@@ -32,8 +32,10 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
 
         options = '--server --only Style/FrozenStringLiteralComment,Style/StringLiterals'
         expect(`ruby -I . "#{rubocop}" #{options}`).to start_with('RuboCop server starting on')
-        # Emulating the SHA1 value of Gemfile.lock, .rubocop.yml, and .rubocop_todo.yml.
-        RuboCop::Server::Cache.write_version_file('615dfedabfe01face6557b935510309ae550f74f')
+
+        # Emulate the server starting with an older RuboCop version.
+        stub_const('RuboCop::Version::STRING', '0.0.1')
+        RuboCop::Server::Cache.write_version_file(RuboCop::Server::Cache.restart_key)
 
         expect(`ruby -I . "#{rubocop}" --server-status`).to match(/RuboCop server .* is running/)
         _stdout, stderr, _status = Open3.capture3("ruby -I . \"#{rubocop}\" #{options}")
@@ -218,8 +220,8 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
           match(/RuboCop server .* is running/), debug_output.join("\n")
         )
 
-        # Emulating the SHA1 value of Gemfile.lock and .rubocop.yml.
-        RuboCop::Server::Cache.write_version_file('f63c8f29b26472dae07bfa80c13a6f658361893d')
+        # Recompute the cache key with the modified .rubocop.yml content.
+        RuboCop::Server::Cache.write_version_file(RuboCop::Server::Cache.restart_key)
 
         message = expect(`ruby -I . "#{rubocop}" --server`)
         message.not_to start_with('RuboCop server starting on '), debug_output.join("\n")
