@@ -55,25 +55,19 @@ module RuboCop
         MSG = 'Avoid comparing a variable with multiple items ' \
               'in a conditional, use `Array#include?` instead.'
 
-        def on_new_investigation
-          reset_comparison
-        end
-
         def on_or(node)
           root_of_or_node = root_of_or_node(node)
-
           return unless node == root_of_or_node
-          return unless nested_variable_comparison?(root_of_or_node)
-          return if @allowed_method_comparison
-          return if @compared_elements.size < comparisons_threshold
+          return unless nested_comparison?(node)
+
+          return unless (variable, values = find_offending_var(node))
+          return if values.size < comparisons_threshold
 
           add_offense(node) do |corrector|
-            elements = @compared_elements.join(', ')
-            prefer_method = "[#{elements}].include?(#{variables_in_node(node).first})"
+            elements = values.map(&:source).join(', ')
+            prefer_method = "[#{elements}].include?(#{variable_name(variable)})"
 
             corrector.replace(node, prefer_method)
-
-            reset_comparison
           end
         end
 
@@ -92,32 +86,25 @@ module RuboCop
           (send $_ :== $lvar)
         PATTERN
 
-        def nested_variable_comparison?(node)
-          return false unless nested_comparison?(node)
-
-          variables_in_node(node).count == 1
-        end
-
-        def variables_in_node(node)
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def find_offending_var(node, variables = Set.new, values = [])
           if node.or_type?
-            node.node_parts.flat_map { |node_part| variables_in_node(node_part) }.uniq
-          else
-            variables_in_simple_node(node)
-          end
-        end
+            find_offending_var(node.lhs, variables, values)
+            find_offending_var(node.rhs, variables, values)
+          elsif simple_double_comparison?(node)
+            return
+          elsif (var, obj = simple_comparison?(node))
+            return if allow_method_comparison? && obj.send_type?
 
-        def variables_in_simple_node(node)
-          simple_double_comparison?(node) do |var1, var2|
-            return [variable_name(var1), variable_name(var2)]
-          end
-          if (var, obj = simple_comparison_lhs?(node)) || (obj, var = simple_comparison_rhs?(node))
-            @allowed_method_comparison = true if allow_method_comparison? && obj.send_type?
-            @compared_elements << obj.source
-            return [variable_name(var)]
+            variables << var
+            return if variables.size > 1
+
+            values << obj
           end
 
-          []
+          [variables.first, values] if variables.any?
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def variable_name(node)
           node.children[0]
@@ -132,7 +119,14 @@ module RuboCop
         end
 
         def comparison?(node)
-          simple_comparison_lhs?(node) || simple_comparison_rhs?(node) || nested_comparison?(node)
+          simple_comparison?(node) || nested_comparison?(node)
+        end
+
+        def simple_comparison?(node)
+          if (var, obj = simple_comparison_lhs?(node)) ||
+             (obj, var = simple_comparison_rhs?(node))
+            [var, obj]
+          end
         end
 
         def root_of_or_node(or_node)
@@ -143,11 +137,6 @@ module RuboCop
           else
             or_node
           end
-        end
-
-        def reset_comparison
-          @compared_elements = []
-          @allowed_method_comparison = false
         end
 
         def allow_method_comparison?
