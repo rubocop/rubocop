@@ -6,6 +6,7 @@
 
 = Bundler
 
+[#bundlerduplicatedgem]
 == Bundler/DuplicatedGem
 
 |===
@@ -20,6 +21,7 @@
 
 A Gem's requirements should be listed only once in a Gemfile.
 
+[#examples-bundlerduplicatedgem]
 === Examples
 
 [source,ruby]
@@ -55,6 +57,7 @@ else
 end
 ----
 
+[#configurable-attributes-bundlerduplicatedgem]
 === Configurable attributes
 
 |===
@@ -69,6 +72,7 @@ end
 | Array
 |===
 
+[#bundlerduplicatedgroup]
 == Bundler/DuplicatedGroup
 
 |===
@@ -101,6 +105,7 @@ platforms :jruby do
 end
 -----
 
+[#examples-bundlerduplicatedgroup]
 === Examples
 
 [source,ruby]
@@ -137,6 +142,7 @@ gem 'rubocop', groups: [:development, :test]
 gem 'rspec', groups: [:development, :test]
 ----
 
+[#configurable-attributes-bundlerduplicatedgroup]
 === Configurable attributes
 
 |===
@@ -151,6 +157,7 @@ gem 'rspec', groups: [:development, :test]
 | Array
 |===
 
+[#bundlergemcomment]
 == Bundler/GemComment
 
 |===
@@ -193,8 +200,10 @@ For a full list of options supported by bundler,
 see https://bundler.io/man/gemfile.5.html
 .
 
+[#examples-bundlergemcomment]
 === Examples
 
+[#onlyfor_-__-_default_-bundlergemcomment]
 ==== OnlyFor: [] (default)
 
 [source,ruby]
@@ -209,6 +218,7 @@ gem 'foo'
 gem 'foo'
 ----
 
+[#onlyfor_-__version_specifiers__-bundlergemcomment]
 ==== OnlyFor: ['version_specifiers']
 
 [source,ruby]
@@ -223,6 +233,7 @@ gem 'foo', '< 2.1'
 gem 'foo', '< 2.1'
 ----
 
+[#onlyfor_-__restrictive_version_specifiers__-bundlergemcomment]
 ==== OnlyFor: ['restrictive_version_specifiers']
 
 [source,ruby]
@@ -239,6 +250,7 @@ gem 'foo', '>= 1.0'
 gem 'foo', '< 2.1'
 ----
 
+[#onlyfor_-__version_specifiers__-_github__-bundlergemcomment]
 ==== OnlyFor: ['version_specifiers', 'github']
 
 [source,ruby]
@@ -258,6 +270,7 @@ gem 'foo', github: 'some_account/some_fork_of_foo'
 gem 'bar', '< 2.1'
 ----
 
+[#configurable-attributes-bundlergemcomment]
 === Configurable attributes
 
 |===
@@ -276,6 +289,7 @@ gem 'bar', '< 2.1'
 | Array
 |===
 
+[#bundlergemfilename]
 == Bundler/GemFilename
 
 |===
@@ -291,8 +305,10 @@ gem 'bar', '< 2.1'
 Verifies that a project contains Gemfile or gems.rb file and correct
 associated lock file based on the configuration.
 
+[#examples-bundlergemfilename]
 === Examples
 
+[#enforcedstyle_-gemfile-_default_-bundlergemfilename]
 ==== EnforcedStyle: Gemfile (default)
 
 [source,ruby]
@@ -307,6 +323,7 @@ Project contains Gemfile and gems.locked file
 Project contains Gemfile and Gemfile.lock
 ----
 
+[#enforcedstyle_-gems_rb-bundlergemfilename]
 ==== EnforcedStyle: gems.rb
 
 [source,ruby]
@@ -321,6 +338,7 @@ Project contains gems.rb and Gemfile.lock file
 Project contains gems.rb and gems.locked files
 ----
 
+[#configurable-attributes-bundlergemfilename]
 === Configurable attributes
 
 |===
@@ -335,6 +353,7 @@ Project contains gems.rb and gems.locked files
 | Array
 |===
 
+[#bundlergemversion]
 == Bundler/GemVersion
 
 |===
@@ -350,8 +369,10 @@ Project contains gems.rb and gems.locked files
 Enforce that Gem version specifications or a commit reference (branch,
 ref, or tag) are either required or forbidden.
 
+[#examples-bundlergemversion]
 === Examples
 
+[#enforcedstyle_-required-_default_-bundlergemversion]
 ==== EnforcedStyle: required (default)
 
 [source,ruby]
@@ -378,6 +399,7 @@ gem 'rubocop', ref: '74b5bfbb2c4b6fd6cdbbc7254bd7084b36e0c85b'
 gem 'rubocop', tag: 'v1.17.0'
 ----
 
+[#enforcedstyle_-forbidden-bundlergemversion]
 ==== EnforcedStyle: forbidden
 
 [source,ruby]
@@ -404,6 +426,7 @@ gem 'rubocop', ref: '74b5bfbb2c4b6fd6cdbbc7254bd7084b36e0c85b'
 gem 'rubocop', tag: 'v1.17.0'
 ----
 
+[#configurable-attributes-bundlergemversion]
 === Configurable attributes
 
 |===
@@ -422,6 +445,7 @@ gem 'rubocop', tag: 'v1.17.0'
 | Array
 |===
 
+[#bundlerinsecureprotocolsource]
 == Bundler/InsecureProtocolSource
 
 |===
@@ -450,6 +474,7 @@ more secure.
 If you don't allow `http://`, please set `false` to `AllowHttpProtocol`.
 This option is `true` by default for safe autocorrection.
 
+[#examples-bundlerinsecureprotocolsource]
 === Examples
 
 [source,ruby]
@@ -463,6 +488,7 @@ source :rubyforge
 source 'https://rubygems.org' # strongly recommended
 ----
 
+[#allowhttpprotocol_-true-_default_-bundlerinsecureprotocolsource]
 ==== AllowHttpProtocol: true (default)
 
 [source,ruby]
@@ -471,6 +497,7 @@ source 'https://rubygems.org' # strongly recommended
 source 'http://rubygems.org' # use only if HTTPS is unavailable
 ----
 
+[#allowhttpprotocol_-false-bundlerinsecureprotocolsource]
 ==== AllowHttpProtocol: false
 
 [source,ruby]
@@ -479,6 +506,7 @@ source 'http://rubygems.org' # use only if HTTPS is unavailable
 source 'http://rubygems.org'
 ----
 
+[#configurable-attributes-bundlerinsecureprotocolsource]
 === Configurable attributes
 
 |===
@@ -497,6 +525,7 @@ source 'http://rubygems.org'
 | Array
 |===
 
+[#bundlerorderedgems]
 == Bundler/OrderedGems
 
 |===
@@ -511,6 +540,7 @@ source 'http://rubygems.org'
 
 Gems should be alphabetically sorted within groups.
 
+[#examples-bundlerorderedgems]
 === Examples
 
 [source,ruby]
@@ -529,6 +559,7 @@ gem 'rubocop'
 gem 'rspec'
 ----
 
+[#treatcommentsasgroupseparators_-true-_default_-bundlerorderedgems]
 ==== TreatCommentsAsGroupSeparators: true (default)
 
 [source,ruby]
@@ -540,6 +571,7 @@ gem 'rubocop'
 gem 'rspec'
 ----
 
+[#treatcommentsasgroupseparators_-false-bundlerorderedgems]
 ==== TreatCommentsAsGroupSeparators: false
 
 [source,ruby]
@@ -551,6 +583,7 @@ gem 'rubocop'
 gem 'rspec'
 ----
 
+[#configurable-attributes-bundlerorderedgems]
 === Configurable attributes
 
 |===

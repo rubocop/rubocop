@@ -6,6 +6,7 @@
 
 = Lint
 
+[#lintambiguousassignment]
 == Lint/AmbiguousAssignment
 
 |===
@@ -20,6 +21,7 @@
 
 Checks for mistyped shorthand assignments.
 
+[#examples-lintambiguousassignment]
 === Examples
 
 [source,ruby]
@@ -37,6 +39,7 @@ x *= y # or x = *y
 x != y # or x = !y
 ----
 
+[#lintambiguousblockassociation]
 == Lint/AmbiguousBlockAssociation
 
 |===
@@ -55,6 +58,7 @@ when param passed without parentheses.
 This cop can customize allowed methods with `AllowedMethods`.
 By default, there are no methods to allowed.
 
+[#examples-lintambiguousblockassociation]
 === Examples
 
 [source,ruby]
@@ -77,6 +81,7 @@ foo == bar { |b| b.baz }
 foo = ->(bar) { bar.baz }
 ----
 
+[#allowedmethods_-__-_default_-lintambiguousblockassociation]
 ==== AllowedMethods: [] (default)
 
 [source,ruby]
@@ -85,6 +90,7 @@ foo = ->(bar) { bar.baz }
 expect { do_something }.to change { object.attribute }
 ----
 
+[#allowedmethods_-_change_-lintambiguousblockassociation]
 ==== AllowedMethods: [change]
 
 [source,ruby]
@@ -93,6 +99,7 @@ expect { do_something }.to change { object.attribute }
 expect { do_something }.to change { object.attribute }
 ----
 
+[#allowedpatterns_-__-_default_-lintambiguousblockassociation]
 ==== AllowedPatterns: [] (default)
 
 [source,ruby]
@@ -101,6 +108,7 @@ expect { do_something }.to change { object.attribute }
 expect { do_something }.to change { object.attribute }
 ----
 
+[#allowedpatterns_-__change__-lintambiguousblockassociation]
 ==== AllowedPatterns: ['change']
 
 [source,ruby]
@@ -110,6 +118,7 @@ expect { do_something }.to change { object.attribute }
 expect { do_something }.to not_change { object.attribute }
 ----
 
+[#configurable-attributes-lintambiguousblockassociation]
 === Configurable attributes
 
 |===
@@ -124,6 +133,7 @@ expect { do_something }.to not_change { object.attribute }
 | Array
 |===
 
+[#lintambiguousoperator]
 == Lint/AmbiguousOperator
 
 |===
@@ -139,6 +149,7 @@ expect { do_something }.to not_change { object.attribute }
 Checks for ambiguous operators in the first argument of a
 method invocation without parentheses.
 
+[#examples-lintambiguousoperator]
 === Examples
 
 [source,ruby]
@@ -155,10 +166,12 @@ do_something *some_array
 do_something(*some_array)
 ----
 
+[#references-lintambiguousoperator]
 === References
 
 * https://rubystyle.guide#method-invocation-parens
 
+[#lintambiguousoperatorprecedence]
 == Lint/AmbiguousOperatorPrecedence
 
 |===
@@ -181,6 +194,7 @@ operators (ie. `a =~ b`) because those are not ambiguous.
 
 NOTE: Ranges are handled by `Lint/AmbiguousRange`.
 
+[#examples-lintambiguousoperatorprecedence]
 === Examples
 
 [source,ruby]
@@ -200,6 +214,7 @@ a + b + c
 a * b / c % d
 ----
 
+[#lintambiguousrange]
 == Lint/AmbiguousRange
 
 |===
@@ -226,6 +241,7 @@ by this cop.
 NOTE: Regardless of this configuration, if a method receiver is a basic literal
 value, it will be wrapped in order to prevent the ambiguity of `1..2.to_a`.
 
+[#safety-lintambiguousrange]
 === Safety
 
 The cop autocorrects by wrapping the entire boundary in parentheses, which
@@ -234,6 +250,7 @@ programmer. For this reason, this cop's autocorrect is unsafe (it will not
 change the behavior of the code, but will not necessarily match the
 intent of the program).
 
+[#examples-lintambiguousrange]
 === Examples
 
 [source,ruby]
@@ -259,6 +276,7 @@ x || (1..2)
 (1..2).to_a
 ----
 
+[#requireparenthesesformethodchains_-false-_default_-lintambiguousrange]
 ==== RequireParenthesesForMethodChains: false (default)
 
 [source,ruby]
@@ -268,6 +286,7 @@ a.foo..b.bar
 (a.foo)..(b.bar)
 ----
 
+[#requireparenthesesformethodchains_-true-lintambiguousrange]
 ==== RequireParenthesesForMethodChains: true
 
 [source,ruby]
@@ -279,6 +298,7 @@ a.foo..b.bar
 (a.foo)..(b.bar)
 ----
 
+[#configurable-attributes-lintambiguousrange]
 === Configurable attributes
 
 |===
@@ -289,6 +309,7 @@ a.foo..b.bar
 | Boolean
 |===
 
+[#lintambiguousregexpliteral]
 == Lint/AmbiguousRegexpLiteral
 
 |===
@@ -304,6 +325,7 @@ a.foo..b.bar
 Checks for ambiguous regexp literals in the first argument of
 a method invocation without parentheses.
 
+[#examples-lintambiguousregexpliteral]
 === Examples
 
 [source,ruby]
@@ -321,6 +343,7 @@ do_something /pattern/i
 do_something(/pattern/i)
 ----
 
+[#lintassignmentincondition]
 == Lint/AssignmentInCondition
 
 |===
@@ -341,11 +364,13 @@ By safe assignment we mean putting parentheses around
 an assignment to indicate "I know I'm using an assignment
 as a condition. It's not a mistake."
 
+[#safety-lintassignmentincondition]
 === Safety
 
 This cop's autocorrection is unsafe because it assumes that
 the author meant to use an assignment result as a condition.
 
+[#examples-lintassignmentincondition]
 === Examples
 
 [source,ruby]
@@ -361,6 +386,7 @@ if some_var == value
 end
 ----
 
+[#allowsafeassignment_-true-_default_-lintassignmentincondition]
 ==== AllowSafeAssignment: true (default)
 
 [source,ruby]
@@ -371,6 +397,7 @@ if (some_var = value)
 end
 ----
 
+[#allowsafeassignment_-false-lintassignmentincondition]
 ==== AllowSafeAssignment: false
 
 [source,ruby]
@@ -381,6 +408,7 @@ if (some_var = value)
 end
 ----
 
+[#configurable-attributes-lintassignmentincondition]
 === Configurable attributes
 
 |===
@@ -391,10 +419,12 @@ end
 | Boolean
 |===
 
+[#references-lintassignmentincondition]
 === References
 
 * https://rubystyle.guide#safe-assignment-in-condition
 
+[#lintbigdecimalnew]
 == Lint/BigDecimalNew
 
 |===
@@ -411,6 +441,7 @@ end
 This cop identifies places where `BigDecimal.new()`
 can be replaced by `BigDecimal()`.
 
+[#examples-lintbigdecimalnew]
 === Examples
 
 [source,ruby]
@@ -422,6 +453,7 @@ BigDecimal.new(123.456, 3)
 BigDecimal(123.456, 3)
 ----
 
+[#lintbinaryoperatorwithidenticaloperands]
 == Lint/BinaryOperatorWithIdenticalOperands
 
 |===
@@ -448,6 +480,7 @@ do so. This does not include operations such as `-` or `/` where the result will
 always be the same (`x - x` will always be 0; `x / x` will always be 1), and
 thus are legitimate offenses.
 
+[#safety-lintbinaryoperatorwithidenticaloperands]
 === Safety
 
 This cop is unsafe as it does not consider side effects when calling methods
@@ -460,6 +493,7 @@ if wr.take_char == '\0' && wr.take_char == '\0'
 end
 ----
 
+[#examples-lintbinaryoperatorwithidenticaloperands]
 === Examples
 
 [source,ruby]
@@ -481,6 +515,7 @@ x + x
 1 << 1
 ----
 
+[#lintbooleansymbol]
 == Lint/BooleanSymbol
 
 |===
@@ -496,12 +531,14 @@ x + x
 Checks for `:true` and `:false` symbols.
 In most cases it would be a typo.
 
+[#safety-lintbooleansymbol]
 === Safety
 
 Autocorrection is unsafe for this cop because code relying
 on `:true` or `:false` symbols will break when those are
 changed to actual booleans.
 
+[#examples-lintbooleansymbol]
 === Examples
 
 [source,ruby]
@@ -519,6 +556,7 @@ true
 false
 ----
 
+[#lintcircularargumentreference]
 == Lint/CircularArgumentReference
 
 |===
@@ -536,6 +574,7 @@ arguments and optional ordinal arguments.
 
 This cop mirrors a warning produced by MRI since 2.2.
 
+[#examples-lintcircularargumentreference]
 === Examples
 
 [source,ruby]
@@ -566,6 +605,7 @@ def cook(dry_ingredients = self.dry_ingredients)
 end
 ----
 
+[#lintconstantdefinitioninblock]
 == Lint/ConstantDefinitionInBlock
 
 |===
@@ -587,6 +627,7 @@ in the outer scope would be problematic.
 
 For meta-programming, use `const_set`.
 
+[#examples-lintconstantdefinitioninblock]
 === Examples
 
 [source,ruby]
@@ -629,6 +670,7 @@ module M
 end
 ----
 
+[#allowedmethods_-__enums__-_default_-lintconstantdefinitioninblock]
 ==== AllowedMethods: ['enums'] (default)
 
 [source,ruby]
@@ -644,6 +686,7 @@ class TestEnum < T::Enum
 end
 ----
 
+[#configurable-attributes-lintconstantdefinitioninblock]
 === Configurable attributes
 
 |===
@@ -654,10 +697,12 @@ end
 | Array
 |===
 
+[#references-lintconstantdefinitioninblock]
 === References
 
 * https://rubystyle.guide#no-constant-definition-in-block
 
+[#lintconstantoverwritteninrescue]
 == Lint/ConstantOverwrittenInRescue
 
 |===
@@ -676,6 +721,7 @@ You intended to write as `rescue StandardError`.
 However, you have written `rescue => StandardError`.
 In that case, the result of `rescue` will overwrite `StandardError`.
 
+[#examples-lintconstantoverwritteninrescue]
 === Examples
 
 [source,ruby]
@@ -693,6 +739,7 @@ rescue StandardError
 end
 ----
 
+[#lintconstantresolution]
 == Lint/ConstantResolution
 
 |===
@@ -722,6 +769,7 @@ NOTE: `Style/RedundantConstantBase` cop is disabled if this cop is enabled to pr
 conflicting rules. Because it respects user configurations that want to enable
 this cop which is disabled by default.
 
+[#examples-lintconstantresolution]
 === Examples
 
 [source,ruby]
@@ -741,6 +789,7 @@ User::Login
 ::User::Login
 ----
 
+[#only_-__login__-lintconstantresolution]
 ==== Only: ['Login']
 
 [source,ruby]
@@ -757,6 +806,7 @@ Login
 User::Login
 ----
 
+[#ignore_-__login__-lintconstantresolution]
 ==== Ignore: ['Login']
 
 [source,ruby]
@@ -773,6 +823,7 @@ User
 Login
 ----
 
+[#configurable-attributes-lintconstantresolution]
 === Configurable attributes
 
 |===
@@ -787,6 +838,7 @@ Login
 | Array
 |===
 
+[#lintdebugger]
 == Lint/Debugger
 
 |===
@@ -830,6 +882,7 @@ for example `require 'debug/start'` from `ruby/debug`. These requires can
 be configured through `DebuggerRequires`. It has the same structure as
 `DebuggerMethods`, which you can read about above.
 
+[#examples-lintdebugger]
 === Examples
 
 [source,ruby]
@@ -857,6 +910,7 @@ def some_method
 end
 ----
 
+[#debuggermethods_-_my_debugger_-lintdebugger]
 ==== DebuggerMethods: [my_debugger]
 
 [source,ruby]
@@ -868,6 +922,7 @@ def some_method
 end
 ----
 
+[#debuggerrequires_-_my_debuggerstart_-lintdebugger]
 ==== DebuggerRequires: [my_debugger/start]
 
 [source,ruby]
@@ -877,6 +932,7 @@ end
 require 'my_debugger/start'
 ----
 
+[#configurable-attributes-lintdebugger]
 === Configurable attributes
 
 |===
@@ -891,6 +947,7 @@ require 'my_debugger/start'
 | 
 |===
 
+[#lintdeprecatedclassmethods]
 == Lint/DeprecatedClassMethods
 
 |===
@@ -905,6 +962,7 @@ require 'my_debugger/start'
 
 Checks for uses of the deprecated class method usages.
 
+[#examples-lintdeprecatedclassmethods]
 === Examples
 
 [source,ruby]
@@ -934,6 +992,7 @@ Addrinfo.getaddrinfo(nodename, service)
 Addrinfo.tcp(host, port).getnameinfo
 ----
 
+[#lintdeprecatedconstants]
 == Lint/DeprecatedConstants
 
 |===
@@ -960,6 +1019,7 @@ alternative value as `Alternative`. And you can set the deprecated version as
 By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException, `Random::DEFAULT`,
 `Struct::Group`, and `Struct::Passwd` are configured.
 
+[#examples-lintdeprecatedconstants]
 === Examples
 
 [source,ruby]
@@ -983,6 +1043,7 @@ Etc::Group
 Etc::Passwd
 ----
 
+[#configurable-attributes-lintdeprecatedconstants]
 === Configurable attributes
 
 |===
@@ -993,6 +1054,7 @@ Etc::Passwd
 | 
 |===
 
+[#lintdeprecatedopensslconstant]
 == Lint/DeprecatedOpenSSLConstant
 
 |===
@@ -1009,6 +1071,7 @@ Algorithmic constants for `OpenSSL::Cipher` and `OpenSSL::Digest`
 deprecated since OpenSSL version 2.2.0. Prefer passing a string
 instead.
 
+[#examples-lintdeprecatedopensslconstant]
 === Examples
 
 [source,ruby]
@@ -1032,6 +1095,7 @@ OpenSSL::Digest::SHA256.digest('foo')
 OpenSSL::Digest.digest('SHA256', 'foo')
 ----
 
+[#lintdisjunctiveassignmentinconstructor]
 == Lint/DisjunctiveAssignmentInConstructor
 
 |===
@@ -1053,6 +1117,7 @@ instance variables.
 In ruby, an instance variable is nil until a value is assigned, so the
 disjunction is unnecessary. A plain assignment has the same effect.
 
+[#safety-lintdisjunctiveassignmentinconstructor]
 === Safety
 
 This cop is unsafe because it can register a false positive when a
@@ -1077,6 +1142,7 @@ end
 Without the disjunctive assignment, `Derived` will be unable to override
 the value for `@config`.
 
+[#examples-lintdisjunctiveassignmentinconstructor]
 === Examples
 
 [source,ruby]
@@ -1092,6 +1158,7 @@ def initialize
 end
 ----
 
+[#lintduplicatebranch]
 == Lint/DuplicateBranch
 
 |===
@@ -1116,6 +1183,7 @@ the above basic literal values.
 With `IgnoreConstantBranches: true`, branches are not registered
 as offenses if they return a constant value.
 
+[#examples-lintduplicatebranch]
 === Examples
 
 [source,ruby]
@@ -1170,6 +1238,7 @@ rescue FooError, BarError
 end
 ----
 
+[#ignoreliteralbranches_-true-lintduplicatebranch]
 ==== IgnoreLiteralBranches: true
 
 [source,ruby]
@@ -1183,6 +1252,7 @@ else 250
 end
 ----
 
+[#ignoreconstantbranches_-true-lintduplicatebranch]
 ==== IgnoreConstantBranches: true
 
 [source,ruby]
@@ -1196,6 +1266,7 @@ else MEDIUM_SIZE
 end
 ----
 
+[#configurable-attributes-lintduplicatebranch]
 === Configurable attributes
 
 |===
@@ -1210,6 +1281,7 @@ end
 | Boolean
 |===
 
+[#lintduplicatecasecondition]
 == Lint/DuplicateCaseCondition
 
 |===
@@ -1225,6 +1297,7 @@ end
 Checks that there are no repeated conditions
 used in case 'when' expressions.
 
+[#examples-lintduplicatecasecondition]
 === Examples
 
 [source,ruby]
@@ -1246,6 +1319,7 @@ when 'second'
 end
 ----
 
+[#lintduplicateelsifcondition]
 == Lint/DuplicateElsifCondition
 
 |===
@@ -1260,6 +1334,7 @@ end
 
 Checks that there are no repeated conditions used in if 'elsif'.
 
+[#examples-lintduplicateelsifcondition]
 === Examples
 
 [source,ruby]
@@ -1279,6 +1354,7 @@ elsif x == 2
 end
 ----
 
+[#lintduplicatehashkey]
 == Lint/DuplicateHashKey
 
 |===
@@ -1296,6 +1372,7 @@ This cop considers both primitive types and constants for the hash keys.
 
 This cop mirrors a warning in Ruby 2.2.
 
+[#examples-lintduplicatehashkey]
 === Examples
 
 [source,ruby]
@@ -1307,6 +1384,7 @@ hash = { food: 'apple', food: 'orange' }
 hash = { food: 'apple', other_food: 'orange' }
 ----
 
+[#lintduplicatemagiccomment]
 == Lint/DuplicateMagicComment
 
 |===
@@ -1321,6 +1399,7 @@ hash = { food: 'apple', other_food: 'orange' }
 
 Checks for duplicated magic comments.
 
+[#examples-lintduplicatemagiccomment]
 === Examples
 
 [source,ruby]
@@ -1344,6 +1423,7 @@ Checks for duplicated magic comments.
 # frozen_string_literal: true
 ----
 
+[#lintduplicatematchpattern]
 == Lint/DuplicateMatchPattern
 
 NOTE: Required Ruby version: 2.7
@@ -1360,6 +1440,7 @@ NOTE: Required Ruby version: 2.7
 
 Checks that there are no repeated patterns used in `in` keywords.
 
+[#examples-lintduplicatematchpattern]
 === Examples
 
 [source,ruby]
@@ -1445,6 +1526,7 @@ in foo if baz
 end
 ----
 
+[#lintduplicatemethods]
 == Lint/DuplicateMethods
 
 |===
@@ -1460,6 +1542,7 @@ end
 Checks for duplicated instance (or singleton) method
 definitions.
 
+[#examples-lintduplicatemethods]
 === Examples
 
 [source,ruby]
@@ -1497,6 +1580,7 @@ end
 alias bar foo
 ----
 
+[#lintduplicateregexpcharacterclasselement]
 == Lint/DuplicateRegexpCharacterClassElement
 
 |===
@@ -1511,6 +1595,7 @@ alias bar foo
 
 Checks for duplicate elements in Regexp character classes.
 
+[#examples-lintduplicateregexpcharacterclasselement]
 === Examples
 
 [source,ruby]
@@ -1528,6 +1613,7 @@ r = /[xy]/
 r = /[0-9x]/
 ----
 
+[#lintduplicaterequire]
 == Lint/DuplicateRequire
 
 |===
@@ -1542,11 +1628,13 @@ r = /[0-9x]/
 
 Checks for duplicate ``require``s and ``require_relative``s.
 
+[#safety-lintduplicaterequire]
 === Safety
 
 This cop's autocorrection is unsafe because it may break the dependency order
 of `require`.
 
+[#examples-lintduplicaterequire]
 === Examples
 
 [source,ruby]
@@ -1565,6 +1653,7 @@ require 'foo'
 require_relative 'foo'
 ----
 
+[#lintduplicaterescueexception]
 == Lint/DuplicateRescueException
 
 |===
@@ -1580,6 +1669,7 @@ require_relative 'foo'
 Checks that there are no repeated exceptions
 used in 'rescue' expressions.
 
+[#examples-lintduplicaterescueexception]
 === Examples
 
 [source,ruby]
@@ -1603,6 +1693,46 @@ rescue SecondException
 end
 ----
 
+[#lintduplicatesetelement]
+== Lint/DuplicateSetElement
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.67
+| -
+|===
+
+Checks for duplicate literal, constant, or variable elements in Set.
+
+[#examples-lintduplicatesetelement]
+=== Examples
+
+[source,ruby]
+----
+# bad
+Set[:foo, :bar, :foo]
+
+# good
+Set[:foo, :bar]
+
+# bad
+Set.new([:foo, :bar, :foo])
+
+# good
+Set.new([:foo, :bar])
+
+# bad
+[:foo, :bar, :foo].to_set
+
+# good
+[:foo, :bar].to_set
+----
+
+[#linteachwithobjectargument]
 == Lint/EachWithObjectArgument
 
 |===
@@ -1621,6 +1751,7 @@ make calls on to build something based on the enumerable that
 each_with_object iterates over, an immutable argument makes no sense.
 It's definitely a bug.
 
+[#examples-linteachwithobjectargument]
 === Examples
 
 [source,ruby]
@@ -1633,6 +1764,7 @@ num = 0
 sum = numbers.each_with_object(num) { |e, a| a += e }
 ----
 
+[#lintelselayout]
 == Lint/ElseLayout
 
 |===
@@ -1653,6 +1785,7 @@ Its autocorrection tweaks layout to keep the syntax. So, this autocorrection
 is compatible correction for bad case syntax, but if your code makes a mistake
 with `elsif` and `else`, you will have to correct it manually.
 
+[#examples-lintelselayout]
 === Examples
 
 [source,ruby]
@@ -1684,6 +1817,7 @@ elsif do_this
 end
 ----
 
+[#lintemptyblock]
 == Lint/EmptyBlock
 
 |===
@@ -1706,6 +1840,7 @@ NOTE: For backwards compatibility, the configuration that allows/disallows
 empty lambdas and procs is called `AllowEmptyLambdas`, even though it also
 applies to procs.
 
+[#examples-lintemptyblock]
 === Examples
 
 [source,ruby]
@@ -1717,6 +1852,7 @@ items.each { |item| }
 items.each { |item| puts item }
 ----
 
+[#allowcomments_-true-_default_-lintemptyblock]
 ==== AllowComments: true (default)
 
 [source,ruby]
@@ -1729,6 +1865,7 @@ end
 items.each { |item| } # TODO: implement later (inline comment)
 ----
 
+[#allowcomments_-false-lintemptyblock]
 ==== AllowComments: false
 
 [source,ruby]
@@ -1741,6 +1878,7 @@ end
 items.each { |item| } # TODO: implement later (inline comment)
 ----
 
+[#allowemptylambdas_-true-_default_-lintemptyblock]
 ==== AllowEmptyLambdas: true (default)
 
 [source,ruby]
@@ -1757,6 +1895,7 @@ proc { }
 Proc.new { }
 ----
 
+[#allowemptylambdas_-false-lintemptyblock]
 ==== AllowEmptyLambdas: false
 
 [source,ruby]
@@ -1773,6 +1912,7 @@ proc { }
 Proc.new { }
 ----
 
+[#configurable-attributes-lintemptyblock]
 === Configurable attributes
 
 |===
@@ -1787,6 +1927,7 @@ Proc.new { }
 | Boolean
 |===
 
+[#lintemptyclass]
 == Lint/EmptyClass
 
 |===
@@ -1803,6 +1944,7 @@ Checks for classes and metaclasses without a body.
 Such empty classes and metaclasses are typically an oversight or we should provide a comment
 to be clearer what we're aiming for.
 
+[#examples-lintemptyclass]
 === Examples
 
 [source,ruby]
@@ -1837,6 +1979,7 @@ class << obj
 end
 ----
 
+[#allowcomments_-false-_default_-lintemptyclass]
 ==== AllowComments: false (default)
 
 [source,ruby]
@@ -1857,6 +2000,7 @@ class << obj
 end
 ----
 
+[#allowcomments_-true-lintemptyclass]
 ==== AllowComments: true
 
 [source,ruby]
@@ -1877,6 +2021,7 @@ class << obj
 end
 ----
 
+[#configurable-attributes-lintemptyclass]
 === Configurable attributes
 
 |===
@@ -1887,6 +2032,7 @@ end
 | Boolean
 |===
 
+[#lintemptyconditionalbody]
 == Lint/EmptyConditionalBody
 
 |===
@@ -1903,12 +2049,14 @@ Checks for the presence of `if`, `elsif` and `unless` branches without a body.
 
 NOTE: empty `else` branches are handled by `Style/EmptyElse`.
 
+[#safety-lintemptyconditionalbody]
 === Safety
 
 Autocorrection for this cop is not safe. The conditions for empty branches that
 the autocorrection removes may have side effects, or the logic in subsequent
 branches may change due to the removal of a previous condition.
 
+[#examples-lintemptyconditionalbody]
 === Examples
 
 [source,ruby]
@@ -1945,6 +2093,7 @@ elsif other_condition
 end
 ----
 
+[#allowcomments_-true-_default_-lintemptyconditionalbody]
 ==== AllowComments: true (default)
 
 [source,ruby]
@@ -1957,6 +2106,7 @@ elsif other_condition
 end
 ----
 
+[#allowcomments_-false-lintemptyconditionalbody]
 ==== AllowComments: false
 
 [source,ruby]
@@ -1969,6 +2119,7 @@ elsif other_condition
 end
 ----
 
+[#configurable-attributes-lintemptyconditionalbody]
 === Configurable attributes
 
 |===
@@ -1979,6 +2130,7 @@ end
 | Boolean
 |===
 
+[#lintemptyensure]
 == Lint/EmptyEnsure
 
 |===
@@ -1993,6 +2145,7 @@ end
 
 Checks for empty `ensure` blocks.
 
+[#examples-lintemptyensure]
 === Examples
 
 [source,ruby]
@@ -2024,6 +2177,7 @@ ensure
 end
 ----
 
+[#lintemptyexpression]
 == Lint/EmptyExpression
 
 |===
@@ -2038,6 +2192,7 @@ end
 
 Checks for the presence of empty expressions.
 
+[#examples-lintemptyexpression]
 === Examples
 
 [source,ruby]
@@ -2060,6 +2215,7 @@ if (some_expression)
 end
 ----
 
+[#lintemptyfile]
 == Lint/EmptyFile
 
 |===
@@ -2074,6 +2230,7 @@ end
 
 Enforces that Ruby source files are not empty.
 
+[#examples-lintemptyfile]
 === Examples
 
 [source,ruby]
@@ -2085,6 +2242,7 @@ Enforces that Ruby source files are not empty.
 # File containing non commented source lines
 ----
 
+[#allowcomments_-true-_default_-lintemptyfile]
 ==== AllowComments: true (default)
 
 [source,ruby]
@@ -2093,6 +2251,7 @@ Enforces that Ruby source files are not empty.
 # File consisting only of comments
 ----
 
+[#allowcomments_-false-lintemptyfile]
 ==== AllowComments: false
 
 [source,ruby]
@@ -2101,6 +2260,7 @@ Enforces that Ruby source files are not empty.
 # File consisting only of comments
 ----
 
+[#configurable-attributes-lintemptyfile]
 === Configurable attributes
 
 |===
@@ -2111,6 +2271,7 @@ Enforces that Ruby source files are not empty.
 | Boolean
 |===
 
+[#lintemptyinpattern]
 == Lint/EmptyInPattern
 
 NOTE: Required Ruby version: 2.7
@@ -2127,6 +2288,7 @@ NOTE: Required Ruby version: 2.7
 
 Checks for the presence of `in` pattern branches without a body.
 
+[#examples-lintemptyinpattern]
 === Examples
 
 [source,ruby]
@@ -2147,6 +2309,7 @@ in [a, b]
 end
 ----
 
+[#allowcomments_-true-_default_-lintemptyinpattern]
 ==== AllowComments: true (default)
 
 [source,ruby]
@@ -2160,6 +2323,7 @@ in [a, b]
 end
 ----
 
+[#allowcomments_-false-lintemptyinpattern]
 ==== AllowComments: false
 
 [source,ruby]
@@ -2173,6 +2337,7 @@ in [a, b]
 end
 ----
 
+[#configurable-attributes-lintemptyinpattern]
 === Configurable attributes
 
 |===
@@ -2183,6 +2348,7 @@ end
 | Boolean
 |===
 
+[#lintemptyinterpolation]
 == Lint/EmptyInterpolation
 
 |===
@@ -2197,6 +2363,7 @@ end
 
 Checks for empty interpolation.
 
+[#examples-lintemptyinterpolation]
 === Examples
 
 [source,ruby]
@@ -2208,6 +2375,7 @@ Checks for empty interpolation.
 "result is #{some_result}"
 ----
 
+[#lintemptywhen]
 == Lint/EmptyWhen
 
 |===
@@ -2222,6 +2390,7 @@ Checks for empty interpolation.
 
 Checks for the presence of `when` branches without a body.
 
+[#examples-lintemptywhen]
 === Examples
 
 [source,ruby]
@@ -2242,6 +2411,7 @@ when bar
 end
 ----
 
+[#allowcomments_-true-_default_-lintemptywhen]
 ==== AllowComments: true (default)
 
 [source,ruby]
@@ -2255,6 +2425,7 @@ when bar
 end
 ----
 
+[#allowcomments_-false-lintemptywhen]
 ==== AllowComments: false
 
 [source,ruby]
@@ -2268,6 +2439,7 @@ when bar
 end
 ----
 
+[#configurable-attributes-lintemptywhen]
 === Configurable attributes
 
 |===
@@ -2278,6 +2450,7 @@ end
 | Boolean
 |===
 
+[#lintensurereturn]
 == Lint/EnsureReturn
 
 |===
@@ -2285,7 +2458,7 @@ end
 
 | Enabled
 | Yes
-| Always
+| No
 | 0.9
 | 0.83
 |===
@@ -2297,6 +2470,7 @@ and the exception will be silently thrown away as if it were rescued.
 
 If you want to rescue some (or all) exceptions, best to do it explicitly
 
+[#examples-lintensurereturn]
 === Examples
 
 [source,ruby]
@@ -2330,10 +2504,12 @@ ensure
 end
 ----
 
+[#references-lintensurereturn]
 === References
 
 * https://rubystyle.guide#no-return-ensure
 
+[#linterbnewarguments]
 == Lint/ErbNewArguments
 
 NOTE: Required Ruby version: 2.6
@@ -2370,6 +2546,7 @@ Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.
 This cop identifies places where `ERB.new(str, trim_mode, eoutvar)` can
 be replaced by `ERB.new(str, :trim_mode: trim_mode, eoutvar: eoutvar)`.
 
+[#examples-linterbnewarguments]
 === Examples
 
 [source,ruby]
@@ -2407,6 +2584,7 @@ else
 end
 ----
 
+[#lintflipflop]
 == Lint/FlipFlop
 
 |===
@@ -2428,6 +2606,7 @@ the deprecation has been reverted by Ruby 2.7.0 and
 backported to Ruby 2.6.
 See: https://bugs.ruby-lang.org/issues/5400
 
+[#examples-lintflipflop]
 === Examples
 
 [source,ruby]
@@ -2443,10 +2622,12 @@ end
 end
 ----
 
+[#references-lintflipflop]
 === References
 
 * https://rubystyle.guide#no-flip-flops
 
+[#lintfloatcomparison]
 == Lint/FloatComparison
 
 |===
@@ -2466,20 +2647,7 @@ is almost never the desired semantics. Comparison via the `==/!=` operators chec
 floating-point value representation to be exactly the same, which is very unlikely
 if you perform any arithmetic operations involving precision loss.
 
- # good - comparing against zero
-  x == 0.0
-  x != 0.0
-
-  # good
-  (x - 0.1).abs < Float::EPSILON
-
-  # good
-  tolerance = 0.0001
-  (x - 0.1).abs < tolerance
-
-  # Or some other epsilon based type of comparison:
-  # https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
-
+[#examples-lintfloatcomparison]
 === Examples
 
 [source,ruby]
@@ -2490,12 +2658,28 @@ x != 0.1
 
 # good - using BigDecimal
 x.to_d == 0.1.to_d
+
+# good - comparing against zero
+x == 0.0
+x != 0.0
+
+# good
+(x - 0.1).abs < Float::EPSILON
+
+# good
+tolerance = 0.0001
+(x - 0.1).abs < tolerance
+
+# Or some other epsilon based type of comparison:
+# https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
 ----
 
+[#references-lintfloatcomparison]
 === References
 
 * https://rubystyle.guide#float-comparison
 
+[#lintfloatoutofrange]
 == Lint/FloatOutOfRange
 
 |===
@@ -2512,6 +2696,7 @@ Identifies Float literals which are, like, really really really
 really really really really really big. Too big. No-one needs Floats
 that big. If you need a float that big, something is wrong with you.
 
+[#examples-lintfloatoutofrange]
 === Examples
 
 [source,ruby]
@@ -2523,6 +2708,7 @@ float = 3.0e400
 float = 42.9
 ----
 
+[#lintformatparametermismatch]
 == Lint/FormatParameterMismatch
 
 |===
@@ -2543,6 +2729,7 @@ In addition it checks whether different formats are used in the same
 format string. Do not mix numbered, unnumbered, and named formats in
 the same format string.
 
+[#examples-lintformatparametermismatch]
 === Examples
 
 [source,ruby]
@@ -2560,6 +2747,7 @@ format('Unnumbered format: %s and numbered: %2$s', a_value, another)
 format('Numbered format: %1$s and numbered %2$s', a_value, another)
 ----
 
+[#linthashcomparebyidentity]
 == Lint/HashCompareByIdentity
 
 |===
@@ -2578,6 +2766,7 @@ for hash keys.
 This cop looks for hashes being keyed by objects' `object_id`, using
 one of these methods: `key?`, `has_key?`, `fetch`, `[]` and `[]=`.
 
+[#safety-linthashcomparebyidentity]
 === Safety
 
 This cop is unsafe. Although unlikely, the hash could store both object
@@ -2587,6 +2776,7 @@ could be a false positive.
 Furthermore, this cop cannot guarantee that the receiver of one of the
 methods (`key?`, etc.) is actually a hash.
 
+[#examples-linthashcomparebyidentity]
 === Examples
 
 [source,ruby]
@@ -2602,10 +2792,12 @@ hash[foo] = :bar
 hash.key?(baz)
 ----
 
+[#references-linthashcomparebyidentity]
 === References
 
 * https://rubystyle.guide#identity-comparison
 
+[#lintheredocmethodcallposition]
 == Lint/HeredocMethodCallPosition
 
 |===
@@ -2621,6 +2813,7 @@ hash.key?(baz)
 Checks for the ordering of a method call where
 the receiver of the call is a HEREDOC.
 
+[#examples-lintheredocmethodcallposition]
 === Examples
 
 [source,ruby]
@@ -2647,10 +2840,12 @@ SQL
 SQL
 ----
 
+[#references-lintheredocmethodcallposition]
 === References
 
 * https://rubystyle.guide#heredoc-method-calls
 
+[#lintidentitycomparison]
 == Lint/IdentityComparison
 
 |===
@@ -2668,6 +2863,7 @@ Prefer `equal?` over `==` when comparing `object_id`.
 `Object#equal?` is provided to compare objects for identity, and in contrast
 `Object#==` is provided for the purpose of doing value comparison.
 
+[#examples-lintidentitycomparison]
 === Examples
 
 [source,ruby]
@@ -2679,10 +2875,12 @@ foo.object_id == bar.object_id
 foo.equal?(bar)
 ----
 
+[#references-lintidentitycomparison]
 === References
 
 * https://rubystyle.guide#identity-comparison
 
+[#lintimplicitstringconcatenation]
 == Lint/ImplicitStringConcatenation
 
 |===
@@ -2698,6 +2896,7 @@ foo.equal?(bar)
 Checks for implicit string concatenation of string literals
 which are on the same line.
 
+[#examples-lintimplicitstringconcatenation]
 === Examples
 
 [source,ruby]
@@ -2714,6 +2913,7 @@ array = [
 ]
 ----
 
+[#lintincompatibleioselectwithfiberscheduler]
 == Lint/IncompatibleIoSelectWithFiberScheduler
 
 |===
@@ -2736,11 +2936,13 @@ and the return value of `io.wait_readable` and `io.wait_writable` are `self`.
 They are not autocorrected when assigning a return value because these types are different.
 It's up to user how to handle the return value.
 
+[#safety-lintincompatibleioselectwithfiberscheduler]
 === Safety
 
 This cop's autocorrection is unsafe because `NoMethodError` occurs
 if `require 'io/wait'` is not called.
 
+[#examples-lintincompatibleioselectwithfiberscheduler]
 === Examples
 
 [source,ruby]
@@ -2758,6 +2960,7 @@ IO.select([], [io], [], timeout)
 io.wait_writable(timeout)
 ----
 
+[#lintineffectiveaccessmodifier]
 == Lint/IneffectiveAccessModifier
 
 |===
@@ -2775,6 +2978,7 @@ applied to a singleton method. These access modifiers do not make
 singleton methods private/protected. `private_class_method` can be
 used for that.
 
+[#examples-lintineffectiveaccessmodifier]
 === Examples
 
 [source,ruby]
@@ -2809,6 +3013,7 @@ class C
 end
 ----
 
+[#lintinheritexception]
 == Lint/InheritException
 
 |===
@@ -2825,14 +3030,17 @@ Looks for error classes inheriting from `Exception`.
 It is configurable to suggest using either `StandardError` (default) or
 `RuntimeError` instead.
 
+[#safety-lintinheritexception]
 === Safety
 
 This cop's autocorrection is unsafe because `rescue` that omit
 exception class handle `StandardError` and its subclasses,
 but not `Exception` and its subclasses.
 
+[#examples-lintinheritexception]
 === Examples
 
+[#enforcedstyle_-standard_error-_default_-lintinheritexception]
 ==== EnforcedStyle: standard_error (default)
 
 [source,ruby]
@@ -2850,6 +3058,7 @@ class C < StandardError; end
 C = Class.new(StandardError)
 ----
 
+[#enforcedstyle_-runtime_error-lintinheritexception]
 ==== EnforcedStyle: runtime_error
 
 [source,ruby]
@@ -2867,6 +3076,7 @@ class C < RuntimeError; end
 C = Class.new(RuntimeError)
 ----
 
+[#configurable-attributes-lintinheritexception]
 === Configurable attributes
 
 |===
@@ -2877,6 +3087,7 @@ C = Class.new(RuntimeError)
 | `standard_error`, `runtime_error`
 |===
 
+[#lintinterpolationcheck]
 == Lint/InterpolationCheck
 
 |===
@@ -2891,6 +3102,7 @@ C = Class.new(RuntimeError)
 
 Checks for interpolation in a single quoted string.
 
+[#safety-lintinterpolationcheck]
 === Safety
 
 This cop's autocorrection is unsafe because although it always replaces single quotes as
@@ -2898,6 +3110,7 @@ if it were miswritten double quotes, it is not always the case. For example,
 `'#{foo} bar'` would be replaced by `"#{foo} bar"`, so the replaced code would evaluate
 the expression `foo`.
 
+[#examples-lintinterpolationcheck]
 === Examples
 
 [source,ruby]
@@ -2909,6 +3122,7 @@ foo = 'something with #{interpolation} inside'
 foo = "something with #{interpolation} inside"
 ----
 
+[#lintitwithoutargumentsinblock]
 == Lint/ItWithoutArgumentsInBlock
 
 |===
@@ -2933,6 +3147,7 @@ use it() or self.it
 `it` calls without arguments will refer to the first block param in Ruby 3.4.
 So use `it()` or `self.it` to ensure compatibility.
 
+[#examples-lintitwithoutargumentsinblock]
 === Examples
 
 [source,ruby]
@@ -2945,10 +3160,12 @@ do_something { it() }
 do_something { self.it }
 ----
 
+[#references-lintitwithoutargumentsinblock]
 === References
 
 * https://bugs.ruby-lang.org/issues/18980
 
+[#lintlambdawithoutliteralblock]
 == Lint/LambdaWithoutLiteralBlock
 
 |===
@@ -2972,6 +3189,7 @@ It emulates the following warning in Ruby 3.0:
 This way, proc object is never converted to lambda.
 Autocorrection replaces with compatible proc argument.
 
+[#examples-lintlambdawithoutliteralblock]
 === Examples
 
 [source,ruby]
@@ -2986,6 +3204,7 @@ Proc.new { do_something }
 lambda { do_something } # If you use lambda.
 ----
 
+[#lintliteralascondition]
 == Lint/LiteralAsCondition
 
 |===
@@ -3005,6 +3224,7 @@ if/while/until/case-when/case-in.
 NOTE: Literals in `case-in` condition where the match variable is used in
 `in` are accepted as a pattern matching.
 
+[#examples-lintliteralascondition]
 === Examples
 
 [source,ruby]
@@ -3031,6 +3251,7 @@ while true
 end
 ----
 
+[#lintliteralassignmentincondition]
 == Lint/LiteralAssignmentInCondition
 
 |===
@@ -3055,6 +3276,7 @@ $ ruby -we 'if x = true; end'
 As a lint cop, it cannot be determined if `==` is appropriate as intended,
 therefore this cop does not provide autocorrection.
 
+[#examples-lintliteralassignmentincondition]
 === Examples
 
 [source,ruby]
@@ -3075,6 +3297,7 @@ if x = y
 end
 ----
 
+[#lintliteralininterpolation]
 == Lint/LiteralInInterpolation
 
 |===
@@ -3089,6 +3312,7 @@ end
 
 Checks for interpolated literals.
 
+[#examples-lintliteralininterpolation]
 === Examples
 
 [source,ruby]
@@ -3100,6 +3324,7 @@ Checks for interpolated literals.
 "result is 10"
 ----
 
+[#lintloop]
 == Lint/Loop
 
 |===
@@ -3114,12 +3339,14 @@ Checks for interpolated literals.
 
 Checks for uses of `begin...end while/until something`.
 
+[#safety-lintloop]
 === Safety
 
 The cop is unsafe because behavior can change in some cases, including
 if a local variable inside the loop body is accessed outside of it, or if the
 loop body raises a `StopIteration` exception (which `Kernel#loop` rescues).
 
+[#examples-lintloop]
 === Examples
 
 [source,ruby]
@@ -3155,10 +3382,12 @@ loop do
 end
 ----
 
+[#references-lintloop]
 === References
 
 * https://rubystyle.guide#loop-with-break
 
+[#lintmissingcopenabledirective]
 == Lint/MissingCopEnableDirective
 
 |===
@@ -3176,6 +3405,7 @@ after a `# rubocop:disable ...` statement. This will prevent leaving
 cop disables on wide ranges of code, that latter contributors to
 a file wouldn't be aware of.
 
+[#examples-lintmissingcopenabledirective]
 === Examples
 
 [source,ruby]
@@ -3215,6 +3445,7 @@ x += 1
 # rubocop:enable Layout/SpaceAroundOperators
 ----
 
+[#configurable-attributes-lintmissingcopenabledirective]
 === Configurable attributes
 
 |===
@@ -3225,6 +3456,7 @@ x += 1
 | Float
 |===
 
+[#lintmissingsuper]
 == Lint/MissingSuper
 
 |===
@@ -3255,6 +3487,7 @@ not meant to be called with `super`. In those cases, you can use the
 `AllowedParentClasses` option to specify which classes should be allowed
 *in addition to* `Object` and `BasicObject`.
 
+[#examples-lintmissingsuper]
 === Examples
 
 [source,ruby]
@@ -3312,6 +3545,7 @@ class ClassWithNoParent
 end
 ----
 
+[#allowedparentclasses_-_myabstractclass_-lintmissingsuper]
 ==== AllowedParentClasses: [MyAbstractClass]
 
 [source,ruby]
@@ -3324,6 +3558,7 @@ class MyConcreteClass < MyAbstractClass
 end
 ----
 
+[#configurable-attributes-lintmissingsuper]
 === Configurable attributes
 
 |===
@@ -3334,6 +3569,7 @@ end
 | Array
 |===
 
+[#lintmixedcaserange]
 == Lint/MixedCaseRange
 
 |===
@@ -3353,6 +3589,7 @@ as well as range objects like `('A'..'z')`.
 
 NOTE: Range objects cannot be autocorrected.
 
+[#safety-lintmixedcaserange]
 === Safety
 
 The cop autocorrects regexp character classes
@@ -3362,6 +3599,7 @@ but it changes the regexp to no longer match symbols it used to include.
 For this reason, this cop's autocorrect is unsafe (it will
 change the behavior of the code).
 
+[#examples-lintmixedcaserange]
 === Examples
 
 [source,ruby]
@@ -3373,6 +3611,7 @@ r = /[A-z]/
 r = /[A-Za-z]/
 ----
 
+[#lintmixedregexpcapturetypes]
 == Lint/MixedRegexpCaptureTypes
 
 |===
@@ -3390,6 +3629,7 @@ because numbered capture is ignored if they're mixed.
 Replace numbered captures with non-capturing groupings or
 named captures.
 
+[#examples-lintmixedregexpcapturetypes]
 === Examples
 
 [source,ruby]
@@ -3407,6 +3647,7 @@ named captures.
 /(FOO)(BAR)/
 ----
 
+[#lintmultiplecomparison]
 == Lint/MultipleComparison
 
 |===
@@ -3424,6 +3665,7 @@ multiple value. However, we can't use the comparison in Ruby. However,
 the comparison is not syntax error. This cop checks the bad usage of
 comparison operators.
 
+[#examples-lintmultiplecomparison]
 === Examples
 
 [source,ruby]
@@ -3437,6 +3679,7 @@ x < y && y < z
 10 <= x && x <= 20
 ----
 
+[#lintnestedmethoddefinition]
 == Lint/NestedMethodDefinition
 
 |===
@@ -3451,6 +3694,7 @@ x < y && y < z
 
 Checks for nested method definitions.
 
+[#examples-lintnestedmethoddefinition]
 === Examples
 
 [source,ruby]
@@ -3501,6 +3745,7 @@ def foo
 end
 ----
 
+[#allowedmethods_-__-_default_-lintnestedmethoddefinition]
 ==== AllowedMethods: [] (default)
 
 [source,ruby]
@@ -3514,6 +3759,7 @@ def do_something
 end
 ----
 
+[#allowedmethods_-__has_many__-lintnestedmethoddefinition]
 ==== AllowedMethods: ['has_many']
 
 [source,ruby]
@@ -3527,6 +3773,7 @@ def do_something
 end
 ----
 
+[#allowedpatterns_-__-_default_-lintnestedmethoddefinition]
 ==== AllowedPatterns: [] (default)
 
 [source,ruby]
@@ -3540,6 +3787,7 @@ def foo(obj)
 end
 ----
 
+[#allowedpatterns_-__baz__-lintnestedmethoddefinition]
 ==== AllowedPatterns: ['baz']
 
 [source,ruby]
@@ -3553,6 +3801,7 @@ def foo(obj)
 end
 ----
 
+[#configurable-attributes-lintnestedmethoddefinition]
 === Configurable attributes
 
 |===
@@ -3567,10 +3816,12 @@ end
 | Array
 |===
 
+[#references-lintnestedmethoddefinition]
 === References
 
 * https://rubystyle.guide#no-nested-methods
 
+[#lintnestedpercentliteral]
 == Lint/NestedPercentLiteral
 
 |===
@@ -3585,6 +3836,7 @@ end
 
 Checks for nested percent literals.
 
+[#examples-lintnestedpercentliteral]
 === Examples
 
 [source,ruby]
@@ -3612,6 +3864,7 @@ attributes = {
 }
 ----
 
+[#lintnextwithoutaccumulator]
 == Lint/NextWithoutAccumulator
 
 |===
@@ -3626,6 +3879,7 @@ attributes = {
 
 Don't omit the accumulator when calling `next` in a `reduce` block.
 
+[#examples-lintnextwithoutaccumulator]
 === Examples
 
 [source,ruby]
@@ -3643,6 +3897,7 @@ result = (1..4).reduce(0) do |acc, i|
 end
 ----
 
+[#lintnoreturninbeginendblocks]
 == Lint/NoReturnInBeginEndBlocks
 
 |===
@@ -3660,6 +3915,7 @@ in assignment contexts.
 In this situation, the `return` will result in an exit from the current
 method, possibly leading to unexpected behavior.
 
+[#examples-lintnoreturninbeginendblocks]
 === Examples
 
 [source,ruby]
@@ -3690,6 +3946,7 @@ some_variable = if some_condition_is_met
                 end
 ----
 
+[#lintnonatomicfileoperation]
 == Lint/NonAtomicFileOperation
 
 |===
@@ -3718,12 +3975,14 @@ Subsequent processes are executed without the directory that should be there
 when the directory existed at the time of `exist?`,
 but someone else deleted it shortly afterwards.
 
+[#safety-lintnonatomicfileoperation]
 === Safety
 
 This cop is unsafe, because autocorrection change to atomic processing.
 The atomic processing of the replacement destination is not guaranteed
 to be strictly equivalent to that before the replacement.
 
+[#examples-lintnonatomicfileoperation]
 === Examples
 
 [source,ruby]
@@ -3745,10 +4004,12 @@ end
 FileUtils.rm_f(path)
 ----
 
+[#references-lintnonatomicfileoperation]
 === References
 
 * https://rubystyle.guide#atomic-file-operations
 
+[#lintnondeterministicrequireorder]
 == Lint/NonDeterministicRequireOrder
 
 |===
@@ -3774,11 +4035,13 @@ So all bad cases are acceptable when Ruby 3.0 or higher are used.
 
 NOTE: This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
 
+[#safety-lintnondeterministicrequireorder]
 === Safety
 
 This cop is unsafe in the case where sorting files changes existing
 expected behavior.
 
+[#examples-lintnondeterministicrequireorder]
 === Examples
 
 [source,ruby]
@@ -3819,6 +4082,7 @@ Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
 Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), sort: false).each(&method(:require))
 ----
 
+[#lintnonlocalexitfromiterator]
 == Lint/NonLocalExitFromIterator
 
 |===
@@ -3842,6 +4106,7 @@ or `define_singleton_method`,
 * the return is not contained in an inner scope, e.g. a lambda or a
 method definition.
 
+[#examples-lintnonlocalexitfromiterator]
 === Examples
 
 [source,ruby]
@@ -3869,6 +4134,7 @@ class ItemApi
 end
 ----
 
+[#lintnumberconversion]
 == Lint/NumberConversion
 
 |===
@@ -3897,12 +4163,14 @@ cop by default). Similarly, Rails' duration methods do not work well
 with `Integer()` and can be allowed with `AllowedMethods`. By default,
 there are no methods to allowed.
 
+[#safety-lintnumberconversion]
 === Safety
 
 Autocorrection is unsafe because it is not guaranteed that the
 replacement `Kernel` methods are able to properly handle the
 input if it is not a standard class.
 
+[#examples-lintnumberconversion]
 === Examples
 
 [source,ruby]
@@ -3928,6 +4196,7 @@ foo.try { |i| Float(i) }
 bar.send { |i| Complex(i) }
 ----
 
+[#allowedmethods_-__-_default_-lintnumberconversion]
 ==== AllowedMethods: [] (default)
 
 [source,ruby]
@@ -3936,6 +4205,7 @@ bar.send { |i| Complex(i) }
 10.minutes.to_i
 ----
 
+[#allowedmethods_-_minutes_-lintnumberconversion]
 ==== AllowedMethods: [minutes]
 
 [source,ruby]
@@ -3944,6 +4214,7 @@ bar.send { |i| Complex(i) }
 10.minutes.to_i
 ----
 
+[#allowedpatterns_-__-_default_-lintnumberconversion]
 ==== AllowedPatterns: [] (default)
 
 [source,ruby]
@@ -3952,6 +4223,7 @@ bar.send { |i| Complex(i) }
 10.minutes.to_i
 ----
 
+[#allowedpatterns_-__min___-lintnumberconversion]
 ==== AllowedPatterns: ['min*']
 
 [source,ruby]
@@ -3960,6 +4232,7 @@ bar.send { |i| Complex(i) }
 10.minutes.to_i
 ----
 
+[#ignoredclasses_-_time_-datetime_-_default_-lintnumberconversion]
 ==== IgnoredClasses: [Time, DateTime] (default)
 
 [source,ruby]
@@ -3968,6 +4241,7 @@ bar.send { |i| Complex(i) }
 Time.now.to_datetime.to_i
 ----
 
+[#configurable-attributes-lintnumberconversion]
 === Configurable attributes
 
 |===
@@ -3986,6 +4260,7 @@ Time.now.to_datetime.to_i
 | Array
 |===
 
+[#lintnumberedparameterassignment]
 == Lint/NumberedParameterAssignment
 
 |===
@@ -4014,6 +4289,7 @@ Assigning to a numbered parameter (from `_1` to `_9`) causes an error in Ruby 3.
 NOTE: The parametered parameters are from `_1` to `_9`. This cop checks `_0`, and over `_10`
 as well to prevent confusion.
 
+[#examples-lintnumberedparameterassignment]
 === Examples
 
 [source,ruby]
@@ -4025,6 +4301,7 @@ _1 = :value
 non_numbered_parameter_name = :value
 ----
 
+[#lintorassignmenttoconstant]
 == Lint/OrAssignmentToConstant
 
 |===
@@ -4043,11 +4320,13 @@ Constants should always be assigned in the same location. And its value
 should always be the same. If constants are assigned in multiple
 locations, the result may vary depending on the order of `require`.
 
+[#safety-lintorassignmenttoconstant]
 === Safety
 
 This cop is unsafe because code that is already conditionally
 assigning a constant may have its behavior changed by autocorrection.
 
+[#examples-lintorassignmenttoconstant]
 === Examples
 
 [source,ruby]
@@ -4059,6 +4338,7 @@ CONST ||= 1
 CONST = 1
 ----
 
+[#lintorderedmagiccomments]
 == Lint/OrderedMagicComments
 
 |===
@@ -4074,10 +4354,12 @@ CONST = 1
 Checks the proper ordering of magic comments and whether
 a magic comment is not placed before a shebang.
 
+[#safety-lintorderedmagiccomments]
 === Safety
 
 This cop's autocorrection is unsafe because file encoding may change.
 
+[#examples-lintorderedmagiccomments]
 === Examples
 
 [source,ruby]
@@ -4102,6 +4384,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 ----
 
+[#lintoutofrangeregexpref]
 == Lint/OutOfRangeRegexpRef
 
 |===
@@ -4117,6 +4400,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 Looks for references of Regexp captures that are out of range
 and thus always returns nil.
 
+[#safety-lintoutofrangeregexpref]
 === Safety
 
 This cop is unsafe because it is naive in how it determines what
@@ -4135,6 +4419,7 @@ do_something if $2
 This might be a good indication of code that should be refactored,
 however.
 
+[#examples-lintoutofrangeregexpref]
 === Examples
 
 [source,ruby]
@@ -4150,6 +4435,7 @@ puts $2 # => nil
 puts $1 # => foo
 ----
 
+[#lintparenthesesasgroupedexpression]
 == Lint/ParenthesesAsGroupedExpression
 
 |===
@@ -4165,6 +4451,7 @@ puts $1 # => foo
 Checks for space between the name of a called method and a left
 parenthesis.
 
+[#examples-lintparenthesesasgroupedexpression]
 === Examples
 
 [source,ruby]
@@ -4178,10 +4465,12 @@ do_something (2 + 3) * 4
 do_something (foo * bar).baz
 ----
 
+[#references-lintparenthesesasgroupedexpression]
 === References
 
 * https://rubystyle.guide#parens-no-spaces
 
+[#lintpercentstringarray]
 == Lint/PercentStringArray
 
 |===
@@ -4200,6 +4489,7 @@ It is more likely that the additional characters are unintended (for
 example, mistranslating an array of literals to percent string notation)
 rather than meant to be part of the resulting strings.
 
+[#safety-lintpercentstringarray]
 === Safety
 
 The cop is unsafe because the correction changes the values in the array
@@ -4211,6 +4501,7 @@ and that might have been done purposely.
 %w(foo bar)      #=> ['foo', 'bar']
 ----
 
+[#examples-lintpercentstringarray]
 === Examples
 
 [source,ruby]
@@ -4222,6 +4513,7 @@ and that might have been done purposely.
 %w(foo bar)
 ----
 
+[#lintpercentsymbolarray]
 == Lint/PercentSymbolArray
 
 |===
@@ -4240,6 +4532,7 @@ It is more likely that the additional characters are unintended (for
 example, mistranslating an array of literals to percent string notation)
 rather than meant to be part of the resulting symbols.
 
+[#examples-lintpercentsymbolarray]
 === Examples
 
 [source,ruby]
@@ -4251,6 +4544,7 @@ rather than meant to be part of the resulting symbols.
 %i(foo bar)
 ----
 
+[#lintraiseexception]
 == Lint/RaiseException
 
 |===
@@ -4273,11 +4567,13 @@ prevent the false positive by specifying a namespace to be omitted for
 `Exception`. Alternatively, make `Exception` a fully qualified class
 name with an explicit namespace.
 
+[#safety-lintraiseexception]
 === Safety
 
 This cop is unsafe because it will change the exception class being
 raised, which is a change in behavior.
 
+[#examples-lintraiseexception]
 === Examples
 
 [source,ruby]
@@ -4289,6 +4585,7 @@ raise Exception, 'Error message here'
 raise StandardError, 'Error message here'
 ----
 
+[#allowedimplicitnamespaces_-__gem__-lintraiseexception]
 ==== AllowedImplicitNamespaces: ['Gem']
 
 [source,ruby]
@@ -4301,6 +4598,7 @@ module Gem
 end
 ----
 
+[#configurable-attributes-lintraiseexception]
 === Configurable attributes
 
 |===
@@ -4311,10 +4609,12 @@ end
 | Array
 |===
 
+[#references-lintraiseexception]
 === References
 
 * https://rubystyle.guide#raise-exception
 
+[#lintrandone]
 == Lint/RandOne
 
 |===
@@ -4330,6 +4630,7 @@ end
 Checks for `rand(1)` calls.
 Such calls always return `0`.
 
+[#examples-lintrandone]
 === Examples
 
 [source,ruby]
@@ -4344,6 +4645,7 @@ rand(-1.0)
 0 # just use 0 instead
 ----
 
+[#lintredundantcopdisabledirective]
 == Lint/RedundantCopDisableDirective
 
 |===
@@ -4366,6 +4668,7 @@ their work. Instead, it waits until it's called in a later stage of the
 execution. The reason it can't be implemented as a normal cop is that
 it depends on the results of all other cops to do its work.
 
+[#examples-lintredundantcopdisabledirective]
 === Examples
 
 [source,ruby]
@@ -4379,6 +4682,7 @@ x += 1
 x += 1
 ----
 
+[#lintredundantcopenabledirective]
 == Lint/RedundantCopEnableDirective
 
 |===
@@ -4397,6 +4701,7 @@ removed.
 When comment enables all cops at once `rubocop:enable all`
 that cop checks whether any cop was actually enabled.
 
+[#examples-lintredundantcopenabledirective]
 === Examples
 
 [source,ruby]
@@ -4422,6 +4727,7 @@ foo = "1"
 baz
 ----
 
+[#lintredundantdirglobsort]
 == Lint/RedundantDirGlobSort
 
 NOTE: Required Ruby version: 3.0
@@ -4439,12 +4745,14 @@ NOTE: Required Ruby version: 3.0
 Sort globbed results by default in Ruby 3.0.
 This cop checks for redundant `sort` method to `Dir.glob` and `Dir[]`.
 
+[#safety-lintredundantdirglobsort]
 === Safety
 
 This cop is unsafe, in case of having a file and a directory with
 identical names, since directory will be loaded before the file, which
 will break `exe/files.rb` that rely on `exe.rb` file.
 
+[#examples-lintredundantdirglobsort]
 === Examples
 
 [source,ruby]
@@ -4464,6 +4772,7 @@ Dir['./lib/**/*.rb'].each do |file|
 end
 ----
 
+[#lintredundantregexpquantifiers]
 == Lint/RedundantRegexpQuantifiers
 
 |===
@@ -4486,6 +4795,7 @@ because it's unknown what kind of string will be expanded as a result:
 /(?:a*#{interpolation})?/x
 ----
 
+[#examples-lintredundantregexpquantifiers]
 === Examples
 
 [source,ruby]
@@ -4509,6 +4819,7 @@ because it's unknown what kind of string will be expanded as a result:
 /(?:x*)/
 ----
 
+[#lintredundantrequirestatement]
 == Lint/RedundantRequireStatement
 
 |===
@@ -4542,11 +4853,13 @@ Below are the features that each `TargetRubyVersion` targets.
 
 This cop target those features.
 
+[#safety-lintredundantrequirestatement]
 === Safety
 
 This cop's autocorrection is unsafe because if `require 'pp'` is removed from one file,
 `NameError` can be encountered when another file uses `PP.pp`.
 
+[#examples-lintredundantrequirestatement]
 === Examples
 
 [source,ruby]
@@ -4559,6 +4872,7 @@ require 'thread'
 require 'unloaded_feature'
 ----
 
+[#lintredundantsafenavigation]
 == Lint/RedundantSafeNavigation
 
 |===
@@ -4588,12 +4902,14 @@ for which to suppress (allow) this cop's check.
 In the example below, the safe navigation operator (`&.`) is unnecessary
 because `NilClass` has methods like `respond_to?` and `is_a?`.
 
+[#safety-lintredundantsafenavigation]
 === Safety
 
 This cop is unsafe, because autocorrection can change the return type of
 the expression. An offending expression that previously could return `nil`
 will be autocorrected to never return `nil`.
 
+[#examples-lintredundantsafenavigation]
 === Examples
 
 [source,ruby]
@@ -4640,6 +4956,7 @@ foo.to_f
 foo.to_s
 ----
 
+[#allowedmethods_-_nil_safe_method_-lintredundantsafenavigation]
 ==== AllowedMethods: [nil_safe_method]
 
 [source,ruby]
@@ -4652,6 +4969,7 @@ do_something if attrs.nil_safe_method(:[])
 do_something if attrs&.not_nil_safe_method(:[])
 ----
 
+[#configurable-attributes-lintredundantsafenavigation]
 === Configurable attributes
 
 |===
@@ -4662,6 +4980,7 @@ do_something if attrs&.not_nil_safe_method(:[])
 | Array
 |===
 
+[#lintredundantsplatexpansion]
 == Lint/RedundantSplatExpansion
 
 |===
@@ -4676,6 +4995,7 @@ do_something if attrs&.not_nil_safe_method(:[])
 
 Checks for unneeded usages of splat expansion.
 
+[#examples-lintredundantsplatexpansion]
 === Examples
 
 [source,ruby]
@@ -4732,6 +5052,7 @@ else
 end
 ----
 
+[#allowpercentliteralarrayargument_-true-_default_-lintredundantsplatexpansion]
 ==== AllowPercentLiteralArrayArgument: true (default)
 
 [source,ruby]
@@ -4740,6 +5061,7 @@ end
 do_something(*%w[foo bar baz])
 ----
 
+[#allowpercentliteralarrayargument_-false-lintredundantsplatexpansion]
 ==== AllowPercentLiteralArrayArgument: false
 
 [source,ruby]
@@ -4748,6 +5070,7 @@ do_something(*%w[foo bar baz])
 do_something(*%w[foo bar baz])
 ----
 
+[#configurable-attributes-lintredundantsplatexpansion]
 === Configurable attributes
 
 |===
@@ -4758,6 +5081,7 @@ do_something(*%w[foo bar baz])
 | Boolean
 |===
 
+[#lintredundantstringcoercion]
 == Lint/RedundantStringCoercion
 
 |===
@@ -4773,6 +5097,7 @@ do_something(*%w[foo bar baz])
 Checks for string conversion in string interpolation, `print`, `puts`, and `warn` arguments,
 which is redundant.
 
+[#examples-lintredundantstringcoercion]
 === Examples
 
 [source,ruby]
@@ -4790,10 +5115,12 @@ puts something
 warn something
 ----
 
+[#references-lintredundantstringcoercion]
 === References
 
 * https://rubystyle.guide#no-to-s
 
+[#lintredundantwithindex]
 == Lint/RedundantWithIndex
 
 |===
@@ -4808,6 +5135,7 @@ warn something
 
 Checks for redundant `with_index`.
 
+[#examples-lintredundantwithindex]
 === Examples
 
 [source,ruby]
@@ -4833,6 +5161,7 @@ ary.each do |v|
 end
 ----
 
+[#lintredundantwithobject]
 == Lint/RedundantWithObject
 
 |===
@@ -4847,6 +5176,7 @@ end
 
 Checks for redundant `with_object`.
 
+[#examples-lintredundantwithobject]
 === Examples
 
 [source,ruby]
@@ -4872,6 +5202,7 @@ ary.each do |v|
 end
 ----
 
+[#lintrefinementimportmethods]
 == Lint/RefinementImportMethods
 
 NOTE: Required Ruby version: 3.1
@@ -4891,6 +5222,7 @@ These methods are deprecated and should be replaced with `Refinement#import_meth
 
 It emulates deprecation warnings in Ruby 3.1.
 
+[#safety-lintrefinementimportmethods]
 === Safety
 
 This cop's autocorrection is unsafe because `include M` will affect the included class
@@ -4898,6 +5230,7 @@ if any changes are made to module `M`.
 On the other hand, `import_methods M` uses a snapshot of method definitions,
 thus it will not be affected if module `M` changes.
 
+[#examples-lintrefinementimportmethods]
 === Examples
 
 [source,ruby]
@@ -4918,6 +5251,7 @@ refine Foo do
 end
 ----
 
+[#lintregexpascondition]
 == Lint/RegexpAsCondition
 
 |===
@@ -4933,6 +5267,7 @@ end
 Checks for regexp literals used as `match-current-line`.
 If a regexp literal is in condition, the regexp matches `$_` implicitly.
 
+[#examples-lintregexpascondition]
 === Examples
 
 [source,ruby]
@@ -4948,6 +5283,7 @@ if /foo/ =~ $_
 end
 ----
 
+[#lintrequireparentheses]
 == Lint/RequireParentheses
 
 |===
@@ -4969,6 +5305,7 @@ The idea behind warning for these constructs is that the user might
 be under the impression that the return value from the method call is
 an operand of &&/||.
 
+[#examples-lintrequireparentheses]
 === Examples
 
 [source,ruby]
@@ -4984,6 +5321,7 @@ if day.is?(:tuesday) && month == :jan
 end
 ----
 
+[#lintrequirerangeparentheses]
 == Lint/RequireRangeParentheses
 
 |===
@@ -5010,6 +5348,7 @@ when 42..
 end
 ----
 
+[#examples-lintrequirerangeparentheses]
 === Examples
 
 [source,ruby]
@@ -5033,6 +5372,7 @@ end
 42)
 ----
 
+[#lintrequirerelativeselfpath]
 == Lint/RequireRelativeSelfPath
 
 |===
@@ -5047,6 +5387,7 @@ end
 
 Checks for uses a file requiring itself with `require_relative`.
 
+[#examples-lintrequirerelativeselfpath]
 === Examples
 
 [source,ruby]
@@ -5063,6 +5404,7 @@ require_relative 'bar'
 require_relative 'bar'
 ----
 
+[#lintrescueexception]
 == Lint/RescueException
 
 |===
@@ -5077,6 +5419,7 @@ require_relative 'bar'
 
 Checks for `rescue` blocks targeting the Exception class.
 
+[#examples-lintrescueexception]
 === Examples
 
 [source,ruby]
@@ -5096,10 +5439,12 @@ rescue ArgumentError
 end
 ----
 
+[#references-lintrescueexception]
 === References
 
 * https://rubystyle.guide#no-blind-rescues
 
+[#lintrescuetype]
 == Lint/RescueType
 
 |===
@@ -5115,6 +5460,7 @@ end
 Check for arguments to `rescue` that will result in a `TypeError`
 if an exception is raised.
 
+[#examples-lintrescuetype]
 === Examples
 
 [source,ruby]
@@ -5148,6 +5494,7 @@ rescue NameError
 end
 ----
 
+[#lintreturninvoidcontext]
 == Lint/ReturnInVoidContext
 
 |===
@@ -5163,6 +5510,7 @@ end
 Checks for the use of a return with a value in a context
 where the value will be ignored. (initialize and setter methods)
 
+[#examples-lintreturninvoidcontext]
 === Examples
 
 [source,ruby]
@@ -5190,6 +5538,7 @@ def foo=(bar)
 end
 ----
 
+[#lintsafenavigationchain]
 == Lint/SafeNavigationChain
 
 NOTE: Required Ruby version: 2.3
@@ -5210,6 +5559,7 @@ navigation operator, it raises NoMethodError. We should use a
 safe navigation operator after a safe navigation operator.
 This cop checks for the problem outlined above.
 
+[#examples-lintsafenavigationchain]
 === Examples
 
 [source,ruby]
@@ -5224,6 +5574,7 @@ x&.foo&.bar
 x&.foo || bar
 ----
 
+[#configurable-attributes-lintsafenavigationchain]
 === Configurable attributes
 
 |===
@@ -5234,6 +5585,7 @@ x&.foo || bar
 | Array
 |===
 
+[#lintsafenavigationconsistency]
 == Lint/SafeNavigationConsistency
 
 |===
@@ -5246,33 +5598,47 @@ x&.foo || bar
 | 0.77
 |===
 
-Check to make sure that if safe navigation is used for a method
-call in an `&&` or `||` condition that safe navigation is used for all
-method calls on that same object.
+Check to make sure that if safe navigation is used in an `&&` or `||` condition,
+consistent and appropriate safe navigation, without excess or deficiency,
+is used for all method calls on the same object.
 
+[#examples-lintsafenavigationconsistency]
 === Examples
 
 [source,ruby]
 ----
 # bad
+foo&.bar && foo&.baz
+
+# good
 foo&.bar && foo.baz
 
 # bad
-foo.bar || foo&.baz
-
-# bad
-foo&.bar && (foobar.baz || foo.baz)
+foo.bar && foo&.baz
 
 # good
 foo.bar && foo.baz
 
+# bad
+foo&.bar || foo.baz
+
 # good
 foo&.bar || foo&.baz
 
+# bad
+foo.bar || foo&.baz
+
 # good
+foo.bar || foo.baz
+
+# bad
 foo&.bar && (foobar.baz || foo&.baz)
+
+# good
+foo&.bar && (foobar.baz || foo.baz)
 ----
 
+[#configurable-attributes-lintsafenavigationconsistency]
 === Configurable attributes
 
 |===
@@ -5283,6 +5649,7 @@ foo&.bar && (foobar.baz || foo&.baz)
 | Array
 |===
 
+[#lintsafenavigationwithempty]
 == Lint/SafeNavigationWithEmpty
 
 |===
@@ -5302,6 +5669,7 @@ While the safe navigation operator is generally a good idea, when
 checking `foo&.empty?` in a conditional, `foo` being `nil` will actually
 do the opposite of what the author intends.
 
+[#examples-lintsafenavigationwithempty]
 === Examples
 
 [source,ruby]
@@ -5315,6 +5683,7 @@ return if foo && foo.empty?
 return unless foo && foo.empty?
 ----
 
+[#lintscriptpermission]
 == Lint/ScriptPermission
 
 |===
@@ -5330,6 +5699,7 @@ return unless foo && foo.empty?
 Checks if a file which has a shebang line as
 its first line is granted execute permission.
 
+[#examples-lintscriptpermission]
 === Examples
 
 [source,ruby]
@@ -5358,6 +5728,7 @@ puts 'hello, world'
 puts 'hello, world'
 ----
 
+[#lintselfassignment]
 == Lint/SelfAssignment
 
 |===
@@ -5372,6 +5743,7 @@ puts 'hello, world'
 
 Checks for self-assignments.
 
+[#examples-lintselfassignment]
 === Examples
 
 [source,ruby]
@@ -5394,6 +5766,7 @@ obj.attr = obj.attr2
 hash[foo] = hash[foo]
 ----
 
+[#lintsendwithmixinargument]
 == Lint/SendWithMixinArgument
 
 |===
@@ -5415,6 +5788,7 @@ higher style that can be called by public methods.
 And `extend` method that was originally a public method is also targeted
 for style unification.
 
+[#examples-lintsendwithmixinargument]
 === Examples
 
 [source,ruby]
@@ -5440,6 +5814,7 @@ Foo.prepend Bar
 Foo.extend Bar
 ----
 
+[#lintshadowedargument]
 == Lint/ShadowedArgument
 
 |===
@@ -5458,6 +5833,7 @@ This cop has `IgnoreImplicitReferences` configuration option.
 It means argument shadowing is used in order to pass parameters
 to zero arity `super` when `IgnoreImplicitReferences` is `true`.
 
+[#examples-lintshadowedargument]
 === Examples
 
 [source,ruby]
@@ -5489,6 +5865,7 @@ def do_something(foo)
 end
 ----
 
+[#ignoreimplicitreferences_-false-_default_-lintshadowedargument]
 ==== IgnoreImplicitReferences: false (default)
 
 [source,ruby]
@@ -5505,6 +5882,7 @@ def do_something(foo)
 end
 ----
 
+[#ignoreimplicitreferences_-true-lintshadowedargument]
 ==== IgnoreImplicitReferences: true
 
 [source,ruby]
@@ -5521,6 +5899,7 @@ def do_something(foo)
 end
 ----
 
+[#configurable-attributes-lintshadowedargument]
 === Configurable attributes
 
 |===
@@ -5531,6 +5910,7 @@ end
 | Boolean
 |===
 
+[#lintshadowedexception]
 == Lint/ShadowedException
 
 |===
@@ -5555,6 +5935,7 @@ exception. (ie. `rescue Exception, StandardError` has the same behavior
 whether `StandardError` is included or not, because all ``StandardError``s
 are rescued by `rescue Exception`).
 
+[#examples-lintshadowedexception]
 === Examples
 
 [source,ruby]
@@ -5601,6 +5982,7 @@ rescue Errno::EAGAIN, Errno::EWOULDBLOCK
 end
 ----
 
+[#lintshadowingouterlocalvariable]
 == Lint/ShadowingOuterLocalVariable
 
 |===
@@ -5629,6 +6011,7 @@ Ractor.new(worker_id, pipe) do |worker_id, pipe|
 end
 ----
 
+[#examples-lintshadowingouterlocalvariable]
 === Examples
 
 [source,ruby]
@@ -5652,6 +6035,7 @@ def some_method
 end
 ----
 
+[#lintstructnewoverride]
 == Lint/StructNewOverride
 
 |===
@@ -5667,6 +6051,7 @@ end
 Checks unexpected overrides of the `Struct` built-in methods
 via `Struct.new`.
 
+[#examples-lintstructnewoverride]
 === Examples
 
 [source,ruby]
@@ -5686,6 +6071,7 @@ g.clone #=> #<struct Good id=1, name="foo">
 g.count #=> 2
 ----
 
+[#lintsuppressedexception]
 == Lint/SuppressedException
 
 |===
@@ -5700,6 +6086,7 @@ g.count #=> 2
 
 Checks for `rescue` blocks with no body.
 
+[#examples-lintsuppressedexception]
 === Examples
 
 [source,ruby]
@@ -5731,6 +6118,7 @@ rescue
 end
 ----
 
+[#allowcomments_-true-_default_-lintsuppressedexception]
 ==== AllowComments: true (default)
 
 [source,ruby]
@@ -5750,6 +6138,7 @@ rescue
 end
 ----
 
+[#allowcomments_-false-lintsuppressedexception]
 ==== AllowComments: false
 
 [source,ruby]
@@ -5769,6 +6158,7 @@ rescue
 end
 ----
 
+[#allownil_-true-_default_-lintsuppressedexception]
 ==== AllowNil: true (default)
 
 [source,ruby]
@@ -5791,6 +6181,7 @@ end
 do_something rescue nil
 ----
 
+[#allownil_-false-lintsuppressedexception]
 ==== AllowNil: false
 
 [source,ruby]
@@ -5813,6 +6204,7 @@ end
 do_something rescue nil
 ----
 
+[#configurable-attributes-lintsuppressedexception]
 === Configurable attributes
 
 |===
@@ -5827,10 +6219,12 @@ do_something rescue nil
 | Boolean
 |===
 
+[#references-lintsuppressedexception]
 === References
 
 * https://rubystyle.guide#dont-hide-exceptions
 
+[#lintsymbolconversion]
 == Lint/SymbolConversion
 
 |===
@@ -5852,6 +6246,7 @@ There are two possible styles for this cop.
 every symbol key (ie. if any symbol key needs to be quoted it requires
 all keys to be quoted).
 
+[#examples-lintsymbolconversion]
 === Examples
 
 [source,ruby]
@@ -5873,6 +6268,7 @@ all keys to be quoted).
 :"string_#{interpolation}"
 ----
 
+[#enforcedstyle_-strict-_default_-lintsymbolconversion]
 ==== EnforcedStyle: strict (default)
 
 [source,ruby]
@@ -5892,6 +6288,7 @@ all keys to be quoted).
 }
 ----
 
+[#enforcedstyle_-consistent-lintsymbolconversion]
 ==== EnforcedStyle: consistent
 
 [source,ruby]
@@ -5915,6 +6312,7 @@ all keys to be quoted).
 }
 ----
 
+[#configurable-attributes-lintsymbolconversion]
 === Configurable attributes
 
 |===
@@ -5925,6 +6323,7 @@ all keys to be quoted).
 | `strict`, `consistent`
 |===
 
+[#lintsyntax]
 == Lint/Syntax
 
 |===
@@ -5940,6 +6339,7 @@ all keys to be quoted).
 Repacks Parser's diagnostics/errors
 into RuboCop's offenses.
 
+[#linttoenumarguments]
 == Lint/ToEnumArguments
 
 |===
@@ -5955,6 +6355,7 @@ into RuboCop's offenses.
 Ensures that `to_enum`/`enum_for`, called for the current method,
 has correct arguments.
 
+[#examples-linttoenumarguments]
 === Examples
 
 [source,ruby]
@@ -5977,6 +6378,7 @@ def foo(x, y = 1)
 end
 ----
 
+[#linttojson]
 == Lint/ToJSON
 
 |===
@@ -5994,6 +6396,7 @@ When overriding `#to_json`, callers may invoke JSON
 generation via `JSON.generate(your_obj)`.  Since `JSON#generate` allows
 for an optional argument, your method should too.
 
+[#examples-linttojson]
 === Examples
 
 [source,ruby]
@@ -6018,6 +6421,7 @@ class Point
 end
 ----
 
+[#linttoplevelreturnwithargument]
 == Lint/TopLevelReturnWithArgument
 
 |===
@@ -6034,6 +6438,7 @@ Checks for top level return with arguments. If there is a
 top-level return statement with an argument, then the argument is
 always ignored. This is detected automatically since Ruby 2.7.
 
+[#examples-linttoplevelreturnwithargument]
 === Examples
 
 [source,ruby]
@@ -6045,6 +6450,7 @@ return 1
 return
 ----
 
+[#configurable-attributes-linttoplevelreturnwithargument]
 === Configurable attributes
 
 |===
@@ -6055,6 +6461,7 @@ return
 | Array
 |===
 
+[#linttrailingcommainattributedeclaration]
 == Lint/TrailingCommaInAttributeDeclaration
 
 |===
@@ -6071,6 +6478,7 @@ Checks for trailing commas in attribute declarations, such as
 `#attr_reader`. Leaving a trailing comma will nullify the next method
 definition by overriding it with a getter method.
 
+[#examples-linttrailingcommainattributedeclaration]
 === Examples
 
 [source,ruby]
@@ -6094,6 +6502,7 @@ class Foo
 end
 ----
 
+[#linttriplequotes]
 == Lint/TripleQuotes
 
 |===
@@ -6119,6 +6528,7 @@ is still only the "actual" string within the delimiters.
 NOTE: Although this cop is called triple quotes, the same behavior is present
 for strings delimited by 5, 7, etc. quotation marks.
 
+[#examples-linttriplequotes]
 === Examples
 
 [source,ruby]
@@ -6147,6 +6557,7 @@ STRING
 'A string'
 ----
 
+[#lintunderscoreprefixedvariablename]
 == Lint/UnderscorePrefixedVariableName
 
 |===
@@ -6166,8 +6577,10 @@ Since block keyword arguments cannot be arbitrarily named at call
 sites, the `AllowKeywordBlockArguments` will allow use of underscore-
 prefixed block keyword arguments.
 
+[#examples-lintunderscoreprefixedvariablename]
 === Examples
 
+[#allowkeywordblockarguments_-false-_default_-lintunderscoreprefixedvariablename]
 ==== AllowKeywordBlockArguments: false (default)
 
 [source,ruby]
@@ -6193,6 +6606,7 @@ end
 end
 ----
 
+[#allowkeywordblockarguments_-true-lintunderscoreprefixedvariablename]
 ==== AllowKeywordBlockArguments: true
 
 [source,ruby]
@@ -6204,6 +6618,7 @@ query(:sales) do |_id:, revenue:, cost:|
 end
 ----
 
+[#configurable-attributes-lintunderscoreprefixedvariablename]
 === Configurable attributes
 
 |===
@@ -6214,6 +6629,7 @@ end
 | Boolean
 |===
 
+[#lintunexpectedblockarity]
 == Lint/UnexpectedBlockArity
 
 |===
@@ -6245,12 +6661,14 @@ Methods:
   reduce: 2
 ----
 
+[#safety-lintunexpectedblockarity]
 === Safety
 
 This cop matches for method names only and hence cannot tell apart
 methods with same name in different classes, which may lead to a
 false positive.
 
+[#examples-lintunexpectedblockarity]
 === Examples
 
 [source,ruby]
@@ -6266,6 +6684,7 @@ values.min { |a, b| a <=> b }
 values.sort { |*x| x[0] <=> x[1] }
 ----
 
+[#configurable-attributes-lintunexpectedblockarity]
 === Configurable attributes
 
 |===
@@ -6276,6 +6695,7 @@ values.sort { |*x| x[0] <=> x[1] }
 | 
 |===
 
+[#lintunifiedinteger]
 == Lint/UnifiedInteger
 
 |===
@@ -6290,6 +6710,7 @@ values.sort { |*x| x[0] <=> x[1] }
 
 Checks for using Fixnum or Bignum constant.
 
+[#examples-lintunifiedinteger]
 === Examples
 
 [source,ruby]
@@ -6302,6 +6723,7 @@ Checks for using Fixnum or Bignum constant.
 1.is_a?(Integer)
 ----
 
+[#lintunmodifiedreduceaccumulator]
 == Lint/UnmodifiedReduceAccumulator
 
 |===
@@ -6330,6 +6752,7 @@ returns in `reduce` blocks where the element is the only variable in
 the expression (since we will not be able to tell what other variables
 relate to via static analysis).
 
+[#examples-lintunmodifiedreduceaccumulator]
 === Examples
 
 [source,ruby]
@@ -6377,6 +6800,7 @@ enum.reduce do |acc, el|
 end
 ----
 
+[#lintunreachablecode]
 == Lint/UnreachableCode
 
 |===
@@ -6393,6 +6817,7 @@ Checks for unreachable code.
 The check are based on the presence of flow of control
 statement in non-final position in `begin` (implicit) blocks.
 
+[#examples-lintunreachablecode]
 === Examples
 
 [source,ruby]
@@ -6419,6 +6844,7 @@ def some_method
 end
 ----
 
+[#lintunreachableloop]
 == Lint/UnreachableLoop
 
 |===
@@ -6443,6 +6869,7 @@ NOTE: Block methods that are used with ``Enumerable``s are considered to be loop
 code that would otherwise be registered as an offense (eg. `times` used not in an
 `Enumerable` context).
 
+[#examples-lintunreachableloop]
 === Examples
 
 [source,ruby]
@@ -6511,6 +6938,7 @@ end
 2.times { raise ArgumentError }
 ----
 
+[#allowedpatterns_-___exactly_at_least_at_most____d_____times__-_default_-lintunreachableloop]
 ==== AllowedPatterns: ['(exactly|at_least|at_most)\(\d+\)\.times'] (default)
 
 [source,ruby]
@@ -6519,6 +6947,7 @@ end
 exactly(2).times { raise StandardError }
 ----
 
+[#configurable-attributes-lintunreachableloop]
 === Configurable attributes
 
 |===
@@ -6529,6 +6958,7 @@ exactly(2).times { raise StandardError }
 | Array
 |===
 
+[#lintunusedblockargument]
 == Lint/UnusedBlockArgument
 
 |===
@@ -6543,6 +6973,7 @@ exactly(2).times { raise StandardError }
 
 Checks for unused block arguments.
 
+[#examples-lintunusedblockargument]
 === Examples
 
 [source,ruby]
@@ -6574,6 +7005,7 @@ define_method(:foo) do |_bar|
 end
 ----
 
+[#ignoreemptyblocks_-true-_default_-lintunusedblockargument]
 ==== IgnoreEmptyBlocks: true (default)
 
 [source,ruby]
@@ -6582,6 +7014,7 @@ end
 do_something { |unused| }
 ----
 
+[#ignoreemptyblocks_-false-lintunusedblockargument]
 ==== IgnoreEmptyBlocks: false
 
 [source,ruby]
@@ -6590,6 +7023,7 @@ do_something { |unused| }
 do_something { |unused| }
 ----
 
+[#allowunusedkeywordarguments_-false-_default_-lintunusedblockargument]
 ==== AllowUnusedKeywordArguments: false (default)
 
 [source,ruby]
@@ -6600,6 +7034,7 @@ do_something do |unused: 42|
 end
 ----
 
+[#allowunusedkeywordarguments_-true-lintunusedblockargument]
 ==== AllowUnusedKeywordArguments: true
 
 [source,ruby]
@@ -6610,6 +7045,7 @@ do_something do |unused: 42|
 end
 ----
 
+[#configurable-attributes-lintunusedblockargument]
 === Configurable attributes
 
 |===
@@ -6624,10 +7060,12 @@ end
 | Boolean
 |===
 
+[#references-lintunusedblockargument]
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
 
+[#lintunusedmethodargument]
 == Lint/UnusedMethodArgument
 
 |===
@@ -6642,6 +7080,7 @@ end
 
 Checks for unused method arguments.
 
+[#examples-lintunusedmethodargument]
 === Examples
 
 [source,ruby]
@@ -6657,6 +7096,7 @@ def some_method(used, _unused, _unused_but_allowed)
 end
 ----
 
+[#allowunusedkeywordarguments_-false-_default_-lintunusedmethodargument]
 ==== AllowUnusedKeywordArguments: false (default)
 
 [source,ruby]
@@ -6667,6 +7107,7 @@ def do_something(used, unused: 42)
 end
 ----
 
+[#allowunusedkeywordarguments_-true-lintunusedmethodargument]
 ==== AllowUnusedKeywordArguments: true
 
 [source,ruby]
@@ -6677,6 +7118,7 @@ def do_something(used, unused: 42)
 end
 ----
 
+[#ignoreemptymethods_-true-_default_-lintunusedmethodargument]
 ==== IgnoreEmptyMethods: true (default)
 
 [source,ruby]
@@ -6686,6 +7128,7 @@ def do_something(unused)
 end
 ----
 
+[#ignoreemptymethods_-false-lintunusedmethodargument]
 ==== IgnoreEmptyMethods: false
 
 [source,ruby]
@@ -6695,6 +7138,7 @@ def do_something(unused)
 end
 ----
 
+[#ignorenotimplementedmethods_-true-_default_-lintunusedmethodargument]
 ==== IgnoreNotImplementedMethods: true (default)
 
 [source,ruby]
@@ -6709,6 +7153,7 @@ def do_something_else(unused)
 end
 ----
 
+[#ignorenotimplementedmethods_-false-lintunusedmethodargument]
 ==== IgnoreNotImplementedMethods: false
 
 [source,ruby]
@@ -6723,6 +7168,7 @@ def do_something_else(unused)
 end
 ----
 
+[#configurable-attributes-lintunusedmethodargument]
 === Configurable attributes
 
 |===
@@ -6741,10 +7187,12 @@ end
 | Boolean
 |===
 
+[#references-lintunusedmethodargument]
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
 
+[#linturiescapeunescape]
 == Lint/UriEscapeUnescape
 
 |===
@@ -6764,6 +7212,7 @@ Also this cop identifies places where `URI.unescape` can be replaced by
 `CGI.unescape`, `URI.decode_www_form`,
 or `URI.decode_www_form_component` depending on your specific use case.
 
+[#examples-linturiescapeunescape]
 === Examples
 
 [source,ruby]
@@ -6788,6 +7237,7 @@ URI.decode_www_form(enc_uri)
 URI.decode_www_form_component(enc_uri)
 ----
 
+[#linturiregexp]
 == Lint/UriRegexp
 
 |===
@@ -6800,9 +7250,20 @@ URI.decode_www_form_component(enc_uri)
 | -
 |===
 
-Identifies places where `URI.regexp` is obsolete and should
-not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
+Identifies places where `URI.regexp` is obsolete and should not be used.
 
+For Ruby 3.3 or lower, use `URI::DEFAULT_PARSER.make_regexp`.
+For Ruby 3.4 or higher, use `URI::RFC2396_PARSER.make_regexp`.
+
+NOTE: If you need to support both Ruby 3.3 and lower as well as Ruby 3.4 and higher,
+consider manually changing the code as follows:
+
+[source,ruby]
+----
+defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::DEFAULT_PARSER
+----
+
+[#examples-linturiregexp]
 === Examples
 
 [source,ruby]
@@ -6810,10 +7271,14 @@ not be used. Instead, use `URI::DEFAULT_PARSER.make_regexp`.
 # bad
 URI.regexp('http://example.com')
 
-# good
+# good - Ruby 3.3 or lower
 URI::DEFAULT_PARSER.make_regexp('http://example.com')
+
+# good - Ruby 3.4 or higher
+URI::RFC2396_PARSER.make_regexp('http://example.com')
 ----
 
+[#lintuselessaccessmodifier]
 == Lint/UselessAccessModifier
 
 |===
@@ -6842,6 +7307,7 @@ is an empty array that means no method is specified.
 This setting is an array of methods which, when called, are known to
 create other methods in the module's current access context.
 
+[#examples-lintuselessaccessmodifier]
 === Examples
 
 [source,ruby]
@@ -6913,6 +7379,7 @@ class Foo
 end
 ----
 
+[#contextcreatingmethods_-concerning-lintuselessaccessmodifier]
 ==== ContextCreatingMethods: concerning
 
 [source,ruby]
@@ -6942,6 +7409,7 @@ class Foo
 end
 ----
 
+[#methodcreatingmethods_-delegate-lintuselessaccessmodifier]
 ==== MethodCreatingMethods: delegate
 
 [source,ruby]
@@ -6960,6 +7428,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-lintuselessaccessmodifier]
 === Configurable attributes
 
 |===
@@ -6974,6 +7443,7 @@ end
 | Array
 |===
 
+[#lintuselessassignment]
 == Lint/UselessAssignment
 
 |===
@@ -7007,6 +7477,7 @@ a local variable. For example, replacing `a ||= 1` with `a || 1` may cause
 NOTE: Given the assignment `foo = 1, bar = 2`, removing unused variables
 can lead to a syntax error, so this case is not autocorrected.
 
+[#examples-lintuselessassignment]
 === Examples
 
 [source,ruby]
@@ -7024,10 +7495,12 @@ def some_method
 end
 ----
 
+[#references-lintuselessassignment]
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
 
+[#lintuselesselsewithoutrescue]
 == Lint/UselessElseWithoutRescue
 
 |===
@@ -7044,6 +7517,7 @@ Checks for useless `else` in `begin..end` without `rescue`.
 
 NOTE: This syntax is no longer valid on Ruby 2.6 or higher.
 
+[#examples-lintuselesselsewithoutrescue]
 === Examples
 
 [source,ruby]
@@ -7065,6 +7539,7 @@ else
 end
 ----
 
+[#lintuselessmethoddefinition]
 == Lint/UselessMethodDefinition
 
 |===
@@ -7080,11 +7555,13 @@ end
 Checks for useless method definitions, specifically: empty constructors
 and methods just delegating to `super`.
 
+[#safety-lintuselessmethoddefinition]
 === Safety
 
 This cop is unsafe as it can register false positives for cases when an empty
 constructor just overrides the parent constructor, which is bad anyway.
 
+[#examples-lintuselessmethoddefinition]
 === Examples
 
 [source,ruby]
@@ -7114,6 +7591,7 @@ def method(*args)
 end
 ----
 
+[#lintuselessnumericoperation]
 == Lint/UselessNumericOperation
 
 |===
@@ -7130,6 +7608,7 @@ Certain numeric operations have no impact, being:
 Adding or subtracting 0, multiplying or dividing by 1 or raising to the power of 1.
 These are probably leftover from debugging, or are mistakes.
 
+[#examples-lintuselessnumericoperation]
 === Examples
 
 [source,ruby]
@@ -7155,6 +7634,7 @@ x **= 1
 x = x
 ----
 
+[#lintuselessrescue]
 == Lint/UselessRescue
 
 |===
@@ -7169,6 +7649,7 @@ x = x
 
 Checks for useless `rescue`s, which only reraise rescued exceptions.
 
+[#examples-lintuselessrescue]
 === Examples
 
 [source,ruby]
@@ -7214,6 +7695,7 @@ rescue
 end
 ----
 
+[#lintuselessruby2keywords]
 == Lint/UselessRuby2Keywords
 
 |===
@@ -7232,6 +7714,7 @@ Looks for `ruby2_keywords` calls for methods that do not need it.
 (`\*args`) but do not explicit keyword arguments (`k:` or `k: true`) or
 a keyword splat (`**kwargs`).
 
+[#examples-lintuselessruby2keywords]
 === Examples
 
 [source,ruby]
@@ -7290,6 +7773,7 @@ ruby2_keywords :foo
 define_method(:foo) { |arg| }
 ----
 
+[#lintuselesssettercall]
 == Lint/UselessSetterCall
 
 |===
@@ -7305,6 +7789,7 @@ define_method(:foo) { |arg| }
 Checks for setter call to local variable as the final
 expression of a function definition.
 
+[#safety-lintuselesssettercall]
 === Safety
 
 There are edge cases in which the local variable references a
@@ -7314,6 +7799,7 @@ detected by the cop, and it can yield a false positive.
 As well, autocorrection is unsafe because the method's
 return value will be changed.
 
+[#examples-lintuselesssettercall]
 === Examples
 
 [source,ruby]
@@ -7332,6 +7818,7 @@ def something
 end
 ----
 
+[#lintuselesstimes]
 == Lint/UselessTimes
 
 |===
@@ -7348,11 +7835,13 @@ Checks for uses of `Integer#times` that will never yield
 (when the integer ``<= 0``) or that will only ever yield once
 (`1.times`).
 
+[#safety-lintuselesstimes]
 === Safety
 
 This cop is unsafe as `times` returns its receiver, which is
 *usually* OK, but might change behavior.
 
+[#examples-lintuselesstimes]
 === Examples
 
 [source,ruby]
@@ -7368,6 +7857,7 @@ do_something
 do_something(1)
 ----
 
+[#lintvoid]
 == Lint/Void
 
 |===
@@ -7393,8 +7883,10 @@ enumerator = [1, 2, 3].filter
 enumerator.each { |item| item >= 2 } #=> [2, 3]
 ----
 
+[#examples-lintvoid]
 === Examples
 
+[#checkformethodswithnosideeffects_-false-_default_-lintvoid]
 ==== CheckForMethodsWithNoSideEffects: false (default)
 
 [source,ruby]
@@ -7411,6 +7903,7 @@ def some_method(some_var)
 end
 ----
 
+[#checkformethodswithnosideeffects_-true-lintvoid]
 ==== CheckForMethodsWithNoSideEffects: true
 
 [source,ruby]
@@ -7438,6 +7931,7 @@ def some_method(some_array)
 end
 ----
 
+[#configurable-attributes-lintvoid]
 === Configurable attributes
 
 |===

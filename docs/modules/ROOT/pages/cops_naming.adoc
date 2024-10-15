@@ -6,6 +6,7 @@
 
 = Naming
 
+[#namingaccessormethodname]
 == Naming/AccessorMethodName
 
 |===
@@ -26,6 +27,7 @@ arity. Getters (`get_attribute`) must have no arguments to be
 registered, and setters (`set_attribute(value)`) must have exactly
 one.
 
+[#examples-namingaccessormethodname]
 === Examples
 
 [source,ruby]
@@ -55,10 +57,12 @@ def set_value
 end
 ----
 
+[#references-namingaccessormethodname]
 === References
 
 * https://rubystyle.guide#accessor_mutator_method_names
 
+[#namingasciiidentifiers]
 == Naming/AsciiIdentifiers
 
 |===
@@ -75,6 +79,7 @@ Checks for non-ascii characters in identifier and constant names.
 Identifiers are always checked and whether constants are checked
 can be controlled using AsciiConstants config.
 
+[#examples-namingasciiidentifiers]
 === Examples
 
 [source,ruby]
@@ -108,6 +113,7 @@ params[:عرض_gteq] # Arabic character (non-ascii)
 params[:width_gteq]
 ----
 
+[#asciiconstants_-true-_default_-namingasciiidentifiers]
 ==== AsciiConstants: true (default)
 
 [source,ruby]
@@ -119,6 +125,7 @@ end
 FOÖ = "foo"
 ----
 
+[#asciiconstants_-false-namingasciiidentifiers]
 ==== AsciiConstants: false
 
 [source,ruby]
@@ -130,6 +137,7 @@ end
 FOÖ = "foo"
 ----
 
+[#configurable-attributes-namingasciiidentifiers]
 === Configurable attributes
 
 |===
@@ -140,10 +148,12 @@ FOÖ = "foo"
 | Boolean
 |===
 
+[#references-namingasciiidentifiers]
 === References
 
 * https://rubystyle.guide#english-identifiers
 
+[#namingbinaryoperatorparametername]
 == Naming/BinaryOperatorParameterName
 
 |===
@@ -159,6 +169,7 @@ FOÖ = "foo"
 Makes sure that certain binary operator methods have their
 sole  parameter named `other`.
 
+[#examples-namingbinaryoperatorparametername]
 === Examples
 
 [source,ruby]
@@ -170,10 +181,12 @@ def +(amount); end
 def +(other); end
 ----
 
+[#references-namingbinaryoperatorparametername]
 === References
 
 * https://rubystyle.guide#other-arg
 
+[#namingblockforwarding]
 == Naming/BlockForwarding
 
 NOTE: Required Ruby version: 3.1
@@ -198,8 +211,10 @@ You can specify the block variable name for autocorrection with `BlockForwarding
 The default variable name is `block`. If the name is already in use, it will not be
 autocorrected.
 
+[#examples-namingblockforwarding]
 === Examples
 
+[#enforcedstyle_-anonymous-_default_-namingblockforwarding]
 ==== EnforcedStyle: anonymous (default)
 
 [source,ruby]
@@ -215,6 +230,7 @@ def foo(&)
 end
 ----
 
+[#enforcedstyle_-explicit-namingblockforwarding]
 ==== EnforcedStyle: explicit
 
 [source,ruby]
@@ -230,6 +246,7 @@ def foo(&block)
 end
 ----
 
+[#configurable-attributes-namingblockforwarding]
 === Configurable attributes
 
 |===
@@ -244,10 +261,12 @@ end
 | String
 |===
 
+[#references-namingblockforwarding]
 === References
 
 * https://rubystyle.guide#block-forwarding
 
+[#namingblockparametername]
 == Naming/BlockParameterName
 
 |===
@@ -272,6 +291,7 @@ takes an array of permitted names that will never register an
 offense. The `ForbiddenNames` config option takes an array of
 restricted names that will always register an offense.
 
+[#examples-namingblockparametername]
 === Examples
 
 [source,ruby]
@@ -297,6 +317,7 @@ foo { |speed, distance| speed * distance }
 baz { |age, height, gender| do_stuff(age, height, gender) }
 ----
 
+[#configurable-attributes-namingblockparametername]
 === Configurable attributes
 
 |===
@@ -319,6 +340,7 @@ baz { |age, height, gender| do_stuff(age, height, gender) }
 | Array
 |===
 
+[#namingclassandmodulecamelcase]
 == Naming/ClassAndModuleCamelCase
 
 |===
@@ -340,6 +362,7 @@ These names can be full class/module names or part of the name.
 eg. Adding `my_class` to the `AllowedNames` config will allow names like
 `my_class`, `my_class::User`, `App::my_class`, `App::my_class::User`, etc.
 
+[#examples-namingclassandmodulecamelcase]
 === Examples
 
 [source,ruby]
@@ -359,6 +382,7 @@ class module_parent::MyModule
 end
 ----
 
+[#configurable-attributes-namingclassandmodulecamelcase]
 === Configurable attributes
 
 |===
@@ -369,10 +393,12 @@ end
 | Array
 |===
 
+[#references-namingclassandmodulecamelcase]
 === References
 
 * https://rubystyle.guide#camelcase-classes
 
+[#namingconstantname]
 == Naming/ConstantName
 
 |===
@@ -391,6 +417,7 @@ SCREAMING_SNAKE_CASE.
 To avoid false positives, it ignores cases in which we cannot know
 for certain the type of value that would be assigned to a constant.
 
+[#examples-namingconstantname]
 === Examples
 
 [source,ruby]
@@ -404,10 +431,12 @@ Inch_In_Cm = 2.54
 INCH_IN_CM = 2.54
 ----
 
+[#references-namingconstantname]
 === References
 
 * https://rubystyle.guide#screaming-snake-case
 
+[#namingfilename]
 == Naming/FileName
 
 |===
@@ -441,6 +470,7 @@ with a shebang line are not considered by the cop.
 When `Regex` is set, the cop will flag any filename that does not match
 the regular expression.
 
+[#examples-namingfilename]
 === Examples
 
 [source,ruby]
@@ -456,6 +486,7 @@ lib/layout_manager.rb
 anything/using_snake_case.rake
 ----
 
+[#configurable-attributes-namingfilename]
 === Configurable attributes
 
 |===
@@ -490,10 +521,12 @@ anything/using_snake_case.rake
 | Array
 |===
 
+[#references-namingfilename]
 === References
 
 * https://rubystyle.guide#snake-case-files
 
+[#namingheredocdelimitercase]
 == Naming/HeredocDelimiterCase
 
 |===
@@ -509,8 +542,10 @@ anything/using_snake_case.rake
 Checks that your heredocs are using the configured case.
 By default it is configured to enforce uppercase heredocs.
 
+[#examples-namingheredocdelimitercase]
 === Examples
 
+[#enforcedstyle_-uppercase-_default_-namingheredocdelimitercase]
 ==== EnforcedStyle: uppercase (default)
 
 [source,ruby]
@@ -526,6 +561,7 @@ sql
 SQL
 ----
 
+[#enforcedstyle_-lowercase-namingheredocdelimitercase]
 ==== EnforcedStyle: lowercase
 
 [source,ruby]
@@ -541,6 +577,7 @@ SQL
 sql
 ----
 
+[#configurable-attributes-namingheredocdelimitercase]
 === Configurable attributes
 
 |===
@@ -551,10 +588,12 @@ sql
 | `lowercase`, `uppercase`
 |===
 
+[#references-namingheredocdelimitercase]
 === References
 
 * https://rubystyle.guide#heredoc-delimiters
 
+[#namingheredocdelimiternaming]
 == Naming/HeredocDelimiterNaming
 
 |===
@@ -571,6 +610,7 @@ Checks that your heredocs are using meaningful delimiters.
 By default it disallows `END` and `EO*`, and can be configured through
 forbidden listing additional delimiters.
 
+[#examples-namingheredocdelimiternaming]
 === Examples
 
 [source,ruby]
@@ -591,6 +631,7 @@ END
 EOS
 ----
 
+[#configurable-attributes-namingheredocdelimiternaming]
 === Configurable attributes
 
 |===
@@ -601,10 +642,12 @@ EOS
 | Array
 |===
 
+[#references-namingheredocdelimiternaming]
 === References
 
 * https://rubystyle.guide#heredoc-delimiters
 
+[#naminginclusivelanguage]
 == Naming/InclusiveLanguage
 
 |===
@@ -641,8 +684,10 @@ a term matches the whole word (partial matches will not be offenses).
 The cop supports autocorrection when there is only one suggestion. When there are multiple
 suggestions, the best suggestion cannot be identified and will not be autocorrected.
 
+[#examples-naminginclusivelanguage]
 === Examples
 
+[#flaggedterms_-_-whitelist_-_-suggestions_-__allowlist__-_-_-naminginclusivelanguage]
 ==== FlaggedTerms: { whitelist: { Suggestions: ['allowlist'] } }
 
 [source,ruby]
@@ -656,6 +701,7 @@ whitelist_users = %w(user1 user1)
 allowlist_users = %w(user1 user2)
 ----
 
+[#flaggedterms_-_-master_-_-suggestions_-__main__-_primary__-_leader__-_-_-naminginclusivelanguage]
 ==== FlaggedTerms: { master: { Suggestions: ['main', 'primary', 'leader'] } }
 
 [source,ruby]
@@ -669,6 +715,7 @@ allowlist_users = %w(user1 user2)
 @primary_node = 'node1.example.com'
 ----
 
+[#flaggedterms_-_-whitelist_-_-regex_-_rubyregexp-_white_-__s__list_-_-_-naminginclusivelanguage]
 ==== FlaggedTerms: { whitelist: { Regex: !ruby/regexp '/white[-_\s]?list' } }
 
 [source,ruby]
@@ -682,6 +729,7 @@ white_list = %w(user1 user2)
 allow_list = %w(user1 user2)
 ----
 
+[#flaggedterms_-_-master_-_-allowedregex_-_master___s-degree_-_-_-naminginclusivelanguage]
 ==== FlaggedTerms: { master: { AllowedRegex: 'master\'?s degree' } }
 
 [source,ruby]
@@ -695,6 +743,7 @@ allow_list = %w(user1 user2)
 # They had a master's degree
 ----
 
+[#flaggedterms_-_-slave_-_-wholeword_-true-_-_-naminginclusivelanguage]
 ==== FlaggedTerms: { slave: { WholeWord: true } }
 
 [source,ruby]
@@ -708,6 +757,7 @@ Slave
 TeslaVehicle
 ----
 
+[#configurable-attributes-naminginclusivelanguage]
 === Configurable attributes
 
 |===
@@ -746,6 +796,7 @@ TeslaVehicle
 | 
 |===
 
+[#namingmemoizedinstancevariablename]
 == Naming/MemoizedInstanceVariableName
 
 |===
@@ -769,6 +820,7 @@ prefixed with an underscore. Prefixing ivars with an underscore is a
 convention that is used to implicitly indicate that an ivar should not
 be set or referenced outside of the memoization method.
 
+[#safety-namingmemoizedinstancevariablename]
 === Safety
 
 This cop relies on the pattern `@instance_var ||= ...`,
@@ -776,8 +828,10 @@ but this is sometimes used for other purposes than memoization
 so this cop is considered unsafe. Also, its autocorrection is unsafe
 because it may conflict with instance variable names already in use.
 
+[#examples-namingmemoizedinstancevariablename]
 === Examples
 
+[#enforcedstyleforleadingunderscores_-disallowed-_default_-namingmemoizedinstancevariablename]
 ==== EnforcedStyleForLeadingUnderscores: disallowed (default)
 
 [source,ruby]
@@ -829,6 +883,7 @@ define_method(:foo) do
 end
 ----
 
+[#enforcedstyleforleadingunderscores_-required-namingmemoizedinstancevariablename]
 ==== EnforcedStyleForLeadingUnderscores: required
 
 [source,ruby]
@@ -875,6 +930,7 @@ define_method(:foo) do
 end
 ----
 
+[#enforcedstyleforleadingunderscores-_optional-namingmemoizedinstancevariablename]
 ==== EnforcedStyleForLeadingUnderscores :optional
 
 [source,ruby]
@@ -916,6 +972,7 @@ define_method(:foo) do
 end
 ----
 
+[#configurable-attributes-namingmemoizedinstancevariablename]
 === Configurable attributes
 
 |===
@@ -926,6 +983,7 @@ end
 | `disallowed`, `required`, `optional`
 |===
 
+[#namingmethodname]
 == Naming/MethodName
 
 |===
@@ -950,8 +1008,10 @@ This cop has `AllowedPatterns` configuration option.
 
 Method names matching patterns are always allowed.
 
+[#examples-namingmethodname]
 === Examples
 
+[#enforcedstyle_-snake_case-_default_-namingmethodname]
 ==== EnforcedStyle: snake_case (default)
 
 [source,ruby]
@@ -963,6 +1023,7 @@ def fooBar; end
 def foo_bar; end
 ----
 
+[#enforcedstyle_-camelcase-namingmethodname]
 ==== EnforcedStyle: camelCase
 
 [source,ruby]
@@ -974,6 +1035,7 @@ def foo_bar; end
 def fooBar; end
 ----
 
+[#configurable-attributes-namingmethodname]
 === Configurable attributes
 
 |===
@@ -988,10 +1050,12 @@ def fooBar; end
 | Array
 |===
 
+[#references-namingmethodname]
 === References
 
 * https://rubystyle.guide#snake-case-symbols-methods-vars
 
+[#namingmethodparametername]
 == Naming/MethodParameterName
 
 |===
@@ -1016,6 +1080,7 @@ takes an array of permitted names that will never register an
 offense. The `ForbiddenNames` config option takes an array of
 restricted names that will always register an offense.
 
+[#examples-namingmethodparametername]
 === Examples
 
 [source,ruby]
@@ -1049,6 +1114,7 @@ def baz(age_a, height_b, gender_c)
 end
 ----
 
+[#configurable-attributes-namingmethodparametername]
 === Configurable attributes
 
 |===
@@ -1071,6 +1137,7 @@ end
 | Array
 |===
 
+[#namingpredicatename]
 == Naming/PredicateName
 
 |===
@@ -1097,8 +1164,10 @@ methods which begin with a forbidden prefix are not allowed, even if
 they end with a `?`. These methods should be changed to remove the
 prefix.
 
+[#examples-namingpredicatename]
 === Examples
 
+[#nameprefix_-__is___-_has___-_have___-_default_-namingpredicatename]
 ==== NamePrefix: ['is_', 'has_', 'have_'] (default)
 
 [source,ruby]
@@ -1118,6 +1187,7 @@ def is_even?(value)
 end
 ----
 
+[#nameprefix_-__seems_to_be___-namingpredicatename]
 ==== NamePrefix: ['seems_to_be_']
 
 [source,ruby]
@@ -1137,6 +1207,7 @@ def seems_to_be_even?(value)
 end
 ----
 
+[#allowedmethods_-__is_a___-_default_-namingpredicatename]
 ==== AllowedMethods: ['is_a?'] (default)
 
 [source,ruby]
@@ -1147,6 +1218,7 @@ def is_a?(value)
 end
 ----
 
+[#allowedmethods_-__is_even___-namingpredicatename]
 ==== AllowedMethods: ['is_even?']
 
 [source,ruby]
@@ -1156,6 +1228,7 @@ def is_even?(value)
 end
 ----
 
+[#methoddefinitionmacros_-__define_method__-_define_singleton_method__-_default_-namingpredicatename]
 ==== MethodDefinitionMacros: ['define_method', 'define_singleton_method'] (default)
 
 [source,ruby]
@@ -1167,6 +1240,7 @@ define_method(:is_even) { |value| }
 define_method(:even?) { |value| }
 ----
 
+[#methoddefinitionmacros_-__def_node_matcher__-namingpredicatename]
 ==== MethodDefinitionMacros: ['def_node_matcher']
 
 [source,ruby]
@@ -1178,6 +1252,7 @@ def_node_matcher(:is_even) { |value| }
 def_node_matcher(:even?) { |value| }
 ----
 
+[#configurable-attributes-namingpredicatename]
 === Configurable attributes
 
 |===
@@ -1204,10 +1279,12 @@ def_node_matcher(:even?) { |value| }
 | Array
 |===
 
+[#references-namingpredicatename]
 === References
 
 * https://rubystyle.guide#bool-methods-qmark
 
+[#namingrescuedexceptionsvariablename]
 == Naming/RescuedExceptionsVariableName
 
 |===
@@ -1231,8 +1308,10 @@ guarantee that the variable from the outer rescue is not used within
 the inner rescue (in which case, changing the inner variable would
 shadow the outer variable).
 
+[#examples-namingrescuedexceptionsvariablename]
 === Examples
 
+[#preferredname_-e-_default_-namingrescuedexceptionsvariablename]
 ==== PreferredName: e (default)
 
 [source,ruby]
@@ -1259,6 +1338,7 @@ rescue MyException => _e
 end
 ----
 
+[#preferredname_-exception-namingrescuedexceptionsvariablename]
 ==== PreferredName: exception
 
 [source,ruby]
@@ -1285,6 +1365,7 @@ rescue MyException => _exception
 end
 ----
 
+[#configurable-attributes-namingrescuedexceptionsvariablename]
 === Configurable attributes
 
 |===
@@ -1295,6 +1376,7 @@ end
 | String
 |===
 
+[#namingvariablename]
 == Naming/VariableName
 
 |===
@@ -1310,8 +1392,10 @@ end
 Makes sure that all variables use the configured style,
 snake_case or camelCase, for their names.
 
+[#examples-namingvariablename]
 === Examples
 
+[#enforcedstyle_-snake_case-_default_-namingvariablename]
 ==== EnforcedStyle: snake_case (default)
 
 [source,ruby]
@@ -1323,6 +1407,7 @@ fooBar = 1
 foo_bar = 1
 ----
 
+[#enforcedstyle_-camelcase-namingvariablename]
 ==== EnforcedStyle: camelCase
 
 [source,ruby]
@@ -1334,6 +1419,7 @@ foo_bar = 1
 fooBar = 1
 ----
 
+[#allowedidentifiers_-__foobar__-namingvariablename]
 ==== AllowedIdentifiers: ['fooBar']
 
 [source,ruby]
@@ -1342,6 +1428,7 @@ fooBar = 1
 fooBar = 1
 ----
 
+[#allowedpatterns_-___v_d__z__-namingvariablename]
 ==== AllowedPatterns: ['_v\d+\z']
 
 [source,ruby]
@@ -1350,6 +1437,7 @@ fooBar = 1
 :release_v1
 ----
 
+[#configurable-attributes-namingvariablename]
 === Configurable attributes
 
 |===
@@ -1368,10 +1456,12 @@ fooBar = 1
 | Array
 |===
 
+[#references-namingvariablename]
 === References
 
 * https://rubystyle.guide#snake-case-symbols-methods-vars
 
+[#namingvariablenumber]
 == Naming/VariableNumber
 
 |===
@@ -1392,8 +1482,10 @@ Additionally, `CheckMethodNames` and `CheckSymbols` configuration options
 can be used to specify whether method names and symbols should be checked.
 Both are enabled by default.
 
+[#examples-namingvariablenumber]
 === Examples
 
+[#enforcedstyle_-normalcase-_default_-namingvariablenumber]
 ==== EnforcedStyle: normalcase (default)
 
 [source,ruby]
@@ -1415,6 +1507,7 @@ def some_method1; end
 def some_method1(arg1); end
 ----
 
+[#enforcedstyle_-snake_case-namingvariablenumber]
 ==== EnforcedStyle: snake_case
 
 [source,ruby]
@@ -1436,6 +1529,7 @@ def some_method_1; end
 def some_method_1(arg_1); end
 ----
 
+[#enforcedstyle_-non_integer-namingvariablenumber]
 ==== EnforcedStyle: non_integer
 
 [source,ruby]
@@ -1471,6 +1565,7 @@ def some_methodone(arg_one); end
 # In the following examples, we assume `EnforcedStyle: normalcase` (default).
 ----
 
+[#checkmethodnames_-true-_default_-namingvariablenumber]
 ==== CheckMethodNames: true (default)
 
 [source,ruby]
@@ -1479,6 +1574,7 @@ def some_methodone(arg_one); end
 def some_method_1; end
 ----
 
+[#checkmethodnames_-false-namingvariablenumber]
 ==== CheckMethodNames: false
 
 [source,ruby]
@@ -1487,6 +1583,7 @@ def some_method_1; end
 def some_method_1; end
 ----
 
+[#checksymbols_-true-_default_-namingvariablenumber]
 ==== CheckSymbols: true (default)
 
 [source,ruby]
@@ -1495,6 +1592,7 @@ def some_method_1; end
 :some_sym_1
 ----
 
+[#checksymbols_-false-namingvariablenumber]
 ==== CheckSymbols: false
 
 [source,ruby]
@@ -1503,6 +1601,7 @@ def some_method_1; end
 :some_sym_1
 ----
 
+[#allowedidentifiers_-_capture3_-namingvariablenumber]
 ==== AllowedIdentifiers: [capture3]
 
 [source,ruby]
@@ -1511,6 +1610,7 @@ def some_method_1; end
 expect(Open3).to receive(:capture3)
 ----
 
+[#allowedpatterns_-___v_d__z__-namingvariablenumber]
 ==== AllowedPatterns: ['_v\d+\z']
 
 [source,ruby]
@@ -1519,6 +1619,7 @@ expect(Open3).to receive(:capture3)
 :some_sym_v1
 ----
 
+[#configurable-attributes-namingvariablenumber]
 === Configurable attributes
 
 |===
@@ -1545,6 +1646,7 @@ expect(Open3).to receive(:capture3)
 | Array
 |===
 
+[#references-namingvariablenumber]
 === References
 
 * https://rubystyle.guide#snake-case-symbols-methods-vars-with-numbers

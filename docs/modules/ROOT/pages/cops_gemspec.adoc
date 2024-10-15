@@ -6,6 +6,7 @@
 
 = Gemspec
 
+[#gemspecaddruntimedependency]
 == Gemspec/AddRuntimeDependency
 
 |===
@@ -21,6 +22,7 @@
 Prefer `add_dependency` over `add_runtime_dependency` as the latter is
 considered soft-deprecated.
 
+[#examples-gemspecaddruntimedependency]
 === Examples
 
 [source,ruby]
@@ -36,6 +38,7 @@ Gem::Specification.new do |spec|
 end
 ----
 
+[#configurable-attributes-gemspecaddruntimedependency]
 === Configurable attributes
 
 |===
@@ -46,11 +49,13 @@ end
 | Array
 |===
 
+[#references-gemspecaddruntimedependency]
 === References
 
 * https://rubystyle.guide#add_dependency_vs_add_runtime_dependency
 * https://github.com/rubygems/rubygems/issues/7799#issuecomment-2192720316
 
+[#gemspecdependencyversion]
 == Gemspec/DependencyVersion
 
 |===
@@ -66,8 +71,10 @@ end
 Enforce that gem dependency version specifications or a commit reference (branch,
 ref, or tag) are either required or forbidden.
 
+[#examples-gemspecdependencyversion]
 === Examples
 
+[#enforcedstyle_-required-_default_-gemspecdependencyversion]
 ==== EnforcedStyle: required (default)
 
 [source,ruby]
@@ -93,6 +100,7 @@ Gem::Specification.new do |spec|
 end
 ----
 
+[#enforcedstyle_-forbidden-gemspecdependencyversion]
 ==== EnforcedStyle: forbidden
 
 [source,ruby]
@@ -118,6 +126,7 @@ Gem::Specification.new do |spec|
 end
 ----
 
+[#configurable-attributes-gemspecdependencyversion]
 === Configurable attributes
 
 |===
@@ -136,6 +145,7 @@ end
 | Array
 |===
 
+[#gemspecdeprecatedattributeassignment]
 == Gemspec/DeprecatedAttributeAssignment
 
 |===
@@ -151,6 +161,7 @@ end
 Checks that deprecated attributes are not set in a gemspec file.
 Removing deprecated attributes allows the user to receive smaller packed gems.
 
+[#examples-gemspecdeprecatedattributeassignment]
 === Examples
 
 [source,ruby]
@@ -173,6 +184,7 @@ Gem::Specification.new do |spec|
 end
 ----
 
+[#configurable-attributes-gemspecdeprecatedattributeassignment]
 === Configurable attributes
 
 |===
@@ -187,6 +199,7 @@ end
 | Array
 |===
 
+[#gemspecdevelopmentdependencies]
 == Gemspec/DevelopmentDependencies
 
 |===
@@ -205,8 +218,10 @@ Enforce that development dependencies for a gem are specified in
 gemspec`, enforce that all dependencies are specified in `gemspec`,
 rather than in `Gemfile`.
 
+[#examples-gemspecdevelopmentdependencies]
 === Examples
 
+[#enforcedstyle_-gemfile-_default_-gemspecdevelopmentdependencies]
 ==== EnforcedStyle: Gemfile (default)
 
 [source,ruby]
@@ -231,6 +246,7 @@ gem "foo"
 s.add_development_dependency "bar"
 ----
 
+[#enforcedstyle_-gems_rb-gemspecdevelopmentdependencies]
 ==== EnforcedStyle: gems.rb
 
 [source,ruby]
@@ -258,6 +274,7 @@ gem "foo"
 s.add_development_dependency "bar"
 ----
 
+[#enforcedstyle_-gemspec-gemspecdevelopmentdependencies]
 ==== EnforcedStyle: gemspec
 
 [source,ruby]
@@ -277,6 +294,7 @@ s.add_development_dependency "foo"
 gem "bar"
 ----
 
+[#configurable-attributes-gemspecdevelopmentdependencies]
 === Configurable attributes
 
 |===
@@ -295,6 +313,7 @@ gem "bar"
 | Array
 |===
 
+[#gemspecduplicatedassignment]
 == Gemspec/DuplicatedAssignment
 
 |===
@@ -315,6 +334,7 @@ an unintended usage. On the other hand, duplication of methods such
 as `spec.requirements`, `spec.add_runtime_dependency`, and others are
 permitted because it is the intended use of appending values.
 
+[#examples-gemspecduplicatedassignment]
 === Examples
 
 [source,ruby]
@@ -343,6 +363,7 @@ Gem::Specification.new do |spec|
 end
 ----
 
+[#configurable-attributes-gemspecduplicatedassignment]
 === Configurable attributes
 
 |===
@@ -357,6 +378,7 @@ end
 | Array
 |===
 
+[#gemspecordereddependencies]
 == Gemspec/OrderedDependencies
 
 |===
@@ -371,6 +393,7 @@ end
 
 Dependencies in the gemspec should be alphabetically sorted.
 
+[#examples-gemspecordereddependencies]
 === Examples
 
 [source,ruby]
@@ -415,6 +438,7 @@ spec.add_runtime_dependency 'rubocop'
 spec.add_runtime_dependency 'rspec'
 ----
 
+[#treatcommentsasgroupseparators_-true-_default_-gemspecordereddependencies]
 ==== TreatCommentsAsGroupSeparators: true (default)
 
 [source,ruby]
@@ -426,6 +450,7 @@ spec.add_dependency 'rubocop'
 spec.add_dependency 'rspec'
 ----
 
+[#treatcommentsasgroupseparators_-false-gemspecordereddependencies]
 ==== TreatCommentsAsGroupSeparators: false
 
 [source,ruby]
@@ -437,6 +462,7 @@ spec.add_dependency 'rubocop'
 spec.add_dependency 'rspec'
 ----
 
+[#configurable-attributes-gemspecordereddependencies]
 === Configurable attributes
 
 |===
@@ -455,6 +481,7 @@ spec.add_dependency 'rspec'
 | Array
 |===
 
+[#gemspecrequiremfa]
 == Gemspec/RequireMFA
 
 |===
@@ -482,6 +509,7 @@ operations):
 This helps make your gem more secure, as users can be more
 confident that gem updates were pushed by maintainers.
 
+[#examples-gemspecrequiremfa]
 === Examples
 
 [source,ruby]
@@ -528,6 +556,7 @@ Gem::Specification.new do |spec|
 end
 ----
 
+[#configurable-attributes-gemspecrequiremfa]
 === Configurable attributes
 
 |===
@@ -542,10 +571,12 @@ end
 | Array
 |===
 
+[#references-gemspecrequiremfa]
 === References
 
 * https://guides.rubygems.org/mfa-requirement-opt-in/
 
+[#gemspecrequiredrubyversion]
 == Gemspec/RequiredRubyVersion
 
 |===
@@ -564,6 +595,7 @@ configuration for the gem.
 
 This ensures that RuboCop is using the same Ruby version as the gem.
 
+[#examples-gemspecrequiredrubyversion]
 === Examples
 
 [source,ruby]
@@ -612,6 +644,7 @@ Gem::Specification.new do |spec|
 end
 ----
 
+[#configurable-attributes-gemspecrequiredrubyversion]
 === Configurable attributes
 
 |===
@@ -626,6 +659,7 @@ end
 | Array
 |===
 
+[#gemspecrubyversionglobalsusage]
 == Gemspec/RubyVersionGlobalsUsage
 
 |===
@@ -644,6 +678,7 @@ constant is determined by `rake release`.
 It's possible to have dependency based on ruby version used
 to execute `rake release` and not user's ruby version.
 
+[#examples-gemspecrubyversionglobalsusage]
 === Examples
 
 [source,ruby]
@@ -663,6 +698,7 @@ Gem::Specification.new do |spec|
 end
 ----
 
+[#configurable-attributes-gemspecrubyversionglobalsusage]
 === Configurable attributes
 
 |===
@@ -677,6 +713,7 @@ end
 | Array
 |===
 
+[#references-gemspecrubyversionglobalsusage]
 === References
 
 * https://rubystyle.guide#no-ruby-version-in-the-gemspec

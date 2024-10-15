@@ -6,6 +6,7 @@
 
 = Security
 
+[#securitycompoundhash]
 == Security/CompoundHash
 
 |===
@@ -27,11 +28,13 @@ performance or security concerns if they are prone to collisions.
 Delegating to `Array#hash` is clearer and safer, although it might be slower
 depending on the use case.
 
+[#safety-securitycompoundhash]
 === Safety
 
 This cop may be unsafe if the application logic depends on the hash
 value, however this is inadvisable anyway.
 
+[#examples-securitycompoundhash]
 === Examples
 
 [source,ruby]
@@ -47,6 +50,7 @@ def hash
 end
 ----
 
+[#securityeval]
 == Security/Eval
 
 |===
@@ -61,6 +65,7 @@ end
 
 Checks for the use of `Kernel#eval` and `Binding#eval`.
 
+[#examples-securityeval]
 === Examples
 
 [source,ruby]
@@ -71,6 +76,7 @@ eval(something)
 binding.eval(something)
 ----
 
+[#securityiomethods]
 == Security/IoMethods
 
 |===
@@ -92,11 +98,13 @@ a subprocess is created in the same way as `Kernel#open`, and its output is retu
 `IO` methods are a security risk.
 Consider to use `File.read` to disable the behavior of subprocess invocation.
 
+[#safety-securityiomethods]
 === Safety
 
 This cop is unsafe because false positive will occur if the variable passed as
 the first argument is a command that is not a file path.
 
+[#examples-securityiomethods]
 === Examples
 
 [source,ruby]
@@ -111,6 +119,7 @@ File.read('path')
 IO.read('| command') # Allow intentional command invocation.
 ----
 
+[#securityjsonload]
 == Security/JSONLoad
 
 |===
@@ -126,6 +135,7 @@ IO.read('| command') # Allow intentional command invocation.
 Checks for the use of JSON class methods which have potential
 security issues.
 
+[#safety-securityjsonload]
 === Safety
 
 This cop's autocorrection is unsafe because it's potentially dangerous.
@@ -136,6 +146,7 @@ If reading single values (rather than proper JSON objects), like
 option, like `JSON.parse('false', quirks_mode: true)`.
 Other similar issues may apply.
 
+[#examples-securityjsonload]
 === Examples
 
 [source,ruby]
@@ -148,10 +159,12 @@ JSON.restore("{}")
 JSON.parse("{}")
 ----
 
+[#references-securityjsonload]
 === References
 
 * https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load
 
+[#securitymarshalload]
 == Security/MarshalLoad
 
 |===
@@ -168,6 +181,7 @@ Checks for the use of Marshal class methods which have
 potential security issues leading to remote code execution when
 loading from an untrusted source.
 
+[#examples-securitymarshalload]
 === Examples
 
 [source,ruby]
@@ -183,10 +197,12 @@ Marshal.dump("{}")
 Marshal.load(Marshal.dump({}))
 ----
 
+[#references-securitymarshalload]
 === References
 
 * https://ruby-doc.org/core-2.7.0/Marshal.html#module-Marshal-label-Security+considerations
 
+[#securityopen]
 == Security/Open
 
 |===
@@ -211,11 +227,13 @@ the argument of `Kernel#open` and `URI.open`. It would be better to use
 NOTE: `open` and `URI.open` with literal strings are not flagged by this
 cop.
 
+[#safety-securityopen]
 === Safety
 
 This cop could register false positives if `open` is redefined
 in a class and then used without a receiver in that class.
 
+[#examples-securityopen]
 === Examples
 
 [source,ruby]
@@ -236,6 +254,7 @@ open("foo.text")
 URI.open("http://example.com")
 ----
 
+[#securityyamlload]
 == Security/YAMLLoad
 
 |===
@@ -254,11 +273,13 @@ loading from an untrusted source.
 
 NOTE: Ruby 3.1+ (Psych 4) uses `Psych.load` as `Psych.safe_load` by default.
 
+[#safety-securityyamlload]
 === Safety
 
 The behavior of the code might change depending on what was
 in the YAML payload, since `YAML.safe_load` is more restrictive.
 
+[#examples-securityyamlload]
 === Examples
 
 [source,ruby]
@@ -273,6 +294,7 @@ YAML.load("--- !ruby/object:Foo {}", permitted_classes: [Foo])      # Ruby 3.1+ 
 YAML.dump(foo)
 ----
 
+[#references-securityyamlload]
 === References
 
 * https://ruby-doc.org/stdlib-2.7.0/libdoc/yaml/rdoc/YAML.html#module-YAML-label-Security

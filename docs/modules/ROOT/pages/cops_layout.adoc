@@ -6,6 +6,7 @@
 
 = Layout
 
+[#layoutaccessmodifierindentation]
 == Layout/AccessModifierIndentation
 
 |===
@@ -22,8 +23,10 @@ Bare access modifiers (those not applying to specific methods) should be
 indented as deep as method definitions, or as deep as the class/module
 keyword, depending on configuration.
 
+[#examples-layoutaccessmodifierindentation]
 === Examples
 
+[#enforcedstyle_-indent-_default_-layoutaccessmodifierindentation]
 ==== EnforcedStyle: indent (default)
 
 [source,ruby]
@@ -41,6 +44,7 @@ class Plumbus
 end
 ----
 
+[#enforcedstyle_-outdent-layoutaccessmodifierindentation]
 ==== EnforcedStyle: outdent
 
 [source,ruby]
@@ -58,6 +62,7 @@ private
 end
 ----
 
+[#configurable-attributes-layoutaccessmodifierindentation]
 === Configurable attributes
 
 |===
@@ -72,10 +77,12 @@ end
 | Integer
 |===
 
+[#references-layoutaccessmodifierindentation]
 === References
 
 * https://rubystyle.guide#indent-public-private-protected
 
+[#layoutargumentalignment]
 == Layout/ArgumentAlignment
 
 |===
@@ -91,8 +98,10 @@ end
 Here we check if the arguments on a multi-line method
 definition are aligned.
 
+[#examples-layoutargumentalignment]
 === Examples
 
+[#enforcedstyle_-with_first_argument-_default_-layoutargumentalignment]
 ==== EnforcedStyle: with_first_argument (default)
 
 [source,ruby]
@@ -122,6 +131,7 @@ foo(
 )
 ----
 
+[#enforcedstyle_-with_fixed_indentation-layoutargumentalignment]
 ==== EnforcedStyle: with_fixed_indentation
 
 [source,ruby]
@@ -139,6 +149,7 @@ foo :bar,
     key: value
 ----
 
+[#configurable-attributes-layoutargumentalignment]
 === Configurable attributes
 
 |===
@@ -153,10 +164,12 @@ foo :bar,
 | Integer
 |===
 
+[#references-layoutargumentalignment]
 === References
 
 * https://rubystyle.guide#no-double-indent
 
+[#layoutarrayalignment]
 == Layout/ArrayAlignment
 
 |===
@@ -172,8 +185,10 @@ foo :bar,
 Here we check if the elements of a multi-line array literal are
 aligned.
 
+[#examples-layoutarrayalignment]
 === Examples
 
+[#enforcedstyle_-with_first_element-_default_-layoutarrayalignment]
 ==== EnforcedStyle: with_first_element (default)
 
 [source,ruby]
@@ -195,6 +210,7 @@ array = ['run',
      'run']
 ----
 
+[#enforcedstyle_-with_fixed_indentation-layoutarrayalignment]
 ==== EnforcedStyle: with_fixed_indentation
 
 [source,ruby]
@@ -210,6 +226,7 @@ array = [1, 2, 3,
          4, 5, 6]
 ----
 
+[#configurable-attributes-layoutarrayalignment]
 === Configurable attributes
 
 |===
@@ -224,10 +241,12 @@ array = [1, 2, 3,
 | Integer
 |===
 
+[#references-layoutarrayalignment]
 === References
 
 * https://rubystyle.guide#no-double-indent
 
+[#layoutassignmentindentation]
 == Layout/AssignmentIndentation
 
 |===
@@ -246,6 +265,7 @@ right-hand-side of a multi-line assignment.
 The indentation of the remaining lines can be corrected with
 other cops such as `Layout/IndentationConsistency` and `Layout/EndAlignment`.
 
+[#examples-layoutassignmentindentation]
 === Examples
 
 [source,ruby]
@@ -263,6 +283,7 @@ value =
   end
 ----
 
+[#configurable-attributes-layoutassignmentindentation]
 === Configurable attributes
 
 |===
@@ -273,6 +294,7 @@ value =
 | Integer
 |===
 
+[#layoutbeginendalignment]
 == Layout/BeginEndAlignment
 
 |===
@@ -298,8 +320,10 @@ by default. On the other hand, `||= begin` that this cop targets tends to
 align with the start of the line, it defaults to `EnforcedStyleAlignWith: start_of_line`.
 These style can be configured by each cop.
 
+[#examples-layoutbeginendalignment]
 === Examples
 
+[#enforcedstylealignwith_-start_of_line-_default_-layoutbeginendalignment]
 ==== EnforcedStyleAlignWith: start_of_line (default)
 
 [source,ruby]
@@ -315,6 +339,7 @@ foo ||= begin
 end
 ----
 
+[#enforcedstylealignwith_-begin-layoutbeginendalignment]
 ==== EnforcedStyleAlignWith: begin
 
 [source,ruby]
@@ -330,6 +355,7 @@ foo ||= begin
         end
 ----
 
+[#configurable-attributes-layoutbeginendalignment]
 === Configurable attributes
 
 |===
@@ -344,6 +370,7 @@ foo ||= begin
 | String
 |===
 
+[#layoutblockalignment]
 == Layout/BlockAlignment
 
 |===
@@ -371,8 +398,10 @@ start of the line where the expression started.
 `either` (which is the default) : the `end` is allowed to be in either
 location. The autocorrect will default to `start_of_line`.
 
+[#examples-layoutblockalignment]
 === Examples
 
+[#enforcedstylealignwith_-either-_default_-layoutblockalignment]
 ==== EnforcedStyleAlignWith: either (default)
 
 [source,ruby]
@@ -392,6 +421,7 @@ foo.bar
 end
 ----
 
+[#enforcedstylealignwith_-start_of_block-layoutblockalignment]
 ==== EnforcedStyleAlignWith: start_of_block
 
 [source,ruby]
@@ -411,6 +441,7 @@ foo.bar
   end
 ----
 
+[#enforcedstylealignwith_-start_of_line-layoutblockalignment]
 ==== EnforcedStyleAlignWith: start_of_line
 
 [source,ruby]
@@ -430,6 +461,7 @@ foo.bar
 end
 ----
 
+[#configurable-attributes-layoutblockalignment]
 === Configurable attributes
 
 |===
@@ -440,6 +472,7 @@ end
 | `either`, `start_of_block`, `start_of_line`
 |===
 
+[#layoutblockendnewline]
 == Layout/BlockEndNewline
 
 |===
@@ -455,6 +488,7 @@ end
 Checks whether the end statement of a do..end block
 is on its own line.
 
+[#examples-layoutblockendnewline]
 === Examples
 
 [source,ruby]
@@ -478,6 +512,7 @@ blah { |i|
 }
 ----
 
+[#layoutcaseindentation]
 == Layout/CaseIndentation
 
 |===
@@ -495,6 +530,7 @@ are indented in relation to its `case` or `end` keyword.
 
 It will register a separate offense for each misaligned `when` and `in`.
 
+[#examples-layoutcaseindentation]
 === Examples
 
 [source,ruby]
@@ -535,6 +571,7 @@ else
 end
 ----
 
+[#enforcedstyle_-case-_default_-layoutcaseindentation]
 ==== EnforcedStyle: case (default)
 
 [source,ruby]
@@ -574,6 +611,7 @@ a = case n
 end
 ----
 
+[#enforcedstyle_-end-layoutcaseindentation]
 ==== EnforcedStyle: end
 
 [source,ruby]
@@ -609,6 +647,7 @@ else
 end
 ----
 
+[#configurable-attributes-layoutcaseindentation]
 === Configurable attributes
 
 |===
@@ -627,10 +666,12 @@ end
 | Integer
 |===
 
+[#references-layoutcaseindentation]
 === References
 
 * https://rubystyle.guide#indent-when-to-case
 
+[#layoutclassstructure]
 == Layout/ClassStructure
 
 |===
@@ -708,6 +749,7 @@ automatically.
        - extend
 ----
 
+[#safety-layoutclassstructure]
 === Safety
 
 Autocorrection is unsafe because class methods and module inclusion
@@ -716,6 +758,7 @@ already been defined.
 
 Constants will only be moved when they are assigned with literals.
 
+[#examples-layoutclassstructure]
 === Examples
 
 [source,ruby]
@@ -784,6 +827,7 @@ class Person
 end
 ----
 
+[#configurable-attributes-layoutclassstructure]
 === Configurable attributes
 
 |===
@@ -798,10 +842,12 @@ end
 | Array
 |===
 
+[#references-layoutclassstructure]
 === References
 
 * https://rubystyle.guide#consistent-classes
 
+[#layoutclosingheredocindentation]
 == Layout/ClosingHeredocIndentation
 
 |===
@@ -816,6 +862,7 @@ end
 
 Checks the indentation of here document closings.
 
+[#examples-layoutclosingheredocindentation]
 === Examples
 
 [source,ruby]
@@ -859,6 +906,7 @@ foo arg,
     EOS
 ----
 
+[#layoutclosingparenthesisindentation]
 == Layout/ClosingParenthesisIndentation
 
 |===
@@ -875,6 +923,7 @@ Checks the indentation of hanging closing parentheses in
 method calls, method definitions, and grouped expressions. A hanging
 closing parenthesis means `)` preceded by a line break.
 
+[#examples-layoutclosingparenthesisindentation]
 === Examples
 
 [source,ruby]
@@ -938,6 +987,7 @@ some_method(a,
 )
 ----
 
+[#layoutcommentindentation]
 == Layout/CommentIndentation
 
 |===
@@ -952,6 +1002,7 @@ some_method(a,
 
 Checks the indentation of comments.
 
+[#examples-layoutcommentindentation]
 === Examples
 
 [source,ruby]
@@ -983,6 +1034,7 @@ if true
 end
 ----
 
+[#allowforalignment_-false-_default_-layoutcommentindentation]
 ==== AllowForAlignment: false (default)
 
 [source,ruby]
@@ -996,6 +1048,7 @@ a = 1 # A really long comment
 a = 1
 ----
 
+[#allowforalignment_-true-layoutcommentindentation]
 ==== AllowForAlignment: true
 
 [source,ruby]
@@ -1005,6 +1058,7 @@ a = 1 # A really long comment
       # spanning two lines.
 ----
 
+[#configurable-attributes-layoutcommentindentation]
 === Configurable attributes
 
 |===
@@ -1015,6 +1069,7 @@ a = 1 # A really long comment
 | Boolean
 |===
 
+[#layoutconditionposition]
 == Layout/ConditionPosition
 
 |===
@@ -1030,6 +1085,7 @@ a = 1 # A really long comment
 Checks for conditions that are not on the same line as
 if/while/until.
 
+[#examples-layoutconditionposition]
 === Examples
 
 [source,ruby]
@@ -1046,10 +1102,12 @@ if some_condition
 end
 ----
 
+[#references-layoutconditionposition]
 === References
 
 * https://rubystyle.guide#same-line-condition
 
+[#layoutdefendalignment]
 == Layout/DefEndAlignment
 
 |===
@@ -1071,8 +1129,10 @@ parameter. If it's set to `start_of_line` (which is the default), the
 keyword is. If it's set to `def`, the `end` shall be aligned with the
 `def` keyword.
 
+[#examples-layoutdefendalignment]
 === Examples
 
+[#enforcedstylealignwith_-start_of_line-_default_-layoutdefendalignment]
 ==== EnforcedStyleAlignWith: start_of_line (default)
 
 [source,ruby]
@@ -1088,6 +1148,7 @@ private def foo
 end
 ----
 
+[#enforcedstylealignwith_-def-layoutdefendalignment]
 ==== EnforcedStyleAlignWith: def
 
 [source,ruby]
@@ -1103,6 +1164,7 @@ private def foo
         end
 ----
 
+[#configurable-attributes-layoutdefendalignment]
 === Configurable attributes
 
 |===
@@ -1117,6 +1179,7 @@ private def foo
 | String
 |===
 
+[#layoutdotposition]
 == Layout/DotPosition
 
 |===
@@ -1131,8 +1194,10 @@ private def foo
 
 Checks the . position in multi-line method calls.
 
+[#examples-layoutdotposition]
 === Examples
 
+[#enforcedstyle_-leading-_default_-layoutdotposition]
 ==== EnforcedStyle: leading (default)
 
 [source,ruby]
@@ -1146,6 +1211,7 @@ something
   .method
 ----
 
+[#enforcedstyle_-trailing-layoutdotposition]
 ==== EnforcedStyle: trailing
 
 [source,ruby]
@@ -1159,6 +1225,7 @@ something.
   method
 ----
 
+[#configurable-attributes-layoutdotposition]
 === Configurable attributes
 
 |===
@@ -1169,10 +1236,12 @@ something.
 | `leading`, `trailing`
 |===
 
+[#references-layoutdotposition]
 === References
 
 * https://rubystyle.guide#consistent-multi-line-chains
 
+[#layoutelsealignment]
 == Layout/ElseAlignment
 
 |===
@@ -1190,6 +1259,7 @@ be aligned with an if/unless/while/until/begin/def/rescue keyword, but there
 are special cases when they should follow the same rules as the
 alignment of end.
 
+[#examples-layoutelsealignment]
 === Examples
 
 [source,ruby]
@@ -1216,6 +1286,7 @@ else
 end
 ----
 
+[#layoutemptycomment]
 == Layout/EmptyComment
 
 |===
@@ -1230,6 +1301,7 @@ end
 
 Checks empty comment.
 
+[#examples-layoutemptycomment]
 === Examples
 
 [source,ruby]
@@ -1249,6 +1321,7 @@ class Foo
 end
 ----
 
+[#allowbordercomment_-true-_default_-layoutemptycomment]
 ==== AllowBorderComment: true (default)
 
 [source,ruby]
@@ -1264,6 +1337,7 @@ def bar
 end
 ----
 
+[#allowbordercomment_-false-layoutemptycomment]
 ==== AllowBorderComment: false
 
 [source,ruby]
@@ -1279,6 +1353,7 @@ def bar
 end
 ----
 
+[#allowmargincomment_-true-_default_-layoutemptycomment]
 ==== AllowMarginComment: true (default)
 
 [source,ruby]
@@ -1292,6 +1367,7 @@ class Foo
 end
 ----
 
+[#allowmargincomment_-false-layoutemptycomment]
 ==== AllowMarginComment: false
 
 [source,ruby]
@@ -1305,6 +1381,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-layoutemptycomment]
 === Configurable attributes
 
 |===
@@ -1319,6 +1396,7 @@ end
 | Boolean
 |===
 
+[#layoutemptylineafterguardclause]
 == Layout/EmptyLineAfterGuardClause
 
 |===
@@ -1349,6 +1427,7 @@ end
 Refer to SimpleCov's documentation for more details:
 https://github.com/simplecov-ruby/simplecov#ignoringskipping-code
 
+[#examples-layoutemptylineafterguardclause]
 === Examples
 
 [source,ruby]
@@ -1383,6 +1462,7 @@ def foo
 end
 ----
 
+[#layoutemptylineaftermagiccomment]
 == Layout/EmptyLineAfterMagicComment
 
 |===
@@ -1397,6 +1477,7 @@ end
 
 Checks for a newline after the final magic comment.
 
+[#examples-layoutemptylineaftermagiccomment]
 === Examples
 
 [source,ruby]
@@ -1417,10 +1498,12 @@ class Person
 end
 ----
 
+[#references-layoutemptylineaftermagiccomment]
 === References
 
 * https://rubystyle.guide#separate-magic-comments-from-code
 
+[#layoutemptylineaftermultilinecondition]
 == Layout/EmptyLineAfterMultilineCondition
 
 |===
@@ -1435,6 +1518,7 @@ end
 
 Enforces empty line after multiline condition.
 
+[#examples-layoutemptylineaftermultilinecondition]
 === Examples
 
 [source,ruby]
@@ -1485,10 +1569,12 @@ rescue FooError,
 end
 ----
 
+[#references-layoutemptylineaftermultilinecondition]
 === References
 
 * https://github.com/airbnb/ruby#multiline-if-newline
 
+[#layoutemptylinebetweendefs]
 == Layout/EmptyLineBetweenDefs
 
 |===
@@ -1511,8 +1597,10 @@ number of empty lines permitted.
 `AllowAdjacentOneLineDefs` configures whether adjacent
 one-line definitions are considered an offense.
 
+[#examples-layoutemptylinebetweendefs]
 === Examples
 
+[#emptylinebetweenmethoddefs_-true-_default_-layoutemptylinebetweendefs]
 ==== EmptyLineBetweenMethodDefs: true (default)
 
 [source,ruby]
@@ -1536,6 +1624,7 @@ def b
 end
 ----
 
+[#emptylinebetweenclassdefs_-true-_default_-layoutemptylinebetweendefs]
 ==== EmptyLineBetweenClassDefs: true (default)
 
 [source,ruby]
@@ -1564,6 +1653,7 @@ def b
 end
 ----
 
+[#emptylinebetweenmoduledefs_-true-_default_-layoutemptylinebetweendefs]
 ==== EmptyLineBetweenModuleDefs: true (default)
 
 [source,ruby]
@@ -1592,6 +1682,7 @@ def b
 end
 ----
 
+[#allowadjacentonelinedefs_-true-_default_-layoutemptylinebetweendefs]
 ==== AllowAdjacentOneLineDefs: true (default)
 
 [source,ruby]
@@ -1609,6 +1700,7 @@ class ErrorB < BaseError; end
 class ErrorC < BaseError; end
 ----
 
+[#allowadjacentonelinedefs_-false-layoutemptylinebetweendefs]
 ==== AllowAdjacentOneLineDefs: false
 
 [source,ruby]
@@ -1626,6 +1718,7 @@ class ErrorB < BaseError; end
 class ErrorC < BaseError; end
 ----
 
+[#configurable-attributes-layoutemptylinebetweendefs]
 === Configurable attributes
 
 |===
@@ -1656,10 +1749,12 @@ class ErrorC < BaseError; end
 | Integer
 |===
 
+[#references-layoutemptylinebetweendefs]
 === References
 
 * https://rubystyle.guide#empty-lines-between-methods
 
+[#layoutemptylines]
 == Layout/EmptyLines
 
 |===
@@ -1674,6 +1769,7 @@ class ErrorC < BaseError; end
 
 Checks for two or more consecutive blank lines.
 
+[#examples-layoutemptylines]
 === Examples
 
 [source,ruby]
@@ -1690,10 +1786,12 @@ some_method
 some_method
 ----
 
+[#references-layoutemptylines]
 === References
 
 * https://rubystyle.guide#two-or-more-empty-lines
 
+[#layoutemptylinesaroundaccessmodifier]
 == Layout/EmptyLinesAroundAccessModifier
 
 |===
@@ -1708,8 +1806,10 @@ some_method
 
 Access modifiers should be surrounded by blank lines.
 
+[#examples-layoutemptylinesaroundaccessmodifier]
 === Examples
 
+[#enforcedstyle_-around-_default_-layoutemptylinesaroundaccessmodifier]
 ==== EnforcedStyle: around (default)
 
 [source,ruby]
@@ -1731,6 +1831,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-only_before-layoutemptylinesaroundaccessmodifier]
 ==== EnforcedStyle: only_before
 
 [source,ruby]
@@ -1751,6 +1852,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-layoutemptylinesaroundaccessmodifier]
 === Configurable attributes
 
 |===
@@ -1761,11 +1863,13 @@ end
 | `around`, `only_before`
 |===
 
+[#references-layoutemptylinesaroundaccessmodifier]
 === References
 
 * https://rubystyle.guide#empty-lines-around-access-modifier
 * https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions
 
+[#layoutemptylinesaroundarguments]
 == Layout/EmptyLinesAroundArguments
 
 |===
@@ -1781,6 +1885,7 @@ end
 Checks if empty lines exist around the arguments
 of a method invocation.
 
+[#examples-layoutemptylinesaroundarguments]
 === Examples
 
 [source,ruby]
@@ -1817,6 +1922,7 @@ some_method(
 )
 ----
 
+[#layoutemptylinesaroundattributeaccessor]
 == Layout/EmptyLinesAroundAttributeAccessor
 
 |===
@@ -1833,6 +1939,7 @@ Checks for a newline after an attribute accessor or a group of them.
 `alias` syntax and `alias_method`, `public`, `protected`, and `private` methods are allowed
 by default. These are customizable with `AllowAliasSyntax` and `AllowedMethods` options.
 
+[#examples-layoutemptylinesaroundattributeaccessor]
 === Examples
 
 [source,ruby]
@@ -1858,6 +1965,7 @@ def do_something
 end
 ----
 
+[#allowaliassyntax_-true-_default_-layoutemptylinesaroundattributeaccessor]
 ==== AllowAliasSyntax: true (default)
 
 [source,ruby]
@@ -1870,6 +1978,7 @@ def do_something
 end
 ----
 
+[#allowaliassyntax_-false-layoutemptylinesaroundattributeaccessor]
 ==== AllowAliasSyntax: false
 
 [source,ruby]
@@ -1890,6 +1999,7 @@ def do_something
 end
 ----
 
+[#allowedmethods_-__private__-layoutemptylinesaroundattributeaccessor]
 ==== AllowedMethods: ['private']
 
 [source,ruby]
@@ -1902,6 +2012,7 @@ def do_something
 end
 ----
 
+[#configurable-attributes-layoutemptylinesaroundattributeaccessor]
 === Configurable attributes
 
 |===
@@ -1916,10 +2027,12 @@ end
 | Array
 |===
 
+[#references-layoutemptylinesaroundattributeaccessor]
 === References
 
 * https://rubystyle.guide#empty-lines-around-attribute-accessor
 
+[#layoutemptylinesaroundbeginbody]
 == Layout/EmptyLinesAroundBeginBody
 
 |===
@@ -1935,6 +2048,7 @@ end
 Checks if empty lines exist around the bodies of begin-end
 blocks.
 
+[#examples-layoutemptylinesaroundbeginbody]
 === Examples
 
 [source,ruby]
@@ -1954,10 +2068,12 @@ begin
 end
 ----
 
+[#references-layoutemptylinesaroundbeginbody]
 === References
 
 * https://rubystyle.guide#empty-lines-around-bodies
 
+[#layoutemptylinesaroundblockbody]
 == Layout/EmptyLinesAroundBlockBody
 
 |===
@@ -1973,8 +2089,10 @@ end
 Checks if empty lines around the bodies of blocks match
 the configuration.
 
+[#examples-layoutemptylinesaroundblockbody]
 === Examples
 
+[#enforcedstyle_-no_empty_lines-_default_-layoutemptylinesaroundblockbody]
 ==== EnforcedStyle: no_empty_lines (default)
 
 [source,ruby]
@@ -1986,6 +2104,7 @@ foo do |bar|
 end
 ----
 
+[#enforcedstyle_-empty_lines-layoutemptylinesaroundblockbody]
 ==== EnforcedStyle: empty_lines
 
 [source,ruby]
@@ -1999,6 +2118,7 @@ foo do |bar|
 end
 ----
 
+[#configurable-attributes-layoutemptylinesaroundblockbody]
 === Configurable attributes
 
 |===
@@ -2009,10 +2129,12 @@ end
 | `empty_lines`, `no_empty_lines`
 |===
 
+[#references-layoutemptylinesaroundblockbody]
 === References
 
 * https://rubystyle.guide#empty-lines-around-bodies
 
+[#layoutemptylinesaroundclassbody]
 == Layout/EmptyLinesAroundClassBody
 
 |===
@@ -2028,8 +2150,10 @@ end
 Checks if empty lines around the bodies of classes match
 the configuration.
 
+[#examples-layoutemptylinesaroundclassbody]
 === Examples
 
+[#enforcedstyle_-no_empty_lines-_default_-layoutemptylinesaroundclassbody]
 ==== EnforcedStyle: no_empty_lines (default)
 
 [source,ruby]
@@ -2043,6 +2167,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-empty_lines-layoutemptylinesaroundclassbody]
 ==== EnforcedStyle: empty_lines
 
 [source,ruby]
@@ -2058,6 +2183,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-empty_lines_except_namespace-layoutemptylinesaroundclassbody]
 ==== EnforcedStyle: empty_lines_except_namespace
 
 [source,ruby]
@@ -2073,6 +2199,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-empty_lines_special-layoutemptylinesaroundclassbody]
 ==== EnforcedStyle: empty_lines_special
 
 [source,ruby]
@@ -2085,6 +2212,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-beginning_only-layoutemptylinesaroundclassbody]
 ==== EnforcedStyle: beginning_only
 
 [source,ruby]
@@ -2099,6 +2227,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-ending_only-layoutemptylinesaroundclassbody]
 ==== EnforcedStyle: ending_only
 
 [source,ruby]
@@ -2113,6 +2242,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-layoutemptylinesaroundclassbody]
 === Configurable attributes
 
 |===
@@ -2123,10 +2253,12 @@ end
 | `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`, `beginning_only`, `ending_only`
 |===
 
+[#references-layoutemptylinesaroundclassbody]
 === References
 
 * https://rubystyle.guide#empty-lines-around-bodies
 
+[#layoutemptylinesaroundexceptionhandlingkeywords]
 == Layout/EmptyLinesAroundExceptionHandlingKeywords
 
 |===
@@ -2145,6 +2277,7 @@ beginning/end and around method definition body.
 `Style/EmptyLinesAroundBeginBody` or `Style/EmptyLinesAroundMethodBody`
 can be used for this purpose.
 
+[#examples-layoutemptylinesaroundexceptionhandlingkeywords]
 === Examples
 
 [source,ruby]
@@ -2198,10 +2331,12 @@ rescue
 end
 ----
 
+[#references-layoutemptylinesaroundexceptionhandlingkeywords]
 === References
 
 * https://rubystyle.guide#empty-lines-around-bodies
 
+[#layoutemptylinesaroundmethodbody]
 == Layout/EmptyLinesAroundMethodBody
 
 |===
@@ -2216,6 +2351,7 @@ end
 
 Checks if empty lines exist around the bodies of methods.
 
+[#examples-layoutemptylinesaroundmethodbody]
 === Examples
 
 [source,ruby]
@@ -2235,10 +2371,12 @@ def bar
 end
 ----
 
+[#references-layoutemptylinesaroundmethodbody]
 === References
 
 * https://rubystyle.guide#empty-lines-around-bodies
 
+[#layoutemptylinesaroundmodulebody]
 == Layout/EmptyLinesAroundModuleBody
 
 |===
@@ -2254,8 +2392,10 @@ end
 Checks if empty lines around the bodies of modules match
 the configuration.
 
+[#examples-layoutemptylinesaroundmodulebody]
 === Examples
 
+[#enforcedstyle_-no_empty_lines-_default_-layoutemptylinesaroundmodulebody]
 ==== EnforcedStyle: no_empty_lines (default)
 
 [source,ruby]
@@ -2269,6 +2409,7 @@ module Foo
 end
 ----
 
+[#enforcedstyle_-empty_lines-layoutemptylinesaroundmodulebody]
 ==== EnforcedStyle: empty_lines
 
 [source,ruby]
@@ -2284,6 +2425,7 @@ module Foo
 end
 ----
 
+[#enforcedstyle_-empty_lines_except_namespace-layoutemptylinesaroundmodulebody]
 ==== EnforcedStyle: empty_lines_except_namespace
 
 [source,ruby]
@@ -2299,6 +2441,7 @@ module Foo
 end
 ----
 
+[#enforcedstyle_-empty_lines_special-layoutemptylinesaroundmodulebody]
 ==== EnforcedStyle: empty_lines_special
 
 [source,ruby]
@@ -2311,6 +2454,7 @@ module Foo
 end
 ----
 
+[#configurable-attributes-layoutemptylinesaroundmodulebody]
 === Configurable attributes
 
 |===
@@ -2321,10 +2465,12 @@ end
 | `empty_lines`, `empty_lines_except_namespace`, `empty_lines_special`, `no_empty_lines`
 |===
 
+[#references-layoutemptylinesaroundmodulebody]
 === References
 
 * https://rubystyle.guide#empty-lines-around-bodies
 
+[#layoutendalignment]
 == Layout/EndAlignment
 
 |===
@@ -2358,8 +2504,10 @@ to align with the start of the line. `Layout/DefEndAlignment` cop also aligns wi
 `EnforcedStyleAlignWith: start_of_line` by default.
 These style can be configured by each cop.
 
+[#examples-layoutendalignment]
 === Examples
 
+[#enforcedstylealignwith_-keyword-_default_-layoutendalignment]
 ==== EnforcedStyleAlignWith: keyword (default)
 
 [source,ruby]
@@ -2379,6 +2527,7 @@ variable =
   end
 ----
 
+[#enforcedstylealignwith_-variable-layoutendalignment]
 ==== EnforcedStyleAlignWith: variable
 
 [source,ruby]
@@ -2398,6 +2547,7 @@ variable =
   end
 ----
 
+[#enforcedstylealignwith_-start_of_line-layoutendalignment]
 ==== EnforcedStyleAlignWith: start_of_line
 
 [source,ruby]
@@ -2423,6 +2573,7 @@ variable =
   end
 ----
 
+[#configurable-attributes-layoutendalignment]
 === Configurable attributes
 
 |===
@@ -2437,6 +2588,7 @@ variable =
 | String
 |===
 
+[#layoutendofline]
 == Layout/EndOfLine
 
 |===
@@ -2451,8 +2603,10 @@ variable =
 
 Checks for Windows-style line endings in the source code.
 
+[#examples-layoutendofline]
 === Examples
 
+[#enforcedstyle_-native-_default_-layoutendofline]
 ==== EnforcedStyle: native (default)
 
 [source,ruby]
@@ -2469,6 +2623,7 @@ puts 'Hello' # Return character is CR+LF on Windows.
 puts 'Hello' # Return character is LF on other than Windows.
 ----
 
+[#enforcedstyle_-lf-layoutendofline]
 ==== EnforcedStyle: lf
 
 [source,ruby]
@@ -2483,6 +2638,7 @@ puts 'Hello' # Return character is CR+LF on all platforms.
 puts 'Hello' # Return character is LF on all platforms.
 ----
 
+[#enforcedstyle_-crlf-layoutendofline]
 ==== EnforcedStyle: crlf
 
 [source,ruby]
@@ -2497,6 +2653,7 @@ puts 'Hello' # Return character is LF on all platforms.
 puts 'Hello' # Return character is CR+LF on all platforms.
 ----
 
+[#configurable-attributes-layoutendofline]
 === Configurable attributes
 
 |===
@@ -2507,10 +2664,12 @@ puts 'Hello' # Return character is CR+LF on all platforms.
 | `native`, `lf`, `crlf`
 |===
 
+[#references-layoutendofline]
 === References
 
 * https://rubystyle.guide#crlf
 
+[#layoutextraspacing]
 == Layout/ExtraSpacing
 
 |===
@@ -2525,6 +2684,7 @@ puts 'Hello' # Return character is CR+LF on all platforms.
 
 Checks for extra/unnecessary whitespace.
 
+[#examples-layoutextraspacing]
 === Examples
 
 [source,ruby]
@@ -2552,6 +2712,7 @@ another_object.method(arg) # this is another comment
 some_object.method(arg)    # this is some comment
 ----
 
+[#configurable-attributes-layoutextraspacing]
 === Configurable attributes
 
 |===
@@ -2570,6 +2731,7 @@ some_object.method(arg)    # this is some comment
 | Boolean
 |===
 
+[#layoutfirstargumentindentation]
 == Layout/FirstArgumentIndentation
 
 |===
@@ -2592,6 +2754,7 @@ For indenting the first parameter of method _definitions_, check out
 This cop will respect `Layout/ArgumentAlignment` and will not work when
 `EnforcedStyle: with_fixed_indentation` is specified for `Layout/ArgumentAlignment`.
 
+[#examples-layoutfirstargumentindentation]
 === Examples
 
 [source,ruby]
@@ -2619,6 +2782,7 @@ nested_first_param),
 second_param
 ----
 
+[#enforcedstyle_-special_for_inner_method_call_in_parentheses-_default_-layoutfirstargumentindentation]
 ==== EnforcedStyle: special_for_inner_method_call_in_parentheses (default)
 
 [source,ruby]
@@ -2650,6 +2814,7 @@ some_method nested_call(
 second_param
 ----
 
+[#enforcedstyle_-consistent-layoutfirstargumentindentation]
 ==== EnforcedStyle: consistent
 
 [source,ruby]
@@ -2680,6 +2845,7 @@ some_method nested_call(
 second_param
 ----
 
+[#enforcedstyle_-consistent_relative_to_receiver-layoutfirstargumentindentation]
 ==== EnforcedStyle: consistent_relative_to_receiver
 
 [source,ruby]
@@ -2710,6 +2876,7 @@ some_method nested_call(
 second_params
 ----
 
+[#enforcedstyle_-special_for_inner_method_call-layoutfirstargumentindentation]
 ==== EnforcedStyle: special_for_inner_method_call
 
 [source,ruby]
@@ -2742,6 +2909,7 @@ some_method nested_call(
 second_param
 ----
 
+[#configurable-attributes-layoutfirstargumentindentation]
 === Configurable attributes
 
 |===
@@ -2756,6 +2924,7 @@ second_param
 | Integer
 |===
 
+[#layoutfirstarrayelementindentation]
 == Layout/FirstArrayElementIndentation
 
 |===
@@ -2787,8 +2956,10 @@ more than the start of the line where the opening square bracket is.
 This default style is called 'special_inside_parentheses'. Alternative
 styles are 'consistent' and 'align_brackets'. Here are examples:
 
+[#examples-layoutfirstarrayelementindentation]
 === Examples
 
+[#enforcedstyle_-special_inside_parentheses-_default_-layoutfirstarrayelementindentation]
 ==== EnforcedStyle: special_inside_parentheses (default)
 
 [source,ruby]
@@ -2815,6 +2986,7 @@ but_in_a_method_call([
                      ])
 ----
 
+[#enforcedstyle_-consistent-layoutfirstarrayelementindentation]
 ==== EnforcedStyle: consistent
 
 [source,ruby]
@@ -2841,6 +3013,7 @@ and_in_a_method_call([
 ])
 ----
 
+[#enforcedstyle_-align_brackets-layoutfirstarrayelementindentation]
 ==== EnforcedStyle: align_brackets
 
 [source,ruby]
@@ -2859,6 +3032,7 @@ and_now_for_something = [
                         ]
 ----
 
+[#configurable-attributes-layoutfirstarrayelementindentation]
 === Configurable attributes
 
 |===
@@ -2873,6 +3047,7 @@ and_now_for_something = [
 | Integer
 |===
 
+[#layoutfirstarrayelementlinebreak]
 == Layout/FirstArrayElementLineBreak
 
 |===
@@ -2888,6 +3063,7 @@ and_now_for_something = [
 Checks for a line break before the first element in a
 multi-line array.
 
+[#examples-layoutfirstarrayelementlinebreak]
 === Examples
 
 [source,ruby]
@@ -2905,6 +3081,7 @@ multi-line array.
 [:a, :b]
 ----
 
+[#allowmultilinefinalelement_-false-_default_-layoutfirstarrayelementlinebreak]
 ==== AllowMultilineFinalElement: false (default)
 
 [source,ruby]
@@ -2921,6 +3098,7 @@ multi-line array.
 }]
 ----
 
+[#allowmultilinefinalelement_-true-layoutfirstarrayelementlinebreak]
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
@@ -2931,6 +3109,7 @@ multi-line array.
 }]
 ----
 
+[#configurable-attributes-layoutfirstarrayelementlinebreak]
 === Configurable attributes
 
 |===
@@ -2941,6 +3120,7 @@ multi-line array.
 | Boolean
 |===
 
+[#layoutfirsthashelementindentation]
 == Layout/FirstHashElementIndentation
 
 |===
@@ -2969,8 +3149,10 @@ than the start of the line where the opening curly brace is.
 This default style is called 'special_inside_parentheses'. Alternative
 styles are 'consistent' and 'align_braces'. Here are examples:
 
+[#examples-layoutfirsthashelementindentation]
 === Examples
 
+[#enforcedstyle_-special_inside_parentheses-_default_-layoutfirsthashelementindentation]
 ==== EnforcedStyle: special_inside_parentheses (default)
 
 [source,ruby]
@@ -3014,6 +3196,7 @@ takes_multi_pairs_hash(x: {
                        })
 ----
 
+[#enforcedstyle_-consistent-layoutfirsthashelementindentation]
 ==== EnforcedStyle: consistent
 
 [source,ruby]
@@ -3040,6 +3223,7 @@ and_in_a_method_call({
 })
 ----
 
+[#enforcedstyle_-align_braces-layoutfirsthashelementindentation]
 ==== EnforcedStyle: align_braces
 
 [source,ruby]
@@ -3074,6 +3258,7 @@ takes_multi_pairs_hash(x: {
                           })
 ----
 
+[#configurable-attributes-layoutfirsthashelementindentation]
 === Configurable attributes
 
 |===
@@ -3088,6 +3273,7 @@ takes_multi_pairs_hash(x: {
 | Integer
 |===
 
+[#layoutfirsthashelementlinebreak]
 == Layout/FirstHashElementLineBreak
 
 |===
@@ -3103,6 +3289,7 @@ takes_multi_pairs_hash(x: {
 Checks for a line break before the first element in a
 multi-line hash.
 
+[#examples-layoutfirsthashelementlinebreak]
 === Examples
 
 [source,ruby]
@@ -3123,6 +3310,7 @@ multi-line hash.
 }}
 ----
 
+[#allowmultilinefinalelement_-false-_default_-layoutfirsthashelementlinebreak]
 ==== AllowMultilineFinalElement: false (default)
 
 [source,ruby]
@@ -3133,6 +3321,7 @@ multi-line hash.
 }}
 ----
 
+[#allowmultilinefinalelement_-true-layoutfirsthashelementlinebreak]
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
@@ -3149,6 +3338,7 @@ multi-line hash.
 }}
 ----
 
+[#configurable-attributes-layoutfirsthashelementlinebreak]
 === Configurable attributes
 
 |===
@@ -3159,6 +3349,7 @@ multi-line hash.
 | Boolean
 |===
 
+[#layoutfirstmethodargumentlinebreak]
 == Layout/FirstMethodArgumentLineBreak
 
 |===
@@ -3174,6 +3365,7 @@ multi-line hash.
 Checks for a line break before the first argument in a
 multi-line method call.
 
+[#examples-layoutfirstmethodargumentlinebreak]
 === Examples
 
 [source,ruby]
@@ -3192,6 +3384,7 @@ method(
     baz
 ----
 
+[#allowmultilinefinalelement_-false-_default_-layoutfirstmethodargumentlinebreak]
 ==== AllowMultilineFinalElement: false (default)
 
 [source,ruby]
@@ -3210,6 +3403,7 @@ method(
 })
 ----
 
+[#allowmultilinefinalelement_-true-layoutfirstmethodargumentlinebreak]
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
@@ -3240,6 +3434,17 @@ method(
 )
 ----
 
+[#allowedmethods_-__some_method__-layoutfirstmethodargumentlinebreak]
+==== AllowedMethods: ['some_method']
+
+[source,ruby]
+----
+# good
+some_method(foo, bar,
+  baz)
+----
+
+[#configurable-attributes-layoutfirstmethodargumentlinebreak]
 === Configurable attributes
 
 |===
@@ -3248,8 +3453,13 @@ method(
 | xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
 | Boolean
+
+| AllowedMethods
+| `[]`
+| Array
 |===
 
+[#layoutfirstmethodparameterlinebreak]
 == Layout/FirstMethodParameterLineBreak
 
 |===
@@ -3265,6 +3475,7 @@ method(
 Checks for a line break before the first parameter in a
 multi-line method parameter definition.
 
+[#examples-layoutfirstmethodparameterlinebreak]
 === Examples
 
 [source,ruby]
@@ -3289,6 +3500,7 @@ def method foo,
 end
 ----
 
+[#allowmultilinefinalelement_-false-_default_-layoutfirstmethodparameterlinebreak]
 ==== AllowMultilineFinalElement: false (default)
 
 [source,ruby]
@@ -3309,6 +3521,7 @@ def method(
 end
 ----
 
+[#allowmultilinefinalelement_-true-layoutfirstmethodparameterlinebreak]
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
@@ -3321,6 +3534,7 @@ def method(foo, bar, baz = {
 end
 ----
 
+[#configurable-attributes-layoutfirstmethodparameterlinebreak]
 === Configurable attributes
 
 |===
@@ -3331,6 +3545,7 @@ end
 | Boolean
 |===
 
+[#layoutfirstparameterindentation]
 == Layout/FirstParameterIndentation
 
 |===
@@ -3351,6 +3566,7 @@ For indenting the first argument of method _calls_, check out
 Layout/FirstArgumentIndentation, which supports options related to
 nesting that are irrelevant for method _definitions_.
 
+[#examples-layoutfirstparameterindentation]
 === Examples
 
 [source,ruby]
@@ -3363,6 +3579,7 @@ second_param)
 end
 ----
 
+[#enforcedstyle_-consistent-_default_-layoutfirstparameterindentation]
 ==== EnforcedStyle: consistent (default)
 
 [source,ruby]
@@ -3378,6 +3595,7 @@ second_param)
 end
 ----
 
+[#enforcedstyle_-align_parentheses-layoutfirstparameterindentation]
 ==== EnforcedStyle: align_parentheses
 
 [source,ruby]
@@ -3393,6 +3611,7 @@ second_param)
 end
 ----
 
+[#configurable-attributes-layoutfirstparameterindentation]
 === Configurable attributes
 
 |===
@@ -3407,6 +3626,7 @@ end
 | Integer
 |===
 
+[#layouthashalignment]
 == Layout/HashAlignment
 
 |===
@@ -3437,8 +3657,10 @@ can also be configured. The options are:
 Alternatively you can specify multiple allowed styles. That's done by
 passing a list of styles to EnforcedStyles.
 
+[#examples-layouthashalignment]
 === Examples
 
+[#enforcedhashrocketstyle_-key-_default_-layouthashalignment]
 ==== EnforcedHashRocketStyle: key (default)
 
 [source,ruby]
@@ -3460,6 +3682,7 @@ passing a list of styles to EnforcedStyles.
 }
 ----
 
+[#enforcedhashrocketstyle_-separator-layouthashalignment]
 ==== EnforcedHashRocketStyle: separator
 
 [source,ruby]
@@ -3481,6 +3704,7 @@ passing a list of styles to EnforcedStyles.
 }
 ----
 
+[#enforcedhashrocketstyle_-table-layouthashalignment]
 ==== EnforcedHashRocketStyle: table
 
 [source,ruby]
@@ -3498,6 +3722,7 @@ passing a list of styles to EnforcedStyles.
 }
 ----
 
+[#enforcedcolonstyle_-key-_default_-layouthashalignment]
 ==== EnforcedColonStyle: key (default)
 
 [source,ruby]
@@ -3519,6 +3744,7 @@ passing a list of styles to EnforcedStyles.
 }
 ----
 
+[#enforcedcolonstyle_-separator-layouthashalignment]
 ==== EnforcedColonStyle: separator
 
 [source,ruby]
@@ -3536,6 +3762,7 @@ passing a list of styles to EnforcedStyles.
 }
 ----
 
+[#enforcedcolonstyle_-table-layouthashalignment]
 ==== EnforcedColonStyle: table
 
 [source,ruby]
@@ -3553,6 +3780,7 @@ passing a list of styles to EnforcedStyles.
 }
 ----
 
+[#enforcedlastargumenthashstyle_-always_inspect-_default_-layouthashalignment]
 ==== EnforcedLastArgumentHashStyle: always_inspect (default)
 
 [source,ruby]
@@ -3588,6 +3816,7 @@ do_something({
 })
 ----
 
+[#enforcedlastargumenthashstyle_-always_ignore-layouthashalignment]
 ==== EnforcedLastArgumentHashStyle: always_ignore
 
 [source,ruby]
@@ -3603,6 +3832,7 @@ do_something({foo: 1,
   bar: 2})
 ----
 
+[#enforcedlastargumenthashstyle_-ignore_implicit-layouthashalignment]
 ==== EnforcedLastArgumentHashStyle: ignore_implicit
 
 [source,ruby]
@@ -3618,6 +3848,7 @@ do_something(foo: 1,
   bar: 2)
 ----
 
+[#enforcedlastargumenthashstyle_-ignore_explicit-layouthashalignment]
 ==== EnforcedLastArgumentHashStyle: ignore_explicit
 
 [source,ruby]
@@ -3633,6 +3864,7 @@ do_something({foo: 1,
   bar: 2})
 ----
 
+[#configurable-attributes-layouthashalignment]
 === Configurable attributes
 
 |===
@@ -3651,6 +3883,7 @@ do_something({foo: 1,
 | `always_inspect`, `always_ignore`, `ignore_implicit`, `ignore_explicit`
 |===
 
+[#layoutheredocargumentclosingparenthesis]
 == Layout/HeredocArgumentClosingParenthesis
 
 |===
@@ -3668,6 +3901,7 @@ in a method call that passes a HEREDOC string as an argument.
 It should be placed at the end of the line containing the
 opening HEREDOC tag.
 
+[#examples-layoutheredocargumentclosingparenthesis]
 === Examples
 
 [source,ruby]
@@ -3714,10 +3948,12 @@ opening HEREDOC tag.
    )
 ----
 
+[#references-layoutheredocargumentclosingparenthesis]
 === References
 
 * https://rubystyle.guide#heredoc-argument-closing-parentheses
 
+[#layoutheredocindentation]
 == Layout/HeredocIndentation
 
 NOTE: Required Ruby version: 2.3
@@ -3739,6 +3975,7 @@ NOTE: When ``Layout/LineLength``'s `AllowHeredoc` is false (not default),
       this cop does not add any offenses for long here documents to
       avoid ``Layout/LineLength``'s offenses.
 
+[#examples-layoutheredocindentation]
 === Examples
 
 [source,ruby]
@@ -3754,10 +3991,12 @@ RUBY
 RUBY
 ----
 
+[#references-layoutheredocindentation]
 === References
 
 * https://rubystyle.guide#squiggly-heredocs
 
+[#layoutindentationconsistency]
 == Layout/IndentationConsistency
 
 |===
@@ -3780,8 +4019,10 @@ private members shall be indented one step more than the modifiers.
 Other than that, both styles mean that entities on the same logical
 depth shall have the same indentation.
 
+[#examples-layoutindentationconsistency]
 === Examples
 
+[#enforcedstyle_-normal-_default_-layoutindentationconsistency]
 ==== EnforcedStyle: normal (default)
 
 [source,ruby]
@@ -3839,6 +4080,7 @@ class A
 end
 ----
 
+[#enforcedstyle_-indented_internal_methods-layoutindentationconsistency]
 ==== EnforcedStyle: indented_internal_methods
 
 [source,ruby]
@@ -3896,6 +4138,7 @@ class A
 end
 ----
 
+[#configurable-attributes-layoutindentationconsistency]
 === Configurable attributes
 
 |===
@@ -3906,11 +4149,13 @@ end
 | `normal`, `indented_internal_methods`
 |===
 
+[#references-layoutindentationconsistency]
 === References
 
 * https://rubystyle.guide#spaces-indentation
 * https://edgeguides.rubyonrails.org/contributing_to_ruby_on_rails.html#follow-the-coding-conventions
 
+[#layoutindentationstyle]
 == Layout/IndentationStyle
 
 |===
@@ -3926,8 +4171,10 @@ end
 Checks that the indentation method is consistent.
 Either tabs only or spaces only are used for indentation.
 
+[#examples-layoutindentationstyle]
 === Examples
 
+[#enforcedstyle_-spaces-_default_-layoutindentationstyle]
 ==== EnforcedStyle: spaces (default)
 
 [source,ruby]
@@ -3945,6 +4192,7 @@ def foo
 end
 ----
 
+[#enforcedstyle_-tabs-layoutindentationstyle]
 ==== EnforcedStyle: tabs
 
 [source,ruby]
@@ -3962,6 +4210,7 @@ def foo
 end
 ----
 
+[#configurable-attributes-layoutindentationstyle]
 === Configurable attributes
 
 |===
@@ -3976,10 +4225,12 @@ end
 | `spaces`, `tabs`
 |===
 
+[#references-layoutindentationstyle]
 === References
 
 * https://rubystyle.guide#spaces-indentation
 
+[#layoutindentationwidth]
 == Layout/IndentationWidth
 
 |===
@@ -3992,13 +4243,16 @@ end
 | -
 |===
 
-Checks for indentation that doesn't use the specified number
-of spaces.
+Checks for indentation that doesn't use the specified number of spaces.
+The indentation width can be configured using the `Width` setting. The default width is 2.
 
-See also the IndentationConsistency cop which is the companion to this
-one.
+See also the `Layout/IndentationConsistency` cop which is the companion to this one.
 
+[#examples-layoutindentationwidth]
 === Examples
+
+[#width_-2-_default_-layoutindentationwidth]
+==== Width: 2 (default)
 
 [source,ruby]
 ----
@@ -4017,6 +4271,7 @@ class A
 end
 ----
 
+[#allowedpatterns_-____s_module__-layoutindentationwidth]
 ==== AllowedPatterns: ['^\s*module']
 
 [source,ruby]
@@ -4040,6 +4295,7 @@ end
 end
 ----
 
+[#configurable-attributes-layoutindentationwidth]
 === Configurable attributes
 
 |===
@@ -4054,10 +4310,12 @@ end
 | Array
 |===
 
+[#references-layoutindentationwidth]
 === References
 
 * https://rubystyle.guide#spaces-indentation
 
+[#layoutinitialindentation]
 == Layout/InitialIndentation
 
 |===
@@ -4073,6 +4331,7 @@ end
 Checks for indentation of the first non-blank non-comment
 line in a file.
 
+[#examples-layoutinitialindentation]
 === Examples
 
 [source,ruby]
@@ -4088,6 +4347,7 @@ class A
 end
 ----
 
+[#layoutleadingcommentspace]
 == Layout/LeadingCommentSpace
 
 |===
@@ -4106,6 +4366,7 @@ required for some RDoc special syntax, like `#++`, `#--`,
 `#:nodoc`, `=begin`- and `=end` comments, "shebang" directives,
 or rackup options.
 
+[#examples-layoutleadingcommentspace]
 === Examples
 
 [source,ruby]
@@ -4117,6 +4378,7 @@ or rackup options.
 # Some comment
 ----
 
+[#allowdoxygencommentstyle_-false-_default_-layoutleadingcommentspace]
 ==== AllowDoxygenCommentStyle: false (default)
 
 [source,ruby]
@@ -4129,6 +4391,7 @@ or rackup options.
 #*
 ----
 
+[#allowdoxygencommentstyle_-true-layoutleadingcommentspace]
 ==== AllowDoxygenCommentStyle: true
 
 [source,ruby]
@@ -4141,6 +4404,7 @@ or rackup options.
 #*
 ----
 
+[#allowgemfilerubycomment_-false-_default_-layoutleadingcommentspace]
 ==== AllowGemfileRubyComment: false (default)
 
 [source,ruby]
@@ -4151,6 +4415,7 @@ or rackup options.
 #ruby-gemset=myproject
 ----
 
+[#allowgemfilerubycomment_-true-layoutleadingcommentspace]
 ==== AllowGemfileRubyComment: true
 
 [source,ruby]
@@ -4161,6 +4426,33 @@ or rackup options.
 #ruby-gemset=myproject
 ----
 
+[#allowrbsinlineannotation_-false-_default_-layoutleadingcommentspace]
+==== AllowRBSInlineAnnotation: false (default)
+
+[source,ruby]
+----
+# bad
+
+include Enumerable #[Integer]
+
+attr_reader :name #: String
+attr_reader :age  #: Integer?
+----
+
+[#allowrbsinlineannotation_-true-layoutleadingcommentspace]
+==== AllowRBSInlineAnnotation: true
+
+[source,ruby]
+----
+# good
+
+include Enumerable #[Integer]
+
+attr_reader :name #: String
+attr_reader :age  #: Integer?
+----
+
+[#configurable-attributes-layoutleadingcommentspace]
 === Configurable attributes
 
 |===
@@ -4173,12 +4465,18 @@ or rackup options.
 | AllowGemfileRubyComment
 | `false`
 | Boolean
+
+| AllowRBSInlineAnnotation
+| `false`
+| Boolean
 |===
 
+[#references-layoutleadingcommentspace]
 === References
 
 * https://rubystyle.guide#hash-space
 
+[#layoutleadingemptylines]
 == Layout/LeadingEmptyLines
 
 |===
@@ -4194,6 +4492,7 @@ or rackup options.
 Checks for unnecessary leading blank lines at the beginning
 of a file.
 
+[#examples-layoutleadingemptylines]
 === Examples
 
 [source,ruby]
@@ -4219,6 +4518,7 @@ end
 # a comment
 ----
 
+[#layoutlinecontinuationleadingspace]
 == Layout/LineContinuationLeadingSpace
 
 |===
@@ -4235,8 +4535,10 @@ Checks that strings broken over multiple lines (by a backslash) contain
 trailing spaces instead of leading spaces (default) or leading spaces
 instead of trailing spaces.
 
+[#examples-layoutlinecontinuationleadingspace]
 === Examples
 
+[#enforcedstyle_-trailing-_default_-layoutlinecontinuationleadingspace]
 ==== EnforcedStyle: trailing (default)
 
 [source,ruby]
@@ -4258,6 +4560,7 @@ instead of trailing spaces.
 'long'
 ----
 
+[#enforcedstyle_-leading-layoutlinecontinuationleadingspace]
 ==== EnforcedStyle: leading
 
 [source,ruby]
@@ -4279,6 +4582,7 @@ instead of trailing spaces.
 ' long'
 ----
 
+[#configurable-attributes-layoutlinecontinuationleadingspace]
 === Configurable attributes
 
 |===
@@ -4289,6 +4593,7 @@ instead of trailing spaces.
 | `leading`, `trailing`
 |===
 
+[#layoutlinecontinuationspacing]
 == Layout/LineContinuationSpacing
 
 |===
@@ -4304,8 +4609,10 @@ instead of trailing spaces.
 Checks that the backslash of a line continuation is separated from
 preceding text by exactly one space (default) or zero spaces.
 
+[#examples-layoutlinecontinuationspacing]
 === Examples
 
+[#enforcedstyle_-space-_default_-layoutlinecontinuationspacing]
 ==== EnforcedStyle: space (default)
 
 [source,ruby]
@@ -4321,6 +4628,7 @@ preceding text by exactly one space (default) or zero spaces.
 'c'
 ----
 
+[#enforcedstyle_-no_space-layoutlinecontinuationspacing]
 ==== EnforcedStyle: no_space
 
 [source,ruby]
@@ -4336,6 +4644,7 @@ preceding text by exactly one space (default) or zero spaces.
 'c'
 ----
 
+[#configurable-attributes-layoutlinecontinuationspacing]
 === Configurable attributes
 
 |===
@@ -4346,6 +4655,7 @@ preceding text by exactly one space (default) or zero spaces.
 | `space`, `no_space`
 |===
 
+[#layoutlineendstringconcatenationindentation]
 == Layout/LineEndStringConcatenationIndentation
 
 |===
@@ -4368,6 +4678,7 @@ concatenated string parts shall be indented regardless of `EnforcedStyle` config
 If `EnforcedStyle: indented` is set, it's the second line that shall be indented one step
 more than the first line. Lines 3 and forward shall be aligned with line 2.
 
+[#examples-layoutlineendstringconcatenationindentation]
 === Examples
 
 [source,ruby]
@@ -4392,6 +4703,7 @@ def some_method
 end
 ----
 
+[#enforcedstyle_-aligned-_default_-layoutlineendstringconcatenationindentation]
 ==== EnforcedStyle: aligned (default)
 
 [source,ruby]
@@ -4415,6 +4727,7 @@ my_hash = {
 }
 ----
 
+[#enforcedstyle_-indented-layoutlineendstringconcatenationindentation]
 ==== EnforcedStyle: indented
 
 [source,ruby]
@@ -4438,6 +4751,7 @@ my_hash = {
 }
 ----
 
+[#configurable-attributes-layoutlineendstringconcatenationindentation]
 === Configurable attributes
 
 |===
@@ -4452,6 +4766,7 @@ my_hash = {
 | Integer
 |===
 
+[#layoutlinelength]
 == Layout/LineLength
 
 |===
@@ -4504,6 +4819,7 @@ Together, these cops will pretty print hashes, arrays,
 method calls, etc. For example, let's say the max columns
 is 25:
 
+[#examples-layoutlinelength]
 === Examples
 
 [source,ruby]
@@ -4523,6 +4839,7 @@ bar: "0000000000", baz: "0000000000"}
 }
 ----
 
+[#configurable-attributes-layoutlinelength]
 === Configurable attributes
 
 |===
@@ -4553,10 +4870,12 @@ bar: "0000000000", baz: "0000000000"}
 | Array
 |===
 
+[#references-layoutlinelength]
 === References
 
 * https://rubystyle.guide#max-line-length
 
+[#layoutmultilinearraybracelayout]
 == Layout/MultilineArrayBraceLayout
 
 |===
@@ -4592,8 +4911,10 @@ When using the `same_line` style:
 The closing brace of a multi-line array literal must be on the same
 line as the last element of the array.
 
+[#examples-layoutmultilinearraybracelayout]
 === Examples
 
+[#enforcedstyle_-symmetrical-_default_-layoutmultilinearraybracelayout]
 ==== EnforcedStyle: symmetrical (default)
 
 [source,ruby]
@@ -4619,6 +4940,7 @@ line as the last element of the array.
 ]
 ----
 
+[#enforcedstyle_-new_line-layoutmultilinearraybracelayout]
 ==== EnforcedStyle: new_line
 
 [source,ruby]
@@ -4644,6 +4966,7 @@ line as the last element of the array.
 ]
 ----
 
+[#enforcedstyle_-same_line-layoutmultilinearraybracelayout]
 ==== EnforcedStyle: same_line
 
 [source,ruby]
@@ -4669,6 +4992,7 @@ line as the last element of the array.
   :b ]
 ----
 
+[#configurable-attributes-layoutmultilinearraybracelayout]
 === Configurable attributes
 
 |===
@@ -4679,6 +5003,7 @@ line as the last element of the array.
 | `symmetrical`, `new_line`, `same_line`
 |===
 
+[#layoutmultilinearraylinebreaks]
 == Layout/MultilineArrayLineBreaks
 
 |===
@@ -4694,6 +5019,7 @@ line as the last element of the array.
 Ensures that each item in a multi-line array
 starts on a separate line.
 
+[#examples-layoutmultilinearraylinebreaks]
 === Examples
 
 [source,ruby]
@@ -4721,6 +5047,7 @@ starts on a separate line.
 ]
 ----
 
+[#allowmultilinefinalelement_-false-_default_-layoutmultilinearraylinebreaks]
 ==== AllowMultilineFinalElement: false (default)
 
 [source,ruby]
@@ -4731,6 +5058,7 @@ starts on a separate line.
 )]
 ----
 
+[#allowmultilinefinalelement_-true-layoutmultilinearraylinebreaks]
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
@@ -4741,6 +5069,7 @@ starts on a separate line.
 )]
 ----
 
+[#configurable-attributes-layoutmultilinearraylinebreaks]
 === Configurable attributes
 
 |===
@@ -4751,6 +5080,7 @@ starts on a separate line.
 | Boolean
 |===
 
+[#layoutmultilineassignmentlayout]
 == Layout/MultilineAssignmentLayout
 
 |===
@@ -4766,8 +5096,10 @@ starts on a separate line.
 Checks whether the multiline assignments have a newline
 after the assignment operator.
 
+[#examples-layoutmultilineassignmentlayout]
 === Examples
 
+[#enforcedstyle_-new_line-_default_-layoutmultilineassignmentlayout]
 ==== EnforcedStyle: new_line (default)
 
 [source,ruby]
@@ -4792,6 +5124,7 @@ foo =
   end
 ----
 
+[#enforcedstyle_-same_line-layoutmultilineassignmentlayout]
 ==== EnforcedStyle: same_line
 
 [source,ruby]
@@ -4802,6 +5135,7 @@ foo = if expression
 end
 ----
 
+[#supportedtypes_-__block__-_case__-_class__-_if__-_kwbegin__-_module__-_default_-layoutmultilineassignmentlayout]
 ==== SupportedTypes: ['block', 'case', 'class', 'if', 'kwbegin', 'module'] (default)
 
 [source,ruby]
@@ -4819,6 +5153,7 @@ foo =
   end
 ----
 
+[#supportedtypes_-__block__-layoutmultilineassignmentlayout]
 ==== SupportedTypes: ['block']
 
 [source,ruby]
@@ -4835,6 +5170,7 @@ foo =
   end
 ----
 
+[#configurable-attributes-layoutmultilineassignmentlayout]
 === Configurable attributes
 
 |===
@@ -4845,10 +5181,12 @@ foo =
 | `same_line`, `new_line`
 |===
 
+[#references-layoutmultilineassignmentlayout]
 === References
 
 * https://rubystyle.guide#indent-conditional-assignment
 
+[#layoutmultilineblocklayout]
 == Layout/MultilineBlockLayout
 
 |===
@@ -4867,6 +5205,7 @@ arguments, if any, are on the same line as the start of the
 block. Putting block arguments on separate lines, because the whole
 line would otherwise be too long, is accepted.
 
+[#examples-layoutmultilineblocklayout]
 === Examples
 
 [source,ruby]
@@ -4911,6 +5250,7 @@ blah { |
 }
 ----
 
+[#layoutmultilinehashbracelayout]
 == Layout/MultilineHashBraceLayout
 
 |===
@@ -4946,8 +5286,10 @@ When using the `same_line` style:
 The closing brace of a multi-line hash literal must be on the same
 line as the last element of the hash.
 
+[#examples-layoutmultilinehashbracelayout]
 === Examples
 
+[#enforcedstyle_-symmetrical-_default_-layoutmultilinehashbracelayout]
 ==== EnforcedStyle: symmetrical (default)
 
 [source,ruby]
@@ -4972,6 +5314,7 @@ line as the last element of the hash.
 }
 ----
 
+[#enforcedstyle_-new_line-layoutmultilinehashbracelayout]
 ==== EnforcedStyle: new_line
 
 [source,ruby]
@@ -4997,6 +5340,7 @@ line as the last element of the hash.
 }
 ----
 
+[#enforcedstyle_-same_line-layoutmultilinehashbracelayout]
 ==== EnforcedStyle: same_line
 
 [source,ruby]
@@ -5022,6 +5366,7 @@ line as the last element of the hash.
   b: 2 }
 ----
 
+[#configurable-attributes-layoutmultilinehashbracelayout]
 === Configurable attributes
 
 |===
@@ -5032,6 +5377,7 @@ line as the last element of the hash.
 | `symmetrical`, `new_line`, `same_line`
 |===
 
+[#layoutmultilinehashkeylinebreaks]
 == Layout/MultilineHashKeyLineBreaks
 
 |===
@@ -5047,6 +5393,7 @@ line as the last element of the hash.
 Ensures that each key in a multi-line hash
 starts on a separate line.
 
+[#examples-layoutmultilinehashkeylinebreaks]
 === Examples
 
 [source,ruby]
@@ -5073,6 +5420,7 @@ starts on a separate line.
 }
 ----
 
+[#allowmultilinefinalelement_-false-_default_-layoutmultilinehashkeylinebreaks]
 ==== AllowMultilineFinalElement: false (default)
 
 [source,ruby]
@@ -5083,6 +5431,7 @@ starts on a separate line.
 }}
 ----
 
+[#allowmultilinefinalelement_-true-layoutmultilinehashkeylinebreaks]
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
@@ -5093,6 +5442,7 @@ starts on a separate line.
 }}
 ----
 
+[#configurable-attributes-layoutmultilinehashkeylinebreaks]
 === Configurable attributes
 
 |===
@@ -5103,6 +5453,7 @@ starts on a separate line.
 | Boolean
 |===
 
+[#layoutmultilinemethodargumentlinebreaks]
 == Layout/MultilineMethodArgumentLineBreaks
 
 |===
@@ -5121,6 +5472,7 @@ starts on a separate line.
 NOTE: This cop does not move the first argument, if you want that to
 be on a separate line, see `Layout/FirstMethodArgumentLineBreak`.
 
+[#examples-layoutmultilinemethodargumentlinebreaks]
 === Examples
 
 [source,ruby]
@@ -5146,6 +5498,7 @@ foo(
 foo(a, b, c)
 ----
 
+[#allowmultilinefinalelement_-false-_default_-layoutmultilinemethodargumentlinebreaks]
 ==== AllowMultilineFinalElement: false (default)
 
 [source,ruby]
@@ -5160,6 +5513,7 @@ foo(
 )
 ----
 
+[#allowmultilinefinalelement_-true-layoutmultilinemethodargumentlinebreaks]
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
@@ -5174,6 +5528,7 @@ foo(
 )
 ----
 
+[#configurable-attributes-layoutmultilinemethodargumentlinebreaks]
 === Configurable attributes
 
 |===
@@ -5184,6 +5539,7 @@ foo(
 | Boolean
 |===
 
+[#layoutmultilinemethodcallbracelayout]
 == Layout/MultilineMethodCallBraceLayout
 
 |===
@@ -5219,8 +5575,10 @@ When using the `same_line` style:
 The closing brace of a multi-line method call must be on the same
 line as the last argument of the call.
 
+[#examples-layoutmultilinemethodcallbracelayout]
 === Examples
 
+[#enforcedstyle_-symmetrical-_default_-layoutmultilinemethodcallbracelayout]
 ==== EnforcedStyle: symmetrical (default)
 
 [source,ruby]
@@ -5246,6 +5604,7 @@ foo(
 )
 ----
 
+[#enforcedstyle_-new_line-layoutmultilinemethodcallbracelayout]
 ==== EnforcedStyle: new_line
 
 [source,ruby]
@@ -5271,6 +5630,7 @@ foo(
 )
 ----
 
+[#enforcedstyle_-same_line-layoutmultilinemethodcallbracelayout]
 ==== EnforcedStyle: same_line
 
 [source,ruby]
@@ -5296,6 +5656,7 @@ foo(a,
   b)
 ----
 
+[#configurable-attributes-layoutmultilinemethodcallbracelayout]
 === Configurable attributes
 
 |===
@@ -5306,6 +5667,7 @@ foo(a,
 | `symmetrical`, `new_line`, `same_line`
 |===
 
+[#layoutmultilinemethodcallindentation]
 == Layout/MultilineMethodCallIndentation
 
 |===
@@ -5321,8 +5683,10 @@ foo(a,
 Checks the indentation of the method name part in method calls
 that span more than one line.
 
+[#examples-layoutmultilinemethodcallindentation]
 === Examples
 
+[#enforcedstyle_-aligned-_default_-layoutmultilinemethodcallindentation]
 ==== EnforcedStyle: aligned (default)
 
 [source,ruby]
@@ -5345,6 +5709,7 @@ Thing.a
      .c
 ----
 
+[#enforcedstyle_-indented-layoutmultilinemethodcallindentation]
 ==== EnforcedStyle: indented
 
 [source,ruby]
@@ -5357,6 +5722,7 @@ while myvariable
 end
 ----
 
+[#enforcedstyle_-indented_relative_to_receiver-layoutmultilinemethodcallindentation]
 ==== EnforcedStyle: indented_relative_to_receiver
 
 [source,ruby]
@@ -5376,6 +5742,7 @@ myvariable = Thing
                .c
 ----
 
+[#configurable-attributes-layoutmultilinemethodcallindentation]
 === Configurable attributes
 
 |===
@@ -5390,6 +5757,7 @@ myvariable = Thing
 | Integer
 |===
 
+[#layoutmultilinemethoddefinitionbracelayout]
 == Layout/MultilineMethodDefinitionBraceLayout
 
 |===
@@ -5425,8 +5793,10 @@ When using the `same_line` style:
 The closing brace of a multi-line method definition must be on the same
 line as the last parameter of the definition.
 
+[#examples-layoutmultilinemethoddefinitionbracelayout]
 === Examples
 
+[#enforcedstyle_-symmetrical-_default_-layoutmultilinemethoddefinitionbracelayout]
 ==== EnforcedStyle: symmetrical (default)
 
 [source,ruby]
@@ -5456,6 +5826,7 @@ def foo(
 end
 ----
 
+[#enforcedstyle_-new_line-layoutmultilinemethoddefinitionbracelayout]
 ==== EnforcedStyle: new_line
 
 [source,ruby]
@@ -5485,6 +5856,7 @@ def foo(
 end
 ----
 
+[#enforcedstyle_-same_line-layoutmultilinemethoddefinitionbracelayout]
 ==== EnforcedStyle: same_line
 
 [source,ruby]
@@ -5514,6 +5886,7 @@ def foo(a,
 end
 ----
 
+[#configurable-attributes-layoutmultilinemethoddefinitionbracelayout]
 === Configurable attributes
 
 |===
@@ -5524,6 +5897,7 @@ end
 | `symmetrical`, `new_line`, `same_line`
 |===
 
+[#layoutmultilinemethodparameterlinebreaks]
 == Layout/MultilineMethodParameterLineBreaks
 
 |===
@@ -5542,6 +5916,7 @@ starts on a separate line.
 NOTE: This cop does not move the first argument, if you want that to
 be on a separate line, see `Layout/FirstMethodParameterLineBreak`.
 
+[#examples-layoutmultilinemethodparameterlinebreaks]
 === Examples
 
 [source,ruby]
@@ -5574,6 +5949,7 @@ def foo(a, b, c)
 end
 ----
 
+[#allowmultilinefinalelement_-false-_default_-layoutmultilinemethodparameterlinebreaks]
 ==== AllowMultilineFinalElement: false (default)
 
 [source,ruby]
@@ -5585,6 +5961,7 @@ def foo(a, b = {
 end
 ----
 
+[#allowmultilinefinalelement_-true-layoutmultilinemethodparameterlinebreaks]
 ==== AllowMultilineFinalElement: true
 
 [source,ruby]
@@ -5596,6 +5973,7 @@ def foo(a, b = {
 end
 ----
 
+[#configurable-attributes-layoutmultilinemethodparameterlinebreaks]
 === Configurable attributes
 
 |===
@@ -5606,6 +5984,7 @@ end
 | Boolean
 |===
 
+[#layoutmultilineoperationindentation]
 == Layout/MultilineOperationIndentation
 
 |===
@@ -5625,8 +6004,10 @@ The `aligned` style checks that operators are aligned if they are part of an `if
 condition, an explicit `return` statement, etc. In other contexts, the second operand should
 be indented regardless of enforced style.
 
+[#examples-layoutmultilineoperationindentation]
 === Examples
 
+[#enforcedstyle_-aligned-_default_-layoutmultilineoperationindentation]
 ==== EnforcedStyle: aligned (default)
 
 [source,ruby]
@@ -5646,6 +6027,7 @@ if a +
 end
 ----
 
+[#enforcedstyle_-indented-layoutmultilineoperationindentation]
 ==== EnforcedStyle: indented
 
 [source,ruby]
@@ -5665,6 +6047,7 @@ if a +
 end
 ----
 
+[#configurable-attributes-layoutmultilineoperationindentation]
 === Configurable attributes
 
 |===
@@ -5679,6 +6062,7 @@ end
 | Integer
 |===
 
+[#layoutparameteralignment]
 == Layout/ParameterAlignment
 
 |===
@@ -5697,8 +6081,10 @@ definition are aligned.
 To set the alignment of the first argument, use the cop
 FirstParameterIndentation.
 
+[#examples-layoutparameteralignment]
 === Examples
 
+[#enforcedstyle_-with_first_parameter-_default_-layoutparameteralignment]
 ==== EnforcedStyle: with_first_parameter (default)
 
 [source,ruby]
@@ -5733,6 +6119,7 @@ def foo(
 end
 ----
 
+[#enforcedstyle_-with_fixed_indentation-layoutparameteralignment]
 ==== EnforcedStyle: with_fixed_indentation
 
 [source,ruby]
@@ -5767,6 +6154,7 @@ def foo(
 end
 ----
 
+[#configurable-attributes-layoutparameteralignment]
 === Configurable attributes
 
 |===
@@ -5781,10 +6169,12 @@ end
 | Integer
 |===
 
+[#references-layoutparameteralignment]
 === References
 
 * https://rubystyle.guide#no-double-indent
 
+[#layoutredundantlinebreak]
 == Layout/RedundantLineBreak
 
 |===
@@ -5800,8 +6190,10 @@ end
 Checks whether certain expressions, e.g. method calls, that could fit
 completely on a single line, are broken up into multiple lines unnecessarily.
 
+[#examples-layoutredundantlinebreak]
 === Examples
 
+[#any-configuration-layoutredundantlinebreak]
 ==== any configuration
 
 [source,ruby]
@@ -5827,6 +6219,7 @@ puts 'string that fits on a single line'
 things.select { |thing| thing.cond? }.join('-')
 ----
 
+[#inspectblocks_-false-_default_-layoutredundantlinebreak]
 ==== InspectBlocks: false (default)
 
 [source,ruby]
@@ -5837,6 +6230,7 @@ foo(a) do |x|
 end
 ----
 
+[#inspectblocks_-true-layoutredundantlinebreak]
 ==== InspectBlocks: true
 
 [source,ruby]
@@ -5850,6 +6244,7 @@ end
 foo(a) { |x| puts x }
 ----
 
+[#configurable-attributes-layoutredundantlinebreak]
 === Configurable attributes
 
 |===
@@ -5860,6 +6255,7 @@ foo(a) { |x| puts x }
 | Boolean
 |===
 
+[#layoutrescueensurealignment]
 == Layout/RescueEnsureAlignment
 
 |===
@@ -5875,6 +6271,7 @@ foo(a) { |x| puts x }
 Checks whether the rescue and ensure keywords are aligned
 properly.
 
+[#examples-layoutrescueensurealignment]
 === Examples
 
 [source,ruby]
@@ -5894,6 +6291,7 @@ rescue
 end
 ----
 
+[#layoutsinglelineblockchain]
 == Layout/SingleLineBlockChain
 
 |===
@@ -5909,6 +6307,7 @@ end
 Checks if method calls are chained onto single line blocks. It considers that a
 line break before the dot improves the readability of the code.
 
+[#examples-layoutsinglelineblockchain]
 === Examples
 
 [source,ruby]
@@ -5926,6 +6325,7 @@ example.select do |item|
 end.join('-')
 ----
 
+[#layoutspaceaftercolon]
 == Layout/SpaceAfterColon
 
 |===
@@ -5942,6 +6342,7 @@ Checks for colon (:) not followed by some kind of space.
 N.B. this cop does not handle spaces after a ternary operator, which are
 instead handled by Layout/SpaceAroundOperators.
 
+[#examples-layoutspaceaftercolon]
 === Examples
 
 [source,ruby]
@@ -5953,10 +6354,12 @@ def f(a:, b:2); {a:3}; end
 def f(a:, b: 2); {a: 3}; end
 ----
 
+[#references-layoutspaceaftercolon]
 === References
 
 * https://rubystyle.guide#spaces-operators
 
+[#layoutspaceaftercomma]
 == Layout/SpaceAfterComma
 
 |===
@@ -5971,6 +6374,7 @@ def f(a:, b: 2); {a: 3}; end
 
 Checks for comma (,) not followed by some kind of space.
 
+[#examples-layoutspaceaftercomma]
 === Examples
 
 [source,ruby]
@@ -5984,10 +6388,12 @@ Checks for comma (,) not followed by some kind of space.
 { foo:bar, }
 ----
 
+[#references-layoutspaceaftercomma]
 === References
 
 * https://rubystyle.guide#spaces-operators
 
+[#layoutspaceaftermethodname]
 == Layout/SpaceAfterMethodName
 
 |===
@@ -6002,6 +6408,7 @@ Checks for comma (,) not followed by some kind of space.
 
 Checks for space between a method name and a left parenthesis in defs.
 
+[#examples-layoutspaceaftermethodname]
 === Examples
 
 [source,ruby]
@@ -6015,10 +6422,12 @@ def func(x) end
 def method=(y) end
 ----
 
+[#references-layoutspaceaftermethodname]
 === References
 
 * https://rubystyle.guide#parens-no-spaces
 
+[#layoutspaceafternot]
 == Layout/SpaceAfterNot
 
 |===
@@ -6033,6 +6442,7 @@ def method=(y) end
 
 Checks for space after `!`.
 
+[#examples-layoutspaceafternot]
 === Examples
 
 [source,ruby]
@@ -6044,10 +6454,12 @@ Checks for space after `!`.
 !something
 ----
 
+[#references-layoutspaceafternot]
 === References
 
 * https://rubystyle.guide#no-space-bang
 
+[#layoutspaceaftersemicolon]
 == Layout/SpaceAfterSemicolon
 
 |===
@@ -6062,6 +6474,7 @@ Checks for space after `!`.
 
 Checks for semicolon (;) not followed by some kind of space.
 
+[#examples-layoutspaceaftersemicolon]
 === Examples
 
 [source,ruby]
@@ -6073,10 +6486,12 @@ x = 1;y = 2
 x = 1; y = 2
 ----
 
+[#references-layoutspaceaftersemicolon]
 === References
 
 * https://rubystyle.guide#spaces-operators
 
+[#layoutspacearoundblockparameters]
 == Layout/SpaceAroundBlockParameters
 
 |===
@@ -6093,8 +6508,10 @@ Checks the spacing inside and after block parameters pipes. Line breaks
 inside parameter pipes are checked by `Layout/MultilineBlockLayout` and
 not by this cop.
 
+[#examples-layoutspacearoundblockparameters]
 === Examples
 
+[#enforcedstyleinsidepipes_-no_space-_default_-layoutspacearoundblockparameters]
 ==== EnforcedStyleInsidePipes: no_space (default)
 
 [source,ruby]
@@ -6108,6 +6525,7 @@ not by this cop.
 ->(x, y) { puts x }
 ----
 
+[#enforcedstyleinsidepipes_-space-layoutspacearoundblockparameters]
 ==== EnforcedStyleInsidePipes: space
 
 [source,ruby]
@@ -6121,6 +6539,7 @@ not by this cop.
 ->( x, y ) { puts x }
 ----
 
+[#configurable-attributes-layoutspacearoundblockparameters]
 === Configurable attributes
 
 |===
@@ -6131,6 +6550,7 @@ not by this cop.
 | `space`, `no_space`
 |===
 
+[#layoutspacearoundequalsinparameterdefault]
 == Layout/SpaceAroundEqualsInParameterDefault
 
 |===
@@ -6146,8 +6566,10 @@ not by this cop.
 Checks that the equals signs in parameter default assignments
 have or don't have surrounding space depending on configuration.
 
+[#examples-layoutspacearoundequalsinparameterdefault]
 === Examples
 
+[#enforcedstyle_-space-_default_-layoutspacearoundequalsinparameterdefault]
 ==== EnforcedStyle: space (default)
 
 [source,ruby]
@@ -6163,6 +6585,7 @@ def some_method(arg1 = :default, arg2 = nil, arg3 = [])
 end
 ----
 
+[#enforcedstyle_-no_space-layoutspacearoundequalsinparameterdefault]
 ==== EnforcedStyle: no_space
 
 [source,ruby]
@@ -6178,6 +6601,7 @@ def some_method(arg1=:default, arg2=nil, arg3=[])
 end
 ----
 
+[#configurable-attributes-layoutspacearoundequalsinparameterdefault]
 === Configurable attributes
 
 |===
@@ -6188,10 +6612,12 @@ end
 | `space`, `no_space`
 |===
 
+[#references-layoutspacearoundequalsinparameterdefault]
 === References
 
 * https://rubystyle.guide#spaces-around-equals
 
+[#layoutspacearoundkeyword]
 == Layout/SpaceAroundKeyword
 
 |===
@@ -6206,6 +6632,7 @@ end
 
 Checks the spacing around the keywords.
 
+[#examples-layoutspacearoundkeyword]
 === Examples
 
 [source,ruby]
@@ -6229,6 +6656,7 @@ end
 something = 123 if test
 ----
 
+[#layoutspacearoundmethodcalloperator]
 == Layout/SpaceAroundMethodCallOperator
 
 |===
@@ -6243,6 +6671,7 @@ something = 123 if test
 
 Checks method call operators to not have spaces around them.
 
+[#examples-layoutspacearoundmethodcalloperator]
 === Examples
 
 [source,ruby]
@@ -6276,6 +6705,7 @@ RuboCop::Cop::Base
 ::RuboCop::Cop
 ----
 
+[#layoutspacearoundoperators]
 == Layout/SpaceAroundOperators
 
 |===
@@ -6297,6 +6727,7 @@ This cop has `AllowForAlignment` option. When `true`, allows most
 uses of extra spacing if the intent is to align with an operator on
 the previous or next line, not counting empty lines or comment lines.
 
+[#examples-layoutspacearoundoperators]
 === Examples
 
 [source,ruby]
@@ -6312,6 +6743,7 @@ total = 3 * 4
 my_number = 38 / 4
 ----
 
+[#allowforalignment_-true-_default_-layoutspacearoundoperators]
 ==== AllowForAlignment: true (default)
 
 [source,ruby]
@@ -6323,6 +6755,7 @@ my_number = 38 / 4
 }
 ----
 
+[#allowforalignment_-false-layoutspacearoundoperators]
 ==== AllowForAlignment: false
 
 [source,ruby]
@@ -6334,6 +6767,7 @@ my_number = 38 / 4
 }
 ----
 
+[#enforcedstyleforexponentoperator_-no_space-_default_-layoutspacearoundoperators]
 ==== EnforcedStyleForExponentOperator: no_space (default)
 
 [source,ruby]
@@ -6345,6 +6779,7 @@ a ** b
 a**b
 ----
 
+[#enforcedstyleforexponentoperator_-space-layoutspacearoundoperators]
 ==== EnforcedStyleForExponentOperator: space
 
 [source,ruby]
@@ -6356,6 +6791,7 @@ a**b
 a ** b
 ----
 
+[#enforcedstyleforrationalliterals_-no_space-_default_-layoutspacearoundoperators]
 ==== EnforcedStyleForRationalLiterals: no_space (default)
 
 [source,ruby]
@@ -6367,6 +6803,7 @@ a ** b
 1/48r
 ----
 
+[#enforcedstyleforrationalliterals_-space-layoutspacearoundoperators]
 ==== EnforcedStyleForRationalLiterals: space
 
 [source,ruby]
@@ -6378,6 +6815,7 @@ a ** b
 1 / 48r
 ----
 
+[#configurable-attributes-layoutspacearoundoperators]
 === Configurable attributes
 
 |===
@@ -6396,10 +6834,12 @@ a ** b
 | `space`, `no_space`
 |===
 
+[#references-layoutspacearoundoperators]
 === References
 
 * https://rubystyle.guide#spaces-operators
 
+[#layoutspacebeforeblockbraces]
 == Layout/SpaceBeforeBlockBraces
 
 |===
@@ -6415,8 +6855,10 @@ a ** b
 Checks that block braces have or don't have a space before the opening
 brace depending on configuration.
 
+[#examples-layoutspacebeforeblockbraces]
 === Examples
 
+[#enforcedstyle_-space-_default_-layoutspacebeforeblockbraces]
 ==== EnforcedStyle: space (default)
 
 [source,ruby]
@@ -6432,6 +6874,7 @@ foo.map { |a|
 }
 ----
 
+[#enforcedstyle_-no_space-layoutspacebeforeblockbraces]
 ==== EnforcedStyle: no_space
 
 [source,ruby]
@@ -6447,6 +6890,7 @@ foo.map{ |a|
 }
 ----
 
+[#enforcedstyleforemptybraces_-space-_default_-layoutspacebeforeblockbraces]
 ==== EnforcedStyleForEmptyBraces: space (default)
 
 [source,ruby]
@@ -6458,6 +6902,7 @@ foo.map{ |a|
 7.times {}
 ----
 
+[#enforcedstyleforemptybraces_-no_space-layoutspacebeforeblockbraces]
 ==== EnforcedStyleForEmptyBraces: no_space
 
 [source,ruby]
@@ -6469,6 +6914,7 @@ foo.map{ |a|
 7.times{}
 ----
 
+[#configurable-attributes-layoutspacebeforeblockbraces]
 === Configurable attributes
 
 |===
@@ -6483,6 +6929,7 @@ foo.map{ |a|
 | `space`, `no_space`
 |===
 
+[#layoutspacebeforebrackets]
 == Layout/SpaceBeforeBrackets
 
 |===
@@ -6498,6 +6945,7 @@ foo.map{ |a|
 Checks for space between the name of a receiver and a left
 brackets.
 
+[#examples-layoutspacebeforebrackets]
 === Examples
 
 [source,ruby]
@@ -6509,10 +6957,12 @@ collection [index_or_key]
 collection[index_or_key]
 ----
 
+[#references-layoutspacebeforebrackets]
 === References
 
 * https://rubystyle.guide#space-in-brackets-access
 
+[#layoutspacebeforecomma]
 == Layout/SpaceBeforeComma
 
 |===
@@ -6527,6 +6977,7 @@ collection[index_or_key]
 
 Checks for comma (,) preceded by space.
 
+[#examples-layoutspacebeforecomma]
 === Examples
 
 [source,ruby]
@@ -6542,6 +6993,7 @@ a(1, 2)
 each { |a, b| }
 ----
 
+[#layoutspacebeforecomment]
 == Layout/SpaceBeforeComment
 
 |===
@@ -6557,6 +7009,7 @@ each { |a, b| }
 Checks for missing space between a token and a comment on the
 same line.
 
+[#examples-layoutspacebeforecomment]
 === Examples
 
 [source,ruby]
@@ -6568,6 +7021,7 @@ same line.
 1 + 1 # this operation does ...
 ----
 
+[#layoutspacebeforefirstarg]
 == Layout/SpaceBeforeFirstArg
 
 |===
@@ -6587,6 +7041,7 @@ Alternatively, extra spaces can be added to align the argument with
 something on a preceding or following line, if the AllowForAlignment
 config parameter is true.
 
+[#examples-layoutspacebeforefirstarg]
 === Examples
 
 [source,ruby]
@@ -6602,6 +7057,7 @@ something y, z
 something 'hello'
 ----
 
+[#configurable-attributes-layoutspacebeforefirstarg]
 === Configurable attributes
 
 |===
@@ -6612,6 +7068,7 @@ something 'hello'
 | Boolean
 |===
 
+[#layoutspacebeforesemicolon]
 == Layout/SpaceBeforeSemicolon
 
 |===
@@ -6626,6 +7083,7 @@ something 'hello'
 
 Checks for semicolon (;) preceded by space.
 
+[#examples-layoutspacebeforesemicolon]
 === Examples
 
 [source,ruby]
@@ -6637,6 +7095,7 @@ x = 1 ; y = 2
 x = 1; y = 2
 ----
 
+[#layoutspaceinlambdaliteral]
 == Layout/SpaceInLambdaLiteral
 
 |===
@@ -6652,8 +7111,10 @@ x = 1; y = 2
 Checks for spaces between `->` and opening parameter
 parenthesis (`(`) in lambda literals.
 
+[#examples-layoutspaceinlambdaliteral]
 === Examples
 
+[#enforcedstyle_-require_no_space-_default_-layoutspaceinlambdaliteral]
 ==== EnforcedStyle: require_no_space (default)
 
 [source,ruby]
@@ -6665,6 +7126,7 @@ a = -> (x, y) { x + y }
 a = ->(x, y) { x + y }
 ----
 
+[#enforcedstyle_-require_space-layoutspaceinlambdaliteral]
 ==== EnforcedStyle: require_space
 
 [source,ruby]
@@ -6676,6 +7138,7 @@ a = ->(x, y) { x + y }
 a = -> (x, y) { x + y }
 ----
 
+[#configurable-attributes-layoutspaceinlambdaliteral]
 === Configurable attributes
 
 |===
@@ -6686,6 +7149,7 @@ a = -> (x, y) { x + y }
 | `require_no_space`, `require_space`
 |===
 
+[#layoutspaceinsidearrayliteralbrackets]
 == Layout/SpaceInsideArrayLiteralBrackets
 
 |===
@@ -6701,8 +7165,10 @@ a = -> (x, y) { x + y }
 Checks that brackets used for array literals have or don't have
 surrounding space depending on configuration.
 
+[#examples-layoutspaceinsidearrayliteralbrackets]
 === Examples
 
+[#enforcedstyle_-no_space-_default_-layoutspaceinsidearrayliteralbrackets]
 ==== EnforcedStyle: no_space (default)
 
 [source,ruby]
@@ -6717,6 +7183,7 @@ array = [ a, b, c, d ]
 array = [a, b, c, d]
 ----
 
+[#enforcedstyle_-space-layoutspaceinsidearrayliteralbrackets]
 ==== EnforcedStyle: space
 
 [source,ruby]
@@ -6731,6 +7198,7 @@ array = [a, b, c, d]
 array = [ a, b, c, d ]
 ----
 
+[#enforcedstyle_-compact-layoutspaceinsidearrayliteralbrackets]
 ==== EnforcedStyle: compact
 
 [source,ruby]
@@ -6752,6 +7220,7 @@ array = [[ a ],
   [ b, c ]]
 ----
 
+[#enforcedstyleforemptybrackets_-no_space-_default_-layoutspaceinsidearrayliteralbrackets]
 ==== EnforcedStyleForEmptyBrackets: no_space (default)
 
 [source,ruby]
@@ -6768,6 +7237,7 @@ foo = []
 bar = []
 ----
 
+[#enforcedstyleforemptybrackets_-space-layoutspaceinsidearrayliteralbrackets]
 ==== EnforcedStyleForEmptyBrackets: space
 
 [source,ruby]
@@ -6784,6 +7254,7 @@ foo = [ ]
 bar = [ ]
 ----
 
+[#configurable-attributes-layoutspaceinsidearrayliteralbrackets]
 === Configurable attributes
 
 |===
@@ -6798,6 +7269,7 @@ bar = [ ]
 | `space`, `no_space`
 |===
 
+[#layoutspaceinsidearraypercentliteral]
 == Layout/SpaceInsideArrayPercentLiteral
 
 |===
@@ -6816,6 +7288,7 @@ Checks for unnecessary additional spaces inside array percent literals
 Note that blank percent literals (e.g. `%i( )`) are checked by
 `Layout/SpaceInsidePercentLiteralDelimiters`.
 
+[#examples-layoutspaceinsidearraypercentliteral]
 === Examples
 
 [source,ruby]
@@ -6826,6 +7299,7 @@ Note that blank percent literals (e.g. `%i( )`) are checked by
 %i(foo bar baz)
 ----
 
+[#layoutspaceinsideblockbraces]
 == Layout/SpaceInsideBlockBraces
 
 |===
@@ -6843,8 +7317,10 @@ them on configuration. For blocks taking parameters, it checks that the
 left brace has or doesn't have trailing space depending on
 configuration.
 
+[#examples-layoutspaceinsideblockbraces]
 === Examples
 
+[#enforcedstyle_-space-_default_-layoutspaceinsideblockbraces]
 ==== EnforcedStyle: space (default)
 
 [source,ruby]
@@ -6859,6 +7335,7 @@ some_array.each {puts e}
 some_array.each { puts e }
 ----
 
+[#enforcedstyle_-no_space-layoutspaceinsideblockbraces]
 ==== EnforcedStyle: no_space
 
 [source,ruby]
@@ -6873,6 +7350,7 @@ some_array.each { puts e }
 some_array.each {puts e}
 ----
 
+[#enforcedstyleforemptybraces_-no_space-_default_-layoutspaceinsideblockbraces]
 ==== EnforcedStyleForEmptyBraces: no_space (default)
 
 [source,ruby]
@@ -6889,6 +7367,7 @@ some_array.each { }
 some_array.each {}
 ----
 
+[#enforcedstyleforemptybraces_-space-layoutspaceinsideblockbraces]
 ==== EnforcedStyleForEmptyBraces: space
 
 [source,ruby]
@@ -6905,6 +7384,7 @@ some_array.each {  }
 some_array.each {   }
 ----
 
+[#spacebeforeblockparameters_-true-_default_-layoutspaceinsideblockbraces]
 ==== SpaceBeforeBlockParameters: true (default)
 
 [source,ruby]
@@ -6920,6 +7400,7 @@ some_array.each {   }
 [1, 2, 3].each { |n| n * 2 }
 ----
 
+[#spacebeforeblockparameters_-false-layoutspaceinsideblockbraces]
 ==== SpaceBeforeBlockParameters: false
 
 [source,ruby]
@@ -6935,6 +7416,7 @@ some_array.each {   }
 [1, 2, 3].each {|n| n * 2 }
 ----
 
+[#configurable-attributes-layoutspaceinsideblockbraces]
 === Configurable attributes
 
 |===
@@ -6953,6 +7435,7 @@ some_array.each {   }
 | Boolean
 |===
 
+[#layoutspaceinsidehashliteralbraces]
 == Layout/SpaceInsideHashLiteralBraces
 
 |===
@@ -6968,8 +7451,10 @@ some_array.each {   }
 Checks that braces used for hash literals have or don't have
 surrounding space depending on configuration.
 
+[#examples-layoutspaceinsidehashliteralbraces]
 === Examples
 
+[#enforcedstyle_-space-_default_-layoutspaceinsidehashliteralbraces]
 ==== EnforcedStyle: space (default)
 
 [source,ruby]
@@ -6984,6 +7469,7 @@ h = {a: 1, b: 2}
 h = { a: 1, b: 2 }
 ----
 
+[#enforcedstyle_-no_space-layoutspaceinsidehashliteralbraces]
 ==== EnforcedStyle: no_space
 
 [source,ruby]
@@ -6998,6 +7484,7 @@ h = { a: 1, b: 2 }
 h = {a: 1, b: 2}
 ----
 
+[#enforcedstyle_-compact-layoutspaceinsidehashliteralbraces]
 ==== EnforcedStyle: compact
 
 [source,ruby]
@@ -7015,6 +7502,7 @@ h = { a: { b: 2 }}
 foo = {{ a: 1 } => { b: { c: 2 }}}
 ----
 
+[#enforcedstyleforemptybraces_-no_space-_default_-layoutspaceinsidehashliteralbraces]
 ==== EnforcedStyleForEmptyBraces: no_space (default)
 
 [source,ruby]
@@ -7034,6 +7522,7 @@ bar = {}
 baz = {}
 ----
 
+[#enforcedstyleforemptybraces_-space-layoutspaceinsidehashliteralbraces]
 ==== EnforcedStyleForEmptyBraces: space
 
 [source,ruby]
@@ -7051,6 +7540,7 @@ foo = {
 }
 ----
 
+[#configurable-attributes-layoutspaceinsidehashliteralbraces]
 === Configurable attributes
 
 |===
@@ -7065,10 +7555,12 @@ foo = {
 | `space`, `no_space`
 |===
 
+[#references-layoutspaceinsidehashliteralbraces]
 === References
 
 * https://rubystyle.guide#spaces-braces
 
+[#layoutspaceinsideparens]
 == Layout/SpaceInsideParens
 
 |===
@@ -7083,8 +7575,10 @@ foo = {
 
 Checks for spaces inside ordinary round parentheses.
 
+[#examples-layoutspaceinsideparens]
 === Examples
 
+[#enforcedstyle_-no_space-_default_-layoutspaceinsideparens]
 ==== EnforcedStyle: no_space (default)
 
 [source,ruby]
@@ -7102,6 +7596,7 @@ g = (a + 3)
 f()
 ----
 
+[#enforcedstyle_-space-layoutspaceinsideparens]
 ==== EnforcedStyle: space
 
 [source,ruby]
@@ -7121,6 +7616,7 @@ g = ( a + 3 )
 y()
 ----
 
+[#enforcedstyle_-compact-layoutspaceinsideparens]
 ==== EnforcedStyle: compact
 
 [source,ruby]
@@ -7146,6 +7642,7 @@ g( f( x( 3 )), 5 )
 g((( 3 + 5 ) * f ) ** x, 5 )
 ----
 
+[#configurable-attributes-layoutspaceinsideparens]
 === Configurable attributes
 
 |===
@@ -7156,10 +7653,12 @@ g((( 3 + 5 ) * f ) ** x, 5 )
 | `space`, `compact`, `no_space`
 |===
 
+[#references-layoutspaceinsideparens]
 === References
 
 * https://rubystyle.guide#spaces-braces
 
+[#layoutspaceinsidepercentliteraldelimiters]
 == Layout/SpaceInsidePercentLiteralDelimiters
 
 |===
@@ -7175,6 +7674,7 @@ g((( 3 + 5 ) * f ) ** x, 5 )
 Checks for unnecessary additional spaces inside the delimiters of
 %i/%w/%x literals.
 
+[#examples-layoutspaceinsidepercentliteraldelimiters]
 === Examples
 
 [source,ruby]
@@ -7206,6 +7706,7 @@ Checks for unnecessary additional spaces inside the delimiters of
 %w()
 ----
 
+[#layoutspaceinsiderangeliteral]
 == Layout/SpaceInsideRangeLiteral
 
 |===
@@ -7220,6 +7721,7 @@ Checks for unnecessary additional spaces inside the delimiters of
 
 Checks for spaces inside range literals.
 
+[#examples-layoutspaceinsiderangeliteral]
 === Examples
 
 [source,ruby]
@@ -7237,10 +7739,12 @@ Checks for spaces inside range literals.
 'a'..'z'
 ----
 
+[#references-layoutspaceinsiderangeliteral]
 === References
 
 * https://rubystyle.guide#no-space-inside-range-literals
 
+[#layoutspaceinsidereferencebrackets]
 == Layout/SpaceInsideReferenceBrackets
 
 |===
@@ -7256,8 +7760,10 @@ Checks for spaces inside range literals.
 Checks that reference brackets have or don't have
 surrounding space depending on configuration.
 
+[#examples-layoutspaceinsidereferencebrackets]
 === Examples
 
+[#enforcedstyle_-no_space-_default_-layoutspaceinsidereferencebrackets]
 ==== EnforcedStyle: no_space (default)
 
 [source,ruby]
@@ -7274,6 +7780,7 @@ hash[:key]
 array[index]
 ----
 
+[#enforcedstyle_-space-layoutspaceinsidereferencebrackets]
 ==== EnforcedStyle: space
 
 [source,ruby]
@@ -7290,6 +7797,7 @@ hash[ :key ]
 array[ index ]
 ----
 
+[#enforcedstyleforemptybrackets_-no_space-_default_-layoutspaceinsidereferencebrackets]
 ==== EnforcedStyleForEmptyBrackets: no_space (default)
 
 [source,ruby]
@@ -7307,6 +7815,7 @@ foo[
 foo[]
 ----
 
+[#enforcedstyleforemptybrackets_-space-layoutspaceinsidereferencebrackets]
 ==== EnforcedStyleForEmptyBrackets: space
 
 [source,ruby]
@@ -7324,6 +7833,7 @@ foo[
 foo[ ]
 ----
 
+[#configurable-attributes-layoutspaceinsidereferencebrackets]
 === Configurable attributes
 
 |===
@@ -7338,6 +7848,7 @@ foo[ ]
 | `space`, `no_space`
 |===
 
+[#layoutspaceinsidestringinterpolation]
 == Layout/SpaceInsideStringInterpolation
 
 |===
@@ -7352,8 +7863,10 @@ foo[ ]
 
 Checks for whitespace within string interpolations.
 
+[#examples-layoutspaceinsidestringinterpolation]
 === Examples
 
+[#enforcedstyle_-no_space-_default_-layoutspaceinsidestringinterpolation]
 ==== EnforcedStyle: no_space (default)
 
 [source,ruby]
@@ -7365,6 +7878,7 @@ Checks for whitespace within string interpolations.
    var = "This is the #{no_space} example"
 ----
 
+[#enforcedstyle_-space-layoutspaceinsidestringinterpolation]
 ==== EnforcedStyle: space
 
 [source,ruby]
@@ -7376,6 +7890,7 @@ Checks for whitespace within string interpolations.
    var = "This is the #{ space } example"
 ----
 
+[#configurable-attributes-layoutspaceinsidestringinterpolation]
 === Configurable attributes
 
 |===
@@ -7386,10 +7901,12 @@ Checks for whitespace within string interpolations.
 | `space`, `no_space`
 |===
 
+[#references-layoutspaceinsidestringinterpolation]
 === References
 
 * https://rubystyle.guide#string-interpolation
 
+[#layouttrailingemptylines]
 == Layout/TrailingEmptyLines
 
 |===
@@ -7405,8 +7922,10 @@ Checks for whitespace within string interpolations.
 Looks for trailing blank lines and a final newline in the
 source code.
 
+[#examples-layouttrailingemptylines]
 === Examples
 
+[#enforcedstyle_-final_newline-_default_-layouttrailingemptylines]
 ==== EnforcedStyle: final_newline (default)
 
 [source,ruby]
@@ -7426,6 +7945,7 @@ class Foo; end
 # EOF
 ----
 
+[#enforcedstyle_-final_blank_line-layouttrailingemptylines]
 ==== EnforcedStyle: final_blank_line
 
 [source,ruby]
@@ -7446,6 +7966,7 @@ class Foo; end
 # EOF
 ----
 
+[#configurable-attributes-layouttrailingemptylines]
 === Configurable attributes
 
 |===
@@ -7456,10 +7977,12 @@ class Foo; end
 | `final_newline`, `final_blank_line`
 |===
 
+[#references-layouttrailingemptylines]
 === References
 
 * https://rubystyle.guide#newline-eof
 
+[#layouttrailingwhitespace]
 == Layout/TrailingWhitespace
 
 |===
@@ -7474,6 +7997,7 @@ class Foo; end
 
 Looks for trailing whitespace in the source code.
 
+[#examples-layouttrailingwhitespace]
 === Examples
 
 [source,ruby]
@@ -7487,6 +8011,7 @@ x = 0
 x = 0
 ----
 
+[#allowinheredoc_-false-_default_-layouttrailingwhitespace]
 ==== AllowInHeredoc: false (default)
 
 [source,ruby]
@@ -7509,6 +8034,7 @@ code = <<~RUBY
 RUBY
 ----
 
+[#allowinheredoc_-true-layouttrailingwhitespace]
 ==== AllowInHeredoc: true
 
 [source,ruby]
@@ -7520,6 +8046,7 @@ code = <<~RUBY
 RUBY
 ----
 
+[#configurable-attributes-layouttrailingwhitespace]
 === Configurable attributes
 
 |===
@@ -7530,6 +8057,7 @@ RUBY
 | Boolean
 |===
 
+[#references-layouttrailingwhitespace]
 === References
 
 * https://rubystyle.guide#no-trailing-whitespace

@@ -1837,7 +1837,7 @@ Lint/DuplicateRescueException:
 Lint/DuplicateSetElement:
   Description: 'Checks for duplicate elements in Set.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.67'
 
 Lint/EachWithObjectArgument:
   Description: 'Check for immutable argument given to each_with_object.'
@@ -4076,7 +4076,7 @@ Style/HashSyntax:
   StyleGuide: '#hash-literals'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.67'
   EnforcedStyle: ruby19
   SupportedStyles:
     # checks for 1.9 syntax (e.g. {a: 1}) for all symbol keys
@@ -4325,7 +4325,7 @@ Style/MapIntoArray:
   StyleGuide: '#functional-code'
   Enabled: pending
   VersionAdded: '1.63'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.67'
   Safe: false
 
 Style/MapToHash:
@@ -5216,7 +5216,7 @@ Style/ReturnNilInPredicateMethodDefinition:
   AllowedMethods: []
   AllowedPatterns: []
   VersionAdded: '1.53'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.67'
 
 Style/SafeNavigation:
   Description: >-
@@ -5227,7 +5227,7 @@ Style/SafeNavigation:
                   be `nil` or truthy, but never `false`.
   Enabled: true
   VersionAdded: '0.43'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.67'
   # Safe navigation may cause a statement to start returning `nil` in addition
   # to whatever it used to return.
   ConvertCodeThatCanStartToReturnNil: false

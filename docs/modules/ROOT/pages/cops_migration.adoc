@@ -6,6 +6,7 @@
 
 = Migration
 
+[#migrationdepartmentname]
 == Migration/DepartmentName
 
 |===

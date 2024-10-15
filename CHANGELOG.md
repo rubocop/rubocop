@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.67.0 (2024-10-15)
+
 ### New features
 
 * [#13259](https://github.com/rubocop/rubocop/issues/13259): Add new `Lint/DuplicateSetElement` cop. ([@koic][])

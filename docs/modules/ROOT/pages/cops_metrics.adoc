@@ -6,6 +6,7 @@
 
 = Metrics
 
+[#metricsabcsize]
 == Metrics/AbcSize
 
 |===
@@ -36,8 +37,10 @@ is meant to distinguish actual `attr_reader` from other methods.
 This cop also takes into account `AllowedMethods` (defaults to `[]`)
 And `AllowedPatterns` (defaults to `[]`)
 
+[#examples-metricsabcsize]
 === Examples
 
+[#countrepeatedattributes_-false-_default-is-true_-metricsabcsize]
 ==== CountRepeatedAttributes: false (default is true)
 
 [source,ruby]
@@ -56,6 +59,7 @@ def search
 end
 ----
 
+[#configurable-attributes-metricsabcsize]
 === Configurable attributes
 
 |===
@@ -78,11 +82,13 @@ end
 | Integer
 |===
 
+[#references-metricsabcsize]
 === References
 
 * http://c2.com/cgi/wiki?AbcMetric
 * https://en.wikipedia.org/wiki/ABC_Software_Metric
 
+[#metricsblocklength]
 == Metrics/BlockLength
 
 |===
@@ -111,8 +117,10 @@ NOTE: The `ExcludedMethods` configuration is deprecated and only kept
 for backwards compatibility. Please use `AllowedMethods` and `AllowedPatterns`
 instead. By default, there are no methods to allowed.
 
+[#examples-metricsblocklength]
 === Examples
 
+[#countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsblocklength]
 ==== CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
 
 [source,ruby]
@@ -139,6 +147,7 @@ something do
 end                 # 4 points
 ----
 
+[#configurable-attributes-metricsblocklength]
 === Configurable attributes
 
 |===
@@ -169,6 +178,7 @@ end                 # 4 points
 | Array
 |===
 
+[#metricsblocknesting]
 == Metrics/BlockNesting
 
 |===
@@ -190,6 +200,7 @@ calculation as well.
 
 The maximum level of nesting allowed is configurable.
 
+[#configurable-attributes-metricsblocknesting]
 === Configurable attributes
 
 |===
@@ -208,10 +219,12 @@ The maximum level of nesting allowed is configurable.
 | Integer
 |===
 
+[#references-metricsblocknesting]
 === References
 
 * https://rubystyle.guide#three-is-the-number-thou-shalt-count
 
+[#metricsclasslength]
 == Metrics/ClassLength
 
 |===
@@ -235,8 +248,10 @@ Each construct will be counted as one line regardless of its actual size.
 
 NOTE: This cop also applies for `Struct` definitions.
 
+[#examples-metricsclasslength]
 === Examples
 
+[#countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsclasslength]
 ==== CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
 
 [source,ruby]
@@ -263,6 +278,7 @@ class Foo
 end                 # 4 points
 ----
 
+[#configurable-attributes-metricsclasslength]
 === Configurable attributes
 
 |===
@@ -281,6 +297,7 @@ end                 # 4 points
 | Array
 |===
 
+[#metricscollectionliterallength]
 == Metrics/CollectionLiteralLength
 
 |===
@@ -298,6 +315,7 @@ configuration or data that may be better extracted somewhere else, like
 a database, fetched from an API, or read from a non-code file (CSV,
 JSON, YAML, etc.).
 
+[#examples-metricscollectionliterallength]
 === Examples
 
 [source,ruby]
@@ -341,6 +359,7 @@ Set[1, 2, '...', 10]
 SomeFramework.config_for(:something)[:numbers].to_set
 ----
 
+[#configurable-attributes-metricscollectionliterallength]
 === Configurable attributes
 
 |===
@@ -351,6 +370,7 @@ SomeFramework.config_for(:something)[:numbers].to_set
 | Integer
 |===
 
+[#metricscyclomaticcomplexity]
 == Metrics/CyclomaticComplexity
 
 |===
@@ -390,6 +410,7 @@ Blocks that are calls to builtin iteration methods
     self
   end                                       # total: 6
 
+[#configurable-attributes-metricscyclomaticcomplexity]
 === Configurable attributes
 
 |===
@@ -408,6 +429,7 @@ Blocks that are calls to builtin iteration methods
 | Integer
 |===
 
+[#metricsmethodlength]
 == Metrics/MethodLength
 
 |===
@@ -434,8 +456,10 @@ deprecated and only kept for backwards compatibility.
 Please use `AllowedMethods` and `AllowedPatterns` instead.
 By default, there are no methods to allowed.
 
+[#examples-metricsmethodlength]
 === Examples
 
+[#countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsmethodlength]
 ==== CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
 
 [source,ruby]
@@ -462,6 +486,7 @@ def m
 end               # 4 points
 ----
 
+[#configurable-attributes-metricsmethodlength]
 === Configurable attributes
 
 |===
@@ -488,10 +513,12 @@ end               # 4 points
 | Array
 |===
 
+[#references-metricsmethodlength]
 === References
 
 * https://rubystyle.guide#short-methods
 
+[#metricsmodulelength]
 == Metrics/ModuleLength
 
 |===
@@ -513,8 +540,10 @@ You can set constructs you want to fold with `CountAsOne`.
 Available are: 'array', 'hash', 'heredoc', and 'method_call'.
 Each construct will be counted as one line regardless of its actual size.
 
+[#examples-metricsmodulelength]
 === Examples
 
+[#countasone_-__array__-_hash__-_heredoc__-_method_call__-metricsmodulelength]
 ==== CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
 
 [source,ruby]
@@ -541,6 +570,7 @@ module M
 end                 # 4 points
 ----
 
+[#configurable-attributes-metricsmodulelength]
 === Configurable attributes
 
 |===
@@ -559,6 +589,7 @@ end                 # 4 points
 | Array
 |===
 
+[#metricsparameterlists]
 == Metrics/ParameterLists
 
 |===
@@ -597,8 +628,10 @@ erroneous change that is avoided by making block argument implicit.
 This cop also checks for the maximum number of optional parameters.
 This can be configured using the `MaxOptionalParameters` config option.
 
+[#examples-metricsparameterlists]
 === Examples
 
+[#max_-3-metricsparameterlists]
 ==== Max: 3
 
 [source,ruby]
@@ -608,6 +641,7 @@ def foo(a, b, c = 1)
 end
 ----
 
+[#max_-2-metricsparameterlists]
 ==== Max: 2
 
 [source,ruby]
@@ -617,6 +651,7 @@ def foo(a, b, c = 1)
 end
 ----
 
+[#countkeywordargs_-true-_default_-metricsparameterlists]
 ==== CountKeywordArgs: true (default)
 
 [source,ruby]
@@ -632,6 +667,7 @@ def foo(a, b, c: 1)
 end
 ----
 
+[#countkeywordargs_-false-metricsparameterlists]
 ==== CountKeywordArgs: false
 
 [source,ruby]
@@ -643,6 +679,7 @@ def foo(a, b, c, d: 1)
 end
 ----
 
+[#maxoptionalparameters_-3-_default_-metricsparameterlists]
 ==== MaxOptionalParameters: 3 (default)
 
 [source,ruby]
@@ -652,6 +689,7 @@ def foo(a = 1, b = 2, c = 3)
 end
 ----
 
+[#maxoptionalparameters_-2-metricsparameterlists]
 ==== MaxOptionalParameters: 2
 
 [source,ruby]
@@ -661,6 +699,7 @@ def foo(a = 1, b = 2, c = 3)
 end
 ----
 
+[#configurable-attributes-metricsparameterlists]
 === Configurable attributes
 
 |===
@@ -679,10 +718,12 @@ end
 | Integer
 |===
 
+[#references-metricsparameterlists]
 === References
 
 * https://rubystyle.guide#too-many-params
 
+[#metricsperceivedcomplexity]
 == Metrics/PerceivedComplexity
 
 |===
@@ -704,6 +745,7 @@ the cop treats it as an `if`/`elsif`/`elsif`... and lets all the `when`
 nodes count. In contrast to the CyclomaticComplexity cop, this cop
 considers `else` nodes as adding complexity.
 
+[#examples-metricsperceivedcomplexity]
 === Examples
 
 [source,ruby]
@@ -722,6 +764,7 @@ def my_method                   # 1
 end                             # 7 complexity points
 ----
 
+[#configurable-attributes-metricsperceivedcomplexity]
 === Configurable attributes
 
 |===

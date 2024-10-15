@@ -6,6 +6,7 @@
 
 = Style
 
+[#styleaccessmodifierdeclarations]
 == Style/AccessModifierDeclarations
 
 |===
@@ -35,14 +36,17 @@ familiar with Ruby may know that the modifier applies to `def`, but they
 may not know that it also applies to `attr*` methods. It would be easier
 to understand if we could write `attr*` methods in inline style.
 
+[#safety-styleaccessmodifierdeclarations]
 === Safety
 
 Autocorrection is not safe, because the visibility of dynamically
 defined methods can vary depending on the state determined by
 the group access modifier.
 
+[#examples-styleaccessmodifierdeclarations]
 === Examples
 
+[#enforcedstyle_-group-_default_-styleaccessmodifierdeclarations]
 ==== EnforcedStyle: group (default)
 
 [source,ruby]
@@ -66,6 +70,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-inline-styleaccessmodifierdeclarations]
 ==== EnforcedStyle: inline
 
 [source,ruby]
@@ -89,6 +94,7 @@ class Foo
 end
 ----
 
+[#allowmodifiersonsymbols_-true-_default_-styleaccessmodifierdeclarations]
 ==== AllowModifiersOnSymbols: true (default)
 
 [source,ruby]
@@ -97,10 +103,13 @@ end
 class Foo
 
   private :bar, :baz
+  private *%i[qux quux]
+  private *METHOD_NAMES
 
 end
 ----
 
+[#allowmodifiersonsymbols_-false-styleaccessmodifierdeclarations]
 ==== AllowModifiersOnSymbols: false
 
 [source,ruby]
@@ -109,10 +118,13 @@ end
 class Foo
 
   private :bar, :baz
+  private *%i[qux quux]
+  private *METHOD_NAMES
 
 end
 ----
 
+[#allowmodifiersonattrs_-true-_default_-styleaccessmodifierdeclarations]
 ==== AllowModifiersOnAttrs: true (default)
 
 [source,ruby]
@@ -134,6 +146,7 @@ class Foo
 end
 ----
 
+[#allowmodifiersonattrs_-false-styleaccessmodifierdeclarations]
 ==== AllowModifiersOnAttrs: false
 
 [source,ruby]
@@ -149,6 +162,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-styleaccessmodifierdeclarations]
 === Configurable attributes
 
 |===
@@ -167,6 +181,7 @@ end
 | Boolean
 |===
 
+[#styleaccessorgrouping]
 == Style/AccessorGrouping
 
 |===
@@ -186,8 +201,13 @@ but it can be configured to enforce separating them in multiple declarations.
 NOTE: If there is a method call before the accessor method it is always allowed
 as it might be intended like Sorbet.
 
+NOTE: If there is a RBS::Inline annotation comment just after the accessor method
+it is always allowed.
+
+[#examples-styleaccessorgrouping]
 === Examples
 
+[#enforcedstyle_-grouped-_default_-styleaccessorgrouping]
 ==== EnforcedStyle: grouped (default)
 
 [source,ruby]
@@ -217,6 +237,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-separated-styleaccessorgrouping]
 ==== EnforcedStyle: separated
 
 [source,ruby]
@@ -233,6 +254,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-styleaccessorgrouping]
 === Configurable attributes
 
 |===
@@ -243,6 +265,7 @@ end
 | `separated`, `grouped`
 |===
 
+[#stylealias]
 == Style/Alias
 
 |===
@@ -264,8 +287,10 @@ in an instance method definition and in a singleton method definition.
 If used in a block, always enforce `alias_method`
 unless it is an `instance_eval` block.
 
+[#examples-stylealias]
 === Examples
 
+[#enforcedstyle_-prefer_alias-_default_-stylealias]
 ==== EnforcedStyle: prefer_alias (default)
 
 [source,ruby]
@@ -278,6 +303,7 @@ alias :bar :foo
 alias bar foo
 ----
 
+[#enforcedstyle_-prefer_alias_method-stylealias]
 ==== EnforcedStyle: prefer_alias_method
 
 [source,ruby]
@@ -290,6 +316,7 @@ alias bar foo
 alias_method :bar, :foo
 ----
 
+[#configurable-attributes-stylealias]
 === Configurable attributes
 
 |===
@@ -300,10 +327,12 @@ alias_method :bar, :foo
 | `prefer_alias`, `prefer_alias_method`
 |===
 
+[#references-stylealias]
 === References
 
 * https://rubystyle.guide#alias-method-lexically
 
+[#styleandor]
 == Style/AndOr
 
 |===
@@ -320,14 +349,17 @@ Checks for uses of `and` and `or`, and suggests using `&&` and
 `||` instead. It can be configured to check only in conditions or in
 all contexts.
 
+[#safety-styleandor]
 === Safety
 
 Autocorrection is unsafe because there is a different operator precedence
 between logical operators (`&&` and `||`) and semantic operators (`and` and `or`),
 and that might change the behavior.
 
+[#examples-styleandor]
 === Examples
 
+[#enforcedstyle_-conditionals-_default_-styleandor]
 ==== EnforcedStyle: conditionals (default)
 
 [source,ruby]
@@ -347,6 +379,7 @@ if foo && bar
 end
 ----
 
+[#enforcedstyle_-always-styleandor]
 ==== EnforcedStyle: always
 
 [source,ruby]
@@ -366,6 +399,7 @@ if foo && bar
 end
 ----
 
+[#configurable-attributes-styleandor]
 === Configurable attributes
 
 |===
@@ -376,10 +410,12 @@ end
 | `always`, `conditionals`
 |===
 
+[#references-styleandor]
 === References
 
 * https://rubystyle.guide#no-and-or-or
 
+[#styleargumentsforwarding]
 == Style/ArgumentsForwarding
 
 NOTE: Required Ruby version: 2.7
@@ -422,6 +458,7 @@ Names not on this list are likely to be meaningful and are allowed by default.
 
 This cop handles not only method forwarding but also forwarding to `super`.
 
+[#examples-styleargumentsforwarding]
 === Examples
 
 [source,ruby]
@@ -442,6 +479,7 @@ def foo(...)
 end
 ----
 
+[#useanonymousforwarding_-true-_default_-only-relevant-for-ruby-__-3_2_-styleargumentsforwarding]
 ==== UseAnonymousForwarding: true (default, only relevant for Ruby >= 3.2)
 
 [source,ruby]
@@ -461,6 +499,7 @@ def foo(*, **, &)
 end
 ----
 
+[#useanonymousforwarding_-false-_only-relevant-for-ruby-__-3_2_-styleargumentsforwarding]
 ==== UseAnonymousForwarding: false (only relevant for Ruby >= 3.2)
 
 [source,ruby]
@@ -473,6 +512,7 @@ def foo(*args, **kwargs, &block)
 end
 ----
 
+[#allowonlyrestargument_-true-_default_-only-relevant-for-ruby-_-3_2_-styleargumentsforwarding]
 ==== AllowOnlyRestArgument: true (default, only relevant for Ruby < 3.2)
 
 [source,ruby]
@@ -487,6 +527,7 @@ def foo(**kwargs)
 end
 ----
 
+[#allowonlyrestargument_-false-_only-relevant-for-ruby-_-3_2_-styleargumentsforwarding]
 ==== AllowOnlyRestArgument: false (only relevant for Ruby < 3.2)
 
 [source,ruby]
@@ -503,6 +544,7 @@ def foo(**kwargs)
 end
 ----
 
+[#redundantrestargumentnames_-__args__-_arguments__-_default_-styleargumentsforwarding]
 ==== RedundantRestArgumentNames: ['args', 'arguments'] (default)
 
 [source,ruby]
@@ -518,6 +560,7 @@ def foo(*)
 end
 ----
 
+[#redundantkeywordrestargumentnames_-__kwargs__-_options__-_opts__-_default_-styleargumentsforwarding]
 ==== RedundantKeywordRestArgumentNames: ['kwargs', 'options', 'opts'] (default)
 
 [source,ruby]
@@ -533,6 +576,7 @@ def foo(**)
 end
 ----
 
+[#redundantblockargumentnames_-__blk__-_block__-_proc__-_default_-styleargumentsforwarding]
 ==== RedundantBlockArgumentNames: ['blk', 'block', 'proc'] (default)
 
 [source,ruby]
@@ -548,6 +592,7 @@ def foo(&)
 end
 ----
 
+[#configurable-attributes-styleargumentsforwarding]
 === Configurable attributes
 
 |===
@@ -574,10 +619,12 @@ end
 | Array
 |===
 
+[#references-styleargumentsforwarding]
 === References
 
 * https://rubystyle.guide#arguments-forwarding
 
+[#stylearraycoercion]
 == Style/ArrayCoercion
 
 |===
@@ -594,6 +641,7 @@ Enforces the use of `Array()` instead of explicit `Array` check or `[*var]`.
 
 The cop is disabled by default due to safety concerns.
 
+[#safety-stylearraycoercion]
 === Safety
 
 This cop is unsafe because a false positive may occur if
@@ -615,6 +663,7 @@ Array({a: 'b'})   #=> [[:a, 'b']]
 Array(Time.now)   #=> [14, 16, 14, 16, 9, 2021, 4, 259, true, "EDT"]
 ----
 
+[#examples-stylearraycoercion]
 === Examples
 
 [source,ruby]
@@ -630,10 +679,12 @@ paths.each { |path| do_something(path) }
 Array(paths).each { |path| do_something(path) }
 ----
 
+[#references-stylearraycoercion]
 === References
 
 * https://rubystyle.guide#array-coercion
 
+[#stylearrayfirstlast]
 == Style/ArrayFirstLast
 
 |===
@@ -651,6 +702,7 @@ them to use `arr.first` and `arr.last` instead.
 
 The cop is disabled by default due to safety concerns.
 
+[#safety-stylearrayfirstlast]
 === Safety
 
 This cop is unsafe because `[0]` or `[-1]` can be called on a Hash,
@@ -658,6 +710,7 @@ which returns a value for `0` or `-1` key, but changing these to use
 `.first` or `.last` will return first/last tuple instead. Also, String
 does not implement `first`/`last` methods.
 
+[#examples-stylearrayfirstlast]
 === Examples
 
 [source,ruby]
@@ -673,10 +726,12 @@ arr[0] = 2
 arr[0][-2]
 ----
 
+[#references-stylearrayfirstlast]
 === References
 
 * #first-and-last
 
+[#stylearrayintersect]
 == Style/ArrayIntersect
 
 NOTE: Required Ruby version: 3.1
@@ -708,11 +763,13 @@ so it will not be detected when using block argument.
 [1].intersect?([1,2]) { |x| false } # => true
 ----
 
+[#safety-stylearrayintersect]
 === Safety
 
 This cop cannot guarantee that `array1` and `array2` are
 actually arrays while method `intersect?` is for arrays only.
 
+[#examples-stylearrayintersect]
 === Examples
 
 [source,ruby]
@@ -726,6 +783,7 @@ array1.intersect?(array2)
 !array1.intersect?(array2)
 ----
 
+[#allcops_activesupportextensionsenabled_-false-_default_-stylearrayintersect]
 ==== AllCops:ActiveSupportExtensionsEnabled: false (default)
 
 [source,ruby]
@@ -735,6 +793,7 @@ array1.intersect?(array2)
 (array1 & array2).blank?
 ----
 
+[#allcops_activesupportextensionsenabled_-true-stylearrayintersect]
 ==== AllCops:ActiveSupportExtensionsEnabled: true
 
 [source,ruby]
@@ -748,6 +807,7 @@ array1.intersect?(array2)
 !array1.intersect?(array2)
 ----
 
+[#stylearrayjoin]
 == Style/ArrayJoin
 
 |===
@@ -766,6 +826,7 @@ Not all cases can reliably checked, due to Ruby's dynamic
 types, so we consider only cases when the first argument is an
 array literal or the second is a string literal.
 
+[#examples-stylearrayjoin]
 === Examples
 
 [source,ruby]
@@ -777,10 +838,12 @@ array literal or the second is a string literal.
 %w(foo bar baz).join(",")
 ----
 
+[#references-stylearrayjoin]
 === References
 
 * https://rubystyle.guide#array-join
 
+[#styleasciicomments]
 == Style/AsciiComments
 
 |===
@@ -797,6 +860,7 @@ Checks for non-ascii (non-English) characters
 in comments. You could set an array of allowed non-ascii chars in
 `AllowedChars` attribute (copyright notice "©" by default).
 
+[#examples-styleasciicomments]
 === Examples
 
 [source,ruby]
@@ -808,6 +872,7 @@ in comments. You could set an array of allowed non-ascii chars in
 # Translates from English to Japanese
 ----
 
+[#configurable-attributes-styleasciicomments]
 === Configurable attributes
 
 |===
@@ -818,10 +883,12 @@ in comments. You could set an array of allowed non-ascii chars in
 | Array
 |===
 
+[#references-styleasciicomments]
 === References
 
 * https://rubystyle.guide#english-comments
 
+[#styleattr]
 == Style/Attr
 
 |===
@@ -836,6 +903,7 @@ in comments. You could set an array of allowed non-ascii chars in
 
 Checks for uses of Module#attr.
 
+[#examples-styleattr]
 === Examples
 
 [source,ruby]
@@ -849,10 +917,12 @@ attr_accessor :something
 attr_reader :one, :two, :three
 ----
 
+[#references-styleattr]
 === References
 
 * https://rubystyle.guide#attr
 
+[#styleautoresourcecleanup]
 == Style/AutoResourceCleanup
 
 |===
@@ -869,6 +939,7 @@ Checks for cases when you could use a block
 accepting version of a method that does automatic
 resource cleanup.
 
+[#examples-styleautoresourcecleanup]
 === Examples
 
 [source,ruby]
@@ -890,6 +961,7 @@ Tempfile.open('temp') do |f|
 end
 ----
 
+[#stylebarepercentliterals]
 == Style/BarePercentLiterals
 
 |===
@@ -904,8 +976,10 @@ end
 
 Checks if usage of %() or %Q() matches configuration.
 
+[#examples-stylebarepercentliterals]
 === Examples
 
+[#enforcedstyle_-bare_percent-_default_-stylebarepercentliterals]
 ==== EnforcedStyle: bare_percent (default)
 
 [source,ruby]
@@ -919,6 +993,7 @@ Checks if usage of %() or %Q() matches configuration.
 %{She said: 'Hi'}
 ----
 
+[#enforcedstyle_-percent_q-stylebarepercentliterals]
 ==== EnforcedStyle: percent_q
 
 [source,ruby]
@@ -932,6 +1007,7 @@ Checks if usage of %() or %Q() matches configuration.
 %q/She said: 'Hi'/
 ----
 
+[#configurable-attributes-stylebarepercentliterals]
 === Configurable attributes
 
 |===
@@ -942,10 +1018,12 @@ Checks if usage of %() or %Q() matches configuration.
 | `percent_q`, `bare_percent`
 |===
 
+[#references-stylebarepercentliterals]
 === References
 
 * https://rubystyle.guide#percent-q-shorthand
 
+[#stylebeginblock]
 == Style/BeginBlock
 
 |===
@@ -960,6 +1038,7 @@ Checks if usage of %() or %Q() matches configuration.
 
 Checks for BEGIN blocks.
 
+[#examples-stylebeginblock]
 === Examples
 
 [source,ruby]
@@ -968,10 +1047,12 @@ Checks for BEGIN blocks.
 BEGIN { test }
 ----
 
+[#references-stylebeginblock]
 === References
 
 * https://rubystyle.guide#no-BEGIN-blocks
 
+[#stylebisectedattraccessor]
 == Style/BisectedAttrAccessor
 
 |===
@@ -987,6 +1068,7 @@ BEGIN { test }
 Checks for places where `attr_reader` and `attr_writer`
 for the same method can be combined into single `attr_accessor`.
 
+[#examples-stylebisectedattraccessor]
 === Examples
 
 [source,ruby]
@@ -1003,6 +1085,7 @@ class Foo
 end
 ----
 
+[#styleblockcomments]
 == Style/BlockComments
 
 |===
@@ -1017,6 +1100,7 @@ end
 
 Looks for uses of block comments (=begin...=end).
 
+[#examples-styleblockcomments]
 === Examples
 
 [source,ruby]
@@ -1032,10 +1116,12 @@ of comments...
 # of comments...
 ----
 
+[#references-styleblockcomments]
 === References
 
 * https://rubystyle.guide#no-block-comments
 
+[#styleblockdelimiters]
 == Style/BlockDelimiters
 
 |===
@@ -1056,8 +1142,10 @@ categorised from their usage alone is ignored.
 `lambda`, `proc`, and `it` are their defaults.
 Additional methods can be added to the `AllowedMethods`.
 
+[#examples-styleblockdelimiters]
 === Examples
 
+[#enforcedstyle_-line_count_based-_default_-styleblockdelimiters]
 ==== EnforcedStyle: line_count_based (default)
 
 [source,ruby]
@@ -1081,6 +1169,7 @@ things.map do |thing|
 end
 ----
 
+[#enforcedstyle_-semantic-styleblockdelimiters]
 ==== EnforcedStyle: semantic
 
 [source,ruby]
@@ -1144,6 +1233,7 @@ collection.each { |element| puts element }
 collection.each do |element| puts element end
 ----
 
+[#enforcedstyle_-braces_for_chaining-styleblockdelimiters]
 ==== EnforcedStyle: braces_for_chaining
 
 [source,ruby]
@@ -1159,6 +1249,7 @@ words.each { |word|
 }.join("-")
 ----
 
+[#enforcedstyle_-always_braces-styleblockdelimiters]
 ==== EnforcedStyle: always_braces
 
 [source,ruby]
@@ -1174,6 +1265,7 @@ words.each { |word|
 }
 ----
 
+[#bracesrequiredmethods_-__sig__-styleblockdelimiters]
 ==== BracesRequiredMethods: ['sig']
 
 [source,ruby]
@@ -1203,6 +1295,7 @@ def bar(foo)
 end
 ----
 
+[#allowedmethods_-__lambda__-_proc__-_it_-_-_default_-styleblockdelimiters]
 ==== AllowedMethods: ['lambda', 'proc', 'it' ] (default)
 
 [source,ruby]
@@ -1217,6 +1310,7 @@ foo = lambda do |x|
 end
 ----
 
+[#allowedpatterns_-__-_default_-styleblockdelimiters]
 ==== AllowedPatterns: [] (default)
 
 [source,ruby]
@@ -1228,6 +1322,7 @@ things.map { |thing|
 }
 ----
 
+[#allowedpatterns_-__map__-styleblockdelimiters]
 ==== AllowedPatterns: ['map']
 
 [source,ruby]
@@ -1239,6 +1334,7 @@ things.map { |thing|
 }
 ----
 
+[#configurable-attributes-styleblockdelimiters]
 === Configurable attributes
 
 |===
@@ -1273,10 +1369,12 @@ things.map { |thing|
 | Array
 |===
 
+[#references-styleblockdelimiters]
 === References
 
 * https://rubystyle.guide#single-line-blocks
 
+[#stylecaseequality]
 == Style/CaseEquality
 
 |===
@@ -1292,6 +1390,7 @@ things.map { |thing|
 If `AllowOnSelfClass` option is enabled, the cop will ignore violations when the receiver of
 the case equality operator is `self.class`. Note intermediate variables are not accepted.
 
+[#examples-stylecaseequality]
 === Examples
 
 [source,ruby]
@@ -1306,6 +1405,7 @@ something.is_a?(Array)
 /something/.match?(some_string)
 ----
 
+[#allowonconstant_-false-_default_-stylecaseequality]
 ==== AllowOnConstant: false (default)
 
 [source,ruby]
@@ -1314,6 +1414,7 @@ something.is_a?(Array)
 Array === something
 ----
 
+[#allowonconstant_-true-stylecaseequality]
 ==== AllowOnConstant: true
 
 [source,ruby]
@@ -1322,6 +1423,7 @@ Array === something
 Array === something
 ----
 
+[#allowonselfclass_-false-_default_-stylecaseequality]
 ==== AllowOnSelfClass: false (default)
 
 [source,ruby]
@@ -1330,6 +1432,7 @@ Array === something
 self.class === something
 ----
 
+[#allowonselfclass_-true-stylecaseequality]
 ==== AllowOnSelfClass: true
 
 [source,ruby]
@@ -1338,6 +1441,7 @@ self.class === something
 self.class === something
 ----
 
+[#configurable-attributes-stylecaseequality]
 === Configurable attributes
 
 |===
@@ -1352,10 +1456,12 @@ self.class === something
 | Boolean
 |===
 
+[#references-stylecaseequality]
 === References
 
 * https://rubystyle.guide#no-case-equality
 
+[#stylecaselikeif]
 == Style/CaseLikeIf
 
 |===
@@ -1371,14 +1477,17 @@ self.class === something
 Identifies places where `if-elsif` constructions
 can be replaced with `case-when`.
 
+[#safety-stylecaselikeif]
 === Safety
 
 This cop is unsafe. `case` statements use `===` for equality,
 so if the original conditional used a different equality operator, the
 behavior may be different.
 
+[#examples-stylecaselikeif]
 === Examples
 
+[#minbranchescount_-3-_default_-stylecaselikeif]
 ==== MinBranchesCount: 3 (default)
 
 [source,ruby]
@@ -1407,6 +1516,7 @@ else
 end
 ----
 
+[#minbranchescount_-4-stylecaselikeif]
 ==== MinBranchesCount: 4
 
 [source,ruby]
@@ -1423,6 +1533,7 @@ else
 end
 ----
 
+[#configurable-attributes-stylecaselikeif]
 === Configurable attributes
 
 |===
@@ -1433,10 +1544,12 @@ end
 | Integer
 |===
 
+[#references-stylecaselikeif]
 === References
 
 * https://rubystyle.guide#case-vs-if-else
 
+[#stylecharacterliteral]
 == Style/CharacterLiteral
 
 |===
@@ -1457,6 +1570,7 @@ is mostly redundant at this point.
 ? character literal can be used to express meta and control character.
 That's a good use case of ? literal so it doesn't count it as an offense.
 
+[#examples-stylecharacterliteral]
 === Examples
 
 [source,ruby]
@@ -1472,10 +1586,12 @@ That's a good use case of ? literal so it doesn't count it as an offense.
 "\C-\M-d" # same as above
 ----
 
+[#references-stylecharacterliteral]
 === References
 
 * https://rubystyle.guide#no-character-literals
 
+[#styleclassandmodulechildren]
 == Style/ClassAndModuleChildren
 
 |===
@@ -1493,6 +1609,7 @@ modules. Basically there are two different styles:
 
 The compact style is only forced for classes/modules with one child.
 
+[#safety-styleclassandmodulechildren]
 === Safety
 
 Autocorrection is unsafe.
@@ -1503,8 +1620,10 @@ verification that the outer parent is defined elsewhere. RuboCop does not
 have the knowledge to perform either operation safely and thus requires
 manual oversight.
 
+[#examples-styleclassandmodulechildren]
 === Examples
 
+[#enforcedstyle_-nested-_default_-styleclassandmodulechildren]
 ==== EnforcedStyle: nested (default)
 
 [source,ruby]
@@ -1517,6 +1636,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-compact-styleclassandmodulechildren]
 ==== EnforcedStyle: compact
 
 [source,ruby]
@@ -1527,6 +1647,7 @@ class Foo::Bar
 end
 ----
 
+[#configurable-attributes-styleclassandmodulechildren]
 === Configurable attributes
 
 |===
@@ -1537,10 +1658,12 @@ end
 | `nested`, `compact`
 |===
 
+[#references-styleclassandmodulechildren]
 === References
 
 * https://rubystyle.guide#namespace-definition
 
+[#styleclasscheck]
 == Style/ClassCheck
 
 |===
@@ -1555,8 +1678,10 @@ end
 
 Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.
 
+[#examples-styleclasscheck]
 === Examples
 
+[#enforcedstyle_-is_a_-_default_-styleclasscheck]
 ==== EnforcedStyle: is_a? (default)
 
 [source,ruby]
@@ -1570,6 +1695,7 @@ var.is_a?(Date)
 var.is_a?(Integer)
 ----
 
+[#enforcedstyle_-kind_of_-styleclasscheck]
 ==== EnforcedStyle: kind_of?
 
 [source,ruby]
@@ -1583,6 +1709,7 @@ var.kind_of?(Time)
 var.kind_of?(String)
 ----
 
+[#configurable-attributes-styleclasscheck]
 === Configurable attributes
 
 |===
@@ -1593,10 +1720,12 @@ var.kind_of?(String)
 | `is_a?`, `kind_of?`
 |===
 
+[#references-styleclasscheck]
 === References
 
 * https://rubystyle.guide#is-a-vs-kind-of
 
+[#styleclassequalitycomparison]
 == Style/ClassEqualityComparison
 
 |===
@@ -1614,12 +1743,14 @@ for equality.
 `==`, `equal?`, and `eql?` custom method definitions are allowed by default.
 These are customizable with `AllowedMethods` option.
 
+[#safety-styleclassequalitycomparison]
 === Safety
 
 This cop's autocorrection is unsafe because there is no guarantee that
 the constant `Foo` exists when autocorrecting `var.class.name == 'Foo'` to
 `var.instance_of?(Foo)`.
 
+[#examples-styleclassequalitycomparison]
 === Examples
 
 [source,ruby]
@@ -1634,6 +1765,7 @@ var.class.name == 'Date'
 var.instance_of?(Date)
 ----
 
+[#allowedmethods_-______-_equal___-_eql___-_default_-styleclassequalitycomparison]
 ==== AllowedMethods: ['==', 'equal?', 'eql?'] (default)
 
 [source,ruby]
@@ -1652,6 +1784,7 @@ def eql?(other)
 end
 ----
 
+[#allowedpatterns_-__-_default_-styleclassequalitycomparison]
 ==== AllowedPatterns: [] (default)
 
 [source,ruby]
@@ -1662,6 +1795,7 @@ def eq(other)
 end
 ----
 
+[#allowedpatterns_-__eq__-styleclassequalitycomparison]
 ==== AllowedPatterns: ['eq']
 
 [source,ruby]
@@ -1672,6 +1806,7 @@ def eq(other)
 end
 ----
 
+[#configurable-attributes-styleclassequalitycomparison]
 === Configurable attributes
 
 |===
@@ -1686,10 +1821,12 @@ end
 | Array
 |===
 
+[#references-styleclassequalitycomparison]
 === References
 
 * https://rubystyle.guide#instance-of-vs-class-comparison
 
+[#styleclassmethods]
 == Style/ClassMethods
 
 |===
@@ -1705,6 +1842,7 @@ end
 Checks for uses of the class/module name instead of
 self, when defining class/module methods.
 
+[#examples-styleclassmethods]
 === Examples
 
 [source,ruby]
@@ -1724,10 +1862,12 @@ class SomeClass
 end
 ----
 
+[#references-styleclassmethods]
 === References
 
 * https://rubystyle.guide#def-self-class-methods
 
+[#styleclassmethodsdefinitions]
 == Style/ClassMethodsDefinitions
 
 |===
@@ -1742,8 +1882,10 @@ end
 
 Enforces using `def self.method_name` or `class << self` to define class methods.
 
+[#examples-styleclassmethodsdefinitions]
 === Examples
 
+[#enforcedstyle_-def_self-_default_-styleclassmethodsdefinitions]
 ==== EnforcedStyle: def_self (default)
 
 [source,ruby]
@@ -1784,6 +1926,7 @@ class SomeClass
 end
 ----
 
+[#enforcedstyle_-self_class-styleclassmethodsdefinitions]
 ==== EnforcedStyle: self_class
 
 [source,ruby]
@@ -1805,6 +1948,7 @@ class SomeClass
 end
 ----
 
+[#configurable-attributes-styleclassmethodsdefinitions]
 === Configurable attributes
 
 |===
@@ -1815,10 +1959,12 @@ end
 | `def_self`, `self_class`
 |===
 
+[#references-styleclassmethodsdefinitions]
 === References
 
 * https://rubystyle.guide#def-self-class-methods
 
+[#styleclassvars]
 == Style/ClassVars
 
 |===
@@ -1841,6 +1987,7 @@ value of a class variable also affects the inheriting
 classes. This means that it's almost always better to
 use a class instance variable instead.
 
+[#examples-styleclassvars]
 === Examples
 
 [source,ruby]
@@ -1877,10 +2024,12 @@ class A
 end
 ----
 
+[#references-styleclassvars]
 === References
 
 * https://rubystyle.guide#no-class-vars
 
+[#stylecollectioncompact]
 == Style/CollectionCompact
 
 NOTE: Required Ruby version: 2.4
@@ -1898,6 +2047,7 @@ NOTE: Required Ruby version: 2.4
 Checks for places where custom logic on rejection nils from arrays
 and hashes can be replaced with `{Array,Hash}#{compact,compact!}`.
 
+[#safety-stylecollectioncompact]
 === Safety
 
 It is unsafe by default because false positives may occur in the
@@ -1909,6 +2059,7 @@ For example, `[[1, 2], [3, nil]].reject { |first, second| second.nil? }`
 and `[[1, 2], [3, nil]].compact` are not compatible. This will work fine
 when the receiver is a hash object.
 
+[#examples-stylecollectioncompact]
 === Examples
 
 [source,ruby]
@@ -1917,6 +2068,7 @@ when the receiver is a hash object.
 array.reject(&:nil?)
 array.reject { |e| e.nil? }
 array.select { |e| !e.nil? }
+array.filter { |e| !e.nil? }
 array.grep_v(nil)
 array.grep_v(NilClass)
 
@@ -1925,15 +2077,15 @@ array.compact
 
 # bad
 hash.reject!(&:nil?)
-array.delete_if(&:nil?)
 hash.reject! { |k, v| v.nil? }
-array.delete_if { |e| e.nil? }
 hash.select! { |k, v| !v.nil? }
+hash.filter! { |k, v| !v.nil? }
 
 # good
 hash.compact!
 ----
 
+[#allowedreceivers_-__params__-stylecollectioncompact]
 ==== AllowedReceivers: ['params']
 
 [source,ruby]
@@ -1942,6 +2094,7 @@ hash.compact!
 params.reject(&:nil?)
 ----
 
+[#configurable-attributes-stylecollectioncompact]
 === Configurable attributes
 
 |===
@@ -1952,6 +2105,7 @@ params.reject(&:nil?)
 | Array
 |===
 
+[#stylecollectionmethods]
 == Style/CollectionMethods
 
 |===
@@ -1975,12 +2129,14 @@ e.g. to use `detect` over `find`:
     PreferredMethods:
       find: detect
 
+[#safety-stylecollectionmethods]
 === Safety
 
 This cop is unsafe because it finds methods by name, without actually
 being able to determine if the receiver is an Enumerable or not, so
 this cop may register false positives.
 
+[#examples-stylecollectionmethods]
 === Examples
 
 [source,ruby]
@@ -2006,6 +2162,7 @@ items.select
 items.include?
 ----
 
+[#configurable-attributes-stylecollectionmethods]
 === Configurable attributes
 
 |===
@@ -2020,10 +2177,12 @@ items.include?
 | Array
 |===
 
+[#references-stylecollectionmethods]
 === References
 
 * https://rubystyle.guide#map-find-select-reduce-include-size
 
+[#stylecolonmethodcall]
 == Style/ColonMethodCall
 
 |===
@@ -2039,6 +2198,7 @@ items.include?
 Checks for methods invoked via the `::` operator instead
 of the `.` operator (like `FileUtils::rmdir` instead of `FileUtils.rmdir`).
 
+[#examples-stylecolonmethodcall]
 === Examples
 
 [source,ruby]
@@ -2054,10 +2214,12 @@ FileUtils.rmdir(dir)
 Marshal.dump(obj)
 ----
 
+[#references-stylecolonmethodcall]
 === References
 
 * https://rubystyle.guide#double-colons
 
+[#stylecolonmethoddefinition]
 == Style/ColonMethodDefinition
 
 |===
@@ -2073,6 +2235,7 @@ Marshal.dump(obj)
 Checks for class methods that are defined using the `::`
 operator instead of the `.` operator.
 
+[#examples-stylecolonmethoddefinition]
 === Examples
 
 [source,ruby]
@@ -2090,10 +2253,12 @@ class Foo
 end
 ----
 
+[#references-stylecolonmethoddefinition]
 === References
 
 * https://rubystyle.guide#colon-method-definition
 
+[#stylecombinableloops]
 == Style/CombinableLoops
 
 |===
@@ -2110,11 +2275,16 @@ Checks for places where multiple consecutive loops over the same data
 can be combined into a single loop. It is very likely that combining them
 will make the code more efficient and more concise.
 
+NOTE: Autocorrection is not applied when the block variable names differ in separate loops,
+as it is impossible to determine which variable name should be prioritized.
+
+[#safety-stylecombinableloops]
 === Safety
 
 The cop is unsafe, because the first loop might modify state that the
 second loop depends on; these two aren't combinable.
 
+[#examples-stylecombinableloops]
 === Examples
 
 [source,ruby]
@@ -2164,6 +2334,7 @@ def method
 end
 ----
 
+[#stylecommandliteral]
 == Style/CommandLiteral
 
 |===
@@ -2178,8 +2349,10 @@ end
 
 Enforces using `` or %x around command literals.
 
+[#examples-stylecommandliteral]
 === Examples
 
+[#enforcedstyle_-backticks-_default_-stylecommandliteral]
 ==== EnforcedStyle: backticks (default)
 
 [source,ruby]
@@ -2203,6 +2376,7 @@ folders = `find . -type d`.split
 `
 ----
 
+[#enforcedstyle_-mixed-stylecommandliteral]
 ==== EnforcedStyle: mixed
 
 [source,ruby]
@@ -2226,6 +2400,7 @@ folders = `find . -type d`.split
 )
 ----
 
+[#enforcedstyle_-percent_x-stylecommandliteral]
 ==== EnforcedStyle: percent_x
 
 [source,ruby]
@@ -2249,6 +2424,7 @@ folders = %x(find . -type d).split
 )
 ----
 
+[#allowinnerbackticks_-false-_default_-stylecommandliteral]
 ==== AllowInnerBackticks: false (default)
 
 [source,ruby]
@@ -2263,6 +2439,7 @@ folders = %x(find . -type d).split
 %x(echo `ls`)
 ----
 
+[#allowinnerbackticks_-true-stylecommandliteral]
 ==== AllowInnerBackticks: true
 
 [source,ruby]
@@ -2271,6 +2448,7 @@ folders = %x(find . -type d).split
 `echo \`ls\``
 ----
 
+[#configurable-attributes-stylecommandliteral]
 === Configurable attributes
 
 |===
@@ -2285,10 +2463,12 @@ folders = %x(find . -type d).split
 | Boolean
 |===
 
+[#references-stylecommandliteral]
 === References
 
 * https://rubystyle.guide#percent-x
 
+[#stylecommentannotation]
 == Style/CommentAnnotation
 
 |===
@@ -2313,8 +2493,10 @@ if an annotation keyword starts another line. This is done to prevent
 incorrect registering of keywords (eg. `review`) inside a paragraph as an
 annotation.
 
+[#examples-stylecommentannotation]
 === Examples
 
+[#requirecolon_-true-_default_-stylecommentannotation]
 ==== RequireColon: true (default)
 
 [source,ruby]
@@ -2344,6 +2526,7 @@ annotation.
 # OPTIMIZE: does not work
 ----
 
+[#requirecolon_-false-stylecommentannotation]
 ==== RequireColon: false
 
 [source,ruby]
@@ -2367,6 +2550,7 @@ annotation.
 # OPTIMIZE does not work
 ----
 
+[#configurable-attributes-stylecommentannotation]
 === Configurable attributes
 
 |===
@@ -2381,10 +2565,12 @@ annotation.
 | Boolean
 |===
 
+[#references-stylecommentannotation]
 === References
 
 * https://rubystyle.guide#annotate-keywords
 
+[#stylecommentedkeyword]
 == Style/CommentedKeyword
 
 |===
@@ -2402,16 +2588,18 @@ These keywords are: `class`, `module`, `def`, `begin`, `end`.
 
 Note that some comments
 (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
-are allowed.
+and RBS::Inline annotation comments are allowed.
 
 Autocorrection removes comments from `end` keyword and keeps comments
 for `class`, `module`, `def` and `begin` above the keyword.
 
+[#safety-stylecommentedkeyword]
 === Safety
 
 Autocorrection is unsafe because it may remove a comment that is
 meaningful.
 
+[#examples-stylecommentedkeyword]
 === Examples
 
 [source,ruby]
@@ -2440,6 +2628,7 @@ class X # :nodoc:
 end
 ----
 
+[#stylecomparableclamp]
 == Style/ComparableClamp
 
 NOTE: Required Ruby version: 2.4
@@ -2466,6 +2655,7 @@ When these are variables, it is not possible to determine which is the minimum a
 1.clamp(3, 1)       # => min argument must be smaller than max argument (ArgumentError)
 ----
 
+[#examples-stylecomparableclamp]
 === Examples
 
 [source,ruby]
@@ -2486,6 +2676,7 @@ end
 x.clamp(low, high)
 ----
 
+[#styleconcatarrayliterals]
 == Style/ConcatArrayLiterals
 
 |===
@@ -2501,11 +2692,13 @@ x.clamp(low, high)
 Enforces the use of `Array#push(item)` instead of `Array#concat([item])`
 to avoid redundant array literals.
 
+[#safety-styleconcatarrayliterals]
 === Safety
 
 This cop is unsafe, as it can produce false positives if the receiver
 is not an `Array` object.
 
+[#examples-styleconcatarrayliterals]
 === Examples
 
 [source,ruby]
@@ -2521,6 +2714,7 @@ list.push(bar, baz)
 list.push(qux, quux, corge)
 ----
 
+[#styleconditionalassignment]
 == Style/ConditionalAssignment
 
 |===
@@ -2537,8 +2731,10 @@ Check for `if` and `case` statements where each branch is used for
 both the assignment and comparison of the same variable
 when using the return of the condition can be used instead.
 
+[#examples-styleconditionalassignment]
 === Examples
 
+[#enforcedstyle_-assign_to_condition-_default_-styleconditionalassignment]
 ==== EnforcedStyle: assign_to_condition (default)
 
 [source,ruby]
@@ -2588,6 +2784,7 @@ bar << if foo
        end
 ----
 
+[#enforcedstyle_-assign_inside_condition-styleconditionalassignment]
 ==== EnforcedStyle: assign_inside_condition
 
 [source,ruby]
@@ -2637,6 +2834,7 @@ else
 end
 ----
 
+[#configurable-attributes-styleconditionalassignment]
 === Configurable attributes
 
 |===
@@ -2655,6 +2853,7 @@ end
 | Boolean
 |===
 
+[#styleconstantvisibility]
 == Style/ConstantVisibility
 
 |===
@@ -2673,6 +2872,7 @@ and module constants public, which litters the public API of the
 class or module. Explicitly declaring a visibility makes intent more
 clear, and prevents outside actors from touching private state.
 
+[#examples-styleconstantvisibility]
 === Examples
 
 [source,ruby]
@@ -2693,6 +2893,7 @@ class Foo
 end
 ----
 
+[#ignoremodules_-false-_default_-styleconstantvisibility]
 ==== IgnoreModules: false (default)
 
 [source,ruby]
@@ -2709,6 +2910,7 @@ class Foo
 end
 ----
 
+[#ignoremodules_-true-styleconstantvisibility]
 ==== IgnoreModules: true
 
 [source,ruby]
@@ -2719,6 +2921,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-styleconstantvisibility]
 === Configurable attributes
 
 |===
@@ -2729,6 +2932,7 @@ end
 | Boolean
 |===
 
+[#stylecopyright]
 == Style/Copyright
 
 |===
@@ -2756,6 +2960,7 @@ This regex string is treated as an unanchored regex. For each file
 that RuboCop scans, a comment that matches this regex must be found or
 an offense is reported.
 
+[#configurable-attributes-stylecopyright]
 === Configurable attributes
 
 |===
@@ -2770,6 +2975,7 @@ an offense is reported.
 | String
 |===
 
+[#styledatainheritance]
 == Style/DataInheritance
 
 NOTE: Required Ruby version: 3.2
@@ -2786,11 +2992,13 @@ NOTE: Required Ruby version: 3.2
 
 Checks for inheritance from `Data.define` to avoid creating the anonymous parent class.
 
+[#safety-styledatainheritance]
 === Safety
 
 Autocorrection is unsafe because it will change the inheritance
 tree (e.g. return value of `Module#ancestors`) of the constant.
 
+[#examples-styledatainheritance]
 === Examples
 
 [source,ruby]
@@ -2810,10 +3018,12 @@ Person = Data.define(:first_name, :last_name) do
 end
 ----
 
+[#references-styledatainheritance]
 === References
 
 * https://rubystyle.guide#no-extend-data-define
 
+[#styledatetime]
 == Style/DateTime
 
 |===
@@ -2832,12 +3042,14 @@ although highly overlapping, have particularities that make them not
 replaceable in certain situations when dealing with multiple timezones
 and/or DST.
 
+[#safety-styledatetime]
 === Safety
 
 Autocorrection is not safe, because `DateTime` and `Time` do not have
 exactly the same behavior, although in most cases the autocorrection
 will be fine.
 
+[#examples-styledatetime]
 === Examples
 
 [source,ruby]
@@ -2858,6 +3070,7 @@ Time.iso8601('2016-06-29')
 DateTime.iso8601('1751-04-23', Date::ENGLAND)
 ----
 
+[#allowcoercion_-false-_default_-styledatetime]
 ==== AllowCoercion: false (default)
 
 [source,ruby]
@@ -2869,6 +3082,7 @@ something.to_datetime
 something.to_time
 ----
 
+[#allowcoercion_-true-styledatetime]
 ==== AllowCoercion: true
 
 [source,ruby]
@@ -2880,6 +3094,7 @@ something.to_datetime
 something.to_time
 ----
 
+[#configurable-attributes-styledatetime]
 === Configurable attributes
 
 |===
@@ -2890,10 +3105,12 @@ something.to_time
 | Boolean
 |===
 
+[#references-styledatetime]
 === References
 
 * https://rubystyle.guide#date-time
 
+[#styledefwithparentheses]
 == Style/DefWithParentheses
 
 |===
@@ -2910,6 +3127,7 @@ Checks for parentheses in the definition of a method,
 that does not take any arguments. Both instance and
 class/singleton methods are checked.
 
+[#examples-styledefwithparentheses]
 === Examples
 
 [source,ruby]
@@ -2944,10 +3162,12 @@ def Baz.foo
 end
 ----
 
+[#references-styledefwithparentheses]
 === References
 
 * https://rubystyle.guide#method-parens
 
+[#styledir]
 == Style/Dir
 
 NOTE: Required Ruby version: 2.0
@@ -2966,6 +3186,7 @@ Checks for places where the `#\_\_dir\_\_` method can replace more
 complex constructs to retrieve a canonicalized absolute path to the
 current file.
 
+[#examples-styledir]
 === Examples
 
 [source,ruby]
@@ -2980,6 +3201,7 @@ path = File.dirname(File.realpath(__FILE__))
 path = __dir__
 ----
 
+[#styledirempty]
 == Style/DirEmpty
 
 NOTE: Required Ruby version: 2.4
@@ -2996,6 +3218,7 @@ NOTE: Required Ruby version: 2.4
 
 Prefer to use `Dir.empty?('path/to/dir')` when checking if a directory is empty.
 
+[#examples-styledirempty]
 === Examples
 
 [source,ruby]
@@ -3010,6 +3233,7 @@ Dir.each_child('path/to/dir').none?
 Dir.empty?('path/to/dir')
 ----
 
+[#styledisablecopswithinsourcecodedirective]
 == Style/DisableCopsWithinSourceCodeDirective
 
 |===
@@ -3029,6 +3253,7 @@ and not quickly disabled with a comment.
 Specific cops can be allowed with the `AllowedCops` configuration. Note that
 if this configuration is set, `rubocop:disable all` is still disallowed.
 
+[#examples-styledisablecopswithinsourcecodedirective]
 === Examples
 
 [source,ruby]
@@ -3044,6 +3269,7 @@ def foo
 end
 ----
 
+[#allowedcops_-_metricsabcsize_-styledisablecopswithinsourcecodedirective]
 ==== AllowedCops: [Metrics/AbcSize]
 
 [source,ruby]
@@ -3055,6 +3281,7 @@ end
 # rubocop:enable Metrics/AbcSize
 ----
 
+[#configurable-attributes-styledisablecopswithinsourcecodedirective]
 === Configurable attributes
 
 |===
@@ -3065,6 +3292,7 @@ end
 | Array
 |===
 
+[#styledocumentdynamicevaldefinition]
 == Style/DocumentDynamicEvalDefinition
 
 |===
@@ -3080,6 +3308,7 @@ end
 When using `class_eval` (or other `eval`) with string interpolation,
 add a comment block showing its appearance if interpolated (a practice used in Rails code).
 
+[#examples-styledocumentdynamicevaldefinition]
 === Examples
 
 [source,ruby]
@@ -3153,10 +3382,12 @@ class_eval("def #{unsafe_method}!(*params); end")
 class_eval("def #{unsafe_method}!(*params); end # def capitalize!(*params); end")
 ----
 
+[#references-styledocumentdynamicevaldefinition]
 === References
 
 * https://rubystyle.guide#eval-comment-docs
 
+[#styledocumentation]
 == Style/Documentation
 
 |===
@@ -3179,6 +3410,7 @@ The documentation requirement is annulled if the class or module has
 a `#:nodoc:` comment next to it. Likewise, `#:nodoc: all` does the
 same for all its children.
 
+[#examples-styledocumentation]
 === Examples
 
 [source,ruby]
@@ -3230,6 +3462,7 @@ module Namespace
 end
 ----
 
+[#allowedconstants_-__classmethods__-styledocumentation]
 ==== AllowedConstants: ['ClassMethods']
 
 [source,ruby]
@@ -3242,6 +3475,7 @@ module A
 end
 ----
 
+[#configurable-attributes-styledocumentation]
 === Configurable attributes
 
 |===
@@ -3256,6 +3490,7 @@ end
 | Array
 |===
 
+[#styledocumentationmethod]
 == Style/DocumentationMethod
 
 |===
@@ -3276,6 +3511,7 @@ NOTE: This cop allows `initialize` method because `initialize` is
 a special method called from `new`. In some programming languages
 they are called constructor to distinguish it from method.
 
+[#examples-styledocumentationmethod]
 === Examples
 
 [source,ruby]
@@ -3320,6 +3556,7 @@ def foo.bar
 end
 ----
 
+[#requirefornonpublicmethods_-false-_default_-styledocumentationmethod]
 ==== RequireForNonPublicMethods: false (default)
 
 [source,ruby]
@@ -3338,6 +3575,7 @@ class Foo
 end
 ----
 
+[#requirefornonpublicmethods_-true-styledocumentationmethod]
 ==== RequireForNonPublicMethods: true
 
 [source,ruby]
@@ -3371,6 +3609,7 @@ class Foo
 end
 ----
 
+[#allowedmethods_-__method_missing__-_respond_to_missing___-styledocumentationmethod]
 ==== AllowedMethods: ['method_missing', 'respond_to_missing?']
 
 [source,ruby]
@@ -3385,6 +3624,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-styledocumentationmethod]
 === Configurable attributes
 
 |===
@@ -3403,6 +3643,7 @@ end
 | Boolean
 |===
 
+[#styledoublecopdisabledirective]
 == Style/DoubleCopDisableDirective
 
 |===
@@ -3418,6 +3659,7 @@ end
 Detects double disable comments on one line. This is mostly to catch
 automatically generated comments that need to be regenerated.
 
+[#examples-styledoublecopdisabledirective]
 === Examples
 
 [source,ruby]
@@ -3437,6 +3679,7 @@ def f # rubocop:disable Style/For, Metrics/AbcSize
 end
 ----
 
+[#styledoublenegation]
 == Style/DoubleNegation
 
 |===
@@ -3460,6 +3703,7 @@ NOTE: when `something` is a boolean value
 As you're unlikely to write code that can accept values of any type
 this is rarely a problem in practice.
 
+[#safety-styledoublenegation]
 === Safety
 
 Autocorrection is unsafe when the value is `false`, because the result
@@ -3471,6 +3715,7 @@ of the expression will change.
 !false.nil? #=> true
 ----
 
+[#examples-styledoublenegation]
 === Examples
 
 [source,ruby]
@@ -3482,6 +3727,7 @@ of the expression will change.
 !something.nil?
 ----
 
+[#enforcedstyle_-allowed_in_returns-_default_-styledoublenegation]
 ==== EnforcedStyle: allowed_in_returns (default)
 
 [source,ruby]
@@ -3500,6 +3746,7 @@ define_singleton_method :foo? do
 end
 ----
 
+[#enforcedstyle_-forbidden-styledoublenegation]
 ==== EnforcedStyle: forbidden
 
 [source,ruby]
@@ -3518,6 +3765,7 @@ define_singleton_method :foo? do
 end
 ----
 
+[#configurable-attributes-styledoublenegation]
 === Configurable attributes
 
 |===
@@ -3528,10 +3776,12 @@ end
 | `allowed_in_returns`, `forbidden`
 |===
 
+[#references-styledoublenegation]
 === References
 
 * https://rubystyle.guide#no-bang-bang
 
+[#styleeachforsimpleloop]
 == Style/EachForSimpleLoop
 
 |===
@@ -3550,6 +3800,7 @@ using a Range literal and `#each`. This can be done more readably using
 
 This check only applies if the block takes no parameters.
 
+[#examples-styleeachforsimpleloop]
 === Examples
 
 [source,ruby]
@@ -3567,6 +3818,7 @@ This check only applies if the block takes no parameters.
 10.times {}
 ----
 
+[#styleeachwithobject]
 == Style/EachWithObject
 
 |===
@@ -3586,6 +3838,7 @@ the need to return the object at the end.
 However, we can't replace with each_with_object if the accumulator
 parameter is assigned to within the block.
 
+[#examples-styleeachwithobject]
 === Examples
 
 [source,ruby]
@@ -3597,6 +3850,7 @@ parameter is assigned to within the block.
 [1, 2].each_with_object({}) { |e, a| a[e] = e }
 ----
 
+[#styleemptyblockparameter]
 == Style/EmptyBlockParameter
 
 |===
@@ -3612,6 +3866,7 @@ parameter is assigned to within the block.
 Checks for pipes for empty block parameters. Pipes for empty
 block parameters do not cause syntax errors, but they are redundant.
 
+[#examples-styleemptyblockparameter]
 === Examples
 
 [source,ruby]
@@ -3632,6 +3887,7 @@ end
 a { do_something }
 ----
 
+[#styleemptycasecondition]
 == Style/EmptyCaseCondition
 
 |===
@@ -3646,6 +3902,7 @@ a { do_something }
 
 Checks for case statements with an empty condition.
 
+[#examples-styleemptycasecondition]
 === Examples
 
 [source,ruby]
@@ -3680,6 +3937,7 @@ else
 end
 ----
 
+[#styleemptyelse]
 == Style/EmptyElse
 
 |===
@@ -3695,8 +3953,10 @@ end
 Checks for empty else-clauses, possibly including comments and/or an
 explicit `nil` depending on the EnforcedStyle.
 
+[#examples-styleemptyelse]
 === Examples
 
+[#enforcedstyle_-both-_default_-styleemptyelse]
 ==== EnforcedStyle: both (default)
 
 [source,ruby]
@@ -3729,6 +3989,7 @@ if condition
 end
 ----
 
+[#enforcedstyle_-empty-styleemptyelse]
 ==== EnforcedStyle: empty
 
 [source,ruby]
@@ -3761,6 +4022,7 @@ if condition
 end
 ----
 
+[#enforcedstyle_-nil-styleemptyelse]
 ==== EnforcedStyle: nil
 
 [source,ruby]
@@ -3793,6 +4055,7 @@ if condition
 end
 ----
 
+[#allowcomments_-false-_default_-styleemptyelse]
 ==== AllowComments: false (default)
 
 [source,ruby]
@@ -3813,6 +4076,7 @@ else
 end
 ----
 
+[#allowcomments_-true-styleemptyelse]
 ==== AllowComments: true
 
 [source,ruby]
@@ -3833,6 +4097,7 @@ else
 end
 ----
 
+[#configurable-attributes-styleemptyelse]
 === Configurable attributes
 
 |===
@@ -3847,6 +4112,7 @@ end
 | Boolean
 |===
 
+[#styleemptyheredoc]
 == Style/EmptyHeredoc
 
 |===
@@ -3861,6 +4127,7 @@ end
 
 Checks for using empty heredoc to reduce redundancy.
 
+[#examples-styleemptyheredoc]
 === Examples
 
 [source,ruby]
@@ -3892,6 +4159,7 @@ EOS
 do_something('')
 ----
 
+[#styleemptylambdaparameter]
 == Style/EmptyLambdaParameter
 
 |===
@@ -3908,6 +4176,7 @@ Checks for parentheses for empty lambda parameters. Parentheses
 for empty lambda parameters do not cause syntax errors, but they are
 redundant.
 
+[#examples-styleemptylambdaparameter]
 === Examples
 
 [source,ruby]
@@ -3922,6 +4191,7 @@ redundant.
 -> (arg) { do_something(arg) }
 ----
 
+[#styleemptyliteral]
 == Style/EmptyLiteral
 
 |===
@@ -3937,6 +4207,7 @@ redundant.
 Checks for the use of a method, the result of which
 would be a literal, like an empty array, hash, or string.
 
+[#examples-styleemptyliteral]
 === Examples
 
 [source,ruby]
@@ -3954,10 +4225,12 @@ h = {}
 s = ''
 ----
 
+[#references-styleemptyliteral]
 === References
 
 * https://rubystyle.guide#literal-array-hash
 
+[#styleemptymethod]
 == Style/EmptyMethod
 
 |===
@@ -3982,8 +4255,10 @@ NOTE: Autocorrection will not be applied for the `compact` style
 if the resulting code is longer than the `Max` configuration for
 `Layout/LineLength`, but an offense will still be registered.
 
+[#examples-styleemptymethod]
 === Examples
 
+[#enforcedstyle_-compact-_default_-styleemptymethod]
 ==== EnforcedStyle: compact (default)
 
 [source,ruby]
@@ -4005,6 +4280,7 @@ end
 def self.foo(bar); end
 ----
 
+[#enforcedstyle_-expanded-styleemptymethod]
 ==== EnforcedStyle: expanded
 
 [source,ruby]
@@ -4022,6 +4298,7 @@ def self.foo(bar)
 end
 ----
 
+[#configurable-attributes-styleemptymethod]
 === Configurable attributes
 
 |===
@@ -4032,10 +4309,12 @@ end
 | `compact`, `expanded`
 |===
 
+[#references-styleemptymethod]
 === References
 
 * https://rubystyle.guide#no-single-line-methods
 
+[#styleencoding]
 == Style/Encoding
 
 |===
@@ -4050,6 +4329,7 @@ end
 
 Checks ensures source files have no utf-8 encoding comments.
 
+[#examples-styleencoding]
 === Examples
 
 [source,ruby]
@@ -4060,10 +4340,12 @@ Checks ensures source files have no utf-8 encoding comments.
 # -*- coding: UTF-8 -*-
 ----
 
+[#references-styleencoding]
 === References
 
 * https://rubystyle.guide#utf-8
 
+[#styleendblock]
 == Style/EndBlock
 
 |===
@@ -4078,6 +4360,7 @@ Checks ensures source files have no utf-8 encoding comments.
 
 Checks for END blocks.
 
+[#examples-styleendblock]
 === Examples
 
 [source,ruby]
@@ -4089,10 +4372,12 @@ END { puts 'Goodbye!' }
 at_exit { puts 'Goodbye!' }
 ----
 
+[#references-styleendblock]
 === References
 
 * https://rubystyle.guide#no-END-blocks
 
+[#styleendlessmethod]
 == Style/EndlessMethod
 
 NOTE: Required Ruby version: 3.0
@@ -4123,8 +4408,10 @@ The supported styles are:
 NOTE: Incorrect endless method definitions will always be
 corrected to a multi-line definition.
 
+[#examples-styleendlessmethod]
 === Examples
 
+[#enforcedstyle_-allow_single_line-_default_-styleendlessmethod]
 ==== EnforcedStyle: allow_single_line (default)
 
 [source,ruby]
@@ -4138,6 +4425,7 @@ def my_method() = x.foo
                    .baz
 ----
 
+[#enforcedstyle_-allow_always-styleendlessmethod]
 ==== EnforcedStyle: allow_always
 
 [source,ruby]
@@ -4151,6 +4439,7 @@ def my_method() = x.foo
                    .baz
 ----
 
+[#enforcedstyle_-disallow-styleendlessmethod]
 ==== EnforcedStyle: disallow
 
 [source,ruby]
@@ -4164,6 +4453,7 @@ def my_method() = x.foo
                    .baz
 ----
 
+[#configurable-attributes-styleendlessmethod]
 === Configurable attributes
 
 |===
@@ -4174,10 +4464,12 @@ def my_method() = x.foo
 | `allow_single_line`, `allow_always`, `disallow`
 |===
 
+[#references-styleendlessmethod]
 === References
 
 * https://rubystyle.guide#endless-methods
 
+[#styleenvhome]
 == Style/EnvHome
 
 |===
@@ -4193,6 +4485,7 @@ def my_method() = x.foo
 Checks for consistent usage of `ENV['HOME']`. If `nil` is used as
 the second argument of `ENV.fetch`, it is treated as a bad case like `ENV[]`.
 
+[#safety-styleenvhome]
 === Safety
 
 The cop is unsafe because the result when `nil` is assigned to `ENV['HOME']` changes:
@@ -4204,6 +4497,7 @@ ENV['HOME'] # => nil
 Dir.home    # => '/home/foo'
 ----
 
+[#examples-styleenvhome]
 === Examples
 
 [source,ruby]
@@ -4219,6 +4513,7 @@ Dir.home
 ENV.fetch('HOME', default)
 ----
 
+[#styleevalwithlocation]
 == Style/EvalWithLocation
 
 |===
@@ -4257,6 +4552,7 @@ RUBY
 eval code # not checked.
 ----
 
+[#examples-styleevalwithlocation]
 === Examples
 
 [source,ruby]
@@ -4286,6 +4582,7 @@ C.class_eval <<-RUBY, __FILE__, __LINE__ + 1
 RUBY
 ----
 
+[#styleevenodd]
 == Style/EvenOdd
 
 |===
@@ -4301,6 +4598,7 @@ RUBY
 Checks for places where `Integer#even?` or `Integer#odd?`
 can be used.
 
+[#examples-styleevenodd]
 === Examples
 
 [source,ruby]
@@ -4314,10 +4612,12 @@ if x.even?
 end
 ----
 
+[#references-styleevenodd]
 === References
 
 * https://rubystyle.guide#predicate-methods
 
+[#styleexactregexpmatch]
 == Style/ExactRegexpMatch
 
 |===
@@ -4332,6 +4632,7 @@ end
 
 Checks for exact regexp match inside Regexp literals.
 
+[#examples-styleexactregexpmatch]
 === Examples
 
 [source,ruby]
@@ -4352,6 +4653,7 @@ string !~ /\Astring\z/
 string != 'string'
 ----
 
+[#styleexpandpatharguments]
 == Style/ExpandPathArguments
 
 |===
@@ -4370,6 +4672,7 @@ Likewise, it also checks for the `Pathname.new` argument.
 Contrastive bad case and good case are alternately shown in
 the following examples.
 
+[#examples-styleexpandpatharguments]
 === Examples
 
 [source,ruby]
@@ -4405,6 +4708,7 @@ Pathname.new(__FILE__).parent.expand_path
 Pathname.new(__dir__).expand_path
 ----
 
+[#styleexplicitblockargument]
 == Style/ExplicitBlockArgument
 
 |===
@@ -4423,6 +4727,7 @@ block literal that just passes its arguments to another block.
 NOTE: This cop only registers an offense if the block args match the
 yield args exactly.
 
+[#examples-styleexplicitblockargument]
 === Examples
 
 [source,ruby]
@@ -4456,10 +4761,12 @@ def nine_times(&block)
 end
 ----
 
+[#references-styleexplicitblockargument]
 === References
 
 * https://rubystyle.guide#block-argument
 
+[#styleexponentialnotation]
 == Style/ExponentialNotation
 
 |===
@@ -4481,8 +4788,10 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 * `integral` which enforces the mantissa to always be a whole number without
   trailing zeroes.
 
+[#examples-styleexponentialnotation]
 === Examples
 
+[#enforcedstyle_-scientific-_default_-styleexponentialnotation]
 ==== EnforcedStyle: scientific (default)
 
 [source,ruby]
@@ -4502,6 +4811,7 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 3.14
 ----
 
+[#enforcedstyle_-engineering-styleexponentialnotation]
 ==== EnforcedStyle: engineering
 
 [source,ruby]
@@ -4522,6 +4832,7 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 1.232e9
 ----
 
+[#enforcedstyle_-integral-styleexponentialnotation]
 ==== EnforcedStyle: integral
 
 [source,ruby]
@@ -4540,6 +4851,7 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 12e5
 ----
 
+[#configurable-attributes-styleexponentialnotation]
 === Configurable attributes
 
 |===
@@ -4550,10 +4862,12 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 | `scientific`, `engineering`, `integral`
 |===
 
+[#references-styleexponentialnotation]
 === References
 
 * https://rubystyle.guide#exponential-notation
 
+[#stylefetchenvvar]
 == Style/FetchEnvVar
 
 |===
@@ -4572,6 +4886,7 @@ which may cause unexpected behaviors when the developer forgets to set it.
 On the other hand, `ENV.fetch` raises KeyError or returns the explicitly
 specified default value.
 
+[#examples-stylefetchenvvar]
 === Examples
 
 [source,ruby]
@@ -4589,6 +4904,7 @@ x = ENV.fetch('X')
 ENV['X'].some_method # (e.g. `.nil?`)
 ----
 
+[#configurable-attributes-stylefetchenvvar]
 === Configurable attributes
 
 |===
@@ -4599,10 +4915,12 @@ ENV['X'].some_method # (e.g. `.nil?`)
 | Array
 |===
 
+[#references-stylefetchenvvar]
 === References
 
 * https://rubystyle.guide/#hash-fetch-defaults
 
+[#stylefileempty]
 == Style/FileEmpty
 
 NOTE: Required Ruby version: 2.4
@@ -4619,12 +4937,14 @@ NOTE: Required Ruby version: 2.4
 
 Prefer to use `File.empty?('path/to/file')` when checking if a file is empty.
 
+[#safety-stylefileempty]
 === Safety
 
 This cop is unsafe, because `File.size`, `File.read`, and `File.binread`
 raise `ENOENT` exception when there is no file corresponding to the path,
 while `File.empty?` does not raise an exception.
 
+[#examples-stylefileempty]
 === Examples
 
 [source,ruby]
@@ -4643,6 +4963,7 @@ File.empty?('path/to/file')
 FileTest.empty?('path/to/file')
 ----
 
+[#stylefileread]
 == Style/FileRead
 
 |===
@@ -4657,6 +4978,7 @@ FileTest.empty?('path/to/file')
 
 Favor `File.(bin)read` convenience methods.
 
+[#examples-stylefileread]
 === Examples
 
 [source,ruby]
@@ -4688,10 +5010,12 @@ end
 File.binread(filename)
 ----
 
+[#references-stylefileread]
 === References
 
 * https://rubystyle.guide#file-read
 
+[#stylefilewrite]
 == Style/FileWrite
 
 |===
@@ -4717,6 +5041,7 @@ File.open(filename, 'w') do |f|
 end
 ----
 
+[#examples-stylefilewrite]
 === Examples
 
 [source,ruby]
@@ -4740,10 +5065,12 @@ end
 File.binwrite(filename, content)
 ----
 
+[#references-stylefilewrite]
 === References
 
 * https://rubystyle.guide#file-write
 
+[#stylefloatdivision]
 == Style/FloatDivision
 
 |===
@@ -4760,6 +5087,7 @@ Checks for division with integers coerced to floats.
 It is recommended to either always use `fdiv` or coerce one side only.
 This cop also provides other options for code consistency.
 
+[#safety-stylefloatdivision]
 === Safety
 
 This cop is unsafe, because if the operand variable is a string object
@@ -4772,8 +5100,10 @@ b = '3.4'
 a.to_f / b.to_f # Both `to_f` calls are required here
 ----
 
+[#examples-stylefloatdivision]
 === Examples
 
+[#enforcedstyle_-single_coerce-_default_-stylefloatdivision]
 ==== EnforcedStyle: single_coerce (default)
 
 [source,ruby]
@@ -4786,6 +5116,7 @@ a.to_f / b
 a / b.to_f
 ----
 
+[#enforcedstyle_-left_coerce-stylefloatdivision]
 ==== EnforcedStyle: left_coerce
 
 [source,ruby]
@@ -4798,6 +5129,7 @@ a.to_f / b.to_f
 a.to_f / b
 ----
 
+[#enforcedstyle_-right_coerce-stylefloatdivision]
 ==== EnforcedStyle: right_coerce
 
 [source,ruby]
@@ -4810,6 +5142,7 @@ a.to_f / b.to_f
 a / b.to_f
 ----
 
+[#enforcedstyle_-fdiv-stylefloatdivision]
 ==== EnforcedStyle: fdiv
 
 [source,ruby]
@@ -4823,6 +5156,7 @@ a.to_f / b.to_f
 a.fdiv(b)
 ----
 
+[#configurable-attributes-stylefloatdivision]
 === Configurable attributes
 
 |===
@@ -4833,11 +5167,13 @@ a.fdiv(b)
 | `left_coerce`, `right_coerce`, `single_coerce`, `fdiv`
 |===
 
+[#references-stylefloatdivision]
 === References
 
 * https://rubystyle.guide#float-division
 * https://blog.rubystyle.guide/ruby/2019/06/21/float-division.html
 
+[#stylefor]
 == Style/For
 
 |===
@@ -4855,13 +5191,16 @@ preferred alternative is set in the EnforcedStyle configuration
 parameter. An `each` call with a block on a single line is always
 allowed.
 
+[#safety-stylefor]
 === Safety
 
 This cop's autocorrection is unsafe because the scope of
 variables is different between `each` and `for`.
 
+[#examples-stylefor]
 === Examples
 
+[#enforcedstyle_-each-_default_-stylefor]
 ==== EnforcedStyle: each (default)
 
 [source,ruby]
@@ -4881,6 +5220,7 @@ def foo
 end
 ----
 
+[#enforcedstyle_-for-stylefor]
 ==== EnforcedStyle: for
 
 [source,ruby]
@@ -4900,6 +5240,7 @@ def foo
 end
 ----
 
+[#configurable-attributes-stylefor]
 === Configurable attributes
 
 |===
@@ -4910,10 +5251,12 @@ end
 | `each`, `for`
 |===
 
+[#references-stylefor]
 === References
 
 * https://rubystyle.guide#no-for-loops
 
+[#styleformatstring]
 == Style/FormatString
 
 |===
@@ -4946,8 +5289,10 @@ format('%s', [1, 2, 3]) #=> '[1, 2, 3]'
 '%s' % [1, 2, 3].to_s   #=> '[1, 2, 3]'
 ----
 
+[#examples-styleformatstring]
 === Examples
 
+[#enforcedstyle_-format-_default_-styleformatstring]
 ==== EnforcedStyle: format (default)
 
 [source,ruby]
@@ -4960,6 +5305,7 @@ puts '%10s' % 'foo'
 puts format('%10s', 'foo')
 ----
 
+[#enforcedstyle_-sprintf-styleformatstring]
 ==== EnforcedStyle: sprintf
 
 [source,ruby]
@@ -4972,6 +5318,7 @@ puts '%10s' % 'foo'
 puts sprintf('%10s', 'foo')
 ----
 
+[#enforcedstyle_-percent-styleformatstring]
 ==== EnforcedStyle: percent
 
 [source,ruby]
@@ -4984,6 +5331,7 @@ puts sprintf('%10s', 'foo')
 puts '%10s' % 'foo'
 ----
 
+[#configurable-attributes-styleformatstring]
 === Configurable attributes
 
 |===
@@ -4994,10 +5342,12 @@ puts '%10s' % 'foo'
 | `format`, `sprintf`, `percent`
 |===
 
+[#references-styleformatstring]
 === References
 
 * https://rubystyle.guide#sprintf
 
+[#styleformatstringtoken]
 == Style/FormatStringToken
 
 |===
@@ -5025,8 +5375,10 @@ It is allowed to contain unannotated token
 if the number of them is less than or equals to
 `MaxUnannotatedPlaceholdersAllowed`.
 
+[#examples-styleformatstringtoken]
 === Examples
 
+[#enforcedstyle_-annotated-_default_-styleformatstringtoken]
 ==== EnforcedStyle: annotated (default)
 
 [source,ruby]
@@ -5039,6 +5391,7 @@ format('%s', 'Hello')
 format('%<greeting>s', greeting: 'Hello')
 ----
 
+[#enforcedstyle_-template-styleformatstringtoken]
 ==== EnforcedStyle: template
 
 [source,ruby]
@@ -5051,6 +5404,7 @@ format('%s', 'Hello')
 format('%{greeting}', greeting: 'Hello')
 ----
 
+[#enforcedstyle_-unannotated-styleformatstringtoken]
 ==== EnforcedStyle: unannotated
 
 [source,ruby]
@@ -5063,6 +5417,7 @@ format('%{greeting}', greeting: 'Hello')
 format('%s', 'Hello')
 ----
 
+[#maxunannotatedplaceholdersallowed_-0-styleformatstringtoken]
 ==== MaxUnannotatedPlaceholdersAllowed: 0
 
 [source,ruby]
@@ -5075,6 +5430,7 @@ format('%s %s.', 'Hello', 'world')
 format('%<number>06d', number: 10)
 ----
 
+[#maxunannotatedplaceholdersallowed_-1-_default_-styleformatstringtoken]
 ==== MaxUnannotatedPlaceholdersAllowed: 1 (default)
 
 [source,ruby]
@@ -5086,6 +5442,7 @@ format('%s %s.', 'Hello', 'world')
 format('%06d', 10)
 ----
 
+[#allowedmethods_-__-_default_-styleformatstringtoken]
 ==== AllowedMethods: [] (default)
 
 [source,ruby]
@@ -5094,6 +5451,7 @@ format('%06d', 10)
 redirect('foo/%{bar_id}')
 ----
 
+[#allowedmethods_-_redirect_-styleformatstringtoken]
 ==== AllowedMethods: [redirect]
 
 [source,ruby]
@@ -5102,6 +5460,7 @@ redirect('foo/%{bar_id}')
 redirect('foo/%{bar_id}')
 ----
 
+[#allowedpatterns_-__-_default_-styleformatstringtoken]
 ==== AllowedPatterns: [] (default)
 
 [source,ruby]
@@ -5110,6 +5469,7 @@ redirect('foo/%{bar_id}')
 redirect('foo/%{bar_id}')
 ----
 
+[#allowedpatterns_-__redirect__-styleformatstringtoken]
 ==== AllowedPatterns: ['redirect']
 
 [source,ruby]
@@ -5118,6 +5478,7 @@ redirect('foo/%{bar_id}')
 redirect('foo/%{bar_id}')
 ----
 
+[#configurable-attributes-styleformatstringtoken]
 === Configurable attributes
 
 |===
@@ -5140,6 +5501,7 @@ redirect('foo/%{bar_id}')
 | Array
 |===
 
+[#stylefrozenstringliteralcomment]
 == Style/FrozenStringLiteralComment
 
 NOTE: Required Ruby version: 2.3
@@ -5167,14 +5529,17 @@ to `false` instead of `true`.
 To require a blank line after this comment, please see
 `Layout/EmptyLineAfterMagicComment` cop.
 
+[#safety-stylefrozenstringliteralcomment]
 === Safety
 
 This cop's autocorrection is unsafe since any strings mutations will
 change from being accepted to raising `FrozenError`, as all strings
 will become frozen by default, and will need to be manually refactored.
 
+[#examples-stylefrozenstringliteralcomment]
 === Examples
 
+[#enforcedstyle_-always-_default_-stylefrozenstringliteralcomment]
 ==== EnforcedStyle: always (default)
 
 [source,ruby]
@@ -5202,6 +5567,7 @@ module Bar
 end
 ----
 
+[#enforcedstyle_-never-stylefrozenstringliteralcomment]
 ==== EnforcedStyle: never
 
 [source,ruby]
@@ -5221,6 +5587,7 @@ module Baz
 end
 ----
 
+[#enforcedstyle_-always_true-stylefrozenstringliteralcomment]
 ==== EnforcedStyle: always_true
 
 [source,ruby]
@@ -5248,6 +5615,7 @@ module Bar
 end
 ----
 
+[#configurable-attributes-stylefrozenstringliteralcomment]
 === Configurable attributes
 
 |===
@@ -5258,6 +5626,7 @@ end
 | `always`, `always_true`, `never`
 |===
 
+[#styleglobalstdstream]
 == Style/GlobalStdStream
 
 |===
@@ -5275,11 +5644,13 @@ Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.
 reassign (possibly to redirect some stream) constants in Ruby, you'll get
 an interpreter warning if you do so.
 
+[#safety-styleglobalstdstream]
 === Safety
 
 Autocorrection is unsafe because `STDOUT` and `$stdout` may point to different
 objects, for example.
 
+[#examples-styleglobalstdstream]
 === Examples
 
 [source,ruby]
@@ -5303,10 +5674,12 @@ def m(out = $stdout)
 end
 ----
 
+[#references-styleglobalstdstream]
 === References
 
 * https://rubystyle.guide#global-stdout
 
+[#styleglobalvars]
 == Style/GlobalVars
 
 |===
@@ -5326,6 +5699,7 @@ users can allow additional variables via the AllowedVariables option.
 
 Note that backreferences like $1, $2, etc are not global variables.
 
+[#examples-styleglobalvars]
 === Examples
 
 [source,ruby]
@@ -5340,6 +5714,7 @@ foo = 2
 $stdin.read
 ----
 
+[#configurable-attributes-styleglobalvars]
 === Configurable attributes
 
 |===
@@ -5350,11 +5725,13 @@ $stdin.read
 | Array
 |===
 
+[#references-styleglobalvars]
 === References
 
 * https://rubystyle.guide#instance-vars
 * https://www.zenspider.com/ruby/quickref.html
 
+[#styleguardclause]
 == Style/GuardClause
 
 |===
@@ -5377,6 +5754,7 @@ in the body of the conditional expression.
 NOTE: Autocorrect works in most cases except with if-else statements
   that contain logical operators such as `foo || raise('exception')`
 
+[#examples-styleguardclause]
 === Examples
 
 [source,ruby]
@@ -5442,6 +5820,7 @@ define_method(:test) do
 end
 ----
 
+[#allowconsecutiveconditionals_-false-_default_-styleguardclause]
 ==== AllowConsecutiveConditionals: false (default)
 
 [source,ruby]
@@ -5458,6 +5837,7 @@ def test
 end
 ----
 
+[#allowconsecutiveconditionals_-true-styleguardclause]
 ==== AllowConsecutiveConditionals: true
 
 [source,ruby]
@@ -5487,6 +5867,7 @@ def test
 end
 ----
 
+[#configurable-attributes-styleguardclause]
 === Configurable attributes
 
 |===
@@ -5501,10 +5882,12 @@ end
 | Boolean
 |===
 
+[#references-styleguardclause]
 === References
 
 * https://rubystyle.guide#no-nested-conditionals
 
+[#stylehashaslastarrayitem]
 == Style/HashAsLastArrayItem
 
 |===
@@ -5523,8 +5906,10 @@ array item depending on configuration.
 NOTE: This cop will ignore arrays where all items are hashes, regardless of
 EnforcedStyle.
 
+[#examples-stylehashaslastarrayitem]
 === Examples
 
+[#enforcedstyle_-braces-_default_-stylehashaslastarrayitem]
 ==== EnforcedStyle: braces (default)
 
 [source,ruby]
@@ -5539,6 +5924,7 @@ EnforcedStyle.
 [{ one: 1 }, { two: 2 }]
 ----
 
+[#enforcedstyle_-no_braces-stylehashaslastarrayitem]
 ==== EnforcedStyle: no_braces
 
 [source,ruby]
@@ -5553,6 +5939,7 @@ EnforcedStyle.
 [{ one: 1 }, { two: 2 }]
 ----
 
+[#configurable-attributes-stylehashaslastarrayitem]
 === Configurable attributes
 
 |===
@@ -5563,10 +5950,12 @@ EnforcedStyle.
 | `braces`, `no_braces`
 |===
 
+[#references-stylehashaslastarrayitem]
 === References
 
 * https://rubystyle.guide#hash-literal-as-last-array-item
 
+[#stylehashconversion]
 == Style/HashConversion
 
 |===
@@ -5586,6 +5975,7 @@ Correction code from splat argument (`Hash[*ary]`) is not simply determined. For
 `Hash[*ary]` can be replaced with `ary.each_slice(2).to_h` but it will be complicated.
 So, `AllowSplatArgument` option is true by default to allow splat argument for simple code.
 
+[#safety-stylehashconversion]
 === Safety
 
 This cop's autocorrection is unsafe because `ArgumentError` occurs
@@ -5597,6 +5987,7 @@ Hash[[[1, 2], [3]]] #=> {1=>2, 3=>nil}
 [[1, 2], [5]].to_h  #=> wrong array length at 1 (expected 2, was 1) (ArgumentError)
 ----
 
+[#examples-stylehashconversion]
 === Examples
 
 [source,ruby]
@@ -5614,6 +6005,7 @@ Hash[key1, value1, key2, value2]
 {key1 => value1, key2 => value2}
 ----
 
+[#allowsplatargument_-true-_default_-stylehashconversion]
 ==== AllowSplatArgument: true (default)
 
 [source,ruby]
@@ -5622,6 +6014,7 @@ Hash[key1, value1, key2, value2]
 Hash[*ary]
 ----
 
+[#allowsplatargument_-false-stylehashconversion]
 ==== AllowSplatArgument: false
 
 [source,ruby]
@@ -5630,6 +6023,7 @@ Hash[*ary]
 Hash[*ary]
 ----
 
+[#configurable-attributes-stylehashconversion]
 === Configurable attributes
 
 |===
@@ -5640,10 +6034,12 @@ Hash[*ary]
 | Boolean
 |===
 
+[#references-stylehashconversion]
 === References
 
 * https://rubystyle.guide#avoid-hash-constructor
 
+[#stylehasheachmethods]
 == Style/HashEachMethods
 
 |===
@@ -5662,12 +6058,14 @@ NOTE: If you have an array of two-element arrays, you can put
   parentheses around the block arguments to indicate that you're not
   working with a hash, and suppress RuboCop offenses.
 
+[#safety-stylehasheachmethods]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 is a `Hash`. The `AllowedReceivers` configuration can mitigate,
 but not fully resolve, this safety issue.
 
+[#examples-stylehasheachmethods]
 === Examples
 
 [source,ruby]
@@ -5687,6 +6085,7 @@ hash.each { |unused_key, v| p v }
 hash.each_value { |v| p v }
 ----
 
+[#allowedreceivers_-__execute__-stylehasheachmethods]
 ==== AllowedReceivers: ['execute']
 
 [source,ruby]
@@ -5696,6 +6095,7 @@ execute(sql).keys.each { |v| p v }
 execute(sql).values.each { |v| p v }
 ----
 
+[#configurable-attributes-stylehasheachmethods]
 === Configurable attributes
 
 |===
@@ -5706,10 +6106,12 @@ execute(sql).values.each { |v| p v }
 | Array
 |===
 
+[#references-stylehasheachmethods]
 === References
 
 * https://rubystyle.guide#hash-each
 
+[#stylehashexcept]
 == Style/HashExcept
 
 NOTE: Required Ruby version: 3.0
@@ -5734,11 +6136,13 @@ For safe detection, it is limited to commonly used string and symbol comparisons
 when used `==`.
 And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
 
+[#safety-stylehashexcept]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 is a `Hash` or responds to the replacement method.
 
+[#examples-stylehashexcept]
 === Examples
 
 [source,ruby]
@@ -5755,6 +6159,7 @@ is a `Hash` or responds to the replacement method.
 {foo: 1, bar: 2, baz: 3}.except(:bar)
 ----
 
+[#stylehashlikecase]
 == Style/HashLikeCase
 
 |===
@@ -5770,8 +6175,10 @@ is a `Hash` or responds to the replacement method.
 Checks for places where `case-when` represents a simple 1:1
 mapping and can be replaced with a hash lookup.
 
+[#examples-stylehashlikecase]
 === Examples
 
+[#minbranchescount_-3-_default_-stylehashlikecase]
 ==== MinBranchesCount: 3 (default)
 
 [source,ruby]
@@ -5795,6 +6202,7 @@ SITES = {
 SITES[country]
 ----
 
+[#minbranchescount_-4-stylehashlikecase]
 ==== MinBranchesCount: 4
 
 [source,ruby]
@@ -5810,6 +6218,7 @@ when 'australia'
 end
 ----
 
+[#configurable-attributes-stylehashlikecase]
 === Configurable attributes
 
 |===
@@ -5820,6 +6229,7 @@ end
 | Integer
 |===
 
+[#stylehashsyntax]
 == Style/HashSyntax
 
 |===
@@ -5829,7 +6239,7 @@ end
 | Yes
 | Always
 | 0.9
-| 1.24
+| 1.67
 |===
 
 Checks hash literal syntax.
@@ -5861,8 +6271,10 @@ The supported styles are:
 * either_consistent - accepts both shorthand and explicit use of hash literal value,
                       but they must be consistent
 
+[#examples-stylehashsyntax]
 === Examples
 
+[#enforcedstyle_-ruby19-_default_-stylehashsyntax]
 ==== EnforcedStyle: ruby19 (default)
 
 [source,ruby]
@@ -5877,6 +6289,7 @@ The supported styles are:
 {d: 1, 'e' => 2} # technically not forbidden
 ----
 
+[#enforcedstyle_-hash_rockets-stylehashsyntax]
 ==== EnforcedStyle: hash_rockets
 
 [source,ruby]
@@ -5889,6 +6302,7 @@ The supported styles are:
 {:a => 1, :b => 2}
 ----
 
+[#enforcedstyle_-no_mixed_keys-stylehashsyntax]
 ==== EnforcedStyle: no_mixed_keys
 
 [source,ruby]
@@ -5902,6 +6316,7 @@ The supported styles are:
 {c: 1, d: 2}
 ----
 
+[#enforcedstyle_-ruby19_no_mixed_keys-stylehashsyntax]
 ==== EnforcedStyle: ruby19_no_mixed_keys
 
 [source,ruby]
@@ -5915,7 +6330,8 @@ The supported styles are:
 {:c => 3, 'd' => 4}
 ----
 
-==== EnforcedShorthandSyntax: always (default)
+[#enforcedshorthandsyntax_-always-stylehashsyntax]
+==== EnforcedShorthandSyntax: always
 
 [source,ruby]
 ----
@@ -5926,6 +6342,7 @@ The supported styles are:
 {foo:, bar:}
 ----
 
+[#enforcedshorthandsyntax_-never-stylehashsyntax]
 ==== EnforcedShorthandSyntax: never
 
 [source,ruby]
@@ -5937,7 +6354,8 @@ The supported styles are:
 {foo: foo, bar: bar}
 ----
 
-==== EnforcedShorthandSyntax: either
+[#enforcedshorthandsyntax_-either-_default_-stylehashsyntax]
+==== EnforcedShorthandSyntax: either (default)
 
 [source,ruby]
 ----
@@ -5951,6 +6369,7 @@ The supported styles are:
 {foo:, bar:}
 ----
 
+[#enforcedshorthandsyntax_-consistent-stylehashsyntax]
 ==== EnforcedShorthandSyntax: consistent
 
 [source,ruby]
@@ -5971,6 +6390,7 @@ The supported styles are:
 {foo: foo, bar: baz}
 ----
 
+[#enforcedshorthandsyntax_-either_consistent-stylehashsyntax]
 ==== EnforcedShorthandSyntax: either_consistent
 
 [source,ruby]
@@ -5991,6 +6411,7 @@ The supported styles are:
 {foo: foo, bar: baz}
 ----
 
+[#configurable-attributes-stylehashsyntax]
 === Configurable attributes
 
 |===
@@ -6001,7 +6422,7 @@ The supported styles are:
 | `ruby19`, `hash_rockets`, `no_mixed_keys`, `ruby19_no_mixed_keys`
 
 | EnforcedShorthandSyntax
-| `always`
+| `either`
 | `always`, `never`, `either`, `consistent`, `either_consistent`
 
 | UseHashRocketsWithSymbolValues
@@ -6013,10 +6434,12 @@ The supported styles are:
 | Boolean
 |===
 
+[#references-stylehashsyntax]
 === References
 
 * https://rubystyle.guide#hash-literals
 
+[#stylehashtransformkeys]
 == Style/HashTransformKeys
 
 NOTE: Required Ruby version: 2.5
@@ -6038,12 +6461,14 @@ call to `transform_keys` instead.
 It should only be enabled on Ruby version 2.5 or newer.
 (`transform_keys` was added in Ruby 2.5.)
 
+[#safety-stylehashtransformkeys]
 === Safety
 
 This cop is unsafe, as it can produce false positives if we are
 transforming an enumerable of key-value-like pairs that isn't actually
 a hash, e.g.: `[[k1, v1], [k2, v2], ...]`
 
+[#examples-stylehashtransformkeys]
 === Examples
 
 [source,ruby]
@@ -6059,6 +6484,7 @@ Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
 {a: 1, b: 2}.transform_keys { |k| k.to_s }
 ----
 
+[#stylehashtransformvalues]
 == Style/HashTransformValues
 
 NOTE: Required Ruby version: 2.4
@@ -6078,12 +6504,14 @@ Looks for uses of `\_.each_with_object({}) {...}`,
 transforming the values of a hash, and tries to use a simpler & faster
 call to `transform_values` instead.
 
+[#safety-stylehashtransformvalues]
 === Safety
 
 This cop is unsafe, as it can produce false positives if we are
 transforming an enumerable of key-value-like pairs that isn't actually
 a hash, e.g.: `[[k1, v1], [k2, v2], ...]`
 
+[#examples-stylehashtransformvalues]
 === Examples
 
 [source,ruby]
@@ -6099,6 +6527,7 @@ Hash[{a: 1, b: 2}.collect { |k, v| [k, foo(v)] }]
 {a: 1, b: 2}.transform_values { |v| v * v }
 ----
 
+[#styleidenticalconditionalbranches]
 == Style/IdenticalConditionalBranches
 
 |===
@@ -6119,6 +6548,7 @@ NOTE: The cop is poorly named and some people might think that it actually
 checks for duplicated conditional branches. The name will probably be changed
 in a future major RuboCop release.
 
+[#safety-styleidenticalconditionalbranches]
 === Safety
 
 Autocorrection is unsafe because changing the order of method invocations
@@ -6138,6 +6568,7 @@ end
 In this example, `method_that_relies_on_global_state` will be moved before
 `method_that_modifies_global_state`, which changes the behavior of the program.
 
+[#examples-styleidenticalconditionalbranches]
 === Examples
 
 [source,ruby]
@@ -6221,6 +6652,7 @@ else
 end
 ----
 
+[#styleifinsideelse]
 == Style/IfInsideElse
 
 |===
@@ -6237,6 +6669,7 @@ If the `else` branch of a conditional consists solely of an `if` node,
 it can be combined with the `else` to become an `elsif`.
 This helps to keep the nesting level from getting too deep.
 
+[#examples-styleifinsideelse]
 === Examples
 
 [source,ruby]
@@ -6262,6 +6695,7 @@ else
 end
 ----
 
+[#allowifmodifier_-false-_default_-styleifinsideelse]
 ==== AllowIfModifier: false (default)
 
 [source,ruby]
@@ -6281,6 +6715,7 @@ elsif condition_b
 end
 ----
 
+[#allowifmodifier_-true-styleifinsideelse]
 ==== AllowIfModifier: true
 
 [source,ruby]
@@ -6300,6 +6735,7 @@ elsif condition_b
 end
 ----
 
+[#configurable-attributes-styleifinsideelse]
 === Configurable attributes
 
 |===
@@ -6310,6 +6746,7 @@ end
 | Boolean
 |===
 
+[#styleifunlessmodifier]
 == Style/IfUnlessModifier
 
 |===
@@ -6356,6 +6793,7 @@ undefined_bar = 'default_value' unless defined?(undefined_bar)
 undefined_bar # => nil
 ----
 
+[#examples-styleifunlessmodifier]
 === Examples
 
 [source,ruby]
@@ -6384,10 +6822,12 @@ if short_condition # a long comment that makes it too long if it were just a sin
 end
 ----
 
+[#references-styleifunlessmodifier]
 === References
 
 * https://rubystyle.guide#if-as-a-modifier
 
+[#styleifunlessmodifierofifunless]
 == Style/IfUnlessModifierOfIfUnless
 
 |===
@@ -6403,6 +6843,7 @@ end
 Checks for if and unless statements used as modifiers of other if or
 unless statements.
 
+[#examples-styleifunlessmodifierofifunless]
 === Examples
 
 [source,ruby]
@@ -6423,6 +6864,7 @@ if running?
 end
 ----
 
+[#styleifwithbooleanliteralbranches]
 == Style/IfWithBooleanLiteralBranches
 
 |===
@@ -6458,11 +6900,13 @@ else
 end
 ----
 
+[#safety-styleifwithbooleanliteralbranches]
 === Safety
 
 Autocorrection is unsafe because there is no guarantee that all predicate methods
 will return a boolean value. Those methods can be allowed with `AllowedMethods` config.
 
+[#examples-styleifwithbooleanliteralbranches]
 === Examples
 
 [source,ruby]
@@ -6491,6 +6935,7 @@ end
 foo.do_something?
 ----
 
+[#allowedmethods_-__nonzero___-_default_-styleifwithbooleanliteralbranches]
 ==== AllowedMethods: ['nonzero?'] (default)
 
 [source,ruby]
@@ -6499,6 +6944,7 @@ foo.do_something?
 num.nonzero? ? true : false
 ----
 
+[#configurable-attributes-styleifwithbooleanliteralbranches]
 === Configurable attributes
 
 |===
@@ -6509,6 +6955,7 @@ num.nonzero? ? true : false
 | Array
 |===
 
+[#styleifwithsemicolon]
 == Style/IfWithSemicolon
 
 |===
@@ -6523,6 +6970,7 @@ num.nonzero? ? true : false
 
 Checks for uses of semicolon in if statements.
 
+[#examples-styleifwithsemicolon]
 === Examples
 
 [source,ruby]
@@ -6534,10 +6982,12 @@ result = if some_condition; something else another_thing end
 result = some_condition ? something : another_thing
 ----
 
+[#references-styleifwithsemicolon]
 === References
 
 * https://rubystyle.guide#no-semicolon-ifs
 
+[#styleimplicitruntimeerror]
 == Style/ImplicitRuntimeError
 
 |===
@@ -6555,6 +7005,7 @@ explicit exception class. (This raises a `RuntimeError`. Some projects
 might prefer to use exception classes which more precisely identify the
 nature of the error.)
 
+[#examples-styleimplicitruntimeerror]
 === Examples
 
 [source,ruby]
@@ -6566,6 +7017,7 @@ raise 'Error message here'
 raise ArgumentError, 'Error message here'
 ----
 
+[#styleinpatternthen]
 == Style/InPatternThen
 
 NOTE: Required Ruby version: 2.7
@@ -6582,6 +7034,7 @@ NOTE: Required Ruby version: 2.7
 
 Checks for `in;` uses in `case` expressions.
 
+[#examples-styleinpatternthen]
 === Examples
 
 [source,ruby]
@@ -6599,10 +7052,12 @@ in pattern_b then bar
 end
 ----
 
+[#references-styleinpatternthen]
 === References
 
 * https://rubystyle.guide#no-in-pattern-semicolons
 
+[#styleinfiniteloop]
 == Style/InfiniteLoop
 
 |===
@@ -6617,12 +7072,14 @@ end
 
 Use `Kernel#loop` for infinite loops.
 
+[#safety-styleinfiniteloop]
 === Safety
 
 This cop is unsafe as the rule should not necessarily apply if the loop
 body might raise a `StopIteration` exception; contrary to other infinite
 loops, `Kernel#loop` silently rescues that and returns `nil`.
 
+[#examples-styleinfiniteloop]
 === Examples
 
 [source,ruby]
@@ -6638,10 +7095,12 @@ loop do
 end
 ----
 
+[#references-styleinfiniteloop]
 === References
 
 * https://rubystyle.guide#infinite-loop
 
+[#styleinlinecomment]
 == Style/InlineComment
 
 |===
@@ -6656,6 +7115,7 @@ end
 
 Checks for trailing inline comments.
 
+[#examples-styleinlinecomment]
 === Examples
 
 [source,ruby]
@@ -6672,6 +7132,7 @@ foo.each do |f|
 end
 ----
 
+[#styleinversemethods]
 == Style/InverseMethods
 
 |===
@@ -6694,12 +7155,14 @@ Methods that are inverted by inverting the return
 of the block that is passed to the method should be defined in
 `InverseBlocks`.
 
+[#safety-styleinversemethods]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the method
 and its inverse method are both defined on receiver, and also are
 actually inverse of each other.
 
+[#examples-styleinversemethods]
 === Examples
 
 [source,ruby]
@@ -6727,6 +7190,7 @@ foo.select do |f|
 end
 ----
 
+[#configurable-attributes-styleinversemethods]
 === Configurable attributes
 
 |===
@@ -6741,6 +7205,7 @@ end
 | 
 |===
 
+[#styleinvertibleunlesscondition]
 == Style/InvertibleUnlessCondition
 
 |===
@@ -6771,12 +7236,14 @@ InverseMethods:
 
 will suggest both `even?` and `odd?` to be inverted, but only `!=` (and not `==`).
 
+[#safety-styleinvertibleunlesscondition]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the method
 and its inverse method are both defined on receiver, and also are
 actually inverse of each other.
 
+[#examples-styleinvertibleunlesscondition]
 === Examples
 
 [source,ruby]
@@ -6805,6 +7272,7 @@ foo if x == y && x.odd?
 foo if !condition
 ----
 
+[#configurable-attributes-styleinvertibleunlesscondition]
 === Configurable attributes
 
 |===
@@ -6815,6 +7283,7 @@ foo if !condition
 | 
 |===
 
+[#styleipaddresses]
 == Style/IpAddresses
 
 |===
@@ -6833,6 +7302,7 @@ is deployed to a different server or environment, which may break
 a deployment if forgotten. Prefer setting IP addresses in ENV or
 other configuration.
 
+[#examples-styleipaddresses]
 === Examples
 
 [source,ruby]
@@ -6844,6 +7314,7 @@ ip_address = '127.59.241.29'
 ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 ----
 
+[#configurable-attributes-styleipaddresses]
 === Configurable attributes
 
 |===
@@ -6858,6 +7329,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | Array
 |===
 
+[#stylekeywordparametersorder]
 == Style/KeywordParametersOrder
 
 |===
@@ -6877,6 +7349,7 @@ This improves readability, because when looking through the source,
 it is expected to find required parameters at the beginning of parameters list
 and optional parameters at the end.
 
+[#examples-stylekeywordparametersorder]
 === Examples
 
 [source,ruby]
@@ -6902,10 +7375,12 @@ do_something do |second:, first: false, third: 10|
 end
 ----
 
+[#references-stylekeywordparametersorder]
 === References
 
 * https://rubystyle.guide#keyword-parameters-order
 
+[#stylelambda]
 == Style/Lambda
 
 |===
@@ -6923,8 +7398,10 @@ single line lambdas, and the method call syntax for multiline lambdas.
 It is configurable to enforce one of the styles for both single line
 and multiline lambdas as well.
 
+[#examples-stylelambda]
 === Examples
 
+[#enforcedstyle_-line_count_dependent-_default_-stylelambda]
 ==== EnforcedStyle: line_count_dependent (default)
 
 [source,ruby]
@@ -6942,6 +7419,7 @@ f = lambda do |x|
     end
 ----
 
+[#enforcedstyle_-lambda-stylelambda]
 ==== EnforcedStyle: lambda
 
 [source,ruby]
@@ -6959,6 +7437,7 @@ f = lambda do |x|
     end
 ----
 
+[#enforcedstyle_-literal-stylelambda]
 ==== EnforcedStyle: literal
 
 [source,ruby]
@@ -6976,6 +7455,7 @@ f = ->(x) do
     end
 ----
 
+[#configurable-attributes-stylelambda]
 === Configurable attributes
 
 |===
@@ -6986,10 +7466,12 @@ f = ->(x) do
 | `line_count_dependent`, `lambda`, `literal`
 |===
 
+[#references-stylelambda]
 === References
 
 * https://rubystyle.guide#lambda-multi-line
 
+[#stylelambdacall]
 == Style/LambdaCall
 
 |===
@@ -7004,8 +7486,10 @@ f = ->(x) do
 
 Checks for use of the lambda.(args) syntax.
 
+[#examples-stylelambdacall]
 === Examples
 
+[#enforcedstyle_-call-_default_-stylelambdacall]
 ==== EnforcedStyle: call (default)
 
 [source,ruby]
@@ -7017,6 +7501,7 @@ lambda.(x, y)
 lambda.call(x, y)
 ----
 
+[#enforcedstyle_-braces-stylelambdacall]
 ==== EnforcedStyle: braces
 
 [source,ruby]
@@ -7028,6 +7513,7 @@ lambda.call(x, y)
 lambda.(x, y)
 ----
 
+[#configurable-attributes-stylelambdacall]
 === Configurable attributes
 
 |===
@@ -7038,10 +7524,12 @@ lambda.(x, y)
 | `call`, `braces`
 |===
 
+[#references-stylelambdacall]
 === References
 
 * https://rubystyle.guide#proc-call
 
+[#stylelineendconcatenation]
 == Style/LineEndConcatenation
 
 |===
@@ -7057,6 +7545,7 @@ lambda.(x, y)
 Checks for string literal concatenation at
 the end of a line.
 
+[#safety-stylelineendconcatenation]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the
@@ -7071,6 +7560,7 @@ array << 'foo' <<
          'baz'
 ----
 
+[#examples-stylelineendconcatenation]
 === Examples
 
 [source,ruby]
@@ -7087,6 +7577,7 @@ some_str = 'ala' \
            'bala'
 ----
 
+[#stylemagiccommentformat]
 == Style/MagicCommentFormat
 
 |===
@@ -7108,8 +7599,10 @@ Required capitalization can be set with the `DirectiveCapitalization` and
 
 NOTE: If one of these configuration is set to nil, any capitalization is allowed.
 
+[#examples-stylemagiccommentformat]
 === Examples
 
+[#enforcedstyle_-snake_case-_default_-stylemagiccommentformat]
 ==== EnforcedStyle: snake_case (default)
 
 [source,ruby]
@@ -7131,6 +7624,7 @@ module Bar
 end
 ----
 
+[#enforcedstyle_-kebab_case-stylemagiccommentformat]
 ==== EnforcedStyle: kebab_case
 
 [source,ruby]
@@ -7152,6 +7646,7 @@ module Baz
 end
 ----
 
+[#directivecapitalization_-lowercase-_default_-stylemagiccommentformat]
 ==== DirectiveCapitalization: lowercase (default)
 
 [source,ruby]
@@ -7163,6 +7658,7 @@ end
 # frozen-string-literal: true
 ----
 
+[#directivecapitalization_-uppercase-stylemagiccommentformat]
 ==== DirectiveCapitalization: uppercase
 
 [source,ruby]
@@ -7174,6 +7670,7 @@ end
 # FROZEN-STRING-LITERAL: true
 ----
 
+[#directivecapitalization_-nil-stylemagiccommentformat]
 ==== DirectiveCapitalization: nil
 
 [source,ruby]
@@ -7187,6 +7684,7 @@ end
 # FROZEN-STRING-LITERAL: true
 ----
 
+[#valuecapitalization_-nil-_default_-stylemagiccommentformat]
 ==== ValueCapitalization: nil (default)
 
 [source,ruby]
@@ -7200,6 +7698,7 @@ end
 # frozen-string-literal: TRUE
 ----
 
+[#valuecapitalization_-lowercase-stylemagiccommentformat]
 ==== ValueCapitalization: lowercase
 
 [source,ruby]
@@ -7213,6 +7712,7 @@ end
 # frozen-string-literal: TRUE
 ----
 
+[#valuecapitalization_-uppercase-stylemagiccommentformat]
 ==== ValueCapitalization: uppercase
 
 [source,ruby]
@@ -7224,6 +7724,7 @@ end
 # frozen-string-literal: TRUE
 ----
 
+[#configurable-attributes-stylemagiccommentformat]
 === Configurable attributes
 
 |===
@@ -7242,6 +7743,7 @@ end
 | 
 |===
 
+[#stylemapcompactwithconditionalblock]
 == Style/MapCompactWithConditionalBlock
 
 |===
@@ -7257,6 +7759,7 @@ end
 Prefer `select` or `reject` over `map { ... }.compact`.
 This cop also handles `filter_map { ... }`, similar to `map { ... }.compact`.
 
+[#examples-stylemapcompactwithconditionalblock]
 === Examples
 
 [source,ruby]
@@ -7295,6 +7798,7 @@ array.select { |e| some_condition? }
 array.reject { |e| some_condition? }
 ----
 
+[#stylemapintoarray]
 == Style/MapIntoArray
 
 |===
@@ -7304,7 +7808,7 @@ array.reject { |e| some_condition? }
 | No
 | Always (Unsafe)
 | 1.63
-| -
+| 1.67
 |===
 
 Checks for usages of `each` with `<<`, `push`, or `append` which
@@ -7317,8 +7821,10 @@ NOTE: The return value of `Enumerable#each` is `self`, whereas the
 return value of `Enumerable#map` is an `Array`. They are not autocorrected
 when a return value could be used because these types differ.
 
-NOTE: It only detects when the mapping destination is a local variable
-initialized as an empty array and referred to only by the pushing operation.
+NOTE: It only detects when the mapping destination is either:
+* a local variable initialized as an empty array and referred to only by the
+pushing operation;
+* or, if it is the single block argument to a `[].tap` block.
 This is because, if not, it's challenging to statically guarantee that the
 mapping destination variable remains an empty array:
 
@@ -7331,6 +7837,7 @@ dest = []
 src.each { |e| dest << transform(e, dest) } # `transform` method may mutate `dest`
 ----
 
+[#safety-stylemapintoarray]
 === Safety
 
 This cop is unsafe because not all objects that have an `each`
@@ -7338,6 +7845,7 @@ method also have a `map` method (e.g. `ENV`). Additionally, for calls
 with a block, not all objects that have a `map` method return an array
 (e.g. `Enumerator::Lazy`).
 
+[#examples-stylemapintoarray]
 === Examples
 
 [source,ruby]
@@ -7350,16 +7858,26 @@ dest
 # good
 dest = src.map { |e| e * 2 }
 
+# bad
+[].tap do |dest|
+  src.each { |e| dest << e * 2 }
+end
+
+# good
+dest = src.map { |e| e * 2 }
+
 # good - contains another operation
 dest = []
 src.each { |e| dest << e * 2; puts e }
 dest
 ----
 
+[#references-stylemapintoarray]
 === References
 
 * https://rubystyle.guide#functional-code
 
+[#stylemaptohash]
 == Style/MapToHash
 
 NOTE: Required Ruby version: 2.6
@@ -7381,11 +7899,13 @@ NOTE: `Style/HashTransformKeys` and `Style/HashTransformValues` will
 also change this pattern if only hash keys or hash values are being
 transformed.
 
+[#safety-stylemaptohash]
 === Safety
 
 This cop is unsafe, as it can produce false positives if the receiver
 is not an `Enumerable`.
 
+[#examples-stylemaptohash]
 === Examples
 
 [source,ruby]
@@ -7403,6 +7923,7 @@ something.to_h { |v| [v, v * 2] }
 {foo: bar}.to_h { |k, v| [k.to_s, v.do_something] }
 ----
 
+[#stylemaptoset]
 == Style/MapToSet
 
 |===
@@ -7418,11 +7939,13 @@ something.to_h { |v| [v, v * 2] }
 Looks for uses of `map.to_set` or `collect.to_set` that could be
 written with just `to_set`.
 
+[#safety-stylemaptoset]
 === Safety
 
 This cop is unsafe, as it can produce false positives if the receiver
 is not an `Enumerable`.
 
+[#examples-stylemaptoset]
 === Examples
 
 [source,ruby]
@@ -7440,6 +7963,7 @@ something.to_set { |i| i * 2 }
 [1, 2, 3].to_set { |i| i.to_s }
 ----
 
+[#stylemethodcallwithargsparentheses]
 == Style/MethodCallWithArgsParentheses
 
 |===
@@ -7511,8 +8035,10 @@ Non-exhaustive list of examples:
 - Parentheses are required in anonymous arguments, keyword arguments
   and block passing in Ruby 3.2.
 
+[#examples-stylemethodcallwithargsparentheses]
 === Examples
 
+[#enforcedstyle_-require_parentheses-_default_-stylemethodcallwithargsparentheses]
 ==== EnforcedStyle: require_parentheses (default)
 
 [source,ruby]
@@ -7538,6 +8064,7 @@ puts 'test'
 assert_equal 'test', x
 ----
 
+[#enforcedstyle_-omit_parentheses-stylemethodcallwithargsparentheses]
 ==== EnforcedStyle: omit_parentheses
 
 [source,ruby]
@@ -7573,6 +8100,7 @@ if meets(criteria:, action:)
 end
 ----
 
+[#ignoremacros_-true-_default_-stylemethodcallwithargsparentheses]
 ==== IgnoreMacros: true (default)
 
 [source,ruby]
@@ -7583,6 +8111,7 @@ class Foo
 end
 ----
 
+[#ignoremacros_-false-stylemethodcallwithargsparentheses]
 ==== IgnoreMacros: false
 
 [source,ruby]
@@ -7593,6 +8122,7 @@ class Foo
 end
 ----
 
+[#allowparenthesesinmultilinecall_-false-_default_-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInMultilineCall: false (default)
 
 [source,ruby]
@@ -7607,6 +8137,7 @@ foo.enforce \
   strict: true
 ----
 
+[#allowparenthesesinmultilinecall_-true-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInMultilineCall: true
 
 [source,ruby]
@@ -7621,6 +8152,7 @@ foo.enforce \
   strict: true
 ----
 
+[#allowparenthesesinchaining_-false-_default_-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInChaining: false (default)
 
 [source,ruby]
@@ -7632,6 +8164,7 @@ foo().bar(1)
 foo().bar 1
 ----
 
+[#allowparenthesesinchaining_-true-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInChaining: true
 
 [source,ruby]
@@ -7643,6 +8176,7 @@ foo().bar(1)
 foo().bar 1
 ----
 
+[#allowparenthesesincamelcasemethod_-false-_default_-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInCamelCaseMethod: false (default)
 
 [source,ruby]
@@ -7654,6 +8188,7 @@ Array(1)
 Array 1
 ----
 
+[#allowparenthesesincamelcasemethod_-true-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInCamelCaseMethod: true
 
 [source,ruby]
@@ -7665,6 +8200,7 @@ Array(1)
 Array 1
 ----
 
+[#allowparenthesesinstringinterpolation_-false-_default_-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInStringInterpolation: false (default)
 
 [source,ruby]
@@ -7676,6 +8212,7 @@ Array 1
 "#{t 'this.is.better'}"
 ----
 
+[#allowparenthesesinstringinterpolation_-true-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInStringInterpolation: true
 
 [source,ruby]
@@ -7687,6 +8224,7 @@ Array 1
 "#{t 'this.is.also.good'}"
 ----
 
+[#configurable-attributes-stylemethodcallwithargsparentheses]
 === Configurable attributes
 
 |===
@@ -7729,10 +8267,12 @@ Array 1
 | `require_parentheses`, `omit_parentheses`
 |===
 
+[#references-stylemethodcallwithargsparentheses]
 === References
 
 * https://rubystyle.guide#method-invocation-parens
 
+[#stylemethodcallwithoutargsparentheses]
 == Style/MethodCallWithoutArgsParentheses
 
 |===
@@ -7753,6 +8293,7 @@ By default, there are no allowed methods.
 NOTE: This cop allows the use of `it()` without arguments in blocks,
 as in `0.times { it() }`, following `Lint/ItWithoutArgumentsInBlock` cop.
 
+[#examples-stylemethodcallwithoutargsparentheses]
 === Examples
 
 [source,ruby]
@@ -7764,6 +8305,7 @@ object.some_method()
 object.some_method
 ----
 
+[#allowedmethods_-__-_default_-stylemethodcallwithoutargsparentheses]
 ==== AllowedMethods: [] (default)
 
 [source,ruby]
@@ -7772,6 +8314,7 @@ object.some_method
 object.foo()
 ----
 
+[#allowedmethods_-_foo_-stylemethodcallwithoutargsparentheses]
 ==== AllowedMethods: [foo]
 
 [source,ruby]
@@ -7780,6 +8323,7 @@ object.foo()
 object.foo()
 ----
 
+[#configurable-attributes-stylemethodcallwithoutargsparentheses]
 === Configurable attributes
 
 |===
@@ -7794,10 +8338,12 @@ object.foo()
 | Array
 |===
 
+[#references-stylemethodcallwithoutargsparentheses]
 === References
 
 * https://rubystyle.guide#method-invocation-parens
 
+[#stylemethodcalledondoendblock]
 == Style/MethodCalledOnDoEndBlock
 
 |===
@@ -7814,6 +8360,7 @@ Checks for methods called on a do...end block. The point of
 this check is that it's easy to miss the call tacked on to the block
 when reading code.
 
+[#examples-stylemethodcalledondoendblock]
 === Examples
 
 [source,ruby]
@@ -7833,10 +8380,12 @@ end
 foo.c
 ----
 
+[#references-stylemethodcalledondoendblock]
 === References
 
 * https://rubystyle.guide#single-line-blocks
 
+[#stylemethoddefparentheses]
 == Style/MethodDefParentheses
 
 |===
@@ -7862,8 +8411,10 @@ Regardless of style, parentheses are necessary for:
 
 Removing the parens would be a syntax error here.
 
+[#examples-stylemethoddefparentheses]
 === Examples
 
+[#enforcedstyle_-require_parentheses-_default_-stylemethoddefparentheses]
 ==== EnforcedStyle: require_parentheses (default)
 
 [source,ruby]
@@ -7894,6 +8445,7 @@ def foo(descriptive_var_name,
 end
 ----
 
+[#enforcedstyle_-require_no_parentheses-stylemethoddefparentheses]
 ==== EnforcedStyle: require_no_parentheses
 
 [source,ruby]
@@ -7924,6 +8476,7 @@ def foo descriptive_var_name,
 end
 ----
 
+[#enforcedstyle_-require_no_parentheses_except_multiline-stylemethoddefparentheses]
 ==== EnforcedStyle: require_no_parentheses_except_multiline
 
 [source,ruby]
@@ -7955,6 +8508,7 @@ def foo(descriptive_var_name,
 end
 ----
 
+[#configurable-attributes-stylemethoddefparentheses]
 === Configurable attributes
 
 |===
@@ -7965,10 +8519,12 @@ end
 | `require_parentheses`, `require_no_parentheses`, `require_no_parentheses_except_multiline`
 |===
 
+[#references-stylemethoddefparentheses]
 === References
 
 * https://rubystyle.guide#method-parens
 
+[#styleminmax]
 == Style/MinMax
 
 |===
@@ -7983,6 +8539,7 @@ end
 
 Checks for potential uses of `Enumerable#minmax`.
 
+[#examples-styleminmax]
 === Examples
 
 [source,ruby]
@@ -7996,6 +8553,7 @@ bar = foo.minmax
 return foo.minmax
 ----
 
+[#styleminmaxcomparison]
 == Style/MinMaxComparison
 
 |===
@@ -8019,11 +8577,13 @@ a.clamp(b..) # Same as `[a, b].max`
 a.clamp(..b) # Same as `[a, b].min`
 ----
 
+[#safety-styleminmaxcomparison]
 === Safety
 
 This cop is unsafe because even if a value has `<` or `>` method,
 it is not necessarily `Comparable`.
 
+[#examples-styleminmaxcomparison]
 === Examples
 
 [source,ruby]
@@ -8043,6 +8603,7 @@ a <= b ? a : b
 [a, b].min
 ----
 
+[#stylemissingelse]
 == Style/MissingElse
 
 |===
@@ -8062,8 +8623,10 @@ it raises `NoMatchingPatternError` if the pattern doesn't match and without havi
 
 Supported styles are: if, case, both.
 
+[#examples-stylemissingelse]
 === Examples
 
+[#enforcedstyle_-both-_default_-stylemissingelse]
 ==== EnforcedStyle: both (default)
 
 [source,ruby]
@@ -8097,6 +8660,7 @@ else
 end
 ----
 
+[#enforcedstyle_-if-stylemissingelse]
 ==== EnforcedStyle: if
 
 [source,ruby]
@@ -8130,6 +8694,7 @@ else
 end
 ----
 
+[#enforcedstyle_-case-stylemissingelse]
 ==== EnforcedStyle: case
 
 [source,ruby]
@@ -8163,6 +8728,7 @@ else
 end
 ----
 
+[#configurable-attributes-stylemissingelse]
 === Configurable attributes
 
 |===
@@ -8173,6 +8739,7 @@ end
 | `if`, `case`, `both`
 |===
 
+[#stylemissingrespondtomissing]
 == Style/MissingRespondToMissing
 
 |===
@@ -8188,6 +8755,7 @@ end
 Checks for the presence of `method_missing` without also
 defining `respond_to_missing?`.
 
+[#examples-stylemissingrespondtomissing]
 === Examples
 
 [source,ruby]
@@ -8207,10 +8775,12 @@ def method_missing(name, *args)
 end
 ----
 
+[#references-stylemissingrespondtomissing]
 === References
 
 * https://rubystyle.guide#no-method-missing
 
+[#stylemixingrouping]
 == Style/MixinGrouping
 
 |===
@@ -8227,8 +8797,10 @@ Checks for grouping of mixins in `class` and `module` bodies.
 By default it enforces mixins to be placed in separate declarations,
 but it can be configured to enforce grouping them in one declaration.
 
+[#examples-stylemixingrouping]
 === Examples
 
+[#enforcedstyle_-separated-_default_-stylemixingrouping]
 ==== EnforcedStyle: separated (default)
 
 [source,ruby]
@@ -8245,6 +8817,7 @@ class Foo
 end
 ----
 
+[#enforcedstyle_-grouped-stylemixingrouping]
 ==== EnforcedStyle: grouped
 
 [source,ruby]
@@ -8261,6 +8834,7 @@ class Foo
 end
 ----
 
+[#configurable-attributes-stylemixingrouping]
 === Configurable attributes
 
 |===
@@ -8271,10 +8845,12 @@ end
 | `separated`, `grouped`
 |===
 
+[#references-stylemixingrouping]
 === References
 
 * https://rubystyle.guide#mixin-grouping
 
+[#stylemixinusage]
 == Style/MixinUsage
 
 |===
@@ -8291,6 +8867,7 @@ Checks that `include`, `extend` and `prepend` statements appear
 inside classes and modules, not at the top level, so as to not affect
 the behavior of `Object`.
 
+[#examples-stylemixinusage]
 === Examples
 
 [source,ruby]
@@ -8329,6 +8906,7 @@ class C
 end
 ----
 
+[#stylemodulefunction]
 == Style/ModuleFunction
 
 |===
@@ -8351,13 +8929,16 @@ A couple of things to keep in mind:
 - in default mode (`module_function`), the cop won't be activated when the module
   contains any private methods
 
+[#safety-stylemodulefunction]
 === Safety
 
 Autocorrection is unsafe (and is disabled by default) because `extend self`
 and `module_function` do not behave exactly the same.
 
+[#examples-stylemodulefunction]
 === Examples
 
+[#enforcedstyle_-module_function-_default_-stylemodulefunction]
 ==== EnforcedStyle: module_function (default)
 
 [source,ruby]
@@ -8390,6 +8971,7 @@ module Test
 end
 ----
 
+[#enforcedstyle_-extend_self-stylemodulefunction]
 ==== EnforcedStyle: extend_self
 
 [source,ruby]
@@ -8414,6 +8996,7 @@ module Test
 end
 ----
 
+[#enforcedstyle_-forbidden-stylemodulefunction]
 ==== EnforcedStyle: forbidden
 
 [source,ruby]
@@ -8446,6 +9029,7 @@ module Test
 end
 ----
 
+[#configurable-attributes-stylemodulefunction]
 === Configurable attributes
 
 |===
@@ -8460,10 +9044,12 @@ end
 | Boolean
 |===
 
+[#references-stylemodulefunction]
 === References
 
 * https://rubystyle.guide#module-function
 
+[#stylemultilineblockchain]
 == Style/MultilineBlockChain
 
 |===
@@ -8479,6 +9065,7 @@ end
 Checks for chaining of a block after another block that spans
 multiple lines.
 
+[#examples-stylemultilineblockchain]
 === Examples
 
 [source,ruby]
@@ -8499,10 +9086,12 @@ alive_threads.map do |t|
 end
 ----
 
+[#references-stylemultilineblockchain]
 === References
 
 * https://rubystyle.guide#single-line-blocks
 
+[#stylemultilineifmodifier]
 == Style/MultilineIfModifier
 
 |===
@@ -8517,6 +9106,7 @@ end
 
 Checks for uses of if/unless modifiers with multiple-lines bodies.
 
+[#examples-stylemultilineifmodifier]
 === Examples
 
 [source,ruby]
@@ -8530,10 +9120,12 @@ Checks for uses of if/unless modifiers with multiple-lines bodies.
 { result: 'ok' } if cond
 ----
 
+[#references-stylemultilineifmodifier]
 === References
 
 * https://rubystyle.guide#no-multiline-if-modifiers
 
+[#stylemultilineifthen]
 == Style/MultilineIfThen
 
 |===
@@ -8548,6 +9140,7 @@ Checks for uses of if/unless modifiers with multiple-lines bodies.
 
 Checks for uses of the `then` keyword in multi-line if statements.
 
+[#examples-stylemultilineifthen]
 === Examples
 
 [source,ruby]
@@ -8564,10 +9157,12 @@ elsif cond then b
 end
 ----
 
+[#references-stylemultilineifthen]
 === References
 
 * https://rubystyle.guide#no-then
 
+[#stylemultilineinpatternthen]
 == Style/MultilineInPatternThen
 
 NOTE: Required Ruby version: 2.7
@@ -8584,6 +9179,7 @@ NOTE: Required Ruby version: 2.7
 
 Checks uses of the `then` keyword in multi-line `in` statement.
 
+[#examples-stylemultilineinpatternthen]
 === Examples
 
 [source,ruby]
@@ -8610,10 +9206,12 @@ in pattern then do_something(arg1,
 end
 ----
 
+[#references-stylemultilineinpatternthen]
 === References
 
 * https://rubystyle.guide#no-then
 
+[#stylemultilinememoization]
 == Style/MultilineMemoization
 
 |===
@@ -8628,8 +9226,10 @@ end
 
 Checks expressions wrapping styles for multiline memoization.
 
+[#examples-stylemultilinememoization]
 === Examples
 
+[#enforcedstyle_-keyword-_default_-stylemultilinememoization]
 ==== EnforcedStyle: keyword (default)
 
 [source,ruby]
@@ -8647,6 +9247,7 @@ foo ||= begin
 end
 ----
 
+[#enforcedstyle_-braces-stylemultilinememoization]
 ==== EnforcedStyle: braces
 
 [source,ruby]
@@ -8664,6 +9265,7 @@ foo ||= (
 )
 ----
 
+[#configurable-attributes-stylemultilinememoization]
 === Configurable attributes
 
 |===
@@ -8674,6 +9276,7 @@ foo ||= (
 | `keyword`, `braces`
 |===
 
+[#stylemultilinemethodsignature]
 == Style/MultilineMethodSignature
 
 |===
@@ -8688,6 +9291,7 @@ foo ||= (
 
 Checks for method signatures that span multiple lines.
 
+[#examples-stylemultilinemethodsignature]
 === Examples
 
 [source,ruby]
@@ -8704,6 +9308,7 @@ def foo(bar,
 end
 ----
 
+[#stylemultilineternaryoperator]
 == Style/MultilineTernaryOperator
 
 |===
@@ -8722,6 +9327,7 @@ NOTE: `return if ... else ... end` is syntax error. If `return` is used before
 multiline ternary operator expression, it will be autocorrected to single-line
 ternary operator. The same is true for `break`, `next`, and method call.
 
+[#examples-stylemultilineternaryoperator]
 === Examples
 
 [source,ruby]
@@ -8750,10 +9356,12 @@ end
 return cond ? b : c
 ----
 
+[#references-stylemultilineternaryoperator]
 === References
 
 * https://rubystyle.guide#no-multiline-ternary
 
+[#stylemultilinewhenthen]
 == Style/MultilineWhenThen
 
 |===
@@ -8769,6 +9377,7 @@ return cond ? b : c
 Checks uses of the `then` keyword
 in multi-line when statements.
 
+[#examples-stylemultilinewhenthen]
 === Examples
 
 [source,ruby]
@@ -8795,10 +9404,12 @@ when bar then do_something(arg1,
 end
 ----
 
+[#references-stylemultilinewhenthen]
 === References
 
 * https://rubystyle.guide#no-then
 
+[#stylemultiplecomparison]
 == Style/MultipleComparison
 
 |===
@@ -8817,6 +9428,7 @@ to avoid code repetition.
 It accepts comparisons of multiple method calls to avoid unnecessary method calls
 by default. It can be configured by `AllowMethodComparison` option.
 
+[#examples-stylemultiplecomparison]
 === Examples
 
 [source,ruby]
@@ -8842,6 +9454,7 @@ end
 foo if a == b.lightweight || a == b.heavyweight
 ----
 
+[#allowmethodcomparison_-true-_default_-stylemultiplecomparison]
 ==== AllowMethodComparison: true (default)
 
 [source,ruby]
@@ -8850,6 +9463,7 @@ foo if a == b.lightweight || a == b.heavyweight
 foo if a == b.lightweight || a == b.heavyweight
 ----
 
+[#allowmethodcomparison_-false-stylemultiplecomparison]
 ==== AllowMethodComparison: false
 
 [source,ruby]
@@ -8861,6 +9475,7 @@ foo if a == b.lightweight || a == b.heavyweight
 foo if [b.lightweight, b.heavyweight].include?(a)
 ----
 
+[#comparisonsthreshold_-2-_default_-stylemultiplecomparison]
 ==== ComparisonsThreshold: 2 (default)
 
 [source,ruby]
@@ -8869,6 +9484,7 @@ foo if [b.lightweight, b.heavyweight].include?(a)
 foo if a == 'a' || a == 'b'
 ----
 
+[#comparisonsthreshold_-3-stylemultiplecomparison]
 ==== ComparisonsThreshold: 3
 
 [source,ruby]
@@ -8877,6 +9493,7 @@ foo if a == 'a' || a == 'b'
 foo if a == 'a' || a == 'b'
 ----
 
+[#configurable-attributes-stylemultiplecomparison]
 === Configurable attributes
 
 |===
@@ -8891,6 +9508,7 @@ foo if a == 'a' || a == 'b'
 | Integer
 |===
 
+[#stylemutableconstant]
 == Style/MutableConstant
 
 |===
@@ -8928,14 +9546,17 @@ freezing for such strings.
 NOTE: From Ruby 3.0, this cop allows explicit freezing of constants when
 the `shareable_constant_value` directive is used.
 
+[#safety-stylemutableconstant]
 === Safety
 
 This cop's autocorrection is unsafe since any mutations on objects that
 are made frozen will change from being accepted to raising `FrozenError`,
 and will need to be manually refactored.
 
+[#examples-stylemutableconstant]
 === Examples
 
+[#enforcedstyle_-literals-_default_-stylemutableconstant]
 ==== EnforcedStyle: literals (default)
 
 [source,ruby]
@@ -8955,6 +9576,7 @@ TESTING
 CONST = Something.new
 ----
 
+[#enforcedstyle_-strict-stylemutableconstant]
 ==== EnforcedStyle: strict
 
 [source,ruby]
@@ -8992,6 +9614,7 @@ CONST = [1, 2, 3]
 CONST = [1, 2, 3]
 ----
 
+[#configurable-attributes-stylemutableconstant]
 === Configurable attributes
 
 |===
@@ -9002,6 +9625,7 @@ CONST = [1, 2, 3]
 | `literals`, `strict`
 |===
 
+[#stylenegatedif]
 == Style/NegatedIf
 
 |===
@@ -9021,8 +9645,10 @@ without else are considered. There are three different styles:
 * prefix
 * postfix
 
+[#examples-stylenegatedif]
 === Examples
 
+[#enforcedstyle_-both-_default_-stylenegatedif]
 ==== EnforcedStyle: both (default)
 
 [source,ruby]
@@ -9050,6 +9676,7 @@ bar if !foo
 bar unless foo
 ----
 
+[#enforcedstyle_-prefix-stylenegatedif]
 ==== EnforcedStyle: prefix
 
 [source,ruby]
@@ -9073,6 +9700,7 @@ end
 bar if !foo
 ----
 
+[#enforcedstyle_-postfix-stylenegatedif]
 ==== EnforcedStyle: postfix
 
 [source,ruby]
@@ -9094,6 +9722,7 @@ if !foo
 end
 ----
 
+[#configurable-attributes-stylenegatedif]
 === Configurable attributes
 
 |===
@@ -9104,10 +9733,12 @@ end
 | `both`, `prefix`, `postfix`
 |===
 
+[#references-stylenegatedif]
 === References
 
 * https://rubystyle.guide#unless-for-negatives
 
+[#stylenegatedifelsecondition]
 == Style/NegatedIfElseCondition
 
 |===
@@ -9123,6 +9754,7 @@ end
 Checks for uses of `if-else` and ternary operators with a negated condition
 which can be simplified by inverting condition and swapping branches.
 
+[#examples-stylenegatedifelsecondition]
 === Examples
 
 [source,ruby]
@@ -9148,6 +9780,7 @@ end
 x ? do_something_else : do_something
 ----
 
+[#stylenegatedunless]
 == Style/NegatedUnless
 
 |===
@@ -9167,8 +9800,10 @@ without else are considered. There are three different styles:
 * prefix
 * postfix
 
+[#examples-stylenegatedunless]
 === Examples
 
+[#enforcedstyle_-both-_default_-stylenegatedunless]
 ==== EnforcedStyle: both (default)
 
 [source,ruby]
@@ -9192,6 +9827,7 @@ bar unless !foo
 bar if foo
 ----
 
+[#enforcedstyle_-prefix-stylenegatedunless]
 ==== EnforcedStyle: prefix
 
 [source,ruby]
@@ -9212,6 +9848,7 @@ end
 bar unless !foo
 ----
 
+[#enforcedstyle_-postfix-stylenegatedunless]
 ==== EnforcedStyle: postfix
 
 [source,ruby]
@@ -9230,6 +9867,7 @@ unless !foo
 end
 ----
 
+[#configurable-attributes-stylenegatedunless]
 === Configurable attributes
 
 |===
@@ -9240,10 +9878,12 @@ end
 | `both`, `prefix`, `postfix`
 |===
 
+[#references-stylenegatedunless]
 === References
 
 * https://rubystyle.guide#if-for-negatives
 
+[#stylenegatedwhile]
 == Style/NegatedWhile
 
 |===
@@ -9258,6 +9898,7 @@ end
 
 Checks for uses of while with a negated condition.
 
+[#examples-stylenegatedwhile]
 === Examples
 
 [source,ruby]
@@ -9280,10 +9921,12 @@ bar while foo
 bar while !foo && baz
 ----
 
+[#references-stylenegatedwhile]
 === References
 
 * https://rubystyle.guide#until-for-negatives
 
+[#stylenestedfiledirname]
 == Style/NestedFileDirname
 
 NOTE: Required Ruby version: 3.1
@@ -9301,6 +9944,7 @@ NOTE: Required Ruby version: 3.1
 Checks for nested `File.dirname`.
 It replaces nested `File.dirname` with the level argument introduced in Ruby 3.1.
 
+[#examples-stylenestedfiledirname]
 === Examples
 
 [source,ruby]
@@ -9312,6 +9956,7 @@ File.dirname(File.dirname(path))
 File.dirname(path, 2)
 ----
 
+[#stylenestedmodifier]
 == Style/NestedModifier
 
 |===
@@ -9327,6 +9972,7 @@ File.dirname(path, 2)
 Checks for nested use of if, unless, while and until in their
 modifier form.
 
+[#examples-stylenestedmodifier]
 === Examples
 
 [source,ruby]
@@ -9338,10 +9984,12 @@ something if a if b
 something if b && a
 ----
 
+[#references-stylenestedmodifier]
 === References
 
 * https://rubystyle.guide#no-nested-modifiers
 
+[#stylenestedparenthesizedcalls]
 == Style/NestedParenthesizedCalls
 
 |===
@@ -9361,6 +10009,7 @@ of a parenthesized method call.
 `respond_to`, and `start_with` methods are allowed by default.
 These are customizable with `AllowedMethods` option.
 
+[#examples-stylenestedparenthesizedcalls]
 === Examples
 
 [source,ruby]
@@ -9372,6 +10021,7 @@ method1(method2(arg))
 method1(method2 arg)
 ----
 
+[#allowedmethods_-_foo_-stylenestedparenthesizedcalls]
 ==== AllowedMethods: [foo]
 
 [source,ruby]
@@ -9380,6 +10030,7 @@ method1(method2 arg)
 method1(foo arg)
 ----
 
+[#configurable-attributes-stylenestedparenthesizedcalls]
 === Configurable attributes
 
 |===
@@ -9390,6 +10041,7 @@ method1(foo arg)
 | Array
 |===
 
+[#stylenestedternaryoperator]
 == Style/NestedTernaryOperator
 
 |===
@@ -9404,6 +10056,7 @@ method1(foo arg)
 
 Checks for nested ternary op expressions.
 
+[#examples-stylenestedternaryoperator]
 === Examples
 
 [source,ruby]
@@ -9419,10 +10072,12 @@ else
 end
 ----
 
+[#references-stylenestedternaryoperator]
 === References
 
 * https://rubystyle.guide#no-nested-ternary
 
+[#stylenext]
 == Style/Next
 
 |===
@@ -9437,8 +10092,10 @@ end
 
 Use `next` to skip iteration instead of a condition at the end.
 
+[#examples-stylenext]
 === Examples
 
+[#enforcedstyle_-skip_modifier_ifs-_default_-stylenext]
 ==== EnforcedStyle: skip_modifier_ifs (default)
 
 [source,ruby]
@@ -9462,6 +10119,7 @@ end
 end
 ----
 
+[#enforcedstyle_-always-stylenext]
 ==== EnforcedStyle: always
 
 [source,ruby]
@@ -9489,6 +10147,7 @@ end
 end
 ----
 
+[#configurable-attributes-stylenext]
 === Configurable attributes
 
 |===
@@ -9503,10 +10162,12 @@ end
 | Integer
 |===
 
+[#references-stylenext]
 === References
 
 * https://rubystyle.guide#no-nested-conditionals
 
+[#stylenilcomparison]
 == Style/NilComparison
 
 |===
@@ -9524,8 +10185,10 @@ Checks for comparison of something with nil using `==` and
 
 Supported styles are: predicate, comparison.
 
+[#examples-stylenilcomparison]
 === Examples
 
+[#enforcedstyle_-predicate-_default_-stylenilcomparison]
 ==== EnforcedStyle: predicate (default)
 
 [source,ruby]
@@ -9539,6 +10202,7 @@ if x.nil?
 end
 ----
 
+[#enforcedstyle_-comparison-stylenilcomparison]
 ==== EnforcedStyle: comparison
 
 [source,ruby]
@@ -9552,6 +10216,7 @@ if x == nil
 end
 ----
 
+[#configurable-attributes-stylenilcomparison]
 === Configurable attributes
 
 |===
@@ -9562,10 +10227,12 @@ end
 | `predicate`, `comparison`
 |===
 
+[#references-stylenilcomparison]
 === References
 
 * https://rubystyle.guide#predicate-methods
 
+[#stylenillambda]
 == Style/NilLambda
 
 |===
@@ -9581,6 +10248,7 @@ end
 Checks for lambdas and procs that always return nil,
 which can be replaced with an empty lambda or proc instead.
 
+[#examples-stylenillambda]
 === Examples
 
 [source,ruby]
@@ -9611,6 +10279,7 @@ proc {}
 Proc.new { nil if x }
 ----
 
+[#stylenonnilcheck]
 == Style/NonNilCheck
 
 |===
@@ -9636,6 +10305,7 @@ With `IncludeSemanticChanges` set to `true`, this cop reports offenses
 for `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which
 is *usually* OK, but might change behavior.
 
+[#examples-stylenonnilcheck]
 === Examples
 
 [source,ruby]
@@ -9655,6 +10325,7 @@ def signed_in?
 end
 ----
 
+[#includesemanticchanges_-false-_default_-stylenonnilcheck]
 ==== IncludeSemanticChanges: false (default)
 
 [source,ruby]
@@ -9664,6 +10335,7 @@ if !x.nil?
 end
 ----
 
+[#includesemanticchanges_-true-stylenonnilcheck]
 ==== IncludeSemanticChanges: true
 
 [source,ruby]
@@ -9673,6 +10345,7 @@ if !x.nil?
 end
 ----
 
+[#configurable-attributes-stylenonnilcheck]
 === Configurable attributes
 
 |===
@@ -9683,10 +10356,12 @@ end
 | Boolean
 |===
 
+[#references-stylenonnilcheck]
 === References
 
 * https://rubystyle.guide#no-non-nil-checks
 
+[#stylenot]
 == Style/Not
 
 |===
@@ -9701,6 +10376,7 @@ end
 
 Checks for uses of the keyword `not` instead of `!`.
 
+[#examples-stylenot]
 === Examples
 
 [source,ruby]
@@ -9712,10 +10388,12 @@ x = (not something)
 x = !something
 ----
 
+[#references-stylenot]
 === References
 
 * https://rubystyle.guide#bang-not-not
 
+[#stylenumberedparameters]
 == Style/NumberedParameters
 
 NOTE: Required Ruby version: 2.7
@@ -9735,8 +10413,10 @@ Checks for numbered parameters.
 It can either restrict the use of numbered parameters to
 single-lined blocks, or disallow completely numbered parameters.
 
+[#examples-stylenumberedparameters]
 === Examples
 
+[#enforcedstyle_-allow_single_line-_default_-stylenumberedparameters]
 ==== EnforcedStyle: allow_single_line (default)
 
 [source,ruby]
@@ -9750,6 +10430,7 @@ end
 collection.each { puts _1 }
 ----
 
+[#enforcedstyle_-disallow-stylenumberedparameters]
 ==== EnforcedStyle: disallow
 
 [source,ruby]
@@ -9761,6 +10442,7 @@ collection.each { puts _1 }
 collection.each { |item| puts item }
 ----
 
+[#configurable-attributes-stylenumberedparameters]
 === Configurable attributes
 
 |===
@@ -9771,6 +10453,7 @@ collection.each { |item| puts item }
 | `allow_single_line`, `disallow`
 |===
 
+[#stylenumberedparameterslimit]
 == Style/NumberedParametersLimit
 
 NOTE: Required Ruby version: 2.7
@@ -9792,8 +10475,10 @@ cryptic and hard to read.
 The cop defaults to registering an offense if there is more than 1 numbered
 parameter but this maximum can be configured by setting `Max`.
 
+[#examples-stylenumberedparameterslimit]
 === Examples
 
+[#max_-1-_default_-stylenumberedparameterslimit]
 ==== Max: 1 (default)
 
 [source,ruby]
@@ -9806,6 +10491,7 @@ array.each { use_array_element_as_numbered_parameter(_1) }
 hash.each { use_only_hash_value_as_numbered_parameter(_2) }
 ----
 
+[#configurable-attributes-stylenumberedparameterslimit]
 === Configurable attributes
 
 |===
@@ -9816,6 +10502,7 @@ hash.each { use_only_hash_value_as_numbered_parameter(_2) }
 | Integer
 |===
 
+[#stylenumericliteralprefix]
 == Style/NumericLiteralPrefix
 
 |===
@@ -9832,8 +10519,10 @@ Checks for octal, hex, binary, and decimal literals using
 uppercase prefixes and corrects them to lowercase prefix
 or no prefix (in case of decimals).
 
+[#examples-stylenumericliteralprefix]
 === Examples
 
+[#enforcedoctalstyle_-zero_with_o-_default_-stylenumericliteralprefix]
 ==== EnforcedOctalStyle: zero_with_o (default)
 
 [source,ruby]
@@ -9857,6 +10546,7 @@ num = 0b10101
 num = 1234
 ----
 
+[#enforcedoctalstyle_-zero_only-stylenumericliteralprefix]
 ==== EnforcedOctalStyle: zero_only
 
 [source,ruby]
@@ -9869,6 +10559,7 @@ num = 0O1234
 num = 01234
 ----
 
+[#configurable-attributes-stylenumericliteralprefix]
 === Configurable attributes
 
 |===
@@ -9879,10 +10570,12 @@ num = 01234
 | `zero_with_o`, `zero_only`
 |===
 
+[#references-stylenumericliteralprefix]
 === References
 
 * https://rubystyle.guide#numeric-literal-prefixes
 
+[#stylenumericliterals]
 == Style/NumericLiterals
 
 |===
@@ -9906,6 +10599,7 @@ as anchored even if the patterns do not contain anchors (so
 NOTE: Even if `AllowedPatterns` are given, autocorrection will
 only correct to the standard pattern of an `_` every 3 digits.
 
+[#examples-stylenumericliterals]
 === Examples
 
 [source,ruby]
@@ -9920,6 +10614,7 @@ only correct to the standard pattern of an `_` every 3 digits.
 1000
 ----
 
+[#strict_-false-_default_-stylenumericliterals]
 ==== Strict: false (default)
 
 [source,ruby]
@@ -9928,6 +10623,7 @@ only correct to the standard pattern of an `_` every 3 digits.
 10_000_00 # typical representation of $10,000 in cents
 ----
 
+[#strict_-true-stylenumericliterals]
 ==== Strict: true
 
 [source,ruby]
@@ -9936,6 +10632,7 @@ only correct to the standard pattern of an `_` every 3 digits.
 10_000_00 # typical representation of $10,000 in cents
 ----
 
+[#allowednumbers_-_3000_-stylenumericliterals]
 ==== AllowedNumbers: [3000]
 
 [source,ruby]
@@ -9944,6 +10641,7 @@ only correct to the standard pattern of an `_` every 3 digits.
 3000 # You can specify allowed numbers. (e.g. port number)
 ----
 
+[#configurable-attributes-stylenumericliterals]
 === Configurable attributes
 
 |===
@@ -9966,10 +10664,12 @@ only correct to the standard pattern of an `_` every 3 digits.
 | Array
 |===
 
+[#references-stylenumericliterals]
 === References
 
 * https://rubystyle.guide#underscores-in-numerics
 
+[#stylenumericpredicate]
 == Style/NumericPredicate
 
 |===
@@ -9998,14 +10698,17 @@ This cop allows comparisons to global variables, since they are often
 populated with objects which can be compared with integers, but are
 not themselves `Integer` polymorphic.
 
+[#safety-stylenumericpredicate]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 defines the predicates or can be compared to a number, which may lead
 to a false positive for non-standard classes.
 
+[#examples-stylenumericpredicate]
 === Examples
 
+[#enforcedstyle_-predicate-_default_-stylenumericpredicate]
 ==== EnforcedStyle: predicate (default)
 
 [source,ruby]
@@ -10021,6 +10724,7 @@ foo.negative?
 bar.baz.positive?
 ----
 
+[#enforcedstyle_-comparison-stylenumericpredicate]
 ==== EnforcedStyle: comparison
 
 [source,ruby]
@@ -10036,6 +10740,7 @@ foo == 0
 bar.baz > 0
 ----
 
+[#allowedmethods_-__-_default_-with-enforcedstyle_-predicate-stylenumericpredicate]
 ==== AllowedMethods: [] (default) with EnforcedStyle: predicate
 
 [source,ruby]
@@ -10046,6 +10751,7 @@ foo == 0
 bar.baz > 0
 ----
 
+[#allowedmethods_-____-with-enforcedstyle_-predicate-stylenumericpredicate]
 ==== AllowedMethods: [==] with EnforcedStyle: predicate
 
 [source,ruby]
@@ -10058,6 +10764,7 @@ foo == 0
 bar.baz > 0
 ----
 
+[#allowedpatterns_-__-_default_-with-enforcedstyle_-comparison-stylenumericpredicate]
 ==== AllowedPatterns: [] (default) with EnforcedStyle: comparison
 
 [source,ruby]
@@ -10068,6 +10775,7 @@ foo.negative?
 bar.baz.positive?
 ----
 
+[#allowedpatterns_-__zero__-with-enforcedstyle_-predicate-stylenumericpredicate]
 ==== AllowedPatterns: ['zero'] with EnforcedStyle: predicate
 
 [source,ruby]
@@ -10081,6 +10789,7 @@ foo.negative?
 bar.baz.positive?
 ----
 
+[#configurable-attributes-stylenumericpredicate]
 === Configurable attributes
 
 |===
@@ -10103,10 +10812,12 @@ bar.baz.positive?
 | Array
 |===
 
+[#references-stylenumericpredicate]
 === References
 
 * https://rubystyle.guide#predicate-methods
 
+[#styleobjectthen]
 == Style/ObjectThen
 
 NOTE: Required Ruby version: 2.6
@@ -10124,8 +10835,10 @@ NOTE: Required Ruby version: 2.6
 Enforces the use of consistent method names
 `Object#yield_self` or `Object#then`.
 
+[#examples-styleobjectthen]
 === Examples
 
+[#enforcedstyle_-then-_default_-styleobjectthen]
 ==== EnforcedStyle: then (default)
 
 [source,ruby]
@@ -10137,6 +10850,7 @@ obj.yield_self { |x| x.do_something }
 obj.then { |x| x.do_something }
 ----
 
+[#enforcedstyle_-yield_self-styleobjectthen]
 ==== EnforcedStyle: yield_self
 
 [source,ruby]
@@ -10148,6 +10862,7 @@ obj.then { |x| x.do_something }
 obj.yield_self { |x| x.do_something }
 ----
 
+[#configurable-attributes-styleobjectthen]
 === Configurable attributes
 
 |===
@@ -10158,10 +10873,12 @@ obj.yield_self { |x| x.do_something }
 | `then`, `yield_self`
 |===
 
+[#references-styleobjectthen]
 === References
 
 * https://rubystyle.guide#object-yield-self-vs-object-then
 
+[#styleonelineconditional]
 == Style/OneLineConditional
 
 |===
@@ -10179,6 +10896,7 @@ AlwaysCorrectToMultiline config option can be set to true to auto-convert all of
 multi-line constructs. When AlwaysCorrectToMultiline is false (default case) the
 autocorrect will first try converting them to ternary operators.
 
+[#examples-styleonelineconditional]
 === Examples
 
 [source,ruby]
@@ -10206,6 +10924,7 @@ else
 end
 ----
 
+[#configurable-attributes-styleonelineconditional]
 === Configurable attributes
 
 |===
@@ -10216,10 +10935,12 @@ end
 | Boolean
 |===
 
+[#references-styleonelineconditional]
 === References
 
 * https://rubystyle.guide#ternary-operator
 
+[#styleopenstructuse]
 == Style/OpenStructUse
 
 |===
@@ -10235,6 +10956,7 @@ end
 Flags uses of OpenStruct, as it is now officially discouraged
 to be used for performance, version compatibility, and potential security issues.
 
+[#safety-styleopenstructuse]
 === Safety
 
 Note that this cop may flag false positives; for instance, the following legal
@@ -10251,6 +10973,7 @@ module MyNamespace
 end
 ```
 
+[#examples-styleopenstructuse]
 === Examples
 
 [source,ruby]
@@ -10273,10 +10996,12 @@ test_double = double
 allow(test_double).to receive(:a).and_return('b')
 ----
 
+[#references-styleopenstructuse]
 === References
 
 * https://docs.ruby-lang.org/en/3.0.0/OpenStruct.html#class-OpenStruct-label-Caveats
 
+[#styleoperatormethodcall]
 == Style/OperatorMethodCall
 
 |===
@@ -10293,6 +11018,7 @@ Checks for redundant dot before operator method call.
 The target operator methods are `|`, `^`, `&`, ``<=>``, `==`, `===`, `=~`, `>`, `>=`, `<`,
 ``<=``, `<<`, `>>`, `+`, `-`, `*`, `/`, `%`, `**`, `~`, `!`, `!=`, and `!~`.
 
+[#examples-styleoperatormethodcall]
 === Examples
 
 [source,ruby]
@@ -10306,10 +11032,12 @@ foo + bar
 foo & bar
 ----
 
+[#references-styleoperatormethodcall]
 === References
 
 * https://rubystyle.guide#operator-method-call
 
+[#styleoptionhash]
 == Style/OptionHash
 
 |===
@@ -10325,6 +11053,7 @@ foo & bar
 Checks for options hashes and discourages them if the
 current Ruby version supports keyword arguments.
 
+[#examples-styleoptionhash]
 === Examples
 
 [source,ruby]
@@ -10341,6 +11070,7 @@ def fry(temperature: 300)
 end
 ----
 
+[#configurable-attributes-styleoptionhash]
 === Configurable attributes
 
 |===
@@ -10355,10 +11085,12 @@ end
 | Array
 |===
 
+[#references-styleoptionhash]
 === References
 
 * https://rubystyle.guide#keyword-arguments-vs-option-hashes
 
+[#styleoptionalarguments]
 == Style/OptionalArguments
 
 |===
@@ -10374,11 +11106,13 @@ end
 Checks for optional arguments to methods
 that do not come at the end of the argument list.
 
+[#safety-styleoptionalarguments]
 === Safety
 
 This cop is unsafe because changing a method signature will
 implicitly change behavior.
 
+[#examples-styleoptionalarguments]
 === Examples
 
 [source,ruby]
@@ -10395,10 +11129,12 @@ def foobar(a = 1, b = 2, c = 3)
 end
 ----
 
+[#references-styleoptionalarguments]
 === References
 
 * https://rubystyle.guide#optional-arguments
 
+[#styleoptionalbooleanparameter]
 == Style/OptionalBooleanParameter
 
 |===
@@ -10415,11 +11151,13 @@ Checks for places where keyword arguments can be used instead of
 boolean arguments when defining methods. `respond_to_missing?` method is allowed by default.
 These are customizable with `AllowedMethods` option.
 
+[#safety-styleoptionalbooleanparameter]
 === Safety
 
 This cop is unsafe because changing a method signature will
 implicitly change behavior.
 
+[#examples-styleoptionalbooleanparameter]
 === Examples
 
 [source,ruby]
@@ -10441,6 +11179,7 @@ def some_method(bar: false)
 end
 ----
 
+[#allowedmethods_-__some_method__-styleoptionalbooleanparameter]
 ==== AllowedMethods: ['some_method']
 
 [source,ruby]
@@ -10451,6 +11190,7 @@ def some_method(bar = false)
 end
 ----
 
+[#configurable-attributes-styleoptionalbooleanparameter]
 === Configurable attributes
 
 |===
@@ -10461,10 +11201,12 @@ end
 | Array
 |===
 
+[#references-styleoptionalbooleanparameter]
 === References
 
 * https://rubystyle.guide#boolean-keyword-arguments
 
+[#styleorassignment]
 == Style/OrAssignment
 
 |===
@@ -10479,6 +11221,7 @@ end
 
 Checks for potential usage of the `||=` operator.
 
+[#examples-styleorassignment]
 === Examples
 
 [source,ruby]
@@ -10505,10 +11248,12 @@ name = 'Bozhidar' unless name
 name ||= 'Bozhidar'
 ----
 
+[#references-styleorassignment]
 === References
 
 * https://rubystyle.guide#double-pipe-for-uninit
 
+[#styleparallelassignment]
 == Style/ParallelAssignment
 
 |===
@@ -10525,6 +11270,7 @@ Checks for simple usages of parallel assignment.
 This will only complain when the number of variables
 being assigned matched the number of assigning variables.
 
+[#examples-styleparallelassignment]
 === Examples
 
 [source,ruby]
@@ -10543,10 +11289,12 @@ b = 2
 c = 3
 ----
 
+[#references-styleparallelassignment]
 === References
 
 * https://rubystyle.guide#parallel-assignment
 
+[#styleparenthesesaroundcondition]
 == Style/ParenthesesAroundCondition
 
 |===
@@ -10567,6 +11315,7 @@ By safe assignment we mean putting parentheses around
 an assignment to indicate "I know I'm using an assignment
 as a condition. It's not a mistake."
 
+[#examples-styleparenthesesaroundcondition]
 === Examples
 
 [source,ruby]
@@ -10588,6 +11337,7 @@ elsif x < 3
 end
 ----
 
+[#allowsafeassignment_-true-_default_-styleparenthesesaroundcondition]
 ==== AllowSafeAssignment: true (default)
 
 [source,ruby]
@@ -10596,6 +11346,7 @@ end
 foo unless (bar = baz)
 ----
 
+[#allowsafeassignment_-false-styleparenthesesaroundcondition]
 ==== AllowSafeAssignment: false
 
 [source,ruby]
@@ -10604,6 +11355,7 @@ foo unless (bar = baz)
 foo unless (bar = baz)
 ----
 
+[#allowinmultilineconditions_-false-_default_-styleparenthesesaroundcondition]
 ==== AllowInMultilineConditions: false (default)
 
 [source,ruby]
@@ -10619,6 +11371,7 @@ end
  end
 ----
 
+[#allowinmultilineconditions_-true-styleparenthesesaroundcondition]
 ==== AllowInMultilineConditions: true
 
 [source,ruby]
@@ -10629,6 +11382,7 @@ if (x > 10 &&
 end
 ----
 
+[#configurable-attributes-styleparenthesesaroundcondition]
 === Configurable attributes
 
 |===
@@ -10643,10 +11397,12 @@ end
 | Boolean
 |===
 
+[#references-styleparenthesesaroundcondition]
 === References
 
 * https://rubystyle.guide#no-parens-around-condition
 
+[#stylepercentliteraldelimiters]
 == Style/PercentLiteralDelimiters
 
 |===
@@ -10665,6 +11421,7 @@ Specify the 'default' key to set all preferred delimiters at once. You
 can continue to specify individual preferred delimiters to override the
 default.
 
+[#examples-stylepercentliteraldelimiters]
 === Examples
 
 [source,ruby]
@@ -10684,6 +11441,7 @@ default.
 %I(alpha beta)
 ----
 
+[#configurable-attributes-stylepercentliteraldelimiters]
 === Configurable attributes
 
 |===
@@ -10694,10 +11452,12 @@ default.
 | 
 |===
 
+[#references-stylepercentliteraldelimiters]
 === References
 
 * https://rubystyle.guide#percent-literal-braces
 
+[#stylepercentqliterals]
 == Style/PercentQLiterals
 
 |===
@@ -10712,8 +11472,10 @@ default.
 
 Checks for usage of the %Q() syntax when %q() would do.
 
+[#examples-stylepercentqliterals]
 === Examples
 
+[#enforcedstyle_-lower_case_q-_default_-stylepercentqliterals]
 ==== EnforcedStyle: lower_case_q (default)
 
 [source,ruby]
@@ -10729,6 +11491,7 @@ Checks for usage of the %Q() syntax when %q() would do.
 %q(They all said: 'Hooray!')
 ----
 
+[#enforcedstyle_-upper_case_q-stylepercentqliterals]
 ==== EnforcedStyle: upper_case_q
 
 [source,ruby]
@@ -10743,6 +11506,7 @@ Checks for usage of the %Q() syntax when %q() would do.
 %Q{They all said: 'Hooray!'}
 ----
 
+[#configurable-attributes-stylepercentqliterals]
 === Configurable attributes
 
 |===
@@ -10753,6 +11517,7 @@ Checks for usage of the %Q() syntax when %q() would do.
 | `lower_case_q`, `upper_case_q`
 |===
 
+[#styleperlbackrefs]
 == Style/PerlBackrefs
 
 |===
@@ -10769,6 +11534,7 @@ Looks for uses of Perl-style regexp match
 backreferences and their English versions like
 $1, $2, $&, &+, $MATCH, $PREMATCH, etc.
 
+[#examples-styleperlbackrefs]
 === Examples
 
 [source,ruby]
@@ -10780,10 +11546,12 @@ puts $1
 puts Regexp.last_match(1)
 ----
 
+[#references-styleperlbackrefs]
 === References
 
 * https://rubystyle.guide#no-perl-regexp-last-matchers
 
+[#stylepreferredhashmethods]
 == Style/PreferredHashMethods
 
 |===
@@ -10802,13 +11570,16 @@ Checks for uses of methods `Hash#has_key?` and
 It is configurable to enforce the verbose method names, by using the
 `EnforcedStyle: verbose` configuration.
 
+[#safety-stylepreferredhashmethods]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 is a `Hash` or responds to the replacement methods.
 
+[#examples-stylepreferredhashmethods]
 === Examples
 
+[#enforcedstyle_-short-_default_-stylepreferredhashmethods]
 ==== EnforcedStyle: short (default)
 
 [source,ruby]
@@ -10822,6 +11593,7 @@ Hash#key?
 Hash#value?
 ----
 
+[#enforcedstyle_-verbose-stylepreferredhashmethods]
 ==== EnforcedStyle: verbose
 
 [source,ruby]
@@ -10835,6 +11607,7 @@ Hash#has_key?
 Hash#has_value?
 ----
 
+[#configurable-attributes-stylepreferredhashmethods]
 === Configurable attributes
 
 |===
@@ -10845,10 +11618,12 @@ Hash#has_value?
 | `short`, `verbose`
 |===
 
+[#references-stylepreferredhashmethods]
 === References
 
 * https://rubystyle.guide#hash-key
 
+[#styleproc]
 == Style/Proc
 
 |===
@@ -10864,6 +11639,7 @@ Hash#has_value?
 Checks for uses of Proc.new where Kernel#proc
 would be more appropriate.
 
+[#examples-styleproc]
 === Examples
 
 [source,ruby]
@@ -10875,10 +11651,12 @@ p = Proc.new { |n| puts n }
 p = proc { |n| puts n }
 ----
 
+[#references-styleproc]
 === References
 
 * https://rubystyle.guide#proc
 
+[#stylequotedsymbols]
 == Style/QuotedSymbols
 
 |===
@@ -10901,8 +11679,10 @@ NOTE: `Lint/SymbolConversion` can be used in parallel to ensure that symbols
 are not quoted that don't need to be. This cop is for configuring the quoting
 style to use for symbols that require quotes.
 
+[#examples-stylequotedsymbols]
 === Examples
 
+[#enforcedstyle_-same_as_string_literals-_default_--single_quotes-stylequotedsymbols]
 ==== EnforcedStyle: same_as_string_literals (default) / single_quotes
 
 [source,ruby]
@@ -10916,6 +11696,7 @@ style to use for symbols that require quotes.
 :"a\'b"
 ----
 
+[#enforcedstyle_-double_quotes-stylequotedsymbols]
 ==== EnforcedStyle: double_quotes
 
 [source,ruby]
@@ -10929,6 +11710,7 @@ style to use for symbols that require quotes.
 :"a\'b"
 ----
 
+[#configurable-attributes-stylequotedsymbols]
 === Configurable attributes
 
 |===
@@ -10939,6 +11721,7 @@ style to use for symbols that require quotes.
 | `same_as_string_literals`, `single_quotes`, `double_quotes`
 |===
 
+[#styleraiseargs]
 == Style/RaiseArgs
 
 |===
@@ -10964,12 +11747,15 @@ passed multiple arguments.
 The exploded style has an `AllowedCompactTypes` configuration
 option that takes an Array of exception name Strings.
 
+[#safety-styleraiseargs]
 === Safety
 
 This cop is unsafe because `raise Foo` calls `Foo.exception`, not `Foo.new`.
 
+[#examples-styleraiseargs]
 === Examples
 
+[#enforcedstyle_-exploded-_default_-styleraiseargs]
 ==== EnforcedStyle: exploded (default)
 
 [source,ruby]
@@ -10989,6 +11775,7 @@ raise MyWrappedError.new(obj)
 raise MyWrappedError.new(obj), 'message'
 ----
 
+[#enforcedstyle_-compact-styleraiseargs]
 ==== EnforcedStyle: compact
 
 [source,ruby]
@@ -11004,6 +11791,7 @@ raise MyCustomError.new(arg1, arg2, arg3)
 fail 'message'
 ----
 
+[#configurable-attributes-styleraiseargs]
 === Configurable attributes
 
 |===
@@ -11018,10 +11806,12 @@ fail 'message'
 | Array
 |===
 
+[#references-styleraiseargs]
 === References
 
 * https://rubystyle.guide#exception-class-messages
 
+[#stylerandomwithoffset]
 == Style/RandomWithOffset
 
 |===
@@ -11039,6 +11829,7 @@ added/subtracted with integer literals, as well as those with
 Integer#succ and Integer#pred methods. Prefer using ranges instead,
 as it clearly states the intentions.
 
+[#examples-stylerandomwithoffset]
 === Examples
 
 [source,ruby]
@@ -11059,10 +11850,12 @@ rand(1..6)
 rand(1...7)
 ----
 
+[#references-stylerandomwithoffset]
 === References
 
 * https://rubystyle.guide#random-numbers
 
+[#styleredundantargument]
 == Style/RedundantArgument
 
 |===
@@ -11092,6 +11885,7 @@ Methods:
   foo: 2
 ----
 
+[#safety-styleredundantargument]
 === Safety
 
 This cop is unsafe because of the following limitations:
@@ -11103,6 +11897,7 @@ This cop is unsafe because of the following limitations:
    argument to join is `$OUTPUT_FIELD_SEPARATOR` (or `$,`) rather than `''`, and if that
    global is changed, `''` is no longer a redundant argument.
 
+[#examples-styleredundantargument]
 === Examples
 
 [source,ruby]
@@ -11132,6 +11927,7 @@ string.chomp!
 A.foo
 ----
 
+[#configurable-attributes-styleredundantargument]
 === Configurable attributes
 
 |===
@@ -11142,6 +11938,7 @@ A.foo
 | 
 |===
 
+[#styleredundantarrayconstructor]
 == Style/RedundantArrayConstructor
 
 |===
@@ -11157,6 +11954,7 @@ A.foo
 Checks for the instantiation of array using redundant `Array` constructor.
 Autocorrect replaces to array literal which is the simplest and fastest.
 
+[#examples-styleredundantarrayconstructor]
 === Examples
 
 [source,ruby]
@@ -11176,6 +11974,7 @@ Array.new(3, 'foo')
 Array.new(3) { 'foo' }
 ----
 
+[#styleredundantassignment]
 == Style/RedundantAssignment
 
 |===
@@ -11190,6 +11989,7 @@ Array.new(3) { 'foo' }
 
 Checks for redundant assignment before returning.
 
+[#examples-styleredundantassignment]
 === Examples
 
 [source,ruby]
@@ -11226,6 +12026,7 @@ def test
 end
 ----
 
+[#styleredundantbegin]
 == Style/RedundantBegin
 
 |===
@@ -11242,6 +12043,7 @@ Checks for redundant `begin` blocks.
 
 Currently it checks for code like this:
 
+[#examples-styleredundantbegin]
 === Examples
 
 [source,ruby]
@@ -11301,10 +12103,12 @@ end
 end
 ----
 
+[#references-styleredundantbegin]
 === References
 
 * https://rubystyle.guide#begin-implicit
 
+[#styleredundantcapitalw]
 == Style/RedundantCapitalW
 
 |===
@@ -11319,6 +12123,7 @@ end
 
 Checks for usage of the %W() syntax when %w() would do.
 
+[#examples-styleredundantcapitalw]
 === Examples
 
 [source,ruby]
@@ -11333,6 +12138,7 @@ Checks for usage of the %W() syntax when %w() would do.
 %W(apple #{fruit} grape)
 ----
 
+[#styleredundantcondition]
 == Style/RedundantCondition
 
 |===
@@ -11347,6 +12153,7 @@ Checks for usage of the %W() syntax when %w() would do.
 
 Checks for unnecessary conditional expressions.
 
+[#examples-styleredundantcondition]
 === Examples
 
 [source,ruby]
@@ -11375,6 +12182,7 @@ elsif cond
 end
 ----
 
+[#styleredundantconditional]
 == Style/RedundantConditional
 
 |===
@@ -11389,6 +12197,7 @@ end
 
 Checks for redundant returning of true/false in conditionals.
 
+[#examples-styleredundantconditional]
 === Examples
 
 [source,ruby]
@@ -11413,6 +12222,7 @@ x == y ? false : true
 x != y
 ----
 
+[#styleredundantconstantbase]
 == Style/RedundantConstantBase
 
 |===
@@ -11436,6 +12246,7 @@ NOTE: This cop is disabled if `Lint/ConstantResolution` cop is enabled to preven
 conflicting rules. Because it respects user configurations that want to enable
 `Lint/ConstantResolution` cop which is disabled by default.
 
+[#examples-styleredundantconstantbase]
 === Examples
 
 [source,ruby]
@@ -11467,6 +12278,7 @@ module A
 end
 ----
 
+[#styleredundantcurrentdirectoryinpath]
 == Style/RedundantCurrentDirectoryInPath
 
 |===
@@ -11481,6 +12293,7 @@ end
 
 Checks for uses a redundant current directory in path.
 
+[#examples-styleredundantcurrentdirectoryinpath]
 === Examples
 
 [source,ruby]
@@ -11492,6 +12305,7 @@ require_relative './path/to/feature'
 require_relative 'path/to/feature'
 ----
 
+[#styleredundantdoublesplathashbraces]
 == Style/RedundantDoubleSplatHashBraces
 
 |===
@@ -11506,6 +12320,7 @@ require_relative 'path/to/feature'
 
 Checks for redundant uses of double splat hash braces.
 
+[#examples-styleredundantdoublesplathashbraces]
 === Examples
 
 [source,ruby]
@@ -11523,6 +12338,7 @@ do_something(**{foo: bar, baz: qux}.merge(options))
 do_something(foo: bar, baz: qux, **options)
 ----
 
+[#styleredundanteach]
 == Style/RedundantEach
 
 |===
@@ -11537,11 +12353,13 @@ do_something(foo: bar, baz: qux, **options)
 
 Checks for redundant `each`.
 
+[#safety-styleredundanteach]
 === Safety
 
 This cop is unsafe, as it can produce false positives if the receiver
 is not an `Enumerator`.
 
+[#examples-styleredundanteach]
 === Examples
 
 [source,ruby]
@@ -11567,6 +12385,7 @@ array.each.with_object { |v, o| do_something(v, o) }
 array.each_with_object { |v, o| do_something(v, o) }
 ----
 
+[#styleredundantexception]
 == Style/RedundantException
 
 |===
@@ -11581,6 +12400,7 @@ array.each_with_object { |v, o| do_something(v, o) }
 
 Checks for RuntimeError as the argument of raise/fail.
 
+[#examples-styleredundantexception]
 === Examples
 
 [source,ruby]
@@ -11600,10 +12420,12 @@ raise RuntimeError.new(Object.new)
 raise Object.new.to_s
 ----
 
+[#references-styleredundantexception]
 === References
 
 * https://rubystyle.guide#no-explicit-runtimeerror
 
+[#styleredundantfetchblock]
 == Style/RedundantFetchBlock
 
 |===
@@ -11624,13 +12446,16 @@ NOTE: The block string `'value'` in `hash.fetch(:key) { 'value' }` is detected
 when frozen string literal magic comment is enabled (i.e. `# frozen_string_literal: true`),
 but not when disabled.
 
+[#safety-styleredundantfetchblock]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 does not have a different implementation of `fetch`.
 
+[#examples-styleredundantfetchblock]
 === Examples
 
+[#safeforconstants_-false-_default_-styleredundantfetchblock]
 ==== SafeForConstants: false (default)
 
 [source,ruby]
@@ -11650,6 +12475,7 @@ array.fetch(5, :value)
 ENV.fetch(:key, 'value')
 ----
 
+[#safeforconstants_-true-styleredundantfetchblock]
 ==== SafeForConstants: true
 
 [source,ruby]
@@ -11661,6 +12487,7 @@ ENV.fetch(:key) { VALUE }
 ENV.fetch(:key, VALUE)
 ----
 
+[#configurable-attributes-styleredundantfetchblock]
 === Configurable attributes
 
 |===
@@ -11671,10 +12498,12 @@ ENV.fetch(:key, VALUE)
 | Boolean
 |===
 
+[#references-styleredundantfetchblock]
 === References
 
 * https://github.com/fastruby/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code
 
+[#styleredundantfileextensioninrequire]
 == Style/RedundantFileExtensionInRequire
 
 |===
@@ -11697,6 +12526,7 @@ NOTE: If the extension is omitted, Ruby tries adding '.rb', '.so',
       if `foo.so` file exists when `require 'foo.rb'` will be changed to `require 'foo'`,
       but that seems harmless.
 
+[#examples-styleredundantfileextensioninrequire]
 === Examples
 
 [source,ruby]
@@ -11712,10 +12542,12 @@ require_relative '../foo'
 require_relative '../foo.so'
 ----
 
+[#references-styleredundantfileextensioninrequire]
 === References
 
 * https://rubystyle.guide#no-explicit-rb-to-require
 
+[#styleredundantfilterchain]
 == Style/RedundantFilterChain
 
 |===
@@ -11731,6 +12563,7 @@ require_relative '../foo.so'
 Identifies usages of `any?`, `empty?` or `none?` predicate methods
 chained to `select`/`filter`/`find_all` and change them to use predicate method instead.
 
+[#safety-styleredundantfilterchain]
 === Safety
 
 This cop's autocorrection is unsafe because `array.select.any?` evaluates all elements
@@ -11738,6 +12571,7 @@ through the `select` method, while `array.any?` uses short-circuit evaluation.
 In other words, `array.select.any?` guarantees the evaluation of every element,
 but `array.any?` does not necessarily evaluate all of them.
 
+[#examples-styleredundantfilterchain]
 === Examples
 
 [source,ruby]
@@ -11760,6 +12594,7 @@ relation.select(:name).any?
 arr.select { |x| x > 1 }.any?(&:odd?)
 ----
 
+[#allcops_activesupportextensionsenabled_-false-_default_-styleredundantfilterchain]
 ==== AllCops:ActiveSupportExtensionsEnabled: false (default)
 
 [source,ruby]
@@ -11771,6 +12606,7 @@ arr.select { |x| x > 1 }.many?
 arr.select { |x| x > 1 }.present?
 ----
 
+[#allcops_activesupportextensionsenabled_-true-styleredundantfilterchain]
 ==== AllCops:ActiveSupportExtensionsEnabled: true
 
 [source,ruby]
@@ -11788,6 +12624,7 @@ arr.select { |x| x > 1 }.present?
 arr.any? { |x| x > 1 }
 ----
 
+[#styleredundantfreeze]
 == Style/RedundantFreeze
 
 |===
@@ -11807,6 +12644,7 @@ NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
 NOTE: From Ruby 3.0, this cop allows explicit freezing of interpolated
 string literals when `# frozen-string-literal: true` is used.
 
+[#examples-styleredundantfreeze]
 === Examples
 
 [source,ruby]
@@ -11818,6 +12656,7 @@ CONST = 1.freeze
 CONST = 1
 ----
 
+[#styleredundantheredocdelimiterquotes]
 == Style/RedundantHeredocDelimiterQuotes
 
 |===
@@ -11832,6 +12671,7 @@ CONST = 1
 
 Checks for redundant heredoc delimiter quotes.
 
+[#examples-styleredundantheredocdelimiterquotes]
 === Examples
 
 [source,ruby]
@@ -11856,6 +12696,7 @@ do_something(<<~'EOS')
 EOS
 ----
 
+[#styleredundantinitialize]
 == Style/RedundantInitialize
 
 |===
@@ -11883,11 +12724,13 @@ NOTE: Empty initializers are registered as offenses, but it is possible
 to purposely create an empty `initialize` method to override a superclass's
 initializer.
 
+[#safety-styleredundantinitialize]
 === Safety
 
 This cop is unsafe because if subclass overrides `initialize` method with
 a different arity than superclass.
 
+[#examples-styleredundantinitialize]
 === Examples
 
 [source,ruby]
@@ -11950,6 +12793,7 @@ def initialize(...)
 end
 ----
 
+[#allowcomments_-true-_default_-styleredundantinitialize]
 ==== AllowComments: true (default)
 
 [source,ruby]
@@ -11960,6 +12804,7 @@ def initialize
 end
 ----
 
+[#allowcomments_-false-styleredundantinitialize]
 ==== AllowComments: false
 
 [source,ruby]
@@ -11970,6 +12815,7 @@ def initialize
 end
 ----
 
+[#configurable-attributes-styleredundantinitialize]
 === Configurable attributes
 
 |===
@@ -11980,6 +12826,7 @@ end
 | Boolean
 |===
 
+[#styleredundantinterpolation]
 == Style/RedundantInterpolation
 
 |===
@@ -11994,6 +12841,7 @@ end
 
 Checks for strings that are just an interpolated expression.
 
+[#safety-styleredundantinterpolation]
 === Safety
 
 Autocorrection is unsafe because when calling a destructive method to string,
@@ -12016,6 +12864,7 @@ y = x.to_s
 y << 'b'   # raise `FrozenError`.
 ----
 
+[#examples-styleredundantinterpolation]
 === Examples
 
 [source,ruby]
@@ -12030,6 +12879,7 @@ y << 'b'   # raise `FrozenError`.
 @var
 ----
 
+[#styleredundantinterpolationunfreeze]
 == Style/RedundantInterpolationUnfreeze
 
 NOTE: Required Ruby version: 3.0
@@ -12049,6 +12899,7 @@ magic comment which sometimes made it necessary to explicitly unfreeze them.
 Ruby 3.0 changed interpolated strings to always be unfrozen which makes
 unfreezing them redundant.
 
+[#examples-styleredundantinterpolationunfreeze]
 === Examples
 
 [source,ruby]
@@ -12063,6 +12914,7 @@ unfreezing them redundant.
 "#{foo} bar"
 ----
 
+[#styleredundantlinecontinuation]
 == Style/RedundantLineContinuation
 
 |===
@@ -12082,6 +12934,7 @@ does not result in a syntax error.
 However, a backslash at the end of a comment or
 for string concatenation is not redundant and is not considered an offense.
 
+[#examples-styleredundantlinecontinuation]
 === Examples
 
 [source,ruby]
@@ -12140,6 +12993,7 @@ some_method \
   (argument)
 ----
 
+[#styleredundantparentheses]
 == Style/RedundantParentheses
 
 |===
@@ -12154,6 +13008,7 @@ some_method \
 
 Checks for redundant parentheses.
 
+[#examples-styleredundantparentheses]
 === Examples
 
 [source,ruby]
@@ -12165,6 +13020,7 @@ Checks for redundant parentheses.
 x if y.z.nil?
 ----
 
+[#styleredundantpercentq]
 == Style/RedundantPercentQ
 
 |===
@@ -12179,6 +13035,7 @@ x if y.z.nil?
 
 Checks for usage of the %q/%Q syntax when '' or "" would do.
 
+[#examples-styleredundantpercentq]
 === Examples
 
 [source,ruby]
@@ -12194,10 +13051,12 @@ time = "8 o'clock"
 question = '"What did you say?"'
 ----
 
+[#references-styleredundantpercentq]
 === References
 
 * https://rubystyle.guide#percent-q
 
+[#styleredundantregexpargument]
 == Style/RedundantRegexpArgument
 
 |===
@@ -12213,6 +13072,7 @@ question = '"What did you say?"'
 Identifies places where argument can be replaced from
 a deterministic regexp to a string.
 
+[#examples-styleredundantregexpargument]
 === Examples
 
 [source,ruby]
@@ -12244,6 +13104,7 @@ a deterministic regexp to a string.
 'foo'.sub!('f', 'x')
 ----
 
+[#styleredundantregexpcharacterclass]
 == Style/RedundantRegexpCharacterClass
 
 |===
@@ -12258,6 +13119,7 @@ a deterministic regexp to a string.
 
 Checks for unnecessary single-element Regexp character classes.
 
+[#examples-styleredundantregexpcharacterclass]
 === Examples
 
 [source,ruby]
@@ -12284,6 +13146,7 @@ r = %r{/b}
 r = /[ab]/
 ----
 
+[#styleredundantregexpconstructor]
 == Style/RedundantRegexpConstructor
 
 |===
@@ -12299,6 +13162,7 @@ r = /[ab]/
 Checks for the instantiation of regexp using redundant `Regexp.new` or `Regexp.compile`.
 Autocorrect replaces to regexp literal which is the simplest and fastest.
 
+[#examples-styleredundantregexpconstructor]
 === Examples
 
 [source,ruby]
@@ -12313,6 +13177,7 @@ Regexp.new('regexp')
 Regexp.compile('regexp')
 ----
 
+[#styleredundantregexpescape]
 == Style/RedundantRegexpEscape
 
 |===
@@ -12327,6 +13192,7 @@ Regexp.compile('regexp')
 
 Checks for redundant escapes inside Regexp literals.
 
+[#examples-styleredundantregexpescape]
 === Examples
 
 [source,ruby]
@@ -12359,6 +13225,7 @@ Checks for redundant escapes inside Regexp literals.
 /[+\-]\d/
 ----
 
+[#styleredundantreturn]
 == Style/RedundantReturn
 
 |===
@@ -12373,6 +13240,7 @@ Checks for redundant escapes inside Regexp literals.
 
 Checks for redundant `return` expressions.
 
+[#examples-styleredundantreturn]
 === Examples
 
 [source,ruby]
@@ -12412,6 +13280,7 @@ def test
 end
 ----
 
+[#allowmultiplereturnvalues_-false-_default_-styleredundantreturn]
 ==== AllowMultipleReturnValues: false (default)
 
 [source,ruby]
@@ -12422,6 +13291,7 @@ def test
 end
 ----
 
+[#allowmultiplereturnvalues_-true-styleredundantreturn]
 ==== AllowMultipleReturnValues: true
 
 [source,ruby]
@@ -12432,6 +13302,7 @@ def test
 end
 ----
 
+[#configurable-attributes-styleredundantreturn]
 === Configurable attributes
 
 |===
@@ -12442,10 +13313,12 @@ end
 | Boolean
 |===
 
+[#references-styleredundantreturn]
 === References
 
 * https://rubystyle.guide#no-explicit-return
 
+[#styleredundantself]
 == Style/RedundantSelf
 
 |===
@@ -12475,6 +13348,7 @@ Note we allow uses of `self` with operators because it would be awkward
 otherwise. Also allows the use of `self.it` without arguments in blocks,
 as in `0.times { self.it }`, following `Lint/ItWithoutArgumentsInBlock` cop.
 
+[#examples-styleredundantself]
 === Examples
 
 [source,ruby]
@@ -12501,10 +13375,12 @@ def foo
 end
 ----
 
+[#references-styleredundantself]
 === References
 
 * https://rubystyle.guide#no-self-unless-required
 
+[#styleredundantselfassignment]
 == Style/RedundantSelfAssignment
 
 |===
@@ -12520,12 +13396,14 @@ end
 Checks for places where redundant assignments are made for in place
 modification methods.
 
+[#safety-styleredundantselfassignment]
 === Safety
 
 This cop is unsafe, because it can produce false positives for
 user defined methods having one of the expected names, but not modifying
 its receiver in place.
 
+[#examples-styleredundantselfassignment]
 === Examples
 
 [source,ruby]
@@ -12547,6 +13425,7 @@ foo.concat(ary)
 self.foo += ary
 ----
 
+[#styleredundantselfassignmentbranch]
 == Style/RedundantSelfAssignmentBranch
 
 |===
@@ -12564,6 +13443,7 @@ Checks for places where conditional branch makes redundant self-assignment.
 It only detects local variable because it may replace state of instance variable,
 class variable, and global variable that have state across methods with `nil`.
 
+[#examples-styleredundantselfassignmentbranch]
 === Examples
 
 [source,ruby]
@@ -12581,6 +13461,7 @@ foo = condition ? foo : bar
 foo = bar unless condition
 ----
 
+[#styleredundantsort]
 == Style/RedundantSort
 
 |===
@@ -12602,6 +13483,7 @@ last element. Similarly, `Enumerable#min_by` and
 `Enumerable#max_by` can replace `Enumerable#sort_by` calls
 after which only the first or last element is used.
 
+[#safety-styleredundantsort]
 === Safety
 
 This cop is unsafe, because `sort...last` and `max` may not return the
@@ -12630,6 +13512,7 @@ For example:
   words.max_by { |word| word.length }         #=> 'horse'
 ----
 
+[#examples-styleredundantsort]
 === Examples
 
 [source,ruby]
@@ -12671,6 +13554,7 @@ arr.sort_by(&:foo).slice(-1)
 arr.max_by(&:foo)
 ----
 
+[#styleredundantsortby]
 == Style/RedundantSortBy
 
 |===
@@ -12686,6 +13570,7 @@ arr.max_by(&:foo)
 Identifies places where `sort_by { ... }` can be replaced by
 `sort`.
 
+[#examples-styleredundantsortby]
 === Examples
 
 [source,ruby]
@@ -12700,6 +13585,7 @@ end
 array.sort
 ----
 
+[#styleredundantstringescape]
 == Style/RedundantStringEscape
 
 |===
@@ -12714,6 +13600,7 @@ array.sort
 
 Checks for redundant escapes in string literals.
 
+[#examples-styleredundantstringescape]
 === Examples
 
 [source,ruby]
@@ -12748,6 +13635,7 @@ bar"
 STR
 ----
 
+[#styleregexpliteral]
 == Style/RegexpLiteral
 
 |===
@@ -12771,8 +13659,10 @@ do_something %r{ regexp} # `do_something / regexp/` is an invalid syntax.
 do_something %r{=regexp} # `do_something /=regexp/` is an invalid syntax.
 ----
 
+[#examples-styleregexpliteral]
 === Examples
 
+[#enforcedstyle_-slashes-_default_-styleregexpliteral]
 ==== EnforcedStyle: slashes (default)
 
 [source,ruby]
@@ -12798,6 +13688,7 @@ regex = /
 /x
 ----
 
+[#enforcedstyle_-percent_r-styleregexpliteral]
 ==== EnforcedStyle: percent_r
 
 [source,ruby]
@@ -12823,6 +13714,7 @@ regex = %r{
 }x
 ----
 
+[#enforcedstyle_-mixed-styleregexpliteral]
 ==== EnforcedStyle: mixed
 
 [source,ruby]
@@ -12848,6 +13740,7 @@ regex = %r{
 }x
 ----
 
+[#allowinnerslashes_-false-_default_-styleregexpliteral]
 ==== AllowInnerSlashes: false (default)
 
 [source,ruby]
@@ -12862,6 +13755,7 @@ x =~ /home\//
 x =~ %r{home/}
 ----
 
+[#allowinnerslashes_-true-styleregexpliteral]
 ==== AllowInnerSlashes: true
 
 [source,ruby]
@@ -12870,6 +13764,7 @@ x =~ %r{home/}
 x =~ /home\//
 ----
 
+[#configurable-attributes-styleregexpliteral]
 === Configurable attributes
 
 |===
@@ -12884,10 +13779,12 @@ x =~ /home\//
 | Boolean
 |===
 
+[#references-styleregexpliteral]
 === References
 
 * https://rubystyle.guide#percent-r
 
+[#stylerequireorder]
 == Style/RequireOrder
 
 |===
@@ -12902,10 +13799,12 @@ x =~ /home\//
 
 Sort `require` and `require_relative` in alphabetical order.
 
+[#safety-stylerequireorder]
 === Safety
 
 This cop's autocorrection is unsafe because it will obviously change the execution order.
 
+[#examples-stylerequireorder]
 === Examples
 
 [source,ruby]
@@ -12965,6 +13864,7 @@ end
 require 'a'
 ----
 
+[#stylerescuemodifier]
 == Style/RescueModifier
 
 |===
@@ -12991,6 +13891,7 @@ reasons:
   Example: If `NoMethodError` is raised, modifier form rescue would
   handle the exception.
 
+[#examples-stylerescuemodifier]
 === Examples
 
 [source,ruby]
@@ -13016,10 +13917,12 @@ rescue SomeException
 end
 ----
 
+[#references-stylerescuemodifier]
 === References
 
 * https://rubystyle.guide#no-rescue-modifiers
 
+[#stylerescuestandarderror]
 == Style/RescueStandardError
 
 |===
@@ -13036,8 +13939,10 @@ Checks for rescuing `StandardError`. There are two supported
 styles `implicit` and `explicit`. This cop will not register an offense
 if any error other than `StandardError` is specified.
 
+[#examples-stylerescuestandarderror]
 === Examples
 
+[#enforcedstyle_-explicit-_default_-stylerescuestandarderror]
 ==== EnforcedStyle: explicit (default)
 
 [source,ruby]
@@ -13074,6 +13979,7 @@ rescue StandardError, SecurityError
 end
 ----
 
+[#enforcedstyle_-implicit-stylerescuestandarderror]
 ==== EnforcedStyle: implicit
 
 [source,ruby]
@@ -13110,6 +14016,7 @@ rescue StandardError, SecurityError
 end
 ----
 
+[#configurable-attributes-stylerescuestandarderror]
 === Configurable attributes
 
 |===
@@ -13120,6 +14027,7 @@ end
 | `implicit`, `explicit`
 |===
 
+[#stylereturnnil]
 == Style/ReturnNil
 
 |===
@@ -13140,8 +14048,10 @@ while the latter might be used when the return value is of specific concern.
 
 Supported styles are `return` and `return_nil`.
 
+[#examples-stylereturnnil]
 === Examples
 
+[#enforcedstyle_-return-_default_-stylereturnnil]
 ==== EnforcedStyle: return (default)
 
 [source,ruby]
@@ -13157,6 +14067,7 @@ def foo(arg)
 end
 ----
 
+[#enforcedstyle_-return_nil-stylereturnnil]
 ==== EnforcedStyle: return_nil
 
 [source,ruby]
@@ -13172,6 +14083,7 @@ def foo(arg)
 end
 ----
 
+[#configurable-attributes-stylereturnnil]
 === Configurable attributes
 
 |===
@@ -13182,6 +14094,7 @@ end
 | `return`, `return_nil`
 |===
 
+[#stylereturnnilinpredicatemethoddefinition]
 == Style/ReturnNilInPredicateMethodDefinition
 
 |===
@@ -13191,16 +14104,19 @@ end
 | Yes
 | Always (Unsafe)
 | 1.53
-| -
+| 1.67
 |===
 
-Checks if `return` or `return nil` is used in predicate method definitions.
+Checks for predicate method definitions that return `nil`.
+A predicate method should only return a boolean value.
 
+[#safety-stylereturnnilinpredicatemethoddefinition]
 === Safety
 
 Autocorrection is marked as unsafe because the change of the return value
 from `nil` to `false` could potentially lead to incompatibility issues.
 
+[#examples-stylereturnnilinpredicatemethoddefinition]
 === Examples
 
 [source,ruby]
@@ -13225,8 +14141,27 @@ def foo?
 
   do_something?
 end
+
+# bad
+def foo?
+  if condition
+    nil
+  else
+    true
+  end
+end
+
+# good
+def foo?
+  if condition
+    false
+  else
+    true
+  end
+end
 ----
 
+[#allowedmethods_-__foo___-stylereturnnilinpredicatemethoddefinition]
 ==== AllowedMethods: ['foo?']
 
 [source,ruby]
@@ -13239,6 +14174,7 @@ def foo?
 end
 ----
 
+[#allowedpatterns_-_foo_-stylereturnnilinpredicatemethoddefinition]
 ==== AllowedPatterns: [/foo/]
 
 [source,ruby]
@@ -13251,6 +14187,7 @@ def foo?
 end
 ----
 
+[#configurable-attributes-stylereturnnilinpredicatemethoddefinition]
 === Configurable attributes
 
 |===
@@ -13265,10 +14202,12 @@ end
 | Array
 |===
 
+[#references-stylereturnnilinpredicatemethoddefinition]
 === References
 
 * https://rubystyle.guide#bool-methods-qmark
 
+[#stylesafenavigation]
 == Style/SafeNavigation
 
 NOTE: Required Ruby version: 2.3
@@ -13280,7 +14219,7 @@ NOTE: Required Ruby version: 2.3
 | Yes
 | Always (Unsafe)
 | 0.43
-| 1.27
+| 1.67
 |===
 
 Transforms usages of a method call safeguarded by a non `nil`
@@ -13301,6 +14240,7 @@ The default for `MaxChainLength` is `2`.
 We have limited the cop to not register an offense for method chains
 that exceed this option's value.
 
+[#safety-stylesafenavigation]
 === Safety
 
 Autocorrection is unsafe because if a value is `false`, the resulting
@@ -13313,6 +14253,7 @@ x && x.foo  # return false
 x&.foo      # raises NoMethodError
 ----
 
+[#examples-stylesafenavigation]
 === Examples
 
 [source,ruby]
@@ -13367,6 +14308,7 @@ foo.baz + bar if foo
 foo.bar > 2 if foo
 ----
 
+[#configurable-attributes-stylesafenavigation]
 === Configurable attributes
 
 |===
@@ -13385,6 +14327,7 @@ foo.bar > 2 if foo
 | Integer
 |===
 
+[#stylesample]
 == Style/Sample
 
 |===
@@ -13401,6 +14344,7 @@ Identifies usages of `shuffle.first`,
 `shuffle.last`, and `shuffle[]` and change them to use
 `sample` instead.
 
+[#examples-stylesample]
 === Examples
 
 [source,ruby]
@@ -13426,10 +14370,12 @@ Identifies usages of `shuffle.first`,
 [1, 2, 3].shuffle(random: Random.new)
 ----
 
+[#references-stylesample]
 === References
 
 * https://github.com/fastruby/fast-ruby#arrayshufflefirst-vs-arraysample-code
 
+[#styleselectbyregexp]
 == Style/SelectByRegexp
 
 |===
@@ -13456,6 +14402,7 @@ NOTE: `grep` and `grep_v` were optimized when used without a block
 in Ruby 3.0, but may be slower in previous versions.
 See https://bugs.ruby-lang.org/issues/17030
 
+[#safety-styleselectbyregexp]
 === Safety
 
 Autocorrection is marked as unsafe because `MatchData` will
@@ -13466,11 +14413,12 @@ Additionally, the cop cannot guarantee that the receiver of
 `select` or `reject` is actually an array by static analysis,
 so the correction may not be actually equivalent.
 
+[#examples-styleselectbyregexp]
 === Examples
 
 [source,ruby]
 ----
-# bad (select or find_all)
+# bad (select, filter, or find_all)
 array.select { |x| x.match? /regexp/ }
 array.select { |x| /regexp/.match?(x) }
 array.select { |x| x =~ /regexp/ }
@@ -13487,6 +14435,7 @@ array.grep(regexp)
 array.grep_v(regexp)
 ----
 
+[#styleselfassignment]
 == Style/SelfAssignment
 
 |===
@@ -13501,6 +14450,7 @@ array.grep_v(regexp)
 
 Enforces the use the shorthand for self-assignment.
 
+[#examples-styleselfassignment]
 === Examples
 
 [source,ruby]
@@ -13512,10 +14462,12 @@ x = x + 1
 x += 1
 ----
 
+[#references-styleselfassignment]
 === References
 
 * https://rubystyle.guide#self-assignment
 
+[#stylesemicolon]
 == Style/Semicolon
 
 |===
@@ -13534,6 +14486,7 @@ It also checks for lines terminated with a semicolon.
 This cop has `AllowAsExpressionSeparator` configuration option.
 It allows `;` to separate several expressions on the same line.
 
+[#examples-stylesemicolon]
 === Examples
 
 [source,ruby]
@@ -13548,6 +14501,7 @@ bar = 2
 baz = 3
 ----
 
+[#allowasexpressionseparator_-false-_default_-stylesemicolon]
 ==== AllowAsExpressionSeparator: false (default)
 
 [source,ruby]
@@ -13556,6 +14510,7 @@ baz = 3
 foo = 1; bar = 2
 ----
 
+[#allowasexpressionseparator_-true-stylesemicolon]
 ==== AllowAsExpressionSeparator: true
 
 [source,ruby]
@@ -13564,6 +14519,7 @@ foo = 1; bar = 2
 foo = 1; bar = 2
 ----
 
+[#configurable-attributes-stylesemicolon]
 === Configurable attributes
 
 |===
@@ -13574,10 +14530,12 @@ foo = 1; bar = 2
 | Boolean
 |===
 
+[#references-stylesemicolon]
 === References
 
 * https://rubystyle.guide#no-semicolon
 
+[#stylesend]
 == Style/Send
 
 |===
@@ -13592,6 +14550,7 @@ foo = 1; bar = 2
 
 Checks for the use of the send method.
 
+[#examples-stylesend]
 === Examples
 
 [source,ruby]
@@ -13605,10 +14564,12 @@ Foo.__send__(bar)
 quuz.public_send(fred)
 ----
 
+[#references-stylesend]
 === References
 
 * https://rubystyle.guide#prefer-public-send
 
+[#stylesendwithliteralmethodname]
 == Style/SendWithLiteralMethodName
 
 |===
@@ -13639,12 +14600,14 @@ self.foo = 1   # => 1
 send(:foo=, 1) # => 42
 ----
 
+[#safety-stylesendwithliteralmethodname]
 === Safety
 
 This cop is not safe because it can incorrectly detect based on the receiver.
 Additionally, when `AllowSend` is set to `true`, it cannot determine whether
 the `send` method being detected is calling a private method.
 
+[#examples-stylesendwithliteralmethodname]
 === Examples
 
 [source,ruby]
@@ -13657,6 +14620,7 @@ obj.public_send('method_name')
 obj.method_name
 ----
 
+[#allowsend_-true-_default_-stylesendwithliteralmethodname]
 ==== AllowSend: true (default)
 
 [source,ruby]
@@ -13668,6 +14632,7 @@ obj.__send__(:method_name)
 obj.__send__('method_name')
 ----
 
+[#allowsend_-false-stylesendwithliteralmethodname]
 ==== AllowSend: false
 
 [source,ruby]
@@ -13682,6 +14647,7 @@ obj.__send__('method_name')
 obj.method_name
 ----
 
+[#configurable-attributes-stylesendwithliteralmethodname]
 === Configurable attributes
 
 |===
@@ -13692,6 +14658,7 @@ obj.method_name
 | Boolean
 |===
 
+[#stylesignalexception]
 == Style/SignalException
 
 |===
@@ -13706,8 +14673,10 @@ obj.method_name
 
 Checks for uses of `fail` and `raise`.
 
+[#examples-stylesignalexception]
 === Examples
 
+[#enforcedstyle_-only_raise-_default_-stylesignalexception]
 ==== EnforcedStyle: only_raise (default)
 
 [source,ruby]
@@ -13744,6 +14713,7 @@ end
 Kernel.raise
 ----
 
+[#enforcedstyle_-only_fail-stylesignalexception]
 ==== EnforcedStyle: only_fail
 
 [source,ruby]
@@ -13780,6 +14750,7 @@ end
 Kernel.fail
 ----
 
+[#enforcedstyle_-semantic-stylesignalexception]
 ==== EnforcedStyle: semantic
 
 [source,ruby]
@@ -13820,6 +14791,7 @@ explicit_receiver.fail
 explicit_receiver.raise
 ----
 
+[#configurable-attributes-stylesignalexception]
 === Configurable attributes
 
 |===
@@ -13830,10 +14802,12 @@ explicit_receiver.raise
 | `only_raise`, `only_fail`, `semantic`
 |===
 
+[#references-stylesignalexception]
 === References
 
 * https://rubystyle.guide#prefer-raise-over-fail
 
+[#stylesingleargumentdig]
 == Style/SingleArgumentDig
 
 |===
@@ -13852,12 +14826,14 @@ argument. In such cases, dig should be replaced with `[]`.
 Since replacing `hash&.dig(:key)` with `hash[:key]` could potentially lead to error,
 calls to the `dig` method using safe navigation will be ignored.
 
+[#safety-stylesingleargumentdig]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 is an `Enumerable` or does not have a nonstandard implementation
 of `dig`.
 
+[#examples-stylesingleargumentdig]
 === Examples
 
 [source,ruby]
@@ -13879,6 +14855,7 @@ keys = %i[key1 key2]
 { key1: { key2: 'value' } }.dig(*keys)
 ----
 
+[#stylesinglelineblockparams]
 == Style/SingleLineBlockParams
 
 |===
@@ -13901,8 +14878,10 @@ Configuration option: Methods
 Should be set to use this cop. Array of hashes, where each key is the
 method name and value - array of argument names.
 
+[#examples-stylesinglelineblockparams]
 === Examples
 
+[#methods_-__reduce_-_w_a-b___-stylesinglelineblockparams]
 ==== Methods: [{reduce: %w[a b]}]
 
 [source,ruby]
@@ -13923,6 +14902,7 @@ foo.reduce do |c, d|
 end
 ----
 
+[#configurable-attributes-stylesinglelineblockparams]
 === Configurable attributes
 
 |===
@@ -13933,6 +14913,7 @@ end
 | Array
 |===
 
+[#stylesinglelinedoendblock]
 == Style/SingleLineDoEndBlock
 
 |===
@@ -13951,6 +14932,7 @@ In practice a single line `do`...`end` is autocorrected when `EnforcedStyle: sem
 in `Style/BlockDelimiters`. The autocorrection maintains the `do` ... `end` syntax to
 preserve semantics and does not change it to `{`...`}` block.
 
+[#examples-stylesinglelinedoendblock]
 === Examples
 
 [source,ruby]
@@ -13970,10 +14952,12 @@ end
 ->(arg) { bar(arg) }
 ----
 
+[#references-stylesinglelinedoendblock]
 === References
 
 * https://rubystyle.guide#single-line-do-end-block
 
+[#stylesinglelinemethods]
 == Style/SingleLineMethods
 
 |===
@@ -13995,6 +14979,7 @@ If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow_single_line` or
 `allow_always`, single-line methods will be autocorrected to endless
 methods if there is only one statement in the body.
 
+[#examples-stylesinglelinemethods]
 === Examples
 
 [source,ruby]
@@ -14010,6 +14995,7 @@ def @table.columns; end
 def some_method() = body
 ----
 
+[#allowifmethodisempty_-true-_default_-stylesinglelinemethods]
 ==== AllowIfMethodIsEmpty: true (default)
 
 [source,ruby]
@@ -14018,6 +15004,7 @@ def some_method() = body
 def no_op; end
 ----
 
+[#allowifmethodisempty_-false-stylesinglelinemethods]
 ==== AllowIfMethodIsEmpty: false
 
 [source,ruby]
@@ -14026,6 +15013,7 @@ def no_op; end
 def no_op; end
 ----
 
+[#configurable-attributes-stylesinglelinemethods]
 === Configurable attributes
 
 |===
@@ -14036,10 +15024,12 @@ def no_op; end
 | Boolean
 |===
 
+[#references-stylesinglelinemethods]
 === References
 
 * https://rubystyle.guide#no-single-line-methods
 
+[#styleslicingwithrange]
 == Style/SlicingWithRange
 
 NOTE: Required Ruby version: 2.6
@@ -14058,6 +15048,7 @@ Checks that arrays are not sliced with the redundant `ary[0..-1]`, replacing it 
 and ensures arrays are sliced with endless ranges instead of `ary[start..-1]` on Ruby 2.6+,
 and with beginless ranges instead of `ary[nil..end]` on Ruby 2.7+.
 
+[#safety-styleslicingwithrange]
 === Safety
 
 This cop is unsafe because `x..-1` and `x..` are only guaranteed to
@@ -14072,6 +15063,7 @@ sum[-3..-1] # => -6
 sum[-3..] # Hangs forever
 ----
 
+[#examples-styleslicingwithrange]
 === Examples
 
 [source,ruby]
@@ -14099,10 +15091,12 @@ items[..42]    # Ruby 2.7+
 items[0..42]   # Ruby 2.7+
 ----
 
+[#references-styleslicingwithrange]
 === References
 
 * https://rubystyle.guide#slicing-with-ranges
 
+[#stylesolenestedconditional]
 == Style/SoleNestedConditional
 
 |===
@@ -14119,6 +15113,7 @@ If the branch of a conditional consists solely of a conditional node,
 its conditions can be combined with the conditions of the outer branch.
 This helps to keep the nesting level from getting too deep.
 
+[#examples-stylesolenestedconditional]
 === Examples
 
 [source,ruby]
@@ -14141,6 +15136,7 @@ if condition_a && condition_b
 end
 ----
 
+[#allowmodifier_-false-_default_-stylesolenestedconditional]
 ==== AllowModifier: false (default)
 
 [source,ruby]
@@ -14156,6 +15152,7 @@ if condition_b
 end if condition_a
 ----
 
+[#allowmodifier_-true-stylesolenestedconditional]
 ==== AllowModifier: true
 
 [source,ruby]
@@ -14171,6 +15168,7 @@ if condition_b
 end if condition_a
 ----
 
+[#configurable-attributes-stylesolenestedconditional]
 === Configurable attributes
 
 |===
@@ -14181,6 +15179,7 @@ end if condition_a
 | Boolean
 |===
 
+[#stylespecialglobalvars]
 == Style/SpecialGlobalVars
 
 |===
@@ -14198,13 +15197,16 @@ Correcting to global variables in the 'English' library
 will add a require statement to the top of the file if
 enabled by RequireEnglish config.
 
+[#safety-stylespecialglobalvars]
 === Safety
 
 Autocorrection is marked as unsafe because if `RequireEnglish` is not
 true, replacing perl-style variables with english variables will break.
 
+[#examples-stylespecialglobalvars]
 === Examples
 
+[#enforcedstyle_-use_english_names-_default_-stylespecialglobalvars]
 ==== EnforcedStyle: use_english_names (default)
 
 [source,ruby]
@@ -14232,6 +15234,7 @@ puts $IGNORECASE
 puts $ARGV # or ARGV
 ----
 
+[#enforcedstyle_-use_perl_names-stylespecialglobalvars]
 ==== EnforcedStyle: use_perl_names
 
 [source,ruby]
@@ -14257,6 +15260,7 @@ puts $=
 puts $*
 ----
 
+[#enforcedstyle_-use_builtin_english_names-stylespecialglobalvars]
 ==== EnforcedStyle: use_builtin_english_names
 
 [source,ruby]
@@ -14287,6 +15291,7 @@ puts $=
 puts $*
 ----
 
+[#configurable-attributes-stylespecialglobalvars]
 === Configurable attributes
 
 |===
@@ -14301,10 +15306,12 @@ puts $*
 | `use_perl_names`, `use_english_names`, `use_builtin_english_names`
 |===
 
+[#references-stylespecialglobalvars]
 === References
 
 * https://rubystyle.guide#no-cryptic-perlisms
 
+[#stylestabbylambdaparentheses]
 == Style/StabbyLambdaParentheses
 
 |===
@@ -14320,8 +15327,10 @@ puts $*
 Check for parentheses around stabby lambda arguments.
 There are two different styles. Defaults to `require_parentheses`.
 
+[#examples-stylestabbylambdaparentheses]
 === Examples
 
+[#enforcedstyle_-require_parentheses-_default_-stylestabbylambdaparentheses]
 ==== EnforcedStyle: require_parentheses (default)
 
 [source,ruby]
@@ -14333,6 +15342,7 @@ There are two different styles. Defaults to `require_parentheses`.
 ->(a,b,c) { a + b + c}
 ----
 
+[#enforcedstyle_-require_no_parentheses-stylestabbylambdaparentheses]
 ==== EnforcedStyle: require_no_parentheses
 
 [source,ruby]
@@ -14344,6 +15354,7 @@ There are two different styles. Defaults to `require_parentheses`.
 ->a,b,c { a + b + c}
 ----
 
+[#configurable-attributes-stylestabbylambdaparentheses]
 === Configurable attributes
 
 |===
@@ -14354,10 +15365,12 @@ There are two different styles. Defaults to `require_parentheses`.
 | `require_parentheses`, `require_no_parentheses`
 |===
 
+[#references-stylestabbylambdaparentheses]
 === References
 
 * https://rubystyle.guide#stabby-lambda-with-args
 
+[#stylestaticclass]
 == Style/StaticClass
 
 |===
@@ -14374,12 +15387,14 @@ Checks for places where classes with only class methods can be
 replaced with a module. Classes should be used only when it makes sense to create
 instances out of them.
 
+[#safety-stylestaticclass]
 === Safety
 
 This cop is unsafe, because it is possible that this class is a parent
 for some other subclass, monkey-patched with instance methods or
 a dummy instance is instantiated from it somewhere.
 
+[#examples-stylestaticclass]
 === Examples
 
 [source,ruby]
@@ -14415,10 +15430,12 @@ class SomeClass
 end
 ----
 
+[#references-stylestaticclass]
 === References
 
 * https://rubystyle.guide#modules-vs-classes
 
+[#stylestderrputs]
 == Style/StderrPuts
 
 |===
@@ -14435,6 +15452,7 @@ Identifies places where `$stderr.puts` can be replaced by
 `warn`. The latter has the advantage of easily being disabled by,
 the `-W0` interpreter flag or setting `$VERBOSE` to `nil`.
 
+[#examples-stylestderrputs]
 === Examples
 
 [source,ruby]
@@ -14446,10 +15464,12 @@ $stderr.puts('hello')
 warn('hello')
 ----
 
+[#references-stylestderrputs]
 === References
 
 * https://rubystyle.guide#warn
 
+[#stylestringchars]
 == Style/StringChars
 
 |===
@@ -14464,12 +15484,14 @@ warn('hello')
 
 Checks for uses of `String#split` with empty string or regexp literal argument.
 
+[#safety-stylestringchars]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 is actually a string. If another class has a `split` method with
 different behavior, it would be registered as a false positive.
 
+[#examples-stylestringchars]
 === Examples
 
 [source,ruby]
@@ -14482,10 +15504,12 @@ string.split('')
 string.chars
 ----
 
+[#references-stylestringchars]
 === References
 
 * https://rubystyle.guide#string-chars
 
+[#stylestringconcatenation]
 == Style/StringConcatenation
 
 |===
@@ -14518,13 +15542,16 @@ left side (receiver of `+` method call) is a string literal.
 This is useful when the receiver is some expression that returns string like `Pathname`
 instead of a string literal.
 
+[#safety-stylestringconcatenation]
 === Safety
 
 This cop is unsafe in `aggressive` mode, as it cannot be guaranteed that
 the receiver is actually a string, which can result in a false positive.
 
+[#examples-stylestringconcatenation]
 === Examples
 
+[#mode_-aggressive-_default_-stylestringconcatenation]
 ==== Mode: aggressive (default)
 
 [source,ruby]
@@ -14543,6 +15570,7 @@ name = 'First' +
   'Last'
 ----
 
+[#mode_-conservative-stylestringconcatenation]
 ==== Mode: conservative
 
 [source,ruby]
@@ -14556,6 +15584,7 @@ user.name + '!!'
 Pathname.new('/') + 'test'
 ----
 
+[#configurable-attributes-stylestringconcatenation]
 === Configurable attributes
 
 |===
@@ -14566,10 +15595,12 @@ Pathname.new('/') + 'test'
 | String
 |===
 
+[#references-stylestringconcatenation]
 === References
 
 * https://rubystyle.guide#string-interpolation
 
+[#stylestringhashkeys]
 == Style/StringHashKeys
 
 |===
@@ -14585,11 +15616,13 @@ Pathname.new('/') + 'test'
 Checks for the use of strings as keys in hashes. The use of
 symbols is preferred instead.
 
+[#safety-stylestringhashkeys]
 === Safety
 
 This cop is unsafe because while symbols are preferred for hash keys,
 there are instances when string keys are required.
 
+[#examples-stylestringhashkeys]
 === Examples
 
 [source,ruby]
@@ -14601,10 +15634,12 @@ there are instances when string keys are required.
 { one: 1, two: 2, three: 3 }
 ----
 
+[#references-stylestringhashkeys]
 === References
 
 * https://rubystyle.guide#symbols-as-keys
 
+[#stylestringliterals]
 == Style/StringLiterals
 
 |===
@@ -14619,8 +15654,10 @@ there are instances when string keys are required.
 
 Checks if uses of quotes match the configured preference.
 
+[#examples-stylestringliterals]
 === Examples
 
+[#enforcedstyle_-single_quotes-_default_-stylestringliterals]
 ==== EnforcedStyle: single_quotes (default)
 
 [source,ruby]
@@ -14637,6 +15674,7 @@ Checks if uses of quotes match the configured preference.
 "Wait! What's #{this}!"
 ----
 
+[#enforcedstyle_-double_quotes-stylestringliterals]
 ==== EnforcedStyle: double_quotes
 
 [source,ruby]
@@ -14651,6 +15689,7 @@ Checks if uses of quotes match the configured preference.
 "Every string in #{project} uses double_quotes"
 ----
 
+[#configurable-attributes-stylestringliterals]
 === Configurable attributes
 
 |===
@@ -14665,10 +15704,12 @@ Checks if uses of quotes match the configured preference.
 | Boolean
 |===
 
+[#references-stylestringliterals]
 === References
 
 * https://rubystyle.guide#consistent-string-literals
 
+[#stylestringliteralsininterpolation]
 == Style/StringLiteralsInInterpolation
 
 |===
@@ -14684,8 +15725,10 @@ Checks if uses of quotes match the configured preference.
 Checks that quotes inside string, symbol, and regexp interpolations
 match the configured preference.
 
+[#examples-stylestringliteralsininterpolation]
 === Examples
 
+[#enforcedstyle_-single_quotes-_default_-stylestringliteralsininterpolation]
 ==== EnforcedStyle: single_quotes (default)
 
 [source,ruby]
@@ -14707,6 +15750,7 @@ TEXT
 regexp = /Tests #{success ? 'PASS' : 'FAIL'}/
 ----
 
+[#enforcedstyle_-double_quotes-stylestringliteralsininterpolation]
 ==== EnforcedStyle: double_quotes
 
 [source,ruby]
@@ -14728,6 +15772,7 @@ TEXT
 regexp = /Tests #{success ? "PASS" : "FAIL"}/
 ----
 
+[#configurable-attributes-stylestringliteralsininterpolation]
 === Configurable attributes
 
 |===
@@ -14738,6 +15783,7 @@ regexp = /Tests #{success ? "PASS" : "FAIL"}/
 | `single_quotes`, `double_quotes`
 |===
 
+[#stylestringmethods]
 == Style/StringMethods
 
 |===
@@ -14753,6 +15799,7 @@ regexp = /Tests #{success ? "PASS" : "FAIL"}/
 Enforces the use of consistent method names
 from the String class.
 
+[#examples-stylestringmethods]
 === Examples
 
 [source,ruby]
@@ -14766,6 +15813,7 @@ from the String class.
 'var'.preferred_method
 ----
 
+[#configurable-attributes-stylestringmethods]
 === Configurable attributes
 
 |===
@@ -14776,6 +15824,7 @@ from the String class.
 | 
 |===
 
+[#stylestrip]
 == Style/Strip
 
 |===
@@ -14791,6 +15840,7 @@ from the String class.
 Identifies places where `lstrip.rstrip` can be replaced by
 `strip`.
 
+[#examples-stylestrip]
 === Examples
 
 [source,ruby]
@@ -14803,6 +15853,7 @@ Identifies places where `lstrip.rstrip` can be replaced by
 'abc'.strip
 ----
 
+[#stylestructinheritance]
 == Style/StructInheritance
 
 |===
@@ -14817,11 +15868,13 @@ Identifies places where `lstrip.rstrip` can be replaced by
 
 Checks for inheritance from Struct.new.
 
+[#safety-stylestructinheritance]
 === Safety
 
 Autocorrection is unsafe because it will change the inheritance
 tree (e.g. return value of `Module#ancestors`) of the constant.
 
+[#examples-stylestructinheritance]
 === Examples
 
 [source,ruby]
@@ -14841,10 +15894,12 @@ Person = Struct.new(:first_name, :last_name) do
 end
 ----
 
+[#references-stylestructinheritance]
 === References
 
 * https://rubystyle.guide#no-extend-struct-new
 
+[#stylesuperarguments]
 == Style/SuperArguments
 
 |===
@@ -14877,6 +15932,7 @@ Furthermore, any arguments accompanied by a block may potentially be delegating 
 `define_method`, therefore, `super` used within these blocks will be allowed.
 This approach might result in false negatives, yet ensuring safe detection takes precedence.
 
+[#examples-stylesuperarguments]
 === Examples
 
 [source,ruby]
@@ -14910,6 +15966,7 @@ def method(&block)
 end
 ----
 
+[#stylesuperwithargsparentheses]
 == Style/SuperWithArgsParentheses
 
 |===
@@ -14926,6 +15983,7 @@ Enforces the presence of parentheses in `super` containing arguments.
 
 `super` is a keyword and is provided as a distinct cop from those designed for method call.
 
+[#examples-stylesuperwithargsparentheses]
 === Examples
 
 [source,ruby]
@@ -14937,10 +15995,12 @@ super name, age
 super(name, age)
 ----
 
+[#references-stylesuperwithargsparentheses]
 === References
 
 * https://rubystyle.guide#super-with-args
 
+[#styleswapvalues]
 == Style/SwapValues
 
 |===
@@ -14955,11 +16015,13 @@ super(name, age)
 
 Enforces the use of shorthand-style swapping of 2 variables.
 
+[#safety-styleswapvalues]
 === Safety
 
 Autocorrection is unsafe, because the temporary variable used to
 swap variables will be removed, but may be referred to elsewhere.
 
+[#examples-styleswapvalues]
 === Examples
 
 [source,ruby]
@@ -14973,10 +16035,12 @@ y = tmp
 x, y = y, x
 ----
 
+[#references-styleswapvalues]
 === References
 
 * https://rubystyle.guide#values-swapping
 
+[#stylesymbolarray]
 == Style/SymbolArray
 
 NOTE: Required Ruby version: 2.0
@@ -15003,8 +16067,10 @@ If set, arrays with fewer elements than this value will not trigger the
 cop. For example, a `MinSize` of `3` will not enforce a style on an
 array of 2 or fewer elements.
 
+[#examples-stylesymbolarray]
 === Examples
 
+[#enforcedstyle_-percent-_default_-stylesymbolarray]
 ==== EnforcedStyle: percent (default)
 
 [source,ruby]
@@ -15025,6 +16091,7 @@ array of 2 or fewer elements.
 %i(foo \( \))
 ----
 
+[#enforcedstyle_-brackets-stylesymbolarray]
 ==== EnforcedStyle: brackets
 
 [source,ruby]
@@ -15036,6 +16103,7 @@ array of 2 or fewer elements.
 %i[foo bar baz]
 ----
 
+[#configurable-attributes-stylesymbolarray]
 === Configurable attributes
 
 |===
@@ -15050,10 +16118,12 @@ array of 2 or fewer elements.
 | Integer
 |===
 
+[#references-stylesymbolarray]
 === References
 
 * https://rubystyle.guide#percent-i
 
+[#stylesymbolliteral]
 == Style/SymbolLiteral
 
 |===
@@ -15068,6 +16138,7 @@ array of 2 or fewer elements.
 
 Checks symbol literal syntax.
 
+[#examples-stylesymbolliteral]
 === Examples
 
 [source,ruby]
@@ -15079,6 +16150,7 @@ Checks symbol literal syntax.
 :symbol
 ----
 
+[#stylesymbolproc]
 == Style/SymbolProc
 
 |===
@@ -15098,6 +16170,7 @@ please set `true` to `AllowMethodsWithArguments`.
 `define_method?` methods are allowed by default.
 These are customizable with `AllowedMethods` option.
 
+[#safety-stylesymbolproc]
 === Safety
 
 This cop is unsafe because there is a difference that a `Proc`
@@ -15162,6 +16235,7 @@ boxes.first.symbol_to_proc_matches?(*boxes)
 # => NoMethodError: protected method `secret' called for #<Box...>
 ----
 
+[#examples-stylesymbolproc]
 === Examples
 
 [source,ruby]
@@ -15174,6 +16248,7 @@ something.map { _1.upcase }
 something.map(&:upcase)
 ----
 
+[#allowmethodswitharguments_-false-_default_-stylesymbolproc]
 ==== AllowMethodsWithArguments: false (default)
 
 [source,ruby]
@@ -15185,6 +16260,7 @@ something.do_something(foo) { |o| o.bar }
 something.do_something(foo, &:bar)
 ----
 
+[#allowmethodswitharguments_-true-stylesymbolproc]
 ==== AllowMethodsWithArguments: true
 
 [source,ruby]
@@ -15193,6 +16269,7 @@ something.do_something(foo, &:bar)
 something.do_something(foo) { |o| o.bar }
 ----
 
+[#allowcomments_-false-_default_-stylesymbolproc]
 ==== AllowComments: false (default)
 
 [source,ruby]
@@ -15205,6 +16282,7 @@ something.do_something do |s| # some comment
 end
 ----
 
+[#allowcomments_-true-stylesymbolproc]
 ==== AllowComments: true
 
 [source,ruby]
@@ -15217,6 +16295,7 @@ something.do_something do |s| # some comment
 end
 ----
 
+[#allowedmethods_-_define_method_-_default_-stylesymbolproc]
 ==== AllowedMethods: [define_method] (default)
 
 [source,ruby]
@@ -15225,6 +16304,7 @@ end
 define_method(:foo) { |foo| foo.bar }
 ----
 
+[#allowedpatterns_-__-_default_-stylesymbolproc]
 ==== AllowedPatterns: [] (default)
 
 [source,ruby]
@@ -15233,6 +16313,7 @@ define_method(:foo) { |foo| foo.bar }
 something.map { |s| s.upcase }
 ----
 
+[#allowedpatterns_-__map__-_default_-stylesymbolproc]
 ==== AllowedPatterns: ['map'] (default)
 
 [source,ruby]
@@ -15241,6 +16322,7 @@ something.map { |s| s.upcase }
 something.map { |s| s.upcase }
 ----
 
+[#allcops_activesupportextensionsenabled_-false-_default_-stylesymbolproc]
 ==== AllCops:ActiveSupportExtensionsEnabled: false (default)
 
 [source,ruby]
@@ -15256,6 +16338,7 @@ proc(&:foo)
 Proc.new(&:foo)
 ----
 
+[#allcops_activesupportextensionsenabled_-true-stylesymbolproc]
 ==== AllCops:ActiveSupportExtensionsEnabled: true
 
 [source,ruby]
@@ -15266,6 +16349,7 @@ proc { |x| x.foo }
 Proc.new { |x| x.foo }
 ----
 
+[#configurable-attributes-stylesymbolproc]
 === Configurable attributes
 
 |===
@@ -15288,6 +16372,7 @@ Proc.new { |x| x.foo }
 | Boolean
 |===
 
+[#styleternaryparentheses]
 == Style/TernaryParentheses
 
 |===
@@ -15310,8 +16395,10 @@ By safe assignment we mean putting parentheses around
 an assignment to indicate "I know I'm using an assignment
 as a condition. It's not a mistake."
 
+[#examples-styleternaryparentheses]
 === Examples
 
+[#enforcedstyle_-require_no_parentheses-_default_-styleternaryparentheses]
 ==== EnforcedStyle: require_no_parentheses (default)
 
 [source,ruby]
@@ -15327,6 +16414,7 @@ foo = bar.baz? ? a : b
 foo = bar && baz ? a : b
 ----
 
+[#enforcedstyle_-require_parentheses-styleternaryparentheses]
 ==== EnforcedStyle: require_parentheses
 
 [source,ruby]
@@ -15342,6 +16430,7 @@ foo = (bar.baz?) ? a : b
 foo = (bar && baz) ? a : b
 ----
 
+[#enforcedstyle_-require_parentheses_when_complex-styleternaryparentheses]
 ==== EnforcedStyle: require_parentheses_when_complex
 
 [source,ruby]
@@ -15357,6 +16446,7 @@ foo = bar.baz? ? a : b
 foo = (bar && baz) ? a : b
 ----
 
+[#allowsafeassignment_-true-_default_-styleternaryparentheses]
 ==== AllowSafeAssignment: true (default)
 
 [source,ruby]
@@ -15365,6 +16455,7 @@ foo = (bar && baz) ? a : b
 foo = (bar = baz) ? a : b
 ----
 
+[#allowsafeassignment_-false-styleternaryparentheses]
 ==== AllowSafeAssignment: false
 
 [source,ruby]
@@ -15373,6 +16464,7 @@ foo = (bar = baz) ? a : b
 foo = (bar = baz) ? a : b
 ----
 
+[#configurable-attributes-styleternaryparentheses]
 === Configurable attributes
 
 |===
@@ -15387,6 +16479,7 @@ foo = (bar = baz) ? a : b
 | Boolean
 |===
 
+[#styletoplevelmethoddefinition]
 == Style/TopLevelMethodDefinition
 
 |===
@@ -15406,6 +16499,7 @@ This cop looks for definitions of top-level methods and warns about them.
 However for ruby scripts it is perfectly fine to use top-level methods.
 Hence this cop is disabled by default.
 
+[#examples-styletoplevelmethoddefinition]
 === Examples
 
 [source,ruby]
@@ -15445,10 +16539,12 @@ class Foo
 end
 ----
 
+[#references-styletoplevelmethoddefinition]
 === References
 
 * https://rubystyle.guide#top-level-methods
 
+[#styletrailingbodyonclass]
 == Style/TrailingBodyOnClass
 
 |===
@@ -15463,6 +16559,7 @@ end
 
 Checks for trailing code after the class definition.
 
+[#examples-styletrailingbodyonclass]
 === Examples
 
 [source,ruby]
@@ -15477,6 +16574,7 @@ class Foo
 end
 ----
 
+[#styletrailingbodyonmethoddefinition]
 == Style/TrailingBodyOnMethodDefinition
 
 |===
@@ -15493,6 +16591,7 @@ Checks for trailing code after the method definition.
 
 NOTE: It always accepts endless method definitions that are basically on the same line.
 
+[#examples-styletrailingbodyonmethoddefinition]
 === Examples
 
 [source,ruby]
@@ -15518,6 +16617,7 @@ end
 def endless_method = do_stuff
 ----
 
+[#styletrailingbodyonmodule]
 == Style/TrailingBodyOnModule
 
 |===
@@ -15532,6 +16632,7 @@ def endless_method = do_stuff
 
 Checks for trailing code after the module definition.
 
+[#examples-styletrailingbodyonmodule]
 === Examples
 
 [source,ruby]
@@ -15546,6 +16647,7 @@ module Foo
 end
 ----
 
+[#styletrailingcommainarguments]
 == Style/TrailingCommaInArguments
 
 |===
@@ -15568,8 +16670,10 @@ parenthesized method calls where each argument is on its own line.
 * `no_comma`: Requires that there is no comma after the last
 argument.
 
+[#examples-styletrailingcommainarguments]
 === Examples
 
+[#enforcedstyleformultiline_-consistent_comma-styletrailingcommainarguments]
 ==== EnforcedStyleForMultiline: consistent_comma
 
 [source,ruby]
@@ -15598,6 +16702,7 @@ method(
 )
 ----
 
+[#enforcedstyleformultiline_-comma-styletrailingcommainarguments]
 ==== EnforcedStyleForMultiline: comma
 
 [source,ruby]
@@ -15637,6 +16742,7 @@ method(
 )
 ----
 
+[#enforcedstyleformultiline_-no_comma-_default_-styletrailingcommainarguments]
 ==== EnforcedStyleForMultiline: no_comma (default)
 
 [source,ruby]
@@ -15654,6 +16760,7 @@ method(
 )
 ----
 
+[#configurable-attributes-styletrailingcommainarguments]
 === Configurable attributes
 
 |===
@@ -15664,10 +16771,12 @@ method(
 | `comma`, `consistent_comma`, `no_comma`
 |===
 
+[#references-styletrailingcommainarguments]
 === References
 
 * https://rubystyle.guide#no-trailing-params-comma
 
+[#styletrailingcommainarrayliteral]
 == Style/TrailingCommaInArrayLiteral
 
 |===
@@ -15690,8 +16799,10 @@ but only when each item is on its own line.
 * `no_comma`: Does not require a comma after the
 last item in an array
 
+[#examples-styletrailingcommainarrayliteral]
 === Examples
 
+[#enforcedstyleformultiline_-consistent_comma-styletrailingcommainarrayliteral]
 ==== EnforcedStyleForMultiline: consistent_comma
 
 [source,ruby]
@@ -15720,6 +16831,7 @@ a = [
 ]
 ----
 
+[#enforcedstyleformultiline_-comma-styletrailingcommainarrayliteral]
 ==== EnforcedStyleForMultiline: comma
 
 [source,ruby]
@@ -15759,6 +16871,7 @@ a = [
 ]
 ----
 
+[#enforcedstyleformultiline_-no_comma-_default_-styletrailingcommainarrayliteral]
 ==== EnforcedStyleForMultiline: no_comma (default)
 
 [source,ruby]
@@ -15773,6 +16886,7 @@ a = [
 ]
 ----
 
+[#configurable-attributes-styletrailingcommainarrayliteral]
 === Configurable attributes
 
 |===
@@ -15783,10 +16897,12 @@ a = [
 | `comma`, `consistent_comma`, `no_comma`
 |===
 
+[#references-styletrailingcommainarrayliteral]
 === References
 
 * https://rubystyle.guide#no-trailing-array-commas
 
+[#styletrailingcommainblockargs]
 == Style/TrailingCommaInBlockArgs
 
 |===
@@ -15804,6 +16920,7 @@ required. Blocks with only one argument and a trailing comma require
 that comma to be present. Blocks with more than one argument never
 require a trailing comma.
 
+[#safety-styletrailingcommainblockargs]
 === Safety
 
 This cop is unsafe because a trailing comma can indicate there are
@@ -15824,6 +16941,7 @@ For example:
 This can be fixed by replacing the trailing comma with a placeholder
 argument (such as `|key, _value|`).
 
+[#examples-styletrailingcommainblockargs]
 === Examples
 
 [source,ruby]
@@ -15861,6 +16979,7 @@ add do
 end
 ----
 
+[#styletrailingcommainhashliteral]
 == Style/TrailingCommaInHashLiteral
 
 |===
@@ -15883,8 +17002,10 @@ but only when each item is on its own line.
 * `no_comma`: Does not require a comma after the
 last item in a hash
 
+[#examples-styletrailingcommainhashliteral]
 === Examples
 
+[#enforcedstyleformultiline_-consistent_comma-styletrailingcommainhashliteral]
 ==== EnforcedStyleForMultiline: consistent_comma
 
 [source,ruby]
@@ -15913,6 +17034,7 @@ a = {
 }
 ----
 
+[#enforcedstyleformultiline_-comma-styletrailingcommainhashliteral]
 ==== EnforcedStyleForMultiline: comma
 
 [source,ruby]
@@ -15952,6 +17074,7 @@ a = {
 }
 ----
 
+[#enforcedstyleformultiline_-no_comma-_default_-styletrailingcommainhashliteral]
 ==== EnforcedStyleForMultiline: no_comma (default)
 
 [source,ruby]
@@ -15966,6 +17089,7 @@ a = {
 }
 ----
 
+[#configurable-attributes-styletrailingcommainhashliteral]
 === Configurable attributes
 
 |===
@@ -15976,6 +17100,7 @@ a = {
 | `comma`, `consistent_comma`, `no_comma`
 |===
 
+[#styletrailingmethodendstatement]
 == Style/TrailingMethodEndStatement
 
 |===
@@ -15990,6 +17115,7 @@ a = {
 
 Checks for trailing code after the method definition.
 
+[#examples-styletrailingmethodendstatement]
 === Examples
 
 [source,ruby]
@@ -16022,6 +17148,7 @@ def foo
 end
 ----
 
+[#styletrailingunderscorevariable]
 == Style/TrailingUnderscoreVariable
 
 |===
@@ -16036,6 +17163,7 @@ end
 
 Checks for extra underscores in variable assignment.
 
+[#examples-styletrailingunderscorevariable]
 === Examples
 
 [source,ruby]
@@ -16055,6 +17183,7 @@ a, *b, _ = foo()
 # => The correction `a, *b, = foo()` is a syntax error
 ----
 
+[#allownamedunderscorevariables_-true-_default_-styletrailingunderscorevariable]
 ==== AllowNamedUnderscoreVariables: true (default)
 
 [source,ruby]
@@ -16063,6 +17192,7 @@ a, *b, _ = foo()
 a, b, _something = foo()
 ----
 
+[#allownamedunderscorevariables_-false-styletrailingunderscorevariable]
 ==== AllowNamedUnderscoreVariables: false
 
 [source,ruby]
@@ -16071,6 +17201,7 @@ a, b, _something = foo()
 a, b, _something = foo()
 ----
 
+[#configurable-attributes-styletrailingunderscorevariable]
 === Configurable attributes
 
 |===
@@ -16081,6 +17212,7 @@ a, b, _something = foo()
 | Boolean
 |===
 
+[#styletrivialaccessors]
 == Style/TrivialAccessors
 
 |===
@@ -16099,6 +17231,7 @@ have been created with the attr_* family of functions automatically.
 `to_open`, `to_path`, `to_proc`, `to_r`, `to_regexp`, `to_str`, `to_s`, and `to_sym` methods
 are allowed by default. These are customizable with `AllowedMethods` option.
 
+[#examples-styletrivialaccessors]
 === Examples
 
 [source,ruby]
@@ -16125,6 +17258,7 @@ class << self
 end
 ----
 
+[#exactnamematch_-true-_default_-styletrivialaccessors]
 ==== ExactNameMatch: true (default)
 
 [source,ruby]
@@ -16135,6 +17269,7 @@ def name
 end
 ----
 
+[#exactnamematch_-false-styletrivialaccessors]
 ==== ExactNameMatch: false
 
 [source,ruby]
@@ -16145,6 +17280,7 @@ def name
 end
 ----
 
+[#allowpredicates_-true-_default_-styletrivialaccessors]
 ==== AllowPredicates: true (default)
 
 [source,ruby]
@@ -16155,6 +17291,7 @@ def foo?
 end
 ----
 
+[#allowpredicates_-false-styletrivialaccessors]
 ==== AllowPredicates: false
 
 [source,ruby]
@@ -16168,6 +17305,7 @@ end
 attr_reader :foo
 ----
 
+[#allowdslwriters_-true-_default_-styletrivialaccessors]
 ==== AllowDSLWriters: true (default)
 
 [source,ruby]
@@ -16178,6 +17316,7 @@ def on_exception(action)
 end
 ----
 
+[#allowdslwriters_-false-styletrivialaccessors]
 ==== AllowDSLWriters: false
 
 [source,ruby]
@@ -16191,6 +17330,7 @@ end
 attr_writer :on_exception
 ----
 
+[#ignoreclassmethods_-false-_default_-styletrivialaccessors]
 ==== IgnoreClassMethods: false (default)
 
 [source,ruby]
@@ -16206,6 +17346,7 @@ class << self
 end
 ----
 
+[#ignoreclassmethods_-true-styletrivialaccessors]
 ==== IgnoreClassMethods: true
 
 [source,ruby]
@@ -16216,6 +17357,7 @@ def self.foo
 end
 ----
 
+[#allowedmethods_-__allowed_method__-styletrivialaccessors]
 ==== AllowedMethods: ['allowed_method']
 
 [source,ruby]
@@ -16226,6 +17368,7 @@ def allowed_method
 end
 ----
 
+[#configurable-attributes-styletrivialaccessors]
 === Configurable attributes
 
 |===
@@ -16252,10 +17395,12 @@ end
 | Array
 |===
 
+[#references-styletrivialaccessors]
 === References
 
 * https://rubystyle.guide#attr_family
 
+[#styleunlesselse]
 == Style/UnlessElse
 
 |===
@@ -16270,6 +17415,7 @@ end
 
 Looks for `unless` expressions with `else` clauses.
 
+[#examples-styleunlesselse]
 === Examples
 
 [source,ruby]
@@ -16289,10 +17435,12 @@ else
 end
 ----
 
+[#references-styleunlesselse]
 === References
 
 * https://rubystyle.guide#no-else-with-unless
 
+[#styleunlesslogicaloperators]
 == Style/UnlessLogicalOperators
 
 |===
@@ -16323,8 +17471,10 @@ in order for the expression to be truthy or falsey.
 This makes it even more easy to read the `unless` condition as
 there is only one condition in the expression.
 
+[#examples-styleunlesslogicaloperators]
 === Examples
 
+[#enforcedstyle_-forbid_mixed_logical_operators-_default_-styleunlesslogicaloperators]
 ==== EnforcedStyle: forbid_mixed_logical_operators (default)
 
 [source,ruby]
@@ -16345,6 +17495,7 @@ return unless a or b or c
 return unless a?
 ----
 
+[#enforcedstyle_-forbid_logical_operators-styleunlesslogicaloperators]
 ==== EnforcedStyle: forbid_logical_operators
 
 [source,ruby]
@@ -16360,6 +17511,7 @@ return unless a
 return unless a?
 ----
 
+[#configurable-attributes-styleunlesslogicaloperators]
 === Configurable attributes
 
 |===
@@ -16370,6 +17522,7 @@ return unless a?
 | `forbid_mixed_logical_operators`, `forbid_logical_operators`
 |===
 
+[#styleunpackfirst]
 == Style/UnpackFirst
 
 NOTE: Required Ruby version: 2.4
@@ -16387,6 +17540,7 @@ NOTE: Required Ruby version: 2.4
 Checks for accessing the first element of `String#unpack`
 which can be replaced with the shorter method `unpack1`.
 
+[#examples-styleunpackfirst]
 === Examples
 
 [source,ruby]
@@ -16401,6 +17555,7 @@ which can be replaced with the shorter method `unpack1`.
 'foo'.unpack1('h*')
 ----
 
+[#stylevariableinterpolation]
 == Style/VariableInterpolation
 
 |===
@@ -16415,6 +17570,7 @@ which can be replaced with the shorter method `unpack1`.
 
 Checks for variable interpolation (like "#@ivar").
 
+[#examples-stylevariableinterpolation]
 === Examples
 
 [source,ruby]
@@ -16430,10 +17586,12 @@ Checks for variable interpolation (like "#@ivar").
 "Let's go to the #{@store}"
 ----
 
+[#references-stylevariableinterpolation]
 === References
 
 * https://rubystyle.guide#curlies-interpolate
 
+[#stylewhenthen]
 == Style/WhenThen
 
 |===
@@ -16448,6 +17606,7 @@ Checks for variable interpolation (like "#@ivar").
 
 Checks for `when;` uses in `case` expressions.
 
+[#examples-stylewhenthen]
 === Examples
 
 [source,ruby]
@@ -16465,10 +17624,12 @@ when 2 then 'bar'
 end
 ----
 
+[#references-stylewhenthen]
 === References
 
 * https://rubystyle.guide#no-when-semicolons
 
+[#stylewhileuntildo]
 == Style/WhileUntilDo
 
 |===
@@ -16483,6 +17644,7 @@ end
 
 Checks for uses of `do` in multi-line `while/until` statements.
 
+[#examples-stylewhileuntildo]
 === Examples
 
 [source,ruby]
@@ -16508,10 +17670,12 @@ until x.empty?
 end
 ----
 
+[#references-stylewhileuntildo]
 === References
 
 * https://rubystyle.guide#no-multiline-while-do
 
+[#stylewhileuntilmodifier]
 == Style/WhileUntilModifier
 
 |===
@@ -16528,6 +17692,7 @@ Checks for while and until statements that would fit on one line
 if written as a modifier while/until. The maximum line length is
 configured in the `Layout/LineLength` cop.
 
+[#examples-stylewhileuntilmodifier]
 === Examples
 
 [source,ruby]
@@ -16560,10 +17725,12 @@ while x < 500 # a long comment that makes code too long if it were a single line
 end
 ----
 
+[#references-stylewhileuntilmodifier]
 === References
 
 * https://rubystyle.guide#while-as-a-modifier
 
+[#stylewordarray]
 == Style/WordArray
 
 |===
@@ -16590,8 +17757,10 @@ If set, arrays with fewer elements than this value will not trigger the
 cop. For example, a `MinSize` of `3` will not enforce a style on an
 array of 2 or fewer elements.
 
+[#examples-stylewordarray]
 === Examples
 
+[#enforcedstyle_-percent-_default_-stylewordarray]
 ==== EnforcedStyle: percent (default)
 
 [source,ruby]
@@ -16625,6 +17794,7 @@ array of 2 or fewer elements.
 ]
 ----
 
+[#enforcedstyle_-brackets-stylewordarray]
 ==== EnforcedStyle: brackets
 
 [source,ruby]
@@ -16651,6 +17821,7 @@ array of 2 or fewer elements.
 ]
 ----
 
+[#configurable-attributes-stylewordarray]
 === Configurable attributes
 
 |===
@@ -16669,10 +17840,12 @@ array of 2 or fewer elements.
 | 
 |===
 
+[#references-stylewordarray]
 === References
 
 * https://rubystyle.guide#percent-w
 
+[#styleyamlfileread]
 == Style/YAMLFileRead
 
 |===
@@ -16690,6 +17863,7 @@ Checks for the use of `YAML.load`, `YAML.safe_load`, and `YAML.parse` with
 
 NOTE: `YAML.safe_load_file` was introduced in Ruby 3.0.
 
+[#examples-styleyamlfileread]
 === Examples
 
 [source,ruby]
@@ -16709,6 +17883,7 @@ YAML.safe_load(File.read(path)) # Ruby 3.0 and newer
 YAML.safe_load_file(path)       # Ruby 3.0 and newer
 ----
 
+[#styleyodacondition]
 == Style/YodaCondition
 
 |===
@@ -16725,6 +17900,7 @@ Enforces or forbids Yoda conditions,
 i.e. comparison operations where the order of expression is reversed.
 eg. `5 == x`
 
+[#safety-styleyodacondition]
 === Safety
 
 This cop is unsafe because comparison operators can be defined
@@ -16746,8 +17922,10 @@ obj == 'string'   #=> true
 'string' == obj   #=> false
 ----
 
+[#examples-styleyodacondition]
 === Examples
 
+[#enforcedstyle_-forbid_for_all_comparison_operators-_default_-styleyodacondition]
 ==== EnforcedStyle: forbid_for_all_comparison_operators (default)
 
 [source,ruby]
@@ -16769,6 +17947,7 @@ CONST == 99
 /#{interpolation}/ == foo
 ----
 
+[#enforcedstyle_-forbid_for_equality_operators_only-styleyodacondition]
 ==== EnforcedStyle: forbid_for_equality_operators_only
 
 [source,ruby]
@@ -16782,6 +17961,7 @@ CONST == 99
 3 < a && a < 5
 ----
 
+[#enforcedstyle_-require_for_all_comparison_operators-styleyodacondition]
 ==== EnforcedStyle: require_for_all_comparison_operators
 
 [source,ruby]
@@ -16799,6 +17979,7 @@ bar > 10
 10 < bar
 ----
 
+[#enforcedstyle_-require_for_equality_operators_only-styleyodacondition]
 ==== EnforcedStyle: require_for_equality_operators_only
 
 [source,ruby]
@@ -16812,6 +17993,7 @@ bar > 10
 "bar" != foo
 ----
 
+[#configurable-attributes-styleyodacondition]
 === Configurable attributes
 
 |===
@@ -16822,10 +18004,12 @@ bar > 10
 | `forbid_for_all_comparison_operators`, `forbid_for_equality_operators_only`, `require_for_all_comparison_operators`, `require_for_equality_operators_only`
 |===
 
+[#references-styleyodacondition]
 === References
 
 * https://en.wikipedia.org/wiki/Yoda_conditions
 
+[#styleyodaexpression]
 == Style/YodaExpression
 
 |===
@@ -16849,14 +18033,17 @@ This cop is disabled by default to respect user intentions such as:
 config.server_port = 9000 + ENV["TEST_ENV_NUMBER"].to_i
 ----
 
+[#safety-styleyodaexpression]
 === Safety
 
 This cop is unsafe because binary operators can be defined
 differently on different classes, and are not guaranteed to
 have the same result if reversed.
 
+[#examples-styleyodaexpression]
 === Examples
 
+[#supportedoperators_-_____-____-____-____-____-_default_-styleyodaexpression]
 ==== SupportedOperators: ['*', '+', '&', '|', '^'] (default)
 
 [source,ruby]
@@ -16879,6 +18066,7 @@ CONST + 1
 60 * 24
 ----
 
+[#configurable-attributes-styleyodaexpression]
 === Configurable attributes
 
 |===
@@ -16887,6 +18075,7 @@ CONST + 1
 
 |===
 
+[#stylezerolengthpredicate]
 == Style/ZeroLengthPredicate
 
 |===
@@ -16908,6 +18097,7 @@ replaced by `receiver.empty?` and `!receiver.empty?`.
 NOTE: `File`, `Tempfile`, and `StringIO` do not have `empty?`
 so allow `size == 0` and `size.zero?`.
 
+[#safety-stylezerolengthpredicate]
 === Safety
 
 This cop is unsafe because it cannot be guaranteed that the receiver
@@ -16915,6 +18105,7 @@ has an `empty?` method that is defined in terms of `length`. If there
 is a non-standard class that redefines `length` or `empty?`, the cop
 may register a false positive.
 
+[#examples-stylezerolengthpredicate]
 === Examples
 
 [source,ruby]

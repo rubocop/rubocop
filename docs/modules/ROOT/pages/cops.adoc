@@ -229,6 +229,7 @@ In the following section you find all available cops:
 * xref:cops_lint.adoc#lintduplicateregexpcharacterclasselement[Lint/DuplicateRegexpCharacterClassElement]
 * xref:cops_lint.adoc#lintduplicaterequire[Lint/DuplicateRequire]
 * xref:cops_lint.adoc#lintduplicaterescueexception[Lint/DuplicateRescueException]
+* xref:cops_lint.adoc#lintduplicatesetelement[Lint/DuplicateSetElement]
 * xref:cops_lint.adoc#linteachwithobjectargument[Lint/EachWithObjectArgument]
 * xref:cops_lint.adoc#lintelselayout[Lint/ElseLayout]
 * xref:cops_lint.adoc#lintemptyblock[Lint/EmptyBlock]
