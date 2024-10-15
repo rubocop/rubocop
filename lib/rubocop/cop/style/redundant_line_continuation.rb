@@ -125,7 +125,10 @@ module RuboCop
           return true unless (node = find_node_for_line(range.last_line))
           return false if argument_newline?(node)
 
-          source = node.parent ? node.parent.source : node.source
+          source = node.source
+          while (node = node.parent)
+            source = node.source
+          end
           parse(source.gsub("\\\n", "\n")).valid_syntax?
         end
 
