@@ -38,6 +38,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless require_safe_navigation?(node)
+
           bad_method?(node) do |safe_nav, method|
             return if nil_methods.include?(method) || PLUS_MINUS_METHODS.include?(node.method_name)
 
@@ -51,6 +53,13 @@ module RuboCop
         end
 
         private
+
+        def require_safe_navigation?(node)
+          parent = node.parent
+          return true unless parent&.and_type?
+
+          parent.rhs != node || parent.lhs.receiver != parent.rhs.receiver
+        end
 
         # @param [Parser::Source::Range] offense_range
         # @param [RuboCop::AST::SendNode] send_node

@@ -171,6 +171,68 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'registers an offense when a safe navigation operator is used with a method call as both the LHS and RHS operands of `&&` for the same receiver' do
+      expect_offense(<<~RUBY)
+        x&.foo.bar && x&.foo.baz
+              ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.foo&.bar && x&.foo.baz
+      RUBY
+    end
+
+    it 'does not register an offense when a safe navigation operator is used with a method call as the RHS operand of `&&` for the same receiver' do
+      expect_no_offenses(<<~RUBY)
+        x&.foo&.bar && x&.foo.baz
+      RUBY
+    end
+
+    it 'registers an offense when a safe navigation operator is used with a method call as the RHS operand of `&&` for a different receiver' do
+      expect_offense(<<~RUBY)
+        x&.foo&.bar && y&.foo.baz
+                             ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.foo&.bar && y&.foo&.baz
+      RUBY
+    end
+
+    it 'registers an offense when a safe navigation operator is used with a method call as both the LHS and RHS operands of `||` for the same receiver' do
+      expect_offense(<<~RUBY)
+        x&.foo.bar || x&.foo.baz
+                            ^^^^ Do not chain ordinary method call after safe navigation operator.
+              ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.foo&.bar || x&.foo&.baz
+      RUBY
+    end
+
+    it 'registers an offense when a safe navigation operator is used with a method call as the RHS operand of `||` for the same receiver' do
+      expect_offense(<<~RUBY)
+        x&.foo&.bar || x&.foo.baz
+                             ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.foo&.bar || x&.foo&.baz
+      RUBY
+    end
+
+    it 'registers an offense when a safe navigation operator is used with a method call as the RHS operand of `||` for a different receiver' do
+      expect_offense(<<~RUBY)
+        x&.foo&.bar || y&.foo.baz
+                             ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.foo&.bar || y&.foo&.baz
+      RUBY
+    end
+
     it 'registers an offense for safe navigation with a method call as an expression of `&&` operand' do
       expect_offense(<<~RUBY)
         do_something && x&.foo.bar
