@@ -455,11 +455,10 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           }] # comment
         RUBY
 
-        expect_correction(<<~RUBY.chop)
+        expect_correction(<<~RUBY)
           [# comment
           foo do
-          end
-          ]#{trailing_whitespace}
+          end]
         RUBY
       end
 
@@ -628,6 +627,20 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           my_method :arg1, arg2: proc {
             something
           }, arg3: :another_value
+        RUBY
+      end
+
+      it 'handles a multiline {} block with trailing comment' do
+        expect_offense(<<~RUBY)
+          my_method { |x|
+                    ^ Avoid using `{...}` for multi-line blocks.
+            x.foo } unless bar   # comment
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # comment
+          my_method do |x|
+            x.foo end unless bar
         RUBY
       end
     end

@@ -303,11 +303,26 @@ module RuboCop
 
         def move_comment_before_block(corrector, comment, block_node, closing_brace)
           range = block_node.chained? ? end_of_chain(block_node.parent).source_range : closing_brace
+
+          # It is possible that there is code between the block and the comment
+          # which needs to be preserved and trimmed.
+          pre_comment_range = source_range_before_comment(range, comment)
+
           corrector.remove(range_with_surrounding_space(comment.source_range, side: :right))
-          remove_trailing_whitespace(corrector, range, comment)
-          corrector.insert_after(range, "\n")
+          remove_trailing_whitespace(corrector, pre_comment_range, comment)
+          corrector.insert_after(pre_comment_range, "\n")
 
           corrector.insert_before(block_node, "#{comment.text}\n")
+        end
+
+        def source_range_before_comment(range, comment)
+          range = range.end.join(comment.source_range.begin)
+
+          # End the range before any whitespace that precedes the comment
+          trailing_whitespace_count = range.source[/\s+\z/]&.length
+          range = range.adjust(end_pos: -trailing_whitespace_count) if trailing_whitespace_count
+
+          range
         end
 
         def end_of_chain(node)
