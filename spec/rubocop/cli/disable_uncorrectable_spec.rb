@@ -343,6 +343,62 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
           RUBY
         end
       end
+
+      context 'and the offense is on a line containing a string continuation' do
+        it 'adds before-and-after disable statement around the string continuation' do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              DisabledByDefault: true
+            Lint/DuplicateHashKey:
+              Enabled: true
+          YAML
+          create_file('example.rb', <<~'RUBY')
+            {
+              key1: 'something',
+              key1: 'whatever'\
+                'something else'
+            }
+          RUBY
+          expect(exit_code).to eq(0)
+          expect(File.read('example.rb')).to eq(<<~'RUBY')
+            {
+              key1: 'something',
+              # rubocop:todo Lint/DuplicateHashKey
+              key1: 'whatever'\
+                'something else'
+              # rubocop:enable Lint/DuplicateHashKey
+            }
+          RUBY
+        end
+      end
+
+      context 'and the offense is on a different line than a string continuation' do
+        it 'adds a single one-line disable statement' do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              DisabledByDefault: true
+            Lint/DuplicateHashKey:
+              Enabled: true
+          YAML
+          create_file('example.rb', <<~'RUBY')
+            x = 'something'\
+              'something else'
+            {
+              key1: 'foo',
+              key1: 'bar'
+            }
+          RUBY
+          expect(exit_code).to eq(0)
+          expect(File.read('example.rb')).to eq(<<~'RUBY')
+            x = 'something'\
+              'something else'
+            {
+              key1: 'foo',
+              key1: 'bar' # rubocop:todo Lint/DuplicateHashKey
+            }
+          RUBY
+        end
+      end
     end
 
     context 'when exist offense for Layout/SpaceInsideArrayLiteralBrackets' do

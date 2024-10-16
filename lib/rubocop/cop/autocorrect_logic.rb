@@ -49,7 +49,9 @@ module RuboCop
       private
 
       def disable_offense(offense_range)
-        range = surrounding_heredoc(offense_range) || surrounding_percent_array(offense_range)
+        range = surrounding_heredoc(offense_range) ||
+                surrounding_percent_array(offense_range) ||
+                string_continuation(offense_range)
 
         if range
           disable_offense_before_and_after(range_by_lines(range))
@@ -88,8 +90,26 @@ module RuboCop
         end
 
         percent_array.map(&:source_range).find do |range|
-          offense_range.begin_pos > range.begin_pos && range.overlaps?(offense_range)
+          range_overlaps_offense?(offense_range, range)
         end
+      end
+
+      def string_continuation(offense_range)
+        return nil if offense_range.empty?
+
+        string_continuation_nodes = processed_source.ast.each_descendant.filter_map do |node|
+          range_by_lines(node.source_range) if string_continuation?(node)
+        end
+
+        string_continuation_nodes.find { |range| range_overlaps_offense?(offense_range, range) }
+      end
+
+      def range_overlaps_offense?(offense_range, range)
+        offense_range.begin_pos > range.begin_pos && range.overlaps?(offense_range)
+      end
+
+      def string_continuation?(node)
+        (node.str_type? || node.dstr_type? || node.xstr_type?) && node.source.match?(/\\\s*$/)
       end
 
       def range_of_first_line(range)
