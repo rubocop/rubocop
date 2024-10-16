@@ -1204,6 +1204,41 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           expect_no_corrections
         end
       end
+
+      context 'when HEREDOC start delimiter has a chained method with arguments that go over limit' do
+        it 'adds offense and does not autocorrect' do
+          expect_offense(<<~RUBY)
+            str = <<~HEREDOC.do_something.with_args(foo: '', bar: '', baz: '')
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [66/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'adds offense and does not autocorrect for `dstr`' do
+          expect_offense(<<~'RUBY')
+            str = <<~HEREDOC.do_something.with_args(foo: '', bar: '', baz: '')
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [66/40]
+              #{text}
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'adds offense and does not autocorrect for `xstr`' do
+          expect_offense(<<~RUBY)
+            str = <<~`HEREDOC`.do_something.with_args(foo: '', bar: '', baz: '')
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [68/40]
+              text
+            HEREDOC
+          RUBY
+
+          expect_no_corrections
+        end
+      end
     end
 
     context 'comments' do
