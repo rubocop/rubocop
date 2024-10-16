@@ -44,6 +44,8 @@ module RuboCop
     module CheckLineBreakable
       def extract_breakable_node(node, max)
         if node.send_type?
+          return if chained_to_heredoc?(node)
+
           args = process_args(node.arguments)
           return extract_breakable_node_from_elements(node, args, max)
         elsif node.def_type?
@@ -221,6 +223,14 @@ module RuboCop
         return node.first_line != node.last_argument.last_line if node.def_type?
 
         !node.single_line?
+      end
+
+      def chained_to_heredoc?(node)
+        while (node = node.receiver)
+          return true if (node.str_type? || node.dstr_type? || node.xstr_type?) && node.heredoc?
+        end
+
+        false
       end
     end
   end
