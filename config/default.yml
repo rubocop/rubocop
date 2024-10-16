@@ -2104,6 +2104,11 @@ Lint/NextWithoutAccumulator:
   Enabled: true
   VersionAdded: '0.36'
 
+Lint/NoRescueErrorMessageChecking:
+  Description: 'Checks for the presence of error message checking within rescue blocks.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/NoReturnInBeginEndBlocks:
   Description: 'Do not `return` inside `begin..end` blocks in assignment contexts.'
   Enabled: pending
