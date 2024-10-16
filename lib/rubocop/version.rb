@@ -24,7 +24,7 @@ module RuboCop
       if debug
         verbose_version = format(MSG, version: STRING, parser_version: parser_version,
                                       rubocop_ast_version: RuboCop::AST::Version::STRING,
-                                      target_ruby_version: TargetRuby.new(Config.new).version,
+                                      target_ruby_version: target_ruby_version(env),
                                       ruby_engine: RUBY_ENGINE, ruby_version: RUBY_VERSION,
                                       server_mode: server_mode,
                                       ruby_platform: RUBY_PLATFORM)
@@ -64,12 +64,7 @@ module RuboCop
 
     # @api private
     def self.extension_versions(env)
-      features = Util.silence_warnings do
-        # Suppress any config issues when loading the config (ie. deprecations,
-        # pending cops, etc.).
-        env.config_store.unvalidated.for_pwd.loaded_features.sort
-      end
-
+      features = config_for_pwd(env).loaded_features.sort
       features.filter_map do |loaded_feature|
         next unless (match = loaded_feature.match(/rubocop-(?<feature>.*)/))
 
@@ -88,6 +83,24 @@ module RuboCop
         next unless (feature_version = feature_version(feature))
 
         "  - #{loaded_feature} #{feature_version}"
+      end
+    end
+
+    # @api private
+    def self.target_ruby_version(env)
+      if env
+        config_for_pwd(env).target_ruby_version
+      else
+        TargetRuby.new(Config.new).version
+      end
+    end
+
+    # @api private
+    def self.config_for_pwd(env)
+      Util.silence_warnings do
+        # Suppress any config issues when loading the config (ie. deprecations,
+        # pending cops, etc.).
+        env.config_store.unvalidated.for_pwd
       end
     end
 

@@ -293,7 +293,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       expect($stdout.string).to include(RuboCop::Version::STRING)
       expect($stdout.string).to match(/Parser \d+\.\d+\.\d+/)
       expect($stdout.string).to match(/rubocop-ast \d+\.\d+\.\d+/)
-      expect($stdout.string).to match(/analyzing as Ruby \d+\.\d+/)
+      expect($stdout.string).to match(/analyzing as Ruby #{RuboCop::TargetRuby::DEFAULT_VERSION}/o)
     end
 
     context 'when requiring extension cops' do
@@ -420,6 +420,20 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       it 'exits cleanly' do
         expect(cli.run(['-V'])).to eq(0)
         expect($stdout.string).to include(RuboCop::Version::STRING)
+      end
+    end
+
+    context 'when run in a subfolder with `.rubocop.yml` specifying `TargetRubyVersion`' do
+      before do
+        create_file('subdir/.rubocop.yml', <<~YAML)
+          AllCops:
+            TargetRubyVersion: 3.0
+        YAML
+      end
+
+      it 'shows that Ruby version in the output' do
+        Dir.chdir('subdir') { cli.run ['-V'] }
+        expect($stdout.string).to match(/analyzing as Ruby 3\.0/)
       end
     end
   end
