@@ -51,12 +51,12 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
   context 'when any offenses are detected' do
     before do
-      formatter.started(['test_a.rb', 'test_b.rb'])
+      formatter.started(%w[test_a.rb test_b.rb])
       formatter.file_started('test_a.rb', options)
       formatter.file_finished('test_a.rb', offenses)
       formatter.file_started('test_b.rb', options)
       formatter.file_finished('test_b.rb', [offenses.first])
-      formatter.finished(['test_a.rb', 'test_b.rb'])
+      formatter.finished(%w[test_a.rb test_b.rb])
     end
 
     let(:expected_rubocop_todo) do
@@ -92,14 +92,14 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
             - !ruby/regexp /.*/bar/*/foo\.rb$/
       YAML
 
-      formatter.started(['test_a.rb', 'test_b.rb'])
+      formatter.started(%w[test_a.rb test_b.rb])
       formatter.file_started('test_a.rb', options)
       formatter.file_finished('test_a.rb', offenses)
       formatter.file_started('test_b.rb', options)
       formatter.file_finished('test_b.rb', [offenses.first])
 
       allow(RuboCop::ConfigLoader.default_configuration).to receive(:[]).and_return({})
-      formatter.finished(['test_a.rb', 'test_b.rb'])
+      formatter.finished(%w[test_a.rb test_b.rb])
     end
 
     let(:expected_rubocop_todo) do

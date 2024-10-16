@@ -321,13 +321,13 @@ RSpec.describe RuboCop::Cop::Registry do
 
   it 'exposes a list of cop names' do
     expect(registry.names).to eql(
-      [
-        'Lint/BooleanSymbol',
-        'Lint/DuplicateMethods',
-        'Layout/FirstArrayElementIndentation',
-        'Metrics/MethodLength',
-        'RSpec/Foo',
-        'Test/FirstArrayElementIndentation'
+      %w[
+        Lint/BooleanSymbol
+        Lint/DuplicateMethods
+        Layout/FirstArrayElementIndentation
+        Metrics/MethodLength
+        RSpec/Foo
+        Test/FirstArrayElementIndentation
       ]
     )
   end

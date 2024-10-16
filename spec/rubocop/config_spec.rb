@@ -460,7 +460,7 @@ RSpec.describe RuboCop::Config do
 
   describe '#make_excludes_absolute' do
     context 'when config is in root directory' do
-      let(:hash) { { 'AllCops' => { 'Exclude' => ['config/environment', 'spec'] } } }
+      let(:hash) { { 'AllCops' => { 'Exclude' => %w[config/environment spec] } } }
 
       before do
         allow(configuration)
@@ -820,7 +820,7 @@ RSpec.describe RuboCop::Config do
   end
 
   describe '#gem_versions_in_target', :isolated_environment do
-    ['Gemfile.lock', 'gems.locked'].each do |file_name|
+    %w[Gemfile.lock gems.locked].each do |file_name|
       let(:base_path) { configuration.base_dir_for_path_parameters }
       let(:lockfile_path) { File.join(base_path, file_name) }
 

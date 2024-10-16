@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files = Dir.glob('{assets,config,lib}/**/*', File::FNM_DOTMATCH)
   s.bindir = 'exe'
   s.executables = ['rubocop']
-  s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
+  s.extra_rdoc_files = %w[LICENSE.txt README.md]
   s.homepage = 'https://github.com/rubocop/rubocop'
   s.licenses = ['MIT']
   s.summary = 'Automatic Ruby code style checking tool.'

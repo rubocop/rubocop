@@ -215,7 +215,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     it 'has values as arrays of extra enabled cops' do
-      expect(extra.values.first).to eq ['Metrics/MethodLength', 'Security/Eval']
+      expect(extra.values.first).to eq %w[Metrics/MethodLength Security/Eval]
     end
   end
 
