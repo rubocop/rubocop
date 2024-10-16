@@ -68,6 +68,7 @@ module RuboCop
         end
         alias on_while on_if
         alias on_until on_if
+        alias on_case on_if
 
         private
 
