@@ -273,7 +273,7 @@ module RuboCop
 
     def rubocop_version_with_support
       if supported?
-        RuboCop::Version.version
+        RuboCop::Version::STRING
       else
         OBSOLETE_RUBIES[version]
       end

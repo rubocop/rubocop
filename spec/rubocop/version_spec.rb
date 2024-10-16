@@ -18,6 +18,10 @@ RSpec.describe RuboCop::Version do
 
       it { is_expected.to match(/\d+\.\d+\.\d+ \(using Parser/) }
     end
+
+    it 'is the gem version when called without arguments' do
+      expect(described_class.version).to eq(described_class::STRING)
+    end
   end
 
   describe '.extension_versions', :isolated_environment, :restore_registry do
