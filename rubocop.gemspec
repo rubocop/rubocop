@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
 
   s.metadata = {
     'homepage_uri' => 'https://rubocop.org/',
-    'changelog_uri' => "https://github.com/rubocop/rubocop/releases/tag/v#{RuboCop::Version.version}",
+    'changelog_uri' => "https://github.com/rubocop/rubocop/releases/tag/v#{RuboCop::Version::STRING}",
     'source_code_uri' => 'https://github.com/rubocop/rubocop/',
     'documentation_uri' => "https://docs.rubocop.org/rubocop/#{RuboCop::Version.document_version}/",
     'bug_tracker_uri' => 'https://github.com/rubocop/rubocop/issues',

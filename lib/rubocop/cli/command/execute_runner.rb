@@ -78,7 +78,7 @@ module RuboCop
             Please, report your problems to RuboCop's issue tracker.
             #{bug_tracker_uri}
             Mention the following information in the issue report:
-            #{RuboCop::Version.version(debug: true)}
+            #{RuboCop::Version.verbose}
           WARNING
         end
 

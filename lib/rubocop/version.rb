@@ -18,6 +18,7 @@ module RuboCop
       'rubocop-md' => 'markdown', 'rubocop-factory_bot' => 'factory_bot'
     }.freeze
 
+    # NOTE: Marked as private but used by gems like standard.
     # @api private
     def self.version(debug: false, env: nil)
       if debug
@@ -39,6 +40,11 @@ module RuboCop
       else
         STRING
       end
+    end
+
+    # @api private
+    def self.verbose(env: nil)
+      version(debug: true, env: env)
     end
 
     # @api private
