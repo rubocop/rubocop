@@ -17,14 +17,17 @@ module RuboCop
     EXTENSION_PATH_NAMES = {
       'rubocop-md' => 'markdown', 'rubocop-factory_bot' => 'factory_bot'
     }.freeze
+    ENGINE_NAMES = { 'ruby' => 'Ruby', 'jruby' => 'JRuby' }.freeze
 
+    # rubocop:disable Metrics/MethodLength
     # @api private
     def self.version(debug: false, env: nil)
       if debug
         verbose_version = format(MSG, version: STRING, parser_version: parser_version,
                                       rubocop_ast_version: RuboCop::AST::Version::STRING,
                                       target_ruby_version: TargetRuby.new(Config.new).version,
-                                      ruby_engine: RUBY_ENGINE, ruby_version: RUBY_VERSION,
+                                      ruby_engine: ENGINE_NAMES.fetch(RUBY_ENGINE, RUBY_ENGINE),
+                                      ruby_version: RUBY_VERSION,
                                       server_mode: server_mode,
                                       ruby_platform: RUBY_PLATFORM)
         return verbose_version unless env
@@ -40,6 +43,7 @@ module RuboCop
         STRING
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     # @api private
     def self.parser_version
