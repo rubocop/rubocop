@@ -34,26 +34,110 @@ module RuboCop
       #   end
       class LiteralAsCondition < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Literal `%<literal>s` appeared as a condition.'
 
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        def on_and(node)
+          if node.lhs.truthy_literal? && node.rhs.truthy_literal?
+            add_offense(node) do |corrector|
+              corrector.replace(node, 'true')
+            end
+            return
+          end
+
+          if node.lhs.truthy_literal?
+            add_offense(node.lhs) do |corrector|
+              corrector.replace(node, node.rhs.source)
+            end
+          end
+
+          return unless node.rhs.truthy_literal?
+
+          add_offense(node.rhs) do |corrector|
+            corrector.replace(node, node.lhs.source)
+          end
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
         def on_if(node)
-          check_for_literal(node)
+          cond = condition(node)
+
+          if cond.truthy_literal? || (node.unless? && cond.falsey_literal?)
+            add_offense(cond) do |corrector|
+              corrector.replace(node, node.if_branch.source)
+            end
+          end
+
+          return unless cond.falsey_literal? || (node.unless? && cond.truthy_literal?)
+
+          add_offense(cond)
         end
 
         def on_while(node)
-          return if condition(node).true_type?
+          return if node.condition.source == 'true'
 
-          check_for_literal(node)
+          if node.condition.truthy_literal?
+            add_offense(node.condition) do |corrector|
+              corrector.replace(node.condition, 'true')
+            end
+          end
+
+          return unless node.condition.falsey_literal?
+
+          add_offense(node.condition)
         end
-        alias on_while_post on_while
+
+        # rubocop:disable Metrics/AbcSize
+        def on_while_post(node)
+          return if node.condition.source == 'true'
+
+          if node.condition.truthy_literal?
+            add_offense(node.condition) do |corrector|
+              corrector.replace(node, node.body.source.sub!('begin', 'while true'))
+            end
+          end
+
+          return unless node.condition.falsey_literal?
+
+          add_offense(node.condition) do |corrector|
+            corrector.replace(node, node.body.child_nodes.map(&:source).join("\n"))
+          end
+        end
+        # rubocop:enable Metrics/AbcSize
 
         def on_until(node)
-          return if condition(node).false_type?
+          return if node.condition.source == 'false'
 
-          check_for_literal(node)
+          if node.condition.falsey_literal?
+            add_offense(node.condition) do |corrector|
+              corrector.replace(node.condition, 'false')
+            end
+          end
+
+          return unless node.condition.truthy_literal?
+
+          add_offense(node.condition)
         end
-        alias on_until_post on_until
+
+        # rubocop:disable Metrics/AbcSize
+        def on_until_post(node)
+          return if node.condition.source == 'false'
+
+          if node.condition.falsey_literal?
+            add_offense(node.condition) do |corrector|
+              corrector.replace(node, node.body.source.sub!('begin', 'until false'))
+            end
+          end
+
+          return unless node.condition.truthy_literal?
+
+          add_offense(node.condition) do |corrector|
+            corrector.replace(node, node.body.child_nodes.map(&:source).join("\n"))
+          end
+        end
+        # rubocop:enable Metrics/AbcSize
 
         def on_case(case_node)
           if case_node.condition
@@ -129,6 +213,8 @@ module RuboCop
 
         def handle_node(node)
           if node.literal?
+            return if node.parent.and_type?
+
             add_offense(node)
           elsif %i[send and or begin].include?(node.type)
             check_node(node)
