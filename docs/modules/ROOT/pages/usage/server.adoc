@@ -116,8 +116,12 @@ environment variables.
 * `$RUBOCOP_SERVER_HOST`
 * `$RUBOCOP_SERVER_PORT`
 
-The following is an example:
+You can configure the server process to automatically shut down after a period of not receiving connections. The option takes a number in seconds.
+
+* `$RUBOCOP_SERVER_IDLE_TIMEOUT`
+
+The following is an example that listens on port 98989 and shuts down after one minute without receiving connections:
 
 ```console
-$ RUBOCOP_SERVER_PORT=98989 rubocop --start-server
+$ RUBOCOP_SERVER_PORT=98989 RUBOCOP_SERVER_IDLE_TIMEOUT=60 rubocop --start-server
 ```
