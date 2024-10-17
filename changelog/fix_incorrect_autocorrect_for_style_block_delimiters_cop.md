@@ -1,0 +1,1 @@
+* [#13353](https://github.com/rubocop/rubocop/issues/13353): Fix an incorrect autocorrect for `Style/BlockDelimiters` when `EnforcedStyle: semantic` is set and used with `Layout/SpaceInsideBlockBraces`. ([@koic][])
