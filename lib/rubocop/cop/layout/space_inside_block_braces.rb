@@ -82,6 +82,10 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
+        def self.autocorrect_incompatible_with
+          [Style::BlockDelimiters]
+        end
+
         def on_block(node)
           return if node.keywords?
 

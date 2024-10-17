@@ -301,6 +301,24 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `EnforcedStyle: semantic` of `Style/BlockDelimiters` with `Layout/SpaceInsideBlockBraces`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/BlockDelimiters:
+        EnforcedStyle: semantic
+    YAML
+    source = <<~RUBY
+      File.open('a', 'w') { }
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect-all',
+                     '--only', 'Style/BlockDelimiters,Layout/SpaceInsideBlockBraces'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      File.open('a', 'w') do  end
+    RUBY
+  end
+
   it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
     create_file('.rubocop.yml', <<~YAML)
       Style/MethodCallWithArgsParentheses:
