@@ -3145,6 +3145,7 @@ Style/Alias:
 
 Style/AmbiguousEndlessMethodDefinition:
   Description: 'Checks for endless methods inside operators of lower precedence.'
+  StyleGuide: '#ambiguous-endless-method-defintions'
   Enabled: pending
   VersionAdded: '<<next>>'
 
