@@ -74,9 +74,19 @@ module RuboCop
         end
 
         def check_if(node)
+          return true if check_literal_if(node)
+
           if_branch = node.if_branch
           else_branch = node.else_branch
           if_branch && else_branch && flow_expression?(if_branch) && flow_expression?(else_branch)
+        end
+
+        def check_literal_if(node)
+          return false unless flow_expression?(node.if_branch)
+
+          return true if !node.unless? && node.condition.truthy_literal?
+
+          node.unless? && node.condition.falsey_literal?
         end
 
         def check_case(node)
