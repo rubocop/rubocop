@@ -13,9 +13,10 @@ module RuboCop
           CLASSLIKE_TYPES = %i[class module].freeze
           private_constant :FOLDABLE_TYPES, :CLASSLIKE_TYPES
 
-          def initialize(node, processed_source, count_comments: false, foldable_types: [])
+          def initialize(node, processed_source, count_comments: false, skipable_lines_patterns: [], foldable_types: [])
             @node = node
             @processed_source = processed_source
+            @skipable_lines_patterns = skipable_lines_patterns
             @count_comments = count_comments
             @foldable_checks = build_foldable_checks(foldable_types)
             @foldable_types = normalize_foldable_types(foldable_types)
@@ -157,11 +158,15 @@ module RuboCop
 
           # Returns true for lines that shall not be included in the count.
           def irrelevant_line?(source_line)
-            source_line.blank? || (!count_comments? && comment_line?(source_line))
+            source_line.blank? || (!count_comments? && comment_line?(source_line)) || (is_skipable_line?(source_line))
           end
 
           def count_comments?
             @count_comments
+          end
+
+          def is_skipable_line?(source_line)
+            @skipable_lines_patterns.any? { |pattern| Regexp.new(pattern).match?(source_line) }
           end
 
           def omit_length(descendant)

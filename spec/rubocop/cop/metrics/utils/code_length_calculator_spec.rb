@@ -52,6 +52,22 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
         expect(length).to eq(6)
       end
 
+      it 'skips skipable lines' do
+        source = parse_source(<<~RUBY)
+          def test
+            a = 1
+            puts '2'
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, count_comments: true, skipable_lines_patterns: [/\bputs\b/]).calculate
+        expect(length).to eq(5)
+      end
+
       it 'folds arrays if asked' do
         source = parse_source(<<~RUBY)
           def test
