@@ -1038,6 +1038,7 @@ Layout/LeadingCommentSpace:
   AllowDoxygenCommentStyle: false
   AllowGemfileRubyComment: false
   AllowRBSInlineAnnotation: false
+  AllowSteepAnnotation: false
 
 Layout/LeadingEmptyLines:
   Description: Check for unnecessary blank lines at the beginning of a file.
