@@ -33,12 +33,12 @@ module RuboCop
         private
 
         def offense_range(node, begin_pos)
-          if reference_variable_with_brackets?(node)
-            receiver_end_pos = node.receiver.source_range.end_pos
-            selector_begin_pos = node.loc.selector.begin_pos
-            return if receiver_end_pos >= selector_begin_pos
-            return if dot_before_brackets?(node, receiver_end_pos, selector_begin_pos)
+          receiver_end_pos = node.receiver.source_range.end_pos
+          selector_begin_pos = node.loc.selector.begin_pos
+          return if receiver_end_pos >= selector_begin_pos
+          return if dot_before_brackets?(node, receiver_end_pos, selector_begin_pos)
 
+          if reference_variable_with_brackets?(node)
             range_between(receiver_end_pos, selector_begin_pos)
           elsif node.method?(:[]=)
             offense_range_for_assignment(node, begin_pos)
