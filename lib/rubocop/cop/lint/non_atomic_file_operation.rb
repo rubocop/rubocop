@@ -134,6 +134,9 @@ module RuboCop
 
           corrector.replace(node.child_nodes.first.loc.name, 'FileUtils')
           corrector.replace(node.loc.selector, replacement_method(node))
+          if node.child_nodes.first.const_name == 'Dir' && replacement_method(node) == 'mkdir_p' && node.arguments.length == 2
+            corrector.insert_before(node.arguments.last.source_range, 'mode: ')
+          end
         end
 
         def replacement_method(node)
