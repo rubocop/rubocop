@@ -67,19 +67,39 @@ module RuboCop
       #   attr_reader :name #: String
       #   attr_reader :age  #: Integer?
       #
+      # @example AllowSteepAnnotation: false (default)
+      #
+      #   # bad
+      #   [1, 2, 3].each_with_object([]) do |n, list| #$ Array[Integer]
+      #     list << n
+      #   end
+      #
+      #   name = 'John'      #: String
+      #
+      # @example AllowSteepAnnotation: true
+      #
+      #   # good
+      #
+      #   [1, 2, 3].each_with_object([]) do |n, list| #$ Array[Integer]
+      #     list << n
+      #   end
+      #
+      #   name = 'John'      #: String
+      #
       class LeadingCommentSpace < Base
         include RangeHelp
         extend AutoCorrector
 
         MSG = 'Missing space after `#`.'
 
-        def on_new_investigation # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        def on_new_investigation # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           processed_source.comments.each do |comment|
             next unless /\A(?!#\+\+|#--)(#+[^#\s=])/.match?(comment.text)
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
             next if doxygen_comment_style?(comment)
             next if gemfile_ruby_comment?(comment)
             next if rbs_inline_annotation?(comment)
+            next if steep_annotation?(comment)
 
             add_offense(comment) do |corrector|
               expr = comment.source_range
@@ -141,6 +161,14 @@ module RuboCop
 
         def rbs_inline_annotation?(comment)
           allow_rbs_inline_annotation? && comment.text.start_with?(/#:|#\[.+\]/)
+        end
+
+        def allow_steep_annotation?
+          cop_config['AllowSteepAnnotation']
+        end
+
+        def steep_annotation?(comment)
+          allow_steep_annotation? && comment.text.start_with?(/#[$:]/)
         end
       end
     end

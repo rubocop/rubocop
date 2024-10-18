@@ -259,4 +259,44 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
       end
     end
   end
+
+  describe 'Steep annotation' do
+    context 'when config option is disabled' do
+      let(:cop_config) { { 'AllowSteepAnnotation' => false } }
+
+      it 'registers an offense and corrects using Steep annotation' do
+        expect_offense(<<~RUBY)
+          [1, 2, 3].each_with_object([]) do |n, list| #$ Array[Integer]
+                                                      ^^^^^^^^^^^^^^^^^ Missing space after `#`.
+            list << n
+          end
+
+          name = 'John'      #: String
+                             ^^^^^^^^^ Missing space after `#`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1, 2, 3].each_with_object([]) do |n, list| # $ Array[Integer]
+            list << n
+          end
+
+          name = 'John'      # : String
+        RUBY
+      end
+    end
+
+    context 'when config option is enabled' do
+      let(:cop_config) { { 'AllowSteepAnnotation' => true } }
+
+      it 'does not register an offense when using Steep annotation' do
+        expect_no_offenses(<<~RUBY)
+          [1, 2, 3].each_with_object([]) do |n, list| #$ Array[Integer]
+            list << n
+          end
+
+          name = 'John'      #: String
+        RUBY
+      end
+    end
+  end
 end
