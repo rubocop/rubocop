@@ -63,12 +63,17 @@ module RuboCop
 
         MSG = 'Use `%<new_method_name>s` instead of `each` to map elements into an array.'
 
+        # @!method suitable_argument_node?(node)
+        def_node_matcher :suitable_argument_node?, <<-PATTERN
+          !{splat forwarded-restarg forwarded-args (hash (forwarded-kwrestarg)) (block-pass nil?)}
+        PATTERN
+
         # @!method each_block_with_push?(node)
         def_node_matcher :each_block_with_push?, <<-PATTERN
           [
             ^({begin kwbegin block} ...)
             ({block numblock} (send !{nil? self} :each) _
-              (send (lvar _) {:<< :push :append} {send lvar begin}))
+              (send (lvar _) {:<< :push :append} #suitable_argument_node?))
           ]
         PATTERN
 
