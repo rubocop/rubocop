@@ -142,6 +142,87 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
     expect_no_corrections
   end
 
+  it 'does not register an offense when using safe navigation on the LHS with `==` on the RHS of `&&`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar && foo == 1
+    RUBY
+  end
+
+  it 'does not register an offense when using safe navigation on the LHS with `!=` on the RHS of `&&`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar && foo != 1
+    RUBY
+  end
+
+  it 'does not register an offense when using safe navigation on the LHS with `===` on the RHS of `&&`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar && foo === 1
+    RUBY
+  end
+
+  it 'does not register an offense when using safe navigation on the LHS with `==` on the RHS of `||`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar || foo == 1
+    RUBY
+  end
+
+  it 'does not register an offense when using safe navigation on the LHS with `!=` on the RHS of `||`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar || foo != 1
+    RUBY
+  end
+
+  it 'does not register an offense when using safe navigation on the LHS with `===` on the RHS of `||`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar || foo === 1
+    RUBY
+  end
+
+  it 'does not register an offense when using safe navigation on the LHS with `+` on the RHS of `&&`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar && foo + 1
+    RUBY
+  end
+
+  it 'registers an offense when using safe navigation on the LHS with `+` on the RHS of `||`' do
+    expect_offense(<<~RUBY)
+      foo&.bar || foo + 1
+                  ^^^^^^^ Use `&.` for consistency with safe navigation.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not register an offense when using safe navigation on the LHS with `-` on the RHS of `&&`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar && foo - 1
+    RUBY
+  end
+
+  it 'registers an offense when using safe navigation on the LHS with `-` on the RHS of `||`' do
+    expect_offense(<<~RUBY)
+      foo&.bar || foo - 1
+                  ^^^^^^^ Use `&.` for consistency with safe navigation.
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not register an offense when using safe navigation on the LHS with `<<` on the RHS of `&&`' do
+    expect_no_offenses(<<~RUBY)
+      foo&.bar && foo << 1
+    RUBY
+  end
+
+  it 'registers an offense when using safe navigation on the LHS with `<<` on the RHS of `||`' do
+    expect_offense(<<~RUBY)
+      foo&.bar || foo << 1
+                  ^^^^^^^^ Use `&.` for consistency with safe navigation.
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'does not register an offense assignment when using safe navigation on the left `&`' do
     expect_no_offenses(<<~RUBY)
       foo&.bar && foo.baz = 1

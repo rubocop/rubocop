@@ -94,7 +94,9 @@ module RuboCop
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def already_appropriate_call?(operand, dot_op)
-          (operand.safe_navigation? && dot_op == '&.') || (operand.dot? && dot_op == '.')
+          return true if operand.safe_navigation? && dot_op == '&.'
+
+          (operand.dot? || operand.operator_method?) && dot_op == '.'
         end
 
         def register_offense(operand, dot_operator)

@@ -1,0 +1,1 @@
+* [#13365](https://github.com/rubocop/rubocop/issues/13365): Fix false positives for `Lint/SafeNavigationConsistency` when using safe navigation on the LHS with operator method on the RHS of `&&`. ([@koic][])
