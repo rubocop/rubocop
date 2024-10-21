@@ -1185,6 +1185,36 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned as an argument to a method given to multiple assignment' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          a, b = func(c = 3)
+                      ^ Useless assignment to variable - `c`.
+          [a, b]
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          a, b = func(3)
+          [a, b]
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is assigned as an argument to a method given to multiple assignment and later used' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          a, b = func(c = 3)
+          [a, b, c]
+        end
+      RUBY
+    end
+  end
+
   context 'when variables are assigned using chained assignment and remain unreferenced' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
