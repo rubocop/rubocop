@@ -144,6 +144,110 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
         expect(assignment.meta_assignment_node.type).to eq(:for)
       end
     end
+
+    context 'when it is an argument of a send node' do
+      # The `lvasgn` in question in this `context` is the one inside a call to `my_method`.
+      let(:lvasgn_node) { ast.each_node.to_a.reverse.find(&:lvasgn_type?) }
+
+      context 'when it is += operator assignment' do
+        let(:source) do
+          <<~RUBY
+            def some_method
+              foo += my_method(bar = 1)
+            end
+          RUBY
+        end
+
+        it 'returns nil' do
+          expect(assignment.meta_assignment_node).to be_nil
+        end
+      end
+
+      context 'when it is ||= operator assignment' do
+        let(:source) do
+          <<~RUBY
+            def some_method
+              foo ||= my_method(bar = 1)
+            end
+          RUBY
+        end
+
+        it 'returns nil' do
+          expect(assignment.meta_assignment_node).to be_nil
+        end
+      end
+
+      context 'when it is &&= operator assignment' do
+        let(:source) do
+          <<~RUBY
+            def some_method
+              foo &&= my_method(bar = 1)
+            end
+          RUBY
+        end
+
+        it 'returns nil' do
+          expect(assignment.meta_assignment_node).to be_nil
+        end
+      end
+
+      context 'with multiple assignment' do
+        let(:source) do
+          <<~RUBY
+            def some_method
+              foo, baz = my_method(bar = 1)
+            end
+          RUBY
+        end
+
+        it 'returns nil' do
+          expect(assignment.meta_assignment_node).to be_nil
+        end
+      end
+
+      context 'when it is multiple assignment inside multiple assignment' do
+        let(:source) do
+          <<~RUBY
+            def some_method
+              foo, bar = my_method((baz, quux = [1, 2]))
+            end
+          RUBY
+        end
+
+        it 'returns masgn node' do
+          expect(assignment.meta_assignment_node.type).to eq(:masgn)
+        end
+      end
+
+      context 'when it is rest assignment' do
+        let(:source) do
+          <<~RUBY
+            def some_method
+              *foo = my_method(bar = 1)
+            end
+          RUBY
+        end
+
+        it 'returns nil' do
+          expect(assignment.meta_assignment_node).to be_nil
+        end
+      end
+
+      context 'when it is `for` assignment' do
+        let(:source) do
+          <<~RUBY
+            def some_method
+              for item in my_method(bar = 1)
+              end
+            end
+          RUBY
+        end
+
+        it 'returns nil' do
+          expect(assignment.meta_assignment_node).to be_nil
+        end
+      end
+    end
   end
 
   describe '#operator' do
