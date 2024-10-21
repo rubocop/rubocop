@@ -567,4 +567,30 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
       RUBY
     end
   end
+
+  context 'when inspecting an Enumerator object' do
+    it 'does not register an offense using `size == 0`' do
+      expect_no_offenses(<<~RUBY)
+        Enumerator.new(-> {0}).size == 0
+      RUBY
+    end
+
+    it 'does not register an offense with top-level ::Enumerator using `size == 0`' do
+      expect_no_offenses(<<~RUBY)
+        ::Enumerator.new(-> {0}).size == 0
+      RUBY
+    end
+
+    it 'does not register an offense using `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        Enumerator.new(-> {0}).size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense with top-level ::Enumerator using `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        ::Enumerator.new(-> {0}).size.zero?
+      RUBY
+    end
+  end
 end

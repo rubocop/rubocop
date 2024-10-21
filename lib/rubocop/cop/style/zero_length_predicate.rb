@@ -146,7 +146,7 @@ module RuboCop
         # @!method non_polymorphic_collection?(node)
         def_node_matcher :non_polymorphic_collection?, <<~PATTERN
           {(send (send (send (const {nil? cbase} :File) :stat _) ...) ...)
-           (send (send (send (const {nil? cbase} {:File :Tempfile :StringIO}) {:new :open} ...) ...) ...)}
+           (send (send (send (const {nil? cbase} {:File :Tempfile :StringIO :Enumerator}) {:new :open} ...) ...) ...)}
         PATTERN
       end
     end
