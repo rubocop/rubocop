@@ -48,7 +48,7 @@ module RuboCop
         MSG = 'Use %<style>s block forwarding.'
 
         def self.autocorrect_incompatible_with
-          [Lint::AmbiguousOperator, Style::ArgumentsForwarding]
+          [Lint::AmbiguousOperator, Style::ArgumentsForwarding, Style::ExplicitBlockArgument]
         end
 
         def on_def(node)
