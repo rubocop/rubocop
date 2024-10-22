@@ -40,6 +40,34 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and does not autocorrect when if branch has a comment' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            # Important note.
+            b
+          else
+            c
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense and does not autocorrect when else branch has a comment' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            # Important note.
+            c
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
       it 'does not register an offense when using assignment by hash key access' do
         expect_no_offenses(<<~RUBY)
           if @cache[key]
