@@ -15,6 +15,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   let(:options) { {} }
   let(:config_store) { instance_double(RuboCop::ConfigStore, for_pwd: RuboCop::Config.new) }
   let(:cache_root) { "#{Dir.pwd}/rubocop_cache" }
+  let(:cache_root_as_option) { Dir.pwd }
   let(:offenses) do
     [RuboCop::Cop::Offense.new(:warning, location, 'unused var', 'Lint/UselessAssignment')]
   end
@@ -341,13 +342,13 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       cache.save(offenses)
       cache2 = described_class.new('other.rb', team, options, config_store, cache_root)
       expect(Dir["#{cache_root}/*/*/*"].size).to eq(1)
-      cache.class.cleanup(config_store, :verbose, cache_root)
+      cache.class.cleanup(config_store, :verbose, cache_root_as_option)
       expect($stdout.string).to eq('')
 
       cache2.save(offenses)
       underscore_dir = Dir["#{cache_root}/*/*"].first
       expect(Dir["#{underscore_dir}/*"].size).to eq(2)
-      cache.class.cleanup(config_store, :verbose, cache_root)
+      cache.class.cleanup(config_store, :verbose, cache_root_as_option)
       expect(File).not_to exist(underscore_dir)
       expect($stdout.string).to eq("Removing the 2 oldest files from #{cache_root}\n")
     end

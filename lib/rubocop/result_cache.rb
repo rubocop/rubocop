@@ -28,6 +28,7 @@ module RuboCop
     def self.cleanup(config_store, verbose, cache_root = nil)
       return if inhibit_cleanup # OPTIMIZE: For faster testing
 
+      cache_root = File.join(cache_root, 'rubocop_cache') if cache_root
       cache_root ||= cache_root(config_store)
       return unless File.exist?(cache_root)
 
