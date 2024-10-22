@@ -1,0 +1,1 @@
+* [#13374](https://github.com/rubocop/rubocop/issues/13374): Return exit code 0 with `--display-only-correctable` and `--display-only-safe-correctable` when no offenses are displayed. ([@dvandersluis][])
