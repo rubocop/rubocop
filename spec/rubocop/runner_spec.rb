@@ -213,22 +213,40 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       end
 
       context 'when the extractor crashes' do
-        let(:custom_ruby_extractor) do
-          lambda do |_processed_source|
-            raise 'Oh no!'
-          end
-        end
-
         let(:source) { <<~RUBY }
           # frozen_string_literal: true
 
           def foo; end
         RUBY
 
-        it 'raises an error with the crashing extractor/file' do
-          expect do
-            runner.run([])
-          end.to raise_error(RuboCop::Error, /runner_spec\.rb failed to process .*example\.rb/)
+        shared_examples 'error handling' do
+          it 'raises an error with the crashing extractor/file' do
+            expect do
+              runner.run([])
+            end.to raise_error(RuboCop::Error, /runner_spec\.rb failed to process .*example\.rb/)
+          end
+        end
+
+        context 'and it is a Proc' do
+          let(:custom_ruby_extractor) do
+            lambda do |_processed_source|
+              raise 'Oh no!'
+            end
+          end
+
+          it_behaves_like 'error handling'
+        end
+
+        context 'and it responds to `call`' do
+          let(:custom_ruby_extractor) do
+            Class.new do
+              def self.call(_processed_source)
+                raise 'Oh no!'
+              end
+            end
+          end
+
+          it_behaves_like 'error handling'
         end
       end
     end
