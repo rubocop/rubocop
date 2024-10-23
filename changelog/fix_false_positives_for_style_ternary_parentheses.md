@@ -1,0 +1,1 @@
+* [#13378](https://github.com/rubocop/rubocop/issues/13378): Fix false positives for `Style/TernaryParentheses` when a ternary condition is a parenthesized operator method and its argument is also parenthesized. ([@koic][])

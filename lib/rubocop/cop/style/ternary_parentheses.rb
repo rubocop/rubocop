@@ -70,7 +70,7 @@ module RuboCop
           condition = node.condition
 
           return if only_closing_parenthesis_is_last_line?(condition)
-          return if condition_as_parenthesized_one_line_pattern_matching?(condition)
+          return if condition_as_parenthesized_operator_or_one_line_pattern_matching?(condition)
           return unless node.ternary? && offense?(node)
 
           message = message(node)
@@ -86,15 +86,20 @@ module RuboCop
           condition.source.split("\n").last == ')'
         end
 
-        def condition_as_parenthesized_one_line_pattern_matching?(condition)
+        def condition_as_parenthesized_operator_or_one_line_pattern_matching?(condition)
           return false unless condition.parenthesized_call?
           return false unless (first_child = condition.children.first)
+          return true if parenthesized_operator_method_call?(first_child)
 
           if target_ruby_version >= 3.0
             first_child.match_pattern_p_type?
           else
             first_child.match_pattern_type? # For Ruby 2.7's one line pattern matching AST.
           end
+        end
+
+        def parenthesized_operator_method_call?(node)
+          node.call_type? && node.loc.dot && node.operator_method? && !node.parenthesized?
         end
 
         def autocorrect(corrector, node)

@@ -514,6 +514,40 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
       expect_no_offenses('(foo..bar).include?(baz) ? a : b')
     end
 
+    it 'registers a condition as a parenthesized operator method with dot (`.>`) when the argument is parenthesized' do
+      expect_offense(<<~RUBY)
+        (foo.>(bar)) ? baz : qux
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.>(bar) ? baz : qux
+      RUBY
+    end
+
+    it 'registers a condition as a parenthesized operator method with dot (`.>`) when the argument is not parenthesized' do
+      expect_no_offenses(<<~RUBY)
+        (foo.>bar) ? baz : qux
+      RUBY
+    end
+
+    it 'registers a condition as a parenthesized operator method with safe navigation (`&.>`) when the argument is parenthesized' do
+      expect_offense(<<~RUBY)
+        (foo&.>(bar)) ? baz : qux
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Omit parentheses for ternary conditions.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo&.>(bar) ? baz : qux
+      RUBY
+    end
+
+    it 'registers a condition as a parenthesized operator method with safe navigation (`&.>`) when the argument is not parenthesized' do
+      expect_no_offenses(<<~RUBY)
+        (foo&.>bar) ? baz : qux
+      RUBY
+    end
+
     context 'with no space between the parentheses and question mark' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
