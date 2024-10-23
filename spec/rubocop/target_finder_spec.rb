@@ -144,7 +144,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
       context 'normally' do
         it 'does not exclude them' do
-          expect(found_basenames).to eq(['ruby1.rb', 'ruby2.rb', 'executable', 'ruby3.rb'])
+          expect(found_basenames).to eq(%w[ruby1.rb ruby2.rb executable ruby3.rb])
         end
       end
 
@@ -161,7 +161,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
           it 'excludes only files that are excluded on top level and does not load ' \
              'other configuration files unnecessarily' do
-            expect(found_basenames).to eq(['ruby2.rb', 'executable'])
+            expect(found_basenames).to eq(%w[ruby2.rb executable])
           end
         end
 

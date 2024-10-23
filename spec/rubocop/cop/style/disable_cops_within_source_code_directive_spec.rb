@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
   end
 
   context 'with AllowedCops' do
-    let(:cop_config) { { 'AllowedCops' => ['Metrics/CyclomaticComplexity', 'Metrics/AbcSize'] } }
+    let(:cop_config) { { 'AllowedCops' => %w[Metrics/CyclomaticComplexity Metrics/AbcSize] } }
 
     context 'when an allowed cop is disabled' do
       it 'does not register an offense' do

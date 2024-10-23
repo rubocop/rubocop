@@ -1348,10 +1348,10 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(cli.run([
                      '--autocorrect-all',
                      '--only',
-                     [
-                       'Layout/AccessModifierIndentation',
-                       'Layout/IndentationConsistency',
-                       'Layout/IndentationWidth'
+                     %w[
+                       Layout/AccessModifierIndentation
+                       Layout/IndentationConsistency
+                       Layout/IndentationWidth
                      ].join(',')
                    ])).to eq(0)
 
@@ -1382,7 +1382,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(cli.run([
                      '--autocorrect-all',
                      '--only',
-                     ['Layout/IndentationConsistency', 'Layout/IndentationWidth'].join(',')
+                     %w[Layout/IndentationConsistency Layout/IndentationWidth].join(',')
                    ])).to eq(0)
 
     corrected = <<~RUBY
@@ -2622,11 +2622,11 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       [
         '--autocorrect-all',
         '--only',
-        [
-          'Style/TrailingCommaInArrayLiteral',
-          'Style/TrailingCommaInHashLiteral',
-          'Layout/MultilineArrayBraceLayout',
-          'Layout/MultilineHashBraceLayout'
+        %w[
+          Style/TrailingCommaInArrayLiteral
+          Style/TrailingCommaInHashLiteral
+          Layout/MultilineArrayBraceLayout
+          Layout/MultilineHashBraceLayout
         ].join(',')
       ]
     )
