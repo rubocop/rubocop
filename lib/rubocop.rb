@@ -11,6 +11,7 @@ require 'rainbow'
 
 require 'regexp_parser'
 require 'set'
+require 'stringio'
 require 'unicode/display_width'
 
 # we have to require RuboCop's version, before rubocop-ast's

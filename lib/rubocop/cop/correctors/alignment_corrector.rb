@@ -47,7 +47,7 @@ module RuboCop
           if column_delta.positive? && range.resize(1).source != "\n"
             corrector.insert_before(range, ' ' * column_delta)
           elsif /\A[ \t]+\z/.match?(range.source)
-            remove(range, corrector)
+            corrector.remove(range)
           end
         end
 
@@ -94,17 +94,6 @@ module RuboCop
           else
             range_between(line_begin_pos - column_delta.abs, line_begin_pos)
           end
-        end
-
-        def remove(range, corrector)
-          original_stderr = $stderr
-          $stderr = StringIO.new # Avoid error messages on console
-          corrector.remove(range)
-        rescue RuntimeError
-          range = range_between(range.begin_pos + 1, range.end_pos + 1)
-          retry if /^ +$/.match?(range.source)
-        ensure
-          $stderr = original_stderr
         end
 
         def each_line(expr)
