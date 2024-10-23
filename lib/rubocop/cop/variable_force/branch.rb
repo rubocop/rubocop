@@ -6,7 +6,7 @@ module RuboCop
       # Namespace for branch classes for each control structure.
       module Branch
         def self.of(target_node, scope: nil)
-          ([target_node] + target_node.ancestors).each do |node|
+          target_node.each_ancestor(include_self: true) do |node|
             return nil unless node.parent
             return nil unless scope.include?(node)
 
