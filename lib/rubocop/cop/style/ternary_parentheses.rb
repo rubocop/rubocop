@@ -171,9 +171,7 @@ module RuboCop
         end
 
         def unsafe_autocorrect?(condition)
-          condition.children.any? do |child|
-            unparenthesized_method_call?(child) || below_ternary_precedence?(child)
-          end
+          condition.children.any? { |child| below_ternary_precedence?(child) }
         end
 
         def unparenthesized_method_call?(child)
@@ -192,7 +190,7 @@ module RuboCop
         # @!method method_name(node)
         def_node_matcher :method_name, <<~PATTERN
           {($:defined? _ ...)
-           (send {_ nil?} $_ _ ...)}
+           (call {_ nil?} $_ _ ...)}
         PATTERN
 
         def correct_parenthesized(corrector, condition)
@@ -203,15 +201,38 @@ module RuboCop
           # If we remove the parentheses, we need to add a space or we'll
           # generate invalid code.
           corrector.insert_after(condition.loc.end, ' ') unless whitespace_after?(condition)
+
+          if (send_node = condition.child_nodes.last) && node_args_need_parens?(send_node)
+            parenthesize_condition_arguments(corrector, send_node)
+          end
         end
 
         def correct_unparenthesized(corrector, condition)
           corrector.wrap(condition, '(', ')')
         end
 
+        def parenthesize_condition_arguments(corrector, send_node)
+          range_start = send_node.defined_type? ? send_node.loc.keyword : send_node.loc.selector
+          opening_range = range_start.end.join(send_node.first_argument.source_range.begin)
+
+          corrector.replace(opening_range, '(')
+          corrector.insert_after(send_node.last_argument, ')')
+        end
+
         def whitespace_after?(node)
           last_token = processed_source.last_token_of(node)
           last_token.space_after?
+        end
+
+        def node_args_need_parens?(send_node)
+          return false unless node_with_args?(send_node)
+          return false if send_node.arguments.none? || send_node.parenthesized?
+
+          send_node.dot? || send_node.safe_navigation? || unparenthesized_method_call?(send_node)
+        end
+
+        def node_with_args?(node)
+          node.call_type? || node.defined_type?
         end
       end
     end
