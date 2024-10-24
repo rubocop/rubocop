@@ -2457,6 +2457,11 @@ Lint/UnderscorePrefixedVariableName:
   VersionAdded: '0.21'
   AllowKeywordBlockArguments: false
 
+Lint/UnescapedBracketInRegexp:
+  Description: 'Checks for unescaped literal `[` in Regexp.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UnexpectedBlockArity:
   Description: 'Looks for blocks that have fewer arguments that the calling method expects.'
   Enabled: pending
