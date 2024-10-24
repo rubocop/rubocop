@@ -74,7 +74,7 @@ module RuboCop
           def parent
             return @parent if instance_variable_defined?(:@parent)
 
-            @branch = Branch.of(control_node, scope: scope)
+            @parent = Branch.of(control_node, scope: scope)
           end
 
           def each_ancestor(include_self: false, &block)
