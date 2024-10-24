@@ -2458,7 +2458,7 @@ Lint/UnderscorePrefixedVariableName:
   AllowKeywordBlockArguments: false
 
 Lint/UnescapedBracketInRegexp:
-  Description: 'Checks for unescaped literal `[` in Regexp.'
+  Description: 'Checks for unescaped literal `]` in Regexp.'
   Enabled: pending
   VersionAdded: '<<next>>'
 

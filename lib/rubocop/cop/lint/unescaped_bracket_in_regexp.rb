@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Lint
       # Checks for Regexpes (both literals and via `Regexp.new` / `Regexp.compile`)
-      # that contain unescaped `[` characters.
+      # that contain unescaped `]` characters.
       #
       # It emulates the following Ruby warning:
       #
