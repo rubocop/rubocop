@@ -29,7 +29,11 @@ module RuboCop
         end
 
         def assign(node)
-          @assignments << Assignment.new(node, self)
+          assignment = Assignment.new(node, self)
+
+          @assignments.last&.reassigned! unless captured_by_block?
+
+          @assignments << assignment
         end
 
         def referenced?

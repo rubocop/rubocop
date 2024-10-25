@@ -9,9 +9,10 @@ module RuboCop
 
         MULTIPLE_LEFT_HAND_SIDE_TYPE = :mlhs
 
-        attr_reader :node, :variable, :referenced, :references
+        attr_reader :node, :variable, :referenced, :references, :reassigned
 
         alias referenced? referenced
+        alias reassigned? reassigned
 
         def initialize(node, variable)
           unless VARIABLE_ASSIGNMENT_TYPES.include?(node.type)
@@ -24,6 +25,7 @@ module RuboCop
           @variable = variable
           @referenced = false
           @references = []
+          @reassigned = false
         end
 
         def name
@@ -39,8 +41,14 @@ module RuboCop
           @referenced = true
         end
 
+        def reassigned!
+          return if referenced?
+
+          @reassigned = true
+        end
+
         def used?
-          @variable.captured_by_block? || @referenced
+          (!reassigned? && @variable.captured_by_block?) || @referenced
         end
 
         def regexp_named_capture?

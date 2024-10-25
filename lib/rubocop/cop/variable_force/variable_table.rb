@@ -61,8 +61,8 @@ module RuboCop
                   "at #{node.source_range}, #{node.inspect}"
           end
 
-          variable.assign(node)
           mark_variable_as_captured_by_block_if_so(variable)
+          variable.assign(node)
         end
 
         def reference_variable(name, node)
@@ -87,8 +87,8 @@ module RuboCop
           # So just skip.
           return unless variable
 
-          variable.reference!(node)
           mark_variable_as_captured_by_block_if_so(variable)
+          variable.reference!(node)
         end
 
         def find_variable(name)
