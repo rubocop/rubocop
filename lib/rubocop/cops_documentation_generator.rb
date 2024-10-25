@@ -36,13 +36,14 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   # This will insert the string returned from the lambda _after_ the section from RuboCop itself.
   # See `CopsDocumentationGenerator::STRUCTURE` for available sections.
   #
-  def initialize(departments: [], extra_info: {})
+  def initialize(departments: [], extra_info: {}, base_dir: Dir.pwd)
     @departments = departments.map(&:to_sym).sort!
     @extra_info = extra_info
     @cops = RuboCop::Cop::Registry.global
     @config = RuboCop::ConfigLoader.default_configuration
-    @docs_path = "#{Dir.pwd}/docs/modules/ROOT/pages/"
-    FileUtils.mkdir_p(@docs_path)
+    @base_dir = base_dir
+    @docs_path = "#{base_dir}/docs/modules/ROOT"
+    FileUtils.mkdir_p("#{@docs_path}/pages")
   end
 
   def call
@@ -158,8 +159,8 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   def example_header(title, cop)
-    content = "[##{to_anchor(title)}-#{to_anchor(cop.cop_name)}]\n"
-    content << +"==== #{title}\n"
+    content = +"[##{to_anchor(title)}-#{to_anchor(cop.cop_name)}]\n"
+    content << "==== #{title}\n"
     content << "\n"
     content
   end
@@ -247,7 +248,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       else
         wrap_backtick(val.nil? ? '<none>' : val)
       end
-    value.gsub("#{Dir.pwd}/", '').rstrip
+    value.gsub("#{@base_dir}/", '').rstrip
   end
 
   def wrap_backtick(value)
@@ -276,7 +277,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     return '' unless department == :Layout
 
     filename = "#{department_to_basename(department)}_footer.adoc"
-    file = "#{Dir.pwd}/docs/modules/ROOT/partials/#{filename}"
+    file = "#{docs_path}/partials/#{filename}"
     return '' unless File.exist?(file)
 
     "\ninclude::../partials/#{filename}[]\n"
@@ -296,7 +297,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     HEADER
     selected_cops.each { |cop| content << print_cop_with_doc(cop) }
     content << footer_for_department(department)
-    file_name = "#{docs_path}#{department_to_basename(department)}.adoc"
+    file_name = "#{docs_path}/pages/#{department_to_basename(department)}.adoc"
     File.open(file_name, 'w') do |file|
       puts "* generated #{file_name}"
       file.write("#{content.strip}\n")
@@ -345,7 +346,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   def print_table_of_contents
-    path = "#{docs_path}/cops.adoc"
+    path = "#{docs_path}/pages/cops.adoc"
 
     File.write(path, table_contents) and return unless File.exist?(path)
 
