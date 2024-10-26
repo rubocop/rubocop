@@ -127,6 +127,23 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
           expect(cache.load[0].location).to eq(no_location)
         end
       end
+
+      context 'a global Lint/Syntax offense, caused by a parser error' do
+        before do
+          create_file('example.rb', ['# encoding: unknown'])
+        end
+
+        let(:no_location) { RuboCop::Cop::Offense::NO_LOCATION }
+        let(:global_offense) do
+          RuboCop::Cop::Offense.new(:warning, no_location, 'empty file', 'Lint/Syntax',
+                                    :unsupported)
+        end
+
+        it 'serializes the range correctly' do
+          cache.save([global_offense])
+          expect(cache.load[0].location).to eq(no_location)
+        end
+      end
     end
 
     context 'when no option is given' do

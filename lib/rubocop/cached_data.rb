@@ -45,21 +45,29 @@ module RuboCop
 
     # Restore an offense object loaded from a JSON file.
     def deserialize_offenses(offenses)
-      source_buffer = Parser::Source::Buffer.new(@filename)
-      source_buffer.source = File.read(@filename, encoding: Encoding::UTF_8)
       offenses.map! do |o|
-        location = location_from_source_buffer(o, source_buffer)
+        location = location_from_source_buffer(o)
         Cop::Offense.new(o['severity'], location, o['message'], o['cop_name'], o['status'].to_sym)
       end
     end
 
-    def location_from_source_buffer(offense, source_buffer)
+    def location_from_source_buffer(offense)
       begin_pos = offense['location']['begin_pos']
       end_pos = offense['location']['end_pos']
       if begin_pos.zero? && end_pos.zero?
         Cop::Offense::NO_LOCATION
       else
         Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
+      end
+    end
+
+    # Delay creation until needed. Some type of offenses will have no buffer associated with them
+    # and be global only. For these, trying to create the buffer will likely fail, for example
+    # because of unknown encoding comments.
+    def source_buffer
+      @source_buffer ||= begin
+        source = File.read(@filename, encoding: Encoding::UTF_8)
+        Parser::Source::Buffer.new(@filename, source: source)
       end
     end
   end
