@@ -190,6 +190,30 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     RUBY
   end
 
+  it 'registers an offense when use file existence checks `unless` by postfix before creating file while Dir.mkdir has 2 arguments' do
+    expect_offense(<<~RUBY)
+      Dir.mkdir(path, 0o0755) unless Dir.exist?(path)
+                              ^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `Dir.exist?`.
+      ^^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      FileUtils.mkdir_p(path, mode: 0o0755)
+    RUBY
+  end
+
+  it 'registers an offense when use file existence checks `unless` by postfix before creating file while Dir.mkdir has an argument' do
+    expect_offense(<<~RUBY)
+      Dir.mkdir(path) unless Dir.exist?(path)
+                      ^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `Dir.exist?`.
+      ^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.mkdir_p`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      FileUtils.mkdir_p(path)
+    RUBY
+  end
+
   it 'registers an offense when use file existence checks `if` by postfix before removing file' do
     expect_offense(<<~RUBY)
       FileUtils.remove(path) if FileTest.exist?(path)

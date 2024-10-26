@@ -134,6 +134,7 @@ module RuboCop
 
           corrector.replace(node.child_nodes.first.loc.name, 'FileUtils')
           corrector.replace(node.loc.selector, replacement_method(node))
+          corrector.insert_before(node.last_argument, 'mode: ') if require_mode_keyword?(node)
         end
 
         def replacement_method(node)
@@ -150,6 +151,12 @@ module RuboCop
 
         def force_method?(node)
           force_method_name?(node) || force_option?(node)
+        end
+
+        def require_mode_keyword?(node)
+          return false unless node.receiver.const_name == 'Dir'
+
+          replacement_method(node) == 'mkdir_p' && node.arguments.length == 2
         end
 
         def force_option?(node)

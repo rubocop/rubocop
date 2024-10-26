@@ -1,0 +1,1 @@
+* [#13325](https://github.com/rubocop/rubocop/pull/13325): Fix an incorrect autocorrect for `Lint/NonAtomicFileOperation` when using a postfix `unless` for file existence checks before creating a file, in cases with `Dir.mkdir`. ([@kotaro0522][])
