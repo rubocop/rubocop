@@ -1,0 +1,1 @@
+* [#13387](https://github.com/rubocop/rubocop/issues/13387): Fix false positives in `Style/RedundantParentheses` when parentheses are used around method chain with `do`...`end` block in keyword argument. ([@koic][])
