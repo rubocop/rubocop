@@ -94,6 +94,16 @@ module RuboCop
       end
 
       def substitute_escaped_delimiters(content, delimiters)
+        if delimiters.first != delimiters.last
+          # With different delimiters (eg. `[]`, `()`), if there are the same
+          # number of each, escaping is not necessary
+          delimiter_counts = delimiters.each_with_object({}) do |delimiter, counts|
+            counts[delimiter] = content.count(delimiter)
+          end
+
+          return content if delimiter_counts[delimiters.first] == delimiter_counts[delimiters.last]
+        end
+
         delimiters.each { |delim| content.gsub!(delim, "\\#{delim}") }
       end
 

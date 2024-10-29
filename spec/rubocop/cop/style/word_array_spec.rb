@@ -659,6 +659,17 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
           %w[) \] ( \[]
         RUBY
       end
+
+      it 'autocorrects balanced pairs of delimiters without excessive escaping' do
+        expect_offense(<<~RUBY)
+          ['a', 'b[]', 'c[][]']
+          ^^^^^^^^^^^^^^^^^^^^^ Use `%w` or `%W` for an array of words.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          %w[a b[] c[][]]
+        RUBY
+      end
     end
   end
 

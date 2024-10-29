@@ -260,6 +260,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
           biz]
         RUBY
       end
+
+      it 'autocorrects balanced pairs of delimiters without excessive escaping' do
+        expect_offense(<<~RUBY)
+          [:a, :'b[]', :'c[][]']
+          ^^^^^^^^^^^^^^^^^^^^^^ Use `%i` or `%I` for an array of symbols.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          %i[a b[] c[][]]
+        RUBY
+      end
     end
   end
 
