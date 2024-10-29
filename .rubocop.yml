@@ -107,6 +107,9 @@ Naming/InclusiveLanguage:
     ' a offense':
       Suggestions:
         - an offense
+    ' and offense':
+      Suggestions:
+        - ' an offense'
     auto-correct:
       Suggestions:
         - autocorrect

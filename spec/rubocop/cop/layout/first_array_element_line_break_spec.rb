@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak, :config do
   end
 
   context 'array nested in a method call' do
-    it 'registers an corrects the offense' do
+    it 'registers and corrects the offense' do
       expect_offense(<<~RUBY)
         method([:foo,
                 ^^^^ Add a line break before the first element of a multi-line array.

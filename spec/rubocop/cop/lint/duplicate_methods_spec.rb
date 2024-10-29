@@ -693,7 +693,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
-  it 'properly registers and offense when deeply nested' do
+  it 'properly registers an offense when deeply nested' do
     expect_offense(<<~RUBY, 'test.rb')
       module A
         module B
