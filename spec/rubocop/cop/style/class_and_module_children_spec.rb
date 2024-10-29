@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
-    it 'registers and offense for deeply nested children' do
+    it 'registers an offense for deeply nested children' do
       expect_offense(<<~RUBY)
         class Foo
               ^^^ Use compact module/class definition instead of nested style.

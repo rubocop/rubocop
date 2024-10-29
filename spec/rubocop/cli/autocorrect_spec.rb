@@ -2132,7 +2132,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
-  it 'corrects `Lint/AmbiguousRange` and offenses and accepts Style/RedundantParentheses' do
+  it 'corrects `Lint/AmbiguousRange` offenses and accepts Style/RedundantParentheses' do
     create_file('example.rb', <<~RUBY)
       x...(y || z)
     RUBY
@@ -2144,7 +2144,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
-  it 'corrects Lint/ParenthesesAsGroupedExpression and offenses and ' \
+  it 'corrects Lint/ParenthesesAsGroupedExpression offenses and ' \
      'accepts Style/RedundantParentheses' do
     create_file('example.rb', <<~RUBY)
       do_something (argument)
@@ -2184,7 +2184,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     special_for_inner_method_call
     special_for_inner_method_call_in_parentheses
   ].each do |style|
-    it 'does not crash `Layout/ArgumentAlignment` and offenses and accepts `Layout/FirstArgumentIndentation` ' \
+    it 'does not crash `Layout/ArgumentAlignment` and accepts `Layout/FirstArgumentIndentation` ' \
        'when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` ' \
        "and `EnforcedStyle: #{style}` of `Layout/FirstArgumentIndentation`" do
       create_file('example.rb', <<~RUBY)
@@ -2550,7 +2550,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
-  it 'does not crash Lint/SafeNavigationWithEmpty and offenses and accepts Style/SafeNavigation ' \
+  it 'does not crash Lint/SafeNavigationWithEmpty and accepts Style/SafeNavigation ' \
      'when checking `foo&.empty?` in a conditional' do
     create_file('example.rb', <<~RUBY)
       do_something if ENV['VERSION'] && ENV['VERSION'].empty?
