@@ -3553,6 +3553,11 @@ Style/ColonMethodDefinition:
   Enabled: true
   VersionAdded: '0.52'
 
+Style/CombinableDefined:
+  Description: 'Checks successive `defined?` calls that can be combined into a single call.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/CombinableLoops:
   Description: >-
                   Checks for places where multiple consecutive loops over the same data
