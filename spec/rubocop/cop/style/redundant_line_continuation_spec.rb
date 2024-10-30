@@ -707,4 +707,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
         baz)
     RUBY
   end
+
+  it 'registers an offense when there is a line continuation at the EOF' do
+    expect_offense(<<~'RUBY')
+      foo \
+          ^ Redundant line continuation.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo#{trailing_whitespace}
+    RUBY
+  end
 end

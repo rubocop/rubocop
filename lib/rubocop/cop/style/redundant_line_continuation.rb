@@ -69,6 +69,8 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant line continuation.'
+        LINE_CONTINUATION = "\\\n"
+        LINE_CONTINUATION_PATTERN = /(\\\n)/.freeze
         ALLOWED_STRING_TOKENS = %i[tSTRING tSTRING_CONTENT].freeze
         ARGUMENT_TYPES = %i[
           kFALSE kNIL kSELF kTRUE tCONSTANT tCVAR tFLOAT tGVAR tIDENTIFIER tINTEGER tIVAR
@@ -79,7 +81,7 @@ module RuboCop
         def on_new_investigation
           return unless processed_source.ast
 
-          each_match_range(processed_source.ast.source_range, /(\\\n)/) do |range|
+          each_match_range(processed_source.ast.source_range, LINE_CONTINUATION_PATTERN) do |range|
             next if require_line_continuation?(range)
             next unless redundant_line_continuation?(range)
 
@@ -87,6 +89,8 @@ module RuboCop
               corrector.remove_leading(range, 1)
             end
           end
+
+          inspect_eof_line_continuation
         end
 
         private
@@ -130,6 +134,17 @@ module RuboCop
             source = node.source
           end
           parse(source.gsub("\\\n", "\n")).valid_syntax?
+        end
+
+        def inspect_eof_line_continuation
+          return unless processed_source.raw_source.end_with?(LINE_CONTINUATION)
+
+          rindex = processed_source.raw_source.rindex(LINE_CONTINUATION)
+          line_continuation_range = range_between(rindex, rindex + 1)
+
+          add_offense(line_continuation_range) do |corrector|
+            corrector.remove_trailing(line_continuation_range, 1)
+          end
         end
 
         def inside_string_literal?(range, token)
