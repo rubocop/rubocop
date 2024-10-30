@@ -43,11 +43,10 @@ module RuboCop
       # @!attribute [r] cop_name
       #
       # @return [String]
-      #   a cop class name without department.
-      #   i.e. type of the violation.
+      #   the cop name as a String for which this offense is for.
       #
       # @example
-      #   'LineLength'
+      #   'Layout/LineLength'
       attr_reader :cop_name
 
       # @api private
