@@ -332,6 +332,54 @@ alias_method :bar, :foo
 
 * https://rubystyle.guide#alias-method-lexically
 
+[#styleambiguousendlessmethoddefinition]
+== Style/AmbiguousEndlessMethodDefinition
+
+NOTE: Required Ruby version: 3.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.68
+| -
+|===
+
+Looks for endless methods inside operations of lower precedence (`and`, `or`, and
+modifier forms of `if`, `unless`, `while`, `until`) that are ambiguous due to
+lack of parentheses. This may lead to unexpected behavior as the code may appear
+to use these keywords as part of the method but in fact they modify
+the method definition itself.
+
+In these cases, using a normal method definition is more clear.
+
+[#examples-styleambiguousendlessmethoddefinition]
+=== Examples
+
+[source,ruby]
+----
+# bad
+def foo = true if bar
+
+# good - using a non-endless method is more explicit
+def foo
+  true
+end if bar
+
+# ok - method body is explicit
+def foo = (true if bar)
+
+# ok - method definition is explicit
+(def foo = true) if bar
+----
+
+[#references-styleambiguousendlessmethoddefinition]
+=== References
+
+* https://rubystyle.guide#ambiguous-endless-method-defintions
+
 [#styleandor]
 == Style/AndOr
 
@@ -1084,6 +1132,58 @@ class Foo
   attr_accessor :bar
 end
 ----
+
+[#stylebitwisepredicate]
+== Style/BitwisePredicate
+
+NOTE: Required Ruby version: 2.5
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Always (Unsafe)
+| 1.68
+| -
+|===
+
+Prefer bitwise predicate methods over direct comparison operations.
+
+[#safety-stylebitwisepredicate]
+=== Safety
+
+This cop is unsafe, as it can produce false positives if the receiver
+is not an `Integer` object.
+
+[#examples-stylebitwisepredicate]
+=== Examples
+
+[source,ruby]
+----
+# bad - checks any set bits
+(variable & flags).positive?
+
+# good
+variable.anybits?(flags)
+
+# bad - checks all set bits
+(variable & flags) == flags
+
+# good
+variable.allbits?(flags)
+
+# bad - checks no set bits
+(variable & flags).zero?
+
+# good
+variable.nobits?(flags)
+----
+
+[#references-stylebitwisepredicate]
+=== References
+
+* https://rubystyle.guide#bitwise-predicate-methods
 
 [#styleblockcomments]
 == Style/BlockComments
@@ -2257,6 +2357,43 @@ end
 === References
 
 * https://rubystyle.guide#colon-method-definition
+
+[#stylecombinabledefined]
+== Style/CombinableDefined
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.68
+| -
+|===
+
+Checks for multiple `defined?` calls joined by `&&` that can be combined
+into a single `defined?`.
+
+When checking that a nested constant or chained method is defined, it is
+not necessary to check each ancestor or component of the chain.
+
+[#examples-stylecombinabledefined]
+=== Examples
+
+[source,ruby]
+----
+# bad
+defined?(Foo) && defined?(Foo::Bar) && defined?(Foo::Bar::Baz)
+
+# good
+defined?(Foo::Bar::Baz)
+
+# bad
+defined?(foo) && defined?(foo.bar) && defined?(foo.bar.baz)
+
+# good
+defined?(foo.bar.baz)
+----
 
 [#stylecombinableloops]
 == Style/CombinableLoops
@@ -7328,6 +7465,44 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`, `+**/*.gemspec+`
 | Array
 |===
+
+[#stylekeywordargumentsmerging]
+== Style/KeywordArgumentsMerging
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.68
+| -
+|===
+
+When passing an existing hash as keyword arguments, provide additional arguments
+directly rather than using `merge`.
+
+Providing arguments directly is more performant, than using `merge`, and
+also leads to a shorter and simpler code.
+
+[#examples-stylekeywordargumentsmerging]
+=== Examples
+
+[source,ruby]
+----
+# bad
+some_method(**opts.merge(foo: true))
+some_method(**opts.merge(other_opts))
+
+# good
+some_method(**opts, foo: true)
+some_method(**opts, **other_opts)
+----
+
+[#references-stylekeywordargumentsmerging]
+=== References
+
+* https://rubystyle.guide#merging-keyword-arguments
 
 [#stylekeywordparametersorder]
 == Style/KeywordParametersOrder
@@ -14240,6 +14415,11 @@ The default for `MaxChainLength` is `2`.
 We have limited the cop to not register an offense for method chains
 that exceed this option's value.
 
+NOTE: This cop will recognize offenses but not autocorrect code when the
+right hand side (RHS) of the `&&` statement is an `||` statement
+(eg. `foo && (foo.bar? || foo.baz?)`). It can be corrected
+manually by removing the `foo &&` and adding `&.` to each `foo` on the RHS.
+
 [#safety-stylesafenavigation]
 === Safety
 
@@ -14326,6 +14506,63 @@ foo.bar > 2 if foo
 | `2`
 | Integer
 |===
+
+[#stylesafenavigationchainlength]
+== Style/SafeNavigationChainLength
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.68
+| -
+|===
+
+Enforces safe navigation chains length to not exceed the configured maximum.
+The longer the chain is, the harder it becomes to track what on it could be
+returning `nil`.
+
+There is a potential interplay with `Style/SafeNavigation` - if both are enabled
+and their settings are "incompatible", one of the cops will complain about what
+the other proposes.
+
+E.g. if `Style/SafeNavigation` is configured with `MaxChainLength: 2` (default)
+and this cop is configured with `Max: 1`, then for `foo.bar.baz if foo` the former
+will suggest `foo&.bar&.baz`, which is an offense for the latter.
+
+[#examples-stylesafenavigationchainlength]
+=== Examples
+
+[#max_-2-_default_-stylesafenavigationchainlength]
+==== Max: 2 (default)
+
+[source,ruby]
+----
+# bad
+user&.address&.zip&.upcase
+
+# good
+user&.address&.zip
+user.address.zip if user
+----
+
+[#configurable-attributes-stylesafenavigationchainlength]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Max
+| `2`
+| Integer
+|===
+
+[#references-stylesafenavigationchainlength]
+=== References
+
+* https://rubystyle.guide#safe-navigation
 
 [#stylesample]
 == Style/Sample

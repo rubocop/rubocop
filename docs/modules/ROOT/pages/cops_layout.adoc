@@ -4452,6 +4452,33 @@ attr_reader :name #: String
 attr_reader :age  #: Integer?
 ----
 
+[#allowsteepannotation_-false-_default_-layoutleadingcommentspace]
+==== AllowSteepAnnotation: false (default)
+
+[source,ruby]
+----
+# bad
+[1, 2, 3].each_with_object([]) do |n, list| #$ Array[Integer]
+  list << n
+end
+
+name = 'John'      #: String
+----
+
+[#allowsteepannotation_-true-layoutleadingcommentspace]
+==== AllowSteepAnnotation: true
+
+[source,ruby]
+----
+# good
+
+[1, 2, 3].each_with_object([]) do |n, list| #$ Array[Integer]
+  list << n
+end
+
+name = 'John'      #: String
+----
+
 [#configurable-attributes-layoutleadingcommentspace]
 === Configurable attributes
 
@@ -4467,6 +4494,10 @@ attr_reader :age  #: Integer?
 | Boolean
 
 | AllowRBSInlineAnnotation
+| `false`
+| Boolean
+
+| AllowSteepAnnotation
 | `false`
 | Boolean
 |===

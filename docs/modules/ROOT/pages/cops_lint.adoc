@@ -1183,6 +1183,9 @@ the above basic literal values.
 With `IgnoreConstantBranches: true`, branches are not registered
 as offenses if they return a constant value.
 
+With `IgnoreDuplicateElseBranch: true`, in conditionals with multiple branches,
+duplicate 'else' branches are not registered as offenses.
+
 [#examples-lintduplicatebranch]
 === Examples
 
@@ -1266,6 +1269,21 @@ else MEDIUM_SIZE
 end
 ----
 
+[#ignoreduplicateelsebranch_-true-lintduplicatebranch]
+==== IgnoreDuplicateElseBranch: true
+
+[source,ruby]
+----
+# good
+if foo
+  do_foo
+elsif bar
+  do_bar
+else
+  do_foo
+end
+----
+
 [#configurable-attributes-lintduplicatebranch]
 === Configurable attributes
 
@@ -1277,6 +1295,10 @@ end
 | Boolean
 
 | IgnoreConstantBranches
+| `false`
+| Boolean
+
+| IgnoreDuplicateElseBranch
 | `false`
 | Boolean
 |===
@@ -6628,6 +6650,48 @@ end
 | `false`
 | Boolean
 |===
+
+[#lintunescapedbracketinregexp]
+== Lint/UnescapedBracketInRegexp
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.68
+| -
+|===
+
+Checks for Regexpes (both literals and via `Regexp.new` / `Regexp.compile`)
+that contain unescaped `]` characters.
+
+It emulates the following Ruby warning:
+
+[source,ruby]
+----
+$ ruby -e '/abc]123/'
+-e:1: warning: regular expression has ']' without escape: /abc]123/
+----
+
+[#examples-lintunescapedbracketinregexp]
+=== Examples
+
+[source,ruby]
+----
+# bad
+/abc]123/
+%r{abc]123}
+Regexp.new('abc]123')
+Regexp.compile('abc]123')
+
+# good
+/abc\]123/
+%r{abc\]123}
+Regexp.new('abc\]123')
+Regexp.compile('abc\]123')
+----
 
 [#lintunexpectedblockarity]
 == Lint/UnexpectedBlockArity

@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.68.0 (2024-10-31)
+
 ### New features
 
 * [#13050](https://github.com/rubocop/rubocop/issues/13050): Add new `Style/BitwisePredicate` cop. ([@koic][])

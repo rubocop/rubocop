@@ -2460,7 +2460,7 @@ Lint/UnderscorePrefixedVariableName:
 Lint/UnescapedBracketInRegexp:
   Description: 'Checks for unescaped literal `]` in Regexp.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.68'
 
 Lint/UnexpectedBlockArity:
   Description: 'Looks for blocks that have fewer arguments that the calling method expects.'
@@ -3154,7 +3154,7 @@ Style/AmbiguousEndlessMethodDefinition:
   Description: 'Checks for endless methods inside operators of lower precedence.'
   StyleGuide: '#ambiguous-endless-method-defintions'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.68'
 
 Style/AndOr:
   Description: 'Use &&/|| instead of and/or.'
@@ -3268,7 +3268,7 @@ Style/BitwisePredicate:
   StyleGuide: '#bitwise-predicate-methods'
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.68'
 
 Style/BlockComments:
   Description: 'Do not use block comments.'
@@ -3556,7 +3556,7 @@ Style/ColonMethodDefinition:
 Style/CombinableDefined:
   Description: 'Checks successive `defined?` calls that can be combined into a single call.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.68'
 
 Style/CombinableLoops:
   Description: >-
@@ -4287,7 +4287,7 @@ Style/KeywordArgumentsMerging:
                  directly rather than using `merge`.
   StyleGuide: '#merging-keyword-arguments'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.68'
 
 Style/KeywordParametersOrder:
   Description: 'Enforces that optional keyword parameters are placed at the end of the parameters list.'
@@ -5278,7 +5278,7 @@ Style/SafeNavigationChainLength:
   Description: 'Enforces safe navigation chains length to not exceed the configured maximum.'
   StyleGuide: '#safe-navigation'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.68'
   Max: 2
 
 Style/Sample:
