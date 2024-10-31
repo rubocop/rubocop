@@ -571,5 +571,67 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         end
       RUBY
     end
+
+    context 'when `NotImplementedExceptions` is configured' do
+      let(:cop_config) do
+        { 'IgnoreNotImplementedMethods' => true,
+          'NotImplementedExceptions' => ['AbstractMethodError'] }
+      end
+
+      it 'accepts a method with a single unused parameter & raises AbstractMethodError' do
+        expect_no_offenses(<<~RUBY)
+          def method(arg)
+            raise AbstractMethodError
+          end
+        RUBY
+      end
+
+      it 'accepts a method with a single unused parameter & raises AbstractMethodError, message' do
+        expect_no_offenses(<<~RUBY)
+          def method(arg)
+            raise AbstractMethodError, message
+          end
+        RUBY
+      end
+
+      it 'accepts a method with a single unused parameter & raises ::AbstractMethodError' do
+        expect_no_offenses(<<~RUBY)
+          def method(arg)
+            raise ::AbstractMethodError
+          end
+        RUBY
+      end
+
+      context 'when `NotImplementedExceptions` contains a namespaced exception class' do
+        let(:cop_config) do
+          { 'IgnoreNotImplementedMethods' => true,
+            'NotImplementedExceptions' => ['Library::AbstractMethodError'] }
+        end
+
+        it 'accepts a method with a single unused parameter & raises Library::AbstractMethodError' do
+          expect_no_offenses(<<~RUBY)
+            def method(arg)
+              raise Library::AbstractMethodError
+            end
+          RUBY
+        end
+
+        it 'accepts a method with a single unused parameter & raises Library::AbstractMethodError, message' do
+          expect_no_offenses(<<~RUBY)
+            def method(arg)
+              raise Library::AbstractMethodError, message
+            end
+          RUBY
+        end
+
+        it 'accepts a method with a single unused parameter & raises ::Library::AbstractMethodError' do
+          expect_no_offenses(<<~RUBY)
+            def method(arg)
+              raise ::Library::AbstractMethodError
+            end
+          RUBY
+        end
+      end
+    end
   end
 end
