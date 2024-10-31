@@ -23,6 +23,15 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
+      it 'accepts when argument to #{access_modifier} is multiple symbols' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            foo
+            #{access_modifier} :bar, :baz
+          end
+        RUBY
+      end
+
       it 'accepts when argument to #{access_modifier} is splat with a `%i` array literal' do
         expect_no_offenses(<<~RUBY)
           class Foo
@@ -59,6 +68,18 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           class Foo
             foo
             %{access_modifier} :bar
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense when argument to #{access_modifier} is multiple symbols' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class Foo
+            foo
+            %{access_modifier} :bar, :baz
             ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
           end
         RUBY
