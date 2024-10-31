@@ -40,6 +40,15 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           end
         RUBY
       end
+
+      it 'accepts when argument to #{access_modifier} is a splat with a method call' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            foo
+            #{access_modifier} *bar
+          end
+        RUBY
+      end
     end
 
     context 'do not allow access modifiers on symbols' do
