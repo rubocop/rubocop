@@ -25,16 +25,16 @@ module RuboCop
     # cleaning should be done relatively seldom, since there is a slight risk
     # that some other RuboCop process was just about to read the file, when
     # there's parallel execution and the cache is shared.
-    def self.cleanup(config_store, verbose, cache_root = nil)
+    def self.cleanup(config_store, verbose, cache_root_override = nil)
       return if inhibit_cleanup # OPTIMIZE: For faster testing
 
-      cache_root ||= cache_root(config_store)
-      return unless File.exist?(cache_root)
+      rubocop_cache_dir = cache_root(config_store, cache_root_override)
+      return unless File.exist?(rubocop_cache_dir)
 
-      files, dirs = Find.find(cache_root).partition { |path| File.file?(path) }
+      files, dirs = Find.find(rubocop_cache_dir).partition { |path| File.file?(path) }
       return unless requires_file_removal?(files.length, config_store)
 
-      remove_oldest_files(files, dirs, cache_root, verbose)
+      remove_oldest_files(files, dirs, rubocop_cache_dir, verbose)
     end
 
     class << self
@@ -49,11 +49,11 @@ module RuboCop
         file_count > 1 && file_count > config_store.for_pwd.for_all_cops['MaxFilesInCache']
       end
 
-      def remove_oldest_files(files, dirs, cache_root, verbose)
+      def remove_oldest_files(files, dirs, rubocop_cache_dir, verbose)
         # Add 1 to half the number of files, so that we remove the file if
         # there's only 1 left.
         remove_count = (files.length / 2) + 1
-        puts "Removing the #{remove_count} oldest files from #{cache_root}" if verbose
+        puts "Removing the #{remove_count} oldest files from #{rubocop_cache_dir}" if verbose
         sorted = files.sort_by { |path| File.mtime(path) }
         remove_files(sorted, dirs, remove_count)
       rescue Errno::ENOENT
@@ -72,9 +72,9 @@ module RuboCop
       end
     end
 
-    def self.cache_root(config_store)
+    def self.cache_root(config_store, cache_root_override = nil)
       CacheConfig.root_dir do
-        config_store.for_pwd.for_all_cops['CacheRootDirectory']
+        cache_root_override || config_store.for_pwd.for_all_cops['CacheRootDirectory']
       end
     end
 
@@ -84,12 +84,12 @@ module RuboCop
 
     attr_reader :path
 
-    def initialize(file, team, options, config_store, cache_root = nil)
-      cache_root ||= File.join(options[:cache_root], 'rubocop_cache') if options[:cache_root]
-      cache_root ||= ResultCache.cache_root(config_store)
+    def initialize(file, team, options, config_store, cache_root_override = nil)
+      cache_root_override ||= options[:cache_root] if options[:cache_root]
+      rubocop_cache_dir = ResultCache.cache_root(config_store, cache_root_override)
       @allow_symlinks_in_cache_location =
         ResultCache.allow_symlinks_in_cache_location?(config_store)
-      @path = File.join(cache_root,
+      @path = File.join(rubocop_cache_dir,
                         rubocop_checksum,
                         context_checksum(team, options),
                         file_checksum(file, config_store))
