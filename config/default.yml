@@ -2521,10 +2521,12 @@ Lint/UnusedMethodArgument:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.21'
-  VersionChanged: '1.61'
+  VersionChanged: '<<next>>'
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
   IgnoreNotImplementedMethods: true
+  NotImplementedExceptions:
+    - NotImplementedError
 
 Lint/UriEscapeUnescape:
   Description: >-

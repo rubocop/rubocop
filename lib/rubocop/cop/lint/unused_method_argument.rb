@@ -39,6 +39,8 @@ module RuboCop
       #   end
       #
       # @example IgnoreNotImplementedMethods: true (default)
+      #   # with default value of `NotImplementedExceptions: ['NotImplementedError']`
+      #
       #   # good
       #   def do_something(unused)
       #     raise NotImplementedError
@@ -46,6 +48,14 @@ module RuboCop
       #
       #   def do_something_else(unused)
       #     fail "TODO"
+      #   end
+      #
+      # @example IgnoreNotImplementedMethods: true
+      #   # with `NotImplementedExceptions: ['AbstractMethodError']`
+      #
+      #   # good
+      #   def do_something(unused)
+      #     raise AbstractMethodError
       #   end
       #
       # @example IgnoreNotImplementedMethods: false
@@ -57,14 +67,13 @@ module RuboCop
       #   def do_something_else(unused)
       #     fail "TODO"
       #   end
-      #
       class UnusedMethodArgument < Base
         include UnusedArgument
         extend AutoCorrector
 
         # @!method not_implemented?(node)
         def_node_matcher :not_implemented?, <<~PATTERN
-          {(send nil? :raise (const {nil? cbase} :NotImplementedError) ...)
+          {(send nil? :raise #allowed_exception_class? ...)
            (send nil? :fail ...)}
         PATTERN
 
@@ -114,6 +123,13 @@ module RuboCop
           end
 
           message
+        end
+
+        def allowed_exception_class?(node)
+          return false unless node.const_type?
+
+          allowed_class_names = Array(cop_config.fetch('NotImplementedExceptions', []))
+          allowed_class_names.include?(node.const_name)
         end
       end
     end
