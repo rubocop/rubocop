@@ -135,7 +135,7 @@ module RuboCop
         # @!method access_modifier_with_symbol?(node)
         def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
           (send nil? {:private :protected :public :module_function}
-            {(sym _) (splat {#percent_symbol_array? const send})}
+            {(sym _)+ (splat {#percent_symbol_array? const send})}
           )
         PATTERN
 
@@ -214,7 +214,10 @@ module RuboCop
 
         def right_siblings_same_inline_method?(node)
           node.right_siblings.any? do |sibling|
-            sibling.send_type? && sibling.method?(node.method_name) && !sibling.arguments.empty?
+            sibling.send_type? &&
+              sibling.method?(node.method_name) &&
+              !sibling.arguments.empty? &&
+              find_corresponding_def_node(sibling)
           end
         end
 
