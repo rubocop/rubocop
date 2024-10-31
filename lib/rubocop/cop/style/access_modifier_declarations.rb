@@ -70,6 +70,7 @@ module RuboCop
       #     private :bar, :baz
       #     private *%i[qux quux]
       #     private *METHOD_NAMES
+      #     private *private_methods
       #
       #   end
       #
@@ -80,6 +81,7 @@ module RuboCop
       #     private :bar, :baz
       #     private *%i[qux quux]
       #     private *METHOD_NAMES
+      #     private *private_methods
       #
       #   end
       #
@@ -133,7 +135,7 @@ module RuboCop
         # @!method access_modifier_with_symbol?(node)
         def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
           (send nil? {:private :protected :public :module_function}
-            {(sym _) (splat {#percent_symbol_array? const})}
+            {(sym _) (splat {#percent_symbol_array? const send})}
           )
         PATTERN
 
