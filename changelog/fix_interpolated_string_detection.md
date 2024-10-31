@@ -1,1 +1,0 @@
-* [#13361](https://github.com/rubocop/rubocop/issues/13361): Fix false positives for `Style/RedundantInterpolationUnfreeze` and `Style/RedundantFreeze` when strings contain interpolated global, instance, and class variables. ([@vlad-pisanov][])

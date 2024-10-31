@@ -1,1 +1,0 @@
-* [#13337](https://github.com/rubocop/rubocop/issues/13337): Fix false positives for `Style/RedundantLineContinuation` when required line continuations for `&&` is used with an assignment after a line break. ([@koic][])

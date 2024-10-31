@@ -11,6 +11,48 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#13050](https://github.com/rubocop/rubocop/issues/13050): Add new `Style/BitwisePredicate` cop. ([@koic][])
+* [#12140](https://github.com/rubocop/rubocop/issues/12140): Add new `Style/CombinableDefined` cop. ([@dvandersluis][])
+* [#12988](https://github.com/rubocop/rubocop/issues/12988): Add new `Style/AmbiguousEndlessMethodDefinition` cop. ([@dvandersluis][])
+* [#11514](https://github.com/rubocop/rubocop/issues/11514): Add new `Lint/UnescapedBracketInRegexp` cop. ([@dvandersluis][])
+* [#13360](https://github.com/rubocop/rubocop/pull/13360): Add `AllowSteepAnnotation` config option to `Layout/LeadingCommentSpace`. ([@tk0miya][])
+* [#13146](https://github.com/rubocop/rubocop/issues/13146): Add new `IgnoreDuplicateElseBranch` option to `Lint/DuplicateBranch`. ([@fatkodima][])
+* [#13171](https://github.com/rubocop/rubocop/issues/13171): Add new `Style/SafeNavigationChainLength` cop. ([@fatkodima][])
+* [#13252](https://github.com/rubocop/rubocop/pull/13252): Add new `Style/KeywordArgumentsMerging` cop. ([@fatkodima][])
+
+### Bug fixes
+
+* [#13401](https://github.com/rubocop/rubocop/pull/13401): Fix a false negative for `Style/RedundantLineContinuation` when there is a line continuation at the EOF. ([@koic][])
+* [#13368](https://github.com/rubocop/rubocop/issues/13368): Fix an incorrect autocorrect for `Naming/BlockForwarding` with `Style/ExplicitBlockArgument`. ([@koic][])
+* [#13391](https://github.com/rubocop/rubocop/pull/13391): Fix deserialization of unknown encoding offenses. ([@earlopain][])
+* [#13348](https://github.com/rubocop/rubocop/issues/13348): Ensure `Style/BlockDelimiters` autocorrection does not move other code between the block and comment. ([@dvandersluis][])
+* [#13382](https://github.com/rubocop/rubocop/pull/13382): Fix an error during error handling for custom ruby extractors when the extractor is a class. ([@earlopain][])
+* [#13309](https://github.com/rubocop/rubocop/issues/13309): Fix a false negative for `Lint/UselessAssignment` cop when there is a useless assignment followed by a block. ([@pCosta99][])
+* [#13255](https://github.com/rubocop/rubocop/pull/13255): Fix false negatives for `Style/MapIntoArray` when using non-splatted arguments. ([@vlad-pisanov][])
+* [#13356](https://github.com/rubocop/rubocop/issues/13356): Fix a false positive for `Layout/SpaceBeforeBrackets` when there is a dot before `[]=`. ([@earlopain][])
+* [#13365](https://github.com/rubocop/rubocop/issues/13365): Fix false positives for `Lint/SafeNavigationConsistency` when using safe navigation on the LHS with operator method on the RHS of `&&`. ([@koic][])
+* [#13390](https://github.com/rubocop/rubocop/issues/13390): Fix false positives for `Style/GuardClause` when using a local variable assigned in a conditional expression in a branch. ([@koic][])
+* [#13337](https://github.com/rubocop/rubocop/issues/13337): Fix false positives for `Style/RedundantLineContinuation` when required line continuations for `&&` is used with an assignment after a line break. ([@koic][])
+* [#13387](https://github.com/rubocop/rubocop/issues/13387): Fix false positives in `Style/RedundantParentheses` when parentheses are used around method chain with `do`...`end` block in keyword argument. ([@koic][])
+* [#13341](https://github.com/rubocop/rubocop/issues/13341): Fix false positives for `Lint/SafeNavigationChain` when a safe navigation operator is used with a method call as the RHS operand of `&&` for the same receiver. ([@koic][])
+* [#13324](https://github.com/rubocop/rubocop/issues/13324): Fix `--disable-uncorrectable` to not insert a comment inside a string continuation. ([@dvandersluis][])
+* [#13364](https://github.com/rubocop/rubocop/issues/13364): Fix incorrect autocorrect with `Lint/UselessAssignment` a multiple assignment or `for` contains an inner assignment. ([@dvandersluis][])
+* [#13353](https://github.com/rubocop/rubocop/issues/13353): Fix an incorrect autocorrect for `Style/BlockDelimiters` when `EnforcedStyle: semantic` is set and used with `Layout/SpaceInsideBlockBraces`. ([@koic][])
+* [#13361](https://github.com/rubocop/rubocop/issues/13361): Fix false positives for `Style/RedundantInterpolationUnfreeze` and `Style/RedundantFreeze` when strings contain interpolated global, instance, and class variables. ([@vlad-pisanov][])
+* [#13343](https://github.com/rubocop/rubocop/issues/13343): Prevent `Layout/LineLength` from breaking up a method with arguments chained onto a heredoc delimiter. ([@dvandersluis][])
+* [#13374](https://github.com/rubocop/rubocop/issues/13374): Return exit code 0 with `--display-only-correctable` and `--display-only-safe-correctable` when no offenses are displayed. ([@dvandersluis][])
+* [#13193](https://github.com/rubocop/rubocop/issues/13193): Fix false positive in `Style/MultipleComparison` when `ComparisonsThreshold` exceeds 2. ([@fatkodima][],[@vlad-pisanov][])
+* [#13325](https://github.com/rubocop/rubocop/pull/13325): Fix an incorrect autocorrect for `Lint/NonAtomicFileOperation` when using a postfix `unless` for file existence checks before creating a file, in cases with `Dir.mkdir`. ([@kotaro0522][])
+* [#13397](https://github.com/rubocop/rubocop/pull/13397): Update `PercentLiteralCorrector` to be able to write pairs of delimiters without excessive escaping. ([@dvandersluis][])
+* [#13336](https://github.com/rubocop/rubocop/issues/13336): Update `Style/SafeNavigation` to not autocorrect if the RHS of an `and` node is an `or` node. ([@dvandersluis][])
+* [#13378](https://github.com/rubocop/rubocop/issues/13378): When removing parens in `Style/TernaryParentheses` with a `send` node condition, ensure its arguments are parenthesized. ([@dvandersluis][])
+
+### Changes
+
+* [#13347](https://github.com/rubocop/rubocop/pull/13347): When running `rubocop -V`, show the analysis Ruby version of the current directory. ([@earlopain][])
+
 ## 1.67.0 (2024-10-15)
 
 ### New features
@@ -7975,3 +8017,5 @@
 [@zopolis4]: https://github.com/zopolis4
 [@tk0miya]: https://github.com/tk0miya
 [@masato-bkn]: https://github.com/masato-bkn
+[@pCosta99]: https://github.com/pCosta99
+[@kotaro0522]: https://github.com/kotaro0522
