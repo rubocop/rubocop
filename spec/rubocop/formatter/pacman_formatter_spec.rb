@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Formatter::PacmanFormatter do
       let(:character) { Rainbow(described_class::GHOST).red }
       let(:expected_progress_line) { format('..%s%s', character, described_class::PACDOT) }
 
-      it 'removes the first • and puts a ghosts' do
+      it 'removes the first • and puts ghosts' do
         step
         expect(formatter.progress_line).to eq(expected_progress_line)
       end

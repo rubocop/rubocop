@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     RUBY
   end
 
-  it 'registers an offenses for exponent operator with spaces' do
+  it 'registers an offense for exponent operator with spaces' do
     expect_offense(<<~RUBY)
       x = a * b ** 2
                 ^^ Space around operator `**` detected.
@@ -227,7 +227,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     expect_no_offenses('x = a * b**2')
   end
 
-  it 'registers an offenses for slash in rational literals with spaces' do
+  it 'registers an offense for slash in rational literals with spaces' do
     expect_offense(<<~RUBY)
       x = a * b / 42r
                 ^ Space around operator `/` detected.
@@ -245,7 +245,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     expect_no_offenses('x = a * b/42r')
   end
 
-  it 'does not register an offenses for slash in non rational literals without spaces' do
+  it 'does not register an offense for slash in non rational literals without spaces' do
     expect_no_offenses(<<~RUBY)
       x = a * b / 42
     RUBY
@@ -269,7 +269,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     let(:target_ruby_version) { 2.7 }
 
     # NOTE: It is `Layout/SpaceAroundKeyword` cop's role to detect this offense.
-    it 'does not register an offenses for one-line pattern matching syntax (`in`)' do
+    it 'does not register an offense for one-line pattern matching syntax (`in`)' do
       expect_no_offenses(<<~RUBY)
         ""in foo
       RUBY
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
   context '>= Ruby 3.0', :ruby30 do
     let(:target_ruby_version) { 3.0 }
 
-    it 'registers an offenses for one-line pattern matching syntax (`=>`)' do
+    it 'registers an offense for one-line pattern matching syntax (`=>`)' do
       expect_offense(<<~RUBY)
         ""=>foo
           ^^ Surrounding space missing for operator `=>`.
@@ -294,7 +294,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
   context 'when EnforcedStyleForExponentOperator is space' do
     let(:exponent_operator_style) { 'space' }
 
-    it 'registers an offenses for exponent operator without spaces' do
+    it 'registers an offense for exponent operator without spaces' do
       expect_offense(<<~RUBY)
         x = a * b**2
                  ^^ Surrounding space missing for operator `**`.
@@ -309,7 +309,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
   context 'when EnforcedStyleForRationalLiterals is space' do
     let(:rational_literals_style) { 'space' }
 
-    it 'registers an offenses for rational literals without spaces' do
+    it 'registers an offense for rational literals without spaces' do
       expect_offense(<<~RUBY)
         x = a * b/42r
                  ^ Surrounding space missing for operator `/`.
@@ -933,14 +933,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
-    it 'does not register an offenses match operators between `<<` and `+=`' do
+    it 'does not register an offense match operators between `<<` and `+=`' do
       expect_no_offenses(<<~RUBY)
         x  << foo
         yz += bar
       RUBY
     end
 
-    it 'does not register an offenses match operators between `+=` and `<<`' do
+    it 'does not register an offense match operators between `+=` and `<<`' do
       expect_no_offenses(<<~RUBY)
         x  += foo
         yz << bar

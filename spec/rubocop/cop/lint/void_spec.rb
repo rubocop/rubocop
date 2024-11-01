@@ -708,7 +708,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
-  it 'registers an offenses for void constant in a `#each` method' do
+  it 'registers an offense for void constant in a `#each` method' do
     expect_offense(<<~RUBY)
       array.each do |_item|
         CONST
