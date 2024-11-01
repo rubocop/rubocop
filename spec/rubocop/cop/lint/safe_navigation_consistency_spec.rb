@@ -295,11 +295,10 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationConsistency, :config do
     expect_offense(<<~RUBY)
       foo&.bar && foo&.baz || foo&.qux
                      ^^ Use `.` instead of unnecessary `&.`.
-                                 ^^ Use `.` instead of unnecessary `&.`.
     RUBY
 
     expect_correction(<<~RUBY)
-      foo&.bar && foo.baz || foo.qux
+      foo&.bar && foo.baz || foo&.qux
     RUBY
   end
 

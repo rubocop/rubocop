@@ -83,6 +83,8 @@ module RuboCop
         def find_consistent_parts(grouped_operands)
           csend_in_and, csend_in_or, send_in_and, send_in_or = most_left_indices(grouped_operands)
 
+          return if csend_in_and && csend_in_or && csend_in_and < csend_in_or
+
           if csend_in_and
             ['.', (send_in_and ? [send_in_and, csend_in_and].min : csend_in_and) + 1]
           elsif send_in_or && csend_in_or
