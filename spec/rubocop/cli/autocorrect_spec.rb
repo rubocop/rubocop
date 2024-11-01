@@ -1682,7 +1682,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
   # In this example, the autocorrection (changing "fail" to "raise")
   # creates a new problem (alignment of parameters), which is also
   # corrected automatically.
-  it 'can correct a problems and the problem it creates' do
+  it 'can correct a problem and the problem it creates' do
     create_file('example.rb', <<~RUBY)
       fail NotImplementedError,
            'Method should be overridden in child classes'

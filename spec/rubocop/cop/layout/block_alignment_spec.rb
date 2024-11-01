@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
-    it 'registers an offenses for mismatched end alignment' do
+    it 'registers an offense for mismatched end alignment' do
       expect_offense(<<~RUBY)
         variable =
           a_long_method_that_dont_fit_on_the_line do |v|

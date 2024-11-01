@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
-    context 'when a cops joining forces callback raises an error' do
+    context "when a cop's joining forces callback raises an error" do
       include_context 'mock console output'
       before do
         allow_any_instance_of(RuboCop::Cop::Lint::ShadowedArgument)

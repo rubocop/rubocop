@@ -319,7 +319,7 @@ RSpec.describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
   context 'when style is use_builtin_english_names' do
     let(:cop_config) { { 'EnforcedStyle' => 'use_builtin_english_names' } }
 
-    it 'does not register an offenses for builtin names' do
+    it 'does not register an offense for builtin names' do
       expect_no_offenses(<<~RUBY)
         puts $LOAD_PATH
         puts $LOADED_FEATURES
