@@ -181,14 +181,14 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
   end
 
   context 'built-in methods' do
-    it 'registers an offense for a irb binding call' do
+    it 'registers an offense for a `binding.irb` call' do
       expect_offense(<<~RUBY)
         binding.irb
         ^^^^^^^^^^^ Remove debugger entry point `binding.irb`.
       RUBY
     end
 
-    it 'registers an offense for a binding.irb with Kernel call' do
+    it 'registers an offense for a `Kernel.binding.irb` call' do
       expect_offense(<<~RUBY)
         Kernel.binding.irb
         ^^^^^^^^^^^^^^^^^^ Remove debugger entry point `Kernel.binding.irb`.
@@ -257,7 +257,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
       RUBY
     end
 
-    it 'does not register an offense when `p` is a array argument of method call' do
+    it 'does not register an offense when `p` is an array argument of method call' do
       expect_no_offenses(<<~RUBY)
         let(:p) { foo }
 

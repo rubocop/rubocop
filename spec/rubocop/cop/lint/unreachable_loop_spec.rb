@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
   context 'with AllowedPatterns' do
     let(:cop_config) { { 'AllowedPatterns' => [/exactly\(\d+\)\.times/] } }
 
-    context 'with a ignored method call' do
+    context 'with an ignored method call' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           exactly(2).times { raise StandardError }

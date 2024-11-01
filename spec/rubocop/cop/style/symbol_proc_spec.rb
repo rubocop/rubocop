@@ -272,7 +272,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
       RUBY
     end
 
-    it "does not register an offense when receiver is a array literal and using `#{method}` with a block" do
+    it "does not register an offense when receiver is an array literal and using `#{method}` with a block" do
       expect_no_offenses(<<~RUBY)
         [1, 2, 3].#{method} {|item| item.foo }
       RUBY
@@ -470,7 +470,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
         RUBY
       end
 
-      it "does not register an offense when receiver is a array literal and using `#{method}` with a numblock" do
+      it "does not register an offense when receiver is an array literal and using `#{method}` with a numblock" do
         expect_no_offenses(<<~RUBY)
           [1, 2, 3].#{method} { _1.foo }
         RUBY

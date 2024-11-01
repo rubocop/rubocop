@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes, :config do
       RUBY
     end
 
-    it 'does not register an offense when containing a ivar' do
+    it 'does not register an offense when containing an ivar' do
       expect_no_offenses(<<~'RUBY')
         /(?<foo>#{@var}*)/
       RUBY

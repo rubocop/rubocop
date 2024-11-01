@@ -111,7 +111,7 @@ module RuboCop
           range_between(start + begin_pos - 1, start + end_pos)
         end
 
-        # If the list of cops is comma-separated, but without a empty space after the comma,
+        # If the list of cops is comma-separated, but without an empty space after the comma,
         # we should **not** remove the prepending empty space, thus begin_pos += 1
         def range_with_comma_after(comment, start, begin_pos, end_pos)
           begin_pos += 1 if comment.source[end_pos + 1] != ' '

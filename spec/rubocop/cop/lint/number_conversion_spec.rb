@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
-    it 'when `#to_i` called on a variable on a array' do
+    it 'when `#to_i` called on a variable on an array' do
       expect_offense(<<~RUBY)
         args = [1,2,3]
         args[0].to_i

@@ -186,7 +186,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
-  it 'registers an offense when a semicolon at after a opening brace of string interpolation' do
+  it 'registers an offense when a semicolon at after an opening brace of string interpolation' do
     expect_offense(<<~'RUBY')
       "#{;foo}"
          ^ Do not use semicolons to terminate expressions.

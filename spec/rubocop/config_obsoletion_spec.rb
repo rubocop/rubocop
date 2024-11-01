@@ -391,7 +391,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
         OUTPUT
       end
 
-      it 'prints a error message' do
+      it 'prints an error message' do
         config_obsoletion.reject_obsolete!
         raise 'Expected a RuboCop::ValidationError'
       rescue RuboCop::ValidationError => e
