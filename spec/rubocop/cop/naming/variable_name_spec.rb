@@ -37,7 +37,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
         RUBY
       end
 
-      it 'does not register an offense for a instance variable name that is allowed' do
+      it 'does not register an offense for an instance variable name that is allowed' do
         expect_no_offenses(<<~RUBY)
           @#{identifier} = :foo
         RUBY
@@ -78,7 +78,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
         RUBY
       end
 
-      it 'does not register an offense for a instance variable name that matches the allowed pattern' do
+      it 'does not register an offense for an instance variable name that matches the allowed pattern' do
         expect_no_offenses(<<~RUBY)
           @#{identifier} = :foo
         RUBY

@@ -302,7 +302,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       RUBY
     end
 
-    it 'does not register an offense for a instance variable name that is allowed' do
+    it 'does not register an offense for an instance variable name that is allowed' do
       expect_no_offenses(<<~RUBY)
         @capture3 = :foo
       RUBY
@@ -360,14 +360,14 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
       RUBY
     end
 
-    it 'registers an offense for a instance variable name that does not match an allowed pattern' do
+    it 'registers an offense for an instance variable name that does not match an allowed pattern' do
       expect_offense(<<~RUBY)
         @foo_a1 = :foo
         ^^^^^^^ Use snake_case for variable numbers.
       RUBY
     end
 
-    it 'does not register an offense for a instance variable name that matches an allowed pattern' do
+    it 'does not register an offense for an instance variable name that matches an allowed pattern' do
       expect_no_offenses(<<~RUBY)
         @foo_v1 = :foo
         @foo_allow_me_a1 = :allowed

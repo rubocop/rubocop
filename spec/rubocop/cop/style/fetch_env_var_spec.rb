@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     end
   end
 
-  context 'when the node is a assigned by `||=`' do
+  context 'when the node is assigned by `||=`' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         y ||= ENV['X']
@@ -92,7 +92,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     end
   end
 
-  context 'when the node is a assigned by `&&=`' do
+  context 'when the node is assigned by `&&=`' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         y &&= ENV['X']

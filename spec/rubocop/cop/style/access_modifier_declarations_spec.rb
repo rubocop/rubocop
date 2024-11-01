@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
     context 'allow access modifiers on attrs' do
       let(:cop_config) { { 'AllowModifiersOnAttrs' => true } }
 
-      it 'accepts when argument to #{access_modifier} is a attr_*' do
+      it 'accepts when argument to #{access_modifier} is an attr_*' do
         expect_no_offenses(<<~RUBY)
           class Foo
             #{access_modifier} attr_reader :foo

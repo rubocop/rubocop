@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Style::IpAddresses, :config do
   context 'with allowed addresses' do
     let(:cop_config) { { 'AllowedAddresses' => ['a::b'] } }
 
-    it 'does not register an offense for a allowed addresses' do
+    it 'does not register an offense for an allowed address' do
       expect_no_offenses('"a::b"')
     end
 

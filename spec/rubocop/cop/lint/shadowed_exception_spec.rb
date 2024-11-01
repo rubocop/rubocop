@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
-    it 'rescue a exception without causing constant name deprecation warning' do
+    it 'rescue an exception without causing constant name deprecation warning' do
       expect do
         expect_no_offenses(<<~RUBY)
           def foo

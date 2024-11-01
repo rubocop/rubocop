@@ -182,7 +182,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     end
 
     if r != '"'
-      it 'registers an offense and corrects a escaped nested delimiter in a double quoted string' do
+      it 'registers an offense and corrects an escaped nested delimiter in a double quoted string' do
         expect_offense(<<~'RUBY', l: l, r: r)
           %{l}#{"\%{r}"}%{r}
           _{l}   ^^ Redundant escape of %{r} inside string literal.
@@ -234,19 +234,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
     end
   end
 
-  it 'does not register an offense for a regexp literal' do
+  it 'does not register an offense for a `regexp` literal' do
     expect_no_offenses('/\#/')
   end
 
-  it 'does not register an offense for a x-str literal' do
+  it 'does not register an offense for an `xstr` literal' do
     expect_no_offenses('%x{\#}')
   end
 
-  it 'does not register an offense for a __FILE__ literal' do
+  it 'does not register an offense for a `__FILE__` literal' do
     expect_no_offenses('"__FILE__"')
   end
 
-  it 'does not register an offense for a __dir__ literal' do
+  it 'does not register an offense for a `__dir__` literal' do
     expect_no_offenses('"__dir__"')
   end
 

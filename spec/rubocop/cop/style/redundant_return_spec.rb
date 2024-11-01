@@ -602,7 +602,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
     end
   end
 
-  context 'when return is inside a in-branch' do
+  context 'when return is inside an in-branch' do
     it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)
         def func

@@ -662,7 +662,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a unreferenced variable is reassigned in same branch ' \
+  context 'when an unreferenced variable is reassigned in same branch ' \
           'and referenced after the branching' do
     it 'registers an offense for the unreferenced assignment' do
       expect_offense(<<~RUBY)
@@ -863,7 +863,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a variable is reassigned and unreferenced in a if branch ' \
+  context 'when a variable is reassigned and unreferenced in an if branch ' \
           'while the variable is referenced in the paired else branch' do
     it 'registers an offense for the reassignment in the if branch' do
       expect_offense(<<~RUBY)
@@ -917,7 +917,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context "when there's an unreferenced reassignment in a if branch " \
+  context "when there's an unreferenced reassignment in an if branch " \
           'while the variable is referenced in the paired elsif branch' do
     it 'registers an offense for the reassignment in the if branch' do
       expect_offense(<<~RUBY)
@@ -949,7 +949,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context "when there's an unreferenced reassignment in a if branch " \
+  context "when there's an unreferenced reassignment in an if branch " \
           'while the variable is referenced in a case branch ' \
           'in the paired else branch' do
     it 'registers an offense for the reassignment in the if branch' do
@@ -988,7 +988,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when an assignment in a if branch is referenced in another if branch' do
+  context 'when an assignment in an if branch is referenced in another if branch' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method(flag_a, flag_b)
@@ -1047,7 +1047,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a unreferenced variable is reassigned ' \
+  context 'when an unreferenced variable is reassigned ' \
           'on the left side of && and referenced after the &&' do
     it 'registers an offense for the unreferenced assignment' do
       expect_offense(<<~RUBY)
@@ -1069,7 +1069,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a unreferenced variable is reassigned ' \
+  context 'when an unreferenced variable is reassigned ' \
           'on the right side of && and referenced after the &&' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
@@ -1901,7 +1901,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'when a optional keyword method argument is not used' do
+  context 'when an optional keyword method argument is not used' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
         def some_method(name: value)

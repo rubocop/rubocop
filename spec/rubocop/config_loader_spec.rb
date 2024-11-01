@@ -2028,7 +2028,7 @@ RSpec.describe RuboCop::ConfigLoader do
     end
   end
 
-  describe 'when a unqualified requirement is defined', :isolated_environment do
+  describe 'when an unqualified requirement is defined', :isolated_environment do
     let(:required_file_path) { 'required_file' }
 
     before do

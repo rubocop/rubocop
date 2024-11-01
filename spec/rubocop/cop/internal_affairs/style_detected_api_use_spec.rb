@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::StyleDetectedApiUse, :config do
       RUBY
     end
 
-    it "does not register an offense when correct_style_detected and a #{negative_style_detected_method} are both used" do
+    it "does not register an offense when correct_style_detected and #{negative_style_detected_method} are both used" do
       expect_no_offenses(<<~RUBY)
         def on_send(node)
           if offense?
