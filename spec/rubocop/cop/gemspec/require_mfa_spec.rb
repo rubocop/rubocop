@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequireMFA, :config do
     end
   end
 
-  context 'when the specification has an non-hash metadata' do
+  context 'when the specification has a non-hash metadata' do
     it 'registers an offense but does not correct' do
       expect_offense(<<~RUBY, 'my.gemspec')
         Gem::Specification.new do |spec|

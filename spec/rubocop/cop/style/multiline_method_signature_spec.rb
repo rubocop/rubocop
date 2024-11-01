@@ -98,7 +98,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
     end
 
-    context 'when defining an class method' do
+    context 'when defining a class method' do
       context 'when arguments span a single line' do
         it 'registers an offense and corrects when closing paren is on the following line' do
           expect_offense(<<~RUBY)
@@ -175,7 +175,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
     end
 
-    context 'when defining an class method' do
+    context 'when defining a class method' do
       it 'registers an offense and corrects when `end` is on the following line' do
         expect_offense(<<~RUBY)
           def self.foo(bar,

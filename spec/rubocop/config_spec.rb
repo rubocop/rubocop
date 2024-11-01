@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Config do
         YAML
       end
 
-      it 'raises an validation error' do
+      it 'raises a validation error' do
         expect { configuration }.to raise_error(
           RuboCop::ValidationError,
           'unrecognized cop or department LyneLenth found in .rubocop.yml'
@@ -744,7 +744,7 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    context 'when an nested cop department is disabled' do
+    context 'when a nested cop department is disabled' do
       context 'but an individual cop is enabled' do
         let(:hash) do
           {
