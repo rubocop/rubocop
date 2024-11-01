@@ -12,7 +12,7 @@ module RuboCop
       # first parameter of the definition, then the closing brace should be
       # on the same line as the last parameter of the definition.
       #
-      # If an method definition's opening brace is on the line above the first
+      # If a method definition's opening brace is on the line above the first
       # parameter of the definition, then the closing brace should be on the
       # line below the last parameter of the definition.
       #

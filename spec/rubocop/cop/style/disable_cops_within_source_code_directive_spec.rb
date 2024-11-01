@@ -52,7 +52,7 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       end
     end
 
-    context 'when an non-allowed cop is disabled' do
+    context 'when a non-allowed cop is disabled' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)
           def foo # rubocop:disable Layout/LineLength
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       end
     end
 
-    context 'when an mix of cops are disabled' do
+    context 'when a mix of cops are disabled' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)
           def foo # rubocop:disable Metrics/AbcSize, Layout/LineLength, Metrics/CyclomaticComplexity, Style/AndOr

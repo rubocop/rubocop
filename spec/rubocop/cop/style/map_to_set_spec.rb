@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Style::MapToSet, :config do
       end
     end
 
-    context 'when the receiver is an hash' do
+    context 'when the receiver is a hash' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY, method: method)
           { foo: :bar }.#{method} { |x, y| [x.to_s, y.to_s] }.to_set

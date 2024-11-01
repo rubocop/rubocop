@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
     RUBY
   end
 
-  it 'registers an offense when building an instance using an digest constant and corrects' do
+  it 'registers an offense when building an instance using a digest constant and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Digest::SHA256.new
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Digest.new('SHA256')` instead of `OpenSSL::Digest::SHA256.new`.
@@ -127,7 +127,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
     RUBY
   end
 
-  it 'registers an offense when using an digest constant with chained methods and corrects' do
+  it 'registers an offense when using a digest constant with chained methods and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Digest::SHA256.new.digest('foo')
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Digest.new('SHA256')` instead of `OpenSSL::Digest::SHA256.new`.

@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Lockfile, :isolated_environment do
       it { is_expected.to eq([]) }
     end
 
-    context 'when there is an no lockfile' do
+    context 'when there is no lockfile' do
       let(:lockfile) { nil }
 
       it { is_expected.to eq([]) }

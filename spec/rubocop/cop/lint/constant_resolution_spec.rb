@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantResolution, :config do
       RUBY
     end
 
-    it 'registers an with a namespace const' do
+    it 'registers an offense with a namespace const' do
       expect_offense(<<~RUBY)
         MyConst::MY_CONST
         ^^^^^^^ Fully qualify this constant to avoid possibly ambiguous resolution.

@@ -201,13 +201,13 @@ RSpec.describe RuboCop::MagicComment do
       it { is_expected.to be(true) }
     end
 
-    context 'with an frozen string literal comment' do
+    context 'with a frozen string literal comment' do
       let(:comment) { '# frozen-string-literal: true' }
 
       it { is_expected.to be(true) }
     end
 
-    context 'with an shareable constant value comment' do
+    context 'with a shareable constant value comment' do
       let(:comment) { '# shareable-constant-value: literal' }
 
       it { is_expected.to be(true) }
