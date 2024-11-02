@@ -160,4 +160,12 @@ RSpec.describe RuboCop::Cop::Style::BitwisePredicate, :config do
       end
     end
   end
+
+  context 'when using a simple method call' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        zero?
+      RUBY
+    end
+  end
 end
