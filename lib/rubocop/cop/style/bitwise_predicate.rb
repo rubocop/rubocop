@@ -71,7 +71,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless node.receiver.begin_type?
+          return unless node.receiver&.begin_type?
           return unless (preferred_method = preferred_method(node))
 
           bit_operation = node.receiver.children.first
