@@ -2146,6 +2146,11 @@ Lint/NumberedParameterAssignment:
   Enabled: pending
   VersionAdded: '1.9'
 
+Lint/ObjectEqualityOverride:
+  Description: 'Check against argument class within overridden `eql?` methods.'
+  Enabled: true
+  VersionAdded: '<<next>>'
+
 Lint/OrAssignmentToConstant:
   Description: 'Checks unintended or-assignment to constant.'
   Enabled: pending
