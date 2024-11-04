@@ -6,8 +6,8 @@ module RuboCop
       # When passing an existing hash as keyword arguments, provide additional arguments
       # directly rather than using `merge`.
       #
-      # Providing arguments directly is more performant, than using `merge`, and
-      # also leads to a shorter and simpler code.
+      # Providing arguments directly is more performant than using `merge`, and
+      # also leads to shorter and simpler code.
       #
       # @example
       #   # bad
