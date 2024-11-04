@@ -92,6 +92,7 @@ module RuboCop
           )
         end
 
+        # rubocop:disable Metrics/AbcSize
         def alignment_source(node, starting_loc)
           ending_loc =
             case node.type
@@ -101,8 +102,7 @@ module RuboCop
                  :lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn
               node.loc.name
             when :masgn
-              mlhs_node, = *node
-              mlhs_node.source_range
+              node.lhs.source_range
             else
               # It is a wrapper with receiver of object attribute or access modifier.
               node.receiver&.source_range || node.child_nodes.first.loc.name
@@ -110,6 +110,7 @@ module RuboCop
 
           range_between(starting_loc.begin_pos, ending_loc.end_pos).source
         end
+        # rubocop:enable Metrics/AbcSize
 
         # We will use ancestor or wrapper with access modifier.
 

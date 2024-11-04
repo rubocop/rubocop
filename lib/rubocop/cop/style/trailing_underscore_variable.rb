@@ -94,7 +94,7 @@ module RuboCop
         end
 
         def unneeded_ranges(node)
-          node.masgn_type? ? (mlhs_node, = *node) : mlhs_node = node
+          mlhs_node = node.masgn_type? ? node.lhs : node
           variables = *mlhs_node
 
           main_offense = main_node_offense(node)
@@ -106,15 +106,15 @@ module RuboCop
         end
 
         def main_node_offense(node)
-          node.masgn_type? ? (mlhs_node, right = *node) : mlhs_node = node
-
+          mlhs_node = node.masgn_type? ? node.lhs : node
           variables = *mlhs_node
+
           first_offense = find_first_offense(variables)
 
           return unless first_offense
 
           if unused_variables_only?(first_offense, variables)
-            return unused_range(node.type, mlhs_node, right)
+            return unused_range(node.type, mlhs_node, node.rhs)
           end
 
           return range_for_parentheses(first_offense, mlhs_node) if Util.parentheses?(mlhs_node)

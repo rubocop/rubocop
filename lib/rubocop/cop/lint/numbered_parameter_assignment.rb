@@ -33,8 +33,7 @@ module RuboCop
         NUMBERED_PARAMETER_RANGE = (1..9).freeze
 
         def on_lvasgn(node)
-          lhs, _rhs = *node
-          return unless /\A_(\d+)\z/ =~ lhs
+          return unless /\A_(\d+)\z/ =~ node.name
 
           number = Regexp.last_match(1).to_i
           template = NUMBERED_PARAMETER_RANGE.include?(number) ? NUM_PARAM_MSG : LVAR_MSG

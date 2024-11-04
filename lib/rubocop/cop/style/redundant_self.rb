@@ -66,14 +66,12 @@ module RuboCop
         # Assignment of self.x
 
         def on_or_asgn(node)
-          lhs, _rhs = *node
-          allow_self(lhs)
+          allow_self(node.lhs)
         end
         alias on_and_asgn on_or_asgn
 
         def on_op_asgn(node)
-          lhs, _op, _rhs = *node
-          allow_self(lhs)
+          allow_self(node.lhs)
         end
 
         # Using self.x to distinguish from local variable x
@@ -92,13 +90,11 @@ module RuboCop
         end
 
         def on_masgn(node)
-          lhs, rhs = *node
-          add_masgn_lhs_variables(rhs, lhs)
+          add_masgn_lhs_variables(node.rhs, node.lhs)
         end
 
         def on_lvasgn(node)
-          lhs, rhs = *node
-          add_lhs_to_local_variables_scopes(rhs, lhs)
+          add_lhs_to_local_variables_scopes(node.rhs, node.lhs)
         end
 
         def on_in_pattern(node)
@@ -127,12 +123,10 @@ module RuboCop
           # Allow conditional nodes to use `self` in the condition if that variable
           # name is used in an `lvasgn` or `masgn` within the `if`.
           node.child_nodes.each do |child_node|
-            lhs, _rhs = *child_node
-
             if child_node.lvasgn_type?
-              add_lhs_to_local_variables_scopes(node.condition, lhs)
+              add_lhs_to_local_variables_scopes(node.condition, child_node.lhs)
             elsif child_node.masgn_type?
-              add_masgn_lhs_variables(node.condition, lhs)
+              add_masgn_lhs_variables(node.condition, child_node.lhs)
             end
           end
         end

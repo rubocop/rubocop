@@ -34,16 +34,17 @@ module RuboCop
         PATTERN
 
         def on_lvasgn(node)
-          variable, expression = *node
+          expression = node.expression
+
           return unless use_if_and_else_branch?(expression)
 
           if_branch = expression.if_branch
           else_branch = expression.else_branch
           return if inconvertible_to_modifier?(if_branch, else_branch)
 
-          if self_assign?(variable, if_branch)
+          if self_assign?(node.name, if_branch)
             register_offense(expression, if_branch, else_branch, 'unless')
-          elsif self_assign?(variable, else_branch)
+          elsif self_assign?(node.name, else_branch)
             register_offense(expression, else_branch, if_branch, 'if')
           end
         end
