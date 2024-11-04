@@ -1,0 +1,1 @@
+* [#13415](https://github.com/rubocop/rubocop/issues/13415): Fix false positives for `Naming/MemoizedInstanceVariableName` when using `initialize_clone`, `initialize_copy`, or `initialize_dup`. ([@koic][])

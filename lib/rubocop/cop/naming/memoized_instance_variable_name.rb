@@ -155,6 +155,7 @@ module RuboCop
         UNDERSCORE_REQUIRED = 'Memoized variable `%<var>s` does not start ' \
                               'with `_`. Use `@%<suggested_var>s` instead.'
         DYNAMIC_DEFINE_METHODS = %i[define_method define_singleton_method].to_set.freeze
+        INITIALIZE_METHODS = %i[initialize initialize_clone initialize_copy initialize_dup].freeze
 
         # @!method method_definition?(node)
         def_node_matcher :method_definition?, <<~PATTERN
@@ -251,7 +252,7 @@ module RuboCop
         end
 
         def matches?(method_name, ivar_assign)
-          return true if ivar_assign.nil? || method_name == :initialize
+          return true if ivar_assign.nil? || INITIALIZE_METHODS.include?(method_name)
 
           method_name = method_name.to_s.delete('!?')
           variable = ivar_assign.children.first
