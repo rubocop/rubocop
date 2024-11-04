@@ -93,9 +93,15 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
     RUBY
   end
 
-  it 'does not register an offense with cipher constant and send argument is a method' do
+  it 'does not register an offense with cipher constant and argument is a method call' do
     expect_no_offenses(<<~RUBY)
       OpenSSL::Cipher::AES128.new(do_something)
+    RUBY
+  end
+
+  it 'does not register an offense with cipher constant and argument is a safe navigation method call' do
+    expect_no_offenses(<<~RUBY)
+      OpenSSL::Cipher::AES128.new(foo&.bar)
     RUBY
   end
 

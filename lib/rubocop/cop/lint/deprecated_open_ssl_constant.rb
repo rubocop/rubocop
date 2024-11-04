@@ -51,7 +51,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return if node.arguments.any? { |arg| arg.variable? || arg.send_type? || arg.const_type? }
+          return if node.arguments.any? { |arg| arg.variable? || arg.call_type? || arg.const_type? }
           return if digest_const?(node.receiver)
           return unless algorithm_const(node)
 
