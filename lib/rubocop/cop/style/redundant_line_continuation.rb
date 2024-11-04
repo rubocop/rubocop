@@ -69,7 +69,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Redundant line continuation.'
-        LINE_CONTINUATION = "\\\n"
+        LINE_CONTINUATION = '\\'
         LINE_CONTINUATION_PATTERN = /(\\\n)/.freeze
         ALLOWED_STRING_TOKENS = %i[tSTRING tSTRING_CONTENT].freeze
         ARGUMENT_TYPES = %i[
@@ -90,7 +90,7 @@ module RuboCop
             end
           end
 
-          inspect_eof_line_continuation
+          inspect_end_of_ruby_code_line_continuation
         end
 
         private
@@ -136,11 +136,12 @@ module RuboCop
           parse(source.gsub("\\\n", "\n")).valid_syntax?
         end
 
-        def inspect_eof_line_continuation
-          return unless processed_source.raw_source.end_with?(LINE_CONTINUATION)
+        def inspect_end_of_ruby_code_line_continuation
+          last_line = processed_source.lines[processed_source.ast.last_line - 1]
+          return unless last_line.end_with?(LINE_CONTINUATION)
 
-          rindex = processed_source.raw_source.rindex(LINE_CONTINUATION)
-          line_continuation_range = range_between(rindex, rindex + 1)
+          last_column = last_line.length
+          line_continuation_range = range_between(last_column - 1, last_column)
 
           add_offense(line_continuation_range) do |corrector|
             corrector.remove_trailing(line_continuation_range, 1)
