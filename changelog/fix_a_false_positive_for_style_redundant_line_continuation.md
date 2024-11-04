@@ -1,0 +1,1 @@
+* [#13412](https://github.com/rubocop/rubocop/issues/13412): Fix a false positive for `Style/RedundantLineContinuation` when there is a line continuation at the end of Ruby code followed by `__END__` data. ([@koic][])
