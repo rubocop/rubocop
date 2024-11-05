@@ -194,15 +194,10 @@ module RuboCop
       end
 
       def process_variable_operator_assignment(node)
-        if LOGICAL_OPERATOR_ASSIGNMENT_TYPES.include?(node.type)
-          asgn_node, rhs_node = *node
-        else
-          asgn_node, _operator, rhs_node = *node
-        end
-
+        asgn_node = node.lhs
         return unless asgn_node.lvasgn_type?
 
-        name = asgn_node.children.first
+        name = asgn_node.name
 
         variable_table.declare_variable(name, asgn_node) unless variable_table.variable_exist?(name)
 
@@ -222,7 +217,7 @@ module RuboCop
         # before processing rhs nodes.
 
         variable_table.reference_variable(name, node)
-        process_node(rhs_node)
+        process_node(node.rhs)
         variable_table.assign_to_variable(name, asgn_node)
 
         skip_children!
@@ -355,8 +350,7 @@ module RuboCop
         when :lvasgn
           AssignmentReference.new(node)
         when *OPERATOR_ASSIGNMENT_TYPES
-          asgn_node = node.children.first
-          VariableReference.new(asgn_node.children.first) if asgn_node.lvasgn_type?
+          VariableReference.new(node.lhs.name) if node.lhs.lvasgn_type?
         end
       end
 

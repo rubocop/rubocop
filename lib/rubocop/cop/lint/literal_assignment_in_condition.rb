@@ -40,7 +40,7 @@ module RuboCop
           traverse_node(node.condition) do |asgn_node|
             next unless asgn_node.loc.operator
 
-            rhs = asgn_node.to_a.last
+            rhs = asgn_node.rhs
             next if !all_literals?(rhs) || parallel_assignment_with_splat_operator?(rhs)
 
             range = offense_range(asgn_node, rhs)

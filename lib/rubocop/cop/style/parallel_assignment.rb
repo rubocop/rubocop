@@ -28,28 +28,25 @@ module RuboCop
 
         MSG = 'Do not use parallel assignment.'
 
-        def on_masgn(node)
-          lhs, rhs = *node
-          lhs_elements = *lhs
+        def on_masgn(node) # rubocop:disable Metrics/AbcSize
+          rhs = node.rhs
           rhs = rhs.body if rhs.rescue_type?
           rhs_elements = Array(rhs).compact # edge case for one constant
 
-          return if allowed_lhs?(lhs) || allowed_rhs?(rhs) ||
-                    allowed_masign?(lhs_elements, rhs_elements)
+          return if allowed_lhs?(node.assignments) || allowed_rhs?(rhs) ||
+                    allowed_masign?(node.assignments, rhs_elements)
 
           range = node.source_range.begin.join(rhs.source_range.end)
 
           add_offense(range) do |corrector|
-            autocorrect(corrector, node, lhs, rhs)
+            autocorrect(corrector, node, rhs)
           end
         end
 
         private
 
-        def autocorrect(corrector, node, lhs, rhs)
-          left_elements = *lhs
-          right_elements = Array(rhs).compact
-          order = find_valid_order(left_elements, right_elements)
+        def autocorrect(corrector, node, rhs)
+          order = find_valid_order(node.assignments, Array(rhs).compact)
           correction = assignment_corrector(node, rhs, order)
 
           corrector.replace(correction.correction_range, correction.correction)
@@ -61,9 +58,7 @@ module RuboCop
                               add_self_to_getters(rhs_elements))
         end
 
-        def allowed_lhs?(node)
-          elements = *node
-
+        def allowed_lhs?(elements)
           # Account for edge cases using one variable with a comma
           # E.g.: `foo, = *bar`
           elements.one? || elements.any?(&:splat_type?)
