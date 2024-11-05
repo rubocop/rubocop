@@ -54,9 +54,9 @@ module RuboCop
           parent = node.parent
 
           if parent&.assignment?
-            block_node = parent.children[1]
+            block_node = parent.expression
           elsif parent&.parent&.masgn_type?
-            block_node = parent.parent.children[1]
+            block_node = parent.parent.expression
           else
             _scope, _name, block_node = *node
           end

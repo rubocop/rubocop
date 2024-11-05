@@ -102,24 +102,18 @@ module RuboCop
             when :op_asgn
               process_binary_operator_assignment(node)
             when *ASSIGNMENT_TYPES
-              _, rhs_node = *node
-              process_assignment(node, rhs_node) if rhs_node
+              process_assignment(node, node.rhs) if node.rhs
             end
           end
 
           def process_multiple_assignment(masgn_node)
-            mlhs_node, mrhs_node = *masgn_node
-
-            mlhs_node.children.each_with_index do |lhs_node, index|
+            masgn_node.assignments.each_with_index do |lhs_node, index|
               next unless ASSIGNMENT_TYPES.include?(lhs_node.type)
 
-              lhs_variable_name, = *lhs_node
-              rhs_node = mrhs_node.children[index]
-
-              if mrhs_node.array_type? && rhs_node
-                process_assignment(lhs_variable_name, rhs_node)
+              if masgn_node.rhs.array_type? && (rhs_node = masgn_node.rhs.children[index])
+                process_assignment(lhs_node, rhs_node)
               else
-                @local[lhs_variable_name] = true
+                @local[lhs_node.name] = true
               end
             end
 
@@ -127,33 +121,28 @@ module RuboCop
           end
 
           def process_logical_operator_assignment(asgn_node)
-            lhs_node, rhs_node = *asgn_node
-            return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
+            return unless ASSIGNMENT_TYPES.include?(asgn_node.lhs.type)
 
-            process_assignment(lhs_node, rhs_node)
+            process_assignment(asgn_node.lhs, asgn_node.rhs)
 
             throw :skip_children
           end
 
           def process_binary_operator_assignment(op_asgn_node)
-            lhs_node, = *op_asgn_node
+            lhs_node = op_asgn_node.lhs
             return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
 
-            lhs_variable_name, = *lhs_node
-            @local[lhs_variable_name] = true
+            @local[lhs_node.name] = true
 
             throw :skip_children
           end
 
           def process_assignment(asgn_node, rhs_node)
-            lhs_variable_name, = *asgn_node
-
-            @local[lhs_variable_name] = if rhs_node.variable?
-                                          rhs_variable_name, = *rhs_node
-                                          @local[rhs_variable_name]
-                                        else
-                                          constructor?(rhs_node)
-                                        end
+            @local[asgn_node.name] = if rhs_node.variable?
+                                       @local[rhs_node.name]
+                                     else
+                                       constructor?(rhs_node)
+                                     end
           end
 
           def constructor?(node)

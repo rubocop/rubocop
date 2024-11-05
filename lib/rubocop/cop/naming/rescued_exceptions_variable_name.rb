@@ -109,7 +109,7 @@ module RuboCop
               variable_name_matches?(lvasgn_node, name)
             end
           else
-            node.children.first == name
+            node.name == name
           end
         end
 
@@ -141,12 +141,7 @@ module RuboCop
         # Further `lvar` nodes will not be corrected though since they now refer to a
         # different variable.
         def correct_reassignment(corrector, node, offending_name, preferred_name)
-          if node.lvasgn_type?
-            correct_node(corrector, node.child_nodes.first, offending_name, preferred_name)
-          elsif node.masgn_type?
-            # With multiple assign, the assignments are in an array as the last child
-            correct_node(corrector, node.children.last, offending_name, preferred_name)
-          end
+          correct_node(corrector, node.rhs, offending_name, preferred_name)
         end
 
         def preferred_name(variable_name)
@@ -159,10 +154,7 @@ module RuboCop
         end
 
         def variable_name(node)
-          asgn_node = node.exception_variable
-          return unless asgn_node
-
-          asgn_node.children.last
+          node.exception_variable&.name
         end
 
         def message(node)

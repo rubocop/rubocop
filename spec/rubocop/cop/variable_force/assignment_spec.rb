@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
 
   let(:lvasgn_node) { ast.each_node.find(&:lvasgn_type?) }
 
-  let(:name) { lvasgn_node.children.first }
+  let(:name) { lvasgn_node.name }
   let(:scope) { RuboCop::Cop::VariableForce::Scope.new(def_node) }
   let(:variable) { RuboCop::Cop::VariableForce::Variable.new(name, lvasgn_node, scope) }
   let(:assignment) { described_class.new(lvasgn_node, variable) }
