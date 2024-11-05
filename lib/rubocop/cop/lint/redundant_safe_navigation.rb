@@ -6,7 +6,7 @@ module RuboCop
       # Checks for redundant safe navigation calls.
       # Use cases where a constant, named in camel case for classes and modules is `nil` are rare,
       # and an offense is not detected when the receiver is a constant. The detection also applies
-      # to literal receivers, except for `nil`.
+      # to `self`, and to literal receivers, except for `nil`.
       #
       # For all receivers, the `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`,
       # and `equal?` methods are checked by default.
@@ -29,6 +29,9 @@ module RuboCop
       #   # bad
       #   CamelCaseConst&.do_something
       #
+      #   # good
+      #   CamelCaseConst.do_something
+      #
       #   # bad
       #   do_something if attrs&.respond_to?(:[])
       #
@@ -39,9 +42,6 @@ module RuboCop
       #   while node&.is_a?(BeginNode)
       #     node = node.parent
       #   end
-      #
-      #   # good
-      #   CamelCaseConst.do_something
       #
       #   # good
       #   while node.is_a?(BeginNode)
@@ -66,6 +66,12 @@ module RuboCop
       #   foo.to_i
       #   foo.to_f
       #   foo.to_s
+      #
+      #   # bad
+      #   self&.foo
+      #
+      #   # good
+      #   self.foo
       #
       # @example AllowedMethods: [nil_safe_method]
       #   # bad
@@ -133,7 +139,7 @@ module RuboCop
         def assume_receiver_instance_exists?(receiver)
           return true if receiver.const_type? && !receiver.short_name.match?(SNAKE_CASE)
 
-          receiver.literal? && !receiver.nil_type?
+          receiver.self_type? || (receiver.literal? && !receiver.nil_type?)
         end
 
         def check?(node)
