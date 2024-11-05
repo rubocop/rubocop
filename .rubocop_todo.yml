@@ -6,9 +6,10 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 81
+# Offense count: 4
 InternalAffairs/NodeDestructuring:
-  Enabled: false
+  Exclude:
+    - 'lib/rubocop/cop/variable_force.rb'
 
 # Offense count: 78
 # Configuration parameters: CountComments, CountAsOne.

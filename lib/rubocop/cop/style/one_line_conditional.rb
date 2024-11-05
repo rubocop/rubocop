@@ -108,7 +108,7 @@ module RuboCop
         end
 
         def ternary_replacement(node)
-          condition, if_branch, else_branch = *node
+          condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring
 
           "#{expr_replacement(condition)} ? " \
             "#{expr_replacement(if_branch)} : " \

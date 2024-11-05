@@ -27,8 +27,7 @@ module RuboCop
         MSG = 'Avoid using or-assignment with constants.'
 
         def on_or_asgn(node)
-          lhs, _rhs = *node
-          return unless lhs&.casgn_type?
+          return unless node.lhs&.casgn_type?
 
           add_offense(node.loc.operator) do |corrector|
             next if node.each_ancestor(:def, :defs).any?

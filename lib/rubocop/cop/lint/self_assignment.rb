@@ -43,23 +43,21 @@ module RuboCop
         alias on_csend on_send
 
         def on_lvasgn(node)
-          lhs, rhs = *node
-          return unless rhs
+          return unless node.rhs
 
           rhs_type = ASSIGNMENT_TYPE_TO_RHS_TYPE[node.type]
 
-          add_offense(node) if rhs.type == rhs_type && rhs.source == lhs.to_s
+          add_offense(node) if node.rhs.type == rhs_type && node.rhs.source == node.lhs.to_s
         end
         alias on_ivasgn on_lvasgn
         alias on_cvasgn on_lvasgn
         alias on_gvasgn on_lvasgn
 
         def on_casgn(node)
-          lhs_scope, lhs_name, rhs = *node
-          return unless rhs&.const_type?
+          return unless node.rhs&.const_type?
 
-          rhs_scope, rhs_name = *rhs
-          add_offense(node) if lhs_scope == rhs_scope && lhs_name == rhs_name
+          add_offense(node) if node.namespace == node.rhs.namespace &&
+                               node.short_name == node.rhs.short_name
         end
 
         def on_masgn(node)
@@ -67,15 +65,15 @@ module RuboCop
         end
 
         def on_or_asgn(node)
-          lhs, rhs = *node
-          add_offense(node) if rhs_matches_lhs?(rhs, lhs)
+          add_offense(node) if rhs_matches_lhs?(node.rhs, node.lhs)
         end
         alias on_and_asgn on_or_asgn
 
         private
 
         def multiple_self_assignment?(node)
-          lhs, rhs = *node
+          lhs = node.lhs
+          rhs = node.rhs
           return false unless rhs.array_type?
           return false unless lhs.children.size == rhs.children.size
 

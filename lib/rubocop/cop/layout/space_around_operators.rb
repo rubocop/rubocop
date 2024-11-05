@@ -99,51 +99,50 @@ module RuboCop
         def on_resbody(node)
           return unless node.loc.assoc
 
-          _, variable, = *node
-
-          check_operator(:resbody, node.loc.assoc, variable)
+          check_operator(:resbody, node.loc.assoc, node.exception_variable)
         end
 
         def on_send(node)
           return if rational_literal?(node)
 
           if node.setter_method?
-            on_special_asgn(node)
+            on_setter_method(node)
           elsif regular_operator?(node)
             check_operator(:send, node.loc.selector, node.first_argument)
           end
         end
 
         def on_assignment(node)
-          _, rhs, = *node
+          rhs = node.rhs
 
           return unless rhs
 
-          check_operator(:assignment, node.loc.operator, rhs)
+          type = node.op_asgn_type? ? :special_asgn : :assignment
+          check_operator(type, node.loc.operator, rhs)
         end
 
-        def on_casgn(node)
-          _, _, right, = *node
+        def on_class(node)
+          rhs = node.parent_class
 
-          return unless right
+          return unless rhs
 
-          check_operator(:assignment, node.loc.operator, right)
+          check_operator(:class, node.loc.operator, rhs)
         end
 
         def on_binary(node)
-          _, rhs, = *node
+          rhs = node.rhs
 
           return unless rhs
 
           check_operator(:binary, node.loc.operator, rhs)
         end
 
-        def on_special_asgn(node)
-          _, _, right, = *node
+        def on_setter_method(node)
+          rhs = node.first_argument
 
-          return unless right
+          return unless rhs
 
-          check_operator(:special_asgn, node.loc.operator, right)
+          check_operator(:special_asgn, node.loc.operator, node.first_argument)
         end
 
         def on_match_pattern(node)
@@ -155,14 +154,14 @@ module RuboCop
         alias on_or       on_binary
         alias on_and      on_binary
         alias on_lvasgn   on_assignment
+        alias on_casgn    on_assignment
         alias on_masgn    on_assignment
         alias on_ivasgn   on_assignment
         alias on_cvasgn   on_assignment
         alias on_gvasgn   on_assignment
-        alias on_class    on_binary
         alias on_or_asgn  on_assignment
         alias on_and_asgn on_assignment
-        alias on_op_asgn  on_special_asgn
+        alias on_op_asgn  on_assignment
 
         private
 

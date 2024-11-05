@@ -428,4 +428,14 @@ RSpec.describe RuboCop::Cop::Style::NegatedIfElseCondition, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense for != with multiple arguments' do
+    expect_no_offenses(<<~RUBY)
+      if foo.!=(bar, baz)
+        do_a
+      else
+        do_c
+      end
+    RUBY
+  end
 end

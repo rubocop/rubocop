@@ -46,10 +46,12 @@ module RuboCop
           @corrected_nodes = nil
         end
 
+        # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
         def on_if(node)
           return unless if_else?(node)
           return unless (condition = unwrap_begin_nodes(node.condition))
           return if double_negation?(condition) || !negated_condition?(condition)
+          return unless condition.arguments.size < 2
 
           message = message(node)
           add_offense(node, message: message) do |corrector|
@@ -62,6 +64,7 @@ module RuboCop
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize,Metrics/CyclomaticComplexity
 
         private
 
@@ -92,13 +95,12 @@ module RuboCop
         end
 
         def correct_negated_condition(corrector, node)
-          receiver, method_name, rhs = *node
           replacement =
             if node.negation_method?
-              receiver.source
+              node.receiver.source
             else
-              inverted_method = method_name.to_s.sub('!', '=')
-              "#{receiver.source} #{inverted_method} #{rhs.source}"
+              inverted_method = node.method_name.to_s.sub('!', '=')
+              "#{node.receiver.source} #{inverted_method} #{node.first_argument.source}"
             end
 
           corrector.replace(node, replacement)

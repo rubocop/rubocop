@@ -36,12 +36,9 @@ module RuboCop
 
         def on_irange(node)
           return unless node.children.compact.all?(&:str_type?)
+          return if node.begin.nil? || node.end.nil?
 
-          range_start, range_end = node.children
-
-          return if range_start.nil? || range_end.nil?
-
-          add_offense(node) if unsafe_range?(range_start.value, range_end.value)
+          add_offense(node) if unsafe_range?(node.begin.value, node.end.value)
         end
         alias on_erange on_irange
 

@@ -506,6 +506,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects a setter call with implicit array without spaces' do
+      expect_offense(<<~RUBY)
+        x.y=2,3
+           ^ Surrounding space missing for operator `=`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.y = 2,3
+      RUBY
+    end
+
     context 'when a hash literal is on a single line' do
       context 'and Layout/HashAlignment:EnforcedHashRocketStyle is key' do
         let(:hash_style) { 'key' }

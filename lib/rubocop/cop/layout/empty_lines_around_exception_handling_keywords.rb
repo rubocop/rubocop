@@ -72,8 +72,7 @@ module RuboCop
         alias on_numblock on_def
 
         def on_kwbegin(node)
-          body, = *node
-          check_body(body, node.loc.line)
+          check_body(node.children.first, node.loc.line)
         end
 
         private
@@ -128,10 +127,10 @@ module RuboCop
         end
 
         def keyword_locations_in_ensure(node)
-          ensure_body, = *node
+          rescue_body_without_ensure = node.children.first
           [
             node.loc.keyword,
-            *keyword_locations(ensure_body)
+            *keyword_locations(rescue_body_without_ensure)
           ]
         end
       end

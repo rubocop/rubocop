@@ -214,7 +214,7 @@ module RuboCop
         end
 
         def insert_bang_for_and(corrector, node)
-          lhs, rhs = *node
+          lhs, rhs = *node # rubocop:disable InternalAffairs/NodeDestructuring
 
           if lhs.and_type?
             insert_bang_for_and(corrector, lhs)

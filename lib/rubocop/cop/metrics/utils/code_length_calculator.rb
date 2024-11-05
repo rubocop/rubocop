@@ -148,8 +148,7 @@ module RuboCop
             when :class, :module, :sclass, :block, :numblock, :def, :defs
               node.body
             when :casgn
-              _scope, _name, value = *node
-              extract_body(value)
+              extract_body(node.expression)
             else
               node
             end

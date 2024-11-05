@@ -67,7 +67,7 @@ module RuboCop
         def on_rescue(node)
           return if rescue_modifier?(node)
 
-          _body, *rescues, _else = *node
+          rescues = node.resbody_branches
           rescued_groups = rescued_groups_for(rescues)
 
           rescue_group_rescues_multiple_levels = rescued_groups.any? do |group|

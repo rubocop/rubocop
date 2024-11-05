@@ -122,10 +122,9 @@ module RuboCop
         def on_rescue(node)
           return unless style == :semantic
 
-          begin_node, *rescue_nodes, _else_node = *node
-          check_scope(:raise, begin_node)
+          check_scope(:raise, node.body)
 
-          rescue_nodes.each do |rescue_node|
+          node.resbody_branches.each do |rescue_node|
             check_scope(:fail, rescue_node)
             allow(:raise, rescue_node)
           end

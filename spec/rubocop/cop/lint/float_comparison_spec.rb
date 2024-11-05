@@ -92,4 +92,13 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
       nil != Float('not_a_float', exception: false)
     RUBY
   end
+
+  it 'does not register an offense when comparing with multiple arguments' do
+    expect_no_offenses(<<~RUBY)
+      x.==(0.1, 0.2)
+      x.!=(0.1, 0.2)
+      x.eql?(0.1, 0.2)
+      x.equal?(0.1, 0.2)
+    RUBY
+  end
 end
