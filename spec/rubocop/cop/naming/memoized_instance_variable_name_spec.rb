@@ -243,6 +243,36 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
               RUBY
             end
           end
+
+          context 'instance variables in `initialize_clone` method' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def initialize_clone(obj)
+                  @files_with_offenses ||= {}
+                end
+              RUBY
+            end
+          end
+
+          context 'instance variables in `initialize_copy` method' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def initialize_copy(obj)
+                  @files_with_offenses ||= {}
+                end
+              RUBY
+            end
+          end
+
+          context 'instance variables in `initialize_dup` method' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def initialize_dup(obj)
+                  @files_with_offenses ||= {}
+                end
+              RUBY
+            end
+          end
         end
       end
 
