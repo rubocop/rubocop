@@ -62,8 +62,7 @@ module RuboCop
 
         def node_and_method_name(node, attribute)
           if node.op_asgn_type?
-            lhs, _op, _rhs = *node
-            [lhs, attribute]
+            [node.lhs, attribute]
           else
             [node, :"#{attribute}="]
           end
