@@ -132,6 +132,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
+  it 'registers an offense and correct when `&.` is used with `self`' do
+    expect_offense(<<~RUBY)
+      self&.foo
+          ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      self.foo
+    RUBY
+  end
+
   %i[while until].each do |loop_type|
     it 'registers an offense and corrects when `&.` is used inside `#{loop_type}` condition' do
       expect_offense(<<~RUBY, loop_type: loop_type)
