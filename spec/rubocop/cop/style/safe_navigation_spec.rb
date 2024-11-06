@@ -1089,7 +1089,13 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
             it 'allows an object check followed by 4 chained method calls' do
               expect_no_offenses(<<~RUBY)
-                #{variable} && #{variable}.one.two.three.fore
+                #{variable} && #{variable}.one.two.three.four
+              RUBY
+            end
+
+            it 'allows an object check followed by 4 chained method calls with safe navigation' do
+              expect_no_offenses(<<~RUBY)
+                #{variable} && #{variable}.one.two.three&.four
               RUBY
             end
           end
