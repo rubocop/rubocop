@@ -16,7 +16,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
   after { described_class.files = [described_class::DEFAULT_RULES_FILE] }
 
-  describe '#validate', :isolated_environment do
+  describe '#reject_obsolete!', :isolated_environment do
     context 'when the configuration includes any obsolete cop name' do
       let(:hash) do
         {

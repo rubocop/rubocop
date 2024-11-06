@@ -3,7 +3,7 @@
 module RuboCop
   # Handles validation of configuration, for example cop names, parameter
   # names, and Ruby versions.
-  class ConfigValidator
+  class ConfigValidator # rubocop:disable Metrics/ClassLength
     extend SimpleForwardable
 
     # @api private
@@ -27,6 +27,7 @@ module RuboCop
     def initialize(config)
       @config = config
       @config_obsoletion = ConfigObsoletion.new(config)
+      @inconsistent_config = InconsistentConfig.new(config)
       @target_ruby = TargetRuby.new(config)
     end
 
@@ -42,6 +43,7 @@ module RuboCop
       end
 
       check_obsoletions
+      check_inconsistencies
 
       alert_about_unrecognized_cops(invalid_cop_names)
       validate_new_cops_parameter
@@ -79,6 +81,13 @@ module RuboCop
       return unless @config_obsoletion.warnings.any?
 
       warn Rainbow("Warning: #{@config_obsoletion.warnings.join("\n")}").yellow
+    end
+
+    def check_inconsistencies
+      @inconsistent_config.validate!
+      return unless @inconsistent_config.warnings.any?
+
+      warn Rainbow("Warning: #{@inconsistent_config.warnings.join("\n")}").yellow
     end
 
     def check_target_ruby

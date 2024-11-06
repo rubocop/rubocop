@@ -138,12 +138,22 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
         expect(annotate).to include('http://example.org/cop/path/rule#target_based_url')
       end
 
-      it 'can accept relative paths if base has a full path' do
-        config['AllCops'] = {
-          'StyleGuideBaseURL' => 'https://github.com/rubocop/ruby-style-guide/'
-        }
-        config['Cop/Cop'] = { 'StyleGuide' => '../rails-style-guide#target_based_url' }
-        expect(annotate).to include('https://github.com/rubocop/rails-style-guide#target_based_url')
+      context 'if base has a full path' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => {
+              'StyleGuideBaseURL' => 'https://github.com/rubocop/ruby-style-guide/'
+            },
+            'Cop/Cop' => {
+              'StyleGuide' => '../rails-style-guide#target_based_url'
+            }
+          )
+        end
+
+        it 'can accept relative paths' do
+          config['Cop/Cop'] = { 'StyleGuide' => '../rails-style-guide#target_based_url' }
+          expect(annotate).to include('https://github.com/rubocop/rails-style-guide#target_based_url')
+        end
       end
 
       it 'allows absolute URLs in the cop config' do

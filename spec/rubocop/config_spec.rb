@@ -456,6 +456,31 @@ RSpec.describe RuboCop::Config do
         end
       end
     end
+
+    describe 'conflicting cop configuration' do
+      include_context 'mock console output'
+
+      context 'when `Style/SafeNavigation: MaxChainLength` is different than `Style/SafeNavigationChainLength`' do
+        before do
+          create_file(configuration_path, <<~YAML)
+            Style/SafeNavigation:
+              Enabled: true
+              MaxChainLength: 2
+            Style/SafeNavigationChainLength:
+              Enabled: true
+              Max: 3
+          YAML
+        end
+
+        it 'prints a warning message' do
+          configuration
+          expect($stderr.string).to eq(<<~WARNING)
+            Warning: `Style/SafeNavigation` value for `MaxChainLength` (2) is inconsistent with `Style/SafeNavigationChainLength` value for `Max` (3)
+            Use the same value to prevent incompatibilities when evaluating safe navigation chains.
+          WARNING
+        end
+      end
+    end
   end
 
   describe '#make_excludes_absolute' do
@@ -603,28 +628,46 @@ RSpec.describe RuboCop::Config do
 
     let(:loaded_path) { 'example/.rubocop.yml' }
 
-    it 'returns true when Include config only includes regular paths' do
-      configuration['AllCops'] = { 'Include' => ['**/Gemfile', 'config/unicorn.rb.example'] }
+    context 'when Include config only includes regular paths' do
+      let(:hash) do
+        { 'AllCops' => { 'Include' => ['**/Gemfile', 'config/unicorn.rb.example'] } }
+      end
 
-      expect(configuration).not_to be_possibly_include_hidden
+      it 'returns true' do
+        expect(configuration).not_to be_possibly_include_hidden
+      end
     end
 
-    it 'returns true when Include config includes a regex' do
-      configuration['AllCops'] = { 'Include' => [/foo/] }
+    context 'when Include config includes a regex' do
+      let(:hash) do
+        { 'AllCops' => { 'Include' => [/foo/] } }
+      end
 
-      expect(configuration).to be_possibly_include_hidden
+      it 'returns true' do
+        configuration['AllCops'] = { 'Include' => [/foo/] }
+
+        expect(configuration).to be_possibly_include_hidden
+      end
     end
 
-    it 'returns true when Include config includes a toplevel dotfile' do
-      configuration['AllCops'] = { 'Include' => ['.foo'] }
+    context 'when Include config includes a toplevel dotfile' do
+      let(:hash) do
+        { 'AllCops' => { 'Include' => ['.foo'] } }
+      end
 
-      expect(configuration).to be_possibly_include_hidden
+      it 'returns true' do
+        expect(configuration).to be_possibly_include_hidden
+      end
     end
 
-    it 'returns true when Include config includes a dotfile in a path' do
-      configuration['AllCops'] = { 'Include' => ['foo/.bar'] }
+    context 'when Include config includes a dotfile in a path' do
+      let(:hash) do
+        { 'AllCops' => { 'Include' => ['foo/.bar'] } }
+      end
 
-      expect(configuration).to be_possibly_include_hidden
+      it 'returns true' do
+        expect(configuration).to be_possibly_include_hidden
+      end
     end
   end
 
