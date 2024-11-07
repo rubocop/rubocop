@@ -8,6 +8,8 @@ module RuboCop
       #
       # This cop mirrors a warning produced by MRI since 2.2.
       #
+      # NOTE: This syntax is no longer valid on Ruby 2.7 or higher.
+      #
       # @example
       #
       #   # bad
