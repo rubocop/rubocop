@@ -85,4 +85,11 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
       x.to_f.nonzero?
     RUBY
   end
+
+  it 'does not register an offense when comparing against nil' do
+    expect_no_offenses(<<~RUBY)
+      Float('not_a_float', exception: false) == nil
+      nil != Float('not_a_float', exception: false)
+    RUBY
+  end
 end
