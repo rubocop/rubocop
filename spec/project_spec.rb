@@ -243,6 +243,18 @@ RSpec.describe 'RuboCop Project', type: :feature do
         end
       end
 
+      it 'has a single space after each comma in the list of multiple contributor names' do
+        entries.each do |entry|
+          contributors = entry.scan(/\(\[@\S+\]\[\](?:, \[@\S+\]\[\])*\)/)
+          contributors.each do |contributor|
+            expect(contributor).not_to(
+              match(/,\S/),
+              "Contributor names should have exactly one space after each comma: #{contributor}"
+            )
+          end
+        end
+      end
+
       describe 'contributor name' do
         subject(:contributor_names) { lines.grep(/\A\[@/).map(&:chomp) }
 
