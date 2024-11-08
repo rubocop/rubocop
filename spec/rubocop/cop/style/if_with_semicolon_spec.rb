@@ -125,7 +125,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
   it 'registers an offense when using multiple expressions in the `else` branch' do
     expect_offense(<<~RUBY)
       if cond; foo else bar'arg'; baz end
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use `if/else` instead.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a newline instead.
     RUBY
 
     expect_correction(<<~RUBY)
