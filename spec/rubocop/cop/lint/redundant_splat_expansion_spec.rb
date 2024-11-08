@@ -376,6 +376,12 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
       RUBY
     end
 
+    it 'does not register an offense when using percent string literal array in safe navigation' do
+      expect_no_offenses(<<~RUBY)
+        maybe_nil&.do_something(*%w[foo bar baz])
+      RUBY
+    end
+
     it 'does not register an offense when using percent symbol literal array' do
       expect_no_offenses(<<~RUBY)
         do_something(*%i[foo bar baz])
@@ -393,6 +399,21 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
       expect_offense(<<~RUBY)
         do_something(*%w[foo bar baz])
                      ^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something('foo', 'bar', 'baz')
+      RUBY
+    end
+
+    it 'registers an offense when using percent literal array in safe navigation' do
+      expect_offense(<<~RUBY)
+        maybe_nil&.do_something(*%w[foo bar baz])
+                                ^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        maybe_nil&.do_something('foo', 'bar', 'baz')
       RUBY
     end
 
