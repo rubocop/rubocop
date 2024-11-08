@@ -254,7 +254,7 @@ module RuboCop
         def matches?(method_name, ivar_assign)
           return true if ivar_assign.nil? || INITIALIZE_METHODS.include?(method_name)
 
-          method_name = method_name.to_s.delete('!?')
+          method_name = method_name.to_s.delete('!?=')
           variable = ivar_assign.children.first
           variable_name = variable.to_s.sub('@', '')
 
@@ -270,7 +270,7 @@ module RuboCop
         end
 
         def suggested_var(method_name)
-          suggestion = method_name.to_s.delete('!?')
+          suggestion = method_name.to_s.delete('!?=')
 
           style == :required ? "_#{suggestion}" : suggestion
         end
