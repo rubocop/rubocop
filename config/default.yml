@@ -1956,6 +1956,11 @@ Lint/HashCompareByIdentity:
   Safe: false
   VersionAdded: '0.93'
 
+Lint/HashNewWithKeywordArgumentsAsDefault:
+  Description: 'Checks for the deprecated use of keyword arguments for hash default in `Hash.new`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/HeredocMethodCallPosition:
   Description: >-
                  Checks for the ordering of a method call where
