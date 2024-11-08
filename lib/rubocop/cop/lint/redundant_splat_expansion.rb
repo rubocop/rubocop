@@ -157,7 +157,7 @@ module RuboCop
         end
 
         def method_argument?(node)
-          node.parent.send_type?
+          node.parent.call_type?
         end
 
         def part_of_an_array?(node)
@@ -171,7 +171,7 @@ module RuboCop
           parent = node.parent
           grandparent = node.parent.parent
 
-          parent.when_type? || parent.send_type? || part_of_an_array?(node) ||
+          parent.when_type? || method_argument?(node) || part_of_an_array?(node) ||
             grandparent&.resbody_type?
         end
 
@@ -196,7 +196,7 @@ module RuboCop
         def use_percent_literal_array_argument?(node)
           argument = node.children.first
 
-          node.parent.send_type? &&
+          method_argument?(node) &&
             (argument.percent_literal?(:string) || argument.percent_literal?(:symbol))
         end
 
