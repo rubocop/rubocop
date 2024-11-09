@@ -60,6 +60,34 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     it "accepts parenthesized void op #{op} by itself without a begin block" do
       expect_no_offenses("(a #{op} b)")
     end
+
+    it 'handles methods called by dot' do
+      expect_offense(<<~RUBY, op: op)
+        a.%{op}(b)
+          ^{op} Operator `#{op}` used in void context.
+        nil
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a
+        (b)
+        nil
+      RUBY
+    end
+
+    it 'handles methods called by dot with safe navigation' do
+      expect_offense(<<~RUBY, op: op)
+        a&.%{op}(b)
+           ^{op} Operator `#{op}` used in void context.
+        nil
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a
+        (b)
+        nil
+      RUBY
+    end
   end
 
   sign_unary_operators = %i[+ -]
@@ -98,6 +126,32 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         b
         b
         #{op}b
+      RUBY
+    end
+
+    it "registers an offense for void unary op #{op} with dot" do
+      expect_offense(<<~RUBY, op: op)
+        b.%{op}
+          ^{op} Operator `#{op}` used in void context.
+        b.%{op}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        b
+        b.#{op}
+      RUBY
+    end
+
+    it "registers an offense for void unary op #{op} with dot with safe navigation" do
+      expect_offense(<<~RUBY, op: op)
+        b&.%{op}
+           ^{op} Operator `#{op}` used in void context.
+        b&.%{op}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        b
+        b&.#{op}
       RUBY
     end
   end
