@@ -58,11 +58,15 @@ module RuboCop
         end
 
         def require_newline?(node)
-          node.branches.compact.any?(&:begin_type?)
+          node.branches.compact.any?(&:begin_type?) || use_return_with_argument?(node)
         end
 
         def use_block_in_branches?(node)
           node.branches.compact.any? { |branch| branch.block_type? || branch.numblock_type? }
+        end
+
+        def use_return_with_argument?(node)
+          node.if_branch&.return_type? && node.if_branch&.arguments&.any?
         end
 
         def replacement(node)

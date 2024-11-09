@@ -277,5 +277,28 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
          bar else baz { _1 ? quux : nil } end
       RUBY
     end
+
+    it 'registers an offense when using `return` with value in `if` with a semicolon is used' do
+      expect_offense(<<~RUBY)
+        if cond; return value end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a newline instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+         return value end
+      RUBY
+    end
+
+    it 'registers an offense when using `return` without value in `if` with a semicolon is used' do
+      expect_offense(<<~RUBY)
+        if cond; return end
+        ^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? return : nil
+      RUBY
+    end
   end
 end
