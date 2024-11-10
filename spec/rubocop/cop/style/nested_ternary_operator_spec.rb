@@ -99,4 +99,19 @@ RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
       end
     RUBY
   end
+
+  it 'registers an offense and corrects when ternary operators are nested and the inner condition is parenthesized' do
+    expect_offense(<<~RUBY)
+      foo ? (bar && baz) ? qux : quux : corge
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Ternary operators must not be nested. Prefer `if` or `else` constructs instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo
+      (bar && baz) ? qux : quux
+      else
+      corge
+      end
+    RUBY
+  end
 end

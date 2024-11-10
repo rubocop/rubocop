@@ -1,0 +1,1 @@
+* [#13442](https://github.com/rubocop/rubocop/pull/13442): Fix an incorrect autocorrect for `Style/NestedTernaryOperator` when ternary operators are nested and the inner condition is parenthesized. ([@koic][])
