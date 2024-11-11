@@ -45,9 +45,11 @@ module RuboCop
         end
 
         def remove_parentheses(source)
-          return source unless source.start_with?('(')
-
-          source.delete_prefix('(').delete_suffix(')')
+          if source.start_with?('(') && source.end_with?(')')
+            source.delete_prefix('(').delete_suffix(')')
+          else
+            source
+          end
         end
 
         def replace_loc_and_whitespace(corrector, range, replacement)
