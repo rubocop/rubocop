@@ -83,7 +83,9 @@ module RuboCop
         end
 
         def cannot_replace_to_ternary?(node)
-          node.elsif_conditional?
+          return true if node.elsif_conditional?
+
+          node.else_branch.begin_type? && node.else_branch.children.compact.count >= 2
         end
 
         def ternary_replacement(node)
