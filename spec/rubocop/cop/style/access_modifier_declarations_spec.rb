@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
   shared_examples 'always accepted' do |access_modifier|
-    it 'accepts when #{access_modifier} is a hash literal value' do
+    it "accepts when #{access_modifier} is a hash literal value" do
       expect_no_offenses(<<~RUBY)
         class Foo
           foo
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
     context 'allow access modifiers on symbols' do
       let(:cop_config) { { 'AllowModifiersOnSymbols' => true } }
 
-      it 'accepts when argument to #{access_modifier} is a symbol' do
+      it "accepts when argument to #{access_modifier} is a symbol" do
         expect_no_offenses(<<~RUBY)
           class Foo
             foo
@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it 'accepts when argument to #{access_modifier} is multiple symbols' do
+      it "accepts when argument to #{access_modifier} is multiple symbols" do
         expect_no_offenses(<<~RUBY)
           class Foo
             foo
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it 'accepts when argument to #{access_modifier} is splat with a `%i` array literal' do
+      it "accepts when argument to #{access_modifier} is splat with a `%i` array literal" do
         expect_no_offenses(<<~RUBY)
           class Foo
             foo
@@ -41,7 +41,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it 'accepts when argument to #{access_modifier} is splat with a constant' do
+      it "accepts when argument to #{access_modifier} is splat with a constant" do
         expect_no_offenses(<<~RUBY)
           class Foo
             foo
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it 'accepts when argument to #{access_modifier} is a splat with a method call' do
+      it "accepts when argument to #{access_modifier} is a splat with a method call" do
         expect_no_offenses(<<~RUBY)
           class Foo
             foo
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
     context 'do not allow access modifiers on symbols' do
       let(:cop_config) { { 'AllowModifiersOnSymbols' => false } }
 
-      it 'registers an offense when argument to #{access_modifier} is a symbol' do
+      it "registers an offense when argument to #{access_modifier} is a symbol" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Foo
             foo
@@ -75,19 +75,107 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         expect_no_corrections
       end
 
-      it 'registers an offense when argument to #{access_modifier} is multiple symbols' do
-        expect_offense(<<~RUBY, access_modifier: access_modifier)
-          class Foo
-            foo
-            %{access_modifier} :bar, :baz
-            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
-          end
-        RUBY
+      context "when argument to #{access_modifier} is multiple symbols" do
+        it 'registers an offense and does not autocorrect when methods are not defined' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Foo
+              foo
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+            end
+          RUBY
 
-        expect_no_corrections
+          expect_no_corrections
+        end
+
+        it 'registers an offense and autocorrects when methods are all defined in class' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            module Foo
+              def bar; end
+              def baz; end
+
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module Foo
+
+            #{access_modifier}
+
+            def bar; end
+            def baz; end
+            end
+          RUBY
+        end
+
+        it 'registers an offense and autocorrects when methods are all defined in class and there is a comment' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            module Foo
+              def bar; end
+              def baz; end
+
+              # comment
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module Foo
+
+            #{access_modifier}
+
+            # comment
+            def bar; end
+            def baz; end
+            end
+          RUBY
+        end
+
+        it 'registers an offense and autocorrects when methods are all defined in class and there is already a bare access modifier' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            module Foo
+              def bar; end
+              def baz; end
+
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+
+              %{access_modifier}
+              def quux; end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module Foo
+
+
+              #{access_modifier}
+
+            def bar; end
+            def baz; end
+              def quux; end
+            end
+          RUBY
+        end
+
+        it 'registers an offense and autocorrects when not all methods are defined in class' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            module Foo
+              def bar; end
+
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
       end
 
-      it 'registers an offense when argument to #{access_modifier} is splat with a `%i` array literal' do
+      it "registers an offense when argument to #{access_modifier} is splat with a `%i` array literal" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Foo
             foo
@@ -99,7 +187,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         expect_no_corrections
       end
 
-      it 'registers an offense when argument to #{access_modifier} is splat with a constant' do
+      it "registers an offense when argument to #{access_modifier} is splat with a constant" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Foo
             foo
@@ -115,7 +203,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
     context 'allow access modifiers on attrs' do
       let(:cop_config) { { 'AllowModifiersOnAttrs' => true } }
 
-      it 'accepts when argument to #{access_modifier} is an attr_*' do
+      it "accepts when argument to #{access_modifier} is an attr_*" do
         expect_no_offenses(<<~RUBY)
           class Foo
             #{access_modifier} attr_reader :foo
@@ -227,7 +315,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it 'accepts when using only #{access_modifier}' do
+      it "accepts when using only #{access_modifier}" do
         expect_no_offenses(<<~RUBY)
           #{access_modifier}
         RUBY
@@ -241,7 +329,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it 'registers an offense for correct + multiple opposite styles of #{access_modifier} usage' do
+      it "registers an offense for correct + multiple opposite styles of #{access_modifier} usage" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class TestOne
             #{access_modifier}
@@ -296,7 +384,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       end
 
-      it 'does not register an offense when using #{access_modifier} in a block' do
+      it "does not register an offense when using #{access_modifier} in a block" do
         expect_no_offenses(<<~RUBY)
           module MyModule
             singleton_methods.each { |method| #{access_modifier}(method) }
@@ -495,7 +583,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
-      it 'registers an offense for correct + multiple opposite styles of #{access_modifier} usage' do
+      it "registers an offense for correct + multiple opposite styles of #{access_modifier} usage" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class TestOne
             #{access_modifier} def foo; end
