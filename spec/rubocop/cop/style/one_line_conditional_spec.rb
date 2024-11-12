@@ -82,6 +82,21 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       RUBY
     end
 
+    it 'registers and corrects an offense when the else branch of a ternary operator has multiple expressions' do
+      expect_offense(<<~RUBY)
+        if cond; foo; else bar; baz; end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+          foo
+        else
+          bar; baz
+        end
+      RUBY
+    end
+
     it 'does not register an offense for unless/then/else/end with empty else' do
       expect_no_offenses('unless cond then run else end')
     end
