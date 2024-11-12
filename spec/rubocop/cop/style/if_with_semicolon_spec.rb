@@ -100,6 +100,17 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects a single-line `if/;/end` when the then body contains an arithmetic operator method call' do
+    expect_offense(<<~RUBY)
+      if cond;do_something - arg end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      cond ? do_something - arg : nil
+    RUBY
+  end
+
   it 'registers an offense and corrects a single-line `if/;/end` when the then body contains a method call with `[]`' do
     expect_offense(<<~RUBY)
       if cond; foo[key] else bar end
