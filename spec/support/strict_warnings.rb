@@ -35,7 +35,7 @@ module StrictWarnings
     return if RUBY_PATCHLEVEL == -1
     # Don't raise for warnings during development. It's expected that
     # some code will warn like "unused variable" while iterating.
-    return unless ENV['CI']
+    return unless ENV['STRICT_WARNINGS'] == '1'
 
     raise WarningError, message
   end

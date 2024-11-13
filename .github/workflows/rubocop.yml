@@ -36,6 +36,7 @@ jobs:
         env:
           CI_RUBY_VERSION: ${{ matrix.ruby }}
           CC_TEST_REPORTER_ID: dummy # Value doesn't matter, enables json formatter
+          STRICT_WARNINGS: 1
         run: COVERAGE=true bundle exec rake spec
       - name: Upload Coverage Artifact
         uses: actions/upload-artifact@v4
