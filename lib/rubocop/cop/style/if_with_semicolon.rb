@@ -117,7 +117,7 @@ module RuboCop
         end
 
         def require_argument_parentheses?(node)
-          return false unless node.call_type?
+          return false if !node.call_type? || node.arithmetic_operation?
 
           !node.parenthesized? && node.arguments.any? && !node.method?(:[]) && !node.method?(:[]=)
         end
