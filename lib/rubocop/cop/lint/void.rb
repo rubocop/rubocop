@@ -196,7 +196,7 @@ module RuboCop
         end
 
         def check_ensure(node)
-          return unless (body = node.body)
+          return unless (body = node.branch)
           # NOTE: the `begin` node case is already handled via `on_begin`
           return if body.begin_type?
 
