@@ -349,6 +349,44 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'registers a guard clause outside difference line block' do
+    expect_offense(<<~RUBY)
+      return if condition
+      ^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+      foo do
+        bar
+      end
+      baz
+    RUBY
+
+    expect_correction(<<~RUBY)
+      return if condition
+
+      foo do
+        bar
+      end
+      baz
+    RUBY
+  end
+
+  it 'accepts a guard clause outside oneliner block' do
+    expect_no_offenses(<<~RUBY)
+      return if condition; foo do
+        bar
+      end
+      baz
+    RUBY
+  end
+
+  it 'accepts a guard clause outside oneliner numbered block' do
+    expect_no_offenses(<<~RUBY)
+      return if condition; foo do
+        bar(_1)
+      end
+      baz
+    RUBY
+  end
+
   it 'accepts multiple guard clauses' do
     expect_no_offenses(<<~RUBY)
       def foo
