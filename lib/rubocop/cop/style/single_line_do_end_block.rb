@@ -6,8 +6,13 @@ module RuboCop
       # Checks for single-line `do`...`end` block.
       #
       # In practice a single line `do`...`end` is autocorrected when `EnforcedStyle: semantic`
-      # in `Style/BlockDelimiters`. The autocorrection maintains the `do` ... `end` syntax to
-      # preserve semantics and does not change it to `{`...`}` block.
+      # is configured for `Style/BlockDelimiters`. The autocorrection maintains the
+      # `do` ... `end` syntax to preserve semantics and does not change it to `{`...`}` block.
+      #
+      # NOTE: If `InspectBlocks` is set to `true` for `Layout/RedundantLineBreak`, blocks will
+      # be autocorrected to be on a single line if possible. This cop respects that configuration
+      # by not registering an offense if it would subsequently cause a
+      # `Layout/RedundantLineBreak` offense.
       #
       # @example
       #
@@ -27,12 +32,14 @@ module RuboCop
       #
       class SingleLineDoEndBlock < Base
         extend AutoCorrector
+        include CheckSingleLineSuitability
 
         MSG = 'Prefer multiline `do`...`end` block.'
 
         # rubocop:disable Metrics/AbcSize
         def on_block(node)
           return if !node.single_line? || node.braces?
+          return if single_line_blocks_preferred? && suitable_as_single_line?(node)
 
           add_offense(node) do |corrector|
             corrector.insert_after(do_line(node), "\n")
@@ -60,7 +67,10 @@ module RuboCop
           end
         end
 
-        def x(corrector, node); end
+        def single_line_blocks_preferred?
+          redundant_line_break_config = @config.for_cop('Layout/RedundantLineBreak')
+          redundant_line_break_config['Enabled'] && redundant_line_break_config['InspectBlocks']
+        end
       end
     end
   end

@@ -1,0 +1,1 @@
+* [#12597](https://github.com/rubocop/rubocop/issues/12597): Update `Style/SingleLineDoEndBlock` to not register an offense if it will introduce a conflicting `Layout/RedundantLineBreak` offense. ([@dvandersluis][])

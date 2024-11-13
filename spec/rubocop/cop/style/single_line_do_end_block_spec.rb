@@ -109,4 +109,36 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
       foo { bar }
     RUBY
   end
+
+  context 'when `Layout/RedundantLineBreak` is enabled with `InspectBlocks: true`' do
+    let(:other_cops) do
+      {
+        'Layout/RedundantLineBreak' => { 'Enabled' => true, 'InspectBlocks' => true },
+        'Layout/LineLength' => { 'Max' => 20 }
+      }
+    end
+
+    context 'when a block fits on a single line' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          a do b end
+        RUBY
+      end
+    end
+
+    context 'when the block does not fit on a single line' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          aaaaaaaaaaaa do bbbbbbbbbbbbb end
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          aaaaaaaaaaaa do
+           bbbbbbbbbbbbb#{' '}
+          end
+        RUBY
+      end
+    end
+  end
 end
