@@ -3693,4 +3693,29 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
   end
+
+  it 'does not cause an infinite loop between `Layout/RedundantLineBreak` and `Style/SingleLineDoEndBlock`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      a do
+        b
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/RedundantLineBreak:
+        Enabled: true
+        InspectBlocks: true
+
+      Style/SingleLineDoEndBlock:
+        Enabled: true
+    YAML
+
+    status = cli.run(%w[--autocorrect -d])
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      a { b }
+    RUBY
+  end
 end
