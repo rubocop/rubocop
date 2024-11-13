@@ -43,7 +43,7 @@ module RuboCop
         MSG = 'Do not return from an `ensure` block.'
 
         def on_ensure(node)
-          node.body&.each_node(:return) { |return_node| add_offense(return_node) }
+          node.branch&.each_node(:return) { |return_node| add_offense(return_node) }
         end
       end
     end

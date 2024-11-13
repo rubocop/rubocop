@@ -38,7 +38,7 @@ module RuboCop
         MSG = 'Empty `ensure` block detected.'
 
         def on_ensure(node)
-          return if node.body
+          return if node.branch
 
           add_offense(node.loc.keyword) { |corrector| corrector.remove(node.loc.keyword) }
         end

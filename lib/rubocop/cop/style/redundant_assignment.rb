@@ -93,7 +93,7 @@ module RuboCop
         end
 
         def check_ensure_node(node)
-          check_branch(node.body)
+          check_branch(node.branch)
         end
 
         def check_begin_node(node)

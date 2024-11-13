@@ -62,12 +62,14 @@ module RuboCop
           check_indentation(node.loc.else, else_node)
         end
 
-        def on_ensure(node)
+        def on_resbody(node)
           check_indentation(node.loc.keyword, node.body)
         end
+        alias on_for on_resbody
 
-        alias on_resbody on_ensure
-        alias on_for     on_ensure
+        def on_ensure(node)
+          check_indentation(node.loc.keyword, node.branch)
+        end
 
         def on_kwbegin(node)
           # Check indentation against end keyword but only if it's first on its
