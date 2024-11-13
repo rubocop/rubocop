@@ -44,6 +44,7 @@ module RuboCop
       #
       class RedundantLineBreak < Base
         include CheckAssignment
+        include CheckSingleLineSuitability
         extend AutoCorrector
 
         MSG = 'Redundant line break detected.'
@@ -84,7 +85,7 @@ module RuboCop
         end
 
         def offense?(node)
-          return false if !node.multiline? || too_long?(node) || !suitable_as_single_line?(node)
+          return false unless node.multiline? && suitable_as_single_line?(node)
           return require_backslash?(node) if node.operator_keyword?
 
           !index_access_call_chained?(node) && !configured_to_not_be_inspected?(node)
@@ -117,43 +118,10 @@ module RuboCop
           @config.for_cop('Layout/SingleLineBlockChain')['Enabled']
         end
 
-        def suitable_as_single_line?(node)
-          !comment_within?(node) &&
-            node.each_descendant(:if, :case, :kwbegin, :def, :defs).none? &&
-            node.each_descendant(:dstr, :str).none? { |n| n.heredoc? || n.value.include?("\n") } &&
-            node.each_descendant(:begin, :sym).none? { |b| !b.single_line? }
-        end
-
         def convertible_block?(node)
           parent = node.parent
           parent&.block_type? && node == parent.send_node &&
             (node.parenthesized? || !node.arguments?)
-        end
-
-        def comment_within?(node)
-          comment_line_numbers = processed_source.comments.map { |comment| comment.loc.line }
-
-          comment_line_numbers.any? do |comment_line_number|
-            comment_line_number >= node.first_line && comment_line_number <= node.last_line
-          end
-        end
-
-        def too_long?(node)
-          lines = processed_source.lines[(node.first_line - 1)...node.last_line]
-          to_single_line(lines.join("\n")).length > max_line_length
-        end
-
-        def to_single_line(source)
-          source
-            .gsub(/" *\\\n\s*'/, %q(" + ')) # Double quote, backslash, and then single quote
-            .gsub(/' *\\\n\s*"/, %q(' + ")) # Single quote, backslash, and then double quote
-            .gsub(/(["']) *\\\n\s*\1/, '')  # Double or single quote, backslash, then same quote
-            .gsub(/\n\s*(?=(&)?\.\w)/, '')  # Extra space within method chaining which includes `&.`
-            .gsub(/\s*\\?\n\s*/, ' ')       # Any other line break, with or without backslash
-        end
-
-        def max_line_length
-          config.for_cop('Layout/LineLength')['Max']
         end
       end
     end

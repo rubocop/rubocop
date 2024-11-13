@@ -78,6 +78,7 @@ require_relative 'rubocop/cop/mixin/allowed_receivers'
 require_relative 'rubocop/cop/mixin/auto_corrector' # rubocop:todo Naming/InclusiveLanguage
 require_relative 'rubocop/cop/mixin/check_assignment'
 require_relative 'rubocop/cop/mixin/check_line_breakable'
+require_relative 'rubocop/cop/mixin/check_single_line_suitability'
 require_relative 'rubocop/cop/mixin/configurable_max'
 require_relative 'rubocop/cop/mixin/code_length' # relies on configurable_max
 require_relative 'rubocop/cop/mixin/configurable_enforced_style'
