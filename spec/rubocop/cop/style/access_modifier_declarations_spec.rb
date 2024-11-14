@@ -125,6 +125,63 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           end
         RUBY
       end
+
+      it 'accepts multiple arguments on attrs' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            #{access_modifier} attr_reader :reader1, :reader2
+            #{access_modifier} attr_writer :writer1, :writer2
+            #{access_modifier} attr_accessor :accessor1, :accessor2
+            #{access_modifier} attr :attr1, :attr2
+          end
+        RUBY
+      end
+    end
+
+    context 'do not allow access modifiers on attrs' do
+      let(:cop_config) { { 'AllowModifiersOnAttrs' => false } }
+
+      %i[attr_reader attr_writer attr_accessor attr].each do |attr_method|
+        context "for #{access_modifier} #{attr_method}" do
+          it 'registers an offense for a single symbol' do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              class Foo
+                foo
+                %{access_modifier} #{attr_method} :bar
+                ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              class Foo
+                foo
+              #{access_modifier}
+
+              #{attr_method} :bar
+              end
+            RUBY
+          end
+
+          it 'registers an offense for multiple symbols' do
+            expect_offense(<<~RUBY, access_modifier: access_modifier)
+              class Foo
+                foo
+                %{access_modifier} #{attr_method} :bar, :baz
+                ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              class Foo
+                foo
+              #{access_modifier}
+
+              #{attr_method} :bar, :baz
+              end
+            RUBY
+          end
+        end
+      end
     end
   end
 
