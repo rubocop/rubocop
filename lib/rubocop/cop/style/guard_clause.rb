@@ -264,7 +264,7 @@ module RuboCop
 
         def and_or_guard_clause?(guard_clause)
           parent = guard_clause.parent
-          parent.and_type? || parent.or_type?
+          parent.operator_keyword?
         end
 
         def too_long_for_single_line?(node, example)

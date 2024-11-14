@@ -147,8 +147,7 @@ module RuboCop
           return false unless parent
 
           condition?(parent, node) ||
-            parent.and_type? ||
-            parent.or_type? ||
+            parent.operator_keyword? ||
             (parent.send_type? && parent.negation_method?)
         end
 

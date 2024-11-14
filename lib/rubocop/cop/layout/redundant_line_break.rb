@@ -85,7 +85,7 @@ module RuboCop
 
         def offense?(node)
           return false if !node.multiline? || too_long?(node) || !suitable_as_single_line?(node)
-          return require_backslash?(node) if node.and_type? || node.or_type?
+          return require_backslash?(node) if node.operator_keyword?
 
           !index_access_call_chained?(node) && !configured_to_not_be_inspected?(node)
         end

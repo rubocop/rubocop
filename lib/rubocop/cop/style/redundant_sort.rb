@@ -201,7 +201,7 @@ module RuboCop
         def with_logical_operator?(node)
           return false unless (parent = node.parent)
 
-          parent.or_type? || parent.and_type?
+          parent.operator_keyword?
         end
       end
     end

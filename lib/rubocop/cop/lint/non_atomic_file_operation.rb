@@ -95,7 +95,7 @@ module RuboCop
         end
 
         def allowable_use_with_if?(if_node)
-          if_node.condition.and_type? || if_node.condition.or_type? || if_node.else_branch
+          if_node.condition.operator_keyword? || if_node.else_branch
         end
 
         def register_offense(node, exist_node)

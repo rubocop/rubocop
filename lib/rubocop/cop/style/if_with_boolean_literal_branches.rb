@@ -155,8 +155,7 @@ module RuboCop
         end
 
         def require_parentheses?(condition)
-          condition.and_type? || condition.or_type? ||
-            (condition.send_type? && condition.comparison_method?)
+          condition.operator_keyword? || (condition.send_type? && condition.comparison_method?)
         end
       end
     end

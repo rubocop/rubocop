@@ -481,7 +481,7 @@ module RuboCop
         end
 
         def conditional?(node)
-          node.if_type? || node.or_type? || node.and_type?
+          node.if_type? || node.operator_keyword?
         end
 
         def array_or_range?(node)

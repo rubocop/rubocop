@@ -203,7 +203,7 @@ module RuboCop
           end
 
           def logical_operator?(node)
-            (node.and_type? || node.or_type?) && node.logical_operator?
+            node.operator_keyword? && node.logical_operator?
           end
 
           def hash_literal?(node)
