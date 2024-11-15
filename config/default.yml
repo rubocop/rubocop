@@ -2382,7 +2382,6 @@ Lint/ShadowedArgument:
   VersionAdded: '0.52'
   IgnoreImplicitReferences: false
 
-
 Lint/ShadowedException:
   Description: >-
                   Avoid rescuing a higher level exception
@@ -2396,6 +2395,11 @@ Lint/ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
   VersionAdded: '0.9'
+
+Lint/SharedMutableDefault:
+  Description: 'Checks for mutable literals used as default arguments during Hash initialization.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
 
 Lint/StructNewOverride:
   Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
