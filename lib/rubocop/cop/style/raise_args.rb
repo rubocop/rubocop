@@ -150,7 +150,7 @@ module RuboCop
         end
 
         def requires_parens?(parent)
-          parent.and_type? || parent.or_type? || (parent.if_type? && parent.ternary?)
+          parent.operator_keyword? || (parent.if_type? && parent.ternary?)
         end
       end
     end

@@ -61,7 +61,7 @@ module RuboCop
         private
 
         def modifier_form?(operation)
-          return true if operation.and_type? || operation.or_type?
+          return true if operation.operator_keyword?
 
           operation.modifier_form?
         end

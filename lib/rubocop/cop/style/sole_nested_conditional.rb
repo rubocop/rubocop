@@ -237,8 +237,7 @@ module RuboCop
         end
 
         def wrap_condition?(node)
-          node.and_type? || node.or_type? ||
-            (node.call_type? && node.arguments.any? && !node.parenthesized?)
+          node.operator_keyword? || (node.call_type? && node.arguments.any? && !node.parenthesized?)
         end
 
         def replace_condition(condition)

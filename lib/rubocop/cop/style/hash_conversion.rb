@@ -111,8 +111,7 @@ module RuboCop
         end
 
         def requires_parens?(node)
-          (node.call_type? && node.arguments.any? && !node.parenthesized?) ||
-            node.or_type? || node.and_type?
+          (node.call_type? && node.arguments.any? && !node.parenthesized?) || node.operator_keyword?
         end
 
         def multi_argument(node)
