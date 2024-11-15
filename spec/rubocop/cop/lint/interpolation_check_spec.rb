@@ -80,4 +80,10 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
       %w("#{a}-foo")
     RUBY
   end
+
+  it 'does not register an offense when using invalid syntax in interpolation' do
+    expect_no_offenses(<<~'RUBY')
+      '#{%<expression>s}'
+    RUBY
+  end
 end
