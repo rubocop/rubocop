@@ -1753,6 +1753,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           - URISchemes
           - IgnoreCopDirectives
           - AllowedPatterns
+          - SplitStrings
       RESULT
     end
 

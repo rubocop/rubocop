@@ -1086,11 +1086,11 @@ Layout/LineLength:
   StyleGuide: '#max-line-length'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '1.4'
+  VersionChanged: '<<next>>'
   Max: 120
+  AllowHeredoc: true
   # To make it possible to copy or click on URIs in the code, we allow lines
   # containing a URI to be longer than Max.
-  AllowHeredoc: true
   AllowURI: true
   URISchemes:
     - http
@@ -1102,6 +1102,8 @@ Layout/LineLength:
   # elements. Strings will be converted to Regexp objects. A line that matches
   # any regular expression listed in this option will be ignored by LineLength.
   AllowedPatterns: []
+  # If SplitStrings is true, long strings will be split using continuations
+  SplitStrings: false
 
 Layout/MultilineArrayBraceLayout:
   Description: >-
