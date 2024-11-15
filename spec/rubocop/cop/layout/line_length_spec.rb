@@ -468,7 +468,372 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
   end
 
   context 'autocorrection' do
-    let(:cop_config) { { 'Max' => 40, 'AllowedPatterns' => nil, 'AutoCorrect' => true } }
+    let(:split_strings) { true }
+    let(:cop_config) do
+      {
+        'Max' => 40,
+        'AllowedPatterns' => nil,
+        'AutoCorrect' => true,
+        'SplitStrings' => split_strings
+      }
+    end
+
+    context 'string' do
+      context 'when under limit' do
+        it 'does not add any offenses' do
+          expect_no_offenses(<<~RUBY)
+            'aaaaaaaaaaaaaaaaaaa'
+          RUBY
+        end
+
+        it 'does not add any offenses with interpolation' do
+          expect_no_offenses(<<~'RUBY')
+            'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa#{bbbbb}'
+          RUBY
+        end
+      end
+
+      context 'when over limit' do
+        context 'when SplitStrings: true' do
+          let(:split_strings) { true }
+
+          it 'breaks the string at the limit' do
+            expect_offense(<<~RUBY)
+              'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb'
+                                                      ^^^ Line is too long. [43/40]
+            RUBY
+
+            expect_correction(<<~'RUBY')
+              'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \
+              'bbbbb'
+            RUBY
+          end
+
+          context 'when the string straddles after the limit' do
+            it 'registers an offense but does not correct' do
+              expect_offense(<<~RUBY)
+                foo
+                                                     'aaaa'
+                                                        ^^^ Line is too long. [43/40]
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+
+          context 'when the string starts after the limit' do
+            it 'registers an offense but does not correct' do
+              expect_offense(<<~RUBY)
+                foo
+                                                        'aaaa'
+                                                        ^^^^^^ Line is too long. [46/40]
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+
+          context 'when there is already a continuation' do
+            it 'breaks the string at the limit' do
+              expect_offense(<<~'RUBY')
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \
+                'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbcccccccccccc'
+                                                        ^^^^^^^^^^ Line is too long. [50/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \
+                'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' \
+                'cccccccccccc'
+              RUBY
+            end
+          end
+
+          context 'when the string is not at the start of the source' do
+            it 'breaks the string at the limit' do
+              expect_offense(<<~RUBY)
+                x = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbb'
+                                                        ^^^ Line is too long. [43/40]
+              RUBY
+
+              expect_correction(<<~'RUBY', loop: false)
+                x = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \
+                'bbbbb'
+              RUBY
+            end
+
+            context 'with spaces' do
+              it 'breaks the string at the last space' do
+                expect_offense(<<~RUBY)
+                  x = 'aaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbb'
+                                                          ^^^^ Line is too long. [44/40]
+                RUBY
+
+                expect_correction(<<~'RUBY', loop: false)
+                  x = 'aaaaaaaaaaaaaaaaaaaaaa ' \
+                  'bbbbbbbbbbbbbbb'
+                RUBY
+              end
+            end
+
+            context 'with escape characters' do
+              it 'breaks the string at the last space' do
+                expect_offense(<<~'RUBY')
+                  x = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nbbbbbbbbbb'
+                                                          ^^^^^^^^^ Line is too long. [49/40]
+                RUBY
+
+                expect_correction(<<~'RUBY', loop: false)
+                  x = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \
+                  '\nbbbbbbbbbb'
+                RUBY
+              end
+            end
+          end
+
+          context 'inside a hash' do
+            it 'breaks the hash not the string' do
+              expect_offense(<<~RUBY)
+                { x: 'aaaa', y: 'bbbbbbbbbbbbbbbbbbbbbbbbbbb', z: 'cccccccccccccccccccccccccccccccccccccccccc' }
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [96/40]
+              RUBY
+
+              expect_correction(<<~RUBY)
+                { x: 'aaaa',#{' '}
+                y: 'bbbbbbbbbbbbbbbbbbbbbbbbbbb', z: 'cccccccccccccccccccccccccccccccccccccccccc' }
+              RUBY
+            end
+          end
+
+          context 'due to a comment' do
+            it 'registers an offense but does not correct' do
+              expect_offense(<<~RUBY)
+                'aaaaaaaaaaaaaaaaaaaaa' # this comment makes the line too long
+                                                        ^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [62/40]
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+
+          context 'when there is a space in the string' do
+            it 'breaks the string at the space' do
+              expect_offense(<<~RUBY)
+                'aaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbbbbbbbbb'
+                                                        ^^^^^^ Line is too long. [46/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                'aaaaaaaaaaaaaaaaaaaaaaaaa ' \
+                'bbbbbbbbbbbbbbbbbb'
+              RUBY
+            end
+          end
+
+          context 'when there are multiple spaces in the string' do
+            it 'breaks the string at the last space before the limit' do
+              expect_offense(<<~RUBY)
+                'aaaaaaaaaaaaaaaaaaaaaaaaa bbbbb ccccccccc dddddddddddddddddddddd eeeeeeeeeeee'
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [79/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                'aaaaaaaaaaaaaaaaaaaaaaaaa bbbbb ' \
+                'ccccccccc dddddddddddddddddddddd ' \
+                'eeeeeeeeeeee'
+              RUBY
+            end
+          end
+
+          context 'when there is an escape character at the limit' do
+            it 'breaks the string before the escape character' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\nbbbb"
+                                                        ^^^ Line is too long. [43/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "\nbbbb"
+              RUBY
+            end
+          end
+
+          context 'when there is an \u escape character at the limit' do
+            it 'breaks the string before the escape character' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\u0061bbbb"
+                                                        ^^^^^^ Line is too long. [46/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "\u0061bbbb"
+              RUBY
+            end
+          end
+
+          context 'when there is an \x escape character at the limit' do
+            it 'breaks the string before the escape character' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\x61bbbb"
+                                                        ^^ Line is too long. [42/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "\x61bbbb"
+              RUBY
+            end
+          end
+
+          context 'when there is a multibyte character at the limit' do
+            it 'breaks the string at the limit' do
+              expect_offense(<<~RUBY)
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaあbbbbb"
+                                                        ^^^^ Line is too long. [44/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "あbbbbb"
+              RUBY
+            end
+          end
+
+          context 'when the string is inside a %{}' do
+            it 'registers an offense but does not correct' do
+              expect_offense(<<~RUBY)
+                %{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
+                                                        ^^^^ Line is too long. [44/40]
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+
+          %i[%q %Q %i %I %w %W].each do |macro|
+            context "when the string is inside a #{macro}" do
+              it 'registers an offense but does not correct' do
+                expect_offense(<<~RUBY, macro: macro)
+                  %{macro}[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]
+                  _{macro}                                      ^^^^^ Line is too long. [45/40]
+                RUBY
+
+                expect_no_corrections
+              end
+            end
+          end
+
+          context 'when the string is inside a heredoc' do
+            it 'registers an offense but does not correct' do
+              expect_offense(<<~RUBY)
+                <<~STR
+                  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+                                                        ^^^ Line is too long. [43/40]
+                STR
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+
+          context 'with interpolation' do
+            it 'breaks the string before the interpolation' do
+              expect_offense(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa#{bbbb}"
+                                                        ^^^^ Line is too long. [44/40]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                "#{bbbb}"
+              RUBY
+            end
+
+            context 'when the interpolation is before the limit' do
+              it 'breaks the string at the limit' do
+                expect_offense(<<~'RUBY')
+                  "#{bbbb}aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                                                          ^^^^^^^^^^^^^^ Line is too long. [54/40]
+                RUBY
+
+                expect_correction(<<~'RUBY')
+                  "#{bbbb}aaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                  "aaaaaaaaaaaaaaaa"
+                RUBY
+              end
+            end
+
+            context 'when the interpolation comes after the limit' do
+              it 'breaks the string but not the interpolation' do
+                expect_offense(<<~'RUBY')
+                  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa#{bbbb}"
+                                                          ^^^^^^^^^^^^^^ Line is too long. [54/40]
+                RUBY
+
+                expect_correction(<<~'RUBY')
+                  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                  "aaaaaaaaa#{bbbb}"
+                RUBY
+              end
+            end
+
+            context 'when the entire string is interpolation' do
+              it 'registers an offense but does not correct' do
+                expect_offense(<<~'RUBY')
+                  "#{aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}"
+                                                          ^^^^^^^^^^^^^^ Line is too long. [54/40]
+                RUBY
+
+                expect_no_corrections
+              end
+            end
+
+            context 'with multiple interpolations' do
+              it 'breaks the string where appropriate' do
+                expect_offense(<<~'RUBY')
+                  "#{aaaaa}bbbbbbb#{cccccc}ddddddddddddddddddddd#{eeeeeeeeeeee}"
+                                                          ^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [62/40]
+                RUBY
+
+                expect_correction(<<~'RUBY')
+                  "#{aaaaa}bbbbbbb#{cccccc}dddddddddddd" \
+                  "ddddddddd#{eeeeeeeeeeee}"
+                RUBY
+              end
+            end
+
+            context 'nested interpolation' do
+              it 'breaks the string before the outer interpolation' do
+                expect_offense(<<~'RUBY')
+                  "aaaaaaaaaaaaa#{"#{bbbbbbbbbbbbbbbbbbbbbbbb}"}"
+                                                          ^^^^^^^ Line is too long. [47/40]
+                RUBY
+
+                expect_correction(<<~'RUBY')
+                  "aaaaaaaaaaaaa" \
+                  "#{"#{bbbbbbbbbbbbbbbbbbbbbbbb}"}"
+                RUBY
+              end
+            end
+          end
+        end
+
+        context 'when SplitStrings: false' do
+          let(:split_strings) { false }
+
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY)
+              'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+                                                      ^^^ Line is too long. [43/40]
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+      end
+    end
 
     context 'hash' do
       context 'when under limit' do
@@ -1178,13 +1543,16 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
 
       context 'semicolons inside string literal' do
-        it 'adds offense and autocorrects elsewhere' do
+        it 'adds offense and autocorrects' do
           expect_offense(<<~RUBY)
             "00000000000000000;0000000000000000000'000000;00000'0000;0000;000"
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [66/40]
           RUBY
 
-          expect_no_corrections
+          expect_correction(<<~'RUBY')
+            "00000000000000000;000000000000000000" \
+            "0'000000;00000'0000;0000;000"
+          RUBY
         end
       end
     end

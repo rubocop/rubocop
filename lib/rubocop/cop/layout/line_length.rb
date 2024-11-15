@@ -60,7 +60,7 @@ module RuboCop
       #     bar: "0000000000",
       #     baz: "0000000000",
       #   }
-      class LineLength < Base
+      class LineLength < Base # rubocop:disable Metrics/ClassLength
         include CheckLineBreakable
         include AllowedPattern
         include RangeHelp
@@ -74,8 +74,15 @@ module RuboCop
         def on_block(node)
           check_for_breakable_block(node)
         end
-
         alias on_numblock on_block
+
+        def on_str(node)
+          check_for_breakable_str(node)
+        end
+
+        def on_dstr(node)
+          check_for_breakable_dstr(node)
+        end
 
         def on_potential_breakable_node(node)
           check_for_breakable_node(node)
@@ -132,6 +139,42 @@ module RuboCop
           breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
         end
 
+        def check_for_breakable_str(node)
+          line_index = node.loc.line - 1
+          return if breakable_range_by_line_index[line_index]
+
+          return unless breakable_string?(node)
+          return unless (delimiter = string_delimiter(node))
+          return unless (pos = breakable_string_position(node))
+
+          breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
+          breakable_string_delimiters[line_index] = delimiter
+        end
+
+        def check_for_breakable_dstr(node) # rubocop:disable Metrics/AbcSize
+          line_index = node.loc.line - 1
+          return if breakable_range_by_line_index[line_index]
+
+          return unless breakable_dstr?(node)
+          return unless (delimiter = string_delimiter(node))
+
+          node.each_child_node(:begin).detect do |begin_node|
+            next unless (pos = breakable_dstr_begin_position(begin_node))
+
+            breakable_range_by_line_index[line_index] = range_between(pos, pos + 1)
+            breakable_string_delimiters[line_index] = delimiter
+          end
+        end
+
+        def breakable_string?(node)
+          allow_string_split? &&
+            node.single_line? &&
+            !node.heredoc? &&
+            # TODO: strings inside hashes, kwargs and arrays are currently ignored,
+            # but could be considered in the future
+            !node.parent&.type?(:pair, :kwoptarg, :array)
+        end
+
         def breakable_block_range(block_node)
           if block_node.arguments? && !block_node.lambda?
             block_node.arguments.loc.end
@@ -153,8 +196,45 @@ module RuboCop
           next_range
         end
 
+        def breakable_string_position(node)
+          source_range = node.source_range
+          return if source_range.last_column < max
+          return unless (pos = breakable_string_range(node))
+
+          pos.end_pos unless pos.end_pos == source_range.begin_pos
+        end
+
+        # Locate where to break a string that is too long, ensuring that escape characters
+        # are not bisected.
+        # If the string contains spaces, use them to determine a place for a clean break;
+        # otherwise, the string will be broken at the line length limit.
+        def breakable_string_range(node) # rubocop:disable Metrics/AbcSize
+          source_range = node.source_range
+          relevant_substr = largest_possible_string(node)
+
+          if (space_pos = relevant_substr.rindex(/\s/))
+            source_range.resize(space_pos + 1)
+          elsif (escape_pos = relevant_substr.rindex(/\\(u[\da-f]{0,4}|x[\da-f]{0,2})?\z/))
+            source_range.resize(escape_pos)
+          else
+            adjustment = max - source_range.last_column - 3
+            return if adjustment.abs > source_range.size
+
+            source_range.adjust(end_pos: max - source_range.last_column - 3)
+          end
+        end
+
+        def breakable_dstr_begin_position(node)
+          source_range = node.source_range
+          source_range.begin_pos if source_range.begin_pos < max && source_range.end_pos >= max
+        end
+
         def breakable_range_by_line_index
           @breakable_range_by_line_index ||= {}
+        end
+
+        def breakable_string_delimiters
+          @breakable_string_delimiters ||= {}
         end
 
         def heredocs
@@ -197,7 +277,14 @@ module RuboCop
 
           add_offense(loc, message: message) do |corrector|
             self.max = line_length(line)
-            corrector.insert_before(breakable_range, "\n") unless breakable_range.nil?
+
+            insertion = if (delimiter = breakable_string_delimiters[line_index])
+                          [delimiter, " \\\n", delimiter].join
+                        else
+                          "\n"
+                        end
+
+            corrector.insert_before(breakable_range, insertion) unless breakable_range.nil?
           end
         end
 
@@ -222,6 +309,10 @@ module RuboCop
 
         def allowed_heredoc
           cop_config['AllowHeredoc']
+        end
+
+        def allow_string_split?
+          cop_config['SplitStrings']
         end
 
         def extract_heredocs(ast)
@@ -269,6 +360,29 @@ module RuboCop
           return if uri_range && allowed_uri_position?(line, uri_range)
 
           register_offense(excess_range(uri_range, line, line_index), line, line_index)
+        end
+
+        def breakable_dstr?(node)
+          # If the `dstr` only contains one child, it cannot be broken
+          breakable_string?(node) && !node.child_nodes.one?
+        end
+
+        def string_delimiter(node)
+          delimiter = node.loc.begin
+          delimiter ||= node.parent.loc.begin if node.parent&.dstr_type?
+          delimiter = delimiter&.source
+
+          delimiter if %w[' "].include?(delimiter)
+        end
+
+        # Find the largest possible substring of a string node to retain before a break
+        def largest_possible_string(node)
+          # The maximum allowed length of a string value is:
+          # `Max` - end delimiter (quote) - continuation characters (space and slash)
+          max_length = max - 3
+          # If the string doesn't start at the beginning of the line, the max length is offset
+          max_length -= column_offset_between(node.loc, node.parent.loc) if node.parent
+          node.source[0...(max_length)]
         end
       end
     end

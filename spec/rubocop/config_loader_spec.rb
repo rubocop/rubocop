@@ -995,7 +995,8 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowURI' => true,
               'URISchemes' => %w[http https],
               'IgnoreCopDirectives' => true,
-              'AllowedPatterns' => []
+              'AllowedPatterns' => [],
+              'SplitStrings' => false
             },
             'Metrics/MethodLength' => {
               'Description' =>
@@ -1098,7 +1099,8 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowURI' => true,
               'URISchemes' => %w[http https],
               'IgnoreCopDirectives' => true,
-              'AllowedPatterns' => []
+              'AllowedPatterns' => [],
+              'SplitStrings' => false
             }
           )
 
