@@ -47,7 +47,7 @@ module RuboCop
       #     run
       #   else
       #     dont
-      #   eend
+      #   end
       #
       class OneLineConditional < Base
         include Alignment
