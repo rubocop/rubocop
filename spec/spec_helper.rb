@@ -11,6 +11,8 @@ require 'rubocop'
 require 'rubocop/cop/internal_affairs'
 require 'rubocop/server'
 
+# FIXME: Remove when https://github.com/bblimke/webmock/pull/1081 is merged and released
+Net::HTTPSession = Net::HTTP unless defined?(Net::HTTPSession)
 require 'webmock/rspec'
 
 require_relative 'core_ext/string'
