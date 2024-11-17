@@ -12,9 +12,11 @@ module RuboCop
       #
       #   # bad
       #   array = [ a, b, c, d ]
+      #   array = [ a, [ b, c ]]
       #
       #   # good
       #   array = [a, b, c, d]
+      #   array = [a, [b, c]]
       #
       # @example EnforcedStyle: space
       #   # The `space` style enforces that array literals have
@@ -22,9 +24,11 @@ module RuboCop
       #
       #   # bad
       #   array = [a, b, c, d]
+      #   array = [ a, [ b, c ]]
       #
       #   # good
       #   array = [ a, b, c, d ]
+      #   array = [ a, [ b, c ] ]
       #
       # @example EnforcedStyle: compact
       #   # The `compact` style normally requires a space inside
@@ -32,6 +36,7 @@ module RuboCop
       #   # or right brackets are collapsed together in nested arrays.
       #
       #   # bad
+      #   array = [a, b, c, d]
       #   array = [ a, [ b, c ] ]
       #   array = [
       #     [ a ],
@@ -39,6 +44,7 @@ module RuboCop
       #   ]
       #
       #   # good
+      #   array = [ a, b, c, d ]
       #   array = [ a, [ b, c ]]
       #   array = [[ a ],
       #     [ b, c ]]
