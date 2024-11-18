@@ -40,7 +40,6 @@ module RuboCop
       #
       class BeginEndAlignment < Base
         include EndKeywordAlignment
-        include RangeHelp
         extend AutoCorrector
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'

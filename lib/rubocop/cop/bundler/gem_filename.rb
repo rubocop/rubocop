@@ -27,7 +27,6 @@ module RuboCop
       #   Project contains gems.rb and gems.locked files
       class GemFilename < Base
         include ConfigurableEnforcedStyle
-        include RangeHelp
 
         MSG_GEMFILE_REQUIRED = '`gems.rb` file was found but `Gemfile` is required ' \
                                '(file path: %<file_path>s).'

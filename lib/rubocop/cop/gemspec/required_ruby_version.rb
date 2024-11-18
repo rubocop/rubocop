@@ -53,8 +53,6 @@ module RuboCop
       #     spec.required_ruby_version = '~> 2.5'
       #   end
       class RequiredRubyVersion < Base
-        include RangeHelp
-
         RESTRICT_ON_SEND = %i[required_ruby_version=].freeze
         NOT_EQUAL_MSG = '`required_ruby_version` and `TargetRubyVersion` ' \
                         '(%<target_ruby_version>s, which may be specified in ' \

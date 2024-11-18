@@ -21,8 +21,6 @@ module RuboCop
       #   # File consisting only of comments
       #
       class EmptyFile < Base
-        include RangeHelp
-
         MSG = 'Empty file detected.'
 
         def on_new_investigation

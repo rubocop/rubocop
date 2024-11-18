@@ -50,8 +50,6 @@ module RuboCop
       #   end
       #
       class StyleDetectedApiUse < Base
-        include RangeHelp
-
         MSG_FOR_POSITIVE_WITHOUT_NEGATIVE =
           '`correct_style_detected` method called without ' \
           'calling a negative `*_style_detected` method.'

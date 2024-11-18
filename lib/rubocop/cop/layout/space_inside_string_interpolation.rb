@@ -22,7 +22,6 @@ module RuboCop
         include Interpolation
         include SurroundingSpace
         include ConfigurableEnforcedStyle
-        include RangeHelp
         extend AutoCorrector
 
         MSG = '%<command>s space inside string interpolation.'

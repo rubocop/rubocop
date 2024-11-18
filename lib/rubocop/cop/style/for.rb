@@ -44,7 +44,6 @@ module RuboCop
       #
       class For < Base
         include ConfigurableEnforcedStyle
-        include RangeHelp
         extend AutoCorrector
 
         EACH_LENGTH = 'each'.length

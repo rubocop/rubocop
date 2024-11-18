@@ -23,7 +23,6 @@ module RuboCop
       #   foo = bar unless condition
       #
       class RedundantSelfAssignmentBranch < Base
-        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Remove the self-assignment branch.'
