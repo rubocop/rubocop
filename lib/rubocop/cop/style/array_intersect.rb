@@ -28,6 +28,7 @@ module RuboCop
       #   # bad
       #   (array1 & array2).any?
       #   (array1 & array2).empty?
+      #   (array1 & array2).none?
       #
       #   # good
       #   array1.intersect?(array2)
@@ -57,7 +58,7 @@ module RuboCop
           (send
             (begin
               (send $(...) :& $(...))
-            ) ${:any? :empty?}
+            ) ${:any? :empty? :none?}
           )
         PATTERN
 
@@ -66,14 +67,14 @@ module RuboCop
           (send
             (begin
               (send $(...) :& $(...))
-            ) ${:present? :any? :blank? :empty?}
+            ) ${:present? :any? :blank? :empty? :none?}
           )
         PATTERN
 
         MSG = 'Use `%<negated>s%<receiver>s.intersect?(%<argument>s)` ' \
               'instead of `(%<receiver>s & %<argument>s).%<method_name>s`.'
         STRAIGHT_METHODS = %i[present? any?].freeze
-        NEGATED_METHODS = %i[blank? empty?].freeze
+        NEGATED_METHODS = %i[blank? empty? none?].freeze
         RESTRICT_ON_SEND = (STRAIGHT_METHODS + NEGATED_METHODS).freeze
 
         def on_send(node)
