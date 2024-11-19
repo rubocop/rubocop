@@ -32,6 +32,17 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
       RUBY
     end
 
+    it 'registers an offense when using `none?`' do
+      expect_offense(<<~RUBY)
+        (a & b).none?
+        ^^^^^^^^^^^^^ Use `!a.intersect?(b)` instead of `(a & b).none?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        !a.intersect?(b)
+      RUBY
+    end
+
     it 'does not register an offense when using `(array1 & array2).any?` with block' do
       expect_no_offenses(<<~RUBY)
         (array1 & array2).any? { |x| false }
