@@ -142,14 +142,11 @@ module RuboCop
         # @!method access_modifier_with_attr?(node)
         def_node_matcher :access_modifier_with_attr?, <<~PATTERN
           (send nil? {:private :protected :public :module_function}
-            (send nil? {:attr :attr_reader :attr_writer :attr_accessor} _))
+            (send nil? {:attr :attr_reader :attr_writer :attr_accessor} _+))
         PATTERN
 
         def on_send(node)
-          return unless node.access_modifier?
-          return if ALLOWED_NODE_TYPES.include?(node.parent&.type)
-          return if allow_modifiers_on_symbols?(node)
-          return if allow_modifiers_on_attrs?(node)
+          return if allowed?(node)
 
           if offense?(node)
             add_offense(node.loc.selector) do |corrector|
@@ -162,6 +159,13 @@ module RuboCop
         end
 
         private
+
+        def allowed?(node)
+          !node.access_modifier? ||
+            ALLOWED_NODE_TYPES.include?(node.parent&.type) ||
+            allow_modifiers_on_symbols?(node) ||
+            allow_modifiers_on_attrs?(node)
+        end
 
         def autocorrect(corrector, node)
           case style
@@ -196,6 +200,13 @@ module RuboCop
             (inline_style? && access_modifier_is_not_inlined?(node))
         end
 
+        def correctable_group_offense?(node)
+          return false unless group_style?
+          return false if allowed?(node)
+
+          access_modifier_is_inlined?(node) && find_corresponding_def_node(node)
+        end
+
         def group_style?
           style == :group
         end
@@ -215,9 +226,9 @@ module RuboCop
         def right_siblings_same_inline_method?(node)
           node.right_siblings.any? do |sibling|
             sibling.send_type? &&
+              correctable_group_offense?(sibling) &&
               sibling.method?(node.method_name) &&
-              !sibling.arguments.empty? &&
-              find_corresponding_def_node(sibling)
+              !sibling.arguments.empty?
           end
         end
 

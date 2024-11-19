@@ -3320,6 +3320,40 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       RUBY
     end
 
+    it 'corrects when the first is an attr list' do
+      source_file = Pathname('example.rb')
+      create_file(source_file, <<~RUBY)
+        class Test
+          private attr_reader :bar, :baz
+          private def foo; end
+          def quux; end
+        end
+      RUBY
+      status = cli.run(%w[--autocorrect-all --only Style/AccessModifierDeclarations])
+      expect($stdout.string).to eq(<<~RESULT)
+        Inspecting 1 file
+        C
+
+        Offenses:
+
+        example.rb:3:3: C: [Corrected] Style/AccessModifierDeclarations: private should not be inlined in method definitions.
+          private def foo; end
+          ^^^^^^^
+
+        1 file inspected, 1 offense detected, 1 offense corrected
+      RESULT
+      expect(status).to eq(0)
+      expect(source_file.read).to eq(<<~RUBY)
+        class Test
+          private attr_reader :bar, :baz
+          def quux; end
+        private
+
+        def foo; end
+        end
+      RUBY
+    end
+
     it 'corrects when the second is a symbol list' do
       source_file = Pathname('example.rb')
       create_file(source_file, <<~RUBY)
@@ -3346,6 +3380,40 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       expect(source_file.read).to eq(<<~RUBY)
         class Test
           private :bar, :baz
+          def quux; end
+        private
+
+        def foo; end
+        end
+      RUBY
+    end
+
+    it 'corrects when the second is an attr list' do
+      source_file = Pathname('example.rb')
+      create_file(source_file, <<~RUBY)
+        class Test
+          private def foo; end
+          private attr_reader :bar, :baz
+          def quux; end
+        end
+      RUBY
+      status = cli.run(%w[--autocorrect-all --only Style/AccessModifierDeclarations])
+      expect($stdout.string).to eq(<<~RESULT)
+        Inspecting 1 file
+        C
+
+        Offenses:
+
+        example.rb:2:3: C: [Corrected] Style/AccessModifierDeclarations: private should not be inlined in method definitions.
+          private def foo; end
+          ^^^^^^^
+
+        1 file inspected, 1 offense detected, 1 offense corrected
+      RESULT
+      expect(status).to eq(0)
+      expect(source_file.read).to eq(<<~RUBY)
+        class Test
+          private attr_reader :bar, :baz
           def quux; end
         private
 
@@ -3391,6 +3459,90 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         private
 
         def foo; end
+        end
+      RUBY
+    end
+
+    it 'corrects when the first is an attr list and `AllowModifiersOnAttrs` is false' do
+      source_file = Pathname('example.rb')
+      create_file('.rubocop.yml', <<~YAML)
+        Style/AccessModifierDeclarations:
+          AllowModifiersOnAttrs: false
+      YAML
+      create_file(source_file, <<~RUBY)
+        class Test
+          private attr_reader :bar, :baz
+          private def foo; end
+          def quux; end
+        end
+      RUBY
+      status = cli.run(%w[--autocorrect-all --only Style/AccessModifierDeclarations])
+      expect($stdout.string).to eq(<<~RESULT)
+        Inspecting 1 file
+        C
+
+        Offenses:
+
+        example.rb:2:3: C: [Corrected] Style/AccessModifierDeclarations: private should not be inlined in method definitions.
+          private attr_reader :bar, :baz
+          ^^^^^^^
+        example.rb:3:3: C: [Corrected] Style/AccessModifierDeclarations: private should not be inlined in method definitions.
+          private def foo; end
+          ^^^^^^^
+
+        1 file inspected, 2 offenses detected, 2 offenses corrected
+      RESULT
+      expect(status).to eq(0)
+      expect(source_file.read).to eq(<<~RUBY)
+        class Test
+          def quux; end
+        private
+
+        attr_reader :bar, :baz
+
+        def foo; end
+        end
+      RUBY
+    end
+
+    it 'corrects a mix of symbols and attrs when both are disallowed' do
+      source_file = Pathname('example.rb')
+      create_file('.rubocop.yml', <<~YAML)
+        Style/AccessModifierDeclarations:
+          AllowModifiersOnAttrs: false
+          AllowModifiersOnSymbols: false
+      YAML
+      create_file(source_file, <<~RUBY)
+        class Test
+          private :foo, :bar
+          private attr_reader :baz, :quux
+          def corge; end
+        end
+      RUBY
+      status = cli.run(%w[--autocorrect-all --only Style/AccessModifierDeclarations])
+      expect($stdout.string).to eq(<<~RESULT)
+        Inspecting 1 file
+        C
+
+        Offenses:
+
+        example.rb:2:3: C: Style/AccessModifierDeclarations: private should not be inlined in method definitions.
+          private :foo, :bar
+          ^^^^^^^
+        example.rb:3:3: C: [Corrected] Style/AccessModifierDeclarations: private should not be inlined in method definitions.
+          private attr_reader :baz, :quux
+          ^^^^^^^
+
+        1 file inspected, 2 offenses detected, 1 offense corrected
+      RESULT
+      expect(status).to eq(1)
+      expect(source_file.read).to eq(<<~RUBY)
+        class Test
+          private :foo, :bar
+          def corge; end
+        private
+
+        attr_reader :baz, :quux
         end
       RUBY
     end
