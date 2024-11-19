@@ -4316,6 +4316,11 @@ Style/IpAddresses:
     - '**/gems.rb'
     - '**/*.gemspec'
 
+Style/ItAssignment:
+  Description: 'Checks for assignment to `it` inside a block.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/KeywordArgumentsMerging:
   Description: >-
                  When passing an existing hash as keyword arguments, provide additional arguments
