@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # Checks for missing `numblock handlers. The blocks with numbered
+      # Checks for missing `numblock` handlers. The blocks with numbered
       # arguments introduced in Ruby 2.7 are parsed with a node type of
       # `numblock` instead of block. Cops that define `block` handlers
       # need to define `numblock` handlers or disable this cope for them.
