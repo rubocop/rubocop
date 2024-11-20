@@ -2561,6 +2561,11 @@ Lint/UselessAssignment:
   VersionAdded: '0.11'
   VersionChanged: '1.66'
 
+Lint/UselessDefined:
+  Description: 'Checks for calls to `defined?` with strings and symbols. The result of such a call will always be truthy.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
   Enabled: true

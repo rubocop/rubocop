@@ -42,6 +42,10 @@ Style/IpAddresses:
   Exclude:
     - spec/rubocop/cop/style/ip_addresses_spec.rb
 
+Style/ReturnNilInPredicateMethodDefinition:
+  AllowedMethods:
+    - on_defined? # rubocop-ast node handler
+
 Layout/EndOfLine:
   EnforcedStyle: lf
 
