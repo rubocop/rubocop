@@ -237,6 +237,51 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
     RUBY
   end
 
+  it 'does not register an offense for RBS::Inline generics annotation' do
+    expect_no_offenses(<<~RUBY)
+      class X < Y #[String]
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for RBS::Inline non generics annotation' do
+    expect_offense(<<~RUBY)
+      class X #[String]
+              ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
+      class X < Y #[String
+                  ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
+      class X < Y #String]
+                  ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
+      class X < Y # String]
+                  ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
+      class X < Y #String ]
+                  ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      #[String]
+      class X
+      end
+      #[String
+      class X < Y
+      end
+      #String]
+      class X < Y
+      end
+      # String]
+      class X < Y
+      end
+      #String ]
+      class X < Y
+      end
+    RUBY
+  end
+
   it 'does not register an offense for RBS::Inline annotation for method definition' do
     expect_no_offenses(<<~RUBY)
       def x #: String

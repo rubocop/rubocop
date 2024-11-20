@@ -57,6 +57,9 @@ module RuboCop
 
         REGEXP = /(?<keyword>\S+).*#/.freeze
 
+        SUBCLASS_DEFINITION = /\A\s*class\s+\w+\s*<\s*\w+/.freeze
+        METHOD_DEFINITION = /\A\s*def\s/.freeze
+
         def on_new_investigation
           processed_source.comments.each do |comment|
             next unless offensive?(comment) && (match = source_line(comment).match(REGEXP))
@@ -93,7 +96,14 @@ module RuboCop
         end
 
         def rbs_inline_annotation?(line, comment)
-          comment.text.start_with?('#:') && line.start_with?(/\A\s*def\s/)
+          case line
+          when SUBCLASS_DEFINITION
+            comment.text.start_with?(/#\[.+\]/)
+          when METHOD_DEFINITION
+            comment.text.start_with?('#:')
+          else
+            false
+          end
         end
       end
     end
