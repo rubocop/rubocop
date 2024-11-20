@@ -45,7 +45,11 @@ module RuboCop
         RESTRICT_ON_SEND = EQUALITY_METHODS
 
         def on_send(node)
-          lhs, _method, rhs = *node
+          return unless node.arguments.one?
+
+          lhs = node.receiver
+          rhs = node.first_argument
+
           return if literal_safe?(lhs) || literal_safe?(rhs)
 
           add_offense(node) if float?(lhs) || float?(rhs)
@@ -77,8 +81,7 @@ module RuboCop
         # rubocop:disable Metrics/PerceivedComplexity
         def check_send(node)
           if node.arithmetic_operation?
-            lhs, _operation, rhs = *node
-            float?(lhs) || float?(rhs)
+            float?(node.receiver) || float?(node.first_argument)
           elsif FLOAT_RETURNING_METHODS.include?(node.method_name)
             true
           elsif node.receiver&.float_type?

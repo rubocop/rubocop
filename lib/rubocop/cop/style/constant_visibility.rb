@@ -53,8 +53,7 @@ module RuboCop
           return if visibility_declaration?(node)
           return if ignore_modules? && module?(node)
 
-          message = message(node)
-          add_offense(node, message: message)
+          add_offense(node, message: format(MSG, constant_name: node.name))
         end
 
         private
@@ -64,13 +63,7 @@ module RuboCop
         end
 
         def module?(node)
-          node.children.last.class_constructor?
-        end
-
-        def message(node)
-          _namespace, constant_name, _value = *node
-
-          format(MSG, constant_name: constant_name)
+          node.expression.class_constructor?
         end
 
         def class_or_module_scope?(node)
@@ -85,10 +78,8 @@ module RuboCop
         end
 
         def visibility_declaration?(node)
-          _namespace, constant_name, _value = *node
-
           node.parent.each_child_node(:send).any? do |child|
-            visibility_declaration_for?(child, constant_name)
+            visibility_declaration_for?(child, node.name)
           end
         end
 

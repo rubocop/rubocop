@@ -121,12 +121,10 @@ module RuboCop
 
       def indented_keyword_expression(node)
         if node.for_type?
-          expression = node.collection
+          node.collection
         else
-          expression, = *node
+          node.children.first
         end
-
-        expression
       end
 
       def argument_in_method_call(node, kind) # rubocop:todo Metrics/CyclomaticComplexity
@@ -187,12 +185,10 @@ module RuboCop
 
       def assignment_rhs(node)
         case node.type
-        when :casgn   then _scope, _lhs, rhs = *node
-        when :op_asgn then _lhs, _op, rhs = *node
-        when :send, :csend then rhs = node.last_argument
-        else               _lhs, rhs = *node
+        when :casgn, :op_asgn then node.rhs
+        when :send, :csend    then node.last_argument
+        else                       node.children.last
         end
-        rhs
       end
 
       def not_for_this_cop?(node)

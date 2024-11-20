@@ -17,9 +17,7 @@ module RuboCop
       alias on_and_asgn on_lvasgn
 
       def on_send(node)
-        rhs = extract_rhs(node)
-
-        return unless rhs
+        return unless (rhs = extract_rhs(node))
 
         check_assignment(node, rhs)
       end
@@ -27,17 +25,11 @@ module RuboCop
       module_function
 
       def extract_rhs(node)
-        if node.casgn_type?
-          _scope, _lhs, rhs = *node
-        elsif node.op_asgn_type?
-          _lhs, _op, rhs = *node
-        elsif node.call_type?
-          rhs = node.last_argument
+        if node.call_type?
+          node.last_argument
         elsif node.assignment?
-          _lhs, rhs = *node
+          node.expression
         end
-
-        rhs
       end
     end
   end

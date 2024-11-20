@@ -149,7 +149,7 @@ module RuboCop
         end
 
         def on_gvar(node)
-          global_var, = *node
+          global_var = node.name
 
           return unless (preferred = preferred_names(global_var))
 

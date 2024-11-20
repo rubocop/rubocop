@@ -68,8 +68,7 @@ module RuboCop
         end
 
         def correct_rescue_block(corrector, node, parenthesized)
-          operation, rescue_modifier, = *node
-          *_, rescue_args = *rescue_modifier
+          operation = node.body
 
           node_indentation, node_offset = indentation_and_offset(node, parenthesized)
 
@@ -78,7 +77,7 @@ module RuboCop
           corrector.insert_after(heredoc_end(operation) || operation, <<~RESCUE_CLAUSE.chop)
 
             #{node_offset}rescue
-            #{node_indentation}#{rescue_args.source}
+            #{node_indentation}#{node.resbody_branches.first.body.source}
             #{node_offset}end
           RESCUE_CLAUSE
         end

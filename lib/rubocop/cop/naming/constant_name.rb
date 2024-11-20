@@ -31,12 +31,11 @@ module RuboCop
         PATTERN
 
         def on_casgn(node)
-          if node.parent&.or_asgn_type?
-            lhs, value = *node.parent
-            _scope, const_name = *lhs
-          else
-            _scope, const_name, value = *node
-          end
+          value = if node.parent&.or_asgn_type?
+                    node.parent.expression
+                  else
+                    node.expression
+                  end
 
           # We cannot know the result of method calls like
           # NewClass = something_that_returns_a_class
@@ -46,7 +45,7 @@ module RuboCop
           # SomeClass = Class.new(...)
           # SomeClass = Struct.new(...)
           return if allowed_assignment?(value)
-          return if SNAKE_CASE.match?(const_name)
+          return if SNAKE_CASE.match?(node.name)
 
           add_offense(node.loc.name)
         end

@@ -70,9 +70,7 @@ module RuboCop
         end
 
         def check(node)
-          global_var, = *node
-
-          add_offense(node.loc.name) unless allowed_var?(global_var)
+          add_offense(node.loc.name) unless allowed_var?(node.name)
         end
       end
     end

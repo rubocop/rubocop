@@ -58,8 +58,7 @@ module RuboCop
         PATTERN
 
         def on_rescue(node)
-          _begin_node, *_rescue_nodes, else_node = *node
-          check_indentation(node.loc.else, else_node)
+          check_indentation(node.loc.else, node.else_branch)
         end
 
         def on_resbody(node)
@@ -327,8 +326,7 @@ module RuboCop
           if body_node.rescue_type?
             check_rescue?(body_node)
           elsif body_node.ensure_type?
-            block_body, = *body_node
-
+            block_body, = *body_node # rubocop:disable InternalAffairs/NodeDestructuring
             if block_body&.rescue_type?
               check_rescue?(block_body)
             else

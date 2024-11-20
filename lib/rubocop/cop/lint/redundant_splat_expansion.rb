@@ -135,10 +135,10 @@ module RuboCop
           grandparent.array_type? && grandparent.children.size > 1
         end
 
+        # rubocop:disable Metrics/AbcSize
         def replacement_range_and_content(node)
-          variable, = *node
-          loc = node.loc
-          expression = loc.expression
+          variable = node.children.first
+          expression = node.source_range
 
           if array_new?(variable)
             expression = node.parent.source_range if node.parent.array_type?
@@ -148,9 +148,10 @@ module RuboCop
           elsif redundant_brackets?(node)
             [expression, remove_brackets(variable)]
           else
-            [loc.operator, '']
+            [node.loc.operator, '']
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def array_splat?(node)
           node.children.first.array_type?

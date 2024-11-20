@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def on_nth_ref(node)
-          backref, = *node
+          backref = node.children.first
           return if @valid_ref.nil? || backref <= @valid_ref
 
           message = format(

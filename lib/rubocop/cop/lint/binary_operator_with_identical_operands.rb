@@ -49,15 +49,16 @@ module RuboCop
 
         def on_send(node)
           return unless node.binary_operation?
-
-          lhs, operation, rhs = *node
           return if MATH_OPERATORS.include?(node.method_name)
+          return unless node.receiver == node.first_argument
 
-          add_offense(node, message: format(MSG, op: operation)) if lhs == rhs
+          add_offense(node, message: format(MSG, op: node.method_name))
         end
 
         def on_and(node)
-          add_offense(node, message: format(MSG, op: node.operator)) if node.lhs == node.rhs
+          return unless node.lhs == node.rhs
+
+          add_offense(node, message: format(MSG, op: node.operator))
         end
         alias on_or on_and
       end

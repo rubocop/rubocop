@@ -78,18 +78,15 @@ module RuboCop
         end
 
         def take_variable_and_default_from_ternary(node)
-          variable, if_statement = *node
-          [variable, if_statement.else_branch]
+          [node.name, node.expression.else_branch]
         end
 
         def take_variable_and_default_from_unless(node)
           if node.if_branch
-            variable, default = *node.if_branch
+            [node.if_branch.name, node.if_branch.expression]
           else
-            variable, default = *node.else_branch
+            [node.else_branch.name, node.else_branch.expression]
           end
-
-          [variable, default]
         end
       end
     end

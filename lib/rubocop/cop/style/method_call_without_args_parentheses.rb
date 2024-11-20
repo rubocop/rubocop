@@ -71,9 +71,11 @@ module RuboCop
           return false if node.receiver
 
           any_assignment?(node) do |asgn_node|
-            next variable_in_mass_assignment?(node.method_name, asgn_node) if asgn_node.masgn_type?
-
-            asgn_node.loc.name.source == node.method_name.to_s
+            if asgn_node.masgn_type?
+              variable_in_mass_assignment?(node.method_name, asgn_node)
+            else
+              asgn_node.loc.name.source == node.method_name.to_s
+            end
           end
         end
 

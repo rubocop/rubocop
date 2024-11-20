@@ -37,33 +37,29 @@ module RuboCop
         private
 
         def check(node, var_type)
-          var_name, rhs = *node
-          return unless rhs
+          return unless (rhs = node.expression)
 
-          if rhs.send_type?
-            check_send_node(node, rhs, var_name, var_type)
+          if rhs.send_type? && rhs.arguments.one?
+            check_send_node(node, rhs, node.name, var_type)
           elsif rhs.operator_keyword?
-            check_boolean_node(node, rhs, var_name, var_type)
+            check_boolean_node(node, rhs, node.name, var_type)
           end
         end
 
         def check_send_node(node, rhs, var_name, var_type)
-          receiver, method_name, *_args = *rhs
-          return unless OPS.include?(method_name)
+          return unless OPS.include?(rhs.method_name)
 
           target_node = s(var_type, var_name)
-          return unless receiver == target_node
+          return unless rhs.receiver == target_node
 
-          add_offense(node, message: format(MSG, method: method_name)) do |corrector|
+          add_offense(node, message: format(MSG, method: rhs.method_name)) do |corrector|
             autocorrect(corrector, node)
           end
         end
 
         def check_boolean_node(node, rhs, var_name, var_type)
-          first_operand, _second_operand = *rhs
-
           target_node = s(var_type, var_name)
-          return unless first_operand == target_node
+          return unless rhs.lhs == target_node
 
           operator = rhs.loc.operator.source
           add_offense(node, message: format(MSG, method: operator)) do |corrector|
@@ -72,7 +68,7 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
-          _var_name, rhs = *node
+          rhs = node.expression
 
           if rhs.send_type?
             autocorrect_send_node(corrector, node, rhs)
@@ -82,13 +78,11 @@ module RuboCop
         end
 
         def autocorrect_send_node(corrector, node, rhs)
-          _receiver, method_name, args = *rhs
-          apply_autocorrect(corrector, node, rhs, method_name.to_s, args)
+          apply_autocorrect(corrector, node, rhs, rhs.method_name, rhs.first_argument)
         end
 
         def autocorrect_boolean_node(corrector, node, rhs)
-          _first_operand, second_operand = *rhs
-          apply_autocorrect(corrector, node, rhs, rhs.loc.operator.source, second_operand)
+          apply_autocorrect(corrector, node, rhs, rhs.loc.operator.source, rhs.rhs)
         end
 
         def apply_autocorrect(corrector, node, rhs, operator, new_rhs)

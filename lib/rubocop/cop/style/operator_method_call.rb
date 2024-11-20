@@ -31,10 +31,9 @@ module RuboCop
           return unless (dot = node.loc.dot)
           return if node.receiver.const_type? || !node.arguments.one?
 
-          _lhs, _op, rhs = *node
-          if !rhs || method_call_with_parenthesized_arg?(rhs) || invalid_syntax_argument?(rhs)
-            return
-          end
+          return unless (rhs = node.first_argument)
+          return if method_call_with_parenthesized_arg?(rhs)
+          return if invalid_syntax_argument?(rhs)
 
           add_offense(dot) do |corrector|
             wrap_in_parentheses_if_chained(corrector, node)
@@ -73,7 +72,7 @@ module RuboCop
         end
 
         def insert_space_after?(node)
-          _lhs, op, rhs = *node
+          rhs = node.first_argument
           selector = node.loc.selector
 
           return true if selector.end_pos == rhs.source_range.begin_pos
@@ -82,7 +81,7 @@ module RuboCop
           # For `/` operations, if the RHS starts with a `(` without space,
           # add one to avoid a syntax error.
           range = selector.end.join(rhs.source_range.begin)
-          return true if op == :/ && range.source == '('
+          return true if node.method?(:/) && range.source == '('
 
           false
         end

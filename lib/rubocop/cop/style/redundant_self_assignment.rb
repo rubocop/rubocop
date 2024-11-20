@@ -49,19 +49,21 @@ module RuboCop
           gvasgn: :gvar
         }.freeze
 
+        # rubocop:disable Metrics/AbcSize
         def on_lvasgn(node)
-          lhs, rhs = *node
-          receiver, method_name, = *rhs
-          return unless receiver && method_returning_self?(method_name)
+          return unless (rhs = node.rhs)
+          return unless rhs.send_type? && method_returning_self?(rhs.method_name)
+          return unless (receiver = rhs.receiver)
 
           receiver_type = ASSIGNMENT_TYPE_TO_RECEIVER_TYPE[node.type]
-          return unless receiver.type == receiver_type && receiver.children.first == lhs
+          return unless receiver.type == receiver_type && receiver.children.first == node.lhs
 
-          message = format(MSG, method_name: method_name)
+          message = format(MSG, method_name: rhs.method_name)
           add_offense(node.loc.operator, message: message) do |corrector|
             corrector.replace(node, rhs.source)
           end
         end
+        # rubocop:enable Metrics/AbcSize
         alias on_ivasgn on_lvasgn
         alias on_cvasgn on_lvasgn
         alias on_gvasgn on_lvasgn

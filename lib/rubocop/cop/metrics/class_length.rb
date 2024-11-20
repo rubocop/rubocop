@@ -53,13 +53,13 @@ module RuboCop
         def on_casgn(node)
           parent = node.parent
 
-          if parent&.assignment?
-            block_node = parent.expression
-          elsif parent&.parent&.masgn_type?
-            block_node = parent.parent.expression
-          else
-            _scope, _name, block_node = *node
-          end
+          block_node = if parent&.assignment?
+                         parent.expression
+                       elsif parent&.parent&.masgn_type?
+                         parent.parent.expression
+                       else
+                         node.expression
+                       end
 
           return unless block_node.respond_to?(:class_definition?) && block_node.class_definition?
 

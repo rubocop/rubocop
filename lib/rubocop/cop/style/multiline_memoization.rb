@@ -39,7 +39,7 @@ module RuboCop
         BRACES_MSG = 'Wrap multiline memoization blocks in `(` and `)`.'
 
         def on_or_asgn(node)
-          _lhs, rhs = *node
+          rhs = node.expression
 
           return unless bad_rhs?(rhs)
 
