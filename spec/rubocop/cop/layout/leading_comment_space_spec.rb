@@ -35,6 +35,15 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
     RUBY
   end
 
+  it 'does not register an offense for a multiline shebang starting on the first line' do
+    expect_no_offenses(<<~RUBY)
+      #!/usr/bin/env nix-shell
+      #! nix-shell -i ruby --pure
+      #! nix-shell -p ruby gh git
+      test
+    RUBY
+  end
+
   it 'registers an offense and corrects #! after the first line' do
     expect_offense(<<~RUBY)
       test
@@ -45,6 +54,25 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
     expect_correction(<<~RUBY)
       test
       # !/usr/bin/ruby
+    RUBY
+  end
+
+  it 'registers an offense and corrects for a multiline shebang starting after the first line' do
+    expect_offense(<<~RUBY)
+      test
+      #!/usr/bin/env nix-shell
+      ^^^^^^^^^^^^^^^^^^^^^^^^ Missing space after `#`.
+      #! nix-shell -i ruby --pure
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing space after `#`.
+      #! nix-shell -p ruby gh git
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Missing space after `#`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      test
+      # !/usr/bin/env nix-shell
+      # ! nix-shell -i ruby --pure
+      # ! nix-shell -p ruby gh git
     RUBY
   end
 
