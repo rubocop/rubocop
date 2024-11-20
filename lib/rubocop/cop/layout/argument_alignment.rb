@@ -3,8 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # Here we check if the arguments on a multi-line method
-      # definition are aligned.
+      # Check that the arguments on a multi-line method definition are aligned.
       #
       # @example EnforcedStyle: with_first_argument (default)
       #   # good
