@@ -1499,7 +1499,6 @@ Layout/SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
-
 Layout/SpaceInsideParens:
   Description: 'No spaces after ( or before ).'
   StyleGuide: '#spaces-braces'
@@ -2381,7 +2380,6 @@ Lint/ShadowedArgument:
   Enabled: true
   VersionAdded: '0.52'
   IgnoreImplicitReferences: false
-
 
 Lint/ShadowedException:
   Description: >-
