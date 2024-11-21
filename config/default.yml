@@ -3947,6 +3947,12 @@ Style/FileRead:
   Enabled: pending
   VersionAdded: '1.24'
 
+Style/FileTouch:
+  Description: 'Favor `FileUtils.touch` for touching files.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  SafeAutoCorrect: false
+
 Style/FileWrite:
   Description: 'Favor `File.(bin)write` convenience methods.'
   StyleGuide: '#file-write'
