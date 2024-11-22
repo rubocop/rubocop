@@ -26,6 +26,9 @@ module RuboCop
       #
       class ItWithoutArgumentsInBlock < Base
         include NodePattern::Macros
+        extend TargetRubyVersion
+
+        maximum_target_ruby_version 3.3
 
         MSG = '`it` calls without arguments will refer to the first block param in Ruby 3.4; ' \
               'use `it()` or `self.it`.'
