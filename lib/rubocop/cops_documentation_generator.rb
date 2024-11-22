@@ -114,7 +114,15 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def required_ruby_version(cop)
     return '' unless cop.respond_to?(:required_minimum_ruby_version)
 
-    "NOTE: Required Ruby version: #{cop.required_minimum_ruby_version}\n\n"
+    if cop.required_minimum_ruby_version
+      requirement = cop.required_minimum_ruby_version
+    elsif cop.required_maximum_ruby_version
+      requirement = "<= #{cop.required_maximum_ruby_version}"
+    else
+      return ''
+    end
+
+    "NOTE: Requires Ruby version #{requirement}\n\n"
   end
 
   # rubocop:disable Metrics/MethodLength
