@@ -689,7 +689,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
   end
 
   shared_examples 'on if nodes which exit current scope' do |kw, options|
-    it "registers an error with #{kw} in the if branch", *options do
+    it "registers an offense with #{kw} in the if branch", *options do
       expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause (`#{kw} if something`) instead of wrapping the code inside a conditional expression.
@@ -708,7 +708,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "registers an error with #{kw} in the else branch", *options do
+    it "registers an offense with #{kw} in the else branch", *options do
       expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause (`#{kw} unless something`) instead of wrapping the code inside a conditional expression.
@@ -727,7 +727,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "doesn't register an error if condition has multiple lines", *options do
+    it "doesn't register an offense if condition has multiple lines", *options do
       expect_no_offenses(<<~RUBY)
         if something &&
              something_else
@@ -770,7 +770,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it "doesn't register an error if control flow expr has multiple lines", *options do
+    it "doesn't register an offense if control flow expr has multiple lines", *options do
       expect_no_offenses(<<~RUBY)
         if something
           #{kw} 'blah blah blah' \\
@@ -781,7 +781,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it 'registers an error if non-control-flow branch has multiple lines', *options do
+    it 'registers an offense if non-control-flow branch has multiple lines', *options do
       expect_offense(<<~RUBY)
         if something
         ^^ Use a guard clause (`#{kw} if something`) instead of wrapping the code inside a conditional expression.
