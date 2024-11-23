@@ -658,6 +658,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense for a line continuation with a method definition as a method argument' do
+    expect_no_offenses(<<~'RUBY')
+      class Foo
+        memoize \
+        def do_something
+        end
+      end
+    RUBY
+  end
+
   it 'does not register an offense when line continuations with using && for comparison chaining' do
     expect_no_offenses(<<~'RUBY')
       foo == other.foo \
