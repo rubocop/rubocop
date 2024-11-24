@@ -61,9 +61,9 @@ module RuboCop
         RESTRICT_ON_SEND = %i[define_method define_singleton_method lambda].freeze
 
         def on_send(node)
-          return unless (parent = node.parent) && parent.block_type?
+          return unless node.block_literal?
 
-          check_branch(parent.body)
+          check_branch(node.parent.body)
         end
 
         def on_def(node)

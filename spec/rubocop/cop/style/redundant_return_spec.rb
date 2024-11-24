@@ -649,4 +649,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantReturn, :config do
       RUBY
     end
   end
+
+  it 'does not register an offense when using `lambda.call(block)`' do
+    expect_no_offenses(<<~RUBY)
+      lambda.call(block)
+    RUBY
+  end
 end

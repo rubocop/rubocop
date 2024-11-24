@@ -78,7 +78,7 @@ module RuboCop
         RESTRICT_ON_SEND = (STRAIGHT_METHODS + NEGATED_METHODS).freeze
 
         def on_send(node)
-          return if (parent = node.parent) && (parent.block_type? || parent.numblock_type?)
+          return if node.block_literal?
           return unless (receiver, argument, method_name = bad_intersection_check?(node))
 
           message = message(receiver.source, argument.source, method_name)
