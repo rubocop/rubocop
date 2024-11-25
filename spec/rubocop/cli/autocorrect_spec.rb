@@ -3711,11 +3711,45 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         Enabled: true
     YAML
 
-    status = cli.run(%w[--autocorrect -d])
+    status = cli.run(%w[--autocorrect])
     expect(status).to eq(1)
     expect($stderr.string).to eq('')
     expect(source_file.read).to eq(<<~RUBY)
       a { b }
+    RUBY
+  end
+
+  it 'does not trigger `Style/SingleArgumentDig` when `Style/DigChain` is enabled and will correct' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      x.dig('foo').dig('bar')
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Style/SingleArgumentDig:
+        Enabled: true
+
+      Style/DigChain:
+        Enabled: true
+    YAML
+
+    status = cli.run(%w[--only Style/SingleArgumentDig,Style/DigChain --autocorrect-all])
+    expect(status).to eq(0)
+    expect($stdout.string).to eq(<<~RESULT)
+      Inspecting 1 file
+      C
+
+      Offenses:
+
+      example.rb:1:3: C: [Corrected] Style/DigChain: Use dig('foo', 'bar') instead of chaining.
+      x.dig('foo').dig('bar')
+        ^^^^^^^^^^^^^^^^^^^^^
+
+      1 file inspected, 1 offense detected, 1 offense corrected
+    RESULT
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      x.dig('foo', 'bar')
     RUBY
   end
 end

@@ -136,4 +136,32 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
       RUBY
     end
   end
+
+  context 'when there is a chain of digs' do
+    context 'and `Style/DigChain` is enabled' do
+      let(:other_cops) do
+        { 'Style/DigChain' => { 'Enabled' => true } }
+      end
+
+      it 'does not register an offense for chained `dig` calls' do
+        expect_no_offenses(<<~RUBY)
+          data.dig(var1).dig(var2)
+        RUBY
+      end
+    end
+
+    context 'and `Style/DigChain` is not enabled' do
+      let(:other_cops) do
+        { 'Style/DigChain' => { 'Enabled' => false } }
+      end
+
+      it 'does registers an offense for chained `dig` calls' do
+        expect_offense(<<~RUBY)
+          data.dig(var1).dig(var2)
+          ^^^^^^^^^^^^^^ Use `data[var1]` instead of `data.dig(var1)`.
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use `data.dig(var1)[var2]` instead of `data.dig(var1).dig(var2)`.
+        RUBY
+      end
+    end
+  end
 end
