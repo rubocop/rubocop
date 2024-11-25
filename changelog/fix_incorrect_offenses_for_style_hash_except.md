@@ -1,0 +1,1 @@
+* [#13494](https://github.com/rubocop/rubocop/pull/13494): Fix false positives for `Style/HashExcept` cop when using `reject/!include?`, `reject/!in?` or `select/!exclude?` combinations. ([@lovro-bikic][])
