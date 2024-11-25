@@ -3715,6 +3715,12 @@ Style/DefWithParentheses:
   VersionAdded: '0.9'
   VersionChanged: '0.12'
 
+Style/DigChain:
+  Description: 'Use `dig` with multiple parameters instead of chaining multiple calls.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/Dir:
   Description: >-
                  Use the `__dir__` method to retrieve the canonicalized
