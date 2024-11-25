@@ -75,10 +75,14 @@ task documentation_syntax_check: :yard_for_generate_documentation do
     rescue Parser::SyntaxError => e
       path = example.object.file
       line, column = buffer.decompose_position(e.diagnostic.location.begin_pos)
+      indentation = ' ' * column
+      highlight = '^' * Unicode::DisplayWidth.of(e.diagnostic.location.source)
 
-      puts "#{path}:#{line}:#{column} Syntax Error in an example: #{e}"
-      puts buffer.source_lines[line - 1]
-      puts (' ' * column) + ('^' * Unicode::DisplayWidth.of(e.diagnostic.location.source))
+      warn Rainbow(<<~MESSAGE).red
+        #{path}:#{line}:#{column} Syntax Error in an example: #{e}
+        #{buffer.source_lines[line - 1]}
+        #{indentation + highlight}
+      MESSAGE
 
       ok = false
     end
