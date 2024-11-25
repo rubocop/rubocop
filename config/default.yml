@@ -3941,6 +3941,12 @@ Style/FileEmpty:
   Safe: false
   VersionAdded: '1.48'
 
+Style/FileNull:
+  Description: 'Use `File::NULL` instead of hardcoding "dev/null".'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Style/FileRead:
   Description: 'Favor `File.(bin)read` convenience methods.'
   StyleGuide: '#file-read'
