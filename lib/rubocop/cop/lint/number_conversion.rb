@@ -74,7 +74,6 @@ module RuboCop
         extend AutoCorrector
         include AllowedMethods
         include AllowedPattern
-        include IgnoredNode
 
         CONVERSION_METHOD_CLASS_MAPPING = {
           to_i: "#{Integer.name}(%<number_object>s, 10)",

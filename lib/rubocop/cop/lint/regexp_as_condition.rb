@@ -17,7 +17,6 @@ module RuboCop
       #     do_something
       #   end
       class RegexpAsCondition < Base
-        include IgnoredNode
         extend AutoCorrector
 
         MSG = 'Do not use regexp literal as a condition. ' \

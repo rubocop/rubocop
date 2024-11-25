@@ -18,7 +18,6 @@ module RuboCop
       class NestedTernaryOperator < Base
         extend AutoCorrector
         include RangeHelp
-        include IgnoredNode
 
         MSG = 'Ternary operators must not be nested. Prefer `if` or `else` constructs instead.'
 
