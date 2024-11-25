@@ -33,15 +33,11 @@ module RuboCop
       #
       class SingleArgumentDig < Base
         extend AutoCorrector
+        include DigHelp
 
         MSG = 'Use `%<receiver>s[%<argument>s]` instead of `%<original>s`.'
         RESTRICT_ON_SEND = %i[dig].freeze
         IGNORED_ARGUMENT_TYPES = %i[block_pass forwarded_restarg forwarded_args hash].freeze
-
-        # @!method single_argument_dig?(node)
-        def_node_matcher :single_argument_dig?, <<~PATTERN
-          (send _ :dig $!splat)
-        PATTERN
 
         def on_send(node)
           return unless node.receiver
@@ -49,6 +45,7 @@ module RuboCop
           expression = single_argument_dig?(node)
           return unless expression
           return if IGNORED_ARGUMENT_TYPES.include?(expression.type)
+          return if ignore_dig_chain?(node)
 
           receiver = node.receiver.source
           argument = expression.source
@@ -62,6 +59,13 @@ module RuboCop
           end
 
           ignore_node(node)
+        end
+
+        private
+
+        def ignore_dig_chain?(node)
+          dig_chain_enabled? &&
+            (dig?(node.receiver) || dig?(node.parent))
         end
       end
     end

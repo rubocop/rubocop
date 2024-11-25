@@ -26,14 +26,10 @@ module RuboCop
         extend AutoCorrector
         include RangeHelp
         include CommentsHelp
+        include DigHelp
 
         MSG = 'Use `%<replacement>s` instead of chaining.'
         RESTRICT_ON_SEND = %i[dig].freeze
-
-        # @!method dig?(node)
-        def_node_matcher :dig?, <<~PATTERN
-          (call _ :dig $!{hash block_pass}+)
-        PATTERN
 
         def on_send(node)
           return if ignored_node?(node)
