@@ -41,7 +41,6 @@ module RuboCop
       #     f != 1
       #   end
       class InverseMethods < Base
-        include IgnoredNode
         include RangeHelp
         extend AutoCorrector
 

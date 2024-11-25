@@ -20,7 +20,6 @@ module RuboCop
       #  lambda.(x, y)
       class LambdaCall < Base
         include ConfigurableEnforcedStyle
-        include IgnoredNode
         extend AutoCorrector
 
         MSG = 'Prefer the use of `%<prefer>s` over `%<current>s`.'

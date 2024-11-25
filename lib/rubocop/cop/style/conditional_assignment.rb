@@ -207,7 +207,6 @@ module RuboCop
       class ConditionalAssignment < Base
         include ConditionalAssignmentHelper
         include ConfigurableEnforcedStyle
-        include IgnoredNode
         extend AutoCorrector
 
         MSG = 'Use the return of the conditional for variable assignment and comparison.'

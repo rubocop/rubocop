@@ -59,7 +59,6 @@ module RuboCop
       #   end
       #
       class IfInsideElse < Base
-        include IgnoredNode
         include RangeHelp
         extend AutoCorrector
 
