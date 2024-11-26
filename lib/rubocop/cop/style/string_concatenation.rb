@@ -51,7 +51,6 @@ module RuboCop
       #   Pathname.new('/') + 'test'
       #
       class StringConcatenation < Base
-        include Util
         include RangeHelp
         extend AutoCorrector
 
