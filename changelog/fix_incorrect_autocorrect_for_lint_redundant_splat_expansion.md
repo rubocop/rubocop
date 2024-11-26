@@ -1,1 +1,0 @@
-* [#13436](https://github.com/rubocop/rubocop/pull/13436): Fix incorrect offense and autocorrect for `Lint/RedundantSplatExpansion` when percent literal array is used in a safe navigation method call. ([@lovro-bikic][])

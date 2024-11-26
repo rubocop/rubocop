@@ -1,1 +1,0 @@
-* [#13448](https://github.com/rubocop/rubocop/pull/13448): Fix an incorrect autocorrect for `Style/IfWithSemicolon` when the then body contains an arithmetic operator method call with an argument. ([@koic][])
