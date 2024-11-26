@@ -23,6 +23,7 @@ module RuboCop
 
         def on_normal_if_unless(node)
           return if node.parent&.if_type?
+          return if part_of_ignored_node?(node)
 
           beginning = node.loc.begin
           return unless beginning&.is?(';')
@@ -32,6 +33,8 @@ module RuboCop
           add_offense(node, message: message) do |corrector|
             autocorrect(corrector, node)
           end
+
+          ignore_node(node)
         end
 
         private
