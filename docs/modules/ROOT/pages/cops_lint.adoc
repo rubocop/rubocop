@@ -463,22 +463,21 @@ BigDecimal(123.456, 3)
 | No
 | No
 | 0.89
-| 1.7
+| 1.69
 |===
 
 Checks for places where binary operator has identical operands.
 
-It covers arithmetic operators: `-`, `/`, `%`;
-comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, ``<=``;
+It covers comparison operators: `==`, `===`, `=~`, `>`, `>=`, `<`, ``<=``;
 bitwise operators: `|`, `^`, `&`;
 boolean operators: `&&`, `||`
 and "spaceship" operator - ``<=>``.
 
 Simple arithmetic operations are allowed by this cop: `+`, `*`, `**`, `<<` and `>>`.
 Although these can be rewritten in a different way, it should not be necessary to
-do so. This does not include operations such as `-` or `/` where the result will
-always be the same (`x - x` will always be 0; `x / x` will always be 1), and
-thus are legitimate offenses.
+do so. Operations such as `-` or `/` where the result will always be the same
+(`x - x` will always be 0; `x / x` will always be 1) are offenses, but these
+are covered by Lint/NumericOperationWithConstantResult instead.
 
 [#safety-lintbinaryoperatorwithidenticaloperands]
 === Safety
@@ -499,7 +498,6 @@ end
 [source,ruby]
 ----
 # bad
-x / x
 x.top >= x.top
 
 if a.x != 0 && a.x != 0
@@ -573,6 +571,8 @@ Checks for circular argument references in optional keyword
 arguments and optional ordinal arguments.
 
 This cop mirrors a warning produced by MRI since 2.2.
+
+NOTE: This syntax is no longer valid on Ruby 2.7 or higher.
 
 [#examples-lintcircularargumentreference]
 === Examples
@@ -1448,7 +1448,7 @@ Checks for duplicated magic comments.
 [#lintduplicatematchpattern]
 == Lint/DuplicateMatchPattern
 
-NOTE: Required Ruby version: 2.7
+NOTE: Requires Ruby version 2.7
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -2296,7 +2296,7 @@ Enforces that Ruby source files are not empty.
 [#lintemptyinpattern]
 == Lint/EmptyInPattern
 
-NOTE: Required Ruby version: 2.7
+NOTE: Requires Ruby version 2.7
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -2534,7 +2534,7 @@ end
 [#linterbnewarguments]
 == Lint/ErbNewArguments
 
-NOTE: Required Ruby version: 2.6
+NOTE: Requires Ruby version 2.6
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -2692,6 +2692,9 @@ x != 0.0
 tolerance = 0.0001
 (x - 0.1).abs < tolerance
 
+# good - comparing against nil
+Float(x, exception: false) == nil
+
 # Or some other epsilon based type of comparison:
 # https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
 ----
@@ -2818,6 +2821,46 @@ hash.key?(baz)
 === References
 
 * https://rubystyle.guide#identity-comparison
+
+[#linthashnewwithkeywordargumentsasdefault]
+== Lint/HashNewWithKeywordArgumentsAsDefault
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.69
+| -
+|===
+
+Checks for the deprecated use of keyword arguments as a default in `Hash.new`.
+
+This usage raises a warning in Ruby 3.3 and results in an error in Ruby 3.4.
+In Ruby 3.4, keyword arguments will instead be used to change the behavior of a hash.
+For example, the capacity option can be passed to create a hash with a certain size
+if you know it in advance, for better performance.
+
+NOTE: The following corner case may result in a false negative when upgrading from Ruby 3.3
+or earlier, but it is intentionally not detected to respect the expected usage in Ruby 3.4.
+
+[source,ruby]
+----
+Hash.new(capacity: 42)
+----
+
+[#examples-linthashnewwithkeywordargumentsasdefault]
+=== Examples
+
+[source,ruby]
+----
+# bad
+Hash.new(key: :value)
+
+# good
+Hash.new({key: :value})
+----
 
 [#lintheredocmethodcallposition]
 == Lint/HeredocMethodCallPosition
@@ -3146,6 +3189,8 @@ foo = "something with #{interpolation} inside"
 
 [#lintitwithoutargumentsinblock]
 == Lint/ItWithoutArgumentsInBlock
+
+NOTE: Requires Ruby version <= 3.3
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -4323,6 +4368,66 @@ _1 = :value
 non_numbered_parameter_name = :value
 ----
 
+[#lintnumericoperationwithconstantresult]
+== Lint/NumericOperationWithConstantResult
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.69
+| -
+|===
+
+Certain numeric operations have a constant result, usually 0 or 1.
+Subtracting a number from itself or multiplying it by 0 will always return 0.
+Additionally, a variable modulo 0 or itself will always return 0.
+Dividing a number by itself or raising it to the power of 0 will always return 1.
+As such, they can be replaced with that result.
+These are probably leftover from debugging, or are mistakes.
+Other numeric operations that are similarly leftover from debugging or mistakes
+are handled by Lint/UselessNumericOperation.
+
+[#examples-lintnumericoperationwithconstantresult]
+=== Examples
+
+[source,ruby]
+----
+# bad
+x - x
+x * 0
+x % 1
+x % x
+
+# good
+0
+
+# bad
+x -= x
+x *= 0
+x %= 1
+x %= x
+
+# good
+x = 0
+
+# bad
+x / x
+x ** 0
+
+# good
+1
+
+# bad
+x /= x
+x **= 0
+
+# good
+x = 1
+----
+
 [#lintorassignmenttoconstant]
 == Lint/OrAssignmentToConstant
 
@@ -4752,7 +4857,7 @@ baz
 [#lintredundantdirglobsort]
 == Lint/RedundantDirGlobSort
 
-NOTE: Required Ruby version: 3.0
+NOTE: Requires Ruby version 3.0
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -4910,7 +5015,7 @@ require 'unloaded_feature'
 Checks for redundant safe navigation calls.
 Use cases where a constant, named in camel case for classes and modules is `nil` are rare,
 and an offense is not detected when the receiver is a constant. The detection also applies
-to literal receivers, except for `nil`.
+to `self`, and to literal receivers, except for `nil`.
 
 For all receivers, the `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`,
 and `equal?` methods are checked by default.
@@ -4939,6 +5044,9 @@ will be autocorrected to never return `nil`.
 # bad
 CamelCaseConst&.do_something
 
+# good
+CamelCaseConst.do_something
+
 # bad
 do_something if attrs&.respond_to?(:[])
 
@@ -4949,9 +5057,6 @@ do_something if attrs.respond_to?(:[])
 while node&.is_a?(BeginNode)
   node = node.parent
 end
-
-# good
-CamelCaseConst.do_something
 
 # good
 while node.is_a?(BeginNode)
@@ -4976,6 +5081,12 @@ foo.to_a
 foo.to_i
 foo.to_f
 foo.to_s
+
+# bad
+self&.foo
+
+# good
+self.foo
 ----
 
 [#allowedmethods_-_nil_safe_method_-lintredundantsafenavigation]
@@ -5227,7 +5338,7 @@ end
 [#lintrefinementimportmethods]
 == Lint/RefinementImportMethods
 
-NOTE: Required Ruby version: 3.1
+NOTE: Requires Ruby version 3.1
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -5563,7 +5674,7 @@ end
 [#lintsafenavigationchain]
 == Lint/SafeNavigationChain
 
-NOTE: Required Ruby version: 2.3
+NOTE: Requires Ruby version 2.3
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -7139,7 +7250,7 @@ end
 | Yes
 | Command-line only
 | 0.21
-| 1.61
+| 1.69
 |===
 
 Checks for unused method arguments.
@@ -7207,6 +7318,8 @@ end
 
 [source,ruby]
 ----
+# with default value of `NotImplementedExceptions: ['NotImplementedError']`
+
 # good
 def do_something(unused)
   raise NotImplementedError
@@ -7214,6 +7327,19 @@ end
 
 def do_something_else(unused)
   fail "TODO"
+end
+----
+
+[#ignorenotimplementedmethods_-true-lintunusedmethodargument]
+==== IgnoreNotImplementedMethods: true
+
+[source,ruby]
+----
+# with `NotImplementedExceptions: ['AbstractMethodError']`
+
+# good
+def do_something(unused)
+  raise AbstractMethodError
 end
 ----
 
@@ -7249,6 +7375,10 @@ end
 | IgnoreNotImplementedMethods
 | `true`
 | Boolean
+
+| NotImplementedExceptions
+| `NotImplementedError`
+| Array
 |===
 
 [#references-lintunusedmethodargument]
@@ -7563,6 +7693,60 @@ end
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
+
+[#lintuselessdefined]
+== Lint/UselessDefined
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.69
+| -
+|===
+
+Checks for calls to `defined?` with strings or symbols as the argument.
+Such calls will always return `'expression'`, you probably meant to
+check for the existence of a constant, method, or variable instead.
+
+`defined?` is part of the Ruby syntax and doesn't behave like normal methods.
+You can safely pass in what you are checking for directly, without encountering
+a `NameError`.
+
+When interpolation is used, oftentimes it is not possible to write the
+code with `defined?`. In these cases, switch to one of the more specific methods:
+
+* `class_variable_defined?`
+* `const_defined?`
+* `method_defined?`
+* `instance_variable_defined?`
+* `binding.local_variable_defined?`
+
+[#examples-lintuselessdefined]
+=== Examples
+
+[source,ruby]
+----
+# bad
+defined?('FooBar')
+defined?(:FooBar)
+defined?(:foo_bar)
+defined?('foo_bar')
+
+# good
+defined?(FooBar)
+defined?(foo_bar)
+
+# bad - interpolation
+bar = 'Bar'
+defined?("Foo::#{bar}::Baz")
+
+# good
+bar = 'Bar'
+defined?(Foo) && Foo.const_defined?(bar) && Foo.const_get(bar).const_defined?(:Baz)
+----
 
 [#lintuselesselsewithoutrescue]
 == Lint/UselessElseWithoutRescue

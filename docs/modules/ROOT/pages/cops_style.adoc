@@ -105,6 +105,7 @@ class Foo
   private :bar, :baz
   private *%i[qux quux]
   private *METHOD_NAMES
+  private *private_methods
 
 end
 ----
@@ -120,6 +121,7 @@ class Foo
   private :bar, :baz
   private *%i[qux quux]
   private *METHOD_NAMES
+  private *private_methods
 
 end
 ----
@@ -335,7 +337,7 @@ alias_method :bar, :foo
 [#styleambiguousendlessmethoddefinition]
 == Style/AmbiguousEndlessMethodDefinition
 
-NOTE: Required Ruby version: 3.0
+NOTE: Requires Ruby version 3.0
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -466,7 +468,7 @@ end
 [#styleargumentsforwarding]
 == Style/ArgumentsForwarding
 
-NOTE: Required Ruby version: 2.7
+NOTE: Requires Ruby version 2.7
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -782,7 +784,7 @@ arr[0][-2]
 [#stylearrayintersect]
 == Style/ArrayIntersect
 
-NOTE: Required Ruby version: 3.1
+NOTE: Requires Ruby version 3.1
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -825,6 +827,7 @@ actually arrays while method `intersect?` is for arrays only.
 # bad
 (array1 & array2).any?
 (array1 & array2).empty?
+(array1 & array2).none?
 
 # good
 array1.intersect?(array2)
@@ -1136,7 +1139,7 @@ end
 [#stylebitwisepredicate]
 == Style/BitwisePredicate
 
-NOTE: Required Ruby version: 2.5
+NOTE: Requires Ruby version 2.5
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -2132,7 +2135,7 @@ end
 [#stylecollectioncompact]
 == Style/CollectionCompact
 
-NOTE: Required Ruby version: 2.4
+NOTE: Requires Ruby version 2.4
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -2768,7 +2771,7 @@ end
 [#stylecomparableclamp]
 == Style/ComparableClamp
 
-NOTE: Required Ruby version: 2.4
+NOTE: Requires Ruby version 2.4
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -3115,7 +3118,7 @@ an offense is reported.
 [#styledatainheritance]
 == Style/DataInheritance
 
-NOTE: Required Ruby version: 3.2
+NOTE: Requires Ruby version 3.2
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -3304,10 +3307,49 @@ end
 
 * https://rubystyle.guide#method-parens
 
+[#styledigchain]
+== Style/DigChain
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Always (Unsafe)
+| 1.69
+| -
+|===
+
+Check for chained `dig` calls that can be collapsed into a single `dig`.
+
+[#safety-styledigchain]
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+is an `Enumerable` or does not have a nonstandard implementation
+of `dig`.
+
+[#examples-styledigchain]
+=== Examples
+
+[source,ruby]
+----
+# bad
+x.dig(:foo).dig(:bar).dig(:baz)
+x.dig(:foo, :bar).dig(:baz)
+x.dig(:foo, :bar)&.dig(:baz)
+
+# good
+x.dig(:foo, :bar, :baz)
+
+# good - `dig`s cannot be combined
+x.dig(:foo).bar.dig(:baz)
+----
+
 [#styledir]
 == Style/Dir
 
-NOTE: Required Ruby version: 2.0
+NOTE: Requires Ruby version 2.0
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -3341,7 +3383,7 @@ path = __dir__
 [#styledirempty]
 == Style/DirEmpty
 
-NOTE: Required Ruby version: 2.4
+NOTE: Requires Ruby version 2.4
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -4517,7 +4559,7 @@ at_exit { puts 'Goodbye!' }
 [#styleendlessmethod]
 == Style/EndlessMethod
 
-NOTE: Required Ruby version: 3.0
+NOTE: Requires Ruby version 3.0
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -5060,7 +5102,7 @@ ENV['X'].some_method # (e.g. `.nil?`)
 [#stylefileempty]
 == Style/FileEmpty
 
-NOTE: Required Ruby version: 2.4
+NOTE: Requires Ruby version 2.4
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -5098,6 +5140,60 @@ FileTest.zero?('path/to/file')
 # good
 File.empty?('path/to/file')
 FileTest.empty?('path/to/file')
+----
+
+[#stylefilenull]
+== Style/FileNull
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always (Unsafe)
+| 1.69
+| -
+|===
+
+Use `File::NULL` instead of hardcoding the null device (`/dev/null` on Unix-like
+OSes, `NUL` or `NUL:` on Windows), so that code is platform independent.
+Only looks for full string matches, substrings within a longer string are not
+considered.
+
+NOTE: Uses inside arrays and hashes are ignored.
+
+[#safety-stylefilenull]
+=== Safety
+
+It is possible for a string value to be changed if code is being run
+on multiple platforms and was previously hardcoded to a specific null device.
+
+For example, the following string will change on Windows when changed to
+`File::NULL`:
+
+[source,ruby]
+----
+path = "/dev/null"
+----
+
+[#examples-stylefilenull]
+=== Examples
+
+[source,ruby]
+----
+# bad
+'/dev/null'
+'NUL'
+'NUL:'
+
+# good
+File::NULL
+
+# ok - inside an array
+null_devices = %w[/dev/null nul]
+
+# ok - inside a hash
+{ unix: "/dev/null", windows: "nul" }
 ----
 
 [#stylefileread]
@@ -5151,6 +5247,56 @@ File.binread(filename)
 === References
 
 * https://rubystyle.guide#file-read
+
+[#stylefiletouch]
+== Style/FileTouch
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always (Unsafe)
+| 1.69
+| -
+|===
+
+Checks for usage of `File.open` in append mode with empty block.
+
+Such a usage only creates a new file, but it doesn't update
+timestamps for an existing file, which might have been the intention.
+
+For example, for an existing file `foo.txt`:
+
+  ruby -e "puts File.mtime('foo.txt')"
+  # 2024-11-26 12:17:23 +0100
+
+  ruby -e "File.open('foo.txt', 'a') {}"
+
+  ruby -e "puts File.mtime('foo.txt')"
+  # 2024-11-26 12:17:23 +0100 -> unchanged
+
+If the intention was to update timestamps, `FileUtils.touch('foo.txt')`
+should be used instead.
+
+[#safety-stylefiletouch]
+=== Safety
+
+Autocorrection is unsafe for this cop because unlike `File.open`,
+`FileUtils.touch` updates an existing file's timestamps.
+
+[#examples-stylefiletouch]
+=== Examples
+
+[source,ruby]
+----
+# bad
+File.open(filename, 'a') {}
+File.open(filename, 'a+') {}
+
+# good
+FileUtils.touch(filename)
+----
 
 [#stylefilewrite]
 == Style/FileWrite
@@ -5641,7 +5787,7 @@ redirect('foo/%{bar_id}')
 [#stylefrozenstringliteralcomment]
 == Style/FrozenStringLiteralComment
 
-NOTE: Required Ruby version: 2.3
+NOTE: Requires Ruby version 2.3
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -6251,7 +6397,7 @@ execute(sql).values.each { |v| p v }
 [#stylehashexcept]
 == Style/HashExcept
 
-NOTE: Required Ruby version: 3.0
+NOTE: Requires Ruby version 3.0
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -6579,7 +6725,7 @@ The supported styles are:
 [#stylehashtransformkeys]
 == Style/HashTransformKeys
 
-NOTE: Required Ruby version: 2.5
+NOTE: Requires Ruby version 2.5
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -6624,7 +6770,7 @@ Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
 [#stylehashtransformvalues]
 == Style/HashTransformValues
 
-NOTE: Required Ruby version: 2.4
+NOTE: Requires Ruby version 2.4
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -7157,7 +7303,7 @@ raise ArgumentError, 'Error message here'
 [#styleinpatternthen]
 == Style/InPatternThen
 
-NOTE: Required Ruby version: 2.7
+NOTE: Requires Ruby version 2.7
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -8055,7 +8201,7 @@ dest
 [#stylemaptohash]
 == Style/MapToHash
 
-NOTE: Required Ruby version: 2.6
+NOTE: Requires Ruby version 2.6
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -8930,6 +9076,28 @@ end
 Checks for the presence of `method_missing` without also
 defining `respond_to_missing?`.
 
+Not defining `respond_to_missing?` will cause metaprogramming
+methods like `respond_to?` to behave unexpectedly:
+
+[source,ruby]
+----
+class StringDelegator
+  def initialize(string)
+    @string = string
+  end
+
+  def method_missing(name, *args)
+    @string.send(name, *args)
+  end
+end
+
+delegator = StringDelegator.new("foo")
+# Claims to not respond to `upcase`.
+delegator.respond_to?(:upcase) # => false
+# But you can call it.
+delegator.upcase # => FOO
+----
+
 [#examples-stylemissingrespondtomissing]
 === Examples
 
@@ -8937,16 +9105,24 @@ defining `respond_to_missing?`.
 ----
 # bad
 def method_missing(name, *args)
-  # ...
+  if @delegate.respond_to?(name)
+    @delegate.send(name, *args)
+  else
+    super
+  end
 end
 
 # good
 def respond_to_missing?(name, include_private)
-  # ...
+  @delegate.respond_to?(name) || super
 end
 
 def method_missing(name, *args)
-  # ...
+  if @delegate.respond_to?(name)
+    @delegate.send(name, *args)
+  else
+    super
+  end
 end
 ----
 
@@ -9340,7 +9516,7 @@ end
 [#stylemultilineinpatternthen]
 == Style/MultilineInPatternThen
 
-NOTE: Required Ruby version: 2.7
+NOTE: Requires Ruby version 2.7
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -10104,7 +10280,7 @@ bar while !foo && baz
 [#stylenestedfiledirname]
 == Style/NestedFileDirname
 
-NOTE: Required Ruby version: 3.1
+NOTE: Requires Ruby version 3.1
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -10571,7 +10747,7 @@ x = !something
 [#stylenumberedparameters]
 == Style/NumberedParameters
 
-NOTE: Required Ruby version: 2.7
+NOTE: Requires Ruby version 2.7
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -10631,7 +10807,7 @@ collection.each { |item| puts item }
 [#stylenumberedparameterslimit]
 == Style/NumberedParametersLimit
 
-NOTE: Required Ruby version: 2.7
+NOTE: Requires Ruby version 2.7
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -10995,7 +11171,7 @@ bar.baz.positive?
 [#styleobjectthen]
 == Style/ObjectThen
 
-NOTE: Required Ruby version: 2.6
+NOTE: Requires Ruby version 2.6
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -11067,8 +11243,8 @@ obj.yield_self { |x| x.do_something }
 |===
 
 Checks for uses of if/then/else/end constructs on a single line.
-AlwaysCorrectToMultiline config option can be set to true to auto-convert all offenses to
-multi-line constructs. When AlwaysCorrectToMultiline is false (default case) the
+`AlwaysCorrectToMultiline` config option can be set to true to autocorrect all offenses to
+multi-line constructs. When `AlwaysCorrectToMultiline` is false (default case) the
 autocorrect will first try converting them to ternary operators.
 
 [#examples-styleonelineconditional]
@@ -11096,6 +11272,34 @@ if foo
   bar
 else
   baz
+end
+----
+
+[#alwayscorrecttomultiline_-false-_default_-styleonelineconditional]
+==== AlwaysCorrectToMultiline: false (default)
+
+[source,ruby]
+----
+# bad
+if cond then run else dont end
+
+# good
+cond ? run : dont
+----
+
+[#alwayscorrecttomultiline_-true-styleonelineconditional]
+==== AlwaysCorrectToMultiline: true
+
+[source,ruby]
+----
+# bad
+if cond then run else dont end
+
+# good
+if cond
+  run
+else
+  dont
 end
 ----
 
@@ -12328,6 +12532,19 @@ Checks for usage of the %W() syntax when %w() would do.
 
 Checks for unnecessary conditional expressions.
 
+NOTE: Since the intention of the comment cannot be automatically determined,
+autocorrection is not applied when a comment is used, as shown below:
+
+[source,ruby]
+-----
+if b
+  # Important note.
+  b
+else
+  c
+end
+-----
+
 [#examples-styleredundantcondition]
 === Examples
 
@@ -13057,7 +13274,7 @@ y << 'b'   # raise `FrozenError`.
 [#styleredundantinterpolationunfreeze]
 == Style/RedundantInterpolationUnfreeze
 
-NOTE: Required Ruby version: 3.0
+NOTE: Requires Ruby version 3.0
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -14385,7 +14602,7 @@ end
 [#stylesafenavigation]
 == Style/SafeNavigation
 
-NOTE: Required Ruby version: 2.3
+NOTE: Requires Ruby version 2.3
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -14625,7 +14842,7 @@ Identifies usages of `shuffle.first`,
 | -
 |===
 
-Looks for places where an subset of an Enumerable (array,
+Looks for places where a subset of an Enumerable (array,
 range, set, etc.; see note below) is calculated based on a `Regexp`
 match, and suggests `grep` or `grep_v` instead.
 
@@ -15166,8 +15383,13 @@ end
 Checks for single-line `do`...`end` block.
 
 In practice a single line `do`...`end` is autocorrected when `EnforcedStyle: semantic`
-in `Style/BlockDelimiters`. The autocorrection maintains the `do` ... `end` syntax to
-preserve semantics and does not change it to `{`...`}` block.
+is configured for `Style/BlockDelimiters`. The autocorrection maintains the
+`do` ... `end` syntax to preserve semantics and does not change it to `{`...`}` block.
+
+NOTE: If `InspectBlocks` is set to `true` for `Layout/RedundantLineBreak`, blocks will
+be autocorrected to be on a single line if possible. This cop respects that configuration
+by not registering an offense if it would subsequently cause a
+`Layout/RedundantLineBreak` offense.
 
 [#examples-stylesinglelinedoendblock]
 === Examples
@@ -15269,7 +15491,7 @@ def no_op; end
 [#styleslicingwithrange]
 == Style/SlicingWithRange
 
-NOTE: Required Ruby version: 2.6
+NOTE: Requires Ruby version 2.6
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -16280,7 +16502,7 @@ x, y = y, x
 [#stylesymbolarray]
 == Style/SymbolArray
 
-NOTE: Required Ruby version: 2.0
+NOTE: Requires Ruby version 2.0
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -17762,7 +17984,7 @@ return unless a?
 [#styleunpackfirst]
 == Style/UnpackFirst
 
-NOTE: Required Ruby version: 2.4
+NOTE: Requires Ruby version 2.4
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed

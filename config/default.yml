@@ -1086,7 +1086,7 @@ Layout/LineLength:
   StyleGuide: '#max-line-length'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.69'
   Max: 120
   AllowHeredoc: true
   # To make it possible to copy or click on URIs in the code, we allow lines
@@ -1635,7 +1635,7 @@ Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
   Safe: false
   VersionAdded: '0.89'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.69'
 
 Lint/BooleanSymbol:
   Description: 'Check for `:true` and `:false` symbols.'
@@ -1960,7 +1960,7 @@ Lint/HashCompareByIdentity:
 Lint/HashNewWithKeywordArgumentsAsDefault:
   Description: 'Checks for the deprecated use of keyword arguments for hash default in `Hash.new`.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.69'
 
 Lint/HeredocMethodCallPosition:
   Description: >-
@@ -2155,7 +2155,7 @@ Lint/NumberedParameterAssignment:
 Lint/NumericOperationWithConstantResult:
   Description: 'Checks for numeric operations with constant results.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.69'
 
 Lint/OrAssignmentToConstant:
   Description: 'Checks unintended or-assignment to constant.'
@@ -2531,7 +2531,7 @@ Lint/UnusedMethodArgument:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.21'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.69'
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
   IgnoreNotImplementedMethods: true
@@ -2574,7 +2574,7 @@ Lint/UselessAssignment:
 Lint/UselessDefined:
   Description: 'Checks for calls to `defined?` with strings and symbols. The result of such a call will always be truthy.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.69'
 
 Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
@@ -3719,7 +3719,7 @@ Style/DigChain:
   Description: 'Use `dig` with multiple parameters instead of chaining multiple calls.'
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.69'
 
 Style/Dir:
   Description: >-
@@ -3951,7 +3951,7 @@ Style/FileNull:
   Description: 'Use `File::NULL` instead of hardcoding "dev/null".'
   Enabled: pending
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.69'
 
 Style/FileRead:
   Description: 'Favor `File.(bin)read` convenience methods.'
@@ -3962,7 +3962,7 @@ Style/FileRead:
 Style/FileTouch:
   Description: 'Favor `FileUtils.touch` for touching files.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.69'
   SafeAutoCorrect: false
 
 Style/FileWrite:

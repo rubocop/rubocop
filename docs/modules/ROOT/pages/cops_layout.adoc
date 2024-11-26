@@ -95,8 +95,7 @@ end
 | 0.77
 |===
 
-Here we check if the arguments on a multi-line method
-definition are aligned.
+Check that the arguments on a multi-line method definition are aligned.
 
 [#examples-layoutargumentalignment]
 === Examples
@@ -182,7 +181,7 @@ foo :bar,
 | 0.77
 |===
 
-Here we check if the elements of a multi-line array literal are
+Check that the elements of a multi-line array literal are
 aligned.
 
 [#examples-layoutarrayalignment]
@@ -3956,7 +3955,7 @@ opening HEREDOC tag.
 [#layoutheredocindentation]
 == Layout/HeredocIndentation
 
-NOTE: Required Ruby version: 2.3
+NOTE: Requires Ruby version 2.3
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -4807,7 +4806,7 @@ my_hash = {
 | Yes
 | Always
 | 0.25
-| 1.4
+| 1.69
 |===
 
 Checks the length of lines in the source code.
@@ -4899,6 +4898,10 @@ bar: "0000000000", baz: "0000000000"}
 | AllowedPatterns
 | `[]`
 | Array
+
+| SplitStrings
+| `false`
+| Boolean
 |===
 
 [#references-layoutlinelength]
@@ -5592,7 +5595,7 @@ If a method call's opening brace is on the same line as the first
 argument of the call, then the closing brace should be on the same
 line as the last argument of the call.
 
-If an method call's opening brace is on the line above the first
+If a method call's opening brace is on the line above the first
 argument of the call, then the closing brace should be on the line
 below the last argument of the call.
 
@@ -5810,7 +5813,7 @@ If a method definition's opening brace is on the same line as the
 first parameter of the definition, then the closing brace should be
 on the same line as the last parameter of the definition.
 
-If an method definition's opening brace is on the line above the first
+If a method definition's opening brace is on the line above the first
 parameter of the definition, then the closing brace should be on the
 line below the last parameter of the definition.
 
@@ -6106,11 +6109,10 @@ end
 | 0.77
 |===
 
-Here we check if the parameters on a multi-line method call or
-definition are aligned.
+Check that the parameters on a multi-line method call or definition are aligned.
 
-To set the alignment of the first argument, use the cop
-FirstParameterIndentation.
+To set the alignment of the first argument, use the
+`Layout/FirstParameterIndentation` cop.
 
 [#examples-layoutparameteralignment]
 === Examples
@@ -7209,9 +7211,11 @@ surrounding space depending on configuration.
 
 # bad
 array = [ a, b, c, d ]
+array = [ a, [ b, c ]]
 
 # good
 array = [a, b, c, d]
+array = [a, [b, c]]
 ----
 
 [#enforcedstyle_-space-layoutspaceinsidearrayliteralbrackets]
@@ -7224,9 +7228,11 @@ array = [a, b, c, d]
 
 # bad
 array = [a, b, c, d]
+array = [ a, [ b, c ]]
 
 # good
 array = [ a, b, c, d ]
+array = [ a, [ b, c ] ]
 ----
 
 [#enforcedstyle_-compact-layoutspaceinsidearrayliteralbrackets]
@@ -7239,6 +7245,7 @@ array = [ a, b, c, d ]
 # or right brackets are collapsed together in nested arrays.
 
 # bad
+array = [a, b, c, d]
 array = [ a, [ b, c ] ]
 array = [
   [ a ],
@@ -7246,6 +7253,7 @@ array = [
 ]
 
 # good
+array = [ a, b, c, d ]
 array = [ a, [ b, c ]]
 array = [[ a ],
   [ b, c ]]
@@ -7495,9 +7503,11 @@ surrounding space depending on configuration.
 
 # bad
 h = {a: 1, b: 2}
+foo = {{ a: 1 } => { b: { c: 2 }}}
 
 # good
 h = { a: 1, b: 2 }
+foo = { { a: 1 } => { b: { c: 2 } } }
 ----
 
 [#enforcedstyle_-no_space-layoutspaceinsidehashliteralbraces]
@@ -7510,9 +7520,11 @@ h = { a: 1, b: 2 }
 
 # bad
 h = { a: 1, b: 2 }
+foo = {{ a: 1 } => { b: { c: 2 }}}
 
 # good
 h = {a: 1, b: 2}
+foo = {{a: 1} => {b: {c: 2}}}
 ----
 
 [#enforcedstyle_-compact-layoutspaceinsidehashliteralbraces]

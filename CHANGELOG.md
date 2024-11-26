@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.69.0 (2024-11-26)
+
 ### New features
 
 * [#13439](https://github.com/rubocop/rubocop/pull/13439): Add new `Lint/HashNewWithKeywordArgumentsAsDefault` cop. ([@koic][])

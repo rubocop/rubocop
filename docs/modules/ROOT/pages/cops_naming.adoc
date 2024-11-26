@@ -189,7 +189,7 @@ def +(other); end
 [#namingblockforwarding]
 == Naming/BlockForwarding
 
-NOTE: Required Ruby version: 3.1
+NOTE: Requires Ruby version 3.1
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
