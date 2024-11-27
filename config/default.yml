@@ -4141,6 +4141,14 @@ Style/HashLikeCase:
   # to trigger this cop
   MinBranchesCount: 3
 
+Style/HashSlice:
+  Description: >-
+                 Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
+                 that can be replaced with `Hash#slice` method.
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/HashSyntax:
   Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
