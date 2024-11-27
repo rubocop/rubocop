@@ -52,7 +52,7 @@ module RuboCop
           end_pos = node.source_range.end_pos
 
           while dig?((node = node.receiver))
-            begin_pos = node.loc.dot ? node.loc.dot.begin_pos + 1 : 0
+            begin_pos = node.loc.dot ? node.loc.dot.end_pos : 0
             arguments.unshift(*node.arguments)
             ignore_node(node)
           end
