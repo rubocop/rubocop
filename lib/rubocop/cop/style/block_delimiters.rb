@@ -342,16 +342,23 @@ module RuboCop
           node.respond_to?(:block_node) && node.block_node
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def get_blocks(node, &block)
           case node.type
           when :block, :numblock
             yield node
           when :send
+            # When a method has an argument which is another method with a block,
+            # that block needs braces, otherwise a syntax error will be introduced
+            # for subsequent arguments.
+            # Additionally, even without additional arguments, changing `{...}` to
+            # `do...end` will change the binding of the block to the outer method.
             get_blocks(node.receiver, &block) if node.receiver
+            node.arguments.each { |argument| get_blocks(argument, &block) }
           when :hash
             # A hash which is passed as method argument may have no braces
             # In that case, one of the K/V pairs could contain a block node
-            # which could change in meaning if do...end replaced {...}
+            # which could change in meaning if `do...end` is replaced with `{...}`
             return if node.braces?
 
             node.each_child_node { |child| get_blocks(child, &block) }
@@ -359,6 +366,7 @@ module RuboCop
             node.each_child_node { |child| get_blocks(child, &block) }
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         # rubocop:disable Metrics/CyclomaticComplexity
         def proper_block_style?(node)

@@ -1,6 +1,68 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
+  shared_examples 'always accepted' do
+    context 'with blocks that need braces to be valid ruby' do
+      it 'accepts a multi-line block' do
+        expect_no_offenses(<<~RUBY)
+          puts [1, 2, 3].map { |n|
+            n * n
+          }
+        RUBY
+      end
+
+      it 'accepts a multi-line block followed by another argument' do
+        expect_no_offenses(<<~RUBY)
+          puts [1, 2, 3].map { |n|
+            n * n
+          }, 1
+        RUBY
+      end
+
+      it 'accepts a multi-line block inside a nested send' do
+        expect_no_offenses(<<~RUBY)
+          puts [0] + [1,2,3].map { |n|
+            n * n
+          }, 1
+        RUBY
+      end
+
+      it 'accepts a multi-line block inside a nested send when the block is the receiver' do
+        expect_no_offenses(<<~RUBY)
+          puts [1,2,3].map { |n|
+            n * n
+          } + [0], 1
+        RUBY
+      end
+
+      context 'Ruby >= 2.7', :ruby27 do
+        it 'accepts a multi-line numblock' do
+          expect_no_offenses(<<~RUBY)
+            puts [1, 2, 3].map {
+              _1 * _1
+            }, 1
+          RUBY
+        end
+
+        it 'accepts a multi-line numblock inside a nested send' do
+          expect_no_offenses(<<~RUBY)
+            puts [0] + [1,2,3].map {
+              _1 * _1
+            }, 1
+          RUBY
+        end
+
+        it 'accepts a multi-line numblock inside a nested send when the block is the receiver' do
+          expect_no_offenses(<<~RUBY)
+            puts [1,2,3].map {
+              _1 * _1
+            } + [0], 1
+          RUBY
+        end
+      end
+    end
+  end
+
   shared_examples 'syntactic styles' do
     it 'registers an offense for a single line block with do-end' do
       expect_offense(<<~RUBY)
@@ -17,14 +79,6 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect_no_offenses(<<~RUBY)
         each do |x|
         end
-      RUBY
-    end
-
-    it 'accepts a multi-line block that needs braces to be valid ruby' do
-      expect_no_offenses(<<~RUBY)
-        puts [1, 2, 3].map { |n|
-          n * n
-        }, 1
       RUBY
     end
 
@@ -47,14 +101,6 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           end
         RUBY
       end
-
-      it 'accepts a multi-line numblock that needs braces to be valid ruby' do
-        expect_no_offenses(<<~RUBY)
-          puts [1, 2, 3].map {
-            _1 * _1
-          }, 1
-        RUBY
-      end
     end
   end
 
@@ -68,6 +114,8 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     }
 
     let(:cop_config) { cop_config }
+
+    include_examples 'always accepted'
 
     it 'accepts a multi-line block with braces if the return value is assigned' do
       expect_no_offenses(<<~RUBY)
@@ -387,6 +435,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     let(:cop_config) { cop_config }
 
+    include_examples 'always accepted'
     include_examples 'syntactic styles'
 
     it 'autocorrects do-end for single line blocks to { and }' do
@@ -602,16 +651,10 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
-      it 'registers an offense and autocorrects when multi-line blocks to `{` and `}` with method chain' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense for a multi-line block with `{` and `}` with method chain' do
+        expect_no_offenses(<<~RUBY)
           foo bar + baz {
-                        ^ Avoid using `{...}` for multi-line blocks.
           }.qux.quux
-        RUBY
-
-        expect_correction(<<~RUBY)
-          foo bar + baz do
-          end.qux.quux
         RUBY
       end
 
@@ -690,6 +733,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     let(:cop_config) { cop_config }
 
+    include_examples 'always accepted'
     include_examples 'syntactic styles'
 
     it 'registers an offense for multi-line chained do-end blocks' do
@@ -858,6 +902,8 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
     }
 
     let(:cop_config) { cop_config }
+
+    include_examples 'always accepted'
 
     it 'registers an offense for a single line block with do-end' do
       expect_offense(<<~RUBY)
