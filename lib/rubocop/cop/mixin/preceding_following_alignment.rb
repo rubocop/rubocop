@@ -62,7 +62,7 @@ module RuboCop
           next unless index
           next if indent && indent != index
 
-          return yield(range, line)
+          return yield(range, line, lineno + 1)
         end
         false
       end
@@ -74,12 +74,12 @@ module RuboCop
           end.map(&:line)
       end
 
-      def aligned_token?(range, line)
-        aligned_words?(range, line) || aligned_assignment?(range, line)
+      def aligned_token?(range, line, lineno)
+        aligned_words?(range, line) || aligned_assignment?(range, lineno)
       end
 
-      def aligned_operator?(range, line)
-        aligned_identical?(range, line) || aligned_assignment?(range, line)
+      def aligned_operator?(range, line, lineno)
+        aligned_identical?(range, line) || aligned_assignment?(range, lineno)
       end
 
       def aligned_words?(range, line)
@@ -90,16 +90,33 @@ module RuboCop
         token == line[left_edge, token.length]
       end
 
-      def aligned_assignment?(range, line)
-        (range.source[-1] == '=' && line[range.last_column - 1] == '=') ||
-          aligned_with_append_operator?(range, line)
+      def aligned_assignment?(range, lineno)
+        # Check that assignment is aligned with a previous assignment operator
+        # ie. an equals sign, an operator assignment, or an append operator (`<<`)
+        line_range = processed_source.buffer.line_range(lineno)
+        return false unless line_range
+
+        # Find the specific token to avoid matching up to operators inside strings
+        assignment_token = processed_source.tokens_within(line_range).detect do |token|
+          token.equal_sign? || token.type == :tLSHFT
+        end
+
+        aligned_with_preceding_assignment?(range, assignment_token) ||
+          aligned_with_append_operator?(range, assignment_token)
       end
 
-      def aligned_with_append_operator?(range, line)
-        last_column = range.last_column
+      def aligned_with_preceding_assignment?(range, token)
+        return false unless token
 
-        (range.source == '<<' && line[last_column - 1] == '=') ||
-          (range.source[-1] == '=' && line[(last_column - 2)..(last_column - 1)] == '<<')
+        range.source[-1] == '=' && range.last_column == token.pos.last_column
+      end
+
+      def aligned_with_append_operator?(range, token)
+        return false unless token
+
+        ((range.source == '<<' && token.equal_sign?) ||
+          (range.source[-1] == '=' && token.type == :tLSHFT)) &&
+          token && range.last_column == token.pos.last_column
       end
 
       def aligned_identical?(range, line)
@@ -116,12 +133,9 @@ module RuboCop
         relevant_indent = processed_source.line_indentation(relevant_line_number)
 
         return :none if relevant_indent < token_line_indent
+        return :none unless processed_source.lines[relevant_line_number - 1]
 
-        assignment_line = processed_source.lines[relevant_line_number - 1]
-
-        return :none unless assignment_line
-
-        aligned_assignment?(token.pos, assignment_line) ? :yes : :no
+        aligned_assignment?(token.pos, relevant_line_number) ? :yes : :no
       end
 
       def assignment_lines

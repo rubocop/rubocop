@@ -958,6 +958,32 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
       RUBY
     end
 
+    it 'registers an offense when operator is followed by aligned << inside a string' do
+      expect_offense(<<~RUBY)
+        x   += foo
+            ^^ Operator `+=` should be surrounded by a single space.
+        'yz << bar'
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x += foo
+        'yz << bar'
+      RUBY
+    end
+
+    it 'registers an offense when operator is preceded by aligned << inside a string' do
+      expect_offense(<<~RUBY)
+        'yz << bar'
+        x   += foo
+            ^^ Operator `+=` should be surrounded by a single space.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        'yz << bar'
+        x += foo
+      RUBY
+    end
+
     it 'registers an offense and corrects various assignments with too many spaces' do
       expect_offense(<<~RUBY)
         x ||=  0
