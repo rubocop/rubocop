@@ -467,9 +467,12 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
         end
       RUBY
 
+      warning = 'Unknown foldable type: :send. ' \
+                'Valid foldable types are: array, hash, heredoc, method_call.'
+
       expect do
-        described_class.new(source.ast, source, foldable_types: %i[unknown]).calculate
-      end.to raise_error(RuboCop::Warning, /Unknown foldable type/)
+        described_class.new(source.ast, source, foldable_types: %i[send]).calculate
+      end.to raise_error(RuboCop::Warning, warning)
     end
   end
 end
