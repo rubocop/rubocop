@@ -9,7 +9,7 @@ module RuboCop
           extend NodePattern::Macros
           include Util
 
-          FOLDABLE_TYPES = %i[array hash heredoc send csend].freeze
+          FOLDABLE_TYPES = %i[array hash heredoc method_call].freeze
           CLASSLIKE_TYPES = %i[class module].freeze
           private_constant :FOLDABLE_TYPES, :CLASSLIKE_TYPES
 
