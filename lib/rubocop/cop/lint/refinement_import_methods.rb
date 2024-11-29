@@ -6,7 +6,7 @@ module RuboCop
       # Checks if `include` or `prepend` is called in `refine` block.
       # These methods are deprecated and should be replaced with `Refinement#import_methods`.
       #
-      # It emulates deprecation warnings in Ruby 3.1.
+      # It emulates deprecation warnings in Ruby 3.1. Functionality has been removed in Ruby 3.2.
       #
       # @safety
       #   This cop's autocorrection is unsafe because `include M` will affect the included class

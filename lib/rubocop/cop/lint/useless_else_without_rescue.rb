@@ -25,7 +25,11 @@ module RuboCop
       #     do_something_else
       #   end
       class UselessElseWithoutRescue < Base
+        extend TargetRubyVersion
+
         MSG = '`else` without `rescue` is useless.'
+
+        maximum_target_ruby_version 2.5
 
         def on_new_investigation
           processed_source.diagnostics.each do |diagnostic|
