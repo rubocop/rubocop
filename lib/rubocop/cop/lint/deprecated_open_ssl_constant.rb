@@ -33,6 +33,7 @@ module RuboCop
 
         MSG = 'Use `%<constant>s.%<method>s(%<replacement_args>s)` instead of `%<original>s`.'
 
+        RESTRICT_ON_SEND = %i[new digest].freeze
         NO_ARG_ALGORITHM = %w[BF DES IDEA RC4].freeze
 
         # @!method algorithm_const(node)

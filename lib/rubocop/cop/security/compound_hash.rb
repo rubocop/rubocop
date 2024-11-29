@@ -32,6 +32,7 @@ module RuboCop
         MONUPLE_HASH_MSG =
           'Delegate hash directly without wrapping in an array when only using a single value.'
         REDUNDANT_HASH_MSG = 'Calling .hash on elements of a hashed array is redundant.'
+        RESTRICT_ON_SEND = %i[hash ^ + * |].freeze
 
         # @!method hash_method_definition?(node)
         def_node_matcher :hash_method_definition?, <<~PATTERN

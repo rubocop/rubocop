@@ -19,6 +19,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `%<preferred>s`.'
+        RESTRICT_ON_SEND = [:==].freeze
 
         # @!method line_send(node)
         def_node_matcher :line_send, <<~PATTERN

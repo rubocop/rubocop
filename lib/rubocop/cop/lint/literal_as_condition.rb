@@ -36,6 +36,7 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Literal `%<literal>s` appeared as a condition.'
+        RESTRICT_ON_SEND = [:!].freeze
 
         def on_if(node)
           check_for_literal(node)

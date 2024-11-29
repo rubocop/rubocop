@@ -26,6 +26,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
+        RESTRICT_ON_SEND = [:[]].freeze
 
         # @!method env_with_bracket?(node)
         def_node_matcher :env_with_bracket?, <<~PATTERN
