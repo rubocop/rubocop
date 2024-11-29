@@ -25,9 +25,12 @@ module RuboCop
       #
       class YAMLLoad < Base
         extend AutoCorrector
+        extend TargetRubyVersion
 
         MSG = 'Prefer using `YAML.safe_load` over `YAML.load`.'
         RESTRICT_ON_SEND = %i[load].freeze
+
+        maximum_target_ruby_version 3.0
 
         # @!method yaml_load(node)
         def_node_matcher :yaml_load, <<~PATTERN
@@ -35,8 +38,6 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return if target_ruby_version >= 3.1
-
           yaml_load(node) do
             add_offense(node.loc.selector) do |corrector|
               corrector.replace(node.loc.selector, 'safe_load')

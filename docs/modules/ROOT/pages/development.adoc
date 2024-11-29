@@ -378,12 +378,12 @@ Some cops apply changes that only apply in particular contexts, such as if the u
 
 ==== Requiring a minimum Ruby version
 
-If your cop uses new Ruby syntax or standard library APIs, it should only autocorrect if the user has the target Ruby version, which you set with https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/TargetRubyVersion#minimum_target_ruby_version-instance_metho[`TargetRubyVersion#minimum_target_ruby_version`].
+If your cop uses new Ruby syntax or standard library APIs, it should only register offenses if the user has the proper target Ruby version, which you can require with https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/TargetRubyVersion#minimum_target_ruby_version-instance_method[`TargetRubyVersion#minimum_target_ruby_version`].
 
 For example, the `Performance/SelectMap` cop requires Ruby 2.7, which introduced `Enumerable#filter_map`:
 
 ```ruby
-module RuboCop::Cop::Performance::SelectMap < Base
+class RuboCop::Cop::Performance::SelectMap < Base
   extend TargetRubyVersion
 
   minimum_target_ruby_version 2.7
@@ -392,7 +392,23 @@ module RuboCop::Cop::Performance::SelectMap < Base
 end
 ```
 
-This cop won't autocorrect on Ruby 2.6 or older, and it won't even report an offense (since there's no better alternative to recommend instead).
+This cop won't register offenses on Ruby 2.6 or older.
+
+==== Requiring a maximum Ruby version
+
+Mirroring `minimum_target_ruby_version`, you can also specify a maximum Ruby version your cop should analyze.
+
+For example, the `Lint/CircularArgumentReference` cop only runs when analyzing code for Ruby before 2.7. The code it is looking for can never be written in more recent Rubies, it would be a syntax error:
+
+```ruby
+class RuboCop::Cop::Lint::CircularArgumentReference < Base
+  extend TargetRubyVersion
+
+  maximum_target_ruby_version 2.6
+
+  # ...
+end
+```
 
 ==== Requiring a gem
 

@@ -37,7 +37,11 @@ module RuboCop
       #     dry_ingredients.combine
       #   end
       class CircularArgumentReference < Base
+        extend TargetRubyVersion
+
         MSG = 'Circular argument reference - `%<arg_name>s`.'
+
+        maximum_target_ruby_version 2.6
 
         def on_kwoptarg(node)
           check_for_circular_argument_references(*node)

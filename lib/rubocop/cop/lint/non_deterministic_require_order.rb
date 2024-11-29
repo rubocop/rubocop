@@ -59,11 +59,13 @@ module RuboCop
       #
       class NonDeterministicRequireOrder < Base
         extend AutoCorrector
+        extend TargetRubyVersion
 
         MSG = 'Sort files before requiring them.'
 
+        maximum_target_ruby_version 2.7
+
         def on_block(node)
-          return if target_ruby_version >= 3.0
           return unless node.body
           return unless unsorted_dir_loop?(node.send_node)
 
@@ -75,7 +77,6 @@ module RuboCop
         end
 
         def on_numblock(node)
-          return if target_ruby_version >= 3.0
           return unless node.body
           return unless unsorted_dir_loop?(node.send_node)
 
@@ -87,7 +88,6 @@ module RuboCop
         end
 
         def on_block_pass(node)
-          return if target_ruby_version >= 3.0
           return unless method_require?(node)
           return unless unsorted_dir_pass?(node.parent)
 
