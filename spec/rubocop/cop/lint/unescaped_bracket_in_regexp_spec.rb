@@ -68,6 +68,15 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
         RUBY
       end
     end
+
+    context 'character class in lookbehind' do
+      # See https://github.com/ammar/regexp_parser/issues/93
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          /(?<=[<>=:])/
+        RUBY
+      end
+    end
   end
 
   context '%r{} Regexp' do
@@ -132,6 +141,15 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           %r{[abc]}
+        RUBY
+      end
+    end
+
+    context 'character class in lookbehind' do
+      # See https://github.com/ammar/regexp_parser/issues/93
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          %r{(?<=[<>=:])}
         RUBY
       end
     end
