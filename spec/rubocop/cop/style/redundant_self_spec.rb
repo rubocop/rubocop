@@ -238,6 +238,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
         end
       RUBY
     end
+
+    it 'accepts `kwnilarg` argument node type' do
+      expect_no_offenses(<<~RUBY)
+        def requested_specs(groups, **nil)
+          some_method(self.groups)
+        end
+      RUBY
+    end
   end
 
   describe 'class methods' do
