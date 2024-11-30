@@ -30,6 +30,7 @@ module RuboCop
         minimum_target_ruby_version 2.6
 
         MSG = 'Prefer `%<prefer>s` over `%<current>s`.'
+        RESTRICT_ON_SEND = %i[then yield_self].freeze
 
         def on_block(node)
           check_method_node(node.send_node)
