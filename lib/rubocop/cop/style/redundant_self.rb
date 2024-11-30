@@ -175,7 +175,7 @@ module RuboCop
         def on_argument(node)
           if node.mlhs_type?
             on_args(node)
-          else
+          elsif node.respond_to?(:name)
             @local_variables_scopes[node] << node.name
           end
         end
