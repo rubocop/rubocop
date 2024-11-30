@@ -258,6 +258,12 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           test
         end
       end
+
+      def func
+        return work || raise('exception') if something
+
+        test
+      end
     RUBY
   end
 
@@ -265,7 +271,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     expect_offense(<<~RUBY)
       def func
         if something
-        ^^ Use a guard clause (`work || raise('message') if something`) instead of wrapping the code inside a conditional expression.
+        ^^ Use a guard clause (`return work || raise('message') if something`) instead of wrapping the code inside a conditional expression.
           work || raise('message')
         else
           test
@@ -280,7 +286,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     expect_offense(<<~RUBY)
       def func
         if something
-        ^^ Use a guard clause (`test || raise('message') unless something`) instead of wrapping the code inside a conditional expression.
+        ^^ Use a guard clause (`return test || raise('message') unless something`) instead of wrapping the code inside a conditional expression.
           work
         else
           test || raise('message')
@@ -307,7 +313,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     expect_offense(<<~RUBY)
       def func
         if something
-        ^^ Use a guard clause (`work and return if something`) instead of wrapping the code inside a conditional expression.
+        ^^ Use a guard clause (`return (work and return) if something`) instead of wrapping the code inside a conditional expression.
           work and return
         else
           test
@@ -322,7 +328,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     expect_offense(<<~RUBY)
       def func
         if something
-        ^^ Use a guard clause (`test and return unless something`) instead of wrapping the code inside a conditional expression.
+        ^^ Use a guard clause (`return (test and return) unless something`) instead of wrapping the code inside a conditional expression.
           work
         else
           test and return
