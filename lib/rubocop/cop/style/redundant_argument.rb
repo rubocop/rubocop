@@ -118,7 +118,9 @@ module RuboCop
         end
 
         def exclude_cntrl_character?(target_argument, redundant_argument)
-          !target_argument.to_s.sub(/\A'/, '"').sub(/'\z/, '"').match?(/[[:cntrl:]]/) ||
+          return true unless (target_argument_string = target_argument.to_s).valid_encoding?
+
+          !target_argument_string.sub(/\A'/, '"').sub(/'\z/, '"').match?(/[[:cntrl:]]/) ||
             !redundant_argument.match?(/[[:cntrl:]]/)
         end
       end
