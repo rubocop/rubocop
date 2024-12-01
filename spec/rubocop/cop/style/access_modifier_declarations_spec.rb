@@ -505,6 +505,56 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       end
 
+      context "with #{access_modifier} within `if` node" do
+        it "does not offend when #{access_modifier} does not have right sibling node" do
+          expect_no_offenses(<<~RUBY)
+            class Test
+              #{access_modifier} :inspect if METHODS.include?(:inspect)
+            end
+          RUBY
+        end
+
+        it 'registers and autocorrects offense if conditional modifier is followed by a normal one' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Test
+              #{access_modifier} get_method_name if get_method_name =~ /a/
+              #{access_modifier} def bar; end
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+              #{access_modifier} get_method_name if get_method_name =~ /a/
+            #{access_modifier}
+
+            def bar; end
+            end
+          RUBY
+        end
+
+        it 'registers and autocorrects offense if conditional modifiers wrap a normal one' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Test
+              #{access_modifier} get_method_name_1 if get_method_name_1 =~ /a/
+              #{access_modifier} def bar; end
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+              #{access_modifier} get_method_name_2 if get_method_name_2 =~ /b/
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+              #{access_modifier} get_method_name_1 if get_method_name_1 =~ /a/
+              #{access_modifier} get_method_name_2 if get_method_name_2 =~ /b/
+            #{access_modifier}
+
+            def bar; end
+            end
+          RUBY
+        end
+      end
+
       include_examples 'always accepted', access_modifier
     end
 
