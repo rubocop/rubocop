@@ -229,6 +229,23 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
           RUBY
         end
       end
+
+      context 'invalid regular expressions' do
+        %w[+ * {42}].each do |invalid_regexp|
+          it "does not register an offense for single invalid `/#{invalid_regexp}/` regexp`" do
+            expect_no_offenses(<<~RUBY)
+              Regexp.#{method}("#{invalid_regexp}")
+            RUBY
+          end
+
+          it "registers an offense for regexp following invalid `/#{invalid_regexp}/` regexp" do
+            expect_offense(<<~RUBY, method: method, invalid_regexp: invalid_regexp)
+              [Regexp.#{method}('#{invalid_regexp}'), Regexp.#{method}('abc]123')]
+                      _{method}  _{invalid_regexp}           _{method}     ^ Regular expression has `]` without escape.
+            RUBY
+          end
+        end
+      end
     end
   end
 end
