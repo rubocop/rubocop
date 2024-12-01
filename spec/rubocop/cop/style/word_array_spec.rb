@@ -559,7 +559,7 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       RUBY
     end
 
-    it "doesn't fail with `encoding: binary" do
+    it "doesn't fail with `encoding: binary`" do
       expect_no_offenses(<<~'RUBY')
         # -*- encoding: binary -*-
         ["\xC0"] # Invalid as UTF-8
