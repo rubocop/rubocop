@@ -58,6 +58,9 @@ module RuboCop
             Regexp::Parser.parse(text.value)&.each_expression do |expr|
               detect_offenses(text, expr)
             end
+          rescue Regexp::Parser::ParserError
+            # Upon encountering an invalid regular expression,
+            # we aim to proceed and identify any remaining potential offenses.
           end
         end
 
