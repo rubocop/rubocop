@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'internal_affairs/cop_description'
+require_relative 'internal_affairs/cop_enabled'
 require_relative 'internal_affairs/create_empty_file'
 require_relative 'internal_affairs/empty_line_between_expect_offense_and_correction'
 require_relative 'internal_affairs/example_description'
