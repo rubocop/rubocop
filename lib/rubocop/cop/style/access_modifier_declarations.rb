@@ -196,7 +196,7 @@ module RuboCop
 
         def offense?(node)
           (group_style? && access_modifier_is_inlined?(node) &&
-            !right_siblings_same_inline_method?(node)) ||
+            !node.parent&.if_type? && !right_siblings_same_inline_method?(node)) ||
             (inline_style? && access_modifier_is_not_inlined?(node))
         end
 
