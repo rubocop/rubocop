@@ -142,20 +142,22 @@ module RuboCop
         end
 
         def replacement(parts)
-          interpolated_parts =
-            parts.map do |part|
-              case part.type
-              when :str
-                value = part.value
-                single_quoted?(part) ? value.gsub(/(\\|")/, '\\\\\&') : value.inspect[1..-2]
-              when :dstr
-                contents_range(part).source
-              else
-                "\#{#{part.source}}"
-              end
+          interpolated_parts = parts.map do |part|
+            case part.type
+            when :str
+              adjust_str(part)
+            when :dstr
+              part.children.all?(&:str_type?) ? adjust_str(part) : contents_range(part).source
+            else
+              "\#{#{part.source}}"
             end
+          end
 
           "\"#{handle_quotes(interpolated_parts).join}\""
+        end
+
+        def adjust_str(node)
+          single_quoted?(node) ? node.value.gsub(/(\\|")/, '\\\\\&') : node.value.inspect[1..-2]
         end
 
         def handle_quotes(parts)

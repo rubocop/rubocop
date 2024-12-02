@@ -52,6 +52,41 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
     RUBY
   end
 
+  context 'implicit concatenation' do
+    it 'registers an offense and corrects with implicit concatenation at the end' do
+      expect_offense(<<~RUBY)
+        "a" + "b" "c"
+        ^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "abc"
+      RUBY
+    end
+
+    it 'registers an offense and corrects with implicit concatenation at the start' do
+      expect_offense(<<~RUBY)
+        "a" "b" + "c"
+        ^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "abc"
+      RUBY
+    end
+
+    it 'registers an offense and corrects with implicit concatenation at the middle' do
+      expect_offense(<<~RUBY)
+        "a" + "b" "c" + "d"
+        ^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        "abcd"
+      RUBY
+    end
+  end
+
   context 'multiline' do
     context 'string continuation' do
       it 'does not register an offense' do
