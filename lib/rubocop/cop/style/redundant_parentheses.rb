@@ -244,7 +244,7 @@ module RuboCop
         end
 
         def only_begin_arg?(args)
-          args.one? && args.first.begin_type?
+          args.one? && args.first&.begin_type?
         end
 
         def first_argument?(node)
