@@ -723,6 +723,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     expect_no_offenses('x = *(y || z)')
   end
 
+  it 'accepts parentheses around `case` expression in splat' do
+    # Parentheses are redundant, but respect user's intentions for readability.
+    expect_no_offenses('x = *(case true when true then false end)')
+  end
+
+  it 'accepts parentheses around `case` expression without condition in splat' do
+    # Parentheses are redundant, but respect user's intentions for readability.
+    expect_no_offenses('x = *(case when rand > 0.5 then 1 end)')
+  end
+
   it 'accepts parentheses around logical operator in double splat' do
     # Parentheses are redundant, but respect user's intentions for readability.
     expect_no_offenses('x(**(y || z))')
