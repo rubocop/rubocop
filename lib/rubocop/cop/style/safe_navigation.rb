@@ -323,7 +323,7 @@ module RuboCop
           return true if unsafe_method?(method)
 
           method.each_ancestor(:send).any? do |ancestor|
-            break true unless config.for_cop('Lint/SafeNavigationChain')['Enabled']
+            break true unless config.cop_enabled?('Lint/SafeNavigationChain')
 
             break true if unsafe_method?(ancestor)
             break true if nil_methods.include?(ancestor.method_name)

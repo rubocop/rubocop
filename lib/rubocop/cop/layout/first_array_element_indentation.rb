@@ -180,13 +180,8 @@ module RuboCop
         end
 
         def enforce_first_argument_with_fixed_indentation?
-          return false unless array_alignment_config['Enabled']
-
-          array_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
-        end
-
-        def array_alignment_config
-          config.for_cop('Layout/ArrayAlignment')
+          argument_alignment_config = config.for_enabled_cop('Layout/ArrayAlignment')
+          argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
         end
       end
     end
