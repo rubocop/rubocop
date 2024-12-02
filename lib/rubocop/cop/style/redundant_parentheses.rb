@@ -166,10 +166,7 @@ module RuboCop
         def_node_matcher :interpolation?, '[^begin ^^dstr]'
 
         def allow_in_multiline_conditions?
-          parentheses_around_condition_config = config.for_cop('Style/ParenthesesAroundCondition')
-          return false unless parentheses_around_condition_config['Enabled']
-
-          !!parentheses_around_condition_config['AllowInMultilineConditions']
+          !!config.for_enabled_cop('Style/ParenthesesAroundCondition')['AllowInMultilineConditions']
         end
 
         def check_send(begin_node, node)

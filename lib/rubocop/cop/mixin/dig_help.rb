@@ -20,7 +20,7 @@ module RuboCop
       private
 
       def dig_chain_enabled?
-        @config.for_cop('Style/DigChain')['Enabled']
+        @config.cop_enabled?('Style/DigChain')
       end
     end
   end
