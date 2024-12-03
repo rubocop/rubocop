@@ -23,14 +23,9 @@ RSpec.describe RuboCop::Cop::Lint::NumericOperationWithConstantResult, :config d
     RUBY
   end
 
-  it 'registers an offense when the modulo of variable and 1 is taken' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when the modulo of variable and 1 is taken' do
+    expect_no_offenses(<<~RUBY)
       x % 1
-      ^^^^^ Numeric operation with a constant result detected.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      0
     RUBY
   end
 
@@ -89,14 +84,9 @@ RSpec.describe RuboCop::Cop::Lint::NumericOperationWithConstantResult, :config d
     RUBY
   end
 
-  it 'registers an offense when the modulo of variable and 1 is taken via abbreviated assignment' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when the modulo of variable and 1 is taken via abbreviated assignment' do
+    expect_no_offenses(<<~RUBY)
       x %= 1
-      ^^^^^^ Numeric operation with a constant result detected.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      x = 0
     RUBY
   end
 
