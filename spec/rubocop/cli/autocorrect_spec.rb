@@ -3756,7 +3756,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
   it 'does not change the number of spaces when autocorrecting a combination of `Layout/LineEndStringConcatenationIndentation`' \
      'and `Style/StringLiterals` with newlines' do
     source_file = Pathname('example.rb')
-    create_file(source_file, <<~'RUBY')
+    create_file(source_file, <<~'RUBY', retain_line_terminators: RuboCop::Platform.windows?)
       "    0:  4\n" \
       "    8: 12\n" \
       "   16: 20"
