@@ -129,9 +129,9 @@ module RuboCop
 
         def message(_range)
           if enforced_style_leading?
-            'Move trailing spaces to the start of next line.'
+            'Move trailing spaces to the start of the next line.'
           else
-            'Move leading spaces to the end of previous line.'
+            'Move leading spaces to the end of the previous line.'
           end
         end
 
