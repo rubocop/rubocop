@@ -3752,4 +3752,44 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       x.dig('foo', 'bar')
     RUBY
   end
+
+  it 'does not change the number of spaces when autocorrecting a combination of `Layout/LineEndStringConcatenationIndentation`' \
+     'and `Style/StringLiterals` with newlines' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~'RUBY')
+      "    0:  4\n" \
+      "    8: 12\n" \
+      "   16: 20"
+    RUBY
+
+    status = cli.run(%w[
+                       --autocorrect-all
+                       --only Layout/LineContinuationLeadingSpace,Style/StringLiterals
+                     ])
+    expect(status).to eq(0)
+    expect($stdout.string).to eq(<<~'RESULT')
+      Inspecting 1 file
+      C
+
+      Offenses:
+
+      example.rb:2:2: C: [Corrected] Layout/LineContinuationLeadingSpace: Move leading spaces to the end of the previous line.
+      "    8: 12\n" \
+       ^^^^
+      example.rb:3:1: C: [Corrected] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+      "   16: 20"
+      ^^^^^^^^^^^
+      example.rb:3:2: C: [Corrected] Layout/LineContinuationLeadingSpace: Move leading spaces to the end of the previous line.
+      "   16: 20"
+       ^^^
+
+      1 file inspected, 3 offenses detected, 3 offenses corrected
+    RESULT
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~'RUBY')
+      "    0:  4\n    " \
+      "8: 12\n   " \
+      '16: 20'
+    RUBY
+  end
 end

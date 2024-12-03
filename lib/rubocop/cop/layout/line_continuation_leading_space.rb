@@ -51,6 +51,10 @@ module RuboCop
         private_constant :LINE_1_ENDING, :LINE_2_BEGINNING,
                          :LEADING_STYLE_OFFENSE, :TRAILING_STYLE_OFFENSE
 
+        def self.autocorrect_incompatible_with
+          [Style::StringLiterals]
+        end
+
         def on_dstr(node)
           # Quick check if we possibly have line continuations.
           return unless node.source.include?('\\')
