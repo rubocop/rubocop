@@ -45,6 +45,17 @@ RSpec.describe RuboCop::Cop::InternalAffairs::OperatorKeyword, :config do
     RUBY
   end
 
+  it 'registers an offense when using `and_type? || or_type?` without receivers' do
+    expect_offense(<<~RUBY)
+      and_type? || or_type?
+      ^^^^^^^^^^^^^^^^^^^^^ Use `operator_keyword?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      operator_keyword?
+    RUBY
+  end
+
   it 'does not register an offense when using `node.operator_keyword?`' do
     expect_no_offenses(<<~RUBY)
       node.operator_keyword?

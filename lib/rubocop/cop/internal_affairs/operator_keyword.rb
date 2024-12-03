@@ -17,6 +17,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use `%<prefer>s`.'
+        PREFERRED_METHOD = 'operator_keyword?'
 
         # @!method and_or_type(node)
         def_node_matcher :and_or_type, <<~PATTERN
@@ -33,8 +34,9 @@ module RuboCop
         def on_or(node)
           return unless (lhs, rhs = and_or_type(node))
 
-          offense = lhs.receiver.source_range.join(rhs.source_range.end)
-          prefer = "#{lhs.receiver.source}.operator_keyword?"
+          begin_range = lhs.receiver&.source_range || lhs.loc.selector
+          offense = begin_range.join(rhs.source_range.end)
+          prefer = lhs.receiver ? "#{lhs.receiver.source}.#{PREFERRED_METHOD}" : PREFERRED_METHOD
 
           add_offense(offense, message: format(MSG, prefer: prefer)) do |corrector|
             corrector.replace(offense, prefer)
