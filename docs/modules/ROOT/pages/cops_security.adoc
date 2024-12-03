@@ -257,6 +257,8 @@ URI.open("http://example.com")
 [#securityyamlload]
 == Security/YAMLLoad
 
+NOTE: Requires Ruby version <= 3.0
+
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 

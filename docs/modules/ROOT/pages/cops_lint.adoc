@@ -557,6 +557,8 @@ false
 [#lintcircularargumentreference]
 == Lint/CircularArgumentReference
 
+NOTE: Requires Ruby version <= 2.6
+
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
@@ -4079,6 +4081,8 @@ FileUtils.rm_f(path)
 [#lintnondeterministicrequireorder]
 == Lint/NonDeterministicRequireOrder
 
+NOTE: Requires Ruby version <= 2.7
+
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
@@ -5353,7 +5357,7 @@ NOTE: Requires Ruby version 3.1
 Checks if `include` or `prepend` is called in `refine` block.
 These methods are deprecated and should be replaced with `Refinement#import_methods`.
 
-It emulates deprecation warnings in Ruby 3.1.
+It emulates deprecation warnings in Ruby 3.1. Functionality has been removed in Ruby 3.2.
 
 [#safety-lintrefinementimportmethods]
 === Safety
@@ -7750,6 +7754,8 @@ defined?(Foo) && Foo.const_defined?(bar) && Foo.const_get(bar).const_defined?(:B
 
 [#lintuselesselsewithoutrescue]
 == Lint/UselessElseWithoutRescue
+
+NOTE: Requires Ruby version <= 2.5
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
