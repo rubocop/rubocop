@@ -45,12 +45,10 @@ module RuboCop
       #
       class BinaryOperatorWithIdenticalOperands < Base
         MSG = 'Binary operator `%<op>s` has identical operands.'
-        MATH_OPERATORS = %i[- + * / ** << >>].to_set.freeze
         RESTRICT_ON_SEND = %i[== != === <=> =~ && || > >= < <= | ^].freeze
 
         def on_send(node)
           return unless node.binary_operation?
-          return if MATH_OPERATORS.include?(node.method_name)
           return unless node.receiver == node.first_argument
 
           add_offense(node, message: format(MSG, op: node.method_name))
