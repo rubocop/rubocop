@@ -51,6 +51,15 @@ module RuboCop
         private_constant :LINE_1_ENDING, :LINE_2_BEGINNING,
                          :LEADING_STYLE_OFFENSE, :TRAILING_STYLE_OFFENSE
 
+        # When both cops are activated and run in the same iteration of the correction loop,
+        # `Style/StringLiterals` undoes the moving of spaces that
+        # `Layout/LineContinuationLeadingSpace` performs. This is because `Style/StringLiterals`
+        # takes the original string content and transforms it, rather than just modifying the
+        # delimiters, in order to handle escaping for quotes within the string.
+        def self.autocorrect_incompatible_with
+          [Style::StringLiterals]
+        end
+
         def on_dstr(node)
           # Quick check if we possibly have line continuations.
           return unless node.source.include?('\\')
