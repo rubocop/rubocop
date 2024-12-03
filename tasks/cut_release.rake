@@ -47,6 +47,10 @@ namespace :cut_release do
         "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
     end
+
+    update_file('docs/modules/ROOT/pages/integration_with_other_tools.adoc') do |integration|
+      integration.gsub("rev: v#{old_version}", "rev: v#{new_version}")
+    end
   end
 
   def update_issue_template(old_version, new_version)
