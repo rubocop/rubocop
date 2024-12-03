@@ -8,19 +8,18 @@ module RuboCop
       #
       # @example
       #
-      #   # good
-      #
-      #   begin
-      #     # ...
-      #   end
-      #
       #   # bad
-      #
       #   begin
       #
       #     # ...
       #
       #   end
+      #
+      #   # good
+      #   begin
+      #     # ...
+      #   end
+      #
       class EmptyLinesAroundBeginBody < Base
         include EmptyLinesAroundBody
         extend AutoCorrector
