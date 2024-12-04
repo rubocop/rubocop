@@ -167,6 +167,17 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
     end
 
+    context 'with URI starting before or after limit depending on tabs count' do
+      let(:cop_config) { { 'Max' => 30, 'AllowURI' => true } }
+
+      it 'registers an offense for the line' do
+        expect_offense(<<~RUBY)
+          \t\t\t\t# There is some content http://test.com
+                                    ^^^^^^^^^^^^^^^^^ Line is too long. [47/30]
+        RUBY
+      end
+    end
+
     context 'and an error other than URI::InvalidURIError is raised ' \
             'while validating a URI-ish string' do
       let(:cop_config) { { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w[LDAP] } }
@@ -463,6 +474,13 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
 
       it "accepts a line that's including URI in quotes with text" do
         expect_no_offenses("\t\t# See 'https://github.com/rubocop/rubocop'")
+      end
+
+      it 'registers the line which looks like YARD comment' do
+        expect_offense(<<-RUBY)
+	        \texpect(some_exception_variable) {|e| e.url.should == 'http://host/path'}
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [83/30]
+        RUBY
       end
     end
   end
