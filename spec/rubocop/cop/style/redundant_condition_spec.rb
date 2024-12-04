@@ -558,6 +558,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects with empty arguments' do
+        expect_offense(<<~RUBY)
+          test ? test : Proc.new {}
+               ^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          test || Proc.new {}
+        RUBY
+      end
+
       it 'registers an offense and corrects nested vars' do
         expect_offense(<<~RUBY)
           b.x ? b.x : c
