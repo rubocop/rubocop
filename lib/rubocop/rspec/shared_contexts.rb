@@ -136,11 +136,13 @@ RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
       rails_version || RuboCop::Config::DEFAULT_RAILS_VERSION
     )
 
-    allow(config).to receive(:gem_versions_in_target).and_return(
-      {
-        'railties' => rails_version_in_gemfile
-      }
-    )
+    allow(config).to receive(:gem_versions_in_target).and_wrap_original do |method|
+      result = method.call
+      next unless result
+
+      result['railties'] = rails_version_in_gemfile
+      result
+    end
 
     config
   end
