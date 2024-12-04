@@ -35,6 +35,25 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'accepts a multi-line block with chained method as an argument to an operator method' do
+        expect_no_offenses(<<~RUBY)
+          'Some text: %s' %
+            %w[foo bar].map { |v|
+              v.upcase
+            }.join(', ')
+        RUBY
+      end
+
+      it 'accepts a multi-line block with chained method as an argument to an operator method' \
+         'inside a kwarg' do
+        expect_no_offenses(<<~RUBY)
+          foo :bar, baz: 'Some text: %s' %
+                         %w[foo bar].map { |v|
+                          v.upcase
+                         }.join(', ')
+        RUBY
+      end
+
       context 'Ruby >= 2.7', :ruby27 do
         it 'accepts a multi-line numblock' do
           expect_no_offenses(<<~RUBY)
@@ -59,6 +78,25 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             } + [0], 1
           RUBY
         end
+
+        it 'accepts a multi-line numblock with chained method as an argument to an operator method' do
+          expect_no_offenses(<<~RUBY)
+            foo %
+              %w[bar baz].map {
+                _1.upcase
+              }.join(', ')
+          RUBY
+        end
+
+        it 'accepts a multi-line numblock with chained method as an argument to an operator method' \
+           'inside a kwarg' do
+          expect_no_offenses(<<~RUBY)
+            foo :bar, baz: 'Some text: %s' %
+                           %w[foo bar].map {
+                            _1.upcase
+                           }.join(', ')
+          RUBY
+        end
       end
     end
   end
@@ -68,6 +106,10 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect_offense(<<~RUBY)
         each do |x| end
              ^^ Prefer `{...}` over `do...end` for single-line blocks.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        each { |x| }
       RUBY
     end
 
@@ -87,6 +129,10 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         expect_offense(<<~RUBY)
           each do _1 end
                ^^ Prefer `{...}` over `do...end` for single-line blocks.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          each { _1 }
         RUBY
       end
 
@@ -166,6 +212,12 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         }
       RUBY
+
+      expect_correction(<<~RUBY)
+        each do |x|
+          x
+        end
+      RUBY
     end
 
     it 'registers an offense for a multi-line block with do-end if the return value is assigned' do
@@ -174,6 +226,12 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
                   ^^ Prefer `{...}` over `do...end` for functional blocks.
           x
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = map { |x|
+          x
+        }
       RUBY
     end
 
@@ -185,6 +243,12 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         end)
       RUBY
+
+      expect_correction(<<~RUBY)
+        puts (map { |x|
+          x
+        })
+      RUBY
     end
 
     it 'registers an offense for a multi-line block with do-end if the ' \
@@ -194,6 +258,12 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
                       ^^ Prefer `{...}` over `do...end` for functional blocks.
           x
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.bar = map { |x|
+          x
+        }
       RUBY
     end
 
@@ -338,21 +408,6 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'autocorrects do-end to {} if it is a functional block' do
-      expect_offense(<<~RUBY)
-        foo = map do |x|
-                  ^^ Prefer `{...}` over `do...end` for functional blocks.
-          x
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        foo = map { |x|
-          x
-        }
-      RUBY
-    end
-
     it 'autocorrects do-end to {} with appropriate spacing' do
       expect_offense(<<~RUBY)
         foo = map do|x|
@@ -365,21 +420,6 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         foo = map { |x|
           x
         }
-      RUBY
-    end
-
-    it 'autocorrects do-end to {} if it is a functional block and does not change the meaning' do
-      expect_offense(<<~RUBY)
-        puts (map do |x|
-                  ^^ Prefer `{...}` over `do...end` for functional blocks.
-          x
-        end)
-      RUBY
-
-      expect_correction(<<~RUBY)
-        puts (map { |x|
-          x
-        })
       RUBY
     end
 
@@ -473,6 +513,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
                ^ Avoid using `{...}` for multi-line blocks.
           }
         RUBY
+
+        expect_correction(<<~RUBY)
+          each do |x|
+          end
+        RUBY
       end
 
       it 'registers an offense when combined with attribute assignment' do
@@ -480,6 +525,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           foo.bar = baz.map { |x|
                             ^ Avoid using `{...}` for multi-line blocks.
           }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.bar = baz.map do |x|
+          end
         RUBY
       end
 
@@ -603,6 +653,16 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             # ...
           })
         RUBY
+
+        expect_correction(<<~RUBY)
+          scope :foo, (lambda do |f|
+            where(condition: "value")
+          end)
+
+          expect { something }.to(raise_error(ErrorClass) do |error|
+            # ...
+          end)
+        RUBY
       end
 
       it 'can handle special method names such as []= and done?' do
@@ -611,6 +671,16 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
                             ^ Avoid using `{...}` for multi-line blocks.
             h3[k3] = 0
           }
+
+          x = done? list.reject { |e|
+            e.nil?
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          h2[k2] = Hash.new do |h3,k3|
+            h3[k3] = 0
+          end
 
           x = done? list.reject { |e|
             e.nil?
@@ -802,6 +872,14 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           }
         ]
       RUBY
+
+      expect_correction(<<~RUBY)
+        Hash[
+          {foo: :bar}.map do |k, v|
+            [k, v]
+          end
+        ]
+      RUBY
     end
 
     context 'when there are braces around a multi-line block' do
@@ -811,6 +889,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
                ^ Prefer `do...end` for multi-line blocks without chaining.
           }
         RUBY
+
+        expect_correction(<<~RUBY)
+          each do |x|
+          end
+        RUBY
       end
 
       it 'registers an offense when combined with attribute assignment' do
@@ -818,6 +901,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           foo.bar = baz.map { |x|
                             ^ Prefer `do...end` for multi-line blocks without chaining.
           }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.bar = baz.map do |x|
+          end
         RUBY
       end
 
@@ -926,6 +1014,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
              ^^ Prefer `{...}` over `do...end` for blocks.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        each { |x|
+        }
+      RUBY
     end
 
     it 'does not autocorrect do-end if {} would change the meaning' do
@@ -964,6 +1057,11 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         foo.bar = baz.map do |x|
                           ^^ Prefer `{...}` over `do...end` for blocks.
         end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.bar = baz.map { |x|
+        }
       RUBY
     end
 
