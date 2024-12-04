@@ -433,6 +433,22 @@ end
 
 You can specify any gem requirement using https://guides.rubygems.org/patterns/#declaring-dependencies[the same syntax as your `Gemfile`].
 
+You can also handle multiple versions of a gem with `target_gem_version`. It behaves similar to `target_ruby_version`, allowing you to inspect a gem version at runtime:
+
+```Ruby
+class MyCop < Base
+  requires_gem "my-gem"
+
+  def on_send(node)
+    if target_gem_version("my-gem) < "1.0"
+      # ...
+    else
+      # ...
+    end
+  end
+end
+```
+
 ==== Special case: Rails
 
 Historically, many cops in `rubocop-rails` aren't actually specific to Rails itself, but some of its components (e.g. `ActiveSupport`). These dependencies are declared with https://www.rubydoc.info/gems/rubocop-rails/RuboCop/Cop/TargetRailsVersion#minimum_target_rails_version-instance_method[`TargetRailsVersion.minimum_target_rails_version`].

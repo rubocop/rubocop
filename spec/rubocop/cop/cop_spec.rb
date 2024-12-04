@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Cop, :config do
+  include FileHelper
+
   let(:source) { 'code = {some: :ruby}' }
   let(:location) { source_range(0...1) }
 
@@ -91,7 +93,20 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       end
     end
 
-    describe 'on a cop with gem requirements' do
+    context 'on a cop with a versionless gem requirement' do
+      let(:cop_class) do
+        stub_cop_class('CopSpec::CopWithVersionlessGemReq') do
+          requires_gem 'gem'
+        end
+      end
+
+      it 'returns a unconstrained requirement' do
+        expected = { 'gem' => Gem::Requirement.new('>= 0') }
+        expect(cop_class.gem_requirements).to eq(expected)
+      end
+    end
+
+    describe 'on a cop with gem version requirements' do
       let(:cop_class) do
         stub_cop_class('CopSpec::CopWithGemReqs') do
           requires_gem 'gem1', '>= 1.2.3'
@@ -125,6 +140,38 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
       # Ensure the superclass wasn't modified:
       expect(superclass.gem_requirements).to eq(expected.slice('gem1'))
+    end
+  end
+
+  describe '#target_gem_version', :isolated_environment do
+    let(:cop_class) { RuboCop::Cop::Style::HashSyntax }
+
+    it 'returns nil when no lockfile exists' do
+      expect(cop.target_gem_version('foo')).to be_nil
+    end
+
+    context 'when the lockfile exists' do
+      before do
+        create_file('Gemfile.lock', <<~LOCKFILE)
+          GEM
+            specs:
+              rack (3.1.1)
+
+          PLATFORMS
+            ruby
+
+          DEPENDENCIES
+            rack (~> 3.0)
+        LOCKFILE
+      end
+
+      it 'returns nil when the gem is not found' do
+        expect(cop.target_gem_version('foo')).to be_nil
+      end
+
+      it 'returns the gem version for a matching gem' do
+        expect(cop.target_gem_version('rack')).to eq(Gem::Version.new('3.1.1'))
+      end
     end
   end
 
