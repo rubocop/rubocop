@@ -602,6 +602,32 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         end
       RUBY
     end
+
+    it 'registers an offense and corrects when there is = in a string after assignment' do
+      expect_offense(<<~RUBY)
+        e, f = val.split('=')
+        opt.ssh_config[e] = f
+                          ^ `=` is not aligned with the preceding assignment.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        e, f              = val.split('=')
+        opt.ssh_config[e] = f
+      RUBY
+    end
+
+    it 'registers an offense and corrects with op-asgn when there is = in a string after assignment' do
+      expect_offense(<<~RUBY)
+        xy &&= val.split('=')
+        opt.ssh_config[e] = f
+                          ^ `=` is not aligned with the preceding assignment.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        xy              &&= val.split('=')
+        opt.ssh_config[e] = f
+      RUBY
+    end
   end
 
   context 'when exactly two comments have extra spaces' do
