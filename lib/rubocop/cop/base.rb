@@ -432,6 +432,8 @@ module RuboCop
       def use_corrector(range, corrector)
         if autocorrect?
           attempt_correction(range, corrector)
+        elsif disable_uncorrectable?
+          attempt_correction(range, nil)
         elsif corrector && (always_autocorrect? || (contextual_autocorrect? && !LSP.enabled?))
           :uncorrected
         else

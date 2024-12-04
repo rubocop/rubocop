@@ -6,7 +6,8 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
   include_context 'cli spec behavior'
 
   describe '--disable-uncorrectable' do
-    let(:exit_code) { cli.run(%w[--autocorrect-all --format simple --disable-uncorrectable]) }
+    let(:cli_opts) { %w[--autocorrect-all --format simple --disable-uncorrectable] }
+    let(:exit_code) { cli.run(cli_opts) }
 
     let(:setup_long_line) do
       create_file('.rubocop.yml', <<~YAML)
@@ -401,7 +402,59 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
       end
     end
 
-    context 'when exist offense for Layout/SpaceInsideArrayLiteralBrackets' do
+    context 'with an unsafe autocorrection' do
+      let(:cli_opts) { %w[--format simple --disable-uncorrectable].unshift(autocorrect_mode) }
+
+      before do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          do_something(:true)
+        RUBY
+      end
+
+      context 'when `--autocorrect` is specfied' do
+        let(:autocorrect_mode) { '--autocorrect' }
+
+        it 'adds `rubocop:todo` to the offense' do
+          expect(exit_code).to eq(0)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<~OUTPUT)
+            == example.rb ==
+            W:  3: 14: [Todo] Lint/BooleanSymbol: Symbol with a boolean name - you probably meant to use true.
+
+            1 file inspected, 1 offense detected, 1 offense corrected
+          OUTPUT
+          expect(File.read('example.rb')).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            do_something(:true) # rubocop:todo Lint/BooleanSymbol
+          RUBY
+        end
+      end
+
+      context 'when `--autocorrect-all` is specfied' do
+        let(:autocorrect_mode) { '--autocorrect-all' }
+
+        it 'adds corrects the offense' do
+          expect(exit_code).to eq(0)
+          expect($stderr.string).to eq('')
+          expect($stdout.string).to eq(<<~OUTPUT)
+            == example.rb ==
+            W:  3: 14: [Corrected] Lint/BooleanSymbol: Symbol with a boolean name - you probably meant to use true.
+
+            1 file inspected, 1 offense detected, 1 offense corrected
+          OUTPUT
+          expect(File.read('example.rb')).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            do_something(true)
+          RUBY
+        end
+      end
+    end
+
+    context 'with a `Layout/SpaceInsideArrayLiteralBrackets` offense' do
       context 'when `EnforcedStyle: no_space`' do
         it 'does not disable anything for cops that support autocorrect' do
           create_file('example.rb', <<~RUBY)

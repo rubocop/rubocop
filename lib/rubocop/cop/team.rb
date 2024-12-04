@@ -73,6 +73,10 @@ module RuboCop
         @options[:autocorrect]
       end
 
+      def disable_uncorrectable?
+        @options[:disable_uncorrectable] == true
+      end
+
       def debug?
         @options[:debug]
       end
@@ -97,7 +101,7 @@ module RuboCop
         # run the other cops when no corrections are left
         on_duty = roundup_relevant_cops(processed_source)
 
-        autocorrect_cops, other_cops = on_duty.partition(&:autocorrect?)
+        autocorrect_cops, other_cops = partition_cops(on_duty)
         report = investigate_partial(autocorrect_cops, processed_source,
                                      offset: offset, original: original)
 
@@ -174,7 +178,7 @@ module RuboCop
         commissioner.investigate(processed_source, offset: offset, original: original)
       end
 
-      # @return [Array<cop>]
+      # @return [Array<Cop>]
       def roundup_relevant_cops(processed_source)
         cops.select do |cop|
           next true if processed_source.comment_config.cop_opted_in?(cop)
@@ -183,6 +187,16 @@ module RuboCop
 
           support_target_ruby_version?(cop) && support_target_rails_version?(cop)
         end
+      end
+
+      # Return cops partitioned into autocorrectable and not autocorrectable arrays.
+      # @return [Array<Array<Cop>, Array<Cop>>]
+      def partition_cops(cops)
+        # If disabling uncorrectable, all cops can be autocorrected, because that's
+        # how the `rubocop:todo` directive is added.
+        return [cops, []] if disable_uncorrectable?
+
+        cops.partition(&:autocorrect?)
       end
 
       def support_target_ruby_version?(cop)
