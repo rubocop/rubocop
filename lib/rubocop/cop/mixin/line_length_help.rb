@@ -37,11 +37,12 @@ module RuboCop
         last_uri_match = match_uris(line).last
         return nil unless last_uri_match
 
-        begin_position, end_position = last_uri_match.offset(0).map do |pos|
-          pos + indentation_difference(line)
-        end
-
+        begin_position, end_position = last_uri_match.offset(0)
         end_position = extend_uri_end_position(line, end_position)
+
+        line_indentation_difference = indentation_difference(line)
+        begin_position += line_indentation_difference
+        end_position += line_indentation_difference
 
         return nil if begin_position < max_line_length && end_position < max_line_length
 
