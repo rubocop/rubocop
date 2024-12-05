@@ -225,13 +225,8 @@ module RuboCop
         end
 
         def enforce_first_argument_with_fixed_indentation?
-          return false unless argument_alignment_config['Enabled']
-
+          argument_alignment_config = config.for_enabled_cop('Layout/ArgumentAlignment')
           argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
-        end
-
-        def argument_alignment_config
-          config.for_cop('Layout/ArgumentAlignment')
         end
       end
     end

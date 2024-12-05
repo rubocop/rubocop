@@ -136,7 +136,7 @@ module RuboCop
         def frozen_strings?
           return true if frozen_string_literals_enabled?
 
-          frozen_string_cop_enabled = config.for_cop('Style/FrozenStringLiteralComment')['Enabled']
+          frozen_string_cop_enabled = config.cop_enabled?('Style/FrozenStringLiteralComment')
           frozen_string_cop_enabled &&
             !frozen_string_literals_disabled? &&
             string_literals_frozen_by_default?.nil?
