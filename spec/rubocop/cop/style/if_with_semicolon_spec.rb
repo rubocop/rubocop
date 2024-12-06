@@ -285,6 +285,30 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
       RUBY
     end
 
+    it 'registers an offense when using multi value assignment in `if` with a semicolon is used' do
+      expect_offense(<<~RUBY)
+        if foo; bar, baz = qux else quux end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if foo;` - use `if/else` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+         bar, baz = qux else quux end
+      RUBY
+    end
+
+    it 'registers an offense when using multi value assignment in `else` with a semicolon is used' do
+      expect_offense(<<~RUBY)
+        if foo; bar else baz, qux = quux end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if foo;` - use `if/else` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+         bar else baz, qux = quux end
+      RUBY
+    end
+
     it 'registers an offense when using `return` with value in `if` with a semicolon is used' do
       expect_offense(<<~RUBY)
         if cond; return value end
