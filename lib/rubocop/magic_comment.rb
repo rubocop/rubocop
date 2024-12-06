@@ -283,7 +283,7 @@ module RuboCop
       # is the only text in the comment.
       #
       # Case-insensitive and dashes/underscores are acceptable.
-      # @see https://github.com/ruby/ruby/blob/78b95b4/parse.y#L7134-L7138
+      # @see https://github.com/ruby/ruby/blob/78b95b49f8/parse.y#L7134-L7138
       def extract_frozen_string_literal
         extract(/\A\s*#\s*#{KEYWORDS[:frozen_string_literal]}:\s*#{TOKEN}\s*\z/io)
       end
