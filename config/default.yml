@@ -2407,6 +2407,11 @@ Lint/StructNewOverride:
   Enabled: true
   VersionAdded: '0.81'
 
+Lint/SubclassesMethod:
+  Description: 'TODO: Write a description of the cop.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/SuppressedException:
   Description: "Don't suppress exceptions."
   StyleGuide: '#dont-hide-exceptions'
