@@ -80,13 +80,13 @@ module RuboCop
 
     # Expose the `frozen_string_literal` value coerced to a boolean if possible.
     #
-    # @return [Boolean] if value is `true` or `false`
+    # @return [Boolean] if value is `true` or `false` in any case
     # @return [nil] if frozen_string_literal comment isn't found
     # @return [String] if comment is found but isn't true or false
     def frozen_string_literal
       return unless (setting = extract_frozen_string_literal)
 
-      case setting
+      case setting.downcase
       when 'true'  then true
       when 'false' then false
       else

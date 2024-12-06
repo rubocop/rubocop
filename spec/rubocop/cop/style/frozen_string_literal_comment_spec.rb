@@ -274,6 +274,15 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
     end
+
+    %w[TRUE FALSE True False truE falsE].each do |value|
+      it "accepts a frozen string literal with `#{value}` literal" do
+        expect_no_offenses(<<~RUBY)
+          # frozen_string_literal: #{value}
+          puts 1
+        RUBY
+      end
+    end
   end
 
   context 'never' do
@@ -1040,6 +1049,21 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         #!/usr/bin/env ruby
         # frozen_string_literal: true
       RUBY
+    end
+
+    %w[FALSE falsE].each do |value|
+      it "registers an offense for a frozen string literal with `#{value}` literal" do
+        expect_offense(<<~RUBY, value: value)
+          # frozen_string_literal: #{value}
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+          puts 1
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # frozen_string_literal: true
+          puts 1
+        RUBY
+      end
     end
   end
 
