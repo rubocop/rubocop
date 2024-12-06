@@ -43,7 +43,7 @@ module RuboCop
           template = if require_newline?(node)
                        MSG_NEWLINE
                      elsif node.else_branch&.if_type? || node.else_branch&.begin_type? ||
-                           use_block_in_branches?(node)
+                           use_masgn_or_block_in_branches?(node)
                        MSG_IF_ELSE
                      else
                        MSG_TERNARY
@@ -53,7 +53,7 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
-          if require_newline?(node) || use_block_in_branches?(node)
+          if require_newline?(node) || use_masgn_or_block_in_branches?(node)
             corrector.replace(node.loc.begin, "\n")
           else
             corrector.replace(node, replacement(node))
@@ -64,8 +64,10 @@ module RuboCop
           node.branches.compact.any?(&:begin_type?) || use_return_with_argument?(node)
         end
 
-        def use_block_in_branches?(node)
-          node.branches.compact.any? { |branch| branch.block_type? || branch.numblock_type? }
+        def use_masgn_or_block_in_branches?(node)
+          node.branches.compact.any? do |branch|
+            branch.masgn_type? || branch.block_type? || branch.numblock_type?
+          end
         end
 
         def use_return_with_argument?(node)
