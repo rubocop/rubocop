@@ -13,6 +13,18 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMagicComment, :config do
     RUBY
   end
 
+  it 'registers an offense when frozen magic comments with different case are duplicated' do
+    expect_offense(<<~RUBY)
+      # frozen_string_literal: true
+      # frozen_string_literal: TRUE
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Duplicate magic comment detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # frozen_string_literal: true
+    RUBY
+  end
+
   it 'registers an offense when same encoding magic comments are duplicated' do
     expect_offense(<<~RUBY)
       # encoding: ascii
