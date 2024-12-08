@@ -63,11 +63,13 @@ module RuboCop
           return unless (variable, values = find_offending_var(node))
           return if values.size < comparisons_threshold
 
-          add_offense(node) do |corrector|
+          range = offense_range(values)
+
+          add_offense(range) do |corrector|
             elements = values.map(&:source).join(', ')
             prefer_method = "[#{elements}].include?(#{variable_name(variable)})"
 
-            corrector.replace(node, prefer_method)
+            corrector.replace(range, prefer_method)
           end
         end
 
@@ -105,6 +107,10 @@ module RuboCop
           [variables.first, values] if variables.any?
         end
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def offense_range(values)
+          values.first.parent.source_range.begin.join(values.last.parent.source_range.end)
+        end
 
         def variable_name(node)
           node.children[0]

@@ -208,6 +208,19 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
         end
       RUBY
     end
+
+    it 'registers an offense and corrects when `var` is compared multiple times after a method call' do
+      expect_offense(<<~RUBY)
+        var = do_something
+        var == foo || var == 'bar' || var == 'baz'
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        var = do_something
+        var == foo || ['bar', 'baz'].include?(var)
+      RUBY
+    end
   end
 
   it 'does not register an offense when comparing two sides of the disjunction is unrelated' do
@@ -235,6 +248,19 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
         if [before.column, after.column].include?(col)
           do_something
         end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when `var` is compared multiple times after a method call' do
+      expect_offense(<<~RUBY)
+        var = do_something
+        var == foo || var == 'bar' || var == 'baz'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        var = do_something
+        [foo, 'bar', 'baz'].include?(var)
       RUBY
     end
   end
