@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
+  shared_examples 'with implicit receiver' do |method_id|
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        if FileTest.exist?(path)
+          #{method_id}(path)
+        end
+      RUBY
+    end
+  end
+
   it 'registers an offense when use `FileTest.exist?` before creating file' do
     expect_offense(<<~RUBY)
       unless FileTest.exist?(path)
@@ -32,6 +42,14 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
 
       RUBY
     end
+
+    it 'does not register an offense for make method with implicit receiver' do
+      expect_no_offenses(<<~RUBY)
+        unless FileTest.exist?(path)
+          #{make_method}(path)
+        end
+      RUBY
+    end
   end
 
   %i[remove delete unlink remove_file rm rmdir safe_unlink].each do |remove_method|
@@ -50,6 +68,8 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
 
       RUBY
     end
+
+    include_examples 'with implicit receiver', remove_method
   end
 
   %i[remove_dir remove_entry remove_entry_secure].each do |remove_method|
@@ -68,6 +88,8 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
 
       RUBY
     end
+
+    include_examples 'with implicit receiver', remove_method
   end
 
   %i[rm_f rm_rf].each do |remove_method|
@@ -85,6 +107,8 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
 
       RUBY
     end
+
+    include_examples 'with implicit receiver', remove_method
   end
 
   %i[rm_r rmtree].each do |remove_method|
@@ -95,6 +119,8 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
         end
       RUBY
     end
+
+    include_examples 'with implicit receiver', remove_method
   end
 
   it 'registers an offense when use `FileTest.exist?` before creating file with an option `force: true`' do
@@ -323,6 +349,12 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       if FileTest.exist?(path) || condition
         FileUtils.mkdir(path)
       end
+    RUBY
+  end
+
+  it 'does not register an offense without explicit receiver constant' do
+    expect_no_offenses(<<~RUBY)
+      mkdir(path) unless FileTest.exist?(path)
     RUBY
   end
 end
