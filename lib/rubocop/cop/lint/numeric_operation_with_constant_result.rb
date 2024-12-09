@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # Certain numeric operations have a constant result, usually 0 or 1.
       # Subtracting a number from itself or multiplying it by 0 will always return 0.
-      # Additionally, a variable modulo 0 or itself will always return 0.
+      # Additionally, a variable modulo itself will always return 0.
       # Dividing a number by itself or raising it to the power of 0 will always return 1.
       # As such, they can be replaced with that result.
       # These are probably leftover from debugging, or are mistakes.
@@ -17,7 +17,6 @@ module RuboCop
       #   # bad
       #   x - x
       #   x * 0
-      #   x % 1
       #   x % x
       #
       #   # good
@@ -26,7 +25,6 @@ module RuboCop
       #   # bad
       #   x -= x
       #   x *= 0
-      #   x %= 1
       #   x %= x
       #
       #   # good
@@ -85,13 +83,10 @@ module RuboCop
 
         private
 
-        # rubocop :disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def constant_result?(variable, operation, number)
           if number.to_s == '0'
             return 0 if operation == :*
             return 1 if operation == :**
-          elsif number.to_s == '1'
-            return 0 if operation == :%
           elsif number == variable
             return 0 if %i[- %].include?(operation)
             return 1 if operation == :/
@@ -99,7 +94,6 @@ module RuboCop
           # If we weren't able to find any matches, return false so we can bail out.
           false
         end
-        # rubocop :enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
     end
   end
