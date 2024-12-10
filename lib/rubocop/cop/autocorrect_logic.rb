@@ -68,7 +68,7 @@ module RuboCop
             heredoc_range(node)
           elsif string_continuation?(node)
             range_by_lines(node.source_range)
-          elsif surrounding_percent_array?(node)
+          elsif surrounding_percent_array?(node) || multiline_string?(node)
             node.source_range
           end
         end
@@ -103,6 +103,10 @@ module RuboCop
 
       def string_continuation?(node)
         (node.str_type? || node.dstr_type? || node.xstr_type?) && node.source.match?(/\\\s*$/)
+      end
+
+      def multiline_string?(node)
+        node.dstr_type? && node.multiline?
       end
 
       def range_of_first_line(range)
