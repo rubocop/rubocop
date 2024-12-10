@@ -102,5 +102,18 @@ RSpec.describe RuboCop::Cop::Bundler::DuplicatedGem, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when gem is duplicated within `case` statement with empty branch' do
+      expect_no_offenses(<<~RUBY, 'Gemfile')
+        case
+        when Dir.exist?(local)
+          gem 'rubocop', path: local
+        when ENV['RUBOCOP_VERSION'] == 'master'
+          # no-op, do nothing club
+        else
+          gem 'rubocop', '~> 0.90.0'
+        end
+      RUBY
+    end
   end
 end
