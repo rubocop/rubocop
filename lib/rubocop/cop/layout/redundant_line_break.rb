@@ -115,7 +115,7 @@ module RuboCop
         end
 
         def single_line_block_chain_enabled?
-          @config.for_cop('Layout/SingleLineBlockChain')['Enabled']
+          @config.cop_enabled?('Layout/SingleLineBlockChain')
         end
 
         def convertible_block?(node)

@@ -134,10 +134,9 @@ module RuboCop
         end
 
         def disallow_endless_method_style?
-          endless_method_config = config.for_cop('Style/EndlessMethod')
-          return true unless endless_method_config['Enabled']
+          return true unless config.cop_enabled?('Style/EndlessMethod')
 
-          endless_method_config['EnforcedStyle'] == 'disallow'
+          config.for_cop('Style/EndlessMethod')['EnforcedStyle'] == 'disallow'
         end
       end
     end

@@ -540,10 +540,7 @@ module RuboCop
         end
 
         def explicit_block_name?
-          block_forwarding_config = config.for_cop('Naming/BlockForwarding')
-          return false unless block_forwarding_config['Enabled']
-
-          block_forwarding_config['EnforcedStyle'] == 'explicit'
+          config.for_enabled_cop('Naming/BlockForwarding')['EnforcedStyle'] == 'explicit'
         end
       end
     end

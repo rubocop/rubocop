@@ -68,8 +68,7 @@ module RuboCop
         end
 
         def single_line_blocks_preferred?
-          redundant_line_break_config = @config.for_cop('Layout/RedundantLineBreak')
-          redundant_line_break_config['Enabled'] && redundant_line_break_config['InspectBlocks']
+          @config.for_enabled_cop('Layout/RedundantLineBreak')['InspectBlocks']
         end
       end
     end

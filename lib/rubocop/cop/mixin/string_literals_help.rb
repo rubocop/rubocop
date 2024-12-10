@@ -26,7 +26,7 @@ module RuboCop
       end
 
       def string_literals_config
-        config.for_cop('Style/StringLiterals')
+        config.for_enabled_cop('Style/StringLiterals')
       end
     end
   end
