@@ -1,0 +1,12 @@
+# Configuration of cop configuration that should be consistent between multiple cops.
+# Each top level rule defines a group of cop parameters that should have consistent values.
+# Used by `InconsistentConfig`.
+
+safe_navigation_chain_length:
+  rules:
+    - cop: Style/SafeNavigation
+      parameter: MaxChainLength
+    - cop: Style/SafeNavigationChainLength
+      parameter: Max
+  message:
+    Use the same value to prevent incompatibilities when evaluating safe navigation chains.
