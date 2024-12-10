@@ -51,15 +51,7 @@ module RuboCop
         end
 
         def on_casgn(node)
-          parent = node.parent
-
-          block_node = if parent&.assignment?
-                         parent.expression
-                       elsif parent&.parent&.masgn_type?
-                         parent.parent.expression
-                       else
-                         node.expression
-                       end
+          block_node = node.expression || find_expression_within_parent(node.parent)
 
           return unless block_node.respond_to?(:class_definition?) && block_node.class_definition?
 
@@ -70,6 +62,14 @@ module RuboCop
 
         def message(length, max_length)
           format('Class has too many lines. [%<length>d/%<max>d]', length: length, max: max_length)
+        end
+
+        def find_expression_within_parent(parent)
+          if parent&.assignment?
+            parent.expression
+          elsif parent&.parent&.masgn_type?
+            parent.parent.expression
+          end
         end
       end
     end
