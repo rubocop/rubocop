@@ -96,7 +96,20 @@ RSpec.describe RuboCop::Config do
       it 'raises validation error' do
         expect { configuration.validate }
           .to raise_error(RuboCop::ValidationError,
-                          %r{^empty section Layout/LineLength})
+                          %r{^empty section "Layout/LineLength"})
+      end
+    end
+
+    context 'when the configuration has the wrong type' do
+      before { create_file(configuration_path, ['Layout/LineLength: Enabled']) }
+
+      it 'raises validation error' do
+        expect { configuration.validate }.to(
+          raise_error(
+            RuboCop::ValidationError,
+            %r{^The configuration for "Layout/LineLength" in .* is not a Hash.\n\nFound: "Enabled"}
+          )
+        )
       end
     end
 
@@ -105,7 +118,7 @@ RSpec.describe RuboCop::Config do
 
       it 'raises validation error' do
         expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /^empty section AllCops/)
+          .to raise_error(RuboCop::ValidationError, /^empty section "AllCops"/)
       end
     end
 

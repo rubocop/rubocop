@@ -80,10 +80,7 @@ module RuboCop
 
     def make_excludes_absolute
       each_key do |key|
-        @validator.validate_section_presence(key)
-        next unless self[key]['Exclude']
-
-        self[key]['Exclude'].map! do |exclude_elem|
+        dig(key, 'Exclude')&.map! do |exclude_elem|
           if exclude_elem.is_a?(String) && !absolute?(exclude_elem)
             File.expand_path(File.join(base_dir_for_path_parameters, exclude_elem))
           else

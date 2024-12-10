@@ -3,6 +3,7 @@
 module RuboCop
   # Handles validation of configuration, for example cop names, parameter
   # names, and Ruby versions.
+  # rubocop:disable Metrics/ClassLength
   class ConfigValidator
     extend SimpleForwardable
 
@@ -41,8 +42,9 @@ module RuboCop
         ConfigLoader.default_configuration.key?(key)
       end
 
-      check_obsoletions
+      validate_parameter_shape(valid_cop_names)
 
+      check_obsoletions
       alert_about_unrecognized_cops(invalid_cop_names)
       validate_new_cops_parameter
       validate_parameter_names(valid_cop_names)
@@ -62,12 +64,6 @@ module RuboCop
 
     def target_ruby_version
       target_ruby.version
-    end
-
-    def validate_section_presence(name)
-      return unless @config.key?(name) && @config[name].nil?
-
-      raise ValidationError, "empty section #{name} found in #{smart_loaded_path}"
     end
 
     private
@@ -177,9 +173,22 @@ module RuboCop
       raise ValidationError, message
     end
 
+    def validate_parameter_shape(valid_cop_names)
+      valid_cop_names.each do |name|
+        if @config[name].nil?
+          raise ValidationError, "empty section #{name.inspect} found in #{smart_loaded_path}"
+        elsif !@config[name].is_a?(Hash)
+          raise ValidationError, <<~MESSAGE
+            The configuration for #{name.inspect} in #{smart_loaded_path} is not a Hash.
+
+            Found: #{@config[name].inspect}
+          MESSAGE
+        end
+      end
+    end
+
     def validate_parameter_names(valid_cop_names)
       valid_cop_names.each do |name|
-        validate_section_presence(name)
         each_invalid_parameter(name) do |param, supported_params|
           warn Rainbow(<<~MESSAGE).yellow
             Warning: #{name} does not support #{param} parameter.
@@ -277,4 +286,5 @@ module RuboCop
         "is supposed to be #{supposed_values} and #{Rainbow(value).yellow} is not."
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
