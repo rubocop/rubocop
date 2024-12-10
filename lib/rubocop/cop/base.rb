@@ -261,6 +261,12 @@ module RuboCop
         @config.target_ruby_version
       end
 
+      # Returns a gems locked versions (i.e. from Gemfile.lock or gems.locked)
+      # @returns [Gem::Version | nil] The locked gem version, or nil if the gem is not present.
+      def target_gem_version(gem_name)
+        @config.gem_versions_in_target && @config.gem_versions_in_target[gem_name]
+      end
+
       def parser_engine
         @config.parser_engine
       end
