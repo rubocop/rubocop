@@ -358,6 +358,26 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
+    it 'can handle a method call using square brackets' do
+      expect_offense(<<~RUBY)
+        callable[
+              foo,
+            bar,
+            ^^^ Align the arguments of a method call if they span more than one line.
+                   baz
+                   ^^^ Align the arguments of a method call if they span more than one line.
+        ]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        callable[
+              foo,
+              bar,
+              baz
+        ]
+      RUBY
+    end
+
     context 'when using safe navigation operator' do
       it 'registers an offense and corrects arguments with single indent' do
         expect_offense(<<~RUBY)
@@ -543,6 +563,27 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
           |     b,
           |     c
           |   )
+        RUBY
+      end
+
+      it 'can handle a method call using square brackets' do
+        expect_offense(<<~RUBY)
+          callable[
+                foo,
+                ^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+              bar,
+              ^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+                     baz
+                     ^^^ Use one level of indentation for arguments following the first line of a multi-line method call.
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          callable[
+            foo,
+            bar,
+            baz
+          ]
         RUBY
       end
     end
