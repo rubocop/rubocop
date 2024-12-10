@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Config do
       it 'raises validation error' do
         expect { configuration.validate }
           .to raise_error(RuboCop::ValidationError,
-                          %r{^empty section Layout/LineLength})
+                          %r{^empty section "Layout/LineLength"})
       end
     end
 
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Config do
 
       it 'raises validation error' do
         expect { configuration.validate }
-          .to raise_error(RuboCop::ValidationError, /^empty section AllCops/)
+          .to raise_error(RuboCop::ValidationError, /^empty section "AllCops"/)
       end
     end
 
