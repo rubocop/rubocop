@@ -73,7 +73,7 @@ module RuboCop
         end
 
         def within_conditional?(node, conditional_node)
-          conditional_node.branches.any? do |branch|
+          conditional_node.branches.compact.any? do |branch|
             branch == node || branch.child_nodes.include?(node)
           end
         end
