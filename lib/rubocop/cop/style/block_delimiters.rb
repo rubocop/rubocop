@@ -183,7 +183,8 @@ module RuboCop
         def on_send(node)
           return unless node.arguments?
           return if node.parenthesized?
-          return if node.operator_method? || node.assignment_method?
+          return if node.assignment_method?
+          return if single_argument_operator_method?(node)
 
           node.arguments.each do |arg|
             get_blocks(arg) do |block|
@@ -500,6 +501,12 @@ module RuboCop
           # If the block contains `rescue` or `ensure`, it needs to be wrapped in
           # `begin`...`end` when changing `do-end` to `{}`.
           block_node.each_child_node(:rescue, :ensure).any? && !block_node.single_line?
+        end
+
+        def single_argument_operator_method?(node)
+          return false unless node.operator_method?
+
+          node.arguments.one? && node.first_argument.block_type?
         end
       end
     end
