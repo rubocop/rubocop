@@ -49,14 +49,28 @@ module RuboCop
       private
 
       def disable_offense(offense_range)
-        range = surrounding_heredoc(offense_range) ||
-                surrounding_percent_array(offense_range) ||
-                string_continuation(offense_range)
+        unbreakable_range = multiline_ranges(offense_range)&.find do |range|
+          range_overlaps_offense?(offense_range, range)
+        end
 
-        if range
-          disable_offense_before_and_after(range_by_lines(range))
+        if unbreakable_range
+          disable_offense_before_and_after(range_by_lines(unbreakable_range))
         else
           disable_offense_with_eol_or_surround_comment(offense_range)
+        end
+      end
+
+      def multiline_ranges(offense_range)
+        return if offense_range.empty?
+
+        processed_source.ast.each_node.filter_map do |node|
+          if surrounding_heredoc?(node)
+            heredoc_range(node)
+          elsif string_continuation?(node)
+            range_by_lines(node.source_range)
+          elsif surrounding_percent_array?(node)
+            node.source_range
+          end
         end
       end
 
@@ -71,41 +85,20 @@ module RuboCop
         end
       end
 
-      def surrounding_heredoc(offense_range)
-        # The empty offense range is an edge case that can be reached from the Lint/Syntax cop.
-        return nil if offense_range.empty?
-
-        heredoc_nodes = processed_source.ast.each_descendant.select do |node|
-          node.respond_to?(:heredoc?) && node.heredoc?
-        end
-        heredoc_nodes.map { |node| node.source_range.join(node.loc.heredoc_end) }
-                     .find { |range| range.contains?(offense_range) }
-      end
-
-      def surrounding_percent_array(offense_range)
-        return nil if offense_range.empty?
-
-        percent_array = processed_source.ast.each_descendant.select do |node|
-          node.array_type? && node.percent_literal?
-        end
-
-        percent_array.map(&:source_range).find do |range|
-          range_overlaps_offense?(offense_range, range)
-        end
-      end
-
-      def string_continuation(offense_range)
-        return nil if offense_range.empty?
-
-        string_continuation_nodes = processed_source.ast.each_descendant.filter_map do |node|
-          range_by_lines(node.source_range) if string_continuation?(node)
-        end
-
-        string_continuation_nodes.find { |range| range_overlaps_offense?(offense_range, range) }
-      end
-
       def range_overlaps_offense?(offense_range, range)
         offense_range.begin_pos > range.begin_pos && range.overlaps?(offense_range)
+      end
+
+      def surrounding_heredoc?(node)
+        node.type?(:str, :dstr, :xstr) && node.heredoc?
+      end
+
+      def heredoc_range(node)
+        node.source_range.join(node.loc.heredoc_end)
+      end
+
+      def surrounding_percent_array?(node)
+        node.array_type? && node.percent_literal?
       end
 
       def string_continuation?(node)
