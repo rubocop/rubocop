@@ -78,6 +78,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless node.receiver
           return unless if_node_child?(node)
           return if explicit_not_force?(node)
           return unless (exist_node = send_exist_node(node.parent).first)

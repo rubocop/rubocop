@@ -325,4 +325,10 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense without explicit receiver' do
+    expect_no_offenses(<<~RUBY)
+      mkdir(path) unless FileTest.exist?(path)
+    RUBY
+  end
 end
