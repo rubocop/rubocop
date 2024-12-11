@@ -107,7 +107,7 @@ module RuboCop
         end
 
         def variable_in_mass_assignment?(variable_name, node)
-          node.assignments.any? { |n| n.name == variable_name }
+          node.assignments.reject(&:send_type?).any? { |n| n.name == variable_name }
         end
 
         def offense_range(node)
