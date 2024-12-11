@@ -129,11 +129,10 @@ module RuboCop
           return true unless (node = find_node_for_line(range.last_line))
           return false if argument_newline?(node)
 
-          source = node.source
-          while (node = node.parent)
-            source = node.source
-          end
-          parse(source.gsub("\\\n", "\n")).valid_syntax?
+          # Check if source is still valid without the continuation
+          source = processed_source.raw_source.dup
+          source[range.begin_pos, range.length] = "\n"
+          parse(source).valid_syntax?
         end
 
         def inspect_end_of_ruby_code_line_continuation

@@ -361,7 +361,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
-  it 'does not register an offense when string concatenation' do
+  it 'does not register an offense for string concatenation' do
     expect_no_offenses(<<~'RUBY')
       foo('bar' \
         'baz')
@@ -621,6 +621,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
       def do_something
         foo \
           || bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for an extra continuation after a required continuation' do
+    expect_offense(<<~'RUBY')
+      def do_something
+        foo \
+          || bar \
+                 ^ Redundant line continuation.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def do_something
+        foo \\
+          || bar#{trailing_whitespace}
       end
     RUBY
   end
