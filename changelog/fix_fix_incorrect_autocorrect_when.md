@@ -1,0 +1,1 @@
+* [#13320](https://github.com/rubocop/rubocop/issues/13320): Fix incorrect autocorrect when `Layout/LineContinuationLeadingSpace` and `Style/StringLiterals` autocorrects in the same pass. ([@dvandersluis][])
