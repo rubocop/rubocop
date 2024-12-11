@@ -3,6 +3,7 @@
 module RuboCop
   # Handles validation of configuration, for example cop names, parameter
   # names, and Ruby versions.
+  # rubocop:disable Metrics/ClassLength
   class ConfigValidator
     extend SimpleForwardable
 
@@ -65,9 +66,15 @@ module RuboCop
     end
 
     def validate_section_presence(name)
-      return unless @config.key?(name) && @config[name].nil?
+      if (config_hash = @config[name]).nil? && @config.key?(name)
+        raise ValidationError, "empty section #{name.inspect} found in #{smart_loaded_path}"
+      end
 
-      raise ValidationError, "empty section #{name} found in #{smart_loaded_path}"
+      raise ValidationError, <<~MESSAGE unless config_hash.is_a?(Hash)
+        The configuration for #{name.inspect} in #{smart_loaded_path} is not a Hash.
+
+        Found: #{config_hash.inspect}
+      MESSAGE
     end
 
     private
@@ -277,4 +284,5 @@ module RuboCop
         "is supposed to be #{supposed_values} and #{Rainbow(value).yellow} is not."
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
