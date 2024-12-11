@@ -131,6 +131,23 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
         end
       RUBY
     end
+
+    it 'registers an empty parens offense for array mass assignment with same name' do
+      expect_offense(<<~RUBY)
+        A = [1, 2]
+        def c; A; end
+
+        c[2], x = c()
+                   ^^ Do not use parentheses for method calls with no arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        A = [1, 2]
+        def c; A; end
+
+        c[2], x = c
+      RUBY
+    end
   end
 
   it 'registers an offense for `obj.method ||= func()`' do
@@ -211,5 +228,31 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
         _a, _b, _c = d(e)
       RUBY
     end
+  end
+
+  it 'registers an empty parens offense for hash mass assignment' do
+    expect_offense(<<~RUBY)
+      h = {}
+      h[:a], h[:b] = c()
+                      ^^ Do not use parentheses for method calls with no arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      h = {}
+      h[:a], h[:b] = c
+    RUBY
+  end
+
+  it 'registers an empty parens offense for array mass assignment' do
+    expect_offense(<<~RUBY)
+      a = []
+      a[0], a[10] = c()
+                     ^^ Do not use parentheses for method calls with no arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = []
+      a[0], a[10] = c
+    RUBY
   end
 end
