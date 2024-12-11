@@ -511,6 +511,18 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
         RUBY
       end
     end
+
+    context 'when exception is assigned with writer method' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          begin
+            something
+          rescue => storage.exception
+            # do something
+          end
+        RUBY
+      end
+    end
   end
 
   context 'with the `PreferredName` setup' do
