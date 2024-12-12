@@ -136,6 +136,26 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationLeadingSpace, :config do
       RUBY
     end
 
+    it 'registers no offense when last character is a newline and next line is indented' do
+      expect_no_offenses(<<~'RUBY')
+        "foo\n" \
+        "  bar"
+      RUBY
+    end
+
+    it 'registers an offense when using trailing style after newline' do
+      expect_offense(<<~'RUBY')
+        "foo\n  " \
+              ^^ Move leading spaces after newline to the beginning of next line.
+        "bar"
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "foo\n" \
+        "  bar"
+      RUBY
+    end
+
     describe 'interpolated strings' do
       it 'registers no offense on interpolated string alone' do
         expect_no_offenses(<<~'RUBY')

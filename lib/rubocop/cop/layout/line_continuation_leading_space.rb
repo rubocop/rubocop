@@ -48,6 +48,9 @@ module RuboCop
         LINE_2_BEGINNING = /\A\s*['"]/.freeze
         LEADING_STYLE_OFFENSE = /(?<trailing_spaces>\s+)(?<ending>#{LINE_1_ENDING})/.freeze
         TRAILING_STYLE_OFFENSE = /(?<beginning>#{LINE_2_BEGINNING})(?<leading_spaces>\s+)/.freeze
+
+        NEWLINE_EDGE_CASE =
+          /(?<newline>\\n)(?<trailing_spaces>\s*)(?<ending>#{LINE_1_ENDING})/.freeze
         private_constant :LINE_1_ENDING, :LINE_2_BEGINNING,
                          :LEADING_STYLE_OFFENSE, :TRAILING_STYLE_OFFENSE
 
@@ -102,6 +105,10 @@ module RuboCop
         end
 
         def investigate_trailing_style(first_line, second_line, end_of_first_line)
+          # Check for newline edge case first
+          matches = first_line.match(NEWLINE_EDGE_CASE)
+          return investigate_leading_style(first_line, second_line, end_of_first_line) if matches
+
           matches = second_line.match(TRAILING_STYLE_OFFENSE)
           return if matches.nil?
 
@@ -136,9 +143,11 @@ module RuboCop
           range_between(begin_pos, end_pos)
         end
 
-        def message(_range)
+        def message(range)
           if enforced_style_leading?
             'Move trailing spaces to the start of the next line.'
+          elsif range_between(range.begin_pos - 2, range.begin_pos).source == '\\n'
+            'Move leading spaces after newline to the beginning of next line.'
           else
             'Move leading spaces to the end of the previous line.'
           end
