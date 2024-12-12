@@ -231,7 +231,7 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
       end
 
       context 'invalid regular expressions' do
-        %w[+ * {42}].each do |invalid_regexp|
+        %w[+ * {42} \xff].each do |invalid_regexp|
           it "does not register an offense for single invalid `/#{invalid_regexp}/` regexp`" do
             expect_no_offenses(<<~RUBY)
               Regexp.#{method}("#{invalid_regexp}")
