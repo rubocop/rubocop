@@ -1,1 +1,0 @@
-* [#13559](https://github.com/rubocop/rubocop/pull/13559): Fix a false positive for `Style/RedundantLineContinuation` when a method definition is used as an argument for a method call. ([@davidrunger][])
