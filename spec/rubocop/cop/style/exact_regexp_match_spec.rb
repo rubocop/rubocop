@@ -100,4 +100,27 @@ RSpec.describe RuboCop::Cop::Style::ExactRegexpMatch, :config do
       string =~ /\Astring\z/i
     RUBY
   end
+
+  context 'invalid regular expressions' do
+    around { |example| RuboCop::Util.silence_warnings(&example) }
+
+    it 'does not register an offense for single invalid regexp' do
+      expect_no_offenses(<<~'RUBY')
+        string =~ /^\P$/
+      RUBY
+    end
+
+    it 'registers an offense for regexp following invalid regexp' do
+      expect_offense(<<~'RUBY')
+        string =~ /^\P$/
+        string.match(/\Astring\z/)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'string'`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        string =~ /^\P$/
+        string == 'string'
+      RUBY
+    end
+  end
 end
