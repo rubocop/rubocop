@@ -3,15 +3,21 @@
 require 'fileutils'
 
 module FileHelper
-  def create_file(file_path, content)
+  def create_file(file_path, content, retain_line_terminators: false)
     file_path = File.expand_path(file_path)
+
+    # On Windows, when a file is opened in 'w' mode, LF line terminators (`\n`)
+    # are automatically converted to CRLF (`\r\n`).
+    # If this is not desired, `force_lf: true` will cause the file to be opened
+    # in 'wb' mode instead, which keeps existing line terminators.
+    file_mode = retain_line_terminators ? 'wb' : 'w'
 
     ensure_descendant(file_path)
 
     dir_path = File.dirname(file_path)
     FileUtils.mkdir_p dir_path
 
-    File.open(file_path, 'w') do |file|
+    File.open(file_path, file_mode) do |file|
       case content
       when String
         file.puts content
