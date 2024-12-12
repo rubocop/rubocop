@@ -160,11 +160,11 @@ jobs:
         run: |
           sed -e "/'rspec', '~> 3/d" -i Gemfile
           cat << EOF > Gemfile.local
-            gem 'rspec', github: 'rspec/rspec-metagem', branch: '4-0-dev'
-            gem 'rspec-core', github: 'rspec/rspec-core', branch: '4-0-dev'
-            gem 'rspec-expectations', github: 'rspec/rspec-expectations', branch: '4-0-dev'
-            gem 'rspec-mocks', github: 'rspec/rspec-mocks', branch: '4-0-dev'
-            gem 'rspec-support', github: 'rspec/rspec-support', branch: '4-0-dev'
+            gem 'rspec', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-core', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-expectations', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-mocks', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-support', github: 'rspec/rspec', branch: '4-0-dev'
           EOF
       - uses: ruby/setup-ruby@v1
         with:
