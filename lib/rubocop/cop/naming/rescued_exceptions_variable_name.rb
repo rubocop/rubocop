@@ -154,7 +154,7 @@ module RuboCop
         end
 
         def variable_name(node)
-          node.exception_variable&.name
+          node.exception_variable.name if node.exception_variable.respond_to?(:name)
         end
 
         def message(node)
