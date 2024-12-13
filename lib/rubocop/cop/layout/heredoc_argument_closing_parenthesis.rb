@@ -162,7 +162,7 @@ module RuboCop
 
         def end_keyword_before_closing_parenthesis?(parenthesized_send_node)
           parenthesized_send_node.ancestors.any? do |ancestor|
-            ancestor.loc.respond_to?(:end) && ancestor.loc.end&.source == 'end'
+            ancestor.loc_is?(:end, 'end')
           end
         end
 
