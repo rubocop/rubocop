@@ -21,7 +21,7 @@ module RuboCop
       end
 
       def begin_source(node)
-        node.loc.begin.source if node.loc.respond_to?(:begin) && node.loc.begin
+        node.loc.begin.source if node.loc?(:begin)
       end
 
       def type(node)
