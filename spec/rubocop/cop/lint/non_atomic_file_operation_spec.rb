@@ -331,4 +331,10 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
       mkdir(path) unless FileTest.exist?(path)
     RUBY
   end
+
+  it 'does not register an offense with non-constant receiver' do
+    expect_no_offenses(<<~RUBY)
+      storage[:files].delete(file) unless File.exists?(file)
+    RUBY
+  end
 end
