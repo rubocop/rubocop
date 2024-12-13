@@ -146,6 +146,11 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   describe '#target_gem_version', :isolated_environment do
     let(:cop_class) { RuboCop::Cop::Style::HashSyntax }
 
+    before do
+      # Call the original to actually look at the provided Gemfile.lock
+      allow(config).to receive(:gem_versions_in_target).and_call_original
+    end
+
     it 'returns nil when no lockfile exists' do
       expect(cop.target_gem_version('foo')).to be_nil
     end
