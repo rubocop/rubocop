@@ -55,12 +55,9 @@ module RuboCop
           return if node.each_descendant(:dstr).any?
 
           regexp_constructor(node) do |text|
-            Regexp::Parser.parse(text.value)&.each_expression do |expr|
+            parse_regexp(text.value)&.each_expression do |expr|
               detect_offenses(text, expr)
             end
-          rescue Regexp::Parser::Error
-            # Upon encountering an invalid regular expression,
-            # we aim to proceed and identify any remaining potential offenses.
           end
         end
 

@@ -193,6 +193,14 @@ module RuboCop
           enforced_style.sub(/^Enforced/, 'Supported').sub('Style', 'Styles')
       end
 
+      def parse_regexp(text)
+        Regexp::Parser.parse(text)
+      rescue Regexp::Parser::Error
+        # Upon encountering an invalid regular expression,
+        # we aim to proceed and identify any remaining potential offenses.
+        nil
+      end
+
       private
 
       def compatible_external_encoding_for?(src)

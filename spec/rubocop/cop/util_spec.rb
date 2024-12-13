@@ -76,4 +76,14 @@ RSpec.describe RuboCop::Cop::Util do
       expect(described_class).not_to be_same_line(5, ivar_bar_node)
     end
   end
+
+  describe '#parse_regexp' do
+    it 'returns parsed expression structure on valid regexp' do
+      expect(described_class.parse_regexp('a+')).to be_a(Regexp::Expression::Root)
+    end
+
+    it 'returns `nil` on invalid regexp' do
+      expect(described_class.parse_regexp('+')).to be_nil
+    end
+  end
 end

@@ -40,15 +40,8 @@ module RuboCop
         def on_send(node)
           return unless (receiver = node.receiver)
           return unless (regexp = exact_regexp_match(node))
-
-          parsed_regexp = begin
-            Regexp::Parser.parse(regexp)
-          rescue Regexp::Parser::Error
-            # Upon encountering an invalid regular expression,
-            # we aim to proceed and identify any remaining potential offenses.
-          end
-
-          return unless parsed_regexp && exact_match_pattern?(parsed_regexp)
+          return unless (parsed_regexp = parse_regexp(regexp))
+          return unless exact_match_pattern?(parsed_regexp)
 
           prefer = "#{receiver.source} #{new_method(node)} '#{parsed_regexp[1].text}'"
 
