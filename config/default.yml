@@ -5272,6 +5272,11 @@ Style/RescueStandardError:
     - implicit
     - explicit
 
+Style/RescueVariableWriter:
+  Description: 'Do not use writer method for rescued exception.'
+  Enabled: true
+  VersionAdded: '<<next>>'
+
 Style/ReturnNil:
   Description: 'Use return instead of return nil.'
   Enabled: false
