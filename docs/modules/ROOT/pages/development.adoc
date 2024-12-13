@@ -123,6 +123,7 @@ and use patterns to match with specific nodes that you want to match.
 You can learn more about Node Pattern https://github.com/rubocop/rubocop-ast/blob/master/docs/modules/ROOT/pages/node_pattern.adoc[here].
 
 Alias `NodePattern` to `RuboCop::AST::NodePattern` to make it easier to use:
+
 [source,ruby]
 ----
 NodePattern = RuboCop::AST::NodePattern
