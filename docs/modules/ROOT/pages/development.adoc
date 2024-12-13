@@ -440,10 +440,37 @@ class MyCop < Base
   requires_gem "my-gem"
 
   def on_send(node)
-    if target_gem_version("my-gem) < "1.0"
+    if target_gem_version("my-gem) < "2.0"
       # ...
     else
       # ...
+    end
+  end
+end
+```
+
+When writing tests, you can specify the gem version to run your example against through the `gem_versions` RSpec helper:
+
+```Ruby
+describe RuboCop::Cop::Style::MyCop, :config do
+  context 'when `my-gem` is at version `1.X`' do
+    let(:gem_versions) { { 'my-gem' => '1.0.0' } }
+
+    it 'registers no offense' do
+      expect_no_offenses(<<~RUBY)
+        MyGem.foo
+      RUBY
+    end
+  end
+
+  context 'when `my-gem` is at version `2.X`' do
+    let(:gem_versions) { { 'my-gem' => '2.0.0' } }
+
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        MyGem.foo
+        ^^^^^^^^^ Instead of `foo`, use the newer `bar` method.
+      RUBY
     end
   end
 end
