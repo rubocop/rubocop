@@ -216,7 +216,7 @@ module RuboCop
 
         def get_dot_right_above(node)
           node.each_ancestor.find do |a|
-            dot = a.loc.respond_to?(:dot) && a.loc.dot
+            dot = a.loc.dot if a.loc?(:dot)
             next unless dot
 
             dot.line == node.loc.dot.line - 1 && dot.column == node.loc.dot.column
@@ -239,7 +239,7 @@ module RuboCop
           node = node.receiver while node.receiver
           # ascend to first call which has a dot
           node = node.parent
-          node = node.parent until node.loc.respond_to?(:dot) && node.loc.dot
+          node = node.parent until node.loc?(:dot)
 
           node
         end
