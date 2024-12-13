@@ -122,7 +122,8 @@ RSpec.describe RuboCop::Cop::Generator do
         # frozen_string_literal: true
 
         RSpec.describe RuboCop::Cop::Style::FakeCop, :config do
-          let(:config) { RuboCop::Config.new }
+          # You can override RuboCop's default configuration:
+          # let(:config) { RuboCop::Config.new }
 
           # TODO: Write test code
           #

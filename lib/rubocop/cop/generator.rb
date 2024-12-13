@@ -92,7 +92,8 @@ module RuboCop
         # frozen_string_literal: true
 
         RSpec.describe RuboCop::Cop::%<department>s::%<cop_name>s, :config do
-          let(:config) { RuboCop::Config.new }
+          # You can override RuboCop's default configuration:
+          # let(:config) { RuboCop::Config.new }
 
           # TODO: Write test code
           #
