@@ -208,6 +208,17 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           RUBY
         end
       end
+
+      it 'registers an offense for implicit `call` method' do
+        expect_offense(<<~RUBY)
+          method(:puts).(:key => value)
+                         ^^^^^^^ Use the new Ruby 1.9 hash syntax.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          method(:puts).(key: value)
+        RUBY
+      end
     end
 
     context 'with SpaceAroundOperators disabled' do
@@ -336,6 +347,17 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
     end
+
+    it 'registers an offense for implicit `call` method' do
+      expect_offense(<<~RUBY)
+        method(:puts).(:key=>value)
+                       ^^^^^^ Use the new Ruby 1.9 hash syntax.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        method(:puts).(key: value)
+      RUBY
+    end
   end
 
   context 'configured to enforce hash rockets style' do
@@ -405,6 +427,17 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       it 'does not register an offense when there is a symbol value' do
         expect_no_offenses('{ :a => :b, :c => :d }')
       end
+    end
+
+    it 'registers an offense for implicit `call` method' do
+      expect_offense(<<~RUBY)
+        method(:puts).(a: 0)
+                       ^^ Use hash rockets syntax.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        method(:puts).(:a => 0)
+      RUBY
     end
   end
 
