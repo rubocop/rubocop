@@ -59,12 +59,12 @@ module RuboCop
 
         # @!method send_exist_node(node)
         def_node_search :send_exist_node, <<~PATTERN
-          $(send (const nil? {:FileTest :File :Dir :Shell}) {:exist? :exists?} ...)
+          $(send (const {cbase nil?} {:FileTest :File :Dir :Shell}) {:exist? :exists?} ...)
         PATTERN
 
         # @!method receiver_and_method_name(node)
         def_node_matcher :receiver_and_method_name, <<~PATTERN
-          (send (const nil? $_) $_ ...)
+          (send (const {cbase nil?} $_) $_ ...)
         PATTERN
 
         # @!method force?(node)
@@ -116,6 +116,7 @@ module RuboCop
 
         def message_remove_file_exist_check(node)
           receiver, method_name = receiver_and_method_name(node)
+
           format(MSG_REMOVE_FILE_EXIST_CHECK, receiver: receiver, method_name: method_name)
         end
 
