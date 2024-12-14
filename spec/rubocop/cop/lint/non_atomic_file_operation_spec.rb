@@ -252,6 +252,56 @@ RSpec.describe RuboCop::Cop::Lint::NonAtomicFileOperation, :config do
     RUBY
   end
 
+  context 'with fully-qualified constant names' do
+    it 'registers an offense when existence check uses fully qualified constant name' do
+      expect_offense(<<~RUBY)
+        if ::FileTest.exist?(path)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+          FileUtils.delete(path)
+          ^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        #{trailing_whitespace}#{trailing_whitespace}FileUtils.rm_f(path)
+
+      RUBY
+    end
+
+    it 'registers an offense when file method uses fully qualified constant name' do
+      expect_offense(<<~RUBY)
+        if FileTest.exist?(path)
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+          ::FileUtils.delete(path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        #{trailing_whitespace}#{trailing_whitespace}::FileUtils.rm_f(path)
+
+      RUBY
+    end
+
+    it 'registers an offense when both methods use fully qualified constant name' do
+      expect_offense(<<~RUBY)
+        if ::FileTest.exist?(path)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary existence check `FileTest.exist?`.
+          ::FileUtils.delete(path)
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use atomic file operation method `FileUtils.rm_f`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        #{trailing_whitespace}#{trailing_whitespace}::FileUtils.rm_f(path)
+
+      RUBY
+    end
+  end
+
   it 'does not register an offense when not checking for the existence' do
     expect_no_offenses(<<~RUBY)
       FileUtils.mkdir_p(path)
