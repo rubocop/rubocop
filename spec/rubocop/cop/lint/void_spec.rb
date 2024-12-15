@@ -196,6 +196,34 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       # so for convenience, the code will not be autocorrected by deletion.
       expect_no_corrections
     end
+
+    it "registers an offense for void var #{var} inside unless block if not on last line" do
+      expect_offense(<<~RUBY, var: var)
+        %{var} = 5
+        unless condition
+          %{var}
+          ^{var} Variable `#{var}` used in void context.
+        end
+        top
+      RUBY
+
+      # `unless condition; var end` might indicate missing `return` or assignment,
+      # so for convenience, the code will not be autocorrected by deletion.
+      expect_no_corrections
+    end
+
+    it "registers an offense for void var #{var} in ternary if not on last line" do
+      expect_offense(<<~RUBY, var: var)
+        %{var} = 5
+        condition ? %{var} : nil
+                    ^{var} Variable `#{var}` used in void context.
+        top
+      RUBY
+
+      # `condition ? var : nil` might indicate missing `return` or assignment,
+      # so for convenience, the code will not be autocorrected by deletion.
+      expect_no_corrections
+    end
   end
 
   it 'registers an offense for void constant `CONST` if not on last line' do
@@ -225,6 +253,34 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     expect_no_corrections
   end
 
+  it 'registers an offense for void constant `CONST` within conditional if not on last line' do
+    expect_offense(<<~RUBY)
+      CONST = 5
+      unless condition
+        CONST
+        ^^^^^ Constant `CONST` used in void context.
+      end
+      top
+    RUBY
+
+    # `unless condition; CONST end` might indicate missing `return` or assignment,
+    # so for convenience, the code will not be autocorrected by deletion.
+    expect_no_corrections
+  end
+
+  it 'registers an offense for void constant `CONST` within ternary if not on last line' do
+    expect_offense(<<~RUBY)
+      CONST = 5
+      condition ? CONST : nil
+                  ^^^^^ Constant `CONST` used in void context.
+      top
+    RUBY
+
+    # `condition ? CONST : ...` might indicate missing `return` or assignment,
+    # so for convenience, the code will not be autocorrected by deletion.
+    expect_no_corrections
+  end
+
   %w(1 2.0 :test /test/ [1] {}).each do |lit|
     it "registers an offense for void lit #{lit} if not on last line" do
       expect_offense(<<~RUBY, lit: lit)
@@ -247,6 +303,32 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       RUBY
 
       # `42 unless condition` might indicate missing `return` in `return 42 unless condition`,
+      # so for convenience, the code will not be autocorrected by deletion.
+      expect_no_corrections
+    end
+
+    it "registers an offense for void lit #{lit} within conditional if not on last line" do
+      expect_offense(<<~RUBY, lit: lit)
+        unless condition
+          %{lit}
+          ^{lit} Literal `#{lit}` used in void context.
+        end
+        top
+      RUBY
+
+      # `unless condition; 42 end` might indicate missing `return` or assignment,
+      # so for convenience, the code will not be autocorrected by deletion.
+      expect_no_corrections
+    end
+
+    it "registers an offense for void lit #{lit} within ternary if not on last line" do
+      expect_offense(<<~RUBY, lit: lit)
+        condition ? %{lit} : nil
+                    ^{lit} Literal `#{lit}` used in void context.
+        top
+      RUBY
+
+      # `condition ? 42 : ...` might indicate missing `return` or assignment,
       # so for convenience, the code will not be autocorrected by deletion.
       expect_no_corrections
     end
@@ -948,6 +1030,29 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
   it 'accepts backtick commands' do
     expect_no_offenses(<<~RUBY)
       `touch x`
+      nil
+    RUBY
+  end
+
+  it 'accepts assigned if statements' do
+    expect_no_offenses(<<~RUBY)
+      x = if condition
+            42
+          end
+      nil
+    RUBY
+  end
+
+  it 'accepts assigned if statements in modifier form' do
+    expect_no_offenses(<<~RUBY)
+      x = (42 if condition)
+      nil
+    RUBY
+  end
+
+  it 'accepts assigned ternary statements' do
+    expect_no_offenses(<<~RUBY)
+      x = condition ? 42 : nil
       nil
     RUBY
   end
