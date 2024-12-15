@@ -96,7 +96,7 @@ module RuboCop
 
         def on_def(node)
           subject, = *node # rubocop:disable InternalAffairs/NodeDestructuring
-          return if node.defs_type? && subject.variable?
+          return if node.defs_type? && allowed_subject_type?(subject)
 
           def_ancestor = node.each_ancestor(:def, :defs).first
           return unless def_ancestor
@@ -115,6 +115,10 @@ module RuboCop
         def scoping_method_call?(child)
           child.sclass_type? || eval_call?(child) || exec_call?(child) ||
             child.class_constructor? || allowed_method_name?(child)
+        end
+
+        def allowed_subject_type?(subject)
+          subject.variable? || subject.const_type? || subject.call_type?
         end
 
         def allowed_method_name?(node)
