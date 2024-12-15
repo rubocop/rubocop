@@ -121,6 +121,39 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
     RUBY
   end
 
+  it 'does not register offense for definition of method on constant' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        def x
+          def Const.y
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register offense for definition of method on method call' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        def x
+          def do_something.y
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register offense for definition of method on safe navigation method call' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        def x
+          def (do_something&.y).z
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'does not register offense for nested definition inside class_eval' do
     expect_no_offenses(<<~RUBY)
       class Foo
