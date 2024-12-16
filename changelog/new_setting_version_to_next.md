@@ -1,1 +1,1 @@
-adding a new Metrics/SingleLineComplexity cop. ([@kallin][])
+* Adding a new Metrics/SingleLineComplexity cop. ([@kallin][])
