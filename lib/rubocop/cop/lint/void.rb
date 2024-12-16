@@ -113,7 +113,7 @@ module RuboCop
         end
 
         def check_expression(expr)
-          expr = expr.body if expr.if_type? && expr.modifier_form?
+          expr = expr.body if expr.if_type?
 
           check_literal(expr)
           check_var(expr)
@@ -229,7 +229,7 @@ module RuboCop
         end
 
         def autocorrect_void_expression(corrector, node)
-          return if node.parent.if_type? && node.parent.modifier_form?
+          return if node.parent.if_type?
 
           corrector.remove(range_with_surrounding_space(range: node.source_range, side: :left))
         end
