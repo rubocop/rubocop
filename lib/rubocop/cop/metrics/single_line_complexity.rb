@@ -8,7 +8,7 @@ module RuboCop
         def on_new_investigation
           return unless (root = processed_source.ast)
 
-          root_nodes_per_line = map_nodes_to_lines(root)
+          root_nodes_per_line = top_level_nodes_per_line(root)
 
           root_nodes_per_line.each do |line, nodes|
             abc_score, _ = abc_score_for_nodes(nodes)
@@ -21,10 +21,11 @@ module RuboCop
 
         def abc_score_for_nodes(nodes)
           scores = nodes.map do |node|
-            calculator = RuboCop::Cop::Metrics::Utils::AbcSizeCalculator.new(node)
-            calculator.calculate
+            Utils::AbcSizeCalculator.calculate(node)
           end
 
+          # in cases such as `a = 1; b = 2` there are multiple 'top-level' nodes on the same line
+          # we sum the scores of all nodes on the line
           sum_complexity_scores(scores)
         end
 
@@ -46,7 +47,7 @@ module RuboCop
           [total_score, "<#{vector_sums.join(', ')}>"]
         end
 
-        def map_nodes_to_lines(root)
+        def top_level_nodes_per_line(root)
           nodes_per_line = {}
 
           root.each_node do |child|
@@ -63,19 +64,12 @@ module RuboCop
             end
           end
 
-          # Filter nodes to only include root nodes for each line
+          # Filter nodes to only include top-level nodes for each line
+          # (i.e. nodes that are not children of other nodes on the same line)
           nodes_per_line.transform_values do |nodes|
             nodes.reject do |node|
-              # Reject nodes where the parent is also in the list of nodes for this line
               nodes.include?(node.parent)
             end
-          end
-        end
-
-        def calculate_abc(nodes)
-          nodes.sum do |node|
-            calculator = Utils::AbcSizeCalculator.new(node)
-            calculator.calculate
           end
         end
 
