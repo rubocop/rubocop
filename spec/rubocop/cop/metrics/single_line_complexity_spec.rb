@@ -32,7 +32,6 @@ RSpec.describe RuboCop::Cop::Metrics::SingleLineComplexity, :config do
     end
   end
 
-
   context 'inline statements' do
     it 'rejects an offense when ABC > 2' do
       expect_offense(<<~RUBY)
@@ -47,6 +46,4 @@ RSpec.describe RuboCop::Cop::Metrics::SingleLineComplexity, :config do
       RUBY
     end
   end
-
-
 end

@@ -1,19 +1,29 @@
+# frozen_string_literal: true
+
 module RuboCop
   module Cop
     module Metrics
+      # Checks that the ABC size of each individual line is not higher than the
+      # configured maximum. Please see the `Metrics/AbcSize` cop for more
+      # information on how the ABC size is calculated.
+      #
       class SingleLineComplexity < Base
-
-        MSG = 'Assignment Branch Condition size too high for line %<line>d. [%<complexity>d/%<max>d]'
+        MSG = 'Assignment Branch Condition size too high for line %<line>d. ' \
+              '[%<complexity>d/%<max>d]'
 
         def on_new_investigation
           return unless (root = processed_source.ast)
 
-          root_nodes_per_line = top_level_nodes_per_line(root)
+          top_level_nodes_per_line = top_level_nodes_per_line(root)
 
-          root_nodes_per_line.each do |line, nodes|
-            abc_score, _ = abc_score_for_nodes(nodes)
+          top_level_nodes_per_line.each do |line, nodes|
+            abc_score, = abc_score_for_nodes(nodes)
 
-            add_offense(nodes.first, message: format(MSG, line: line, complexity: abc_score, max: max_score_allowed)) if abc_score > max_score_allowed
+            next unless abc_score > max_score_allowed
+
+            add_offense(nodes.first,
+                        message: format(MSG, line: line, complexity: abc_score,
+                                             max: max_score_allowed))
           end
         end
 
@@ -48,6 +58,18 @@ module RuboCop
         end
 
         def top_level_nodes_per_line(root)
+          nodes_per_line = nodes_per_line(root)
+
+          # Filter nodes to only include top-level nodes for each line
+          # (i.e. nodes that are not children of other nodes on the same line)
+          nodes_per_line.transform_values do |nodes|
+            nodes.reject do |node|
+              nodes.include?(node.parent)
+            end
+          end
+        end
+
+        def nodes_per_line(root)
           nodes_per_line = {}
 
           root.each_node do |child|
@@ -63,18 +85,11 @@ module RuboCop
               nodes_per_line[line] << child
             end
           end
-
-          # Filter nodes to only include top-level nodes for each line
-          # (i.e. nodes that are not children of other nodes on the same line)
-          nodes_per_line.transform_values do |nodes|
-            nodes.reject do |node|
-              nodes.include?(node.parent)
-            end
-          end
+          nodes_per_line
         end
 
         def max_score_allowed
-          cop_config['Max'] || 10
+          cop_config.fetch('Max', 10)
         end
       end
     end
