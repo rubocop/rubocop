@@ -2745,7 +2745,7 @@ Metrics/PerceivedComplexity:
 Metrics/SingleLineComplexity:
   Description: 'Metrics/AbcSize, calculated per line instead of per method.'
   Enabled: true
-  VersionAdded: '0.?'
+  VersionAdded: '1.69.3'
   Max: 10
 
 ################## Migration #############################
