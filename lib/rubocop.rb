@@ -445,6 +445,7 @@ require_relative 'rubocop/cop/metrics/method_length'
 require_relative 'rubocop/cop/metrics/module_length'
 require_relative 'rubocop/cop/metrics/parameter_lists'
 require_relative 'rubocop/cop/metrics/perceived_complexity'
+require_relative 'rubocop/cop/metrics/single_line_complexity'
 
 require_relative 'rubocop/cop/naming/accessor_method_name'
 require_relative 'rubocop/cop/naming/ascii_identifiers'
