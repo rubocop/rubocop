@@ -2746,7 +2746,7 @@ Metrics/SingleLineComplexity:
   Description: 'Metrics/AbcSize, calculated per line instead of per method.'
   Enabled: true
   VersionAdded: '<<next>>'
-  Max: 10
+  Max: 14
 
 ################## Migration #############################
 
