@@ -101,7 +101,7 @@ module RuboCop
               ranges << loc.expression
             elsif literal.heredoc?
               ranges << loc.heredoc_body
-            elsif loc.respond_to?(:begin) && loc.begin
+            elsif (loc.respond_to?(:begin) && loc.begin) || ignored_parent?(literal)
               ranges << loc.expression
             end
           end
@@ -125,6 +125,12 @@ module RuboCop
         def ignored_ranges
           @ignored_ranges ||= ignored_literal_ranges(processed_source.ast) +
                               comment_ranges(processed_source.comments)
+        end
+
+        def ignored_parent?(node)
+          return false unless node.parent
+
+          node.parent.type?(:regexp, :xstr)
         end
 
         def no_space_style?
