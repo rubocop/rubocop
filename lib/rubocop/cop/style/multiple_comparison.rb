@@ -96,7 +96,7 @@ module RuboCop
           elsif simple_double_comparison?(node)
             return
           elsif (var, obj = simple_comparison?(node))
-            return if allow_method_comparison? && obj.send_type?
+            return if allow_method_comparison? && obj.call_type?
 
             variables << var
             return if variables.size > 1

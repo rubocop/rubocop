@@ -209,6 +209,15 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
       RUBY
     end
 
+    it 'does not register an offense when using multiple safe navigation method calls' do
+      expect_no_offenses(<<~RUBY)
+        col = loc.column
+        if col == before&.column || col == after&.column
+          do_something
+        end
+      RUBY
+    end
+
     it 'registers an offense and corrects when `var` is compared multiple times after a method call' do
       expect_offense(<<~RUBY)
         var = do_something
