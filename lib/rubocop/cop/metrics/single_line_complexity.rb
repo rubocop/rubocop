@@ -89,7 +89,7 @@ module RuboCop
         end
 
         def max_score_allowed
-          cop_config.fetch('Max', 10)
+          cop_config['Max']
         end
       end
     end
