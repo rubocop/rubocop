@@ -70,7 +70,7 @@ module RuboCop
         end
 
         def check_assignment(token)
-          return unless aligned_with_preceding_assignment(token) == :no
+          return unless aligned_with_preceding_equals_operator(token) == :no
 
           message = format(MSG_UNALIGNED_ASGN, location: 'preceding')
           add_offense(token.pos, message: message) do |corrector|

@@ -5,6 +5,10 @@ module RuboCop
     # Common functionality for checking whether an AST node/token is aligned
     # with something on a preceding or following line
     module PrecedingFollowingAlignment
+      # Tokens that end with an `=`, as well as `<<`, that can be aligned together:
+      # `=`, `==`, `===`, `!=`, `<=`, `>=`, `<<` and operator assignment (`+=`, etc).
+      ASSIGNMENT_OR_COMPARISON_TOKENS = %i[tEQL tEQ tEQQ tNEQ tLEQ tGEQ tOP_ASGN tLSHFT].freeze
+
       private
 
       def allow_for_alignment?
@@ -19,16 +23,20 @@ module RuboCop
         aligned_with_adjacent_line?(range, method(:aligned_operator?))
       end
 
-      def aligned_with_preceding_assignment(token)
+      # Allows alignment with a preceding operator that ends with an `=`,
+      # including assignment and comparison operators.
+      def aligned_with_preceding_equals_operator(token)
         preceding_line_range = token.line.downto(1)
 
-        aligned_with_assignment(token, preceding_line_range)
+        aligned_with_equals_sign(token, preceding_line_range)
       end
 
-      def aligned_with_subsequent_assignment(token)
+      # Allows alignment with a subsequent operator that ends with an `=`,
+      # including assignment and comparison operators.
+      def aligned_with_subsequent_equals_operator(token)
         subsequent_line_range = token.line.upto(processed_source.lines.length)
 
-        aligned_with_assignment(token, subsequent_line_range)
+        aligned_with_equals_sign(token, subsequent_line_range)
       end
 
       def aligned_with_adjacent_line?(range, predicate)
@@ -75,11 +83,11 @@ module RuboCop
       end
 
       def aligned_token?(range, line, lineno)
-        aligned_words?(range, line) || aligned_assignment?(range, lineno)
+        aligned_words?(range, line) || aligned_equals_operator?(range, lineno)
       end
 
       def aligned_operator?(range, line, lineno)
-        aligned_identical?(range, line) || aligned_assignment?(range, lineno)
+        aligned_identical?(range, line) || aligned_equals_operator?(range, lineno)
       end
 
       def aligned_words?(range, line)
@@ -90,22 +98,24 @@ module RuboCop
         token == line[left_edge, token.length]
       end
 
-      def aligned_assignment?(range, lineno)
-        # Check that assignment is aligned with a previous assignment operator
-        # ie. an equals sign, an operator assignment, or an append operator (`<<`)
+      def aligned_equals_operator?(range, lineno)
+        # Check that the operator is aligned with a previous assignment or comparison operator
+        # ie. an equals sign, an operator assignment (eg. `+=`), a comparison (`==`, `<=`, etc.).
+        # Since append operators (`<<`) are a type of assignment, they are allowed as well,
+        # despite not ending with a literal equals character.
         line_range = processed_source.buffer.line_range(lineno)
         return false unless line_range
 
         # Find the specific token to avoid matching up to operators inside strings
-        assignment_token = processed_source.tokens_within(line_range).detect do |token|
-          token.equal_sign? || token.type == :tLSHFT
+        operator_token = processed_source.tokens_within(line_range).detect do |token|
+          ASSIGNMENT_OR_COMPARISON_TOKENS.include?(token.type)
         end
 
-        aligned_with_preceding_assignment?(range, assignment_token) ||
-          aligned_with_append_operator?(range, assignment_token)
+        aligned_with_preceding_equals?(range, operator_token) ||
+          aligned_with_append_operator?(range, operator_token)
       end
 
-      def aligned_with_preceding_assignment?(range, token)
+      def aligned_with_preceding_equals?(range, token)
         return false unless token
 
         range.source[-1] == '=' && range.last_column == token.pos.last_column
@@ -123,7 +133,7 @@ module RuboCop
         range.source == line[range.column, range.size]
       end
 
-      def aligned_with_assignment(token, line_range)
+      def aligned_with_equals_sign(token, line_range)
         token_line_indent    = processed_source.line_indentation(token.line)
         assignment_lines     = relevant_assignment_lines(line_range)
         relevant_line_number = assignment_lines[1]
@@ -135,7 +145,7 @@ module RuboCop
         return :none if relevant_indent < token_line_indent
         return :none unless processed_source.lines[relevant_line_number - 1]
 
-        aligned_assignment?(token.pos, relevant_line_number) ? :yes : :no
+        aligned_equals_operator?(token.pos, relevant_line_number) ? :yes : :no
       end
 
       def assignment_lines

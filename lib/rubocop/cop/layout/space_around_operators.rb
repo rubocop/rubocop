@@ -242,12 +242,12 @@ module RuboCop
           return !aligned_with_operator?(operator) unless type == :assignment
 
           token            = Token.new(operator, nil, operator.source)
-          align_preceding  = aligned_with_preceding_assignment(token)
+          align_preceding  = aligned_with_preceding_equals_operator(token)
 
           return false if align_preceding == :yes ||
-                          aligned_with_subsequent_assignment(token) == :none
+                          aligned_with_subsequent_equals_operator(token) == :none
 
-          aligned_with_subsequent_assignment(token) != :yes
+          aligned_with_subsequent_equals_operator(token) != :yes
         end
 
         def excess_trailing_space?(right_operand, with_space)
