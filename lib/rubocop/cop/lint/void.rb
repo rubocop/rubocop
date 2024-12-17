@@ -114,6 +114,7 @@ module RuboCop
 
         def check_expression(expr)
           expr = expr.body if expr.if_type?
+          return unless expr
 
           check_literal(expr)
           check_var(expr)
