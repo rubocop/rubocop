@@ -73,6 +73,8 @@ module RuboCop
             node.else_branch.loc.line
           elsif node.elsif?
             node.each_ancestor(:if).find(&:if?).loc.end.line
+          elsif node.if? && node.parent && parentheses?(node.parent)
+            node.parent.loc.end.line
           end
         elsif node.block_type? || node.numblock_type?
           node.loc.end.line
