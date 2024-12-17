@@ -1097,4 +1097,13 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense for `if` without body' do
+    expect_no_offenses(<<~RUBY)
+      if some_condition
+      end
+
+      puts :ok
+    RUBY
+  end
 end
