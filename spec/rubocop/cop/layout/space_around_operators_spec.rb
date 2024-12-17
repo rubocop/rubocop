@@ -176,6 +176,18 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     RUBY
   end
 
+  it 'accepts vertical alignment with different operators that end with `=`' do
+    expect_no_offenses(<<~RUBY)
+      var.foo       = a
+      var.bar      != b
+      var.quux     <= c
+      var.garply   >= d
+      var.corge    == e
+      var.fred     += f
+      var.baz     === g
+    RUBY
+  end
+
   it 'accepts an operator called with method syntax' do
     expect_no_offenses('Date.today.+(1).to_s')
   end
