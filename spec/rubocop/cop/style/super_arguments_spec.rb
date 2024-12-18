@@ -166,12 +166,98 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
       RUBY
     end
 
-    it 'registers no offense for a method with block when calling super with positional argument' do
-      expect_no_offenses(<<~RUBY)
+    it 'registers an offense if the arguments match' do
+      expect_offense(<<~RUBY)
+        def test(a, b)
+          super(a, b) { x }
+          ^^^^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test(a, b)
+          super { x }
+        end
+      RUBY
+    end
+
+    it 'registers an offense when there is a non-forwarded block arg and positional arguments match' do
+      expect_offense(<<~RUBY)
         def test(a, &blk)
+          super(a) { x }
+          ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test(a, &blk)
+          super { x }
+        end
+      RUBY
+    end
+
+    it 'does not register an offense if the arguments do not match' do
+      expect_no_offenses(<<~RUBY)
+        def test(a, b)
           super(a) { x }
         end
       RUBY
+    end
+
+    context 'numblocks', :ruby27 do
+      it 'registers no offense when calling super with no arguments' do
+        expect_no_offenses(<<~RUBY)
+          def test
+            super { _1 }
+          end
+        RUBY
+      end
+
+      it 'registers no offense when calling super with implicit positional arguments' do
+        expect_no_offenses(<<~RUBY)
+          def test(a)
+            super { _1 }
+          end
+        RUBY
+      end
+
+      it 'registers an offense if the arguments match' do
+        expect_offense(<<~RUBY)
+          def test(a, b)
+            super(a, b) { _1 }
+            ^^^^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def test(a, b)
+            super { _1 }
+          end
+        RUBY
+      end
+
+      it 'registers an offense when there is a non-forwarded block arg and positional arguments match' do
+        expect_offense(<<~RUBY)
+          def test(a, &blk)
+            super(a) { _1 }
+            ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def test(a, &blk)
+            super { _1 }
+          end
+        RUBY
+      end
+
+      it 'does not register an offense if the arguments do not match' do
+        expect_no_offenses(<<~RUBY)
+          def test(a, b)
+            super(a) { _1 }
+          end
+        RUBY
+      end
     end
   end
 
