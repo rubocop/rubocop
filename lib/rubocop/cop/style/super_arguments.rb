@@ -64,7 +64,7 @@ module RuboCop
             # When defining dynamic methods, implicitly calling `super` is not possible.
             # Since there is a possibility of delegation to `define_method`,
             # `super` used within the block is always allowed.
-            break if node.block_type? && !block_send_node_is_super?(super_node, node)
+            break if node.block_type? && !block_sends_to_super?(super_node, node)
 
             break node if DEF_TYPES.include?(node.type)
           end
@@ -98,18 +98,21 @@ module RuboCop
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def argument_list_size_differs?(def_args, super_args, super_node)
+          # If the def node has a block argument and the super node has an explicit block,
+          # the number of arguments is the same, so ignore the def node block arg.
           def_args_size = def_args.size
-          super_args_size = super_args.size
-          def_args_size -= 1 if def_args.any?(&:blockarg_type?) && block_send_node_is_super?(super_node)
+          def_args_size -= 1 if def_args.any?(&:blockarg_type?) && block_sends_to_super?(super_node)
 
-          def_args_size != super_args_size
+          def_args_size != super_args.size
         end
 
-        def block_send_node_is_super?(super_node, parent_node = super_node.parent)
+        def block_sends_to_super?(super_node, parent_node = super_node.parent)
+          # Checks if the send node of a block is the given super node,
+          # or a method chain containing it.
           return false unless parent_node
           return false unless parent_node.type?(:block, :numblock)
 
-          parent_node.send_node.each_node.any? { |node| node == super_node }
+          parent_node.send_node.each_node(:super).any?(super_node)
         end
 
         def positional_arg_same?(def_arg, super_arg)
@@ -151,7 +154,7 @@ module RuboCop
 
         def block_arg_same?(def_node, super_node, def_arg, super_arg)
           return false unless def_arg.blockarg_type?
-          return true if block_send_node_is_super?(super_node)
+          return true if block_sends_to_super?(super_node)
           return false unless super_arg.block_pass_type?
 
           # anonymous forwarding
