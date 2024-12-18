@@ -261,6 +261,34 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
     end
   end
 
+  context 'method call on super' do
+    it 'registers an offense for unneeded arguments' do
+      expect_offense(<<~RUBY)
+        def foo(a)
+          super(a).foo
+          ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+        end
+      RUBY
+    end
+
+    fit 'registers an offense for unneeded arguments when the method has a block' do
+      expect_offense(<<~RUBY)
+        def foo(a)
+          super(a).foo { x }
+          ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+        end
+      RUBY
+    end
+
+    it 'registers an offense for unneeded arguments when the method has a numblock', :ruby27 do
+      expect_offense(<<~RUBY)
+        def foo(a)
+          super(a).foo { _1 }
+          ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+        end
+      RUBY
+    end
+  end
   context 'scope changes' do
     it 'registers no offense when the scope changes because of a class definition with block' do
       expect_no_offenses(<<~RUBY)
