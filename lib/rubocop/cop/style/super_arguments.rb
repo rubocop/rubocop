@@ -64,12 +64,13 @@ module RuboCop
             # When defining dynamic methods, implicitly calling `super` is not possible.
             # Since there is a possibility of delegation to `define_method`,
             # `super` used within the block is always allowed.
-            break if node.block_type?
+            break if node.block_type? && node.send_node != super_node
 
             break node if DEF_TYPES.include?(node.type)
           end
           return unless def_node
-          return unless arguments_identical?(def_node, def_node.arguments.argument_list,
+          return unless arguments_identical?(def_node, super_node,
+                                             def_node.arguments.argument_list,
                                              super_node.arguments)
 
           add_offense(super_node) { |corrector| corrector.replace(super_node, 'super') }
@@ -78,16 +79,16 @@ module RuboCop
         private
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        def arguments_identical?(def_node, def_args, super_args)
+        def arguments_identical?(def_node, super_node, def_args, super_args)
           super_args = preprocess_super_args(super_args)
-          return false if def_args.size != super_args.size
+          return false if argument_list_size_differs?(def_args, super_args, super_node)
 
           def_args.zip(super_args).each do |def_arg, super_arg|
             next if positional_arg_same?(def_arg, super_arg)
             next if positional_rest_arg_same(def_arg, super_arg)
             next if keyword_arg_same?(def_arg, super_arg)
             next if keyword_rest_arg_same?(def_arg, super_arg)
-            next if block_arg_same?(def_node, def_arg, super_arg)
+            next if block_arg_same?(def_node, super_node, def_arg, super_arg)
             next if forward_arg_same?(def_arg, super_arg)
 
             return false
@@ -95,6 +96,20 @@ module RuboCop
           true
         end
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def argument_list_size_differs?(def_args, super_args, super_node)
+          def_args_size = def_args.size
+          super_args_size = super_args.size
+          def_args_size -= 1 if def_args.any?(&:blockarg_type?) && super_node_has_block?(super_node)
+
+          def_args_size != super_args_size
+        end
+
+        def super_node_has_block?(super_node)
+          return false unless super_node.parent
+
+          super_node.parent.type?(:block, :numblock) && super_node.parent.send_node == super_node
+        end
 
         def positional_arg_same?(def_arg, super_arg)
           return false unless def_arg.arg_type? || def_arg.optarg_type?
@@ -133,8 +148,11 @@ module RuboCop
           def_arg.name == lvar_node.children.first
         end
 
-        def block_arg_same?(def_node, def_arg, super_arg)
-          return false unless def_arg.blockarg_type? && super_arg.block_pass_type?
+        def block_arg_same?(def_node, super_node, def_arg, super_arg)
+          return false unless def_arg.blockarg_type?
+          return true if super_node_has_block?(super_node)
+          return false unless super_arg.block_pass_type?
+
           # anonymous forwarding
           return true if (block_pass_child = super_arg.children.first).nil? && def_arg.name.nil?
 
