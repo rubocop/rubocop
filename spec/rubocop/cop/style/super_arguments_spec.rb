@@ -62,10 +62,10 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
   it_behaves_like 'offense', 'positional splat arguments', '*args'
   it_behaves_like 'offense', 'keyword splat arguments', '**kwargs'
   it_behaves_like 'offense', 'positional/keyword splat arguments', '*args, **kwargs'
-  it_behaves_like 'offense', 'positionalkeyword splat arguments with block', '*args, **kwargs, &blk'
+  it_behaves_like 'offense', 'positional/keyword splat arguments with block', '*args, **kwargs, &blk'
   it_behaves_like 'offense', 'keyword arguments mixed with forwarding', 'a:, **kwargs', 'a: a, **kwargs'
-  it_behaves_like 'offense', 'tripple dot forwarding', '...'
-  it_behaves_like 'offense', 'tripple dot forwarding with extra arg', 'a, ...'
+  it_behaves_like 'offense', 'triple dot forwarding', '...'
+  it_behaves_like 'offense', 'triple dot forwarding with extra arg', 'a, ...'
 
   it_behaves_like 'no offense', 'different amount of positional arguments', 'a, b', 'a'
   it_behaves_like 'no offense', 'positional arguments in different order', 'a, b', 'b, a'
@@ -75,8 +75,8 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
   it_behaves_like 'no offense', 'block argument with different name', '&blk', '&other_blk'
   it_behaves_like 'no offense', 'keyword arguments and hash', 'a:', '{ a: a }'
   it_behaves_like 'no offense', 'keyword arguments with send node', 'a:, b:', 'a: a, b: c'
-  it_behaves_like 'no offense', 'tripple dot forwarding with extra param', '...', 'a, ...'
-  it_behaves_like 'no offense', 'tripple dot forwarding with different param', 'a, ...', 'b, ...'
+  it_behaves_like 'no offense', 'triple dot forwarding with extra param', '...', 'a, ...'
+  it_behaves_like 'no offense', 'triple dot forwarding with different param', 'a, ...', 'b, ...'
   it_behaves_like 'no offense', 'keyword forwarding with extra keyword', 'a, **kwargs', 'a: a, **kwargs'
 
   context 'Ruby >= 3.1', :ruby31 do
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
     RUBY
   end
 
-  it 'registers an offense when passign along no arguments' do
+  it 'registers an offense when passing along no arguments' do
     expect_offense(<<~RUBY)
       def foo
         super()
@@ -149,7 +149,25 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
     RUBY
   end
 
-  context 'when calling super with an extra block argument' do
+  context 'block argument' do
+    it 'does not register an offense for a block parameter that is not passed to super' do
+      expect_no_offenses(<<~RUBY)
+        def bar(a, b, &blk)
+          super(a, b)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for an anonymous block parameter that is not passed to super', :ruby31 do
+      expect_no_offenses(<<~RUBY)
+        def bar(a, b, &)
+          super(a, b)
+        end
+      RUBY
+    end
+  end
+
+  context 'when calling super with a block literal' do
     it 'registers no offense when calling super with no arguments' do
       expect_no_offenses(<<~RUBY)
         def test
@@ -185,7 +203,7 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
       expect_offense(<<~RUBY)
         def test(a, &blk)
           super(a) { x }
-          ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+          ^^^^^^^^ Call `super` without arguments and parentheses when all positional and keyword arguments are forwarded.
         end
       RUBY
 
@@ -240,7 +258,7 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
         expect_offense(<<~RUBY)
           def test(a, &blk)
             super(a) { _1 }
-            ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+            ^^^^^^^^ Call `super` without arguments and parentheses when all positional and keyword arguments are forwarded.
           end
         RUBY
 
@@ -271,7 +289,7 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
       RUBY
     end
 
-    fit 'registers an offense for unneeded arguments when the method has a block' do
+    it 'registers an offense for unneeded arguments when the method has a block' do
       expect_offense(<<~RUBY)
         def foo(a)
           super(a).foo { x }
@@ -289,6 +307,7 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
       RUBY
     end
   end
+
   context 'scope changes' do
     it 'registers no offense when the scope changes because of a class definition with block' do
       expect_no_offenses(<<~RUBY)
