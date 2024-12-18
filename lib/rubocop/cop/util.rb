@@ -204,8 +204,7 @@ module RuboCop
       private
 
       def compatible_external_encoding_for?(src)
-        src = src.dup if RUBY_ENGINE == 'jruby'
-        src.force_encoding(Encoding.default_external).valid_encoding?
+        src.dup.force_encoding(Encoding.default_external).valid_encoding?
       end
 
       def include_or_equal?(source, target)
