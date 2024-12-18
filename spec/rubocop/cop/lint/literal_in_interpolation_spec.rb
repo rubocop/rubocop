@@ -507,5 +507,18 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
         RUBY
       end
     end
+
+    context 'with invalid string literal' do
+      it 'registers an offense' do
+        expect_offense(<<~'RUBY')
+          "#{"\201\203"}"
+             ^^^^^^^^^^ Literal interpolation detected.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          "\201\203"
+        RUBY
+      end
+    end
   end
 end
