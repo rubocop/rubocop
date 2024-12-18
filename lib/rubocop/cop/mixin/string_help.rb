@@ -10,7 +10,7 @@ module RuboCop
       def on_str(node)
         # Constants like __FILE__ are handled as strings,
         # but don't respond to begin.
-        return unless node.loc.respond_to?(:begin) && node.loc.begin
+        return unless node.loc?(:begin)
         return if part_of_ignored_node?(node)
 
         if offense?(node)

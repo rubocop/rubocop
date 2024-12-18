@@ -49,7 +49,7 @@ module RuboCop
         end
 
         def on_rescue(node)
-          return unless node.loc.respond_to?(:else) && node.loc.else
+          return unless node.loc?(:else)
 
           check_alignment(base_range_of_rescue(node), node.loc.else)
         end

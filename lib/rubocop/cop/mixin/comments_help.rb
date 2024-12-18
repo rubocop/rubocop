@@ -82,7 +82,7 @@ module RuboCop
               next_sibling.source_range
           next_sibling.loc.line
         elsif (parent = node.parent)
-          if parent.loc.respond_to?(:end) && parent.loc.end
+          if parent.loc?(:end)
             parent.loc.end.line
           else
             parent.loc.line
