@@ -35,7 +35,8 @@ module RuboCop
           return if in_array_percent_literal?(begin_node) && /\s|\A\z/.match?(expanded_value)
 
           add_offense(final_node) do |corrector|
-            return if final_node.dstr_type? # nested, fixed in next iteration
+            next if final_node.str_type? && !final_node.value.valid_encoding?
+            next if final_node.dstr_type? # nested, fixed in next iteration
 
             corrector.replace(final_node.parent, expanded_value)
           end
@@ -168,7 +169,7 @@ module RuboCop
         end
 
         def space_literal?(node)
-          node.str_type? && node.value.blank?
+          node.str_type? && node.value.valid_encoding? && node.value.blank?
         end
 
         def ends_heredoc_line?(node)
