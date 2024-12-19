@@ -551,6 +551,51 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when assigning in branch' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          changed = false
+
+          if Random.rand > 1
+            changed = true
+          end
+
+          [].each do
+            changed = true
+          end
+
+          puts changed
+        end
+      RUBY
+    end
+  end
+
+  context 'when assigning in case' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          changed = false
+
+          case Random.rand
+          when 0.5
+            changed = true
+          when 1..20
+            changed = false
+          when 21..70
+            changed = true
+          end
+
+          [].each do
+            changed = true
+          end
+
+          puts changed
+        end
+      RUBY
+    end
+  end
+
   context "when a variable is reassigned in loop body but won't " \
           'be referenced either next iteration or loop condition' do
     it 'registers an offense' do
