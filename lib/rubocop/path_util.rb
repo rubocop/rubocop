@@ -32,16 +32,19 @@ module RuboCop
     private_constant :SMART_PATH_CACHE
 
     def smart_path(path)
-      SMART_PATH_CACHE[path] ||= begin
-        # Ideally, we calculate this relative to the project root.
-        base_dir = Dir.pwd
-
-        if path.start_with? base_dir
-          relative_path(path, base_dir)
+      SMART_PATH_CACHE[path] ||=
+        if path.is_a?(RemoteConfig)
+          path.uri.to_s
         else
-          path
+          # Ideally, we calculate this relative to the project root.
+          base_dir = Dir.pwd
+
+          if path.start_with? base_dir
+            relative_path(path, base_dir)
+          else
+            path
+          end
         end
-      end
     end
 
     # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
