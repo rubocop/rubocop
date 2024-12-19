@@ -86,4 +86,14 @@ RSpec.describe RuboCop::Cop::Util do
       expect(described_class.parse_regexp('+')).to be_nil
     end
   end
+
+  describe '#to_string_literal' do
+    it 'returns literal for normal string' do
+      expect(TestUtil.new.send(:to_string_literal, 'foo')).to eq("'foo'")
+    end
+
+    it 'returns literal for string which requires escaping' do
+      expect(TestUtil.new.send(:to_string_literal, 'foo\'')).to eq('"foo\'"')
+    end
+  end
 end
