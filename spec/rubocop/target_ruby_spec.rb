@@ -32,6 +32,41 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
     end
   end
 
+  context 'when RUBOCOP_TARGET_RUBY_VERSION is set' do
+    it 'uses RUBOCOP_TARGET_RUBY_VERSION' do
+      old_version = ENV.fetch('RUBOCOP_TARGET_RUBY_VERSION', nil)
+      begin
+        ENV['RUBOCOP_TARGET_RUBY_VERSION'] = '2.7'
+        expect(target_ruby.version).to eq 2.7
+      ensure
+        ENV['RUBOCOP_TARGET_RUBY_VERSION'] = old_version
+      end
+    end
+
+    it 'does not read .ruby-version' do
+      expect(File).not_to receive(:file?).with('.ruby-version')
+      old_version = ENV.fetch('RUBOCOP_TARGET_RUBY_VERSION', nil)
+      begin
+        ENV['RUBOCOP_TARGET_RUBY_VERSION'] = '2.7'
+        expect(target_ruby.version).to eq 2.7
+      ensure
+        ENV['RUBOCOP_TARGET_RUBY_VERSION'] = old_version
+      end
+    end
+
+    it 'does not read Gemfile.lock or gems.locked' do
+      expect(File).not_to receive(:file?).with('Gemfile')
+      expect(File).not_to receive(:file?).with('gems.locked')
+      old_version = ENV.fetch('RUBOCOP_TARGET_RUBY_VERSION', nil)
+      begin
+        ENV['RUBOCOP_TARGET_RUBY_VERSION'] = '2.7'
+        expect(target_ruby.version).to eq 2.7
+      ensure
+        ENV['RUBOCOP_TARGET_RUBY_VERSION'] = old_version
+      end
+    end
+  end
+
   context 'when TargetRubyVersion is not set' do
     context 'when gemspec file is present' do
       let(:base_path) { configuration.base_dir_for_path_parameters }
