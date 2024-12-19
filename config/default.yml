@@ -2404,6 +2404,7 @@ Lint/ShadowingOuterLocalVariable:
 
 Lint/SharedMutableDefault:
   Description: 'Checks for mutable literals used as default arguments during Hash initialization.'
+  StyleGuide: '#no-mutable-defaults'
   Enabled: pending
   VersionAdded: '<<next>>'
 
