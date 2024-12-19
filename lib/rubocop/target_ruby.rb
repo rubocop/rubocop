@@ -34,6 +34,20 @@ module RuboCop
       end
     end
 
+    # The target ruby version may be configured by setting the
+    # `RUBOCOP_TARGET_RUBY_VERSION` environment variable.
+    class RuboCopEnvVar < Source
+      def name
+        '`RUBOCOP_TARGET_RUBY_VERSION` environment variable'
+      end
+
+      private
+
+      def find_version
+        ENV.fetch('RUBOCOP_TARGET_RUBY_VERSION', nil)&.to_f
+      end
+    end
+
     # The target ruby version may be configured in RuboCop's config.
     # @api private
     class RuboCopConfig < Source
@@ -246,6 +260,7 @@ module RuboCop
     end
 
     SOURCES = [
+      RuboCopEnvVar,
       RuboCopConfig,
       GemspecFile,
       RubyVersionFile,
