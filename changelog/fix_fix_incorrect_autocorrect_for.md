@@ -1,0 +1,1 @@
+* [#13599](https://github.com/rubocop/rubocop/issues/13599): Fix incorrect autocorrect for `Layout/HashAlignment` when there is a multiline positional argument and `Layout/ArgumentAlignment` is configured with `EnforcedStyle: with_fixed_indentation`. ([@dvandersluis][])

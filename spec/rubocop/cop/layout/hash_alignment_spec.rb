@@ -268,6 +268,33 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         proc.(key: value)
       RUBY
     end
+
+    it 'does not register an offense for a method with a positional argument' do
+      expect_no_offenses(<<~RUBY)
+        do_something(
+          foo, baz: true,
+          quux: false
+        )
+      RUBY
+    end
+
+    it 'does not register an offense for a method with a positional argument that spans multiple lines' do
+      expect_no_offenses(<<~RUBY)
+        do_something(
+          foo(
+            bar
+          ), baz: true,
+          quux: false
+        )
+      RUBY
+    end
+
+    it 'does not register an offense when a multiline hash starts on the same line as an implicit `call`' do
+      expect_no_offenses(<<~RUBY)
+        do_something.(foo: bar, baz: qux,
+          quux: corge)
+      RUBY
+    end
   end
 
   context 'always ignore last argument hash' do
