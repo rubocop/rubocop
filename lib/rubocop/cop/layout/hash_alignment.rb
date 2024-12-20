@@ -227,6 +227,7 @@ module RuboCop
           left_sibling = argument_before_hash(node)
           parent_loc = node.parent.loc
           selector = left_sibling || parent_loc.selector || parent_loc.expression
+
           same_line?(selector, node.pairs.first)
         end
 
@@ -384,6 +385,11 @@ module RuboCop
         def enforce_first_argument_with_fixed_indentation?
           argument_alignment_config = config.for_enabled_cop('Layout/ArgumentAlignment')
           argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def same_line?(node1, node2)
+          # Override `Util#same_line?`
+          super || node1.last_line == line(node2)
         end
       end
     end
