@@ -105,4 +105,27 @@ RSpec.describe RuboCop::PathUtil do
       expect(described_class).not_to be_match_path(/^d.*$/, "dir/file\xBF")
     end
   end
+
+  describe '#smart_path', :isolated_environment do
+    subject(:smart_path) { described_class.smart_path(path) }
+
+    context 'when given a path relative to Dir.pwd' do
+      let(:path) { File.join(Dir.pwd, 'relative') }
+
+      it { is_expected.to eq('relative') }
+    end
+
+    context 'when given a path that is not relative to Dir.pwd' do
+      let(:path) { '/src/rubocop/foo' }
+
+      it { is_expected.to eq(path) }
+    end
+
+    context 'when given a RuboCop::RemoteConfig object' do
+      let(:uri) { 'https://www.example.com/rubocop.yml' }
+      let(:path) { RuboCop::RemoteConfig.new(uri, Dir.pwd) }
+
+      it { is_expected.to eq(uri) }
+    end
+  end
 end

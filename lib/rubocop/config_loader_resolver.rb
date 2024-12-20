@@ -163,14 +163,21 @@ module RuboCop
     end
 
     def warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
+      # If the file being considered is remote, don't bother checking for duplicates
+      return if remote_config?(opts[:file])
+
       return unless duplicate_setting?(base_hash, derived_hash, key, opts[:inherited_file])
 
       inherit_mode = opts[:inherit_mode]['merge'] || opts[:inherit_mode]['override']
       return if base_hash[key].is_a?(Array) && inherit_mode&.include?(key)
 
-      puts "#{PathUtil.smart_path(opts[:file])}: " \
-           "#{opts[:cop_name]}:#{key} overrides " \
-           "the same parameter in #{opts[:inherited_file]}"
+      puts duplicate_setting_warning(opts, key)
+    end
+
+    def duplicate_setting_warning(opts, key)
+      "#{PathUtil.smart_path(opts[:file])}: " \
+        "#{opts[:cop_name]}:#{key} overrides " \
+        "the same parameter in #{opts[:inherited_file]}"
     end
 
     def determine_inherit_mode(hash, key)
@@ -240,6 +247,10 @@ module RuboCop
 
     def remote_file?(uri)
       uri.start_with?('http://', 'https://')
+    end
+
+    def remote_config?(file)
+      file.is_a?(RemoteConfig)
     end
 
     def handle_disabled_by_default(config, new_default_configuration)
