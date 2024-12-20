@@ -642,6 +642,101 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'registers an offense for a redundant continuation following a required continuation in separate blocks' do
+    expect_offense(<<~'RUBY')
+      x do
+        foo bar \
+          baz
+      end
+
+      y do
+        foo(bar, \
+                 ^ Redundant line continuation.
+          baz)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x do
+        foo bar \\
+          baz
+      end
+
+      y do
+        foo(bar,#{trailing_whitespace}
+          baz)
+      end
+    RUBY
+  end
+
+  it 'registers an offense for an redundant continuation on a statement preceding a required continuation inside the same begin node' do
+    expect_offense(<<~'RUBY')
+      foo(bar, \
+               ^ Redundant line continuation.
+        baz)
+
+      foo bar \
+        baz
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(bar,#{trailing_whitespace}
+        baz)
+
+      foo bar \\
+        baz
+    RUBY
+  end
+
+  it 'registers an offense for an redundant continuation on a statement following a required continuation inside the same begin node' do
+    expect_offense(<<~'RUBY')
+      foo bar \
+        baz
+
+      foo(bar, \
+               ^ Redundant line continuation.
+        baz)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo bar \\
+        baz
+
+      foo(bar,#{trailing_whitespace}
+        baz)
+    RUBY
+  end
+
+  it 'registers an offense for multiple redundant continuations inside the same begin node' do
+    expect_offense(<<~'RUBY')
+      foo(bar, \
+               ^ Redundant line continuation.
+        baz)
+
+      foo(bar, \
+               ^ Redundant line continuation.
+        baz)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo(bar,#{trailing_whitespace}
+        baz)
+
+      foo(bar,#{trailing_whitespace}
+        baz)
+    RUBY
+  end
+
+  it 'does not register an offense for multiple required continuations inside the same begin node' do
+    expect_no_offenses(<<~'RUBY')
+      foo bar \
+        baz
+
+      foo bar \
+        baz
+    RUBY
+  end
+
   it 'does not register an offense when multi-line continuations with &' do
     expect_no_offenses(<<~'RUBY')
       foo \
