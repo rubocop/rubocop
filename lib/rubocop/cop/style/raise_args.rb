@@ -50,6 +50,9 @@ module RuboCop
 
         EXPLODED_MSG = 'Provide an exception class and message as arguments to `%<method>s`.'
         COMPACT_MSG = 'Provide an exception object as an argument to `%<method>s`.'
+        ACCEPTABLE_ARG_TYPES = %i[
+          hash forwarded_restarg splat forwarded_restarg forwarded_args
+        ].freeze
 
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
@@ -138,9 +141,8 @@ module RuboCop
 
           arg = args.first
 
-          # Allow code like `raise Ex.new(kw: arg)`.
-          # Allow code like `raise Ex.new(*args)`.
-          arg.hash_type? || arg.splat_type?
+          # Allow nodes that may forward more than one argument
+          ACCEPTABLE_ARG_TYPES.include?(arg.type)
         end
 
         def allowed_non_exploded_type?(arg)

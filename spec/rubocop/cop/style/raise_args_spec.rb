@@ -322,6 +322,22 @@ RSpec.describe RuboCop::Cop::Style::RaiseArgs, :config do
       expect_no_offenses('raise MyCustomError.new(*args)')
     end
 
+    context 'when Ruby >= 3.2', :ruby32 do
+      it 'accepts a raise with anonymous splatted arguments' do
+        expect_no_offenses('def foo(*) raise MyCustomError.new(*) end')
+      end
+
+      it 'accepts a raise with anonymous keyword splatted arguments' do
+        expect_no_offenses('def foo(**) raise MyCustomError.new(**) end')
+      end
+    end
+
+    context 'when Ruby >= 27', :ruby27 do
+      it 'accepts a raise with triple dot forwarding' do
+        expect_no_offenses('def foo(...) raise MyCustomError.new(...) end')
+      end
+    end
+
     it 'ignores a raise with an exception argument' do
       expect_no_offenses('raise Ex.new(entity), message')
     end
