@@ -70,4 +70,26 @@ RSpec.describe RuboCop::Cop::Style::YodaExpression, :config do
       1 | x
     RUBY
   end
+
+  it 'registers an offense and corrects when using suffix form of operator with constant receiver' do
+    expect_offense(<<~RUBY)
+      1 + CONST.+(ary)
+      ^^^^^^^^^^^^^^^^ Non-literal operand (`CONST.+(ary)`) should be first.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ary.+(CONST) + 1
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using suffix form of nullary operator with constant receiver' do
+    expect_offense(<<~RUBY)
+      1 + CONST.*
+      ^^^^^^^^^^^ Non-literal operand (`CONST.*`) should be first.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      CONST.* + 1
+    RUBY
+  end
 end
