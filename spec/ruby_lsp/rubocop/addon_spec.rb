@@ -31,18 +31,20 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
 
   describe 'textDocument/diagnostic' do
     subject(:result) do
-      with_server(source, 'example.rb') do |server, uri|
-        server.process_message(
-          id: 2,
-          method: 'textDocument/diagnostic',
-          params: {
-            textDocument: {
-              uri: uri
+      do_with_fake_io do
+        with_server(source, 'example.rb') do |server, uri|
+          server.process_message(
+            id: 2,
+            method: 'textDocument/diagnostic',
+            params: {
+              textDocument: {
+                uri: uri
+              }
             }
-          }
-        )
+          )
 
-        server.pop_response
+          server.pop_response
+        end
       end
     end
 
@@ -62,7 +64,9 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
       expect(first_item.code).to eq 'Style/FrozenStringLiteralComment'
       expect(first_item.code_description.href).to eq 'https://docs.rubocop.org/rubocop/cops_style.html#stylefrozenstringliteralcomment'
       expect(first_item.source).to eq 'RuboCop'
-      expect(first_item.message).to eq 'Missing frozen string literal comment.'
+      expect(first_item.message).to eq <<~MESSAGE.chop
+        Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+      MESSAGE
     end
 
     it 'has second diagnostic information' do
@@ -74,24 +78,26 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
       expect(second_item.code_description.href).to eq 'https://docs.rubocop.org/rubocop/cops_style.html#stylestringliterals'
       expect(second_item.source).to eq 'RuboCop'
       expect(second_item.message).to eq <<~MESSAGE.chop
-        Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       MESSAGE
     end
   end
 
   describe 'textDocument/formatting' do
     subject(:result) do
-      with_server(source, 'example.rb') do |server, uri|
-        server.process_message(
-          id: 2,
-          method: 'textDocument/formatting',
-          params: {
-            textDocument: { uri: uri },
-            position: { line: 0, character: 0 }
-          }
-        )
+      do_with_fake_io do
+        with_server(source, 'example.rb') do |server, uri|
+          server.process_message(
+            id: 2,
+            method: 'textDocument/formatting',
+            params: {
+              textDocument: { uri: uri },
+              position: { line: 0, character: 0 }
+            }
+          )
 
-        server.pop_response
+          server.pop_response
+        end
       end
     end
 
@@ -151,4 +157,8 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def do_with_fake_io(&block)
+    RuboCop::Server::Helper.redirect(stdout: StringIO.new, stderr: StringIO.new, &block)
+  end
 end

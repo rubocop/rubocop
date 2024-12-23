@@ -17,15 +17,20 @@ module RubyLsp
       end
 
       def activate(global_state, message_queue)
-        ::RuboCop::LSP::Logger.log("Activating RuboCop LSP addon #{::RuboCop::Version::STRING}.")
+        ::RuboCop::LSP::Logger.log(
+          "Activating RuboCop LSP addon #{::RuboCop::Version::STRING}.", prefix: '[RuboCop]'
+        )
 
+        ::RuboCop::LSP.enable
         @wraps_built_in_lsp_runtime = WrapsBuiltinLspRuntime.new
 
         global_state.register_formatter('rubocop', @wraps_built_in_lsp_runtime)
 
         register_additional_file_watchers(global_state, message_queue)
 
-        ::RuboCop::LSP::Logger.log("Initialized RuboCop LSP addon #{::RuboCop::Version::STRING}.")
+        ::RuboCop::LSP::Logger.log(
+          "Initialized RuboCop LSP addon #{::RuboCop::Version::STRING}.", prefix: '[RuboCop]'
+        )
       end
 
       def deactivate
@@ -47,7 +52,7 @@ module RubyLsp
                 register_options: Interface::DidChangeWatchedFilesRegistrationOptions.new(
                   watchers: [
                     Interface::FileSystemWatcher.new(
-                      glob_pattern: '**/.rubocop.yml',
+                      glob_pattern: '**/.rubocop{,_todo}.yml',
                       kind: Constant::WatchKind::CREATE | Constant::WatchKind::CHANGE | Constant::WatchKind::DELETE
                     )
                   ]
@@ -64,7 +69,7 @@ module RubyLsp
 
         @wraps_built_in_lsp_runtime.init!
 
-        ::RuboCop::LSP::Logger(<<~MESSAGE)
+        ::RuboCop::LSP::Logger(<<~MESSAGE, prefix: '[RuboCop]')
           Re-initialized RuboCop LSP addon #{::RuboCop::Version::STRING} due to .rubocop.yml file change.
         MESSAGE
       end
