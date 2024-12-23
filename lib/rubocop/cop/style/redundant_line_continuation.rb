@@ -112,10 +112,13 @@ module RuboCop
         end
 
         def inside_string_literal_or_method_with_argument?(range)
+          line_range = range_by_whole_lines(range)
+
           processed_source.tokens.each_cons(2).any? do |token, next_token|
             next if token.line == next_token.line
 
-            inside_string_literal?(range, token) || method_with_argument?(token, next_token)
+            inside_string_literal?(range, token) ||
+              method_with_argument?(line_range, token, next_token)
           end
         end
 
@@ -155,8 +158,9 @@ module RuboCop
         #
         #   do_something \
         #     argument
-        def method_with_argument?(current_token, next_token)
+        def method_with_argument?(line_range, current_token, next_token)
           return false unless ARGUMENT_TAKING_FLOW_TOKEN_TYPES.include?(current_token.type)
+          return false unless current_token.pos.overlaps?(line_range)
 
           ARGUMENT_TYPES.include?(next_token.type)
         end
@@ -180,7 +184,7 @@ module RuboCop
 
         def find_node_for_line(last_line)
           processed_source.ast.each_node do |node|
-            return node if node.respond_to?(:expression) && node.expression&.last_line == last_line
+            return node if same_line?(node, last_line)
           end
         end
 
