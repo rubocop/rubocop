@@ -1901,6 +1901,38 @@ RSpec.describe RuboCop::ConfigLoader do
         end
       end
     end
+
+    context 'when inheriting from a remote file' do
+      let(:remote_config_parent) { <<~YAML }
+        inherit_from: './child.yml'
+
+        AllCops:
+          TargetRubyVersion: 3.2
+      YAML
+
+      let(:remote_config_child) { <<~YAML }
+        AllCops:
+          TargetRubyVersion: 3.1
+      YAML
+
+      context 'and that file inherits another' do
+        before do
+          create_file('.rubocop.yml', <<~YAML)
+            inherit_from: "https://www.example.com/rubocop.yml"
+          YAML
+
+          stub_request(:get, 'https://www.example.com/rubocop.yml')
+            .to_return(status: 200, body: remote_config_parent)
+
+          stub_request(:get, 'https://www.example.com/child.yml')
+            .to_return(status: 200, body: remote_config_child)
+        end
+
+        it 'does not output warnings for duplicate keys' do
+          expect { load_file }.not_to output(/overrides the same parameter/).to_stdout
+        end
+      end
+    end
   end
 
   describe '.merge' do
