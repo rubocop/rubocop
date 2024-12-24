@@ -26,6 +26,14 @@ module RubyLsp
         @runtime.format(uri_to_path(uri), document.source, command: 'rubocop.formatAutocorrects')
       end
 
+      def run_range_formatting(_uri, _partial_source, _base_indentation)
+        # Not yet supported. Should return the formatted version of `partial_source` which is
+        # a partial selection of the entire document. For example, it should not try to add
+        # a frozen_string_literal magic comment and all style corrections should start from
+        # the `base_indentation`.
+        nil
+      end
+
       private
 
       # duplicated from: lib/standard/lsp/routes.rb
