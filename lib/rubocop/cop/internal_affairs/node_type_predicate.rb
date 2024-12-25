@@ -21,16 +21,17 @@ module RuboCop
 
         # @!method node_type_check(node)
         def_node_matcher :node_type_check, <<~PATTERN
-          (send (send $_ :type) :== (sym $_))
+          (send (call _ :type) :== (sym $_))
         PATTERN
 
         def on_send(node)
-          node_type_check(node) do |receiver, node_type|
+          node_type_check(node) do |node_type|
             return unless Parser::Meta::NODE_TYPES.include?(node_type)
 
             message = format(MSG, type: node_type)
             add_offense(node, message: message) do |corrector|
-              range = node.source_range.with(begin_pos: receiver.source_range.end_pos + 1)
+              range = node.receiver.loc.selector.join(node.source_range.end)
+
               corrector.replace(range, "#{node_type}_type?")
             end
           end

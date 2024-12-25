@@ -127,7 +127,7 @@ module RuboCop
 
         def base_column(child)
           grandparent = child.parent.parent
-          if grandparent&.type == :pair
+          if grandparent&.pair_type?
             grandparent.loc.column
           else
             child.source_range.source_line =~ /\S/

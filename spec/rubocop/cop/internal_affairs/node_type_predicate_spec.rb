@@ -14,8 +14,21 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypePredicate, :config do
     end
   end
 
+  context 'comparison node type check with safe navigation operator' do
+    it 'registers an offense and autocorrects' do
+      expect_offense(<<~RUBY)
+        node&.type == :send
+        ^^^^^^^^^^^^^^^^^^^ Use `#send_type?` to check node type.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        node&.send_type?
+      RUBY
+    end
+  end
+
   it 'does not register an offense for a predicate node type check' do
-    expect_no_offenses(<<~RUBY, 'example_spec.rb')
+    expect_no_offenses(<<~RUBY)
       node.send_type?
     RUBY
   end

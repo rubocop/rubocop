@@ -161,7 +161,7 @@ module RuboCop
         end
 
         def gem_options(node)
-          return [] unless node.last_argument&.type == :hash
+          return [] unless node.last_argument&.hash_type?
 
           node.last_argument.keys.map(&:value)
         end
