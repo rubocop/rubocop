@@ -62,6 +62,27 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
       end
     end
 
+    context 'with a diagnostic warning and error' do
+      let(:source) { <<~RUBY }
+        # warning: ambiguous `*` has been interpreted as an argument prefix
+        foo *some_array
+        (
+      RUBY
+
+      it 'shows only syntax errors' do
+        expect(processed_source.diagnostics.map(&:level)).to contain_exactly(:warning, :error)
+
+        expect(offenses.size).to eq(1)
+        message = <<~MESSAGE.chomp
+          #{syntax_error_message}
+          (Using Ruby 3.3 parser; configure using `TargetRubyVersion` parameter, under `AllCops`)
+        MESSAGE
+        offense = offenses.first
+        expect(offense.message).to eq(message)
+        expect(offense.severity).to eq(:fatal)
+      end
+    end
+
     context 'with a parser error' do
       let(:source) { <<~RUBY }
         # \xf9
