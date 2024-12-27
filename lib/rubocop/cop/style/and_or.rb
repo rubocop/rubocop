@@ -127,7 +127,7 @@ module RuboCop
         end
 
         def correct_other(node, corrector)
-          return if node.source_range.begin.is?('(')
+          return if node.parenthesized_call?
 
           corrector.wrap(node, '(', ')')
         end
