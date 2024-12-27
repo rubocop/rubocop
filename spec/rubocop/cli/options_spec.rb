@@ -1742,28 +1742,40 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     describe 'custom formatter' do
       let(:target_file) { abs('example.rb') }
 
+      before do
+        stub_const('MyTool::RuboCopFormatter',
+                   Class.new(RuboCop::Formatter::BaseFormatter) do
+                     def started(all_files)
+                       output.puts "started: #{all_files.join(',')}"
+                     end
+
+                     def file_started(file, _options)
+                       output.puts "file_started: #{file}"
+                     end
+
+                     def file_finished(file, _offenses)
+                       output.puts "file_finished: #{file}"
+                     end
+
+                     def finished(processed_files)
+                       output.puts "finished: #{processed_files.join(',')}"
+                     end
+                   end)
+      end
+
       context 'when a class name is specified' do
         it 'uses the class as a formatter' do
-          stub_const('MyTool::RuboCopFormatter',
-                     Class.new(RuboCop::Formatter::BaseFormatter) do
-                       def started(all_files)
-                         output.puts "started: #{all_files.join(',')}"
-                       end
-
-                       def file_started(file, _options)
-                         output.puts "file_started: #{file}"
-                       end
-
-                       def file_finished(file, _offenses)
-                         output.puts "file_finished: #{file}"
-                       end
-
-                       def finished(processed_files)
-                         output.puts "finished: #{processed_files.join(',')}"
-                       end
-                     end)
-
           cli.run(['--format', 'MyTool::RuboCopFormatter', 'example.rb'])
+          expect($stdout.string).to eq(<<~RESULT)
+            started: #{target_file}
+            file_started: #{target_file}
+            file_finished: #{target_file}
+            finished: #{target_file}
+          RESULT
+        end
+
+        it 'accepts fully qualified class name' do
+          cli.run(['--format', '::MyTool::RuboCopFormatter', 'example.rb'])
           expect($stdout.string).to eq(<<~RESULT)
             started: #{target_file}
             file_started: #{target_file}
