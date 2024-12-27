@@ -5523,6 +5523,12 @@ Style/RedundantStringEscape:
   Enabled: pending
   VersionAdded: '1.37'
 
+Style/RedundantStructKeywordInit:
+  Description: 'Checks for redundant `keyword_init` option for `Struct.new`.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: '#percent-r'
