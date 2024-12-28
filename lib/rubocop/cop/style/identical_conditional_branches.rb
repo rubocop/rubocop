@@ -108,6 +108,7 @@ module RuboCop
       #     do_z
       #   end
       class IdenticalConditionalBranches < Base
+        include NonModifierIfThen
         include RangeHelp
         extend AutoCorrector
 
@@ -189,7 +190,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def check_expressions(node, expressions, insert_position)
           return if expressions.any?(&:nil?)
 
@@ -197,7 +198,8 @@ module RuboCop
 
           expressions.each do |expression|
             add_offense(expression) do |corrector|
-              next if node.if_type? && node.ternary?
+              next if node.if_type? &&
+                      (node.ternary? || non_modifier_if_then?(node, same_line: true))
 
               range = range_by_whole_lines(expression.source_range, include_final_newline: true)
               corrector.remove(range)
@@ -212,7 +214,7 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         def last_child_of_parent?(node)
           return true unless (parent = node.parent)
