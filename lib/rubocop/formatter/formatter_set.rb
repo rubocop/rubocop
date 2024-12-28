@@ -77,7 +77,7 @@ module RuboCop
         case formatter_type
         when Class
           formatter_type
-        when /\A[A-Z]/
+        when /\A(::)?[A-Z]/
           custom_formatter_class(formatter_type)
         else
           builtin_formatter_class(formatter_type)
