@@ -398,5 +398,56 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         end
       RUBY
     end
+
+    context 'with unindented nested nodes' do
+      it 'registers an offense and autocorrects unindented class' do
+        expect_offense(<<~RUBY)
+          module M
+                 ^ Use compact module/class definition instead of nested style.
+          class C
+          end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class M::C
+          end
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects unindented class and method' do
+        expect_offense(<<~RUBY)
+          module M
+                 ^ Use compact module/class definition instead of nested style.
+          class C
+          def foo; 1; end
+          end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class M::C
+          def foo; 1; end
+          end
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects unindented method' do
+        expect_offense(<<~RUBY)
+          module M
+                 ^ Use compact module/class definition instead of nested style.
+            class C
+            def foo; 1; end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class M::C
+            def foo; 1; end
+          end
+        RUBY
+      end
+    end
   end
 end

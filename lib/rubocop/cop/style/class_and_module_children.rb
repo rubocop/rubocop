@@ -126,9 +126,12 @@ module RuboCop
         end
 
         def unindent(corrector, node)
-          return if node.body.children.last.nil?
+          return unless node.body.children.last
 
-          column_delta = configured_indentation_width - leading_spaces(node.body.children.last).size
+          last_child_leading_spaces = leading_spaces(node.body.children.last)
+          return if leading_spaces(node).size == last_child_leading_spaces.size
+
+          column_delta = configured_indentation_width - last_child_leading_spaces.size
           return if column_delta.zero?
 
           AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
