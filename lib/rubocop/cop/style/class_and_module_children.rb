@@ -125,14 +125,19 @@ module RuboCop
           corrector.remove(range)
         end
 
+        # rubocop:disable Metrics/AbcSize
         def unindent(corrector, node)
           return if node.body.children.last.nil?
 
-          column_delta = configured_indentation_width - leading_spaces(node.body.children.last).size
+          last_children_leading_spaces = leading_spaces(node.body.children.last)
+          return if leading_spaces(node).size == last_children_leading_spaces.size
+
+          column_delta = configured_indentation_width - last_children_leading_spaces.size
           return if column_delta.zero?
 
           AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
         end
+        # rubocop:enable Metrics/AbcSize
 
         def leading_spaces(node)
           node.source_range.source_line[/\A\s*/]
