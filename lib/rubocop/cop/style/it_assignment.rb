@@ -24,17 +24,12 @@ module RuboCop
       class ItAssignment < Base
         MSG = '`it` is the default block parameter; consider another name.'
 
-        # @!method local_it_assignment?(node)
-        def_node_matcher :local_it_assignment?, <<~PATTERN
-          `$(lvasgn :it _)
-        PATTERN
+        def on_lvasgn(node)
+          return unless node.name == :it
+          return unless node.each_ancestor(:block, :numblock).any?
 
-        def on_block(node)
-          if (lvasgn_node = local_it_assignment?(node))
-            add_offense(lvasgn_node.loc.name)
-          end
+          add_offense(node.loc.name)
         end
-        alias on_numblock on_block
       end
     end
   end
