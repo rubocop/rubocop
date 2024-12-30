@@ -264,6 +264,17 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             if cond; foo else; nil; end
           RUBY
         end
+
+        it 'registers an offense with `elsif` clause' do
+          expect_offense(<<~RUBY)
+            if cond_1; 1; elsif cond_2; 3; end
+                          ^^^^^^^^^^^^^^^ `if` condition requires an `else`-clause with `nil` in it.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if cond_1; 1; elsif cond_2; 3; else; nil; end
+          RUBY
+        end
       end
     end
 
@@ -382,6 +393,17 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
             if cond; foo else; end
           RUBY
         end
+
+        it 'registers an offense with `elsif` clause' do
+          expect_offense(<<~RUBY)
+            if cond_1; 1; elsif cond_2; 3; end
+                          ^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if cond_1; 1; elsif cond_2; 3; else; end
+          RUBY
+        end
       end
     end
 
@@ -498,6 +520,17 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
 
           expect_correction(<<~RUBY)
             if cond; foo else; end
+          RUBY
+        end
+
+        it 'registers an offense with `elsif` clause' do
+          expect_offense(<<~RUBY)
+            if cond_1; 1; elsif cond_2; 3; end
+                          ^^^^^^^^^^^^^^^ `if` condition requires an empty `else`-clause.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if cond_1; 1; elsif cond_2; 3; else; end
           RUBY
         end
       end
