@@ -315,9 +315,11 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
   end
 
   describe '#run with cops autocorrecting each-other' do
-    let(:source_file_path) { create_file('example.rb', source) }
+    include_context 'mock console output'
 
-    let(:options) { { autocorrect: true, formatters: [['progress', formatter_output_path]] } }
+    let!(:source_file_path) { create_file('example.rb', source) }
+
+    let(:options) { { autocorrect: true } }
 
     context 'with two conflicting cops' do
       subject(:runner) do
@@ -341,17 +343,27 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           end
         RUBY
 
-        it 'aborts because of an infinite loop' do
-          expect do
-            runner.run([])
-          end.to raise_error(
-            described_class::InfiniteCorrectionLoop,
+        it 'records the infinite loop error' do
+          runner.run([])
+          expect(runner.errors.size).to be(1)
+          expect(runner.errors[0].message).to eq(
             "Infinite loop detected in #{source_file_path} and caused by " \
-            "Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop\n" \
-            'Hint: Please update to the latest RuboCop version if not already in use, ' \
-            "and report a bug if the issue still occurs on this version.\n" \
-            'Please check the latest version at https://rubygems.org/gems/rubocop.'
+            'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
           )
+        end
+
+        context 'when `raise_cop_error` is set' do
+          let(:options) { { autocorrect: true, raise_cop_error: true } }
+
+          it 'raises the infinite loop error' do
+            expect do
+              runner.run([])
+            end.to raise_error(
+              described_class::InfiniteCorrectionLoop,
+              "Infinite loop detected in #{source_file_path} and caused by " \
+              'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
+            )
+          end
         end
       end
 
@@ -364,16 +376,13 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           end
         RUBY
 
-        it 'aborts because of an infinite loop' do
-          expect do
-            runner.run([])
-          end.to raise_error(
-            described_class::InfiniteCorrectionLoop,
+        it 'records the infinite loop error' do
+          runner.run([])
+
+          expect(runner.errors.size).to be(1)
+          expect(runner.errors[0].message).to eq(
             "Infinite loop detected in #{source_file_path} and caused by " \
-            "Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop\n" \
-            'Hint: Please update to the latest RuboCop version if not already in use, ' \
-            "and report a bug if the issue still occurs on this version.\n" \
-            'Please check the latest version at https://rubygems.org/gems/rubocop.'
+            'Test/ClassMustBeAModuleCop -> Test/ModuleMustBeAClassCop'
           )
         end
       end
@@ -403,16 +412,13 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
           end
         RUBY
 
-        it 'aborts because of an infinite loop' do
-          expect do
-            runner.run([])
-          end.to raise_error(
-            described_class::InfiniteCorrectionLoop,
+        it 'records the infinite loop error' do
+          runner.run([])
+
+          expect(runner.errors.size).to be(1)
+          expect(runner.errors[0].message).to eq(
             "Infinite loop detected in #{source_file_path} and caused by " \
-            "Test/ClassMustBeAModuleCop, Test/AtoB -> Test/ModuleMustBeAClassCop, Test/BtoA\n" \
-            'Hint: Please update to the latest RuboCop version if not already in use, ' \
-            "and report a bug if the issue still occurs on this version.\n" \
-            'Please check the latest version at https://rubygems.org/gems/rubocop.'
+            'Test/ClassMustBeAModuleCop, Test/AtoB -> Test/ModuleMustBeAClassCop, Test/BtoA'
           )
         end
       end
@@ -440,16 +446,13 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             end
           RUBY
 
-          it 'aborts because of an infinite loop' do
-            expect do
-              runner.run([])
-            end.to raise_error(
-              described_class::InfiniteCorrectionLoop,
+          it 'records the infinite correction error' do
+            runner.run([])
+
+            expect(runner.errors.size).to be(1)
+            expect(runner.errors[0].message).to eq(
               "Infinite loop detected in #{source_file_path} and caused by " \
-              "Test/AtoB -> Test/BtoC -> Test/CtoA\n" \
-              'Hint: Please update to the latest RuboCop version if not already in use, ' \
-              "and report a bug if the issue still occurs on this version.\n" \
-              'Please check the latest version at https://rubygems.org/gems/rubocop.'
+              'Test/AtoB -> Test/BtoC -> Test/CtoA'
             )
           end
         end

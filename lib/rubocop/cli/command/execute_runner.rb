@@ -71,11 +71,11 @@ module RuboCop
 
           warn Rainbow("\n#{pluralize(errors.size, 'error')} occurred:").red
 
-          errors.each { |error| warn error }
+          errors.each { |error| warn Rainbow(error).red }
 
-          warn <<~WARNING
+          warn Rainbow(<<~WARNING.strip).yellow
             Errors are usually caused by RuboCop bugs.
-            Please, report your problems to RuboCop's issue tracker.
+            Please, update to the latest RuboCop version if not already in use, and report a bug if the issue still occurs on this version.
             #{bug_tracker_uri}
             Mention the following information in the issue report:
             #{RuboCop::Version.verbose}
