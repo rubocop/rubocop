@@ -2053,6 +2053,14 @@ Lint/Loop:
   VersionChanged: '1.3'
   Safe: false
 
+Lint/MethodKeywordName:
+  Description: 'TODO: Write a description of the cop.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  AllowedIdentifiers:
+    - for
+    - then
+
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
