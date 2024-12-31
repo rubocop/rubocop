@@ -7,6 +7,7 @@ module RuboCop
   # @api private
   class ConfigFinder
     DOTFILE = '.rubocop.yml'
+    ALT_DOTFILE = '.rubocop.yaml'
     XDG_CONFIG = 'config.yml'
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
@@ -38,7 +39,10 @@ module RuboCop
       end
 
       def find_project_dotfile(target_dir)
-        find_file_upwards(DOTFILE, target_dir, project_root)
+        dotfile = find_file_upwards(DOTFILE, target_dir, project_root)
+        return dotfile unless dotfile.nil?
+
+        find_file_upwards(ALT_DOTFILE, target_dir, project_root)
       end
 
       def find_project_root_dot_config

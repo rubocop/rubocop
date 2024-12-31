@@ -1,0 +1,1 @@
+- [#13639](https://github.com/rubocop/rubocop/pull/13639): Allow .yaml extension for .rubocop.yml file. ([@calebmeyer][])
