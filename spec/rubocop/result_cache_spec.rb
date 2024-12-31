@@ -14,7 +14,8 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   let(:file) { 'example.rb' }
   let(:options) { {} }
   let(:config_store) { instance_double(RuboCop::ConfigStore, for_pwd: RuboCop::Config.new) }
-  let(:cache_root) { "#{Dir.pwd}/rubocop_cache" }
+  let(:cache_root) { "#{Dir.pwd}/.cache" }
+  let(:rubocop_cache_dir) { "#{Dir.pwd}/.cache/rubocop_cache" }
   let(:offenses) do
     [RuboCop::Cop::Offense.new(:warning, location, 'unused var', 'Lint/UselessAssignment')]
   end
@@ -354,19 +355,37 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       create_file('other.rb', ['x = 1'])
     end
 
-    it 'removes the oldest files in the cache if needed' do
+    it 'removes the oldest files in the standard cache_root if needed' do
       cache.save(offenses)
-      cache2 = described_class.new('other.rb', team, options, config_store, cache_root)
-      expect(Dir["#{cache_root}/*/*/*"].size).to eq(1)
+      underscore_dir = Dir["#{rubocop_cache_dir}/*/*"].first
+      expect(Dir["#{underscore_dir}/*"].size).to eq(1)
       cache.class.cleanup(config_store, :verbose, cache_root)
       expect($stdout.string).to eq('')
 
+      cache2 = described_class.new('other.rb', team, options, config_store, cache_root)
       cache2.save(offenses)
-      underscore_dir = Dir["#{cache_root}/*/*"].first
+      underscore_dir = Dir["#{rubocop_cache_dir}/*/*"].first
       expect(Dir["#{underscore_dir}/*"].size).to eq(2)
+
       cache.class.cleanup(config_store, :verbose, cache_root)
       expect(File).not_to exist(underscore_dir)
-      expect($stdout.string).to eq("Removing the 2 oldest files from #{cache_root}\n")
+      expect($stdout.string).to eq("Removing the 2 oldest files from #{rubocop_cache_dir}\n")
+    end
+
+    it 'removes the oldest files in a custom cache_root if needed' do
+      custom_cache_root = "#{Dir.pwd}/.custom_cache"
+      custom_rubocop_cache_dir = "#{Dir.pwd}/.custom_cache/rubocop_cache"
+
+      custom_cache = described_class.new('other.rb', team, options, config_store, custom_cache_root)
+      custom_cache.save(offenses)
+      custom_cache2 = described_class.new('some.rb', team, options, config_store, custom_cache_root)
+      custom_cache2.save(offenses)
+      underscore_dir = Dir["#{custom_rubocop_cache_dir}/*/*"].first
+      expect(Dir["#{underscore_dir}/*"].size).to eq(2)
+
+      custom_cache.class.cleanup(config_store, :verbose, custom_cache_root)
+      expect(File).not_to exist(underscore_dir)
+      expect($stdout.string).to eq("Removing the 2 oldest files from #{custom_rubocop_cache_dir}\n")
     end
   end
 
