@@ -148,6 +148,14 @@ RSpec.describe RuboCop::Cop::Naming::BlockForwarding, :config do
         RUBY
       end
 
+      it 'does not register an offense when method just returns the block argument' do
+        expect_no_offenses(<<~RUBY)
+          def foo(&block)
+            block
+          end
+        RUBY
+      end
+
       it 'does not register an offense when defining without block argument method' do
         expect_no_offenses(<<~RUBY)
           def foo(arg1, arg2)
