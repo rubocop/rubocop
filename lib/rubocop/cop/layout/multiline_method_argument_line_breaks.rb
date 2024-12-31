@@ -33,25 +33,21 @@ module RuboCop
       #
       # @example AllowMultilineFinalElement: false (default)
       #
-      #   # good
-      #   foo(
-      #     a,
-      #     b,
-      #     {
-      #       foo: "bar",
-      #     }
-      #   )
+      #   # bad
+      #   # foo(
+      #   #   a, b, {
+      #   #     foo: "bar",
+      #   #   }
+      #   # )
       #
       # @example AllowMultilineFinalElement: true
       #
       #   # good
-      #   foo(
-      #     a,
-      #     b,
-      #     {
-      #       foo: "bar",
-      #     }
-      #   )
+      #   # foo(
+      #   #   a, b, {
+      #   #     foo: "bar",
+      #   #   }
+      #   # )
       #
       class MultilineMethodArgumentLineBreaks < Base
         include MultilineElementLineBreaks

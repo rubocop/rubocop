@@ -5537,9 +5537,7 @@ foo(a, b, c)
 ----
 # good
 foo(
-  a,
-  b,
-  {
+  a, b, {
     foo: "bar",
   }
 )
@@ -5552,9 +5550,7 @@ foo(
 ----
 # good
 foo(
-  a,
-  b,
-  {
+  a, b, {
     foo: "bar",
   }
 )
