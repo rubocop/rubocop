@@ -100,7 +100,7 @@ module RuboCop
             find_offending_var(node.rhs, variables, values)
           elsif simple_double_comparison?(node)
             return
-          elsif (var, obj = simple_comparison?(node))
+          elsif (var, obj = simple_comparison(node))
             return if allow_method_comparison? && obj.call_type?
 
             variables << var
@@ -130,11 +130,13 @@ module RuboCop
         end
 
         def comparison?(node)
-          simple_comparison?(node) || nested_comparison?(node)
+          !!simple_comparison(node) || nested_comparison?(node)
         end
 
-        def simple_comparison?(node)
+        def simple_comparison(node)
           if (var, obj = simple_comparison_lhs(node)) || (obj, var = simple_comparison_rhs(node))
+            return if var.call_type? && !allow_method_comparison?
+
             [var, obj]
           end
         end
