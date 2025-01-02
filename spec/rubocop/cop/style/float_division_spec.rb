@@ -37,6 +37,10 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
       RUBY
     end
 
+    it 'does not register offense for right coerce with implicit receiver' do
+      expect_no_offenses('a / to_f')
+    end
+
     it 'does not register offense for left coerce' do
       expect_no_offenses('a.to_f / b')
     end
@@ -78,6 +82,10 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
       RUBY
     end
 
+    it 'does not register offense for left coerce with implicit receiver' do
+      expect_no_offenses('to_f / b')
+    end
+
     it 'does not register offense for right coerce' do
       expect_no_offenses('a / b.to_f')
     end
@@ -114,6 +122,18 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
 
     it 'does not register offense for right coerce only' do
       expect_no_offenses('a / b.to_f')
+    end
+
+    it 'does not register offense for left coerce with implicit receiver' do
+      expect_no_offenses('a / to_f')
+    end
+
+    it 'does not register offense for rigjt coerce with implicit receiver' do
+      expect_no_offenses('to_f / b')
+    end
+
+    it 'does not register offense for coercions with implicit receivers' do
+      expect_no_offenses('to_f / to_f')
     end
   end
 
@@ -166,6 +186,14 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
 
     it 'does not register offense on usage of fdiv' do
       expect_no_offenses('a.fdiv(b)')
+    end
+
+    it 'does not register offense for left coerce with implicit receiver' do
+      expect_no_offenses('to_f / b')
+    end
+
+    it 'does not register offense for right coerce with implicit receiver' do
+      expect_no_offenses('a / to_f')
     end
   end
 end

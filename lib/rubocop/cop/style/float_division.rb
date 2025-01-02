@@ -65,19 +65,23 @@ module RuboCop
 
         # @!method right_coerce?(node)
         def_node_matcher :right_coerce?, <<~PATTERN
-          (send _ :/ (send _ :to_f))
+          (send _ :/ #to_f_method?)
         PATTERN
         # @!method left_coerce?(node)
         def_node_matcher :left_coerce?, <<~PATTERN
-          (send (send _ :to_f) :/ _)
+          (send #to_f_method? :/ _)
         PATTERN
         # @!method both_coerce?(node)
         def_node_matcher :both_coerce?, <<~PATTERN
-          (send (send _ :to_f) :/ (send _ :to_f))
+          (send #to_f_method? :/ #to_f_method?)
         PATTERN
         # @!method any_coerce?(node)
         def_node_matcher :any_coerce?, <<~PATTERN
-          {(send _ :/ (send _ :to_f)) (send (send _ :to_f) :/ _)}
+          {(send _ :/ #to_f_method?) (send #to_f_method? :/ _)}
+        PATTERN
+        # @!method to_f_method?(node)
+        def_node_matcher :to_f_method?, <<~PATTERN
+          (send !nil? :to_f)
         PATTERN
 
         def on_send(node)
