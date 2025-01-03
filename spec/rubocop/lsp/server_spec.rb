@@ -74,20 +74,107 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
           diagnostics: [
             {
               code: 'Style/FrozenStringLiteralComment',
-              message: 'Missing frozen string literal comment.',
+              codeDescription: {
+                href: 'https://docs.rubocop.org/rubocop/cops_style.html#stylefrozenstringliteralcomment'
+              },
+              data: {
+                code_actions: [
+                  {
+                    edit: {
+                      documentChanges: [
+                        edits: [
+                          {
+                            newText: "# frozen_string_literal: true\n",
+                            range: {
+                              start: { character: 0, line: 0 },
+                              end: { character: 0, line: 0 }
+                            }
+                          }
+                        ],
+                        textDocument: { uri: 'file:///path/to/file.rb', version: nil }
+                      ]
+                    },
+                    kind: 'quickfix',
+                    title: 'Autocorrect Style/FrozenStringLiteralComment',
+                    isPreferred: true
+                  }, {
+                    edit: {
+                      documentChanges: [
+                        edits: [
+                          {
+                            newText: ' # rubocop:disable Style/FrozenStringLiteralComment',
+                            range: {
+                              start: { character: 6, line: 0 },
+                              end: { character: 6, line: 0 }
+                            }
+                          }
+                        ],
+                        textDocument: { uri: 'file:///path/to/file.rb', version: nil }
+                      ]
+                    },
+                    kind: 'quickfix',
+                    title: 'Disable Style/FrozenStringLiteralComment for this line'
+                  }
+                ],
+                correctable: true
+              },
+              message: 'Style/FrozenStringLiteralComment: Missing frozen string literal comment.',
               range: {
-                start: { character: 0, line: 0 }, end: { character: 1, line: 0 }
+                start: { character: 0, line: 0 },
+                end: { character: 1, line: 0 }
               },
               severity: 3,
-              source: 'rubocop'
+              source: 'RuboCop'
             }, {
               code: 'Layout/SpaceInsideArrayLiteralBrackets',
-              message: 'Do not use space inside array brackets.',
+              codeDescription: {
+                href: 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutspaceinsidearrayliteralbrackets'
+              },
+              data: {
+                code_actions: [
+                  {
+                    edit: {
+                      documentChanges: [
+                        edits: [
+                          newText: '', range: {
+                            end: { character: 6, line: 2 },
+                            start: { character: 4, line: 2 }
+                          }
+                        ],
+                        textDocument: { uri: 'file:///path/to/file.rb', version: nil }
+                      ]
+                    },
+                    kind: 'quickfix',
+                    title: 'Autocorrect Layout/SpaceInsideArrayLiteralBrackets',
+                    isPreferred: true
+                  }, {
+                    edit: {
+                      documentChanges: [
+                        edits: [
+                          newText: ' # rubocop:disable Layout/SpaceInsideArrayLiteralBrackets',
+                          range: {
+                            end: { character: 7, line: 2 },
+                            start: {
+                              character: 7, line: 2
+                            }
+                          }
+                        ],
+                        textDocument: { uri: 'file:///path/to/file.rb', version: nil }
+                      ]
+                    },
+                    kind: 'quickfix',
+                    title: 'Disable Layout/SpaceInsideArrayLiteralBrackets for this line'
+                  }
+                ],
+                correctable: true
+              },
+              message: 'Layout/SpaceInsideArrayLiteralBrackets: Do not use space inside array brackets.', # rubocop:disable Layout/LineLength
               range: {
-                start: { character: 4, line: 2 }, end: { character: 6, line: 2 }
+                start: { character: 4, line: 2 },
+                end: { character: 6, line: 2 }
               },
               severity: 3,
-              source: 'rubocop'
+              source: 'RuboCop'
             }
           ], uri: 'file:///path/to/file.rb'
         }
@@ -1185,9 +1272,6 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
           uri: "file://#{Dir.pwd}/tmp/foo/bar.rb"
         }
       )
-      expect(stderr.chomp).to eq(
-        "[server] Ignoring file, per configuration: #{Dir.pwd}/tmp/foo/bar.rb"
-      )
     end
   end
 
@@ -1232,9 +1316,6 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
           }
         }
       )
-      expect(stderr.chomp).to eq(
-        "[server] Ignoring file, per configuration: #{Dir.pwd}/tmp/baz.rb"
-      )
     end
   end
 
@@ -1278,9 +1359,6 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     it 'handles requests' do
       format_result = messages.last
       expect(format_result).to eq(jsonrpc: '2.0', id: 20, result: [])
-      expect(stderr.chomp).to eq(
-        "[server] Ignoring file, per configuration: #{Dir.pwd}/tmp/zzz.rb"
-      )
     end
   end
 

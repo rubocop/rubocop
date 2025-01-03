@@ -16,6 +16,11 @@ module RuboCop
     # Routes for Language Server Protocol of RuboCop.
     # @api private
     class Routes
+      CONFIGURATION_FILE_PATTERNS = [
+        RuboCop::ConfigFinder::DOTFILE,
+        RuboCop::CLI::Command::AutoGenerateConfig::AUTO_GENERATED_FILE
+      ].freeze
+
       def self.handle(name, &block)
         define_method(:"handle_#{name}", &block)
       end
@@ -96,7 +101,7 @@ module RuboCop
 
       handle 'workspace/didChangeWatchedFiles' do |request|
         changed = request[:params][:changes].any? do |change|
-          change[:uri].end_with?(RuboCop::ConfigFinder::DOTFILE)
+          CONFIGURATION_FILE_PATTERNS.any? { |path| change[:uri].end_with?(path) }
         end
 
         if changed
@@ -204,39 +209,18 @@ module RuboCop
 
       def diagnostic(file_uri, text)
         @text_cache[file_uri] = text
-        offenses = @server.offenses(remove_file_protocol_from(file_uri), text)
-        diagnostics = offenses.map { |offense| to_diagnostic(offense) }
 
         {
           method: 'textDocument/publishDiagnostics',
           params: {
             uri: file_uri,
-            diagnostics: diagnostics
+            diagnostics: @server.offenses(remove_file_protocol_from(file_uri), text)
           }
         }
       end
 
       def remove_file_protocol_from(uri)
         uri.delete_prefix('file://')
-      end
-
-      def to_diagnostic(offense)
-        code = offense[:cop_name]
-        message = offense[:message]
-        loc = offense[:location]
-        rubocop_severity = offense[:severity]
-        severity = Severity.find_by(rubocop_severity)
-
-        {
-          code: code, message: message, range: to_range(loc), severity: severity, source: 'rubocop'
-        }
-      end
-
-      def to_range(location)
-        {
-          start: { character: location[:start_column] - 1, line: location[:start_line] - 1 },
-          end: { character: location[:last_column], line: location[:last_line] - 1 }
-        }
       end
     end
   end
