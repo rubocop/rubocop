@@ -1665,6 +1665,11 @@ Lint/ConstantOverwrittenInRescue:
   Enabled: pending
   VersionAdded: '1.31'
 
+Lint/ConstantReassignment:
+  Description: 'Checks for constant reassignments.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
   Enabled: false
