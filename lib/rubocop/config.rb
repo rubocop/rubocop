@@ -45,6 +45,10 @@ module RuboCop
     end
     # rubocop:enable Metrics/AbcSize
 
+    def loaded_plugins
+      @loaded_plugins ||= ConfigLoader.loaded_plugins
+    end
+
     def loaded_features
       @loaded_features ||= ConfigLoader.loaded_features
     end

@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Version do
       end
 
       before do
-        allow(config).to receive(:loaded_features).and_return(known_features)
+        allow(config).to receive_messages(loaded_plugins: [], loaded_features: known_features)
         allow(config_store).to receive(:for_dir).and_return(config)
 
         stub_const('RuboCop::GraphQL::Version::STRING', '1.0.0')

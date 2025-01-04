@@ -21,7 +21,8 @@ module StrictWarnings
     /`inspect_file` is deprecated\. Use `investigate` instead\./, # RuboCop's deprecated API in spec
     /`forces` is deprecated./, # RuboCop's deprecated API in spec
     /`support_autocorrect\?` is deprecated\./, # RuboCop's deprecated API in spec
-    /`Cop\.registry` is deprecated\./ # RuboCop's deprecated API in spec
+    /`Cop\.registry` is deprecated\./, # RuboCop's deprecated API in spec
+    /Specify `rubocop-internal_affairs` instead/ # RuboCop's obsolete internal plugin name
   )
 
   def warn(message, ...)

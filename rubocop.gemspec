@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency('json', '~> 2.3')
   s.add_dependency('language_server-protocol', '>= 3.17.0')
+  s.add_dependency('lint_roller', '>= 1.1.0')
   s.add_dependency('parallel', '~> 1.10')
   s.add_dependency('parser', '>= 3.3.0.2')
   s.add_dependency('rainbow', '>= 2.2.2', '< 4.0')

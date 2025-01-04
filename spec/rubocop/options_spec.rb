@@ -213,6 +213,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --init                       Generate a .rubocop.yml file in the current directory.
               -c, --config FILE                Specify configuration file.
               -d, --debug                      Display debug info.
+                  --plugin FILE                Load a RuboCop plugin.
               -r, --require FILE               Require Ruby file.
                   --[no-]color                 Force color output on or off.
               -v, --version                    Display version.

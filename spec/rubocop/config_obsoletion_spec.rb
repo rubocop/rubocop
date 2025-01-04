@@ -277,6 +277,8 @@ RSpec.describe RuboCop::ConfigObsoletion do
     end
 
     context 'when the extensions are loaded via inherit_gem', :restore_registry do
+      include_context 'mock console output'
+
       let(:resolver) { RuboCop::ConfigLoaderResolver.new }
       let(:gem_root) { File.expand_path('gems') }
 

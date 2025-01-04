@@ -37,18 +37,3 @@ require_relative 'internal_affairs/style_detected_api_use'
 require_relative 'internal_affairs/undefined_config'
 require_relative 'internal_affairs/useless_message_assertion'
 require_relative 'internal_affairs/useless_restrict_on_send'
-
-module RuboCop
-  # Patch in the InternalAffairs specific config values
-  module InternalAffairs
-    def self.inject!
-      path = File.join(ConfigLoader::RUBOCOP_HOME, 'config', 'internal_affairs.yml')
-      hash = ConfigLoader.load_yaml_configuration(path)
-      config = Config.new(hash, path)
-      config = ConfigLoader.merge_with_default(config, path)
-      ConfigLoader.instance_variable_set(:@default_configuration, config)
-    end
-  end
-end
-
-RuboCop::InternalAffairs.inject!
