@@ -4,6 +4,43 @@ It's possible to extend RuboCop with custom (third-party) cops and formatters.
 
 == Loading Extensions
 
+Starting with RuboCop 1.72, plugins are provided as a way to load extension cop gems.
+When using gems that support plugins, please update the configuration in `.rubocop.yml`
+from `require` to `plugins`.
+
+Refer to the xref:plugin_migration_guide.adoc[Plugin Migration Guide] when migrating existing configurations.
+
+=== Loading Plugin Extensions
+
+NOTE: The plugin system was introduced in RuboCop 1.72.
+
+Besides the `--plugin` command line option you can also specify ruby
+files that should be loaded with the optional `plugins` directive in the
+`.rubocop.yml` file:
+
+[source,yaml]
+----
+plugins:
+  - rubocop-performance
+----
+
+Most extension gems with plugin support should work with the example above.
+
+The following is an example of a plugin that is not published as a gem:
+
+[source,yaml]
+----
+plugins:
+  - rubocop-extension
+      require_path: path/to/extension/plugin
+      plugin_class_name: RuboCop::Extension::Plugin
+----
+
+There are other ways to specify this. For more details, please refer to the lint_roller documentation.
+The lint_roller plugin specifications follow https://github.com/standardrb/lint_roller[lint_roller].
+
+=== Loading Inject and Relative Path Extensions
+
 Besides the `--require` command line option you can also specify ruby
 files that should be loaded with the optional `require` directive in the
 `.rubocop.yml` file:
@@ -11,9 +48,14 @@ files that should be loaded with the optional `require` directive in the
 [source,yaml]
 ----
 require:
- - ../my/custom/file.rb
- - rubocop-extension
+  - ../my/custom/file.rb
+  - rubocop-extension
 ----
+
+The extension loading via `require` remains compatible with the pre-plugin inject method.
+Since `require` is used for internal extensions such as custom cops and formatters,
+there are no plans to remove it in the future.
+However, it is recommended that publicly available extension cops in gems migrate to the plugin system.
 
 NOTE: The paths are directly passed to `Kernel.require`. If your
 extension file is not in `$LOAD_PATH`, you need to specify the path as
@@ -58,6 +100,8 @@ other cop.
 === Writing your own Cops
 
 If you'd like to create an extension gem, you can use https://github.com/rubocop/rubocop-extension-generator[rubocop-extension-generator].
+
+For plugin specifications, please refer to https://github.com/standardrb/lint_roller[lint_roller].
 
 See xref:development.adoc[development] to learn how to implement a cop.
 

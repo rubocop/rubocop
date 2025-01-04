@@ -1,0 +1,130 @@
+= Plugin Migration Guide
+
+This page provides guidance on migrating to RuboCop extensions using plugins. Plugins are a feature introduced in RuboCop 1.72.
+
+It is divided into two main sections: one for plugin users and the other for plugin developers.
+
+== For Plugin Users
+
+Please update the RuboCop extension cops specified in configuration files like `.rubocop.yml` from `require` to `plugin`.
+
+[source,yaml]
+----
+plugins:
+  - rubocop-performance
+----
+
+Specifically, those that trigger warnings like the following should be updated:
+
+[source,console]
+----
+$ bundle exec rubocop
+rubocop-performance extension supports plugin, specify `plugins: rubocop-performance`
+instead of `require: rubocop-performance` in /Users/koic/src/github.com/rubocop/rubocop/.rubocop.yml.
+For more information, see https://docs.rubocop.org/rubocop/plugin_migration_guide.html.
+----
+
+NOTE: Non-plugin extension Ruby files can continue to use `require` for file requiring.
+
+== For Plugin Developers
+
+Converting an existing RuboCop extension using `Inject.defaults!` into a plugin can generally be done in the following three steps.
+
+1. Create `Plugin` class
+2. Update gemspec file
+3. Remove `Inject.defaults!` code
+
+The `rubocop-performance` extension gem is used as an example here.
+Replace "performance" with the name of your extension as appropriate.
+
+=== 1. Create `Plugin` class
+
+Prepare the plugin class. It is typically placed under the department directory, such as `rubocop/performance/plugin.rb`.
+
+[source,ruby]
+----
+# frozen_string_literal: true
+
+require 'lint_roller'
+
+module RuboCop
+  module Performance
+    # A plugin that integrates RuboCop Performance with RuboCop's plugin system.
+    class Plugin < LintRoller::Plugin
+      def about
+        LintRoller::About.new(
+          name: 'rubocop-performance',
+          version: Version::STRING,
+          homepage: 'https://github.com/rubocop/rubocop-performance',
+          description: 'A collection of RuboCop cops to check for performance optimizations in Ruby code.'
+        )
+      end
+
+      def supported?(context)
+        context.engine == :rubocop
+      end
+
+      def rules(_context)
+        LintRoller::Rules.new(
+          type: :path,
+          config_format: :rubocop,
+          value: Pathname.new(__dir__).join('../../../config/default.yml')
+        )
+      end
+    end
+  end
+end
+----
+
+For details on configurations, refer to the lint_roller documentation:
+https://github.com/standardrb/lint_roller?tab=readme-ov-file#how-to-make-a-plugin
+
+=== 2. Update gemspec file
+
+Set the plugin class name in `spec.metadata['default_lint_roller_plugin']` and add a runtime dependency on `lint_roller`.
+
+[source,ruby]
+----
+spec.metadata['default_lint_roller_plugin'] = 'RuboCop::Performance::Plugin'
+
+spec.add_dependency('lint_roller')
+----
+
+Update `rubocop` to a version that supports plugins or higher.
+
+[source,ruby]
+----
+spec.require('rubocop', '>= 1.72.0')
+----
+
+=== 3. Replace `Inject.defaults!` code
+
+Replace `rubocop/performance/inject`, where the `RuboCop::Performance::Inject` class is defined.
+
+[source,console]
+----
+$ rm 'rubocop/performance/inject'
+----
+
+Remove the call to `RuboCop::Performance::Inject.defaults!` and the related `require_relative` code.
+
+[source,ruby]
+----
+require_relative 'rubocop/performance/inject'
+
+RuboCop::Performance::Inject.defaults!
+----
+
+And use `require_relative` for the plugin class file instead of the above.
+
+[source,ruby]
+----
+require_relative 'rubocop/performance/plugin'
+----
+
+In non-runtime environments like `spec/spec_helper.rb`, replace `require_relative 'rubocop/performance/plugin'` with `RuboCop::ConfigLoader.inject_defaults!`.
+
+[source,ruby]
+----
+RuboCop::ConfigLoader.inject_defaults!("#{__dir__}/../config/default.yml")
+----

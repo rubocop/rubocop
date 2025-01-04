@@ -12,7 +12,8 @@ module RuboCop
   # Use global Rake namespace here to avoid namespace issues with custom
   # rubocop-rake tasks
   class RakeTask < ::Rake::TaskLib
-    attr_accessor :name, :verbose, :fail_on_error, :patterns, :formatters, :requires, :options
+    attr_accessor :name, :verbose, :fail_on_error, :patterns, :formatters, :plugins, :requires,
+                  :options
 
     def initialize(name = :rubocop, *args, &task_block)
       super()
@@ -54,6 +55,7 @@ module RuboCop
 
     def full_options
       formatters.map { |f| ['--format', f] }.flatten
+                .concat(plugins.map { |plugin| ['--plugin', plugin] }.flatten)
                 .concat(requires.map { |r| ['--require', r] }.flatten)
                 .concat(options.flatten)
                 .concat(patterns)
@@ -64,6 +66,7 @@ module RuboCop
       @verbose = true
       @fail_on_error = true
       @patterns = []
+      @plugins = []
       @requires = []
       @options = []
       @formatters = []

@@ -1,8 +1,11 @@
 # This is the configuration used to check the rubocop source code.
 
 inherit_from: .rubocop_todo.yml
+
+plugins:
+  - rubocop-internal_affairs
+
 require:
-  - rubocop/cop/internal_affairs
   - rubocop-performance
   - rubocop-rspec
   - rubocop-rake

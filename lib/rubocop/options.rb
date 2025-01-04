@@ -243,6 +243,7 @@ module RuboCop
         option(opts, '--init')
         option(opts, '-c', '--config FILE')
         option(opts, '-d', '--debug')
+        option(opts, '--plugin FILE') { |f| plugin_feature(f) }
         option(opts, '-r', '--require FILE') { |f| require_feature(f) }
         option(opts, '--[no-]color')
         option(opts, '-v', '--version')
@@ -299,11 +300,25 @@ module RuboCop
       long_opt[2..].sub('[no-]', '').sub(/ .*/, '').tr('-', '_').gsub(/[\[\]]/, '').to_sym
     end
 
-    def require_feature(file)
-      # If any features were added on the CLI from `--require`,
+    def plugin_feature(file)
+      # If any features were added on the CLI from `--plugin`,
       # add them to the config.
-      ConfigLoader.add_loaded_features(file)
-      require file
+      ConfigLoaderResolver.new.resolve_plugins(Config.new, file)
+    end
+
+    def require_feature(file)
+      if Plugin.plugin_capable?(file)
+        # NOTE: Compatibility for before plugins style.
+        warn Rainbow(<<~MESSAGE).yellow
+          #{file} gem supports plugin, use `--plugin` instead of `--require`.
+        MESSAGE
+        plugin_feature(file)
+      else
+        # If any features were added on the CLI from `--require`,
+        # add them to the config.
+        require file
+        ConfigLoader.add_loaded_features(file)
+      end
     end
   end
 
@@ -503,6 +518,7 @@ module RuboCop
       only_guide_cops:                  ['Run only cops for rules that link to a',
                                          'style guide.'],
       except:                           'Exclude the given cop(s).',
+      plugin:                           'Load a RuboCop plugin.',
       require:                          'Require Ruby file.',
       config:                           'Specify configuration file.',
       auto_gen_config:                  ['Generate a configuration file acting as a',

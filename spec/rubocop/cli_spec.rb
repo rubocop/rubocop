@@ -2047,6 +2047,32 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to match(regexp)
       end
     end
+
+    context 'when using `plugins` to enable a plugin' do
+      it 'exits with 0 without warning' do
+        create_file('.rubocop.yml', <<~YAML)
+          plugins:
+            - rubocop-internal_affairs
+        YAML
+
+        expect(cli.run([])).to eq(0)
+        expect($stderr.string).to be_blank
+      end
+    end
+
+    context 'when using `require` to enable a plugin' do
+      it 'exits with 0 with warning' do
+        create_file('.rubocop.yml', <<~YAML)
+          require:
+            - rubocop/cop/internal_affairs
+        YAML
+
+        expect(cli.run([])).to eq(0)
+        expect($stderr.string).to start_with(
+          'rubocop/cop/internal_affairs extension supports plugin'
+        )
+      end
+    end
   end
 
   describe 'obsolete cops' do

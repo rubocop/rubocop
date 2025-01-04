@@ -365,12 +365,7 @@ RSpec.describe RuboCop::Cop::Generator do
       RuboCop::Cop::Registry.with_temporary_global(new_global) { example.run }
     end
 
-    let(:config) do
-      config = RuboCop::ConfigStore.new
-      path = File.join(RuboCop::ConfigLoader::RUBOCOP_HOME, RuboCop::ConfigFinder::DOTFILE)
-      config.options_config = path
-      config
-    end
+    let(:config) { RuboCop::ConfigStore.new }
     let(:options) { { formatters: [] } }
     let(:runner) { RuboCop::Runner.new(options, config) }
 

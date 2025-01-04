@@ -90,6 +90,22 @@ RSpec.describe RuboCop::RakeTask do
       Rake::Task['rubocop'].execute
     end
 
+    it 'allows nested arrays inside formatters, options, and plugins' do
+      described_class.new do |task|
+        task.formatters = [['files']]
+        task.plugins = [['extension-plugin']]
+        task.options = [['--display-cop-names']]
+      end
+
+      cli = instance_double(RuboCop::CLI, run: 0)
+      allow(RuboCop::CLI).to receive(:new).and_return(cli)
+      options = ['--format', 'files', '--plugin', 'extension-plugin', '--display-cop-names']
+
+      expect(cli).to receive(:run).with(options)
+
+      Rake::Task['rubocop'].execute
+    end
+
     it 'does not error when result is not 0 and fail_on_error is false' do
       described_class.new { |task| task.fail_on_error = false }
 

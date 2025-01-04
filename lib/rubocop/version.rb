@@ -63,9 +63,21 @@ module RuboCop
     end
 
     # @api private
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def self.extension_versions(env)
+      plugins = config_for_pwd(env).loaded_plugins
+      plugin_versions = plugins.filter_map do |plugin|
+        next if Plugin::BUILTIN_INTERNAL_PLUGINS.key?(plugin.about.name)
+        next unless (plugin_name = plugin.about.name)
+
+        "  - #{plugin_name} #{plugin.about.version}"
+      end
+
+      # TODO: It needs to be maintained for a while to ensure compatibility with extensions that
+      # don't support plugins. It should be removed in future once the old style becomes obsolete.
       features = config_for_pwd(env).loaded_features.sort
-      features.filter_map do |loaded_feature|
+      features -= plugins.map { |plugin| plugin.about.name }
+      feature_versions = features.filter_map do |loaded_feature|
         next unless (match = loaded_feature.match(/rubocop-(?<feature>.*)/))
 
         # Get the expected name of the folder containing the extension code.
@@ -84,7 +96,10 @@ module RuboCop
 
         "  - #{loaded_feature} #{feature_version}"
       end
+
+      plugin_versions + feature_versions
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     # @api private
     def self.target_ruby_version(env)

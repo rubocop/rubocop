@@ -2,16 +2,34 @@
 
 require 'pathname'
 require 'yaml'
+require_relative 'plugin'
 
 module RuboCop
   # A help class for ConfigLoader that handles configuration resolution.
   # @api private
   class ConfigLoaderResolver # rubocop:disable Metrics/ClassLength
+    def resolve_plugins(rubocop_config, plugins)
+      return if (plugins = Array(plugins)).empty?
+
+      Plugin.integrate_plugins(rubocop_config, plugins)
+    end
+
     def resolve_requires(path, hash)
       config_dir = File.dirname(path)
       hash.delete('require').tap do |loaded_features|
         Array(loaded_features).each do |feature|
-          FeatureLoader.load(config_directory_path: config_dir, feature: feature)
+          if Plugin.plugin_capable?(feature)
+            # NOTE: Compatibility for before plugins style.
+            warn Rainbow(<<~MESSAGE).yellow
+              #{feature} extension supports plugin, specify `plugins: #{feature}` instead of `require: #{feature}` in #{path}.
+              For more information, see https://docs.rubocop.org/rubocop/plugin_migration_guide.html.
+            MESSAGE
+            rubocop_config = Config.create(hash, path, check: false)
+
+            resolve_plugins(rubocop_config, feature)
+          else
+            FeatureLoader.load(config_directory_path: config_dir, feature: feature)
+          end
         end
       end
     end
