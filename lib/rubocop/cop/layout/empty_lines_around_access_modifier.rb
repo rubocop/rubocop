@@ -86,6 +86,7 @@ module RuboCop
 
         def on_send(node)
           return unless node.bare_access_modifier? && !node.block_literal?
+          return if same_line?(node, node.right_sibling)
           return if expected_empty_lines?(node)
 
           message = message(node)

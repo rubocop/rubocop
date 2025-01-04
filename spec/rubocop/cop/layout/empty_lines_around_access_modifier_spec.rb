@@ -334,6 +334,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           #{access_modifier}
         RUBY
       end
+
+      it 'accepts when an access modifier and an expression are on the same line' do
+        expect_no_offenses(<<~RUBY)
+          #{access_modifier}; foo
+          .bar
+        RUBY
+      end
     end
   end
 
