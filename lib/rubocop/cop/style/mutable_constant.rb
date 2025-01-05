@@ -238,7 +238,7 @@ module RuboCop
 
         # @!method range_enclosed_in_parentheses?(node)
         def_node_matcher :range_enclosed_in_parentheses?, <<~PATTERN
-          (begin ({irange erange} _ _))
+          (begin (range _ _))
         PATTERN
       end
     end
