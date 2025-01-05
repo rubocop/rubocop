@@ -48,7 +48,7 @@ module RuboCop
 
         def on_new_investigation
           processed_source.lines.each_with_index do |line, index|
-            next unless line.end_with?(' ', "\t")
+            next unless line.match?(/[[:blank:]]\z/)
 
             process_line(line, index + 1)
           end
@@ -84,7 +84,7 @@ module RuboCop
         end
 
         def whitespace_is_indentation?(range, level)
-          range.source[/[ \t]+/].length <= level
+          range.source[/[[:blank:]]+/].length <= level
         end
 
         def whitespace_only?(range)
@@ -123,7 +123,9 @@ module RuboCop
         end
 
         def offense_range(lineno, line)
-          source_range(processed_source.buffer, lineno, (line.rstrip.length)...(line.length))
+          source_range(
+            processed_source.buffer, lineno, (line.sub(/[[:blank:]]+\z/, '').length)...(line.length)
+          )
         end
       end
     end
