@@ -935,6 +935,44 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    context 'range literals' do
+      it 'accepts parens when no end node and last argument' do
+        expect_no_offenses(<<~RUBY)
+          foo(2..)
+          foo(1, 2...)
+        RUBY
+      end
+
+      it 'registers an offense no end node and not last argument' do
+        expect_offense(<<~RUBY)
+          foo(2.., 1)
+             ^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo 2.., 1
+        RUBY
+      end
+
+      it 'accepts parens when no begin node and first argument' do
+        expect_no_offenses(<<~RUBY)
+          foo(..2, 1)
+          foo(...2)
+        RUBY
+      end
+
+      it 'registers an offense no begin node and not first argument' do
+        expect_offense(<<~RUBY)
+          foo(1, ..2)
+             ^^^^^^^^ Omit parentheses for method calls with arguments.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo 1, ..2
+        RUBY
+      end
+    end
+
     it 'accepts parens in assignment in conditions' do
       expect_no_offenses(<<-RUBY)
         case response = get("server/list")
