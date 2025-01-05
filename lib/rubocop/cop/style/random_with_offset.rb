@@ -36,7 +36,7 @@ module RuboCop
             (send
               {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int (irange int int) (erange int int)}))
+              {int (range int int)}))
         PATTERN
 
         # @!method rand_op_integer?(node)
@@ -45,7 +45,7 @@ module RuboCop
             (send
               {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int (irange int int) (erange int int)})
+              {int (range int int)})
             {:+ :-}
             int)
         PATTERN
@@ -56,7 +56,7 @@ module RuboCop
             (send
               {nil? (const {nil? cbase} :Random) (const {nil? cbase} :Kernel)}
               :rand
-              {int (irange int int) (erange int int)})
+              {int (range int int)})
             {:succ :pred :next})
         PATTERN
 

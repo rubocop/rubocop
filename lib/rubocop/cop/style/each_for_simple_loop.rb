@@ -53,8 +53,7 @@ module RuboCop
           (block
             (call
               (begin
-                (${irange erange}
-                  (int $_) (int $_)))
+                ($range (int $_) (int $_)))
               :each)
             (args ...)
             ...)
@@ -65,8 +64,7 @@ module RuboCop
           (block
             (call
               (begin
-                ({irange erange}
-                  (int 0) (int _)))
+                (range (int 0) (int _)))
               :each)
             (args ...)
             ...)
@@ -77,8 +75,7 @@ module RuboCop
           (block
             (call
               (begin
-                ({irange erange}
-                  (int _) (int _)))
+                (range (int _) (int _)))
               :each)
             (args)
             ...)
