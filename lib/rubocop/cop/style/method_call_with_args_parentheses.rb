@@ -61,6 +61,8 @@ module RuboCop
       #   https://bugs.ruby-lang.org/issues/18396.
       # - Parentheses are required in anonymous arguments, keyword arguments
       #   and block passing in Ruby 3.2.
+      # - Parentheses are required when the first argument is a beginless range or
+      #   the last argument is an endless range.
       #
       # @example EnforcedStyle: require_parentheses (default)
       #

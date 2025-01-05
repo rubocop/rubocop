@@ -135,17 +135,20 @@ module RuboCop
             node.parent&.class_type? && node.parent.single_line?
           end
 
-          def call_with_ambiguous_arguments?(node) # rubocop:disable Metrics/PerceivedComplexity
+          # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+          def call_with_ambiguous_arguments?(node)
             call_with_braced_block?(node) ||
               call_in_argument_with_block?(node) ||
               call_as_argument_or_chain?(node) ||
               call_in_match_pattern?(node) ||
               hash_literal_in_arguments?(node) ||
+              ambiguous_range_argument?(node) ||
               node.descendants.any? do |n|
                 n.forwarded_args_type? || n.block_type? || n.numblock_type? ||
                   ambiguous_literal?(n) || logical_operator?(n)
               end
           end
+          # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
           def call_with_braced_block?(node)
             (node.call_type? || node.super_type?) && node.block_node&.braces?
@@ -175,6 +178,13 @@ module RuboCop
               hash_literal?(n) ||
                 (n.send_type? && node.descendants.any? { |descendant| hash_literal?(descendant) })
             end
+          end
+
+          def ambiguous_range_argument?(node)
+            return true if (first_arg = node.first_argument)&.range_type? && first_arg.begin.nil?
+            return true if (last_arg = node.last_argument)&.range_type? && last_arg.end.nil?
+
+            false
           end
 
           def allowed_multiline_call_with_parentheses?(node)
