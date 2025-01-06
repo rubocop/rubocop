@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
         expect(cli.run(['--server-status', '--cache-root', '/tmp'])).to eq(0)
         expect(cli).to be_exit
         expect($stdout.string).to eq "RuboCop server is not running.\n"
-        expect($stderr.string).not_to eq "--server-status cannot be combined with other options.\n"
+        expect($stderr.string).not_to eq "--server-status cannot be combined with --cache-root.\n"
       end
     end
 
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
         expect(cli.run(['--server-status', '--cache-root=/tmp'])).to eq(0)
         expect(cli).to be_exit
         expect($stdout.string).to eq "RuboCop server is not running.\n"
-        expect($stderr.string).not_to eq "--server-status cannot be combined with other options.\n"
+        expect($stderr.string).not_to eq "--server-status cannot be combined with --cache-root.\n"
       end
     end
   else
