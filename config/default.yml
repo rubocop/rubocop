@@ -3142,13 +3142,14 @@ Style/AccessModifierDeclarations:
   Description: 'Checks style of how access modifiers are used.'
   Enabled: true
   VersionAdded: '0.57'
-  VersionChanged: '0.81'
+  VersionChanged: '<<next>>'
   EnforcedStyle: group
   SupportedStyles:
     - inline
     - group
   AllowModifiersOnSymbols: true
   AllowModifiersOnAttrs: true
+  AllowModifiersOnAliasMethod: true
   SafeAutoCorrect: false
 
 Style/AccessorGrouping:
