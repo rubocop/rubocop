@@ -41,6 +41,10 @@ module RuboCop
       def clear_options
         @debug = nil
         @loaded_features = Set.new
+        @disable_pending_cops = nil
+        @enable_pending_cops = nil
+        @ignore_parent_exclusion = nil
+        @ignore_unrecognized_cops = nil
         FileFinder.root_level = nil
       end
 
