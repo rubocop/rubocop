@@ -9,7 +9,10 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
   let(:rubocop) { "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/exe/rubocop" }
 
-  before { RuboCop::ConfigLoader.default_configuration = nil }
+  before do
+    RuboCop::ConfigLoader.default_configuration = nil
+    RuboCop::ConfigLoader.clear_options
+  end
 
   describe '--parallel' do
     if RuboCop::Platform.windows?

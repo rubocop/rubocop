@@ -81,6 +81,8 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     create_file('dir1/executable', '#!/usr/bin/env ruby')
     create_empty_file('dir2/ruby3.rb')
     create_empty_file('.hidden/ruby4.rb')
+
+    RuboCop::ConfigLoader.clear_options
   end
 
   shared_examples 'common behavior for #find' do
