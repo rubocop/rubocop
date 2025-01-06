@@ -24,6 +24,13 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
     RUBY
   end
 
+  it 'registers an offense for a line ending with full-width space' do
+    expect_offense(<<~RUBY)
+      x = :a\u3000
+            ^ Trailing whitespace detected.
+    RUBY
+  end
+
   it 'registers an offense for trailing whitespace in a heredoc string' do
     expect_offense(<<~RUBY)
       x = <<HEREDOC
@@ -37,6 +44,15 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
     expect_offense(<<~RUBY)
       <<~X
       \t
+      ^ Trailing whitespace detected.
+      X
+    RUBY
+  end
+
+  it 'registers an offense for a full-width space in a heredoc' do
+    expect_offense(<<~RUBY)
+      <<~X
+      \u3000
       ^ Trailing whitespace detected.
       X
     RUBY
@@ -104,11 +120,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
            ^ Trailing whitespace detected.
       x = 0\t
            ^ Trailing whitespace detected.
+      x = :a\u3000
+            ^ Trailing whitespace detected.
     RUBY
 
     expect_correction(<<~RUBY)
       x = 0
       x = 0
+      x = :a
     RUBY
   end
 
