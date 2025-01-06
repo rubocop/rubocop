@@ -4,6 +4,18 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
   context 'when method is an instance method' do
+    it 'does not register an offense when there are exactly `Max` lines' do
+      expect_no_offenses(<<~RUBY)
+        def m
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+        end
+      RUBY
+    end
+
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def m
@@ -20,10 +32,50 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
   end
 
   context 'when method is defined with `define_method`' do
-    it 'registers an offense' do
+    it 'does not register an offense when there are exactly `Max` lines' do
+      expect_no_offenses(<<~RUBY)
+        define_method(:m) do
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+        end
+      RUBY
+    end
+
+    it 'registers an offense when there are more than `Max` lines' do
       expect_offense(<<~RUBY)
         define_method(:m) do
         ^^^^^^^^^^^^^^^^^^^^ Method has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+
+    it 'registers an offense for an over-long dynamically defined method with a dynamic symbol name' do
+      expect_offense(<<~'RUBY')
+        define_method(:"#{method_name}=") do
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
+
+    it 'registers an offense for an over-long dynamically defined method with a dynamic string name' do
+      expect_offense(<<~'RUBY')
+        define_method("#{method_name}=") do
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method has too many lines. [6/5]
           a = 1
           a = 2
           a = 3
@@ -247,6 +299,32 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
           end
         RUBY
       end
+
+      it 'accepts dynamically defined matching method name with more than 5 lines' do
+        expect_no_offenses(<<~RUBY)
+          define_method(:foo) do
+            a = 1
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+            a = 6
+          end
+        RUBY
+      end
+
+      it 'accepts dynamically defined matching method name with a numblock' do
+        expect_no_offenses(<<~RUBY)
+          define_method(:foo) do
+            a = _1
+            a = _2
+            a = _3
+            a = _4
+            a = _5
+            a = _6
+          end
+        RUBY
+      end
     end
 
     context 'AllowedPatterns is enabled' do
@@ -261,6 +339,32 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
             a = 4
             a = 5
             a = 6
+          end
+        RUBY
+      end
+
+      it 'accepts dynamically defined matching method name with more than 5 lines' do
+        expect_no_offenses(<<~RUBY)
+          define_method(:user_name) do
+            a = 1
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+            a = 6
+          end
+        RUBY
+      end
+
+      it 'accepts dynamically defined matching method name with a numblock' do
+        expect_no_offenses(<<~RUBY)
+          define_method(:user_name) do
+            a = _1
+            a = _2
+            a = _3
+            a = _4
+            a = _5
+            a = _6
           end
         RUBY
       end
