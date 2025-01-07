@@ -11,6 +11,9 @@ module RuboCop
       # will not register an offense, because it allows the initializer to take a different
       # number of arguments as its superclass potentially does.
       #
+      # NOTE: If an initializer takes any arguments and has an empty body, RuboCop
+      # assumes it to *not* be redundant. This is to prevent potential `ArgumentError`.
+      #
       # NOTE: If an initializer argument has a default value, RuboCop assumes it
       # to *not* be redundant.
       #
@@ -19,8 +22,10 @@ module RuboCop
       # initializer.
       #
       # @safety
-      #   This cop is unsafe because if subclass overrides `initialize` method with
-      #   a different arity than superclass.
+      #   This cop is unsafe because removing an empty initializer may alter
+      #   the behavior of the code, particularly if the superclass initializer
+      #   raises an exception. In such cases, the empty initializer may act as
+      #   a safeguard to prevent unintended errors from propagating.
       #
       # @example
       #   # bad
@@ -69,6 +74,10 @@ module RuboCop
       #   end
       #
       #   # good (changes the parameter requirements)
+      #   def initialize(_)
+      #   end
+      #
+      #   # good (changes the parameter requirements)
       #   def initialize(*)
       #   end
       #
@@ -111,7 +120,7 @@ module RuboCop
           return if acceptable?(node)
 
           if node.body.nil?
-            register_offense(node, MSG_EMPTY)
+            register_offense(node, MSG_EMPTY) if node.arguments.empty?
           else
             return if node.body.begin_type?
 
