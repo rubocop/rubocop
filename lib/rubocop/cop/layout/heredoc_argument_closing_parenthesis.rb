@@ -75,6 +75,7 @@ module RuboCop
             autocorrect(corrector, outermost_send)
           end
         end
+        alias on_csend on_send
 
         private
 
