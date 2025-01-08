@@ -78,38 +78,67 @@ module RuboCop
           return unless node.arguments.one?
 
           range_node = node.first_argument
-          selector = node.loc.selector
-          unless (message, removal_range = offense_message_with_removal_range(range_node, selector))
-            return
-          end
+          offense_range = find_offense_range(node)
+          return unless (message, removal_range =
+                           offense_message_with_removal_range(node, range_node, offense_range))
 
-          add_offense(selector, message: message) do |corrector|
+          # Changing the range to beginningless or endless when unparenthesized
+          # changes the semantics of the code, and thus will not be considered
+          # an offense.
+          return if removal_range != offense_range && unparenthesized_call?(node)
+
+          add_offense(offense_range, message: message) do |corrector|
             corrector.remove(removal_range)
           end
         end
+        alias on_csend on_send
 
         private
 
-        def offense_message_with_removal_range(range_node, selector)
+        def unparenthesized_call?(node)
+          node.loc.dot && !node.parenthesized?
+        end
+
+        def find_offense_range(node)
+          if node.loc.dot
+            node.loc.dot.join(node.source_range.end)
+          else
+            node.loc.selector
+          end
+        end
+
+        def offense_message_with_removal_range(node, range_node, offense_range)
           if range_from_zero_till_minus_one?(range_node)
-            [format(MSG_USELESS_RANGE, prefer: selector.source), selector]
+            [format(MSG_USELESS_RANGE, prefer: offense_range.source), offense_range]
           elsif range_till_minus_one?(range_node)
             [
-              format(MSG, prefer: endless(range_node), current: selector.source), range_node.end
+              offense_message_for_partial_range(node, endless(range_node), offense_range),
+              range_node.end
             ]
           elsif range_from_zero?(range_node) && target_ruby_version >= 2.7
             [
-              format(MSG, prefer: beginless(range_node), current: selector.source), range_node.begin
+              offense_message_for_partial_range(node, beginless(range_node), offense_range),
+              range_node.begin
             ]
           end
         end
 
+        def offense_message_for_partial_range(node, prefer, offense_range)
+          current = node.loc.dot ? arguments_source(node) : offense_range.source
+          prefer = "[#{prefer}]" unless node.loc.dot
+          format(MSG, prefer: prefer, current: current)
+        end
+
         def endless(range_node)
-          "[#{range_node.begin.source}#{range_node.loc.operator.source}]"
+          "#{range_node.begin.source}#{range_node.loc.operator.source}"
         end
 
         def beginless(range_node)
-          "[#{range_node.loc.operator.source}#{range_node.end.source}]"
+          "#{range_node.loc.operator.source}#{range_node.end.source}"
+        end
+
+        def arguments_source(node)
+          node.first_argument.source_range.join(node.last_argument.source_range.end).source
         end
       end
     end
