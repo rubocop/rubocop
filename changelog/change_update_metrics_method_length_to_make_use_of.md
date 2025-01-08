@@ -1,0 +1,1 @@
+* [#13652](https://github.com/rubocop/rubocop/pull/13652): Update `Metrics/MethodLength` to make use of `AllowedMethods` and `AllowedPatterns` for methods defined dynamically with `define_method`. ([@dvandersluis][])

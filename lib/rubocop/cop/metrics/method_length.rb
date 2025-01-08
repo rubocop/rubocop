@@ -48,7 +48,7 @@ module RuboCop
         LABEL = 'Method'
 
         def on_def(node)
-          return if allowed_method?(node.method_name) || matches_allowed_pattern?(node.method_name)
+          return if allowed?(node.method_name)
 
           check_code_length(node)
         end
@@ -56,6 +56,9 @@ module RuboCop
 
         def on_block(node)
           return unless node.method?(:define_method)
+
+          method_name = node.send_node.first_argument
+          return if method_name.basic_literal? && allowed?(method_name.value)
 
           check_code_length(node)
         end
@@ -65,6 +68,10 @@ module RuboCop
 
         def cop_label
           LABEL
+        end
+
+        def allowed?(method_name)
+          allowed_method?(method_name) || matches_allowed_pattern?(method_name)
         end
       end
     end
