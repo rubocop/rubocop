@@ -90,6 +90,7 @@ module RuboCop
         alias on_array on_potential_breakable_node
         alias on_hash on_potential_breakable_node
         alias on_send on_potential_breakable_node
+        alias on_csend on_potential_breakable_node
         alias on_def on_potential_breakable_node
 
         def on_new_investigation
