@@ -43,7 +43,7 @@ module RuboCop
     # (Note: Passes may not happen exactly in this sequence.)
     module CheckLineBreakable
       def extract_breakable_node(node, max)
-        if node.send_type?
+        if node.call_type?
           return if chained_to_heredoc?(node)
 
           args = process_args(node.arguments)
@@ -74,9 +74,9 @@ module RuboCop
       def extract_first_element_over_column_limit(node, elements, max)
         line = node.first_line
 
-        # If a `send` node is not parenthesized, don't move the first element, because it
+        # If a `send` or `csend` node is not parenthesized, don't move the first element, because it
         # can result in changed behavior or a syntax error.
-        if node.send_type? && !node.parenthesized? && !first_argument_is_heredoc?(node)
+        if node.call_type? && !node.parenthesized? && !first_argument_is_heredoc?(node)
           elements = elements.drop(1)
         end
 
@@ -98,10 +98,10 @@ module RuboCop
       end
 
       # @api private
-      # If a send node contains a heredoc argument, splitting cannot happen
+      # If a `send` or `csend` node contains a heredoc argument, splitting cannot happen
       # after the heredoc or else it will cause a syntax error.
       def shift_elements_for_heredoc_arg(node, elements, index)
-        return index unless node.send_type? || node.array_type?
+        return index unless node.call_type? || node.array_type?
 
         heredoc_index = elements.index { |arg| arg.respond_to?(:heredoc?) && arg.heredoc? }
         return index unless heredoc_index
@@ -156,7 +156,7 @@ module RuboCop
 
           if ancestor.hash_type? || ancestor.array_type?
             elements = ancestor.children
-          elsif ancestor.send_type?
+          elsif ancestor.call_type?
             elements = process_args(ancestor.arguments)
           else
             next
@@ -176,7 +176,7 @@ module RuboCop
             return children_could_be_broken_up?(ancestor.children)
           end
 
-          next unless ancestor.send_type?
+          next unless ancestor.call_type?
 
           args = process_args(ancestor.arguments)
           return children_could_be_broken_up?(args) if breakable_collection?(ancestor, args)
