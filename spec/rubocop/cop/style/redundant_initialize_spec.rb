@@ -138,18 +138,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantInitialize, :config do
     RUBY
   end
 
-  it 'registers an offense for an `initialize` method with a default argument that does nothing' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for an `initialize` method with a default argument that does nothing' do
+    expect_no_offenses(<<~RUBY)
       def initialize(a, b = 5)
-      ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
       end
     RUBY
   end
 
-  it 'registers an offense for an `initialize` method with a default keyword argument that does nothing' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for an `initialize` method with a default keyword argument that does nothing' do
+    expect_no_offenses(<<~RUBY)
       def initialize(a, b: 5)
-      ^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary empty `initialize` method.
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for an empty `initialize` method with an argument`' do
+    expect_no_offenses(<<~RUBY)
+      def initialize(_)
       end
     RUBY
   end
