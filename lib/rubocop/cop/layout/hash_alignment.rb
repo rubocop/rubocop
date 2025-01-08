@@ -202,6 +202,7 @@ module RuboCop
 
           ignore_node(last_argument)
         end
+        alias on_csend on_send
         alias on_super on_send
         alias on_yield on_send
 
