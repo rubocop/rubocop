@@ -3,7 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for uses a redundant current directory in path.
+      # Checks for paths given to `require_relative` that start with
+      # the current directory (`./`), which can be omitted.
       #
       # @example
       #
