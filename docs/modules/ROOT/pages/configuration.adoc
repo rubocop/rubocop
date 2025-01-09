@@ -1000,6 +1000,26 @@ Sorbet:
   DocumentationExtension: .md
 ----
 
+== Setting the version tracking metadata for cops
+
+This configuration is particularly useful when custom cops are distributed as a gem.
+
+Each cop can have the following additional metadata:
+
+* `VersionAdded` - the RuboCop version in which it was added
+* `VersionChanged` (optional) - the latest RuboCop version in which it was changed in a user-impacting way (new config, updated defaults, etc)
+
+[source,yaml]
+----
+Style/HashSyntax:
+  VersionAdded: '0.9'
+  VersionChanged: '1.67'
+----
+
+NOTE: These values do not include patch versions.
+
+Those will be pretty useful for the documentation (so the manual generation has to be enhanced to include them) and keeping track of changes.
+
 == Enable checking Active Support extensions
 
 Some cops for checking specified methods (e.g. `Style/HashExcept`) supports Active Support extensions.
