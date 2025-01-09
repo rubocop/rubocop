@@ -68,7 +68,7 @@ module RuboCop
         def on_send(node)
           return if allow_send? && !node.method?(:public_send)
           return unless (first_argument = node.first_argument)
-          return unless STATIC_METHOD_NAME_NODE_TYPES.include?(first_argument.type)
+          return unless first_argument.type?(*STATIC_METHOD_NAME_NODE_TYPES)
 
           offense_range = offense_range(node)
           method_name = first_argument.value
@@ -83,6 +83,7 @@ module RuboCop
             end
           end
         end
+        alias on_csend on_send
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
