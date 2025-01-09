@@ -45,6 +45,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment, :config do
         $foo.concat(ary)
       RUBY
     end
+
+    it 'registers an offense and corrects when the rhs uses safe navigation' do
+      expect_offense(<<~RUBY)
+        foo = foo&.concat(ary)
+            ^ Redundant self assignment detected. Method `concat` modifies its receiver in place.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo&.concat(ary)
+      RUBY
+    end
   end
 
   it 'does not register an offense when lhs and receiver are different' do
@@ -70,6 +81,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when assigning to attribute of `self` with safe navigation' do
+    expect_offense(<<~RUBY)
+      self.foo = foo&.concat(ary)
+               ^ Redundant self assignment detected. Method `concat` modifies its receiver in place.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo&.concat(ary)
+    RUBY
+  end
+
   it 'registers an offense and corrects when assigning to attribute of non `self`' do
     expect_offense(<<~RUBY)
       other.foo = other.foo.concat(ary)
@@ -78,6 +100,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment, :config do
 
     expect_correction(<<~RUBY)
       other.foo.concat(ary)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when assigning to attribute of non `self` with safe assignment' do
+    expect_offense(<<~RUBY)
+      other.foo = other.foo&.concat(ary)
+                ^ Redundant self assignment detected. Method `concat` modifies its receiver in place.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      other.foo&.concat(ary)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when assigning to attribute of non `self` with safe assignment chain' do
+    expect_offense(<<~RUBY)
+      other&.foo = other&.foo&.concat(ary)
+                 ^ Redundant self assignment detected. Method `concat` modifies its receiver in place.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      other&.foo&.concat(ary)
     RUBY
   end
 

@@ -52,7 +52,7 @@ module RuboCop
         # rubocop:disable Metrics/AbcSize
         def on_lvasgn(node)
           return unless (rhs = node.rhs)
-          return unless rhs.send_type? && method_returning_self?(rhs.method_name)
+          return unless rhs.call_type? && method_returning_self?(rhs.method_name)
           return unless (receiver = rhs.receiver)
 
           receiver_type = ASSIGNMENT_TYPE_TO_RECEIVER_TYPE[node.type]
@@ -77,6 +77,7 @@ module RuboCop
             corrector.remove(correction_range(node))
           end
         end
+        alias on_csend on_send
 
         private
 
@@ -88,7 +89,7 @@ module RuboCop
         def_node_matcher :redundant_self_assignment?, <<~PATTERN
           (send
             (self) _
-            (send
+            (call
               (send
                 {(self) nil?} %1) #method_returning_self?
               ...))
@@ -96,10 +97,10 @@ module RuboCop
 
         # @!method redundant_nonself_assignment?(node, receiver, method_name)
         def_node_matcher :redundant_nonself_assignment?, <<~PATTERN
-          (send
+          (call
             %1 _
-            (send
-              (send
+            (call
+              (call
                 %1 %2) #method_returning_self?
               ...))
         PATTERN
