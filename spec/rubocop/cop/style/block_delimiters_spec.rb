@@ -625,6 +625,22 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'accepts braces with safe navigation if do-end would change the meaning' do
+        expect_no_offenses(<<~RUBY)
+          foo&.bar baz {
+            y
+          }
+        RUBY
+      end
+
+      it 'accepts braces with chained safe navigation if do-end would change the meaning' do
+        expect_no_offenses(<<~RUBY)
+          foo.bar baz {
+            y
+          }&.quux
+        RUBY
+      end
+
       it 'accepts a multi-line functional block with {} if it is an ignored method' do
         expect_no_offenses(<<~RUBY)
           foo = proc {
@@ -724,6 +740,13 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       it 'does not register an offense for a multi-line block with `{` and `}` with method chain' do
         expect_no_offenses(<<~RUBY)
           foo bar + baz {
+          }.qux.quux
+        RUBY
+      end
+
+      it 'does not register an offense for a multi-line block with `{` and `}` with method chain and safe navigation' do
+        expect_no_offenses(<<~RUBY)
+          foo x&.bar + baz {
           }.qux.quux
         RUBY
       end
