@@ -58,4 +58,92 @@ RSpec.describe RuboCop::Cop::Style::ArrayFirstLast, :config do
       arr[0][-1]
     RUBY
   end
+
+  it 'registers an offense when using `arr.[](0)`' do
+    expect_offense(<<~RUBY)
+      arr.[](0)
+          ^^^^^ Use `first`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.first
+    RUBY
+  end
+
+  it 'registers an offense when using `arr&.[](0)`' do
+    expect_offense(<<~RUBY)
+      arr&.[](0)
+           ^^^^^ Use `first`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr&.first
+    RUBY
+  end
+
+  it 'registers an offense when using `arr.[] 0`' do
+    expect_offense(<<~RUBY)
+      arr.[] 0
+          ^^^^ Use `first`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.first
+    RUBY
+  end
+
+  it 'registers an offense when using `arr&.[] 0`' do
+    expect_offense(<<~RUBY)
+      arr&.[] 0
+           ^^^^ Use `first`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr&.first
+    RUBY
+  end
+
+  it 'registers an offense when using `arr.[](-1)`' do
+    expect_offense(<<~RUBY)
+      arr.[](-1)
+          ^^^^^^ Use `last`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.last
+    RUBY
+  end
+
+  it 'registers an offense when using `arr&.[](-1)`' do
+    expect_offense(<<~RUBY)
+      arr&.[](-1)
+           ^^^^^^ Use `last`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr&.last
+    RUBY
+  end
+
+  it 'registers an offense when using `arr.[] -1`' do
+    expect_offense(<<~RUBY)
+      arr.[] -1
+          ^^^^^ Use `last`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.last
+    RUBY
+  end
+
+  it 'registers an offense when using `arr&.[] -1`' do
+    expect_offense(<<~RUBY)
+      arr&.[] -1
+           ^^^^^ Use `last`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr&.last
+    RUBY
+  end
 end

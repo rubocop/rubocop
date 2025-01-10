@@ -42,13 +42,29 @@ module RuboCop
           return if node.parent && brace_method?(node.parent)
 
           preferred = (value.zero? ? 'first' : 'last')
-          add_offense(node.loc.selector, message: format(MSG, preferred: preferred)) do |corrector|
-            corrector.replace(node.loc.selector, ".#{preferred}")
+          offense_range = find_offense_range(node)
+
+          add_offense(offense_range, message: format(MSG, preferred: preferred)) do |corrector|
+            corrector.replace(offense_range, preferred_value(node, preferred))
           end
         end
         # rubocop:enable Metrics/AbcSize
+        alias on_csend on_send
 
         private
+
+        def preferred_value(node, value)
+          value = ".#{value}" unless node.loc.dot
+          value
+        end
+
+        def find_offense_range(node)
+          if node.loc.dot
+            node.loc.selector.join(node.source_range.end)
+          else
+            node.loc.selector
+          end
+        end
 
         def innermost_braces_node(node)
           node = node.receiver while node.receiver.send_type? && node.receiver.method?(:[])
