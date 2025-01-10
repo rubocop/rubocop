@@ -1,1 +1,0 @@
-* [#13632](https://github.com/rubocop/rubocop/pull/13632): Fix `Style/MissingElse` cop error if `Style/EmptyElse`'s `EnforcedStyle` is not `both` and `if` expression contains `elsif`. ([@viralpraxis][])

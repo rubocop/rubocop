@@ -1,1 +1,0 @@
-* [#13645](https://github.com/rubocop/rubocop/issues/13645): Fix a false positive for `Style/MethodCallWithArgsParentheses` when setting `EnforcedStyle: omit_parentheses` and last argument is an endless range. ([@earlopain][])

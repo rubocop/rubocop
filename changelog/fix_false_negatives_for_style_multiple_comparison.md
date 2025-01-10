@@ -1,1 +1,0 @@
-* [#13623](https://github.com/rubocop/rubocop/issues/13623): Fix false negatives for `Style/MultipleComparison` when setting `AllowMethodComparison: false` and comparing with simple method calls. ([@koic][])
