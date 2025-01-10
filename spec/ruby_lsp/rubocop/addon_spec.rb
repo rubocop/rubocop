@@ -144,7 +144,7 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
       end
 
       server.global_state.index.index_single(
-        RubyIndexer::IndexablePath.new(nil, uri.to_standardized_path), source
+        URI::Generic.from_path(path: uri.to_standardized_path), source
       )
       server.load_addons if load_addons
 
