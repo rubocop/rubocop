@@ -49,7 +49,6 @@ module RuboCop
         def on_block(node)
           check_method_node(node.send_node)
         end
-
         alias on_numblock on_block
 
         def on_send(node)
@@ -57,6 +56,7 @@ module RuboCop
 
           check_method_node(node)
         end
+        alias on_csend on_send
 
         private
 
