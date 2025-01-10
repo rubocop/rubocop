@@ -1668,7 +1668,7 @@ Lint/ConstantOverwrittenInRescue:
 Lint/ConstantReassignment:
   Description: 'Checks for constant reassignments.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.70'
 
 Lint/ConstantResolution:
   Description: 'Check that constants are fully qualified with `::`.'
@@ -2411,7 +2411,7 @@ Lint/SharedMutableDefault:
   Description: 'Checks for mutable literals used as default arguments during Hash initialization.'
   StyleGuide: '#no-mutable-defaults'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.70'
 
 Lint/StructNewOverride:
   Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
@@ -3147,7 +3147,7 @@ Style/AccessModifierDeclarations:
   Description: 'Checks style of how access modifiers are used.'
   Enabled: true
   VersionAdded: '0.57'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.70'
   EnforcedStyle: group
   SupportedStyles:
     - inline
@@ -4331,7 +4331,7 @@ Style/IpAddresses:
 Style/ItAssignment:
   Description: 'Checks for assignment to `it` inside a block.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.70'
 
 Style/KeywordArgumentsMerging:
   Description: >-

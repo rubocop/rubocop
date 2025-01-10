@@ -5535,6 +5535,18 @@ foo(a, b, c)
 
 [source,ruby]
 ----
+# bad
+foo(a, b,
+  c
+)
+
+# bad
+foo(
+  a, b, {
+    foo: "bar",
+  }
+)
+
 # good
 foo(
   a,
@@ -5550,6 +5562,18 @@ foo(
 
 [source,ruby]
 ----
+# bad
+foo(a, b,
+  c
+)
+
+# good
+foo(
+  a, b, {
+    foo: "bar",
+  }
+)
+
 # good
 foo(
   a,

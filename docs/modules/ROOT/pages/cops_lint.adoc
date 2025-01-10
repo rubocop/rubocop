@@ -741,6 +741,83 @@ rescue StandardError
 end
 ----
 
+[#lintconstantreassignment]
+== Lint/ConstantReassignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.70
+| -
+|===
+
+Checks for constant reassignments.
+
+Emulates Ruby's runtime warning "already initialized constant X"
+when a constant is reassigned in the same file and namespace using the
+`NAME = value` syntax.
+
+The cop cannot catch all offenses, like, for example, when a constant
+is reassigned in another file, or when using metaprogramming (`Module#const_set`).
+
+The cop only takes into account constants assigned in a "simple" way: directly
+inside class/module definition, or within another constant. Other type of assignments
+(e.g., inside a conditional) are disregarded.
+
+The cop also tracks constant removal using `Module#remove_const` with symbol
+or string argument.
+
+[#examples-lintconstantreassignment]
+=== Examples
+
+[source,ruby]
+----
+# bad
+X = :foo
+X = :bar
+
+# bad
+class A
+  X = :foo
+  X = :bar
+end
+
+# bad
+module A
+  X = :foo
+  X = :bar
+end
+
+# good - keep only one assignment
+X = :bar
+
+class A
+  X = :bar
+end
+
+module A
+  X = :bar
+end
+
+# good - use OR assignment
+X = :foo
+X ||= :bar
+
+# good - use conditional assignment
+X = :foo
+X = :bar unless defined?(X)
+
+# good - remove the assigned constant first
+class A
+  X = :foo
+  remove_const :X
+  X = :bar
+end
+----
+
 [#lintconstantresolution]
 == Lint/ConstantResolution
 
@@ -1730,7 +1807,7 @@ end
 | -
 |===
 
-Checks for duplicate literal, constant, or variable elements in Set.
+Checks for duplicate literal, constant, or variable elements in Set and SortedSet.
 
 [#examples-lintduplicatesetelement]
 === Examples
@@ -1754,6 +1831,18 @@ Set.new([:foo, :bar])
 
 # good
 [:foo, :bar].to_set
+
+# bad
+SortedSet[:foo, :bar, :foo]
+
+# good
+SortedSet[:foo, :bar]
+
+# bad
+SortedSet.new([:foo, :bar, :foo])
+
+# good
+SortedSet.new([:foo, :bar])
 ----
 
 [#linteachwithobjectargument]
@@ -4386,13 +4475,16 @@ non_numbered_parameter_name = :value
 |===
 
 Certain numeric operations have a constant result, usually 0 or 1.
-Subtracting a number from itself or multiplying it by 0 will always return 0.
-Additionally, a variable modulo 0 or itself will always return 0.
+Multiplying a number by 0 will always return 0.
 Dividing a number by itself or raising it to the power of 0 will always return 1.
 As such, they can be replaced with that result.
 These are probably leftover from debugging, or are mistakes.
 Other numeric operations that are similarly leftover from debugging or mistakes
 are handled by Lint/UselessNumericOperation.
+
+NOTE: This cop doesn't detect offenses for the `-` and `%` operator because it
+can't determine the type of `x`. If `x` is an Array or String, it doesn't perform
+a numeric operation.
 
 [#examples-lintnumericoperationwithconstantresult]
 === Examples
@@ -4400,19 +4492,13 @@ are handled by Lint/UselessNumericOperation.
 [source,ruby]
 ----
 # bad
-x - x
 x * 0
-x % 1
-x % x
 
 # good
 0
 
 # bad
-x -= x
 x *= 0
-x %= 1
-x %= x
 
 # good
 x = 0
@@ -6171,6 +6257,71 @@ def some_method
   end
 end
 ----
+
+[#lintsharedmutabledefault]
+== Lint/SharedMutableDefault
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.70
+| -
+|===
+
+Checks for Hash creation with a mutable default value.
+Creating a Hash in such a way will share the default value
+across all keys, causing unexpected behavior when modifying it.
+
+For example, when the Hash was created with an Array as the argument,
+calling `hash[:foo] << 'bar'` will also change the value of all
+other keys that have not been explicitly assigned to.
+
+[#examples-lintsharedmutabledefault]
+=== Examples
+
+[source,ruby]
+----
+# bad
+Hash.new([])
+Hash.new({})
+Hash.new(Array.new)
+Hash.new(Hash.new)
+
+# okay -- In rare cases that intentionally have this behavior,
+#   without disabling the cop, you can set the default explicitly.
+h = Hash.new
+h.default = []
+h[:a] << 1
+h[:b] << 2
+h # => {:a => [1, 2], :b => [1, 2]}
+
+# okay -- beware this will discard mutations and only remember assignments
+Hash.new { Array.new }
+Hash.new { Hash.new }
+Hash.new { {} }
+Hash.new { [] }
+
+# good - frozen solution will raise an error when mutation attempted
+Hash.new([].freeze)
+Hash.new({}.freeze)
+
+# good - using a proc will create a new object for each key
+h = Hash.new
+h.default_proc = ->(h, k) { [] }
+h.default_proc = ->(h, k) { {} }
+
+# good - using a block will create a new object for each key
+Hash.new { |h, k| h[k] = [] }
+Hash.new { |h, k| h[k] = {} }
+----
+
+[#references-lintsharedmutabledefault]
+=== References
+
+* https://rubystyle.guide#no-mutable-defaults
 
 [#lintstructnewoverride]
 == Lint/StructNewOverride

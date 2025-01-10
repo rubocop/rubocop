@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.70.0 (2025-01-10)
+
 ### New features
 
 * [#13474](https://github.com/rubocop/rubocop/pull/13474): Add new `Style/ItAssignment` cop to detect local assignments to `it` inside blocks. ([@dvandersluis][])

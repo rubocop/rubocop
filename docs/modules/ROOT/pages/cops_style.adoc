@@ -16,7 +16,7 @@
 | Yes
 | Always (Unsafe)
 | 0.57
-| 0.81
+| 1.70
 |===
 
 Access modifiers should be declared to apply to a group of methods
@@ -164,6 +164,36 @@ class Foo
 end
 ----
 
+[#allowmodifiersonaliasmethod_-true-_default_-styleaccessmodifierdeclarations]
+==== AllowModifiersOnAliasMethod: true (default)
+
+[source,ruby]
+----
+# good
+class Foo
+
+  public alias_method :bar, :foo
+  protected alias_method :baz, :foo
+  private alias_method :qux, :foo
+
+end
+----
+
+[#allowmodifiersonaliasmethod_-false-styleaccessmodifierdeclarations]
+==== AllowModifiersOnAliasMethod: false
+
+[source,ruby]
+----
+# bad
+class Foo
+
+  public alias_method :bar, :foo
+  protected alias_method :baz, :foo
+  private alias_method :qux, :foo
+
+end
+----
+
 [#configurable-attributes-styleaccessmodifierdeclarations]
 === Configurable attributes
 
@@ -179,6 +209,10 @@ end
 | Boolean
 
 | AllowModifiersOnAttrs
+| `true`
+| Boolean
+
+| AllowModifiersOnAliasMethod
 | `true`
 | Boolean
 |===
@@ -4963,7 +4997,7 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 
 * `scientific` which enforces a mantissa between 1 (inclusive) and 10 (exclusive).
 * `engineering` which enforces the exponent to be a multiple of 3 and the mantissa
-  to be between 0.1 (inclusive) and 10 (exclusive).
+  to be between 0.1 (inclusive) and 1000 (exclusive).
 * `integral` which enforces the mantissa to always be a whole number without
   trailing zeroes.
 
@@ -6422,8 +6456,10 @@ This cop should only be enabled on Ruby version 3.0 or higher.
 (`Hash#except` was added in Ruby 3.0.)
 
 For safe detection, it is limited to commonly used string and symbol comparisons
-when used `==`.
-And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
+when using `==` or `!=`.
+
+This cop doesn't check for `Hash#delete_if` and `Hash#keep_if` because they
+modify the receiver.
 
 [#safety-stylehashexcept]
 === Safety
@@ -7629,6 +7665,43 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | Array
 |===
 
+[#styleitassignment]
+== Style/ItAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.70
+| -
+|===
+
+Checks for assignments to a local `it` variable inside a block
+where `it` can refer to the first anonymous parameter as of Ruby 3.4.
+
+Although Ruby allows reassigning `it` in these cases, it could
+cause confusion if `it` is used as a block parameter elsewhere.
+For consistency, this also applies to numblocks and blocks with
+parameters, even though `it` cannot be used in those cases.
+
+[#examples-styleitassignment]
+=== Examples
+
+[source,ruby]
+----
+# bad
+foo { it = 5 }
+foo { |bar| it = bar }
+foo { it = _2 }
+
+# good - use a different variable name
+foo { var = 5 }
+foo { |bar| var = bar }
+foo { bar = _2 }
+----
+
 [#stylekeywordargumentsmerging]
 == Style/KeywordArgumentsMerging
 
@@ -8372,6 +8445,8 @@ Non-exhaustive list of examples:
   https://bugs.ruby-lang.org/issues/18396.
 - Parentheses are required in anonymous arguments, keyword arguments
   and block passing in Ruby 3.2.
+- Parentheses are required when the first argument is a beginless range or
+  the last argument is an endless range.
 
 [#examples-stylemethodcallwithargsparentheses]
 === Examples
@@ -12700,7 +12775,8 @@ end
 | -
 |===
 
-Checks for uses a redundant current directory in path.
+Checks for paths given to `require_relative` that start with
+the current directory (`./`), which can be omitted.
 
 [#examples-styleredundantcurrentdirectoryinpath]
 === Examples
@@ -13126,6 +13202,9 @@ an argument that accepts multiple values (`restarg`, `kwrestarg`, etc.) it
 will not register an offense, because it allows the initializer to take a different
 number of arguments as its superclass potentially does.
 
+NOTE: If an initializer takes any arguments and has an empty body, RuboCop
+assumes it to *not* be redundant. This is to prevent potential `ArgumentError`.
+
 NOTE: If an initializer argument has a default value, RuboCop assumes it
 to *not* be redundant.
 
@@ -13136,8 +13215,10 @@ initializer.
 [#safety-styleredundantinitialize]
 === Safety
 
-This cop is unsafe because if subclass overrides `initialize` method with
-a different arity than superclass.
+This cop is unsafe because removing an empty initializer may alter
+the behavior of the code, particularly if the superclass initializer
+raises an exception. In such cases, the empty initializer may act as
+a safeguard to prevent unintended errors from propagating.
 
 [#examples-styleredundantinitialize]
 === Examples
@@ -13187,6 +13268,10 @@ end
 # good (default value)
 def initialize(a, b: 5)
   super
+end
+
+# good (changes the parameter requirements)
+def initialize(_)
 end
 
 # good (changes the parameter requirements)
@@ -16408,6 +16493,10 @@ Furthermore, any arguments accompanied by a block may potentially be delegating 
 `define_method`, therefore, `super` used within these blocks will be allowed.
 This approach might result in false negatives, yet ensuring safe detection takes precedence.
 
+NOTE: When forwarding the same arguments but replacing the block argument with a new inline
+block, it is not necessary to explicitly list the non-block arguments. As such, an offense
+will be registered in this case.
+
 [#examples-stylesuperarguments]
 === Examples
 
@@ -16431,6 +16520,16 @@ end
 # good - forwarding no arguments
 def method(*args, **kwargs)
   super()
+end
+
+# bad - forwarding with overridden block
+def method(*args, **kwargs, &block)
+  super(*args, **kwargs) { do_something }
+end
+
+# good - implicitly passing all non-block arguments
+def method(*args, **kwargs, &block)
+  super { do_something }
 end
 
 # good - assigning to the block variable before calling super
