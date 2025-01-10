@@ -116,6 +116,47 @@ RSpec.describe RuboCop::Cop::Style::SlicingWithRange, :config do
         ary[0..42]
       RUBY
     end
+
+    context 'when calling `[]` with a dot' do
+      it 'reports an offense and removes the entire method call for 0..-1' do
+        expect_offense(<<~RUBY)
+          ary.[](0..-1)
+             ^^^^^^^^^^ Remove the useless `.[](0..-1)`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ary
+        RUBY
+      end
+
+      it 'reports an offense and removes the entire method call for 0..-1 without parens' do
+        expect_offense(<<~RUBY)
+          ary.[] 0..-1
+             ^^^^^^^^^ Remove the useless `.[] 0..-1`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ary
+        RUBY
+      end
+
+      it 'reports an offense and corrects for `1..-1`' do
+        expect_offense(<<~RUBY)
+          ary.[](1..-1)
+             ^^^^^^^^^^ Prefer `1..` over `1..-1`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ary.[](1..)
+        RUBY
+      end
+
+      it 'does not register an offense for `1..-1` without parens' do
+        expect_no_offenses(<<~RUBY)
+          ary.[] 1..-1
+        RUBY
+      end
+    end
   end
 
   context '>= Ruby 2.7', :ruby27 do
@@ -140,6 +181,83 @@ RSpec.describe RuboCop::Cop::Style::SlicingWithRange, :config do
       expect_no_offenses(<<~RUBY)
         ary[..-1]
       RUBY
+    end
+
+    context 'when calling `[]` with a dot' do
+      it 'reports an offense and corrects for `nil..42`' do
+        expect_offense(<<~RUBY)
+          ary.[](nil..42)
+             ^^^^^^^^^^^^ Prefer `..42` over `nil..42`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ary.[](..42)
+        RUBY
+      end
+
+      it 'does not register an offense for `nil..42` without parens' do
+        expect_no_offenses(<<~RUBY)
+          ary.[] nil..42
+        RUBY
+      end
+    end
+
+    context 'when calling `[]` with a safe navigation' do
+      it 'reports an offense and removes the entire method call for 0..-1' do
+        expect_offense(<<~RUBY)
+          ary&.[](0..-1)
+             ^^^^^^^^^^^ Remove the useless `&.[](0..-1)`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ary
+        RUBY
+      end
+
+      it 'reports an offense and removes the entire method call for 0..-1 without parens' do
+        expect_offense(<<~RUBY)
+          ary.[] 0..-1
+             ^^^^^^^^^ Remove the useless `.[] 0..-1`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ary
+        RUBY
+      end
+
+      it 'reports an offense and corrects for `1..-1`' do
+        expect_offense(<<~RUBY)
+          ary.[](1..-1)
+             ^^^^^^^^^^ Prefer `1..` over `1..-1`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ary.[](1..)
+        RUBY
+      end
+
+      it 'does not register an offense for `1..-1` without parens' do
+        expect_no_offenses(<<~RUBY)
+          ary.[] 1..-1
+        RUBY
+      end
+
+      it 'reports an offense and corrects for `nil..42`' do
+        expect_offense(<<~RUBY)
+          ary&.[](nil..42)
+             ^^^^^^^^^^^^^ Prefer `..42` over `nil..42`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ary&.[](..42)
+        RUBY
+      end
+
+      it 'does not register an offense for `nil..42` without parens' do
+        expect_no_offenses(<<~RUBY)
+          ary&.[] nil..42
+        RUBY
+      end
     end
   end
 end
