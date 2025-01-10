@@ -6,7 +6,7 @@ module RuboCop
     module FrozenStringLiteral
       module_function
 
-      FROZEN_STRING_LITERAL = '# frozen_string_literal:'
+      FROZEN_STRING_LITERAL_REGEXP = /#\s*frozen[-_]?string[-_]?literal:/i.freeze
       FROZEN_STRING_LITERAL_ENABLED = '# frozen_string_literal: true'
       FROZEN_STRING_LITERAL_TYPES_RUBY27 = %i[str dstr].freeze
 
