@@ -144,5 +144,40 @@ RSpec.describe RuboCop::Cop::Style::MapToSet, :config do
         RUBY
       end
     end
+
+    context 'with safe navigation' do
+      it "registers an offense and corrects for `foo&.#{method}.to_set" do
+        expect_offense(<<~RUBY, method: method)
+          foo&.#{method} { |x| [x, x * 2] }.to_set
+               ^{method} Pass a block to `to_set` instead of calling `#{method}.to_set`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo&.to_set { |x| [x, x * 2] }
+        RUBY
+      end
+
+      it "registers an offense and corrects for `foo.#{method}&.to_set" do
+        expect_offense(<<~RUBY, method: method)
+          foo.#{method} { |x| [x, x * 2] }&.to_set
+              ^{method} Pass a block to `to_set` instead of calling `#{method}.to_set`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.to_set { |x| [x, x * 2] }
+        RUBY
+      end
+
+      it "registers an offense and corrects for `foo&.#{method}&.to_set" do
+        expect_offense(<<~RUBY, method: method)
+          foo&.#{method} { |x| [x, x * 2] }&.to_set
+               ^{method} Pass a block to `to_set` instead of calling `#{method}.to_set`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo&.to_set { |x| [x, x * 2] }
+        RUBY
+      end
+    end
   end
 end
