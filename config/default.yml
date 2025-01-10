@@ -5070,7 +5070,7 @@ Style/RedundantConstantBase:
   VersionAdded: '1.40'
 
 Style/RedundantCurrentDirectoryInPath:
-  Description: 'Checks for uses a redundant current directory in path.'
+  Description: 'Checks for a redundant current directory in a path given to `require_relative`.'
   Enabled: pending
   VersionAdded: '1.53'
 
