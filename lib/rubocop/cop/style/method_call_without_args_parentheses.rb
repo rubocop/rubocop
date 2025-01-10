@@ -45,6 +45,7 @@ module RuboCop
           register_offense(node)
         end
         # rubocop:enable Metrics/CyclomaticComplexity
+        alias on_csend on_send
 
         private
 
@@ -100,7 +101,7 @@ module RuboCop
             # `obj.method ||= value` parses as (or-asgn (send ...) ...)
             # which IS an `asgn_node`. Similarly, `obj.method += value` parses
             # as (op-asgn (send ...) ...), which is also an `asgn_node`.
-            next if asgn_node.shorthand_asgn? && asgn_node.lhs.send_type?
+            next if asgn_node.shorthand_asgn? && asgn_node.lhs.call_type?
 
             yield asgn_node
           end

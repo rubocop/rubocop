@@ -29,14 +29,30 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     expect_no_offenses('not(something)')
   end
 
-  it 'does not register an offense when using `it()` in the single line block' do
+  it 'does not register an offense when using `it()` in a single line block' do
     # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
     expect_no_offenses(<<~RUBY)
       0.times { it() }
     RUBY
   end
 
-  it 'does not register an offense when using `it()` in the multiline block' do
+  it 'registers an offense when using `foo.it()` in a single line block' do
+    # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
+    expect_offense(<<~RUBY)
+      0.times { foo.it() }
+                      ^^ Do not use parentheses for method calls with no arguments.
+    RUBY
+  end
+
+  it 'registers an offense when using `foo&.it()` in a single line block' do
+    # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
+    expect_offense(<<~RUBY)
+      0.times { foo&.it() }
+                       ^^ Do not use parentheses for method calls with no arguments.
+    RUBY
+  end
+
+  it 'does not register an offense when using `it()` in a multiline block' do
     # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
     expect_no_offenses(<<~RUBY)
       0.times do
@@ -77,16 +93,24 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
   context 'when AllowedMethods is enabled' do
     let(:cop_config) { { 'AllowedMethods' => %w[s] } }
 
-    it 'ignores method listed in AllowedMethods' do
+    it 'allows a listed method' do
       expect_no_offenses('s()')
+    end
+
+    it 'allows a listed method used with safe navigation' do
+      expect_no_offenses('foo&.s()')
     end
   end
 
   context 'when AllowedPatterns is enabled' do
     let(:cop_config) { { 'AllowedPatterns' => ['test'] } }
 
-    it 'ignores method listed in AllowedMethods' do
+    it 'allows a method that matches' do
       expect_no_offenses('my_test()')
+    end
+
+    it 'allows a method that matches with safe navigation' do
+      expect_no_offenses('foo&.my_test()')
     end
   end
 
@@ -103,6 +127,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
 
       expect_correction(<<~RUBY)
         test = x.test
+      RUBY
+    end
+
+    it 'registers an offense when calling method on a receiver with safe navigation' do
+      expect_offense(<<~RUBY)
+        test = x&.test()
+                      ^^ Do not use parentheses for method calls with no arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        test = x&.test
       RUBY
     end
 
@@ -226,6 +261,17 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
 
       expect_correction(<<~RUBY)
         _a, _b, _c = d(e)
+      RUBY
+    end
+
+    it 'registers an empty parens offense for multiple assignment with safe navigation' do
+      expect_offense(<<~RUBY)
+        _a, _b, _c = d&.e()
+                         ^^ Do not use parentheses for method calls with no arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        _a, _b, _c = d&.e
       RUBY
     end
   end
