@@ -499,6 +499,42 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         # frozen_string_literal: true
       RUBY
     end
+
+    [
+      '# frozen-string-literal: true',
+      '# frozen_string_literal: TRUE',
+      '# frozen-string_literal: true',
+      '# frozen-string_literal: TRUE',
+      '# frozen_string-literal: true',
+      '# FROZEN-STRING-LITERAL: true',
+      '# FROZEN_STRING_LITERAL: true'
+    ].each do |magic_comment|
+      it "registers an offense for having a `#{magic_comment}` frozen string literal comment" do
+        expect_offense(<<~RUBY, magic_comment: magic_comment)
+          #{magic_comment}
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
+
+          puts 1
+        RUBY
+
+        expect_correction(<<~RUBY)
+          puts 1
+        RUBY
+      end
+    end
+
+    it 'registers an offense for having a frozen string literal comment with multiple spaces at beginning' do
+      expect_offense(<<~RUBY)
+        #   frozen_string_literal: true
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
+
+        puts 1
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts 1
+      RUBY
+    end
   end
 
   context 'always_true' do
