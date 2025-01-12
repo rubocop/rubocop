@@ -52,7 +52,7 @@ module RuboCop
         def on_hash(node)
           # This cop only deals with hashes wrapped by a set of curly
           # braces like {foo: 1}. That is, not a kwargs hashes.
-          # Style/MultilineMethodArgumentLineBreaks handles those.
+          # Layout/MultilineMethodArgumentLineBreaks handles those.
           return unless starts_with_curly_brace?(node)
           return unless node.loc.begin
 
