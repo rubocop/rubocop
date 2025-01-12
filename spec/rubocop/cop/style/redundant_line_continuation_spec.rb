@@ -453,6 +453,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of constant base' do
+    expect_no_offenses(<<~'RUBY')
+      foo = do_something \
+        ::ARGUMENT
+    RUBY
+  end
+
   it 'does not register an offense when using line concatenation for assigning a return value and without argument parentheses of string literal' do
     expect_no_offenses(<<~'RUBY')
       foo = do_something \
