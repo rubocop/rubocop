@@ -2,8 +2,8 @@
 
 module RuboCop
   module Cop
-    # Common methods shared by Style/TrailingCommaInArguments and
-    # Style/TrailingCommaInLiteral
+    # Common methods shared by Style/TrailingCommaInArguments,
+    # Style/TrailingCommaInArrayLiteral and Style/TrailingCommaInHashLiteral
     module TrailingComma
       include ConfigurableEnforcedStyle
       include RangeHelp

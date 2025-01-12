@@ -51,7 +51,7 @@ module RuboCop
 
         def on_hash(node)
           # node.loc.begin tells us whether the hash opens with a {
-          # If it doesn't, Style/FirstMethodArgumentLineBreak will handle it
+          # If it doesn't, Layout/FirstMethodArgumentLineBreak will handle it
           return unless node.loc.begin
 
           check_children_line_break(node, node.children, ignore_last: ignore_last_element?)
