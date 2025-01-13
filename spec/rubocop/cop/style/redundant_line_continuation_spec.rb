@@ -1,6 +1,64 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
+  context 'when a line continuation precedes the arguments to an unparenthesized method call' do
+    shared_examples 'no offense' do |argument|
+      it "does not register an offense when the first argument is `#{argument}`" do
+        expect_no_offenses(<<~RUBY)
+          foo \\
+            #{argument}
+        RUBY
+      end
+    end
+
+    shared_examples 'no forwarding offense' do |argument, *metadata|
+      it "does not register an offense when the first argument is `#{argument}", *metadata do
+        expect_no_offenses(<<~RUBY)
+          def a(#{argument})
+            b \\
+              #{argument}; # the semicolon is necessary or ruby cannot parse
+          end
+        RUBY
+      end
+    end
+
+    it_behaves_like 'no offense', '"string"'
+    it_behaves_like 'no offense', '"#{dynamic string}"'
+    it_behaves_like 'no offense', '`xstring`'
+    it_behaves_like 'no offense', ':symbol'
+    it_behaves_like 'no offense', '?c'
+    it_behaves_like 'no offense', '123'
+    it_behaves_like 'no offense', 'bar'
+    it_behaves_like 'no offense', '!bar'
+    it_behaves_like 'no offense', '..5'
+    it_behaves_like 'no offense', '...5'
+    it_behaves_like 'no offense', '~5'
+    it_behaves_like 'no offense', '->() {}'
+    it_behaves_like 'no offense', 'proc {}'
+    it_behaves_like 'no offense', '*bar'
+    it_behaves_like 'no offense', '**bar'
+    it_behaves_like 'no offense', '&block'
+    it_behaves_like 'no offense', '+1'
+    it_behaves_like 'no offense', '-1'
+    it_behaves_like 'no offense', '+bar'
+    it_behaves_like 'no offense', '-bar'
+    it_behaves_like 'no offense', '/bar/'
+    it_behaves_like 'no offense', '%[bar]'
+    it_behaves_like 'no offense', '%w[bar]'
+    it_behaves_like 'no offense', '%W[bar]'
+    it_behaves_like 'no offense', '%i[bar]'
+    it_behaves_like 'no offense', '%I[bar]'
+    it_behaves_like 'no offense', '%r[bar]'
+    it_behaves_like 'no offense', '%x[bar]'
+    it_behaves_like 'no offense', '%s[bar]'
+    it_behaves_like 'no offense', 'defined?(bar)'
+
+    it_behaves_like 'no forwarding offense', '...'
+    it_behaves_like 'no forwarding offense', '&', :ruby31
+    it_behaves_like 'no forwarding offense', '*', :ruby32
+    it_behaves_like 'no forwarding offense', '**', :ruby32
+  end
+
   it 'registers an offense when redundant line continuations for define class' do
     expect_offense(<<~'RUBY')
       class Foo \
@@ -203,6 +261,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     expect_no_offenses(<<~'RUBY')
       bar \
         until foo
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations with `rescue` modifier' do
+    expect_no_offenses(<<~'RUBY')
+      bar \
+        rescue foo
     RUBY
   end
 
@@ -590,6 +655,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
               / 5  \
                 % 6 \
                   ** 7
+    RUBY
+  end
+
+  it 'does not register an offense when a line continuation precedes a bitwise operator' do
+    expect_no_offenses(<<~'RUBY')
+      1 \
+        & 2 \
+          | 3 \
+            ^ 4
     RUBY
   end
 
