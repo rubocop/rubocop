@@ -7,6 +7,7 @@ gemspec
 gem 'asciidoctor'
 gem 'bump', require: false
 gem 'bundler', '>= 1.15.0', '< 3.0'
+gem 'irb'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
 gem 'prism', '~> 1.2'
 gem 'rake', '~> 13.0'
