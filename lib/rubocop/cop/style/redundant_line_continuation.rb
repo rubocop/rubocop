@@ -96,15 +96,20 @@ module RuboCop
         private
 
         def require_line_continuation?(range)
-          !ends_with_backslash_without_comment?(range.source_line) ||
+          !ends_with_uncommented_backslash?(range) ||
             string_concatenation?(range.source_line) ||
             start_with_arithmetic_operator?(processed_source[range.line]) ||
             inside_string_literal_or_method_with_argument?(range) ||
             leading_dot_method_chain_with_blank_line?(range)
         end
 
-        def ends_with_backslash_without_comment?(source_line)
-          source_line.gsub(/#.+/, '').end_with?('\\')
+        def ends_with_uncommented_backslash?(range)
+          # A line continuation always needs to be the last character on the line, which
+          # means that it is impossible to have a comment following a continuation.
+          # Therefore, if the line contains a comment, it cannot end with a continuation.
+          return false if processed_source.line_with_comment?(range.line)
+
+          range.source_line.end_with?(LINE_CONTINUATION)
         end
 
         def string_concatenation?(source_line)

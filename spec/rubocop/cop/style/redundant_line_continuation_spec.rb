@@ -356,8 +356,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
 
   it 'does not register an offense when line continuations inside comment' do
     expect_no_offenses(<<~'RUBY')
-      # foo \
-      #  .bar
+      class Foo
+        # foo \
+        #   bar
+      end
     RUBY
   end
 
@@ -387,6 +389,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
         'baz')
       foo(bar('string1' \
           'string2')).baz
+    RUBY
+  end
+
+  it 'registers an offense for an interpolated string argument followed by line continuation' do
+    expect_offense(<<~'RUBY')
+      foo("#{bar}", \
+                    ^ Redundant line continuation.
+        baz)
     RUBY
   end
 
