@@ -259,7 +259,7 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Deprecated alias of `-a/--autocorrect`.
 
 | `--show-cops`
-| Shows available cops and their configuration.
+| Shows available cops and their configuration. You can use `*` as a wildcard.
 
 | `--show-docs-url`
 | Shows urls for documentation pages of supplied cops.

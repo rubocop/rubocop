@@ -9,11 +9,31 @@ module RuboCop
       class ShowCops < Base
         self.command_name = :show_cops
 
+        ExactMatcher = Struct.new(:pattern) do
+          def match?(name)
+            name == pattern
+          end
+        end
+
+        WildcardMatcher = Struct.new(:pattern) do
+          def match?(name)
+            File.fnmatch(pattern, name, File::FNM_PATHNAME)
+          end
+        end
+
         def initialize(env)
           super
 
           # Load the configs so the require()s are done for custom cops
           @config = @config_store.for(Dir.pwd)
+
+          @cop_matchers = @options[:show_cops].map do |pattern|
+            if pattern.include?('*')
+              WildcardMatcher.new(pattern)
+            else
+              ExactMatcher.new(pattern)
+            end
+          end
         end
 
         def run
@@ -24,7 +44,7 @@ module RuboCop
 
         def print_available_cops
           registry = Cop::Registry.global
-          show_all = @options[:show_cops].empty?
+          show_all = @cop_matchers.empty?
 
           puts "# Available cops (#{registry.length}) + config for #{Dir.pwd}: " if show_all
 
@@ -56,7 +76,9 @@ module RuboCop
 
         def selected_cops_of_department(cops, department)
           cops_of_department(cops, department).select do |cop|
-            @options[:show_cops].include?(cop.cop_name)
+            @cop_matchers.any? do |matcher|
+              matcher.match?(cop.cop_name)
+            end
           end
         end
 
