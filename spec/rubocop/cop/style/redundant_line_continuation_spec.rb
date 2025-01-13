@@ -361,7 +361,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
-  it 'does not register an offense for string concatenation' do
+  it 'does not register an offense for string concatenation with single quotes' do
+    expect_no_offenses(<<~'RUBY')
+      'bar' \
+        'baz'
+    RUBY
+  end
+
+  it 'does not register an offense for string concatenation with double quotes' do
+    expect_no_offenses(<<~'RUBY')
+      "bar" \
+        "baz"
+    RUBY
+  end
+
+  it 'does not register an offense for string concatenation inside a method call' do
     expect_no_offenses(<<~'RUBY')
       foo('bar' \
         'baz')
