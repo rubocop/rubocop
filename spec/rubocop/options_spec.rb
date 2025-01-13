@@ -21,6 +21,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         expect { options.parse ['--help'] }.to exit_with_code(0)
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it 'shows help text' do
         begin
           options.parse(['--help'])
@@ -188,6 +189,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
                                                default, and their configurations for the
                                                current directory.
+                                               You can use `*` as a wildcard.
                   --show-docs-url [COP1,COP2,...]
                                                Display url to documentation for the given
                                                cops, or base url by default.
@@ -214,6 +216,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
         expect($stdout.string).to eq(expected_help)
       end
+      # rubocop:enable RSpec/ExampleLength
 
       it 'lists all builtin formatters' do
         begin

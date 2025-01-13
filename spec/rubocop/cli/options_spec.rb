@@ -1252,8 +1252,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                          else
                            YAML.load(out.join) # rubocop:disable Security/YAMLLoad
                          end
-        cop_names = (arguments[0] || '').split(',')
-        cop_names.each do |cop_name|
+
+        expected_cop_names.each do |cop_name|
           global_conf[cop_name].each do |key, value|
             printed_value = printed_config[cop_name][key]
             expect(printed_value).to eq(value)
@@ -1261,6 +1261,8 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         end
       end
     end
+
+    let(:expected_cop_names) { (arguments[0] || '').split(',') }
 
     let(:cops) { RuboCop::Cop::Registry.all }
     let(:registry) { RuboCop::Cop::Registry.global }
@@ -1401,6 +1403,15 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
            '    - DeprecatedConstants'].join("\n")
         )
       end
+    end
+
+    context 'with a cop containing a wildcard' do
+      let(:arguments) { ['Layout/Indentation*'] }
+      let(:expected_cop_names) do
+        ['Layout/IndentationConsistency', 'Layout/IndentationStyle', 'Layout/IndentationWidth']
+      end
+
+      include_examples 'prints config'
     end
 
     context 'with two cops given' do
