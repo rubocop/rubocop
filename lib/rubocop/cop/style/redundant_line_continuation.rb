@@ -77,6 +77,7 @@ module RuboCop
           tIVAR tLBRACK tLCURLY tLPAREN_ARG tSTRING tSTRING_BEG tSYMBOL tXSTRING_BEG
         ].freeze
         ARGUMENT_TAKING_FLOW_TOKEN_TYPES = %i[tIDENTIFIER kRETURN kBREAK kNEXT kYIELD].freeze
+        ARITHMETIC_OPERATOR_TOKENS = %i[tDIVIDE tDSTAR tMINUS tPERCENT tPLUS tSTAR2].freeze
 
         def on_new_investigation
           return unless processed_source.ast
@@ -98,7 +99,7 @@ module RuboCop
         def require_line_continuation?(range)
           !ends_with_uncommented_backslash?(range) ||
             string_concatenation?(range.source_line) ||
-            start_with_arithmetic_operator?(processed_source[range.line]) ||
+            start_with_arithmetic_operator?(range) ||
             inside_string_literal_or_method_with_argument?(range) ||
             leading_dot_method_chain_with_blank_line?(range)
         end
@@ -224,8 +225,9 @@ module RuboCop
           node.call_type? && !node.arguments.empty?
         end
 
-        def start_with_arithmetic_operator?(source_line)
-          %r{\A\s*[+\-*/%]}.match?(source_line)
+        def start_with_arithmetic_operator?(range)
+          line_range = processed_source.buffer.line_range(range.line + 1)
+          ARITHMETIC_OPERATOR_TOKENS.include?(processed_source.first_token_of(line_range).type)
         end
       end
     end

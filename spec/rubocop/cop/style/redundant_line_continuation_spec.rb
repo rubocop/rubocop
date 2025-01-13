@@ -581,14 +581,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
-  it 'does not register an offense when line continuations with arithmetic operator' do
+  it 'does not register an offense when a line continuation precedes an arithmetic operator' do
     expect_no_offenses(<<~'RUBY')
       1 \
         + 2 \
           - 3 \
             * 4 \
               / 5  \
-                % 6
+                % 6 \
+                  ** 7
     RUBY
   end
 
@@ -892,6 +893,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
 
       __END__
       data \\
+    RUBY
+  end
+
+  it 'registers an offense when there is a line continuation inside a method call followed by a percent array' do
+    expect_offense(<<~'RUBY')
+      foo(bar, \
+               ^ Redundant line continuation.
+        %i[baz quux])
     RUBY
   end
 end
