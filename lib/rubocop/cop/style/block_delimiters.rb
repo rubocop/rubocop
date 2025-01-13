@@ -195,6 +195,7 @@ module RuboCop
             end
           end
         end
+        alias on_csend on_send
 
         def on_block(node)
           return if ignored_node?(node)
@@ -348,7 +349,7 @@ module RuboCop
           case node.type
           when :block, :numblock
             yield node
-          when :send
+          when :send, :csend
             # When a method has an argument which is another method with a block,
             # that block needs braces, otherwise a syntax error will be introduced
             # for subsequent arguments.
@@ -369,9 +370,8 @@ module RuboCop
         end
         # rubocop:enable Metrics/CyclomaticComplexity
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         def proper_block_style?(node)
-          return true if require_braces?(node) || require_do_end?(node)
+          return true if require_do_end?(node)
           return special_method_proper_block_style?(node) if special_method?(node.method_name)
 
           case style
@@ -379,15 +379,6 @@ module RuboCop
           when :semantic            then semantic_block_style?(node)
           when :braces_for_chaining then braces_for_chaining_style?(node)
           when :always_braces       then braces_style?(node)
-          end
-        end
-        # rubocop:enable Metrics/CyclomaticComplexity
-
-        def require_braces?(node)
-          return false unless node.braces?
-
-          node.each_ancestor(:send).any? do |send|
-            send.arithmetic_operation? && node.source_range.end_pos < send.loc.selector.begin_pos
           end
         end
 
