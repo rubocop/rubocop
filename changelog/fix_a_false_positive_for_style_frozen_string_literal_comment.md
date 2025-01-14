@@ -1,0 +1,1 @@
+* [#13684](https://github.com/rubocop/rubocop/issues/13684): Fix a false positive for `Style/FrozenStringLiteralComment` when using the frozen string literal magic comment in Active Admin's arb files. ([@koic][])

@@ -4063,6 +4063,9 @@ Style/FrozenStringLiteralComment:
     # exist in a file.
     - never
   SafeAutoCorrect: false
+  Exclude:
+    # Prevent the Ruby warning: `'frozen_string_literal' is ignored after any tokens` when using Active Admin.
+    - '**/*.arb'
 
 Style/GlobalStdStream:
   Description: 'Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.'
