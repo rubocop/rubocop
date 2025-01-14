@@ -140,7 +140,7 @@ module RuboCop
 
         def inspect_end_of_ruby_code_line_continuation
           last_line = processed_source.lines[processed_source.ast.last_line - 1]
-          return unless last_line.end_with?(LINE_CONTINUATION)
+          return unless code_ends_with_continuation?(last_line)
 
           last_column = last_line.length
           line_continuation_range = range_between(last_column - 1, last_column)
@@ -148,6 +148,12 @@ module RuboCop
           add_offense(line_continuation_range) do |corrector|
             corrector.remove_trailing(line_continuation_range, 1)
           end
+        end
+
+        def code_ends_with_continuation?(last_line)
+          return false if processed_source.line_with_comment?(processed_source.ast.last_line)
+
+          last_line.end_with?(LINE_CONTINUATION)
         end
 
         def inside_string_literal?(range, token)

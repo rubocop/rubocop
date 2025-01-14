@@ -361,6 +361,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense for a backslash in a comment at EOF' do
+    expect_no_offenses(<<~'RUBY')
+      foo # \
+    RUBY
+  end
+
   it 'does not register an offense for string concatenation with single quotes' do
     expect_no_offenses(<<~'RUBY')
       'bar' \
