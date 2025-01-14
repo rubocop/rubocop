@@ -52,12 +52,19 @@ module RuboCop
               'Prefer reading the data from an external source.'
         RESTRICT_ON_SEND = [:[]].freeze
 
+        # @!method set_const?(node)
+        def_node_matcher :set_const?, <<~PATTERN
+          (const {cbase nil?} :Set)
+        PATTERN
+
         def on_array(node)
           add_offense(node) if node.children.length >= collection_threshold
         end
         alias on_hash on_array
 
         def on_index(node)
+          return unless set_const?(node.receiver)
+
           add_offense(node) if node.arguments.length >= collection_threshold
         end
 
