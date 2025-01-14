@@ -2290,6 +2290,11 @@ Lint/RedundantStringCoercion:
   VersionAdded: '0.19'
   VersionChanged: '0.77'
 
+Lint/RedundantTypeConversion:
+  Description: 'Checks for redundantly converting a literal to the same type.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/RedundantWithIndex:
   Description: 'Checks for redundant `with_index`.'
   Enabled: true
