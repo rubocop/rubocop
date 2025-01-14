@@ -4,7 +4,7 @@
 class Changelog
   ENTRIES_PATH = 'changelog/'
   FIRST_HEADER = /#{Regexp.escape("## master (unreleased)\n")}/m.freeze
-  ENTRIES_PATH_TEMPLATE = "#{ENTRIES_PATH}%<type>s_%<name>s.md"
+  ENTRIES_PATH_TEMPLATE = "#{ENTRIES_PATH}%<type>s_%<name>s_%<timestamp>s.md"
   TYPE_REGEXP = /#{Regexp.escape(ENTRIES_PATH)}([a-z]+)_/.freeze
   TYPE_TO_HEADER = { new: 'New features', fix: 'Bug fixes', change: 'Changes' }.freeze
   HEADER = /### (.*)/.freeze
@@ -30,7 +30,10 @@ class Changelog
     end
 
     def path
-      format(ENTRIES_PATH_TEMPLATE, type: type, name: str_to_filename(body))
+      format(
+        ENTRIES_PATH_TEMPLATE,
+        type: type, name: str_to_filename(body), timestamp: Time.now.strftime('%Y%m%d%H%M%S')
+      )
     end
 
     def content
