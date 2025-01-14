@@ -149,7 +149,7 @@ RSpec.describe Changelog do
       it 'generates correct file name' do
         body = 'Add new `Lint/UselessRescue` cop'
         entry = described_class.new(type: :new, body: body, user: github_user)
-        expect(entry.path).to eq('changelog/new_add_new_lint_useless_rescue_cop.md')
+        expect(entry.path).to match(%r{\Achangelog/new_add_new_lint_useless_rescue_cop_\d+.md\z})
       end
     end
   end
