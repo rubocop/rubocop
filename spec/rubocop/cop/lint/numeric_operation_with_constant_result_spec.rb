@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Lint::NumericOperationWithConstantResult, :config d
     RUBY
   end
 
-  it 'egisters an offense when a variable is raised to the power of 0 via abbreviated assignment' do
+  it 'registers an offense when a variable is raised to the power of 0 via abbreviated assignment' do
     expect_offense(<<~RUBY)
       x **= 0
       ^^^^^^^ Numeric operation with a constant result detected.
@@ -78,5 +78,49 @@ RSpec.describe RuboCop::Cop::Lint::NumericOperationWithConstantResult, :config d
     it "registers no offense for `#{expression}`" do
       expect_no_offenses(expression)
     end
+  end
+
+  it 'registers an offense when a variable is multiplied by 0 using dot notation' do
+    expect_offense(<<~RUBY)
+      x.*(0)
+      ^^^^^^ Numeric operation with a constant result detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      0
+    RUBY
+  end
+
+  it 'registers an offense when a variable is divided by using dot notation' do
+    expect_offense(<<~RUBY)
+      x./(x)
+      ^^^^^^ Numeric operation with a constant result detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      1
+    RUBY
+  end
+
+  it 'registers an offense when a variable is multiplied by 0 using safe navigation' do
+    expect_offense(<<~RUBY)
+      x&.*(0)
+      ^^^^^^^ Numeric operation with a constant result detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      0
+    RUBY
+  end
+
+  it 'registers an offense when a variable is divided by using safe navigation' do
+    expect_offense(<<~RUBY)
+      x&./(x)
+      ^^^^^^^ Numeric operation with a constant result detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      1
+    RUBY
   end
 end
