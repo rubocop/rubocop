@@ -35,7 +35,7 @@ module RuboCop
         RESTRICT_ON_SEND = %i[+ - * / **].freeze
 
         # @!method useless_operation?(node)
-        def_node_matcher :useless_operation?, '(send (send nil? $_) $_ (int $_))'
+        def_node_matcher :useless_operation?, '(call (call nil? $_) $_ (int $_))'
 
         # @!method useless_abbreviated_assignment?(node)
         def_node_matcher :useless_abbreviated_assignment?, '(op-asgn (lvasgn $_) $_ (int $_))'
@@ -50,6 +50,7 @@ module RuboCop
             corrector.replace(node, variable)
           end
         end
+        alias on_csend on_send
 
         def on_op_asgn(node)
           return unless useless_abbreviated_assignment?(node)
