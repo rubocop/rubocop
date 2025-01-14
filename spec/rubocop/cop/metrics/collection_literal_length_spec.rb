@@ -103,4 +103,12 @@ RSpec.describe RuboCop::Cop::Metrics::CollectionLiteralLength, :config do
       ]
     RUBY
   end
+
+  it 'does not register an offense when `[]` is called on something other than `Set`' do
+    expect_no_offenses(<<~RUBY)
+      foo[
+        #{large_array.join(",\n  ")}
+      ]
+    RUBY
+  end
 end
