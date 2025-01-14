@@ -5,6 +5,9 @@ return if RUBY_VERSION < '3.0' || RUBY_ENGINE == 'jruby' || RuboCop::Platform.wi
 
 require 'ruby_lsp/internal'
 require 'ruby_lsp/rubocop/addon'
+# NOTE: ruby-lsp enables LSP mode. Ideally the two requires should happen in isolation, but
+# for now this prevents it from failing unrelated tests.
+RuboCop::LSP.disable
 
 describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
   let(:addon) do
