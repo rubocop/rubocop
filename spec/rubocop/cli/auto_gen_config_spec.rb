@@ -175,6 +175,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
+                  - '**/*.arb'
                   - 'example.rb'
             YAML
           expect(File.read('.rubocop.yml')).to eq(<<~YAML)
@@ -213,6 +214,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
+                  - '**/*.arb'
                   - 'example.rb'
 
               # Offense count: 1
@@ -262,6 +264,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               # SupportedStyles: always, always_true, never
               Style/FrozenStringLiteralComment:
                 Exclude:
+                  - '**/*.arb'
                   - 'example.rb'
 
               # Offense count: 1
@@ -391,6 +394,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '# SupportedStyles: always, always_true, never',
                 'Style/FrozenStringLiteralComment:',
                 '  Exclude:',
+                "    - '**/*.arb'",
                 "    - 'example1.rb'",
                 '',
                 '# Offense count: 1',
@@ -520,6 +524,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
+              - '**/*.arb'
               - 'example1.rb'
 
           # Offense count: 1
@@ -592,6 +597,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
+              - '**/*.arb'
               - 'example1.rb'
         YAML
         expect(File.read('cop_config.yml')).to eq(<<~YAML)
@@ -628,6 +634,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
+              - '**/*.arb'
               - 'example1.rb'
         YAML
         expect(File.read('.rubocop.yml')).to eq(<<~YAML)
@@ -698,6 +705,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
+              - '**/*.arb'
               - 'example1.rb'
         YAML
         expect(File.read('.rubocop.yml')).to eq(<<~YAML)
@@ -736,6 +744,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           # SupportedStyles: always, always_true, never
           Style/FrozenStringLiteralComment:
             Exclude:
+              - '**/*.arb'
               - 'example1.rb'
 
           # Offense count: 1
@@ -1501,6 +1510,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
             # SupportedStyles: always, always_true, never
             Style/FrozenStringLiteralComment:
               Exclude:
+                - '**/*.arb'
                 - 'example1.rb'
                 - 'example2.rb'
                 - 'example3.rb'
@@ -1689,6 +1699,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               - 'file.rb'
           Style/FrozenStringLiteralComment:
             Exclude:
+              - '**/*.arb'
               - 'file.rb'
         YAML
         expect(cli.run([])).to eq(0)
