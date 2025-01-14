@@ -29,7 +29,7 @@ module RuboCop
         RESTRICT_ON_SEND = %i[print puts warn].freeze
 
         # @!method to_s_without_args?(node)
-        def_node_matcher :to_s_without_args?, '(send _ :to_s)'
+        def_node_matcher :to_s_without_args?, '(call _ :to_s)'
 
         def on_interpolation(begin_node)
           final_node = begin_node.children.last
@@ -42,7 +42,7 @@ module RuboCop
         def on_send(node)
           return if node.receiver
 
-          node.each_child_node(:send) do |child|
+          node.each_child_node(:send, :csend) do |child|
             next if !child.method?(:to_s) || child.arguments.any?
 
             register_offense(child, "`#{node.method_name}`")
