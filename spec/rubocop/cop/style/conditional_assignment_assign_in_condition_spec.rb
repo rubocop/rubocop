@@ -633,6 +633,21 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
+    it 'corrects assignment to an unless condition' do
+      expect_offense(<<~RUBY)
+        value = unless condition
+        ^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals.
+                      1
+                    end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        unless condition
+          value = 1
+        end
+      RUBY
+    end
+
     it 'corrects assignment to an unless else condition' do
       expect_offense(<<~RUBY)
         bar = unless foo

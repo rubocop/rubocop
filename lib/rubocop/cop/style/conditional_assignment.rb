@@ -309,7 +309,7 @@ module RuboCop
         end
 
         def allowed_single_line?(branches)
-          single_line_conditions_only? && branches.any?(&:begin_type?)
+          single_line_conditions_only? && branches.compact.any?(&:begin_type?)
         end
 
         def assignment_node(node)
@@ -445,6 +445,8 @@ module RuboCop
           end
 
           [condition.loc.else, condition.loc.end].each do |loc|
+            next unless loc
+
             corrector.remove_preceding(loc, loc.column - column)
           end
         end
