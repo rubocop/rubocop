@@ -110,4 +110,37 @@ RSpec.describe RuboCop::Cop::Lint::UselessNumericOperation, :config do
       x = x
     RUBY
   end
+
+  it 'registers an offense when calling `.+(0)`' do
+    expect_offense(<<~RUBY)
+      x.+(0)
+      ^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x
+    RUBY
+  end
+
+  it 'registers an offense when calling `&.+(0)`' do
+    expect_offense(<<~RUBY)
+      x&.+(0)
+      ^^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x
+    RUBY
+  end
+
+  it 'registers an offense when calling `.+(0)` in a chain' do
+    expect_offense(<<~RUBY)
+      x.+(0).bar
+      ^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.bar
+    RUBY
+  end
 end
