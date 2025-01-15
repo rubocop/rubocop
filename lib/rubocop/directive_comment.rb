@@ -88,10 +88,15 @@ module RuboCop
       @cop_names ||= all_cops? ? all_cop_names : parsed_cop_names
     end
 
+    # Returns an array of cops for this directive comment, without resolving departments
+    def raw_cop_names
+      @raw_cop_names ||= (cops || '').split(/,\s*/)
+    end
+
     # Returns array of specified in this directive department names
     # when all department disabled
     def department_names
-      splitted_cops_string.select { |cop| department?(cop) }
+      raw_cop_names.select { |cop| department?(cop) }
     end
 
     # Checks if directive departments include cop
@@ -101,11 +106,11 @@ module RuboCop
 
     # Checks if cop department has already used in directive comment
     def overridden_by_department?(cop)
-      in_directive_department?(cop) && splitted_cops_string.include?(cop)
+      in_directive_department?(cop) && raw_cop_names.include?(cop)
     end
 
     def directive_count
-      splitted_cops_string.count
+      raw_cop_names.count
     end
 
     # Returns line number for directive
@@ -115,12 +120,8 @@ module RuboCop
 
     private
 
-    def splitted_cops_string
-      (cops || '').split(/,\s*/)
-    end
-
     def parsed_cop_names
-      cops = splitted_cops_string.map do |name|
+      cops = raw_cop_names.map do |name|
         department?(name) ? cop_names_for_department(name) : name
       end.flatten
       cops - [LINT_SYNTAX_COP]

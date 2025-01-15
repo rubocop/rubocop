@@ -415,6 +415,41 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  describe 'for a cop enabled only for a subset of files' do
+    it "doesn't enable the cop for all files when department disables are present" do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          DisabledByDefault: true
+
+        Style/HashSyntax:
+          Enabled: true
+          Exclude:
+            - example1.rb
+      YAML
+
+      source = <<~RUBY
+        { :a => :b }
+        # rubocop:disable Style
+        { :a => :b }
+        # rubocop:enable Style
+        # rubocop:disable all
+        { :a => :b }
+        # rubocop:enable all
+      RUBY
+
+      create_file('example1.rb', source)
+      create_file('example2.rb', source)
+
+      expect(cli.run(['--format', 'simple', 'example1.rb', 'example2.rb'])).to eq(1)
+      expect($stdout.string).to eq(<<~RESULT)
+        == example2.rb ==
+        C:  1:  3: [Correctable] Style/HashSyntax: Use the new Ruby 1.9 hash syntax.
+
+        2 files inspected, 1 offense detected, 1 offense autocorrectable
+      RESULT
+    end
+  end
+
   describe 'rubocop:disable comment' do
     it 'can disable all cops in a code section' do
       src = ['# rubocop:disable all',
