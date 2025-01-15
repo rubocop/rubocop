@@ -430,4 +430,14 @@ RSpec.describe RuboCop::DirectiveComment do
       it { is_expected.to be(false) }
     end
   end
+
+  describe '#raw_cop_names' do
+    subject { directive_comment.raw_cop_names }
+
+    context 'when there are departments' do
+      let(:text) { '# rubocop:enable Style, Lint/Void' }
+
+      it { is_expected.to eq(%w[Style Lint/Void]) }
+    end
+  end
 end

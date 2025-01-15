@@ -87,7 +87,7 @@ module RuboCop
           next unless directive.enabled?
           next if directive.all_cops?
 
-          cops.merge(directive.cop_names)
+          cops.merge(directive.raw_cop_names)
         end
         cops
       end
