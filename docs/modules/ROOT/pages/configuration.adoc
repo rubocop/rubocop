@@ -50,7 +50,6 @@ files:
 * `/path/to/project/.rubocop.yml`
 * `/path/to/project/.config/.rubocop.yml`
 * `/path/to/project/.config/rubocop/config.yml`
-* `/.rubocop.yml`
 * `~/.rubocop.yml`
 * `~/.config/rubocop/config.yml`
 * https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCop's default configuration]
