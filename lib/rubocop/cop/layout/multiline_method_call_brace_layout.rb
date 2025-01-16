@@ -109,6 +109,7 @@ module RuboCop
         def on_send(node)
           check_brace_layout(node)
         end
+        alias on_csend on_send
 
         private
 
