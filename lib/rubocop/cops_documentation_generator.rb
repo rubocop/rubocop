@@ -18,7 +18,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     description:           ->(data) { "#{data.description}\n" },
     safety:                ->(data) { safety_object(data.safety_objects, data.cop) },
     examples:              ->(data) { examples(data.example_objects, data.cop) },
-    configuration:         ->(data) { configurations(data.cop.department, data.config, data.cop) },
+    configuration:         ->(data) { configurations(data.cop.department, data.cop, data.config) },
     references:            ->(data) { references(data.cop, data.see_objects) }
   }.freeze
 
@@ -180,17 +180,17 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     content
   end
 
-  def configurations(department, pars, cop)
+  def configurations(department, cop, cop_config)
     header = ['Name', 'Default value', 'Configurable values']
-    configs = pars
+    configs = cop_config
               .each_key
               .reject { |key| key.start_with?('Supported') }
               .reject { |key| key.start_with?('AllowMultipleStyles') }
     return '' if configs.empty?
 
     content = configs.map do |name|
-      configurable = configurable_values(pars, name)
-      default = format_table_value(pars[name])
+      configurable = configurable_values(cop_config, name)
+      default = format_table_value(cop_config[name])
 
       [configuration_name(department, name), default, configurable]
     end
@@ -206,17 +206,17 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
-  def configurable_values(pars, name)
+  def configurable_values(cop_config, name)
     case name
     when /^Enforced/
       supported_style_name = RuboCop::Cop::Util.to_supported_styles(name)
-      format_table_value(pars[supported_style_name])
+      format_table_value(cop_config[supported_style_name])
     when 'IndentationWidth'
       'Integer'
     when 'Database'
-      format_table_value(pars['SupportedDatabases'])
+      format_table_value(cop_config['SupportedDatabases'])
     else
-      case pars[name]
+      case cop_config[name]
       when String
         'String'
       when Integer
@@ -319,7 +319,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       AutoCorrect Description Enabled StyleGuide Reference Safe SafeAutoCorrect VersionAdded
       VersionChanged
     ]
-    pars = cop_config.reject { |k| non_display_keys.include? k }
+    parameters = cop_config.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
     example_objects = safety_objects = see_objects = []
     cop_code(cop) do |code_object|
@@ -329,7 +329,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       see_objects = code_object.tags('see')
     end
     data = CopData.new(cop: cop, description: description, example_objects: example_objects,
-                       safety_objects: safety_objects, see_objects: see_objects, config: pars)
+                       safety_objects: safety_objects, see_objects: see_objects, config: parameters)
     cops_body(data)
   end
 
