@@ -100,6 +100,7 @@ module RuboCop
             add_offense(node, message: REDUNDANT_HASH_MSG)
           end
         end
+        alias on_csend on_send
         alias on_op_asgn on_send
       end
     end

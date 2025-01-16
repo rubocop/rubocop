@@ -62,6 +62,16 @@ RSpec.describe RuboCop::Cop::Security::CompoundHash, :config do
     RUBY
   end
 
+  it 'registers an offense if .hash is called on any elements of a hashed array with safe navigation' do
+    expect_offense(<<~RUBY)
+      def hash
+        [foo&.hash, bar&.hash].hash
+                    ^^^^^^^^^ Calling .hash on elements of a hashed array is redundant.
+         ^^^^^^^^^ Calling .hash on elements of a hashed array is redundant.
+      end
+    RUBY
+  end
+
   it 'does not register an offense when delegating to Array#hash' do
     expect_no_offenses(<<~RUBY)
       def hash
