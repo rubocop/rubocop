@@ -478,9 +478,9 @@ end
 
 ==== Special case: Rails
 
-Historically, many cops in `rubocop-rails` aren't actually specific to Rails itself, but some of its components (e.g. `ActiveSupport`). These dependencies are declared with https://www.rubydoc.info/gems/rubocop-rails/RuboCop/Cop/TargetRailsVersion#minimum_target_rails_version-instance_method[`TargetRailsVersion.minimum_target_rails_version`].
+Historically, many cops in `rubocop-rails` aren't actually specific to Rails itself, but some of its components (e.g., Active Support). These dependencies are declared with https://www.rubydoc.info/gems/rubocop-rails/RuboCop/Cop/TargetRailsVersion#minimum_target_rails_version-instance_method[`TargetRailsVersion.minimum_target_rails_version`].
 
-For example, the `Rails/Pluck` cop requires ActiveSupport 6.0, which introduces `Enumerable#pluck`:
+For example, the `Rails/Pluck` cop requires Active Support 6.0, which introduces `Enumerable#pluck`:
 
 ```ruby
 class RuboCop::Cop::Rails::Pluck < Base
