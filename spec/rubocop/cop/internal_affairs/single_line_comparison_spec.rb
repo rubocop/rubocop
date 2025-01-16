@@ -122,4 +122,20 @@ RSpec.describe RuboCop::Cop::InternalAffairs::SingleLineComparison, :config do
       nodes.first.first_line == nodes.last.last_line
     RUBY
   end
+
+  context 'with safe navigation' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        node&.first_line == node&.last_line
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `node&.single_line?`.
+        node&.first_line != node&.last_line
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!node&.single_line?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        node&.single_line?
+        !node&.single_line?
+      RUBY
+    end
+  end
 end
