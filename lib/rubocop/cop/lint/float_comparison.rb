@@ -36,7 +36,8 @@ module RuboCop
       #   # https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
       #
       class FloatComparison < Base
-        MSG = 'Avoid (in)equality comparisons of floats as they are unreliable.'
+        MSG_EQUALITY = 'Avoid equality comparisons of floats as they are unreliable.'
+        MSG_INEQUALITY = 'Avoid inequality comparisons of floats as they are unreliable.'
 
         EQUALITY_METHODS = %i[== != eql? equal?].freeze
         FLOAT_RETURNING_METHODS = %i[to_f Float fdiv].freeze
@@ -52,8 +53,10 @@ module RuboCop
 
           return if literal_safe?(lhs) || literal_safe?(rhs)
 
-          add_offense(node) if float?(lhs) || float?(rhs)
+          message = node.method?(:!=) ? MSG_INEQUALITY : MSG_EQUALITY
+          add_offense(node, message: message) if float?(lhs) || float?(rhs)
         end
+        alias on_csend on_send
 
         private
 
