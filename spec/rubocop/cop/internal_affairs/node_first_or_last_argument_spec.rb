@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::InternalAffairs::NodeFirstOrLastArgument, :config do
-  shared_examples 'registers an offense' do |receiver:, position:, accessor:|
+  shared_examples 'registers an offense' do |receiver:, position:, accessor:, dot: '.'|
     offending_source = "#{receiver}.arguments#{accessor}"
-    correction_source = "#{receiver}.#{position}_argument"
+    correction_source = "#{receiver}#{dot}#{position}_argument"
 
     it "registers an offense when using `#{offending_source}`" do
-      expect_offense(<<~RUBY, receiver: receiver, accessor: accessor)
-        %{receiver}.arguments%{accessor}
-        _{receiver} ^^^^^^^^^^{accessor} Use `##{position}_argument` instead of `#arguments#{accessor}`.
+      expect_offense(<<~RUBY, receiver: receiver, accessor: accessor, dot: dot)
+        %{receiver}%{dot}arguments%{accessor}
+        _{receiver}_{dot}^^^^^^^^^^{accessor} Use `##{position}_argument` instead of `#arguments#{accessor}`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -27,6 +27,17 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeFirstOrLastArgument, :config d
   include_examples 'registers an offense', receiver: 'node', position: 'first', accessor: '[0]'
   include_examples 'registers an offense', receiver: 'node', position: 'last', accessor: '.last'
   include_examples 'registers an offense', receiver: 'node', position: 'last', accessor: '[-1]'
+
+  include_examples 'registers an offense', receiver: 'node', position: 'first', accessor: '&.first'
+  include_examples 'registers an offense', receiver: 'node', position: 'first', accessor: '&.[](0)'
+  include_examples 'registers an offense', receiver: 'node', position: 'last', accessor: '&.last'
+  include_examples 'registers an offense', receiver: 'node', position: 'last', accessor: '&.[](-1)'
+
+  include_examples 'registers an offense', receiver: 'node', position: 'first', accessor: '&.first', dot: '&.'
+  include_examples 'registers an offense', receiver: 'node', position: 'first', accessor: '&.[](0)', dot: '&.'
+  include_examples 'registers an offense', receiver: 'node', position: 'last', accessor: '&.last', dot: '&.'
+  include_examples 'registers an offense', receiver: 'node', position: 'last', accessor: '&.[](-1)', dot: '&.'
+
   include_examples 'registers an offense', receiver: 'some_node', position: 'first', accessor: '.first'
   include_examples 'registers an offense', receiver: 'some_node', position: 'first', accessor: '[0]'
   include_examples 'registers an offense', receiver: 'some_node', position: 'last', accessor: '.last'

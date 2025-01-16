@@ -27,8 +27,8 @@ module RuboCop
         # @!method arguments_first_or_last?(node)
         def_node_matcher :arguments_first_or_last?, <<~PATTERN
           {
-            (send (send !nil? :arguments) ${:first :last})
-            (send (send !nil? :arguments) :[] (int ${0 -1}))
+            (call (call !nil? :arguments) ${:first :last})
+            (call (call !nil? :arguments) :[] (int ${0 -1}))
           }
         PATTERN
 
@@ -47,6 +47,7 @@ module RuboCop
             end
           end
         end
+        alias on_csend on_send
       end
     end
   end
