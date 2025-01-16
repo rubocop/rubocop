@@ -99,6 +99,7 @@ module RuboCop
 
           check_line_breaks(node, args, ignore_last: ignore_last_element?)
         end
+        alias on_csend on_send
 
         private
 

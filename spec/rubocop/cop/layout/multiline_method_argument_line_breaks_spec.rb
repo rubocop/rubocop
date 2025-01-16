@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks, :config do
-  context 'when one argument on same line' do
+  context 'with one argument on same line as the method call' do
     it 'does not add any offenses' do
       expect_no_offenses(<<~RUBY)
         taz("abc")
@@ -157,6 +157,62 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks, :config 
         baz,
           quux)
       RUBY
+    end
+  end
+
+  context 'with safe navigation' do
+    context 'with one argument on the same line as the method call' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          foo&.bar(baz)
+        RUBY
+      end
+    end
+
+    context 'with multiple arguments on the same line as the method call' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          foo&.bar(baz, quux)
+        RUBY
+      end
+    end
+
+    context 'with arguments over multiple lines and more than one argument on a single line' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo&.bar(baz, quux,
+                        ^^^^ Each argument in a multi-line method call must start on a separate line.
+            corge)
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo&.bar(baz,#{trailing_whitespace}
+          quux,
+            corge)
+        RUBY
+      end
+    end
+
+    context 'with []=' do
+      it 'allows a multiline assignment' do
+        expect_no_offenses(<<~RUBY)
+          foo&.bar['foo'] = ::Time.zone.at(
+                              huh['foo'],
+                            )
+        RUBY
+      end
+    end
+
+    context 'with AllowMultilineFinalElement: true' do
+      let(:cop_config) { { 'AllowMultilineFinalElement' => true } }
+
+      it 'ignores last argument that is a multiline hash' do
+        expect_no_offenses(<<~RUBY)
+          foo&.bar(1, 2, 3, {
+            a: 1,
+          })
+        RUBY
+      end
     end
   end
 
