@@ -46,4 +46,26 @@ RSpec.describe RuboCop::Cop::Metrics::SingleLineComplexity, :config do
       RUBY
     end
   end
+
+  it 'does not register an offense for a multiline heredoc' do
+    expect_no_offenses(<<~'RUBY')
+      <<~STRING
+        #{foo}
+        #{bar}
+        #{baz}
+        #{quux}
+      STRING
+    RUBY
+  end
+
+  it 'registers an offense for a complex line within a heredoc' do
+    expect_offense(<<~'RUBY')
+      <<~STRING
+
+        Heredoc with multiple lines
+        #{foo.bar.baz.quux}
+        ^^^^^^^^^^^^^^^^^^^ Assignment Branch Condition size too high for line 4. [<0.0, 4.0, 0.0> 4/2]
+      STRING
+    RUBY
+  end
 end

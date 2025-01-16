@@ -62,11 +62,10 @@ module RuboCop
         def top_level_nodes_per_line(root)
           nodes_per_line = nodes_per_line(root)
 
-          # Filter nodes to only include top-level nodes for each line
-          # (i.e. nodes that are not children of other nodes on the same line)
-          nodes_per_line.transform_values do |nodes|
-            nodes.reject do |node|
-              nodes.include?(node.parent)
+          nodes_per_line.transform_values do |nodes_on_line|
+            nodes_on_line.reject do |node|
+              # if the node's parent is on this line, then this node is not top-level for the line
+              nodes_on_line.include?(node.parent)
             end
           end
         end
@@ -82,12 +81,18 @@ module RuboCop
             # Skip nodes that span multiple lines
             next if line_range.size > 1
 
+            next if heredoc_node?(child)
+
             line_range.each do |line|
               nodes_per_line[line] ||= []
               nodes_per_line[line] << child
             end
           end
           nodes_per_line
+        end
+
+        def heredoc_node?(node)
+          node.dstr_type?
         end
 
         def max
