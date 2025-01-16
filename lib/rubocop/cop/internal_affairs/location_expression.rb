@@ -22,7 +22,7 @@ module RuboCop
 
         def on_send(node)
           return unless (parent = node.parent)
-          return unless parent.send_type? && parent.method?(:expression)
+          return unless parent.call_type? && parent.method?(:expression)
           return unless parent.receiver.receiver
 
           offense = node.loc.selector.join(parent.source_range.end)
@@ -31,6 +31,7 @@ module RuboCop
             corrector.replace(offense, 'source_range')
           end
         end
+        alias on_csend on_send
       end
     end
   end
