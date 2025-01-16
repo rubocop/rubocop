@@ -145,4 +145,43 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
       RUBY
     end
   end
+
+  context 'using Sorbet sigs' do
+    let(:cop_config) do
+      {
+        'NamePrefix' => %w[is_ has_],
+        'ForbiddenPrefixes' => [],
+        'UseSorbetSigs' => 'true'
+      }
+    end
+
+    it 'registers an offense if no ? when `sig { returns(T::Boolean) }`' do
+      expect_offense(<<~RUBY)
+        sig { returns(T::Boolean) }
+        def is_attr; end
+            ^^^^^^^ Rename `is_attr` to `is_attr?`.
+      RUBY
+    end
+
+    it 'does not register an offense if no ? when `sig { returns(T::Array[String])`' do
+      expect_no_offenses(<<~RUBY)
+        sig { returns(T::Array[String]) }
+        def has_caused_error
+          errors.add(:base, 'This has caused an error')
+        end
+      RUBY
+    end
+
+    it 'picks the correct sig when there are multiple' do
+      expect_no_offenses(<<~RUBY)
+        sig { returns(T::Boolean) }
+        def is_attr?; end
+
+        sig { returns(T::Array[String]) }
+        def has_caused_error
+          errors.add(:base, 'This has caused an error')
+        end
+      RUBY
+    end
+  end
 end

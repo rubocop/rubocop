@@ -3035,6 +3035,8 @@ Naming/PredicateName:
   MethodDefinitionMacros:
     - define_method
     - define_singleton_method
+  # Use Sorbet's T::Boolean return type to detect predicate methods.
+  UseSorbetSigs: false
   # Exclude Rspec specs because there is a strong convention to write spec
   # helpers in the form of `have_something` or `be_something`.
   Exclude:
