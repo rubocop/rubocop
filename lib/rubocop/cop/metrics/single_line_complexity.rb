@@ -9,7 +9,7 @@ module RuboCop
       #
       class SingleLineComplexity < Base
         MSG = 'Assignment Branch Condition size too high for line %<line>d. ' \
-              '[%<complexity>d/%<max>d]'
+              '[%<abc_vector>s %<complexity>.4g/%<max>.4g]'
 
         def on_new_investigation
           return unless (root = processed_source.ast)
@@ -17,13 +17,15 @@ module RuboCop
           top_level_nodes_per_line = top_level_nodes_per_line(root)
 
           top_level_nodes_per_line.each do |line, nodes|
-            abc_score, = abc_score_for_nodes(nodes)
+            complexity, abc_vector = abc_score_for_nodes(nodes)
 
-            next unless abc_score > max_score_allowed
+            next unless complexity > max
 
-            add_offense(nodes.first,
-                        message: format(MSG, line: line, complexity: abc_score,
-                                             max: max_score_allowed))
+            msg = format(
+              self.class::MSG, line: line, complexity: complexity, abc_vector: abc_vector, max: max
+            )
+
+            add_offense(nodes.first, message: msg)
           end
         end
 
@@ -88,7 +90,7 @@ module RuboCop
           nodes_per_line
         end
 
-        def max_score_allowed
+        def max
           cop_config['Max']
         end
       end
