@@ -7,11 +7,14 @@ module RuboCop
       # The supported styles are:
       #
       # * `consistent_comma`: Requires a comma after the last argument,
-      # for all parenthesized method calls with arguments.
+      # for all parenthesized multi-line method calls with arguments.
       # * `comma`: Requires a comma after the last argument, but only for
       # parenthesized method calls where each argument is on its own line.
       # * `no_comma`: Requires that there is no comma after the last
       # argument.
+      #
+      # Regardless of style, trailing commas are not allowed in
+      # single-line method calls.
       #
       # @example EnforcedStyleForMultiline: consistent_comma
       #   # bad
