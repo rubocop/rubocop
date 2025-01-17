@@ -36,7 +36,7 @@ module RuboCop
         include MethodComplexity
         include Utils::IteratingBlock
 
-        MSG = 'Cyclomatic complexity for %<method>s is too high. [%<complexity>d/%<max>d]'
+        MSG = 'Cyclomatic complexity for `%<method>s` is too high. [%<complexity>d/%<max>d]'
         COUNTED_NODES = %i[if while until for csend block block_pass
                            rescue when in_pattern and or or_asgn and_asgn].freeze
 

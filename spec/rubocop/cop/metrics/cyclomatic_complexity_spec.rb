@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for an if modifier' do
       expect_offense(<<~RUBY)
         def self.method_name
-        ^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           call_foo if some_condition
         end
       RUBY
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for an unless modifier' do
       offenses = expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           call_foo unless some_condition
         end
       RUBY
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for an elsif block' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [3/1]
           if first_condition then
             call_foo
           elsif second_condition then
@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for a ternary operator' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           value = some_condition ? 1 : 2
         end
       RUBY
@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for a while block' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           while some_condition do
             call_foo
           end
@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for an until block' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           until some_condition do
             call_foo
           end
@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for a for block' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           for i in 1..2 do
             call_method
           end
@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for a rescue block' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           begin
             call_foo
           rescue Exception
@@ -132,7 +132,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for a case/when block' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [3/1]
           case value
           when 1
             call_foo
@@ -146,7 +146,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for a case/in block', :ruby27 do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [3/1]
           case value
           in 1
             call_foo
@@ -160,7 +160,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for &&' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           call_foo && call_bar
         end
       RUBY
@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for &&=' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           foo = nil
           foo &&= 42
         end
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for and' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           call_foo and call_bar
         end
       RUBY
@@ -188,7 +188,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for ||' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           call_foo || call_bar
         end
       RUBY
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for ||=' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           foo = nil
           foo ||= 42
         end
@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for or' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           call_foo or call_bar
         end
       RUBY
@@ -216,7 +216,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'deals with nested if blocks containing && and ||' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [6/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [6/1]
           if first_condition then
             call_foo if second_condition && third_condition
             call_bar if fourth_condition || fifth_condition
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for &.' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [3/1]
           foo&.bar
           foo&.bar
         end
@@ -238,7 +238,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'counts repeated &. on same untouched local variable as 1' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [3/1]
           var = 1
           var&.foo
           var&.dont_count_me
@@ -252,12 +252,12 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'counts only a single method' do
       expect_offense(<<~RUBY)
         def method_name_1
-        ^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name_1 is too high. [2/1]
+        ^^^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name_1` is too high. [2/1]
           call_foo if some_condition
         end
 
         def method_name_2
-        ^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name_2 is too high. [2/1]
+        ^^^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name_2` is too high. [2/1]
           call_foo if some_condition
         end
       RUBY
@@ -266,7 +266,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'registers an offense for a `define_method`' do
       expect_offense(<<~RUBY)
         define_method :method_name do
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           call_foo if some_condition
         end
       RUBY
@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'counts enumerating methods with blocks as +1' do
       expect_offense(<<~RUBY)
         define_method :method_name do
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [3/1]
           (1..4).map do |i|                            # map: +1
             i * 2
           end.each.with_index { |val, i| puts val, i } # each: +0, with_index: +1
@@ -288,7 +288,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
       it 'counts enumerating methods with numblocks as +1' do
         expect_offense(<<~RUBY)
           define_method :method_name do
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [3/1]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [3/1]
             (_1.._2).map do |i|                          # map: +1
               i * 2
             end.each.with_index { |val, i| puts val, i } # each: +0, with_index: +1
@@ -301,7 +301,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'counts enumerating methods with block-pass as +1' do
       expect_offense(<<~RUBY)
         define_method :method_name do
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
           [].map(&:to_s)
         end
       RUBY
@@ -325,7 +325,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
       it 'registers an offense for an unless modifier' do
         offenses = expect_offense(<<~RUBY)
           def method_name
-          ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [2/1]
+          ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [2/1]
             call_foo unless some_condition
           end
         RUBY
@@ -397,7 +397,7 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     it 'counts stupid nested if and else blocks' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Cyclomatic complexity for method_name is too high. [5/2]
+        ^^^^^^^^^^^^^^^ Cyclomatic complexity for `method_name` is too high. [5/2]
           if first_condition then
             call_foo
           else
