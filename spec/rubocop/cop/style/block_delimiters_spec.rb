@@ -281,6 +281,52 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect_no_offenses('return if any? { |x| x }')
     end
 
+    it 'accepts a single line block with {} if used in an `if` condition' do
+      expect_no_offenses(<<~RUBY)
+        if any? { |x| x }
+          return
+        end
+      RUBY
+    end
+
+    it 'accepts a single line block with {} if used in an `unless` condition' do
+      expect_no_offenses(<<~RUBY)
+        unless any? { |x| x }
+          return
+        end
+      RUBY
+    end
+
+    it 'accepts a single line block with {} if used in a `case` condition' do
+      expect_no_offenses(<<~RUBY)
+        case foo { |x| x }
+        when bar
+        end
+      RUBY
+    end
+
+    it 'accepts a single line block with {} if used in a `case` match condition' do
+      expect_no_offenses(<<~RUBY)
+        case foo { |x| x }
+        in bar
+        end
+      RUBY
+    end
+
+    it 'accepts a single line block with {} if used in a `while` condition' do
+      expect_no_offenses(<<~RUBY)
+        while foo { |x| x }
+        end
+      RUBY
+    end
+
+    it 'accepts a single line block with {} if used in an `until` condition' do
+      expect_no_offenses(<<~RUBY)
+        until foo { |x| x }
+        end
+      RUBY
+    end
+
     it 'accepts a single line block with {} if used in a logical or' do
       expect_no_offenses('any? { |c| c } || foo')
     end
