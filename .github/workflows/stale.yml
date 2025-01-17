@@ -1,0 +1,42 @@
+name: Close inactive issues and pull requests
+on:
+  schedule:
+    - cron: "30 1 * * *"
+
+jobs:
+  close-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-issue-stale: 30
+          days-before-issue-close: 30
+          stale-issue-label: "stale"
+          exempt-issues-labels:
+            - "high priority"
+            - "good first issue"
+            - "pinned"
+          stale-issue-message: >-
+            This issue has been automatically marked as stale because it has not
+            had any recent activity. It will be closed soon if no further
+            activity occurs. Thank you for your contribution and understanding!
+          close-issue-message: >-
+            This issue been automatically closed due to lack of activity. Feel free to re-open it
+            if you ever come back to it.
+          days-before-pr-stale: 30
+          days-before-pr-close: 30
+          exempt-issues-labels:
+            - "high priority"
+            - "good first issue"
+            - "pinned"
+          stale-pr-message: >-
+            This pull request has been automatically marked as stale because it has not
+            had any recent activity. It will be closed soon if no further
+            activity occurs. Thank you for your contribution and understanding!
+          close-pr-message: >-
+            This issue been automatically closed due to lack of activity. Feel free to re-open it
+            if you ever come back to it.
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
