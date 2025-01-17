@@ -474,14 +474,10 @@ module RuboCop
         end
 
         def return_value_of_scope?(node)
-          return false unless node.parent
+          return false unless (parent = node.parent)
 
-          conditional?(node.parent) || array_or_range?(node.parent) ||
-            node.parent.children.last == node
-        end
-
-        def conditional?(node)
-          node.if_type? || node.operator_keyword?
+          parent.conditional? || parent.operator_keyword? || array_or_range?(parent) ||
+            parent.children.last == node
         end
 
         def array_or_range?(node)
