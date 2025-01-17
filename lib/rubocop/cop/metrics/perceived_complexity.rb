@@ -27,7 +27,7 @@ module RuboCop
       #     end                           # ===
       #   end                             # 7 complexity points
       class PerceivedComplexity < CyclomaticComplexity
-        MSG = 'Perceived complexity for %<method>s is too high. [%<complexity>d/%<max>d]'
+        MSG = 'Perceived complexity for `%<method>s` is too high. [%<complexity>d/%<max>d]'
 
         COUNTED_NODES = (CyclomaticComplexity::COUNTED_NODES - [:when] + [:case]).freeze
 
