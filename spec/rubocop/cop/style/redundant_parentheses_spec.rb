@@ -182,6 +182,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '(x < y)', 'x < y', 'a comparison expression'
   it_behaves_like 'redundant', '(x <= y)', 'x <= y', 'a comparison expression'
 
+  it_behaves_like 'redundant', '(var = 42)', 'var = 42', 'an assignment'
+  it_behaves_like 'redundant', '(@var = 42)', '@var = 42', 'an assignment'
+  it_behaves_like 'redundant', '(@@var = 42)', '@@var = 42', 'an assignment'
+  it_behaves_like 'redundant', '($var = 42)', '$var = 42', 'an assignment'
+  it_behaves_like 'redundant', '(CONST = 42)', 'CONST = 42', 'an assignment'
+  it_behaves_like 'plausible', 'if (var = 42); end'
+  it_behaves_like 'plausible', 'unless (var = 42); end'
+  it_behaves_like 'plausible', 'while (var = 42); end'
+  it_behaves_like 'plausible', 'until (var = 42); end'
+  it_behaves_like 'plausible', '(var + 42) > do_something'
+
   it_behaves_like 'redundant', '(!x)', '!x', 'a unary operation'
   it_behaves_like 'redundant', '(~x)', '~x', 'a unary operation'
   it_behaves_like 'redundant', '(-x)', '-x', 'a unary operation'
@@ -213,6 +224,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
     expect_correction(<<~RUBY)
       x.y(z)
+    RUBY
+  end
+
+  it 'registers an offense for parens around parenthesized conditional assignment' do
+    expect_offense(<<~RUBY)
+      if ((var = 42))
+          ^^^^^^^^^^ Don't use parentheses around an assignment.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (var = 42)
+      end
     RUBY
   end
 
