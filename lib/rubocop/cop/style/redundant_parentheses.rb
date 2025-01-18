@@ -140,6 +140,9 @@ module RuboCop
           return 'a literal' if disallowed_literal?(begin_node, node)
           return 'a variable' if node.variable?
           return 'a constant' if node.const_type?
+          if node.assignment? && (begin_node.parent.nil? || begin_node.parent.begin_type?)
+            return 'an assignment'
+          end
           if node.lambda_or_proc? && (node.braces? || node.send_node.lambda_literal?)
             return 'an expression'
           end
