@@ -15,10 +15,7 @@ jobs:
           days-before-issue-stale: 30
           days-before-issue-close: 30
           stale-issue-label: "stale"
-          exempt-issue-labels:
-            - "high priority"
-            - "good first issue"
-            - "pinned"
+          exempt-issue-labels: "high priority, good first issue, pinned"
           stale-issue-message: >-
             This issue has been automatically marked as stale because it has not
             had any recent activity. It will be closed soon if no further
@@ -28,10 +25,7 @@ jobs:
             if you ever come back to it.
           days-before-pr-stale: 30
           days-before-pr-close: 30
-          exempt-pr-labels:
-            - "high priority"
-            - "good first issue"
-            - "pinned"
+          exempt-pr-labels: "high priority, good first issue, pinned"
           stale-pr-message: >-
             This pull request has been automatically marked as stale because it has not
             had any recent activity. It will be closed soon if no further
