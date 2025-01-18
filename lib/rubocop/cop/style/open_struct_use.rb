@@ -3,15 +3,15 @@
 module RuboCop
   module Cop
     module Style
-      # Flags uses of OpenStruct, as it is now officially discouraged
+      # Flags uses of `OpenStruct`, as it is now officially discouraged
       # to be used for performance, version compatibility, and potential security issues.
       #
       # @safety
-      #
       #   Note that this cop may flag false positives; for instance, the following legal
       #   use of a hand-rolled `OpenStruct` type would be considered an offense:
       #
-      #   ```
+      #   [source,ruby]
+      #   -----
       #   module MyNamespace
       #     class OpenStruct # not the OpenStruct we're looking for
       #     end
@@ -20,7 +20,7 @@ module RuboCop
       #       OpenStruct.new # resolves to MyNamespace::OpenStruct
       #     end
       #   end
-      #   ```
+      #   -----
       #
       # @example
       #
