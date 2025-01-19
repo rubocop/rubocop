@@ -426,6 +426,21 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     include_examples 'one-line pattern matching'
   end
 
+  context 'when using omitted hash values in an assignment', :ruby31 do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        if condition
+        ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+          obj[:key] = { foo: }
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj[:key] = { foo: } if condition
+      RUBY
+    end
+  end
+
   context 'multiline `if` that fits on one line and using hash value omission syntax', :ruby31 do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

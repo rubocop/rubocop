@@ -55,12 +55,17 @@ module RuboCop
       end
 
       def if_body_source(if_body)
-        if if_body.call_type? &&
-           if_body.last_argument&.hash_type? && if_body.last_argument.pairs.last&.value_omission?
+        if if_body.call_type? && !if_body.method?(:[]=) && omitted_value_in_last_hash_arg?(if_body)
           "#{method_source(if_body)}(#{if_body.arguments.map(&:source).join(', ')})"
         else
           if_body.source
         end
+      end
+
+      def omitted_value_in_last_hash_arg?(if_body)
+        return false unless (last_argument = if_body.last_argument)
+
+        last_argument.hash_type? && last_argument.pairs.last&.value_omission?
       end
 
       def method_source(if_body)
