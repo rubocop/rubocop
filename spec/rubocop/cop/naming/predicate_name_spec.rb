@@ -155,15 +155,38 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
       }
     end
 
-    it 'registers an offense if no ? when `sig { returns(T::Boolean) }`' do
+    it 'registers an offense if no ? when `sig { returns(T::Boolean) }` and variants' do
       expect_offense(<<~RUBY)
         sig { returns(T::Boolean) }
         def is_attr; end
             ^^^^^^^ Rename `is_attr` to `is_attr?`.
       RUBY
+
+      expect_offense(<<~RUBY)
+        sig { returns(T::Boolean) }
+        # Comment here.
+        def is_attr; end
+            ^^^^^^^ Rename `is_attr` to `is_attr?`.
+      RUBY
+
+      expect_offense(<<~RUBY)
+        sig { returns(T::Boolean) }
+
+
+        def is_attr; end
+            ^^^^^^^ Rename `is_attr` to `is_attr?`.
+      RUBY
+
+      expect_offense(<<~RUBY)
+        sig do
+          returns(T::Boolean)
+        end
+        def is_attr; end
+            ^^^^^^^ Rename `is_attr` to `is_attr?`.
+      RUBY
     end
 
-    it 'does not register an offense if no ? when `sig { returns(T::Array[String])`' do
+    it 'does not register an offense if no ? when `sig { returns(T::Array[String]) }`' do
       expect_no_offenses(<<~RUBY)
         sig { returns(T::Array[String]) }
         def has_caused_error
