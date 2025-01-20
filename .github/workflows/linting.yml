@@ -13,7 +13,7 @@ concurrency:
 jobs:
   lint-ruby:
     name: Ruby
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
