@@ -9,6 +9,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
             #{argument}
         RUBY
       end
+
+      it "does not register an offense for `super` when the first argument is `#{argument}`" do
+        expect_no_offenses(<<~RUBY)
+          super \\
+            #{argument}
+        RUBY
+      end
     end
 
     shared_examples 'no forwarding offense' do |argument, *metadata|
@@ -16,6 +23,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
         expect_no_offenses(<<~RUBY)
           def a(#{argument})
             b \\
+              #{argument}; # the semicolon is necessary or ruby cannot parse
+          end
+        RUBY
+      end
+
+      it "does not register an offense with superwhen the first argument is `#{argument}", *metadata do
+        expect_no_offenses(<<~RUBY)
+          def a(#{argument})
+            super \\
               #{argument}; # the semicolon is necessary or ruby cannot parse
           end
         RUBY
@@ -975,6 +991,24 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
       foo(bar, \
                ^ Redundant line continuation.
         %i[baz quux])
+    RUBY
+  end
+
+  it 'registers an offense for a method call with a line continuation and no following arguments' do
+    expect_offense(<<~'RUBY')
+      def foo
+        bar \
+            ^ Redundant line continuation.
+      end
+    RUBY
+  end
+
+  it 'registers an offense for `super` with a line continuation and no following arguments' do
+    expect_offense(<<~'RUBY')
+      def foo
+        super \
+              ^ Redundant line continuation.
+      end
     RUBY
   end
 end
