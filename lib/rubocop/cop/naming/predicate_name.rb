@@ -128,7 +128,7 @@ module RuboCop
             method_name = node.method_name.to_s
 
             next if allowed_method_name?(method_name, prefix)
-            next if use_sorbet_sigs? && !boolean_sorbet_sig?(node)
+            next if use_sorbet_sigs? && !sorbet_sig?(node, return_type: "T::Boolean")
 
             add_offense(
               node.loc.name,
@@ -150,12 +150,16 @@ module RuboCop
 
         private
 
-        def boolean_sorbet_sig?(node)
-          # Select if it's a `sig` block with a `returns(T::Boolean)` directly above the method.
+        def sorbet_sig?(node, return_type: nil)
           left_sibling = node.left_sibling
           return false unless left_sibling&.block_type?
+          return false if return_type.nil?
 
-          left_sibling.method?(:sig) && left_sibling.source.include?('returns(T::Boolean)')
+          returns_node = left_sibling.children.find do |child|
+            child.type == :send && child.method_name == :returns
+          end
+
+          returns_node&.arguments&.first&.source == return_type
         end
 
         def allowed_method_name?(method_name, prefix)

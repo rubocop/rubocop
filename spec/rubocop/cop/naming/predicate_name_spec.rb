@@ -200,10 +200,16 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
         sig { returns(T::Boolean) }
         def is_attr?; end
 
-        sig { returns(T::Array[String]) }
+        sig { returns(String) }
         def has_caused_error
           errors.add(:base, 'This has caused an error')
         end
+      RUBY
+    end
+
+    it 'does not register an offense if no ? when no sigs but the config is enabled' do
+      expect_no_offenses(<<~RUBY)
+        def is_attr; end
       RUBY
     end
   end
