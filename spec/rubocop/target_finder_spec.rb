@@ -116,6 +116,16 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
+    context 'when a pattern with matching folders is passed' do
+      before { create_empty_file('app/dir.rb/ruby.rb') }
+
+      let(:args) { ['app/**/*.rb'] }
+
+      it 'finds only files which match the pattern' do
+        expect(found_basenames).to eq(['ruby.rb'])
+      end
+    end
+
     context 'when same paths are passed' do
       let(:args) { %w[dir1 dir1] }
 

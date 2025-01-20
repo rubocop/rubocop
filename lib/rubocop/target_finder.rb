@@ -127,6 +127,7 @@ module RuboCop
       if mode == :only_recognized_file_types || force_exclusion?
         files.select! { |file| included_file?(file) }
       end
+      files.reject! { |file| FileTest.directory?(file) }
 
       force_exclusion? ? without_excluded(files) : files
     end
