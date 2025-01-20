@@ -5,6 +5,7 @@ on:
 
 jobs:
   close-issues:
+    if: (github.repository == 'rubocop/rubocop')
     runs-on: ubuntu-latest
     permissions:
       issues: write
