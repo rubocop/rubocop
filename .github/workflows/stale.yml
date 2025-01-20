@@ -5,7 +5,7 @@ on:
 
 jobs:
   close-issues:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     permissions:
       issues: write
       pull-requests: write
