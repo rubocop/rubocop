@@ -5,6 +5,9 @@ module RuboCop
     module Lint
       # Checks for interpolated literals.
       #
+      # NOTE: Array literals interpolated in regexps are not handled by this cop, but
+      # by `Lint/ArrayLiteralInRegexp` instead.
+      #
       # @example
       #
       #   # bad
@@ -55,13 +58,20 @@ module RuboCop
           node &&
             !special_keyword?(node) &&
             prints_as_self?(node) &&
-            # Special case for Layout/TrailingWhitespace
-            !(space_literal?(node) && ends_heredoc_line?(node))
+            # Special case for `Layout/TrailingWhitespace`
+            !(space_literal?(node) && ends_heredoc_line?(node)) &&
+            # Handled by `Lint/LiteralArrayInRegexp`
+            !array_in_regexp?(node)
         end
 
         def special_keyword?(node)
           # handle strings like __FILE__
           (node.str_type? && !node.loc.respond_to?(:begin)) || node.source_range.is?('__LINE__')
+        end
+
+        def array_in_regexp?(node)
+          grandparent = node.parent.parent
+          node.array_type? && grandparent.regexp_type?
         end
 
         # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
