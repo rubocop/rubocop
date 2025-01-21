@@ -31,3 +31,7 @@ gem 'rubocop-ast', path: local_ast if Dir.exist? local_ast
 
 local_gemfile = File.expand_path('Gemfile.local', __dir__)
 eval_gemfile local_gemfile if File.exist?(local_gemfile)
+
+# TODO: remove when JRuby 9.4.10.0 will be released and available on CI
+# Ref: https://github.com/jruby/jruby/issues/7262
+gem 'jar-dependencies', '0.4.1' if RUBY_PLATFORM.include?('java')
