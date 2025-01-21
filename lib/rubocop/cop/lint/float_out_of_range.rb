@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Identifies Float literals which are, like, really really really
+      # Identifies `Float` literals which are, like, really really really
       # really really really really really big. Too big. No-one needs Floats
       # that big. If you need a float that big, something is wrong with you.
       #

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Looks for references of Regexp captures that are out of range
+      # Looks for references of `Regexp` captures that are out of range
       # and thus always returns nil.
       #
       # @safety

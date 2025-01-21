@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Do not mix named captures and numbered captures in a Regexp literal
+      # Do not mix named captures and numbered captures in a `Regexp` literal
       # because numbered capture is ignored if they're mixed.
       # Replace numbered captures with non-capturing groupings or
       # named captures.

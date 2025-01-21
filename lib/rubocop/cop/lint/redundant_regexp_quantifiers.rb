@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for redundant quantifiers inside Regexp literals.
+      # Checks for redundant quantifiers inside `Regexp` literals.
       #
       # It is always allowed when interpolation is used in a regexp literal,
       # because it's unknown what kind of string will be expanded as a result:

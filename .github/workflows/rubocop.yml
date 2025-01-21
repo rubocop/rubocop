@@ -17,7 +17,7 @@ concurrency:
 jobs:
   spec-ubuntu:
     name: Spec - ubuntu ${{ matrix.ruby }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     strategy:
       fail-fast: false
       matrix:
@@ -47,7 +47,7 @@ jobs:
 
   spec-jruby:
     name: Spec - JRuby
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -103,7 +103,7 @@ jobs:
 
   ascii_spec:
     name: Ascii Spec - ${{ matrix.os }} ${{ matrix.ruby }}
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os == 'ubuntu' && 'ubuntu-24.04-arm' || matrix.os == 'windows' && 'windows-latest' }}
 
     strategy:
       fail-fast: false
@@ -126,7 +126,7 @@ jobs:
 
   documentation_check:
     name: Documentation Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -137,7 +137,7 @@ jobs:
         run: bundle exec rake documentation_syntax_check
 
   prism:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     name: Prism
     steps:
       - uses: actions/checkout@v4
@@ -152,7 +152,7 @@ jobs:
         run: bundle exec rake prism_spec
 
   rspec4:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     name: RSpec 4
     steps:
       - uses: actions/checkout@v4

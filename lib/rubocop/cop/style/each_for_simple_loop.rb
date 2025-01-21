@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       # Checks for loops which iterate a constant number of times,
-      # using a Range literal and `#each`. This can be done more readably using
+      # using a `Range` literal and `#each`. This can be done more readably using
       # `Integer#times`.
       #
       # This check only applies if the block takes no parameters.

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for exact regexp match inside Regexp literals.
+      # Checks for exact regexp match inside `Regexp` literals.
       #
       # @example
       #
