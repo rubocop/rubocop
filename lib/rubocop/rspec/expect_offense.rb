@@ -190,8 +190,10 @@ module RuboCop
       def expect_no_offenses(source, file = nil)
         offenses = inspect_source(source, file)
 
-        # Carets given in `expect_no_offenses` should not be treated as annotations so are escaped
-        expected_annotations = AnnotatedSource.parse(source.gsub('^', '\^'))
+        # Since source given `expect_no_offenses` does not have annotations, we do not need to parse
+        # for them, and can just build an `AnnotatedSource` object from the source lines.
+        # This also prevents treating source lines that begin with a caret as an annotation.
+        expected_annotations = AnnotatedSource.new(source.each_line.to_a, [])
         actual_annotations = expected_annotations.with_offense_annotations(offenses)
         expect(actual_annotations.to_s).to eq(source)
       end
@@ -240,7 +242,7 @@ module RuboCop
             if ANNOTATION_PATTERN.match?(source_line)
               annotations << [source.size, source_line]
             else
-              source << source_line.gsub('\^', '^')
+              source << source_line
             end
           end
           annotations.each { |a| a[0] = 1 } if source.empty?
