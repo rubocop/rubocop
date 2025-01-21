@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for duplicate literal, constant, or variable elements in Set and SortedSet.
+      # Checks for duplicate literal, constant, or variable elements in `Set` and `SortedSet`.
       #
       # @example
       #

@@ -19,7 +19,7 @@ module RuboCop
       # acceptable value other than none, it will suppress the offenses
       # raised by this cop. It enforces frozen state.
       #
-      # NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
+      # NOTE: `Regexp` and `Range` literals are frozen objects since Ruby 3.0.
       #
       # NOTE: From Ruby 3.0, interpolated strings are not frozen when
       # `# frozen-string-literal: true` is used, so this cop enforces explicit
