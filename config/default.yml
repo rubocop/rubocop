@@ -1616,6 +1616,12 @@ Lint/AmbiguousRegexpLiteral:
   VersionAdded: '0.17'
   VersionChanged: '0.83'
 
+Lint/ArrayLiteralInRegexp:
+  Description: 'Checks for an array literal interpolated inside a regexp.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  SafeAutoCorrect: false
+
 Lint/AssignmentInCondition:
   Description: "Don't use assignment in conditions."
   StyleGuide: '#safe-assignment-in-condition'

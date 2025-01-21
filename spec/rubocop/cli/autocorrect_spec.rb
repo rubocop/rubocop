@@ -3792,4 +3792,55 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       '16: 20'
     RUBY
   end
+
+  it 'handles `Lint/LiteralInInterpolation`, `Lint/ArrayLiteralInRegexp`, `Style/RedundantRegexpCharacterClass`' \
+     'and `Style/RedundantRegexpEscape` together' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~'RUBY')
+      /#{%w[$ | ^ -]}/
+      /#{%w[a]}/
+    RUBY
+
+    cops = %w[
+      Lint/LiteralInInterpolation
+      Lint/ArrayLiteralInRegexp
+      Style/RedundantRegexpCharacterClass
+      Style/RedundantRegexpEscape
+    ]
+
+    status = cli.run(%W[--autocorrect-all --only #{cops.join(',')}])
+    expect(status).to eq(0)
+    expect($stdout.string).to eq(<<~'RESULT')
+      Inspecting 1 file
+      W
+
+      Offenses:
+
+      example.rb:1:2: W: [Corrected] Lint/ArrayLiteralInRegexp: Use a character class instead of interpolating an array in a regexp.
+      /#{%w[$ | ^ -]}/
+       ^^^^^^^^^^^^^^
+      example.rb:1:3: C: [Corrected] Style/RedundantRegexpEscape: Redundant escape inside regexp literal
+      /[\$\|\^\-]/
+        ^^
+      example.rb:1:5: C: [Corrected] Style/RedundantRegexpEscape: Redundant escape inside regexp literal
+      /[\$\|\^\-]/
+          ^^
+      example.rb:1:9: C: [Corrected] Style/RedundantRegexpEscape: Redundant escape inside regexp literal
+      /[\$\|\^\-]/
+              ^^
+      example.rb:2:2: W: [Corrected] Lint/ArrayLiteralInRegexp: Use a character class instead of interpolating an array in a regexp.
+      /#{%w[a]}/
+       ^^^^^^^^
+      example.rb:2:2: C: [Corrected] Style/RedundantRegexpCharacterClass: Redundant single-element character class, [a] can be replaced with a.
+      /[a]/
+       ^^^
+
+      1 file inspected, 6 offenses detected, 6 offenses corrected
+    RESULT
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~'RUBY')
+      /[$|\^-]/
+      /a/
+    RUBY
+  end
 end

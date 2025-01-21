@@ -60,7 +60,7 @@ module RuboCop
             prints_as_self?(node) &&
             # Special case for `Layout/TrailingWhitespace`
             !(space_literal?(node) && ends_heredoc_line?(node)) &&
-            # Handled by `Lint/LiteralArrayInRegexp`
+            # Handled by `Lint/ArrayLiteralInRegexp`
             !array_in_regexp?(node)
         end
 
