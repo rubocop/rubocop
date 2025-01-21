@@ -14,7 +14,7 @@ module RuboCop
       # passed multiple arguments.
       #
       # The exploded style has an `AllowedCompactTypes` configuration
-      # option that takes an Array of exception name Strings.
+      # option that takes an `Array` of exception name Strings.
       #
       # @safety
       #   This cop is unsafe because `raise Foo` calls `Foo.exception`, not `Foo.new`.

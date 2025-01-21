@@ -10,7 +10,7 @@ module RuboCop
       # parameters.
       #
       # Configuration option: Methods
-      # Should be set to use this cop. Array of hashes, where each key is the
+      # Should be set to use this cop. `Array` of hashes, where each key is the
       # method name and value - array of argument names.
       #
       # @example Methods: [{reduce: %w[a b]}]

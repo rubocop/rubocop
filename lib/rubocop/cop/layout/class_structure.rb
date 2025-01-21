@@ -3,23 +3,23 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks if the code style follows the ExpectedOrder configuration:
+      # Checks if the code style follows the `ExpectedOrder` configuration:
       #
       # `Categories` allows us to map macro names into a category.
       #
       # Consider an example of code style that covers the following order:
       #
-      # * Module inclusion (include, prepend, extend)
+      # * Module inclusion (`include`, `prepend`, `extend`)
       # * Constants
-      # * Associations (has_one, has_many)
-      # * Public attribute macros (attr_accessor, attr_writer, attr_reader)
-      # * Other macros (validates, validate)
+      # * Associations (`has_one`, `has_many`)
+      # * Public attribute macros (`attr_accessor`, `attr_writer`, `attr_reader`)
+      # * Other macros (`validates`, `validate`)
       # * Public class methods
       # * Initializer
       # * Public instance methods
-      # * Protected attribute macros (attr_accessor, attr_writer, attr_reader)
+      # * Protected attribute macros (`attr_accessor`, `attr_writer`, `attr_reader`)
       # * Protected instance methods
-      # * Private attribute macros (attr_accessor, attr_writer, attr_reader)
+      # * Private attribute macros (`attr_accessor`, `attr_writer`, `attr_reader`)
       # * Private instance methods
       #
       # You can configure the following order:

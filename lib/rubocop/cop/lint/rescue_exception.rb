@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for `rescue` blocks targeting the Exception class.
+      # Checks for `rescue` blocks targeting the `Exception` class.
       #
       # @example
       #

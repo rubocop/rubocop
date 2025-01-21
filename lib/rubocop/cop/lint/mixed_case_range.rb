@@ -8,7 +8,7 @@ module RuboCop
       # Offenses are registered for regexp character classes like `/[A-z]/`
       # as well as range objects like `('A'..'z')`.
       #
-      # NOTE: Range objects cannot be autocorrected.
+      # NOTE: `Range` objects cannot be autocorrected.
       #
       # @safety
       #   The cop autocorrects regexp character classes
