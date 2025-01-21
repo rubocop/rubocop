@@ -469,17 +469,6 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
           /test\\\/test/
         RUBY
       end
-
-      it 'handles slashes inside other non-strings' do
-        expect_offense(<<~'RUBY')
-          /test#{%w[/ \\]}test/
-                 ^^^^^^^^ Literal interpolation detected.
-        RUBY
-
-        expect_correction(<<~'RUBY')
-          /test[\"\/\", \"\\\\\"]test/
-        RUBY
-      end
     end
 
     context 'when inside a %r{} `regexp`' do
@@ -520,5 +509,11 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
         RUBY
       end
     end
+  end
+
+  it 'does not register an offense for an array inside a regexp' do
+    expect_no_offenses(<<~'RUBY')
+      /#{%w[a b c]}/
+    RUBY
   end
 end
