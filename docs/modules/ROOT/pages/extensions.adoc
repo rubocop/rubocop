@@ -90,13 +90,13 @@ Capybara-specific analysis
 factory_bot-specific analysis
 * https://github.com/rubocop/rubocop-rspec_rails[rubocop-rspec_rails] -
 RSpec Rails-specific analysis
+* https://github.com/rubocop/rubocop-i18n[rubocop-i18n] -
+i18n wrapper function analysis (`gettext` and `rails-i18n`)
 
 ==== Third-party Extensions
 
 * https://github.com/milch/rubocop-require_tools[rubocop-require_tools] -
 Dynamic analysis for missing `require` statements
-* https://github.com/puppetlabs/rubocop-i18n[rubocop-i18n] -
-i18n wrapper function analysis (`gettext` and `rails-i18n`)
 * https://github.com/chef/cookstyle[cookstyle] -
 Custom cops and config defaults for Chef Infra Cookbooks
 * https://github.com/utkarsh2102/rubocop-packaging[rubocop-packaging] -
