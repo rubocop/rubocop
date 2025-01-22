@@ -1619,7 +1619,7 @@ Lint/AmbiguousRegexpLiteral:
 Lint/ArrayLiteralInRegexp:
   Description: 'Checks for an array literal interpolated inside a regexp.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.71'
   SafeAutoCorrect: false
 
 Lint/AssignmentInCondition:
@@ -4156,7 +4156,7 @@ Style/HashSlice:
                  that can be replaced with `Hash#slice` method.
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.71'
 
 Style/HashSyntax:
   Description: >-

@@ -343,6 +343,61 @@ do_something /pattern/i
 do_something(/pattern/i)
 ----
 
+[#lintarrayliteralinregexp]
+== Lint/ArrayLiteralInRegexp
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always (Unsafe)
+| 1.71
+| -
+|===
+
+Checks for an array literal interpolated inside a regexp.
+
+When interpolating an array literal, it is converted to a string. This means
+that when inside a regexp, it acts as a character class but with additional
+quotes, spaces and commas that are likely not intended. For example,
+`/#{%w[a b c]}/` parses as `/["a", "b", "c"]/` (or `/["a, bc]/` without
+repeated characters).
+
+The cop can autocorrect to a character class (if all items in the array are a
+single character) or alternation (if the array contains longer items).
+
+NOTE: This only considers interpolated arrays that contain only strings, symbols,
+integers, and floats. Any other type is not easily convertible to a character class
+or regexp alternation.
+
+[#safety-lintarrayliteralinregexp]
+=== Safety
+
+Autocorrection is unsafe because it will change the regexp pattern, by
+removing the additional quotes, spaces and commas from the character class.
+
+[#examples-lintarrayliteralinregexp]
+=== Examples
+
+[source,ruby]
+----
+# bad
+/#{%w[a b c]}/
+
+# good
+/[abc]/
+
+# bad
+/#{%w[foo bar baz]}/
+
+# good
+/(?:foo|bar|baz)/
+
+# bad - construct a regexp rather than interpolate an array of identifiers
+/#{[foo, bar]}/
+----
+
 [#lintassignmentincondition]
 == Lint/AssignmentInCondition
 
@@ -1018,11 +1073,11 @@ require 'my_debugger/start'
 | Name | Default value | Configurable values
 
 | DebuggerMethods
-| `{"Kernel"=>["binding.irb", "Kernel.binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["page.save_and_open_page", "page.save_and_open_screenshot", "page.save_page", "page.save_screenshot", "save_and_open_page", "save_and_open_screenshot", "save_page", "save_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue", "pry"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
+| `{"Kernel" => ["binding.irb", "Kernel.binding.irb"], "Byebug" => ["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara" => ["page.save_and_open_page", "page.save_and_open_screenshot", "page.save_page", "page.save_screenshot", "save_and_open_page", "save_and_open_screenshot", "save_page", "save_screenshot"], "debug.rb" => ["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry" => ["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue", "pry"], "Rails" => ["debugger", "Kernel.debugger"], "RubyJard" => ["jard"], "WebConsole" => ["binding.console"]}`
 | 
 
 | DebuggerRequires
-| `{"debug.rb"=>["debug/open", "debug/start"]}`
+| `{"debug.rb" => ["debug/open", "debug/start"]}`
 | 
 |===
 
@@ -1129,7 +1184,7 @@ Etc::Passwd
 | Name | Default value | Configurable values
 
 | DeprecatedConstants
-| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Net::HTTPServerException"=>{"Alternative"=>"Net::HTTPClientException", "DeprecatedVersion"=>"2.6"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}, "Struct::Group"=>{"Alternative"=>"Etc::Group", "DeprecatedVersion"=>"3.0"}, "Struct::Passwd"=>{"Alternative"=>"Etc::Passwd", "DeprecatedVersion"=>"3.0"}}`
+| `{"NIL" => {"Alternative" => "nil", "DeprecatedVersion" => "2.4"}, "TRUE" => {"Alternative" => "true", "DeprecatedVersion" => "2.4"}, "FALSE" => {"Alternative" => "false", "DeprecatedVersion" => "2.4"}, "Net::HTTPServerException" => {"Alternative" => "Net::HTTPClientException", "DeprecatedVersion" => "2.6"}, "Random::DEFAULT" => {"Alternative" => "Random.new", "DeprecatedVersion" => "3.0"}, "Struct::Group" => {"Alternative" => "Etc::Group", "DeprecatedVersion" => "3.0"}, "Struct::Passwd" => {"Alternative" => "Etc::Passwd", "DeprecatedVersion" => "3.0"}}`
 | 
 |===
 
@@ -1694,7 +1749,7 @@ alias bar foo
 | -
 |===
 
-Checks for duplicate elements in Regexp character classes.
+Checks for duplicate elements in `Regexp` character classes.
 
 [#examples-lintduplicateregexpcharacterclasselement]
 === Examples
@@ -1807,7 +1862,7 @@ end
 | -
 |===
 
-Checks for duplicate literal, constant, or variable elements in Set and SortedSet.
+Checks for duplicate literal, constant, or variable elements in `Set` and `SortedSet`.
 
 [#examples-lintduplicatesetelement]
 === Examples
@@ -2808,7 +2863,7 @@ Float(x, exception: false) == nil
 | -
 |===
 
-Identifies Float literals which are, like, really really really
+Identifies `Float` literals which are, like, really really really
 really really really really really big. Too big. No-one needs Floats
 that big. If you need a float that big, something is wrong with you.
 
@@ -3470,6 +3525,9 @@ end
 
 Checks for interpolated literals.
 
+NOTE: Array literals interpolated in regexps are not handled by this cop, but
+by `Lint/ArrayLiteralInRegexp` instead.
+
 [#examples-lintliteralininterpolation]
 === Examples
 
@@ -3745,7 +3803,7 @@ Checks for mixed-case character ranges since they include likely unintended char
 Offenses are registered for regexp character classes like `/[A-z]/`
 as well as range objects like `('A'..'z')`.
 
-NOTE: Range objects cannot be autocorrected.
+NOTE: `Range` objects cannot be autocorrected.
 
 [#safety-lintmixedcaserange]
 === Safety
@@ -3782,7 +3840,7 @@ r = /[A-Za-z]/
 | -
 |===
 
-Do not mix named captures and numbered captures in a Regexp literal
+Do not mix named captures and numbered captures in a `Regexp` literal
 because numbered capture is ignored if they're mixed.
 Replace numbered captures with non-capturing groupings or
 named captures.
@@ -4483,7 +4541,7 @@ Other numeric operations that are similarly leftover from debugging or mistakes
 are handled by Lint/UselessNumericOperation.
 
 NOTE: This cop doesn't detect offenses for the `-` and `%` operator because it
-can't determine the type of `x`. If `x` is an Array or String, it doesn't perform
+can't determine the type of `x`. If `x` is an `Array` or `String`, it doesn't perform
 a numeric operation.
 
 [#examples-lintnumericoperationwithconstantresult]
@@ -4614,7 +4672,7 @@ p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
 | -
 |===
 
-Looks for references of Regexp captures that are out of range
+Looks for references of `Regexp` captures that are out of range
 and thus always returns nil.
 
 [#safety-lintoutofrangeregexpref]
@@ -5002,7 +5060,7 @@ end
 | -
 |===
 
-Checks for redundant quantifiers inside Regexp literals.
+Checks for redundant quantifiers inside `Regexp` literals.
 
 It is always allowed when interpolation is used in a regexp literal,
 because it's unknown what kind of string will be expanded as a result:
@@ -5640,7 +5698,7 @@ require_relative 'bar'
 | 0.27
 |===
 
-Checks for `rescue` blocks targeting the Exception class.
+Checks for `rescue` blocks targeting the `Exception` class.
 
 [#examples-lintrescueexception]
 === Examples
@@ -6271,11 +6329,11 @@ end
 | -
 |===
 
-Checks for Hash creation with a mutable default value.
-Creating a Hash in such a way will share the default value
+Checks for `Hash` creation with a mutable default value.
+Creating a `Hash` in such a way will share the default value
 across all keys, causing unexpected behavior when modifying it.
 
-For example, when the Hash was created with an Array as the argument,
+For example, when the `Hash` was created with an `Array` as the argument,
 calling `hash[:foo] << 'bar'` will also change the value of all
 other keys that have not been explicitly assigned to.
 
@@ -7021,7 +7079,7 @@ values.sort { |*x| x[0] <=> x[1] }
 | Name | Default value | Configurable values
 
 | Methods
-| `{"chunk_while"=>2, "each_with_index"=>2, "each_with_object"=>2, "inject"=>2, "max"=>2, "min"=>2, "minmax"=>2, "reduce"=>2, "slice_when"=>2, "sort"=>2}`
+| `{"chunk_while" => 2, "each_with_index" => 2, "each_with_object" => 2, "inject" => 2, "max" => 2, "min" => 2, "minmax" => 2, "reduce" => 2, "slice_when" => 2, "sort" => 2}`
 | 
 |===
 
@@ -7819,7 +7877,7 @@ reassignments and properly handles varied cases such as branch, loop,
 rescue, ensure, etc.
 
 This cop's autocorrection avoids cases like `a ||= 1` because removing assignment from
-operator assignment can cause NameError if this assignment has been used to declare
+operator assignment can cause `NameError` if this assignment has been used to declare
 a local variable. For example, replacing `a ||= 1` with `a || 1` may cause
 "undefined local variable or method `a' for main:Object (NameError)".
 

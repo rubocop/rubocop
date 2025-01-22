@@ -95,7 +95,7 @@ end
 | 0.77
 |===
 
-Check that the arguments on a multi-line method definition are aligned.
+Check that the arguments on a multi-line method call are aligned.
 
 [#examples-layoutargumentalignment]
 === Examples
@@ -683,23 +683,23 @@ end
 | 1.53
 |===
 
-Checks if the code style follows the ExpectedOrder configuration:
+Checks if the code style follows the `ExpectedOrder` configuration:
 
 `Categories` allows us to map macro names into a category.
 
 Consider an example of code style that covers the following order:
 
-* Module inclusion (include, prepend, extend)
+* Module inclusion (`include`, `prepend`, `extend`)
 * Constants
-* Associations (has_one, has_many)
-* Public attribute macros (attr_accessor, attr_writer, attr_reader)
-* Other macros (validates, validate)
+* Associations (`has_one`, `has_many`)
+* Public attribute macros (`attr_accessor`, `attr_writer`, `attr_reader`)
+* Other macros (`validates`, `validate`)
 * Public class methods
 * Initializer
 * Public instance methods
-* Protected attribute macros (attr_accessor, attr_writer, attr_reader)
+* Protected attribute macros (`attr_accessor`, `attr_writer`, `attr_reader`)
 * Protected instance methods
-* Private attribute macros (attr_accessor, attr_writer, attr_reader)
+* Private attribute macros (`attr_accessor`, `attr_writer`, `attr_reader`)
 * Private instance methods
 
 You can configure the following order:
@@ -833,7 +833,7 @@ end
 | Name | Default value | Configurable values
 
 | Categories
-| `{"module_inclusion"=>["include", "prepend", "extend"]}`
+| `{"module_inclusion" => ["include", "prepend", "extend"]}`
 | 
 
 | ExpectedOrder
@@ -2271,7 +2271,7 @@ end
 Checks if empty lines exist around the bodies of `begin`
 sections. This cop doesn't check empty lines at `begin` body
 beginning/end and around method definition body.
-`Style/EmptyLinesAroundBeginBody` or `Style/EmptyLinesAroundMethodBody`
+`Layout/EmptyLinesAroundBeginBody` or `Layout/EmptyLinesAroundMethodBody`
 can be used for this purpose.
 
 [#examples-layoutemptylinesaroundexceptionhandlingkeywords]
@@ -3134,7 +3134,7 @@ Checks the indentation of the first key in a hash literal
 where the opening brace and the first key are on separate lines. The
 other keys' indentations are handled by the HashAlignment cop.
 
-By default, Hash literals that are arguments in a method call with
+By default, `Hash` literals that are arguments in a method call with
 parentheses, and where the opening curly brace of the hash is on the
 same line as the opening parenthesis of the method call, shall have
 their first key indented one step (two spaces) more than the position
