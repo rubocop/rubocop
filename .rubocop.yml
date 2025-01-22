@@ -168,6 +168,7 @@ RSpec/SpecFilePathFormat:
   CustomTransform:
     GitHubActionsFormatter: github_actions_formatter
     JUnitFormatter: junit_formatter
+    OnSendWithoutOnCSend: on_send_without_on_csend
     RedundantLetRuboCopConfigNew: redundant_let_rubocop_config_new
   Exclude:
     - spec/rubocop/cop/mixin/enforce_superclass_spec.rb
