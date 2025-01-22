@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # rubocop:disable InternalAffairs/RedundantSourceRange - node here is a `NodePattern::Node`
+      # rubocop:disable InternalAffairs/RedundantSourceRange -- node here is a `NodePattern::Node`
       class NodePatternGroups
         # Walks an AST that has been processed by `InternalAffairs::NodePatternGroups::Processor`
         # in order to find `node_type` and `node_sequence` nodes that can be replaced with a node

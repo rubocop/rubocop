@@ -18,9 +18,23 @@ module RuboCop
     # @api private
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
     # @api private
+    AVAILABLE_MODES = %w[disable enable todo].freeze
+    # @api private
+    DIRECTIVE_MARKER_PATTERN = '# rubocop : '
+    # @api private
+    DIRECTIVE_MARKER_REGEXP = Regexp.new(DIRECTIVE_MARKER_PATTERN.gsub(' ', '\s*'))
+    # @api private
+    DIRECTIVE_HEADER_PATTERN = "#{DIRECTIVE_MARKER_PATTERN}((?:#{AVAILABLE_MODES.join('|')}))\\b"
+    # @api private
     DIRECTIVE_COMMENT_REGEXP = Regexp.new(
-      "# rubocop : ((?:disable|enable|todo))\\b #{COPS_PATTERN}"
+      "#{DIRECTIVE_HEADER_PATTERN} #{COPS_PATTERN}"
         .gsub(' ', '\s*')
+    )
+    # @api private
+    TRAILING_COMMENT_MARKER = '--'
+    # @api private
+    MALFORMED_DIRECTIVE_WITHOUT_COP_NAME_REGEXP = Regexp.new(
+      "\\A#{DIRECTIVE_HEADER_PATTERN}\\s*\\z".gsub(' ', '\s*')
     )
 
     def self.before_comment(line)
@@ -32,7 +46,26 @@ module RuboCop
     def initialize(comment, cop_registry = Cop::Registry.global)
       @comment = comment
       @cop_registry = cop_registry
+      @match_data = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
       @mode, @cops = match_captures
+    end
+
+    # Checks if the comment starts with `# rubocop:` marker
+    def start_with_marker?
+      comment.text.start_with?(DIRECTIVE_MARKER_REGEXP)
+    end
+
+    # Checks if the comment is malformed as a `# rubocop:` directive
+    def malformed?
+      return true if !start_with_marker? || @match_data.nil?
+
+      tail = @match_data.post_match.lstrip
+      !(tail.empty? || tail.start_with?(TRAILING_COMMENT_MARKER))
+    end
+
+    # Checks if the directive comment is missing a cop name
+    def missing_cop_name?
+      MALFORMED_DIRECTIVE_WITHOUT_COP_NAME_REGEXP.match?(comment.text)
     end
 
     # Checks if this directive relates to single line
@@ -55,7 +88,7 @@ module RuboCop
 
     # Returns match captures to directive comment pattern
     def match_captures
-      @match_captures ||= comment.text.match(DIRECTIVE_COMMENT_REGEXP)&.captures
+      @match_captures ||= @match_data&.captures
     end
 
     # Checks if this directive disables cops

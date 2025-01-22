@@ -862,12 +862,14 @@ Running `rubocop --autocorrect --disable-uncorrectable` will
 create comments to disable all offenses that can't be automatically
 corrected.
 
-Do not write anything other than cop name in the disabling comment. E.g.:
+You can add a comment to the disabling/enabling directive by prefixing it with `--`. For example:
 
 [source,ruby]
 ----
-# rubocop:disable Layout/LineLength --This is a bad comment that includes other than cop name.
+# rubocop:disable Layout/LineLength -- A comment explaining why the cop is disabled
 ----
+
+The syntax of directives can be checked using the cop `Lint/CopDirectiveSyntax`.
 
 == Temporarily enabling cops in source code
 

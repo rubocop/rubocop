@@ -1685,6 +1685,11 @@ Lint/ConstantResolution:
   # Restrict this cop from only looking at certain names
   Ignore: []
 
+Lint/CopDirectiveSyntax:
+  Description: 'Checks that `# rubocop:` directives are strictly formatted.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
