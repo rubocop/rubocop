@@ -5,6 +5,7 @@ module RuboCop
     # Common functionality for Style/HashExcept and Style/HashSlice cops.
     # It registers an offense on methods with blocks that are equivalent
     # to Hash#except or Hash#slice.
+    # rubocop:disable Metrics/ModuleLength
     module HashSubset
       include RangeHelp
       extend NodePattern::Macros
@@ -67,7 +68,11 @@ module RuboCop
 
       def extracts_hash_subset?(block)
         block_with_first_arg_check?(block) do |key_arg, send_node, method|
+          # Only consider methods that have one argument
+          return false unless send_node.arguments.one?
+
           return false unless supported_subset_method?(method)
+          return false if range_include?(send_node)
 
           case method
           when :include?, :exclude?
@@ -78,6 +83,18 @@ module RuboCop
             true
           end
         end
+      end
+
+      def range_include?(send_node)
+        # When checking `include?`, `exclude?` and `in?` for offenses, if the receiver
+        # or first argument is a range, an offense should not be registered.
+        # ie. `(1..5).include?(k)` or `k.in?('a'..'z')`
+
+        return true if send_node.first_argument.range_type?
+
+        receiver = send_node.receiver
+        receiver = receiver.child_nodes.first while receiver.begin_type?
+        receiver.range_type?
       end
 
       def supported_subset_method?(method)
@@ -166,5 +183,6 @@ module RuboCop
         range_between(node.loc.selector.begin_pos, node.parent.loc.end.end_pos)
       end
     end
+    # rubocop:enable Metrics/ModuleLength
   end
 end
