@@ -64,12 +64,9 @@ Notable `misspell` help options or flags are:
 * `-w`: Overwrite file with corrections (default is just to display)
 
 We also run [codespell](https://github.com/codespell-project/codespell) with GitHub Actions to check spelling and
-[codespell](https://pypi.org/project/codespell/) runs against a [small custom dictionary](https://github.com/rubocop/rubocop/blob/master/codespell.txt).
-`codespell` is written in [Python](https://www.python.org/) and you can run it with:
+[codespell](https://pypi.org/project/codespell/) runs against a [small custom dictionary](https://github.com/rubocop/rubocop/blob/master/.codespellrc).
 
-```console
-$ codespell --ignore-words=codespell.txt
-```
+If you have `codespell` locally available in your `$PATH`, `bundle exec rake` will run it for you.
 
 ### Linting YAML files
 

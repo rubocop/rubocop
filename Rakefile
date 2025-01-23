@@ -27,7 +27,7 @@ RuboCop::RakeTask.new(:internal_investigation)
 # The `ascii_spec` task has not been failing for a while, so it will not be run by default.
 # However, `ascii_spec` task will continue to be checked in CI. If there are any failures
 # originating from `ascii_spec` in CI, please run `bundle exec ascii_spec` to investigate.
-task default: %i[documentation_syntax_check spec prism_spec internal_investigation]
+task default: %i[codespell documentation_syntax_check spec prism_spec internal_investigation]
 
 require 'yard'
 YARD::Rake::YardocTask.new
