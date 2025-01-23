@@ -16,10 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: codespell-project/actions-codespell@v2
-        with:
-          check_filenames: true
-          check_hidden: true
-          ignore_words_file: codespell.txt
+
   misspell:
     name: Check spelling of all files in commit with misspell
     runs-on: ubuntu-latest
