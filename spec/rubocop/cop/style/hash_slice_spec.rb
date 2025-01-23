@@ -182,13 +182,25 @@ RSpec.describe RuboCop::Cop::Style::HashSlice, :config do
 
       it 'does not register an offense when using `select` and calling `include?` method on a key' do
         expect_no_offenses(<<~RUBY)
-          {foo: 1, bar: 2, baz: 3}.select { |k, v| k.include?('oo') }
+          { 'foo' => 1, 'bar' => 2, 'baz' => 3 }.select { |k, v| k.include?('oo') }
         RUBY
       end
 
       it 'does not register an offense when using `select` and calling `!include?` method on a key' do
         expect_no_offenses(<<~RUBY)
-          {foo: 1, bar: 2, baz: 3}.select { |k, v| !k.include?('oo') }
+          { 'foo' => 1, 'bar' => 2, 'baz' => 3 }.select { |k, v| !k.include?('oo') }
+        RUBY
+      end
+
+      it 'does not register an offense when using `select` with `include?` with an inclusive range receiver' do
+        expect_no_offenses(<<~RUBY)
+          { foo: 1, bar: 2, baz: 3 }.select{ |k, v| (:baa..:bbb).include?(k) }
+        RUBY
+      end
+
+      it 'does not register an offense when using `select` with `include?` with an exclusive range receiver' do
+        expect_no_offenses(<<~RUBY)
+          { foo: 1, bar: 2, baz: 3 }.select{ |k, v| (:baa...:bbb).include?(k) }
         RUBY
       end
     end
@@ -464,6 +476,18 @@ RSpec.describe RuboCop::Cop::Style::HashSlice, :config do
         it 'does not register an offense when using `select` and calling `in?` method with symbol array and second block value' do
           expect_no_offenses(<<~RUBY)
             {foo: 1, bar: 2, baz: 3}.select { |k, v| v.in?([1, 2]) }
+          RUBY
+        end
+
+        it 'does not register an offense when using `select` with `in?` with an inclusive range argument' do
+          expect_no_offenses(<<~RUBY)
+            { foo: 1, bar: 2, baz: 3 }.select{ |k, v| k.in?(:baa..:bbb) }
+          RUBY
+        end
+
+        it 'does not register an offense when using `select` with `in?` with an exclusive range argument' do
+          expect_no_offenses(<<~RUBY)
+            { foo: 1, bar: 2, baz: 3 }.select{ |k, v| k.in?(:baa...:bbb) }
           RUBY
         end
       end

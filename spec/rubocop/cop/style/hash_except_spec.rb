@@ -191,6 +191,18 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
           {foo: 1, bar: 2, baz: 3}.reject { |k, v| !k.include?('oo') }
         RUBY
       end
+
+      it 'does not register an offense when using `reject` with `!include?` with an inclusive range receiver' do
+        expect_no_offenses(<<~RUBY)
+          { foo: 1, bar: 2, baz: 3 }.reject { |k, v| (:baa..:bbb).include?(k) }
+        RUBY
+      end
+
+      it 'does not register an offense when using `reject` with `!include?` with an exclusive range receiver' do
+        expect_no_offenses(<<~RUBY)
+          { foo: 1, bar: 2, baz: 3 }.reject { |k, v| (:baa...:bbb).include?(k) }
+        RUBY
+      end
     end
 
     context 'using `exclude?`' do
@@ -464,6 +476,18 @@ RSpec.describe RuboCop::Cop::Style::HashExcept, :config do
         it 'does not register an offense when using `reject` and calling `in?` method with symbol array and second block value' do
           expect_no_offenses(<<~RUBY)
             {foo: 1, bar: 2, baz: 3}.reject { |k, v| v.in?([1, 2]) }
+          RUBY
+        end
+
+        it 'does not register an offense when using `reject` with `!in?` with an inclusive range argument' do
+          expect_no_offenses(<<~RUBY)
+            { foo: 1, bar: 2, baz: 3 }.reject{ |k, v| k.in?(:baa..:bbb) }
+          RUBY
+        end
+
+        it 'does not register an offense when using `reject` with `!in?` with an exclusive range argument' do
+          expect_no_offenses(<<~RUBY)
+            { foo: 1, bar: 2, baz: 3 }.reject{ |k, v| k.in?(:baa...:bbb) }
           RUBY
         end
       end
