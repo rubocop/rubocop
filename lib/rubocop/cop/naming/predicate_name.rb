@@ -150,16 +150,14 @@ module RuboCop
 
         private
 
+        def_node_matcher :sorbet_return_type, <<~PATTERN
+          (block (send nil? :sig) args (send nil? :returns $_type))
+        PATTERN
+
         def sorbet_sig?(node, return_type: nil)
-          left_sibling = node.left_sibling
-          return false unless left_sibling&.block_type?
-          return false if return_type.nil?
+          return false unless (type = sorbet_return_type(node.left_sibling))
 
-          returns_node = left_sibling.children.find do |child|
-            child.type == :send && child.method_name == :returns
-          end
-
-          returns_node&.arguments&.first&.source == return_type
+          type.source == return_type
         end
 
         def allowed_method_name?(method_name, prefix)
