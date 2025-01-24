@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Layout
       # Bare access modifiers (those not applying to specific methods) should be
-      # indented as deep as method definitions, or as deep as the class/module
+      # indented as deep as method definitions, or as deep as the `class`/`module`
       # keyword, depending on configuration.
       #
       # @example EnforcedStyle: indent (default)
