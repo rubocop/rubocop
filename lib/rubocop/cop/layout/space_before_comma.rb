@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks for comma (,) preceded by space.
+      # Checks for comma (`,`) preceded by space.
       #
       # @example
       #   # bad

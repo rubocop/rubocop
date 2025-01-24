@@ -3,9 +3,9 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks for colon (:) not followed by some kind of space.
+      # Checks for colon (`:`) not followed by some kind of space.
       # N.B. this cop does not handle spaces after a ternary operator, which are
-      # instead handled by Layout/SpaceAroundOperators.
+      # instead handled by `Layout/SpaceAroundOperators`.
       #
       # @example
       #   # bad
