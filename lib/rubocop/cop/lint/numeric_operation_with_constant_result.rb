@@ -9,7 +9,7 @@ module RuboCop
       # As such, they can be replaced with that result.
       # These are probably leftover from debugging, or are mistakes.
       # Other numeric operations that are similarly leftover from debugging or mistakes
-      # are handled by Lint/UselessNumericOperation.
+      # are handled by `Lint/UselessNumericOperation`.
       #
       # NOTE: This cop doesn't detect offenses for the `-` and `%` operator because it
       # can't determine the type of `x`. If `x` is an `Array` or `String`, it doesn't perform

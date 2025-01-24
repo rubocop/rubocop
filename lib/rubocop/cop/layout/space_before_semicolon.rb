@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # Checks for semicolon (;) preceded by space.
+      # Checks for semicolon (`;`) preceded by space.
       #
       # @example
       #   # bad
