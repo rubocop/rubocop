@@ -67,7 +67,7 @@ module RuboCop
 
         # @!method if_with_boolean_literal_branches?(node)
         def_node_matcher :if_with_boolean_literal_branches?, <<~PATTERN
-          (if #return_boolean_value? {(true) (false) | (false) (true)})
+          (if #return_boolean_value? <true false>)
         PATTERN
         # @!method double_negative?(node)
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
