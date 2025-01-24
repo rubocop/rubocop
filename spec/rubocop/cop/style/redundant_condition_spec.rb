@@ -569,6 +569,179 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
     end
+
+    context 'when `true` as the true branch' do
+      it 'registers an offense and autocorrects when true is used as the true branch' do
+        expect_offense(<<~RUBY)
+          if a.zero?
+          ^^^^^^^^^^ Use double pipes `||` instead.
+            true
+          else
+            a
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a.zero? || a
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects when true is used as the true branch and the false branch is a string' do
+        expect_offense(<<~RUBY)
+          if b.nil?
+          ^^^^^^^^^ Use double pipes `||` instead.
+            true
+          else
+            'hello world'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b.nil? || 'hello world'
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects when true is used as the true branch and the false branch is an array' do
+        expect_offense(<<~RUBY)
+          if c.empty?
+          ^^^^^^^^^^^ Use double pipes `||` instead.
+            true
+          else
+            [1, 2, 3]
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          c.empty? || [1, 2, 3]
+        RUBY
+      end
+
+      context 'when if branch has a comment or else branch has a comment' do
+        it 'does not autocorrect when the true branch has a comment after it' do
+          expect_offense(<<~RUBY)
+            if a.zero?
+            ^^^^^^^^^^ Use double pipes `||` instead.
+              true # comment
+            else
+              a
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'does not autocorrect when the true branch has a comment before it' do
+          expect_offense(<<~RUBY)
+            if a.zero?
+            ^^^^^^^^^^ Use double pipes `||` instead.
+              # comment
+              true
+            else
+              a
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'does not autocorrect when the false branch has a comment after it' do
+          expect_offense(<<~RUBY)
+            if a.zero?
+            ^^^^^^^^^^ Use double pipes `||` instead.
+              true
+            else
+              a # comment
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'does not autocorrect when the false branch has a comment before it' do
+          expect_offense(<<~RUBY)
+            if a.zero?
+            ^^^^^^^^^^ Use double pipes `||` instead.
+              true
+            else
+              # comment
+              a
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+    end
+
+    context 'when the true branch is `not true`' do
+      it 'does not register an offense when the true branch is a string' do
+        expect_no_offenses(<<~RUBY)
+          if a.zero?
+            'true'
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the true branch is a quoted string' do
+        expect_no_offenses(<<~RUBY)
+          if a.zero?
+            "true"
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the true branch is false' do
+        expect_no_offenses(<<~RUBY)
+          if a.zero?
+            false
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the true branch is a number' do
+        expect_no_offenses(<<~RUBY)
+          if a.zero?
+            1
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when there is no else branch' do
+        expect_no_offenses(<<~RUBY)
+          if a.zero?
+            true
+          else
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when there is no if branch' do
+        expect_no_offenses(<<~RUBY)
+          if a.zero?
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when there are two different branches' do
+        expect_no_offenses(<<~RUBY)
+          if a.zero?
+            a
+          else
+            b
+          end
+        RUBY
+      end
+    end
   end
 
   context 'ternary expression (?:)' do
@@ -725,6 +898,106 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
 
         expect_correction(<<~RUBY)
           a || (b and c)
+        RUBY
+      end
+    end
+
+    context 'when `true` as the true branch' do
+      it 'registers an offense and autocorrects when the true branch is true and the false branch is a variable' do
+        expect_offense(<<~RUBY)
+          a.zero? ? true : a
+                  ^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a.zero? || a
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects when the true branch is true and the false branch is a number' do
+        expect_offense(<<~RUBY)
+          a.zero? ? true : 5
+                  ^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a.zero? || 5
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects when the true branch is true and the false branch is a string' do
+        expect_offense(<<~RUBY)
+          a.zero? ? true : 'a string'
+                  ^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a.zero? || 'a string'
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects when the true branch is true and the false branch is assigned to a variable' do
+        expect_offense(<<~RUBY)
+          something = a.zero? ? true : a
+                              ^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          something = a.zero? || a
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects when the true branch is true and the false branch is an array' do
+        expect_offense(<<~RUBY)
+          b.nil? ? true : [1, 2, 3]
+                 ^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b.nil? || [1, 2, 3]
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects assignment when the true branch is true and the false branch is a variable' do
+        expect_offense(<<~RUBY)
+          something = a.nil? ? true : a
+                             ^^^^^^^^ Use double pipes `||` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          something = a.nil? || a
+        RUBY
+      end
+    end
+
+    context 'when the true branch is `not true`' do
+      it 'does not register an offense when the true branch is a string' do
+        expect_no_offenses(<<~RUBY)
+          a.zero? ? 'true' : a
+        RUBY
+      end
+
+      it 'does not register an offense when the true branch is a quoted string' do
+        expect_no_offenses(<<~RUBY)
+          a.zero? ? "true" : a
+        RUBY
+      end
+
+      it 'does not register an offense when the true branch is false' do
+        expect_no_offenses(<<~RUBY)
+          a.zero? ? false : a
+        RUBY
+      end
+
+      it 'does not register an offense when the true branch is a number' do
+        expect_no_offenses(<<~RUBY)
+          a.zero? ? 1 : a
+        RUBY
+      end
+
+      it 'does not register an offense when the true and false branches are different variables' do
+        expect_no_offenses(<<~RUBY)
+          a.zero? ? a : b
         RUBY
       end
     end

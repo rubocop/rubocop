@@ -42,6 +42,22 @@ module RuboCop
       #     c
       #   end
       #
+      #   # bad
+      #   a.nil? ? true : a
+      #
+      #   # good
+      #   a.nil? || a
+      #
+      #   # bad
+      #   if a.nil?
+      #     true
+      #   else
+      #     a
+      #   end
+      #
+      #   # good
+      #   a.nil? || a
+      #
       class RedundantCondition < Base
         include CommentsHelp
         include RangeHelp
@@ -129,6 +145,16 @@ module RuboCop
           return true if condition == if_branch
 
           # e.g.
+          #   a.nil? ? true : a
+          # or
+          #   if a.nil?
+          #     true
+          #   else
+          #     a
+          #   end
+          return true if if_branch_is_true_type_and_else_is_not?(node)
+
+          # e.g.
           #   if foo
           #     @value = foo
           #   else
@@ -144,6 +170,12 @@ module RuboCop
           #   end
           branches_have_method?(node) && condition == if_branch.first_argument &&
             !use_hash_key_access?(if_branch)
+        end
+
+        def if_branch_is_true_type_and_else_is_not?(node)
+          return false unless node.ternary? || node.if?
+
+          node.if_branch&.true_type? && node.else_branch && !node.else_branch.true_type?
         end
 
         def branches_have_assignment?(node)
@@ -194,6 +226,8 @@ module RuboCop
             argument_source = if_branch.first_argument.source
 
             "#{if_branch.receiver.source} #{if_branch.method_name} (#{argument_source}"
+          elsif if_branch.true_type?
+            if_branch.parent.condition.source
           else
             if_branch.source
           end
