@@ -81,21 +81,16 @@ module RuboCop
           (node.numeric_type? && node.value.zero?) || node.nil_type?
         end
 
-        # rubocop:disable Metrics/PerceivedComplexity
         def check_send(node)
           if node.arithmetic_operation?
             float?(node.receiver) || float?(node.first_argument)
           elsif FLOAT_RETURNING_METHODS.include?(node.method_name)
             true
           elsif node.receiver&.float_type?
-            if FLOAT_INSTANCE_METHODS.include?(node.method_name)
-              true
-            else
+            FLOAT_INSTANCE_METHODS.include?(node.method_name) ||
               check_numeric_returning_method(node)
-            end
           end
         end
-        # rubocop:enable Metrics/PerceivedComplexity
 
         def check_numeric_returning_method(node)
           return false unless node.receiver

@@ -1,0 +1,1 @@
+* [#13729](https://github.com/rubocop/rubocop/pull/13729): Update `Style/RedundantCondition` cop to detect conditional expressions where the true branch is `true` and suggest replacing them with a logical OR. ([@datpmt][])
