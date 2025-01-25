@@ -21,12 +21,8 @@ module RuboCop
       #   args += foo
       #   hash.merge!(other)
       #
-      #   # bad
-      #   self.foo = foo.concat(ary)
-      #
       #   # good
       #   foo.concat(ary)
-      #   self.foo += ary
       #
       class RedundantSelfAssignment < Base
         include RangeHelp
@@ -48,6 +44,16 @@ module RuboCop
           cvasgn: :cvar,
           gvasgn: :gvar
         }.freeze
+
+        # @!method redundant_self_assignment?
+        def_node_matcher :redundant_self_assignment?, <<~PATTERN
+          (call
+            %1 _
+            (call
+              (call
+                %1 %2) #method_returning_self?
+              ...))
+        PATTERN
 
         # rubocop:disable Metrics/AbcSize
         def on_lvasgn(node)
@@ -85,31 +91,10 @@ module RuboCop
           METHODS_RETURNING_SELF.include?(method_name)
         end
 
-        # @!method redundant_self_assignment?(node, method_name)
-        def_node_matcher :redundant_self_assignment?, <<~PATTERN
-          (send
-            (self) _
-            (call
-              (send
-                {(self) nil?} %1) #method_returning_self?
-              ...))
-        PATTERN
-
-        # @!method redundant_nonself_assignment?(node, receiver, method_name)
-        def_node_matcher :redundant_nonself_assignment?, <<~PATTERN
-          (call
-            %1 _
-            (call
-              (call
-                %1 %2) #method_returning_self?
-              ...))
-        PATTERN
-
         def redundant_assignment?(node)
-          receiver_name = node.method_name.to_s[0...-1].to_sym
+          receiver_name = node.method_name.to_s.delete_suffix('=').to_sym
 
-          redundant_self_assignment?(node, receiver_name) ||
-            redundant_nonself_assignment?(node, node.receiver, receiver_name)
+          redundant_self_assignment?(node, node.receiver, receiver_name)
         end
 
         def correction_range(node)
