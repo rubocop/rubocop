@@ -70,25 +70,15 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when assigning to attribute of `self`' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when assigning to attribute of `self`' do
+    expect_no_offenses(<<~RUBY)
       self.foo = foo.concat(ary)
-               ^ Redundant self assignment detected. Method `concat` modifies its receiver in place.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      foo.concat(ary)
     RUBY
   end
 
-  it 'registers an offense and corrects when assigning to attribute of `self` with safe navigation' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when assigning to attribute of `self` with safe navigation' do
+    expect_no_offenses(<<~RUBY)
       self.foo = foo&.concat(ary)
-               ^ Redundant self assignment detected. Method `concat` modifies its receiver in place.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      foo&.concat(ary)
     RUBY
   end
 
