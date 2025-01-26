@@ -160,9 +160,6 @@ RSpec:
       - expect_no_offenses
       - expect_offense
 
-RSpec/ExampleWithoutDescription:
-  EnforcedStyle: single_line_only
-
 RSpec/PredicateMatcher:
   # Also consider `be(true)` and `be(false)` as offenses, instead of only `be_truthy` and `be_falsy`
   Strict: false
