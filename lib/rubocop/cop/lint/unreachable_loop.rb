@@ -108,7 +108,7 @@ module RuboCop
         private
 
         def loop_method?(node)
-          return false unless node.block_type? || node.numblock_type?
+          return false unless node.any_block_type?
 
           send_node = node.send_node
           loopable = send_node.enumerable_method? || send_node.enumerator_method? ||

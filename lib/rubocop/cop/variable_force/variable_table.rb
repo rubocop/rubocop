@@ -100,7 +100,7 @@ module RuboCop
 
             # Only block scope allows referencing outer scope variables.
             node = scope.node
-            return nil unless node.block_type? || node.numblock_type?
+            return nil unless node.any_block_type?
           end
 
           nil
@@ -113,14 +113,14 @@ module RuboCop
         def accessible_variables
           scope_stack.reverse_each.with_object([]) do |scope, variables|
             variables.concat(scope.variables.values)
-            break variables unless scope.node.block_type? || scope.node.numblock_type?
+            break variables unless scope.node.any_block_type?
           end
         end
 
         private
 
         def mark_variable_as_captured_by_block_if_so(variable)
-          return unless current_scope.node.block_type? || current_scope.node.numblock_type?
+          return unless current_scope.node.any_block_type?
           return if variable.scope == current_scope
 
           variable.capture_with_block!

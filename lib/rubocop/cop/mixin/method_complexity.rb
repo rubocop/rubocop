@@ -35,7 +35,7 @@ module RuboCop
 
       # @!method define_method?(node)
       def_node_matcher :define_method?, <<~PATTERN
-        ({block numblock}
+        (any_block
          (send nil? :define_method ({sym str} $_)) _ _)
       PATTERN
 

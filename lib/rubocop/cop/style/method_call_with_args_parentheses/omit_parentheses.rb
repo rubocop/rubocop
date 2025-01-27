@@ -135,7 +135,7 @@ module RuboCop
             node.parent&.class_type? && node.parent.single_line?
           end
 
-          # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity
+          # rubocop:disable Metrics/PerceivedComplexity
           def call_with_ambiguous_arguments?(node)
             call_with_braced_block?(node) ||
               call_in_argument_with_block?(node) ||
@@ -144,11 +144,11 @@ module RuboCop
               hash_literal_in_arguments?(node) ||
               ambiguous_range_argument?(node) ||
               node.descendants.any? do |n|
-                n.forwarded_args_type? || n.block_type? || n.numblock_type? ||
+                n.forwarded_args_type? || n.any_block_type? ||
                   ambiguous_literal?(n) || logical_operator?(n)
               end
           end
-          # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
+          # rubocop:enable Metrics/PerceivedComplexity
 
           def call_with_braced_block?(node)
             (node.call_type? || node.super_type?) && node.block_node&.braces?

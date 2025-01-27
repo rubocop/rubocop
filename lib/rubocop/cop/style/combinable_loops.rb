@@ -98,7 +98,7 @@ module RuboCop
         end
 
         def same_collection_looping_block?(node, sibling)
-          return false if sibling.nil? || (!sibling.block_type? && !sibling.numblock_type?)
+          return false if sibling.nil? || !sibling.any_block_type?
 
           sibling.method?(node.method_name) &&
             sibling.receiver == node.receiver &&
@@ -118,7 +118,7 @@ module RuboCop
 
         def correct_end_of_block(corrector, node)
           return unless node.left_sibling.respond_to?(:braces?)
-          return if node.right_sibling&.block_type? || node.right_sibling&.numblock_type?
+          return if node.right_sibling&.any_block_type?
 
           end_of_block = node.left_sibling.braces? ? '}' : ' end'
           corrector.remove(node.loc.end)

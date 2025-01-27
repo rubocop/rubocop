@@ -159,12 +159,12 @@ module RuboCop
 
         # @!method dynamic_method_definition?(node)
         def_node_matcher :dynamic_method_definition?, <<~PATTERN
-          {(send nil? :define_method ...) ({block numblock} (send nil? :define_method ...) ...)}
+          {(send nil? :define_method ...) (any_block (send nil? :define_method ...) ...)}
         PATTERN
 
         # @!method class_or_instance_eval?(node)
         def_node_matcher :class_or_instance_eval?, <<~PATTERN
-          ({block numblock} (send _ {:class_eval :instance_eval}) ...)
+          (any_block (send _ {:class_eval :instance_eval}) ...)
         PATTERN
 
         def check_node(node)
@@ -282,7 +282,7 @@ module RuboCop
             matcher_name = :"#{m}_block?"
             unless respond_to?(matcher_name)
               self.class.def_node_matcher matcher_name, <<~PATTERN
-                ({block numblock} (send {nil? const} {:#{m}} ...) ...)
+                (any_block (send {nil? const} {:#{m}} ...) ...)
               PATTERN
             end
 

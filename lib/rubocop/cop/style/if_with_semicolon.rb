@@ -66,7 +66,7 @@ module RuboCop
 
         def use_masgn_or_block_in_branches?(node)
           node.branches.compact.any? do |branch|
-            branch.masgn_type? || branch.block_type? || branch.numblock_type?
+            branch.masgn_type? || branch.any_block_type?
           end
         end
 

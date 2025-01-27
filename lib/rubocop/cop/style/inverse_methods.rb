@@ -60,18 +60,18 @@ module RuboCop
         def_node_matcher :inverse_candidate?, <<~PATTERN
           {
             (send $(call $(...) $_ $...) :!)
-            (send ({block numblock} $(call $(...) $_) $...) :!)
+            (send (any_block $(call $(...) $_) $...) :!)
             (send (begin $(call $(...) $_ $...)) :!)
           }
         PATTERN
 
         # @!method inverse_block?(node)
         def_node_matcher :inverse_block?, <<~PATTERN
-          ({block numblock} $(call (...) $_) ... { $(call ... :!)
-                                                   $(send (...) {:!= :!~} ...)
-                                                   (begin ... $(call ... :!))
-                                                   (begin ... $(send (...) {:!= :!~} ...))
-                                                 })
+          (any_block $(call (...) $_) ... { $(call ... :!)
+                                            $(send (...) {:!= :!~} ...)
+                                            (begin ... $(call ... :!))
+                                            (begin ... $(send (...) {:!= :!~} ...))
+                                          })
         PATTERN
 
         def on_send(node)

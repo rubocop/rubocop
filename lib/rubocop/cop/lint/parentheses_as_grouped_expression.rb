@@ -38,14 +38,10 @@ module RuboCop
 
         def valid_context?(node)
           return true unless node.arguments.one? && node.first_argument.parenthesized_call?
-          return true if first_argument_block_type?(node.first_argument)
+          return true if node.first_argument.any_block_type?
 
           node.operator_method? || node.setter_method? || chained_calls?(node) ||
             valid_first_argument?(node.first_argument)
-        end
-
-        def first_argument_block_type?(first_arg)
-          first_arg.block_type? || first_arg.numblock_type?
         end
 
         def valid_first_argument?(first_arg)

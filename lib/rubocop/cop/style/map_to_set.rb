@@ -33,7 +33,7 @@ module RuboCop
         # @!method map_to_set?(node)
         def_node_matcher :map_to_set?, <<~PATTERN
           {
-            $(call ({block numblock} $(call _ {:map :collect}) ...) :to_set)
+            $(call (any_block $(call _ {:map :collect}) ...) :to_set)
             $(call $(call _ {:map :collect} (block_pass sym)) :to_set)
           }
         PATTERN

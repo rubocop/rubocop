@@ -97,7 +97,7 @@ module RuboCop
 
         # @!method class_new_block(node)
         def_node_matcher :class_new_block, <<~RUBY
-          ({block numblock}
+          (any_block
             (send
               (const {nil? cbase} :Class) :new $_) ...)
         RUBY

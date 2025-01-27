@@ -72,7 +72,7 @@ module RuboCop
         def_node_matcher :method_definition, <<~PATTERN
           {
             (def %1 ...)
-            ({block numblock} (send _ :define_method (sym %1)) ...)
+            (any_block (send _ :define_method (sym %1)) ...)
           }
         PATTERN
 

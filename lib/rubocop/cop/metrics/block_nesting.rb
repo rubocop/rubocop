@@ -52,7 +52,7 @@ module RuboCop
         def consider_node?(node)
           return true if NESTING_BLOCKS.include?(node.type)
 
-          count_blocks? && (node.block_type? || node.numblock_type?)
+          count_blocks? && node.any_block_type?
         end
 
         def message(max)

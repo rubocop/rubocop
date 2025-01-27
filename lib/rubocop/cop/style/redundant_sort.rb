@@ -93,9 +93,9 @@ module RuboCop
             (call $(call _ $:sort_by _) ${:last :first})
             (send $(send _ $:sort_by _) ${:[] :at :slice} {(int 0) (int -1)})
 
-            (call ({block numblock} $(call _ ${:sort_by :sort}) ...) ${:last :first})
+            (call (any_block $(call _ ${:sort_by :sort}) ...) ${:last :first})
             (call
-              ({block numblock} $(call _ ${:sort_by :sort}) ...)
+              (any_block $(call _ ${:sort_by :sort}) ...)
               ${:[] :at :slice} {(int 0) (int -1)}
             )
           }

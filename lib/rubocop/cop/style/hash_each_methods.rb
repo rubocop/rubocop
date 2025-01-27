@@ -44,7 +44,7 @@ module RuboCop
 
         # @!method kv_each(node)
         def_node_matcher :kv_each, <<~PATTERN
-          ({block numblock} $(call (call _ ${:keys :values}) :each) ...)
+          (any_block $(call (call _ ${:keys :values}) :each) ...)
         PATTERN
 
         # @!method each_arguments(node)
@@ -162,10 +162,7 @@ module RuboCop
 
         def use_array_converter_method_as_preceding?(node)
           return false unless (preceding_method = node.children.first.children.first)
-          unless preceding_method.call_type? ||
-                 preceding_method.block_type? || preceding_method.numblock_type?
-            return false
-          end
+          return false unless preceding_method.call_type? || preceding_method.any_block_type?
 
           ARRAY_CONVERTER_METHODS.include?(preceding_method.method_name)
         end

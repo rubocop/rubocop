@@ -76,7 +76,7 @@ module RuboCop
           elsif node.if? && node.parent && parentheses?(node.parent)
             node.parent.loc.end.line
           end
-        elsif node.block_type? || node.numblock_type?
+        elsif node.any_block_type?
           node.loc.end.line
         elsif (next_sibling = node.right_sibling) && next_sibling.is_a?(AST::Node) &&
               next_sibling.source_range
