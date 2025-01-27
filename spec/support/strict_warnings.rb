@@ -18,6 +18,7 @@ module StrictWarnings
     /`Process` does not respond to `fork` method/, # JRuby
     /File#readline accesses caller method's state and should not be aliased/, # JRuby, test stub
     /instance variable @.* not initialized/, # Ruby 2.7
+    /\[server\] Unknown severity: UNKNOWN/, # RuboCop's built-in LSP API in spec
     /`inspect_file` is deprecated\. Use `investigate` instead\./, # RuboCop's deprecated API in spec
     /`forces` is deprecated./, # RuboCop's deprecated API in spec
     /`support_autocorrect\?` is deprecated\./, # RuboCop's deprecated API in spec
