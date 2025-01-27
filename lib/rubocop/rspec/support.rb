@@ -10,6 +10,7 @@ require_relative 'shared_contexts'
 
 RSpec.configure do |config|
   config.include CopHelper
+  config.include RuboCop::RSpec::ExpectOffense
   config.include HostEnvironmentSimulatorHelper
   config.include_context 'config', :config
   config.include_context 'isolated environment', :isolated_environment
