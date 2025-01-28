@@ -39,7 +39,7 @@ module RuboCop
 
         def offending_range(node)
           receiver = node.receiver
-          return unless receiver&.block_type?
+          return unless receiver&.any_block_type?
 
           receiver_location = receiver.loc
           closing_block_delimiter_line_num = receiver_location.end.line
