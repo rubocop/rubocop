@@ -13,6 +13,20 @@ module RuboCop
       # The default variable name is `block`. If the name is already in use, it will not be
       # autocorrected.
       #
+      # [NOTE]
+      # --
+      # Because of a bug in Ruby 3.3.0, when a block is referenced inside of another block,
+      # no offense will be registered until Ruby 3.4:
+
+      # [source,ruby]
+      # ----
+      # def foo(&block)
+      #   # Using an anonymous block would be a syntax error on Ruby 3.3.0
+      #   block_method { bar(&block) }
+      # end
+      # ----
+      # --
+      #
       # @example EnforcedStyle: anonymous (default)
       #
       #   # bad
@@ -90,21 +104,11 @@ module RuboCop
           last_argument.source == block_pass_node.source
         end
 
-        # Prevents the following syntax error:
-        #
-        # # foo.rb
-        # def foo(&)
-        #   block_method do
-        #     bar(&)
-        #   end
-        # end
-        #
-        # $ ruby -vc foo.rb
-        # ruby 3.3.0 (2023-12-25 revision 5124f9ac75) [x86_64-darwin22]
-        # foo.rb: foo.rb:4: anonymous block parameter is also used within block (SyntaxError)
-        #
+        # Ruby 3.3.0 had a bug where accessing an anonymous block argument inside of a block
+        # was a syntax error in unambiguous cases: https://bugs.ruby-lang.org/issues/20090
+        # We disallow this also for earlier Ruby versions so that code is forwards compatible.
         def invalidates_syntax?(block_pass_node)
-          block_pass_node.each_ancestor(:block, :numblock).any?
+          target_ruby_version <= 3.3 && block_pass_node.each_ancestor(:block, :numblock).any?
         end
 
         def use_kwarg_in_method_definition?(node)

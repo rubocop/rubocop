@@ -31,6 +31,20 @@ module RuboCop
       #
       # This cop handles not only method forwarding but also forwarding to `super`.
       #
+      # [NOTE]
+      # --
+      # Because of a bug in Ruby 3.3.0, when a block is referenced inside of another block,
+      # no offense will be registered until Ruby 3.4:
+
+      # [source,ruby]
+      # ----
+      # def foo(&block)
+      #   # Using an anonymous block would be a syntax error on Ruby 3.3.0
+      #   block_method { bar(&block) }
+      # end
+      # ----
+      # --
+      #
       # @example
       #   # bad
       #   def foo(*args, &block)
@@ -191,9 +205,7 @@ module RuboCop
 
           send_classifications.each do |send_node, c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
             if !forward_rest && !forward_kwrest && c != :all_anonymous
-              # Prevents `anonymous block parameter is also used within block (SyntaxError)` occurs
-              # in Ruby 3.3.0.
-              if outside_block?(forward_block_arg)
+              if allow_anonymous_forwarding_in_block?(forward_block_arg)
                 register_forward_block_arg_offense(!forward_rest, node.arguments, block_arg)
                 register_forward_block_arg_offense(!forward_rest, send_node, forward_block_arg)
               end
@@ -214,24 +226,22 @@ module RuboCop
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def add_post_ruby_32_offenses(def_node, send_classifications, forwardable_args)
           return unless use_anonymous_forwarding?
-          return if send_inside_block?(send_classifications)
+          return unless all_forwarding_offenses_correctable?(send_classifications)
 
           rest_arg, kwrest_arg, block_arg = *forwardable_args
 
           send_classifications.each do |send_node, _c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
-            if outside_block?(forward_rest)
+            if allow_anonymous_forwarding_in_block?(forward_rest)
               register_forward_args_offense(def_node.arguments, rest_arg)
               register_forward_args_offense(send_node, forward_rest)
             end
 
-            if outside_block?(forward_kwrest)
+            if allow_anonymous_forwarding_in_block?(forward_kwrest)
               register_forward_kwargs_offense(!forward_rest, def_node.arguments, kwrest_arg)
               register_forward_kwargs_offense(!forward_rest, send_node, forward_kwrest)
             end
 
-            # Prevents `anonymous block parameter is also used within block (SyntaxError)` occurs
-            # in Ruby 3.3.0.
-            if outside_block?(forward_block_arg)
+            if allow_anonymous_forwarding_in_block?(forward_block_arg)
               register_forward_block_arg_offense(!forward_rest, def_node.arguments, block_arg)
               register_forward_block_arg_offense(!forward_rest, send_node, forward_block_arg)
             end
@@ -293,8 +303,23 @@ module RuboCop
           redundant_arg_names.include?(arg.source) ? arg : nil
         end
 
-        def outside_block?(node)
+        # Checks if forwarding is uses both in blocks and outside of blocks.
+        # On Ruby 3.3.0, anonymous block forwarding in blocks can be is a syntax
+        # error, so we only want to register an offense if we can change all occurrences.
+        def all_forwarding_offenses_correctable?(send_classifications)
+          return true if target_ruby_version >= 3.4
+
+          send_classifications.none? do |send_node, *|
+            send_node.each_ancestor(:block, :numblock).any?
+          end
+        end
+
+        # Ruby 3.3.0 had a bug where accessing an anonymous block argument inside of a block
+        # was a syntax error in unambiguous cases: https://bugs.ruby-lang.org/issues/20090
+        # We disallow this also for earlier Ruby versions so that code is forwards compatible.
+        def allow_anonymous_forwarding_in_block?(node)
           return false unless node
+          return true if target_ruby_version >= 3.4
 
           node.each_ancestor(:block, :numblock).none?
         end
@@ -355,12 +380,6 @@ module RuboCop
 
         def use_anonymous_forwarding?
           cop_config.fetch('UseAnonymousForwarding', false)
-        end
-
-        def send_inside_block?(send_classifications)
-          send_classifications.any? do |send_node, *|
-            send_node.each_ancestor(:block, :numblock).any?
-          end
         end
 
         def add_parens_if_missing(node, corrector)
