@@ -59,6 +59,7 @@ module RuboCop
 
         def on_send(node)
           return unless (source_range = redundant_source_range(node))
+          return unless source_range.receiver
           return if source_range.receiver.send_type? && source_range.receiver.method?(:buffer)
 
           selector = source_range.loc.selector
