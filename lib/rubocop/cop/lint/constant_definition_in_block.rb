@@ -68,12 +68,12 @@ module RuboCop
 
         # @!method constant_assigned_in_block?(node)
         def_node_matcher :constant_assigned_in_block?, <<~PATTERN
-          ({^block_type? [^begin_type? ^^block_type?]} nil? ...)
+          ({^any_block [^begin ^^any_block]} nil? ...)
         PATTERN
 
         # @!method module_defined_in_block?(node)
         def_node_matcher :module_defined_in_block?, <<~PATTERN
-          ({^block_type? [^begin_type? ^^block_type?]} ...)
+          ({^any_block [^begin ^^any_block]} ...)
         PATTERN
 
         def on_casgn(node)
@@ -92,7 +92,7 @@ module RuboCop
         private
 
         def method_name(node)
-          node.ancestors.find(&:block_type?).method_name
+          node.ancestors.find(&:any_block_type?).method_name
         end
       end
     end
