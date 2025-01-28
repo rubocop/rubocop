@@ -109,7 +109,7 @@ module RuboCop
         return if dispatch_node.parent && parentheses?(dispatch_node.parent)
         return if last_expression?(dispatch_node) && !method_dispatch_as_argument?(dispatch_node)
 
-        def_node = node.each_ancestor(:send, :csend, :super, :yield).first
+        def_node = node.each_ancestor(:call, :super, :yield).first
 
         DefNode.new(def_node) unless def_node && def_node.arguments.empty?
       end

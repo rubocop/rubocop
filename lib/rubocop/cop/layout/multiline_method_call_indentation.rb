@@ -224,7 +224,7 @@ module RuboCop
         end
 
         def find_multiline_block_chain_node(node)
-          return unless (block_node = node.each_descendant(:block, :numblock).first)
+          return unless (block_node = node.each_descendant(:any_block).first)
           return unless block_node.multiline? && block_node.parent.call_type?
 
           if node.receiver.call_type?

@@ -279,9 +279,9 @@ module RuboCop
         end
 
         def do_end_block_in_method_chain?(begin_node, node)
-          return false unless (block = node.each_descendant(:block, :numblock).first)
+          return false unless (block = node.each_descendant(:any_block).first)
 
-          block.keywords? && begin_node.each_ancestor(:send, :csend).any?
+          block.keywords? && begin_node.each_ancestor(:call).any?
         end
       end
     end

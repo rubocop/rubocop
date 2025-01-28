@@ -26,7 +26,7 @@ module RuboCop
 
         def on_lvasgn(node)
           return unless node.name == :it
-          return unless node.each_ancestor(:block, :numblock).any?
+          return unless node.each_ancestor(:any_block).any?
 
           add_offense(node.loc.name)
         end

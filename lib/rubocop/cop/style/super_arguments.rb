@@ -136,7 +136,7 @@ module RuboCop
           # Checks if the send node of a block is the given super node,
           # or a method chain containing it.
           return false unless parent_node
-          return false unless parent_node.type?(:block, :numblock)
+          return false unless parent_node.any_block_type?
 
           parent_node.send_node.each_node(:super).any?(super_node)
         end

@@ -65,7 +65,7 @@ module RuboCop
           return if node.last_argument&.block_pass_type?
 
           if node.method?(:each) && !node.parent&.block_type?
-            ancestor_node = node.each_ancestor(:send, :csend).detect do |ancestor|
+            ancestor_node = node.each_ancestor(:call).detect do |ancestor|
               ancestor.receiver == node &&
                 (RESTRICT_ON_SEND.include?(ancestor.method_name) || ancestor.method?(:reverse_each))
             end

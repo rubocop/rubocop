@@ -162,7 +162,7 @@ module RuboCop
 
           restarg, kwrestarg, blockarg = extract_forwardable_args(node.arguments)
           forwardable_args = redundant_forwardable_named_args(restarg, kwrestarg, blockarg)
-          send_nodes = node.each_descendant(:send, :csend, :super, :yield).to_a
+          send_nodes = node.each_descendant(:call, :super, :yield).to_a
 
           send_classifications = classify_send_nodes(
             node, send_nodes, non_splat_or_block_pass_lvar_references(node.body), forwardable_args
@@ -310,7 +310,7 @@ module RuboCop
           return true if target_ruby_version >= 3.4
 
           send_classifications.none? do |send_node, *|
-            send_node.each_ancestor(:block, :numblock).any?
+            send_node.each_ancestor(:any_block).any?
           end
         end
 
@@ -321,7 +321,7 @@ module RuboCop
           return false unless node
           return true if target_ruby_version >= 3.4
 
-          node.each_ancestor(:block, :numblock).none?
+          node.each_ancestor(:any_block).none?
         end
 
         def register_forward_args_offense(def_arguments_or_send, rest_arg_or_splat)

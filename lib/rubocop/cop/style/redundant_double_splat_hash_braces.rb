@@ -73,7 +73,7 @@ module RuboCop
         end
 
         def select_merge_method_nodes(kwsplat)
-          extract_send_methods(kwsplat).select do |node|
+          kwsplat.each_descendant(:call).select do |node|
             mergeable?(node)
           end
         end
@@ -89,7 +89,7 @@ module RuboCop
         def autocorrect_merge_methods(corrector, merge_methods, kwsplat)
           range = range_of_merge_methods(merge_methods)
 
-          new_kwsplat_arguments = extract_send_methods(kwsplat).map do |descendant|
+          new_kwsplat_arguments = kwsplat.each_descendant(:call).map do |descendant|
             convert_to_new_arguments(descendant)
           end
           new_source = new_kwsplat_arguments.compact.reverse.unshift('').join(', ')
@@ -102,10 +102,6 @@ module RuboCop
           end_merge_method = merge_methods.first
 
           begin_merge_method.loc.dot.begin.join(end_merge_method.source_range.end)
-        end
-
-        def extract_send_methods(kwsplat)
-          kwsplat.each_descendant(:send, :csend)
         end
 
         def convert_to_new_arguments(node)
