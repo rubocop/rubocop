@@ -69,11 +69,7 @@ module RuboCop
           elements = Array(node).compact
 
           # Account for edge case of `Constant::CONSTANT`
-          !node.array_type? || return_of_method_call?(node) || elements.any?(&:splat_type?)
-        end
-
-        def return_of_method_call?(node)
-          node.block_type? || node.send_type?
+          !node.array_type? || elements.any?(&:splat_type?)
         end
 
         def assignment_corrector(node, rhs, order)
