@@ -10,6 +10,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
   it_behaves_like 'accepts', 'foo == bar { baz a }'
   it_behaves_like 'accepts', 'foo ->(a) { bar a }'
   it_behaves_like 'accepts', 'some_method(a) { |el| puts el }'
+  it_behaves_like 'accepts', 'some_method(a) { puts _1 }'
   it_behaves_like 'accepts', 'some_method(a) do;puts a;end'
   it_behaves_like 'accepts', 'some_method a do;puts "dev";end'
   it_behaves_like 'accepts', 'some_method a do |e|;puts e;end'
@@ -40,6 +41,19 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
 
         expect_correction(<<~RUBY)
           some_method(a { |el| puts el })
+        RUBY
+      end
+    end
+
+    context 'without receiver and numblock' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          some_method a { puts _1 }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { puts _1 }` to make sure that the block will be associated with the `a` method call.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          some_method(a { puts _1 })
         RUBY
       end
     end
