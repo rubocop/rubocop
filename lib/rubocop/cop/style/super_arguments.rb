@@ -98,7 +98,7 @@ module RuboCop
             # When defining dynamic methods, implicitly calling `super` is not possible.
             # Since there is a possibility of delegation to `define_method`,
             # `super` used within the block is always allowed.
-            break if node.block_type? && !block_sends_to_super?(super_node, node)
+            break if node.any_block_type? && !block_sends_to_super?(super_node, node)
 
             break node if DEF_TYPES.include?(node.type)
           end
