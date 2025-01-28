@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::InternalAffairs::RedundantSourceRange, :config do
+  it 'does not register an offense when using `source_range.source`' do
+    expect_no_offenses(<<~RUBY)
+      source_range.source
+    RUBY
+  end
+
   it 'registers an offense when using `node.source_range.source`' do
     expect_offense(<<~RUBY)
       node.source_range.source
