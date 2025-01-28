@@ -65,6 +65,16 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock, :config do
     RUBY
   end
 
+  it 'registers an offense for a class defined within a numblock' do
+    expect_offense(<<~RUBY)
+      describe do
+        class Foo; end
+        ^^^^^^^^^^^^^^ Do not define constants this way within a block.
+        _1
+      end
+    RUBY
+  end
+
   it 'does not register an offense for a top-level module' do
     expect_no_offenses(<<~RUBY)
       module Foo; end
@@ -93,6 +103,16 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock, :config do
         module Foo; end
         ^^^^^^^^^^^^^^^ Do not define constants this way within a block.
         bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense for a module defined within a numblock' do
+    expect_offense(<<~RUBY)
+      describe do
+        module Foo; end
+        ^^^^^^^^^^^^^^^ Do not define constants this way within a block.
+        _1
       end
     RUBY
   end
@@ -158,6 +178,16 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock, :config do
         enums do
           module Foo
           end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a module defined within a numblock of `enums` method' do
+      expect_no_offenses(<<~RUBY)
+        enums do
+          module Foo
+          end
+          _1
         end
       RUBY
     end
