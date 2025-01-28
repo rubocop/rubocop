@@ -164,7 +164,7 @@ module RuboCop
 
           ast = processed_source.ast
           @range_nodes = ast.range_type? ? [ast] : []
-          @range_nodes.concat(ast.each_descendant(:irange, :erange).to_a)
+          @range_nodes.concat(ast.each_descendant(:range).to_a)
         end
       end
     end

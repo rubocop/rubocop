@@ -43,7 +43,7 @@ module RuboCop
         PATTERN
 
         def parent_block_node(node)
-          node.each_ancestor(:block, :numblock).first
+          node.each_ancestor(:any_block).first
         end
       end
     end

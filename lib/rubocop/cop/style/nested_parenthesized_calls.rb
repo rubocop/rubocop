@@ -35,7 +35,7 @@ module RuboCop
         def on_send(node)
           return unless node.parenthesized?
 
-          node.each_child_node(:send, :csend) do |nested|
+          node.each_child_node(:call) do |nested|
             next if allowed_omission?(nested)
 
             message = format(MSG, source: nested.source)

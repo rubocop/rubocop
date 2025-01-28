@@ -135,7 +135,7 @@ module RuboCop
         end
 
         def inside_class_with_stateful_parent?(node)
-          if (block_node = node.each_ancestor(:block, :numblock).first)
+          if (block_node = node.each_ancestor(:any_block).first)
             return false unless (super_class = class_new_block(block_node))
 
             !allowed_class?(super_class)

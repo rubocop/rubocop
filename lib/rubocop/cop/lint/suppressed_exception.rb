@@ -116,7 +116,7 @@ module RuboCop
         private
 
         def comment_between_rescue_and_end?(node)
-          ancestor = node.each_ancestor(:kwbegin, :def, :defs, :block, :numblock).first
+          ancestor = node.each_ancestor(:kwbegin, :def, :defs, :any_block).first
           return false unless ancestor
 
           end_line = ancestor.loc.end&.line || ancestor.loc.last_line

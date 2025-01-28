@@ -108,7 +108,7 @@ module RuboCop
 
         def find_method_definition(node, method_name)
           node.each_ancestor.lazy.map do |ancestor|
-            ancestor.each_child_node(:def, :block, :numblock).find do |child|
+            ancestor.each_child_node(:def, :any_block).find do |child|
               method_definition(child, method_name)
             end
           end.find(&:itself)

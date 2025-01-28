@@ -108,7 +108,7 @@ module RuboCop
         # was a syntax error in unambiguous cases: https://bugs.ruby-lang.org/issues/20090
         # We disallow this also for earlier Ruby versions so that code is forwards compatible.
         def invalidates_syntax?(block_pass_node)
-          target_ruby_version <= 3.3 && block_pass_node.each_ancestor(:block, :numblock).any?
+          target_ruby_version <= 3.3 && block_pass_node.each_ancestor(:any_block).any?
         end
 
         def use_kwarg_in_method_definition?(node)

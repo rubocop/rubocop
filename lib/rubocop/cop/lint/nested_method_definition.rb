@@ -102,7 +102,7 @@ module RuboCop
           return unless def_ancestor
 
           within_scoping_def =
-            node.each_ancestor(:block, :numblock, :sclass).any? do |ancestor|
+            node.each_ancestor(:any_block, :sclass).any? do |ancestor|
               scoping_method_call?(ancestor)
             end
 

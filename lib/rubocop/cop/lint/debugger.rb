@@ -116,7 +116,7 @@ module RuboCop
 
         def assumed_usage_context?(node)
           # Basically, debugger methods are not used as a method argument without arguments.
-          return false unless node.arguments.empty? && node.each_ancestor(:send, :csend).any?
+          return false unless node.arguments.empty? && node.each_ancestor(:call).any?
           return true if assumed_argument?(node)
 
           node.each_ancestor.none? do |ancestor|

@@ -42,7 +42,7 @@ module RuboCop
         def on_send(node)
           return if node.receiver
 
-          node.each_child_node(:send, :csend) do |child|
+          node.each_child_node(:call) do |child|
             next if !child.method?(:to_s) || child.arguments.any?
 
             register_offense(child, "`#{node.method_name}`")

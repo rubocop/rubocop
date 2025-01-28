@@ -312,7 +312,7 @@ module RuboCop
         end
 
         def chain_length(method_chain, method)
-          method.each_ancestor(:send, :csend).inject(0) do |total, ancestor|
+          method.each_ancestor(:call).inject(0) do |total, ancestor|
             break total + 1 if ancestor == method_chain
 
             total + 1
