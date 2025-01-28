@@ -1,0 +1,1 @@
+* [#13741](https://github.com/rubocop/rubocop/pull/13741): Register an offense for `Naming/BlockForwarding` and `Style/ArgumentsForwarding` with Ruby >= 3.4 when the block argument is referenced inside a block. This was previously disabled because of a bug in Ruby 3.3.0. ([@earlopain][])

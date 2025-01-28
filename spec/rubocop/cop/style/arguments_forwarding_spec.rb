@@ -2677,4 +2677,98 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       end
     end
   end
+
+  context 'TargetRubyVersion >= 3.4', :ruby34 do
+    it 'registers an offense when rest arguments forwarding to a method in numbered block' do
+      expect_offense(<<~RUBY)
+        def foo(*args, &block)
+                       ^^^^^^ Use anonymous block arguments forwarding (`&`).
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+          do_something do
+            bar(*args, &block)
+                       ^^^^^^ Use anonymous block arguments forwarding (`&`).
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+            baz(_1)
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(*, &)
+          do_something do
+            bar(*, &)
+            baz(_1)
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when keyword rest arguments forwarding to a method in block' do
+      expect_offense(<<~RUBY)
+        def foo(**kwargs, &block)
+                          ^^^^^^ Use anonymous block arguments forwarding (`&`).
+                ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          do_something do
+            bar(**kwargs, &block)
+                          ^^^^^^ Use anonymous block arguments forwarding (`&`).
+                ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(**, &)
+          do_something do
+            bar(**, &)
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when keyword rest arguments forwarding to a method in numbered block' do
+      expect_offense(<<~RUBY)
+        def foo(**kwargs, &block)
+                          ^^^^^^ Use anonymous block arguments forwarding (`&`).
+                ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+          do_something do
+            bar(**kwargs, &block)
+                          ^^^^^^ Use anonymous block arguments forwarding (`&`).
+                ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+            baz(_1)
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(**, &)
+          do_something do
+            bar(**, &)
+            baz(_1)
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when rest arguments and keyword rest arguments forwarding to a method in block' do
+      expect_offense(<<~RUBY)
+        def foo(*args, **kwargs)
+                       ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+          block_method do
+            bar(*args, **kwargs)
+                       ^^^^^^^^ Use anonymous keyword arguments forwarding (`**`).
+                ^^^^^ Use anonymous positional arguments forwarding (`*`).
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(*, **)
+          block_method do
+            bar(*, **)
+          end
+        end
+      RUBY
+    end
+  end
 end
