@@ -42,7 +42,7 @@ module RuboCop
         def message(node)
           template = if require_newline?(node)
                        MSG_NEWLINE
-                     elsif node.else_branch&.if_type? || node.else_branch&.begin_type? ||
+                     elsif node.else_branch&.type?(:if, :begin) ||
                            use_masgn_or_block_in_branches?(node)
                        MSG_IF_ELSE
                      else
@@ -66,7 +66,7 @@ module RuboCop
 
         def use_masgn_or_block_in_branches?(node)
           node.branches.compact.any? do |branch|
-            branch.masgn_type? || branch.any_block_type?
+            branch.type?(:masgn, :any_block)
           end
         end
 

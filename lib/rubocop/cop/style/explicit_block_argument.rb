@@ -123,7 +123,7 @@ module RuboCop
         end
 
         def call_like?(node)
-          node.call_type? || node.zsuper_type? || node.super_type?
+          node.type?(:call, :zsuper, :super)
         end
 
         def insert_argument(node, corrector, block_name)

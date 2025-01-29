@@ -83,7 +83,7 @@ module RuboCop
         end
 
         def scoped_node?(node)
-          node.def_type? || node.defs_type? || node.lambda?
+          node.type?(:def, :defs) || node.lambda?
         end
 
         # @!method chained_send?(node)

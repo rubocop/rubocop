@@ -161,7 +161,7 @@ module RuboCop
 
         def check_compact_style(node, body)
           parent = node.parent
-          return if parent&.class_type? || parent&.module_type?
+          return if parent&.type?(:class, :module)
 
           return unless needs_compacting?(body)
 

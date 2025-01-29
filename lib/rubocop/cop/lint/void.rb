@@ -179,7 +179,7 @@ module RuboCop
         end
 
         def check_nonmutating(node)
-          return if !node.send_type? && !node.any_block_type?
+          return unless node.type?(:send, :any_block)
 
           method_name = node.method_name
           return unless NONMUTATING_METHODS.include?(method_name)

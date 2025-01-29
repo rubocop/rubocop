@@ -82,7 +82,7 @@ module RuboCop
         end
 
         def string_literal?(node)
-          node.str_type? || node.dstr_type?
+          node.type?(:str, :dstr)
         end
 
         def string_literals?(node1, node2)

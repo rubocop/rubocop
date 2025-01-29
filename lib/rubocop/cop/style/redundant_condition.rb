@@ -157,7 +157,7 @@ module RuboCop
         end
 
         def asgn_type?(node)
-          node.lvasgn_type? || node.ivasgn_type? || node.cvasgn_type? || node.gvasgn_type?
+          node.type?(:lvasgn, :ivasgn, :cvasgn, :gvasgn)
         end
 
         def branches_have_method?(node)
@@ -184,7 +184,7 @@ module RuboCop
           return false unless argument.hash_type?
           return false unless (node = argument.children.first)
 
-          node.kwsplat_type? || node.forwarded_kwrestarg_type?
+          node.type?(:kwsplat, :forwarded_kwrestarg)
         end
 
         def if_source(if_branch, arithmetic_operation)

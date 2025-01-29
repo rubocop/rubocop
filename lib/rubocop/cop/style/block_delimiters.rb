@@ -481,7 +481,7 @@ module RuboCop
         end
 
         def array_or_range?(node)
-          node.array_type? || node.range_type?
+          node.type?(:array, :range)
         end
 
         def begin_required?(block_node)

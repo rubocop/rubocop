@@ -102,7 +102,7 @@ module RuboCop
       end
 
       def string_continuation?(node)
-        (node.str_type? || node.dstr_type? || node.xstr_type?) && node.source.match?(/\\\s*$/)
+        node.type?(:str, :dstr, :xstr) && node.source.match?(/\\\s*$/)
       end
 
       def multiline_string?(node)

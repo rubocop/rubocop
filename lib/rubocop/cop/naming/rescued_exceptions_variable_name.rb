@@ -113,7 +113,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/MethodLength
         def correct_node(corrector, node, offending_name, preferred_name)
           return unless node
 
@@ -129,13 +129,13 @@ module RuboCop
               end
             end
 
-            if child_node.masgn_type? || child_node.lvasgn_type?
+            if child_node.type?(:masgn, :lvasgn)
               correct_reassignment(corrector, child_node, offending_name, preferred_name)
               break
             end
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/MethodLength
 
         # If the exception variable is reassigned, that assignment needs to be corrected.
         # Further `lvar` nodes will not be corrected though since they now refer to a

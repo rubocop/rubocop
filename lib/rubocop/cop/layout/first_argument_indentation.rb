@@ -225,7 +225,7 @@ module RuboCop
 
         def base_range(send_node, arg_node)
           parent = send_node.parent
-          start_node = if parent && (parent.splat_type? || parent.kwsplat_type?)
+          start_node = if parent&.type?(:splat, :kwsplat)
                          send_node.parent
                        else
                          send_node

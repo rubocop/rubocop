@@ -51,7 +51,7 @@ module RuboCop
         end
 
         def string_message?(message)
-          message.str_type? || message.dstr_type? || message.xstr_type?
+          message.type?(:str, :dstr, :xstr)
         end
 
         def fix_compact(node)

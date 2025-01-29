@@ -111,9 +111,7 @@ module RuboCop
             parent = node.parent&.block_type? ? node.parent.parent : node.parent
             return false unless parent
 
-            parent.pair_type? ||
-              parent.array_type? ||
-              parent.range_type? ||
+            parent.type?(:pair, :array, :range) ||
               splat?(parent) ||
               ternary_if?(parent)
           end
@@ -128,7 +126,7 @@ module RuboCop
           end
 
           def call_in_optional_arguments?(node)
-            node.parent && (node.parent.optarg_type? || node.parent.kwoptarg_type?)
+            node.parent&.type?(:optarg, :kwoptarg)
           end
 
           def call_in_single_line_inheritance?(node)
@@ -144,33 +142,32 @@ module RuboCop
               hash_literal_in_arguments?(node) ||
               ambiguous_range_argument?(node) ||
               node.descendants.any? do |n|
-                n.forwarded_args_type? || n.any_block_type? ||
+                n.type?(:forwarded_args, :any_block) ||
                   ambiguous_literal?(n) || logical_operator?(n)
               end
           end
           # rubocop:enable Metrics/PerceivedComplexity
 
           def call_with_braced_block?(node)
-            (node.call_type? || node.super_type?) && node.block_node&.braces?
+            node.type?(:call, :super) && node.block_node&.braces?
           end
 
           def call_in_argument_with_block?(node)
             parent = node.parent&.block_type? && node.parent.parent
             return false unless parent
 
-            parent.call_type? || parent.super_type? || parent.yield_type?
+            parent.type?(:call, :super, :yield)
           end
 
           def call_as_argument_or_chain?(node)
-            node.parent &&
-              (node.parent.call_type? || node.parent.super_type? || node.parent.yield_type?) &&
+            node.parent&.type?(:call, :super, :yield) &&
               !assigned_before?(node.parent, node)
           end
 
           def call_in_match_pattern?(node)
             return false unless (parent = node.parent)
 
-            parent.match_pattern_type? || parent.match_pattern_p_type?
+            parent.type?(:match_pattern, :match_pattern_p)
           end
 
           def hash_literal_in_arguments?(node)
@@ -205,7 +202,7 @@ module RuboCop
           end
 
           def splat?(node)
-            node.splat_type? || node.kwsplat_type? || node.block_pass_type?
+            node.type?(:splat, :kwsplat, :block_pass)
           end
 
           def ternary_if?(node)

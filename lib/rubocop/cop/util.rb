@@ -74,9 +74,9 @@ module RuboCop
 
       def args_begin(node)
         loc = node.loc
-        selector = if node.super_type? || node.yield_type?
+        selector = if node.type?(:super, :yield)
                      loc.keyword
-                   elsif node.def_type? || node.defs_type?
+                   elsif node.type?(:def, :defs)
                      loc.name
                    else
                      loc.selector

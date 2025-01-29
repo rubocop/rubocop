@@ -68,7 +68,7 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
-          if node.while_post_type? || node.until_post_type?
+          if node.type?(:while_post, :until_post)
             replace_begin_end_with_modifier(corrector, node)
           elsif node.modifier_form?
             replace_source(corrector, node.source_range, modifier_replacement(node))

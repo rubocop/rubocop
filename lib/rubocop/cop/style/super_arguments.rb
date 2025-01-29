@@ -142,7 +142,7 @@ module RuboCop
         end
 
         def positional_arg_same?(def_arg, super_arg)
-          return false unless def_arg.arg_type? || def_arg.optarg_type?
+          return false unless def_arg.type?(:arg, :optarg)
           return false unless super_arg.lvar_type?
 
           def_arg.name == super_arg.children.first
@@ -159,7 +159,7 @@ module RuboCop
         end
 
         def keyword_arg_same?(def_arg, super_arg)
-          return false unless def_arg.kwarg_type? || def_arg.kwoptarg_type?
+          return false unless def_arg.type?(:kwarg, :kwoptarg)
           return false unless (pair_node = super_arg).pair_type?
           return false unless (sym_node = pair_node.key).sym_type?
           return false unless (lvar_node = pair_node.value).lvar_type?

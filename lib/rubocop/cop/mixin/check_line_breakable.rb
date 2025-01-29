@@ -50,7 +50,7 @@ module RuboCop
           return extract_breakable_node_from_elements(node, args, max)
         elsif node.def_type?
           return extract_breakable_node_from_elements(node, node.arguments, max)
-        elsif node.array_type? || node.hash_type?
+        elsif node.type?(:array, :hash)
           return extract_breakable_node_from_elements(node, node.children, max)
         end
         nil
@@ -101,7 +101,7 @@ module RuboCop
       # If a `send` or `csend` node contains a heredoc argument, splitting cannot happen
       # after the heredoc or else it will cause a syntax error.
       def shift_elements_for_heredoc_arg(node, elements, index)
-        return index unless node.call_type? || node.array_type?
+        return index unless node.type?(:call, :array)
 
         heredoc_index = elements.index { |arg| arg.respond_to?(:heredoc?) && arg.heredoc? }
         return index unless heredoc_index
@@ -154,7 +154,7 @@ module RuboCop
           # Ignore ancestors on different lines.
           break if ancestor.first_line != node.first_line
 
-          if ancestor.hash_type? || ancestor.array_type?
+          if ancestor.type?(:hash, :array)
             elements = ancestor.children
           elsif ancestor.call_type?
             elements = process_args(ancestor.arguments)
@@ -171,7 +171,7 @@ module RuboCop
       # @api private
       def contained_by_multiline_collection_that_could_be_broken_up?(node)
         node.each_ancestor.find do |ancestor|
-          if (ancestor.hash_type? || ancestor.array_type?) &&
+          if ancestor.type?(:hash, :array) &&
              breakable_collection?(ancestor, ancestor.children)
             return children_could_be_broken_up?(ancestor.children)
           end
@@ -227,7 +227,7 @@ module RuboCop
 
       def chained_to_heredoc?(node)
         while (node = node.receiver)
-          return true if (node.str_type? || node.dstr_type? || node.xstr_type?) && node.heredoc?
+          return true if node.type?(:str, :dstr, :xstr) && node.heredoc?
         end
 
         false

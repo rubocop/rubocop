@@ -86,7 +86,7 @@ module RuboCop
         return true if !node.key.sym_type? || require_hash_value_for_around_hash_literal?(node)
 
         hash_value = node.value
-        return true unless hash_value.send_type? || hash_value.lvar_type?
+        return true unless hash_value.type?(:send, :lvar)
 
         hash_key_source != hash_value.source || hash_key_source.end_with?('!', '?')
       end
@@ -117,7 +117,7 @@ module RuboCop
 
       def find_ancestor_method_dispatch_node(node)
         return unless (ancestor = node.parent.parent)
-        return unless ancestor.call_type? || ancestor.super_type? || ancestor.yield_type?
+        return unless ancestor.type?(:call, :super, :yield)
         return if brackets?(ancestor)
 
         ancestor
@@ -150,7 +150,7 @@ module RuboCop
         parent = method_dispatch_node.parent
         return false unless parent
 
-        parent.call_type? || parent.super_type? || parent.yield_type?
+        parent.type?(:call, :super, :yield)
       end
 
       def breakdown_value_types_of_hash(hash_node)

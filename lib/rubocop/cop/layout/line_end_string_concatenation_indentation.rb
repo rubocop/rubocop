@@ -102,7 +102,7 @@ module RuboCop
 
         def strings_concatenated_with_backslash?(dstr_node)
           dstr_node.multiline? &&
-            dstr_node.children.all? { |c| c.str_type? || c.dstr_type? } &&
+            dstr_node.children.all? { |c| c.type?(:str, :dstr) } &&
             dstr_node.children.none?(&:multiline?)
         end
 

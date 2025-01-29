@@ -74,7 +74,7 @@ module RuboCop
         end
 
         def unwrap_begin_nodes(node)
-          node = node.children.first while node && (node.begin_type? || node.kwbegin_type?)
+          node = node.children.first while node&.type?(:begin, :kwbegin)
 
           node
         end

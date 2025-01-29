@@ -186,7 +186,7 @@ module RuboCop
         def qualify_const(node)
           return if node.nil?
 
-          if node.cbase_type? || node.self_type? || node.call_type? || node.variable?
+          if node.type?(:cbase, :self, :call) || node.variable?
             node.source
           else
             [qualify_const(node.namespace), node.short_name].compact

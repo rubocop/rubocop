@@ -66,7 +66,7 @@ module RuboCop
         private
 
         def scoped_node?(node)
-          node.def_type? || node.defs_type? || node.lambda?
+          node.type?(:def, :defs) || node.lambda?
         end
 
         def return_value?(return_node)

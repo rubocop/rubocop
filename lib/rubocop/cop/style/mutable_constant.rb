@@ -197,7 +197,7 @@ module RuboCop
         end
 
         def frozen_regexp_or_range_literals?(node)
-          target_ruby_version >= 3.0 && (node.regexp_type? || node.range_type?)
+          target_ruby_version >= 3.0 && node.type?(:regexp, :range)
         end
 
         def requires_parentheses?(node)

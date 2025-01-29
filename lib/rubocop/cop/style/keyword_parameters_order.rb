@@ -57,7 +57,7 @@ module RuboCop
 
         def append_newline_to_last_kwoptarg(arguments, corrector)
           last_argument = arguments.last
-          return if last_argument.kwrestarg_type? || last_argument.blockarg_type?
+          return if last_argument.type?(:kwrestarg, :blockarg)
 
           last_kwoptarg = arguments.reverse.find(&:kwoptarg_type?)
           corrector.insert_after(last_kwoptarg, "\n") unless arguments.parent.block_type?

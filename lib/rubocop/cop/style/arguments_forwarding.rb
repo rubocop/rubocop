@@ -530,7 +530,7 @@ module RuboCop
           end
 
           def additional_kwargs?
-            @def_node.arguments.any? { |a| a.kwarg_type? || a.kwoptarg_type? }
+            @def_node.arguments.any? { |a| a.type?(:kwarg, :kwoptarg) }
           end
 
           def forward_additional_kwargs?

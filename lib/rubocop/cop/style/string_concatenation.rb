@@ -132,7 +132,7 @@ module RuboCop
         end
 
         def heredoc?(node)
-          return false unless node.str_type? || node.dstr_type?
+          return false unless node.type?(:str, :dstr)
 
           node.heredoc?
         end

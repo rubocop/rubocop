@@ -69,7 +69,7 @@ module RuboCop
         end
 
         def all_string_literals?(nodes)
-          nodes.all? { |n| n.str_type? || n.dstr_type? }
+          nodes.all? { |n| n.type?(:str, :dstr) }
         end
 
         def detect_quote_styles(node)

@@ -86,7 +86,7 @@ module RuboCop
           return if node.method?(:eval) && !valid_eval_receiver?(node.receiver)
 
           code = node.first_argument
-          return unless code && (code.str_type? || code.dstr_type?)
+          return unless code&.type?(:str, :dstr)
 
           check_location(node, code)
         end

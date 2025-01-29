@@ -68,7 +68,7 @@ module RuboCop
           return false if body_node.parent.assignment_method? ||
                           NOT_SUPPORTED_ENDLESS_METHOD_BODY_TYPES.include?(body_node.type)
 
-          !(body_node.begin_type? || body_node.kwbegin_type?)
+          !body_node.type?(:begin, :kwbegin)
         end
 
         def correct_to_multiline(corrector, node)

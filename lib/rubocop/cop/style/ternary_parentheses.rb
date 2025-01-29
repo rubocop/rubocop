@@ -232,7 +232,7 @@ module RuboCop
         end
 
         def node_with_args?(node)
-          node.call_type? || node.defined_type?
+          node.type?(:call, :defined?)
         end
       end
     end

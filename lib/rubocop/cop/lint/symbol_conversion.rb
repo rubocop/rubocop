@@ -78,7 +78,7 @@ module RuboCop
         def on_send(node)
           return unless node.receiver
 
-          if node.receiver.str_type? || node.receiver.sym_type?
+          if node.receiver.type?(:str, :sym)
             register_offense(node, correction: node.receiver.value.to_sym.inspect)
           elsif node.receiver.dstr_type?
             register_offense(node, correction: ":\"#{node.receiver.value.to_sym}\"")

@@ -55,7 +55,7 @@ module RuboCop
         def defined_calls(nodes)
           nodes.filter_map do |defined_node|
             subject = defined_node.first_argument
-            subject if subject.const_type? || subject.call_type?
+            subject if subject.type?(:const, :call)
           end
         end
 

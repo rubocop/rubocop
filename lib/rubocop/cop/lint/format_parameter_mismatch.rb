@@ -73,7 +73,7 @@ module RuboCop
 
           first_arg = node.first_argument
           return false if num_of_expected_fields.zero? &&
-                          (first_arg.dstr_type? || first_arg.array_type?)
+                          first_arg.type?(:dstr, :array)
 
           matched_arguments_count?(num_of_expected_fields, num_of_format_args)
         end
