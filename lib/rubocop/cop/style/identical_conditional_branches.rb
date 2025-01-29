@@ -203,16 +203,35 @@ module RuboCop
               corrector.remove(range)
               next if inserted_expression
 
-              if insert_position == :after_condition
-                corrector.insert_after(node, "\n#{expression.source}")
+              if node.parent&.assignment?
+                correct_assignment(corrector, node, expression, insert_position)
               else
-                corrector.insert_before(node, "#{expression.source}\n")
+                correct_no_assignment(corrector, node, expression, insert_position)
               end
+
               inserted_expression = true
             end
           end
         end
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+
+        def correct_assignment(corrector, node, expression, insert_position)
+          if insert_position == :after_condition
+            assignment = node.parent.source_range.with(end_pos: node.source_range.begin_pos)
+            corrector.remove(assignment)
+            corrector.insert_after(node, "\n#{assignment.source}#{expression.source}")
+          else
+            corrector.insert_before(node.parent, "#{expression.source}\n")
+          end
+        end
+
+        def correct_no_assignment(corrector, node, expression, insert_position)
+          if insert_position == :after_condition
+            corrector.insert_after(node, "\n#{expression.source}")
+          else
+            corrector.insert_before(node, "#{expression.source}\n")
+          end
+        end
 
         def last_child_of_parent?(node)
           return true unless (parent = node.parent)

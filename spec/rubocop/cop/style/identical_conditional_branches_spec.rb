@@ -747,4 +747,188 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
       expect_no_corrections
     end
   end
+
+  context 'when the result of the conditional is assigned' do
+    context 'with identical trailing lines' do
+      context 'with `if`' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            x = if foo
+              bar
+              ^^^ Move `bar` out of the conditional.
+            else
+              bar
+              ^^^ Move `bar` out of the conditional.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if foo
+            else
+            end
+            x = bar
+          RUBY
+        end
+      end
+
+      context 'with a ternary' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            x = foo ? bar : bar
+                      ^^^ Move `bar` out of the conditional.
+                            ^^^ Move `bar` out of the conditional.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `case`' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            x = case something
+            when :a
+              bar
+              ^^^ Move `bar` out of the conditional.
+            when :b
+              bar
+              ^^^ Move `bar` out of the conditional.
+            else
+              bar
+              ^^^ Move `bar` out of the conditional.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            case something
+            when :a
+            when :b
+            else
+            end
+            x = bar
+          RUBY
+        end
+      end
+
+      context 'with pattern matching', :ruby27 do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            x = case something
+            in :a
+              bar
+              ^^^ Move `bar` out of the conditional.
+            in :b
+              bar
+              ^^^ Move `bar` out of the conditional.
+            else
+              bar
+              ^^^ Move `bar` out of the conditional.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            case something
+            in :a
+            in :b
+            else
+            end
+            x = bar
+          RUBY
+        end
+      end
+    end
+
+    context 'with identical leading lines' do
+      context 'with `if`' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            x = if foo
+              bar
+              ^^^ Move `bar` out of the conditional.
+              do_x(1)
+            else
+              bar
+              ^^^ Move `bar` out of the conditional.
+              do_x(2)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            bar
+            x = if foo
+              do_x(1)
+            else
+              do_x(2)
+            end
+          RUBY
+        end
+      end
+
+      context 'with `case`' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            x = case something
+            when :a
+              bar
+              ^^^ Move `bar` out of the conditional.
+              do_x(1)
+            when :b
+              bar
+              ^^^ Move `bar` out of the conditional.
+              do_x(2)
+            else
+              bar
+              ^^^ Move `bar` out of the conditional.
+              do_x(3)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            bar
+            x = case something
+            when :a
+              do_x(1)
+            when :b
+              do_x(2)
+            else
+              do_x(3)
+            end
+          RUBY
+        end
+      end
+
+      context 'with pattern matching', :ruby27 do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            x = case something
+            in :a
+              bar
+              ^^^ Move `bar` out of the conditional.
+              do_x(1)
+            in :b
+              bar
+              ^^^ Move `bar` out of the conditional.
+              do_x(2)
+            else
+              bar
+              ^^^ Move `bar` out of the conditional.
+              do_x(3)
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            bar
+            x = case something
+            in :a
+              do_x(1)
+            in :b
+              do_x(2)
+            else
+              do_x(3)
+            end
+          RUBY
+        end
+      end
+    end
+  end
 end
