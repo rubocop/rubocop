@@ -151,7 +151,7 @@ module RuboCop
         private
 
         def_node_matcher :sorbet_return_type, <<~PATTERN
-          (block (send nil? :sig) args (send nil? :returns $_type))
+          (block (send nil? :sig) args (send _ :returns $_type))
         PATTERN
 
         def sorbet_sig?(node, return_type: nil)

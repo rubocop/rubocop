@@ -207,6 +207,14 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
       RUBY
     end
 
+    it "works correctly when returns is chained on params" do
+      expect_offense(<<~RUBY)
+        sig { params(x: Integer).returns(T::Boolean) }
+        def is_even(x); end
+            ^^^^^^^ Rename `is_even` to `is_even?`.
+      RUBY
+    end
+
     it 'does not register an offense if no ? when no sigs but the config is enabled' do
       expect_no_offenses(<<~RUBY)
         def is_attr; end
