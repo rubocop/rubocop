@@ -604,6 +604,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense for parens around a numblock body' do
+    expect_offense(<<~RUBY)
+      x do
+        (_1; bar)
+        ^^^^^^^^^ Don't use parentheses around a variable.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x do
+        _1; bar
+      end
+    RUBY
+  end
+
   it 'registers an offense for parens around last expressions in block body' do
     expect_offense(<<~RUBY)
       x do

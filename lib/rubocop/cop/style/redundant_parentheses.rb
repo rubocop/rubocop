@@ -72,7 +72,7 @@ module RuboCop
           ancestor = node.ancestors.first
           return false unless ancestor
 
-          !ancestor.begin_type? && !ancestor.def_type? && !ancestor.block_type?
+          !ancestor.type?(:begin, :def, :any_block)
         end
 
         def allowed_ternary?(node)
