@@ -81,7 +81,7 @@ module RuboCop
           node.arguments.count do |arg|
             return Float::INFINITY if arg.restarg_type?
 
-            arg.arg_type? || arg.optarg_type? || arg.mlhs_type?
+            arg.type?(:arg, :optarg, :mlhs)
           end
         end
       end

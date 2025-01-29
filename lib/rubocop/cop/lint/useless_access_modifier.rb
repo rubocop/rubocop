@@ -268,7 +268,7 @@ module RuboCop
         end
 
         def start_of_new_scope?(child)
-          child.module_type? || child.class_type? || child.sclass_type? || eval_call?(child)
+          child.type?(:module, :class, :sclass) || eval_call?(child)
         end
 
         def eval_call?(child)

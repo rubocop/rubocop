@@ -182,7 +182,7 @@ module RuboCop
         end
 
         def alignment_node_for_variable_style(node)
-          if (node.case_type? || node.case_match_type?) && node.argument? &&
+          if node.type?(:case, :case_match) && node.argument? &&
              same_line?(node, node.parent)
             return node.parent
           end

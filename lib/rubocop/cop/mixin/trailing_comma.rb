@@ -181,7 +181,7 @@ module RuboCop
         #       ...
         #     SOURCE
         #   })
-        return heredoc?(node.children.last) if node.pair_type? || node.hash_type?
+        return heredoc?(node.children.last) if node.type?(:pair, :hash)
 
         false
       end

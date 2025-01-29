@@ -41,7 +41,7 @@ module RuboCop
         MSG = 'Redundant escape of %<char>s inside string literal.'
 
         def on_str(node)
-          return if node.parent&.regexp_type? || node.parent&.xstr_type? || node.character_literal?
+          return if node.parent&.type?(:regexp, :xstr) || node.character_literal?
 
           str_contents_range = str_contents_range(node)
 
@@ -147,7 +147,7 @@ module RuboCop
         end
 
         def heredoc?(node)
-          (node.str_type? || node.dstr_type?) && node.heredoc?
+          node.type?(:str, :dstr) && node.heredoc?
         end
 
         def delimiter?(node, char)

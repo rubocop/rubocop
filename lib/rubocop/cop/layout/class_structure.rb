@@ -236,7 +236,7 @@ module RuboCop
 
           return [] unless class_def
 
-          if class_def.def_type? || class_def.send_type?
+          if class_def.type?(:def, :send)
             [class_def]
           else
             class_def.children.compact
@@ -289,7 +289,7 @@ module RuboCop
         def marked_as_private_constant?(node, name)
           return false unless node.method?(:private_constant)
 
-          node.arguments.any? { |arg| (arg.sym_type? || arg.str_type?) && arg.value == name }
+          node.arguments.any? { |arg| arg.type?(:sym, :str) && arg.value == name }
         end
 
         def end_position_for(node)

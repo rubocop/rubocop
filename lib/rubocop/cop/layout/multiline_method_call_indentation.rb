@@ -100,7 +100,7 @@ module RuboCop
 
         def extra_indentation(given_style, parent)
           if given_style == :indented_relative_to_receiver
-            if parent && (parent.splat_type? || parent.kwsplat_type?)
+            if parent&.type?(:splat, :kwsplat)
               configured_indentation_width - parent.loc.operator.length
             else
               configured_indentation_width

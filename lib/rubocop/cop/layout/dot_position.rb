@@ -120,7 +120,7 @@ module RuboCop
         end
 
         def heredoc?(node)
-          (node.str_type? || node.dstr_type?) && node.heredoc?
+          node.type?(:str, :dstr) && node.heredoc?
         end
 
         def end_range(node)

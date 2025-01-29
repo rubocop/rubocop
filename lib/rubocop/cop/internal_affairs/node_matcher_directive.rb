@@ -62,7 +62,7 @@ module RuboCop
         private
 
         def valid_method_name?(node)
-          node.first_argument.str_type? || node.first_argument.sym_type?
+          node.first_argument.type?(:str, :sym)
         end
 
         def method_directives(node)

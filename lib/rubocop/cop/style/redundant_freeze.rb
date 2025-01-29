@@ -42,7 +42,7 @@ module RuboCop
           return true if node.immutable_literal?
           return true if frozen_string_literal?(node)
 
-          target_ruby_version >= 3.0 && (node.regexp_type? || node.range_type?)
+          target_ruby_version >= 3.0 && node.type?(:regexp, :range)
         end
 
         def strip_parenthesis(node)

@@ -185,7 +185,7 @@ module RuboCop
         def contain_rescue_or_ensure?(node)
           first_child = node.children.first
 
-          first_child.rescue_type? || first_child.ensure_type?
+          first_child.type?(:rescue, :ensure)
         end
 
         def valid_context_using_only_begin?(node)

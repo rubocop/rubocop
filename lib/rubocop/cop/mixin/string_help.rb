@@ -33,7 +33,7 @@ module RuboCop
         # A :begin node inside a :dstr, :dsym, or :regexp node is an interpolation.
         node.ancestors
             .drop_while { |a| !a.begin_type? }
-            .any? { |a| a.dstr_type? || a.dsym_type? || a.regexp_type? }
+            .any? { |a| a.type?(:dstr, :dsym, :regexp) }
       end
     end
   end

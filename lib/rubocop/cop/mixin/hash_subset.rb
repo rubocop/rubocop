@@ -136,7 +136,7 @@ module RuboCop
         body = block.body
 
         if body.method?('==') || body.method?('!=')
-          except_key.sym_type? || except_key.str_type?
+          except_key.type?(:sym, :str)
         else
           true
         end

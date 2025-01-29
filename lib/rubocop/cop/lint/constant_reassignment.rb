@@ -96,20 +96,16 @@ module RuboCop
         private
 
         def fixed_constant_path?(node)
-          node.each_path.all? { |path| path.cbase_type? || path.const_type? || path.self_type? }
+          node.each_path.all? { |path| path.type?(:cbase, :const, :self) }
         end
 
         def simple_assignment?(node)
           node.ancestors.all? do |ancestor|
-            return true if namespace_definition?(ancestor)
+            return true if ancestor.type?(:module, :class)
 
             ancestor.begin_type? || ancestor.literal? || ancestor.casgn_type? ||
               freeze_method?(ancestor)
           end
-        end
-
-        def namespace_definition?(node)
-          node.module_type? || node.class_type?
         end
 
         def freeze_method?(node)

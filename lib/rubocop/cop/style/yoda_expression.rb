@@ -72,7 +72,7 @@ module RuboCop
         end
 
         def constant_portion?(node)
-          node.numeric_type? || node.const_type?
+          node.type?(:numeric, :const)
         end
 
         def supported_operators

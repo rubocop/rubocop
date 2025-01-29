@@ -59,7 +59,7 @@ module RuboCop
         end
 
         def use_rest_or_optional_args?(node)
-          node.arguments.any? { |arg| arg.restarg_type? || arg.optarg_type? || arg.kwoptarg_type? }
+          node.arguments.any? { |arg| arg.type?(:restarg, :optarg, :kwoptarg) }
         end
 
         def delegating?(node, def_node)

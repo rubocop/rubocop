@@ -162,7 +162,7 @@ module RuboCop
 
         def use_array_converter_method_as_preceding?(node)
           return false unless (preceding_method = node.children.first.children.first)
-          return false unless preceding_method.call_type? || preceding_method.any_block_type?
+          return false unless preceding_method.type?(:call, :any_block)
 
           ARRAY_CONVERTER_METHODS.include?(preceding_method.method_name)
         end

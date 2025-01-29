@@ -199,7 +199,7 @@ module RuboCop
 
         def in_array_percent_literal?(node)
           parent = node.parent
-          return false unless parent.dstr_type? || parent.dsym_type?
+          return false unless parent.type?(:dstr, :dsym)
 
           grandparent = parent.parent
           grandparent&.array_type? && grandparent.percent_literal?

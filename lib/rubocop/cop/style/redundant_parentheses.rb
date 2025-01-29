@@ -50,7 +50,7 @@ module RuboCop
         def ignore_syntax?(node)
           return false unless (parent = node.parent)
 
-          parent.while_post_type? || parent.until_post_type? || parent.match_with_lvasgn_type? ||
+          parent.type?(:while_post, :until_post, :match_with_lvasgn) ||
             like_method_argument_parentheses?(parent) || multiline_control_flow_statements?(node)
         end
 
@@ -89,7 +89,7 @@ module RuboCop
         end
 
         def like_method_argument_parentheses?(node)
-          return false if !node.send_type? && !node.super_type? && !node.yield_type?
+          return false unless node.type?(:send, :super, :yield)
 
           node.arguments.one? && !node.parenthesized? &&
             !node.arithmetic_operation? && node.first_argument.begin_type?
@@ -99,7 +99,7 @@ module RuboCop
           return false unless (parent = node.parent)
           return false if parent.single_line?
 
-          parent.return_type? || parent.next_type? || parent.break_type?
+          parent.type?(:return, :next, :break)
         end
 
         def empty_parentheses?(node)

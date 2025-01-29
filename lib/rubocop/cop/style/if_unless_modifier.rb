@@ -103,7 +103,7 @@ module RuboCop
 
         def defined_argument_is_undefined?(if_node, defined_node)
           defined_argument = defined_node.first_argument
-          return false unless defined_argument.lvar_type? || defined_argument.send_type?
+          return false unless defined_argument.type?(:lvar, :send)
 
           if_node.left_siblings.none? do |sibling|
             sibling.respond_to?(:lvasgn_type?) && sibling.lvasgn_type? &&
@@ -112,11 +112,11 @@ module RuboCop
         end
 
         def pattern_matching_nodes(condition)
-          if condition.match_pattern_type? || condition.match_pattern_p_type?
+          if condition.type?(:match_pattern, :match_pattern_p)
             [condition]
           else
             condition.each_descendant.select do |node|
-              node.match_pattern_type? || node.match_pattern_p_type?
+              node.type?(:match_pattern, :match_pattern_p)
             end
           end
         end
