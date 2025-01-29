@@ -3923,6 +3923,7 @@ Style/EndlessMethod:
     - allow_single_line
     - allow_always
     - disallow
+    - require_single_line
     - require_always
 
 Style/EnvHome:

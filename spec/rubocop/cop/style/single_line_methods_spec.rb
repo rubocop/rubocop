@@ -318,6 +318,12 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
       it_behaves_like 'convert to endless method'
     end
 
+    context 'with `require_single_line` style' do
+      let(:endless_method_config) { { 'EnforcedStyle' => 'require_single_line' } }
+
+      it_behaves_like 'convert to endless method'
+    end
+
     context 'with `require_always` style' do
       let(:endless_method_config) { { 'EnforcedStyle' => 'require_always' } }
 
