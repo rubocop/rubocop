@@ -19,7 +19,7 @@ module RuboCop
       #
       # When `UseSorbetSigs` set to true (optional), the cop will only report
       # offenses if the method has a Sorbet `sig` with a return type of
-      # `T::Boolean`.
+      # `T::Boolean`. Dynamic methods are not supported with this configuration.
       #
       # @example NamePrefix: ['is_', 'has_', 'have_'] (default)
       #   # bad
@@ -69,7 +69,7 @@ module RuboCop
       #    "yes"
       #  end
       #
-      #  # good
+      #  # good - Sorbet signature is not evaluated
       #  sig { returns(String) }
       #  def is_this_thing_on?
       #    "yes"
