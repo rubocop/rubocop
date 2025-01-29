@@ -282,6 +282,20 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
       RUBY
     end
 
+    it "accepts `#{t}` if called in `instance_eval` with numblock" do
+      expect_no_offenses <<~RUBY
+        class Dummy
+          def #{t}; end
+        end
+
+        d = Dummy.new
+        d.instance_eval do
+          #{t}
+          _1
+        end
+      RUBY
+    end
+
     it "accepts `#{t}` if called in nested `instance_eval`" do
       expect_no_offenses <<~RUBY
         class Dummy

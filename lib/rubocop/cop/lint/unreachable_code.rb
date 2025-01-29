@@ -117,7 +117,7 @@ module RuboCop
         end
 
         def instance_eval_block?(node)
-          node.block_type? && node.method?(:instance_eval)
+          node.any_block_type? && node.method?(:instance_eval)
         end
 
         def report_on_flow_command?(node)
