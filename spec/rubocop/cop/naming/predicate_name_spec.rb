@@ -207,7 +207,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
       RUBY
     end
 
-    it "works correctly when returns is chained on params" do
+    it 'works correctly when returns is chained on params' do
       expect_offense(<<~RUBY)
         sig { params(x: Integer).returns(T::Boolean) }
         def is_even(x); end

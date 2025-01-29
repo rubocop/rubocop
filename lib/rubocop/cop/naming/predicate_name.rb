@@ -128,7 +128,7 @@ module RuboCop
             method_name = node.method_name.to_s
 
             next if allowed_method_name?(method_name, prefix)
-            next if use_sorbet_sigs? && !sorbet_sig?(node, return_type: "T::Boolean")
+            next if use_sorbet_sigs? && !sorbet_sig?(node, return_type: 'T::Boolean')
 
             add_offense(
               node.loc.name,
@@ -150,6 +150,7 @@ module RuboCop
 
         private
 
+        # @!method sorbet_return_type(node)
         def_node_matcher :sorbet_return_type, <<~PATTERN
           (block (send nil? :sig) args (send _ :returns $_type))
         PATTERN
