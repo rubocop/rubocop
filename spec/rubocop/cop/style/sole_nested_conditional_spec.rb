@@ -793,6 +793,27 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
           RUBY
         end
       end
+
+      context 'with a numblock' do
+        it 'registers an offense and corrects' do
+          expect_offense(<<~RUBY)
+            if foo
+              if ok? bar do
+              ^^ Consider merging nested conditions into outer `if` conditions.
+                  _1
+                end
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if foo && (ok? bar do
+                  _1
+                end)
+              end
+          RUBY
+        end
+      end
     end
   end
 
