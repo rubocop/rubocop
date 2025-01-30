@@ -53,8 +53,6 @@ module RuboCop
         ASGN_TYPES = [:begin, *AST::Node::EQUALS_ASSIGNMENTS, :send, :csend].freeze
 
         def on_if(node)
-          return if node.condition.block_type?
-
           traverse_node(node.condition) do |asgn_node|
             next :skip_children if skip_children?(asgn_node)
             next if allowed_construct?(asgn_node)
@@ -95,7 +93,7 @@ module RuboCop
 
         def traverse_node(node, &block)
           # if the node is a block, any assignments are irrelevant
-          return if node.block_type?
+          return if node.any_block_type?
 
           result = yield node if ASGN_TYPES.include?(node.type)
 
