@@ -706,6 +706,28 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       RUBY
     end
 
+    it 'registers offense if next to numblock' do
+      expect_offense(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
+        foo 'second foo' do
+        ^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between block definitions; found 0.
+          _1
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
+
+        foo 'second foo' do
+          _1
+        end
+      RUBY
+    end
+
     it 'does not register offense' do
       expect_no_offenses(<<~RUBY)
         foo 'first foo' do
