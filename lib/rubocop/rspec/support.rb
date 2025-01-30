@@ -4,14 +4,12 @@
 
 require_relative 'cop_helper'
 require_relative 'expect_offense'
-require_relative 'host_environment_simulation_helper'
 require_relative 'parallel_formatter'
 require_relative 'shared_contexts'
 
 RSpec.configure do |config|
   config.include CopHelper
   config.include RuboCop::RSpec::ExpectOffense
-  config.include HostEnvironmentSimulatorHelper
   config.include_context 'config', :config
   config.include_context 'isolated environment', :isolated_environment
   config.include_context 'isolated bundler', :isolated_bundler
