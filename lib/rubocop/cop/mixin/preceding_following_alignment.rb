@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     # Common functionality for checking whether an AST node/token is aligned
     # with something on a preceding or following line
+    # rubocop:disable Metrics/ModuleLength
     module PrecedingFollowingAlignment
       # Tokens that end with an `=`, as well as `<<`, that can be aligned together:
       # `=`, `==`, `===`, `!=`, `<=`, `>=`, `<<` and operator assignment (`+=`, etc).
@@ -156,10 +157,14 @@ module RuboCop
         @assignment_tokens ||= begin
           tokens = processed_source.tokens.select(&:equal_sign?)
 
-          # we don't want to operate on equals signs which are part of an
-          #   optarg in a method definition
-          # e.g.: def method(optarg = default_val); end
-          tokens = remove_optarg_equals(tokens, processed_source)
+          # We don't want to operate on equals signs which are part of an `optarg` in a
+          # method definition, or the separator of an endless method definition.
+          # For example (the equals sign to ignore is highlighted with ^):
+          #     def method(optarg = default_val); end
+          #                       ^
+          #     def method = foo
+          #                ^
+          tokens = remove_equals_in_def(tokens, processed_source)
 
           # Only attempt to align the first = on each line
           Set.new(tokens.uniq(&:line))
@@ -195,11 +200,20 @@ module RuboCop
       # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
       # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength
 
-      def remove_optarg_equals(asgn_tokens, processed_source)
-        optargs    = processed_source.ast.each_node(:optarg)
-        optarg_eql = optargs.to_set { |o| o.loc.operator.begin_pos }
-        asgn_tokens.reject { |t| optarg_eql.include?(t.begin_pos) }
+      def remove_equals_in_def(asgn_tokens, processed_source)
+        nodes = processed_source.ast.each_node(:optarg, :def)
+        eqls_to_ignore = nodes.with_object([]) do |node, arr|
+          loc = if node.def_type?
+                  node.loc.assignment if node.endless?
+                else
+                  node.loc.operator
+                end
+          arr << loc.begin_pos if loc
+        end
+
+        asgn_tokens.reject { |t| eqls_to_ignore.include?(t.begin_pos) }
       end
     end
+    # rubocop:enable Metrics/ModuleLength
   end
 end

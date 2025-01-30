@@ -628,6 +628,24 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         opt.ssh_config[e] = f
       RUBY
     end
+
+    context 'endless methods', :ruby30 do
+      it 'does not register an offense when not aligned' do
+        expect_no_offenses(<<~RUBY)
+          def deleted = do_something
+          def updated = do_something
+          def added = do_something
+        RUBY
+      end
+
+      it 'does not register an offense with optional values' do
+        expect_no_offenses(<<~RUBY)
+          def deleted(x = true) = do_something(x)
+          def updated(x = true) = do_something(x)
+          def added(x = true) = do_something(x)
+        RUBY
+      end
+    end
   end
 
   context 'when exactly two comments have extra spaces' do
