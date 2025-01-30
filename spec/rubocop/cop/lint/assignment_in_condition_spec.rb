@@ -135,6 +135,14 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect_no_offenses('return 1 if any_errors? { o = file }.present?')
   end
 
+  it 'accepts = in a numblock that is called in a condition' do
+    expect_no_offenses('return 1 if any_errors? { o = inspect(_1) }')
+  end
+
+  it 'accepts = in a numblock followed by method call' do
+    expect_no_offenses('return 1 if any_errors? { o = _1 }.present?')
+  end
+
   it 'accepts assignment in a block after ||' do
     expect_no_offenses(<<~RUBY)
       if x?(bar) || y? { z = baz }
