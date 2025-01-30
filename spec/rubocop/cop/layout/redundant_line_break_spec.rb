@@ -71,6 +71,17 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
            .join + []
         RUBY
       end
+
+      it 'accepts a method call chained onto a single line numbered block', :ruby27 do
+        expect_no_offenses(<<~RUBY)
+          e.select { _1.cond? }
+           .join
+          a = e.select { _1.cond? }
+           .join
+          e.select { _1.cond? }
+           .join + []
+        RUBY
+      end
     end
 
     context 'for an expression that fits on a single line' do
@@ -522,6 +533,15 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
           RUBY
         end
 
+        it 'accepts a complex method call on a multiple lines with numbered block', :ruby27 do
+          expect_no_offenses(<<~RUBY)
+            node.each_node(:dstr)
+                .select(&:heredoc?)
+                .map { _1.loc.heredoc_body }
+                .flat_map {  (_1.line..._1.last_line).to_a }
+          RUBY
+        end
+
         it 'accepts method call with a do keyword that would just surpass the max line length' do
           expect_no_offenses(<<~RUBY)
             context 'when the configuration includes ' \\
@@ -646,6 +666,14 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
+      it 'accepts when the method call has parentheses with numbered block', :ruby27 do
+        expect_no_offenses(<<~RUBY)
+          a = Foo.do_something(arg) do
+            _1
+          end
+        RUBY
+      end
+
       it 'accepts when the method call has no arguments' do
         expect_no_offenses(<<~RUBY)
           RSpec.shared_context do
@@ -663,6 +691,14 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             end
           RUBY
         end
+
+        it 'accepts a multiline numbered block without a chained method call', :ruby27 do
+          expect_no_offenses(<<~RUBY)
+            f do
+              foo(_1)
+            end
+          RUBY
+        end
       end
 
       context 'when Layout/SingleLineBlockChain is disabled' do
@@ -671,6 +707,14 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         it 'accepts a multiline block without a chained method call' do
           expect_no_offenses(<<~RUBY)
             f do
+            end
+          RUBY
+        end
+
+        it 'accepts a multiline numbered block without a chained method call', :ruby27 do
+          expect_no_offenses(<<~RUBY)
+            f do
+              foo(_1)
             end
           RUBY
         end
@@ -685,6 +729,20 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             end.join
             e.select do |i|
               i.cond?
+            end.join + []
+          RUBY
+        end
+
+        it 'accepts a method call chained onto a multiline numbered block', :ruby27 do
+          expect_no_offenses(<<~RUBY)
+            e.select do
+              _1.cond?
+            end.join
+            a = e.select do
+              _1.cond?
+            end.join
+            e.select do
+              _1.cond?
             end.join + []
           RUBY
         end

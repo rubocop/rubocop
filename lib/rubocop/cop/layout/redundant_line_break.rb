@@ -103,13 +103,13 @@ module RuboCop
 
         def configured_to_not_be_inspected?(node)
           return true if other_cop_takes_precedence?(node)
+          return false if cop_config['InspectBlocks']
 
-          !cop_config['InspectBlocks'] && (node.block_type? ||
-                                           any_descendant?(node, :block, &:multiline?))
+          node.any_block_type? || any_descendant?(node, :any_block, &:multiline?)
         end
 
         def other_cop_takes_precedence?(node)
-          single_line_block_chain_enabled? && any_descendant?(node, :block) do |block_node|
+          single_line_block_chain_enabled? && any_descendant?(node, :any_block) do |block_node|
             block_node.parent.send_type? && block_node.parent.loc.dot && !block_node.multiline?
           end
         end
@@ -119,8 +119,9 @@ module RuboCop
         end
 
         def convertible_block?(node)
-          parent = node.parent
-          parent&.block_type? && node == parent.send_node &&
+          return false unless (parent = node.parent)
+
+          parent.any_block_type? && node == parent.send_node &&
             (node.parenthesized? || !node.arguments?)
         end
       end
