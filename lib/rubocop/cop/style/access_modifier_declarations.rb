@@ -150,8 +150,6 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[private protected public module_function].freeze
 
-        ALLOWED_NODE_TYPES = %i[pair block].freeze
-
         # @!method access_modifier_with_symbol?(node)
         def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
           (send nil? {:private :protected :public :module_function}
@@ -188,7 +186,7 @@ module RuboCop
 
         def allowed?(node)
           !node.access_modifier? ||
-            ALLOWED_NODE_TYPES.include?(node.parent&.type) ||
+            node.parent&.type?(:pair, :any_block) ||
             allow_modifiers_on_symbols?(node) ||
             allow_modifiers_on_attrs?(node) ||
             allow_modifiers_on_alias_method?(node)
@@ -312,7 +310,7 @@ module RuboCop
           argument_less_modifier_node = find_argument_less_modifier_node(node)
           if argument_less_modifier_node
             corrector.insert_after(argument_less_modifier_node, "\n\n#{source}")
-          elsif (ancestor = node.each_ancestor(:block, :class, :module).first)
+          elsif (ancestor = node.each_ancestor(:class, :module).first)
 
             corrector.insert_before(ancestor.loc.end, "#{node.method_name}\n\n#{source}\n")
           else
