@@ -20,7 +20,7 @@
 |===
 
 Bare access modifiers (those not applying to specific methods) should be
-indented as deep as method definitions, or as deep as the class/module
+indented as deep as method definitions, or as deep as the `class`/`module`
 keyword, depending on configuration.
 
 [#examples-layoutaccessmodifierindentation]
@@ -3557,10 +3557,10 @@ end
 
 Checks the indentation of the first parameter in a method
 definition. Parameters after the first one are checked by
-Layout/ParameterAlignment, not by this cop.
+`Layout/ParameterAlignment`, not by this cop.
 
 For indenting the first argument of method _calls_, check out
-Layout/FirstArgumentIndentation, which supports options related to
+`Layout/FirstArgumentIndentation`, which supports options related to
 nesting that are irrelevant for method _definitions_.
 
 [#examples-layoutfirstparameterindentation]
@@ -6393,9 +6393,9 @@ end.join('-')
 | -
 |===
 
-Checks for colon (:) not followed by some kind of space.
+Checks for colon (`:`) not followed by some kind of space.
 N.B. this cop does not handle spaces after a ternary operator, which are
-instead handled by Layout/SpaceAroundOperators.
+instead handled by `Layout/SpaceAroundOperators`.
 
 [#examples-layoutspaceaftercolon]
 === Examples
@@ -6427,7 +6427,7 @@ def f(a:, b: 2); {a: 3}; end
 | -
 |===
 
-Checks for comma (,) not followed by some kind of space.
+Checks for comma (`,`) not followed by some kind of space.
 
 [#examples-layoutspaceaftercomma]
 === Examples
@@ -6527,7 +6527,7 @@ Checks for space after `!`.
 | -
 |===
 
-Checks for semicolon (;) not followed by some kind of space.
+Checks for semicolon (`;`) not followed by some kind of space.
 
 [#examples-layoutspaceaftersemicolon]
 === Examples
@@ -7030,7 +7030,7 @@ collection[index_or_key]
 | -
 |===
 
-Checks for comma (,) preceded by space.
+Checks for comma (`,`) preceded by space.
 
 [#examples-layoutspacebeforecomma]
 === Examples
@@ -7136,7 +7136,7 @@ something 'hello'
 | -
 |===
 
-Checks for semicolon (;) preceded by space.
+Checks for semicolon (`;`) preceded by space.
 
 [#examples-layoutspacebeforesemicolon]
 === Examples

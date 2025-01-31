@@ -514,33 +514,14 @@ NOTE: Requires Ruby version 2.7
 | 1.58
 |===
 
-In Ruby 2.7, arguments forwarding has been added.
-
-This cop identifies places where `do_something(*args, &block)`
-can be replaced by `do_something(...)`.
-
-In Ruby 3.1, anonymous block forwarding has been added.
-
-This cop identifies places where `do_something(&block)` can be replaced
-by `do_something(&)`; if desired, this functionality can be disabled
-by setting `UseAnonymousForwarding: false`.
-
-In Ruby 3.2, anonymous args/kwargs forwarding has been added.
-
-This cop also identifies places where `use_args(*args)`/`use_kwargs(**kwargs)` can be
-replaced by `use_args(*)`/`use_kwargs(**)`; if desired, this functionality can be disabled
-by setting `UseAnonymousForwarding: false`.
-
-And this cop has `RedundantRestArgumentNames`, `RedundantKeywordRestArgumentNames`,
-and `RedundantBlockArgumentNames` options. This configuration is a list of redundant names
-that are sufficient for anonymizing meaningless naming.
-
-Meaningless names that are commonly used can be anonymized by default:
-e.g., `*args`, `**options`, `&block`, and so on.
-
-Names not on this list are likely to be meaningful and are allowed by default.
-
-This cop handles not only method forwarding but also forwarding to `super`.
+[source,ruby]
+----
+def foo(&block)
+  # Using an anonymous block would be a syntax error on Ruby 3.3.0
+  block_method { bar(&block) }
+end
+----
+--
 
 [#examples-styleargumentsforwarding]
 === Examples
@@ -6487,6 +6468,29 @@ is a `Hash` or responds to the replacement method.
 {foo: 1, bar: 2, baz: 3}.select {|k, v| !%i[bar].include?(k) }
 {foo: 1, bar: 2, baz: 3}.filter {|k, v| !%i[bar].include?(k) }
 
+# good
+{foo: 1, bar: 2, baz: 3}.except(:bar)
+----
+
+[#allcops_activesupportextensionsenabled_-false-_default_-stylehashexcept]
+==== AllCops:ActiveSupportExtensionsEnabled: false (default)
+
+[source,ruby]
+----
+# good
+{foo: 1, bar: 2, baz: 3}.reject {|k, v| !%i[bar].exclude?(k) }
+{foo: 1, bar: 2, baz: 3}.select {|k, v| %i[bar].exclude?(k) }
+
+# good
+{foo: 1, bar: 2, baz: 3}.reject {|k, v| k.in?(%i[bar]) }
+{foo: 1, bar: 2, baz: 3}.select {|k, v| !k.in?(%i[bar]) }
+----
+
+[#allcops_activesupportextensionsenabled_-true-stylehashexcept]
+==== AllCops:ActiveSupportExtensionsEnabled: true
+
+[source,ruby]
+----
 # bad
 {foo: 1, bar: 2, baz: 3}.reject {|k, v| !%i[bar].exclude?(k) }
 {foo: 1, bar: 2, baz: 3}.select {|k, v| %i[bar].exclude?(k) }
@@ -6618,6 +6622,29 @@ is a `Hash` or responds to the replacement method.
 {foo: 1, bar: 2, baz: 3}.reject {|k, v| !%i[bar].include?(k) }
 {foo: 1, bar: 2, baz: 3}.filter {|k, v| %i[bar].include?(k) }
 
+# good
+{foo: 1, bar: 2, baz: 3}.slice(:bar)
+----
+
+[#allcops_activesupportextensionsenabled_-false-_default_-stylehashslice]
+==== AllCops:ActiveSupportExtensionsEnabled: false (default)
+
+[source,ruby]
+----
+# good
+{foo: 1, bar: 2, baz: 3}.select {|k, v| !%i[bar].exclude?(k) }
+{foo: 1, bar: 2, baz: 3}.reject {|k, v| %i[bar].exclude?(k) }
+
+# good
+{foo: 1, bar: 2, baz: 3}.select {|k, v| k.in?(%i[bar]) }
+{foo: 1, bar: 2, baz: 3}.reject {|k, v| !k.in?(%i[bar]) }
+----
+
+[#allcops_activesupportextensionsenabled_-true-stylehashslice]
+==== AllCops:ActiveSupportExtensionsEnabled: true
+
+[source,ruby]
+----
 # bad
 {foo: 1, bar: 2, baz: 3}.select {|k, v| !%i[bar].exclude?(k) }
 {foo: 1, bar: 2, baz: 3}.reject {|k, v| %i[bar].exclude?(k) }
@@ -13977,12 +14004,8 @@ args.concat(foo)
 args += foo
 hash.merge!(other)
 
-# bad
-self.foo = foo.concat(ary)
-
 # good
 foo.concat(ary)
-self.foo += ary
 ----
 
 [#styleredundantselfassignmentbranch]

@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.71.1 (2025-01-31)
+
 ### Bug fixes
 
 * [#10081](https://github.com/rubocop/rubocop/issues/10081): Add the missing `include RuboCop::RSpec::ExpectOffense` in rubocop/rspec/support.rb. ([@d4rky-pl][])
