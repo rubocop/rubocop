@@ -577,6 +577,17 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator, :config do
         RUBY
       end
 
+      it 'does not look inside inner numblocks' do
+        expect_no_offenses(<<~RUBY)
+          foo.#{method}(bar) do |acc, el|
+            values.map do
+              next el if something?
+              _1
+            end
+          end
+        RUBY
+      end
+
       it 'allows break with no value' do
         expect_no_offenses(<<~RUBY)
           foo.#{method}([]) do |acc, el|

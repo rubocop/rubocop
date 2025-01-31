@@ -130,7 +130,7 @@ module RuboCop
 
           block_body_node.each_descendant(:next, :break) do |n|
             # Ignore `next`/`break` inside an inner block
-            next if n.each_ancestor(:block).first != block_body_node.parent
+            next if n.each_ancestor(:any_block).first != block_body_node.parent
             next unless n.first_argument
 
             nodes << n.first_argument
