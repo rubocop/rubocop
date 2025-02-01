@@ -17,7 +17,13 @@ module RuboCop
               'in `config/default.yml`.'
         CONFIG_PATH = find_file_upwards('config/default.yml', Dir.pwd)
         CONFIG = if CONFIG_PATH
-                   ConfigLoader.load_yaml_configuration(CONFIG_PATH)
+                   begin
+                     original_debug = ConfigLoader.debug
+                     ConfigLoader.debug = false
+                     ConfigLoader.load_yaml_configuration(CONFIG_PATH)
+                   ensure
+                     ConfigLoader.debug = original_debug
+                   end
                  else
                    {}
                  end
