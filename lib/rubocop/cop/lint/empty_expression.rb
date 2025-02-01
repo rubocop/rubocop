@@ -14,8 +14,6 @@ module RuboCop
       #     bar
       #   end
       #
-      # @example
-      #
       #   # good
       #
       #   foo = (some_expression)

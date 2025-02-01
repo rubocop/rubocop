@@ -22,8 +22,6 @@ module RuboCop
       #   def b
       #   end
       #
-      # @example
-      #
       #   # good
       #   def a
       #   end
@@ -41,8 +39,6 @@ module RuboCop
       #   end
       #   def b
       #   end
-      #
-      # @example
       #
       #   # good
       #   class A
@@ -64,8 +60,6 @@ module RuboCop
       #   end
       #   def b
       #   end
-      #
-      # @example
       #
       #   # good
       #   module A
