@@ -13,6 +13,21 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
   describe 'option' do
     describe '-h/--help' do
+      # HACK: `help` option is implemented with OptionParser, if the environment vars
+      # `RUBY_PAGER` or `PAGER` are set, the mock for stdout will not be applied.
+      # To ensure stdout is mocked, a simple way is to temporarily delete these environment vars.
+      # https://github.com/ruby/optparse/blob/v0.6.0/lib/optparse.rb#L1053-L1071
+      around do |example|
+        original_ruby_pager = ENV.delete('RUBY_PAGER')
+        original_pager = ENV.delete('PAGER')
+        begin
+          example.run
+        ensure
+          ENV['RUBY_PAGER'] = original_ruby_pager
+          ENV['PAGER'] = original_pager
+        end
+      end
+
       it 'exits cleanly `-h`' do
         expect { options.parse ['-h'] }.to exit_with_code(0)
       end
