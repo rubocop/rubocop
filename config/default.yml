@@ -2410,8 +2410,9 @@ Lint/ShadowingOuterLocalVariable:
   Description: >-
                  Do not use the same name as outer local variable
                  for block arguments or block local variables.
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.9'
+  VersionChanged: <<next>>
 
 Lint/SharedMutableDefault:
   Description: 'Checks for mutable literals used as default arguments during Hash initialization.'
