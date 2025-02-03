@@ -58,7 +58,7 @@ module RuboCop
 
         # @!method each_with_object_block_candidate?(node)
         def_node_matcher :each_with_object_block_candidate?, <<~PATTERN
-          (block $(call _ {:inject :reduce} _) $_ $_)
+          (block $(call _ {:inject :reduce} _) $(args _ _) $_)
         PATTERN
 
         # @!method each_with_object_numblock_candidate?(node)
@@ -71,8 +71,7 @@ module RuboCop
 
           first_arg, second_arg = *node.arguments
 
-          corrector.replace(first_arg, second_arg.source)
-          corrector.replace(second_arg, first_arg.source)
+          corrector.swap(first_arg, second_arg)
 
           if return_value_occupies_whole_line?(return_value)
             corrector.remove(whole_line_expression(return_value))
