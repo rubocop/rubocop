@@ -135,13 +135,26 @@ module RuboCop
         end
 
         def correct_call_node(node, corrector, block_name)
-          corrector.insert_after(node, "(&#{block_name})")
+          new_arguments = if node.zsuper_type?
+                            args = build_new_arguments_for_zsuper(node) << "&#{block_name}"
+                            args.join(', ')
+                          else
+                            "&#{block_name}"
+                          end
+          corrector.insert_after(node, "(#{new_arguments})")
           return unless node.parenthesized?
 
           args_begin = Util.args_begin(node)
           args_end = Util.args_end(node)
           range = range_between(args_begin.begin_pos, args_end.end_pos)
           corrector.remove(range)
+        end
+
+        def build_new_arguments_for_zsuper(node)
+          def_node = node.each_ancestor(:def, :defs).first
+          def_node.arguments.map do |arg|
+            arg.optarg_type? ? arg.node_parts[0] : arg.source
+          end
         end
 
         def block_body_range(block_node, send_node)
