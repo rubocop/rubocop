@@ -101,6 +101,28 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject, :config do
     RUBY
   end
 
+  it 'ignores inject and reduce with block without arguments' do
+    expect_no_offenses(<<~RUBY)
+      [].inject({}) { $GLOBAL[rand] = rand; $GLOBAL }
+
+      [].reduce({}) do
+         $GLOBAL[rand] = rand
+         $GLOBAL
+      end
+    RUBY
+  end
+
+  it 'ignores inject and reduce with block with single argument' do
+    expect_no_offenses(<<~RUBY)
+      [].inject({}) { |h| h[rand] = rand; h }
+
+      [].reduce({}) do |h|
+         h[rand] = rand
+         h
+      end
+    RUBY
+  end
+
   it 'ignores inject and reduce with passed in, but not returned hash' do
     expect_no_offenses(<<~RUBY)
       [].inject({}) do |a, e|
