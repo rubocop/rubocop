@@ -11,6 +11,15 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#13782](https://github.com/rubocop/rubocop/pull/13782): Fix an error `Layout/ElseAlignment` when `else` is part of a numblock. ([@earlopain][])
+* [#13395](https://github.com/rubocop/rubocop/issues/13395): Fix a false positive for `Lint/UselessAssignment` when assigning in branch and block. ([@pCosta99][])
+* [#13783](https://github.com/rubocop/rubocop/pull/13783): Fix a false positive for `Lint/Void` when `each` numblock with conditional expressions that has multiple statements. ([@earlopain][])
+* [#13787](https://github.com/rubocop/rubocop/issues/13787): Fix incorrect autocorrect for `Style/ExplicitBlockArgument` when using arguments of `zsuper` in method definition. ([@koic][])
+* [#13785](https://github.com/rubocop/rubocop/pull/13785): Fix `Style/EachWithObject` cop error in case of single block argument. ([@viralpraxis][])
+* [#13781](https://github.com/rubocop/rubocop/pull/13781): Fix a false positive for `Lint/UnmodifiedReduceAccumulator` when omitting the accumulator in a nested numblock. ([@earlopain][])
+
 ## 1.71.1 (2025-01-31)
 
 ### Bug fixes
