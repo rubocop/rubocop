@@ -2371,10 +2371,7 @@ foo = ()
 if ()
   bar
 end
-----
 
-[source,ruby]
-----
 # good
 
 foo = (some_expression)

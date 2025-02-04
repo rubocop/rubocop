@@ -1611,10 +1611,7 @@ def a
 end
 def b
 end
-----
 
-[source,ruby]
-----
 # good
 def a
 end
@@ -1637,10 +1634,7 @@ class B
 end
 def b
 end
-----
 
-[source,ruby]
-----
 # good
 class A
 end
@@ -1666,10 +1660,7 @@ module B
 end
 def b
 end
-----
 
-[source,ruby]
-----
 # good
 module A
 end
