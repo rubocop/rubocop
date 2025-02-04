@@ -397,7 +397,7 @@ module RuboCop
       return if @options[:format] == 'junit'
 
       raise OptionArgumentError,
-            format('--display-only-failed can only be used together with --format junit.')
+            '--display-only-failed can only be used together with --format junit.'
     end
 
     def validate_display_only_correctable_and_autocorrect
@@ -415,14 +415,13 @@ module RuboCop
                 !@options.key?(:display_only_safe_correctable)
 
       raise OptionArgumentError,
-            format('--display-only-failed cannot be used together with other display options.')
+            '--display-only-failed cannot be used together with other display options.'
     end
 
     def validate_lsp_and_editor_mode
       return if !@options.key?(:lsp) || !@options.key?(:editor_mode)
 
-      raise OptionArgumentError,
-            format('Do not specify `--editor-mode` as it is redundant in `--lsp`.')
+      raise OptionArgumentError, 'Do not specify `--editor-mode` as it is redundant in `--lsp`.'
     end
 
     def validate_autocorrect
@@ -436,7 +435,7 @@ module RuboCop
       return unless @options.key?(:disable_uncorrectable)
 
       raise OptionArgumentError,
-            format('--disable-uncorrectable can only be used together with --autocorrect.')
+            '--disable-uncorrectable can only be used together with --autocorrect.'
     end
 
     def disable_parallel_when_invalid_option_combo
