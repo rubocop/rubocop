@@ -305,6 +305,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/style/nested_file_dirname.rb'
     - 'lib/rubocop/cop/style/random_with_offset.rb'
     - 'lib/rubocop/cop/style/redundant_array_constructor.rb'
+    - 'lib/rubocop/cop/style/redundant_format.rb'
     - 'lib/rubocop/cop/style/redundant_freeze.rb'
     - 'lib/rubocop/cop/style/redundant_interpolation_unfreeze.rb'
     - 'lib/rubocop/cop/style/redundant_regexp_constructor.rb'

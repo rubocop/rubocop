@@ -5150,6 +5150,11 @@ Style/RedundantFilterChain:
   VersionAdded: '1.52'
   VersionChanged: '1.57'
 
+Style/RedundantFormat:
+  Description: 'Checks for usages of `Kernel#format` or `Kernel#sprintf` with only a single argument.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."
   Enabled: true
