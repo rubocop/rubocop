@@ -159,9 +159,7 @@ module RuboCop
       def inject_defaults!(project_root)
         path = File.join(project_root, 'config', 'default.yml')
         config = load_file(path)
-        new_config = ConfigLoader.merge_with_default(config, path)
-        puts "configuration from #{path}" if debug?
-        @default_configuration = new_config
+        @default_configuration = ConfigLoader.merge_with_default(config, path)
       end
 
       # Returns the path RuboCop inferred as the root of the project. No file
