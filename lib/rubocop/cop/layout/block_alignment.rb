@@ -73,6 +73,8 @@ module RuboCop
         # @!method block_end_align_target?(node, child)
         def_node_matcher :block_end_align_target?, <<~PATTERN
           {assignment?
+           def
+           defs
            splat
            and
            or
