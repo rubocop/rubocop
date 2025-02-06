@@ -145,4 +145,80 @@ RSpec.describe RuboCop::Cop::Naming::PredicateName, :config do
       RUBY
     end
   end
+
+  context 'using Sorbet sigs' do
+    let(:cop_config) do
+      {
+        'NamePrefix' => %w[is_ has_],
+        'ForbiddenPrefixes' => [],
+        'UseSorbetSigs' => 'true'
+      }
+    end
+
+    it 'registers an offense if no ? when `sig { returns(T::Boolean) }` and variants' do
+      expect_offense(<<~RUBY)
+        sig { returns(T::Boolean) }
+        def is_attr; end
+            ^^^^^^^ Rename `is_attr` to `is_attr?`.
+      RUBY
+
+      expect_offense(<<~RUBY)
+        sig { returns(T::Boolean) }
+        # Comment here.
+        def is_attr; end
+            ^^^^^^^ Rename `is_attr` to `is_attr?`.
+      RUBY
+
+      expect_offense(<<~RUBY)
+        sig { returns(T::Boolean) }
+
+
+        def is_attr; end
+            ^^^^^^^ Rename `is_attr` to `is_attr?`.
+      RUBY
+
+      expect_offense(<<~RUBY)
+        sig do
+          returns(T::Boolean)
+        end
+        def is_attr; end
+            ^^^^^^^ Rename `is_attr` to `is_attr?`.
+      RUBY
+    end
+
+    it 'does not register an offense if no ? when `sig { returns(T::Array[String]) }`' do
+      expect_no_offenses(<<~RUBY)
+        sig { returns(T::Array[String]) }
+        def has_caused_error
+          errors.add(:base, 'This has caused an error')
+        end
+      RUBY
+    end
+
+    it 'picks the correct sig when there are multiple' do
+      expect_no_offenses(<<~RUBY)
+        sig { returns(T::Boolean) }
+        def is_attr?; end
+
+        sig { returns(String) }
+        def has_caused_error
+          errors.add(:base, 'This has caused an error')
+        end
+      RUBY
+    end
+
+    it 'works correctly when returns is chained on params' do
+      expect_offense(<<~RUBY)
+        sig { params(x: Integer).returns(T::Boolean) }
+        def is_even(x); end
+            ^^^^^^^ Rename `is_even` to `is_even?`.
+      RUBY
+    end
+
+    it 'does not register an offense if no ? when no sigs but the config is enabled' do
+      expect_no_offenses(<<~RUBY)
+        def is_attr; end
+      RUBY
+    end
+  end
 end

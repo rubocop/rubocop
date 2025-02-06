@@ -17,6 +17,10 @@ module RuboCop
       # they end with a `?`. These methods should be changed to remove the
       # prefix.
       #
+      # When `UseSorbetSigs` set to true (optional), the cop will only report
+      # offenses if the method has a Sorbet `sig` with a return type of
+      # `T::Boolean`. Dynamic methods are not supported with this configuration.
+      #
       # @example NamePrefix: ['is_', 'has_', 'have_'] (default)
       #   # bad
       #   def is_even(value)
@@ -56,6 +60,30 @@ module RuboCop
       # @example AllowedMethods: ['is_even?']
       #   # good
       #   def is_even?(value)
+      #   end
+      #
+      # @example UseSorbetSigs: false (default)
+      #  # bad
+      #  sig { returns(String) }
+      #  def is_this_thing_on
+      #    "yes"
+      #  end
+      #
+      #  # good - Sorbet signature is not evaluated
+      #  sig { returns(String) }
+      #  def is_this_thing_on?
+      #    "yes"
+      #  end
+      #
+      # @example UseSorbetSigs: true
+      #   # bad
+      #   sig { returns(T::Boolean) }
+      #   def odd(value)
+      #   end
+      #
+      #   # good
+      #   sig { returns(T::Boolean) }
+      #   def odd?(value)
       #   end
       #
       # @example MethodDefinitionMacros: ['define_method', 'define_singleton_method'] (default)
@@ -100,6 +128,7 @@ module RuboCop
             method_name = node.method_name.to_s
 
             next if allowed_method_name?(method_name, prefix)
+            next if use_sorbet_sigs? && !sorbet_sig?(node, return_type: 'T::Boolean')
 
             add_offense(
               node.loc.name,
@@ -120,6 +149,17 @@ module RuboCop
         end
 
         private
+
+        # @!method sorbet_return_type(node)
+        def_node_matcher :sorbet_return_type, <<~PATTERN
+          (block (send nil? :sig) args (send _ :returns $_type))
+        PATTERN
+
+        def sorbet_sig?(node, return_type: nil)
+          return false unless (type = sorbet_return_type(node.left_sibling))
+
+          type.source == return_type
+        end
 
         def allowed_method_name?(method_name, prefix)
           !(method_name.start_with?(prefix) && # cheap check to avoid allocating Regexp
@@ -149,6 +189,10 @@ module RuboCop
 
         def predicate_prefixes
           cop_config['NamePrefix']
+        end
+
+        def use_sorbet_sigs?
+          cop_config['UseSorbetSigs']
         end
 
         def method_definition_macros(macro_name)
