@@ -210,6 +210,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `-h/--help`
 | Print usage information.
 
+| `--ignore-disable-comments`
+| Report offenses even if they have been manually disabled with a `rubocop:disable` or `rubocop:todo` directive.
+
 | `--ignore-parent-exclusion`
 | Ignores all Exclude: settings from all .rubocop.yml files present in parent folders. This is useful when you are importing submodules when you want to test them without being affected by the parent module's rubocop settings.
 

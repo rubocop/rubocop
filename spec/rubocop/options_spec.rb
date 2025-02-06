@@ -60,8 +60,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                containing offenses.
                   --disable-pending-cops       Run without pending cops.
                   --enable-pending-cops        Run with pending cops.
-                  --ignore-disable-comments    Run cops even when they are disabled locally
-                                               by a `rubocop:disable` directive.
+                  --ignore-disable-comments    Report offenses even if they have been manually disabled
+                                               with a `rubocop:disable` or `rubocop:todo` directive.
                   --force-exclusion            Any files excluded by `Exclude` in configuration
                                                files will be excluded, even if given explicitly
                                                as arguments.
