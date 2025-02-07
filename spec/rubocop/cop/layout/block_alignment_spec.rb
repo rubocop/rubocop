@@ -651,7 +651,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     end
   end
 
-  context 'when configured to align with start_of_line' do
+  context 'with `EnforcedStyle: start_of_line`' do
     let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line' } }
 
     it 'allows when start_of_line aligned' do
@@ -679,9 +679,137 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
       RUBY
     end
+
+    context 'inside a non-endless method' do
+      it 'does not register an offense when `end` is aligned with the block start' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            bar do
+              baz
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when `end` is aligned with the method start' do
+        expect_offense(<<~RUBY)
+          def foo
+            bar do
+              baz
+          end
+          ^^^ `end` at 4, 0 is not aligned with `bar do` at 2, 2.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            bar do
+              baz
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'inside a non-endless singleton method' do
+      it 'does not register an offense when `end` is aligned with the block start' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            bar do
+              baz
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when `end` is aligned with the method start' do
+        expect_offense(<<~RUBY)
+          def self.foo
+            bar do
+              baz
+          end
+          ^^^ `end` at 4, 0 is not aligned with `bar do` at 2, 2.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo
+            bar do
+              baz
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'with endless methods', :ruby30 do
+      it 'does not register an offense when `end` is aligned with the start of the method definition' do
+        expect_no_offenses(<<~RUBY)
+          def foo = bar do
+            baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when `end` is aligned with the start of a multiline method definition' do
+        expect_no_offenses(<<~RUBY)
+          def foo = bar(123,
+                        456) do
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense when `end` is not aligned with the start of the method definition' do
+        expect_offense(<<~RUBY)
+          def foo = bar do
+            baz
+              end
+              ^^^ `end` at 3, 4 is not aligned with `def foo = bar do` at 1, 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo = bar do
+            baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when `end` is aligned with the start of a singleton method definition' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo = bar do
+            baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when `end` is aligned with the start of a multiline singleton method definition' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo = bar(123,
+                             456) do
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense when `end` is not aligned with the start of a singleton method definition' do
+        expect_offense(<<~RUBY)
+          def self.foo = bar do
+            baz
+              end
+              ^^^ `end` at 3, 4 is not aligned with `def self.foo = bar do` at 1, 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo = bar do
+            baz
+          end
+        RUBY
+      end
+    end
   end
 
-  context 'when configured to align with do' do
+  context 'with `EnforcedStyle: start_of_block`' do
     let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_block' } }
 
     it 'allows when do aligned' do
@@ -708,6 +836,150 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
             baz
           end
       RUBY
+    end
+
+    context 'inside a non-endless method' do
+      it 'does not register an offense when `end` is aligned with the block start' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            bar do
+              baz
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when `end` is aligned with the method start' do
+        expect_offense(<<~RUBY)
+          def foo
+            bar do
+              baz
+          end
+          ^^^ `end` at 4, 0 is not aligned with `bar do` at 2, 2.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo
+            bar do
+              baz
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'inside a non-endless singleton method' do
+      it 'does not register an offense when `end` is aligned with the block start' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            bar do
+              baz
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when `end` is aligned with the method start' do
+        expect_offense(<<~RUBY)
+          def self.foo
+            bar do
+              baz
+          end
+          ^^^ `end` at 4, 0 is not aligned with `bar do` at 2, 2.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo
+            bar do
+              baz
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'with endless methods', :ruby30 do
+      it 'does not register an offense when `end` is aligned with the start of the method definition' do
+        expect_no_offenses(<<~RUBY)
+          def foo = bar do
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense when `end` is aligned with the start of a multiline method definition' do
+        expect_offense(<<~RUBY)
+          def foo = bar(123,
+                        456) do
+            baz
+          end
+          ^^^ `end` at 4, 0 is not aligned with `456) do` at 2, 14.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo = bar(123,
+                        456) do
+            baz
+                        end
+        RUBY
+      end
+
+      it 'registers an offense when `end` is not aligned with the start of the method definition' do
+        expect_offense(<<~RUBY)
+          def foo = bar do
+            baz
+              end
+              ^^^ `end` at 3, 4 is not aligned with `def foo = bar do` at 1, 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo = bar do
+            baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when `end` is aligned with the start of a singleton method definition' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo = bar do
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense when `end` is aligned with the start of a multiline singleton method definition' do
+        expect_offense(<<~RUBY)
+          def self.foo = bar(123,
+                             456) do
+            baz
+          end
+          ^^^ `end` at 4, 0 is not aligned with `456) do` at 2, 19.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo = bar(123,
+                             456) do
+            baz
+                             end
+        RUBY
+      end
+
+      it 'registers an offense when `end` is not aligned with the start of a singleton method definition' do
+        expect_offense(<<~RUBY)
+          def self.foo = bar do
+            baz
+              end
+              ^^^ `end` at 3, 4 is not aligned with `def self.foo = bar do` at 1, 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo = bar do
+            baz
+          end
+        RUBY
+      end
     end
   end
 
