@@ -4,18 +4,15 @@ require_relative '../../rubocop/lsp/runtime'
 
 module RubyLsp
   module RuboCop
-    # Wrap RuboCop's built-in runtime for Ruby LSP's add-on.
-    class WrapsBuiltinLspRuntime
+    # Provides an adapter to bridge RuboCop's built-in LSP runtime with Ruby LSP's add-on.
+    # @api private
+    class RuntimeAdapter
       include RubyLsp::Requests::Support::Formatter
 
       def initialize
-        init!
-      end
+        config_store = ::RuboCop::ConfigStore.new
 
-      def init!
-        config = ::RuboCop::ConfigStore.new
-
-        @runtime = ::RuboCop::LSP::Runtime.new(config)
+        @runtime = ::RuboCop::LSP::Runtime.new(config_store)
       end
 
       def run_diagnostic(uri, document)
