@@ -22,8 +22,6 @@ module RuboCop
       def initialize(config_store)
         $PROGRAM_NAME = "rubocop --lsp #{ConfigFinder.project_root}"
 
-        RuboCop::LSP.enable
-
         @reader = LanguageServer::Protocol::Transport::Io::Reader.new($stdin)
         @writer = LanguageServer::Protocol::Transport::Io::Writer.new($stdout)
         @runtime = RuboCop::LSP::Runtime.new(config_store)

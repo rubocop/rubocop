@@ -20,6 +20,8 @@ module RuboCop
       attr_writer :safe_autocorrect, :lint_mode, :layout_mode
 
       def initialize(config_store)
+        RuboCop::LSP.enable
+
         @runner = RuboCop::Lsp::StdinRunner.new(config_store)
         @cop_registry = RuboCop::Cop::Registry.global.to_h
 

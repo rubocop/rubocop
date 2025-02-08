@@ -2,14 +2,14 @@
 
 require_relative '../../rubocop'
 require_relative '../../rubocop/lsp/logger'
-require_relative 'wraps_built_in_lsp_runtime'
+require_relative 'runtime_adapter'
 
 module RubyLsp
   module RuboCop
     # A Ruby LSP add-on for RuboCop.
     class Addon < RubyLsp::Addon
       def initializer
-        @wraps_built_in_lsp_runtime = nil
+        @runtime_adapter = nil
       end
 
       def name
@@ -21,11 +21,8 @@ module RubyLsp
           "Activating RuboCop LSP addon #{::RuboCop::Version::STRING}.", prefix: '[RuboCop]'
         )
 
-        ::RuboCop::LSP.enable
-        @wraps_built_in_lsp_runtime = WrapsBuiltinLspRuntime.new
-
-        global_state.register_formatter('rubocop', @wraps_built_in_lsp_runtime)
-
+        @runtime_adapter = RuntimeAdapter.new
+        global_state.register_formatter('rubocop', @runtime_adapter)
         register_additional_file_watchers(global_state, message_queue)
 
         ::RuboCop::LSP::Logger.log(
@@ -34,7 +31,7 @@ module RubyLsp
       end
 
       def deactivate
-        @wraps_built_in_lsp_runtime = nil
+        @runtime_adapter = nil
       end
 
       # rubocop:disable Layout/LineLength, Metrics/MethodLength
@@ -67,7 +64,7 @@ module RubyLsp
       def workspace_did_change_watched_files(changes)
         return unless changes.any? { |change| change[:uri].end_with?('.rubocop.yml') }
 
-        @wraps_built_in_lsp_runtime.init!
+        @runtime_adapter = RuntimeAdapter.new
 
         ::RuboCop::LSP::Logger(<<~MESSAGE, prefix: '[RuboCop]')
           Re-initialized RuboCop LSP addon #{::RuboCop::Version::STRING} due to .rubocop.yml file change.
