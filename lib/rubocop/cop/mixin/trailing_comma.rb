@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     # Common methods shared by Style/TrailingCommaInArguments,
     # Style/TrailingCommaInArrayLiteral and Style/TrailingCommaInHashLiteral
+    # rubocop:disable Metrics/ModuleLength
     module TrailingComma
       include ConfigurableEnforcedStyle
       include RangeHelp
@@ -57,6 +58,8 @@ module RuboCop
           ', unless each item is on its own line'
         when :consistent_comma
           ', unless items are split onto multiple lines'
+        when :diff_comma
+          ', unless that item immediately precedes a newline'
         else
           ''
         end
@@ -68,6 +71,8 @@ module RuboCop
           multiline?(node) && no_elements_on_same_line?(node)
         when :consistent_comma
           multiline?(node) && !method_name_and_arguments_on_same_line?(node)
+        when :diff_comma
+          multiline?(node) && last_item_precedes_newline?(node)
         else
           false
         end
@@ -128,6 +133,12 @@ module RuboCop
 
       def on_same_line?(range1, range2)
         range1.last_line == range2.line
+      end
+
+      def last_item_precedes_newline?(node)
+        after_last_item =
+          range_between(node.children.last.source_range.end_pos, node.loc.end.begin_pos)
+        after_last_item.source =~ /\A,?\s*\n/
       end
 
       def avoid_comma(kind, comma_begin_pos, extra_info)
@@ -205,5 +216,6 @@ module RuboCop
         false
       end
     end
+    # rubocop:enable Metrics/ModuleLength
   end
 end

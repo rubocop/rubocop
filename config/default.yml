@@ -5688,14 +5688,17 @@ Style/TrailingCommaInArrayLiteral:
   StyleGuide: '#no-trailing-array-commas'
   Enabled: true
   VersionAdded: '0.53'
-  # If `comma`, the cop requires a comma after the last item in an array,
-  # but only when each item is on its own line.
-  # If `consistent_comma`, the cop requires a comma after the last item of all
-  # non-empty, multiline array literals.
+  # If `comma`, the cop requires a comma after the last item in an array, but only when each item is
+  # on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all non-empty, multiline
+  # array literals.
+  # If `diff_comma`, the cop requires a comma after the last item of all non-empty, multiline array
+  # literals, but only when that last item immediately precedes a newline.
   EnforcedStyleForMultiline: no_comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma
+    - diff_comma
     - no_comma
 
 Style/TrailingCommaInBlockArgs:
@@ -5707,14 +5710,17 @@ Style/TrailingCommaInBlockArgs:
 Style/TrailingCommaInHashLiteral:
   Description: 'Checks for trailing comma in hash literals.'
   Enabled: true
-  # If `comma`, the cop requires a comma after the last item in a hash,
-  # but only when each item is on its own line.
-  # If `consistent_comma`, the cop requires a comma after the last item of all
-  # non-empty, multiline hash literals.
+  # If `comma`, the cop requires a comma after the last item in a hash, but only when each item is
+  # on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all non-empty, multiline
+  # hash literals.
+  # If `diff_comma`, the cop requires a comma after the last item of all non-empty, multiline hash
+  # literals, but only when that last item immediately precedes a newline.
   EnforcedStyleForMultiline: no_comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma
+    - diff_comma
     - no_comma
   VersionAdded: '0.53'
 

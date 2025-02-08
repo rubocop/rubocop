@@ -49,6 +49,12 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       include_examples 'single line lists', ', unless each item is on its own line'
     end
 
+    context 'when EnforcedStyleForMultiline is diff_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'diff_comma' } }
+
+      include_examples 'single line lists', ', unless that item immediately precedes a newline'
+    end
+
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
@@ -193,6 +199,98 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
     end
 
+    context 'when EnforcedStyleForMultiline is diff_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'diff_comma' } }
+
+      context 'when closing bracket is on same line as last value' do
+        it 'accepts no trailing comma' do
+          expect_no_offenses(<<~RUBY)
+            VALUES = [
+                       1001,
+                       2020,
+                       3333]
+          RUBY
+        end
+      end
+
+      it 'accepts two values on the same line' do
+        expect_no_offenses(<<~RUBY)
+          VALUES = [
+                     1001, 2020,
+                     3333,
+                   ]
+        RUBY
+      end
+
+      it 'registers an offense for literal with two of the values ' \
+         'on the same line and no trailing comma' do
+        expect_offense(<<~RUBY)
+          VALUES = [
+                     1001, 2020,
+                     3333
+                     ^^^^ Put a comma after the last item of a multiline array.
+                   ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          VALUES = [
+                     1001, 2020,
+                     3333,
+                   ]
+        RUBY
+      end
+
+      it 'accepts trailing comma' do
+        expect_no_offenses(<<~RUBY)
+          VALUES = [1001,
+                    2020,
+                    3333,
+                   ]
+        RUBY
+      end
+
+      it 'registers an offense for a trailing comma on same line as closing bracket' do
+        expect_offense(<<~RUBY)
+          VALUES = [1001,
+                    2020,
+                    3333,]
+                        ^ Avoid comma after the last item of an array, unless that item immediately precedes a newline.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          VALUES = [1001,
+                    2020,
+                    3333]
+        RUBY
+      end
+
+      it 'accepts a multiline word array' do
+        expect_no_offenses(<<~RUBY)
+          ingredients = %w(
+            sausage
+            anchovies
+            olives
+          )
+        RUBY
+      end
+
+      it 'accepts a multiline array with a single item and trailing comma' do
+        expect_no_offenses(<<~RUBY)
+          foo = [
+            1,
+          ]
+        RUBY
+      end
+
+      it 'accepts a multiline array with items on a single line and trailing comma' do
+        expect_no_offenses(<<~RUBY)
+          foo = [
+            1, 2,
+          ]
+        RUBY
+      end
+    end
+
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
@@ -248,6 +346,21 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
                     2020,
                     3333,
                    ]
+        RUBY
+      end
+
+      it 'registers an offense for no trailing comma on same line as closing bracket' do
+        expect_offense(<<~RUBY)
+          VALUES = [1001,
+                    2020,
+                    3333]
+                    ^^^^ Put a comma after the last item of a multiline array.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          VALUES = [1001,
+                    2020,
+                    3333,]
         RUBY
       end
 
