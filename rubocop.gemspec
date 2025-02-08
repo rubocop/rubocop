@@ -32,7 +32,9 @@ Gem::Specification.new do |s|
   }
 
   s.add_dependency('json', '~> 2.3')
-  s.add_dependency('language_server-protocol', '>= 3.17.0')
+  # NOTE: language_server-protocol gem doesn't use semantic versioning. Its versions follow x.y.z.t,
+  # where x.y.z indicates the Language Server Protocol Specification, t is an incrementing number.
+  s.add_dependency('language_server-protocol', '~> 3.17.0.2')
   s.add_dependency('lint_roller', '~> 1.1.0')
   s.add_dependency('parallel', '~> 1.10')
   s.add_dependency('parser', '>= 3.3.0.2')
