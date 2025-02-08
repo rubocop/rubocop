@@ -1,0 +1,1 @@
+* [#13805](https://github.com/rubocop/rubocop/pull/13805): Make the language_server-protocol dependency version stricter. ([@koic][])
