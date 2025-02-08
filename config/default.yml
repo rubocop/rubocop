@@ -2443,6 +2443,12 @@ Lint/SuppressedException:
   VersionAdded: '0.9'
   VersionChanged: '1.12'
 
+Lint/SuppressedExceptionInNumberConversion:
+  Description: 'Checks for cases where exceptions unrelated to the numeric constructors may be unintentionally swallowed.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Lint/SymbolConversion:
   Description: 'Checks for unnecessary symbol conversions.'
   Enabled: pending
