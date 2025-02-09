@@ -165,6 +165,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '("x"&.to_sym)', '"x"&.to_sym', 'a method call'
   it_behaves_like 'redundant', '(x[:y])', 'x[:y]', 'a method call'
   it_behaves_like 'redundant', '("foo"[0])', '"foo"[0]', 'a method call'
+  it_behaves_like 'redundant', '(foo[0][0])', 'foo[0][0]', 'a method call'
   it_behaves_like 'redundant', '(["foo"][0])', '["foo"][0]', 'a method call'
   it_behaves_like 'redundant', '({0 => :a}[0])', '{0 => :a}[0]', 'a method call'
   it_behaves_like 'redundant', '(x; y)', 'x; y', 'a method call'
@@ -556,6 +557,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'plausible', 'x += (foo; bar)'
   it_behaves_like 'plausible', 'x + (foo; bar)'
   it_behaves_like 'plausible', 'x((foo; bar))'
+
+  it_behaves_like 'plausible', '(foo[key] & bar.baz).any?'
 
   it 'registers an offense for parens around method body' do
     expect_offense(<<~RUBY)
