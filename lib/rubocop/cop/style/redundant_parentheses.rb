@@ -135,6 +135,8 @@ module RuboCop
           node = begin_node.children.first
 
           if (message = find_offense_message(begin_node, node))
+            begin_node = begin_node.parent if node.range_type?
+
             return offense(begin_node, message)
           end
 
@@ -144,7 +146,7 @@ module RuboCop
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def find_offense_message(begin_node, node)
           return 'a keyword' if keyword_with_redundant_parentheses?(node)
-          return 'a literal' if disallowed_literal?(begin_node, node)
+          return 'a literal' if node.literal? && disallowed_literal?(begin_node, node)
           return 'a variable' if node.variable?
           return 'a constant' if node.const_type?
           if node.assignment? && (begin_node.parent.nil? || begin_node.parent.begin_type?)
@@ -214,7 +216,11 @@ module RuboCop
         end
 
         def disallowed_literal?(begin_node, node)
-          node.literal? && !node.range_type? && !raised_to_power_negative_numeric?(begin_node, node)
+          if node.range_type?
+            begin_node.parent&.begin_type?
+          else
+            !raised_to_power_negative_numeric?(begin_node, node)
+          end
         end
 
         def raised_to_power_negative_numeric?(begin_node, node)
