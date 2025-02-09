@@ -205,7 +205,7 @@ module RuboCop
       directive.cop_names.each do |name|
         if directive.disabled?
           names[name] += 1
-        elsif (names[name]).positive?
+        elsif names[name].positive?
           names[name] -= 1
         else
           extras[directive.comment] << name
