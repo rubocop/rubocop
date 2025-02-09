@@ -13,6 +13,7 @@ module RuboCop
       #   # good
       #   x if y.z.nil?
       #
+      # rubocop:disable Metrics/ClassLength
       class RedundantParentheses < Base
         include Parentheses
         extend AutoCorrector
@@ -20,7 +21,9 @@ module RuboCop
         ALLOWED_NODE_TYPES = %i[and or send splat kwsplat].freeze
 
         # @!method square_brackets?(node)
-        def_node_matcher :square_brackets?, '(send `{(send _recv _msg) str array hash} :[] ...)'
+        def_node_matcher :square_brackets?, <<~PATTERN
+          (send `{(send _recv _msg) str array hash const #variable?} :[] ...)
+        PATTERN
 
         # @!method method_node_and_args(node)
         def_node_matcher :method_node_and_args, '$(call _recv _msg $...)'
@@ -38,6 +41,10 @@ module RuboCop
         end
 
         private
+
+        def variable?(node)
+          node.respond_to?(:variable?) && node.variable?
+        end
 
         def parens_allowed?(node)
           empty_parentheses?(node) ||
@@ -284,6 +291,7 @@ module RuboCop
           block.keywords? && begin_node.each_ancestor(:call).any?
         end
       end
+      # rubocop:enable Metrics/ClassLength
     end
   end
 end
