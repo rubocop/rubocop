@@ -20,7 +20,7 @@ module RuboCop
         ALLOWED_NODE_TYPES = %i[and or send splat kwsplat].freeze
 
         # @!method square_brackets?(node)
-        def_node_matcher :square_brackets?, '(send {(send _recv _msg) str array hash} :[] ...)'
+        def_node_matcher :square_brackets?, '(send `{(send _recv _msg) str array hash} :[] ...)'
 
         # @!method method_node_and_args(node)
         def_node_matcher :method_node_and_args, '$(call _recv _msg $...)'
