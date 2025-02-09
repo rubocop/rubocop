@@ -57,6 +57,9 @@ RuboCop version incompatibility found, RuboCop server restarting...
 RuboCop server starting on 127.0.0.1:60665.
 ```
 
+NOTE: Detection of incompatibility changes in the local configuration also includes changes to local file paths specified by `inherit_from` and `require` in `.rubocop.yml`.
+Changes involving remote files or those considered to be searched on `$LOAD_PATH` are not detected.
+
 If you would like to start the server in the foreground, which can be useful when running within Docker, you can pass the `--no-detach` option.
 
 ```console

@@ -106,6 +106,34 @@ RSpec.describe RuboCop::PathUtil do
     end
   end
 
+  describe '.remote_file?' do
+    subject(:smart_path) { described_class.remote_file?(path) }
+
+    context 'when the path is an HTTP URL' do
+      let(:path) { 'http://example.com' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the path is an HTTPS URL' do
+      let(:path) { 'https://example.com' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the path is a relative path' do
+      let(:path) { './relative/path/to' }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when path is an absolute path' do
+      let(:path) { '/absolute/path/to' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#smart_path', :isolated_environment do
     subject(:smart_path) { described_class.smart_path(path) }
 

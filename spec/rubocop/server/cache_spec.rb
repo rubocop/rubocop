@@ -274,6 +274,113 @@ RSpec.describe RuboCop::Server::Cache do
   end
 
   unless RuboCop::Platform.windows?
+    describe '.restart_key', :isolated_environment do
+      subject(:restart_key) { described_class.restart_key }
+
+      let(:hexdigest) do
+        Digest::SHA1.hexdigest(contents)
+      end
+
+      context 'when a local path is used in `inherit_from` of .rubocop.yml' do
+        let(:contents) do
+          RuboCop::Version::STRING + File.read('.rubocop.yml') + File.read('.rubocop_todo.yml')
+        end
+
+        before do
+          create_file('.rubocop_todo.yml', <<~YAML)
+            Metrics/ClassLength:
+              Max: 192
+          YAML
+        end
+
+        context 'when `inherit_from` is specified as a string path' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              inherit_from: .rubocop_todo.yml
+            YAML
+          end
+
+          it { expect(restart_key).to eq(hexdigest) }
+        end
+
+        context 'when `inherit_from` is specified as an array path' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              inherit_from:
+                - .rubocop_todo.yml
+            YAML
+          end
+
+          it { expect(restart_key).to eq(hexdigest) }
+        end
+      end
+
+      context 'when a remote path is used in `inherit_from` of .rubocop.yml' do
+        let(:contents) do
+          RuboCop::Version::STRING + File.read('.rubocop.yml')
+        end
+
+        context 'when `inherit_from` is specified as a string path' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              inherit_from: https://example.com
+            YAML
+          end
+
+          it { expect(restart_key).to eq(hexdigest) }
+        end
+      end
+
+      context 'when a local path is used in `require` of .rubocop.yml' do
+        let(:contents) do
+          RuboCop::Version::STRING + File.read('.rubocop.yml') + File.read('local_file.rb')
+        end
+
+        before do
+          create_file('local_file.rb', <<~YAML)
+            do_something
+          YAML
+        end
+
+        context 'when `inherit_from` is specified as a string path' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              require: ./local_file
+            YAML
+          end
+
+          it { expect(restart_key).to eq(hexdigest) }
+        end
+
+        context 'when `inherit_from` is specified as an array path' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              require:
+                ./local_file
+            YAML
+          end
+
+          it { expect(restart_key).to eq(hexdigest) }
+        end
+      end
+
+      context 'when a load path may be used in `require` of .rubocop.yml' do
+        let(:contents) do
+          RuboCop::Version::STRING + File.read('.rubocop.yml')
+        end
+
+        context 'when `inherit_from` is specified as a string path' do
+          before do
+            create_file('.rubocop.yml', <<~YAML)
+              inherit_from: rubocop-performance
+            YAML
+          end
+
+          it { expect(restart_key).to eq(hexdigest) }
+        end
+      end
+    end
+
     describe '.pid_running?', :isolated_environment do
       it 'works properly when concurrency with server stopping and cleaning cache dir' do
         expect(described_class).to receive(:pid_path).and_wrap_original do |method|

@@ -28,6 +28,10 @@ module RuboCop
         end
     end
 
+    def remote_file?(uri)
+      uri.start_with?('http://', 'https://')
+    end
+
     SMART_PATH_CACHE = {} # rubocop:disable Style/MutableConstant
     private_constant :SMART_PATH_CACHE
 

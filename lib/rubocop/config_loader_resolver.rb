@@ -175,7 +175,7 @@ module RuboCop
       return false if inherited_file.nil? # Not inheritance resolving merge
       return false if inherited_file.start_with?('..') # Legitimate override
       return false if base_hash[key] == derived_hash[key] # Same value
-      return false if remote_file?(inherited_file) # Can't change
+      return false if PathUtil.remote_file?(inherited_file) # Can't change
 
       Gem.path.none? { |dir| inherited_file.start_with?(dir) } # Can change?
     end
@@ -243,7 +243,7 @@ module RuboCop
     end
 
     def inherited_file(path, inherit_from, file)
-      if remote_file?(inherit_from)
+      if PathUtil.remote_file?(inherit_from)
         # A remote configuration, e.g. `inherit_from: http://example.com/rubocop.yml`.
         RemoteConfig.new(inherit_from, File.dirname(path))
       elsif Pathname.new(inherit_from).absolute?
@@ -261,10 +261,6 @@ module RuboCop
         print 'Inheriting ' if ConfigLoader.debug?
         File.expand_path(inherit_from, File.dirname(path))
       end
-    end
-
-    def remote_file?(uri)
-      uri.start_with?('http://', 'https://')
     end
 
     def remote_config?(file)
