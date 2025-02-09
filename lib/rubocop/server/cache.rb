@@ -2,8 +2,10 @@
 
 require 'digest'
 require 'pathname'
+require 'yaml'
 require_relative '../cache_config'
 require_relative '../config_finder'
+require_relative '../path_util'
 
 #
 # This code is based on https://github.com/fohte/rubocop-daemon.
@@ -50,9 +52,11 @@ module RuboCop
           end.find(&:exist?)
           version_data = lockfile_path&.read || RuboCop::Version::STRING
           config_data = Pathname(ConfigFinder.find_config_path(Dir.pwd)).read
-          todo_data = (rubocop_todo = Pathname('.rubocop_todo.yml')).exist? ? rubocop_todo.read : ''
+          yaml = YAML.safe_load(config_data, permitted_classes: [Regexp, Symbol], aliases: true)
+          inherit_from_data = inherit_from_data(yaml)
+          require_data = require_data(yaml)
 
-          Digest::SHA1.hexdigest(version_data + config_data + todo_data)
+          Digest::SHA1.hexdigest(version_data + config_data + inherit_from_data + require_data)
         end
         # rubocop:enable Metrics/AbcSize
 
@@ -163,6 +167,35 @@ module RuboCop
 
         def write_version_file(version)
           version_path.write(version)
+        end
+
+        def inherit_from_data(yaml)
+          return '' unless (inherit_from_paths = yaml['inherit_from'])
+
+          Array(inherit_from_paths).map do |path|
+            next if PathUtil.remote_file?(path)
+
+            path = Pathname(path)
+
+            path.exist? ? path.read : ''
+          end.join
+        end
+
+        def require_data(yaml)
+          return '' unless (require_paths = yaml['require'])
+
+          Array(require_paths).map do |path|
+            # NOTE: This targets only relative or absolute path specifications.
+            # For example, specifications like `require: rubocop-performance`,
+            # which can be loaded from `$LOAD_PATH`, are ignored.
+            next unless path.start_with?('.', '/')
+
+            # NOTE: `.so` files are not typically specified, so only `.rb` files are targeted.
+            path = "#{path}.rb" unless path.end_with?('.rb')
+            path = Pathname(path)
+
+            path.exist? ? path.read : ''
+          end.join
         end
       end
     end
