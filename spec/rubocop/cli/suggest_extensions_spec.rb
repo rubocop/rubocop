@@ -78,6 +78,7 @@ RSpec.describe 'RuboCop::CLI SuggestExtensions', :isolated_environment do # rubo
       end
     end
 
+    let(:loaded_plugins) { %w[] }
     let(:loaded_features) { %w[] }
 
     let(:lockfile) do
@@ -112,6 +113,7 @@ RSpec.describe 'RuboCop::CLI SuggestExtensions', :isolated_environment do # rubo
       allow(Bundler).to receive(:default_lockfile)
         .and_return(lockfile ? Pathname.new(lockfile) : nil)
 
+      allow_any_instance_of(RuboCop::Config).to receive(:loaded_plugins).and_return(loaded_plugins)
       allow_any_instance_of(RuboCop::Config).to receive(:loaded_features)
         .and_return(loaded_features)
     end
@@ -215,7 +217,35 @@ RSpec.describe 'RuboCop::CLI SuggestExtensions', :isolated_environment do # rubo
         end
       end
 
-      context 'that are dependencies and required in config' do
+      context 'that are dependencies and required plugins in config' do
+        let(:lockfile) do
+          create_file('Gemfile.lock', <<~TEXT)
+            GEM
+              remote: https://rubygems.org/
+              specs:
+                rake (13.0.1)
+                rspec (3.9.0)
+                  rspec-core (~> 3.9.0)
+                rspec-core (3.9.3)
+                rubocop-rake (0.5.1)
+                rubocop-rspec (2.0.1)
+
+            DEPENDENCIES
+              rake (~> 13.0)
+              rspec (~> 3.7)
+              rubocop-rake (~> 0.5)
+              rubocop-rspec (~> 2.0.0)
+          TEXT
+        end
+
+        let(:loaded_plugins) { %w[rubocop-rspec rubocop-rake] }
+
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'that are dependencies and required features in config' do
         let(:lockfile) do
           create_file('Gemfile.lock', <<~TEXT)
             GEM
