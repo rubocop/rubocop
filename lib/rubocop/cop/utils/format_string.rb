@@ -5,7 +5,7 @@ module RuboCop
     module Utils
       # Parses {Kernel#sprintf} format strings.
       class FormatString
-        DIGIT_DOLLAR  = /(\d+)\$/.freeze
+        DIGIT_DOLLAR  = /(?<arg_number>\d+)\$/.freeze
         INTERPOLATION = /#\{.*?\}/.freeze
         FLAG          = /[ #0+-]|#{DIGIT_DOLLAR}/.freeze
         NUMBER_ARG    = /\*#{DIGIT_DOLLAR}?/.freeze
@@ -42,7 +42,7 @@ module RuboCop
         #
         # @see https://ruby-doc.org/core-2.6.3/Kernel.html#method-i-format
         class FormatSequence
-          attr_reader :begin_pos, :end_pos, :flags, :width, :precision, :name, :type
+          attr_reader :begin_pos, :end_pos, :flags, :width, :precision, :name, :type, :arg_number
 
           def initialize(match)
             @source = match[0]
@@ -53,6 +53,7 @@ module RuboCop
             @precision = match[:precision]
             @name = match[:name]
             @type = match[:type]
+            @arg_number = match[:arg_number]
           end
 
           def percent?
