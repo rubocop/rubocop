@@ -6,14 +6,15 @@ module RuboCop
       # Parses {Kernel#sprintf} format strings.
       class FormatString
         DIGIT_DOLLAR  = /(\d+)\$/.freeze
+        INTERPOLATION = /#\{.*?\}/.freeze
         FLAG          = /[ #0+-]|#{DIGIT_DOLLAR}/.freeze
         NUMBER_ARG    = /\*#{DIGIT_DOLLAR}?/.freeze
-        NUMBER        = /\d+|#{NUMBER_ARG}/.freeze
+        NUMBER        = /\d+|#{NUMBER_ARG}|#{INTERPOLATION}/.freeze
         WIDTH         = /(?<width>#{NUMBER})/.freeze
         PRECISION     = /\.(?<precision>#{NUMBER})/.freeze
         TYPE          = /(?<type>[bBdiouxXeEfgGaAcps])/.freeze
         NAME          = /<(?<name>\w+)>/.freeze
-        TEMPLATE_NAME = /\{(?<name>\w+)\}/.freeze
+        TEMPLATE_NAME = /(?<!#)\{(?<name>\w+)\}/.freeze
 
         SEQUENCE = /
             % (?<type>%)

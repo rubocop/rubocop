@@ -343,6 +343,18 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
     it 'does not register an offense for String#% when only interpolated string' do
       expect_no_offenses('"#{foo}" % [1, 2]')
     end
+
+    it 'does not register an offense when an interpolated width' do
+      expect_no_offenses(<<~'RUBY')
+        format("%#{padding}s: %s", prefix, message)
+      RUBY
+    end
+
+    it 'does not register an offense with a negative interpolated width' do
+      expect_no_offenses(<<~'RUBY')
+        sprintf("| %-#{key_offset}s | %-#{val_offset}s |", key, value)
+      RUBY
+    end
   end
 
   context 'with interpolated string in argument' do
