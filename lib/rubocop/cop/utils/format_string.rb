@@ -11,7 +11,7 @@ module RuboCop
         NUMBER_ARG    = /\*#{DIGIT_DOLLAR}?/.freeze
         NUMBER        = /\d+|#{NUMBER_ARG}|#{INTERPOLATION}/.freeze
         WIDTH         = /(?<width>#{NUMBER})/.freeze
-        PRECISION     = /\.(?<precision>#{NUMBER})/.freeze
+        PRECISION     = /\.(?<precision>#{NUMBER}?)/.freeze
         TYPE          = /(?<type>[bBdiouxXeEfgGaAcps])/.freeze
         NAME          = /<(?<name>\w+)>/.freeze
         TEMPLATE_NAME = /(?<!#)\{(?<name>\w+)\}/.freeze

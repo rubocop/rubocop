@@ -249,6 +249,10 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
     expect_no_offenses('format("%d%d", *test)')
   end
 
+  it 'does not register an offense for precision with no number' do
+    expect_no_offenses('format("%.d", 0)')
+  end
+
   context 'on format with %{} interpolations' do
     context 'and 1 argument' do
       it 'does not register an offense' do
