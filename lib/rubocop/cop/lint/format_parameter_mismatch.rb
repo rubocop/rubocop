@@ -7,7 +7,7 @@ module RuboCop
       # expected fields for format/sprintf/#% and what is actually
       # passed as arguments.
       #
-      # In addition it checks whether different formats are used in the same
+      # In addition, it checks whether different formats are used in the same
       # format string. Do not mix numbered, unnumbered, and named formats in
       # the same format string.
       #
