@@ -97,7 +97,13 @@ module RuboCop
         end
 
         def loaded_extensions
-          @config_store.for_pwd.loaded_features.to_a
+          rubocop_config = @config_store.for_pwd
+
+          plugin_names = rubocop_config.loaded_plugins.map do |plugin|
+            plugin.about.name
+          end
+
+          plugin_names + rubocop_config.loaded_features.to_a
         end
 
         def installed_and_not_loaded_extensions
