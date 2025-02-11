@@ -31,6 +31,20 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       expect_no_offenses("a #{op} b")
     end
 
+    it "accepts void op #{op} method call without arguments unless it is on the last line" do
+      expect_no_offenses(<<~RUBY)
+        a.#{op}
+        something
+      RUBY
+    end
+
+    it "accepts void op #{op} safe navigation method call without arguments unless it is on the last line" do
+      expect_no_offenses(<<~RUBY)
+        a&.#{op}
+        something
+      RUBY
+    end
+
     it "registers an offense for parenthesized void op #{op} if not on last line" do
       expect_offense(<<~RUBY, op: op)
         (a %{op} b)
