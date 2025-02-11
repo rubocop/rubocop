@@ -41,7 +41,6 @@ module RuboCop
           raise Plugin::NotSupportedError, unsupported_plugins
         end
 
-        # rubocop:disable Metrics/MethodLength
         def combine_rubocop_configs(default_config, runner_context, plugins)
           fake_out_rubocop_default_configuration(default_config) do |fake_config|
             all_cop_keys_configured_by_plugins = []
@@ -57,15 +56,11 @@ module RuboCop
                 combined_config['AllCops'], plugin_config['AllCops'],
                 all_cop_keys_configured_by_plugins
               )
-              delete_already_configured_keys!(
-                combined_config.keys, plugin_config, dont_delete_keys: ['AllCops']
-              )
 
               ConfigLoader.merge_with_default(plugin_config, plugin_config_path)
             end
           end
         end
-        # rubocop:enable Metrics/MethodLength
 
         def merge_plugin_config_into_all_cops!(rubocop_config, plugin_config)
           rubocop_config['AllCops'].merge!(plugin_config['AllCops'])
@@ -135,14 +130,6 @@ module RuboCop
           end
 
           [combined_all_cops, combined_configured_keys]
-        end
-
-        def delete_already_configured_keys!(configured_keys, next_config, dont_delete_keys: [])
-          duplicate_keys = configured_keys & Array(next_config&.keys)
-
-          (duplicate_keys - dont_delete_keys).each do |key|
-            next_config.delete(key)
-          end
         end
 
         def resolver
