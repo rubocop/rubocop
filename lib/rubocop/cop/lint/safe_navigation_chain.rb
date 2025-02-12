@@ -19,7 +19,7 @@ module RuboCop
       #   # good
       #   x&.foo&.bar
       #   x&.foo || bar
-      class SafeNavigationChain < Base
+      class SafeNavigationChain < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include NilMethods
         extend AutoCorrector
         extend TargetRubyVersion

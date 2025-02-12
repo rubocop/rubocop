@@ -34,7 +34,7 @@ module RuboCop
       #   RuboCop::Cop::Base
       #   ::RuboCop::Cop
       #
-      class SpaceAroundMethodCallOperator < Base
+      class SpaceAroundMethodCallOperator < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

@@ -27,7 +27,7 @@ module RuboCop
       #     end
       #   end
       #
-      class TrailingCommaInAttributeDeclaration < Base
+      class TrailingCommaInAttributeDeclaration < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
         include RangeHelp
 

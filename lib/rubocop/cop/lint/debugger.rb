@@ -71,7 +71,7 @@ module RuboCop
       #   # bad (ok during development)
       #
       #   require 'my_debugger/start'
-      class Debugger < Base
+      class Debugger < Base # rubocop:todo InternalAffairs/RestrictOnSend
         MSG = 'Remove debugger entry point `%<source>s`.'
         BLOCK_TYPES = %i[block numblock kwbegin].freeze
 

@@ -42,7 +42,7 @@ module RuboCop
       #   # good
       #   foo(a) { |x| puts x }
       #
-      class RedundantLineBreak < Base
+      class RedundantLineBreak < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include CheckAssignment
         include CheckSingleLineSuitability
         extend AutoCorrector

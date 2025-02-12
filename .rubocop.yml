@@ -378,6 +378,10 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/style/numeric_predicate.rb'
     - 'lib/rubocop/cop/style/single_argument_dig.rb'
 
+InternalAffairs/RestrictOnSend:
+  Include:
+    - 'lib/rubocop/cop/**/*.rb'
+
 Gemspec/DependencyVersion:
   Enabled: true
 

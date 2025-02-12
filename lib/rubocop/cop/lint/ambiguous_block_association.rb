@@ -49,7 +49,7 @@ module RuboCop
       #   expect { do_something }.to change { object.attribute }
       #   expect { do_something }.to not_change { object.attribute }
       #
-      class AmbiguousBlockAssociation < Base
+      class AmbiguousBlockAssociation < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
 
         include AllowedMethods

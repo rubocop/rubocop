@@ -33,7 +33,7 @@ module RuboCop
       #
       #   private def foo
       #           end
-      class DefEndAlignment < Base
+      class DefEndAlignment < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include EndKeywordAlignment
         include RangeHelp
         extend AutoCorrector

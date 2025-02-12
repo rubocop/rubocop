@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   'name'.to_sym
       #   'var'.preferred_method
-      class StringMethods < Base
+      class StringMethods < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include MethodPreference
         extend AutoCorrector
 

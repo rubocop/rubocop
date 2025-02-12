@@ -17,7 +17,7 @@ module RuboCop
       #   FileUtils.rmdir(dir)
       #   Marshal.dump(obj)
       #
-      class ColonMethodCall < Base
+      class ColonMethodCall < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
 
         MSG = 'Do not use `::` for method calls.'

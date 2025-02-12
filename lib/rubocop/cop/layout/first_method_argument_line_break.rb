@@ -68,7 +68,7 @@ module RuboCop
       #   # good
       #   some_method(foo, bar,
       #     baz)
-      class FirstMethodArgumentLineBreak < Base
+      class FirstMethodArgumentLineBreak < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include FirstElementLineBreak
         include AllowedMethods
         extend AutoCorrector

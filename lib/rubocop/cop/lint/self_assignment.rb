@@ -23,7 +23,7 @@ module RuboCop
       #   # good (method calls possibly can return different results)
       #   hash[foo] = hash[foo]
       #
-      class SelfAssignment < Base
+      class SelfAssignment < Base # rubocop:todo InternalAffairs/RestrictOnSend
         MSG = 'Self-assignment detected.'
 
         ASSIGNMENT_TYPE_TO_RHS_TYPE = {

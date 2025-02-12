@@ -42,7 +42,7 @@ module RuboCop
       #   foo :bar,
       #       :baz,
       #       key: value
-      class ArgumentAlignment < Base
+      class ArgumentAlignment < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include Alignment
         extend AutoCorrector
 

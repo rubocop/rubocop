@@ -26,7 +26,7 @@ module RuboCop
       #   # good
       #   object.foo()
       #
-      class MethodCallWithoutArgsParentheses < Base
+      class MethodCallWithoutArgsParentheses < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include AllowedMethods
         include AllowedPattern
         extend AutoCorrector

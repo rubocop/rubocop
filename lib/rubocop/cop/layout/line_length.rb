@@ -60,6 +60,7 @@ module RuboCop
       #     bar: "0000000000",
       #     baz: "0000000000",
       #   }
+      # rubocop:todo InternalAffairs/RestrictOnSend
       class LineLength < Base # rubocop:disable Metrics/ClassLength
         include CheckLineBreakable
         include AllowedPattern
@@ -386,6 +387,7 @@ module RuboCop
           node.source[0...(max_length)]
         end
       end
+      # rubocop:enable InternalAffairs/RestrictOnSend
     end
   end
 end

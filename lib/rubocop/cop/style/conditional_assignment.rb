@@ -204,7 +204,7 @@ module RuboCop
       #     some_other_method
       #     bar = 2
       #   end
-      class ConditionalAssignment < Base
+      class ConditionalAssignment < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConditionalAssignmentHelper
         include ConfigurableEnforcedStyle
         extend AutoCorrector

@@ -28,7 +28,7 @@ module RuboCop
       #     bar
       #   SQL
       #
-      class HeredocMethodCallPosition < Base
+      class HeredocMethodCallPosition < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

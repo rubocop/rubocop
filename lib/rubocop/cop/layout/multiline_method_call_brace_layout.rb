@@ -88,7 +88,7 @@ module RuboCop
       #   # good
       #   foo(a,
       #     b)
-      class MultilineMethodCallBraceLayout < Base
+      class MultilineMethodCallBraceLayout < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include MultilineLiteralBraceLayout
         extend AutoCorrector
 

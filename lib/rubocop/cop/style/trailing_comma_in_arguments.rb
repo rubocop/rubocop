@@ -87,7 +87,7 @@ module RuboCop
       #     1,
       #     2
       #   )
-      class TrailingCommaInArguments < Base
+      class TrailingCommaInArguments < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include TrailingComma
         extend AutoCorrector
 

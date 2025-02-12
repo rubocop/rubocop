@@ -40,7 +40,7 @@ module RuboCop
       #   items.select
       #   items.include?
       #
-      class CollectionMethods < Base
+      class CollectionMethods < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include MethodPreference
         extend AutoCorrector
 

@@ -100,7 +100,7 @@ module RuboCop
       #   # good
       #   def_node_matcher(:even?) { |value| }
       #
-      class PredicateName < Base
+      class PredicateName < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include AllowedMethods
 
         # @!method dynamic_method_define(node)

@@ -70,7 +70,7 @@ module RuboCop
       #
       #   # good
       #   Time.now.to_datetime.to_i
-      class NumberConversion < Base
+      class NumberConversion < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
         include AllowedMethods
         include AllowedPattern

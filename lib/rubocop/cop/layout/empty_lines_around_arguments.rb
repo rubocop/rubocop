@@ -38,7 +38,7 @@ module RuboCop
       #     x: y
       #   )
       #
-      class EmptyLinesAroundArguments < Base
+      class EmptyLinesAroundArguments < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

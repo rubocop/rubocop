@@ -22,7 +22,7 @@ module RuboCop
       #   # good
       #   something.
       #     method
-      class DotPosition < Base
+      class DotPosition < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableEnforcedStyle
         include RangeHelp
         extend AutoCorrector

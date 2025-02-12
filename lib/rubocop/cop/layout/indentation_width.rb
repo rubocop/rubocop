@@ -41,6 +41,7 @@ module RuboCop
       #     end
       #   end
       #   end
+      # rubocop:todo InternalAffairs/RestrictOnSend
       class IndentationWidth < Base # rubocop:disable Metrics/ClassLength
         include EndKeywordAlignment
         include Alignment
@@ -383,6 +384,7 @@ module RuboCop
           leftmost_modifier_of(node.parent)
         end
       end
+      # rubocop:enable InternalAffairs/RestrictOnSend
     end
   end
 end

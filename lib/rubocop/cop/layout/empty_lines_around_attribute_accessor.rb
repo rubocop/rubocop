@@ -60,7 +60,7 @@ module RuboCop
       #   def do_something
       #   end
       #
-      class EmptyLinesAroundAttributeAccessor < Base
+      class EmptyLinesAroundAttributeAccessor < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         include AllowedMethods
         extend AutoCorrector

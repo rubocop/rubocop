@@ -23,7 +23,7 @@ module RuboCop
       #   if day.is?(:tuesday) && month == :jan
       #     # ...
       #   end
-      class RequireParentheses < Base
+      class RequireParentheses < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
 
         MSG = 'Use parentheses in the method call to avoid confusion about precedence.'

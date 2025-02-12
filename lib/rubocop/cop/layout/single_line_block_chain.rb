@@ -19,7 +19,7 @@ module RuboCop
       #     item.cond?
       #   end.join('-')
       #
-      class SingleLineBlockChain < Base
+      class SingleLineBlockChain < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

@@ -54,7 +54,7 @@ module RuboCop
       #   string.chomp
       #   string.chomp!
       #   A.foo
-      class RedundantArgument < Base
+      class RedundantArgument < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include RangeHelp
         extend AutoCorrector
 

@@ -165,7 +165,7 @@ module RuboCop
       #     process(something)
       #   }
       #
-      class BlockDelimiters < Base
+      class BlockDelimiters < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableEnforcedStyle
         include AllowedMethods
         include AllowedPattern

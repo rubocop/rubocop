@@ -19,7 +19,7 @@ module RuboCop
       #
       #   # good
       #   ->a,b,c { a + b + c}
-      class StabbyLambdaParentheses < Base
+      class StabbyLambdaParentheses < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableEnforcedStyle
         extend AutoCorrector
 

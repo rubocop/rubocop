@@ -42,7 +42,7 @@ module RuboCop
       #       self.bar == bar  # Resolves name clash with argument of the block.
       #     end
       #   end
-      class RedundantSelf < Base
+      class RedundantSelf < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
 
         MSG = 'Redundant `self` detected.'

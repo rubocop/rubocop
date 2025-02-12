@@ -19,7 +19,7 @@ module RuboCop
       #
       #     # good
       #     a = -> (x, y) { x + y }
-      class SpaceInLambdaLiteral < Base
+      class SpaceInLambdaLiteral < Base # rubocop:todo InternalAffairs/RestrictOnSend
         include ConfigurableEnforcedStyle
         include RangeHelp
         extend AutoCorrector

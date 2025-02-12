@@ -46,7 +46,7 @@ module RuboCop
       #
       #   # good
       #   something.to_time
-      class DateTime < Base
+      class DateTime < Base # rubocop:todo InternalAffairs/RestrictOnSend
         extend AutoCorrector
 
         CLASS_MSG = 'Prefer `Time` over `DateTime`.'

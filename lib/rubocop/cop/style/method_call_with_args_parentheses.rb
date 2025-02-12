@@ -201,7 +201,7 @@ module RuboCop
       #
       #   # good
       #   "#{t 'this.is.also.good'}"
-      class MethodCallWithArgsParentheses < Base
+      class MethodCallWithArgsParentheses < Base # rubocop:todo InternalAffairs/RestrictOnSend
         require_relative 'method_call_with_args_parentheses/omit_parentheses'
         require_relative 'method_call_with_args_parentheses/require_parentheses'
 
