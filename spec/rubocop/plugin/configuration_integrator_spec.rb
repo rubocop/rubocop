@@ -63,5 +63,23 @@ RSpec.describe RuboCop::Plugin::ConfigurationIntegrator do
         expect(exclude[1]).to end_with('.erb')
       end
     end
+
+    context 'when using a plugin with an unsupported RuboCop engine' do
+      let(:rubocop_config) do
+        RuboCop::Config.new
+      end
+      let(:unsupported_plugin) do
+        Class.new(LintRoller::Plugin) do
+          def supported?(context)
+            context.engine == :not_rubocop
+          end
+        end
+      end
+      let(:plugins) { [unsupported_plugin.new] }
+
+      it 'raises `RuboCop::Plugin::NotSupportedError`' do
+        expect { integrated_config }.to raise_error(RuboCop::Plugin::NotSupportedError)
+      end
+    end
   end
 end
