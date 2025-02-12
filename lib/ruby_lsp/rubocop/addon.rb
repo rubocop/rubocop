@@ -66,7 +66,7 @@ module RubyLsp
 
         @runtime_adapter = RuntimeAdapter.new
 
-        ::RuboCop::LSP::Logger(<<~MESSAGE, prefix: '[RuboCop]')
+        ::RuboCop::LSP::Logger.log(<<~MESSAGE, prefix: '[RuboCop]')
           Re-initialized RuboCop LSP addon #{::RuboCop::Version::STRING} due to .rubocop.yml file change.
         MESSAGE
       end

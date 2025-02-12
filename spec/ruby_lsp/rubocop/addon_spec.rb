@@ -117,6 +117,29 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
     end
   end
 
+  describe 'workspace/didChangeWatchedFiles' do
+    it 'creates new runtime adapter' do
+      with_server(source, '.rubocop.yml') do |server, uri|
+        addon = RubyLsp::Addon.addons.find { |a| a.name == 'RuboCop' }
+        expect(addon).to be_an_instance_of(RubyLsp::RuboCop::Addon)
+        original_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
+
+        server.process_message(
+          method: 'workspace/didChangeWatchedFiles',
+          params: {
+            changes: [{
+              uri: uri.to_s,
+              type: RubyLsp::Constant::FileChangeType::CHANGED
+            }]
+          }
+        )
+
+        new_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
+        expect(new_runtime_adapter).not_to eq original_runtime_adapter
+      end
+    end
+  end
+
   private
 
   # Lifted from here, because we need to override the formatter to RuboCop in the spec helper:
