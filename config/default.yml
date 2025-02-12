@@ -2927,6 +2927,12 @@ Naming/FileName:
     - XSRF
     - XSS
 
+Naming/ForbiddenVariableName:
+  Description: 'Avoid using a forbidden name for a variable or argument.'
+  Enabled: false
+  VersionAdded: '<<next>>'
+  ForbiddenNames: []
+
 Naming/HeredocDelimiterCase:
   Description: 'Use configured case for heredoc delimiters.'
   StyleGuide: '#heredoc-delimiters'
