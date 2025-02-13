@@ -1956,6 +1956,26 @@ RSpec.describe RuboCop::ConfigLoader do
     end
   end
 
+  describe '.inject_defaults!', :isolated_environment do
+    subject(:rubocop_config) { described_class.inject_defaults!(config_path) }
+
+    before do
+      create_empty_file('default.yml')
+    end
+
+    context 'when config path is a string' do
+      let(:config_path) { 'default.yml' }
+
+      it { expect { rubocop_config }.not_to raise_error }
+    end
+
+    context 'when config path is a `Pathname` object' do
+      let(:config_path) { Pathname('default.yml') }
+
+      it { expect { rubocop_config }.not_to raise_error }
+    end
+  end
+
   describe 'configuration for CharacterLiteral', :isolated_environment do
     let(:dir_path) { 'test/blargh' }
 

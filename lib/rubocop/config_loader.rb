@@ -181,7 +181,7 @@ module RuboCop
           path = File.join(project_root, 'config', 'default.yml')
           config = load_file(path)
         else
-          hash = ConfigLoader.load_yaml_configuration(config_yml_path)
+          hash = ConfigLoader.load_yaml_configuration(config_yml_path.to_s)
           config = Config.new(hash, config_yml_path).tap(&:make_excludes_absolute)
         end
 
