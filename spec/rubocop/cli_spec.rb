@@ -1765,7 +1765,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         OUTPUT
     end
 
-    it 'prints a warning for an unrecognized configuration parameter' do
+    it 'prints a warning for an unrecognized configuration parameter, ignoring permitted ones' do
       create_file('example/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', <<~YAML)
@@ -1798,18 +1798,6 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           - Enabled
           - IndentationWidth
         Warning: Layout/LineLength does not support Min parameter.
-
-        Supported parameters are:
-
-          - Enabled
-          - Max
-          - AllowHeredoc
-          - AllowURI
-          - URISchemes
-          - IgnoreCopDirectives
-          - AllowedPatterns
-          - SplitStrings
-        Warning: Layout/LineLength does not support Reference parameter.
 
         Supported parameters are:
 
