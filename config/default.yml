@@ -1286,6 +1286,15 @@ Layout/ParameterAlignment:
   # but it can be overridden by setting this parameter.
   IndentationWidth: ~
 
+Layout/PrivateConstant:
+  Description: >-
+                 Checks for public constants in the private section of a
+                 class without a private_constant declaration, which is 
+                 misleading.
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Layout/RedundantLineBreak:
   Description: >-
                  Do not break up an expression into multiple lines when it fits
