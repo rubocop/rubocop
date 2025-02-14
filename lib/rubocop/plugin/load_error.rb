@@ -13,21 +13,12 @@ module RuboCop
 
       def message
         <<~MESSAGE
-          Failed loading plugin `#{@plugin_name}` because we couldn't determine the corresponding plugin class to instantiate.
-          First, try upgrading it. If the issue persists, please check with the developer regarding the following points.
+          Failed to load plugin `#{@plugin_name}` because the corresponding plugin class could not be determined for instantiation.
+          Try upgrading it first (e.g., `bundle update #{@plugin_name}`).
+          If `#{@plugin_name}` is not yet a plugin, use `require: #{@plugin_name}` instead of `plugins: `#{@plugin_name}` in your configuration.
 
-          RuboCop plugin class names must either be:
-
-            - If the plugin is a gem, defined in the gemspec as `default_lint_roller_plugin'
-
-              spec.metadata['default_lint_roller_plugin'] = 'MyModule::Plugin'
-
-            - Set in YAML as `plugin_class_name'; example:
-
-              plugins:
-                - incomplete:
-                    require_path: my_module/plugin
-                    plugin_class_name: "MyModule::Plugin"
+          For further assistance, check with the developer regarding the following points:
+          https://docs.rubocop.org/rubocop/plugin_migration_guide.html
         MESSAGE
       end
     end
