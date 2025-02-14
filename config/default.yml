@@ -1688,7 +1688,7 @@ Lint/ConstantResolution:
 Lint/CopDirectiveSyntax:
   Description: 'Checks that `# rubocop:` directives are strictly formatted.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.72'
 
 Lint/Debugger:
   Description: 'Check for debugger calls.'
@@ -2293,7 +2293,7 @@ Lint/RedundantStringCoercion:
 Lint/RedundantTypeConversion:
   Description: 'Checks for redundantly converting a literal to the same type.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.72'
 
 Lint/RedundantWithIndex:
   Description: 'Checks for redundant `with_index`.'
@@ -2447,7 +2447,7 @@ Lint/SuppressedExceptionInNumberConversion:
   Description: 'Checks for cases where exceptions unrelated to the numeric constructors may be unintentionally swallowed.'
   Enabled: pending
   SafeAutoCorrect: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.72'
 
 Lint/SymbolConversion:
   Description: 'Checks for unnecessary symbol conversions.'
@@ -2607,7 +2607,7 @@ Lint/UselessAssignment:
 Lint/UselessConstantScoping:
   Description: 'Checks for useless constant scoping.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.72'
 
 Lint/UselessDefined:
   Description: 'Checks for calls to `defined?` with strings and symbols. The result of such a call will always be truthy.'
@@ -5171,7 +5171,7 @@ Style/RedundantFilterChain:
 Style/RedundantFormat:
   Description: 'Checks for usages of `Kernel#format` or `Kernel#sprintf` with only a single argument.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.72'
 
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."

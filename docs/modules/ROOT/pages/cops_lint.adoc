@@ -972,6 +972,55 @@ Login
 | Array
 |===
 
+[#lintcopdirectivesyntax]
+== Lint/CopDirectiveSyntax
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.72
+| -
+|===
+
+Checks that `# rubocop:enable ...` and `# rubocop:disable ...` statements
+are strictly formatted.
+
+A comment can be added to the directive by prefixing it with `--`.
+
+[#examples-lintcopdirectivesyntax]
+=== Examples
+
+[source,ruby]
+----
+# bad
+# rubocop:disable Layout/LineLength Style/Encoding
+#                                  ^ missing comma
+
+# bad
+# rubocop:disable
+
+# bad
+# rubocop:disable Layout/LineLength # rubocop:disable Style/Encoding
+
+# bad
+# rubocop:wrongmode Layout/LineLength
+
+# good
+# rubocop:disable Layout/LineLength
+
+# good
+# rubocop:disable Layout/LineLength, Style/Encoding
+
+# good
+# rubocop:disable all
+
+# good
+# rubocop:disable Layout/LineLength -- This is a good comment.
+----
+
 [#lintdebugger]
 == Lint/Debugger
 
@@ -2893,7 +2942,7 @@ This lint sees if there is a mismatch between the number of
 expected fields for format/sprintf/#% and what is actually
 passed as arguments.
 
-In addition it checks whether different formats are used in the same
+In addition, it checks whether different formats are used in the same
 format string. Do not mix numbered, unnumbered, and named formats in
 the same format string.
 
@@ -5398,6 +5447,85 @@ warn something
 
 * https://rubystyle.guide#no-to-s
 
+[#lintredundanttypeconversion]
+== Lint/RedundantTypeConversion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.72
+| -
+|===
+
+Checks for redundant uses of `to_s`, `to_sym`, `to_i`, `to_f`, `to_r`, `to_c`,
+`to_a`, `to_h`, and `to_set`.
+
+When one of these methods is called on an object of the same type, that object
+is returned, making the call unnecessary. The cop detects conversion methods called
+on object literals, class constructors, class `[]` methods, and the `Kernel` methods
+`String()`, `Integer()`, `Float()`, `Rational()`, `Complex()` and `Array()`.
+
+Specifically, these cases are detected for each conversion method:
+
+* `to_s` when called on a string literal, interpolated string, heredoc,
+  or with `String.new` or `String()`.
+* `to_sym` when called on a symbol literal or interpolated symbol.
+* `to_i` when called on an integer literal or with `Integer()`.
+* `to_f` when called on a float literal of with `Float()`.
+* `to_r` when called on a rational literal or with `Rational()`.
+* `to_c` when called on a complex literal of with `Complex()`.
+* `to_a` when called on an array literal, or with `Array.new`, `Array()` or `Array[]`.
+* `to_h` when called on a hash literal, or with `Hash.new`, `Hash()` or `Hash[]`.
+* `to_set` when called on `Set.new` or `Set[]`.
+
+In all cases, chaining one same `to_*` conversion methods listed above is redundant.
+
+The cop can also register an offense for chaining conversion methods on methods that are
+expected to return a specific type regardless of receiver (eg. `foo.inspect.to_s`).
+
+[#examples-lintredundanttypeconversion]
+=== Examples
+
+[source,ruby]
+----
+# bad
+"text".to_s
+:sym.to_sym
+42.to_i
+8.5.to_f
+12r.to_r
+1i.to_c
+[].to_a
+{}.to_h
+Set.new.to_s
+
+# good
+"text"
+:sym
+42
+8.5
+12r
+1i
+[]
+{}
+Set.new
+
+# bad - chaining the same conversion
+foo.to_s.to_s
+
+# good
+foo.to_s
+
+# bad - chaining a conversion to a method that is expected to return the same type
+inspect.to_s
+
+# good
+inspect
+----
+
 [#lintredundantwithindex]
 == Lint/RedundantWithIndex
 
@@ -6566,6 +6694,62 @@ do_something rescue nil
 === References
 
 * https://rubystyle.guide#dont-hide-exceptions
+
+[#lintsuppressedexceptioninnumberconversion]
+== Lint/SuppressedExceptionInNumberConversion
+
+NOTE: Requires Ruby version 2.6
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always (Unsafe)
+| 1.72
+| -
+|===
+
+Checks for cases where exceptions unrelated to the numeric constructors `Integer()`,
+`Float()`, `BigDecimal()`, `Complex()`, and `Rational()` may be unintentionally swallowed.
+
+[#safety-lintsuppressedexceptioninnumberconversion]
+=== Safety
+
+The cop is unsafe for autocorrection because unexpected errors occurring in the argument
+passed to numeric constructor (e.g., `Integer()`) can lead to incompatible behavior.
+For example, changing it to `Integer(potential_exception_method_call, exception: false)`
+ensures that exceptions raised by `potential_exception_method_call` are not ignored.
+
+[source,ruby]
+----
+Integer(potential_exception_method_call) rescue nil
+----
+
+[#examples-lintsuppressedexceptioninnumberconversion]
+=== Examples
+
+[source,ruby]
+----
+# bad
+Integer(arg) rescue nil
+
+# bad
+begin
+  Integer(arg)
+rescue
+  nil
+end
+
+# bad
+begin
+  Integer(arg)
+rescue
+end
+
+# good
+Integer(arg, exception: false)
+----
 
 [#lintsymbolconversion]
 == Lint/SymbolConversion
@@ -7903,6 +8087,57 @@ end
 === References
 
 * https://rubystyle.guide#underscore-unused-vars
+
+[#lintuselessconstantscoping]
+== Lint/UselessConstantScoping
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.72
+| -
+|===
+
+Checks for useless constant scoping. Private constants must be defined using
+`private_constant` or `class << self`. Even if `private` access modifier is used,
+it is public scope despite its appearance.
+
+It does not support autocorrection due to behavior change and multiple ways to fix it.
+Or a public constant may be intended.
+
+[#examples-lintuselessconstantscoping]
+=== Examples
+
+[source,ruby]
+----
+# bad
+class Foo
+  private
+  PRIVATE_CONST = 42
+end
+
+# good
+class Foo
+  PRIVATE_CONST = 42
+  private_constant :PRIVATE_CONST
+end
+
+# good
+class Foo
+  class << self
+    private
+    PRIVATE_CONST = 42
+  end
+end
+
+# good
+class Foo
+  PUBLIC_CONST = 42 # If private scope is not intended.
+end
+----
 
 [#lintuselessdefined]
 == Lint/UselessDefined

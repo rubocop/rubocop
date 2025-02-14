@@ -1163,6 +1163,10 @@ methods which begin with a forbidden prefix are not allowed, even if
 they end with a `?`. These methods should be changed to remove the
 prefix.
 
+When `UseSorbetSigs` set to true (optional), the cop will only report
+offenses if the method has a Sorbet `sig` with a return type of
+`T::Boolean`. Dynamic methods are not supported with this configuration.
+
 [#examples-namingpredicatename]
 === Examples
 
@@ -1227,6 +1231,40 @@ def is_even?(value)
 end
 ----
 
+[#usesorbetsigs_-false-_default_-namingpredicatename]
+==== UseSorbetSigs: false (default)
+
+[source,ruby]
+----
+# bad
+sig { returns(String) }
+def is_this_thing_on
+  "yes"
+end
+
+# good - Sorbet signature is not evaluated
+sig { returns(String) }
+def is_this_thing_on?
+  "yes"
+end
+----
+
+[#usesorbetsigs_-true-namingpredicatename]
+==== UseSorbetSigs: true
+
+[source,ruby]
+----
+# bad
+sig { returns(T::Boolean) }
+def odd(value)
+end
+
+# good
+sig { returns(T::Boolean) }
+def odd?(value)
+end
+----
+
 [#methoddefinitionmacros_-__define_method__-_define_singleton_method__-_default_-namingpredicatename]
 ==== MethodDefinitionMacros: ['define_method', 'define_singleton_method'] (default)
 
@@ -1272,6 +1310,10 @@ def_node_matcher(:even?) { |value| }
 | MethodDefinitionMacros
 | `define_method`, `define_singleton_method`
 | Array
+
+| UseSorbetSigs
+| `false`
+| Boolean
 
 | Exclude
 | `+spec/**/*+`

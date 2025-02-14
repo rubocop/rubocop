@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.72.0 (2025-02-14)
+
 ### New features
 
 * [#13740](https://github.com/rubocop/rubocop/pull/13740): Add new `Lint/CopDirectiveSyntax` cop. ([@kyanagi][])
