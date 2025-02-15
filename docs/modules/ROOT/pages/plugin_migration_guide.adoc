@@ -121,10 +121,3 @@ And use `require_relative` for the plugin class file instead of the above.
 ----
 require_relative 'rubocop/performance/plugin'
 ----
-
-In non-runtime environments like `spec/spec_helper.rb`, replace `require_relative 'rubocop/performance/plugin'` with `RuboCop::ConfigLoader.inject_defaults!`.
-
-[source,ruby]
-----
-RuboCop::ConfigLoader.inject_defaults!("#{__dir__}/../config/default.yml")
-----

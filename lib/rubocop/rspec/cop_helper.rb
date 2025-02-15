@@ -13,6 +13,13 @@ module CopHelper
   let(:parser_engine) { ENV.fetch('PARSER_ENGINE', :parser_whitequark).to_sym }
   let(:rails_version) { false }
 
+  before(:all) do
+    plugins = Gem.loaded_specs.filter_map do |feature_name, feature_specification|
+      feature_name if feature_specification.metadata['default_lint_roller_plugin']
+    end
+    RuboCop::Plugin.integrate_plugins(RuboCop::Config.new, plugins)
+  end
+
   def inspect_source(source, file = nil)
     RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
     RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
