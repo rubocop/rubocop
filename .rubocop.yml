@@ -5,10 +5,10 @@ inherit_from: .rubocop_todo.yml
 plugins:
   - rubocop-internal_affairs
   - rubocop-performance
+  - rubocop-rake
 
 require:
   - rubocop-rspec
-  - rubocop-rake
 
 AllCops:
   NewCops: enable
