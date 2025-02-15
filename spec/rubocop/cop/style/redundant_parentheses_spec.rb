@@ -697,6 +697,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     expect_no_offenses('(a...b)')
   end
 
+  it 'accepts parentheses around an irange when a different expression precedes it' do
+    expect_no_offenses(<<~RUBY)
+      do_something
+      (a..b)
+    RUBY
+  end
+
+  it 'accepts parentheses around an erange when a different expression precedes it' do
+    expect_no_offenses(<<~RUBY)
+      do_something
+      (a...b)
+    RUBY
+  end
+
   it 'accepts an irange starting is a parenthesized condition' do
     expect_no_offenses('(a || b)..c')
   end

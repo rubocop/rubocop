@@ -217,7 +217,9 @@ module RuboCop
 
         def disallowed_literal?(begin_node, node)
           if node.range_type?
-            begin_node.parent&.begin_type?
+            return false unless (parent = begin_node.parent)
+
+            parent.begin_type? && parent.children.one?
           else
             !raised_to_power_negative_numeric?(begin_node, node)
           end
