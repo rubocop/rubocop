@@ -4,9 +4,9 @@ inherit_from: .rubocop_todo.yml
 
 plugins:
   - rubocop-internal_affairs
+  - rubocop-performance
 
 require:
-  - rubocop-performance
   - rubocop-rspec
   - rubocop-rake
 

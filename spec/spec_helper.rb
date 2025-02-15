@@ -21,6 +21,10 @@ rescue LoadError
   # Pry is not activated.
 end
 
+# NOTE: To avoid executing processes needed only for extension plugins in `rubocop/rspec/support`,
+# an environment variable is used to indicate that it is running in the RuboCop core development.
+ENV['RUBOCOP_CORE_DEVELOPMENT'] = 'true'
+
 # Require supporting files exposed for testing.
 require 'rubocop/rspec/support'
 
