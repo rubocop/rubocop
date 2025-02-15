@@ -163,6 +163,10 @@ module RuboCop
         end
       end
 
+      # This API is primarily intended for testing and documenting plugins.
+      # When testing a plugin using `rubocop/rspec/support`, the plugin is loaded automatically,
+      # so this API is usually not needed. It is intended to be used only when implementing tests
+      # that do not use `rubocop/rspec/support`.
       # rubocop:disable Metrics/MethodLength
       def inject_defaults!(config_yml_path)
         if Pathname(config_yml_path).directory?
