@@ -285,6 +285,10 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
     it_behaves_like 'offense', :to_h, '::Kernel::Hash({ foo: bar })'
     it_behaves_like 'offense', :to_h, 'Hash[foo: bar]'
     it_behaves_like 'offense', :to_h, '::Hash[foo: bar]'
+
+    it_behaves_like 'accepted', '{ key: value }.to_h { |key, value| [foo(key), bar(value)] }'
+    it_behaves_like 'accepted', '{ key: value }.to_h { [foo(_1), bar(_2)] }'
+    it_behaves_like 'accepted', '{ key: value }.to_h(&:baz)'
   end
 
   describe '`to_set`' do
@@ -294,5 +298,9 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
     it_behaves_like 'offense', :to_set, '::Set.new([1, 2, 3])'
     it_behaves_like 'offense', :to_set, 'Set[1, 2, 3]'
     it_behaves_like 'offense', :to_set, '::Set[1, 2, 3]'
+
+    it_behaves_like 'accepted', 'Set[1, 2, 3].to_set { |item| foo(item) }'
+    it_behaves_like 'accepted', 'Set[1, 2, 3].to_set { foo(_1) }'
+    it_behaves_like 'accepted', 'Set[1, 2, 3].to_set(&:foo)'
   end
 end

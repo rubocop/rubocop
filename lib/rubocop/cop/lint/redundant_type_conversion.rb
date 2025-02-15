@@ -161,7 +161,10 @@ module RuboCop
           }
         PATTERN
 
+        # rubocop:disable Metrics/AbcSize
         def on_send(node)
+          return if hash_or_set_with_block?(node)
+
           receiver = find_receiver(node)
           return unless literal_receiver?(node, receiver) ||
                         constructor?(node, receiver) ||
@@ -174,9 +177,16 @@ module RuboCop
             corrector.remove(node.loc.dot.join(node.loc.selector))
           end
         end
+        # rubocop:enable Metrics/AbcSize
         alias on_csend on_send
 
         private
+
+        def hash_or_set_with_block?(node)
+          return false if !node.method?(:to_h) && !node.method?(:to_set)
+
+          node.parent&.any_block_type? || node.last_argument&.block_pass_type?
+        end
 
         def find_receiver(node)
           receiver = node.receiver
