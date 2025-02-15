@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.72.1 (2025-02-15)
+
 ### Bug fixes
 
 * [#13836](https://github.com/rubocop/rubocop/issues/13836): Fix an error for `Style/RedundantParentheses` when a different expression appears before a range literal. ([@koic][])
