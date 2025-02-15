@@ -13,7 +13,7 @@ gem 'memory_profiler', '!= 1.0.2', platform: :mri
 gem 'prism', '~> 1.2'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
-gem 'rubocop-performance', '~> 1.23.0'
+gem 'rubocop-performance', '~> 1.24.0'
 gem 'rubocop-rake', '~> 0.6.0'
 gem 'rubocop-rspec', '~> 3.4.0'
 # Ruby LSP supports Ruby 3.0+.

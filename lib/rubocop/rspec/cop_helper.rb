@@ -14,6 +14,8 @@ module CopHelper
   let(:rails_version) { false }
 
   before(:all) do
+    next if ENV['RUBOCOP_CORE_DEVELOPMENT']
+
     plugins = Gem.loaded_specs.filter_map do |feature_name, feature_specification|
       feature_name if feature_specification.metadata['default_lint_roller_plugin']
     end
