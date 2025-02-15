@@ -11,6 +11,15 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#13836](https://github.com/rubocop/rubocop/issues/13836): Fix an error for `Style/RedundantParentheses` when a different expression appears before a range literal. ([@koic][])
+* [#13839](https://github.com/rubocop/rubocop/issues/13839): Fix false positives for `Lint/RedundantTypeConversion` when passing block arguments when generating a Hash or a Set. ([@koic][])
+
+### Changes
+
+* [#13839](https://github.com/rubocop/rubocop/pull/13839): Extension plugin is loaded automatically with `require 'rubocop/rspec/support'. ([@koic][])
+
 ## 1.72.0 (2025-02-14)
 
 ### New features
