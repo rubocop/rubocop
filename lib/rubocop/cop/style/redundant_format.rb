@@ -12,6 +12,22 @@ module RuboCop
       # inlined into a string easily. This applies to the `%s`, `%d`, `%i`, `%u`, and
       # `%f` format specifiers.
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because string object returned by
+      #   `format` and `sprintf` are never frozen. If `format('string')` is autocorrected to
+      #   `'string'`, `FrozenError` may occur when calling a destructive method like `String#<<`.
+      #   Consider using `'string'.dup` instead of `format('string')`.
+      #   Additionally, since the necessity of `dup` cannot be determined automatically,
+      #   this autocorrection is inherently unsafe.
+      #
+      #   [source,ruby]
+      #   ----
+      #   # frozen_string_literal: true
+      #
+      #   format('template').frozen? # => false
+      #   'template'.frozen?         # => true
+      #   ----
+      #
       # @example
       #
       #   # bad
