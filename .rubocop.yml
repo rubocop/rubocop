@@ -6,8 +6,6 @@ plugins:
   - rubocop-internal_affairs
   - rubocop-performance
   - rubocop-rake
-
-require:
   - rubocop-rspec
 
 AllCops:
