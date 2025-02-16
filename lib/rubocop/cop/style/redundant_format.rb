@@ -113,7 +113,7 @@ module RuboCop
         end
 
         def find_argument(sequence, arguments, hash)
-          if sequence.annotated? || sequence.template?
+          if hash && (sequence.annotated? || sequence.template?)
             find_hash_value_node(hash, sequence.name.to_sym).first
           elsif sequence.arg_number
             arguments[sequence.arg_number.to_i - 1]
