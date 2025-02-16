@@ -14,10 +14,10 @@ module RuboCop
       # autocorrected.
       #
       # [NOTE]
-      # --
+      # ====
       # Because of a bug in Ruby 3.3.0, when a block is referenced inside of another block,
       # no offense will be registered until Ruby 3.4:
-
+      #
       # [source,ruby]
       # ----
       # def foo(&block)
@@ -25,7 +25,7 @@ module RuboCop
       #   block_method { bar(&block) }
       # end
       # ----
-      # --
+      # ====
       #
       # @example EnforcedStyle: anonymous (default)
       #
