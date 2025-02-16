@@ -308,6 +308,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
               #{method}('%{foo}', foo: foo)
             RUBY
           end
+
+          it 'does not register an offense when not given keyword arguments' do
+            expect_no_offenses(<<~RUBY)
+              #{method}('%{foo}', foo)
+            RUBY
+          end
         end
 
         context 'with an interpolated format string' do
