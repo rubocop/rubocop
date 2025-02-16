@@ -54,7 +54,7 @@ module RuboCop
       def about
         LintRoller::About.new(
           name: 'rubocop-performance',
-          version: Version::STRING,
+          version: VERSION,
           homepage: 'https://github.com/rubocop/rubocop-performance',
           description: 'A collection of RuboCop cops to check for performance optimizations in Ruby code.'
         )
