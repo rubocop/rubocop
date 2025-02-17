@@ -57,6 +57,8 @@ module RuboCop
                 all_cop_keys_configured_by_plugins
               )
 
+              plugin_config.make_excludes_absolute
+
               ConfigLoader.merge_with_default(plugin_config, plugin_config_path)
             end
           end

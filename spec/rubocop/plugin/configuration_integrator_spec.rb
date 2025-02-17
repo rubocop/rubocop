@@ -2,10 +2,19 @@
 
 require 'lint_roller'
 
-RSpec.describe RuboCop::Plugin::ConfigurationIntegrator do
+RSpec.describe RuboCop::Plugin::ConfigurationIntegrator, :isolated_environment do
+  include FileHelper
+
   describe '.integrate_plugins_into_rubocop_config' do
     subject(:integrated_config) do
       described_class.integrate_plugins_into_rubocop_config(rubocop_config, plugins)
+    end
+
+    after do
+      default_configuration = RuboCop::ConfigLoader.default_configuration
+      default_configuration.delete('inherit_mode')
+
+      RuboCop::ConfigLoader.instance_variable_set(:@default_configuration, default_configuration)
     end
 
     context 'when using internal plugin' do
@@ -25,7 +34,35 @@ RSpec.describe RuboCop::Plugin::ConfigurationIntegrator do
       end
     end
 
-    context 'when using a plugin' do
+    context 'when using a plugin with `Plugin` type is `:path`' do
+      let(:rubocop_config) do
+        RuboCop::Config.new
+      end
+      let(:fake_plugin) do
+        Class.new(LintRoller::Plugin) do
+          def rules(_context)
+            LintRoller::Rules.new(type: :path, config_format: :rubocop, value: 'default.yml')
+          end
+        end
+      end
+      let(:plugins) { [fake_plugin.new] }
+      let(:all_cops_exclude) { integrated_config.to_h['AllCops']['Exclude'] }
+
+      before do
+        create_file('default.yml', <<~YAML)
+          AllCops:
+            Exclude:
+              - db/*schema.rb
+        YAML
+      end
+
+      it 'integrates `Exclude` values from plugin cops as absolute paths into the configuration' do
+        expect(all_cops_exclude.count).to eq 5
+        expect(all_cops_exclude.last).to end_with('/db/*schema.rb')
+      end
+    end
+
+    context 'when using a plugin with `Plugin` type is `:object`' do
       let(:rubocop_config) do
         RuboCop::Config.new('Style/FrozenStringLiteralComment' => { 'Exclude' => %w[**/*.arb] })
       end
@@ -49,13 +86,6 @@ RSpec.describe RuboCop::Plugin::ConfigurationIntegrator do
       end
       let(:plugins) { [fake_plugin.new] }
       let(:exclude) { integrated_config.to_h['Style/FrozenStringLiteralComment']['Exclude'] }
-
-      after do
-        default_configuration = RuboCop::ConfigLoader.default_configuration
-        default_configuration.delete('inherit_mode')
-
-        RuboCop::ConfigLoader.instance_variable_set(:@default_configuration, default_configuration)
-      end
 
       it 'integrates `Exclude` values from plugin cops into the configuration' do
         expect(exclude.count).to eq 2
