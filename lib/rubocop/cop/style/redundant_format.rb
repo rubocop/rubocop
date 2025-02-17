@@ -160,7 +160,7 @@ module RuboCop
         end
 
         def numeric?(argument)
-          argument.type?(:numeric, :str) ||
+          argument&.type?(:numeric, :str) ||
             rational_number?(argument) ||
             complex_number?(argument)
         end

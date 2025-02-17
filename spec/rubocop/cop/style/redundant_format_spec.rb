@@ -314,6 +314,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
               #{method}('%{foo}', foo)
             RUBY
           end
+
+          it 'does not register an offense when given numeric placeholders in the template argument' do
+            expect_no_offenses(<<~RUBY)
+              #{method}('%<placeholder>d, %<placeholder>f', placeholder)
+            RUBY
+          end
         end
 
         context 'with an interpolated format string' do
