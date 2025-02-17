@@ -87,4 +87,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessConstantScoping, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when using constant after `private` access modifier with arguments' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        private do_something
+
+        CONST = 42
+      end
+    RUBY
+  end
 end

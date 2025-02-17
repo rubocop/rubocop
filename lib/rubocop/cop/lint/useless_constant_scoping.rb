@@ -56,7 +56,9 @@ module RuboCop
         private
 
         def after_private_modifier?(left_siblings)
-          left_siblings.compact.select(&:send_type?).any? { |node| node.command?(:private) }
+          left_siblings.compact.select(&:send_type?).any? do |node|
+            node.command?(:private) && node.arguments.none?
+          end
         end
 
         def private_constantize?(right_siblings, const_value)
