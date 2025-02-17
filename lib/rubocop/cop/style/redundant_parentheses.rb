@@ -13,8 +13,7 @@ module RuboCop
       #   # good
       #   x if y.z.nil?
       #
-      # rubocop:disable Metrics/ClassLength
-      class RedundantParentheses < Base
+      class RedundantParentheses < Base # rubocop:disable Metrics/ClassLength
         include Parentheses
         extend AutoCorrector
 
@@ -299,7 +298,6 @@ module RuboCop
           block.keywords? && begin_node.each_ancestor(:call).any?
         end
       end
-      # rubocop:enable Metrics/ClassLength
     end
   end
 end
