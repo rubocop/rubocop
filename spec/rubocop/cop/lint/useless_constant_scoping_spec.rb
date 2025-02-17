@@ -36,6 +36,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessConstantScoping, :config do
     RUBY
   end
 
+  it 'registers an offense when multiple assigning to constants after `private` access modifier' do
+    expect_offense(<<~RUBY)
+      class Foo
+        private
+        FOO = BAR = 42
+        ^^^^^^^^^^^^^^ Useless `private` access modifier for constant scope.
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using constant' do
     expect_no_offenses(<<~RUBY)
       class Foo

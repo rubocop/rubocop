@@ -56,8 +56,12 @@ module RuboCop
         private
 
         def after_private_modifier?(left_siblings)
-          left_siblings.compact.select(&:send_type?).any? do |node|
-            node.command?(:private) && node.arguments.none?
+          access_modifier_candidates = left_siblings.compact.select do |left_sibling|
+            left_sibling.respond_to?(:send_type?) && left_sibling.send_type?
+          end
+
+          access_modifier_candidates.any? do |candidate|
+            candidate.command?(:private) && candidate.arguments.none?
           end
         end
 
