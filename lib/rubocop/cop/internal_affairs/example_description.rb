@@ -90,8 +90,10 @@ module RuboCop
           description_text = string_contents(current_description)
           return unless (new_description = correct_description(description_text, description_map))
 
+          quote = current_description.dstr_type? ? '"' : "'"
+
           add_offense(current_description, message: message) do |corrector|
-            corrector.replace(current_description, "'#{new_description}'")
+            corrector.replace(current_description, "#{quote}#{new_description}#{quote}")
           end
         end
 
@@ -106,7 +108,7 @@ module RuboCop
         end
 
         def string_contents(node)
-          node.str_type? ? node.value : node.source
+          node.type?(:str, :dstr) ? node.value : node.source
         end
       end
     end
