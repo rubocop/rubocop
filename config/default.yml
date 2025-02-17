@@ -5173,7 +5173,7 @@ Style/RedundantFormat:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.72'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.72'
 
 Style/RedundantFreeze:
   Description: "Checks usages of Object#freeze on immutable objects."

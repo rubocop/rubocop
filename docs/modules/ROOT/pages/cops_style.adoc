@@ -13243,9 +13243,9 @@ arr.any? { |x| x > 1 }
 
 | Pending
 | Yes
-| Always
+| Always (Unsafe)
 | 1.72
-| -
+| 1.72
 |===
 
 Checks for calls to `Kernel#format` or `Kernel#sprintf` that are redundant.
@@ -13256,6 +13256,24 @@ replaced by the string itself.
 Also looks for `format` calls where the arguments are literals that can be
 inlined into a string easily. This applies to the `%s`, `%d`, `%i`, `%u`, and
 `%f` format specifiers.
+
+[#safety-styleredundantformat]
+=== Safety
+
+This cop's autocorrection is unsafe because string object returned by
+`format` and `sprintf` are never frozen. If `format('string')` is autocorrected to
+`'string'`, `FrozenError` may occur when calling a destructive method like `String#<<`.
+Consider using `'string'.dup` instead of `format('string')`.
+Additionally, since the necessity of `dup` cannot be determined automatically,
+this autocorrection is inherently unsafe.
+
+[source,ruby]
+----
+# frozen_string_literal: true
+
+format('template').frozen? # => false
+'template'.frozen?         # => true
+----
 
 [#examples-styleredundantformat]
 === Examples
@@ -13669,8 +13687,6 @@ some_method \
 |===
 
 Checks for redundant parentheses.
-
-rubocop:disable Metrics/ClassLength
 
 [#examples-styleredundantparentheses]
 === Examples
