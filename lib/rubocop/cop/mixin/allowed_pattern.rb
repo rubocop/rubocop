@@ -18,12 +18,12 @@ module RuboCop
       end
 
       # @deprecated Use allowed_line? instead
-      def ignored_line?
+      def ignored_line?(line)
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
           `ignored_line?` is deprecated. Use `allowed_line?` instead.
         WARNING
 
-        allowed_line?
+        allowed_line?(line)
       end
 
       def matches_allowed_pattern?(line)
@@ -31,12 +31,12 @@ module RuboCop
       end
 
       # @deprecated Use matches_allowed_pattern? instead
-      def matches_ignored_pattern?
+      def matches_ignored_pattern?(line)
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
           `matches_ignored_pattern?` is deprecated. Use `matches_allowed_pattern?` instead.
         WARNING
 
-        matches_allowed_pattern?
+        matches_allowed_pattern?(line)
       end
 
       def allowed_patterns
