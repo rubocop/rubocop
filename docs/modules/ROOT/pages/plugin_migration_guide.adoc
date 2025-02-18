@@ -6,7 +6,7 @@ It is divided into two main sections: one for plugin users and the other for plu
 
 == For Plugin Users
 
-Please update the RuboCop extension cops specified in configuration files like `.rubocop.yml` from `require` to `plugin`.
+Please update the RuboCop extension cops specified in configuration files like `.rubocop.yml` from `require` to `plugins`.
 
 [source,yaml]
 ----
