@@ -3,8 +3,15 @@
 module RuboCop
   module Cop
     module Naming
-      # Makes sure that all variables use the configured style,
-      # snake_case or camelCase, for their names.
+      # Checks that the configured style (snake_case or camelCase) is used for all variable names.
+      # This includes local variables, instance variables, class variables, method arguments
+      # (positional, keyword, rest or block), and block arguments.
+      #
+      # The cop can also be configured to forbid using specific names for variables, using
+      # `ForbiddenIdentifiers` or `ForbiddenPatterns`. In addition to the above, this applies
+      # to global variables as well.
+      #
+      # Method definitions and method calls are not affected by this cop.
       #
       # @example EnforcedStyle: snake_case (default)
       #   # bad
@@ -26,7 +33,21 @@ module RuboCop
       #
       # @example AllowedPatterns: ['_v\d+\z']
       #   # good (with EnforcedStyle: camelCase)
-      #   :release_v1
+      #   release_v1 = true
+      #
+      # @example ForbiddenIdentifiers: ['fooBar']
+      #   # bad (in all cases)
+      #   fooBar = 1
+      #   @fooBar = 1
+      #   @@fooBar = 1
+      #   $fooBar = 1
+      #
+      # @example ForbiddenPatterns: ['_v\d+\z']
+      #   # bad (in all cases)
+      #   release_v1 = true
+      #   @release_v1 = true
+      #   @@release_v1 = true
+      #   $release_v1 = true
       #
       class VariableName < Base
         include AllowedIdentifiers
@@ -34,16 +55,21 @@ module RuboCop
         include AllowedPattern
 
         MSG = 'Use %<style>s for variable names.'
+        MSG_FORBIDDEN = '`%<identifier>s` is forbidden, use another name instead.'
 
         def valid_name?(node, name, given_style = style)
           super || matches_allowed_pattern?(name)
         end
 
         def on_lvasgn(node)
-          return unless node.name
-          return if allowed_identifier?(node.name)
+          return unless (name = node.name)
+          return if allowed_identifier?(name)
 
-          check_name(node, node.name, node.loc.name)
+          if forbidden_name?(name)
+            register_forbidden_name(node)
+          else
+            check_name(node, name, node.loc.name)
+          end
         end
         alias on_ivasgn    on_lvasgn
         alias on_cvasgn    on_lvasgn
@@ -56,10 +82,42 @@ module RuboCop
         alias on_blockarg  on_lvasgn
         alias on_lvar      on_lvasgn
 
+        # Only forbidden names are checked for global variable assignment
+        def on_gvasgn(node)
+          return unless (name = node.name)
+          return unless forbidden_name?(name)
+
+          register_forbidden_name(node)
+        end
+
         private
 
         def message(style)
           format(MSG, style: style)
+        end
+
+        def forbidden_identifiers
+          cop_config.fetch('ForbiddenIdentifiers', [])
+        end
+
+        def forbidden_patterns
+          cop_config.fetch('ForbiddenPatterns', [])
+        end
+
+        def matches_forbidden_pattern?(name)
+          forbidden_patterns.any? { |pattern| Regexp.new(pattern).match?(name) }
+        end
+
+        def forbidden_name?(name)
+          name = name.to_s.delete(SIGILS)
+
+          (forbidden_identifiers.any? && forbidden_identifiers.include?(name)) ||
+            (forbidden_patterns.any? && matches_forbidden_pattern?(name))
+        end
+
+        def register_forbidden_name(node)
+          message = format(MSG_FORBIDDEN, identifier: node.name)
+          add_offense(node.loc.name, message: message)
         end
       end
     end

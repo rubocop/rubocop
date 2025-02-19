@@ -109,6 +109,316 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
     end
   end
 
+  shared_examples 'forbidden identifiers' do |identifier|
+    context 'when ForbiddenIdentifiers is set' do
+      let(:cop_config) { super().merge('ForbiddenIdentifiers' => [identifier]) }
+
+      context 'with `lvasgn`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            %{identifier} = true
+            ^{identifier} `%{identifier}` is forbidden, use another name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `ivasgn`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            @%{identifier} = true
+            ^^{identifier} `@%{identifier}` is forbidden, use another name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `cvasgn`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            @@%{identifier} = true
+            ^^^{identifier} `@@%{identifier}` is forbidden, use another name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `gvasgn`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            $%{identifier} = true
+            ^^{identifier} `$%{identifier}` is forbidden, use another name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `arg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(%{identifier})
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `optarg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(%{identifier} = false)
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `restarg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(*%{identifier})
+                     ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+        end
+      end
+
+      context 'with `kwarg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(%{identifier}:)
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `kwargopt`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(%{identifier}: true)
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+        end
+      end
+
+      context 'with `kwrestarg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(**%{identifier})
+                      ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `blockarg` in `def`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(&%{identifier})
+                     ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `blockarg` in `block`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            foo do |%{identifier}|
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      it 'does not register an offense for a method definition' do
+        expect_no_offenses(<<~RUBY)
+          def #{identifier}
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a method identifier' do
+        expect_no_offenses(<<~RUBY)
+          #{identifier}()
+        RUBY
+      end
+    end
+  end
+
+  shared_examples 'forbidden patterns' do |pattern, identifier|
+    context 'when ForbiddenPatterns is set' do
+      let(:cop_config) { super().merge('ForbiddenPatterns' => [pattern]) }
+
+      context 'with `lvasgn`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            %{identifier} = true
+            ^{identifier} `%{identifier}` is forbidden, use another name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `ivasgn`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            @%{identifier} = true
+            ^^{identifier} `@%{identifier}` is forbidden, use another name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `cvasgn`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            @@%{identifier} = true
+            ^^^{identifier} `@@%{identifier}` is forbidden, use another name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `gvasgn`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            $%{identifier} = true
+            ^^{identifier} `$%{identifier}` is forbidden, use another name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `arg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(%{identifier})
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `optarg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(%{identifier} = false)
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `restarg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(*%{identifier})
+                     ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+        end
+      end
+
+      context 'with `kwarg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(%{identifier}:)
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `kwargopt`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(%{identifier}: true)
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+        end
+      end
+
+      context 'with `kwrestarg`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(**%{identifier})
+                      ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `blockarg` in `def`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo(&%{identifier})
+                     ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'with `blockarg` in `block`' do
+        it 'registers an offense when given a forbidden identifier' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            foo do |%{identifier}|
+                    ^{identifier} `%{identifier}` is forbidden, use another name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      it 'does not register an offense for a method definition' do
+        expect_no_offenses(<<~RUBY)
+          def #{identifier}
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a method identifier' do
+        expect_no_offenses(<<~RUBY)
+          #{identifier}()
+        RUBY
+      end
+    end
+  end
+
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
@@ -206,6 +516,8 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
     include_examples 'always accepted'
     include_examples 'allowed identifiers', 'firstArg'
     include_examples 'allowed patterns', 'st[A-Z]', 'firstArg'
+    include_examples 'forbidden identifiers', 'first_arg'
+    include_examples 'forbidden patterns', 'st_[a-z]', 'first_arg'
   end
 
   context 'when configured for camelCase' do
@@ -304,5 +616,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
     include_examples 'always accepted'
     include_examples 'allowed identifiers', 'first_arg'
     include_examples 'allowed patterns', 'st_[a-z]', 'first_arg'
+    include_examples 'forbidden identifiers', 'first_arg'
+    include_examples 'forbidden patterns', 'st_[a-z]', 'first_arg'
   end
 end
