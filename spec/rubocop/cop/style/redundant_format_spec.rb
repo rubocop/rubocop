@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it 'registers an offense' do
           expect_offense(<<~RUBY, method: method)
             %{method}('foo')
-            ^{method}^^^^^^^ Redundant `%{method}` can be removed.
+            ^{method}^^^^^^^ Use `'foo'` directly instead of `%{method}`.
           RUBY
 
           expect_correction(<<~RUBY)
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it 'registers an offense when the argument is an interpolated string' do
           expect_offense(<<~'RUBY', method: method)
             %{method}("#{foo}")
-            ^{method}^^^^^^^^^^ Redundant `%{method}` can be removed.
+            ^{method}^^^^^^^^^^ Use `"#{foo}"` directly instead of `%{method}`.
           RUBY
 
           expect_correction(<<~'RUBY')
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it 'registers an offense when called with `Kernel`' do
           expect_offense(<<~RUBY, method: method)
             Kernel.%{method}('foo')
-            ^^^^^^^^{method}^^^^^^^ Redundant `%{method}` can be removed.
+            ^^^^^^^^{method}^^^^^^^ Use `'foo'` directly instead of `%{method}`.
           RUBY
 
           expect_correction(<<~RUBY)
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it 'registers an offense when called with `::Kernel`' do
           expect_offense(<<~RUBY, method: method)
             ::Kernel.%{method}('foo')
-            ^^^^^^^^^^{method}^^^^^^^ Redundant `%{method}` can be removed.
+            ^^^^^^^^^^{method}^^^^^^^ Use `'foo'` directly instead of `%{method}`.
           RUBY
 
           expect_correction(<<~RUBY)
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
 
             expect_offense(<<~RUBY, **options)
               %{method}(%{start_delim}%{specifier}%{end_delim}, %{value})
-              ^{method}^^{start_delim}^{specifier}^{end_delim}^^^{value}^ Redundant `%{method}` can be removed.
+              ^{method}^^{start_delim}^{specifier}^{end_delim}^^^{value}^ Use `#{result}` directly instead of `%{method}`.
             RUBY
 
             expect_correction(<<~RUBY)
@@ -199,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'registers an offense and corrects' do
             expect_offense(<<~RUBY, method: method)
               %{method}('%2$s %1$s', 'world', 'hello')
-              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `%{method}` can be removed.
+              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `'hello world'` directly instead of `%{method}`.
             RUBY
 
             expect_correction(<<~RUBY)
@@ -218,7 +218,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'registers an offense and corrects' do
             expect_offense(<<~RUBY, method: method)
               %{method}('%*d', 5, 14)
-              ^{method}^^^^^^^^^^^^^^ Redundant `%{method}` can be removed.
+              ^{method}^^^^^^^^^^^^^^ Use `'   14'` directly instead of `%{method}`.
             RUBY
 
             expect_correction(<<~RUBY)
@@ -229,7 +229,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'registers an offense and corrects with multiple `*`s' do
             expect_offense(<<~RUBY, method: method)
               %{method}('$%0*.*f', 5, 2, 0.5)
-              ^{method}^^^^^^^^^^^^^^^^^^^^^^ Redundant `%{method}` can be removed.
+              ^{method}^^^^^^^^^^^^^^^^^^^^^^ Use `'$00.50'` directly instead of `%{method}`.
             RUBY
 
             expect_correction(<<~RUBY)
@@ -254,7 +254,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'registers an offense and corrects' do
             expect_offense(<<~RUBY, method: method)
               #{method}('%<foo>s %<bar>s', foo: 'foo', bar: 'bar')
-              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `%{method}` can be removed.
+              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `'foo bar'` directly instead of `%{method}`.
             RUBY
 
             expect_correction(<<~RUBY)
@@ -265,7 +265,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'registers an offense and corrects with interpolated strings' do
             expect_offense(<<~'RUBY', method: method)
               %{method}('%<foo>s %<bar>s', foo: "#{foo}", bar: 'bar')
-              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `%{method}` can be removed.
+              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `"#{foo} bar"` directly instead of `%{method}`.
             RUBY
 
             expect_correction(<<~'RUBY')
@@ -284,7 +284,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'registers an offense and corrects' do
             expect_offense(<<~RUBY, method: method)
               #{method}('%{foo}s %{bar}s', foo: 'foo', bar: 'bar')
-              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `%{method}` can be removed.
+              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `'foos bars'` directly instead of `#{method}`.
             RUBY
 
             expect_correction(<<~RUBY)
@@ -295,7 +295,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'registers an offense and corrects with interpolated strings' do
             expect_offense(<<~'RUBY', method: method)
               %{method}('%{foo}s %{bar}s', foo: "#{foo}", bar: 'bar')
-              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Redundant `%{method}` can be removed.
+              ^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `"#{foo}s bars"` directly instead of `%{method}`.
             RUBY
 
             expect_correction(<<~'RUBY')
@@ -334,7 +334,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'registers an offense and corrects' do
             expect_offense(<<~RUBY, method: method)
               %{method}('%s %s', 'foo', 'bar')
-              ^{method}^^^^^^^^^^^^^^^^^^^^^^^ Redundant `%{method}` can be removed.
+              ^{method}^^^^^^^^^^^^^^^^^^^^^^^ Use `'foo bar'` directly instead of `%{method}`.
             RUBY
 
             expect_correction(<<~RUBY)

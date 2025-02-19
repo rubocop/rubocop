@@ -47,7 +47,7 @@ module RuboCop
       class RedundantFormat < Base
         extend AutoCorrector
 
-        MSG = 'Redundant `%<method_name>s` can be removed.'
+        MSG = 'Use `%<prefer>s` directly instead of `%<method_name>s`.'
 
         RESTRICT_ON_SEND = %i[format sprintf].to_set.freeze
         ACCEPTABLE_LITERAL_TYPES = %i[str dstr sym dsym numeric boolean nil].freeze
@@ -74,8 +74,10 @@ module RuboCop
 
         def on_send(node)
           format_without_additional_args?(node) do |value|
-            add_offense(node, message: message(node)) do |corrector|
-              corrector.replace(node, value.source)
+            replacement = value.source
+
+            add_offense(node, message: message(node, replacement)) do |corrector|
+              corrector.replace(node, replacement)
             end
             return
           end
@@ -85,8 +87,8 @@ module RuboCop
 
         private
 
-        def message(node)
-          format(MSG, method_name: node.method_name)
+        def message(node, prefer)
+          format(MSG, prefer: prefer, method_name: node.method_name)
         end
 
         def detect_unnecessary_fields(node)
@@ -104,9 +106,11 @@ module RuboCop
         def register_all_fields_literal(node, string, arguments)
           return unless all_fields_literal?(string, arguments.dup)
 
-          add_offense(node, message: message(node)) do |corrector|
-            replacement = format(string, *argument_values(arguments))
-            corrector.replace(node, quote(replacement, node))
+          formatted_string = format(string, *argument_values(arguments))
+          replacement = quote(formatted_string, node)
+
+          add_offense(node, message: message(node, replacement)) do |corrector|
+            corrector.replace(node, replacement)
           end
         end
 
