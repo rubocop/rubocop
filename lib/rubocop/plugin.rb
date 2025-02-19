@@ -22,6 +22,9 @@ module RuboCop
       def plugin_capable?(feature_name)
         return true if BUILTIN_INTERNAL_PLUGINS.key?(feature_name)
         return true if feature_name == OBSOLETE_INTERNAL_AFFAIRS_PLUGIN_NAME
+
+        # When not using Bundler. Makes the spec available in loaded_specs but does not require it.
+        Gem.try_activate(feature_name)
         return false unless (gem = Gem.loaded_specs[feature_name])
 
         !!gem.metadata['default_lint_roller_plugin']
