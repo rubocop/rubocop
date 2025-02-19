@@ -15,6 +15,7 @@ RSpec.configure do |config|
   config.include_context 'isolated bundler', :isolated_bundler
   config.include_context 'lsp', :lsp
   config.include_context 'maintain registry', :restore_registry
+  config.include_context 'maintain default configuration', :restore_configuration
   config.include_context 'ruby 2.0', :ruby20
   config.include_context 'ruby 2.1', :ruby21
   config.include_context 'ruby 2.2', :ruby22
