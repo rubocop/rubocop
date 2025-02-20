@@ -96,18 +96,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
     end
   end
 
-  context 'target ruby version <= 2.4', :ruby24, unsupported_on: :prism do
-    it 'does not register an offense when using requiring `pp`' do
-      expect_no_offenses(<<~RUBY)
-        require 'pp'
-
-        pp foo
-      RUBY
-    end
-  end
-
   context 'target ruby version >= 2.5', :ruby25 do
-    it 'registers an offense and corrects when using requiring `pp` or already redundant features' do
+    it 'registers an offense and corrects when requiring redundant features' do
       expect_offense(<<~RUBY)
         require 'enumerator'
         ^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
@@ -117,8 +107,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         ^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
         require 'thread'
         ^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
-        require 'pp'
-        ^^^^^^^^^^^^ Remove unnecessary `require` statement.
         require 'uri'
       RUBY
 
@@ -127,62 +115,13 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
       RUBY
     end
 
-    context 'when requiring `pp`' do
-      it 'does not register an offense when using `PP.pp`' do
-        expect_no_offenses(<<~RUBY)
-          require 'pp'
+    it 'registers no offense when requiring "pp"' do
+      expect_no_offenses(<<~RUBY)
+        require 'pp'
 
-          PP.pp
-        RUBY
-      end
-
-      it 'does not register an offense when using `::PP.pp`' do
-        expect_no_offenses(<<~RUBY)
-          require 'pp'
-
-          ::PP.pp
-        RUBY
-      end
-
-      it 'does not register an offense when using `pretty_inspect`' do
-        expect_no_offenses(<<~RUBY)
-          require 'pp'
-
-          foo.pretty_inspect
-        RUBY
-      end
-
-      it 'does not register an offense when using `pretty_print`' do
-        expect_no_offenses(<<~RUBY)
-          require 'pp'
-
-          foo.pretty_print(pp_instance)
-        RUBY
-      end
-
-      it 'does not register an offense when using `pretty_print_cycle`' do
-        expect_no_offenses(<<~RUBY)
-          require 'pp'
-
-          foo.pretty_print_cycle(pp_instance)
-        RUBY
-      end
-
-      it 'does not register an offense when using `pretty_print_inspect`' do
-        expect_no_offenses(<<~RUBY)
-          require 'pp'
-
-          foo.pretty_print_inspect
-        RUBY
-      end
-
-      it 'does not register an offense when using `pretty_print_instance_variables`' do
-        expect_no_offenses(<<~RUBY)
-          require 'pp'
-
-          foo.pretty_print_instance_variables
-        RUBY
-      end
+        # Imagine this code to be in a different file than the require.
+        foo.pretty_inspect
+      RUBY
     end
   end
 
@@ -205,8 +144,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         ^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
         require 'thread'
         ^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
-        require 'pp'
-        ^^^^^^^^^^^^ Remove unnecessary `require` statement.
         require 'ruby2_keywords'
         ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
         require 'uri'
@@ -237,8 +174,6 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         ^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
         require 'thread'
         ^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
-        require 'pp'
-        ^^^^^^^^^^^^ Remove unnecessary `require` statement.
         require 'ruby2_keywords'
         ^^^^^^^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
         require 'fiber'
