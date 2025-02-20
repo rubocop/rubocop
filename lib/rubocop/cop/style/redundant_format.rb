@@ -72,7 +72,7 @@ module RuboCop
           (pair (sym %1) $_)
         PATTERN
 
-        # @!method splatted_arguments?(node, name)
+        # @!method splatted_arguments?(node)
         def_node_matcher :splatted_arguments?, <<~PATTERN
           (send _ %RESTRICT_ON_SEND <{
             splat
@@ -131,7 +131,7 @@ module RuboCop
             next if sequence.percent?
 
             hash = arguments.detect(&:hash_type?)
-            argument = find_argument(sequence, arguments, hash)
+            next unless (argument = find_argument(sequence, arguments, hash))
             next unless matching_argument?(sequence, argument)
 
             count += 1
@@ -172,7 +172,7 @@ module RuboCop
         end
 
         def numeric?(argument)
-          argument&.type?(:numeric, :str) ||
+          argument.type?(:numeric, :str) ||
             rational_number?(argument) ||
             complex_number?(argument)
         end
