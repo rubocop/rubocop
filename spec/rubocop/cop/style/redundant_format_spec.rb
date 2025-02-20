@@ -18,7 +18,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
 
       it 'does not register an offense when called with a splat' do
         expect_no_offenses(<<~RUBY)
-          #{method}(*args)
+          #{method}('%s', *args)
+        RUBY
+      end
+
+      it 'does not register an offense when called with a double splat' do
+        expect_no_offenses(<<~RUBY)
+          #{method}('%s', **args)
+        RUBY
+      end
+
+      it 'does not register an offense when called with a double splat with annotations' do
+        expect_no_offenses(<<~RUBY)
+          #{method}('%<username>s', **args)
         RUBY
       end
 
