@@ -221,6 +221,43 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
+  context 'when display_only_fail_level_offenses option is passed' do
+    before do
+      formatter.started(['test_a.rb', 'test_b.rb'])
+      formatter.file_started('test_a.rb', options)
+      formatter.file_finished('test_a.rb', offenses)
+      formatter.file_started('test_b.rb', options)
+      formatter.file_finished('test_b.rb', [offenses.first])
+      formatter.finished(['test_a.rb', 'test_b.rb'])
+    end
+
+    let(:formatter) { described_class.new(output, display_only_fail_level_offenses: true) }
+
+    let(:expected_heading_command) do
+      'rubocop --auto-gen-config --display-only-fail-level-offenses'
+    end
+
+    let(:expected_rubocop_todo) do
+      [heading,
+       '# Offense count: 2',
+       'Test/Cop1:',
+       '  Exclude:',
+       "    - 'test_a.rb'",
+       "    - 'test_b.rb'",
+       '',
+       '# Offense count: 1',
+       'Test/Cop2:',
+       '  Exclude:',
+       "    - 'test_a.rb'",
+       ''].join("\n")
+    end
+
+    it 'displays YAML configuration disabling all cops with offenses' do
+      expect(output.string).to eq(expected_rubocop_todo)
+      expect($stdout.string).to eq("Created .rubocop_todo.yml.\n")
+    end
+  end
+
   context 'when no files are inspected' do
     before do
       formatter.started([])
