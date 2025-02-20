@@ -80,6 +80,21 @@ RSpec.shared_context 'maintain registry' do
   end
 end
 
+RSpec.shared_context 'maintain default configuration' do
+  around(:each) do |example|
+    # Make a copy of the current configuration that will not change when source hash changes
+    default_configuration = RuboCop::ConfigLoader.default_configuration
+    config = RuboCop::Config.create(
+      default_configuration.to_h.clone,
+      default_configuration.loaded_path
+    )
+
+    example.run
+
+    RuboCop::ConfigLoader.instance_variable_set(:@default_configuration, config)
+  end
+end
+
 # This context assumes nothing and defines `cop`, among others.
 RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
   ### Meant to be overridden at will
