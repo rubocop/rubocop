@@ -16,11 +16,21 @@ module RubyLsp
       end
 
       def run_diagnostic(uri, document)
-        @runtime.offenses(uri_to_path(uri), document.source, document.encoding)
+        @runtime.offenses(
+          uri_to_path(uri),
+          document.source,
+          document.encoding,
+          prism_result: prism_result(document)
+        )
       end
 
       def run_formatting(uri, document)
-        @runtime.format(uri_to_path(uri), document.source, command: 'rubocop.formatAutocorrects')
+        @runtime.format(
+          uri_to_path(uri),
+          document.source,
+          command: 'rubocop.formatAutocorrects',
+          prism_result: prism_result(document)
+        )
       end
 
       def run_range_formatting(_uri, _partial_source, _base_indentation)
@@ -41,6 +51,14 @@ module RubyLsp
         else
           uri.to_s.delete_prefix('file://')
         end
+      end
+
+      def prism_result(document)
+        prism_result = document.parse_result
+
+        # NOTE: `prism_result` must be `Prism::ParseLexResult` compatible object.
+        # This is for compatibility parsed result unsupported.
+        prism_result.is_a?(Prism::ParseLexResult) ? prism_result : nil
       end
     end
   end

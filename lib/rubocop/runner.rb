@@ -489,7 +489,11 @@ module RuboCop
 
       processed_source = if @options[:stdin]
                            ProcessedSource.new(
-                             @options[:stdin], ruby_version, file, parser_engine: parser_engine
+                             @options[:stdin],
+                             ruby_version,
+                             file,
+                             parser_engine: parser_engine,
+                             prism_result: @prism_result
                            )
                          else
                            begin

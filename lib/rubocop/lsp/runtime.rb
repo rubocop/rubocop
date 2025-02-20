@@ -30,7 +30,7 @@ module RuboCop
         @layout_mode = false
       end
 
-      def format(path, text, command:)
+      def format(path, text, command:, prism_result: nil)
         safe_autocorrect = if command
                              command == 'rubocop.formatAutocorrects'
                            else
@@ -40,15 +40,15 @@ module RuboCop
         formatting_options = { autocorrect: true, safe_autocorrect: safe_autocorrect }
         formatting_options[:only] = config_only_options if @lint_mode || @layout_mode
 
-        @runner.run(path, text, formatting_options)
+        @runner.run(path, text, formatting_options, prism_result: prism_result)
         @runner.formatted_source
       end
 
-      def offenses(path, text, document_encoding = nil)
+      def offenses(path, text, document_encoding = nil, prism_result: nil)
         diagnostic_options = {}
         diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode
 
-        @runner.run(path, text, diagnostic_options)
+        @runner.run(path, text, diagnostic_options, prism_result: prism_result)
         @runner.offenses.map do |offense|
           Diagnostic.new(
             document_encoding, offense, path, @cop_registry[offense.cop_name]&.first
