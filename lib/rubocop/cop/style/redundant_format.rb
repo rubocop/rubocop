@@ -72,6 +72,14 @@ module RuboCop
           (pair (sym %1) $_)
         PATTERN
 
+        # @!method splatted_arguments?(node, name)
+        def_node_matcher :splatted_arguments?, <<~PATTERN
+          (send _ %RESTRICT_ON_SEND <{
+            splat
+            (hash <kwsplat ...>)
+          } ...>)
+        PATTERN
+
         def on_send(node)
           format_without_additional_args?(node) do |value|
             replacement = value.source
@@ -98,7 +106,7 @@ module RuboCop
           arguments = node.arguments[1..]
 
           return unless string && arguments.any?
-          return if arguments.any?(&:splat_type?)
+          return if splatted_arguments?(node)
 
           register_all_fields_literal(node, string, arguments)
         end
