@@ -1769,7 +1769,21 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', <<~YAML)
+        # Default config includes none of Min, Reference, or StyleGuide
+        Layout/AssignmentIndentation:
+          Enabled: true
+          Min: 10
+          StyleGuide: '#assignment-indentation'
+
+        # Default config includes StyleGuide, but neither Min nor Reference
         Layout/LineLength:
+          Enabled: true
+          Min: 10
+          Reference:
+            - 'https://example.com#layout-line-length-decision-log'
+
+        # Default config includes Reference and StyleGuide, but not Min
+        Style/GlobalVars:
           Enabled: true
           Min: 10
       YAML
@@ -1777,6 +1791,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w[--format simple example])).to eq(1)
 
       expect($stderr.string).to eq(<<~RESULT)
+        Warning: Layout/AssignmentIndentation does not support Min parameter.
+
+        Supported parameters are:
+
+          - Enabled
+          - IndentationWidth
         Warning: Layout/LineLength does not support Min parameter.
 
         Supported parameters are:
@@ -1789,6 +1809,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           - IgnoreCopDirectives
           - AllowedPatterns
           - SplitStrings
+        Warning: Layout/LineLength does not support Reference parameter.
+
+        Supported parameters are:
+
+          - Enabled
+          - Max
+          - AllowHeredoc
+          - AllowURI
+          - URISchemes
+          - IgnoreCopDirectives
+          - AllowedPatterns
+          - SplitStrings
+        Warning: Style/GlobalVars does not support Min parameter.
+
+        Supported parameters are:
+
+          - Enabled
+          - AllowedVariables
       RESULT
     end
 
