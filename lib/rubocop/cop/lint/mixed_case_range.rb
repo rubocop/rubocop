@@ -79,7 +79,7 @@ module RuboCop
         end
 
         def range_pairs(expr)
-          RuboCop::Cop::Utils::RegexpRanges.new(expr).pairs
+          expr.expressions.filter_map { |e| [e.expressions[0], e.expressions[1]] if e.type == :set }
         end
 
         def unsafe_range?(range_start, range_end)
