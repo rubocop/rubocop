@@ -290,6 +290,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
               #{method}('%<foo>s', foo: foo)
             RUBY
           end
+
+          it 'does not register an offense when there are missing hash keys' do
+            expect_no_offenses(<<~RUBY)
+              format('(%<foo>?%<bar>s:%<baz>s)', 'foobar')
+            RUBY
+          end
         end
 
         context 'with template specifiers' do
