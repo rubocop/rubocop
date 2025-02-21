@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'registers an offense for string concat at line end' do
     expect_offense(<<~RUBY)
       top = "test" +
-                   ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
+                   ^ Use `\\` instead of `+` to concatenate multiline strings.
       "top"
     RUBY
 
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'registers an offense for string concat with << at line end' do
     expect_offense(<<~RUBY)
       top = "test" <<
-                   ^^ Use `\\` instead of `+` or `<<` to concatenate those strings.
+                   ^^ Use `\\` instead of `<<` to concatenate multiline strings.
       "top"
     RUBY
 
@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
     expect_offense(<<~RUBY)
       top = "test " \\
       "foo" <<
-            ^^ Use `\\` instead of `+` or `<<` to concatenate those strings.
+            ^^ Use `\\` instead of `<<` to concatenate multiline strings.
       "bar"
     RUBY
 
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'registers an offense for dynamic string concat at line end' do
     expect_offense(<<~'RUBY')
       top = "test#{x}" +
-                       ^ Use `\` instead of `+` or `<<` to concatenate those strings.
+                       ^ Use `\` instead of `+` to concatenate multiline strings.
       "top"
     RUBY
 
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'registers an offense for dynamic string concat with << at line end' do
     expect_offense(<<~'RUBY')
       top = "test#{x}" <<
-                       ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
+                       ^^ Use `\` instead of `<<` to concatenate multiline strings.
       "top"
     RUBY
 
@@ -71,9 +71,9 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'registers multiple offenses when there are chained << methods' do
     expect_offense(<<~'RUBY')
       top = "test#{x}" <<
-                       ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
+                       ^^ Use `\` instead of `<<` to concatenate multiline strings.
       "top" <<
-            ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
+            ^^ Use `\` instead of `<<` to concatenate multiline strings.
       "ubertop"
     RUBY
 
@@ -87,9 +87,9 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'registers multiple offenses when there are chained concatenations' do
     expect_offense(<<~'RUBY')
       top = "test#{x}" +
-                       ^ Use `\` instead of `+` or `<<` to concatenate those strings.
+                       ^ Use `\` instead of `+` to concatenate multiline strings.
       "top" +
-            ^ Use `\` instead of `+` or `<<` to concatenate those strings.
+            ^ Use `\` instead of `+` to concatenate multiline strings.
       "foo"
     RUBY
 
@@ -103,11 +103,11 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'registers multiple offenses when there are chained concatenations combined with << calls' do
     expect_offense(<<~'RUBY')
       top = "test#{x}" <<
-                       ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
+                       ^^ Use `\` instead of `<<` to concatenate multiline strings.
       "top" +
-            ^ Use `\` instead of `+` or `<<` to concatenate those strings.
+            ^ Use `\` instead of `+` to concatenate multiline strings.
       "foo" <<
-            ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
+            ^^ Use `\` instead of `<<` to concatenate multiline strings.
       "bar"
     RUBY
 
@@ -179,7 +179,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
       "foo" +
       %(bar) +
       "baz" +
-            ^ Use `\` instead of `+` or `<<` to concatenate those strings.
+            ^ Use `\` instead of `+` to concatenate multiline strings.
       "qux"
     RUBY
 
@@ -198,7 +198,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'autocorrects a + with trailing whitespace to \\' do
     expect_offense(<<~RUBY)
       top = "test" +#{trailing_whitespace}
-                   ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
+                   ^ Use `\\` instead of `+` to concatenate multiline strings.
       "top"
     RUBY
 
@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'autocorrects a + with \\ to just \\' do
     expect_offense(<<~RUBY)
       top = "test" + \\
-                   ^ Use `\\` instead of `+` or `<<` to concatenate those strings.
+                   ^ Use `\\` instead of `+` to concatenate multiline strings.
       "top"
     RUBY
 
@@ -224,10 +224,10 @@ RSpec.describe RuboCop::Cop::Style::LineEndConcatenation, :config do
   it 'autocorrects only the lines that should be autocorrected' do
     expect_offense(<<~'RUBY')
       top = "test#{x}" <<
-                       ^^ Use `\` instead of `+` or `<<` to concatenate those strings.
+                       ^^ Use `\` instead of `<<` to concatenate multiline strings.
       "top" + # comment
       "foo" +
-            ^ Use `\` instead of `+` or `<<` to concatenate those strings.
+            ^ Use `\` instead of `+` to concatenate multiline strings.
       "bar" +
       %(baz) +
       "qux"
