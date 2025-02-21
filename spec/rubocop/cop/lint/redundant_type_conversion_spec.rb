@@ -221,8 +221,13 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
 
     it_behaves_like 'offense', :to_i, '42'
     it_behaves_like 'offense', :to_i, 'Integer(42)'
+    it_behaves_like 'offense', :to_i, 'Integer("42", 5)'
     it_behaves_like 'offense', :to_i, 'Kernel::Integer(42)'
     it_behaves_like 'offense', :to_i, '::Kernel::Integer(42)'
+    it_behaves_like 'offense', :to_i, 'Integer("number", exception: true)'
+
+    it_behaves_like 'accepted', 'Integer("number", exception: false).to_i'
+    it_behaves_like 'accepted', 'Integer(obj, base, exception: false).to_i'
 
     it 'does not register an offense with `inspect.to_i`' do
       expect_no_offenses(<<~RUBY)
@@ -238,6 +243,9 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
     it_behaves_like 'offense', :to_f, 'Float(42)'
     it_behaves_like 'offense', :to_f, 'Kernel::Float(42)'
     it_behaves_like 'offense', :to_f, '::Kernel::Float(42)'
+    it_behaves_like 'offense', :to_f, 'Float("number", exception: true)'
+
+    it_behaves_like 'accepted', 'Float("number", exception: false).to_f'
   end
 
   describe '`to_r`' do
@@ -245,8 +253,13 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
 
     it_behaves_like 'offense', :to_r, '5r'
     it_behaves_like 'offense', :to_r, 'Rational(42)'
+    it_behaves_like 'offense', :to_r, 'Rational(3, 8)'
     it_behaves_like 'offense', :to_r, 'Kernel::Rational(42)'
     it_behaves_like 'offense', :to_r, '::Kernel::Rational(42)'
+    it_behaves_like 'offense', :to_r, 'Rational("number", exception: true)'
+
+    it_behaves_like 'accepted', 'Rational("number", exception: false).to_r'
+    it_behaves_like 'accepted', 'Rational(x, y, exception: false).to_r'
   end
 
   describe '`to_c`' do
@@ -255,8 +268,13 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
     it_behaves_like 'offense', :to_c, '5i'
     it_behaves_like 'offense', :to_c, '5ri'
     it_behaves_like 'offense', :to_c, 'Complex(42)'
+    it_behaves_like 'offense', :to_c, 'Complex(5, 3)'
     it_behaves_like 'offense', :to_c, 'Kernel::Complex(42)'
     it_behaves_like 'offense', :to_c, '::Kernel::Complex(42)'
+    it_behaves_like 'offense', :to_c, 'Complex("number", exception: true)'
+
+    it_behaves_like 'accepted', 'Complex("number", exception: false).to_c'
+    it_behaves_like 'accepted', 'Complex(real, imag, exception: false).to_c'
   end
 
   describe '`to_a`' do
