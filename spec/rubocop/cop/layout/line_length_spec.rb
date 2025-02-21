@@ -797,6 +797,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               end
             end
 
+            context 'when the interpolation is not on the first line' do
+              it 'registers an offense and corrects' do
+                expect_offense(<<~'RUBY')
+                  a_long_named_method_call
+                  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa#{bbbbbbbbb}"
+                                                          ^^^^^^^^^^ Line is too long. [50/40]
+                RUBY
+
+                expect_correction(<<~'RUBY')
+                  a_long_named_method_call
+                  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" \
+                  "#{bbbbbbbbb}"
+                RUBY
+              end
+            end
+
             context 'when the entire string is interpolation' do
               it 'registers an offense but does not correct' do
                 expect_offense(<<~'RUBY')

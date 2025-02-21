@@ -209,7 +209,7 @@ module RuboCop
         # are not bisected.
         # If the string contains spaces, use them to determine a place for a clean break;
         # otherwise, the string will be broken at the line length limit.
-        def breakable_string_range(node) # rubocop:disable Metrics/AbcSize
+        def breakable_string_range(node)
           source_range = node.source_range
           relevant_substr = largest_possible_string(node)
 
@@ -221,13 +221,13 @@ module RuboCop
             adjustment = max - source_range.last_column - 3
             return if adjustment.abs > source_range.size
 
-            source_range.adjust(end_pos: max - source_range.last_column - 3)
+            source_range.adjust(end_pos: adjustment)
           end
         end
 
         def breakable_dstr_begin_position(node)
           source_range = node.source_range
-          source_range.begin_pos if source_range.begin_pos < max && source_range.end_pos >= max
+          source_range.begin_pos if source_range.column < max && source_range.last_column >= max
         end
 
         def breakable_range_by_line_index
