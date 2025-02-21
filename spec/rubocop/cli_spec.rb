@@ -1808,6 +1808,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    it 'prints a warning if Reference is a string instead of an array' do
+      create_file('example/example1.rb', '#' * 90)
+
+      create_file('example/.rubocop.yml', <<~YAML)
+        Security/JSONLoad:
+          Reference: 'https://example.com#security-json-load'
+
+        Security/MarshalLoad:
+          Reference:
+            - 'https://example.com#security-marshal-load'
+      YAML
+
+      expect(cli.run(%w[--format simple example])).to eq(1)
+      expect($stderr.string).to eq(<<~RESULT)
+        Warning: Property Reference of Security/JSONLoad cop is supposed to be an array of strings. Providing a string is deprecated.
+      RESULT
+    end
+
     it 'works when a configuration file passed by -c specifies Exclude with regexp' do
       create_file('example/example1.rb', '#' * 90)
 

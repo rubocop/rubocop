@@ -18,7 +18,7 @@ module RuboCop
     NEW_COPS_VALUES = %w[pending disable enable].freeze
 
     # @api private
-    CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect].to_set.freeze
+    CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect Reference].to_set.freeze
     CONFIG_CHECK_DEPARTMENTS = %w[pending override_department].freeze
     CONFIG_CHECK_AUTOCORRECTS = %w[always contextual disabled].freeze
     private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
@@ -259,7 +259,7 @@ module RuboCop
       end
     end
 
-    # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
     def check_cop_config_value(hash, parent = nil)
       hash.each do |key, value|
         check_cop_config_value(value, key) if value.is_a?(Hash)
@@ -270,6 +270,9 @@ module RuboCop
           supposed_values = 'a boolean'
         elsif key == 'AutoCorrect' && !CONFIG_CHECK_AUTOCORRECTS.include?(value)
           supposed_values = '`always`, `contextual`, `disabled`, or a boolean'
+        elsif key == 'Reference'
+          warn string_reference_warning(parent)
+          next
         else
           next
         end
@@ -277,13 +280,20 @@ module RuboCop
         raise ValidationError, param_error_message(parent, key, value, supposed_values)
       end
     end
-    # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize
 
     # FIXME: Handling colors in exception messages like this is ugly.
     def param_error_message(parent, key, value, supposed_values)
       "#{Rainbow('').reset}" \
         "Property #{Rainbow(key).yellow} of #{Rainbow(parent).yellow} cop " \
         "is supposed to be #{supposed_values} and #{Rainbow(value).yellow} is not."
+    end
+
+    # FIXME: Handling colors in exception messages like this is ugly.
+    def string_reference_warning(cop_name)
+      "#{Rainbow('').reset}#{Rainbow('Warning:').yellow} " \
+        "Property #{Rainbow('Reference').yellow} of #{Rainbow(cop_name).yellow} cop " \
+        'is supposed to be an array of strings. Providing a string is deprecated.'
     end
   end
   # rubocop:enable Metrics/ClassLength
