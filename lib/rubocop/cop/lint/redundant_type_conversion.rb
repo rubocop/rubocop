@@ -52,6 +52,16 @@ module RuboCop
       #   {}
       #   Set.new
       #
+      #   # bad
+      #   Integer(var).to_i
+      #
+      #   # good
+      #   Integer(var)
+      #
+      #   # good - chaining to a type constructor with exceptions suppressed
+      #   # in this case, `Integer()` could return `nil`
+      #   Integer(var, exception: false).to_i
+      #
       #   # bad - chaining the same conversion
       #   foo.to_s.to_s
       #
@@ -161,6 +171,11 @@ module RuboCop
           }
         PATTERN
 
+        # @!method exception_false_keyword_argument?(node)
+        def_node_matcher :exception_false_keyword_argument?, <<~PATTERN
+          (hash (pair (sym :exception) false))
+        PATTERN
+
         # rubocop:disable Metrics/AbcSize
         def on_send(node)
           return if hash_or_set_with_block?(node)
@@ -211,7 +226,13 @@ module RuboCop
           matcher = CONSTRUCTOR_MAPPING[node.method_name]
           return false unless matcher
 
-          public_send(matcher, receiver)
+          public_send(matcher, receiver) && !constructor_suppresses_exceptions?(receiver)
+        end
+
+        def constructor_suppresses_exceptions?(receiver)
+          # If the constructor suppresses exceptions with `exception: false`, it is possible
+          # it could return `nil`, and therefore a chained conversion is not redundant.
+          receiver.arguments.any? { |arg| exception_false_keyword_argument?(arg) }
         end
 
         def chained_conversion?(node, receiver)
