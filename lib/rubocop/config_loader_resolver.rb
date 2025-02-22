@@ -123,7 +123,7 @@ module RuboCop
         elsif merge_hashes?(base_hash, derived_hash, key)
           result[key] = merge(base_hash[key], derived_hash[key], **opts)
         elsif should_union?(derived_hash, base_hash, opts[:inherit_mode], key)
-          result[key] = base_hash[key] | derived_hash[key]
+          result[key] = Array(base_hash[key]) | Array(derived_hash[key])
         elsif opts[:debug]
           warn_on_duplicate_setting(base_hash, derived_hash, key, **opts)
         end
@@ -205,7 +205,7 @@ module RuboCop
     end
 
     def should_union?(derived_hash, base_hash, root_mode, key)
-      return false unless base_hash[key].is_a?(Array)
+      return false unless base_hash[key].is_a?(Array) || derived_hash[key].is_a?(Array)
 
       derived_mode = derived_hash['inherit_mode']
       return false if should_override?(derived_mode, key)
