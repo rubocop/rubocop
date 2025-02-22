@@ -5593,6 +5593,12 @@ Style/Strip:
   Enabled: true
   VersionAdded: '0.36'
 
+Style/RedundantStructKeywordInit:
+  Description: 'Checks for redundant use of `keyword_init: true` in Struct.new.'
+  StyleGuide: '#no-keyword-init-true-struct-new'
+  Enabled: true
+  SafeAutoCorrect: true
+
 Style/StructInheritance:
   Description: 'Checks for inheritance from Struct.new.'
   StyleGuide: '#no-extend-struct-new'
