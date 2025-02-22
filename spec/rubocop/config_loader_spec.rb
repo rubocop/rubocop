@@ -712,6 +712,9 @@ RSpec.describe RuboCop::ConfigLoader do
               - foo.rb
             Include:
               - bar.rb
+            InheritedArraySpecifiedString:
+              - 'string in array'
+            InheritedStringSpecifiedArray: 'bare string'
         YAML
         create_file(file_path, <<~YAML)
           inherit_from:
@@ -723,12 +726,17 @@ RSpec.describe RuboCop::ConfigLoader do
                 - AllowedIdentifiers
                 - Exclude
                 - Include
+                - InheritedStringSpecifiedArray
+                - InheritedArraySpecifiedString
             AllowedIdentifiers:
               - iso2
             Exclude:
               - test.rb
             Include:
               - another_test.rb
+            InheritedArraySpecifiedString: 'bare string'
+            InheritedStringSpecifiedArray:
+              - 'string in array'
         YAML
       end
 
@@ -739,6 +747,14 @@ RSpec.describe RuboCop::ConfigLoader do
         expect(examples_configuration['Include']).to contain_exactly('bar.rb', 'another_test.rb')
         expect(examples_configuration['AllowedIdentifiers'])
           .to match_array(%w[capture3 iso8601 rfc1123_date rfc2822 rfc3339 rfc822 iso2 x86_64])
+        expect(examples_configuration['InheritedArraySpecifiedString']).to contain_exactly(
+          'bare string',
+          'string in array'
+        )
+        expect(examples_configuration['InheritedStringSpecifiedArray']).to contain_exactly(
+          'bare string',
+          'string in array'
+        )
       end
     end
 
