@@ -36,7 +36,7 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG = 'Use `\\` instead of `+` or `<<` to concatenate those strings.'
+        MSG = 'Use `\\` instead of `%<operator>s` to concatenate multiline strings.'
         CONCAT_TOKEN_TYPES = %i[tPLUS tLSHFT].freeze
         SIMPLE_STRING_TOKEN_TYPE = :tSTRING
         COMPLEX_STRING_BEGIN_TOKEN = :tSTRING_BEG
@@ -61,14 +61,20 @@ module RuboCop
           successor = tokens[index + 2]
 
           return unless eligible_token_set?(predecessor, operator, successor)
-
           return if same_line?(operator, successor)
 
           next_successor = token_after_last_string(successor, index)
-
           return unless eligible_next_successor?(next_successor)
 
-          add_offense(operator.pos) { |corrector| autocorrect(corrector, operator.pos) }
+          register_offense(operator)
+        end
+
+        def register_offense(operator)
+          message = format(MSG, operator: operator.text)
+
+          add_offense(operator.pos, message: message) do |corrector|
+            autocorrect(corrector, operator.pos)
+          end
         end
 
         def autocorrect(corrector, operator_range)
