@@ -31,7 +31,7 @@ The following is an example of a plugin that is not published as a gem:
 [source,yaml]
 ----
 plugins:
-  - rubocop-extension
+  - rubocop-extension:
       require_path: path/to/extension/plugin
       plugin_class_name: RuboCop::Extension::Plugin
 ----
