@@ -41,7 +41,7 @@ module RuboCop
           return if ignored_node?(node)
 
           return unless (receiver = node.receiver)
-          return unless receiver.any_block_type? && receiver.loc.end.is?('end')
+          return unless receiver.any_block_type? && receiver.keywords?
 
           range = range_between(receiver.loc.end.begin_pos, node.source_range.end_pos)
 
