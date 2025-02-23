@@ -1,12 +1,24 @@
 = Extensions
 
-It's possible to extend RuboCop with custom (third-party) cops and formatters.
+:lint_roller: https://github.com/standardrb/lint_roller[lint_roller].
+
+It's possible to extend RuboCop with additional cops and formatters.
+There are already many official extensions, maintained by RuboCop's team,
+as well as third-party extensions.
+
+NOTE: RuboCop's official extension (plugin) API is based on {lint_roller}.
 
 == Loading Extensions
 
-Starting with RuboCop 1.72, plugins are provided as a way to load extension cop gems.
-When using gems that support plugins, please update the configuration in `.rubocop.yml`
-from `require` to `plugins`.
+There are two ways to load RuboCop extensions today - a legacy ad-hoc
+approach, and an official API that's the recommended way. Not all
+extensions have been updated to the new API, so you'll have to load
+the two types of extensions differently.
+
+Starting with RuboCop 1.72, plugins were introduced as the recommended way to
+load extension cop gems. When using gems that have been updated to support the
+plugin API, please update the configuration in `.rubocop.yml` from `require` to
+`plugins`.
 
 Refer to the xref:plugin_migration_guide.adoc[Plugin Migration Guide] when migrating existing configurations.
 
@@ -36,8 +48,7 @@ plugins:
       plugin_class_name: RuboCop::Extension::Plugin
 ----
 
-There are other ways to specify this. For more details, please refer to the lint_roller documentation.
-The lint_roller plugin specifications follow https://github.com/standardrb/lint_roller[lint_roller].
+There are other ways to specify this. For more details, please refer to the {lint_roller} documentation.
 
 === Loading Inject and Relative Path Extensions
 
@@ -101,7 +112,7 @@ other cop.
 
 If you'd like to create an extension gem, you can use https://github.com/rubocop/rubocop-extension-generator[rubocop-extension-generator].
 
-For plugin specifications, please refer to https://github.com/standardrb/lint_roller[lint_roller].
+For plugin specifications, please refer to {lint_roller}.
 
 See xref:development.adoc[development] to learn how to implement a cop.
 
