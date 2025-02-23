@@ -1,8 +1,16 @@
 = Plugin Migration Guide
 
-This page provides guidance on migrating to RuboCop extensions using plugins. Plugins are a feature introduced in RuboCop 1.72.
+NOTE: The plugin system was introduced in RuboCop 1.72.
 
-It is divided into two main sections: one for plugin users and the other for plugin developers.
+An improved API for RuboCop extensions, called plugins, is being introduced to provide officially documented ways to extend RuboCop.
+This API is provided by the https://github.com/standardrb/lint_roller[lint_roller] library and is intended to replace previous undocumented
+and unofficial methods that emerged out of necessity.
+
+As a user, you will need to adjust your `.rubocop.yml` to load extensions that support this new API differently than before.
+As an extension developer, you will need to modify your extension accordingly, as explained below.
+
+This page provides guidance on migrating to RuboCop extensions using plugins. It is divided into two main sections:
+one for plugin users and the other for plugin developers.
 
 == For Plugin Users
 
