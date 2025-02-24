@@ -317,6 +317,19 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
     RUBY
   end
 
+  it 'accepts writer nested within an instance_eval numblock call' do
+    expect_no_offenses(<<~RUBY)
+      something.instance_eval do
+        _1
+        begin
+          def bar=(bar)
+            @bar = bar
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'accepts reader nested within an instance_eval call' do
     expect_no_offenses(<<~RUBY)
       something.instance_eval do

@@ -113,7 +113,7 @@ module RuboCop
         private
 
         def in_module_or_instance_eval?(node)
-          node.each_ancestor(:block, :class, :sclass, :module).each do |pnode|
+          node.each_ancestor(:any_block, :class, :sclass, :module).each do |pnode|
             case pnode.type
             when :class, :sclass
               return false
