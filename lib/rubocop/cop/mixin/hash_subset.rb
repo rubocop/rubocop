@@ -23,7 +23,7 @@ module RuboCop
           (call _ _)
           (args
             $(arg _key)
-            (arg _))
+            $(arg _))
           {
             $(send
               {(lvar _key) $_ _ | _ $_ (lvar _key)})
@@ -67,7 +67,7 @@ module RuboCop
       end
 
       def extracts_hash_subset?(block)
-        block_with_first_arg_check?(block) do |key_arg, send_node, method|
+        block_with_first_arg_check?(block) do |key_arg, value_arg, send_node, method|
           # Only consider methods that have one argument
           return false unless send_node.arguments.one?
 
@@ -76,13 +76,20 @@ module RuboCop
 
           case method
           when :include?, :exclude?
-            send_node.first_argument.source == key_arg.source
+            slices_key?(send_node, :first_argument, key_arg, value_arg)
           when :in?
-            send_node.receiver.source == key_arg.source
+            slices_key?(send_node, :receiver, key_arg, value_arg)
           else
             true
           end
         end
+      end
+
+      def slices_key?(send_node, method, key_arg, value_arg)
+        return false if using_value_variable?(send_node, value_arg)
+
+        node = method == :receiver ? send_node.receiver : send_node.first_argument
+        node.source == key_arg.source
       end
 
       def range_include?(send_node)
@@ -95,6 +102,14 @@ module RuboCop
         receiver = send_node.receiver
         receiver = receiver.child_nodes.first while receiver.begin_type?
         receiver.range_type?
+      end
+
+      def using_value_variable?(send_node, value_arg)
+        # If the receiver of `include?` or `exclude?`, or the first argument of `in?` is the
+        # hash value block argument, an offense should not be registered.
+        # ie. `v.include?(k)` or `k.in?(v)`
+        (send_node.receiver.lvar_type? && send_node.receiver.name == value_arg.name) ||
+          (send_node.first_argument.lvar_type? && send_node.first_argument.name == value_arg.name)
       end
 
       def supported_subset_method?(method)
