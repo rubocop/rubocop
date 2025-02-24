@@ -1,6 +1,6 @@
 = Changelog
 
-An extensive changelog is available https://github.com/rubocop/rubocop/blob/master/CHANGELOG.md[here].
+An extensive changelog is available https://github.com/rubocop/rubocop/tree/master/relnotes[here].
 
 NOTE: Only user-visible changes are documented there.
 

@@ -394,7 +394,7 @@ AllCops:
 ----
 
 This behavior of `Include` (overriding `default.yml`) was introduced in
-https://github.com/rubocop/rubocop/blob/master/CHANGELOG.md#0560-2018-05-14[0.56.0]
+https://github.com/rubocop/rubocop/releases/tag/v0.56.0[0.56.0]
 via https://github.com/rubocop/rubocop/pull/5882[#5882]. This change allows
 people to include/exclude precisely what they need to, without the defaults
 getting in the way.
