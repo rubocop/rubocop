@@ -165,6 +165,15 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
 
       expect_no_corrections
     end
+
+    it 'registers an offense but does not correct for numblocks' do
+      expect_offense(<<~RUBY)
+        '(' + values.map { _1.titleize }.join(', ') + ')'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_no_corrections
+    end
   end
 
   context 'heredoc' do
