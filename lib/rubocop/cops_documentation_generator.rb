@@ -28,6 +28,12 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   #
   #   CopsDocumentationGenerator.new(departments: ['Lint']).call
   #
+  # For plugin extensions, specify `:plugin_name` keyword as follows:
+  #
+  #   CopsDocumentationGenerator.new(
+  #     departments: ['Performance'], plugin_name: 'rubocop-performance'
+  #   ).call
+  #
   # You can append additional information:
   #
   #   callback = ->(data) { required_rails_version(data.cop) }
@@ -36,11 +42,16 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   # This will insert the string returned from the lambda _after_ the section from RuboCop itself.
   # See `CopsDocumentationGenerator::STRUCTURE` for available sections.
   #
-  def initialize(departments: [], extra_info: {}, base_dir: Dir.pwd)
+  def initialize(departments: [], extra_info: {}, base_dir: Dir.pwd, plugin_name: nil)
     @departments = departments.map(&:to_sym).sort!
     @extra_info = extra_info
     @cops = RuboCop::Cop::Registry.global
     @config = RuboCop::ConfigLoader.default_configuration
+    # NOTE: For example, this prevents excessive plugin loading before another task executes,
+    # in cases where plugins are already loaded by `internal_investigation`.
+    if plugin_name && @config.loaded_plugins.none? { |plugin| plugin.about.name == plugin_name }
+      RuboCop::Plugin.integrate_plugins(RuboCop::Config.new, [plugin_name])
+    end
     @base_dir = base_dir
     @docs_path = "#{base_dir}/docs/modules/ROOT"
     FileUtils.mkdir_p("#{@docs_path}/pages")
