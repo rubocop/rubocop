@@ -93,7 +93,7 @@ module RuboCop
           add_offense(node, message: message) do |corrector|
             line = range_by_whole_lines(node.source_range)
 
-            corrector.insert_before(line, "\n") unless previous_line_empty?(node.first_line)
+            corrector.insert_before(line, "\n") if should_insert_line_before?(node)
 
             correct_next_line_if_denied_style(corrector, node, line)
           end
@@ -122,6 +122,8 @@ module RuboCop
         end
 
         def correct_next_line_if_denied_style(corrector, node, line)
+          return unless should_insert_line_after?(node)
+
           case style
           when :around
             corrector.insert_after(line, "\n") unless next_line_empty?(node.last_line)
@@ -204,6 +206,29 @@ module RuboCop
           else
             format(MSG_BEFORE_FOR_ONLY_BEFORE, modifier: modifier)
           end
+        end
+
+        def should_insert_line_before?(node)
+          return false if previous_line_empty?(node.first_line)
+          return true unless inside_block?(node) && no_empty_lines_around_block_body?
+          return true unless node.parent.begin_type?
+
+          node.parent.children.first != node
+        end
+
+        def should_insert_line_after?(node)
+          return true unless inside_block?(node) && no_empty_lines_around_block_body?
+
+          node.parent.children.last != node
+        end
+
+        def inside_block?(node)
+          node.parent.block_type? || (node.parent.begin_type? && node.parent.parent&.block_type?)
+        end
+
+        def no_empty_lines_around_block_body?
+          config.for_enabled_cop('Layout/EmptyLinesAroundBlockBody')['EnforcedStyle'] ==
+            'no_empty_lines'
         end
       end
     end

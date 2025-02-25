@@ -3843,4 +3843,49 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       /a/
     RUBY
   end
+
+  it 'handles `Layout/EmptyLinesAroundAccessModifier` and `Layout/EmptyLinesAroundBlockBody` with `EnforcedStyle: no_empty_lines`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      block do
+        def foo
+        end
+
+        private
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/EmptyLinesAroundAccessModifier:
+        EnforcedStyle: around
+
+      Layout/EmptyLinesAroundBlockBody:
+        EnforcedStyle: no_empty_lines
+    YAML
+
+    status = cli.run(%w[--autocorrect-all --only
+                        Layout/EmptyLinesAroundAccessModifier,Layout/EmptyLinesAroundBlockBody])
+    expect(status).to eq(1)
+    expect($stdout.string).to eq(<<~RESULT)
+      Inspecting 1 file
+      C
+
+      Offenses:
+
+      example.rb:5:3: C: Layout/EmptyLinesAroundAccessModifier: Keep a blank line before and after private.
+        private
+        ^^^^^^^
+
+      1 file inspected, 1 offense detected
+    RESULT
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      block do
+        def foo
+        end
+
+        private
+      end
+    RUBY
+  end
 end
