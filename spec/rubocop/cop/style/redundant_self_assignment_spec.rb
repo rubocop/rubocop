@@ -56,6 +56,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelfAssignment, :config do
         foo&.concat(ary)
       RUBY
     end
+
+    it 'registers an offense and corrects when the rhs receives a block' do
+      expect_offense(<<~RUBY)
+        foo = foo.delete_if { true }
+            ^ Redundant self assignment detected. Method `delete_if` modifies its receiver in place.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.delete_if { true }
+      RUBY
+    end
   end
 
   it 'does not register an offense when lhs and receiver are different' do
