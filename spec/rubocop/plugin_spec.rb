@@ -15,19 +15,6 @@ RSpec.describe RuboCop::Plugin do
 
       it { is_expected.to be(false) }
     end
-
-    context 'when the plugin is not yet activated' do
-      let(:feature) { 'rubocop-rspec' }
-
-      around do |example|
-        prev_loaded_spec = Gem.loaded_specs[feature]
-        Gem.loaded_specs[feature] = nil
-        example.call
-        Gem.loaded_specs[feature] = prev_loaded_spec
-      end
-
-      it { is_expected.to be(true) }
-    end
   end
 
   describe '.integrate_plugins' do

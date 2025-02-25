@@ -23,6 +23,29 @@ jobs:
       - name: internal_investigation
         run: bundle exec rake internal_investigation
 
+  lint-ruby-without-bundler:
+    name: Ruby without Bundler
+    runs-on: ubuntu-latest
+    steps:
+      # Install Ruby first so bundler installs no gems
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby # Latest stable CRuby version
+      - uses: actions/checkout@v4
+      - name: Package and install RuboCop locally
+        run: |
+          gem build
+          gem install ./rubocop-*.gem --no-document
+          gem install rubocop-performance rubocop-rake rubocop-rspec --no-document
+      - name: internal_investigation
+        run: rubocop
+      # Regression test for https://github.com/rubocop/rubocop/issues/13867
+      - name: internal_investigation with require
+        run: |
+          echo "require: rubocop-rspec" > .rubocop.yml
+          # This should never give any offense, just testing it doesn't error
+          rubocop Gemfile --only RSpec/AnyInstance
+
   lint-yaml:
     permissions:
       contents: read  # for actions/checkout to fetch code
