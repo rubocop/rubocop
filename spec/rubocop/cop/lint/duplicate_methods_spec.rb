@@ -461,6 +461,24 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense for same method name defined in different blocks' do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          dsl_like('foo') do
+            def some_method
+              implement 1
+            end
+          end
+
+          dsl_like('bar') do
+            def some_method
+              implement 2
+            end
+          end
+        end
+      RUBY
+    end
   end
 
   include_examples('in scope', 'class', 'class A')

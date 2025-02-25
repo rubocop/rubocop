@@ -54,14 +54,12 @@ module RuboCop
           # if a method definition is inside an if, it is very likely
           # that a different definition is used depending on platform, etc.
           return if node.each_ancestor.any?(&:if_type?)
-          return if possible_dsl?(node)
 
           found_instance_method(node, node.method_name)
         end
 
         def on_defs(node)
           return if node.each_ancestor.any?(&:if_type?)
-          return if possible_dsl?(node)
 
           if node.receiver.const_type?
             _, const_name = *node.receiver
@@ -79,7 +77,6 @@ module RuboCop
         def on_alias(node)
           return unless (name = method_alias?(node))
           return if node.ancestors.any?(&:if_type?)
-          return if possible_dsl?(node)
 
           found_instance_method(node, name)
         end
@@ -94,7 +91,6 @@ module RuboCop
         def on_send(node)
           if (name = alias_method?(node))
             return if node.ancestors.any?(&:if_type?)
-            return if possible_dsl?(node)
 
             found_instance_method(node, name)
           elsif (attr = node.attribute_accessor?)
@@ -234,16 +230,6 @@ module RuboCop
             "#{namespace.const_name}::#{mod_name}"
           else
             mod_name
-          end
-        end
-
-        def possible_dsl?(node)
-          # DSL methods may evaluate a block in the context of a newly created
-          # class or module
-          # Assume that if a method definition is inside any block call which
-          # we can't identify, it could be a DSL
-          node.each_ancestor(:block).any? do |ancestor|
-            !ancestor.method?(:class_eval) && !ancestor.class_constructor?
           end
         end
 
