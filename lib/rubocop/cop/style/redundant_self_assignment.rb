@@ -58,7 +58,7 @@ module RuboCop
         # rubocop:disable Metrics/AbcSize
         def on_lvasgn(node)
           return unless (rhs = node.rhs)
-          return unless rhs.call_type? && method_returning_self?(rhs.method_name)
+          return unless rhs.type?(:any_block, :call) && method_returning_self?(rhs.method_name)
           return unless (receiver = rhs.receiver)
 
           receiver_type = ASSIGNMENT_TYPE_TO_RECEIVER_TYPE[node.type]
