@@ -128,7 +128,7 @@ module RuboCop
         end
 
         def uncorrectable?(part)
-          part.multiline? || heredoc?(part) || part.each_descendant(:block).any?
+          part.multiline? || heredoc?(part) || part.each_descendant(:any_block).any?
         end
 
         def heredoc?(node)
