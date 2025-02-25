@@ -291,6 +291,50 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
         end
       RUBY
     end
+
+    context 'when constant is used in accessor' do
+      it 'registers and corrects an offense considering ordering of constant' do
+        expect_offense(<<~RUBY)
+          class Foo
+            attr_reader :one
+            ^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+            OTHER_ATTRS = %i[two three].freeze
+
+            attr_reader(*OTHER_ATTRS)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            OTHER_ATTRS = %i[two three].freeze
+
+            attr_reader :one, *OTHER_ATTRS
+          end
+        RUBY
+      end
+
+      it 'registers and corrects when there is no attr_reader after constant' do
+        expect_offense(<<~RUBY)
+          class Foo
+            attr_reader :one
+            ^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+            attr_reader :bar
+            ^^^^^^^^^^^^^^^^ Group together all `attr_reader` attributes.
+
+            OTHER_ATTRS = %i[two three].freeze
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            attr_reader :one, :bar
+
+            OTHER_ATTRS = %i[two three].freeze
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is separated' do

@@ -139,12 +139,16 @@ module RuboCop
           style == :separated
         end
 
+        def groupable_sibling_accessor?(node, sibling)
+          sibling.attribute_accessor? &&
+            sibling.method?(node.method_name) &&
+            node_visibility(sibling) == node_visibility(node) &&
+            groupable_accessor?(sibling) && !previous_line_comment?(sibling)
+        end
+
         def groupable_sibling_accessors(send_node)
           send_node.parent.each_child_node(:send).select do |sibling|
-            sibling.attribute_accessor? &&
-              sibling.method?(send_node.method_name) &&
-              node_visibility(sibling) == node_visibility(send_node) &&
-              groupable_accessor?(sibling) && !previous_line_comment?(sibling)
+            groupable_sibling_accessor?(send_node, sibling)
           end
         end
 
@@ -155,11 +159,21 @@ module RuboCop
 
         def preferred_accessors(node)
           if grouped_style?
+            return if skip_for_grouping?(node)
+
             accessors = groupable_sibling_accessors(node)
-            group_accessors(node, accessors) if node.loc == accessors.first.loc
+            if node.loc == accessors.first.loc || skip_for_grouping?(accessors.first)
+              group_accessors(node, accessors)
+            end
           else
             separate_accessors(node)
           end
+        end
+
+        # Group after constants
+        def skip_for_grouping?(node)
+          node.right_siblings.any?(&:casgn_type?) &&
+            node.right_siblings.any? { |n| n.send_type? && groupable_sibling_accessor?(node, n) }
         end
 
         def group_accessors(node, accessors)
