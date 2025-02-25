@@ -39,7 +39,7 @@ module RuboCop
       #   1i.to_c
       #   [].to_a
       #   {}.to_h
-      #   Set.new.to_s
+      #   Set.new.to_set
       #
       #   # good
       #   "text"
