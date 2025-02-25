@@ -200,17 +200,7 @@ Performance/StartWith:
 RSpec/StubbedMock:
   Enabled: false
 
-InternalAffairs/ExampleDescription:
-  Include:
-    - 'spec/rubocop/cop/**/*.rb'
-
-InternalAffairs/ExampleHeredocDelimiter:
-  Include:
-    - 'spec/rubocop/cop/**/*.rb'
-
 InternalAffairs/UndefinedConfig:
-  Include:
-    - 'lib/rubocop/cop/**/*.rb'
   Exclude:
     - 'lib/rubocop/cop/correctors/**/*.rb'
     - 'lib/rubocop/cop/mixin/**/*.rb'
@@ -224,8 +214,6 @@ InternalAffairs/NumblockHandler:
     - 'lib/rubocop/cop/internal_affairs/*.rb'
 
 InternalAffairs/OnSendWithoutOnCSend:
-  Include:
-    - 'lib/rubocop/cop/**/*.rb'
   Exclude:
     - 'lib/rubocop/cop/bundler/**/*.rb'
     - 'lib/rubocop/cop/gemspec/**/*.rb'
