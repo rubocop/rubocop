@@ -1,1 +1,0 @@
-* [#13900](https://github.com/rubocop/rubocop/issues/13900): Fix infinite loop between `Layout/EmptyLinesAroundAccessModifier` and `Layout/EmptyLinesAroundBlockBody` with `EnforcedStyle: no_empty_lines`. ([@dvandersluis][])
