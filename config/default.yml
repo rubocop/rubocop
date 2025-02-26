@@ -2261,7 +2261,7 @@ Lint/RedundantRequireStatement:
   Description: 'Checks for unnecessary `require` statement.'
   Enabled: true
   VersionAdded: '0.76'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.73'
 
 Lint/RedundantSafeNavigation:
   Description: 'Checks for redundant safe navigation calls.'
@@ -3081,7 +3081,7 @@ Naming/VariableName:
   StyleGuide: '#snake-case-symbols-methods-vars'
   Enabled: true
   VersionAdded: '0.50'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.73'
   EnforcedStyle: snake_case
   SupportedStyles:
     - snake_case

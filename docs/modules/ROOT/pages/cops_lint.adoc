@@ -3471,7 +3471,7 @@ lambda { do_something } # If you use lambda.
 
 | Enabled
 | Yes
-| No
+| Command-line only
 | 0.51
 | -
 |===
@@ -5148,9 +5148,9 @@ because it's unknown what kind of string will be expanded as a result:
 
 | Enabled
 | Yes
-| Always (Unsafe)
+| Always
 | 0.76
-| 1.57
+| 1.73
 |===
 
 Checks for unnecessary `require` statement.
@@ -5167,18 +5167,11 @@ Below are the features that each `TargetRubyVersion` targets.
   * 2.0+ ... `enumerator`
   * 2.1+ ... `thread`
   * 2.2+ ... Add `rational` and `complex` above
-  * 2.5+ ... Add `pp` above
   * 2.7+ ... Add `ruby2_keywords` above
   * 3.1+ ... Add `fiber` above
   * 3.2+ ... `set`
 
 This cop target those features.
-
-[#safety-lintredundantrequirestatement]
-=== Safety
-
-This cop's autocorrection is unsafe because if `require 'pp'` is removed from one file,
-`NameError` can be encountered when another file uses `PP.pp`.
 
 [#examples-lintredundantrequirestatement]
 === Examples
@@ -5500,7 +5493,7 @@ expected to return a specific type regardless of receiver (eg. `foo.inspect.to_s
 1i.to_c
 [].to_a
 {}.to_h
-Set.new.to_s
+Set.new.to_set
 
 # good
 "text"
@@ -5512,6 +5505,16 @@ Set.new.to_s
 []
 {}
 Set.new
+
+# bad
+Integer(var).to_i
+
+# good
+Integer(var)
+
+# good - chaining to a type constructor with exceptions suppressed
+# in this case, `Integer()` could return `nil`
+Integer(var, exception: false).to_i
 
 # bad - chaining the same conversion
 foo.to_s.to_s
