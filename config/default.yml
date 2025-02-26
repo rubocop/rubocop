@@ -5088,6 +5088,7 @@ Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'
   Enabled: true
   VersionAdded: '0.87'
+  AllowComments: false
 
 Style/RedundantBegin:
   Description: "Don't use begin blocks when they are not needed."
