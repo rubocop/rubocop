@@ -144,6 +144,8 @@ module RuboCop
         MSG_REQUIRE_ALWAYS = 'Use endless method definitions.'
 
         def on_def(node)
+          return if node.assignment_method?
+
           case style
           when :allow_single_line, :allow_always
             handle_allow_style(node)
