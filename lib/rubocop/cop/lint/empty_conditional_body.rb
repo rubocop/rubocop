@@ -67,7 +67,6 @@ module RuboCop
 
         MSG = 'Avoid `%<keyword>s` branches without a body.'
 
-        # rubocop:disable Metrics/AbcSize
         def on_if(node)
           return if node.body || same_line?(node.loc.begin, node.loc.end)
           return if cop_config['AllowComments'] && contains_comments?(node)
@@ -75,14 +74,20 @@ module RuboCop
           range = offense_range(node)
 
           add_offense(range, message: format(MSG, keyword: node.keyword)) do |corrector|
-            next if node.parent&.call_type?
-
-            autocorrect(corrector, node)
+            autocorrect(corrector, node) if do_autocorrect?(node)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
+
+        def do_autocorrect?(node)
+          # if condition; end.do_something
+          return false if (parent = node.parent)&.call_type?
+          # x = if condition; end
+          return false if (parent&.assignment? || parent&.operator_keyword?) && node.children.one?
+
+          true
+        end
 
         def offense_range(node)
           if node.loc.else
