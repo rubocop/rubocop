@@ -416,6 +416,26 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
     RUBY
   end
 
+  it 'does not autocorrect when there is only one branch with assignment' do
+    expect_offense(<<~RUBY)
+      x = if foo
+          ^^^^^^ Avoid `if` branches without a body.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect when there is only one branch after `||`' do
+    expect_offense(<<~RUBY)
+      x || if foo
+           ^^^^^^ Avoid `if` branches without a body.
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   context '>= Ruby 3.1', :ruby31 do
     it 'registers an offense for multi-line value omission in `unless`' do
       expect_offense(<<~RUBY)
@@ -426,6 +446,8 @@ RSpec.describe RuboCop::Cop::Lint::EmptyConditionalBody, :config do
             condition || other_condition
           end
       RUBY
+
+      expect_no_corrections
     end
   end
 
