@@ -18,12 +18,15 @@ module RuboCop
       #   end
       #
       #   # bad
-      #   if some_var && true
+      #   # We're only interested in the left hand side being a truthy literal,
+      #   # because it affects the evaluation of the &&, whereas the right hand
+      #   # side will be conditionally executed/called and can be a literal.
+      #   if true && some_var
       #     do_something
       #   end
       #
       #   # good
-      #   if some_var && some_condition
+      #   if some_var
       #     do_something
       #   end
       #
@@ -39,23 +42,13 @@ module RuboCop
         MSG = 'Literal `%<literal>s` appeared as a condition.'
         RESTRICT_ON_SEND = [:!].freeze
 
-        # rubocop:disable Metrics/AbcSize
         def on_and(node)
-          if node.lhs.truthy_literal? && node.rhs.truthy_literal?
-            add_offense(node) do |corrector|
-              corrector.replace(node, 'true')
-            end
-          elsif node.lhs.truthy_literal?
-            add_offense(node.lhs) do |corrector|
-              corrector.replace(node, node.rhs.source)
-            end
-          elsif node.rhs.truthy_literal?
-            add_offense(node.rhs) do |corrector|
-              corrector.replace(node, node.lhs.source)
-            end
+          return unless node.lhs.truthy_literal?
+
+          add_offense(node.lhs) do |corrector|
+            corrector.replace(node, node.rhs.source)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def on_if(node)
           cond = condition(node)

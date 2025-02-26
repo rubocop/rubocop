@@ -177,10 +177,10 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       end
     end
 
-    it "registers an offense for truthy literal #{lit} in &&" do
+    it "registers an offense for truthy literal #{lit} on the lhs of &&" do
       expect_offense(<<~RUBY, lit: lit)
-        if x && %{lit}
-                ^{lit} Literal `#{lit}` appeared as a condition.
+        if %{lit} && x
+           ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
@@ -192,10 +192,31 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       RUBY
     end
 
+    it "registers an offense for truthy literal #{lit} on the lhs of && with a truthy literal rhs" do
+      expect_offense(<<~RUBY, lit: lit)
+        if %{lit} && true
+           ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        top
+      RUBY
+    end
+
+    it "does not register an offense for truthy literal #{lit} on the rhs of &&" do
+      expect_no_offenses(<<~RUBY)
+        if x && %{lit}
+          top
+        end
+      RUBY
+    end
+
     it "registers an offense for truthy literal #{lit} in complex cond" do
       expect_offense(<<~RUBY, lit: lit)
-        if x && !(a && %{lit}) && y && z
-                       ^{lit} Literal `#{lit}` appeared as a condition.
+        if x && !(%{lit} && a) && y && z
+                  ^{lit} Literal `#{lit}` appeared as a condition.
           top
         end
       RUBY
@@ -216,21 +237,6 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       RUBY
 
       expect_no_corrections
-    end
-
-    it "registers an offense for truthy literal #{lit} in complex !" do
-      expect_offense(<<~RUBY, lit: lit)
-        if !(x && (y && %{lit}))
-                        ^{lit} Literal `#{lit}` appeared as a condition.
-          top
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        if !(x && (y))
-          top
-        end
-      RUBY
     end
 
     it "accepts literal #{lit} if it's not an and/or operand" do
