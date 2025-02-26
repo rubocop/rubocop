@@ -307,6 +307,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/internal_affairs/empty_line_between_expect_offense_and_correction.rb'
     - 'lib/rubocop/cop/internal_affairs/example_description.rb'
     - 'lib/rubocop/cop/internal_affairs/example_heredoc_delimiter.rb'
+    - 'lib/rubocop/cop/internal_affairs/missing_expect_correction.rb'
     - 'lib/rubocop/cop/internal_affairs/node_matcher_directive.rb'
     - 'lib/rubocop/cop/internal_affairs/node_pattern_groups.rb'
     - 'lib/rubocop/cop/internal_affairs/offense_location_keyword.rb'
