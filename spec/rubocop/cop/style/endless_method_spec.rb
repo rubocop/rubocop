@@ -244,6 +244,14 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for a single line setter method' do
+        expect_no_offenses(<<~RUBY)
+          def my_method=(arg)
+            arg.foo
+          end
+        RUBY
+      end
+
       it 'does not register an offense when the endless version excess Metrics/MaxLineLength[Max]' do
         expect_no_offenses(<<~RUBY)
           def my_method
@@ -389,6 +397,16 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
           def my_method = x.foo
              .bar
              .baz
+        RUBY
+      end
+
+      it 'does not register an offense for a multiline setter method' do
+        expect_no_offenses(<<~RUBY)
+          def my_method=(arg)
+            x.foo
+             .bar
+             .baz
+          end
         RUBY
       end
 
