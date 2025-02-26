@@ -57,7 +57,7 @@ module RuboCop
 
         REGEXP = /(?<keyword>\S+).*#/.freeze
 
-        SUBCLASS_DEFINITION = /\A\s*class\s+\w+\s*<\s*\w+/.freeze
+        SUBCLASS_DEFINITION = /\A\s*class\s+(\w|::)+\s*<\s*(\w|::)+/.freeze
         METHOD_DEFINITION = /\A\s*def\s/.freeze
 
         def on_new_investigation
