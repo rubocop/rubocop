@@ -114,6 +114,15 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation, :config do
                        )
         RUBY
       end
+
+      it 'does not register offense for aligned parens when first parameter is a hash' do
+        expect_no_offenses(<<~RUBY)
+          some_method({ foo: 1, bar: 2 },
+            x: 1,
+            y: 2
+          )
+        RUBY
+      end
     end
 
     context 'without arguments' do

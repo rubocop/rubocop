@@ -155,10 +155,10 @@ module RuboCop
         end
 
         def all_elements_aligned?(elements)
-          elements.flat_map do |e|
-            if e.hash_type?
-              e.each_child_node.map { |child| child.loc.column }
-            else
+          if elements.first.hash_type?
+            elements.first.each_child_node.map { |child| child.loc.column }
+          else
+            elements.flat_map do |e|
               e.loc.column
             end
           end.uniq.count == 1
