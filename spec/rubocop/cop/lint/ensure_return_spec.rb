@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::EnsureReturn, :config do
-  it 'registers an offense and corrects for return in ensure' do
+  it 'registers an offense but does not correct for return in ensure' do
     expect_offense(<<~RUBY)
       begin
         something
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn, :config do
     expect_no_corrections
   end
 
-  it 'registers an offense and corrects for return with argument in ensure' do
+  it 'registers an offense but does not correct for return with argument in ensure' do
     expect_offense(<<~RUBY)
       begin
         foo
