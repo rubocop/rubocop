@@ -227,6 +227,12 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
     RUBY
   end
 
+  it 'does not register an offense with `/[[ ]]/' do
+    expect_no_offenses(<<~RUBY)
+      /[[ ]]/
+    RUBY
+  end
+
   it 'does not register an offense when a character between `Z` and `a` is at the start of range.' do
     expect_no_offenses(<<~RUBY)
       foo = /[_-a]/
