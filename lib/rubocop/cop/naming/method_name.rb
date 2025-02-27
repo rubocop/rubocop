@@ -6,12 +6,15 @@ module RuboCop
       # Makes sure that all methods use the configured style,
       # snake_case or camelCase, for their names.
       #
-      # This cop has `AllowedPatterns` configuration option.
+      # This cop has `AllowedPatterns` and `ForbiddenIdentifiers` configuration options.
       #
       #   Naming/MethodName:
       #     AllowedPatterns:
       #       - '\AonSelectionBulkChange\z'
       #       - '\AonSelectionCleared\z'
+      #     ForbiddenIdentifiers:
+      #       - 'def'
+      #       - 'super'
       #
       # Method names matching patterns are always allowed.
       #
@@ -28,12 +31,19 @@ module RuboCop
       #
       #   # good
       #   def fooBar; end
+      #
+      # @example ForbiddenIdentifiers: [def super]
+      #   # bad
+      #   def def; end
+      #   def super; end
+      #
       class MethodName < Base
         include ConfigurableNaming
         include AllowedPattern
         include RangeHelp
 
         MSG = 'Use %<style>s for method names.'
+        MSG_FORBIDDEN = '`%<identifier>s` is forbidden, use another method name instead.'
 
         # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'
@@ -48,18 +58,47 @@ module RuboCop
             name = attr_name(name_item)
             next if !name || matches_allowed_pattern?(name)
 
-            check_name(node, name, range_position(node))
+            if forbidden_name?(name.to_s)
+              register_forbidden_name(node)
+            else
+              check_name(node, name, range_position(node))
+            end
           end
         end
 
         def on_def(node)
           return if node.operator_method? || matches_allowed_pattern?(node.method_name)
 
-          check_name(node, node.method_name, node.loc.name)
+          if forbidden_name?(node.method_name.to_s)
+            register_forbidden_name(node)
+          else
+            check_name(node, node.method_name, node.loc.name)
+          end
         end
         alias on_defs on_def
 
         private
+
+        def forbidden_identifiers
+          cop_config.fetch('ForbiddenIdentifiers', [])
+        end
+
+        def forbidden_name?(name)
+          forbidden_identifiers.any? && forbidden_identifiers.include?(name)
+        end
+
+        def register_forbidden_name(node)
+          if node.def_type?
+            name_node = node.loc.name
+            method_name = node.method_name
+          else
+            attrs = node.attribute_accessor?
+            name_node = attrs.last.last
+            method_name = attr_name(name_node)
+          end
+          message = format(MSG_FORBIDDEN, identifier: method_name)
+          add_offense(name_node, message: message)
+        end
 
         def attr_name(name_item)
           sym_name(name_item) || str_name(name_item)
