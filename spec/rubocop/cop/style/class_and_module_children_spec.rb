@@ -450,4 +450,96 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
     end
   end
+
+  context 'when EnforcedStyleForClasses is set' do
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'nested', 'EnforcedStyleForClasses' => enforced_style_for_classes }
+    end
+
+    context 'EnforcedStyleForClasses: nil' do
+      let(:enforced_style_for_classes) { nil }
+
+      it 'uses the set `EnforcedStyle` for classes' do
+        expect_offense(<<~RUBY)
+          class FooClass::BarClass
+                ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooClass
+            class BarClass
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'EnforcedStyleForClasses: compact' do
+      let(:enforced_style_for_classes) { 'compact' }
+
+      it 'registers an offense for classes with nested children' do
+        expect_offense(<<~RUBY)
+          class FooClass
+                ^^^^^^^^ Use compact module/class definition instead of nested style.
+            class BarClass
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class FooClass::BarClass
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when EnforcedStyleForModules is set' do
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'nested', 'EnforcedStyleForModules' => enforced_style_for_modules }
+    end
+
+    context 'EnforcedStyleForModules: nil' do
+      let(:enforced_style_for_modules) { nil }
+
+      it 'uses the set `EnforcedStyle` for modules' do
+        expect_offense(<<~RUBY)
+          module FooModule::BarModule
+                 ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'EnforcedStyleForModules: compact' do
+      let(:enforced_style_for_modules) { 'compact' }
+
+      it 'registers an offense for modules with nested children' do
+        expect_offense(<<~RUBY)
+          module FooModule
+                 ^^^^^^^^^ Use compact module/class definition instead of nested style.
+            module BarModule
+              def method_example
+              end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooModule::BarModule
+            def method_example
+            end
+          end
+        RUBY
+      end
+    end
+  end
 end

@@ -3499,6 +3499,7 @@ Style/ClassAndModuleChildren:
   SafeAutoCorrect: false
   Enabled: true
   VersionAdded: '0.19'
+  VersionChanged: '<<next>>'
   #
   # Basically there are two different styles:
   #
@@ -3514,7 +3515,21 @@ Style/ClassAndModuleChildren:
   #
   # The compact style is only forced, for classes or modules with one child.
   EnforcedStyle: nested
-  SupportedStyles:
+  SupportedStyles: &supported_styles
+    - nested
+    - compact
+  # Configure classes separately, if desired. If not set, or set to `nil`,
+  # the `EnforcedStyle` value will be used.
+  EnforcedStyleForClasses: ~
+  SupportedStylesForClasses:
+    - ~
+    - nested
+    - compact
+  # Configure modules separately, if desired. If not set, or set to `nil`,
+  # the `EnforcedStyle` value will be used.
+  EnforcedStyleForModules: ~
+  SupportedStylesForModules:
+    - ~
     - nested
     - compact
 

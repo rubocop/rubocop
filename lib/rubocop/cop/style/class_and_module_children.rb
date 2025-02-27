@@ -3,14 +3,26 @@
 module RuboCop
   module Cop
     module Style
-      # Checks the style of children definitions at classes and
-      # modules. Basically there are two different styles:
+      # Checks that namespaced classes and modules are defined with a consistent style.
+      #
+      # With `nested` style, classes and modules should be defined separately (one constant
+      # on each line, without `::`). With `compact` style, classes and modules should be
+      # defined with fully qualified names (using `::` for namespaces).
+      #
+      # NOTE: The style chosen will affect `Module.nesting` for the class or module. Using
+      # `nested` style will result in each level being added, whereas `compact` style will
+      # only include the fully qualified class or module name.
+      #
+      # By default, `EnforcedStyle` applies to both classes and modules. If desired, separate
+      # styles can be defined for classes and modules by using `EnforcedStyleForClasses` and
+      # `EnforcedStyleForModules` respectively. If not set, or set to nil, the `EnforcedStyle`
+      # value will be used.
       #
       # @safety
       #   Autocorrection is unsafe.
       #
-      #   Moving from compact to nested children requires knowledge of whether the
-      #   outer parent is a module or a class. Moving from nested to compact requires
+      #   Moving from `compact` to `nested` children requires knowledge of whether the
+      #   outer parent is a module or a class. Moving from `nested` to `compact` requires
       #   verification that the outer parent is defined elsewhere. RuboCop does not
       #   have the knowledge to perform either operation safely and thus requires
       #   manual oversight.
@@ -42,16 +54,18 @@ module RuboCop
         def on_class(node)
           return if node.parent_class && style != :nested
 
-          check_style(node, node.body)
+          check_style(node, node.body, style_for_classes)
         end
 
         def on_module(node)
-          check_style(node, node.body)
+          check_style(node, node.body, style_for_modules)
         end
 
         private
 
         def nest_or_compact(corrector, node)
+          style = node.class_type? ? style_for_classes : style_for_modules
+
           if style == :nested
             nest_definition(corrector, node)
           else
@@ -141,7 +155,7 @@ module RuboCop
           node.source_range.source_line[/\A\s*/]
         end
 
-        def check_style(node, body)
+        def check_style(node, body, style)
           return if node.identifier.namespace&.cbase_type?
 
           if style == :nested
@@ -182,6 +196,14 @@ module RuboCop
 
         def compact_node_name?(node)
           node.identifier.source.include?('::')
+        end
+
+        def style_for_classes
+          cop_config['EnforcedStyleForClasses'] || style
+        end
+
+        def style_for_modules
+          cop_config['EnforcedStyleForModules'] || style
         end
       end
     end
