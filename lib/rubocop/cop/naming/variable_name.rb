@@ -53,6 +53,8 @@ module RuboCop
         include AllowedIdentifiers
         include ConfigurableNaming
         include AllowedPattern
+        include ForbiddenIdentifiers
+        include ForbiddenPattern
 
         MSG = 'Use %<style>s for variable names.'
         MSG_FORBIDDEN = '`%<identifier>s` is forbidden, use another name instead.'
@@ -92,27 +94,12 @@ module RuboCop
 
         private
 
+        def forbidden_name?(name)
+          forbidden_identifier?(name) || forbidden_pattern?(name)
+        end
+
         def message(style)
           format(MSG, style: style)
-        end
-
-        def forbidden_identifiers
-          cop_config.fetch('ForbiddenIdentifiers', [])
-        end
-
-        def forbidden_patterns
-          cop_config.fetch('ForbiddenPatterns', [])
-        end
-
-        def matches_forbidden_pattern?(name)
-          forbidden_patterns.any? { |pattern| Regexp.new(pattern).match?(name) }
-        end
-
-        def forbidden_name?(name)
-          name = name.to_s.delete(SIGILS)
-
-          (forbidden_identifiers.any? && forbidden_identifiers.include?(name)) ||
-            (forbidden_patterns.any? && matches_forbidden_pattern?(name))
         end
 
         def register_forbidden_name(node)
