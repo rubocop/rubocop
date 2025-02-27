@@ -5108,6 +5108,9 @@ Style/RedundantCondition:
   Description: 'Checks for unnecessary conditional expressions.'
   Enabled: true
   VersionAdded: '0.76'
+  VersionChanged: '<<next>>'
+  AllowedMethods:
+    - nonzero?
 
 Style/RedundantConditional:
   Description: "Don't return true/false from a conditional."

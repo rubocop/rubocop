@@ -571,6 +571,16 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
     end
 
     context 'when `true` as the true branch' do
+      it 'does not register an offense when true is used as the true branch and the condition is not a predicate method' do
+        expect_no_offenses(<<~RUBY)
+          if a[:key]
+            true
+          else
+            a
+          end
+        RUBY
+      end
+
       it 'registers an offense and autocorrects when true is used as the true branch' do
         expect_offense(<<~RUBY)
           if a.zero?
@@ -583,6 +593,31 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
 
         expect_correction(<<~RUBY)
           a.zero? || a
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects when true is used as the true branch and the condition uses safe navigation' do
+        expect_offense(<<~RUBY)
+          if a&.zero?
+          ^^^^^^^^^^^ Use double pipes `||` instead.
+            true
+          else
+            a
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a&.zero? || a
+        RUBY
+      end
+
+      it 'does not register an offense when false is used as the else branch and the condition is not a predicate method' do
+        expect_no_offenses(<<~RUBY)
+          if !a[:key]
+            a
+          else
+            false
+          end
         RUBY
       end
 
@@ -1040,6 +1075,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
           end
         RUBY
       end
+    end
+  end
+
+  context 'when `AllowedMethods: nonzero?`' do
+    let(:cop_config) { { 'AllowedMethods' => ['nonzero?'] } }
+
+    it 'does not register an offense when using `nonzero?`' do
+      expect_no_offenses(<<~RUBY)
+        if a.nonzero?
+          true
+        else
+          false
+        end
+      RUBY
     end
   end
 end
