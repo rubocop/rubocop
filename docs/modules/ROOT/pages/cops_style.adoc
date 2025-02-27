@@ -12838,7 +12838,7 @@ Checks for usage of the %W() syntax when %w() would do.
 | Yes
 | Always
 | 0.76
-| -
+| 1.73
 |===
 
 Checks for unnecessary conditional expressions.
@@ -12900,6 +12900,26 @@ end
 # good
 a.nil? || a
 ----
+
+[#allowedmethods_-__nonzero___-_default_-styleredundantcondition]
+==== AllowedMethods: ['nonzero?'] (default)
+
+[source,ruby]
+----
+# good
+num.nonzero? ? true : false
+----
+
+[#configurable-attributes-styleredundantcondition]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedMethods
+| `nonzero?`
+| Array
+|===
 
 [#styleredundantconditional]
 == Style/RedundantConditional

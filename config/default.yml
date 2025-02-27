@@ -5108,7 +5108,7 @@ Style/RedundantCondition:
   Description: 'Checks for unnecessary conditional expressions.'
   Enabled: true
   VersionAdded: '0.76'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.73'
   AllowedMethods:
     - nonzero?
 
