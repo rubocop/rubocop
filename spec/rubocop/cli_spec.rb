@@ -2285,8 +2285,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example.rb', <<~RUBY)
         # frozen_string_literal: true
 
-        if foo and bar
-        end
+        a.foo..b.bar # Lint/AmbiguousRange offense is not safe correctable
       RUBY
       expect(cli.run(['--display-only-safe-correctable', 'example.rb'])).to eq(0)
       expect($stderr.string).to eq('')

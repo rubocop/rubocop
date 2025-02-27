@@ -1887,10 +1887,9 @@ Lint/EmptyConditionalBody:
   Description: 'Checks for the presence of `if`, `elsif` and `unless` branches without a body.'
   Enabled: true
   AutoCorrect: contextual
-  SafeAutoCorrect: false
   AllowComments: true
   VersionAdded: '0.89'
-  VersionChanged: '1.61'
+  VersionChanged: '<<next>>'
 
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
