@@ -4383,7 +4383,9 @@ Style/KeywordArgumentsMerging:
                  directly rather than using `merge`.
   StyleGuide: '#merging-keyword-arguments'
   Enabled: pending
+  SafeAutoCorrect: false
   VersionAdded: '1.68'
+  VersionChanged: '<<next>>'
 
 Style/KeywordParametersOrder:
   Description: 'Enforces that optional keyword parameters are placed at the end of the parameters list.'

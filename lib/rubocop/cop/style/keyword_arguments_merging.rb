@@ -18,6 +18,22 @@ module RuboCop
       #   some_method(**opts, foo: true)
       #   some_method(**opts, **other_opts)
       #
+      # @safety
+      # This cop's autocorrection is unsafe because merging works differently
+      # with Rails' HashWithIndifferentAccess
+      #
+      # [source, ruby]
+      # ----
+      # def my_function_with_options(**attrs)
+      #   attrs['my_merged_option']
+      # end
+      #
+      # options = {}.with_indifferent_access
+      #
+      # my_function_with_options(**options.merge(my_merged_option: 1)) # => 1
+      #
+      # my_function_with_options(**options, my_merged_option: 1) # => nil
+      #
       class KeywordArgumentsMerging < Base
         extend AutoCorrector
 
