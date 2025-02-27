@@ -241,6 +241,14 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
     expect_no_offenses(<<~RUBY)
       class X < Y #[String]
       end
+      class A < B::C #[String]
+      end
+      class A < B::C::D #[String]
+      end
+      class A::B < C #[String]
+      end
+      class A::B::C < D #[String]
+      end
     RUBY
   end
 
@@ -261,6 +269,18 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
       class X < Y #String ]
                   ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
       end
+      class A < B::C #String]
+                     ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
+      class A < B::C::D #String]
+                        ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
+      class A::B < C #String]
+                     ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
+      class A::B::C < D #String]
+                        ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+      end
     RUBY
 
     expect_correction(<<~RUBY)
@@ -278,6 +298,18 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
       end
       #String ]
       class X < Y
+      end
+      #String]
+      class A < B::C
+      end
+      #String]
+      class A < B::C::D
+      end
+      #String]
+      class A::B < C
+      end
+      #String]
+      class A::B::C < D
       end
     RUBY
   end
