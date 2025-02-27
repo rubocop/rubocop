@@ -94,7 +94,7 @@ module RuboCop
 
         def skip_range?(range_start, range_end)
           [range_start, range_end].any? do |bound|
-            bound.type != :literal
+            bound&.type != :literal
           end
         end
 
