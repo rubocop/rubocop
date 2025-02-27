@@ -1,6 +1,7 @@
 ---
 name: Feature Request
 about: Suggest new RuboCop features or improvements to existing features.
+labels: [feature request]
 ---
 
 ## Is your feature request related to a problem? Please describe.
