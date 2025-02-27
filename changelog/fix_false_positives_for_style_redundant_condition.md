@@ -1,1 +1,0 @@
-* [#13913](https://github.com/rubocop/rubocop/issues/13913): Fix false positives for `Style/RedundantCondition` when using when true is used as the true branch and the condition is not a predicate method. ([@koic][])
