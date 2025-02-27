@@ -772,7 +772,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
       end
 
       context 'with a ternary' do
-        it 'registers an offense and corrects' do
+        it 'registers an offense but does not correct' do
           expect_offense(<<~RUBY)
             x = foo ? bar : bar
                       ^^^ Move `bar` out of the conditional.

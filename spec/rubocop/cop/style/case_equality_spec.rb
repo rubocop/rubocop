@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects for === when the receiver is a regexp' do
+    it 'registers an offense but does not correct for === when the receiver is a regexp' do
       expect_offense(<<~RUBY)
         /OMG/ === var
               ^^^ Avoid the use of the case equality operator `===`.
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects for === when the receiver is self.klass' do
+    it 'registers an offense but does not correct for === when the receiver is self.klass' do
       expect_offense(<<~RUBY)
         self.klass === var
                    ^^^ Avoid the use of the case equality operator `===`.

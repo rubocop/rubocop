@@ -227,7 +227,7 @@ RSpec.describe RuboCop::Cop::Style::ComparableClamp, :config do
       expect_no_corrections
     end
 
-    it 'registers and corrects an offense when using `[[low, high].min].max`' do
+    it 'registers but does not correct an offense when using `[[low, high].min].max`' do
       expect_offense(<<~RUBY)
         [low, [x, high].min].max
         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `Comparable#clamp` instead.
@@ -236,7 +236,7 @@ RSpec.describe RuboCop::Cop::Style::ComparableClamp, :config do
       expect_no_corrections
     end
 
-    it 'registers and corrects an offense when using `[low, [high, x].min].max`' do
+    it 'registers but does not correct an offense when using `[low, [high, x].min].max`' do
       expect_offense(<<~RUBY)
         [low, [high, x].min].max
         ^^^^^^^^^^^^^^^^^^^^^^^^ Use `Comparable#clamp` instead.

@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedConstants, :config do
     RUBY
   end
 
-  it 'registers and corrects an offense when using deprecated methods that have no alternative' do
+  it 'registers an offense when using deprecated methods that have no alternative' do
     expect_offense(<<~RUBY)
       Have::No::Alternative
       ^^^^^^^^^^^^^^^^^^^^^ Do not use `Have::No::Alternative`, deprecated since Ruby 2.4.

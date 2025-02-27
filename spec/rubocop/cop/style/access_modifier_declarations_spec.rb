@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           RUBY
         end
 
-        it 'registers an offense and autocorrects when not all methods are defined in class' do
+        it 'registers an offense but does not correct when not all methods are defined in class' do
           expect_offense(<<~RUBY, access_modifier: access_modifier)
             module Foo
               def bar; end

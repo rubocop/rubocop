@@ -50,10 +50,12 @@ module RuboCop
         }.freeze
 
         EXPECT_NO_CORRECTIONS_DESCRIPTION_MAPPING = {
-          /\A(auto[- ]?)?correct/ => 'does not correct'
+          /\A(auto[- ]?)?corrects?/ => 'does not correct',
+          /\band (auto[- ]?)?corrects/ => 'but does not correct'
         }.freeze
 
         EXPECT_CORRECTION_DESCRIPTION_MAPPING = {
+          /\bbut (does not|doesn't) (auto[- ]?)?correct/ => 'and autocorrects',
           /\b(does not|doesn't) (auto[- ]?)?correct/ => 'autocorrects'
         }.freeze
 
