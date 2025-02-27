@@ -58,7 +58,12 @@ module RuboCop
       #   # good
       #   a.nil? || a
       #
+      # @example AllowedMethods: ['nonzero?'] (default)
+      #   # good
+      #   num.nonzero? ? true : false
+      #
       class RedundantCondition < Base
+        include AllowedMethods
         include CommentsHelp
         include RangeHelp
         extend AutoCorrector
@@ -172,11 +177,18 @@ module RuboCop
             !use_hash_key_access?(if_branch)
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def if_branch_is_true_type_and_else_is_not?(node)
           return false unless node.ternary? || node.if?
 
+          cond = node.condition
+          if cond.call_type? && (!cond.predicate_method? || allowed_method?(cond.method_name))
+            return false
+          end
+
           node.if_branch&.true_type? && node.else_branch && !node.else_branch.true_type?
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def branches_have_assignment?(node)
           _condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring
