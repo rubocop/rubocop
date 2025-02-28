@@ -46,6 +46,7 @@ module RuboCop
 
         MSG = 'Use `%<inverse>s` instead of inverting `%<method>s`.'
         CLASS_COMPARISON_METHODS = %i[<= >= < >].freeze
+        SAFE_NAVIGATION_INCOMPATIBLE_METHODS = (CLASS_COMPARISON_METHODS + %i[any? none?]).freeze
         EQUALITY_METHODS = %i[== != =~ !~ <= >= < >].freeze
         NEGATED_EQUALITY_METHODS = %i[!= !~].freeze
         CAMEL_CASE = /[A-Z]+[a-z]+/.freeze
@@ -77,7 +78,7 @@ module RuboCop
         def on_send(node)
           inverse_candidate?(node) do |method_call, lhs, method, rhs|
             return unless inverse_methods.key?(method)
-            return if negated?(node) || relational_comparison_with_safe_navigation?(method_call)
+            return if negated?(node) || safe_navigation_incompatible?(method_call)
             return if part_of_ignored_node?(node)
             return if possible_class_hierarchy_check?(lhs, rhs, method)
 
@@ -154,16 +155,18 @@ module RuboCop
           node.parent.respond_to?(:method?) && node.parent.method?(:!)
         end
 
-        def relational_comparison_with_safe_navigation?(node)
-          node.csend_type? && CLASS_COMPARISON_METHODS.include?(node.method_name)
-        end
-
         def not_to_receiver(node, method_call)
           node.loc.selector.begin.join(method_call.source_range.begin)
         end
 
         def end_parentheses(node, method_call)
           method_call.source_range.end.join(node.source_range.end)
+        end
+
+        def safe_navigation_incompatible?(node)
+          return false unless node.csend_type?
+
+          SAFE_NAVIGATION_INCOMPATIBLE_METHODS.include?(node.method_name)
         end
 
         # When comparing classes, `!(Integer < Numeric)` is not the same as
