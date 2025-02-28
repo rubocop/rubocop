@@ -5,8 +5,11 @@ module RuboCop
     module Utils
       # Parses {Kernel#sprintf} format strings.
       class FormatString
+        # Escaping the `#` in `INTERPOLATION` and `TEMPLATE_NAME` is necessary to
+        # avoid a bug in Ruby 3.2.0
+        # See: https://bugs.ruby-lang.org/issues/19379
         DIGIT_DOLLAR  = /(?<arg_number>\d+)\$/.freeze
-        INTERPOLATION = /#\{.*?\}/.freeze
+        INTERPOLATION = /\#\{.*?\}/.freeze
         FLAG          = /[ #0+-]|#{DIGIT_DOLLAR}/.freeze
         NUMBER_ARG    = /\*#{DIGIT_DOLLAR}?/.freeze
         NUMBER        = /\d+|#{NUMBER_ARG}|#{INTERPOLATION}/.freeze
@@ -14,7 +17,7 @@ module RuboCop
         PRECISION     = /\.(?<precision>#{NUMBER}?)/.freeze
         TYPE          = /(?<type>[bBdiouxXeEfgGaAcps])/.freeze
         NAME          = /<(?<name>\w+)>/.freeze
-        TEMPLATE_NAME = /(?<!#)\{(?<name>\w+)\}/.freeze
+        TEMPLATE_NAME = /(?<!\#)\{(?<name>\w+)\}/.freeze
 
         SEQUENCE = /
             % (?<type>%)
