@@ -28,7 +28,7 @@ module RuboCop
         MSG = 'Avoid multi-line chains of blocks.'
 
         def on_block(node)
-          node.send_node.each_node(:send, :csend) do |send_node|
+          node.send_node.each_node(:call) do |send_node|
             receiver = send_node.receiver
 
             next unless receiver&.any_block_type? && receiver.multiline?
