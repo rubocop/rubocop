@@ -26,6 +26,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
   it_behaves_like 'immutable objects', "('a' > 'b')"
   it_behaves_like 'immutable objects', '(a > b)'
   it_behaves_like 'immutable objects', '[1, 2, 3].size'
+  it_behaves_like 'immutable objects', '[1, 2, 3].count { |x| bar?(x) }'
+  it_behaves_like 'immutable objects', '[1, 2, 3].count { bar?(_1) }'
 
   shared_examples 'mutable objects' do |o|
     it "allows #{o} with freeze" do
