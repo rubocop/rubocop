@@ -60,7 +60,7 @@ module RuboCop
             (begin (send !{(str _) array} {:+ :- :* :** :/ :%} {float int}))
             (begin (send _ {:== :=== :!= :<= :>= :< :>} _))
             (send _ {:count :length :size} ...)
-            (block (send _ {:count :length :size} ...) ...)
+            (any_block (send _ {:count :length :size} ...) ...)
           }
         PATTERN
       end
