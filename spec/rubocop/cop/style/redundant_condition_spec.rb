@@ -571,6 +571,58 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
     end
 
     context 'when `true` as the true branch' do
+      it 'does not register an offense when true is used as the true branch and the condition is a local variable' do
+        expect_no_offenses(<<~RUBY)
+          variable = do_something
+
+          if variable
+            true
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when true is used as the true branch and the condition is an instance variable' do
+        expect_no_offenses(<<~RUBY)
+          if @variable
+            true
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when true is used as the true branch and the condition is a class variable' do
+        expect_no_offenses(<<~RUBY)
+          if @@variable
+            true
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when true is used as the true branch and the condition is a global variable' do
+        expect_no_offenses(<<~RUBY)
+          if $variable
+            true
+          else
+            a
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when true is used as the true branch and the condition is a constant' do
+        expect_no_offenses(<<~RUBY)
+          if CONST
+            true
+          else
+            a
+          end
+        RUBY
+      end
+
       it 'does not register an offense when true is used as the true branch and the condition is not a predicate method' do
         expect_no_offenses(<<~RUBY)
           if a[:key]
