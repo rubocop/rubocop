@@ -50,7 +50,7 @@ module RuboCop
             corrector.remove(range_by_whole_lines(arguments.loc.end, include_final_newline: true))
           end
 
-          arguments_range = arguments_range(node)
+          arguments_range = range_with_surrounding_space(arguments_range(node), side: :left)
           # If the method name isn't on the same line as def, move it directly after def
           if arguments_range.first_line != opening_line(node)
             corrector.remove(node.loc.name)
@@ -64,14 +64,6 @@ module RuboCop
 
         def last_line_source_of_arguments(arguments)
           processed_source[arguments.last_line - 1].strip
-        end
-
-        def arguments_range(node)
-          range = range_between(
-            node.first_argument.source_range.begin_pos, node.last_argument.source_range.end_pos
-          )
-
-          range_with_surrounding_space(range, side: :left)
         end
 
         def opening_line(node)

@@ -34,6 +34,18 @@ module RuboCop
         range_between(node.loc.begin.end_pos, node.loc.end.begin_pos)
       end
 
+      # A range containing the first to the last argument
+      # of a method call or method definition.
+      # def foo(a, b:)
+      #         ^^^^^
+      # bar(1, 2, 3, &blk)
+      #     ^^^^^^^^^^^^^
+      # baz { |x, y:, z:| }
+      #        ^^^^^^^^^
+      def arguments_range(node)
+        node.first_argument.source_range.join(node.last_argument.source_range)
+      end
+
       def range_between(start_pos, end_pos)
         Parser::Source::Range.new(processed_source.buffer, start_pos, end_pos)
       end

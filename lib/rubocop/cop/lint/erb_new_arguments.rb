@@ -156,12 +156,6 @@ module RuboCop
 
           overridden_kwargs
         end
-
-        def arguments_range(node)
-          arguments = node.arguments
-
-          range_between(arguments.first.source_range.begin_pos, arguments.last.source_range.end_pos)
-        end
       end
     end
   end
