@@ -182,9 +182,8 @@ module RuboCop
           return false unless node.ternary? || node.if?
 
           cond = node.condition
-          if cond.call_type? && (!cond.predicate_method? || allowed_method?(cond.method_name))
-            return false
-          end
+          return false unless cond.call_type?
+          return false if !cond.predicate_method? || allowed_method?(cond.method_name)
 
           node.if_branch&.true_type? && node.else_branch && !node.else_branch.true_type?
         end
