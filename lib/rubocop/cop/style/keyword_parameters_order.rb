@@ -42,18 +42,24 @@ module RuboCop
           return if kwarg_nodes.empty?
 
           add_offense(node) do |corrector|
-            if node.parent.find(&:kwoptarg_type?) == node
-              corrector.insert_before(node, "#{kwarg_nodes.map(&:source).join(', ')}, ")
+            defining_node = node.each_ancestor(:def, :defs, :block).first
+            next if processed_source.contains_comment?(arguments_range(defining_node))
+            next unless node.parent.find(&:kwoptarg_type?) == node
 
-              arguments = node.each_ancestor(:def, :defs, :block).first.arguments
-              append_newline_to_last_kwoptarg(arguments, corrector) unless parentheses?(arguments)
-
-              remove_kwargs(kwarg_nodes, corrector)
-            end
+            autocorrect(corrector, node, defining_node, kwarg_nodes)
           end
         end
 
         private
+
+        def autocorrect(corrector, node, defining_node, kwarg_nodes)
+          corrector.insert_before(node, "#{kwarg_nodes.map(&:source).join(', ')}, ")
+
+          arguments = defining_node.arguments
+          append_newline_to_last_kwoptarg(arguments, corrector) unless parentheses?(arguments)
+
+          remove_kwargs(kwarg_nodes, corrector)
+        end
 
         def append_newline_to_last_kwoptarg(arguments, corrector)
           last_argument = arguments.last
