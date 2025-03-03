@@ -93,6 +93,18 @@ RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder, :config do
     RUBY
   end
 
+  it 'registers an offense but does not autocorrect when the argument range contains comments' do
+    expect_offense(<<~RUBY)
+      def foo(optional: 123,
+              ^^^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+          # Some explanation
+          required:)
+      end
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'does not register an offense when there are no `kwoptarg`s before `kwarg`s' do
     expect_no_offenses(<<~RUBY)
       def m(arg, required:, optional: 1)
