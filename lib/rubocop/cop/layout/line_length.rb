@@ -65,6 +65,7 @@ module RuboCop
         include AllowedPattern
         include RangeHelp
         include LineLengthHelp
+        include EndlessMethodRewriter
         extend AutoCorrector
 
         exclude_limit 'Max'
@@ -85,6 +86,15 @@ module RuboCop
           check_for_breakable_dstr(node)
         end
 
+        def on_def(node)
+          if node.endless?
+            handle_endless_method(node)
+          else
+            on_potential_breakable_node(node)
+          end
+        end
+        alias on_defs on_def
+
         def on_potential_breakable_node(node)
           check_for_breakable_node(node)
         end
@@ -92,7 +102,6 @@ module RuboCop
         alias on_hash on_potential_breakable_node
         alias on_send on_potential_breakable_node
         alias on_csend on_potential_breakable_node
-        alias on_def on_potential_breakable_node
 
         def on_new_investigation
           return unless processed_source.raw_source.include?(';')
@@ -109,6 +118,22 @@ module RuboCop
         private
 
         attr_accessor :breakable_range
+
+        def handle_endless_method(node)
+          return unless node.source_range.last_column > max
+          return if always_require_endless_method?
+
+          message = format(MSG, length: node.source_length, max: max)
+          loc = node.source_range.adjust(begin_pos: highlight_start(node.source))
+          add_offense(loc, message: message) do |corrector|
+            correct_to_multiline(corrector, node)
+          end
+        end
+
+        def always_require_endless_method?
+          config.cop_enabled?('Style/EndlessMethod') &&
+            config.for_cop('Style/EndlessMethod')['EnforcedStyle'] == 'require_always'
+        end
 
         def check_for_breakable_node(node)
           breakable_node = extract_breakable_node(node, max)
@@ -133,6 +158,7 @@ module RuboCop
 
         def check_for_breakable_block(block_node)
           return unless block_node.single_line?
+          return if block_node.each_ancestor(:def, :defs).any?(&:endless?)
 
           line_index = block_node.loc.line - 1
           range = breakable_block_range(block_node)
