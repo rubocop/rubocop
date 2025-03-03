@@ -1022,6 +1022,42 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       end
     end
 
+    context 'Ruby >= 3.0', :ruby30 do
+      context 'endless method definition' do
+        let(:cop_config) { { 'Max' => 25 } }
+
+        context 'when under limit' do
+          it 'does not register any offense' do
+            expect_no_offenses(<<~RUBY)
+              def foo(a:, b:) = a + b
+            RUBY
+          end
+        end
+
+        context 'when over limit with block' do
+          it 'registers offense' do
+            expect_offense(<<~RUBY)
+              def citations = a_method_call[1..].map { |argument| some_method(argument) }
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [75/25]
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'when over limit with long method name' do
+          it 'registers offense' do
+            expect_offense(<<~RUBY)
+              def citations = a_method_call_which_is_very_very_long_and_some_more(argument)
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [77/25]
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+      end
+    end
+
     context 'method call' do
       context 'when under limit' do
         it 'does not add any offenses' do
