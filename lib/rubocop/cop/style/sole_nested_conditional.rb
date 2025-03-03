@@ -230,12 +230,6 @@ module RuboCop
             !condition.comparison_method?
         end
 
-        def arguments_range(node)
-          range_between(
-            node.first_argument.source_range.begin_pos, node.last_argument.source_range.end_pos
-          )
-        end
-
         def wrap_condition?(node)
           node.operator_keyword? || (node.call_type? && node.arguments.any? && !node.parenthesized?)
         end

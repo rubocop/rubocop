@@ -137,11 +137,11 @@ module RuboCop
 
           case depth(stripped_current_path)
           when 0
-            range = arguments_range(current_path)
+            range = arguments_range(current_path.parent)
 
             corrector.replace(range, '__FILE__')
           when 1
-            range = arguments_range(current_path)
+            range = arguments_range(current_path.parent)
 
             corrector.replace(range, '__dir__')
           else
@@ -184,11 +184,6 @@ module RuboCop
 
           corrector.remove(node.loc.dot)
           corrector.remove(node.loc.selector)
-        end
-
-        def arguments_range(node)
-          range_between(node.parent.first_argument.source_range.begin_pos,
-                        node.parent.last_argument.source_range.end_pos)
         end
       end
     end
