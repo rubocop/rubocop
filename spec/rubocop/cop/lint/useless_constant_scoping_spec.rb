@@ -46,6 +46,46 @@ RSpec.describe RuboCop::Cop::Lint::UselessConstantScoping, :config do
     RUBY
   end
 
+  it 'registers an offense when defining class after `private` access modifier' do
+    expect_offense(<<~RUBY)
+      class Foo
+        private
+        class Bar; end
+        ^^^^^^^^^^^^^^ Useless `private` access modifier for constant scope.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when defining class constant after `private` access modifier' do
+    expect_offense(<<~RUBY)
+      class Foo
+        private
+        Bar = Class.new
+        ^^^^^^^^^^^^^^^ Useless `private` access modifier for constant scope.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when defining module after `private` access modifier' do
+    expect_offense(<<~RUBY)
+      class Foo
+        private
+        module Bar; end
+        ^^^^^^^^^^^^^^^ Useless `private` access modifier for constant scope.
+      end
+    RUBY
+  end
+
+  it 'does not register offense when class and module are defined without access modifiers' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        class Bar; end
+        Baz = Class.new
+        module Qux; end
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using constant' do
     expect_no_offenses(<<~RUBY)
       class Foo

@@ -45,15 +45,26 @@ module RuboCop
           (send nil? :private_constant $...)
         PATTERN
 
-        def on_casgn(node)
-          return if node.each_ancestor(:sclass).any?
-          return unless after_private_modifier?(node.left_siblings)
-          return if private_constantize?(node.right_siblings, node.name)
+        def on_class(node)
+          check_node(node)
+        end
+        alias on_module on_class
 
-          add_offense(node)
+        def on_casgn(node)
+          check_node(node)
         end
 
         private
+
+        def check_node(node)
+          return if node.each_ancestor(:sclass).any?
+          return unless after_private_modifier?(node.left_siblings)
+
+          name = node.type?(:class, :module) ? node.identifier : node.name
+          return if private_constantize?(node.right_siblings, name)
+
+          add_offense(node)
+        end
 
         def after_private_modifier?(left_siblings)
           access_modifier_candidates = left_siblings.compact.select do |left_sibling|
