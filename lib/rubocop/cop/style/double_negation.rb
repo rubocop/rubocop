@@ -109,7 +109,7 @@ module RuboCop
         end
 
         def define_method?(node)
-          return false unless node.block_type?
+          return false unless node.any_block_type?
 
           child = node.child_nodes.first
           return false unless child.send_type?

@@ -502,6 +502,15 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
       RUBY
     end
 
+    it 'does not register an offense for `!!` when return location by `define_method` with numblock' do
+      expect_no_offenses(<<~RUBY)
+        define_method :foo? do
+          do_something(_1)
+          !!qux
+        end
+      RUBY
+    end
+
     it 'does not register an offense for `!!` when return location by `define_singleton_method`' do
       expect_no_offenses(<<~RUBY)
         define_singleton_method :foo? do
