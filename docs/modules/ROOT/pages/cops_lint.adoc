@@ -2257,21 +2257,14 @@ end
 
 | Enabled
 | Yes
-| Command-line only (Unsafe)
+| Command-line only
 | 0.89
-| 1.61
+| 1.73
 |===
 
 Checks for the presence of `if`, `elsif` and `unless` branches without a body.
 
 NOTE: empty `else` branches are handled by `Style/EmptyElse`.
-
-[#safety-lintemptyconditionalbody]
-=== Safety
-
-Autocorrection for this cop is not safe. The conditions for empty branches that
-the autocorrection removes may have side effects, or the logic in subsequent
-branches may change due to the removal of a previous condition.
 
 [#examples-lintemptyconditionalbody]
 === Examples
@@ -2300,6 +2293,13 @@ end
 # good
 unless condition
   do_something
+end
+
+# good
+if condition
+  do_something
+elsif other_condition
+  nil
 end
 
 # good
