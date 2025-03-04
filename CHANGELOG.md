@@ -11,6 +11,19 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#13942](https://github.com/rubocop/rubocop/pull/13942): Fix incorrect disabling of departments when inheriting configuration. ([@koic][])
+* [#13766](https://github.com/rubocop/rubocop/issues/13766): Fix false positives for `Style/InverseMethods` when using `any?` or `none?` with safe navigation operator. ([@koic][])
+* [#13938](https://github.com/rubocop/rubocop/pull/13938): Fix false positives for `Style/RedundantCondition` when a variable or a constant is used. ([@koic][])
+* [#13935](https://github.com/rubocop/rubocop/pull/13935): Fix a false negative for `Style/RedundantFreeze` when calling methods that produce frozen objects with numblocks. ([@earlopain][])
+* [#13928](https://github.com/rubocop/rubocop/issues/13928): Fix `end pattern with unmatched parenthesis: / (RegexpError)` on Ruby 3.2.0. ([@dvandersluis][])
+* [#13933](https://github.com/rubocop/rubocop/issues/13933): Fix wrong autocorrect for `Style/KeywordParametersOrder` when the arguments are on multiple lines and contain comments. ([@earlopain][])
+
+### Changes
+
+* [#12669](https://github.com/rubocop/rubocop/issues/12669): Update autocorrection for `Lint/EmptyConditionalBody` to be safe. ([@dvandersluis][])
+
 ## 1.73.1 (2025-02-27)
 
 ### Bug fixes
