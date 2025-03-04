@@ -1,0 +1,1 @@
+* [#13946](https://github.com/rubocop/rubocop/pull/13946): Fix some false positives for `Style/MethodCallWithArgsParentheses` with `EnforcedStyle: omit_parentheses` style and numblocks. ([@earlopain][])

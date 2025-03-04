@@ -839,12 +839,30 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       RUBY
     end
 
+    it 'accepts parens in array literal calls with numblocks' do
+      expect_no_offenses(<<~RUBY)
+        [
+          foo.bar.quux(:args) do
+            pass _1
+          end,
+        ]
+      RUBY
+    end
+
     it 'accepts parens in calls with logical operators' do
       expect_no_offenses('foo(a) && bar(b)')
       expect_no_offenses('foo(a) || bar(b)')
       expect_no_offenses(<<~RUBY)
         foo(a) || bar(b) do
           pass
+        end
+      RUBY
+    end
+
+    it 'accepts parens in calls with logical operator and numblock' do
+      expect_no_offenses(<<~RUBY)
+        foo(a) || bar(b) do
+          pass _1
         end
       RUBY
     end
@@ -1152,6 +1170,16 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
           foo(
             bar.new(quux) do
               pass
+            end
+          )
+        RUBY
+      end
+
+      it 'accepts parens in argument calls with numblocks' do
+        expect_no_offenses(<<~RUBY)
+          foo(
+            bar.new(quux) do
+              pass _1
             end
           )
         RUBY
