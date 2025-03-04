@@ -9,8 +9,8 @@ module RuboCop
       # These keywords are: `class`, `module`, `def`, `begin`, `end`.
       #
       # Note that some comments
-      # (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
-      # and RBS::Inline annotation comments are allowed.
+      # (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`),
+      # RBS::Inline annotation, and Steep annotation (`steep:ignore`) are allowed.
       #
       # Autocorrection removes comments from `end` keyword and keeps comments
       # for `class`, `module`, `def` and `begin` above the keyword.
@@ -60,6 +60,8 @@ module RuboCop
         SUBCLASS_DEFINITION = /\A\s*class\s+(\w|::)+\s*<\s*(\w|::)+/.freeze
         METHOD_DEFINITION = /\A\s*def\s/.freeze
 
+        STEEP_REGEXP = /#\ssteep:ignore(\s|\z)/.freeze
+
         def on_new_investigation
           processed_source.comments.each do |comment|
             next unless offensive?(comment) && (match = source_line(comment).match(REGEXP))
@@ -86,6 +88,7 @@ module RuboCop
         def offensive?(comment)
           line = source_line(comment)
           return false if rbs_inline_annotation?(line, comment)
+          return false if steep_annotation?(comment)
 
           KEYWORD_REGEXES.any? { |r| r.match?(line) } &&
             ALLOWED_COMMENT_REGEXES.none? { |r| r.match?(line) }
@@ -104,6 +107,10 @@ module RuboCop
           else
             false
           end
+        end
+
+        def steep_annotation?(comment)
+          comment.text.match?(STEEP_REGEXP)
         end
       end
     end
