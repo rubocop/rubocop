@@ -108,7 +108,7 @@ module RuboCop
           end
 
           def call_in_literals?(node)
-            parent = node.parent&.block_type? ? node.parent.parent : node.parent
+            parent = node.parent&.any_block_type? ? node.parent.parent : node.parent
             return false unless parent
 
             parent.type?(:pair, :array, :range) ||
@@ -117,7 +117,7 @@ module RuboCop
           end
 
           def call_in_logical_operators?(node)
-            parent = node.parent&.block_type? ? node.parent.parent : node.parent
+            parent = node.parent&.any_block_type? ? node.parent.parent : node.parent
             return false unless parent
 
             logical_operator?(parent) ||
@@ -153,7 +153,7 @@ module RuboCop
           end
 
           def call_in_argument_with_block?(node)
-            parent = node.parent&.block_type? && node.parent.parent
+            parent = node.parent&.any_block_type? && node.parent.parent
             return false unless parent
 
             parent.type?(:call, :super, :yield)
