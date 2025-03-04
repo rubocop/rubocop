@@ -29,7 +29,7 @@ module RuboCop
         min = required_minimum_ruby_version || 0
         max = required_maximum_ruby_version || Float::INFINITY
 
-        min <= version && max >= version
+        version.between?(min, max)
       end
     end
   end
