@@ -237,6 +237,46 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
     RUBY
   end
 
+  it 'does not register an offense for steep annotation of method definition' do
+    expect_no_offenses(<<~RUBY)
+      def x # steep:ignore
+      end
+
+      def x # steep:ignore MethodBodyTypeMismatch
+      end
+    RUBY
+  end
+
+  it 'registers an offense and corrects for steep annotation of method definition' do
+    expect_offense(<<~RUBY)
+      def x # steep
+            ^^^^^^^ Do not place comments on the same line as the `def` keyword.
+      end
+
+      def x #steep:ignore
+            ^^^^^^^^^^^^^ Do not place comments on the same line as the `def` keyword.
+      end
+
+      def x # steep:ignoreMethodBodyTypeMismatch
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not place comments on the same line as the `def` keyword.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # steep
+      def x
+      end
+
+      #steep:ignore
+      def x
+      end
+
+      # steep:ignoreMethodBodyTypeMismatch
+      def x
+      end
+    RUBY
+  end
+
   it 'does not register an offense for RBS::Inline generics annotation' do
     expect_no_offenses(<<~RUBY)
       class X < Y #[String]
