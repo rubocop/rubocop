@@ -352,4 +352,203 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
       end
     RUBY
   end
+
+  context 'when Steep annotation is used' do
+    it 'does not register an offense for `steep:ignore` annotation on the same line as `def`' do
+      expect_no_offenses(<<~RUBY)
+        def x # steep:ignore
+        end
+
+        def x # steep:ignore MethodBodyTypeMismatch
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for `steep:ignore` annotation on the same line as `end`' do
+      expect_no_offenses(<<~RUBY)
+        def x
+        end # steep:ignore
+
+        def x
+        end # steep:ignore MethodBodyTypeMismatch
+      RUBY
+    end
+
+    it 'does not register an offense for `steep:ignore` annotation on the same line as `begin`' do
+      expect_no_offenses(<<~RUBY)
+        begin # steep:ignore
+        end
+
+        begin # steep:ignore NoMethod
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for `steep:ignore` annotation on the same line as `class`' do
+      expect_no_offenses(<<~RUBY)
+        class X # steep:ignore
+        end
+
+        class X # steep:ignore UnknownConstant
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for `steep:ignore` annotation on the same line as `module`' do
+      expect_no_offenses(<<~RUBY)
+        module X # steep:ignore
+        end
+
+        module X # steep:ignore UnknownConstant
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for non `steep:ignore` annotation on the same line as `def' do
+      expect_offense(<<~RUBY)
+        def x # steep
+              ^^^^^^^ Do not place comments on the same line as the `def` keyword.
+        end
+
+        def x #steep:ignore
+              ^^^^^^^^^^^^^ Do not place comments on the same line as the `def` keyword.
+        end
+
+        def x # steep:ignoreMethodBodyTypeMismatch
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not place comments on the same line as the `def` keyword.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # steep
+        def x
+        end
+
+        #steep:ignore
+        def x
+        end
+
+        # steep:ignoreMethodBodyTypeMismatch
+        def x
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for non `steep:ignore` annotation on the same line as `end' do
+      expect_offense(<<~RUBY)
+        def x
+        end # steep
+            ^^^^^^^ Do not place comments on the same line as the `end` keyword.
+
+        def x
+        end #steep:ignore
+            ^^^^^^^^^^^^^ Do not place comments on the same line as the `end` keyword.
+
+        def x
+        end # steep:ignoreMethodBodyTypeMismatch
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not place comments on the same line as the `end` keyword.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def x
+        end
+
+        def x
+        end
+
+        def x
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for non `steep:ignore` annotation on the same line as `begin' do
+      expect_offense(<<~RUBY)
+        begin # steep
+              ^^^^^^^ Do not place comments on the same line as the `begin` keyword.
+        end
+
+        begin #steep:ignore
+              ^^^^^^^^^^^^^ Do not place comments on the same line as the `begin` keyword.
+        end
+
+        begin # steep:ignoreUnknownConstant
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not place comments on the same line as the `begin` keyword.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # steep
+        begin
+        end
+
+        #steep:ignore
+        begin
+        end
+
+        # steep:ignoreUnknownConstant
+        begin
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for non `steep:ignore` annotation on the same line as `class' do
+      expect_offense(<<~RUBY)
+        class X # steep
+                ^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+
+        class X #steep:ignore
+                ^^^^^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+
+        class X # steep:ignoreUnknownConstant
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # steep
+        class X
+        end
+
+        #steep:ignore
+        class X
+        end
+
+        # steep:ignoreUnknownConstant
+        class X
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for non `steep:ignore` annotation on the same line as `module' do
+      expect_offense(<<~RUBY)
+        module X # steep
+                 ^^^^^^^ Do not place comments on the same line as the `module` keyword.
+        end
+
+        module X #steep:ignore
+                 ^^^^^^^^^^^^^ Do not place comments on the same line as the `module` keyword.
+        end
+
+        module X # steep:ignoreUnknownConstant
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not place comments on the same line as the `module` keyword.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # steep
+        module X
+        end
+
+        #steep:ignore
+        module X
+        end
+
+        # steep:ignoreUnknownConstant
+        module X
+        end
+      RUBY
+    end
+  end
 end
