@@ -63,7 +63,6 @@ module RuboCop
         loaded_features = resolver.resolve_requires(path, hash)
         add_loaded_features(loaded_features)
 
-        resolver.override_department_setting_for_cops({}, hash)
         resolver.resolve_inheritance_from_gems(hash)
         resolver.resolve_inheritance(path, hash, file, debug?)
         hash.delete('inherit_from')

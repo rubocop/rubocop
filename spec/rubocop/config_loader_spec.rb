@@ -804,6 +804,12 @@ RSpec.describe RuboCop::ConfigLoader do
         it "handles EnabledByDefault: #{enabled_by_default}, " \
            "DisabledByDefault: #{disabled_by_default} with disabled #{custom_dept_to_disable}" do
           create_file('grandparent_rubocop.yml', <<~YAML)
+            Layout:
+              Enabled: false
+
+            Layout/EndOfLine:
+              Enabled: true
+
             Naming/FileName:
               Enabled: pending
 
@@ -841,6 +847,12 @@ RSpec.describe RuboCop::ConfigLoader do
               EnabledByDefault: #{enabled_by_default}
               DisabledByDefault: #{disabled_by_default}
 
+            Layout:
+              Enabled: false
+
+            Layout/LineLength:
+              Enabled: true
+
             Style:
               Enabled: false
 
@@ -869,6 +881,15 @@ RSpec.describe RuboCop::ConfigLoader do
             expect { enabled?('Foo/Bar/Baz') }.to raise_error(RuboCop::ValidationError, message)
             next
           end
+
+          # Department disabled in grandparent config.
+          expect(enabled?('Layout/DotPosition')).to be(false)
+
+          # Enabled in grandparent config, disabled in user config.
+          expect(enabled?('Layout/EndOfLine')).to be(false)
+
+          # Department disabled in grandparent config, cop enabled in user config.
+          expect(enabled?('Layout/LineLength')).to be(true)
 
           # Department disabled in parent config, cop enabled in child.
           expect(enabled?('Metrics/MethodLength')).to be(true)
