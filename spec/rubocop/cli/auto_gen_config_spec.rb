@@ -623,7 +623,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         todo_contents = File.read('.rubocop_todo.yml').lines[8..].join
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
-          # Configuration parameters: AllowedPatterns.
+          # Configuration parameters: AllowedPatterns, ForbiddenIdentifiers.
           # SupportedStyles: snake_case, camelCase
           Naming/MethodName:
             EnforcedStyle: camelCase
