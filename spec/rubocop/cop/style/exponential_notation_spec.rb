@@ -7,21 +7,21 @@ RSpec.describe RuboCop::Cop::Style::ExponentialNotation, :config do
     it 'registers an offense for mantissa equal to 10' do
       expect_offense(<<~RUBY)
         10e6
-        ^^^^ Use a mantissa in [1, 10[.
+        ^^^^ Use a mantissa >= 1 and < 10.
       RUBY
     end
 
     it 'registers an offense for mantissa greater than 10' do
       expect_offense(<<~RUBY)
         12.34e3
-        ^^^^^^^ Use a mantissa in [1, 10[.
+        ^^^^^^^ Use a mantissa >= 1 and < 10.
       RUBY
     end
 
     it 'registers an offense for mantissa smaller than 1' do
       expect_offense(<<~RUBY)
         0.314e1
-        ^^^^^^^ Use a mantissa in [1, 10[.
+        ^^^^^^^ Use a mantissa >= 1 and < 10.
       RUBY
     end
 
@@ -56,35 +56,35 @@ RSpec.describe RuboCop::Cop::Style::ExponentialNotation, :config do
     it 'registers an offense for exponent equal to 4' do
       expect_offense(<<~RUBY)
         10e4
-        ^^^^ Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.
+        ^^^^ Use an exponent divisible by 3 and a mantissa >= 0.1 and < 1000.
       RUBY
     end
 
     it 'registers an offense for exponent equal to -2' do
       expect_offense(<<~RUBY)
         12.3e-2
-        ^^^^^^^ Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.
+        ^^^^^^^ Use an exponent divisible by 3 and a mantissa >= 0.1 and < 1000.
       RUBY
     end
 
     it 'registers an offense for mantissa smaller than 0.1' do
       expect_offense(<<~RUBY)
         0.09e9
-        ^^^^^^ Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.
+        ^^^^^^ Use an exponent divisible by 3 and a mantissa >= 0.1 and < 1000.
       RUBY
     end
 
     it 'registers an offense for a mantissa greater than -0.1' do
       expect_offense(<<~RUBY)
         -0.09e3
-        ^^^^^^^ Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.
+        ^^^^^^^ Use an exponent divisible by 3 and a mantissa >= 0.1 and < 1000.
       RUBY
     end
 
     it 'registers an offense for mantissa smaller than -1000' do
       expect_offense(<<~RUBY)
         -1012.34e6
-        ^^^^^^^^^^ Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.
+        ^^^^^^^^^^ Use an exponent divisible by 3 and a mantissa >= 0.1 and < 1000.
       RUBY
     end
 
