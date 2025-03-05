@@ -3667,6 +3667,12 @@ Style/CommentedKeyword:
   VersionAdded: '0.51'
   VersionChanged: '1.19'
 
+Style/ComparableBetween:
+  Description: 'Enforces the use of `Comparable#between?` instead of logical comparison.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  StyleGuide: '#ranges-or-between'
+
 Style/ComparableClamp:
   Description: 'Enforces the use of `Comparable#clamp` instead of comparison by minimum and maximum.'
   Enabled: pending

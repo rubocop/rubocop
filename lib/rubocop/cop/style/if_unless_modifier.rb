@@ -164,8 +164,8 @@ module RuboCop
 
         def too_long_due_to_comment_after_modifier?(node, comment)
           source_length = processed_source.lines[node.first_line - 1].length
-          source_length >= max_line_length &&
-            source_length - comment.source_range.length <= max_line_length
+
+          max_line_length.between?(source_length - comment.source_range.length, source_length)
         end
 
         def allowed_patterns

@@ -35,7 +35,7 @@ module RuboCop
         comment_line_numbers = processed_source.comments.map { |comment| comment.loc.line }
 
         comment_line_numbers.any? do |comment_line_number|
-          comment_line_number >= node.first_line && comment_line_number <= node.last_line
+          comment_line_number.between?(node.first_line, node.last_line)
         end
       end
 
