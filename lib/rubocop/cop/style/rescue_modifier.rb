@@ -67,11 +67,13 @@ module RuboCop
           node.parent && parentheses?(node.parent)
         end
 
+        # rubocop:disable Metrics/AbcSize
         def correct_rescue_block(corrector, node, parenthesized)
           operation = node.body
 
           node_indentation, node_offset = indentation_and_offset(node, parenthesized)
 
+          corrector.wrap(operation, '[', ']') if operation.array_type? && !operation.bracketed?
           corrector.remove(range_between(operation.source_range.end_pos, node.source_range.end_pos))
           corrector.insert_before(operation, "begin\n#{node_indentation}")
           corrector.insert_after(heredoc_end(operation) || operation, <<~RESCUE_CLAUSE.chop)
@@ -81,6 +83,7 @@ module RuboCop
             #{node_offset}end
           RESCUE_CLAUSE
         end
+        # rubocop:enable Metrics/AbcSize
 
         def indentation_and_offset(node, parenthesized)
           node_indentation = indentation(node)

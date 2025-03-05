@@ -1,0 +1,1 @@
+* [#13948](https://github.com/rubocop/rubocop/pull/13948): Fix wrong autocorrect for `Style/RescueModifier` when using parallel assignment and the right-hand-side is not a bracketed array. ([@earlopain][])

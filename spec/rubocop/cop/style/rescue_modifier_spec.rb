@@ -103,12 +103,28 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
       a, b = 1, 2 rescue nil
       ^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
     RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        a, b = 1, 2
+      rescue
+        nil
+      end
+    RUBY
   end
 
   it 'registers an offense for modifier rescue around parallel assignment', :ruby27 do
     expect_offense(<<~RUBY)
       a, b = 1, 2 rescue nil
              ^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a, b = begin
+               [1, 2]
+             rescue
+               nil
+             end
     RUBY
   end
 
