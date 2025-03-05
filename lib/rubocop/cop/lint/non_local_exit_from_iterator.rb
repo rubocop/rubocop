@@ -46,7 +46,7 @@ module RuboCop
         def on_return(return_node)
           return if return_value?(return_node)
 
-          return_node.each_ancestor(:block, :def, :defs) do |node|
+          return_node.each_ancestor(:any_block, :def, :defs) do |node|
             break if scoped_node?(node)
 
             # if a proc is passed to `Module#define_method` or
@@ -54,7 +54,7 @@ module RuboCop
             # non-local exit error
             break if define_method?(node.send_node)
 
-            next unless node.arguments?
+            next if node.argument_list.empty?
 
             if chained_send?(node.send_node)
               add_offense(return_node.loc.keyword)
