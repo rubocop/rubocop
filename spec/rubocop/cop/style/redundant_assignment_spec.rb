@@ -250,4 +250,126 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment, :config do
       end
     RUBY
   end
+
+  context 'with AllowComments set to false' do
+    let(:cop_config) { { 'AllowComments' => false } }
+
+    it 'reports an offense for def ending with assignment and returning with comment in-between' do
+      expect_offense(<<~RUBY)
+        def func
+          some_preceding_statements
+          x = something
+          ^^^^^^^^^^^^^ Redundant assignment before returning detected.
+          # TODO: fix me
+          # x *= 2
+          x
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          some_preceding_statements
+          something
+          # TODO: fix me
+          # x *= 2
+         #{trailing_whitespace}
+        end
+      RUBY
+    end
+
+    it 'reports an offense for def ending with assignment and returning with comment on assignment line' do
+      expect_offense(<<~RUBY)
+        def func
+          some_preceding_statements
+          x = something # TODO: fix me
+          ^^^^^^^^^^^^^ Redundant assignment before returning detected.
+          x
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          some_preceding_statements
+          something # TODO: fix me
+         #{trailing_whitespace}
+        end
+      RUBY
+    end
+
+    it 'reports an offense for def ending with assignment and returning with comment on return line' do
+      expect_offense(<<~RUBY)
+        def func
+          some_preceding_statements
+          x = something
+          ^^^^^^^^^^^^^ Redundant assignment before returning detected.
+          x # TODO: fix me
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          some_preceding_statements
+          something
+           # TODO: fix me
+        end
+      RUBY
+    end
+  end
+
+  context 'with AllowComments set to true' do
+    let(:cop_config) { { 'AllowComments' => true } }
+
+    it 'does not report an offense for def ending with assignment and returning with comment in-between' do
+      expect_no_offenses(<<~RUBY)
+        def func
+          some_preceding_statements
+          x = something
+          # TODO: fix me
+          # x *= 2
+          x
+        end
+      RUBY
+    end
+
+    it 'does not report an offense for def ending with assignment and returning with comment on assignment line' do
+      expect_no_offenses(<<~RUBY)
+        def func
+          some_preceding_statements
+          x = something # TODO: fix me
+          x
+        end
+      RUBY
+    end
+
+    it 'does not report an offense for def ending with assignment and returning with comment on return line' do
+      expect_no_offenses(<<~RUBY)
+        def func
+          some_preceding_statements
+          x = something
+          x # TODO: fix me
+        end
+      RUBY
+    end
+
+    it 'reports an offense for def ending with assignment and returning with comment before assignment' do
+      expect_offense(<<~RUBY)
+        def func
+          some_preceding_statements
+          # TODO: fix me
+          x = something
+          ^^^^^^^^^^^^^ Redundant assignment before returning detected.
+          x
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          some_preceding_statements
+          # TODO: fix me
+          something
+         #{trailing_whitespace}
+        end
+      RUBY
+    end
+  end
 end
