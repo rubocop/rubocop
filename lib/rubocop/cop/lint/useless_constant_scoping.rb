@@ -38,7 +38,6 @@ module RuboCop
         PATTERN
 
         def on_casgn(node)
-          return if node.each_ancestor(:sclass).any?
           return unless after_private_modifier?(node.left_siblings)
           return if private_constantize?(node.right_siblings, node.name)
 
