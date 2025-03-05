@@ -324,6 +324,10 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
         foo.reject { |param| param.nil? }
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `compact` instead of `reject { |param| param.nil? }`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo.compact
+      RUBY
     end
   end
 end

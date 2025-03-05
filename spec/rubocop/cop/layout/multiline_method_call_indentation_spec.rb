@@ -849,6 +849,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           ^^^^^ Indent `.nil?` 2 spaces more than `0` on line 2.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          !0
+             .nil?
+        end
+      RUBY
     end
 
     it 'accepts correctly indented methods in operation' do
@@ -1007,6 +1014,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           !0
           .nil?
           ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          !0
+            .nil?
         end
       RUBY
     end

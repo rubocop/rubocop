@@ -648,6 +648,18 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          if foo?
+            work
+          end
+
+          return unless bar?
+            work
+        #{trailing_whitespace * 2}
+        end
+      RUBY
     end
   end
 
@@ -683,6 +695,20 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
           ^^ Use a guard clause (`return unless bar?`) instead of wrapping the code inside a conditional expression.
             work
           end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          if foo?
+            work
+          end
+
+          do_something
+
+          return unless bar?
+            work
+        #{trailing_whitespace * 2}
         end
       RUBY
     end

@@ -18,6 +18,11 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
         # rubocop:enable Layout/LineLength
                          ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Layout/LineLength.
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+        # rubocop:enable Layout/LineLength
+      RUBY
     end
   end
 
