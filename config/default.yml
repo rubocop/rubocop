@@ -4166,6 +4166,12 @@ Style/HashExcept:
   VersionAdded: '1.7'
   VersionChanged: '1.39'
 
+Style/HashFetchChain:
+  Description: 'Use `Hash#dig` instead of chained `fetch` calls.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/HashLikeCase:
   Description: >-
                   Checks for places where `case-when` represents a simple 1:1
