@@ -1,0 +1,1 @@
+* [#13950](https://github.com/rubocop/rubocop/pull/13950): Fix sporadic errors about `rubocop-rails` or `rubocop-performance` extraction, even if they are already part of the Gemfile. ([@earlopain][])
