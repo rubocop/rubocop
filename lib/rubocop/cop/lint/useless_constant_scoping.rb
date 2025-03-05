@@ -4,8 +4,8 @@ module RuboCop
   module Cop
     module Lint
       # Checks for useless constant scoping. Private constants must be defined using
-      # `private_constant` or `class << self`. Even if `private` access modifier is used,
-      # it is public scope despite its appearance.
+      # `private_constant`. Even if `private` access modifier is used, it is public scope despite
+      # its appearance.
       #
       # It does not support autocorrection due to behavior change and multiple ways to fix it.
       # Or a public constant may be intended.
@@ -22,14 +22,6 @@ module RuboCop
       #   class Foo
       #     PRIVATE_CONST = 42
       #     private_constant :PRIVATE_CONST
-      #   end
-      #
-      #   # good
-      #   class Foo
-      #     class << self
-      #       private
-      #       PRIVATE_CONST = 42
-      #     end
       #   end
       #
       #   # good
