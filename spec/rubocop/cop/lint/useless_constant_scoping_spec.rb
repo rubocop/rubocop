@@ -54,12 +54,25 @@ RSpec.describe RuboCop::Cop::Lint::UselessConstantScoping, :config do
     RUBY
   end
 
-  it 'does not register an offense when using constant after `private` access modifier in `class << self`' do
+  it 'registers an offense when using constant after `private` access modifier in `class << self`' do
+    expect_offense(<<~RUBY)
+      class Foo
+        class << self
+          private
+          CONST = 42
+          ^^^^^^^^^^ Useless `private` access modifier for constant scope.
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using constant after `private` access modifier in `class << self` with `private_constant`' do
     expect_no_offenses(<<~RUBY)
       class Foo
         class << self
           private
           CONST = 42
+          private_constant :CONST
         end
       end
     RUBY
