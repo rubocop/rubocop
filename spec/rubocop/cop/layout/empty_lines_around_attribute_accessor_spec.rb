@@ -256,6 +256,15 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
         def do_something
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        attr_accessor :foo
+
+        alias foo? foo
+
+        def do_something
+        end
+      RUBY
     end
   end
 
@@ -280,6 +289,15 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
       expect_offense(<<~RUBY)
         attr_accessor :foo
         ^^^^^^^^^^^^^^^^^^ Add an empty line after attribute accessor.
+        private :foo
+
+        def do_something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        attr_accessor :foo
+
         private :foo
 
         def do_something

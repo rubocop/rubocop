@@ -58,6 +58,10 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
         x = 0
              ^{} Final newline missing.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x = 0
+      RUBY
     end
 
     it 'registers an offense for no final newline after block comment' do
@@ -71,6 +75,17 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
         third line
         =end
             ^{} Final newline missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts 'testing rubocop when final new line is missing
+                                  after block comments'
+
+        =begin
+        first line
+        second line
+        third line
+        =end
       RUBY
     end
 
@@ -103,6 +118,11 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
       expect_offense(<<~RUBY, chomp: true)
         x = 0\n
         ^{} Trailing blank line missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = 0
+
       RUBY
     end
 
@@ -140,6 +160,11 @@ RSpec.describe RuboCop::Cop::Layout::TrailingEmptyLines, :config do
       expect_offense(<<~RUBY, chomp: true)
         x = 0
              ^{} Final newline missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = 0
+
       RUBY
     end
 

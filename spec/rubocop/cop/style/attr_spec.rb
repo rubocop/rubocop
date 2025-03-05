@@ -8,6 +8,12 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
         ^^^^ Do not use `attr`. Use `attr_reader` instead.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      class SomeClass
+        attr_reader :name
+      end
+    RUBY
   end
 
   it 'registers offense for attr within class_eval' do
@@ -15,6 +21,12 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
       SomeClass.class_eval do
         attr :name
         ^^^^ Do not use `attr`. Use `attr_reader` instead.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      SomeClass.class_eval do
+        attr_reader :name
       end
     RUBY
   end
@@ -26,6 +38,12 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
         ^^^^ Do not use `attr`. Use `attr_reader` instead.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      SomeClass.module_eval do
+        attr_reader :name
+      end
+    RUBY
   end
 
   it 'registers an offense when using `attr` and method definitions' do
@@ -33,6 +51,15 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
       class SomeClass
         attr :name
         ^^^^ Do not use `attr`. Use `attr_reader` instead.
+
+        def foo
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class SomeClass
+        attr_reader :name
 
         def foo
         end

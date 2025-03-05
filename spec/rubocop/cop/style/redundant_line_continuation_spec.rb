@@ -479,6 +479,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
                     ^ Redundant line continuation.
         baz)
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo("\#{bar}",#{trailing_whitespace}
+        baz)
+    RUBY
   end
 
   it 'does not register an offense when using line concatenation and calling a method without parentheses' do
@@ -992,6 +997,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
                ^ Redundant line continuation.
         %i[baz quux])
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo(bar,#{trailing_whitespace}
+        %i[baz quux])
+    RUBY
   end
 
   it 'registers an offense for a method call with a line continuation and no following arguments' do
@@ -1001,6 +1011,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
             ^ Redundant line continuation.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        bar#{trailing_whitespace}
+      end
+    RUBY
   end
 
   it 'registers an offense for `super` with a line continuation and no following arguments' do
@@ -1008,6 +1024,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
       def foo
         super \
               ^ Redundant line continuation.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        super#{trailing_whitespace}
       end
     RUBY
   end

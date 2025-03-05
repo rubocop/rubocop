@@ -263,23 +263,34 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
 
     it "doesn't crash and burn when there are nested issues" do
       # regression test; see GH issue 2441
-      expect do
-        expect_offense(<<~RUBY)
-          build(:house,
-            :rooms => [
-            ^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
-              build(:bedroom,
-                :bed => build(:bed,
-                ^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
-                  :occupants => [],
-                  ^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
-                  :size => "king"
-                )
+      expect_offense(<<~RUBY)
+        build(:house,
+          :rooms => [
+          ^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+            build(:bedroom,
+              :bed => build(:bed,
+              ^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+                :occupants => [],
+                ^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+                :size => "king"
               )
-            ]
-          )
-        RUBY
-      end.not_to raise_error
+            )
+          ]
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        build(:house,
+              :rooms => [
+                build(:bedroom,
+                      :bed => build(:bed,
+                                    :occupants => [],
+                                    :size => "king"
+                      )
+                )
+              ]
+        )
+      RUBY
     end
 
     context 'assigned methods' do

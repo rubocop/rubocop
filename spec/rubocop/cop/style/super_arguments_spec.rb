@@ -107,6 +107,12 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
         ^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        super
+      end
+    RUBY
   end
 
   it 'registers an offense for nested declarations' do
@@ -118,6 +124,15 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
         end
         super(a)
         ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo(a)
+        def bar(b:)
+          super
+        end
+        super
       end
     RUBY
   end
@@ -287,6 +302,12 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
           ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(a)
+          super.foo
+        end
+      RUBY
     end
 
     it 'registers an offense for unneeded arguments when the method has a block' do
@@ -296,6 +317,12 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
           ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(a)
+          super.foo { x }
+        end
+      RUBY
     end
 
     it 'registers an offense for unneeded arguments when the method has a numblock', :ruby27 do
@@ -303,6 +330,12 @@ RSpec.describe RuboCop::Cop::Style::SuperArguments, :config do
         def foo(a)
           super(a).foo { _1 }
           ^^^^^^^^ Call `super` without arguments and parentheses when the signature is identical.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(a)
+          super.foo { _1 }
         end
       RUBY
     end

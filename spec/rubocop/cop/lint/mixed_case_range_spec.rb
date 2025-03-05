@@ -12,6 +12,8 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
       foo = 'A'..'z'
             ^^^^^^^^ #{message}
     RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense for an overly broad exclusive character range' do
@@ -19,6 +21,8 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
       foo = 'A'...'z'
             ^^^^^^^^^ #{message}
     RUBY
+
+    expect_no_corrections
   end
 
   it 'does not register an offense for an acceptable range' do

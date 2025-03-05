@@ -18,6 +18,10 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
         %x$ls$
         ^^^^^^ Use backticks around command string.
       RUBY
+
+      expect_correction(<<~RUBY)
+        `ls`
+      RUBY
     end
   end
 

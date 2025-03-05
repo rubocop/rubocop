@@ -335,6 +335,10 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
         10.hours.to_i
         ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        Integer(10.hours, 10)
+      RUBY
     end
   end
 
@@ -351,6 +355,10 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       expect_offense(<<~RUBY)
         10.hours.to_i
         ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `10.hours.to_i`, use stricter `Integer(10.hours, 10)`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Integer(10.hours, 10)
       RUBY
     end
   end

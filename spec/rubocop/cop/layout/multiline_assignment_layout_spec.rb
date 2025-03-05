@@ -66,6 +66,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
           ^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
           5
         RUBY
+
+        expect_correction(<<~RUBY)
+          a, b =
+           4,
+          5
+        RUBY
       end
     end
 
@@ -84,6 +90,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
         b = if foo
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        a,
+        b =
+         if foo
+        end
+      RUBY
     end
 
     context 'when supported types is block' do
@@ -94,6 +107,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
         expect_offense(<<~RUBY)
           lambda = -> {
           ^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
+            puts 'hello'
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lambda =
+           -> {
             puts 'hello'
           }
         RUBY
@@ -189,6 +209,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
           4,
           5
         RUBY
+
+        expect_correction(<<~RUBY)
+          a, b = 4,
+          5
+        RUBY
       end
     end
 
@@ -205,6 +230,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
         ^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
         b =
         if foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a,
+        b = if foo
         end
       RUBY
     end
@@ -226,6 +257,12 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
           lambda =
           ^^^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
             -> {
+              puts 'hello'
+            }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          lambda = -> {
               puts 'hello'
             }
         RUBY

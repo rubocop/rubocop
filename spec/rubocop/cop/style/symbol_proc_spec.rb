@@ -304,6 +304,10 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
           coll.map { |e| e.upcase }
                    ^^^^^^^^^^^^^^^^ Pass `&:upcase` as an argument to `map` instead of a block.
         RUBY
+
+        expect_correction(<<~RUBY)
+          coll.map(&:upcase)
+        RUBY
       end
     end
   end

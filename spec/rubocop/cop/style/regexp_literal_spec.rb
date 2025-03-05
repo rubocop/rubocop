@@ -29,6 +29,10 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         %r_ls_
         ^^^^^^ Use `//` around regular expression.
       RUBY
+
+      expect_correction(<<~RUBY)
+        /ls/
+      RUBY
     end
   end
 
@@ -503,6 +507,10 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           do_something %r/regexp/
                        ^^^^^^^^^^ Use `//` around regular expression.
         RUBY
+
+        expect_correction(<<~RUBY)
+          do_something /regexp/
+        RUBY
       end
 
       it 'registers an offense when used as a safe navigation method argument' do
@@ -510,12 +518,20 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           foo&.do_something %r/regexp/
                             ^^^^^^^^^^ Use `//` around regular expression.
         RUBY
+
+        expect_correction(<<~RUBY)
+          foo&.do_something /regexp/
+        RUBY
       end
 
       it 'registers an offense when not used as a method argument' do
         expect_offense(<<~RUBY)
           %r/regexp/
           ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          /regexp/
         RUBY
       end
 
@@ -535,6 +551,10 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         expect_offense(<<~RUBY)
           %r/ regexp/
           ^^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          / regexp/
         RUBY
       end
 
@@ -553,6 +573,10 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           do_something %r/regexp/
                        ^^^^^^^^^^ Use `//` around regular expression.
         RUBY
+
+        expect_correction(<<~RUBY)
+          do_something /regexp/
+        RUBY
       end
 
       it 'registers an offense when used as a safe navigation method argument' do
@@ -560,12 +584,20 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           foo&.do_something %r/regexp/
                             ^^^^^^^^^^ Use `//` around regular expression.
         RUBY
+
+        expect_correction(<<~RUBY)
+          foo&.do_something /regexp/
+        RUBY
       end
 
       it 'registers an offense when not used as a method argument' do
         expect_offense(<<~RUBY)
           %r/regexp/
           ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          /regexp/
         RUBY
       end
 
@@ -585,6 +617,10 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         expect_offense(<<~RUBY)
           %r/ regexp/
           ^^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          / regexp/
         RUBY
       end
     end
@@ -613,6 +649,10 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
           %r/regexp/
           ^^^^^^^^^^ Use `//` around regular expression.
         RUBY
+
+        expect_correction(<<~RUBY)
+          /regexp/
+        RUBY
       end
     end
 
@@ -635,6 +675,10 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
         expect_offense(<<~RUBY)
           %r/regexp/
           ^^^^^^^^^^ Use `//` around regular expression.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          /regexp/
         RUBY
       end
     end

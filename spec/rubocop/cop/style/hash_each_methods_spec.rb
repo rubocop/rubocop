@@ -466,6 +466,10 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
           do_something(arg).values.each { |v| p v }
                             ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
         RUBY
+
+        expect_correction(<<~RUBY)
+          do_something(arg).each_value { |v| p v }
+        RUBY
       end
     end
 

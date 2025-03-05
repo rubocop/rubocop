@@ -550,6 +550,12 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             ^^^^ Redundant `else`-clause.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              statement
+            end
+          RUBY
         end
       end
 
@@ -561,6 +567,12 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             else
             ^^^^ Redundant `else`-clause.
               nil
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              statement
             end
           RUBY
         end
@@ -601,6 +613,14 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             ^^^^ Redundant `else`-clause.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              foo
+            elsif condition2
+              bar
+            end
+          RUBY
         end
       end
 
@@ -614,6 +634,14 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             else
             ^^^^ Redundant `else`-clause.
               nil
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if condition
+              foo
+            elsif condition2
+              bar
             end
           RUBY
         end
@@ -668,6 +696,12 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             ^^^^ Redundant `else`-clause.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            unless condition
+              statement
+            end
+          RUBY
         end
       end
 
@@ -679,6 +713,12 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             else
             ^^^^ Redundant `else`-clause.
               nil
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            unless condition
+              statement
             end
           RUBY
         end
@@ -730,6 +770,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             ^^^^ Redundant `else`-clause.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            case a
+            when condition
+              statement
+            end
+          RUBY
         end
       end
 
@@ -742,6 +789,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
             else
             ^^^^ Redundant `else`-clause.
               nil
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            case a
+            when condition
+              statement
             end
           RUBY
         end

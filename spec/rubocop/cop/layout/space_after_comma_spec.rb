@@ -60,6 +60,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAfterComma, :config do
           { foo:bar,}
                    ^ Space missing after comma.
         RUBY
+
+        expect_correction(<<~RUBY)
+          { foo:bar, }
+        RUBY
       end
     end
 

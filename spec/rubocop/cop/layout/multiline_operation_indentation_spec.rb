@@ -530,6 +530,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 4 (not 2) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} receiver.nil? &&
+              !args.empty? &&
+              FORBIDDEN_METHODS.include?(method_name)
+          end
+        RUBY
       end
 
       it "accepts indented operands in #{keyword} body" do
@@ -664,6 +671,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
                 ^^^^^^^^^^^^ Use 8 (not 4) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
                 FORBIDDEN_METHODS.include?(method_name)
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 8 (not 4) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{keyword} receiver.nil? &&
+                    !args.empty? &&
+                    FORBIDDEN_METHODS.include?(method_name)
             end
           RUBY
         end

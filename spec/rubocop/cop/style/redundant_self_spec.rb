@@ -65,12 +65,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
       a = x if self.b
                ^^^^ Redundant `self` detected.
     RUBY
+
+    expect_correction(<<~RUBY)
+      a = x if b
+    RUBY
   end
 
   it 'reports an offense when a different masgn name is used in `if`' do
     expect_offense(<<~RUBY)
       a, b, c = x if self.d
                      ^^^^ Redundant `self` detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a, b, c = x if d
     RUBY
   end
 
@@ -343,6 +351,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
         ^^^^ Redundant `self` detected.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        it
+      end
+    RUBY
   end
 
   it 'registers an offense when using `it` without arguments in the block with empty block parameter' do
@@ -352,6 +366,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
         ^^^^ Redundant `self` detected.
       }
     RUBY
+
+    expect_correction(<<~RUBY)
+      0.times { ||
+        it
+      }
+    RUBY
   end
 
   it 'registers an offense when using `it` without arguments in the block with useless block parameter' do
@@ -359,6 +379,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
       0.times { |_n|
         self.it
         ^^^^ Redundant `self` detected.
+      }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      0.times { |_n|
+        it
       }
     RUBY
   end
@@ -435,6 +461,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
             in ^foo, *bar
               self.foo + self.bar + foo + bar
               ^^^^ Redundant `self` detected.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = 17
+          case pattern
+            in ^foo, *bar
+              foo + self.bar + foo + bar
           end
         RUBY
       end

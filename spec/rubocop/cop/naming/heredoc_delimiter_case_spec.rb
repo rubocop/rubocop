@@ -32,6 +32,12 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
           Sql
           ^^^ Use uppercase heredoc delimiters.
         RUBY
+
+        expect_correction(<<~RUBY)
+          <<-SQL
+            foo
+          SQL
+        RUBY
       end
 
       it 'does not register an offense with an uppercase delimiter' do

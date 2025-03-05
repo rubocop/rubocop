@@ -362,6 +362,10 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
           object.method(argument)  # this is a comment
                                  ^ Unnecessary spacing detected.
         RUBY
+
+        expect_correction(<<~RUBY)
+          object.method(argument) # this is a comment
+        RUBY
       end
 
       it 'does not trigger on only one space before comment' do

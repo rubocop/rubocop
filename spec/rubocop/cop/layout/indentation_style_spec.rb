@@ -52,6 +52,12 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
         __END__
         \tx = 0
       RUBY
+
+      expect_correction(<<~RUBY)
+          x = 0
+        __END__
+        \tx = 0
+      RUBY
     end
 
     it 'accepts a line with a tab other than indentation' do
@@ -135,12 +141,20 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
          \tx = 0
         ^ Space detected in indentation.
       RUBY
+
+      expect_correction("\tx = 0\n")
     end
 
     it 'registers offenses before __END__ but not after' do
       expect_offense(<<~RUBY)
           x = 0
         ^^ Space detected in indentation.
+        __END__
+          x = 0
+      RUBY
+
+      expect_correction(<<~RUBY)
+        \tx = 0
         __END__
           x = 0
       RUBY

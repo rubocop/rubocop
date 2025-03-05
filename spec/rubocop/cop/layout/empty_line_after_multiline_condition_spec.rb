@@ -9,6 +9,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
         do_something
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if multiline &&
+         condition
+
+        do_something
+      end
+    RUBY
   end
 
   it 'does not register an offense when new line after `if` with multiline condition' do
@@ -34,6 +42,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
       do_something if multiline &&
                       ^^^^^^^^^^^^ Use empty line after multiline condition.
                       condition
+      do_something_else
+    RUBY
+
+    expect_correction(<<~RUBY)
+      do_something if multiline &&
+                      condition
+
       do_something_else
     RUBY
   end
@@ -73,6 +88,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
         do_something_else
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      if condition
+        do_something
+      elsif multiline &&
+         condition
+
+        do_something_else
+      end
+    RUBY
   end
 
   it 'does not register an offense when new line after `elsif` with multiline condition' do
@@ -95,6 +120,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
         do_something
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      while multiline &&
+         condition
+
+        do_something
+      end
+    RUBY
   end
 
   it 'registers an offense when no new line after `until` with multiline condition' do
@@ -102,6 +135,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
       until multiline &&
             ^^^^^^^^^^^^ Use empty line after multiline condition.
          condition
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      until multiline &&
+         condition
+
         do_something
       end
     RUBY
@@ -132,6 +173,15 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
       end while multiline &&
                 ^^^^^^^^^^^^ Use empty line after multiline condition.
             condition
+      do_something_else
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        do_something
+      end while multiline &&
+            condition
+
       do_something_else
     RUBY
   end
@@ -168,6 +218,15 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
         do_something
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      case x
+      when foo,
+          bar
+
+        do_something
+      end
+    RUBY
   end
 
   it 'does not register an offense when new line after `when` with multiline condition' do
@@ -197,6 +256,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMultilineCondition, :config d
       rescue FooError,
       ^^^^^^^^^^^^^^^^ Use empty line after multiline condition.
         BarError
+        handle_error
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        do_something
+      rescue FooError,
+        BarError
+
         handle_error
       end
     RUBY

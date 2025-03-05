@@ -342,6 +342,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
               ^^^^^^ Consider replacing 'master' with another term.
 
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense for a multiline string' do
@@ -468,6 +470,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
         expect_offense(<<~RUBY, '/some/dir/master.rb')
           ^{} Consider replacing 'master' in file path with 'main'.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -481,6 +485,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
         expect_offense(<<~RUBY, '/some/config/master-slave.rb')
           ^{} Consider replacing 'master', 'slave' in file path with other terms.
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -493,6 +499,8 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
         expect_offense(<<~RUBY, '/db/master/config.yml')
           ^{} Consider replacing 'master' in file path with another term.
         RUBY
+
+        expect_no_corrections
       end
     end
 

@@ -190,6 +190,10 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
         #:nodoc:
         ^^^^^^^^ Missing space after `#`.
       RUBY
+
+      expect_correction(<<~RUBY)
+        # :nodoc:
+      RUBY
     end
   end
 
@@ -218,6 +222,13 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
           ^^^^^^^^^^^^^^^^^^^^^^ Missing space after `#`.
           ruby '~> 2.7.0'
         RUBY
+
+        expect_correction(<<~RUBY)
+          # Specific version (comment) will be used by RVM
+          # ruby=2.7.0
+          # ruby-gemset=myproject
+          ruby '~> 2.7.0'
+        RUBY
       end
     end
 
@@ -232,6 +243,13 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
             ^^^^^^^^^^^ Missing space after `#`.
             #ruby-gemset=myproject
             ^^^^^^^^^^^^^^^^^^^^^^ Missing space after `#`.
+            ruby '~> 2.7.0'
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # Specific version (comment) will be used by RVM
+            # ruby=2.7.0
+            # ruby-gemset=myproject
             ruby '~> 2.7.0'
           RUBY
         end

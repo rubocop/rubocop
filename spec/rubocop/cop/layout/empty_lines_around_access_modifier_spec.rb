@@ -209,6 +209,15 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
             end
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+            #{access_modifier}
+
+            def test
+            end
+          end
+        RUBY
       end
 
       it 'accepts missing blank line when at the beginning of file and preceded by a comment' do
@@ -248,6 +257,15 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
               included do
                 #{access_modifier}
                 #{'^' * access_modifier.size} Keep a blank line after `#{access_modifier}`.
+                def test
+                end
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              included do
+                #{access_modifier}
+
                 def test
                 end
               end
@@ -313,6 +331,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           class Test
             #{access_modifier}
             #{'^' * access_modifier.size} Keep a blank line after `#{access_modifier}`.
+            end_this!
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Test
+            #{access_modifier}
+
             end_this!
           end
         RUBY

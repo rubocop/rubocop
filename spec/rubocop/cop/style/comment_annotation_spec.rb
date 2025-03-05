@@ -140,6 +140,15 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
             ].freeze
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          class ToBeDone
+            ITEMS = [
+              '', # TODO: Item 1
+              '', # TODO: Item 2
+            ].freeze
+          end
+        RUBY
       end
     end
 
@@ -148,6 +157,12 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
         expect_offense(<<~RUBY)
           # TODO line 1
             ^^^^^ Annotation keywords like `TODO` should be all upper case, followed by a colon, and a space, then a note describing the problem.
+          # TODO line 2
+          # TODO line 3
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # TODO: line 1
           # TODO line 2
           # TODO line 3
         RUBY
@@ -162,6 +177,10 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
           expect_offense(<<~RUBY, keyword: keyword)
             # #{keyword} blah blah blah
               ^{keyword}^ Annotation keywords like `#{keyword}` should be all upper case, followed by a colon, and a space, then a note describing the problem.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # #{keyword}: blah blah blah
           RUBY
         end
       end
@@ -291,6 +310,15 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
             ].freeze
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          class ToBeDone
+            ITEMS = [
+              '', # TODO Item 1
+              '', # TODO Item 2
+            ].freeze
+          end
+        RUBY
       end
     end
 
@@ -299,6 +327,12 @@ RSpec.describe RuboCop::Cop::Style::CommentAnnotation, :config do
         expect_offense(<<~RUBY)
           # TODO: line 1
             ^^^^^^ Annotation keywords like `TODO` should be all upper case, followed by a space, then a note describing the problem.
+          # TODO: line 2
+          # TODO: line 3
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # TODO line 1
           # TODO: line 2
           # TODO: line 3
         RUBY

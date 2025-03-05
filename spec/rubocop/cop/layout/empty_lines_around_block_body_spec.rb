@@ -77,6 +77,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
             do_something
           #{close}
         RUBY
+
+        expect_correction(<<~RUBY)
+          some_method arg,
+            another_arg #{open}
+            do_something
+          #{close}
+        RUBY
       end
 
       it 'is not fooled by single line blocks' do

@@ -86,6 +86,10 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
         "this is the #{%{literal};%{literal}}"
                        _{literal} ^{literal} Literal interpolation detected.
       RUBY
+
+      expect_correction(<<~RUBY)
+        "this is the #{expected}"
+      RUBY
     end
   end
 

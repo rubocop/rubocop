@@ -238,6 +238,12 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
           RUBY2
         RUBY
+
+        expect_correction(<<~RUBY)
+          <<~RUBY2
+            foo
+          RUBY2
+        RUBY
       end
 
       it 'displays message to use `<<~` instead of `<<-`' do
@@ -245,6 +251,12 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           <<-RUBY2
           foo
           ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
+          RUBY2
+        RUBY
+
+        expect_correction(<<~RUBY)
+          <<~RUBY2
+            foo
           RUBY2
         RUBY
       end

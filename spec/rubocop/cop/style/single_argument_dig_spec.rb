@@ -161,6 +161,10 @@ RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
           ^^^^^^^^^^^^^^ Use `data[var1]` instead of `data.dig(var1)`.
           ^^^^^^^^^^^^^^^^^^^^^^^^ Use `data.dig(var1)[var2]` instead of `data.dig(var1).dig(var2)`.
         RUBY
+
+        expect_correction(<<~RUBY)
+          data.dig(var1)[var2]
+        RUBY
       end
     end
   end

@@ -22,6 +22,25 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      class K
+        def m
+        end
+
+        class J
+          def n
+          end
+
+          def o
+          end
+        end
+
+        # checks something
+        def p
+        end
+      end
+    RUBY
   end
 
   context 'when there are only comments between defs' do
@@ -75,6 +94,22 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           end
           def bar
           ^^^^^^^ Expected 1 empty line between method definitions; found 0.
+            true
+          end
+        else
+          def foo
+            false
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if condition
+          def foo
+            true
+          end
+
+          def bar
             true
           end
         else
