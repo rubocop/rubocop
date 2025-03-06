@@ -43,7 +43,6 @@ module RuboCop
       def named_capturing?(exp, event, named)
         event == :enter &&
           named == exp.respond_to?(:name) &&
-          !exp.text.start_with?('(?<=') &&
           exp.respond_to?(:capturing?) &&
           exp.capturing?
       end
