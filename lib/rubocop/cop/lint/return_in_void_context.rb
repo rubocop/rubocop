@@ -35,21 +35,14 @@ module RuboCop
         def on_return(return_node)
           return unless return_node.descendants.any?
 
-          context_node = non_void_context(return_node)
-
-          return unless context_node&.def_type?
-          return unless context_node&.void_context?
+          def_node = return_node.each_ancestor(:def).first
+          return unless def_node&.void_context?
+          return if return_node.each_ancestor(:any_block).any?(&:lambda?)
 
           add_offense(
             return_node.loc.keyword,
-            message: format(message, method: context_node.method_name)
+            message: format(message, method: def_node.method_name)
           )
-        end
-
-        private
-
-        def non_void_context(return_node)
-          return_node.each_ancestor(:block, :def, :defs).first
         end
       end
     end
