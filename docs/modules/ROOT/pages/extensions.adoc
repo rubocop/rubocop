@@ -1,6 +1,6 @@
 = Extensions
 
-:lint_roller: https://github.com/standardrb/lint_roller[lint_roller].
+:lint_roller: https://github.com/standardrb/lint_roller[lint_roller]
 
 It's possible to extend RuboCop with additional cops and formatters.
 There are already many official extensions, maintained by RuboCop's team,
