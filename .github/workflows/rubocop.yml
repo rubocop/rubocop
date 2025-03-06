@@ -52,10 +52,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          # FIXME: When the JRuby issue https://github.com/jruby/jruby/issues/8606 is resolved,
-          # please replace it with the following:
-          # ruby-version: 'jruby' # Latest stable JRuby version
-          ruby-version: 'jruby-9.4.10.0' # The latest JRuby version that passes CI
+          ruby-version: 'jruby' # Latest stable JRuby version
           bundler-cache: true
       - name: spec
         run: bundle exec rake spec
