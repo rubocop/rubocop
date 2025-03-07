@@ -549,4 +549,54 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       end until false
     RUBY
   end
+
+  context 'void value expressions after autocorrect' do
+    it 'registers an offense but does not autocorrect when `return` is used after `&&`' do
+      expect_offense(<<~RUBY)
+        def foo
+          puts 123 && return if bar?
+               ^^^ Literal `123` appeared as a condition.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense but does not autocorrect when inside `if` and `return` is used after `&&`' do
+      expect_offense(<<~RUBY)
+        def foo
+          baz? if 123 && return
+                  ^^^ Literal `123` appeared as a condition.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense but does not autocorrect when `break` is used after `&&`' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar do
+            puts 123 && break if baz?
+                 ^^^ Literal `123` appeared as a condition.
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense but does not autocorrect when `next` is used after `&&`' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar do
+            puts 123 && next if baz?
+                 ^^^ Literal `123` appeared as a condition.
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+  end
 end
