@@ -2321,7 +2321,7 @@ items.include?
 
 | PreferredMethods
 | `{"collect" => "map", "collect!" => "map!", "collect_concat" => "flat_map", "inject" => "reduce", "detect" => "find", "find_all" => "select", "member?" => "include?"}`
-| 
+|
 
 | MethodsAcceptingSymbol
 | `inject`, `reduce`
@@ -3738,6 +3738,10 @@ NOTE: This cop allows `initialize` method because `initialize` is
 a special method called from `new`. In some programming languages
 they are called constructor to distinguish it from method.
 
+NOTE: To keep compatibility with Sorbet's https://sorbet.org/docs/sigs[method signatures]
+and https://github.com/Shopify/rubocop-sorbet/blob/main/manual/cops_sorbet.md#sorbetemptylineaftersig[Sorbet/EmptyLineAfterSig],
+this cop allows the special `sig` keyword before the method definition as shown below.
+
 [#examples-styledocumentationmethod]
 === Examples
 
@@ -3780,6 +3784,14 @@ end
 # Documentation
 def foo.bar
   puts baz
+end
+
+class Foo
+  # Documentation
+  sig { void }
+  def bar
+    puts baz
+  end
 end
 ----
 
@@ -7752,11 +7764,11 @@ end
 
 | InverseMethods
 | `{any?: :none?, even?: :odd?, "==": :!=, "=~": :!~, "<": :>=, ">": :<=}`
-| 
+|
 
 | InverseBlocks
 | `{select: :reject, select!: :reject!}`
-| 
+|
 |===
 
 [#styleinvertibleunlesscondition]
@@ -7834,7 +7846,7 @@ foo if !condition
 
 | InverseMethods
 | `{"!=": :==, ">": :<=, "<=": :>, "<": :>=, ">=": :<, "!~": :=~, zero?: :nonzero?, nonzero?: :zero?, any?: :none?, none?: :any?, even?: :odd?, odd?: :even?}`
-| 
+|
 |===
 
 [#styleipaddresses]
@@ -8369,7 +8381,7 @@ end
 
 | ValueCapitalization
 | `<none>`
-| 
+|
 |===
 
 [#stylemapcompactwithconditionalblock]
@@ -12139,7 +12151,7 @@ default.
 
 | PreferredDelimiters
 | `{"default" => "()", "%i" => "[]", "%I" => "[]", "%r" => "{}", "%w" => "[]", "%W" => "[]"}`
-| 
+|
 |===
 
 [#references-stylepercentliteraldelimiters]
@@ -12625,7 +12637,7 @@ A.foo
 
 | Methods
 | `{"join" => "", "sum" => 0, "exit" => true, "exit!" => false, "split" => " ", "chomp" => "\n", "chomp!" => "\n"}`
-| 
+|
 |===
 
 [#styleredundantarrayconstructor]
@@ -16693,7 +16705,7 @@ from the `String` class.
 
 | PreferredMethods
 | `{"intern" => "to_sym"}`
-| 
+|
 |===
 
 [#stylestrip]
@@ -18815,7 +18827,7 @@ array of 2 or fewer elements.
 
 | WordRegex
 | `(?-mix:\A(?:\p{Word}\|\p{Word}-\p{Word}\|\n\|\t)+\z)`
-| 
+|
 |===
 
 [#references-stylewordarray]
