@@ -291,6 +291,20 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
+  context 'when SkipableLines is enabled' do
+    before { cop_config['SkipableLines'] = [/\bputs\b/]  }
+
+    it 'does not count matching lines' do
+      expect_no_offenses(<<~RUBY)
+        something do
+          a = 1
+          puts '2'
+          a = 2
+        end
+      RUBY
+    end
+  end
+
   context 'when methods to allow are defined' do
     context 'when AllowedMethods is enabled' do
       it_behaves_like('allow an offense on an allowed method', 'foo', 'AllowedMethods')
