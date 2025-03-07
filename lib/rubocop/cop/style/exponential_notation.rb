@@ -60,8 +60,8 @@ module RuboCop
       class ExponentialNotation < Base
         include ConfigurableEnforcedStyle
         MESSAGES = {
-          scientific: 'Use a mantissa in [1, 10[.',
-          engineering: 'Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.',
+          scientific: 'Use a mantissa >= 1 and < 10.',
+          engineering: 'Use an exponent divisible by 3 and a mantissa >= 0.1 and < 1000.',
           integral: 'Use an integer as mantissa, without trailing zero.'
         }.freeze
 
