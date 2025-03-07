@@ -234,6 +234,10 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
         1234
         ^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
       RUBY
+
+      expect_correction(<<~RUBY)
+        1_234
+      RUBY
     end
   end
 
@@ -251,6 +255,10 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
         1234
         ^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
       RUBY
+
+      expect_correction(<<~RUBY)
+        1_234
+      RUBY
     end
   end
 
@@ -267,6 +275,10 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
       expect_offense(<<~RUBY)
         1234_56_78_9012
         ^^^^^^^^^^^^^^^ Use underscores(_) as thousands separator and separate every 3 digits with them.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        123_456_789_012
       RUBY
     end
 

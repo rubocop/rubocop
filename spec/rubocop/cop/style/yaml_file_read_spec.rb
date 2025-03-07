@@ -51,6 +51,10 @@ RSpec.describe RuboCop::Cop::Style::YAMLFileRead, :config do
         ::YAML.load(::File.read(path))
                ^^^^^^^^^^^^^^^^^^^^^^^ Use `load_file(path)` instead.
       RUBY
+
+      expect_correction(<<~RUBY)
+        ::YAML.load_file(path)
+      RUBY
     end
 
     it "registers an offense when using `YAML.load` with `File.read(Rails.root.join('foo', 'bar', 'baz'))` argument" do

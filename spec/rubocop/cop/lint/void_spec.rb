@@ -631,6 +631,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         baz
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def something
+        baz
+      end
+    RUBY
   end
 
   it 'registers an offense for a nested array literal composed entirely of literals in a method definition' do
@@ -638,6 +644,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       def something
         [1, 2, [3]]
         ^^^^^^^^^^^ Literal `[1, 2, [3]]` used in void context.
+        baz
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def something
         baz
       end
     RUBY
@@ -651,6 +663,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
         baz
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def something
+        baz
+      end
+    RUBY
   end
 
   it 'registers an offense for a literal frozen via safe navigation in a method definition' do
@@ -658,6 +676,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       def something
         'foo'&.freeze
         ^^^^^^^^^^^^^ Literal `'foo'&.freeze` used in void context.
+        baz
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def something
         baz
       end
     RUBY
@@ -677,6 +701,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       def something
         [1, ['foo'.freeze]]
         ^^^^^^^^^^^^^^^^^^^ Literal `[1, ['foo'.freeze]]` used in void context.
+        baz
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def something
         baz
       end
     RUBY
@@ -773,6 +803,12 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       def something
         {[1, 2] => :foo}
         ^^^^^^^^^^^^^^^^ Literal `{[1, 2] => :foo}` used in void context.
+        baz
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def something
         baz
       end
     RUBY

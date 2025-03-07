@@ -75,6 +75,8 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
         thing.to_datetime
         ^^^^^^^^^^^^^^^^^ Do not use `#to_datetime`.
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense when using safe navigation operator' do
@@ -82,6 +84,8 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
         thing&.to_datetime
         ^^^^^^^^^^^^^^^^^^ Do not use `#to_datetime`.
       RUBY
+
+      expect_no_corrections
     end
   end
 
