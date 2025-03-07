@@ -437,6 +437,7 @@ require_relative 'rubocop/cop/lint/useless_ruby2_keywords'
 require_relative 'rubocop/cop/lint/useless_setter_call'
 require_relative 'rubocop/cop/lint/useless_times'
 require_relative 'rubocop/cop/lint/void'
+require_relative 'rubocop/cop/lint/void_value_expression'
 
 require_relative 'rubocop/cop/metrics/utils/iterating_block'
 require_relative 'rubocop/cop/metrics/cyclomatic_complexity'
