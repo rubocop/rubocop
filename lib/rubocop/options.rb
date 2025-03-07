@@ -53,6 +53,7 @@ module RuboCop
     def define_options
       OptionParser.new do |opts|
         opts.banner = rainbow.wrap('Usage: rubocop [options] [file1, file2, ...]').bright
+        opts.require_exact = true
 
         add_check_options(opts)
         add_cache_options(opts)
