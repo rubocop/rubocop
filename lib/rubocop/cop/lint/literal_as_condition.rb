@@ -46,6 +46,10 @@ module RuboCop
           return unless node.lhs.truthy_literal?
 
           add_offense(node.lhs) do |corrector|
+            # Don't autocorrect `'foo' && return` because having `return` as
+            # the leftmost node can lead to a void value expression syntax error.
+            next if node.rhs.type?(:return, :break, :next)
+
             corrector.replace(node, node.rhs.source)
           end
         end
