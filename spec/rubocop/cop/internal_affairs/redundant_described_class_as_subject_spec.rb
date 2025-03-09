@@ -62,4 +62,16 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantDescribedClassAsSubject, 
       end
     RUBY
   end
+
+  it 'registers an offense without `describe` DSL' do
+    expect_offense(<<~RUBY)
+      shared_context "shared cop context" do
+        subject(:cop) { described_class.new }
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Remove the redundant `subject` and specify `:config` in `describe`.
+        let(:config) { RuboCop::Config.new }
+      end
+    RUBY
+
+    expect_no_corrections
+  end
 end
