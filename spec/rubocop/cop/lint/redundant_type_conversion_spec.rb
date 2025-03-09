@@ -248,6 +248,18 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
     it_behaves_like 'accepted', 'Float("number", exception: false).to_f'
   end
 
+  describe '`to_d`' do
+    it_behaves_like 'conversion', :to_d
+
+    it_behaves_like 'offense', :to_d, 'BigDecimal(42)'
+    it_behaves_like 'offense', :to_d, 'Kernel::BigDecimal(42)'
+    it_behaves_like 'offense', :to_d, '::Kernel::BigDecimal(42)'
+    it_behaves_like 'offense', :to_d, 'BigDecimal("number", exception: true)'
+
+    it_behaves_like 'accepted', 'BigDecimal("number", exception: false).to_d'
+    it_behaves_like 'accepted', 'BigDecimal(obj, n, exception: false).to_d'
+  end
+
   describe '`to_r`' do
     it_behaves_like 'conversion', :to_r
 

@@ -3,13 +3,13 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for redundant uses of `to_s`, `to_sym`, `to_i`, `to_f`, `to_r`, `to_c`,
+      # Checks for redundant uses of `to_s`, `to_sym`, `to_i`, `to_f`, `to_d`, `to_r`, `to_c`,
       # `to_a`, `to_h`, and `to_set`.
       #
       # When one of these methods is called on an object of the same type, that object
       # is returned, making the call unnecessary. The cop detects conversion methods called
       # on object literals, class constructors, class `[]` methods, and the `Kernel` methods
-      # `String()`, `Integer()`, `Float()`, `Rational()`, `Complex()` and `Array()`.
+      # `String()`, `Integer()`, `Float()`, BigDecimal(), `Rational()`, `Complex()`, and `Array()`.
       #
       # Specifically, these cases are detected for each conversion method:
       #
@@ -98,6 +98,7 @@ module RuboCop
           to_s: 'string_constructor?',
           to_i: 'integer_constructor?',
           to_f: 'float_constructor?',
+          to_d: 'bigdecimal_constructor?',
           to_r: 'rational_constructor?',
           to_c: 'complex_constructor?',
           to_a: 'array_constructor?',
@@ -110,7 +111,7 @@ module RuboCop
         TYPED_METHODS = { to_s: %i[inspect] }.freeze
 
         CONVERSION_METHODS = Set[*LITERAL_NODE_TYPES.keys].freeze
-        RESTRICT_ON_SEND = CONVERSION_METHODS
+        RESTRICT_ON_SEND = CONVERSION_METHODS + [:to_d]
 
         private_constant :LITERAL_NODE_TYPES, :CONSTRUCTOR_MAPPING
 
@@ -135,6 +136,11 @@ module RuboCop
         # @!method float_constructor?(node)
         def_node_matcher :float_constructor?, <<~PATTERN
           #type_constructor?(:Float)
+        PATTERN
+
+        # @!method bigdecimal_constructor?(node)
+        def_node_matcher :bigdecimal_constructor?, <<~PATTERN
+          #type_constructor?(:BigDecimal)
         PATTERN
 
         # @!method rational_constructor?(node)
