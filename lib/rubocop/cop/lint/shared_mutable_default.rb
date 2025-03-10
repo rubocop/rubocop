@@ -51,7 +51,18 @@ module RuboCop
 
         # @!method hash_initialized_with_mutable_shared_object?(node)
         def_node_matcher :hash_initialized_with_mutable_shared_object?, <<~PATTERN
-          (send (const {nil? cbase} :Hash) :new {array hash (send (const {nil? cbase} {:Array :Hash}) :new)})
+          {
+            (send (const {nil? cbase} :Hash) :new [
+              {array hash (send (const {nil? cbase} {:Array :Hash}) :new)}
+              !#capacity_keyword_argument?
+            ])
+            (send (const {nil? cbase} :Hash) :new hash #capacity_keyword_argument?)
+          }
+        PATTERN
+
+        # @!method capacity_keyword_argument?(node)
+        def_node_matcher :capacity_keyword_argument?, <<~PATTERN
+          (hash (pair (sym :capacity) _))
         PATTERN
 
         def on_send(node)

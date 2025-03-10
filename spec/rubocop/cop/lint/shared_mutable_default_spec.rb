@@ -38,6 +38,14 @@ RSpec.describe RuboCop::Cop::Lint::SharedMutableDefault, :config do
     end
   end
 
+  context 'when `capacity` keyword argument is used' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        Hash.new(capacity: 42)
+      RUBY
+    end
+  end
+
   context 'when Hash is initialized with an array' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
@@ -56,6 +64,15 @@ RSpec.describe RuboCop::Cop::Lint::SharedMutableDefault, :config do
         ^^^^^^^^^^^^ Do not create a Hash with a mutable default value [...]
         Hash.new(Hash.new)
         ^^^^^^^^^^^^^^^^^^ Do not create a Hash with a mutable default value [...]
+      RUBY
+    end
+  end
+
+  context 'when Hash is initialized with a Hash and `capacity` keyword argument' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        Hash.new({}, capacity: 42)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not create a Hash with a mutable default value [...]
       RUBY
     end
   end
