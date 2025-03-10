@@ -4168,6 +4168,12 @@ Style/HashConversion:
   VersionChanged: '1.55'
   AllowSplatArgument: true
 
+Style/HashDig:
+  Description: 'Use `Hash#dig` instead of chained lookups.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/HashEachMethods:
   Description: 'Use Hash#each_key and Hash#each_value.'
   StyleGuide: '#hash-each'
