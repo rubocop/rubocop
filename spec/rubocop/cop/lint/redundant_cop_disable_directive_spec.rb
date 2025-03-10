@@ -266,6 +266,28 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
               RUBY
             end
+
+            context 'when the department starts with a lowercase letter' do
+              it 'registers an offense' do
+                expect_offense(<<~RUBY)
+                  # rubocop:disable lint/SelfAssignment
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `lint/SelfAssignment` (did you mean `Lint/SelfAssignment`?).
+                RUBY
+
+                expect_correction('')
+              end
+            end
+
+            context 'when the cop starts with a lowercase letter' do
+              it 'registers an offense' do
+                expect_offense(<<~RUBY)
+                  # rubocop:disable Lint/selfAssignment
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Lint/selfAssignment` (did you mean `Lint/SelfAssignment`?).
+                RUBY
+
+                expect_correction('')
+              end
+            end
           end
 
           context 'all cops' do
