@@ -41,9 +41,11 @@ module RuboCop
       end
 
       # rubocop:disable Metrics/MethodLength
-      def run(path, contents, options)
+      def run(path, contents, options, prism_result: nil)
         @options = options.merge(DEFAULT_RUBOCOP_OPTIONS)
         @options[:stdin] = contents
+
+        @prism_result = prism_result
 
         @offenses = []
         @warnings = []
