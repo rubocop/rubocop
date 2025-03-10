@@ -7,10 +7,11 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
   let(:configuration) { RuboCop::Config.new(hash, loaded_path) }
   let(:loaded_path) { 'example/.rubocop.yml' }
+  let(:plugins) { [] }
   let(:requires) { [] }
 
   before do
-    allow(configuration).to receive(:loaded_features).and_return(requires)
+    allow(configuration).to receive_messages(loaded_plugins: plugins, loaded_features: requires)
     described_class.files = [described_class::DEFAULT_RULES_FILE]
   end
 
@@ -229,6 +230,32 @@ RSpec.describe RuboCop::ConfigObsoletion do
           'Rails/Date' => { Enabled: true },
           'Rails/DynamicFindBy' => { Enabled: true }
         }
+      end
+
+      context 'when the plugin extensions are loaded' do
+        let(:plugins) { %w[rubocop-rails rubocop-performance] }
+
+        it 'does not print a warning message' do
+          expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+        end
+      end
+
+      context 'when only one plugin extension is loaded' do
+        let(:plugins) { %w[rubocop-performance] }
+
+        let(:expected_message) do
+          <<~OUTPUT.chomp
+            `Rails` cops have been extracted to the `rubocop-rails` gem.
+            (obsolete configuration found in example/.rubocop.yml, please update it)
+          OUTPUT
+        end
+
+        it 'prints a warning message' do
+          config_obsoletion.reject_obsolete!
+          raise 'Expected a RuboCop::ValidationError'
+        rescue RuboCop::ValidationError => e
+          expect(e.message).to eq(expected_message)
+        end
       end
 
       context 'when the extensions are loaded' do

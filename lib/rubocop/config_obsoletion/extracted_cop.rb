@@ -15,7 +15,7 @@ module RuboCop
       end
 
       def violated?
-        return false if feature_loaded?
+        return false if plugin_loaded?
 
         affected_cops.any?
       end
@@ -38,8 +38,9 @@ module RuboCop
         end
       end
 
-      def feature_loaded?
-        config.loaded_features.include?(gem)
+      def plugin_loaded?
+        # Plugins loaded via `require` are included in `loaded_features`.
+        config.loaded_plugins.include?(gem) || config.loaded_features.include?(gem)
       end
     end
   end
