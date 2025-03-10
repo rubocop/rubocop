@@ -548,6 +548,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           }
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          1
+          foo = 2
+          bar {
+            foo = 3
+          }
+        end
+      RUBY
     end
   end
 
@@ -1834,6 +1844,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           foo
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo in { bar: bar }
+          baz { qux - 1 }
+          foo
+        end
+      RUBY
     end
   end
 
@@ -1856,6 +1874,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
           foo => { bar: bar }
           baz { qux -= 1 }
                 ^^^ Useless assignment to variable - `qux`. Use `-` instead of `-=`.
+          foo
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo => { bar: bar }
+          baz { qux - 1 }
           foo
         end
       RUBY

@@ -29,6 +29,11 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
         'foo #{bar}'
         ^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
     RUBY
+
+    expect_correction(<<~'RUBY')
+      'x' \
+        "foo #{bar}"
+    RUBY
   end
 
   it 'registers an offense for interpolation in double + single quoted split string' do
@@ -36,6 +41,11 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
       "x" \
         'foo #{bar}'
         ^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "x" \
+        "foo #{bar}"
     RUBY
   end
 

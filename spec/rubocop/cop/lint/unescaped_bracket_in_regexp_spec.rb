@@ -243,6 +243,10 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
               [Regexp.#{method}('#{invalid_regexp}'), Regexp.#{method}('abc]123')]
                       _{method}  _{invalid_regexp}           _{method}     ^ Regular expression has `]` without escape.
             RUBY
+
+            expect_correction(<<~RUBY)
+              [Regexp.#{method}('#{invalid_regexp}'), Regexp.#{method}('abc\\]123')]
+            RUBY
           end
         end
       end
