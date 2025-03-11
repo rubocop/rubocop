@@ -4090,8 +4090,14 @@ Style/FormatStringToken:
   # style token in a format string to be allowed when enforced style is not
   # `unannotated`.
   MaxUnannotatedPlaceholdersAllowed: 1
+  # The mode the cop operates in. Two values are allowed:
+  # * aggressive (default): all strings are considered
+  # * conservative:
+  #     only register offenses for strings given to `printf`, `sprintf`,
+  #     format` and `%` methods. Other strings are not considered.
+  Mode: aggressive
   VersionAdded: '0.49'
-  VersionChanged: '1.0'
+  VersionChanged: '<<next>>'
   AllowedMethods: []
   AllowedPatterns: []
 

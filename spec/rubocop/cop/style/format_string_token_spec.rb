@@ -4,6 +4,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
   let(:enforced_style) { :annotated }
   let(:allowed_methods) { [] }
   let(:allowed_patterns) { [] }
+  let(:mode) { :aggressive }
 
   let(:cop_config) do
     {
@@ -11,7 +12,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       'SupportedStyles' => %i[annotated template unannotated],
       'MaxUnannotatedPlaceholdersAllowed' => 0,
       'AllowedMethods' => allowed_methods,
-      'AllowedPatterns' => allowed_patterns
+      'AllowedPatterns' => allowed_patterns,
+      'Mode' => mode
     }
   end
 
@@ -414,6 +416,62 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       RUBY
 
       expect_no_corrections
+    end
+  end
+
+  context 'with `Mode: conservative`' do
+    let(:mode) { :conservative }
+
+    %i[annotated template unannotated].each do |style|
+      context "when enforced style is #{style}" do
+        let(:enforced_style) { style }
+
+        shared_examples 'conservative' do |given_style, string|
+          context "with `#{string}`" do
+            context 'with a bare string' do
+              it 'does not register an offense' do
+                expect_no_offenses(<<~RUBY)
+                  '#{string}'
+                RUBY
+              end
+            end
+
+            if style != given_style
+              %i[printf sprintf format].each do |method|
+                context "as an argument to `#{method}`" do
+                  it 'registers an offense' do
+                    expect_offense(<<~RUBY, string: string, method: method)
+                      %{method}('%{string}', *vars)
+                      _{method}  ^{string} Prefer [...]
+                    RUBY
+                  end
+                end
+              end
+
+              context 'as an argument to `%`' do
+                it 'registers an offense' do
+                  expect_offense(<<~RUBY, string: string)
+                    '#{string}' % vars
+                     ^{string} Prefer [...]
+                  RUBY
+                end
+              end
+            end
+
+            context 'as an argument to another method' do
+              it 'does not register an offense' do
+                expect_no_offenses(<<~RUBY)
+                  foo('#{string}')
+                RUBY
+              end
+            end
+          end
+        end
+
+        it_behaves_like 'conservative', :annotated, '%<greetings>s'
+        it_behaves_like 'conservative', :template, '%{greetings}'
+        it_behaves_like 'conservative', :unannotated, '%s'
+      end
     end
   end
 end
