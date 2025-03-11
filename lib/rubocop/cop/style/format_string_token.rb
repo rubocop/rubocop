@@ -3,16 +3,20 @@
 module RuboCop
   module Cop
     module Style
-      # Use a consistent style for named format string tokens.
+      # Use a consistent style for tokens within a format string.
       #
-      # NOTE: `unannotated` style cop only works for strings
-      # which are passed as arguments to those methods:
-      # `printf`, `sprintf`, `format`, `%`.
-      # The reason is that _unannotated_ format is very similar
-      # to encoded URLs or Date/Time formatting strings.
+      # All strings are evaluated. In some cases, this may be undesirable,
+      # as they could be used as arguments to a method that does not consider
+      # them to be tokens, but rather other identifiers or just part of the string.
+      # In these cases, `AllowedMethods` or `AllowedPatterns` can be used to mark the
+      # method as allowed, thereby avoiding an offense from the cop.
       #
-      # This cop's allowed methods can be customized with `AllowedMethods`.
       # By default, there are no allowed methods.
+      #
+      # NOTE: Tokens in the `unannotated` style (eg. `%s`) are only considered if used
+      # in the format string argument to the methods `printf`, `sprintf`, `format` and
+      # `%`. This is done in order to prevent false positives, because this format is
+      # very similar to encoded URLs or Date/Time formatting strings.
       #
       # @example EnforcedStyle: annotated (default)
       #
