@@ -746,7 +746,9 @@ RSpec.describe RuboCop::ConfigLoader do
           .to contain_exactly('foo.rb', 'test.rb')
         expect(examples_configuration['Include']).to contain_exactly('bar.rb', 'another_test.rb')
         expect(examples_configuration['AllowedIdentifiers'])
-          .to match_array(%w[capture3 iso8601 rfc1123_date rfc2822 rfc3339 rfc822 iso2 x86_64])
+          .to match_array(
+            %w[TLS1_1 TLS1_2 capture3 iso8601 rfc1123_date rfc2822 rfc3339 rfc822 iso2 x86_64]
+          )
         expect(examples_configuration['InheritedArraySpecifiedString']).to contain_exactly(
           'bare string',
           'string in array'
