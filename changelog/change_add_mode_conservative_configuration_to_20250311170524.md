@@ -1,1 +1,0 @@
-* [#13979](https://github.com/rubocop/rubocop/pull/13979): Add `Mode: conservative` configuration to `Style/FormatStringToken` to make the cop only register offenses for strings given to `printf`, `sprintf`, `format`, and `%`. ([@dvandersluis][])

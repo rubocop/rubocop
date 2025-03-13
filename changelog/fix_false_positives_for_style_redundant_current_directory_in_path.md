@@ -1,1 +1,0 @@
-* [#13975](https://github.com/rubocop/rubocop/issues/13975): Fix false positives for `Style/RedundantCurrentDirectoryInPath` when using a complex current directory path in `require_relative`. ([@koic][])
