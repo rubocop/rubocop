@@ -9,7 +9,8 @@ module RuboCop
   # @api private
   class ConfigLoaderResolver # rubocop:disable Metrics/ClassLength
     def resolve_plugins(rubocop_config, plugins)
-      return if (plugins = Array(plugins)).empty?
+      plugins = Array(plugins) - ConfigLoader.loaded_plugins.map { |plugin| plugin.about.name }
+      return if plugins.empty?
 
       Plugin.integrate_plugins(rubocop_config, plugins)
     end

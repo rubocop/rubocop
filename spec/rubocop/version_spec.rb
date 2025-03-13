@@ -104,6 +104,48 @@ RSpec.describe RuboCop::Version do
       end
     end
 
+    context 'when plugins are specified' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          plugins:
+            - rubocop-performance
+            - rubocop-rspec
+        YAML
+      end
+
+      it 'returns the extensions' do
+        expect(extension_versions).to contain_exactly(
+          /- rubocop-performance \d+\.\d+\.\d+/,
+          /- rubocop-rspec \d+\.\d+\.\d+/
+        )
+      end
+    end
+
+    context 'when a duplicate plugin is specified in an inherited config' do
+      before do
+        create_file('base.yml', <<~YAML)
+          plugins:
+            - rubocop-performance
+        YAML
+
+        create_file('.rubocop.yml', <<~YAML)
+          inherit_from:
+            - base.yml
+
+          plugins:
+            - rubocop-performance
+            - rubocop-rspec
+        YAML
+      end
+
+      it 'returns each extension exactly once' do
+        expect(extension_versions).to contain_exactly(
+          /- rubocop-performance \d+\.\d+\.\d+/,
+          /- rubocop-rspec \d+\.\d+\.\d+/
+        )
+      end
+    end
+
     context 'with an invalid cop in config' do
       before do
         create_file('.rubocop.yml', <<~YAML)
