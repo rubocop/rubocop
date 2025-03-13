@@ -559,6 +559,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
           RUBY
         end
       end
+
+      context 'and Layout/HashAlignment:EnforcedHashRocketStyle is key, table' do
+        let(:hash_style) { %w[key table] }
+
+        it 'registers an offense and corrects a hash rocket without spaces' do
+          expect_offense(<<~RUBY)
+            { 1=>2, a: b }
+               ^^ Surrounding space missing for operator `=>`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            { 1 => 2, a: b }
+          RUBY
+        end
+      end
     end
 
     context 'when a hash literal is on multiple lines' do
@@ -585,6 +600,19 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
 
       context 'and Layout/HashAlignment:EnforcedHashRocketStyle is table' do
         let(:hash_style) { 'table' }
+
+        it "doesn't register an offense for a hash rocket without spaces" do
+          expect_no_offenses(<<~RUBY)
+            {
+              1=>2,
+              a: b
+            }
+          RUBY
+        end
+      end
+
+      context 'and Layout/HashAlignment:EnforcedHashRocketStyle is key, table' do
+        let(:hash_style) { %w[key table] }
 
         it "doesn't register an offense for a hash rocket without spaces" do
           expect_no_offenses(<<~RUBY)
