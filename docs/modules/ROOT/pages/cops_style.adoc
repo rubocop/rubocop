@@ -1752,11 +1752,23 @@ That's a good use case of ? literal so it doesn't count it as an offense.
 | Yes
 | Always (Unsafe)
 | 0.19
-| -
+| 1.74
 |===
 
-Checks the style of children definitions at classes and
-modules. Basically there are two different styles:
+Checks that namespaced classes and modules are defined with a consistent style.
+
+With `nested` style, classes and modules should be defined separately (one constant
+on each line, without `::`). With `compact` style, classes and modules should be
+defined with fully qualified names (using `::` for namespaces).
+
+NOTE: The style chosen will affect `Module.nesting` for the class or module. Using
+`nested` style will result in each level being added, whereas `compact` style will
+only include the fully qualified class or module name.
+
+By default, `EnforcedStyle` applies to both classes and modules. If desired, separate
+styles can be defined for classes and modules by using `EnforcedStyleForClasses` and
+`EnforcedStyleForModules` respectively. If not set, or set to nil, the `EnforcedStyle`
+value will be used.
 
 The compact style is only forced for classes/modules with one child.
 
@@ -1765,8 +1777,8 @@ The compact style is only forced for classes/modules with one child.
 
 Autocorrection is unsafe.
 
-Moving from compact to nested children requires knowledge of whether the
-outer parent is a module or a class. Moving from nested to compact requires
+Moving from `compact` to `nested` children requires knowledge of whether the
+outer parent is a module or a class. Moving from `nested` to `compact` requires
 verification that the outer parent is defined elsewhere. RuboCop does not
 have the knowledge to perform either operation safely and thus requires
 manual oversight.
@@ -1807,6 +1819,14 @@ end
 | EnforcedStyle
 | `nested`
 | `nested`, `compact`
+
+| EnforcedStyleForClasses
+| `<none>`
+| `<none>`, `nested`, `compact`
+
+| EnforcedStyleForModules
+| `<none>`
+| `<none>`, `nested`, `compact`
 |===
 
 [#references-styleclassandmodulechildren]
@@ -2775,8 +2795,8 @@ Checks for comments put on the same line as some keywords.
 These keywords are: `class`, `module`, `def`, `begin`, `end`.
 
 Note that some comments
-(`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
-and RBS::Inline annotation comments are allowed.
+(`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`),
+RBS::Inline annotation, and Steep annotation (`steep:ignore`) are allowed.
 
 Autocorrection removes comments from `end` keyword and keeps comments
 for `class`, `module`, `def` and `begin` above the keyword.
@@ -2815,6 +2835,45 @@ class X # :nodoc:
   y
 end
 ----
+
+[#stylecomparablebetween]
+== Style/ComparableBetween
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.74
+| -
+|===
+
+Checks for logical comparison which can be replaced with `Comparable#between?`.
+
+NOTE: `Comparable#between?` is on average slightly slower than logical comparison,
+although the difference generally isn't observable. If you require maximum
+performance, consider using logical comparison.
+
+[#examples-stylecomparablebetween]
+=== Examples
+
+[source,ruby]
+----
+# bad
+x >= min && x <= max
+
+# bad
+x <= max && x >= min
+
+# good
+x.between?(min, max)
+----
+
+[#references-stylecomparablebetween]
+=== References
+
+* https://rubystyle.guide#ranges-or-between
 
 [#stylecomparableclamp]
 == Style/ComparableClamp
@@ -5787,19 +5846,27 @@ puts '%10s' % 'foo'
 | Yes
 | Always
 | 0.49
-| 1.0
+| 1.74
 |===
 
-Use a consistent style for named format string tokens.
+Use a consistent style for tokens within a format string.
 
-NOTE: `unannotated` style cop only works for strings
-which are passed as arguments to those methods:
-`printf`, `sprintf`, `format`, `%`.
-The reason is that _unannotated_ format is very similar
-to encoded URLs or Date/Time formatting strings.
+By default, all strings are evaluated. In some cases, this may be undesirable,
+as they could be used as arguments to a method that does not consider
+them to be tokens, but rather other identifiers or just part of the string.
 
-This cop's allowed methods can be customized with `AllowedMethods`.
-By default, there are no allowed methods.
+`AllowedMethods` or `AllowedPatterns` can be configured with in order to mark specific
+methods as always allowed, thereby avoiding an offense from the cop. By default, there
+are no allowed methods.
+
+Additionally, the cop can be made conservative by configuring it with
+`Mode: conservative` (default `aggressive`). In this mode, tokens (regardless
+of `EnforcedStyle`) are only considered if used in the format string argument to the
+methods `printf`, `sprintf`, `format` and `%`.
+
+NOTE: Tokens in the `unannotated` style (eg. `%s`) are always treated as if
+configured with `Conservative: true`. This is done in order to prevent false positives,
+because this format is very similar to encoded URLs or Date/Time formatting strings.
 
 It is allowed to contain unannotated token
 if the number of them is less than or equals to
@@ -5908,6 +5975,25 @@ redirect('foo/%{bar_id}')
 redirect('foo/%{bar_id}')
 ----
 
+[#mode_-conservative_-enforcedstyle_-annotated-styleformatstringtoken]
+==== Mode: conservative, EnforcedStyle: annotated
+
+[source,ruby]
+----
+# In `conservative` mode, offenses are only registered for strings
+# given to a known formatting method.
+
+# good
+"%{greeting}"
+foo("%{greeting}")
+
+# bad
+format("%{greeting}", greeting: 'Hello')
+printf("%{greeting}", greeting: 'Hello')
+sprintf("%{greeting}", greeting: 'Hello')
+"%{greeting}" % { greeting: 'Hello' }
+----
+
 [#configurable-attributes-styleformatstringtoken]
 === Configurable attributes
 
@@ -5921,6 +6007,10 @@ redirect('foo/%{bar_id}')
 | MaxUnannotatedPlaceholdersAllowed
 | `1`
 | Integer
+
+| Mode
+| `aggressive`
+| String
 
 | AllowedMethods
 | `[]`

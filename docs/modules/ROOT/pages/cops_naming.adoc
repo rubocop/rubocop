@@ -1733,7 +1733,7 @@ expect(Open3).to receive(:capture3)
 | Boolean
 
 | AllowedIdentifiers
-| `capture3`, `iso8601`, `rfc1123_date`, `rfc822`, `rfc2822`, `rfc3339`, `x86_64`
+| `TLS1_1`, `TLS1_2`, `capture3`, `iso8601`, `rfc1123_date`, `rfc822`, `rfc2822`, `rfc3339`, `x86_64`
 | Array
 
 | AllowedPatterns

@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.74.0 (2025-03-13)
+
 ### New features
 
 * [#13936](https://github.com/rubocop/rubocop/pull/13936): Adds new cop `Style/ComparableBetween`. ([@lovro-bikic][])

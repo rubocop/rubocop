@@ -5456,13 +5456,13 @@ warn something
 | -
 |===
 
-Checks for redundant uses of `to_s`, `to_sym`, `to_i`, `to_f`, `to_r`, `to_c`,
+Checks for redundant uses of `to_s`, `to_sym`, `to_i`, `to_f`, `to_d`, `to_r`, `to_c`,
 `to_a`, `to_h`, and `to_set`.
 
 When one of these methods is called on an object of the same type, that object
 is returned, making the call unnecessary. The cop detects conversion methods called
 on object literals, class constructors, class `[]` methods, and the `Kernel` methods
-`String()`, `Integer()`, `Float()`, `Rational()`, `Complex()` and `Array()`.
+`String()`, `Integer()`, `Float()`, BigDecimal(), `Rational()`, `Complex()`, and `Array()`.
 
 Specifically, these cases are detected for each conversion method:
 
@@ -8108,8 +8108,8 @@ end
 |===
 
 Checks for useless constant scoping. Private constants must be defined using
-`private_constant` or `class << self`. Even if `private` access modifier is used,
-it is public scope despite its appearance.
+`private_constant`. Even if `private` access modifier is used, it is public scope despite
+its appearance.
 
 It does not support autocorrection due to behavior change and multiple ways to fix it.
 Or a public constant may be intended.
@@ -8129,14 +8129,6 @@ end
 class Foo
   PRIVATE_CONST = 42
   private_constant :PRIVATE_CONST
-end
-
-# good
-class Foo
-  class << self
-    private
-    PRIVATE_CONST = 42
-  end
 end
 
 # good

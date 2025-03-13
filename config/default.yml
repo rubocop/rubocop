@@ -3501,7 +3501,7 @@ Style/ClassAndModuleChildren:
   SafeAutoCorrect: false
   Enabled: true
   VersionAdded: '0.19'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.74'
   #
   # Basically there are two different styles:
   #
@@ -3687,7 +3687,7 @@ Style/CommentedKeyword:
 Style/ComparableBetween:
   Description: 'Enforces the use of `Comparable#between?` instead of logical comparison.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.74'
   StyleGuide: '#ranges-or-between'
 
 Style/ComparableClamp:
@@ -4099,7 +4099,7 @@ Style/FormatStringToken:
   #     format` and `%` methods. Other strings are not considered.
   Mode: aggressive
   VersionAdded: '0.49'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.74'
   AllowedMethods: []
   AllowedPatterns: []
 
