@@ -38,23 +38,24 @@ module RuboCop
 
           describe = find_describe_method_node(node)
 
-          unless (exist_config = describe.last_argument.source == ':config')
-            additional_message = ' and specify `:config` in `describe`'
-          end
+          should_append_config = describe && describe.last_argument.source != ':config'
+          additional_message = ' and specify `:config` in `describe`' if should_append_config
 
           message = format(MSG, additional_message: additional_message)
 
           add_offense(node, message: message) do |corrector|
             corrector.remove(range_by_whole_lines(node.source_range, include_final_newline: true))
 
-            corrector.insert_after(describe.last_argument, ', :config') unless exist_config
+            corrector.insert_after(describe.last_argument, ', :config') if should_append_config
           end
         end
 
         private
 
         def find_describe_method_node(block_node)
-          block_node.ancestors.find { |node| node.block_type? && node.method?(:describe) }.send_node
+          block_node.ancestors.find do |node|
+            node.block_type? && node.method?(:describe)
+          end&.send_node
         end
       end
     end
