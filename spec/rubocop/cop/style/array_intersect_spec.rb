@@ -73,6 +73,64 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
       RUBY
     end
 
+    context 'with Array#intersection' do
+      it 'registers an offense for `a.intersection(b).any?`' do
+        expect_offense(<<~RUBY)
+          a.intersection(b).any?
+          ^^^^^^^^^^^^^^^^^^^^^^ Use `a.intersect?(b)` instead of `a.intersection(b).any?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a.intersect?(b)
+        RUBY
+      end
+
+      it 'registers an offense for `a.intersection(b).none?`' do
+        expect_offense(<<~RUBY)
+          a.intersection(b).none?
+          ^^^^^^^^^^^^^^^^^^^^^^^ Use `!a.intersect?(b)` instead of `a.intersection(b).none?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          !a.intersect?(b)
+        RUBY
+      end
+
+      it 'registers an offense for `a.intersection(b).empty?`' do
+        expect_offense(<<~RUBY)
+          a.intersection(b).empty?
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use `!a.intersect?(b)` instead of `a.intersection(b).empty?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          !a.intersect?(b)
+        RUBY
+      end
+
+      it 'registers an offense when using safe navigation' do
+        expect_offense(<<~RUBY)
+          a&.intersection(b)&.any?
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use `a&.intersect?(b)` instead of `a&.intersection(b)&.any?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a&.intersect?(b)
+        RUBY
+      end
+
+      it 'does not register an offense for `array.intersection` with no arguments' do
+        expect_no_offenses(<<~RUBY)
+          array1.intersection.any?
+        RUBY
+      end
+
+      it 'does not register an offense for `array.intersection` with multiple arguments' do
+        expect_no_offenses(<<~RUBY)
+          array1.intersection(array2, array3).any?
+        RUBY
+      end
+    end
+
     context 'when `AllCops/ActiveSupportExtensionsEnabled: true`' do
       let(:config) do
         RuboCop::Config.new('AllCops' => {
@@ -100,6 +158,28 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
 
         expect_correction(<<~RUBY)
           !conditions.pluck("type").intersect?(%w[customer_country ip_country])
+        RUBY
+      end
+
+      it 'registers an offense for `a.intersection(b).present?`' do
+        expect_offense(<<~RUBY)
+          a.intersection(b).present?
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `a.intersect?(b)` instead of `a.intersection(b).present?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a.intersect?(b)
+        RUBY
+      end
+
+      it 'registers an offense for `a.intersection(b).blank?`' do
+        expect_offense(<<~RUBY)
+          a.intersection(b).blank?
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use `!a.intersect?(b)` instead of `a.intersection(b).blank?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          !a.intersect?(b)
         RUBY
       end
 
