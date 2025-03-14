@@ -1,0 +1,1 @@
+* [#8099](https://github.com/rubocop/rubocop/issues/8099): Fix infinite loop between `Layout/SpaceAroundOperators` and `Layout/HashAlignment` with `EnforcedHashRocketStyle` being an array containing `table`. ([@dvandersluis][])

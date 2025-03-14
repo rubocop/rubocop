@@ -3888,4 +3888,40 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     RUBY
   end
+
+  it 'does not create an infinite loop between `Layout/SpaceAroundOperators` and `Layout/HashAlignment` when `EnforcedHashRocketStyle`' \
+     'is an array containing `table`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      {
+        "one"   => 1,
+        "two"   => {
+        },
+        "three" => {
+        },
+        "four"  => {
+        }
+      }
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/SpaceAroundOperators:
+        AllowForAlignment: true
+
+      Layout/HashAlignment:
+        EnforcedHashRocketStyle:
+          - table
+          - key
+    YAML
+
+    status = cli.run(%w[--autocorrect-all --only Layout/SpaceAroundOperators,Layout/HashAlignment])
+    expect(status).to eq(0)
+    expect($stdout.string).to eq(<<~RESULT)
+      Inspecting 1 file
+      .
+
+      1 file inspected, no offenses detected
+    RESULT
+    expect($stderr.string).to eq('')
+  end
 end

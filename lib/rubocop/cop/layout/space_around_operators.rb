@@ -260,7 +260,10 @@ module RuboCop
         end
 
         def hash_table_style?
-          align_hash_cop_config && align_hash_cop_config['EnforcedHashRocketStyle'] == 'table'
+          return false unless align_hash_cop_config
+
+          enforced_styles = Array(align_hash_cop_config['EnforcedHashRocketStyle'])
+          enforced_styles.include?('table')
         end
 
         def space_around_exponent_operator?
