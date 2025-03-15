@@ -1,4 +1,4 @@
-= Extensions
+= Plugin Configuration
 
 :lint_roller: https://github.com/standardrb/lint_roller[lint_roller]
 
