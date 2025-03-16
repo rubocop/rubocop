@@ -30,14 +30,14 @@ $ rubocop --format progress --format offenses
 # Progress format to $stdout and JSON format to the file rubocop.json.
 $ rubocop --format progress --format json --out rubocop.json
 #         ~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~
-#                 |               |_______________|
-#              $stdout
+#                 |_______________|               |
+#                   default format             $stdout
 
 # Progress format to result.txt and simple format to $stdout.
 $ rubocop --out result.txt --format simple
-#         ~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~
-#                  |                 |
-#           default format        $stdout
+#         ~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~
+#                 |               |
+#              $stdout     default format
 ----
 
 You can also load xref:extensions.adoc#custom-formatters[custom formatters].
