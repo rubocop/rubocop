@@ -52,13 +52,17 @@ module RuboCop
           scope.variables.each_value { |variable| check_for_unused_assignments(variable) }
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength
         def check_for_unused_assignments(variable)
           return if variable.should_be_unused?
 
           variable.assignments.reverse_each do |assignment|
             assignment_node = assignment.node
             next if assignment.used? || part_of_ignored_node?(assignment_node)
+
+            # Don't report an offense if this assignment is in one branch of an if/else
+            # and the variable is captured by a block in another branch
+            next if assignment_in_branch_with_block_capture?(assignment, variable)
 
             message = message_for_useless_assignment(assignment)
             range = offense_range(assignment)
@@ -77,7 +81,27 @@ module RuboCop
             ignore_node(assignment_node) if chained_assignment?(assignment_node)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+
+        def assignment_in_branch_with_block_capture?(assignment, variable)
+          return false unless assignment.branch
+
+          # Check if this assignment is in an if/else branch
+          if_node = assignment.node.each_ancestor(:if).first
+          return false unless if_node
+
+          # Check if the variable is captured by a block in any branch
+          if_node.branches.compact.any? do |branch|
+            branch.each_descendant(:any_block).any? do |block_node|
+              block_assignments = variable.assignments.select do |a|
+                block_node.child_nodes.include?(a.node) || a.node.each_ancestor.any? do |ancestor|
+                  ancestor.equal?(block_node)
+                end
+              end
+              block_assignments.any?(&:used?)
+            end
+          end
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/MethodLength
 
         def message_for_useless_assignment(assignment)
           variable = assignment.variable

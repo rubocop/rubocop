@@ -941,6 +941,40 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
   end
 
   context "when there's an unreferenced assignment in top level if branch " \
+          'also assigned and referenced in the paired else branch in a block' \
+          'while the variable is referenced after the if/else' do
+    it 'allows' do
+      expect_no_offenses(<<~RUBY)
+        if cond
+          output = []
+        else
+          output = []
+          1.times { |value| output = [value] }
+        end
+
+        output
+      RUBY
+    end
+  end
+
+  context "when there's an unreferenced assignment in top level if branch " \
+          'also assigned and referenced in the paired else branch in a numblock' \
+          'while the variable is referenced after the if/else' do
+    it 'allows' do
+      expect_no_offenses(<<~RUBY)
+        if cond
+          output = []
+        else
+          output = []
+          1.times { output = [_1] }
+        end
+
+        output
+      RUBY
+    end
+  end
+
+  context "when there's an unreferenced assignment in top level if branch " \
           'while the variable is referenced in the paired else branch' do
     it 'registers an offense for the assignment in the if branch' do
       expect_offense(<<~RUBY)
