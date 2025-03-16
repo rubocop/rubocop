@@ -189,7 +189,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def check_expressions(node, expressions, insert_position)
           return if expressions.any?(&:nil?)
 
@@ -197,7 +197,9 @@ module RuboCop
 
           expressions.each do |expression|
             add_offense(expression) do |corrector|
-              next if node.if_type? && node.ternary?
+              if (node.if_type? && node.ternary?) || node.loc.begin&.source&.start_with?('then')
+                next
+              end
 
               range = range_by_whole_lines(expression.source_range, include_final_newline: true)
               corrector.remove(range)
@@ -213,7 +215,7 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         def correct_assignment(corrector, node, expression, insert_position)
           if insert_position == :after_condition
