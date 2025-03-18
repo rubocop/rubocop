@@ -551,6 +551,45 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is reassigned in another branch before a block' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          if baz
+            foo = 1
+          else
+            foo = 2
+            bar {
+              foo = 3
+            }
+          end
+
+          foo
+        end
+      RUBY
+    end
+  end
+
+  context 'when a variable is reassigned in another case branch before a block' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          case baz
+          when 1
+            foo = 1
+          else
+            foo = 2
+            bar {
+              foo = 3
+            }
+          end
+
+          foo
+        end
+      RUBY
+    end
+  end
+
   context 'when assigning in branch' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)

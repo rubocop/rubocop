@@ -6,8 +6,6 @@ module RuboCop
       # A Variable represents existence of a local variable.
       # This holds a variable declaration node and some states of the variable.
       class Variable
-        extend NodePattern::Macros
-
         VARIABLE_DECLARATION_TYPES = (VARIABLE_ASSIGNMENT_TYPES + ARGUMENT_DECLARATION_TYPES).freeze
 
         attr_reader :name, :declaration_node, :scope, :assignments, :references, :captured_by_block
@@ -40,13 +38,10 @@ module RuboCop
 
         def mark_last_as_reassigned!(assignment)
           return if captured_by_block?
-          return if candidate_condition?(assignment.node.parent)
+          return unless assignment.branch == @assignments.last&.branch
 
           @assignments.last&.reassigned!
         end
-
-        # @!method candidate_condition?(node)
-        def_node_matcher :candidate_condition?, '[{if case case_match when}]'
 
         def referenced?
           !@references.empty?
