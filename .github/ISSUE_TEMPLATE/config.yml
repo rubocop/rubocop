@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Report a security vulnerability
-    url: https://github.com/rubocop/rubocop/security
-    about: Privately report a security vulnerability.
   - name: GitHub Discussions
     url: https://github.com/rubocop/rubocop/discussions
     about: For anything else.
