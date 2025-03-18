@@ -28,7 +28,7 @@ Specifically, those that trigger warnings like the following should be updated:
 ----
 $ bundle exec rubocop
 rubocop-performance extension supports plugin, specify `plugins: rubocop-performance`
-instead of `require: rubocop-performance` in /Users/koic/src/github.com/rubocop/rubocop/.rubocop.yml.
+instead of `require: rubocop-performance` in /Users/user/src/github.com/rubocop/rubocop/.rubocop.yml.
 For more information, see https://docs.rubocop.org/rubocop/plugin_migration_guide.html.
 ----
 
