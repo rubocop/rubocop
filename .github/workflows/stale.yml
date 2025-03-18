@@ -23,8 +23,8 @@ jobs:
             had any recent activity. It will be closed soon if no further
             activity occurs. Thank you for your understanding!
           close-issue-message: >-
-            This issue been automatically closed due to lack of activity. Feel free to re-open it
-            if you ever come back to it.
+            This issue has been automatically closed due to lack of activity. Feel free to ask
+            for it to be re-opened if you ever come back to it.
           days-before-pr-stale: 30
           days-before-pr-close: 30
           exempt-pr-labels: "high priority, good first issue, pinned"
@@ -33,6 +33,6 @@ jobs:
             had any recent activity. It will be closed soon if no further
             activity occurs. Thank you for your contribution and understanding!
           close-pr-message: >-
-            This pull request been automatically closed due to lack of activity. Feel free to re-open it
-            if you ever come back to it.
+            This pull request has been automatically closed due to lack of activity. Feel free to ask
+            for it to be re-opened if you ever come back to it.
           repo-token: ${{ secrets.GITHUB_TOKEN }}
