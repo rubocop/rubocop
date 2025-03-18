@@ -2995,6 +2995,7 @@ Naming/MethodName:
   StyleGuide: '#snake-case-symbols-methods-vars'
   Enabled: true
   VersionAdded: '0.50'
+  VersionChanged: '<<next>>'
   EnforcedStyle: snake_case
   SupportedStyles:
     - snake_case
@@ -3006,6 +3007,10 @@ Naming/MethodName:
   #     - '\A\s*onSelectionCleared\s*'
   #
   AllowedPatterns: []
+  ForbiddenIdentifiers:
+    - __id__
+    - __send__
+  ForbiddenPatterns: []
 
 Naming/MethodParameterName:
   Description: >-

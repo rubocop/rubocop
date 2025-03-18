@@ -192,6 +192,120 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     end
   end
 
+  shared_examples 'forbidden identifiers' do |identifier|
+    context 'when ForbiddenIdentifiers is set' do
+      let(:cop_config) { super().merge('ForbiddenIdentifiers' => [identifier]) }
+
+      context 'for multi-line method definition' do
+        it 'registers an offense when method with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def %{identifier}
+                ^{identifier} `%{identifier}` is forbidden, use another method name instead.
+              true
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for single-line method definition' do
+        it 'registers an offense when method with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def %{identifier}; true; end
+                ^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for class method definition' do
+        it 'registers an offense when method with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def self.%{identifier}
+                     ^{identifier} `%{identifier}` is forbidden, use another method name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for singleton method definition' do
+        it 'registers an offense when method with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def foo.%{identifier}
+                    ^{identifier} `%{identifier}` is forbidden, use another method name instead.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for attr methods' do
+        it 'registers an offense when method with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            attr_reader :#{identifier}
+                        ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+            attr_writer :#{identifier}
+                        ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+            attr_accessor :#{identifier}
+                          ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+    end
+  end
+
+  shared_examples 'forbidden patterns' do |pattern, identifier|
+    context 'when ForbiddenIdentifiers is set' do
+      let(:cop_config) { super().merge('ForbiddenPatterns' => [pattern]) }
+
+      context 'for multi-line method definition' do
+        it 'registers an offense when method with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def %{identifier}
+                ^{identifier} `%{identifier}` is forbidden, use another method name instead.
+              true
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for single-line method definition' do
+        it 'registers an offense when method with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            def %{identifier}; true; end
+                ^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for attr methods' do
+        it 'registers an offense when method with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            attr_reader :#{identifier}
+                        ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+            attr_writer :#{identifier}
+                        ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+            attr_accessor :#{identifier}
+                          ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+    end
+  end
+
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
@@ -264,6 +378,8 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     include_examples 'never accepted',  'snake_case'
     include_examples 'always accepted', 'snake_case'
     include_examples 'multiple attr methods', 'snake_case'
+    include_examples 'forbidden identifiers', 'super'
+    include_examples 'forbidden patterns', '_v1\z', 'api_v1'
   end
 
   context 'when configured for camelCase' do
@@ -340,6 +456,8 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     include_examples 'always accepted', 'camelCase'
     include_examples 'never accepted',  'camelCase'
     include_examples 'multiple attr methods', 'camelCase'
+    include_examples 'forbidden identifiers', 'super'
+    include_examples 'forbidden patterns', '_gen\d+\z', 'user_gen1'
   end
 
   it 'accepts for non-ascii characters' do
