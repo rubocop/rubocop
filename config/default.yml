@@ -3053,6 +3053,18 @@ Naming/MethodParameterName:
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
+Naming/PredicateMethod:
+  Description: 'Checks that predicate methods end with `?` and non-predicate methods do not.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  # In `aggressive` mode, the cop will register an offense for predicate methods that
+  #   may return a non-boolean value.
+  # In `conservative` mode, the cop will *not* register an offense for predicate methods
+  #   that may return a non-boolean value.
+  Mode: conservative
+  AllowedMethods:
+    - call
+
 Naming/PredicatePrefix:
   Description: 'Predicate method names should not be prefixed and end with a `?`.'
   StyleGuide: '#bool-methods-qmark'
