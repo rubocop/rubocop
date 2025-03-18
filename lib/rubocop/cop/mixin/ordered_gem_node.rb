@@ -24,7 +24,7 @@ module RuboCop
         gem_canonical_name(string_a) < gem_canonical_name(string_b)
       end
 
-      def consecutive_lines(previous, current)
+      def consecutive_lines?(previous, current)
         first_line = get_source_range(current, treat_comments_as_separators).first_line
         previous.source_range.last_line == first_line - 1
       end

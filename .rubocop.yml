@@ -19,6 +19,10 @@ AllCops:
   TargetRubyVersion: 2.7
   SuggestExtensions: false
 
+Naming/PredicateMethod:
+  AllowedMethods:
+    - on_defined?
+
 Naming/PredicatePrefix:
   # Method define macros for dynamically generated method.
   MethodDefinitionMacros:
