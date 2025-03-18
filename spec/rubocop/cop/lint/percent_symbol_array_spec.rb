@@ -46,8 +46,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray, :config do
     end
 
     context 'with binary encoded source' do
-      # FIXME: This spec should work with the latest Prism and Ruby 3.4.0dev.
-      it 'registers an offense and corrects when tokens contain quotes', broken_on: :prism do
+      it 'registers an offense and corrects when tokens contain quotes' do
         expect_offense(<<~RUBY.b)
           # encoding: BINARY
 
@@ -62,8 +61,7 @@ RSpec.describe RuboCop::Cop::Lint::PercentSymbolArray, :config do
         RUBY
       end
 
-      # FIXME: This spec should work with the latest Prism and Ruby 3.4.0dev.
-      it 'accepts if tokens contain no quotes', broken_on: :prism do
+      it 'accepts if tokens contain no quotes' do
         expect_no_offenses(<<~RUBY.b)
           # encoding: BINARY
 
