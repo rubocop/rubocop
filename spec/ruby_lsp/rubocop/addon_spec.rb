@@ -120,6 +120,10 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
   describe 'workspace/didChangeWatchedFiles' do
     it 'creates new runtime adapter' do
       with_server(source, '.rubocop.yml') do |server, uri|
+        # Ensure initial indexing is complete before trying to process did change watched file
+        # notifications
+        server.global_state.index.index_all(uris: [])
+
         addon = RubyLsp::Addon.addons.find { |a| a.name == 'RuboCop' }
         expect(addon).to be_an_instance_of(RubyLsp::RuboCop::Addon)
         original_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
