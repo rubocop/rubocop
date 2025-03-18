@@ -17,7 +17,8 @@ gem 'rubocop-performance', '~> 1.24.0'
 gem 'rubocop-rake', '~> 0.7.0'
 gem 'rubocop-rspec', '~> 3.5.0'
 # Ruby LSP supports Ruby 3.0+.
-gem 'ruby-lsp', '~> 0.23', platform: :mri if RUBY_VERSION >= '3.0'
+# TODO: Remove max version when https://github.com/rubocop/rubocop/issues/14000 is resolved.
+gem 'ruby-lsp', '~> 0.23', '<= 0.23.11', platform: :mri if RUBY_VERSION >= '3.0'
 gem 'simplecov', '~> 0.20'
 gem 'stackprof', platform: :mri
 gem 'test-queue'
