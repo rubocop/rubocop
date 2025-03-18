@@ -100,7 +100,7 @@ module RuboCop
       #   # good
       #   def_node_matcher(:even?) { |value| }
       #
-      class PredicateName < Base
+      class PredicatePrefix < Base
         include AllowedMethods
 
         # @!method dynamic_method_define(node)
@@ -143,7 +143,7 @@ module RuboCop
             next if predicate_prefixes.include?(forbidden_prefix)
 
             raise ValidationError, <<~MSG.chomp
-              The `Naming/PredicateName` cop is misconfigured. Prefix #{forbidden_prefix} must be included in NamePrefix because it is included in ForbiddenPrefixes.
+              The `Naming/PredicatePrefix` cop is misconfigured. Prefix #{forbidden_prefix} must be included in NamePrefix because it is included in ForbiddenPrefixes.
             MSG
           end
         end

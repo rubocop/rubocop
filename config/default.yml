@@ -3042,8 +3042,8 @@ Naming/MethodParameterName:
   # Forbidden names that will register an offense
   ForbiddenNames: []
 
-Naming/PredicateName:
-  Description: 'Check the names of predicate methods.'
+Naming/PredicatePrefix:
+  Description: 'Predicate method names should not be prefixed and end with a `?`.'
   StyleGuide: '#bool-methods-qmark'
   Enabled: true
   VersionAdded: '0.50'

@@ -19,7 +19,7 @@ AllCops:
   TargetRubyVersion: 2.7
   SuggestExtensions: false
 
-Naming/PredicateName:
+Naming/PredicatePrefix:
   # Method define macros for dynamically generated method.
   MethodDefinitionMacros:
     - define_method
@@ -333,7 +333,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/lint/trailing_comma_in_attribute_declaration.rb'
     - 'lib/rubocop/cop/lint/useless_ruby2_keywords.rb'
     - 'lib/rubocop/cop/naming/method_name.rb'
-    - 'lib/rubocop/cop/naming/predicate_name.rb'
+    - 'lib/rubocop/cop/naming/predicate_prefix.rb'
     - 'lib/rubocop/cop/security/eval.rb'
     - 'lib/rubocop/cop/style/access_modifier_declarations.rb'
     - 'lib/rubocop/cop/style/alias.rb'
