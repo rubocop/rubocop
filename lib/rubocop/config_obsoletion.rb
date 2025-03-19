@@ -23,9 +23,40 @@ module RuboCop
     class << self
       attr_accessor :files
 
+      def global
+        @global ||= new(Config.new)
+      end
+
+      def reset!
+        @global = nil
+        @deprecated_names = {}
+        LOAD_RULES_CACHE[rules_cache_key] = nil
+      end
+
+      def rules_cache_key
+        files.hash
+      end
+
       def legacy_cop_names
         # Used by DepartmentName#qualified_legacy_cop_name
-        new(Config.new).rules.select(&:cop_rule?).map(&:old_name)
+        global.legacy_cop_names
+      end
+
+      def deprecated_cop_name?(name)
+        global.deprecated_cop_name?(name)
+      end
+
+      def deprecated_names_for(cop)
+        @deprecated_names ||= {}
+        return @deprecated_names[cop] if @deprecated_names.key?(cop)
+
+        @deprecated_names[cop] = global.rules.filter_map do |rule|
+          next unless rule.cop_rule?
+          next unless rule.respond_to?(:new_name)
+          next unless rule.new_name == cop
+
+          rule.old_name
+        end
       end
     end
 
@@ -45,12 +76,21 @@ module RuboCop
       raise ValidationError, messages.join("\n")
     end
 
+    def legacy_cop_names
+      # Used by DepartmentName#qualified_legacy_cop_name
+      cop_rules.map(&:old_name)
+    end
+
+    def deprecated_cop_name?(name)
+      legacy_cop_names.include?(name)
+    end
+
     private
 
     # Default rules for obsoletions are in config/obsoletion.yml
     # Additional rules files can be added with `RuboCop::ConfigObsoletion.files << filename`
     def load_rules # rubocop:disable Metrics/AbcSize
-      rules = LOAD_RULES_CACHE[self.class.files.hash] ||=
+      rules = LOAD_RULES_CACHE[self.class.rules_cache_key] ||=
         self.class.files.each_with_object({}) do |filename, hash|
           hash.merge!(YAML.safe_load(File.read(filename)) || {}) do |_key, first, second|
             case first
@@ -106,6 +146,10 @@ module RuboCop
 
         rule.message
       end
+    end
+
+    def cop_rules
+      rules.select(&:cop_rule?)
     end
   end
 end

@@ -27,14 +27,43 @@ module RuboCop
       config
     end
 
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(hash = RuboCop::ConfigLoader.default_configuration, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
         cop_name = cop.respond_to?(:cop_name) ? cop.cop_name : cop
-        qualified_cop_name = Cop::Registry.qualified_cop_name(cop_name, loaded_path)
-        cop_options = self[qualified_cop_name].dup || {}
-        cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
+
+        if ConfigObsoletion.deprecated_cop_name?(cop)
+          # Since a deprecated cop will no longer have a qualified name (as the badge is no
+          # longer valid), and since we do not want to automatically enable the cop, we just
+          # set the configuration to an empty hash if it is unset.
+          # This is necessary to allow a renamed cop have its old configuration merged in
+          # before being used (which is necessary to allow it to be disabled via config).
+          cop_options = self[cop_name].dup || {}
+        else
+          qualified_cop_name = Cop::Registry.qualified_cop_name(cop_name, loaded_path, warn: false)
+          cop_options = self[qualified_cop_name].dup || {}
+          cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
+
+          # If the cop has deprecated names (ie. it has been renamed), it is possible that
+          # users will still have old configuration for the cop's old name. In this case,
+          # if `ConfigObsoletion` is configured to warn rather than error (and therefore
+          # RuboCop runs), we want to respect the old configuration, so merge it in.
+          #
+          # NOTE: If there is configuration for both the cop and a deprecated names, the old
+          # configuration will be merged on top of the new configuration!
+          ConfigObsoletion.deprecated_names_for(cop).each do |deprecated_cop_name|
+            deprecated_config = @for_cop[deprecated_cop_name]
+            next if deprecated_config.empty?
+
+            warn Rainbow(<<~WARNING).yellow
+              Warning: Using `#{deprecated_cop_name}` configuration in #{loaded_path} for `#{cop}`.
+            WARNING
+
+            cop_options.merge!(@for_cop[deprecated_cop_name])
+          end
+        end
+
         h[cop] = h[cop_name] = cop_options
       end
       @hash = hash
@@ -43,7 +72,7 @@ module RuboCop
       @badge_config_cache = {}.compare_by_identity
       @clusivity_config_exists_cache = {}
     end
-    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def loaded_plugins
       @loaded_plugins ||= ConfigLoader.loaded_plugins

@@ -6,15 +6,26 @@ module RuboCop
     # a cop or moving it to a new department.
     # @api private
     class RenamedCop < CopRule
-      attr_reader :new_name
+      attr_reader :new_name, :metadata
 
-      def initialize(config, old_name, new_name)
+      def initialize(config, old_name, name_or_hash)
         super(config, old_name)
-        @new_name = new_name
+
+        if name_or_hash.is_a?(Hash)
+          @metadata = name_or_hash
+          @new_name = name_or_hash['new_name']
+        else
+          @metadata = {}
+          @new_name = name_or_hash
+        end
       end
 
       def rule_message
         "The `#{old_name}` cop has been #{verb} to `#{new_name}`."
+      end
+
+      def warning?
+        severity == 'warning'
       end
 
       private
@@ -28,6 +39,10 @@ module RuboCop
 
       def verb
         moved? ? 'moved' : 'renamed'
+      end
+
+      def severity
+        metadata['severity']
       end
     end
   end

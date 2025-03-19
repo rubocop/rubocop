@@ -169,8 +169,6 @@ RSpec.describe RuboCop::ConfigObsoletion do
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/OpMethod` cop has been renamed to `Naming/BinaryOperatorParameterName`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
-          The `Style/PredicateName` cop has been moved to `Naming/PredicateName`.
-          (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Layout/SpaceBeforeFirstArg`.
           (obsolete configuration found in example/.rubocop.yml, please update it)
           The `Style/UnneededCapitalW` cop has been renamed to `Style/RedundantCapitalW`.
@@ -214,11 +212,21 @@ RSpec.describe RuboCop::ConfigObsoletion do
         OUTPUT
       end
 
+      let(:expected_warnings) do
+        [
+          <<~OUTPUT.chomp
+            The `Style/PredicateName` cop has been moved to `Naming/PredicateName`.
+            (obsolete configuration found in example/.rubocop.yml, please update it)
+          OUTPUT
+        ]
+      end
+
       it 'prints a warning message' do
         config_obsoletion.reject_obsolete!
         raise 'Expected a RuboCop::ValidationError'
       rescue RuboCop::ValidationError => e
         expect(e.message).to eq(expected_message)
+        expect(config_obsoletion.warnings).to eq(expected_warnings)
       end
     end
 
@@ -666,6 +674,54 @@ RSpec.describe RuboCop::ConfigObsoletion do
         described_class.files << external_obsoletions
 
         expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+      end
+    end
+  end
+
+  describe '.deprecated_cop_name?' do
+    RSpec::Matchers.alias_matcher(:have_deprecated_cop_name, :be_deprecated_cop_name)
+
+    it 'returns true for a cop name that is deprecated' do
+      expect(described_class).to have_deprecated_cop_name('Layout/AlignArguments')
+    end
+
+    it 'returns true for a cop name that is not deprecated' do
+      expect(described_class).not_to have_deprecated_cop_name('Layout/ArgumentAlignment')
+    end
+
+    it 'returns true for a cop name that is unknown' do
+      expect(described_class).not_to have_deprecated_cop_name('Foo/Bar')
+    end
+  end
+
+  describe '.deprecated_names_for', :isolated_environment, :mock_obsoletion do
+    before do
+      create_file(obsoletion_configuration_path, <<~YAML)
+        renamed:
+          Layout/AlignArguments: Layout/ArgumentAlignment
+          Style/PredicateName: Naming/PredicatePrefix
+          Naming/PredicateName: Naming/PredicatePrefix
+      YAML
+    end
+
+    context 'when a cop has been moved once' do
+      it 'returns the deprecated name for a cop' do
+        described_class.deprecated_names_for('Layout/ArgumentAlignment')
+        expect(described_class.deprecated_names_for('Layout/ArgumentAlignment'))
+          .to contain_exactly('Layout/AlignArguments')
+      end
+    end
+
+    context 'when a cop has been moved multiple times' do
+      it 'returns the deprecated names for a cop' do
+        expect(described_class.deprecated_names_for('Naming/PredicatePrefix'))
+          .to contain_exactly('Style/PredicateName', 'Naming/PredicateName')
+      end
+    end
+
+    context 'when a cop has not been moved' do
+      it 'returns an empty array' do
+        expect(described_class.deprecated_names_for('Foo/Bar')).to be_empty
       end
     end
   end

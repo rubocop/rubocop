@@ -43,7 +43,9 @@ renamed:
   Style/MethodCallParentheses: Style/MethodCallWithoutArgsParentheses
   Style/MethodName: Naming/MethodName
   Style/OpMethod: Naming/BinaryOperatorParameterName
-  Style/PredicateName: Naming/PredicateName
+  Style/PredicateName:
+    new_name: Naming/PredicateName
+    severity: warning
   Style/SingleSpaceBeforeFirstArg: Layout/SpaceBeforeFirstArg
   Style/UnneededCapitalW: Style/RedundantCapitalW
   Style/UnneededCondition: Style/RedundantCondition

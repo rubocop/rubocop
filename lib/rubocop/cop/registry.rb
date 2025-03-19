@@ -23,8 +23,8 @@ module RuboCop
         global.without_department(:Test).cops
       end
 
-      def self.qualified_cop_name(name, origin)
-        global.qualified_cop_name(name, origin)
+      def self.qualified_cop_name(name, origin, warn: true)
+        global.qualified_cop_name(name, origin, warn: warn)
       end
 
       # Changes momentarily the global registry
@@ -139,7 +139,7 @@ module RuboCop
 
         case potential_badges.size
         when 0 then name # No namespace found. Deal with it later in caller.
-        when 1 then resolve_badge(badge, potential_badges.first, path)
+        when 1 then resolve_badge(badge, potential_badges.first, path, warn: warn)
         else raise AmbiguousCopName.new(badge, path, potential_badges)
         end
       end
@@ -296,11 +296,14 @@ module RuboCop
         self.class.new(cops)
       end
 
-      def resolve_badge(given_badge, real_badge, source_path)
+      def resolve_badge(given_badge, real_badge, source_path, warn: true)
         unless given_badge.match?(real_badge)
           path = PathUtil.smart_path(source_path)
-          warn "#{path}: #{given_badge} has the wrong namespace - " \
-               "replace it with #{given_badge.with_department(real_badge.department)}"
+
+          if warn
+            warn("#{path}: #{given_badge} has the wrong namespace - " \
+                 "replace it with #{given_badge.with_department(real_badge.department)}")
+          end
         end
 
         real_badge.to_s

@@ -91,8 +91,12 @@ module RuboCop
       def add_missing_namespaces(path, hash)
         # Using `hash.each_key` will cause the
         # `can't add a new key into hash during iteration` error
+        obsoletion = ConfigObsoletion.new(hash)
+
         hash_keys = hash.keys
         hash_keys.each do |key|
+          next if obsoletion.deprecated_cop_name?(key)
+
           q = Cop::Registry.qualified_cop_name(key, path)
           next if q == key
 
