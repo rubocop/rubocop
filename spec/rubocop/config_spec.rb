@@ -380,6 +380,26 @@ RSpec.describe RuboCop::Config do
       end
     end
 
+    context 'when the configuration includes obsolete cop names that raise warnings', :mock_obsoletion do
+      before do
+        create_file(configuration_path, <<~YAML)
+          Layout/AlignArguments:
+            Enabled: false
+        YAML
+
+        create_file(obsoletion_configuration_path, <<~YAML)
+          renamed:
+            Layout/AlignArguments:
+              new_name: Layout/ArgumentAlignment
+              severity: warning
+        YAML
+      end
+
+      it 'does not raise validation error' do
+        expect { configuration.validate }.not_to raise_error
+      end
+    end
+
     context 'when all cops are both Enabled and Disabled by default' do
       before do
         create_file(configuration_path, <<~YAML)
@@ -708,6 +728,53 @@ RSpec.describe RuboCop::Config do
           expect { |b| configuration.deprecation_check(&b) }.to yield_with_args(String)
         end
       end
+    end
+  end
+
+  describe '#for_cop', :isolated_environment, :mock_obsoletion do
+    before do
+      create_file(obsoletion_configuration_path, <<~YAML)
+        renamed:
+          Lint/OldCop:
+            new_name: Lint/NewCop
+          Lint/MovedCop:
+            new_name: Lint/AnotherCop
+      YAML
+    end
+
+    let(:hash) do
+      {
+        'Style' => { 'Enabled' => false, 'Foo' => 42, 'Bar' => 666 },
+        'Style/Alias' => { 'Bar' => 44 },
+        'Lint/MovedCop' => { 'Bar' => 45 },
+        'Lint/OldCop' => { 'Bar' => 46, 'Enabled' => false },
+        'Lint/NewCop' => { 'Bar' => 47, 'Baz' => 1000 }
+      }
+    end
+
+    it 'returns the configuration for a cop' do
+      expect(configuration.for_cop('Style/Alias')).to eq({ 'Enabled' => false, 'Bar' => 44 })
+    end
+
+    it 'returns a bare configuration for a non-existing cop' do
+      expect(configuration.for_cop('Foo/Bar')).to eq({ 'Enabled' => true })
+    end
+
+    it 'returns the given configuration for a deprecated cop name' do
+      expect(configuration.for_cop('Lint/MovedCop')).to eq({ 'Bar' => 45 })
+    end
+
+    it 'maintains enabled status for a deprecated cop' do
+      expect(configuration.for_cop('Lint/OldCop')).to eq({ 'Bar' => 46, 'Enabled' => false })
+    end
+
+    it 'merges the deprecated name configuration and adds a warning for a renamed cop name' do
+      expect(configuration.for_cop('Lint/NewCop')).to eq(
+        { 'Bar' => 46, 'Baz' => 1000, 'Enabled' => false }
+      )
+      expect($stderr.string.chomp).to eq(
+        'Warning: Using `Lint/OldCop` configuration in example/.rubocop.yml for `Lint/NewCop`.'
+      )
     end
   end
 

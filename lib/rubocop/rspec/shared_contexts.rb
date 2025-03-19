@@ -178,6 +178,21 @@ RSpec.shared_context 'mock console output' do
   end
 end
 
+RSpec.shared_context 'mock obsoletion' do
+  include_context 'mock console output'
+
+  let(:obsoletion_configuration_path) { 'obsoletions.yml' }
+
+  before do
+    RuboCop::ConfigObsoletion.reset!
+    allow(RuboCop::ConfigObsoletion).to receive(:files).and_return([obsoletion_configuration_path])
+  end
+
+  after do
+    RuboCop::ConfigObsoletion.reset!
+  end
+end
+
 RSpec.shared_context 'lsp' do
   before do
     RuboCop::LSP.enable
