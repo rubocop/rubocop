@@ -147,11 +147,13 @@ AllCops:
   # supported Ruby version (currently Ruby 2.7).
   TargetRubyVersion: ~
   # You can specify the parser engine. There are two options available:
+  # - `automatic`
   # - `parser_whitequark` ... https://github.com/whitequark/parser
   # - `parser_prism` ... https://github.com/ruby/prism (`Prism::Translation::Parser`)
-  # By default, `parser` is used. For the `TargetRubyVersion` value, `parser` can be specified for versions `2.0` and above.
-  # `parser_prism` can be specified for versions `3.3` and above. `parser_prism` is faster but still considered experimental.
-  ParserEngine: parser_whitequark
+  # The default `automatic` choses the best parser backend based on the `TargetRubyVersion`
+  # value. For <= 3.3 `parser_whitequark` will be used, for >= 3.4 `parser_prism`.
+  # `parser_whitequark` works with versions <= 3.3, `parser_prism` with versions >= 3.3.
+  ParserEngine: automatic
   # Determines if a notification for extension libraries should be shown when
   # rubocop is run. Keys are the name of the extension, and values are an array
   # of gems in the Gemfile that the extension is suggested for, if not already

@@ -291,7 +291,7 @@ module RuboCop
     end
 
     def parser_engine
-      @parser_engine ||= for_all_cops.fetch('ParserEngine', :parser_whitequark).to_sym
+      @parser_engine ||= for_all_cops.fetch('ParserEngine', :automatic).to_sym
     end
 
     def target_rails_version

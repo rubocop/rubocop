@@ -690,8 +690,7 @@ version, and will instead try to find a target Ruby version elsewhere.
 
 == Setting the parser engine
 
-NOTE: The parser engine configuration was introduced in RuboCop 1.62. This
-experimental feature has been under consideration for a while.
+NOTE: The parser engine configuration was introduced in RuboCop 1.62.
 
 RuboCop allows switching the backend parser by specifying either
 `parser_whitequark` or `parser_prism` as the value for the `ParserEngine`.
@@ -701,9 +700,9 @@ Here are the parsers used as backends for each value:
 - `ParserEngine: parser_whitequark` ... https://github.com/whitequark/parser
 - `ParserEngine: parser_prism` ... https://github.com/ruby/prism (`Prism::Translation::Parser`)
 
-By default, `parser_whitequark` is implicitly used.
+NOTE: RuboCop 1.XX, RuboCop chooses the best parser automatically so you don't need to configure it yourself.
 
-`parser_whitequark` can analyze source code from Ruby 2.0 and above:
+`parser_whitequark` can analyze source code from Ruby 2.0 until Ruby 3.3:
 
 [source,yaml]
 ----
@@ -721,21 +720,6 @@ AllCops:
 ----
 
 `parser_prism` tends to perform analysis faster than `parser_whitequark`.
-
-IMPORTANT: Since the support for Prism is experimental, it is not included in
-RuboCop's runtime dependencies.  If running RuboCop through Bundler, please add
-`gem 'prism'` to your `Gemfile`:
-
-[source,ruby]
-----
-gem 'prism'
-----
-
-There are some incompatibilities with `parser_whitequark` in `parser_prism`,
-which is the main reason why the support for it is considered experimental.
-We're working with Prism's team to address those.  You can track the outstanding
-known issues in Prism that affect RuboCop
-https://github.com/ruby/prism/issues?q=is%3Aissue+is%3Aopen+label%3Arubocop[here].
 
 == Automatically Generated Configuration
 
