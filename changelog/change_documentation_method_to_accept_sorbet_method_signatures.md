@@ -1,0 +1,1 @@
+* [#13038](https://github.com/rubocop/rubocop/pull/13038): Change `Style/DocumentationMethod` to accept Sorbet method signatures and keep compatibility with [rubocop-sorbet](https://github.com/Shopify/rubocop-sorbet/blob/main/manual/cops_sorbet.md#sorbetemptylineaftersig). ([@wpolicarpo][])
