@@ -89,6 +89,40 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using nested `if` within `unless foo & bar`' do
+    expect_offense(<<~RUBY)
+      unless foo & bar
+        if baz
+        ^^ Consider merging nested conditions into outer `unless` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if !(foo & bar) && baz
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` within `if foo & bar`' do
+    expect_offense(<<~RUBY)
+      if foo & bar
+        if baz
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (foo & bar) && baz
+          do_something
+        end
+    RUBY
+  end
+
   it 'registers an offense and corrects when using nested `unless` within `unless`' do
     expect_offense(<<~RUBY)
       unless foo
@@ -158,10 +192,11 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
       end
     RUBY
 
+    # INFO: parentheses are removed by Style/RedundantParentheses
     expect_correction(<<~RUBY)
       class A
         def foo
-          if h[:a] && !h.has_key?(:b)
+          if (h[:a]) && !h.has_key?(:b)
             h[:b] = true
           end
         end
@@ -306,7 +341,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      if !foo && !bar && !baz && !qux
+      if !(foo && bar && baz) && !qux
         do_something
       end
     RUBY
@@ -392,7 +427,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      if foo.is_a?(Foo) && (bar && baz) && quux
+      if foo.is_a?(Foo) && bar && baz && quux
           do_something
         end
     RUBY
@@ -570,7 +605,7 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      if (bar && baz) && foo
+      if bar && baz && foo
         do_something
       end
     RUBY
@@ -631,6 +666,55 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
 
     expect_correction(<<~RUBY)
       if baz && !(foo && bar)
+        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense when inner condition is an & operator' do
+    expect_offense(<<~RUBY)
+      if foo
+        unless bar & baz
+        ^^^^^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && !(bar & baz)
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense when inner condition is an || operator' do
+    expect_offense(<<~RUBY)
+      if foo
+        unless bar || baz
+        ^^^^^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && !(bar || baz)
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense when inner condition is an operator as a guard clause' do
+    expect_offense(<<~RUBY)
+      if foo
+        do_something unless bar & baz
+                     ^^^^^^ Consider merging nested conditions into outer `if` conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && !(bar & baz)
         do_something
       end
     RUBY
