@@ -1936,6 +1936,11 @@ Lint/EnsureReturn:
   VersionAdded: '0.9'
   VersionChanged: '0.83'
 
+Lint/EnvFetchStringDefault:
+  Description: 'Use strings as default when fetching from ENV.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/ErbNewArguments:
   Description: 'Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.'
   Enabled: true

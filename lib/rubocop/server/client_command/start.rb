@@ -37,7 +37,7 @@ module RuboCop
             Cache.write_version_file(Cache.restart_key)
 
             host = ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1')
-            port = ENV.fetch('RUBOCOP_SERVER_PORT', 0)
+            port = ENV.fetch('RUBOCOP_SERVER_PORT', '0')
 
             Server::Core.new.start(host, port, detach: @detach)
           end
