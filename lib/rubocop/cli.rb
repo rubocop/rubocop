@@ -52,7 +52,7 @@ module RuboCop
         end
       end
     rescue ConfigNotFoundError, IncorrectCopNameError, OptionArgumentError => e
-      warn e.message
+      warn Rainbow(e.message).red
       STATUS_ERROR
     rescue RuboCop::Error => e
       warn Rainbow("Error: #{e.message}").red
