@@ -438,6 +438,7 @@ require_relative 'rubocop/cop/lint/useless_rescue'
 require_relative 'rubocop/cop/lint/useless_ruby2_keywords'
 require_relative 'rubocop/cop/lint/useless_setter_call'
 require_relative 'rubocop/cop/lint/useless_times'
+require_relative 'rubocop/cop/lint/variable_bind_in_alternative_pattern'
 require_relative 'rubocop/cop/lint/void'
 
 require_relative 'rubocop/cop/metrics/utils/iterating_block'
