@@ -345,4 +345,38 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
       end
     end
   end
+
+  context 'when using `it` parameter', :ruby34, unsupported_on: :parser do
+    context 'when inspecting a class defined with Module.new' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          Foo = Module.new do
+          ^^^ Module has too many lines. [6/5]
+            a(it)
+            b(it)
+            c(it)
+            d(it)
+            e(it)
+            f(it)
+          end
+        RUBY
+      end
+    end
+
+    context 'when inspecting a class defined with ::Module.new' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          Foo = ::Module.new do
+          ^^^ Module has too many lines. [6/5]
+            a(it)
+            b(it)
+            c(it)
+            d(it)
+            e(it)
+            f(it)
+          end
+        RUBY
+      end
+    end
+  end
 end
