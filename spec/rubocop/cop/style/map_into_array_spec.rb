@@ -173,6 +173,18 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using a itblock', :ruby34, unsupported_on: :parser do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each { dest << it * 2 }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map { it * 2 }
+    RUBY
+  end
+
   it 'registers an offense and corrects when the destination initialized multiple times' do
     expect_offense(<<~RUBY)
       dest = []

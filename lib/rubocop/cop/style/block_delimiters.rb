@@ -208,6 +208,7 @@ module RuboCop
         end
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 
@@ -347,7 +348,7 @@ module RuboCop
         # rubocop:disable Metrics/CyclomaticComplexity
         def get_blocks(node, &block)
           case node.type
-          when :block, :numblock
+          when :block, :numblock, :itblock
             yield node
           when :send, :csend
             # When a method has an argument which is another method with a block,

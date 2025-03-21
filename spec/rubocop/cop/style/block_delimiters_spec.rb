@@ -98,6 +98,51 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           RUBY
         end
       end
+
+      context 'Ruby >= 3.4', :ruby34, unsupported_on: :parser do
+        it 'accepts a multi-line itblock' do
+          expect_no_offenses(<<~RUBY)
+            puts [1, 2, 3].map {
+              it * it
+            }, 1
+          RUBY
+        end
+
+        it 'accepts a multi-line itblock inside a nested send' do
+          expect_no_offenses(<<~RUBY)
+            puts [0] + [1,2,3].map {
+              it * it
+            }, 1
+          RUBY
+        end
+
+        it 'accepts a multi-line itblock inside a nested send when the block is the receiver' do
+          expect_no_offenses(<<~RUBY)
+            puts [1,2,3].map {
+              it * it
+            } + [0], 1
+          RUBY
+        end
+
+        it 'accepts a multi-line itblock with chained method as an argument to an operator method' do
+          expect_no_offenses(<<~RUBY)
+            foo %
+              %w[bar baz].map {
+                it.upcase
+              }.join(', ')
+          RUBY
+        end
+
+        it 'accepts a multi-line itblock with chained method as an argument to an operator method' \
+           'inside a kwarg' do
+          expect_no_offenses(<<~RUBY)
+            foo :bar, baz: 'Some text: %s' %
+                           %w[foo bar].map {
+                            it.upcase
+                           }.join(', ')
+          RUBY
+        end
+      end
     end
   end
 

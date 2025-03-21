@@ -491,6 +491,38 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     it 'accepts block with multiple numbered parameters' do
       expect_no_offenses('something { _1 + _2 }')
     end
+  end
+
+  context 'itblocks', :ruby34, unsupported_on: :parser do
+    %w[reject select].each do |method|
+      it "registers an offense when receiver is an array literal and using `#{method}` with a itblock" do
+        expect_offense(<<~RUBY, method: method)
+          [1, 2, 3].%{method} { it.foo }
+                    _{method} ^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1, 2, 3].#{method}(&:foo)
+        RUBY
+      end
+
+      it "registers an offense when receiver is some value and using `#{method}` with a itblock" do
+        expect_offense(<<~RUBY, method: method)
+          do_something.%{method} { it.foo }
+                       _{method} ^^^^^^^^^^ Pass `&:foo` as an argument to `#{method}` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something.#{method}(&:foo)
+        RUBY
+      end
+
+      it "does not register an offense when receiver is a hash literal and using `#{method}` with a itblock" do
+        expect_no_offenses(<<~RUBY)
+          {foo: 42}.#{method} { it.foo }
+        RUBY
+      end
+    end
 
     context 'when `AllCops/ActiveSupportExtensionsEnabled: true`' do
       let(:config) do

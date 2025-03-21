@@ -80,6 +80,7 @@ module RuboCop
         # rubocop:enable Metrics/CyclomaticComplexity
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def on_for(node)
           return unless node.parent&.begin_type?

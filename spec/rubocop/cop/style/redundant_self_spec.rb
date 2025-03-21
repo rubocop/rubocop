@@ -184,6 +184,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     end
   end
 
+  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    it 'registers offense for self usage in itblocks' do
+      expect_offense(<<~RUBY)
+        %w[x y z].select do
+          self.axis == it
+          ^^^^ Redundant `self` detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        %w[x y z].select do
+          axis == it
+        end
+      RUBY
+    end
+  end
+
   describe 'instance methods' do
     it 'accepts a self receiver used to distinguish from blockarg' do
       expect_no_offenses(<<~RUBY)

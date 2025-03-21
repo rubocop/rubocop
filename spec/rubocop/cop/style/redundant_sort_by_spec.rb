@@ -47,6 +47,30 @@ RSpec.describe RuboCop::Cop::Style::RedundantSortBy, :config do
     end
   end
 
+  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    it 'autocorrects array.sort_by { |x| x }' do
+      expect_offense(<<~RUBY)
+        array.sort_by { it }
+              ^^^^^^^^^^^^^^ Use `sort` instead of `sort_by { it }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.sort
+      RUBY
+    end
+
+    it 'autocorrects array&.sort_by { |x| x }' do
+      expect_offense(<<~RUBY)
+        array&.sort_by { it }
+               ^^^^^^^^^^^^^^ Use `sort` instead of `sort_by { it }`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array&.sort
+      RUBY
+    end
+  end
+
   it 'autocorrects array.sort_by { |y| y }' do
     expect_offense(<<~RUBY)
       array.sort_by { |y| y }

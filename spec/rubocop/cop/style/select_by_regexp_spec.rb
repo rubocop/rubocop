@@ -341,6 +341,77 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     end
   end
 
+  shared_examples 'regexp match with `itblock`s' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+
+    it 'registers an offense and corrects for `match?`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { it.match? /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{correction}(/regexp/)
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `match?` with safe navigation' do
+      expect_offense(<<~RUBY, method: method)
+        array&.#{method} { it.match? /regexp/ }
+        ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array&.#{correction}(/regexp/)
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `Regexp#match?`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/.match?(it) }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{correction}(/regexp/)
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `blockvar =~ regexp`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { it =~ /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{correction}(/regexp/)
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `regexp =~ blockvar`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/ =~ it }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{correction}(/regexp/)
+      RUBY
+    end
+
+    it 'does not register an offense when the param is a method argument' do
+      expect_no_offenses(<<~RUBY)
+        array.#{method} { /regexp/.match?(foo(it)) }
+      RUBY
+    end
+
+    it 'does not register an offense when using `match?` without a receiver' do
+      expect_no_offenses(<<~RUBY)
+        array.#{method} { |item| match?(item) }
+      RUBY
+    end
+  end
+
   shared_examples 'regexp match with safe navigation' do |method, correction|
     message = "Prefer `#{correction}` to `#{method}` with a regexp match."
 
@@ -478,6 +549,32 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     end
   end
 
+  shared_examples 'regexp mismatch with `itblock`s' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+
+    it 'registers an offense and corrects for `blockvar !~ regexp`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { it !~ /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{correction}(/regexp/)
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `regexp !~ blockvar`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/ !~ it }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{correction}(/regexp/)
+      RUBY
+    end
+  end
+
   shared_examples 'regexp mismatch with safe navigation' do |method, correction|
     message = "Prefer `#{correction}` to `#{method}` with a regexp match."
 
@@ -547,6 +644,18 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
         RUBY
       end
     end
+  end
+
+  context 'when Ruby >= 3.4', :ruby34, unsupported_on: :parser do
+    include_examples('regexp match with `itblock`s', 'select', 'grep')
+    include_examples('regexp match with `itblock`s', 'find_all', 'grep')
+    include_examples('regexp match with `itblock`s', 'filter', 'grep')
+    include_examples('regexp mismatch with `itblock`s', 'reject', 'grep')
+
+    include_examples('regexp match with `itblock`s', 'reject', 'grep_v')
+    include_examples('regexp mismatch with `itblock`s', 'select', 'grep_v')
+    include_examples('regexp mismatch with `itblock`s', 'find_all', 'grep_v')
+    include_examples('regexp mismatch with `itblock`s', 'filter', 'grep_v')
   end
 
   context 'when Ruby >= 2.7', :ruby27 do

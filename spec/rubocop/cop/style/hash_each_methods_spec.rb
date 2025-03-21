@@ -327,6 +327,19 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
           RUBY
         end
       end
+
+      context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+        it 'registers offense, autocorrects foo#keys.each to foo#each_key with itblock' do
+          expect_offense(<<~RUBY)
+            foo.keys.each { p it }
+                ^^^^^^^^^ Use `each_key` instead of `keys.each`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.each_key { p it }
+          RUBY
+        end
+      end
     end
 
     context 'when receiver is a hash literal' do

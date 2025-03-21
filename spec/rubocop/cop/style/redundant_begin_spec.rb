@@ -570,6 +570,44 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     end
   end
 
+  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    it 'reports an offense when assigning nested blocks which contain `begin` blocks' do
+      expect_offense(<<~RUBY)
+        var = do_something do
+          begin
+          ^^^^^ Redundant `begin` block detected.
+            do_something do
+              begin
+              ^^^^^ Redundant `begin` block detected.
+                it
+              ensure
+                bar
+              end
+            end
+          ensure
+            baz
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        var = do_something do
+         #{trailing_whitespace}
+            do_something do
+             #{trailing_whitespace}
+                it
+              ensure
+                bar
+             #{trailing_whitespace}
+            end
+          ensure
+            baz
+         #{trailing_whitespace}
+        end
+      RUBY
+    end
+  end
+
   context 'when using endless method definition', :ruby30 do
     it 'registers when `begin` block has a single statement' do
       expect_offense(<<~RUBY)

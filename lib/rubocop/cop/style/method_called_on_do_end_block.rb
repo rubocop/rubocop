@@ -36,6 +36,7 @@ module RuboCop
         end
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def on_send(node)
           return if ignored_node?(node)

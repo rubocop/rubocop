@@ -253,6 +253,59 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
       end
     end
 
+    context '>= Ruby 3.4', :ruby34, unsupported_on: :parser do
+      context 'when using `it` parameter' do
+        context 'with a single line lambda method call' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              f = lambda { it }
+                  ^^^^^^ Use the `-> { ... }` lambda literal syntax for single line lambdas.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              f = -> { it }
+            RUBY
+          end
+        end
+
+        context 'with a multiline `->` call' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              -> {
+              ^^ Use the `lambda` method for multiline lambdas.
+                it.do_something
+              }
+            RUBY
+
+            expect_correction(<<~RUBY)
+              lambda {
+                it.do_something
+              }
+            RUBY
+          end
+        end
+
+        context 'with a multiline lambda method call' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              l = lambda do
+                it
+              end
+            RUBY
+          end
+        end
+
+        context 'with a single line lambda literal' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              lambda = -> { it }
+              lambda.(1)
+            RUBY
+          end
+        end
+      end
+    end
+
     context 'with a multiline lambda literal' do
       context 'with arguments' do
         it 'registers an offense' do
