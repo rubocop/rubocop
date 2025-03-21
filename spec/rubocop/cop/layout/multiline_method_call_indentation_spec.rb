@@ -423,6 +423,17 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         end
       end
 
+      context '>= Ruby 3.4', :ruby34, unsupported_on: :parser do
+        it 'accepts methods being aligned with method that is an argument' \
+           'when using `it` parameter' do
+          expect_no_offenses(<<~RUBY)
+            File.read('data.yml')
+                .then { YAML.safe_load it }
+                .transform_values(&:downcase)
+          RUBY
+        end
+      end
+
       it 'accepts methods being aligned with method that is an argument in assignment' do
         expect_no_offenses(<<~RUBY)
           user = authorize scope.includes(:user)
@@ -763,6 +774,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       expect_no_offenses(<<~RUBY)
         do_something.foo do
           bar(_1)
+        end.baz
+           .qux
+      RUBY
+    end
+
+    it 'accepts aligned methods in multiline `it` block chain', :ruby34, unsupported_on: :parser do
+      expect_no_offenses(<<~RUBY)
+        do_something.foo do
+          bar(it)
         end.baz
            .qux
       RUBY

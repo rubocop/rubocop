@@ -1764,28 +1764,28 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         end
       end
 
-      context 'Ruby 2.7', :ruby27 do
+      context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
         it 'adds an offense for {} block does correct it' do
           expect_offense(<<~RUBY)
-            foo.select { _1 + 4444000039123123129993912312312999199291203123123 }
+            foo.select { it + 4444000039123123129993912312312999199291203123123 }
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [69/40]
           RUBY
 
           expect_correction(<<~RUBY)
             foo.select {
-             _1 + 4444000039123123129993912312312999199291203123123 }
+             it + 4444000039123123129993912312312999199291203123123 }
           RUBY
         end
 
         it 'adds an offense for do-end block and does correct it' do
           expect_offense(<<~RUBY)
-            foo.select do _1 + 4444000039123123129993912312312999199291203123 end
+            foo.select do it + 4444000039123123129993912312312999199291203123 end
                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [69/40]
           RUBY
 
           expect_correction(<<~RUBY)
             foo.select do
-             _1 + 4444000039123123129993912312312999199291203123 end
+             it + 4444000039123123129993912312312999199291203123 end
           RUBY
         end
       end

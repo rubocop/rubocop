@@ -92,7 +92,7 @@ module RuboCop
           case parent.type
           when :def, :defs then base_for_method_definition(parent)
           when :kwbegin then parent.loc.begin
-          when :block, :numblock
+          when :block, :numblock, :itblock
             assignment_node = assignment_node(parent)
             if same_line?(parent, assignment_node)
               assignment_node.source_range

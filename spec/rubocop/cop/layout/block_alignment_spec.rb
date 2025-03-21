@@ -1001,4 +1001,14 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
   end
+
+  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    it 'accepts end aligned with a call chain left hand side' do
+      expect_no_offenses(<<~RUBY)
+        parser.diagnostics.consumer = lambda do
+          it << diagnostic
+        end
+      RUBY
+    end
+  end
 end

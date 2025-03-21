@@ -82,6 +82,17 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
            .join + []
         RUBY
       end
+
+      it 'accepts a method call chained onto a single line `it` block', :ruby34, unsupported_on: :parser do
+        expect_no_offenses(<<~RUBY)
+          e.select { it.cond? }
+           .join
+          a = e.select { it.cond? }
+           .join
+          e.select { it.cond? }
+           .join + []
+        RUBY
+      end
     end
 
     context 'for an expression that fits on a single line' do
@@ -743,6 +754,20 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             end.join
             e.select do
               _1.cond?
+            end.join + []
+          RUBY
+        end
+
+        it 'accepts a method call chained onto a multiline `it` block', :ruby34, unsupported_on: :parser do
+          expect_no_offenses(<<~RUBY)
+            e.select do
+              it.cond?
+            end.join
+            a = e.select do
+              it.cond?
+            end.join
+            e.select do
+              it.cond?
             end.join + []
           RUBY
         end

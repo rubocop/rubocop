@@ -277,7 +277,7 @@ module RuboCop
           case node.type
           when :def, :defs
             :method
-          when :numblock
+          when :numblock, :itblock
             :block
           else
             node.type

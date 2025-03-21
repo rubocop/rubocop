@@ -87,6 +87,7 @@ module RuboCop
         end
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def style_parameter_name
           'EnforcedStyleAlignWith'
