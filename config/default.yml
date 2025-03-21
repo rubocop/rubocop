@@ -2657,6 +2657,11 @@ Lint/UselessTimes:
   VersionAdded: '0.91'
   VersionChanged: '1.61'
 
+Lint/VariableBindInAlternativePattern:
+  Description: 'Checks for binding to variables in alternative pattern matches.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
   Enabled: true
