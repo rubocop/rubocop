@@ -77,6 +77,7 @@ module RuboCop
         end
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 

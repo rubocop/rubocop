@@ -75,6 +75,7 @@ module RuboCop
           check_for_breakable_block(node)
         end
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def on_str(node)
           check_for_breakable_str(node)

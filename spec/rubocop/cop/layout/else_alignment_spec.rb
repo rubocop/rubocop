@@ -597,6 +597,21 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
       RUBY
     end
 
+    it 'accepts a correctly aligned else from itblock', :ruby34, unsupported_on: :parser do
+      expect_no_offenses(<<~RUBY)
+        array_like.each do
+          it
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        rescue
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
     it 'accepts a correctly aligned else with assignment' do
       expect_no_offenses(<<~RUBY)
         result = array_like.each do |n|

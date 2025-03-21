@@ -58,6 +58,24 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBlockBody, :config do
         end
       end
 
+      context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+        it 'registers an offense for block body ending with a blank' do
+          expect_offense(<<~RUBY)
+            some_method #{open}
+              it
+
+            ^{} Extra empty line detected at block body end.
+              #{close}
+          RUBY
+
+          expect_correction(<<~RUBY)
+            some_method #{open}
+              it
+              #{close}
+          RUBY
+        end
+      end
+
       it 'accepts block body starting with a line with spaces' do
         expect_no_offenses(<<~RUBY)
           some_method #{open}

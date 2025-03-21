@@ -728,6 +728,28 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       RUBY
     end
 
+    it 'registers offense if next to itblock', :ruby34, unsupported_on: :parser do
+      expect_offense(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
+        foo 'second foo' do
+        ^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between block definitions; found 0.
+          it
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo 'first foo' do
+          #foo body
+        end
+
+        foo 'second foo' do
+          it
+        end
+      RUBY
+    end
+
     it 'does not register offense' do
       expect_no_offenses(<<~RUBY)
         foo 'first foo' do

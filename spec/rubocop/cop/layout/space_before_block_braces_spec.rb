@@ -81,6 +81,38 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
         RUBY
       end
     end
+
+    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+      it 'registers an offense and corrects opposite + correct style' do
+        expect_offense(<<~RUBY)
+          each{ it }
+              ^ Space missing to the left of {.
+          each { it }
+        RUBY
+
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        expect_correction(<<~RUBY)
+          each { it }
+          each { it }
+        RUBY
+      end
+
+      it 'registers an offense and corrects multiline block where the left ' \
+         'brace has no outer space' do
+        expect_offense(<<~RUBY)
+          foo.map{
+                 ^ Space missing to the left of {.
+            it.bar.to_s
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo.map {
+            it.bar.to_s
+          }
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is no_space' do

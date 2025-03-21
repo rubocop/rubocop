@@ -96,7 +96,7 @@ module RuboCop
         def alignment_source(node, starting_loc)
           ending_loc =
             case node.type
-            when :block, :numblock, :kwbegin
+            when :block, :numblock, :itblock, :kwbegin
               node.loc.begin
             when :def, :defs, :class, :module,
                  :lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn

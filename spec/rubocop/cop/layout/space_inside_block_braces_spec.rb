@@ -104,6 +104,20 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideBlockBraces, :config do
     end
   end
 
+  context 'Ruby >= 3.4', :ruby34, unsupported_on: :parser do
+    it 'registers an offense for itblocks without inner space' do
+      expect_offense(<<~RUBY)
+        [1, 2, 3].each {it * 2}
+                        ^ Space missing inside {.
+                              ^ Space missing inside }.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [1, 2, 3].each { it * 2 }
+      RUBY
+    end
+  end
+
   it 'accepts braces surrounded by spaces' do
     expect_no_offenses('each { puts }')
   end

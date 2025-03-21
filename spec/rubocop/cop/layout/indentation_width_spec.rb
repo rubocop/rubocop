@@ -1629,6 +1629,26 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
       end
 
+      context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+        it 'registers an offense for bad indentation of a {} body' do
+          expect_offense(<<~RUBY)
+            func {
+               it&.foo
+            ^^^ Use 2 (not 3) spaces for indentation.
+            }
+          RUBY
+        end
+
+        it 'registers an offense for bad indentation of a do-end body' do
+          expect_offense(<<~RUBY)
+            func do
+               it&.foo
+            ^^^ Use 2 (not 3) spaces for indentation.
+            end
+          RUBY
+        end
+      end
+
       # The cop uses the block end/} as the base for indentation, so if it's not
       # on its own line, all bets are off.
       it 'accepts badly indented code if block end is not on separate line' do
