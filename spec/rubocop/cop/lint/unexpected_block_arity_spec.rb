@@ -172,6 +172,25 @@ RSpec.describe RuboCop::Cop::Lint::UnexpectedBlockArity, :config do
     end
   end
 
+  context 'with an itblock', :ruby34, unsupported_on: :parser do
+    context 'when given one parameter' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          values.reduce { it }
+          ^^^^^^^^^^^^^^^^^^^^ `reduce` expects at least 2 positional arguments, got 1.
+        RUBY
+      end
+    end
+
+    context 'with no receiver' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          reduce { it }
+        RUBY
+      end
+    end
+  end
+
   it 'registers multiple offenses' do
     expect_offense(<<~RUBY)
       values.reduce { |a| a }

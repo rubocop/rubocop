@@ -143,6 +143,16 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect_no_offenses('return 1 if any_errors? { o = _1 }.present?')
   end
 
+  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    it 'accepts = in an itblock that is called in a condition' do
+      expect_no_offenses('return 1 if any_errors? { o = inspect(it) }')
+    end
+
+    it 'accepts = in an itblock followed by method call' do
+      expect_no_offenses('return 1 if any_errors? { o = it }.present?')
+    end
+  end
+
   it 'accepts assignment in a block after ||' do
     expect_no_offenses(<<~RUBY)
       if x?(bar) || y? { z = baz }

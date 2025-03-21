@@ -49,6 +49,7 @@ module RuboCop
         end
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 
@@ -59,6 +60,8 @@ module RuboCop
               $(call _ {:each_with_object :with_object} _) (args (arg _)) ...)
             (numblock
               $(call _ {:each_with_object :with_object} _) 1 ...)
+            (itblock
+              $(call _ {:each_with_object :with_object} _) _ ...)
           }
         PATTERN
 

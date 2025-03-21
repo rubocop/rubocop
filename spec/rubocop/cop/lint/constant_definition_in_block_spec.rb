@@ -117,6 +117,16 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock, :config do
     RUBY
   end
 
+  it 'registers an offense for a module defined within an itblock', :ruby34, unsupported_on: :parser do
+    expect_offense(<<~RUBY)
+      describe do
+        module Foo; end
+        ^^^^^^^^^^^^^^^ Do not define constants this way within a block.
+        it
+      end
+    RUBY
+  end
+
   it 'does not register an offense for a constant with an explicit self scope' do
     expect_no_offenses(<<~RUBY)
       describe do
@@ -188,6 +198,16 @@ RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock, :config do
           module Foo
           end
           _1
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a module defined within an itblock of `enums` method', :ruby34, unsupported_on: :parser do
+      expect_no_offenses(<<~RUBY)
+        enums do
+          module Foo
+          end
+          it
         end
       RUBY
     end

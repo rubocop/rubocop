@@ -113,4 +113,43 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
       expect_no_offenses('with_index { _1 }')
     end
   end
+
+  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    it 'registers an offense for `ary.each_with_index { it }` and corrects to `ary.each`' do
+      expect_offense(<<~RUBY)
+        ary.each_with_index { it }
+            ^^^^^^^^^^^^^^^ Use `each` instead of `each_with_index`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary.each { it }
+      RUBY
+    end
+
+    it 'registers an offense for `ary&.each_with_index { it }` and corrects to `ary&.each`' do
+      expect_offense(<<~RUBY)
+        ary&.each_with_index { it }
+             ^^^^^^^^^^^^^^^ Use `each` instead of `each_with_index`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary&.each { it }
+      RUBY
+    end
+
+    it 'registers an offense when using `ary.each.with_index { it }` and corrects to `ary.each`' do
+      expect_offense(<<~RUBY)
+        ary.each.with_index { it }
+                 ^^^^^^^^^^ Remove redundant `with_index`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary.each { it }
+      RUBY
+    end
+
+    it 'accepts with_index without receiver with an itblock' do
+      expect_no_offenses('with_index { it }')
+    end
+  end
 end

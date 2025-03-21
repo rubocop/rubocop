@@ -148,6 +148,44 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
     end
   end
 
+  context '`Class.new` `it` block', :ruby34, unsupported_on: :parser do
+    it 'registers an offense and does not autocorrect when no `super` call' do
+      expect_offense(<<~RUBY)
+        Class.new(Parent) do
+          def initialize
+          ^^^^^^^^^^^^^^ Call `super` to initialize state of the parent class.
+          end
+
+          do_something(it)
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not register an offense for the `Class.new` without parent class argument' do
+      expect_no_offenses(<<~RUBY)
+        Class.new do
+          def initialize
+          end
+
+          do_something(it)
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for the `Class.new` with stateless parent class argument' do
+      expect_no_offenses(<<~RUBY)
+        Class.new(Object) do
+          def initialize
+          end
+
+          do_something(it)
+        end
+      RUBY
+    end
+  end
+
   context 'callbacks' do
     it 'registers no offense when module callback without `super` call' do
       expect_no_offenses(<<~RUBY)

@@ -58,6 +58,19 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
       end
     end
 
+    context 'without receiver and itblock', :ruby34, unsupported_on: :parser do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          some_method a { puts it }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Parenthesize the param `a { puts it }` to make sure that the block will be associated with the `a` method call.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          some_method(a { puts it })
+        RUBY
+      end
+    end
+
     context 'with receiver' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)

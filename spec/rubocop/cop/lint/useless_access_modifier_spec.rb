@@ -1058,6 +1058,16 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           end
         RUBY
       end
+
+      it 'registers an offense if no method is defined in `Data.define` with itblock', :ruby34, unsupported_on: :parser do
+        expect_offense(<<~RUBY, modifier: modifier)
+          Data.define do
+            %{modifier}
+            ^{modifier} Useless `#{modifier}` access modifier.
+            do_something(it)
+          end
+        RUBY
+      end
     end
   end
 

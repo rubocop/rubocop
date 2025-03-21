@@ -40,6 +40,20 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext, :config do
       RUBY
     end
 
+    it 'registers an offense when the value is returned in an itblock', :ruby34, unsupported_on: :parser do
+      expect_offense(<<~RUBY)
+        class A
+          def initialize
+            foo do
+              it
+              return :qux
+              ^^^^^^ Do not return a value in `initialize`.
+            end
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense when the value is returned from inside a proc' do
       expect_offense(<<~RUBY)
         class A

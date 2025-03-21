@@ -86,6 +86,7 @@ module RuboCop
           check_expression(node.body)
         end
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def on_begin(node)
           check_begin(node)

@@ -393,6 +393,51 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
     end
   end
 
+  context 'Ruby >= 3.4', :ruby34, unsupported_on: :parser do
+    it 'does not register offense for nested definition inside `Module.new` with itblock' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def self.define
+            Module.new do
+              def y
+              end
+
+              do_something(it)
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register offense for nested definition inside instance_eval with itblock' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def x(obj)
+            obj.instance_eval do
+              @bar = it
+              def y
+              end
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register offense for nested definition inside instance_exec with itblock' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          def x(obj)
+            obj.instance_exec(3) do
+              @bar = it
+              def y
+              end
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when Ruby >= 3.2', :ruby32 do
     it 'does not register offense for nested definition inside `Data.define`' do
       expect_no_offenses(<<~RUBY)

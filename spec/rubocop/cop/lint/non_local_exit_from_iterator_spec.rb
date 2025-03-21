@@ -22,6 +22,16 @@ RSpec.describe RuboCop::Cop::Lint::NonLocalExitFromIterator, :config do
           end
         RUBY
       end
+
+      it 'registers an offense for itblocks', :ruby34, unsupported_on: :parser do
+        expect_offense(<<~RUBY)
+          items.each do
+            return if baz?(it)
+            ^^^^^^ Non-local exit from iterator, [...]
+            it.update!(foobar: true)
+          end
+        RUBY
+      end
     end
 
     context 'and has multiple arguments' do
