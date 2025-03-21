@@ -5,8 +5,8 @@ module RuboCop
     module Style
       # Checks for calls to `Kernel#format` or `Kernel#sprintf` that are redundant.
       #
-      # Calling `format` with only a single string argument is redundant, as it can be
-      # replaced by the string itself.
+      # Calling `format` with only a single string or constant argument is redundant,
+      # as it can be replaced by the string or constant itself.
       #
       # Also looks for `format` calls where the arguments are literals that can be
       # inlined into a string easily. This applies to the `%s`, `%d`, `%i`, `%u`, and
@@ -38,6 +38,13 @@ module RuboCop
       #   'the quick brown fox jumps over the lazy dog.'
       #
       #   # bad
+      #   format(MESSAGE)
+      #   sprintf(MESSAGE)
+      #
+      #   # good
+      #   MESSAGE
+      #
+      #   # bad
       #   format('%s %s', 'foo', 'bar')
       #   sprintf('%s %s', 'foo', 'bar')
       #
@@ -54,7 +61,7 @@ module RuboCop
 
         # @!method format_without_additional_args?(node)
         def_node_matcher :format_without_additional_args?, <<~PATTERN
-          (send {(const {nil? cbase} :Kernel) nil?} %RESTRICT_ON_SEND ${str dstr})
+          (send {(const {nil? cbase} :Kernel) nil?} %RESTRICT_ON_SEND ${str dstr const})
         PATTERN
 
         # @!method rational_number?(node)

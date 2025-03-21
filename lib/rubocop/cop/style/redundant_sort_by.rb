@@ -36,7 +36,7 @@ module RuboCop
           redundant_sort_by_numblock(node) do |send|
             range = sort_by_range(send, node)
 
-            add_offense(range, message: format(MSG_NUMBLOCK)) do |corrector|
+            add_offense(range, message: MSG_NUMBLOCK) do |corrector|
               corrector.replace(range, 'sort')
             end
           end
