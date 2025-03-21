@@ -97,34 +97,31 @@ module RuboCop
           else
             correct_to_elsif_from_if_inside_else_form(corrector, node, node.condition)
           end
-
-          corrector.remove(range_by_whole_lines(find_end_range(node), include_final_newline: true))
-          return unless (if_branch = node.if_branch)
-
-          range = range_by_whole_lines(if_branch.source_range, include_final_newline: true)
-          corrector.remove(range)
         end
 
         def correct_to_elsif_from_modifier_form(corrector, node)
-          corrector.replace(node.parent.loc.else, <<~RUBY.chop)
-            elsif #{node.condition.source}
-            #{indent(node.if_branch)}#{node.if_branch.source}
-            end
-          RUBY
+          corrector.replace(node.parent.loc.else, "elsif #{node.condition.source}")
+
+          condition_range = range_between(
+            node.if_branch.source_range.end_pos, node.condition.source_range.end_pos
+          )
+          corrector.remove(condition_range)
         end
 
-        def correct_to_elsif_from_if_inside_else_form(corrector, node, condition)
+        def correct_to_elsif_from_if_inside_else_form(corrector, node, condition) # rubocop:disable Metrics/AbcSize
           corrector.replace(node.parent.loc.else, "elsif #{condition.source}")
 
           if_condition_range = if_condition_range(node, condition)
 
           if (if_branch = node.if_branch)
-            corrector.replace(if_condition_range, if_branch.source)
+            corrector.replace(if_condition_range, range_with_comments(if_branch).source)
+            corrector.remove(range_with_comments_and_lines(if_branch))
           else
             corrector.remove(range_by_whole_lines(if_condition_range, include_final_newline: true))
           end
 
           corrector.remove(condition)
+          corrector.remove(range_by_whole_lines(find_end_range(node), include_final_newline: true))
         end
 
         def then?(node)

@@ -74,6 +74,35 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     RUBY
   end
 
+  it 'catches an `if..else` nested inside an `else` with comments in both branches' do
+    expect_offense(<<~RUBY)
+      if a
+        foo
+      else
+        if b
+        ^^ Convert `if` nested inside `else` to `elsif`.
+          # this is very important
+          bar # this too
+        else
+          # this three
+          baz # this four
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if a
+        foo
+      elsif b
+        # this is very important
+          bar # this too
+        else
+          # this three
+          baz # this four
+      end
+    RUBY
+  end
+
   it 'catches an if..elsif..else nested inside an else' do
     expect_offense(<<~RUBY)
       if a
@@ -114,7 +143,8 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
       elsif b
         foo
       else
-        bar if condition
+        # important info
+        bar if condition # blabla
             ^^ Convert `if` nested inside `else` to `elsif`.
       end
     RUBY
@@ -125,7 +155,8 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
       elsif b
         foo
       elsif condition
-        bar
+        # important info
+        bar # blabla
       end
     RUBY
   end
