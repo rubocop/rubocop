@@ -145,7 +145,7 @@ module RuboCop
 
           def extract_body(node)
             case node.type
-            when :class, :module, :sclass, :block, :numblock, :def, :defs
+            when :class, :module, :sclass, :block, :numblock, :itblock, :def, :defs
               node.body
             when :casgn
               extract_body(node.expression)

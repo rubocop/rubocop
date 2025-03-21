@@ -137,6 +137,52 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
+  context 'when using `it` parameter', :ruby34, unsupported_on: :parser do
+    it 'rejects a block with more than 5 lines' do
+      expect_offense(<<~RUBY)
+        something do
+        ^^^^^^^^^^^^ Block has too many lines. [3/2]
+          a = it
+          a = it
+          a = it
+        end
+      RUBY
+    end
+
+    it 'reports the correct beginning and end lines' do
+      offenses = expect_offense(<<~RUBY)
+        something do
+        ^^^^^^^^^^^^ Block has too many lines. [3/2]
+          a = it
+          a = it
+          a = it
+        end
+      RUBY
+      offense = offenses.first
+      expect(offense.location.last_line).to eq(5)
+    end
+
+    it 'accepts a block with less than 3 lines' do
+      expect_no_offenses(<<~RUBY)
+        something do
+          a = it
+          a = it
+        end
+      RUBY
+    end
+
+    it 'does not count blank lines' do
+      expect_no_offenses(<<~RUBY)
+        something do
+          a = it
+
+
+          a = it
+        end
+      RUBY
+    end
+  end
+
   it 'accepts a block with multiline receiver and less than 3 lines of body' do
     expect_no_offenses(<<~RUBY)
       [

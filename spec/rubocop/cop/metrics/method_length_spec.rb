@@ -105,6 +105,24 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
     end
   end
 
+  context 'when using `it` parameter', :ruby34, unsupported_on: :parser do
+    context 'when method is defined with `define_method`' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          define_method(:m) do
+          ^^^^^^^^^^^^^^^^^^^^ Method has too many lines. [6/5]
+            a = it
+            a = it
+            a = it
+            a = it
+            a = it
+            a = it
+          end
+        RUBY
+      end
+    end
+  end
+
   context 'when method is a class method' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
@@ -325,6 +343,19 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
           end
         RUBY
       end
+
+      it 'accepts dynamically defined matching method name with an itblock', :ruby34, unsupported_on: :parser do
+        expect_no_offenses(<<~RUBY)
+          define_method(:foo) do
+            a = it
+            a = it
+            a = it
+            a = it
+            a = it
+            a = it
+          end
+        RUBY
+      end
     end
 
     context 'AllowedPatterns is enabled' do
@@ -365,6 +396,19 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
             a = _4
             a = _5
             a = _6
+          end
+        RUBY
+      end
+
+      it 'accepts dynamically defined matching method name with an itblock', :ruby34, unsupported_on: :parser do
+        expect_no_offenses(<<~RUBY)
+          define_method(:user_name) do
+            a = it
+            a = it
+            a = it
+            a = it
+            a = it
+            a = it
           end
         RUBY
       end

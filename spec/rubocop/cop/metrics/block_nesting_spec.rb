@@ -313,6 +313,36 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
         end
       end
     end
+
+    context 'when `it` parameter', :ruby34, unsupported_on: :parser do
+      context 'nested multiline block' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if a
+              if b
+                [1, 2].each do
+                ^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+                  puts it
+                end
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'nested inline block' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            if a
+              if b
+                [1, 2].each { puts it }
+                ^^^^^^^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+              end
+            end
+          RUBY
+        end
+      end
+    end
   end
 
   context 'when CountModifierForms is false' do
