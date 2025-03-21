@@ -48,6 +48,19 @@ RSpec.describe RuboCop::Cop::Style::MultilineBlockChain, :config do
       end
     end
 
+    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+      it 'registers an offense for a slightly more complicated case' do
+        expect_offense(<<~RUBY)
+          a do
+            it
+          end.c1.c2 do
+          ^^^^^^^^^ Avoid multi-line chains of blocks.
+            it
+          end
+        RUBY
+      end
+    end
+
     it 'registers two offenses for a chain of three blocks' do
       expect_offense(<<~RUBY)
         a do

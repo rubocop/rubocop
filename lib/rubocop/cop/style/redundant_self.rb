@@ -118,6 +118,7 @@ module RuboCop
         end
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def on_if(node)
           # Allow conditional nodes to use `self` in the condition if that variable

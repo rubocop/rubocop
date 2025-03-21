@@ -53,6 +53,19 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
     RUBY
   end
 
+  it 'registers an offense when using single line `do`...`end` with `it` block argument', :ruby34, unsupported_on: :parser do
+    expect_offense(<<~RUBY)
+      foo do bar(it) end
+      ^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do
+       bar(it)#{' '}
+      end
+    RUBY
+  end
+
   it 'registers an offense when using single line `do`...`end` with heredoc body' do
     expect_offense(<<~RUBY)
       foo do <<~EOS end

@@ -159,6 +159,7 @@ module RuboCop
           {
             (block $#symbol_proc_receiver? $(args (arg _var)) (send (lvar _var) $_))
             (numblock $#symbol_proc_receiver? $1 (send (lvar :_1) $_))
+            (itblock $#symbol_proc_receiver? $_ (send (lvar :it) $_))
           }
         PATTERN
 
@@ -185,6 +186,7 @@ module RuboCop
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def destructuring_block_argument?(argument_node)
           argument_node.one? && argument_node.source.include?(',')

@@ -56,11 +56,13 @@ module RuboCop
         end
         # rubocop:enable Metrics/AbcSize
         alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 
         def do_line(node)
-          if node.numblock_type? || node.arguments.children.empty? || node.send_node.lambda_literal?
+          if node.type?(:numblock, :itblock) ||
+             node.arguments.children.empty? || node.send_node.lambda_literal?
             node.loc.begin
           else
             node.arguments

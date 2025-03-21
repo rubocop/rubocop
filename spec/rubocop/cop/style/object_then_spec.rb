@@ -77,6 +77,30 @@ RSpec.describe RuboCop::Cop::Style::ObjectThen, :config do
       end
     end
 
+    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+      it 'registers an offense for yield_self with itblock' do
+        expect_offense(<<~RUBY)
+          obj.yield_self { it.test }
+              ^^^^^^^^^^ Prefer `then` over `yield_self`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          obj.then { it.test }
+        RUBY
+      end
+
+      it 'registers an offense for yield_self with safe navigation and itblock' do
+        expect_offense(<<~RUBY)
+          obj&.yield_self { it.test }
+               ^^^^^^^^^^ Prefer `then` over `yield_self`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          obj&.then { it.test }
+        RUBY
+      end
+    end
+
     it 'registers an offense for yield_self with proc param' do
       expect_offense(<<~RUBY)
         obj.yield_self(&:test)

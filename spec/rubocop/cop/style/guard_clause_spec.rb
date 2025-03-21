@@ -112,6 +112,38 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
+    it 'reports an offense if `define_method` block body is if / unless without else', :ruby34, unsupported_on: :parser do
+      expect_offense(<<~RUBY)
+        define_method(:func) do
+          if it
+          ^^ Use a guard clause (`return unless it`) instead of wrapping the code inside a conditional expression.
+            #{body}
+          end
+        end
+
+        define_method(:func) do
+          unless it
+          ^^^^^^ Use a guard clause (`return if it`) instead of wrapping the code inside a conditional expression.
+            #{body}
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        define_method(:func) do
+          return unless it
+            #{body}
+         #{trailing_whitespace}
+        end
+
+        define_method(:func) do
+          return if it
+            #{body}
+         #{trailing_whitespace}
+        end
+      RUBY
+    end
+
     it 'reports an offense if `define_singleton_method` block body is if / unless without else' do
       expect_offense(<<~RUBY)
         define_singleton_method(:func) do

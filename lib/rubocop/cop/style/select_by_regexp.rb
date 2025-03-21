@@ -59,6 +59,7 @@ module RuboCop
           {
             (block call (args (arg $_)) ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
             (numblock call $1 ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
+            (itblock call $_ ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
           }
         PATTERN
 
@@ -137,6 +138,7 @@ module RuboCop
           return unless (block_arg_name, regexp_method_send_node = regexp_match?(block_node))
 
           block_arg_name = :"_#{block_arg_name}" if block_node.numblock_type?
+
           return unless calls_lvar?(regexp_method_send_node, block_arg_name)
 
           regexp_method_send_node
@@ -150,7 +152,8 @@ module RuboCop
           return node.child_nodes.first if node.match_with_lvasgn_type?
 
           if node.receiver.lvar_type? &&
-             (block.numblock_type? || node.receiver.source == block.first_argument.source)
+             (block.type?(:numblock, :itblock) ||
+              node.receiver.source == block.first_argument.source)
             node.first_argument
           elsif node.first_argument.lvar_type?
             node.receiver

@@ -135,6 +135,7 @@ module RuboCop
           on_def(node)
         end
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def on_if(node)
           return if accepted_form?(node)

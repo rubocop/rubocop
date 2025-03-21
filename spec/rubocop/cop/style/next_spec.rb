@@ -44,6 +44,26 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       end
     end
 
+    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+      it "registers an offense for #{condition} inside of downto itblock" do
+        expect_offense(<<~RUBY, condition: condition)
+          3.downto(1) do
+            %{condition} it == 1
+            ^{condition}^^^^^^^^ Use `next` to skip iteration.
+              puts it
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          3.downto(1) do
+            next #{opposite} it == 1
+            puts it
+          end
+        RUBY
+      end
+    end
+
     it "registers an offense for #{condition} inside of each" do
       expect_offense(<<~RUBY, condition: condition)
         [].each do |o|

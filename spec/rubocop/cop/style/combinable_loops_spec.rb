@@ -86,6 +86,22 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
+    it 'registers an offense when looping over the same data for the third consecutive time with `it` blocks', :ruby34, unsupported_on: :parser do
+      expect_offense(<<~RUBY)
+        items.each { foo(it) }
+        items.each { bar(it) }
+        ^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+        items.each { baz(it) }
+        ^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        items.each { foo(it)
+        bar(it)
+        baz(it) }
+      RUBY
+    end
+
     it 'registers an offense when looping over the same data as previous loop in `do`...`end` and `{`...`}` blocks' do
       expect_offense(<<~RUBY)
         items.each do |item| do_something(item) end

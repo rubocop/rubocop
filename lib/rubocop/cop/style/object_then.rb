@@ -38,6 +38,7 @@ module RuboCop
           check_method_node(node.send_node)
         end
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def on_send(node)
           return unless node.arguments.one? && node.first_argument.block_pass_type?

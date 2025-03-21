@@ -74,6 +74,7 @@ module RuboCop
           check_unused_block_args(node, key, value)
         end
         alias on_numblock on_block
+        alias on_itblock on_block
 
         # rubocop:disable Metrics/AbcSize
         def check_unused_block_args(node, key, value)

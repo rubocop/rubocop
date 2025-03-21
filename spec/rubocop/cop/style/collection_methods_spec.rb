@@ -68,6 +68,34 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
       end
     end
 
+    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+      context "#{method} with itblock" do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY, method: method)
+            [1, 2, 3].%{method} { it + 1 }
+                      ^{method} Prefer `#{preferred_method}` over `#{method}`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            [1, 2, 3].#{preferred_method} { it + 1 }
+          RUBY
+        end
+
+        context 'with safe navigation' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY, method: method)
+              [1, 2, 3]&.%{method} { it + 1 }
+                         ^{method} Prefer `#{preferred_method}` over `#{method}`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              [1, 2, 3]&.#{preferred_method} { it + 1 }
+            RUBY
+          end
+        end
+      end
+    end
+
     context "#{method} with proc param" do
       it 'registers an offense' do
         expect_offense(<<~RUBY, method: method)
