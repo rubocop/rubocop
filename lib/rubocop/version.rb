@@ -49,17 +49,7 @@ module RuboCop
 
     # @api private
     def self.parser_version
-      config_path = ConfigFinder.find_config_path(Dir.pwd)
-      yaml = Util.silence_warnings do
-        ConfigLoader.load_yaml_configuration(config_path)
-      end
-
-      if yaml.dig('AllCops', 'ParserEngine') == 'parser_prism'
-        require 'prism'
-        "Prism #{Prism::VERSION}"
-      else
-        "Parser #{Parser::VERSION}"
-      end
+      "Parser #{Parser::VERSION}, Prism #{Prism::VERSION}"
     end
 
     # @api private
