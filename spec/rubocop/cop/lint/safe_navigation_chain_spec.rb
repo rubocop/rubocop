@@ -494,4 +494,20 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
   end
+
+  context '>= Ruby 3.4', :ruby34, unsupported_on: :parser do
+    it 'registers an offense for ordinary method chain exists after ' \
+       'safe navigation method call with a block using `it` parameter' do
+      expect_offense(<<~RUBY)
+        something
+        x&.select { foo(it) }.bar
+                             ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        something
+        x&.select { foo(it) }&.bar
+      RUBY
+    end
+  end
 end

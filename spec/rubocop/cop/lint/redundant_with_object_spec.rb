@@ -113,4 +113,39 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
       RUBY
     end
   end
+
+  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    it 'registers an offense and corrects when using `ary.each_with_object { it }`' do
+      expect_offense(<<~RUBY)
+        ary.each_with_object([]) { it }
+            ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary.each { it }
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using `ary&.each_with_object { it }`' do
+      expect_offense(<<~RUBY)
+        ary&.each_with_object([]) { it }
+             ^^^^^^^^^^^^^^^^^^^^ Use `each` instead of `each_with_object`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary&.each { it }
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using `ary.each.with_object([]) { it }`' do
+      expect_offense(<<~RUBY)
+        ary.each.with_object([]) { it }
+                 ^^^^^^^^^^^^^^^ Remove redundant `with_object`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ary.each { it }
+      RUBY
+    end
+  end
 end

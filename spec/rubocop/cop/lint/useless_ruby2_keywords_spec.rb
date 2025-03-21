@@ -173,6 +173,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessRuby2Keywords, :config do
       RUBY
     end
 
+    it 'registers an offense for an itblock', :ruby34, unsupported_on: :parser do
+      expect_offense(<<~RUBY)
+        define_method(:foo) { it }
+        ruby2_keywords :foo
+        ^^^^^^^^^^^^^^^^^^^ `ruby2_keywords` is unnecessary for method `foo`.
+      RUBY
+    end
+
     it 'does not register an offense for `Proc#ruby2_keywords`' do
       expect_no_offenses(<<~RUBY)
         block = proc { |_, *args| klass.new(*args) }

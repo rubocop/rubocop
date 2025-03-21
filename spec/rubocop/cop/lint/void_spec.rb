@@ -549,6 +549,25 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       end
     end
 
+    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+      it 'registers offense for nonmutating method that takes an `it` parameter block' do
+        expect_offense(<<~RUBY)
+          [1,2,3].map do
+          ^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#each`?
+            it.to_s
+          end
+          "done"
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [1,2,3].each do
+            it.to_s
+          end
+          "done"
+        RUBY
+      end
+    end
+
     it 'registers an offense if not on last line' do
       expect_offense(<<~RUBY)
         x.sort

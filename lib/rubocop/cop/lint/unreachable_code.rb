@@ -43,6 +43,7 @@ module RuboCop
         end
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         def after_block(node)
           @instance_eval_count -= 1 if instance_eval_block?(node)

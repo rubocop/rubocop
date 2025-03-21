@@ -53,6 +53,7 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 
@@ -64,6 +65,8 @@ module RuboCop
               (args (arg _)) ...)
             (numblock
               $(call _ {:each_with_index :with_index} ...) 1 ...)
+            (itblock
+              $(call _ {:each_with_index :with_index} ...) _ ...)
           }
         PATTERN
 

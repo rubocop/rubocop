@@ -53,6 +53,7 @@ module RuboCop
         end
 
         alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 
@@ -74,6 +75,7 @@ module RuboCop
 
         def arg_count(node)
           return node.children[1] if node.numblock_type? # the maximum numbered param for the block
+          return 1 if node.itblock_type? # `it` block parameter is always one
 
           # Only `arg`, `optarg` and `mlhs` (destructuring) count as arguments that
           # can be used. Keyword arguments are not used for these methods so are

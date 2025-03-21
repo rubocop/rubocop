@@ -101,9 +101,8 @@ module RuboCop
           check(node) if loop_method?(node)
         end
 
-        def on_numblock(node)
-          check(node) if loop_method?(node)
-        end
+        alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 
@@ -189,8 +188,9 @@ module RuboCop
 
         def preceded_by_continue_statement?(break_statement)
           break_statement.left_siblings.any? do |sibling|
-            # Numblocks have the arguments count as a number in the AST.
-            next if sibling.is_a?(Integer)
+            # Numblocks have the arguments count as a number or,
+            # itblocks have `:it` symbol in the AST.
+            next if sibling.is_a?(Integer) || sibling.is_a?(Symbol)
             next if sibling.loop_keyword? || loop_method?(sibling)
 
             sibling.each_descendant(*CONTINUE_KEYWORDS).any?

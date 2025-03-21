@@ -59,6 +59,25 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     end
   end
 
+  context 'when using `it` parameter', :ruby34, unsupported_on: :parser do
+    it 'registers an offense and corrects for method call with space before the parenthesis when block argument and parenthesis' do
+      expect_offense(<<~RUBY)
+        a.concat ((1..1).map { it * 10 })
+                ^ `((1..1).map { it * 10 })` interpreted as grouped expression.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a.concat((1..1).map { it * 10 })
+      RUBY
+    end
+
+    it 'does not register an offense for method call with space before the parenthesis when block argument is no parenthesis' do
+      expect_no_offenses(<<~RUBY)
+        a.concat (1..1).map { it * 10 }
+      RUBY
+    end
+  end
+
   it 'does not register an offense for expression followed by an operator' do
     expect_no_offenses(<<~RUBY)
       func (x) || y

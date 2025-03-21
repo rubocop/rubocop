@@ -409,6 +409,19 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
         RUBY
       end
     end
+
+    context 'when assigning an `it` block parameter', :ruby34, unsupported_on: :parser do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def x(array)
+            array.each {
+              bar = it
+            }.each { |bar|
+            }
+          end
+        RUBY
+      end
+    end
   end
 
   context 'with Ractor.new' do

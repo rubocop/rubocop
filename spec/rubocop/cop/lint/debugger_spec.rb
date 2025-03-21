@@ -40,6 +40,16 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
       RUBY
     end
 
+    it 'registers an offense for a `custom_debugger` call when used in `it` block', :ruby34, unsupported_on: :parser do
+      expect_offense(<<~RUBY)
+        x.y = do_something do
+          z(it)
+          custom_debugger
+          ^^^^^^^^^^^^^^^ Remove debugger entry point `custom_debugger`.
+        end
+      RUBY
+    end
+
     it 'registers an offense for a `custom_debugger` call when used in lambda literal' do
       expect_offense(<<~RUBY)
         x.y = -> { custom_debugger }
