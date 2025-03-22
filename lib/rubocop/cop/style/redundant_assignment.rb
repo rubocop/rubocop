@@ -37,6 +37,26 @@ module RuboCop
       #     end
       #   end
       #
+      # @example AllowComments: false (default)
+      #
+      #   # bad
+      #   def test
+      #     x = foo
+      #     # TODO: fix this
+      #     # x *= 2
+      #     x
+      #   end
+      #
+      # @example AllowComments: true
+      #
+      #   # good
+      #   def test
+      #     x = foo
+      #     # TODO: fix this
+      #     # x *= 2
+      #     x
+      #   end
+      #
       class RedundantAssignment < Base
         extend AutoCorrector
 
@@ -98,6 +118,8 @@ module RuboCop
 
         def check_begin_node(node)
           if (assignment = redundant_assignment?(node))
+            return if allow_comments? && comment_between?(assignment, node)
+
             add_offense(assignment) do |corrector|
               expression = assignment.children[1]
               corrector.replace(assignment, expression.source)
@@ -107,6 +129,16 @@ module RuboCop
             last_expr = node.children.last
             check_branch(last_expr)
           end
+        end
+
+        def comment_between?(start_node, end_node)
+          source_range = start_node.source_range.begin.join(end_node.source_range.end)
+
+          processed_source.contains_comment?(source_range)
+        end
+
+        def allow_comments?
+          cop_config.fetch('AllowComments', false)
         end
       end
     end
