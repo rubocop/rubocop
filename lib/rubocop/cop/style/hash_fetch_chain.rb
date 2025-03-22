@@ -79,7 +79,7 @@ module RuboCop
 
           return false unless node.method?(:fetch)
 
-          !node.last_argument.nil_type?
+          !node.last_argument&.nil_type?
         end
 
         def inspect_chain(node)

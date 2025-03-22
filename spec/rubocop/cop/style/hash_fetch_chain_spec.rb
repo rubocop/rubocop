@@ -95,6 +95,14 @@ RSpec.describe RuboCop::Cop::Style::HashFetchChain, :config do
         end
       end
 
+      context 'when no arguments are given to `fetch`' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            hash.fetch
+          RUBY
+        end
+      end
+
       context 'when the 2nd argument is not `nil` or `{}`' do
         it 'does not register an offense' do
           expect_no_offenses(<<~RUBY)
