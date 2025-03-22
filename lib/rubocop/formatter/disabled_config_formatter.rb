@@ -4,7 +4,7 @@ module RuboCop
   module Formatter
     # This formatter displays a YAML configuration file where all cops that
     # detected any offenses are configured to not detect the offense.
-    class DisabledConfigFormatter < BaseFormatter
+    class DisabledConfigFormatter < BaseFormatter # rubocop:disable Metrics/ClassLength
       include PathUtil
 
       HEADING = <<~COMMENTS
@@ -70,7 +70,11 @@ module RuboCop
         @options.fetch(:auto_gen_enforced_style, true)
       end
 
-      def command
+      def only_fail_level_offenses?
+        @options.fetch(:display_only_fail_level_offenses, false)
+      end
+
+      def command # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         command = 'rubocop --auto-gen-config'
 
         command += ' --auto-gen-only-exclude' if @options[:auto_gen_only_exclude]
@@ -85,6 +89,8 @@ module RuboCop
         command += ' --no-auto-gen-timestamp' unless show_timestamp?
 
         command += ' --no-auto-gen-enforced-style' unless auto_gen_enforced_style?
+
+        command += ' --display-only-fail-level-offenses' if only_fail_level_offenses?
 
         command
       end
