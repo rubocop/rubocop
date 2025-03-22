@@ -261,6 +261,20 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       RUBY
     end
 
+    context 'and SplitStrings option is enabled' do
+      let(:cop_config) do
+        super().merge('SplitStrings' => true)
+      end
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~'RUBY')
+          <<~MESSAGE
+            #{'hello' * 1} #{'world' * 2} #{'hello' * 1} #{'world' * 2} #{'hello' * 1} #{'world' * 2}
+          MESSAGE
+        RUBY
+      end
+    end
+
     context 'when the source has no AST' do
       it 'does not crash' do
         expect { expect_no_offenses('# this results in AST being nil') }.not_to raise_error
@@ -525,6 +539,28 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' \
               'bbbbb'
             RUBY
+          end
+
+          context 'when AllowHeredoc: false' do
+            let(:cop_config) { super().merge('AllowHeredoc' => false) }
+
+            context 'with multiple string interpolations' do
+              it 'registers an offense and autocorrects' do
+                expect_offense(<<~'RUBY')
+                  <<~MESSAGE
+                    #{'hello' * 1} #{'world' * 2} #{'hello' * 1}
+                                                          ^^^^^^ Line is too long. [46/40]
+                  MESSAGE
+                RUBY
+
+                expect_correction(<<~'RUBY')
+                  <<~MESSAGE
+                    #{'hello' * 1} #{'world' * 2} #{'he' \
+                  'llo' * 1}
+                  MESSAGE
+                RUBY
+              end
+            end
           end
 
           context 'when the string straddles after the limit' do
