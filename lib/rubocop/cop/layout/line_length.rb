@@ -133,6 +133,7 @@ module RuboCop
 
         def check_for_breakable_block(block_node)
           return unless block_node.single_line?
+          return if block_node.each_ancestor(:def).any?(&:endless?)
 
           line_index = block_node.loc.line - 1
           range = breakable_block_range(block_node)
