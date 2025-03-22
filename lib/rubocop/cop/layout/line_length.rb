@@ -371,7 +371,7 @@ module RuboCop
 
         def string_delimiter(node)
           delimiter = node.loc.begin
-          delimiter ||= node.parent.loc.begin if node.parent&.dstr_type?
+          delimiter ||= node.parent.loc&.begin if node.parent&.dstr_type?
           delimiter = delimiter&.source
 
           delimiter if %w[' "].include?(delimiter)

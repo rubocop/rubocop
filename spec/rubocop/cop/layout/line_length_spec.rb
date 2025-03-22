@@ -261,6 +261,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       RUBY
     end
 
+    context 'and SplitStrings option is enabled' do
+      let(:cop_config) do
+        { 'Max' => 80, 'AllowHeredoc' => true, 'SplitStrings' => true }
+      end
+
+      it 'does not crash' do
+        expect do
+          expect_no_offenses(<<~RUBY)
+            <<~MESSAGE
+              #{'hello' * 1} #{'world' * 2} #{'hello' * 1} #{'world' * 2} #{'hello' * 1} #{'world' * 2}
+            MESSAGE
+          RUBY
+        end.not_to raise_error
+      end
+    end
+
     context 'when the source has no AST' do
       it 'does not crash' do
         expect { expect_no_offenses('# this results in AST being nil') }.not_to raise_error
