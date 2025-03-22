@@ -14,6 +14,10 @@ InternalAffairs/ExampleDescription:
   Include:
     - 'spec/rubocop/cop/**/*.rb'
 
+InternalAffairs/MissingExpectCorrection:
+  Include:
+    - '**/*_spec.rb'
+
 InternalAffairs/NodeTypeGroup:
   Include:
     - 'lib/rubocop/cop/**/*.rb'

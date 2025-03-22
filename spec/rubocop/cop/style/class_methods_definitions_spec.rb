@@ -282,6 +282,8 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'does not register an offense when defining class methods with `class << self`' do

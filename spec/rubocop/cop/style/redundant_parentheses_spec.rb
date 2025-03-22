@@ -510,6 +510,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
                ^^^^^^ Don't use parentheses around a method call.
       }.qux)
     RUBY
+
+    expect_correction(<<~RUBY)
+      foo bar: baz {
+      }.qux
+    RUBY
   end
 
   it 'registers an offense for parentheses around a method chain with `{`...`}` numblock in keyword argument' do
@@ -518,6 +523,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
                ^^^^^^ Don't use parentheses around a method call.
         do_something(_1)
       }.qux)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo bar: baz {
+        do_something(_1)
+      }.qux
     RUBY
   end
 
@@ -843,6 +854,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
       if x; y else (1) end
                    ^^^ Don't use parentheses around a literal.
     RUBY
+
+    expect_correction(<<~RUBY)
+      if x; y else 1 end
+    RUBY
   end
 
   it 'accepts parentheses when enclosed in parentheses at `while-post`' do
@@ -882,6 +897,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
         x(({ y: 1 }), z)
           ^^^^^^^^^^ Don't use parentheses around a literal.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x({ y: 1 }, z)
+      RUBY
     end
   end
 
@@ -890,6 +909,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
       expect_offense(<<~RUBY)
         x ({ y: 1 }), ({ y: 1 })
                       ^^^^^^^^^^ Don't use parentheses around a literal.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x ({ y: 1 }), { y: 1 }
       RUBY
     end
   end

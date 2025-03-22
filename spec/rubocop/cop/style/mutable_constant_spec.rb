@@ -131,6 +131,15 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
               bar
             HERE
           RUBY
+
+          expect_correction(<<~'RUBY')
+            # frozen_string_literal: true
+
+            CONST = <<~HERE.freeze
+              foo #{use_interpolation}
+              bar
+            HERE
+          RUBY
         end
 
         it 'does not register an offense when using a multiline string' do
@@ -149,6 +158,13 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             CONST = "#{foo}" \
                     ^^^^^^^^^^ Freeze mutable objects assigned to constants.
                     'bar'
+          RUBY
+
+          expect_correction(<<~'RUBY')
+            # frozen_string_literal: true
+
+            CONST = "#{foo}" \
+                    'bar'.freeze
           RUBY
         end
       end
@@ -333,6 +349,11 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           Y = [4, 5, 6]
               ^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
+        expect_correction(<<~RUBY)
+          X = [1, 2, 3].freeze # shareable_constant_value: literal
+          Y = [4, 5, 6].freeze
+        RUBY
       end
 
       it 'raises offense only for shareable_constant_value as none when set in the order of: literal, none and experimental_everything' do
@@ -342,6 +363,15 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           # shareable_constant_value: none
           Y = [4, 5, 6]
               ^^^^^^^^^ Freeze mutable objects assigned to constants.
+          # shareable_constant_value: experimental_everything
+          Z = [7, 8, 9]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # shareable_constant_value: literal
+          X = [1, 2, 3]
+          # shareable_constant_value: none
+          Y = [4, 5, 6].freeze
           # shareable_constant_value: experimental_everything
           Z = [7, 8, 9]
         RUBY
