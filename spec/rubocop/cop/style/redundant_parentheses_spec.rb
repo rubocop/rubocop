@@ -765,6 +765,97 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers parentheses around `&&` followed by another `&&`' do
+    expect_offense(<<~RUBY)
+      (x && y) && z
+      ^^^^^^^^ Don't use parentheses around a logical expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x && y && z
+    RUBY
+  end
+
+  it 'registers parentheses around `&&` preceded by another `&&`' do
+    expect_offense(<<~RUBY)
+      x && (y && z)
+           ^^^^^^^^ Don't use parentheses around a logical expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x && y && z
+    RUBY
+  end
+
+  it 'registers parentheses around `&&` preceded and followed by another `&&`' do
+    expect_offense(<<~RUBY)
+      x && (y && z) && w
+           ^^^^^^^^ Don't use parentheses around a logical expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x && y && z && w
+    RUBY
+  end
+
+  it 'registers parentheses around `&&` preceded by another `&&` and followed by `||`' do
+    expect_offense(<<~RUBY)
+      x && (y && z) || w
+           ^^^^^^^^ Don't use parentheses around a logical expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x && y && z || w
+    RUBY
+  end
+
+  it 'registers parentheses around `&&` preceded by `||` and followed by another `&&`' do
+    expect_offense(<<~RUBY)
+      x || (y && z) && w
+           ^^^^^^^^ Don't use parentheses around a logical expression.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x || y && z && w
+    RUBY
+  end
+
+  it 'accepts parentheses around `&&` followed by `||`' do
+    expect_no_offenses(<<~RUBY)
+      (x && y) || z
+    RUBY
+  end
+
+  it 'accepts parentheses around `&&` preceded by `||`' do
+    expect_no_offenses(<<~RUBY)
+      x || (y && z)
+    RUBY
+  end
+
+  it 'accepts parentheses around `&&` preceded and followed by `||`' do
+    expect_no_offenses(<<~RUBY)
+      x || (y && z) || w
+    RUBY
+  end
+
+  it 'accepts parentheses around `||` followed by `&&`' do
+    expect_no_offenses(<<~RUBY)
+      (x || y) && z
+    RUBY
+  end
+
+  it 'accepts parentheses around `||` preceded by `&&`' do
+    expect_no_offenses(<<~RUBY)
+      x && (y || z)
+    RUBY
+  end
+
+  it 'accepts parentheses around `||` preceded and followed by `&&`' do
+    expect_no_offenses(<<~RUBY)
+      x && (y || z) && w
+    RUBY
+  end
+
   it 'accepts parentheses around arithmetic operator' do
     expect_no_offenses('x - (y || z)')
   end
