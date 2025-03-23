@@ -89,8 +89,8 @@ module RuboCop
 
         def inheritance_check?(node)
           argument = node.first_argument
-          node.method?(:<) &&
-            (argument.const_type? && argument.short_name.to_s.upcase != argument.short_name.to_s)
+          node.method?(:<) && argument.const_type? &&
+            argument.short_name.to_s.upcase != argument.short_name.to_s
         end
 
         def preferred_condition(node)

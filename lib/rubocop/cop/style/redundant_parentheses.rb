@@ -17,7 +17,7 @@ module RuboCop
         include Parentheses
         extend AutoCorrector
 
-        ALLOWED_NODE_TYPES = %i[and or send splat kwsplat].freeze
+        ALLOWED_NODE_TYPES = %i[or send splat kwsplat].freeze
 
         # @!method square_brackets?(node)
         def_node_matcher :square_brackets?, <<~PATTERN
@@ -162,6 +162,7 @@ module RuboCop
             return if node.semantic_operator? && begin_node.parent
             return if node.multiline? && allow_in_multiline_conditions?
             return if ALLOWED_NODE_TYPES.include?(begin_node.parent&.type)
+            return if !node.and_type? && begin_node.parent&.and_type?
             return if begin_node.parent&.if_type? && begin_node.parent.ternary?
 
             'a logical expression'
