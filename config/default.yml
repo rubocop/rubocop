@@ -4416,6 +4416,16 @@ Style/ItAssignment:
   Enabled: pending
   VersionAdded: '1.70'
 
+Style/ItBlockParameter:
+  Description: 'Checks for blocks with one argument where `it` block parameter can be used.'
+  Enabled: pending
+  EnforcedStyle: allow_named_parameter
+  SupportedStyles:
+    - allow_named_parameter
+    - always
+    - disallow
+  VersionAdded: '<<next>>'
+
 Style/KeywordArgumentsMerging:
   Description: >-
                  When passing an existing hash as keyword arguments, provide additional arguments
