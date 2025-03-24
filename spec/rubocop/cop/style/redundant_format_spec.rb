@@ -369,6 +369,31 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           end
         end
       end
+
+      context 'with constants' do
+        it 'registers an offense when the only argument is a constant' do
+          expect_offense(<<~RUBY, method: method)
+            %{method}(FORMAT)
+            ^{method}^^^^^^^^ Use `FORMAT` directly instead of `%{method}`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            FORMAT
+          RUBY
+        end
+
+        it 'does not register an offense when the first argument is a constant' do
+          expect_no_offenses(<<~RUBY)
+            #{method}(FORMAT, 'foo', 'bar')
+          RUBY
+        end
+
+        it 'does not register an offense when only argument is a splatted constant' do
+          expect_no_offenses(<<~RUBY)
+            #{method}(*FORMAT)
+          RUBY
+        end
+      end
     end
   end
 end
