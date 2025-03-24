@@ -46,6 +46,38 @@ module RuboCop
       #     next unless a == 1
       #     puts a
       #   end
+      #
+      # @example AllowConsecutiveConditionals: false (default)
+      #   # bad
+      #   [1, 2].each do |a|
+      #     if a == 1
+      #       puts a
+      #     end
+      #     if a == 2
+      #       puts a
+      #     end
+      #   end
+      #
+      #   # good
+      #   [1, 2].each do |a|
+      #     if a == 1
+      #       puts a
+      #     end
+      #     next unless a == 2
+      #     puts a
+      #   end
+      #
+      # @example AllowConsecutiveConditionals: true
+      #   # good
+      #   [1, 2].each do |a|
+      #     if a == 1
+      #       puts a
+      #     end
+      #     if a == 2
+      #       puts a
+      #     end
+      #   end
+      #
       class Next < Base
         include ConfigurableEnforcedStyle
         include MinBodyLength
@@ -86,6 +118,9 @@ module RuboCop
           return unless node.body && ends_with_condition?(node.body)
 
           offending_node = offense_node(node.body)
+
+          return if allowed_consecutive_conditionals? &&
+                    consecutive_conditionals?(offending_node)
 
           add_offense(offense_location(offending_node)) do |corrector|
             if offending_node.modifier_form?
@@ -227,6 +262,14 @@ module RuboCop
           @reindented_lines[lineno] = adjustment
 
           corrector.remove_leading(buffer.line_range(lineno), adjustment) if adjustment.positive?
+        end
+
+        def consecutive_conditionals?(if_node)
+          if_node.parent&.begin_type? && if_node.left_sibling&.if_type?
+        end
+
+        def allowed_consecutive_conditionals?
+          cop_config.fetch('AllowConsecutiveConditionals', false)
         end
       end
     end
