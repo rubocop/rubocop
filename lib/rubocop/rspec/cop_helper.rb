@@ -10,7 +10,7 @@ module CopHelper
     # The minimum version Prism can parse is 3.3.
     ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : RuboCop::TargetRuby::DEFAULT_VERSION
   end
-  let(:parser_engine) { ENV.fetch('PARSER_ENGINE', :parser_whitequark).to_sym }
+  let(:parser_engine) { ENV.fetch('PARSER_ENGINE', 'parser_whitequark').to_sym }
   let(:rails_version) { false }
 
   before(:all) do
