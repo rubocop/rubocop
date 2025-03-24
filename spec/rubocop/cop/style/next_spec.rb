@@ -694,4 +694,52 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
         .to raise_error('MinBodyLength needs to be a positive integer!')
     end
   end
+
+  context 'AllowConsecutiveConditionals: false' do
+    let(:cop_config) { { 'AllowConsecutiveConditionals' => false, 'MinBodyLength' => 1 } }
+
+    it 'registers an offense and corrects when another conditional statements is at the same depth' do
+      expect_offense(<<~RUBY)
+        [].each do
+          if foo?
+            work
+          end
+
+          if bar?
+          ^^^^^^^ Use `next` to skip iteration.
+            work
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [].each do
+          if foo?
+            work
+          end
+
+          next unless bar?
+          work
+        end
+      RUBY
+    end
+  end
+
+  context 'AllowConsecutiveConditionals: true' do
+    let(:cop_config) { { 'AllowConsecutiveConditionals' => true, 'MinBodyLength' => 1 } }
+
+    it 'does not register an offense when other conditional statements are at the same depth' do
+      expect_no_offenses(<<~RUBY)
+        [].each do
+          if foo?
+            work
+          end
+
+          if bar?
+            work
+          end
+        end
+      RUBY
+    end
+  end
 end
