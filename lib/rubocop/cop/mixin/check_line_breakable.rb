@@ -48,7 +48,7 @@ module RuboCop
 
           args = process_args(node.arguments)
           return extract_breakable_node_from_elements(node, args, max)
-        elsif node.def_type?
+        elsif node.type?(:def, :defs)
           return extract_breakable_node_from_elements(node, node.arguments, max)
         elsif node.type?(:array, :hash)
           return extract_breakable_node_from_elements(node, node.children, max)
@@ -220,7 +220,7 @@ module RuboCop
 
       # @api private
       def already_on_multiple_lines?(node)
-        return node.first_line != node.last_argument.last_line if node.def_type?
+        return node.first_line != node.last_argument.last_line if node.type?(:def, :defs)
 
         !node.single_line?
       end

@@ -93,6 +93,7 @@ module RuboCop
         alias on_send on_potential_breakable_node
         alias on_csend on_potential_breakable_node
         alias on_def on_potential_breakable_node
+        alias on_defs on_potential_breakable_node
 
         def on_new_investigation
           return unless processed_source.raw_source.include?(';')
