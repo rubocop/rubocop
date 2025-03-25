@@ -36,11 +36,14 @@ The following table is the runtime support matrix.
 | 3.2 | -
 | 3.3 | -
 | 3.4 (experimental) | -
+| 3.5 (experimental) | -
 |===
 
 RuboCop targets Ruby 2.0+ code analysis with Parser gem as a parser since RuboCop 1.30. It restored code analysis support that had been removed earlier by mistake, together with dropping runtime support for unsupported Ruby versions.
 
-Starting from RuboCop 1.62, support for Prism's `Prism::Translation::parser` will enable analysis of Ruby 3.3+. For more details, please refer to the xref:configuration.adoc#setting-the-parser-engine[setting `ParserEngine`].
+Starting from RuboCop 1.62, support for Prism's translation layer will allow analysis of Ruby 3.3+ with the `prism` gem. For Ruby 3.5+ analysis, only the `prism` translation layer is supported, which means that you need to add the `prism gem to your Gemfile. In a future release, `prism` will become a dependency of RuboCop.
+
+For more details, please refer to the xref:configuration.adoc#setting-the-parser-engine[setting `ParserEngine`].
 
 NOTE: The compatibility xref:configuration.adoc#setting-the-target-ruby-version[setting `TargetRubyVersion`] is about code analysis (what RuboCop can analyze), not runtime (is RuboCop capable of running on some Ruby or not).
 
