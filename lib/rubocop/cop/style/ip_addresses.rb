@@ -32,7 +32,7 @@ module RuboCop
 
           # To try to avoid doing two regex checks on every string,
           # shortcut out if the string does not look like an IP address
-          return false unless could_be_ip?(contents)
+          return false unless potential_ip?(contents)
 
           ::Resolv::IPv4::Regex.match?(contents) || ::Resolv::IPv6::Regex.match?(contents)
         end
@@ -52,7 +52,7 @@ module RuboCop
           Array(allowed_addresses).map(&:downcase)
         end
 
-        def could_be_ip?(str)
+        def potential_ip?(str)
           # If the string is too long, it can't be an IP
           return false if too_long?(str)
 
