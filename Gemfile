@@ -10,7 +10,6 @@ gem 'bundler', '>= 1.15.0', '< 3.0'
 gem 'fiddle', platform: :windows if RUBY_VERSION >= '3.4'
 gem 'irb'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
-gem 'prism', '~> 1.4'
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.24.0'
