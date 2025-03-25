@@ -65,6 +65,7 @@ module RuboCop
 
           check_line_breaks(node, node.arguments, ignore_last: ignore_last_element?)
         end
+        alias on_defs on_def
 
         private
 

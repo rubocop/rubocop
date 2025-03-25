@@ -211,4 +211,39 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodParameterLineBreaks, :config
       RUBY
     end
   end
+
+  context 'when a class method definition is used' do
+    context 'when all parameters are on the same line' do
+      it 'does not add any offenses' do
+        expect_no_offenses(<<~RUBY)
+          def self.taz(
+            foo, bar
+          )
+          end
+        RUBY
+      end
+    end
+
+    context 'when not all parameters are on separate lines' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def self.taz(abc,
+          foo, bar,
+               ^^^ Each parameter in a multi-line method definition must start on a separate line.
+          baz
+          )
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.taz(abc,
+          foo,#{trailing_whitespace}
+          bar,
+          baz
+          )
+          end
+        RUBY
+      end
+    end
+  end
 end
