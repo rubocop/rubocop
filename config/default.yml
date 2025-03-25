@@ -3049,17 +3049,19 @@ Naming/PredicateName:
   StyleGuide: '#bool-methods-qmark'
   Enabled: true
   VersionAdded: '0.50'
-  VersionChanged: '0.77'
+  VersionChanged: '<<next>>'
   # Predicate name prefixes.
   NamePrefix:
     - is_
     - has_
     - have_
+    - does_
   # Predicate name prefixes that should be removed.
   ForbiddenPrefixes:
     - is_
     - has_
     - have_
+    - does_
   # Predicate names which, despite having a forbidden prefix, or no `?`,
   # should still be accepted
   AllowedMethods:
