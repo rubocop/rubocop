@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::HashSlice, :config do
-  shared_examples_for 'include?' do
+  shared_examples 'include?' do
     context 'using `include?`' do
       it 'does not register an offense when using `select` and calling `!include?` method with symbol array' do
         expect_no_offenses(<<~RUBY)

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
-  shared_examples_for 'enforce single quotes' do
+  shared_examples 'enforce single quotes' do
     it 'accepts unquoted symbols' do
       expect_no_offenses(<<~RUBY)
         :a
@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Style::QuotedSymbols, :config do
     end
   end
 
-  shared_examples_for 'enforce double quotes' do
+  shared_examples 'enforce double quotes' do
     it 'accepts unquoted symbols' do
       expect_no_offenses(<<~RUBY)
         :a

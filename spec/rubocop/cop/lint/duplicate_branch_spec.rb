@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
-  shared_examples_for 'literal if allowed' do |type, value|
+  shared_examples 'literal if allowed' do |type, value|
     context "when returning a #{type} in multiple branches" do
       it 'allows branches to be duplicated' do
         expect_no_offenses(<<~RUBY)
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
     end
   end
 
-  shared_examples_for 'literal if disallowed' do |type, value|
+  shared_examples 'literal if disallowed' do |type, value|
     context "when returning a #{type} in multiple branches" do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
     end
   end
 
-  shared_examples_for 'literal case allowed' do |type, value|
+  shared_examples 'literal case allowed' do |type, value|
     context "when returning a #{type} in multiple branches" do
       it 'allows branches to be duplicated' do
         expect_no_offenses(<<~RUBY)
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
     end
   end
 
-  shared_examples_for 'literal case disallowed' do |type, value|
+  shared_examples 'literal case disallowed' do |type, value|
     context "when returning a #{type} in multiple branches" do
       it 'registers an offense' do
         expect_offense(<<~RUBY, value: value)
@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
     end
   end
 
-  shared_examples_for 'literal case-match allowed' do |type, value|
+  shared_examples 'literal case-match allowed' do |type, value|
     context "when returning a #{type} in multiple branches", :ruby27 do
       it 'allows branches to be duplicated' do
         expect_no_offenses(<<~RUBY)
@@ -79,7 +79,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
     end
   end
 
-  shared_examples_for 'literal case-match disallowed' do |type, value|
+  shared_examples 'literal case-match disallowed' do |type, value|
     context "when returning a #{type} in multiple branches", :ruby27 do
       it 'registers an offense' do
         expect_offense(<<~RUBY, value: value)
@@ -95,7 +95,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
     end
   end
 
-  shared_examples_for 'literal rescue allowed' do |type, value|
+  shared_examples 'literal rescue allowed' do |type, value|
     context "when returning a #{type} in multiple branches" do
       it 'allows branches to be duplicated' do
         expect_no_offenses(<<~RUBY)
@@ -113,7 +113,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateBranch, :config do
     end
   end
 
-  shared_examples_for 'literal rescue disallowed' do |type, value|
+  shared_examples 'literal rescue disallowed' do |type, value|
     context "when returning a #{type} in multiple branches" do
       it 'registers an offense' do
         expect_offense(<<~RUBY)

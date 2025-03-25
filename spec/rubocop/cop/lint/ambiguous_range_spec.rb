@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRange, :config do
       end
 
       context 'method calls' do
-        shared_examples_for 'common behavior' do
+        shared_examples 'common behavior' do
           it 'does not register an offense for a non-chained method call' do
             expect_no_offenses(<<~RUBY)
               a#{operator}b

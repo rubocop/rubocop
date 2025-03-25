@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::HashFetchChain, :config do
   context 'ruby >= 2.3' do
     context 'with chained `fetch` methods' do
-      shared_examples_for 'fetch chain' do |argument|
+      shared_examples 'fetch chain' do |argument|
         context "when the 2nd argument is `#{argument}`" do
           it 'does not register an offense when not chained' do
             expect_no_offenses(<<~RUBY)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples_for 'multiline literal brace layout' do
+RSpec.shared_examples 'multiline literal brace layout' do
   include MultilineLiteralBraceHelper
 
   let(:prefix) { '' } # A prefix before the opening brace.
