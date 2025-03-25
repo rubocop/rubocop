@@ -55,13 +55,13 @@ RSpec.describe RuboCop::Cop::AnnotationComment do
   describe '#correct?' do
     subject { annotation.correct?(colon: colon) }
 
-    shared_examples_for 'correct' do |text|
+    shared_examples 'correct' do |text|
       let(:text) { text }
 
       it { is_expected.to be_truthy }
     end
 
-    shared_examples_for 'incorrect' do |text|
+    shared_examples 'incorrect' do |text|
       let(:text) { text }
 
       it { is_expected.to be_falsey }

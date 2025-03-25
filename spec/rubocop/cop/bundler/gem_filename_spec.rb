@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Bundler::GemFilename, :config do
-  shared_examples_for 'invalid gem file' do |message|
+  shared_examples 'invalid gem file' do |message|
     it 'registers an offense' do
       offenses = _investigate(cop, processed_source)
 
@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemFilename, :config do
     end
   end
 
-  shared_examples_for 'valid gem file' do
+  shared_examples 'valid gem file' do
     it 'does not register an offense' do
       offenses = _investigate(cop, processed_source)
 

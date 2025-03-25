@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples_for 'empty_lines_around_class_or_module_body' do |type|
+RSpec.shared_examples 'empty_lines_around_class_or_module_body' do |type|
   context 'when EnforcedStyle is empty_lines_special' do
     let(:cop_config) { { 'EnforcedStyle' => 'empty_lines_special' } }
 
