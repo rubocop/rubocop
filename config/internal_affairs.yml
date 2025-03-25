@@ -22,6 +22,10 @@ InternalAffairs/OnSendWithoutOnCSend:
   Include:
     - 'lib/rubocop/cop/**/*.rb'
 
+InternalAffairs/SharedExamples:
+  Include:
+    - 'spec/**/*.rb'
+
 InternalAffairs/UndefinedConfig:
   Include:
     - 'lib/rubocop/cop/**/*.rb'
