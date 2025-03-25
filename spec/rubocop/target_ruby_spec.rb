@@ -665,5 +665,14 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
     end
+
+    context 'when gemspec file is not visible' do
+      [Errno::EPERM, Errno::EACCES].each do |error_class|
+        it "handles #{error_class} errors gracefully" do
+          expect(Pathname).to receive(:glob).and_raise(error_class).at_least(1).times
+          expect(target_ruby.version).to eq default_version
+        end
+      end
+    end
   end
 end

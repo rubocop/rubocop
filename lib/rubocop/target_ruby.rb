@@ -102,7 +102,11 @@ module RuboCop
           @config.traverse_directories_upwards(@config.base_dir_for_path_parameters) do |dir|
             # NOTE: Can't use `dir.glob` because of JRuby 9.4.8.0 incompatibility:
             # https://github.com/jruby/jruby/issues/8358
-            candidates = Pathname.glob("#{dir}/*.gemspec")
+            candidates = begin
+              Pathname.glob("#{dir}/*.gemspec")
+            rescue Errno::EACCES, Errno::EPERM
+              []
+            end
             # Bundler will use a gemspec whatever the filename is, as long as its the only one in
             # the folder.
             break candidates.first if candidates.one?
