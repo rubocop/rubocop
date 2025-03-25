@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Style::InfiniteLoop, :config do
     RUBY
   end
 
-  shared_examples_for 'autocorrector' do |keyword, lit|
+  shared_examples 'autocorrector' do |keyword, lit|
     it "autocorrects single line modifier #{keyword}" do
       expect_offense(<<~RUBY, keyword: keyword, lit: lit)
         something += 1 %{keyword} %{lit} # comment

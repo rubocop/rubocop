@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples_for 'multiline literal brace layout method argument' do
+RSpec.shared_examples 'multiline literal brace layout method argument' do
   include MultilineLiteralBraceHelper
 
   context 'when arguments to a method' do
