@@ -199,6 +199,34 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
     end
   end
 
+  context 'when a block local variable inside an `if` has same name as an outer scope variable' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method
+          foo = 1
+
+          if cond
+            bar.each do |foo|
+                         ^^^ Shadowing outer local variable - `foo`.
+            end
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block local variable has same name as method argument' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def some_method(foo)
+          1.times do |foo|
+                      ^^^ Shadowing outer local variable - `foo`.
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when a block local variable has same name as an outer scope variable' \
           'with different branches of same `if` condition node' do
     it 'does not register an offense' do
@@ -317,6 +345,16 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
           foo = if condition
                   bar { |foo| baz(foo) }
                 end
+        end
+      RUBY
+    end
+  end
+
+  context 'when the same variable name as a block variable is used in return value assignment of method' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def some_method
+          foo = bar { |foo| baz(foo) }
         end
       RUBY
     end
