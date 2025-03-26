@@ -11,6 +11,41 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#12049](https://github.com/rubocop/rubocop/issues/12049): Add new `Style/HashFetchChain` cop to detect chained `fetch` calls that can be replaced with a single call to `dig`. ([@dvandersluis][])
+* [#13597](https://github.com/rubocop/rubocop/issues/13597): Add new `Style/ItBlockParameter` cop. ([@koic][])
+* [#13899](https://github.com/rubocop/rubocop/pull/13899): Enable reusable Prism parse result for Ruby LSP add-on. ([@koic][])
+* [#14015](https://github.com/rubocop/rubocop/pull/14015): Support `it` block parameter in `Layout` cops. ([@koic][])
+* [#14017](https://github.com/rubocop/rubocop/pull/14017): Support `it` block parameter in `Lint` cops. ([@koic][])
+* [#14018](https://github.com/rubocop/rubocop/pull/14018): Support `it` block parameter in `Metrics` cops. ([@koic][])
+* [#14013](https://github.com/rubocop/rubocop/pull/14013): Support `it` block parameter in `Style` cops. ([@koic][])
+* [#14025](https://github.com/rubocop/rubocop/pull/14025): Support `TargetRubyVersion: 3.5` (experimental). ([@earlopain][])
+
+### Bug fixes
+
+* [#14022](https://github.com/rubocop/rubocop/pull/14022): Fix an error for `Style/HashFetchChain` when no arguments are given to `fetch`. ([@koic][])
+* [#14028](https://github.com/rubocop/rubocop/pull/14028): Fix false negative for `Layout/MultilineMethodParameterLineBreaks` when class method definitions are used. ([@vlad-pisanov][])
+* [#14027](https://github.com/rubocop/rubocop/pull/14027): Fix false negative for `Layout/LineLength` when autocorrecting class method definitions. ([@vlad-pisanov][])
+* [#8099](https://github.com/rubocop/rubocop/issues/8099): Fix infinite loop between `Layout/SpaceAroundOperators` and `Layout/HashAlignment` with `EnforcedHashRocketStyle` being an array containing `table`. ([@dvandersluis][])
+* [#14021](https://github.com/rubocop/rubocop/pull/14021): Fix handling of long heredoc lines with SplitStrings enabled. ([@mauro-oto][])
+* [#13968](https://github.com/rubocop/rubocop/pull/13968): Fix `InternalAffairs/RedundantDescribedClassAsSubject` cop error on missing `describe`. ([@viralpraxis][])
+* [#14036](https://github.com/rubocop/rubocop/pull/14036): Fix false negative for `Lint/ShadowingOuterLocalVariable` when block local variable is used inside a condition. ([@lovro-bikic][])
+* [#13990](https://github.com/rubocop/rubocop/issues/13990): Fix a false positive for `Lint/UselessAssignment` when a variable is reassigned in a different branch. ([@eugeneius][])
+* [#14012](https://github.com/rubocop/rubocop/pull/14012): Fix incorrect autocorrections for `Style/SoleNestedConditional`. ([@lovro-bikic][])
+* [#14020](https://github.com/rubocop/rubocop/pull/14020): Fix comment autocorrection for `Style/IfInsideElse`. ([@lovro-bikic][])
+
+### Changes
+
+* [#12358](https://github.com/rubocop/rubocop/issues/12358): Add `does` as a forbidden prefix to `Naming/PredicateName`. ([@dvandersluis][])
+* [#13621](https://github.com/rubocop/rubocop/issues/13621): Add `ForbiddenIdentifiers` and `ForbiddenPatterns` config options to `Naming/MethodName` cop. ([@tejasbubane][])
+* [#13986](https://github.com/rubocop/rubocop/issues/13986): Add support for `Array#intersection` to `Style/ArrayIntersect`. ([@dvandersluis][])
+* [#14006](https://github.com/rubocop/rubocop/pull/14006): Allow cop renames to trigger warnings instead of fatal errors. ([@dvandersluis][])
+* [#13617](https://github.com/rubocop/rubocop/issues/13617): Use the `prism` translation layer to analyze Ruby 3.4+ by default. ([@earlopain][])
+* [#14024](https://github.com/rubocop/rubocop/pull/14024): Change `Style/RedundantParentheses` to offend parentheses for chained `&&` expressions. ([@lovro-bikic][])
+* [#14029](https://github.com/rubocop/rubocop/pull/14029): Add `AllowConsecutiveConditionals` setting to `Style/Next` to allow consecutive conditional statements. ([@vlad-pisanov][])
+* [#14016](https://github.com/rubocop/rubocop/pull/14016): Update `Style/RedundantFormat` to register offenses when the only argument to `format` or `sprintf` is a constant. ([@dvandersluis][])
+
 ## 1.74.0 (2025-03-13)
 
 ### New features
