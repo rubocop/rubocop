@@ -4423,9 +4423,9 @@ Style/ItAssignment:
 Style/ItBlockParameter:
   Description: 'Checks for blocks with one argument where `it` block parameter can be used.'
   Enabled: pending
-  EnforcedStyle: allow_named_parameter
+  EnforcedStyle: only_numbered_parameters
   SupportedStyles:
-    - allow_named_parameter
+    - only_numbered_parameters
     - always
     - disallow
   VersionAdded: '1.75'

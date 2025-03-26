@@ -7,13 +7,13 @@ module RuboCop
       #
       # It provides three `EnforcedStyle` options:
       #
-      # 1. `allow_named_parameter` (default) ... Detects only numbered block parameters.
+      # 1. `only_numbered_parameters` (default) ... Detects only numbered block parameters.
       # 2. `always` ... Always uses the `it` block parameter.
       # 3. `disallow` ... Disallows the `it` block parameter.
       #
-      # A single numbered parameter is detected when `allow_named_parameter` or `always`.
+      # A single numbered parameter is detected when `only_numbered_parameters` or `always`.
       #
-      # @example EnforcedStyle: allow_named_parameter (default)
+      # @example EnforcedStyle: only_numbered_parameters (default)
       #   # bad
       #   block { do_something(_1) }
       #
