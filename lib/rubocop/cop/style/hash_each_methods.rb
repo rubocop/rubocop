@@ -129,8 +129,8 @@ module RuboCop
           lvar_sources = node.body.each_descendant(:lvar).map(&:source)
 
           if block_arg.mlhs_type?
-            block_arg.each_descendant(:arg, :restarg).all? do |block_arg|
-              lvar_sources.none?(block_arg.source.delete_prefix('*'))
+            block_arg.each_descendant(:arg, :restarg).all? do |descendant|
+              lvar_sources.none?(descendant.source.delete_prefix('*'))
             end
           else
             lvar_sources.none?(block_arg.source.delete_prefix('*'))
