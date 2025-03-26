@@ -2,8 +2,8 @@
 
 RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
   context '>= Ruby 3.4', :ruby34 do
-    context 'EnforcedStyle: allow_named_parameter' do
-      let(:cop_config) { { 'EnforcedStyle' => 'allow_named_parameter' } }
+    context 'EnforcedStyle: only_numbered_parameters' do
+      let(:cop_config) { { 'EnforcedStyle' => 'only_numbered_parameters' } }
 
       it 'registers an offense when using a single numbered parameters' do
         expect_offense(<<~RUBY)
@@ -197,8 +197,8 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
   end
 
   context '<= Ruby 3.3', :ruby33 do
-    context 'EnforcedStyle: allow_named_parameter' do
-      let(:cop_config) { { 'EnforcedStyle' => 'allow_named_parameter' } }
+    context 'EnforcedStyle: only_numbered_parameters' do
+      let(:cop_config) { { 'EnforcedStyle' => 'only_numbered_parameters' } }
 
       it 'does not register an offense when using a single numbered parameters' do
         expect_no_offenses(<<~RUBY)
