@@ -10,6 +10,8 @@ module RuboCop
           'analyzing as Ruby %<target_ruby_version>s, ' \
           'running on %<ruby_engine>s %<ruby_version>s)%<server_mode>s [%<ruby_platform>s]'
 
+    MINIMUM_PARSABLE_PRISM_VERSION = 3.3
+
     CANONICAL_FEATURE_NAMES = {
       'Rspec' => 'RSpec', 'Graphql' => 'GraphQL', 'Md' => 'Markdown', 'Factory_bot' => 'FactoryBot',
       'Thread_safety' => 'ThreadSafety', 'Rspec_rails' => 'RSpecRails'
@@ -20,11 +22,14 @@ module RuboCop
 
     # NOTE: Marked as private but used by gems like standard.
     # @api private
+    # rubocop:disable Metrics/MethodLength
     def self.version(debug: false, env: nil)
       if debug
-        verbose_version = format(MSG, version: STRING, parser_version: parser_version,
+        target_ruby_version = target_ruby_version(env)
+        verbose_version = format(MSG, version: STRING,
+                                      parser_version: parser_version(target_ruby_version),
                                       rubocop_ast_version: RuboCop::AST::Version::STRING,
-                                      target_ruby_version: target_ruby_version(env),
+                                      target_ruby_version: target_ruby_version,
                                       ruby_engine: RUBY_ENGINE, ruby_version: RUBY_VERSION,
                                       server_mode: server_mode,
                                       ruby_platform: RUBY_PLATFORM)
@@ -41,6 +46,7 @@ module RuboCop
         STRING
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     # @api private
     def self.verbose(env: nil)
@@ -48,7 +54,7 @@ module RuboCop
     end
 
     # @api private
-    def self.parser_version
+    def self.parser_version(target_ruby_version)
       config_path = ConfigFinder.find_config_path(Dir.pwd)
       yaml = Util.silence_warnings do
         ConfigLoader.load_yaml_configuration(config_path)
@@ -56,7 +62,11 @@ module RuboCop
       parser_engine = yaml.dig('AllCops', 'ParserEngine')
       parser_engine_text = ", #{parser_engine}" if parser_engine
 
-      "Parser #{Parser::VERSION}, Prism #{Prism::VERSION}#{parser_engine_text}"
+      if target_ruby_version >= MINIMUM_PARSABLE_PRISM_VERSION
+        "Parser #{Parser::VERSION}, Prism #{Prism::VERSION}#{parser_engine_text}"
+      else
+        "Parser #{Parser::VERSION}"
+      end
     end
 
     # @api private
