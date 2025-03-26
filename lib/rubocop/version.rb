@@ -49,8 +49,6 @@ module RuboCop
 
     # @api private
     def self.parser_version
-      require 'prism'
-
       config_path = ConfigFinder.find_config_path(Dir.pwd)
       yaml = Util.silence_warnings do
         ConfigLoader.load_yaml_configuration(config_path)
@@ -59,8 +57,6 @@ module RuboCop
       parser_engine_text = ", #{parser_engine}" if parser_engine
 
       "Parser #{Parser::VERSION}, Prism #{Prism::VERSION}#{parser_engine_text}"
-    rescue LoadError
-      "Parser #{Parser::VERSION}"
     end
 
     # @api private
