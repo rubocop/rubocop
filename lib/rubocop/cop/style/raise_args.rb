@@ -3,15 +3,15 @@
 module RuboCop
   module Cop
     module Style
-      # Checks the args passed to `fail` and `raise`. For exploded
-      # style (default), it recommends passing the exception class and message
-      # to `raise`, rather than construct an instance of the error. It will
-      # still allow passing just a message, or the construction of an error
-      # with more than one argument.
+      # Checks the args passed to `fail` and `raise`.
       #
-      # The exploded style works identically, but with the addition that it
-      # will also suggest constructing error objects when the exception is
-      # passed multiple arguments.
+      # Exploded style (default) enforces passing the exception class and message
+      # arguments separately, rather than constructing an instance of the error.
+      #
+      # Compact style enforces constructing an error instance.
+      #
+      # Both styles allow passing just a message, or an error instance when there is more
+      # than one argument.
       #
       # The exploded style has an `AllowedCompactTypes` configuration
       # option that takes an `Array` of exception name Strings.
