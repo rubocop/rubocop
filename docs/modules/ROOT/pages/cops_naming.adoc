@@ -1007,20 +1007,37 @@ end
 | Yes
 | No
 | 0.50
-| -
+| 1.75
 |===
 
 Makes sure that all methods use the configured style,
 snake_case or camelCase, for their names.
 
-This cop has `AllowedPatterns` configuration option.
-
-  Naming/MethodName:
-    AllowedPatterns:
-      - '\AonSelectionBulkChange\z'
-      - '\AonSelectionCleared\z'
-
 Method names matching patterns are always allowed.
+
+The cop can be configured with `AllowedPatterns` to allow certain regexp patterns:
+
+[source,yaml]
+----
+Naming/MethodName:
+  AllowedPatterns:
+    - '\AonSelectionBulkChange\z'
+    - '\AonSelectionCleared\z'
+----
+
+As well, you can also forbid specific method names or regexp patterns
+using `ForbiddenIdentifiers` or `ForbiddenPatterns`:
+
+[source,yaml]
+----
+Naming/MethodName:
+  ForbiddenIdentifiers:
+    - 'def'
+    - 'super'
+  ForbiddenPatterns:
+    - '_v1\z'
+    - '_gen1\z'
+----
 
 [#examples-namingmethodname]
 === Examples
@@ -1049,6 +1066,26 @@ def foo_bar; end
 def fooBar; end
 ----
 
+[#forbiddenidentifiers_-__def__-_super__-namingmethodname]
+==== ForbiddenIdentifiers: ['def', 'super']
+
+[source,ruby]
+----
+# bad
+def def; end
+def super; end
+----
+
+[#forbiddenpatterns_-___v1_z__-__gen1_z__-namingmethodname]
+==== ForbiddenPatterns: ['_v1\z', '_gen1\z']
+
+[source,ruby]
+----
+# bad
+def release_v1; end
+def api_gen1; end
+----
+
 [#configurable-attributes-namingmethodname]
 === Configurable attributes
 
@@ -1060,6 +1097,14 @@ def fooBar; end
 | `snake_case`, `camelCase`
 
 | AllowedPatterns
+| `[]`
+| Array
+
+| ForbiddenIdentifiers
+| `__id__`, `__send__`
+| Array
+
+| ForbiddenPatterns
 | `[]`
 | Array
 |===
@@ -1161,7 +1206,7 @@ end
 | Yes
 | No
 | 0.50
-| 0.77
+| 1.75
 |===
 
 Checks that predicate method names end with a question mark and
@@ -1311,11 +1356,11 @@ def_node_matcher(:even?) { |value| }
 | Name | Default value | Configurable values
 
 | NamePrefix
-| `is_`, `has_`, `have_`
+| `is_`, `has_`, `have_`, `does_`
 | Array
 
 | ForbiddenPrefixes
-| `is_`, `has_`, `have_`
+| `is_`, `has_`, `have_`, `does_`
 | Array
 
 | AllowedMethods

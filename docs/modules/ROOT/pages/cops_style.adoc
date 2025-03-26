@@ -847,7 +847,8 @@ NOTE: Requires Ruby version 3.1
 In Ruby 3.1, `Array#intersect?` has been added.
 
 This cop identifies places where `(array1 & array2).any?`
-can be replaced by `array1.intersect?(array2)`.
+or `(array1.intersection(array2)).any?` can be replaced by
+`array1.intersect?(array2)`.
 
 The `array1.intersect?(array2)` method is faster than
 `(array1 & array2).any?` and is more readable.
@@ -860,6 +861,10 @@ so it will not be detected when using block argument.
 ([1] & [1,2]).any? { |x| false }    # => false
 [1].intersect?([1,2]) { |x| false } # => true
 ----
+
+NOTE: Although `Array#intersection` can take zero or multiple arguments,
+only cases where exactly one argument is provided can be replaced with
+`Array#intersect?` and are handled by this cop.
 
 [#safety-stylearrayintersect]
 === Safety
@@ -876,6 +881,11 @@ actually arrays while method `intersect?` is for arrays only.
 (array1 & array2).any?
 (array1 & array2).empty?
 (array1 & array2).none?
+
+# bad
+array1.intersection(array2).any?
+array1.intersection(array2).empty?
+array1.intersection(array2).none?
 
 # good
 array1.intersect?(array2)
@@ -6719,6 +6729,62 @@ is a `Hash` or responds to the replacement method.
 {foo: 1, bar: 2, baz: 3}.except(:bar)
 ----
 
+[#stylehashfetchchain]
+== Style/HashFetchChain
+
+NOTE: Requires Ruby version 2.3
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Always (Unsafe)
+| 1.75
+| -
+|===
+
+Use `Hash#dig` instead of chaining potentially null `fetch` calls.
+
+When `fetch(identifier, nil)` calls are chained on a hash, the expectation
+is that each step in the chain returns either `nil` or another hash,
+and in both cases, these can be simplified with a single call to `dig` with
+multiple arguments.
+
+If the 2nd parameter is `{}` or `Hash.new`, an offense will also be registered,
+as long as the final call in the chain is a nil value. If a non-nil value is given,
+the chain will not be registered as an offense, as the default value cannot be safely
+given with `dig`.
+
+NOTE: See `Style/DigChain` for replacing chains of `dig` calls with
+a single method call.
+
+[#safety-stylehashfetchchain]
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+is a `Hash` or that `fetch` or `dig` have the expected standard implementation.
+
+[#examples-stylehashfetchchain]
+=== Examples
+
+[source,ruby]
+----
+# bad
+hash.fetch('foo', nil)&.fetch('bar', nil)
+
+# bad
+# earlier members of the chain can return `{}` as long as the final `fetch`
+# has `nil` as a default value
+hash.fetch('foo', {}).fetch('bar', nil)
+
+# good
+hash.dig('foo', 'bar')
+
+# ok - not handled by the cop since the final `fetch` value is non-nil
+hash.fetch('foo', {}).fetch('bar', {})
+----
+
 [#stylehashlikecase]
 == Style/HashLikeCase
 
@@ -8009,6 +8075,84 @@ foo { var = 5 }
 foo { |bar| var = bar }
 foo { bar = _2 }
 ----
+
+[#styleitblockparameter]
+== Style/ItBlockParameter
+
+NOTE: Requires Ruby version 3.4
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.75
+| -
+|===
+
+Checks for blocks with one argument where `it` block parameter can be used.
+
+It provides three `EnforcedStyle` options:
+
+1. `allow_named_parameter` (default) ... Detects only numbered block parameters.
+2. `always` ... Always uses the `it` block parameter.
+3. `disallow` ... Disallows the `it` block parameter.
+
+A single numbered parameter is detected when `allow_named_parameter` or `always`.
+
+[#examples-styleitblockparameter]
+=== Examples
+
+[#enforcedstyle_-allow_named_parameter-_default_-styleitblockparameter]
+==== EnforcedStyle: allow_named_parameter (default)
+
+[source,ruby]
+----
+# bad
+block { do_something(_1) }
+
+# good
+block { do_something(it) }
+block { |named_param| do_something(named_param) }
+----
+
+[#enforcedstyle_-always-styleitblockparameter]
+==== EnforcedStyle: always
+
+[source,ruby]
+----
+# bad
+block { do_something(_1) }
+block { |named_param| do_something(named_param) }
+
+# good
+block { do_something(it) }
+----
+
+[#enforcedstyle_-disallow-styleitblockparameter]
+==== EnforcedStyle: disallow
+
+[source,ruby]
+----
+# bad
+block { do_something(it) }
+
+# good
+block { do_something(_1) }
+block { |named_param| do_something(named_param) }
+----
+
+[#configurable-attributes-styleitblockparameter]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `allow_named_parameter`
+| `allow_named_parameter`, `always`, `disallow`
+|===
 
 [#stylekeywordargumentsmerging]
 == Style/KeywordArgumentsMerging
@@ -10838,7 +10982,7 @@ end
 | Yes
 | Always
 | 0.22
-| 0.35
+| 1.75
 |===
 
 Use `next` to skip iteration instead of a condition at the end.
@@ -10898,6 +11042,47 @@ end
 end
 ----
 
+[#allowconsecutiveconditionals_-false-_default_-stylenext]
+==== AllowConsecutiveConditionals: false (default)
+
+[source,ruby]
+----
+# bad
+[1, 2].each do |a|
+  if a == 1
+    puts a
+  end
+  if a == 2
+    puts a
+  end
+end
+
+# good
+[1, 2].each do |a|
+  if a == 1
+    puts a
+  end
+  next unless a == 2
+  puts a
+end
+----
+
+[#allowconsecutiveconditionals_-true-stylenext]
+==== AllowConsecutiveConditionals: true
+
+[source,ruby]
+----
+# good
+[1, 2].each do |a|
+  if a == 1
+    puts a
+  end
+  if a == 2
+    puts a
+  end
+end
+----
+
 [#configurable-attributes-stylenext]
 === Configurable attributes
 
@@ -10911,6 +11096,10 @@ end
 | MinBodyLength
 | `3`
 | Integer
+
+| AllowConsecutiveConditionals
+| `false`
+| Boolean
 |===
 
 [#references-stylenext]
@@ -13469,8 +13658,8 @@ arr.any? { |x| x > 1 }
 
 Checks for calls to `Kernel#format` or `Kernel#sprintf` that are redundant.
 
-Calling `format` with only a single string argument is redundant, as it can be
-replaced by the string itself.
+Calling `format` with only a single string or constant argument is redundant,
+as it can be replaced by the string or constant itself.
 
 Also looks for `format` calls where the arguments are literals that can be
 inlined into a string easily. This applies to the `%s`, `%d`, `%i`, `%u`, and
@@ -13505,6 +13694,13 @@ sprintf('the quick brown fox jumps over the lazy dog.')
 
 # good
 'the quick brown fox jumps over the lazy dog.'
+
+# bad
+format(MESSAGE)
+sprintf(MESSAGE)
+
+# good
+MESSAGE
 
 # bad
 format('%s %s', 'foo', 'bar')
