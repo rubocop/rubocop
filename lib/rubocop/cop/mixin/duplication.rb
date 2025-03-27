@@ -39,7 +39,7 @@ module RuboCop
       # @param [Array] collection an array to group duplicates for
       # @return [Array] the grouped duplicates
       def grouped_duplicates(collection)
-        collection.group_by { |item| item }.values.reject(&:one?)
+        collection.group_by(&:itself).values.reject(&:one?)
       end
     end
   end
