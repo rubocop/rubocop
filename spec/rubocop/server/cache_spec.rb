@@ -379,6 +379,25 @@ RSpec.describe RuboCop::Server::Cache do
           it { expect(restart_key).to eq(hexdigest) }
         end
       end
+
+      context 'when ERB pre-processing of the configuration file', :isolated_environment do
+        context 'when `CacheRootDirectory` configure value is set' do
+          it 'does not raise an error' do
+            create_file('.rubocop.yml', <<~YAML)
+              AllCops:
+                CacheRootDirectory: '/tmp/cache-root-directory'
+              Style/Encoding:
+                Enabled: <%= 1 == 1 %>
+                Exclude:
+                <% Dir['*.rb'].sort.each do |name| %>
+                  - <%= name %>
+                <% end %>
+            YAML
+
+            expect { restart_key }.not_to raise_error
+          end
+        end
+      end
     end
 
     describe '.pid_running?', :isolated_environment do

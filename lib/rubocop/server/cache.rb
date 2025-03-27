@@ -52,7 +52,8 @@ module RuboCop
           end.find(&:exist?)
           version_data = lockfile_path&.read || RuboCop::Version::STRING
           config_data = Pathname(ConfigFinder.find_config_path(Dir.pwd)).read
-          yaml = YAML.safe_load(config_data, permitted_classes: [Regexp, Symbol], aliases: true)
+          yaml = load_erb_templated_yaml(config_data)
+
           inherit_from_data = inherit_from_data(yaml)
           require_data = require_data(yaml)
 
@@ -76,7 +77,6 @@ module RuboCop
           File.expand_path(File.join(cache_root_dir, 'server'))
         end
 
-        # rubocop:disable Metrics/MethodLength
         def cache_root_dir_from_config
           CacheConfig.root_dir do
             # `RuboCop::ConfigStore` has heavy dependencies, this is a lightweight implementation
@@ -87,13 +87,7 @@ module RuboCop
             # Returns early if `CacheRootDirectory` is not used before requiring `erb` or `yaml`.
             next unless file_contents.include?('CacheRootDirectory')
 
-            require 'erb'
-            yaml_code = ERB.new(file_contents).result
-
-            require 'yaml'
-            config_yaml = YAML.safe_load(
-              yaml_code, permitted_classes: [Regexp, Symbol], aliases: true
-            )
+            config_yaml = load_erb_templated_yaml(file_contents)
 
             # For compatibility with Ruby 3.0 or lower.
             if Gem::Version.new(Psych::VERSION) < Gem::Version.new('4.0.0')
@@ -103,7 +97,6 @@ module RuboCop
             config_yaml&.dig('AllCops', 'CacheRootDirectory')
           end
         end
-        # rubocop:enable Metrics/MethodLength
 
         def port_path
           dir.join('port')
@@ -196,6 +189,16 @@ module RuboCop
 
             path.exist? ? path.read : ''
           end.join
+        end
+
+        private
+
+        def load_erb_templated_yaml(content)
+          require 'erb'
+          yaml_code = ERB.new(content).result
+
+          require 'yaml'
+          YAML.safe_load(yaml_code, permitted_classes: [Regexp, Symbol], aliases: true)
         end
       end
     end
