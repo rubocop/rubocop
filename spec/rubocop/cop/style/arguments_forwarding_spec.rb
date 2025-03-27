@@ -155,6 +155,12 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
                   ^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(...)
+          obj.bar(...)
+        end
+      RUBY
     end
 
     it 'registers an offense when using restarg and block arg for `.()` call', unsupported_on: :prism do

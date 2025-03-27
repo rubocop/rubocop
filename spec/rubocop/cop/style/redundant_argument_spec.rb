@@ -142,6 +142,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
         foo.chomp("\x82")
                  ^^^^^^^^ Argument "\x82" is redundant because it is implied by default.
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo.chomp
+      RUBY
     end
   end
 

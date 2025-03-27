@@ -32,6 +32,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
                     ^^ Prefer [...]
                        ^^ Prefer [...]
           RUBY
+
+          expect_no_corrections
         end
       else
         it 'does not register offenses for dual unannotated' do
@@ -342,6 +344,10 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           redirect("%{foo}", bye: foo("%{foo}"))
                                        ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
         RUBY
+
+        expect_correction(<<~RUBY)
+          redirect("%{foo}", bye: foo("%<foo>s"))
+        RUBY
       end
     end
 
@@ -352,6 +358,10 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
         expect_offense(<<~RUBY)
           redirect("%{foo}")
                     ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+        RUBY
+
+        expect_correction(<<~RUBY)
+          redirect("%<foo>s")
         RUBY
       end
     end
@@ -376,6 +386,10 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           redirect("%{foo}", bye: foo("%{foo}"))
                                        ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
         RUBY
+
+        expect_correction(<<~RUBY)
+          redirect("%{foo}", bye: foo("%<foo>s"))
+        RUBY
       end
     end
 
@@ -386,6 +400,10 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
         expect_offense(<<~RUBY)
           redirect("%{foo}")
                     ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+        RUBY
+
+        expect_correction(<<~RUBY)
+          redirect("%<foo>s")
         RUBY
       end
     end

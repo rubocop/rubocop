@@ -32,6 +32,12 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation, :config do
       :"symbol #{}"
                ^^^ Empty interpolation detected.
     RUBY
+
+    expect_correction(<<~RUBY)
+      /regexp /
+      `backticks `
+      :"symbol "
+    RUBY
   end
 
   it 'accepts non-empty interpolation' do

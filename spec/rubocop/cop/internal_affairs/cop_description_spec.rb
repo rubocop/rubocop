@@ -48,6 +48,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::CopDescription, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense if the description like `This cop is ...`' do
@@ -65,6 +67,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::CopDescription, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
   end
 

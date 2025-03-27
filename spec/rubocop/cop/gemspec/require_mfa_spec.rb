@@ -50,6 +50,8 @@ RSpec.describe RuboCop::Cop::Gemspec::RequireMFA, :config do
           spec.metadata = Metadata.new
         end
       RUBY
+
+      expect_no_corrections
     end
   end
 

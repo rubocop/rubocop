@@ -133,6 +133,14 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
       method1 or method2 rescue handle
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
     RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        method1 or method2
+      rescue
+        handle
+      end
+    RUBY
   end
 
   it 'handles modifier rescue in normal rescue' do
@@ -248,6 +256,18 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
           normal_handle
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          begin
+            test
+          rescue
+            modifier_handle
+          end
+        rescue
+          normal_handle
+        end
+      RUBY
     end
   end
 
@@ -267,6 +287,18 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
         def self.some_method
           test rescue modifier_handle
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+        rescue
+          normal_handle
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.some_method
+          begin
+            test
+          rescue
+            modifier_handle
+          end
         rescue
           normal_handle
         end
