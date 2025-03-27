@@ -175,7 +175,7 @@ module RuboCop
     end
 
     def ruby_executable?(file)
-      return false unless File.extname(file).empty? && File.exist?(file)
+      return false if !File.extname(file).empty? || !File.exist?(file) || File.empty?(file)
 
       first_line = File.open(file, &:readline)
       /#!.*(#{ruby_interpreters(file).join('|')})/.match?(first_line)

@@ -639,6 +639,32 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
+    context 'when file is actually empty' do
+      include_context 'mock console output'
+
+      before do
+        create_file('dir1/flag', nil)
+      end
+
+      context 'and debug mode is enabled' do
+        let(:debug) { true }
+
+        it 'outputs error message' do
+          found_files
+          expect($stderr.string).to be_empty
+        end
+      end
+
+      context 'and debug mode is disabled' do
+        let(:debug) { false }
+
+        it 'outputs nothing' do
+          found_files
+          expect($stderr.string).to be_empty
+        end
+      end
+    end
+
     context 'w/ --fail-fast option' do
       let(:options) { { force_exclusion: force_exclusion, debug: debug, fail_fast: true } }
 

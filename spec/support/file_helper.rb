@@ -3,6 +3,7 @@
 require 'fileutils'
 
 module FileHelper
+  # rubocop:disable Metrics/MethodLength
   def create_file(file_path, content, retain_line_terminators: false)
     file_path = File.expand_path(file_path)
 
@@ -18,6 +19,8 @@ module FileHelper
     FileUtils.mkdir_p dir_path
 
     File.open(file_path, file_mode) do |file|
+      break if content.nil?
+
       case content
       when String
         file.puts content
@@ -28,6 +31,7 @@ module FileHelper
 
     file_path
   end
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable InternalAffairs/CreateEmptyFile
   def create_empty_file(file_path)
