@@ -151,7 +151,7 @@ module RuboCop
 
         def frozen_string_literal_comment(processed_source)
           processed_source.tokens.find do |token|
-            token.text.start_with?(FROZEN_STRING_LITERAL_REGEXP)
+            MagicComment.parse(token.text).frozen_string_literal_specified?
           end
         end
 
@@ -189,8 +189,9 @@ module RuboCop
 
         def enable_comment(corrector)
           comment = frozen_string_literal_comment(processed_source)
+          replacement = MagicComment.parse(comment.text).new_frozen_string_literal(true)
 
-          corrector.replace(line_range(comment.line), FROZEN_STRING_LITERAL_ENABLED)
+          corrector.replace(line_range(comment.line), replacement)
         end
 
         def insert_comment(corrector)

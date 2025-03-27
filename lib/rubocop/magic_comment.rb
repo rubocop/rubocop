@@ -193,6 +193,10 @@ module RuboCop
       SEPARATOR = ';'
       OPERATOR  = ':'
 
+      def new_frozen_string_literal(value)
+        "# -*- frozen_string_literal: #{value} -*-"
+      end
+
       private
 
       def extract_frozen_string_literal
@@ -273,6 +277,10 @@ module RuboCop
         else
           @comment
         end
+      end
+
+      def new_frozen_string_literal(value)
+        "# frozen_string_literal: #{value}"
       end
 
       private
