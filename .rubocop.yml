@@ -161,6 +161,11 @@ RSpec:
       - expect_no_offenses
       - expect_offense
 
+RSpec/Dialect:
+  Enabled: true
+  PreferredMethods:
+    shared_examples_for: shared_examples
+
 RSpec/ExampleWithoutDescription:
   EnforcedStyle: single_line_only
 
