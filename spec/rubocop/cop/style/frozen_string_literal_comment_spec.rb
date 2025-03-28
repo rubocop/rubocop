@@ -535,6 +535,36 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         puts 1
       RUBY
     end
+
+    context 'with emacs style magic comment' do
+      it 'registers an offense when the comment is the first one' do
+        expect_offense(<<~RUBY)
+          # -*- frozen_string_literal: true -*-
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
+          puts 1
+        RUBY
+
+        expect_correction(<<~RUBY)
+          puts 1
+        RUBY
+      end
+
+      it 'registers an offense when the comment is between other comments' do
+        expect_offense(<<~RUBY)
+          # -*- encoding: utf-8 -*-
+          # -*- frozen_string_literal: true -*-
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary frozen string literal comment.
+          # -*- warn_indent: true -*-
+          puts 1
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # -*- encoding: utf-8 -*-
+          # -*- warn_indent: true -*-
+          puts 1
+        RUBY
+      end
+    end
   end
 
   context 'always_true' do
@@ -854,6 +884,36 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         # encoding: utf-8
         puts 1
       RUBY
+    end
+
+    context 'with emacs style disable magic comment' do
+      it 'registers an offense when the comment is the first one' do
+        expect_offense(<<~RUBY)
+          # -*- frozen_string_literal: false -*-
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # -*- frozen_string_literal: true -*-
+        RUBY
+      end
+
+      it 'registers an offense when the comment is between other comments' do
+        expect_offense(<<~RUBY)
+          # -*- encoding: utf-8 -*-
+          # -*- frozen_string_literal: false -*-
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Frozen string literal comment must be set to `true`.
+          # -*- warn_indent: true -*-
+          puts 1
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # -*- encoding: utf-8 -*-
+          # -*- frozen_string_literal: true -*-
+          # -*- warn_indent: true -*-
+          puts 1
+        RUBY
+      end
     end
 
     it 'registers an offense for not having a frozen string literal comment ' \
