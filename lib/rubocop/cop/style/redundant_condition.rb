@@ -230,6 +230,14 @@ module RuboCop
           node.type?(:kwsplat, :forwarded_kwrestarg)
         end
 
+        def wrap_arguments_with_parens(condition)
+          method = condition.source_range.begin.join(condition.loc.selector.end)
+          arguments = condition.first_argument.source_range.begin.join(condition.source_range.end)
+
+          "#{method.source}(#{arguments.source})"
+        end
+
+        # rubocop:disable Metrics/AbcSize
         def if_source(if_branch, arithmetic_operation)
           if branches_have_method?(if_branch.parent) && if_branch.parenthesized?
             if_branch.source.delete_suffix(')')
@@ -238,11 +246,15 @@ module RuboCop
 
             "#{if_branch.receiver.source} #{if_branch.method_name} (#{argument_source}"
           elsif if_branch.true_type?
-            if_branch.parent.condition.source
+            condition = if_branch.parent.condition
+            return condition.source if condition.arguments.empty?
+
+            wrap_arguments_with_parens(condition)
           else
             if_branch.source
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def else_source(else_branch, arithmetic_operation) # rubocop:disable Metrics/AbcSize
           if arithmetic_operation

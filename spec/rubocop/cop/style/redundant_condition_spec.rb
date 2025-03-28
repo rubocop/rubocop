@@ -663,6 +663,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and autocorrects when true is used as the true branch and the condition takes arguments' do
+        expect_offense(<<~RUBY)
+          if foo? arg
+          ^^^^^^^^^^^ Use double pipes `||` instead.
+            true
+          else
+            bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo?(arg) || bar
+        RUBY
+      end
+
+      it 'registers an offense and autocorrects when true is used as the true branch and the condition takes arguments with safe navigation' do
+        expect_offense(<<~RUBY)
+          if obj&.foo? arg
+          ^^^^^^^^^^^^^^^^ Use double pipes `||` instead.
+            true
+          else
+            bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          obj&.foo?(arg) || bar
+        RUBY
+      end
+
       it 'does not register an offense when false is used as the else branch and the condition is not a predicate method' do
         expect_no_offenses(<<~RUBY)
           if !a[:key]

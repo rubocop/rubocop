@@ -1,0 +1,1 @@
+* [#14051](https://github.com/rubocop/rubocop/issues/14051): Fix incorrect autocorrect for `Style/RedundantCondition` when true is used as the true branch and the condition takes arguments. ([@koic][])
