@@ -45,6 +45,17 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
     RUBY
   end
 
+  it 'registers an offense with cipher constant and `ecb` argument and corrects' do
+    expect_offense(<<~RUBY)
+      OpenSSL::Cipher::BF.new('ecb')
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('bf-ecb')` instead of `OpenSSL::Cipher::BF.new('ecb')`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      OpenSSL::Cipher.new('bf-ecb')
+    RUBY
+  end
+
   it 'registers an offense with AES + blocksize constant and mode argument and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::AES128.new(:GCM)
