@@ -134,7 +134,7 @@ module RuboCop
           if NO_ARG_ALGORITHM.include?(algorithm_parts.first.upcase) && no_arguments
             "'#{algorithm_parts.first}'"
           else
-            mode = 'cbc' unless size_and_mode == ['cbc']
+            mode = 'cbc' if size_and_mode.empty?
 
             "'#{(algorithm_parts + size_and_mode + [mode]).compact.take(3).join('-')}'"
           end
