@@ -436,9 +436,11 @@ module RuboCop
       # Helper module to provide common methods to ConditionalAssignment
       # correctors
       module ConditionalCorrectorHelper
+        # rubocop:disable Metrics/AbcSize
         def remove_whitespace_in_branches(corrector, branch, condition, column)
           branch.each_node do |child|
             next if child.source_range.nil?
+            next if child.parent.dstr_type?
 
             white_space = white_space_range(child, column)
             corrector.remove(white_space) if white_space.source.strip.empty?
@@ -450,6 +452,7 @@ module RuboCop
             corrector.remove_preceding(loc, loc.column - column)
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def white_space_range(node, column)
           expression = node.source_range
