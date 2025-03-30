@@ -102,7 +102,7 @@ Update `rubocop` to a version that supports plugins or higher.
 
 [source,ruby]
 ----
-spec.require('rubocop', '>= 1.72.0')
+spec.add_dependency('rubocop', '>= 1.72.0')
 ----
 
 === 3. Replace `Inject.defaults!` code
