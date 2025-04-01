@@ -76,6 +76,9 @@ module RuboCop
       #   # good
       #   {foo:, bar:}
       #
+      #   # good - allowed to mix syntaxes
+      #   {foo:, bar: baz}
+      #
       # @example EnforcedShorthandSyntax: never
       #
       #   # bad
