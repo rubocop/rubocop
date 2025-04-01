@@ -192,6 +192,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
     it_behaves_like 'offense', :to_s, %('string'), '.bar'
 
     it_behaves_like 'chained typed method', :to_s, 'inspect'
+    it_behaves_like 'chained typed method', :to_s, 'to_json'
 
     it 'registers an offense and corrects with a heredoc' do
       expect_offense(<<~RUBY)

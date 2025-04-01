@@ -27,7 +27,8 @@ module RuboCop
       # In all cases, chaining one same `to_*` conversion methods listed above is redundant.
       #
       # The cop can also register an offense for chaining conversion methods on methods that are
-      # expected to return a specific type regardless of receiver (eg. `foo.inspect.to_s`).
+      # expected to return a specific type regardless of receiver (eg. `foo.inspect.to_s` and
+      # `foo.to_json.to_s`).
       #
       # @example
       #   # bad
@@ -69,10 +70,12 @@ module RuboCop
       #   foo.to_s
       #
       #   # bad - chaining a conversion to a method that is expected to return the same type
-      #   inspect.to_s
+      #   foo.inspect.to_s
+      #   foo.to_json.to_s
       #
       #   # good
-      #   inspect
+      #   foo.inspect
+      #   foo.to_json
       #
       class RedundantTypeConversion < Base
         extend AutoCorrector
@@ -108,7 +111,7 @@ module RuboCop
 
         # Methods that already are expected to return a given type, which makes a further
         # conversion redundant.
-        TYPED_METHODS = { to_s: %i[inspect] }.freeze
+        TYPED_METHODS = { to_s: %i[inspect to_json] }.freeze
 
         CONVERSION_METHODS = Set[*LITERAL_NODE_TYPES.keys].freeze
         RESTRICT_ON_SEND = CONVERSION_METHODS + [:to_d]
