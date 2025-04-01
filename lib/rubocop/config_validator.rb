@@ -9,16 +9,16 @@ module RuboCop
 
     # @api private
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode AutoCorrect StyleGuide Details
-                       Enabled Reference].freeze
+                       Enabled Reference References].freeze
     # @api private
     INTERNAL_PARAMS = %w[Description StyleGuide
                          VersionAdded VersionChanged VersionRemoved
-                         Reference Safe SafeAutoCorrect].freeze
+                         Reference References Safe SafeAutoCorrect].freeze
     # @api private
     NEW_COPS_VALUES = %w[pending disable enable].freeze
 
     # @api private
-    CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect].to_set.freeze
+    CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect References].to_set.freeze
     CONFIG_CHECK_DEPARTMENTS = %w[pending override_department].freeze
     CONFIG_CHECK_AUTOCORRECTS = %w[always contextual disabled].freeze
     private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
@@ -260,8 +260,7 @@ module RuboCop
       end
     end
 
-    # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
-    def check_cop_config_value(hash, parent = nil)
+    def check_cop_config_value(hash, parent = nil) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       hash.each do |key, value|
         check_cop_config_value(value, key) if value.is_a?(Hash)
 
@@ -271,6 +270,8 @@ module RuboCop
           supposed_values = 'a boolean'
         elsif key == 'AutoCorrect' && !CONFIG_CHECK_AUTOCORRECTS.include?(value)
           supposed_values = '`always`, `contextual`, `disabled`, or a boolean'
+        elsif key == 'References'
+          supposed_values = 'an array of strings'
         else
           next
         end
@@ -278,7 +279,6 @@ module RuboCop
         raise ValidationError, param_error_message(parent, key, value, supposed_values)
       end
     end
-    # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
     # FIXME: Handling colors in exception messages like this is ugly.
     def param_error_message(parent, key, value, supposed_values)

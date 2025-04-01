@@ -327,8 +327,12 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   def print_cop_with_doc(cop) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     cop_config = config.for_cop(cop)
     non_display_keys = %w[
-      AutoCorrect Description Enabled StyleGuide Reference Safe SafeAutoCorrect VersionAdded
-      VersionChanged
+      Enabled
+      Description
+      StyleGuide
+      Reference References
+      Safe SafeAutoCorrect AutoCorrect
+      VersionAdded VersionChanged
     ]
     parameters = cop_config.reject { |k| non_display_keys.include? k }
     description = 'No documentation'
