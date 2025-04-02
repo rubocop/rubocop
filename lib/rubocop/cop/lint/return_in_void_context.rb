@@ -32,12 +32,17 @@ module RuboCop
       class ReturnInVoidContext < Base
         MSG = 'Do not return a value in `%<method>s`.'
 
+        # Returning out of these methods only exits the block itself.
+        SCOPE_CHANGING_METHODS = %i[lambda define_method define_singleton_method].freeze
+
         def on_return(return_node)
           return unless return_node.descendants.any?
 
-          def_node = return_node.each_ancestor(:def).first
+          def_node = return_node.each_ancestor(:def, :defs).first
           return unless def_node&.void_context?
-          return if return_node.each_ancestor(:any_block).any?(&:lambda?)
+          return if return_node.each_ancestor(:any_block).any? do |block_node|
+            SCOPE_CHANGING_METHODS.include?(block_node.method_name)
+          end
 
           add_offense(
             return_node.loc.keyword,

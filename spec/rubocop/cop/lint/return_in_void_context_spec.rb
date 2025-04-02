@@ -54,6 +54,66 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext, :config do
       RUBY
     end
 
+    it 'registers no offense when return is used in `define_method`' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          def initialize
+            define_method(:foo) do
+              return bar
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers no offense when return is used in `define_method` with receiver' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          def initialize
+            self.define_method(:foo) do
+              return bar
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers no offense when return is used in `define_singleton_method`' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          def initialize
+            define_singleton_method(:foo) do
+              return bar
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers no offense when return is used in nested method definition' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          def initialize
+            def foo
+              return bar
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers no offense when return is used in nested singleton method definition' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          def initialize
+            def self.foo
+              return bar
+            end
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense when the value is returned from inside a proc' do
       expect_offense(<<~RUBY)
         class A
