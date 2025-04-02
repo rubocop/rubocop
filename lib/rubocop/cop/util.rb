@@ -76,7 +76,7 @@ module RuboCop
         loc = node.loc
         selector = if node.type?(:super, :yield)
                      loc.keyword
-                   elsif node.type?(:def, :defs)
+                   elsif node.any_def_type?
                      loc.name
                    else
                      loc.selector

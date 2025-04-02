@@ -40,7 +40,7 @@ module RuboCop
         # top-level return node's ancestors should not be of block, def, or
         # defs type.
         def top_level_return?(return_node)
-          return_node.each_ancestor(:block, :def, :defs).none?
+          return_node.each_ancestor(:block, :any_def).none?
         end
       end
     end

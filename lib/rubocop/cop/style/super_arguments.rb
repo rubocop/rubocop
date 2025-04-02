@@ -68,7 +68,6 @@ module RuboCop
       class SuperArguments < Base
         extend AutoCorrector
 
-        DEF_TYPES = %i[def defs].freeze
         ASSIGN_TYPES = %i[or_asgn lvasgn].freeze
 
         MSG = 'Call `super` without arguments and parentheses when the signature is identical.'
@@ -100,7 +99,7 @@ module RuboCop
             # `super` used within the block is always allowed.
             break if node.any_block_type? && !block_sends_to_super?(super_node, node)
 
-            break node if DEF_TYPES.include?(node.type)
+            break node if node.any_def_type?
           end
         end
 

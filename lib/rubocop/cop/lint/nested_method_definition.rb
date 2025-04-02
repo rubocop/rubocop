@@ -98,7 +98,7 @@ module RuboCop
           subject, = *node # rubocop:disable InternalAffairs/NodeDestructuring
           return if node.defs_type? && allowed_subject_type?(subject)
 
-          def_ancestor = node.each_ancestor(:def, :defs).first
+          def_ancestor = node.each_ancestor(:any_def).first
           return unless def_ancestor
 
           within_scoping_def =

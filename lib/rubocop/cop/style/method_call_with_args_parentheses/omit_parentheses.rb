@@ -49,7 +49,7 @@ module RuboCop
 
           def inside_endless_method_def?(node)
             # parens are required around arguments inside an endless method
-            node.each_ancestor(:def, :defs).any?(&:endless?) && node.arguments.any?
+            node.each_ancestor(:any_def).any?(&:endless?) && node.arguments.any?
           end
 
           def require_parentheses_for_hash_value_omission?(node) # rubocop:disable Metrics/PerceivedComplexity

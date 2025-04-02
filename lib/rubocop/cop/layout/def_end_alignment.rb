@@ -48,7 +48,7 @@ module RuboCop
         def on_send(node)
           return unless node.def_modifier?
 
-          method_def = node.each_descendant(:def, :defs).first
+          method_def = node.each_descendant(:any_def).first
           expr = node.source_range
 
           line_start = range_between(expr.begin_pos, method_def.loc.keyword.end_pos)

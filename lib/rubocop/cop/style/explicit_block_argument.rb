@@ -65,7 +65,7 @@ module RuboCop
           yielding_block?(block_node) do |send_node, block_args, yield_args|
             return unless yielding_arguments?(block_args, yield_args)
 
-            def_node = block_node.each_ancestor(:def, :defs).first
+            def_node = block_node.each_ancestor(:any_def).first
             # if `yield` is being called outside of a method context, ignore
             # this is not a valid ruby pattern, but can happen in haml or erb,
             # so this can cause crashes in haml_lint
@@ -151,7 +151,7 @@ module RuboCop
         end
 
         def build_new_arguments_for_zsuper(node)
-          def_node = node.each_ancestor(:def, :defs).first
+          def_node = node.each_ancestor(:any_def).first
           def_node.arguments.map do |arg|
             arg.optarg_type? ? arg.node_parts[0] : arg.source
           end

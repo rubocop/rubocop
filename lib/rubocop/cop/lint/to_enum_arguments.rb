@@ -45,7 +45,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          def_node = node.each_ancestor(:def, :defs).first
+          def_node = node.each_ancestor(:any_def).first
           return unless def_node
 
           enum_conversion_call?(node) do |method_node, arguments|

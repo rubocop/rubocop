@@ -180,7 +180,7 @@ module RuboCop
         end
 
         def method_candidate?(node)
-          cop_config['EmptyLineBetweenMethodDefs'] && node.type?(:def, :defs)
+          cop_config['EmptyLineBetweenMethodDefs'] && node.any_def_type?
         end
 
         def class_candidate?(node)
@@ -252,7 +252,7 @@ module RuboCop
         end
 
         def end_loc(node)
-          if node.type?(:def, :defs) && node.endless?
+          if node.any_def_type? && node.endless?
             node.source_range.end
           else
             node.loc.end

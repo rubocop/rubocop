@@ -21,7 +21,7 @@ module RuboCop
 
         # @!method empty_line_required?(node)
         def_node_matcher :empty_line_required?,
-                         '{def defs class module (send nil? {:private :protected :public})}'
+                         '{any_def class module (send nil? {:private :protected :public})}'
 
         def check(node, body, adjusted_first_line: nil)
           return if valid_body_style?(body)

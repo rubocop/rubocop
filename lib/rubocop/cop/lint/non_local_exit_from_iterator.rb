@@ -46,7 +46,7 @@ module RuboCop
         def on_return(return_node)
           return if return_value?(return_node)
 
-          return_node.each_ancestor(:any_block, :def, :defs) do |node|
+          return_node.each_ancestor(:any_block, :any_def) do |node|
             break if scoped_node?(node)
 
             # if a proc is passed to `Module#define_method` or
@@ -66,7 +66,7 @@ module RuboCop
         private
 
         def scoped_node?(node)
-          node.type?(:def, :defs) || node.lambda?
+          node.any_def_type? || node.lambda?
         end
 
         def return_value?(return_node)

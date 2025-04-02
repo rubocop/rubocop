@@ -47,7 +47,7 @@ module RuboCop
 
         def on_return(node)
           # Check Lint/NonLocalExitFromIterator first before this cop
-          node.each_ancestor(:block, :def, :defs) do |n|
+          node.each_ancestor(:block, :any_def) do |n|
             break if scoped_node?(n)
 
             send_node, args_node, _body_node = *n
@@ -83,7 +83,7 @@ module RuboCop
         end
 
         def scoped_node?(node)
-          node.type?(:def, :defs) || node.lambda?
+          node.any_def_type? || node.lambda?
         end
 
         # @!method chained_send?(node)

@@ -42,7 +42,7 @@ module RuboCop
           return if kwarg_nodes.empty?
 
           add_offense(node) do |corrector|
-            defining_node = node.each_ancestor(:def, :defs, :block).first
+            defining_node = node.each_ancestor(:any_def, :block).first
             next if processed_source.contains_comment?(arguments_range(defining_node))
             next unless node.parent.find(&:kwoptarg_type?) == node
 

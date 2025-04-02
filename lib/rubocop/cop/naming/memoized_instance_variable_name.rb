@@ -242,7 +242,7 @@ module RuboCop
         def find_definition(node)
           # Methods can be defined in a `def` or `defs`,
           # or dynamically via a `block` node.
-          node.each_ancestor(:def, :defs, :block).each do |ancestor|
+          node.each_ancestor(:any_def, :block).each do |ancestor|
             method_node, method_name = method_definition?(ancestor)
             return [method_node, method_name] if method_node
           end

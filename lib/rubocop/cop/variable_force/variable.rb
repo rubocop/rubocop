@@ -107,7 +107,7 @@ module RuboCop
         end
 
         def method_argument?
-          argument? && %i[def defs].include?(@scope.node.type)
+          argument? && @scope.node.any_def_type?
         end
 
         def block_argument?

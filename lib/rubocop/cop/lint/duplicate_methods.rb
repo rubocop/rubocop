@@ -42,7 +42,6 @@ module RuboCop
       class DuplicateMethods < Base
         MSG = 'Method `%<method>s` is defined at both %<defined>s and %<current>s.'
         RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr].freeze
-        DEF_TYPES = %i[def defs].freeze
 
         def initialize(config = nil, options = nil)
           super
@@ -162,7 +161,7 @@ module RuboCop
         end
 
         def method_key(node, method_name)
-          if (ancestor_def = node.each_ancestor(*DEF_TYPES).first)
+          if (ancestor_def = node.each_ancestor(:any_def).first)
             "#{ancestor_def.method_name}.#{method_name}"
           else
             method_name
@@ -170,7 +169,7 @@ module RuboCop
         end
 
         def location(node)
-          if DEF_TYPES.include?(node.type)
+          if node.any_def_type?
             node.loc.keyword.join(node.loc.name)
           else
             node.source_range

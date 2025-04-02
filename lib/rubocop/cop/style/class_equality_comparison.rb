@@ -68,7 +68,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          def_node = node.each_ancestor(:def, :defs).first
+          def_node = node.each_ancestor(:any_def).first
           return if def_node &&
                     (allowed_method?(def_node.method_name) ||
                     matches_allowed_pattern?(def_node.method_name))

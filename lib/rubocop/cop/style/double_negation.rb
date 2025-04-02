@@ -102,7 +102,7 @@ module RuboCop
 
         def find_def_node_from_ascendant(node)
           return unless (parent = node.parent)
-          return parent if parent.type?(:def, :defs)
+          return parent if parent.any_def_type?
           return node.parent.child_nodes.first if define_method?(parent)
 
           find_def_node_from_ascendant(node.parent)

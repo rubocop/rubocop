@@ -105,7 +105,7 @@ module RuboCop
         end
 
         def register_forbidden_name(node)
-          if node.type?(:def, :defs)
+          if node.any_def_type?
             name_node = node.loc.name
             method_name = node.method_name
           else

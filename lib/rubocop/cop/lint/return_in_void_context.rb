@@ -38,7 +38,7 @@ module RuboCop
         def on_return(return_node)
           return unless return_node.descendants.any?
 
-          def_node = return_node.each_ancestor(:def, :defs).first
+          def_node = return_node.each_ancestor(:any_def).first
           return unless def_node&.void_context?
           return if return_node.each_ancestor(:any_block).any? do |block_node|
             SCOPE_CHANGING_METHODS.include?(block_node.method_name)
