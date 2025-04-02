@@ -4423,12 +4423,14 @@ Style/ItAssignment:
 Style/ItBlockParameter:
   Description: 'Checks for blocks with one argument where `it` block parameter can be used.'
   Enabled: pending
-  EnforcedStyle: only_numbered_parameters
+  EnforcedStyle: allow_single_line
   SupportedStyles:
+    - allow_single_line
     - only_numbered_parameters
     - always
     - disallow
   VersionAdded: '1.75'
+  VersionChanged: '<<next>>'
 
 Style/KeywordArgumentsMerging:
   Description: >-
