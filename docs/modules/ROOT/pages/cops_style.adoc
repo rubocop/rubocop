@@ -4503,6 +4503,10 @@ redundant.
 Checks for the use of a method, the result of which
 would be a literal, like an empty array, hash, or string.
 
+NOTE: When frozen string literals are enabled, `String.new`
+isn't corrected to an empty string since the former is
+mutable and the latter would be frozen.
+
 [#examples-styleemptyliteral]
 === Examples
 
@@ -6178,6 +6182,9 @@ Enforces the use of `$stdout/$stderr/$stdin` instead of `STDOUT/STDERR/STDIN`.
 reassign (possibly to redirect some stream) constants in Ruby, you'll get
 an interpreter warning if you do so.
 
+Additionally, `$stdout/$stderr/$stdin` can safely be accessed in a Ractor because they
+are ractor-local, while `STDOUT/STDERR/STDIN` will raise `Ractor::IsolationError`.
+
 [#safety-styleglobalstdstream]
 === Safety
 
@@ -7050,6 +7057,9 @@ The supported styles are:
 
 # good
 {foo:, bar:}
+
+# good - allowed to mix syntaxes
+{foo:, bar: baz}
 ----
 
 [#enforcedshorthandsyntax_-never-stylehashsyntax]

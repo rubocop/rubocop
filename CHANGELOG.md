@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.75.2 (2025-04-03)
+
 ### Changes
 
 * [#14065](https://github.com/rubocop/rubocop/pull/14065): Update `Lint/RedundantTypeConversion` to register an offense for `to_json.to_s`. ([@lovro-bikic][])
