@@ -1048,11 +1048,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    context 'when Naming/PredicateName has predicate prefix forbidden which is not listed in NamePrefix' do
+    context 'when Naming/PredicatePrefix has predicate prefix forbidden which is not listed in NamePrefix' do
       it 'fails with an error message' do
         create_file('example.rb', 'puts 1')
         create_file('.rubocop.yml', <<~YAML)
-          Naming/PredicateName:
+          Naming/PredicatePrefix:
             NamePrefix:
               - is_
               - has_
@@ -1063,7 +1063,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         YAML
         expect(cli.run(['example.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
-          'Error: The `Naming/PredicateName` cop is misconfigured. Prefix seems_to_be_ must be ' \
+          'Error: The `Naming/PredicatePrefix` cop is misconfigured. Prefix seems_to_be_ must be ' \
           'included in NamePrefix because it is included in ForbiddenPrefixes.'
         )
       end

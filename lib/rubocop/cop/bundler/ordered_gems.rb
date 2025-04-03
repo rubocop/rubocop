@@ -45,7 +45,7 @@ module RuboCop
 
           gem_declarations(processed_source.ast)
             .each_cons(2) do |previous, current|
-            next unless consecutive_lines(previous, current)
+            next unless consecutive_lines?(previous, current)
             next unless case_insensitive_out_of_order?(gem_name(current), gem_name(previous))
 
             register_offense(previous, current)
