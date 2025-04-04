@@ -583,6 +583,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense for parens around singleton method body' do
+    expect_offense(<<~RUBY)
+      def self.x
+        (foo; bar)
+        ^^^^^^^^^^ Don't use parentheses around a method call.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def self.x
+        foo; bar
+      end
+    RUBY
+  end
+
   it 'registers an offense for parens around last expressions in method body' do
     expect_offense(<<~RUBY)
       def x
