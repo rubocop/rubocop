@@ -25,6 +25,30 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using `each` with `push` with hash argument without braces to build an array' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each { |e| dest.push(e: 2) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map { |e| { e: 2 } }
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `each` with `push` with hash argument with braces to build an array' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each { |e| dest.push({ e: 2 }) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map { |e| { e: 2 } }
+    RUBY
+  end
+
   it 'registers an offense and corrects when using `each` with `append` to build an array' do
     expect_offense(<<~RUBY)
       dest = []
@@ -34,6 +58,30 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
 
     expect_correction(<<~RUBY)
       dest = src.map { |e| e * 2 }
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `each` with `append` with hash argument without braces to build an array' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each { |e| dest.append(e: 2) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map { |e| { e: 2 } }
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using `each` with `append` with hash argument with braces to build an array' do
+    expect_offense(<<~RUBY)
+      dest = []
+      src.each { |e| dest.append({ e: 2 }) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `map` instead of `each` to map elements into an array.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      dest = src.map { |e| { e: 2 } }
     RUBY
   end
 

@@ -212,9 +212,11 @@ module RuboCop
         end
 
         def correct_push_node(corrector, push_node)
+          arg_node = push_node.first_argument
           range = push_node.source_range
-          arg_range = push_node.first_argument.source_range
+          arg_range = arg_node.source_range
 
+          corrector.wrap(arg_node, '{ ', ' }') if arg_node.hash_type? && !arg_node.braces?
           corrector.remove(range_between(range.begin_pos, arg_range.begin_pos))
           corrector.remove(range_between(arg_range.end_pos, range.end_pos))
         end
