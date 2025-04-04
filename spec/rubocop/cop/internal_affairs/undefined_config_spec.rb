@@ -23,10 +23,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::UndefinedConfig, :config, :isolate
           module Test
             class Foo < Base
               def configured?
-                cop_config['Safe']
-                cop_config['SafeAutoCorrect']
-                cop_config['AutoCorrect']
-                cop_config['Severity']
+                #{described_class::ALLOWED_CONFIGURATIONS.map { "cop_config['#{_1}']" }.join("\n          ")}
               end
             end
           end

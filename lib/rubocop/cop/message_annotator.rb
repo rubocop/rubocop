@@ -32,7 +32,7 @@ module RuboCop
       # @param [String] cop_name for specific cop name
       # @param [Hash] cop_config configs for specific cop, from config#for_cop
       # @option cop_config [String] :StyleGuide Extension of base styleguide URL
-      # @option cop_config [String] :Reference Full reference URL
+      # @option cop_config [String] :References Full reference URLs
       # @option cop_config [String] :Details
       #
       # @param [Hash, nil] options optional
@@ -100,8 +100,12 @@ module RuboCop
       end
 
       def reference_urls
-        urls = Array(cop_config['Reference'])
-        urls.nil? || urls.empty? ? nil : urls.reject(&:empty?)
+        urls = cop_config
+               .values_at('References', 'Reference') # Support legacy Reference key
+               .flat_map { Array(_1) }
+               .reject(&:empty?)
+
+        urls unless urls.empty?
       end
 
       def extra_details?

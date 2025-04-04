@@ -1871,6 +1871,24 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'does not set an array to `References`' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          Layout/EmptyComment:
+            References: 'https://example.com'
+        YAML
+      end
+
+      it 'gets a warning message' do
+        expect do
+          load_file
+        end.to raise_error(
+          RuboCop::ValidationError,
+          %r{supposed to be an array of strings and https://example\.com is not}
+        )
+      end
+    end
+
     context 'does not set `pending`, `disable`, or `enable` to `NewCops`' do
       before do
         create_file(configuration_path, <<~YAML)

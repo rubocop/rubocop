@@ -1769,20 +1769,22 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', <<~YAML)
-        # Default config includes none of Min, Reference, or StyleGuide
+        # Default config includes none of Min, References, or StyleGuide
         Layout/AssignmentIndentation:
           Enabled: true
           Min: 10
           StyleGuide: '#assignment-indentation'
 
-        # Default config includes StyleGuide, but neither Min nor Reference
+        # Default config includes StyleGuide, but neither Min nor Reference nor References
         Layout/LineLength:
           Enabled: true
           Min: 10
           Reference:
             - 'https://example.com#layout-line-length-decision-log'
+          References:
+            - 'https://example.com#layout-line-length-decision-log'
 
-        # Default config includes Reference and StyleGuide, but not Min
+        # Default config includes References and StyleGuide, but not Min
         Style/GlobalVars:
           Enabled: true
           Min: 10

@@ -10,7 +10,12 @@ module RuboCop
         extend FileFinder
 
         ALLOWED_CONFIGURATIONS = %w[
-          Safe SafeAutoCorrect AutoCorrect Severity StyleGuide Details Reference Include Exclude
+          Safe SafeAutoCorrect AutoCorrect
+          Severity
+          StyleGuide
+          Details
+          Reference References
+          Include Exclude
         ].freeze
         RESTRICT_ON_SEND = %i[[] fetch].freeze
         MSG = '`%<name>s` is not defined in the configuration for `%<cop>s` ' \
