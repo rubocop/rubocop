@@ -249,6 +249,15 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
         RUBY
       end
 
+      it 'accepts trailing comma with comment' do
+        expect_no_offenses(<<~RUBY)
+          VALUES = [1001,
+                    2020,
+                    3333, # comment
+                   ]
+        RUBY
+      end
+
       it 'registers an offense for a trailing comma on same line as closing bracket' do
         expect_offense(<<~RUBY)
           VALUES = [1001,

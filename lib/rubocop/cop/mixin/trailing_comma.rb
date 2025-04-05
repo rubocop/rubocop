@@ -136,9 +136,9 @@ module RuboCop
       end
 
       def last_item_precedes_newline?(node)
-        after_last_item =
-          range_between(node.children.last.source_range.end_pos, node.loc.end.begin_pos)
-        after_last_item.source =~ /\A,?\s*\n/
+        after_last_item = node.children.last.source_range.end.join(node.loc.end.begin)
+
+        after_last_item.source.start_with?(/,?\s*(#.*)?\n/)
       end
 
       def avoid_comma(kind, comma_begin_pos, extra_info)
