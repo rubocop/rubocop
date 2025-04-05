@@ -19,7 +19,7 @@ module RuboCop
       # * ignore_implicit (without curly braces)
       #
       # Alternatively you can specify multiple allowed styles. That's done by
-      # passing a list of styles to EnforcedStyles.
+      # passing a list of styles to EnforcedHashRocketStyle and EnforcedColonStyle.
       #
       # @example EnforcedHashRocketStyle: key (default)
       #   # bad
