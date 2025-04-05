@@ -126,6 +126,11 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       RUBY
 
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'percent', 'MinSize' => 4)
+
+      expect_correction(<<~RUBY)
+        %i(one two three)
+        %i(a b c d)
+      RUBY
     end
 
     it 'detects when the cop must be disabled to avoid offenses' do
@@ -136,6 +141,11 @@ RSpec.describe RuboCop::Cop::Style::SymbolArray, :config do
       RUBY
 
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+      expect_correction(<<~RUBY)
+        %i(one two three)
+        %i(a b)
+      RUBY
     end
 
     it 'registers an offense for a %i array containing escaped [ ]' do

@@ -50,6 +50,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::CopEnabled, :config do
 
         argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense and does not correct with a local variable' do
@@ -60,6 +62,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::CopEnabled, :config do
 
         argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense and does not correct with an instance variable' do
@@ -70,6 +74,8 @@ RSpec.describe RuboCop::Cop::InternalAffairs::CopEnabled, :config do
 
         @argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
       RUBY
+
+      expect_no_corrections
     end
 
     it 'does not register an offense when the hash name does not end with `_config`' do

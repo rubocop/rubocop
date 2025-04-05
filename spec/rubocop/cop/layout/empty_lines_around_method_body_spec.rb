@@ -52,6 +52,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody, :config do
       #{end_offense_annotation}
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def some_method
+        do_something
+      end
+    RUBY
   end
 
   it 'registers an offense for class method body ending with a blank' do
@@ -60,6 +66,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody, :config do
         do_something
 
       #{end_offense_annotation}
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def Test.some_method
+        do_something
       end
     RUBY
   end
