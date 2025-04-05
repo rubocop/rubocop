@@ -1,0 +1,1 @@
+* [#14070](https://github.com/rubocop/rubocop/issues/14070): Fix false positives for `EnforcedStyleForMultiline: diff_comma` of `Style/TrailingCommaInArrayLiteral` and `Style/TrailingCommaInHashLiteral` when trailing comma with comment. ([@koic][])
