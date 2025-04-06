@@ -665,6 +665,26 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
+    context 'when provided directory contains hidden segments' do
+      let(:base_dir) { File.expand_path('.hidden') }
+
+      it 'picks relevant files within provided directory' do
+        expect(found_basenames).to match_array(%w[ruby4.rb])
+      end
+
+      context 'with nested hidden directory' do
+        before do
+          create_empty_file('.hidden/.nested-hidden/ruby5.rb')
+          create_file('.hidden/shebang-ruby', '#! /usr/bin/env ruby')
+          create_file('.hidden/shebang-zsh', '#! /usr/bin/env zsh')
+        end
+
+        it 'picks relevant files within provided directory' do
+          expect(found_basenames).to match_array(%w[ruby4.rb ruby5.rb shebang-ruby])
+        end
+      end
+    end
+
     context 'w/ --fail-fast option' do
       let(:options) { { force_exclusion: force_exclusion, debug: debug, fail_fast: true } }
 
