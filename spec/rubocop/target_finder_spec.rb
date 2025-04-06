@@ -639,7 +639,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
-    context 'when file is actually empty' do
+    context 'when file is zero-sized' do
       include_context 'mock console output'
 
       before do
