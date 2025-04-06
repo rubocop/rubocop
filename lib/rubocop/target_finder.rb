@@ -46,7 +46,11 @@ module RuboCop
       hidden_files = all_files.select { |file| file.include?(HIDDEN_PATH_SUBSTRING) }.sort
       base_dir_config = @config_store.for(base_dir)
 
-      target_files = all_files.select { |file| to_inspect?(file, hidden_files, base_dir_config) }
+      target_files = if base_dir.include?(HIDDEN_PATH_SUBSTRING)
+                       all_files.select { |file| ruby_file?(file) }
+                     else
+                       all_files.select { |file| to_inspect?(file, hidden_files, base_dir_config) }
+                     end
 
       target_files.sort_by!(&order)
     end
