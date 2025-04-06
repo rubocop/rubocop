@@ -425,6 +425,10 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
         do_something(*%i[foo bar baz])
                      ^^^^^^^^^^^^^^^^ Pass array contents as separate arguments.
       RUBY
+
+      expect_correction(<<~RUBY)
+        do_something(:foo, :bar, :baz)
+      RUBY
     end
 
     context 'splat expansion of method parameters' do
