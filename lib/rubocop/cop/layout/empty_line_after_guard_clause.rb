@@ -131,7 +131,7 @@ module RuboCop
 
         def next_sibling_parent_empty_or_else?(node)
           next_sibling = node.right_sibling
-          return true if next_sibling.nil?
+          return true unless next_sibling.is_a?(AST::Node)
 
           parent = next_sibling.parent
 

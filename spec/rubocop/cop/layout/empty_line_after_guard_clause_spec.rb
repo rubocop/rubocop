@@ -668,6 +668,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'does not register an offense when calling a method on the result of a single-line `if` with `return`' do
+    expect_no_offenses(<<~RUBY)
+      if cond then return end.then { 42 }
+    RUBY
+  end
+
   it 'does not register an offense when the clause ends with a semicolon but is followed by a newline' do
     expect_no_offenses(<<~RUBY)
       def foo(item)
