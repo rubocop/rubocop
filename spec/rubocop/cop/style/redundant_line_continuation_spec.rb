@@ -1011,4 +1011,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
       end
     RUBY
   end
+
+  it 'registers an offense for multiline assignment with a line continuation' do
+    expect_offense(<<~'RUBY')
+      a, b, \
+            ^ Redundant line continuation.
+        c = [1, 2, 3]
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a, b,#{trailing_whitespace}
+        c = [1, 2, 3]
+    RUBY
+  end
 end
