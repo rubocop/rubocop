@@ -56,7 +56,7 @@ There is also the https://github.com/ngmy/vim-rubocop[vim-rubocop] plugin.
 
 === Helix
 
-Helix supports Solargraph natively to provide LSP features. For formatting support, see the https://github.com/helix-editor/helix/wiki/External-binary-formatter-configuration#rubocop[External binary formatter configuration for RuboCop] to use either your bundled or globally installed version of RuboCop.
+Helix supports Solargraph natively to provide LSP features. For formatting support, see the https://github.com/helix-editor/helix/wiki/Formatter-configurations#rubocop[Formatter Configurations for RuboCop] to use either your bundled or globally installed version of RuboCop.
 
 === Sublime Text
 
