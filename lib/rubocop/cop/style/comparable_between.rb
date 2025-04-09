@@ -9,6 +9,11 @@ module RuboCop
       # although the difference generally isn't observable. If you require maximum
       # performance, consider using logical comparison.
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because there is no guarantee that
+      #   `x` responds to `.between?` when autocorrecting
+      #   `x >= min && x <= max` to `x.between?(min, max)`
+      #
       # @example
       #
       #   # bad
