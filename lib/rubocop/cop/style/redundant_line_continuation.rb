@@ -181,9 +181,7 @@ module RuboCop
           ARGUMENT_TYPES.include?(next_token.type)
         end
 
-        # rubocop:disable Metrics/AbcSize
         def argument_newline?(node)
-          node = node.to_a.last if node.assignment?
           return false if node.parenthesized_call?
 
           node = node.children.first if node.root? && node.begin_type?
@@ -196,7 +194,6 @@ module RuboCop
             node.loc.selector.line != node.first_argument.loc.line
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def find_node_for_line(last_line)
           processed_source.ast.each_node do |node|
