@@ -237,120 +237,159 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
     RUBY
   end
 
-  it 'does not register an offense for RBS::Inline generics annotation' do
-    expect_no_offenses(<<~RUBY)
-      class X < Y #[String]
-      end
-      class A < B::C #[String]
-      end
-      class A < B::C::D #[String]
-      end
-      class A::B < C #[String]
-      end
-      class A::B::C < D #[String]
-      end
-    RUBY
-  end
-
-  it 'registers an offense and corrects for RBS::Inline non generics annotation' do
-    expect_offense(<<~RUBY)
-      class X #[String]
-              ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-      class X < Y #[String
-                  ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-      class X < Y #String]
-                  ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-      class X < Y # String]
-                  ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-      class X < Y #String ]
-                  ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-      class A < B::C #String]
-                     ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-      class A < B::C::D #String]
-                        ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-      class A::B < C #String]
-                     ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-      class A::B::C < D #String]
-                        ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end
-    RUBY
-
-    expect_correction(<<~RUBY)
-      #[String]
-      class X
-      end
-      #[String
-      class X < Y
-      end
-      #String]
-      class X < Y
-      end
-      # String]
-      class X < Y
-      end
-      #String ]
-      class X < Y
-      end
-      #String]
-      class A < B::C
-      end
-      #String]
-      class A < B::C::D
-      end
-      #String]
-      class A::B < C
-      end
-      #String]
-      class A::B::C < D
-      end
-    RUBY
-  end
-
-  it 'does not register an offense for RBS::Inline annotation for method definition' do
-    expect_no_offenses(<<~RUBY)
-      def x #: String
-      end
-
-      class Y
-        def y #: String
+  context 'when RBS::Inline annotation is used' do
+    it 'does not register an offense for RBS::Inline generics annotation' do
+      expect_no_offenses(<<~RUBY)
+        class X < Y #[String]
         end
-      end
-    RUBY
-  end
+        class A < B::C #[String]
+        end
+        class A < B::C::D #[String]
+        end
+        class A::B < C #[String]
+        end
+        class A::B::C < D #[String]
+        end
+      RUBY
+    end
 
-  it 'registers an offense and corrects for RBS::Inline annotation for non method definition' do
-    expect_offense(<<~RUBY)
-      class X #: String
-              ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
-      end #: String
-          ^^^^^^^^^ Do not place comments on the same line as the `end` keyword.
-      module Y #: String
-               ^^^^^^^^^ Do not place comments on the same line as the `module` keyword.
-      end
-      begin #: String
-            ^^^^^^^^^ Do not place comments on the same line as the `begin` keyword.
-      end
-    RUBY
+    it 'registers an offense and corrects for RBS::Inline non generics annotation' do
+      expect_offense(<<~RUBY)
+        class X #[String]
+                ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        class X < Y #[String
+                    ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        class X < Y #String]
+                    ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        class X < Y # String]
+                    ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        class X < Y #String ]
+                    ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        class A < B::C #String]
+                       ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        class A < B::C::D #String]
+                          ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        class A::B < C #String]
+                       ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        class A::B::C < D #String]
+                          ^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+      RUBY
 
-    expect_correction(<<~RUBY)
-      #: String
-      class X
-      end
-      #: String
-      module Y
-      end
-      #: String
-      begin
-      end
-    RUBY
+      expect_correction(<<~RUBY)
+        #[String]
+        class X
+        end
+        #[String
+        class X < Y
+        end
+        #String]
+        class X < Y
+        end
+        # String]
+        class X < Y
+        end
+        #String ]
+        class X < Y
+        end
+        #String]
+        class A < B::C
+        end
+        #String]
+        class A < B::C::D
+        end
+        #String]
+        class A::B < C
+        end
+        #String]
+        class A::B::C < D
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for RBS::Inline annotation for method definition' do
+      expect_no_offenses(<<~RUBY)
+        def x #: String
+        end
+
+        class Y
+          def y #: String
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects for RBS::Inline annotation for non method definition' do
+      expect_offense(<<~RUBY)
+        class X #: String
+                ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
+        end
+        module Y #: String
+                 ^^^^^^^^^ Do not place comments on the same line as the `module` keyword.
+        end
+        begin #: String
+              ^^^^^^^^^ Do not place comments on the same line as the `begin` keyword.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #: String
+        class X
+        end
+        #: String
+        module Y
+        end
+        #: String
+        begin
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for RBS::Inline annotation `#:` for `end` keyword of method' do
+      expect_no_offenses(<<~RUBY)
+        def x
+        end #: String
+      RUBY
+    end
+
+    it 'does not register an offense for RBS::Inline annotation `#:` for `end` keyword of block' do
+      expect_no_offenses(<<~RUBY)
+        def x
+          doubled_nums = [1, 2, 3].map do |num|
+            num * 2
+          end #: Array[Integer]
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for RBS::Inline annotation `#:` for `end` keyword of class' do
+      expect_no_offenses(<<~RUBY)
+        class X
+        end #: String
+      RUBY
+    end
+
+    it 'does not register an offense for RBS::Inline annotation `#:` for `end` keyword of module' do
+      expect_no_offenses(<<~RUBY)
+        module X
+        end #: String
+      RUBY
+    end
+
+    it 'does not register an offense for RBS::Inline annotation `#:` for `end` keyword of begin' do
+      expect_no_offenses(<<~RUBY)
+        begin
+        end #: String
+      RUBY
+    end
   end
 
   context 'when Steep annotation is used' do

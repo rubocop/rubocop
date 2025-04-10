@@ -58,7 +58,7 @@ module RuboCop
         REGEXP = /(?<keyword>\S+).*#/.freeze
 
         SUBCLASS_DEFINITION = /\A\s*class\s+(\w|::)+\s*<\s*(\w|::)+/.freeze
-        METHOD_DEFINITION = /\A\s*def\s/.freeze
+        METHOD_OR_END_DEFINITIONS = /\A\s*(def\s|end)/.freeze
 
         STEEP_REGEXP = /#\ssteep:ignore(\s|\z)/.freeze
 
@@ -102,7 +102,7 @@ module RuboCop
           case line
           when SUBCLASS_DEFINITION
             comment.text.start_with?(/#\[.+\]/)
-          when METHOD_DEFINITION
+          when METHOD_OR_END_DEFINITIONS
             comment.text.start_with?('#:')
           else
             false
