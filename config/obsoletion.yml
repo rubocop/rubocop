@@ -31,6 +31,9 @@ renamed:
   Lint/UnneededRequireStatement: Lint/RedundantRequireStatement
   Lint/UnneededSplatExpansion: Lint/RedundantSplatExpansion
   Metrics/LineLength: Layout/LineLength
+  Naming/PredicateName:
+    new_name: Naming/PredicatePrefix
+    severity: warning
   Naming/UncommunicativeBlockParamName: Naming/BlockParameterName
   Naming/UncommunicativeMethodParamName: Naming/MethodParameterName
   Style/AccessorMethodName: Naming/AccessorMethodName
@@ -44,7 +47,7 @@ renamed:
   Style/MethodName: Naming/MethodName
   Style/OpMethod: Naming/BinaryOperatorParameterName
   Style/PredicateName:
-    new_name: Naming/PredicateName
+    new_name: Naming/PredicatePrefix
     severity: warning
   Style/SingleSpaceBeforeFirstArg: Layout/SpaceBeforeFirstArg
   Style/UnneededCapitalW: Style/RedundantCapitalW
@@ -179,10 +182,10 @@ changed_parameters:
   - cops: Naming/HeredocDelimiterNaming
     parameters: Blacklist
     alternative: ForbiddenDelimiters
-  - cops: Naming/PredicateName
+  - cops: Naming/PredicatePrefix
     parameters: NamePrefixBlacklist
     alternative: ForbiddenPrefixes
-  - cops: Naming/PredicateName
+  - cops: Naming/PredicatePrefix
     parameters: NameWhitelist
     alternative: AllowedMethods
   - cops:
