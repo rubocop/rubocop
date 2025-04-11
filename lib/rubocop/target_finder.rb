@@ -46,7 +46,9 @@ module RuboCop
       hidden_files = all_files.select { |file| file.include?(HIDDEN_PATH_SUBSTRING) }.sort
       base_dir_config = @config_store.for(base_dir)
 
-      target_files = all_files.select { |file| to_inspect?(file, hidden_files, base_dir_config) }
+      target_files = all_files.select do |file|
+        to_inspect?(file, hidden_files, base_dir, base_dir_config)
+      end
 
       target_files.sort_by!(&order)
     end
@@ -70,14 +72,19 @@ module RuboCop
 
     private
 
-    def to_inspect?(file, hidden_files, base_dir_config)
+    # rubocop:disable Metrics/CyclomaticComplexity
+    def to_inspect?(file, hidden_files, base_dir, base_dir_config)
       return false if base_dir_config.file_to_exclude?(file)
       return true if !hidden_files.bsearch do |hidden_file|
         file <=> hidden_file
       end && ruby_file?(file)
+      return true if base_dir.include?(HIDDEN_PATH_SUBSTRING) &&
+                     file.start_with?(base_dir) &&
+                     ruby_file?(file)
 
       base_dir_config.file_to_include?(file)
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def wanted_dir_patterns(base_dir, exclude_pattern, flags)
       # Escape glob characters in base_dir to avoid unwanted behavior.
