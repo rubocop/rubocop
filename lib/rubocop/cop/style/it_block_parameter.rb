@@ -5,15 +5,28 @@ module RuboCop
     module Style
       # Checks for blocks with one argument where `it` block parameter can be used.
       #
-      # It provides three `EnforcedStyle` options:
+      # It provides four `EnforcedStyle` options:
       #
-      # 1. `only_numbered_parameters` (default) ... Detects only numbered block parameters.
-      # 2. `always` ... Always uses the `it` block parameter.
-      # 3. `disallow` ... Disallows the `it` block parameter.
+      # 1. `allow_single_line` (default) ... Always uses the `it` block parameter in a single line.
+      # 2. `only_numbered_parameters` ... Detects only numbered block parameters.
+      # 3. `always` ... Always uses the `it` block parameter.
+      # 4. `disallow` ... Disallows the `it` block parameter.
       #
-      # A single numbered parameter is detected when `only_numbered_parameters` or `always`.
+      # A single numbered parameter is detected when `allow_single_line`,
+      # `only_numbered_parameters`, or `always`.
       #
-      # @example EnforcedStyle: only_numbered_parameters (default)
+      # @example EnforcedStyle: allow_single_line (default)
+      #   # bad
+      #   block do
+      #     do_something(it)
+      #   end
+      #   block { do_something(_1) }
+      #
+      #   # good
+      #   block { do_something(it) }
+      #   block { |named_param| do_something(named_param) }
+      #
+      # @example EnforcedStyle: only_numbered_parameters
       #   # bad
       #   block { do_something(_1) }
       #
@@ -42,8 +55,9 @@ module RuboCop
         extend TargetRubyVersion
         extend AutoCorrector
 
-        MSG_USE_IT_BLOCK_PARAMETER = 'Use `it` block parameter.'
-        MSG_AVOID_IT_BLOCK_PARAMETER = 'Avoid using `it` block parameter.'
+        MSG_USE_IT_PARAMETER = 'Use `it` block parameter.'
+        MSG_AVOID_IT_PARAMETER = 'Avoid using `it` block parameter.'
+        MSG_AVOID_IT_PARAMETER_MULTI_LINE = 'Avoid using numbered parameters for multi-line blocks.'
 
         minimum_target_ruby_version 3.4
 
@@ -57,7 +71,7 @@ module RuboCop
           variables = find_block_variables(node, node.first_argument.source)
 
           variables.each do |variable|
-            add_offense(variable, message: MSG_USE_IT_BLOCK_PARAMETER) do |corrector|
+            add_offense(variable, message: MSG_USE_IT_PARAMETER) do |corrector|
               corrector.remove(node.arguments)
               corrector.replace(variable, 'it')
             end
@@ -71,19 +85,24 @@ module RuboCop
           variables = find_block_variables(node, '_1')
 
           variables.each do |variable|
-            add_offense(variable, message: MSG_USE_IT_BLOCK_PARAMETER) do |corrector|
+            add_offense(variable, message: MSG_USE_IT_PARAMETER) do |corrector|
               corrector.replace(variable, 'it')
             end
           end
         end
 
         def on_itblock(node)
-          return unless style == :disallow
+          case style
+          when :allow_single_line
+            return if node.single_line?
 
-          variables = find_block_variables(node, 'it')
+            add_offense(node, message: MSG_AVOID_IT_PARAMETER_MULTI_LINE)
+          when :disallow
+            variables = find_block_variables(node, 'it')
 
-          variables.each do |variable|
-            add_offense(variable, message: MSG_AVOID_IT_BLOCK_PARAMETER)
+            variables.each do |variable|
+              add_offense(variable, message: MSG_AVOID_IT_PARAMETER)
+            end
           end
         end
 
