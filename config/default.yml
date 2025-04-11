@@ -3702,7 +3702,9 @@ Style/CommentedKeyword:
 Style/ComparableBetween:
   Description: 'Enforces the use of `Comparable#between?` instead of logical comparison.'
   Enabled: pending
+  SafeAutoCorrect: false
   VersionAdded: '1.74'
+  VersionChanged: '<<next>>'
   StyleGuide: '#ranges-or-between'
 
 Style/ComparableClamp:
