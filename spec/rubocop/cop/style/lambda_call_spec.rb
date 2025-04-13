@@ -50,6 +50,17 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
       RUBY
     end
 
+    it 'registers an offense for x.() with no arguments' do
+      expect_offense(<<~RUBY)
+        x.()
+        ^^^^ Prefer the use of `x.call` over `x.()`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.call
+      RUBY
+    end
+
     it 'registers an offense for correct + opposite' do
       expect_offense(<<~RUBY)
         x.call(a, b)

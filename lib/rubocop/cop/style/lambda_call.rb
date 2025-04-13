@@ -54,9 +54,14 @@ module RuboCop
 
         def prefer(node)
           receiver = node.receiver.source
-          arguments = node.arguments.map(&:source).join(', ')
           dot = node.loc.dot.source
-          method = explicit_style? ? "call(#{arguments})" : "(#{arguments})"
+          call_arguments = if node.arguments.empty?
+                             ''
+                           else
+                             arguments = node.arguments.map(&:source).join(', ')
+                             "(#{arguments})"
+                           end
+          method = explicit_style? ? "call#{call_arguments}" : "(#{arguments})"
 
           "#{receiver}#{dot}#{method}"
         end
