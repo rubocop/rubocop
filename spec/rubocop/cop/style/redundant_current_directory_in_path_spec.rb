@@ -57,6 +57,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantCurrentDirectoryInPath, :config do
     RUBY
   end
 
+  it 'does not register an offense when not using a one-character path in `require_relative`' do
+    expect_no_offenses(<<~RUBY)
+      require_relative 'p/t/feature'
+    RUBY
+  end
+
   it 'does not register an offense when not using a current directory path in `require_relative`' do
     expect_no_offenses(<<~RUBY)
       require_relative 'path/to/feature'
