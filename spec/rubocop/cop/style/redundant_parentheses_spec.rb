@@ -225,15 +225,78 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'registers an offense for parens around method arguments of a method call with an argument' do
+  it 'registers an offense for parens around a method argument of a parenthesized method call' do
     expect_offense(<<~RUBY)
       x.y((z))
-          ^^^ Don't use parentheses around a method call.
+          ^^^ Don't use parentheses around a method argument.
     RUBY
 
     expect_correction(<<~RUBY)
       x.y(z)
     RUBY
+  end
+
+  it 'registers an offense for parens around a method argument of a parenthesized method call with safe navigation' do
+    expect_offense(<<~RUBY)
+      x&.y((z))
+           ^^^ Don't use parentheses around a method argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x&.y(z)
+    RUBY
+  end
+
+  it 'registers an offense for parens around a second method argument of a parenthesized method call' do
+    expect_offense(<<~RUBY)
+      x.y(z, (w))
+             ^^^ Don't use parentheses around a method argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.y(z, w)
+    RUBY
+  end
+
+  it 'registers an offense for parens around an expression method argument of a parenthesized method call' do
+    expect_offense(<<~RUBY)
+      x.y((z + w))
+          ^^^^^^^ Don't use parentheses around a method argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.y(z + w)
+    RUBY
+  end
+
+  it 'registers an offense for parens around a range method argument of a parenthesized method call' do
+    expect_offense(<<~RUBY)
+      x.y((a..b))
+          ^^^^^^ Don't use parentheses around a method argument.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.y(a..b)
+    RUBY
+  end
+
+  it 'registers an offense for parens around a multiline method argument of a parenthesized method call' do
+    expect_offense(<<~RUBY)
+      x.y((foo &&
+          ^^^^^^^ Don't use parentheses around a method argument.
+        bar
+      ))
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.y(foo &&
+        bar
+      )
+    RUBY
+  end
+
+  it 'does not register an offense for parens around an array destructuring argument in method definition' do
+    expect_no_offenses('def foo((bar, baz)); end')
   end
 
   it 'registers an offense for parens around parenthesized conditional assignment' do

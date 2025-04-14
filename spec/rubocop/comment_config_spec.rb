@@ -120,7 +120,7 @@ RSpec.describe RuboCop::CommentConfig do
     it 'just ignores unpaired enabling directives' do
       void_disabled_lines = disabled_lines_of_cop('Lint/Void')
       expected_part = (25..source.size).to_a
-      expect((void_disabled_lines & expected_part)).to be_empty
+      expect(void_disabled_lines & expected_part).to be_empty
     end
 
     it 'supports disabling single line with a directive at end of line' do

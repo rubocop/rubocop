@@ -134,7 +134,9 @@ module RuboCop
           node = begin_node.children.first
 
           if (message = find_offense_message(begin_node, node))
-            begin_node = begin_node.parent if node.range_type?
+            if node.range_type? && !argument_of_parenthesized_method_call?(begin_node)
+              begin_node = begin_node.parent
+            end
 
             return offense(begin_node, message)
           end
@@ -155,6 +157,7 @@ module RuboCop
             return 'an expression'
           end
           return 'an interpolated expression' if interpolation?(begin_node)
+          return 'a method argument' if argument_of_parenthesized_method_call?(begin_node)
 
           return if begin_node.chained?
 
@@ -176,6 +179,12 @@ module RuboCop
 
         # @!method interpolation?(node)
         def_node_matcher :interpolation?, '[^begin ^^dstr]'
+
+        def argument_of_parenthesized_method_call?(node)
+          return false unless (parent = node.parent)
+
+          parent.call_type? && parent.parenthesized? && parent.receiver != node
+        end
 
         def allow_in_multiline_conditions?
           !!config.for_enabled_cop('Style/ParenthesesAroundCondition')['AllowInMultilineConditions']
