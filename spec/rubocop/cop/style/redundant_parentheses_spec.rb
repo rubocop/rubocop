@@ -975,6 +975,74 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     expect_no_offenses('if x; y else (1)end')
   end
 
+  context 'when a parenthesized literal is used in a comparison' do
+    it 'registers an offense for `==`' do
+      expect_offense(<<~RUBY)
+        x == (42)
+             ^^^^ Don't use parentheses around a literal.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x == 42
+      RUBY
+    end
+
+    it 'registers an offense for `>`' do
+      expect_offense(<<~RUBY)
+        x > (42)
+            ^^^^ Don't use parentheses around a literal.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x > 42
+      RUBY
+    end
+
+    it 'registers an offense for `>=`' do
+      expect_offense(<<~RUBY)
+        x >= (42)
+             ^^^^ Don't use parentheses around a literal.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x >= 42
+      RUBY
+    end
+
+    it 'registers an offense for `<`' do
+      expect_offense(<<~RUBY)
+        x < (42)
+            ^^^^ Don't use parentheses around a literal.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x < 42
+      RUBY
+    end
+
+    it 'registers an offense for `<=`' do
+      expect_offense(<<~RUBY)
+        x <= (42)
+             ^^^^ Don't use parentheses around a literal.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x <= 42
+      RUBY
+    end
+  end
+
+  it 'registers an offense for a parenthesized literal in a `=~` comparison' do
+    expect_offense(<<~RUBY)
+      x =~ (/regexp/)
+           ^^^^^^^^^^ Don't use parentheses around a literal.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x =~ /regexp/
+    RUBY
+  end
+
   context 'when the first argument in a method call begins with a hash literal' do
     it 'accepts parentheses if the argument list is not parenthesized' do
       expect_no_offenses('x ({ y: 1 }), z')
