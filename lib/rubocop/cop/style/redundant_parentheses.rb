@@ -98,7 +98,7 @@ module RuboCop
           return false unless node.type?(:send, :super, :yield)
 
           node.arguments.one? && !node.parenthesized? &&
-            !node.arithmetic_operation? && node.first_argument.begin_type?
+            !node.operator_method? && node.first_argument.begin_type?
         end
 
         def multiline_control_flow_statements?(node)
