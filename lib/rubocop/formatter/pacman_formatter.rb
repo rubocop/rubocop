@@ -58,7 +58,7 @@ module RuboCop
         return pacdots(@total_files) unless @total_files > cols
         return pacdots(cols) unless (@total_files / cols).eql?(@repetitions)
 
-        pacdots((@total_files - (cols * @repetitions)))
+        pacdots(@total_files - (cols * @repetitions))
       end
 
       def pacdots(number)

@@ -52,7 +52,7 @@ module RuboCop
           each_missing_enable do |cop, line_range|
             next if acceptable_range?(cop, line_range)
 
-            range = source_range(processed_source.buffer, line_range.min, (0..0))
+            range = source_range(processed_source.buffer, line_range.min, 0..0)
             comment = processed_source.comment_at_line(line_range.begin)
 
             add_offense(range, message: message(cop, comment))
