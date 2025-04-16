@@ -174,12 +174,17 @@ module RuboCop
               range_with_surrounding_space(range: lhs.source_range, side: :right),
               range_with_surrounding_space(range: lhs_operator_range, side: :right),
               offense_range: range_between(lhs.source_range.begin_pos, rhs.source_range.end_pos)
-            )
+            ) do |corrector|
+              corrector.replace(rhs_receiver, lhs_receiver.source)
+            end
+            ignore_node(node)
           end
         end
 
         def report_offense(node, rhs, rhs_receiver, *removal_ranges, offense_range: node)
           add_offense(offense_range) do |corrector|
+            next if ignored_node?(node)
+
             # If the RHS is an `or` we cannot safely autocorrect because in order to remove
             # the non-nil check we need to add safe-navs to all clauses where the receiver is used
             next if and_with_rhs_or?(node)
@@ -227,7 +232,7 @@ module RuboCop
         end
 
         def offending_node?(node, lhs_receiver, rhs, rhs_receiver) # rubocop:disable Metrics/CyclomaticComplexity
-          return false if lhs_receiver != rhs_receiver || rhs_receiver.nil?
+          return false if !matching_nodes?(lhs_receiver, rhs_receiver) || rhs_receiver.nil?
           return false if use_var_only_in_unless_modifier?(node, lhs_receiver)
           return false if chain_length(rhs, rhs_receiver) > max_chain_length
           return false if unsafe_method_used?(rhs, rhs_receiver.parent)
@@ -306,9 +311,19 @@ module RuboCop
 
           receiver = method_chain.receiver
 
-          return receiver if receiver == checked_variable
+          return receiver if matching_nodes?(receiver, checked_variable)
 
           find_matching_receiver_invocation(receiver, checked_variable)
+        end
+
+        def matching_nodes?(left, right)
+          left == right || matching_call_nodes?(left, right)
+        end
+
+        def matching_call_nodes?(left, right)
+          return false unless left && right
+
+          left.call_type? && right.call_type? && left.children == right.children
         end
 
         def chain_length(method_chain, method)
