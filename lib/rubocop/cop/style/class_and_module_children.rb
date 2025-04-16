@@ -131,13 +131,19 @@ module RuboCop
             "#{node.body.children.first.const_name}"
         end
 
+        # rubocop:disable Metrics/AbcSize
         def remove_end(corrector, body)
-          remove_begin_pos = body.loc.end.begin_pos - leading_spaces(body).size
+          remove_begin_pos = if same_line?(body.loc.name, body.loc.end)
+                               body.loc.name.end_pos
+                             else
+                               body.loc.end.begin_pos - leading_spaces(body).size
+                             end
           adjustment = processed_source.raw_source[remove_begin_pos] == ';' ? 0 : 1
           range = range_between(remove_begin_pos, body.loc.end.end_pos + adjustment)
 
           corrector.remove(range)
         end
+        # rubocop:enable Metrics/AbcSize
 
         def unindent(corrector, node)
           return unless node.body.children.last
