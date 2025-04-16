@@ -40,7 +40,6 @@ module RuboCop
       class HashFetchChain < Base
         extend AutoCorrector
         extend TargetRubyVersion
-        include IgnoredNode
 
         MSG = 'Use `%<replacement>s` instead.'
         RESTRICT_ON_SEND = %i[fetch].freeze
