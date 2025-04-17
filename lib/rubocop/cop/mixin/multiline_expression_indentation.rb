@@ -17,6 +17,8 @@ module RuboCop
 
         lhs = left_hand_side(node.receiver)
         rhs = right_hand_side(node)
+        return unless rhs
+
         range = offending_range(node, lhs, rhs, style)
         check(range, node, lhs, rhs)
       end
