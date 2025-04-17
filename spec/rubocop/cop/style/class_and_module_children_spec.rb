@@ -367,20 +367,6 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
-    it 'registers an offense for classes with nested one-liner children' do
-      expect_offense(<<~RUBY)
-        class FooClass
-              ^^^^^^^^ Use compact module/class definition instead of nested style.
-          class BarClass; end
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        class FooClass::BarClass
-        end
-      RUBY
-    end
-
     it 'accepts class/module with single method' do
       expect_no_offenses(<<~RUBY)
         class FooClass
@@ -445,6 +431,98 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         expect_correction(<<~RUBY)
           class M::C
             def foo; 1; end
+          end
+        RUBY
+      end
+    end
+
+    context 'with one-liner class defintiion' do
+      it 'registers an offense for classes with nested one-liner children' do
+        expect_offense(<<~RUBY)
+          class FooClass
+                ^^^^^^^^ Use compact module/class definition instead of nested style.
+            class BarClass; end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class FooClass::BarClass
+          end
+        RUBY
+      end
+
+      it 'registers an offense when one-liner class definition is 3 levels deep' do
+        expect_offense(<<~RUBY)
+          class A < B
+            class C
+                  ^ Use compact module/class definition instead of nested style.
+              class D; end
+            end
+
+            class E
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A < B
+            class C::D
+            end
+
+            class E
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when one-liner class definition is 4 levels deep' do
+        expect_offense(<<~RUBY)
+          class A < B
+            class F
+              class C
+                    ^ Use compact module/class definition instead of nested style.
+                class D; end
+              end
+
+              class E
+              end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A < B
+            class F
+              class C::D
+              end
+
+              class E
+              end
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when one-liner class definition has multitple whitespaces before the `end` token' do
+        expect_offense(<<~RUBY)
+          class A < B
+            class C
+                  ^ Use compact module/class definition instead of nested style.
+              class D;    end
+            end
+
+            class E
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A < B
+            class C::D
+            end
+
+            class E
+            end
           end
         RUBY
       end
