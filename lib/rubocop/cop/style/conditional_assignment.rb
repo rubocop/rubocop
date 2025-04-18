@@ -314,6 +314,7 @@ module RuboCop
 
         def assignment_node(node)
           assignment = node.send_type? ? node.last_argument : node.expression
+          return unless assignment
 
           # ignore pseudo-assignments without rhs in for nodes
           return if node.parent&.for_type?
