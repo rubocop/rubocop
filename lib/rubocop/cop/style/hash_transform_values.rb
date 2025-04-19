@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # Looks for uses of `\_.each_with_object({}) {...}`,
-      # `\_.map {...}.to_h`, and `Hash[\_.map {...}]` that are actually just
+      # Looks for uses of `+_.each_with_object({}) {...}+`,
+      # `+_.map {...}.to_h+`, and `+Hash[_.map {...}]+` that are actually just
       # transforming the values of a hash, and tries to use a simpler & faster
       # call to `transform_values` instead.
       #

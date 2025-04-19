@@ -4,12 +4,12 @@ module RuboCop
   module Cop
     module Style
       # Ensures that eval methods (`eval`, `instance_eval`, `class_eval`
-      # and `module_eval`) are given filename and line number values (`\_\_FILE\_\_`
-      # and `\_\_LINE\_\_`). This data is used to ensure that any errors raised
+      # and `module_eval`) are given filename and line number values (`+__FILE__+`
+      # and `+__LINE__+`). This data is used to ensure that any errors raised
       # within the evaluated code will be given the correct identification
       # in a backtrace.
       #
-      # The cop also checks that the line number given relative to `\_\_LINE\_\_` is
+      # The cop also checks that the line number given relative to `+__LINE__+` is
       # correct.
       #
       # This cop will autocorrect incorrect or missing filename and line number

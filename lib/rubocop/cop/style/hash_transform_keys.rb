@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # Looks for uses of `\_.each_with_object({}) {...}`,
-      # `\_.map {...}.to_h`, and `Hash[\_.map {...}]` that are actually just
+      # Looks for uses of `+_.each_with_object({}) {...}+`,
+      # `+_.map {...}.to_h+`, and `+Hash[_.map {...}]+` that are actually just
       # transforming the keys of a hash, and tries to use a simpler & faster
       # call to `transform_keys` instead.
       # It should only be enabled on Ruby version 2.5 or newer.

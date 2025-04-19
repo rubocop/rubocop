@@ -16,16 +16,16 @@ module RuboCop
       #
       # In Ruby 3.2, anonymous args/kwargs forwarding has been added.
       #
-      # This cop also identifies places where `use_args(*args)`/`use_kwargs(**kwargs)` can be
-      # replaced by `use_args(*)`/`use_kwargs(**)`; if desired, this functionality can be disabled
-      # by setting `UseAnonymousForwarding: false`.
+      # This cop also identifies places where `+use_args(*args)+`/`+use_kwargs(**kwargs)+` can be
+      # replaced by `+use_args(*)+`/`+use_kwargs(**)+`; if desired, this functionality can be
+      # disabled by setting `UseAnonymousForwarding: false`.
       #
       # And this cop has `RedundantRestArgumentNames`, `RedundantKeywordRestArgumentNames`,
       # and `RedundantBlockArgumentNames` options. This configuration is a list of redundant names
       # that are sufficient for anonymizing meaningless naming.
       #
       # Meaningless names that are commonly used can be anonymized by default:
-      # e.g., `*args`, `**options`, `&block`, and so on.
+      # e.g., `+*args+`, `+**options+`, `&block`, and so on.
       #
       # Names not on this list are likely to be meaningful and are allowed by default.
       #

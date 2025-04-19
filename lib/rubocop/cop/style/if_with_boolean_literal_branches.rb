@@ -10,7 +10,7 @@ module RuboCop
       # `nonzero?` method is allowed by default.
       # These are customizable with `AllowedMethods` option.
       #
-      # This cop targets only `if`s with a single `elsif` or `else` branch. The following
+      # This cop targets only ``if``s with a single `elsif` or `else` branch. The following
       # code will be allowed, because it has two `elsif` branches:
       #
       # [source,ruby]

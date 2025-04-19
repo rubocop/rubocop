@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for useless `rescue`s, which only reraise rescued exceptions.
+      # Checks for useless ``rescue``s, which only reraise rescued exceptions.
       #
       # @example
       #   # bad
