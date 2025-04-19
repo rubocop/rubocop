@@ -32,6 +32,12 @@ RSpec.describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
         ^ Missing frozen string literal comment.
         puts 1
       RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+        # frozen_string_literal: token
+        puts 1
+      RUBY
     end
 
     it 'registers an offense for not having a frozen string literal comment on the top line' do

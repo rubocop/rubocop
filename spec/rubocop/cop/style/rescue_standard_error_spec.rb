@@ -119,6 +119,14 @@ RSpec.describe RuboCop::Cop::Style::RescueStandardError, :config do
                   bar
                 end
               RUBY
+
+              expect_correction(<<~RUBY)
+                begin
+                  foo
+                rescue => e
+                  bar
+                end
+              RUBY
             end
           end
         end
