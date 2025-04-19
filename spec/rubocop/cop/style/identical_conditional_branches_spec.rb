@@ -930,5 +930,55 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
         end
       end
     end
+
+    context 'with `if` in non-modifier form with `then`' do
+      context 'when expression is on the same line as `then`' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def fixed_point(value)
+              if value then value
+                            ^^^^^ Move `value` out of the conditional.
+              else value
+                   ^^^^^ Move `value` out of the conditional.
+              end
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+
+        it 'registers an offense when `else` branch is not inlined' do
+          expect_offense(<<~RUBY)
+            def fixed_point(value)
+              if value then value
+                            ^^^^^ Move `value` out of the conditional.
+              else
+                value
+                ^^^^^ Move `value` out of the conditional.
+              end
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'when expression is on the next line' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            def fixed_point(value)
+              if value then
+                value
+                ^^^^^ Move `value` out of the conditional.
+              else value
+                   ^^^^^ Move `value` out of the conditional.
+              end
+            end
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+    end
   end
 end
