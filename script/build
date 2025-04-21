@@ -1,0 +1,21 @@
+#! /usr/bin/env bash
+
+set -e
+
+# COLORS
+OFF='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+
+GEM_NAME=$(ls | grep gemspec | cut -d. -f1)
+GEM_VERSION=$(gem build $GEM_NAME.gemspec 2>&1 | grep Version | cut -d':' -f 2 | tr -d " \t\n\r")
+
+if [[ "$CI" == "true" ]]; then
+  echo "gem_name=$GEM_NAME" >> $GITHUB_OUTPUT
+  echo "gem_version=$GEM_VERSION" >> $GITHUB_OUTPUT
+  echo "gem_path=$GEM_NAME-$GEM_VERSION.gem" >> $GITHUB_OUTPUT
+fi
+
+echo -e "📦 ${GREEN}successfully${OFF} built ${PURPLE}$GEM_NAME-$GEM_VERSION.gem${OFF}"
