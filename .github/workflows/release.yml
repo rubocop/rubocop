@@ -10,7 +10,7 @@ permissions: {}
 
 jobs:
   build:
-    # if: (github.repository == 'rubocop/rubocop')
+    if: (github.repository == 'rubocop/rubocop')
     permissions:
       contents: read
     runs-on: ubuntu-latest
