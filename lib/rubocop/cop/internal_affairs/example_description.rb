@@ -69,7 +69,7 @@ module RuboCop
         # @!method offense_example(node)
         def_node_matcher :offense_example, <<~PATTERN
           (block
-            (send _ {:it :specify} $...)
+            (send _ {:it :specify :xit :fit} $...)
             _args
             `(send nil? %RESTRICT_ON_SEND ...)
           )

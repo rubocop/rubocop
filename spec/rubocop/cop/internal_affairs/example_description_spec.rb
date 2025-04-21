@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
   context 'with `expect_offense`' do
-    it 'registers an offense when given an improper description' do
+    it 'registers an offense when given an improper description in `it`' do
       expect_offense(<<~RUBY)
         it 'does not register an offense' do
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_offense`.
@@ -12,6 +12,51 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
 
       expect_correction(<<~RUBY)
         it 'registers an offense' do
+          expect_offense('code')
+        end
+      RUBY
+    end
+
+    it 'registers an offense when given an improper description in `xit`' do
+      expect_offense(<<~RUBY)
+        xit 'does not register an offense' do
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_offense`.
+          expect_offense('code')
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        xit 'registers an offense' do
+          expect_offense('code')
+        end
+      RUBY
+    end
+
+    it 'registers an offense when given an improper description in `specify`' do
+      expect_offense(<<~RUBY)
+        specify 'does not register an offense' do
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_offense`.
+          expect_offense('code')
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        specify 'registers an offense' do
+          expect_offense('code')
+        end
+      RUBY
+    end
+
+    it 'registers an offense when given an improper description in `fit`' do
+      expect_offense(<<~RUBY)
+        fit 'does not register an offense' do
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Description does not match use of `expect_offense`.
+          expect_offense('code')
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        fit 'registers an offense' do
           expect_offense('code')
         end
       RUBY
