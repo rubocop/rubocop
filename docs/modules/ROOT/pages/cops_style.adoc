@@ -527,16 +527,16 @@ by setting `UseAnonymousForwarding: false`.
 
 In Ruby 3.2, anonymous args/kwargs forwarding has been added.
 
-This cop also identifies places where `use_args(*args)`/`use_kwargs(**kwargs)` can be
-replaced by `use_args(*)`/`use_kwargs(**)`; if desired, this functionality can be disabled
-by setting `UseAnonymousForwarding: false`.
+This cop also identifies places where `+use_args(*args)+`/`+use_kwargs(**kwargs)+` can be
+replaced by `+use_args(*)+`/`+use_kwargs(**)+`; if desired, this functionality can be
+disabled by setting `UseAnonymousForwarding: false`.
 
 And this cop has `RedundantRestArgumentNames`, `RedundantKeywordRestArgumentNames`,
 and `RedundantBlockArgumentNames` options. This configuration is a list of redundant names
 that are sufficient for anonymizing meaningless naming.
 
 Meaningless names that are commonly used can be anonymized by default:
-e.g., `*args`, `**options`, `&block`, and so on.
+e.g., `+*args+`, `+**options+`, `&block`, and so on.
 
 Names not on this list are likely to be meaningful and are allowed by default.
 
@@ -4920,12 +4920,12 @@ ENV.fetch('HOME', default)
 |===
 
 Ensures that eval methods (`eval`, `instance_eval`, `class_eval`
-and `module_eval`) are given filename and line number values (`\_\_FILE\_\_`
-and `\_\_LINE\_\_`). This data is used to ensure that any errors raised
+and `module_eval`) are given filename and line number values (`+__FILE__+`
+and `+__LINE__+`). This data is used to ensure that any errors raised
 within the evaluated code will be given the correct identification
 in a backtrace.
 
-The cop also checks that the line number given relative to `\_\_LINE\_\_` is
+The cop also checks that the line number given relative to `+__LINE__+` is
 correct.
 
 This cop will autocorrect incorrect or missing filename and line number
@@ -7174,8 +7174,8 @@ NOTE: Requires Ruby version 2.5
 | 0.90
 |===
 
-Looks for uses of `\_.each_with_object({}) {...}`,
-`\_.map {...}.to_h`, and `Hash[\_.map {...}]` that are actually just
+Looks for uses of `+_.each_with_object({}) {...}+`,
+`+_.map {...}.to_h+`, and `+Hash[_.map {...}]+` that are actually just
 transforming the keys of a hash, and tries to use a simpler & faster
 call to `transform_keys` instead.
 It should only be enabled on Ruby version 2.5 or newer.
@@ -7219,8 +7219,8 @@ NOTE: Requires Ruby version 2.4
 | 0.90
 |===
 
-Looks for uses of `\_.each_with_object({}) {...}`,
-`\_.map {...}.to_h`, and `Hash[\_.map {...}]` that are actually just
+Looks for uses of `+_.each_with_object({}) {...}+`,
+`+_.map {...}.to_h+`, and `+Hash[_.map {...}]+` that are actually just
 transforming the values of a hash, and tries to use a simpler & faster
 call to `transform_values` instead.
 
@@ -7604,7 +7604,7 @@ double negation (!!).
 `nonzero?` method is allowed by default.
 These are customizable with `AllowedMethods` option.
 
-This cop targets only `if`s with a single `elsif` or `else` branch. The following
+This cop targets only ``if``s with a single `elsif` or `else` branch. The following
 code will be allowed, because it has two `elsif` branches:
 
 [source,ruby]
@@ -17982,7 +17982,7 @@ literals.
 * `comma`: Requires a comma after the last item in an array, but only when each item is on
 its own line.
 * `diff_comma`: Requires a comma after the last item in an array, but only when that item is
-followed by an immediate newline.
+followed by an immediate newline, even if there is an inline comment on the same line.
 * `no_comma`: Does not require a comma after the last item in an array
 
 [#examples-styletrailingcommainarrayliteral]
@@ -18231,7 +18231,7 @@ literals.
 * `comma`: Requires a comma after the last item in a hash, but only when each item is on its
 own line.
 * `diff_comma`: Requires a comma after the last item in a hash, but only when that item is
-followed by an immediate newline.
+followed by an immediate newline, even if there is an inline comment on the same line.
 * `no_comma`: Does not require a comma after the last item in a hash
 
 [#examples-styletrailingcommainhashliteral]

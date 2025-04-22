@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.75.3 (2025-04-22)
+
 ### Bug fixes
 
 * [#13676](https://github.com/rubocop/rubocop/issues/13676): Allow RuboCop to inspect hidden directories if they are explicitly provided. ([@viralpraxis][])
