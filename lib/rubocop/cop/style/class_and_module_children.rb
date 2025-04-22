@@ -149,9 +149,9 @@ module RuboCop
           return unless node.body.children.last
 
           last_child_leading_spaces = leading_spaces(node.body.children.last)
-          return if leading_spaces(node).size == last_child_leading_spaces.size
+          return if spaces_size(leading_spaces(node)) == spaces_size(last_child_leading_spaces)
 
-          column_delta = configured_indentation_width - last_child_leading_spaces.size
+          column_delta = configured_indentation_width - spaces_size(last_child_leading_spaces)
           return if column_delta.zero?
 
           AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
@@ -159,6 +159,16 @@ module RuboCop
 
         def leading_spaces(node)
           node.source_range.source_line[/\A\s*/]
+        end
+
+        def spaces_size(spaces_string)
+          mapping = { "\t" => tab_indentation_width }
+          spaces_string.chars.sum { |character| mapping.fetch(character, 1) }
+        end
+
+        def tab_indentation_width
+          config.for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
+            configured_indentation_width
         end
 
         def check_style(node, body, style)
