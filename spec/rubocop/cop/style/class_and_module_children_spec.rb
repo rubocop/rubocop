@@ -385,6 +385,25 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'registers an offense for tab-intended nested children' do
+      expect_offense(<<~RUBY)
+        module A
+               ^ Use compact module/class definition instead of nested style.
+        \tmodule B
+        \t\tmodule C
+        \t\t\tbody
+        \t\tend
+        \tend
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module A::B::C
+        \t\t\tbody
+        end
+      RUBY
+    end
+
     context 'with unindented nested nodes' do
       it 'registers an offense and autocorrects unindented class' do
         expect_offense(<<~RUBY)
@@ -433,6 +452,65 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
             def foo; 1; end
           end
         RUBY
+      end
+
+      context 'with tab-intended nested nodes' do
+        it 'registers an offense and autocorrects when 3rd-level module has unintended body' do
+          expect_offense(<<~RUBY)
+            module A
+                   ^ Use compact module/class definition instead of nested style.
+            \tmodule B
+            \t\tmodule C
+            \t\tbody
+            \t\tend
+            \tend
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module A::B::C
+            \t\tbody
+            end
+          RUBY
+        end
+
+        it 'registers an offense and autocorrects when all nested modules have the same indentation' do
+          expect_offense(<<~RUBY)
+            module A
+                   ^ Use compact module/class definition instead of nested style.
+            \tmodule B
+            \tmodule C
+            \tbody
+            \tend
+            \tend
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module A::B::C
+            \tbody
+            end
+          RUBY
+        end
+
+        it 'registers an offense and autocorrects when all nested modules have the same indentation and nested body is intended' do
+          expect_offense(<<~RUBY)
+            module A
+                   ^ Use compact module/class definition instead of nested style.
+            \tmodule B
+            \tmodule C
+            \t\tbody
+            \tend
+            \tend
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module A::B::C
+            \t\tbody
+            end
+          RUBY
+        end
       end
     end
 
