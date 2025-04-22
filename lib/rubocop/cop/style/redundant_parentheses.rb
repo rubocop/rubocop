@@ -181,6 +181,7 @@ module RuboCop
         def_node_matcher :interpolation?, '[^begin ^^dstr]'
 
         def argument_of_parenthesized_method_call?(node)
+          return false if node.children.first.basic_conditional?
           return false unless (parent = node.parent)
 
           parent.call_type? && parent.parenthesized? && parent.receiver != node

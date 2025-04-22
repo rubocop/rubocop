@@ -258,6 +258,30 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'does not register an offense for parens around `if` as the second argument of a parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      x(1, (2 if y?))
+    RUBY
+  end
+
+  it 'does not register an offense for parens around `unless` as the second argument of a parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      x(1, (2 unless y?))
+    RUBY
+  end
+
+  it 'does not register an offense for parens around `while` as the second argument of a parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      x(1, (2 while y?))
+    RUBY
+  end
+
+  it 'does not register an offense for parens around `until` as the second argument of a parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      x(1, (2 until y?))
+    RUBY
+  end
+
   it 'registers an offense for parens around an expression method argument of a parenthesized method call' do
     expect_offense(<<~RUBY)
       x.y((z + w))
