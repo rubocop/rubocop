@@ -1467,6 +1467,16 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     RUBY
   end
 
+  it 'does not register an offense when the RHS of `&&` is a complex `||` expression composed of `&&` conditions' do
+    expect_no_offenses(<<~RUBY)
+      foo && (
+        (foo >= 1 && foo < 2) ||
+        (foo >= 3 && foo < 4) ||
+        (foo >= 5 && foo < 6)
+      )
+    RUBY
+  end
+
   context 'respond_to?' do
     it 'allows method calls safeguarded by a respond_to check' do
       expect_no_offenses('foo.bar if foo.respond_to?(:bar)')
