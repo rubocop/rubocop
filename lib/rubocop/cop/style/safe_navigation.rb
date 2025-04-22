@@ -321,7 +321,7 @@ module RuboCop
         end
 
         def matching_call_nodes?(left, right)
-          return false unless left && right
+          return false unless left && right.respond_to?(:call_type?)
 
           left.call_type? && right.call_type? && left.children == right.children
         end
