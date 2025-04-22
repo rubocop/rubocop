@@ -2008,6 +2008,11 @@ Lint/IncompatibleIoSelectWithFiberScheduler:
   VersionAdded: '1.21'
   VersionChanged: '1.24'
 
+Lint/InconsistentSafeNavigation:
+  Description: 'Detect when a receiver is used inconsistently with safe navigation.'
+  Enabled: pending
+  VersionAdded: '1.75'
+
 Lint/IneffectiveAccessModifier:
   Description: >-
                  Checks for attempts to use `private` or `protected` to set

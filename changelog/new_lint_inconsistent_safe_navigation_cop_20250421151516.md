@@ -1,0 +1,1 @@
+* [#14109](https://github.com/rubocop/rubocop/pull/14109): Add new `Lint/InconsistentSafeNavigation` cop to detect receivers that are used inconsistently with and without safe navigation operator. ([@smcabrera][])
