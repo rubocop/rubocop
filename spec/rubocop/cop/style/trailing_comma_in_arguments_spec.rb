@@ -2,64 +2,95 @@
 
 RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
   shared_examples 'single line lists' do |extra_info|
-    it 'registers an offense for trailing comma in a method call' do
-      expect_offense(<<~RUBY)
-        some_method(a, b, c, )
-                           ^ Avoid comma after the last parameter of a method call#{extra_info}.
-      RUBY
+    [%w[( )], %w[[ ]]].each do |start_bracket, end_bracket|
+      it 'registers an offense for trailing comma in a method call' do
+        expect_offense(<<~RUBY, start_bracket: start_bracket, end_bracket: end_bracket)
+          some_method#{start_bracket}a, b, c, #{end_bracket}
+                      _{start_bracket}      ^ Avoid comma after the last parameter of a method call#{extra_info}.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        some_method(a, b, c )
-      RUBY
-    end
+        expect_correction(<<~RUBY)
+          some_method#{start_bracket}a, b, c #{end_bracket}
+        RUBY
+      end
 
-    it 'registers an offense for trailing comma preceded by whitespace in a method call' do
-      expect_offense(<<~RUBY)
-        some_method(a, b, c , )
-                            ^ Avoid comma after the last parameter of a method call#{extra_info}.
-      RUBY
+      it 'registers an offense for trailing comma preceded by whitespace in a method call' do
+        expect_offense(<<~RUBY, start_bracket: start_bracket, end_bracket: end_bracket)
+          some_method#{start_bracket}a, b, c , #{end_bracket}
+                     _{start_bracket}        ^ Avoid comma after the last parameter of a method call#{extra_info}.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        some_method(a, b, c  )
-      RUBY
-    end
+        expect_correction(<<~RUBY)
+          some_method#{start_bracket}a, b, c  #{end_bracket}
+        RUBY
+      end
 
-    it 'registers an offense for trailing comma in a method call with hash parameters at the end' do
-      expect_offense(<<~RUBY)
-        some_method(a, b, c: 0, d: 1, )
-                                    ^ Avoid comma after the last parameter of a method call#{extra_info}.
-      RUBY
+      it 'registers an offense for trailing comma in a method call with hash parameters at the end' do
+        expect_offense(<<~RUBY, start_bracket: start_bracket, end_bracket: end_bracket)
+          some_method#{start_bracket}a, b, c: 0, d: 1, #{end_bracket}
+                     _{start_bracket}                ^ Avoid comma after the last parameter of a method call#{extra_info}.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        some_method(a, b, c: 0, d: 1 )
-      RUBY
-    end
+        expect_correction(<<~RUBY)
+          some_method#{start_bracket}a, b, c: 0, d: 1 #{end_bracket}
+        RUBY
+      end
 
-    it 'accepts method call without trailing comma' do
-      expect_no_offenses('some_method(a, b, c)')
-    end
+      it 'accepts method call without trailing comma' do
+        expect_no_offenses("some_method#{start_bracket}a, b, c#{end_bracket}")
+      end
 
-    it 'accepts method call without trailing comma when a line break before a method call' do
-      expect_no_offenses(<<~RUBY)
-        obj
-          .do_something(:foo, :bar)
-      RUBY
-    end
+      it 'accepts method call without trailing comma when a line break before a method call' do
+        expect_no_offenses(<<~RUBY)
+          obj
+            .do_something#{start_bracket}:foo, :bar#{end_bracket}
+        RUBY
+      end
 
-    it 'accepts method call without trailing comma with single element hash ' \
-       'parameters at the end' do
-      expect_no_offenses('some_method(a: 1)')
+      it 'accepts method call without trailing comma with single element hash ' \
+         'parameters at the end' do
+        expect_no_offenses("some_method#{start_bracket}a: 1#{end_bracket}")
+      end
+
+      it 'accepts method call without parameters' do
+        expect_no_offenses('some_method')
+      end
+
+      it 'accepts chained single-line method calls' do
+        expect_no_offenses(<<~RUBY)
+          target
+            .some_method#{start_bracket}a#{end_bracket}
+        RUBY
+      end
+
+      context 'when using safe navigation operator' do
+        it 'registers an offense for trailing comma in a method call' do
+          expect_offense(<<~RUBY, start_bracket: start_bracket, end_bracket: end_bracket)
+            receiver&.some_method#{start_bracket}a, b, c, #{end_bracket}
+                                 _{start_bracket}       ^ Avoid comma after the last parameter of a method call#{extra_info}.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            receiver&.some_method#{start_bracket}a, b, c #{end_bracket}
+          RUBY
+        end
+
+        it 'registers an offense for trailing comma in a method call with hash ' \
+           'parameters at the end' do
+          expect_offense(<<~RUBY, start_bracket: start_bracket, end_bracket: end_bracket)
+            receiver&.some_method#{start_bracket}a, b, c: 0, d: 1, #{end_bracket}
+                                 _{start_bracket}                ^ Avoid comma after the last parameter of a method call#{extra_info}.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            receiver&.some_method#{start_bracket}a, b, c: 0, d: 1 #{end_bracket}
+          RUBY
+        end
+      end
     end
 
     it 'accepts method call without parameters' do
       expect_no_offenses('some_method')
-    end
-
-    it 'accepts chained single-line method calls' do
-      expect_no_offenses(<<~RUBY)
-        target
-          .some_method(a)
-      RUBY
     end
 
     it 'accepts heredoc without trailing comma' do
@@ -68,31 +99,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         ...
         HELP
       RUBY
-    end
-
-    context 'when using safe navigation operator' do
-      it 'registers an offense for trailing comma in a method call' do
-        expect_offense(<<~RUBY)
-          receiver&.some_method(a, b, c, )
-                                       ^ Avoid comma after the last parameter of a method call#{extra_info}.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          receiver&.some_method(a, b, c )
-        RUBY
-      end
-
-      it 'registers an offense for trailing comma in a method call with hash ' \
-         'parameters at the end' do
-        expect_offense(<<~RUBY)
-          receiver&.some_method(a, b, c: 0, d: 1, )
-                                                ^ Avoid comma after the last parameter of a method call#{extra_info}.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          receiver&.some_method(a, b, c: 0, d: 1 )
-        RUBY
-      end
     end
   end
 
@@ -120,13 +126,17 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
-      it 'accepts a single argument with no trailing comma' do
-        expect_no_offenses(<<~RUBY)
-          EmailWorker.perform_async({
-            subject: "hey there",
-            email: "foo@bar.com"
-          })
-        RUBY
+      [%w[( )], %w[[ ]]].each do |start_bracket, end_bracket|
+        context "with `#{start_bracket}#{end_bracket}` brackets" do
+          it 'accepts a single argument with no trailing comma' do
+            expect_no_offenses(<<~RUBY)
+              EmailWorker.perform_async#{start_bracket}{
+                subject: "hey there",
+                email: "foo@bar.com"
+              }#{end_bracket}
+            RUBY
+          end
+        end
       end
     end
   end
@@ -168,6 +178,26 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                         b,
                         c: 0,
                         d: 1)
+        RUBY
+      end
+
+      it 'registers an offense for trailing comma in a `[]` method call with ' \
+         'hash parameters at the end' do
+        expect_offense(<<~RUBY)
+          object[
+                        a,
+                        b,
+                        c: 0,
+                        d: 1,]
+                            ^ Avoid comma after the last parameter of a method call.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          object[
+                        a,
+                        b,
+                        c: 0,
+                        d: 1]
         RUBY
       end
 

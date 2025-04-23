@@ -107,7 +107,7 @@ module RuboCop
       # of the argument is not considered multiline, even if the argument
       # itself might span multiple lines.
       def allowed_multiline_argument?(node)
-        elements(node).one? && !Util.begins_its_line?(node.loc.end)
+        elements(node).one? && (!node.loc.end || !Util.begins_its_line?(node.loc.end))
       end
 
       def elements(node)
