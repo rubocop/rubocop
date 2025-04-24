@@ -6,9 +6,8 @@ module RuboCop
       # Checks for circular argument references in optional keyword
       # arguments and optional ordinal arguments.
       #
-      # This cop mirrors a warning produced by MRI since 2.2.
-      #
-      # NOTE: This syntax is no longer valid on Ruby 2.7 or higher.
+      # NOTE: This syntax was made invalid on Ruby 2.7 - Ruby 3.3 but is allowed
+      # again since Ruby 3.4.
       #
       # @example
       #
@@ -40,8 +39,6 @@ module RuboCop
         extend TargetRubyVersion
 
         MSG = 'Circular argument reference - `%<arg_name>s`.'
-
-        maximum_target_ruby_version 2.6
 
         def on_kwoptarg(node)
           check_for_circular_argument_references(*node)
