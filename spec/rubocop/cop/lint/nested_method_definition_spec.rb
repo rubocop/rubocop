@@ -393,7 +393,7 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
     end
   end
 
-  context 'Ruby >= 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby >= 3.4', :ruby34 do
     it 'does not register offense for nested definition inside `Module.new` with itblock' do
       expect_no_offenses(<<~RUBY)
         class Foo

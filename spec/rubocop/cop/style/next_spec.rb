@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Style::Next, :config do
       end
     end
 
-    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    context 'Ruby 3.4', :ruby34 do
       it "registers an offense for #{condition} inside of downto itblock" do
         expect_offense(<<~RUBY, condition: condition)
           3.downto(1) do

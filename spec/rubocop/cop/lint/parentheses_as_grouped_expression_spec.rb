@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     end
   end
 
-  context 'when using `it` parameter', :ruby34, unsupported_on: :parser do
+  context 'when using `it` parameter', :ruby34 do
     it 'registers an offense and corrects for method call with space before the parenthesis when block argument and parenthesis' do
       expect_offense(<<~RUBY)
         a.concat ((1..1).map { it * 10 })

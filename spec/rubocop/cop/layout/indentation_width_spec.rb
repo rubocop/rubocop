@@ -1629,7 +1629,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
       end
 
-      context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+      context 'Ruby 3.4', :ruby34 do
         it 'registers an offense for bad indentation of a {} body' do
           expect_offense(<<~RUBY)
             func {

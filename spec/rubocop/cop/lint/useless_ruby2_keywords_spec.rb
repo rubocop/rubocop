@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessRuby2Keywords, :config do
       RUBY
     end
 
-    it 'registers an offense for an itblock', :ruby34, unsupported_on: :parser do
+    it 'registers an offense for an itblock', :ruby34 do
       expect_offense(<<~RUBY)
         define_method(:foo) { it }
         ruby2_keywords :foo

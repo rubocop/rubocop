@@ -112,7 +112,7 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
       RUBY
     end
 
-    it 'reports an offense if `define_method` block body is if / unless without else', :ruby34, unsupported_on: :parser do
+    it 'reports an offense if `define_method` block body is if / unless without else', :ruby34 do
       expect_offense(<<~RUBY)
         define_method(:func) do
           if it

@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         end
       end
 
-      context 'Ruby >= 3.4', :ruby34, unsupported_on: :parser do
+      context 'Ruby >= 3.4', :ruby34 do
         it 'accepts a multi-line itblock' do
           expect_no_offenses(<<~RUBY)
             puts [1, 2, 3].map {

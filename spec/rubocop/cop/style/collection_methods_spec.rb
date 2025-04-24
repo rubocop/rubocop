@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Style::CollectionMethods, :config do
       end
     end
 
-    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    context 'Ruby 3.4', :ruby34 do
       context "#{method} with itblock" do
         it 'registers an offense' do
           expect_offense(<<~RUBY, method: method)

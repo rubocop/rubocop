@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::SingleLineBlockChain, :config do
     RUBY
   end
 
-  it 'registers an offense for method call chained on the same line as a itblock', :ruby34, unsupported_on: :parser do
+  it 'registers an offense for method call chained on the same line as a itblock', :ruby34 do
     expect_offense(<<~RUBY)
       example.select { it.cond? }.join('-')
                                  ^^^^^ Put method call on a separate line if chained to a single line block.

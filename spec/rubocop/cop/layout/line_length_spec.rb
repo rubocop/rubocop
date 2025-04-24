@@ -1826,7 +1826,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         end
       end
 
-      context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+      context 'Ruby 3.4', :ruby34 do
         it 'adds an offense for {} block does correct it' do
           expect_offense(<<~RUBY)
             foo.select { it + 4444000039123123129993912312312999199291203123123 }

@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
     end
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     it 'registers an offense and corrects when using `ary.each_with_object { it }`' do
       expect_offense(<<~RUBY)
         ary.each_with_object([]) { it }

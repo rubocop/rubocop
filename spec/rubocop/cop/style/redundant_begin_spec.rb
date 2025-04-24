@@ -570,7 +570,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     end
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     it 'reports an offense when assigning nested blocks which contain `begin` blocks' do
       expect_offense(<<~RUBY)
         var = do_something do

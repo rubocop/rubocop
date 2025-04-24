@@ -728,7 +728,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       RUBY
     end
 
-    it 'registers offense if next to itblock', :ruby34, unsupported_on: :parser do
+    it 'registers offense if next to itblock', :ruby34 do
       expect_offense(<<~RUBY)
         foo 'first foo' do
           #foo body

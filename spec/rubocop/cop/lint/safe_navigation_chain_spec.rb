@@ -495,7 +495,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
     end
   end
 
-  context '>= Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context '>= Ruby 3.4', :ruby34 do
     it 'registers an offense for ordinary method chain exists after ' \
        'safe navigation method call with a block using `it` parameter' do
       expect_offense(<<~RUBY)

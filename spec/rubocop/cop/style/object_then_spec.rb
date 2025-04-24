@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Style::ObjectThen, :config do
       end
     end
 
-    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    context 'Ruby 3.4', :ruby34 do
       it 'registers an offense for yield_self with itblock' do
         expect_offense(<<~RUBY)
           obj.yield_self { it.test }

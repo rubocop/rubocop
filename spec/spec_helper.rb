@@ -65,7 +65,4 @@ RSpec.configure do |config|
 
   # Prism supports Ruby 3.3+ parsing.
   config.filter_run_excluding unsupported_on: :prism if ENV['PARSER_ENGINE'] == 'parser_prism'
-
-  # With whitequark/parser, RuboCop supports Ruby syntax compatible with 2.0 to 3.3.
-  config.filter_run_excluding unsupported_on: :parser if ENV['PARSER_ENGINE'] != 'parser_prism'
 end

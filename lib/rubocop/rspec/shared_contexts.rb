@@ -267,6 +267,5 @@ RSpec.shared_context 'ruby 3.4' do
 end
 
 RSpec.shared_context 'ruby 3.5' do
-  # Parser supports parsing Ruby <= 3.4.
-  let(:ruby_version) { ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.5 : 3.4 }
+  let(:ruby_version) { 3.5 }
 end

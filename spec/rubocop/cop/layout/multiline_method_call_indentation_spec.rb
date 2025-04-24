@@ -423,7 +423,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         end
       end
 
-      context '>= Ruby 3.4', :ruby34, unsupported_on: :parser do
+      context '>= Ruby 3.4', :ruby34 do
         it 'accepts methods being aligned with method that is an argument' \
            'when using `it` parameter' do
           expect_no_offenses(<<~RUBY)
@@ -779,7 +779,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
-    it 'accepts aligned methods in multiline `it` block chain', :ruby34, unsupported_on: :parser do
+    it 'accepts aligned methods in multiline `it` block chain', :ruby34 do
       expect_no_offenses(<<~RUBY)
         do_something.foo do
           bar(it)

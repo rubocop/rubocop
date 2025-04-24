@@ -448,7 +448,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
       end
     end
 
-    context 'when assigning an `it` block parameter', :ruby34, unsupported_on: :parser do
+    context 'when assigning an `it` block parameter', :ruby34 do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
           def x(array)

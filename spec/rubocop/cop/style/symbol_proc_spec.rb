@@ -493,7 +493,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     end
   end
 
-  context 'itblocks', :ruby34, unsupported_on: :parser do
+  context 'itblocks', :ruby34 do
     %w[reject select].each do |method|
       it "registers an offense when receiver is an array literal and using `#{method}` with a itblock" do
         expect_offense(<<~RUBY, method: method)

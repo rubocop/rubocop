@@ -602,7 +602,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
     end
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     %w[private protected public module_function].each do |access_modifier|
       it "registers an offense for missing around line before #{access_modifier}" do
         expect_offense(<<~RUBY)

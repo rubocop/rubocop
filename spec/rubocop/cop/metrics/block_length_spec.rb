@@ -137,7 +137,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
-  context 'when using `it` parameter', :ruby34, unsupported_on: :parser do
+  context 'when using `it` parameter', :ruby34 do
     it 'rejects a block with more than 5 lines' do
       expect_offense(<<~RUBY)
         something do

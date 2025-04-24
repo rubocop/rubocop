@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBlockBraces, :config do
       end
     end
 
-    context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+    context 'Ruby 3.4', :ruby34 do
       it 'registers an offense and corrects opposite + correct style' do
         expect_offense(<<~RUBY)
           each{ it }

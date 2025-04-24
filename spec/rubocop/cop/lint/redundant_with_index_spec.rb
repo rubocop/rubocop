@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
     end
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     it 'registers an offense for `ary.each_with_index { it }` and corrects to `ary.each`' do
       expect_offense(<<~RUBY)
         ary.each_with_index { it }

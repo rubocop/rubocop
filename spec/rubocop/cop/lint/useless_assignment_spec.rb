@@ -462,7 +462,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
       RUBY
     end
 
-    it 'registers offenses for self assignment in itblock', :ruby34, unsupported_on: :parser do
+    it 'registers offenses for self assignment in itblock', :ruby34 do
       expect_offense(<<~RUBY)
         do_something { foo += it }
                        ^^^ Useless assignment to variable - `foo`. Use `+` instead of `+=`.
@@ -2112,7 +2112,7 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
-  context 'using `it` block parameter', :ruby34, unsupported_on: :parser do
+  context 'using `it` block parameter', :ruby34 do
     it 'does not register an offense when the variable is used' do
       expect_no_offenses(<<~RUBY)
         var = 42

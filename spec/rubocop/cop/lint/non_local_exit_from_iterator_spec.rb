@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::NonLocalExitFromIterator, :config do
         RUBY
       end
 
-      it 'registers an offense for itblocks', :ruby34, unsupported_on: :parser do
+      it 'registers an offense for itblocks', :ruby34 do
         expect_offense(<<~RUBY)
           items.each do
             return if baz?(it)

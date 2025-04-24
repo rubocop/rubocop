@@ -184,7 +184,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     end
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     it 'registers offense for self usage in itblocks' do
       expect_offense(<<~RUBY)
         %w[x y z].select do

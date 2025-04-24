@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSortBy, :config do
     end
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     it 'autocorrects array.sort_by { |x| x }' do
       expect_offense(<<~RUBY)
         array.sort_by { it }

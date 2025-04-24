@@ -346,7 +346,7 @@ RSpec.describe RuboCop::Cop::Metrics::ModuleLength, :config do
     end
   end
 
-  context 'when using `it` parameter', :ruby34, unsupported_on: :parser do
+  context 'when using `it` parameter', :ruby34 do
     context 'when inspecting a class defined with Module.new' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)

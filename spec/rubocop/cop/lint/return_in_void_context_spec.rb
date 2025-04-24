@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext, :config do
       RUBY
     end
 
-    it 'registers an offense when the value is returned in an itblock', :ruby34, unsupported_on: :parser do
+    it 'registers an offense when the value is returned in an itblock', :ruby34 do
       expect_offense(<<~RUBY)
         class A
           def initialize

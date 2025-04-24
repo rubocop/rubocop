@@ -314,7 +314,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
       end
     end
 
-    context 'when `it` parameter', :ruby34, unsupported_on: :parser do
+    context 'when `it` parameter', :ruby34 do
       context 'nested multiline block' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)

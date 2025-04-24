@@ -40,7 +40,7 @@ RSpec.describe RuboCop::Cop::Lint::Debugger, :config do
       RUBY
     end
 
-    it 'registers an offense for a `custom_debugger` call when used in `it` block', :ruby34, unsupported_on: :parser do
+    it 'registers an offense for a `custom_debugger` call when used in `it` block', :ruby34 do
       expect_offense(<<~RUBY)
         x.y = do_something do
           z(it)

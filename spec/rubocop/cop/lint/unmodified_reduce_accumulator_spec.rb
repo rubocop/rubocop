@@ -588,7 +588,7 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator, :config do
         RUBY
       end
 
-      it 'does not look inside inner itblocks', :ruby34, unsupported_on: :parser do
+      it 'does not look inside inner itblocks', :ruby34 do
         expect_no_offenses(<<~RUBY)
           foo.#{method}(bar) do |acc, el|
             values.map do

@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
     end
   end
 
-  context '`Class.new` `it` block', :ruby34, unsupported_on: :parser do
+  context '`Class.new` `it` block', :ruby34 do
     it 'registers an offense and does not autocorrect when no `super` call' do
       expect_offense(<<~RUBY)
         Class.new(Parent) do
