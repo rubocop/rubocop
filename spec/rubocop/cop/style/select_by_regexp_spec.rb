@@ -646,7 +646,7 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     end
   end
 
-  context 'when Ruby >= 3.4', :ruby34, unsupported_on: :parser do
+  context 'when Ruby >= 3.4', :ruby34 do
     include_examples('regexp match with `itblock`s', 'select', 'grep')
     include_examples('regexp match with `itblock`s', 'find_all', 'grep')
     include_examples('regexp match with `itblock`s', 'filter', 'grep')

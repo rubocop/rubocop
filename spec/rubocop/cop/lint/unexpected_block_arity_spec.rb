@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Lint::UnexpectedBlockArity, :config do
     end
   end
 
-  context 'with an itblock', :ruby34, unsupported_on: :parser do
+  context 'with an itblock', :ruby34 do
     context 'when given one parameter' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)

@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
     context 'EnforcedStyle: disallow' do
       let(:cop_config) { { 'EnforcedStyle' => 'disallow' } }
 
-      it 'registers an offense when using `it` block parameters', unsupported_on: :parser do
+      it 'registers an offense when using `it` block parameters' do
         expect_offense(<<~RUBY)
           block { do_something(it) }
                                ^^ Avoid using `it` block parameter.
@@ -157,7 +157,7 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
         expect_no_corrections
       end
 
-      it 'registers an offense when using twice `it` block parameters', unsupported_on: :parser do
+      it 'registers an offense when using twice `it` block parameters' do
         expect_offense(<<~RUBY)
           block do
             foo(it)

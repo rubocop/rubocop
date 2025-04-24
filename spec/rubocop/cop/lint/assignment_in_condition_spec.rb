@@ -143,7 +143,7 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect_no_offenses('return 1 if any_errors? { o = _1 }.present?')
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     it 'accepts = in an itblock that is called in a condition' do
       expect_no_offenses('return 1 if any_errors? { o = inspect(it) }')
     end

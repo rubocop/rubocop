@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
     end
   end
 
-  context 'when using `it` parameter', :ruby34, unsupported_on: :parser do
+  context 'when using `it` parameter', :ruby34 do
     context 'when method is defined with `define_method`' do
       it 'registers an offense' do
         expect_offense(<<~RUBY)
@@ -344,7 +344,7 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
         RUBY
       end
 
-      it 'accepts dynamically defined matching method name with an itblock', :ruby34, unsupported_on: :parser do
+      it 'accepts dynamically defined matching method name with an itblock', :ruby34 do
         expect_no_offenses(<<~RUBY)
           define_method(:foo) do
             a = it
@@ -400,7 +400,7 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
         RUBY
       end
 
-      it 'accepts dynamically defined matching method name with an itblock', :ruby34, unsupported_on: :parser do
+      it 'accepts dynamically defined matching method name with an itblock', :ruby34 do
         expect_no_offenses(<<~RUBY)
           define_method(:user_name) do
             a = it

@@ -597,7 +597,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
       RUBY
     end
 
-    it 'accepts a correctly aligned else from itblock', :ruby34, unsupported_on: :parser do
+    it 'accepts a correctly aligned else from itblock', :ruby34 do
       expect_no_offenses(<<~RUBY)
         array_like.each do
           it

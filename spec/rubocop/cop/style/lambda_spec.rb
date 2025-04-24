@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
       end
     end
 
-    context '>= Ruby 3.4', :ruby34, unsupported_on: :parser do
+    context '>= Ruby 3.4', :ruby34 do
       context 'when using `it` parameter' do
         context 'with a single line lambda method call' do
           it 'registers an offense' do

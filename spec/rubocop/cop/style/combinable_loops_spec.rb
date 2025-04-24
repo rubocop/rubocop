@@ -86,7 +86,7 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
       RUBY
     end
 
-    it 'registers an offense when looping over the same data for the third consecutive time with `it` blocks', :ruby34, unsupported_on: :parser do
+    it 'registers an offense when looping over the same data for the third consecutive time with `it` blocks', :ruby34 do
       expect_offense(<<~RUBY)
         items.each { foo(it) }
         items.each { bar(it) }

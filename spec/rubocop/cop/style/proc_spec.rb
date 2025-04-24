@@ -44,7 +44,7 @@ RSpec.describe RuboCop::Cop::Style::Proc, :config do
     end
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     it 'registers an offense for a Proc.new call' do
       expect_offense(<<~RUBY)
         f = Proc.new { puts it }

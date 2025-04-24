@@ -11,8 +11,8 @@ module CopHelper
     ENV['PARSER_ENGINE'] == 'parser_prism' ? 3.3 : RuboCop::TargetRuby::DEFAULT_VERSION
   end
   let(:parser_engine) do
-    # The maximum version Parser can parse is 3.4.
-    ruby_version >= 3.5 ? :parser_prism : ENV.fetch('PARSER_ENGINE', :parser_whitequark).to_sym
+    # The maximum version Parser can correctly parse is 3.3.
+    ruby_version >= 3.4 ? :parser_prism : ENV.fetch('PARSER_ENGINE', :parser_whitequark).to_sym
   end
   let(:rails_version) { false }
 

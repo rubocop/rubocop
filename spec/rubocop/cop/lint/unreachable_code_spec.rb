@@ -296,7 +296,7 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
       RUBY
     end
 
-    it "accepts `#{t}` if called in `instance_eval` with itblock", :ruby34, unsupported_on: :parser do
+    it "accepts `#{t}` if called in `instance_eval` with itblock", :ruby34 do
       expect_no_offenses <<~RUBY
         class Dummy
           def #{t}; end

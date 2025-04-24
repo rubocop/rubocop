@@ -642,7 +642,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
   end
 
-  context 'Ruby 3.4', :ruby34, unsupported_on: :parser do
+  context 'Ruby 3.4', :ruby34 do
     it 'accepts aligned rescue in do-end `it` block in a method' do
       expect_no_offenses(<<~RUBY)
         def foo
