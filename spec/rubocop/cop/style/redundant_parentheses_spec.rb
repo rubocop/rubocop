@@ -282,6 +282,30 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'does not register an offense for parens around unparenthesized method call as the second argument of a parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      x(1, (y arg))
+    RUBY
+  end
+
+  it 'does not register an offense for parens around unparenthesized safe navigation method call as the second argument of a parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      x(1, (y&.z arg))
+    RUBY
+  end
+
+  it 'does not register an offense for parens around unparenthesized operator dot method call as the second argument of a parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      x(1, (y.+ arg))
+    RUBY
+  end
+
+  it 'does not register an offense for parens around unparenthesized operator safe navigation method call as the second argument of a parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      x(1, (y&.+ arg))
+    RUBY
+  end
+
   it 'registers an offense for parens around an expression method argument of a parenthesized method call' do
     expect_offense(<<~RUBY)
       x.y((z + w))

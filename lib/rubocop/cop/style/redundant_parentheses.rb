@@ -180,11 +180,18 @@ module RuboCop
         # @!method interpolation?(node)
         def_node_matcher :interpolation?, '[^begin ^^dstr]'
 
-        def argument_of_parenthesized_method_call?(node)
-          return false if node.children.first.basic_conditional?
-          return false unless (parent = node.parent)
+        def argument_of_parenthesized_method_call?(begin_node)
+          node = begin_node.children.first
+          return false if node.basic_conditional? || method_call_parentheses_required?(node)
+          return false unless (parent = begin_node.parent)
 
-          parent.call_type? && parent.parenthesized? && parent.receiver != node
+          parent.call_type? && parent.parenthesized? && parent.receiver != begin_node
+        end
+
+        def method_call_parentheses_required?(node)
+          return false unless node.call_type?
+
+          (node.receiver.nil? || node.loc.dot) && node.arguments.any?
         end
 
         def allow_in_multiline_conditions?
