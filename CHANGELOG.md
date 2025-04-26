@@ -208,7 +208,7 @@
 
 ### Changes
 
-* [#13839](https://github.com/rubocop/rubocop/pull/13839): Extension plugin is loaded automatically with `require 'rubocop/rspec/support'. ([@koic][])
+* [#13840](https://github.com/rubocop/rubocop/pull/13840): Extension plugin is loaded automatically with `require 'rubocop/rspec/support'. ([@koic][])
 
 ## 1.72.0 (2025-02-14)
 
