@@ -23,6 +23,19 @@ RSpec.describe RuboCop::Cop::Lint::BooleanSymbol, :config do
     RUBY
   end
 
+  context 'when using the rocket hash syntax' do
+    it 'registers an offense when using a boolean symbol key' do
+      expect_offense(<<~RUBY)
+        { :false => 42 }
+          ^^^^^^ Symbol with a boolean name - you probably meant to use `false`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        { false => 42 }
+      RUBY
+    end
+  end
+
   context 'when using the new hash syntax' do
     it 'registers an offense when using `true:`' do
       expect_offense(<<~RUBY)
