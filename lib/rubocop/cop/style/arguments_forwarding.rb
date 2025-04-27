@@ -146,7 +146,7 @@ module RuboCop
         minimum_target_ruby_version 2.7
 
         FORWARDING_LVAR_TYPES = %i[splat kwsplat block_pass].freeze
-        ADDITIONAL_ARG_TYPES = %i[lvar arg].freeze
+        ADDITIONAL_ARG_TYPES = %i[lvar arg optarg].freeze
 
         FORWARDING_MSG = 'Use shorthand syntax `...` for arguments forwarding.'
         ARGS_MSG = 'Use anonymous positional arguments forwarding (`*`).'

@@ -181,6 +181,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'registers an offense when using default positional arg, keyword arg, and block arg', :ruby31, unsupported_on: :prism do
+      expect_offense(<<~RUBY)
+        def foo(arg = {}, **kwargs, &block)
+                          ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(arg, **kwargs, &block)
+                   ^^^^^^^^^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(arg = {}, ...)
+          bar(arg, ...)
+        end
+      RUBY
+    end
+
     it 'registers an offense when using block arg', :ruby31 do
       expect_offense(<<~RUBY)
         def foo(&block)
