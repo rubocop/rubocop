@@ -1,1 +1,0 @@
-* [#14110](https://github.com/rubocop/rubocop/pull/14110): Fix false positives for `Style/RedundantParentheses` when parens around basic conditional as the second argument of a parenthesized method call. ([@koic][])

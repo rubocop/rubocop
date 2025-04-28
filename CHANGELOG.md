@@ -11,6 +11,22 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14123](https://github.com/rubocop/rubocop/issues/14123): Fix an infinite loop error for `Lint/BooleanSymbol` when using the rocket hash syntax with a boolean symbol key. ([@koic][])
+* [#14134](https://github.com/rubocop/rubocop/pull/14134): Fix an error for `Style/ComparableBetween` when comparing the value with itself. ([@earlopain][])
+* [#14111](https://github.com/rubocop/rubocop/issues/14111): Fix an error for `Style/SafeNavigation` when the RHS of `&&` is a complex `||` expression composed of `&&` conditions. ([@koic][])
+* [#14129](https://github.com/rubocop/rubocop/issues/14129): Fix false positives for `Style/ArgumentsForwarding` when using default positional arg, keyword arg, and block arg in Ruby 3.1. ([@koic][])
+* [#14110](https://github.com/rubocop/rubocop/pull/14110): Fix false positives for `Style/RedundantParentheses` when parens around basic conditional as the second argument of a parenthesized method call. ([@koic][])
+* [#14120](https://github.com/rubocop/rubocop/issues/14120): Fix false positives for `Style/RedundantParentheses` when parens around unparenthesized method call as the second argument of a parenthesized method call. ([@koic][])
+* [#14133](https://github.com/rubocop/rubocop/pull/14133): Fix `Lint/LiteralAsCondition` autocorrect when a literal is the condition of an elsif followed by an else. ([@zopolis4][])
+* [#14116](https://github.com/rubocop/rubocop/issues/14116): Make `Style/TrailingCommaInArguments` cop aware of trailing commas in `[]` method call. ([@viralpraxis][])
+* [#14114](https://github.com/rubocop/rubocop/pull/14114): Fix `Style/ClassAndModuleChildren` cop error on tab-intended compactable modules. ([@viralpraxis][])
+
+### Changes
+
+* [#13611](https://github.com/rubocop/rubocop/issues/13611): Enable `Lint/CircularArgumentReference` on Ruby 3.4. ([@earlopain][])
+
 ## 1.75.3 (2025-04-22)
 
 ### Bug fixes
