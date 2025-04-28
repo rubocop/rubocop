@@ -57,13 +57,9 @@ module RuboCop
         def on_if(node)
           cond = condition(node)
 
-          if node.unless?
-            correct_if_node(node, cond, true) if cond.falsey_literal?
-            correct_if_node(node, cond, false) if cond.truthy_literal?
-          else
-            correct_if_node(node, cond, true) if cond.truthy_literal?
-            correct_if_node(node, cond, false) if cond.falsey_literal?
-          end
+          return unless cond.falsey_literal? || cond.truthy_literal?
+
+          correct_if_node(node, cond)
         end
 
         def on_while(node)
@@ -232,9 +228,27 @@ module RuboCop
           )
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-        def correct_if_node(node, cond, result)
-          if result
+        def condition_evaluation(node, cond)
+          if node.unless?
+            cond.falsey_literal?
+          else
+            cond.truthy_literal?
+          end
+        end
+
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def correct_if_node(node, cond)
+          result = condition_evaluation(node, cond)
+
+          if node.elsif? && result
+            add_offense(cond) do |corrector|
+              corrector.replace(node, "else\n  #{node.if_branch.source}")
+            end
+          elsif node.elsif? && !result
+            add_offense(cond) do |corrector|
+              corrector.replace(node, "else\n  #{node.else_branch.source}")
+            end
+          elsif result
             add_offense(cond) do |corrector|
               corrector.replace(node, node.if_branch.source)
             end
@@ -252,7 +266,7 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
     end
   end
