@@ -34,6 +34,28 @@ RSpec.describe RuboCop::Cop::Style::ComparableBetween, :config do
     RUBY
   end
 
+  it 'registers an offense when comparing with itself as the min value' do
+    expect_offense(<<~RUBY)
+      x >= x and x <= max
+      ^^^^^^^^^^^^^^^^^^^ Prefer `x.between?(x, max)` over logical comparison.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.between?(x, max)
+    RUBY
+  end
+
+  it 'registers an offense when comparing with itself as both the min and max value' do
+    expect_offense(<<~RUBY)
+      x >= x and x <= x
+      ^^^^^^^^^^^^^^^^^ Prefer `x.between?(x, x)` over logical comparison.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.between?(x, x)
+    RUBY
+  end
+
   it 'does not register an offense when logical comparison excludes max value' do
     expect_no_offenses(<<~RUBY)
       x >= min && x < max
