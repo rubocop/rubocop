@@ -21,13 +21,23 @@ module RuboCop
       #   # File consisting only of comments
       #
       class EmptyFile < Base
+        extend AutoCorrector
+
         MSG = 'Empty file detected.'
 
         def on_new_investigation
-          add_global_offense(MSG) if offending?
+          return unless offending?
+
+          add_global_offense(MSG) do
+            autocorrect if autocorrect_requested?
+          end
         end
 
         private
+
+        def autocorrect
+          FileUtils.rm_f(processed_source.file_path)
+        end
 
         def offending?
           empty_file? || (!cop_config['AllowComments'] && contains_only_comments?)

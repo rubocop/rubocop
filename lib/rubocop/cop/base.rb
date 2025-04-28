@@ -185,13 +185,12 @@ module RuboCop
       end
 
       # Adds an offense that has no particular location.
-      # No correction can be applied to global offenses
-      def add_global_offense(message = nil, severity: nil)
+      def add_global_offense(message = nil, severity: nil, &block)
         severity = find_severity(nil, severity)
         message = find_message(nil, message)
         range = Offense::NO_LOCATION
-        status = enabled_line?(range.line) ? :unsupported : :disabled
-        current_offenses << Offense.new(severity, range, message, name, status)
+        status, corrector = enabled_line?(range.line) ? correct(range, &block) : :disabled
+        current_offenses << Offense.new(severity, range, message, name, status, corrector)
       end
 
       # Adds an offense on the specified range (or node with an expression)
