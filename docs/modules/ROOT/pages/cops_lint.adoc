@@ -612,8 +612,6 @@ false
 [#lintcircularargumentreference]
 == Lint/CircularArgumentReference
 
-NOTE: Requires Ruby version <= 2.6
-
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
@@ -627,9 +625,8 @@ NOTE: Requires Ruby version <= 2.6
 Checks for circular argument references in optional keyword
 arguments and optional ordinal arguments.
 
-This cop mirrors a warning produced by MRI since 2.2.
-
-NOTE: This syntax is no longer valid on Ruby 2.7 or higher.
+NOTE: This syntax was made invalid on Ruby 2.7 - Ruby 3.3 but is allowed
+again since Ruby 3.4.
 
 [#examples-lintcircularargumentreference]
 === Examples
