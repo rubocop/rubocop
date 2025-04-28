@@ -61,6 +61,8 @@ jobs:
     needs: spec-ubuntu # Don't spend CI resources on slow Windows specs if CI won't pass anyway.
     name: Spec - windows ${{ matrix.ruby }}
     runs-on: windows-latest
+    # FIXME: Temporarily disabled: https://bugs.ruby-lang.org/issues/21286
+    if: ${{ false }}
     strategy:
       fail-fast: false
       matrix:
@@ -108,7 +110,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, windows]
+        # FIXME: Temporarily removed windows: https://bugs.ruby-lang.org/issues/21286
+        os: [ubuntu]
         ruby:
           - '2.7'  # Oldest supported version
           - 'ruby' # Latest stable CRuby version
