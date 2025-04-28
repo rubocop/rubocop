@@ -61,8 +61,8 @@ module RuboCop
 
         def register_offense(node, min_and_value, max_and_value)
           value = (min_and_value & max_and_value).first
-          min = min_and_value.find { _1 != value }
-          max = max_and_value.find { _1 != value }
+          min = min_and_value.find { _1 != value } || value
+          max = max_and_value.find { _1 != value } || value
 
           prefer = "#{value.source}.between?(#{min.source}, #{max.source})"
           add_offense(node, message: format(MSG, prefer: prefer)) do |corrector|
