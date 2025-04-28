@@ -479,6 +479,9 @@ module RuboCop
           end
 
           def ruby_32_only_anonymous_forwarding?
+            # A block argument and an anonymous block argument are never passed together.
+            return false if @send_node.each_ancestor(:any_block).any?
+
             def_all_anonymous_args?(@def_node) && send_all_anonymous_args?(@send_node)
           end
 

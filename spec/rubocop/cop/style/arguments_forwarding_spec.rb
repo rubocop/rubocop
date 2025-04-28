@@ -1165,6 +1165,36 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'does not register an offense when using anonymous block argument forwarding to a method with a block', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def foo(*, **, &)
+          with_block(*, **) do
+            bar(baz(*, **, &))
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using anonymous block argument forwarding to a method with a numbered block', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def foo(*, **, &)
+          with_block(*, **) do
+            bar(baz(*, **, &), _1)
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using anonymous block argument forwarding to a method with an `it` block', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        def foo(*, **, &)
+          with_block(*, **) do
+            bar(baz(*, **, &), it)
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense when using block arg forwarding with no forwarding arguments' do
       expect_offense(<<~RUBY)
         def before_transition(options = {}, &block)
