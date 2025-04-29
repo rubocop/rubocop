@@ -107,7 +107,7 @@ module RuboCop
       # of the argument is not considered multiline, even if the argument
       # itself might span multiple lines.
       def allowed_multiline_argument?(node)
-        elements(node).one? && (!node.loc.end || !Util.begins_its_line?(node.loc.end))
+        elements(node).one? && !Util.begins_its_line?(node_end_location(node))
       end
 
       def elements(node)
@@ -127,8 +127,12 @@ module RuboCop
 
       def no_elements_on_same_line?(node)
         items = elements(node).map(&:source_range)
-        items << node.loc.end
+        items << node_end_location(node)
         items.each_cons(2).none? { |a, b| on_same_line?(a, b) }
+      end
+
+      def node_end_location(node)
+        node.loc.end || node.source_range.end.adjust(begin_pos: -1)
       end
 
       def on_same_line?(range1, range2)
