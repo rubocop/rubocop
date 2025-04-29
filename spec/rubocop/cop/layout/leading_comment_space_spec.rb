@@ -263,6 +263,16 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
                             ^^^^^^^^^ Missing space after `#`.
           attr_reader :age  #: Integer?
                             ^^^^^^^^^^^ Missing space after `#`.
+
+          #: (
+          ^^^^ Missing space after `#`.
+          #|   Integer,
+          ^^^^^^^^^^^^^ Missing space after `#`.
+          #|   String
+          ^^^^^^^^^^^ Missing space after `#`.
+          #| ) -> void
+          ^^^^^^^^^^^^ Missing space after `#`.
+          def foo; end
         RUBY
 
         expect_correction(<<~RUBY)
@@ -270,6 +280,12 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
 
           attr_reader :name # : String
           attr_reader :age  # : Integer?
+
+          # : (
+          # |   Integer,
+          # |   String
+          # | ) -> void
+          def foo; end
         RUBY
       end
     end
@@ -283,6 +299,12 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
 
           attr_reader :name #: String
           attr_reader :age  #: Integer?
+
+          #: (
+          #|   Integer,
+          #|   String
+          #| ) -> void
+          def foo; end
         RUBY
       end
     end
