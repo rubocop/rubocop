@@ -58,6 +58,12 @@ module RuboCop
       #   attr_reader :name #: String
       #   attr_reader :age  #: Integer?
       #
+      #   #: (
+      #   #|   Integer,
+      #   #|   String
+      #   #| ) -> void
+      #   def foo; end
+      #
       # @example AllowRBSInlineAnnotation: true
       #
       #   # good
@@ -66,6 +72,12 @@ module RuboCop
       #
       #   attr_reader :name #: String
       #   attr_reader :age  #: Integer?
+      #
+      #   #: (
+      #   #|   Integer,
+      #   #|   String
+      #   #| ) -> void
+      #   def foo; end
       #
       # @example AllowSteepAnnotation: false (default)
       #
@@ -175,7 +187,7 @@ module RuboCop
         end
 
         def rbs_inline_annotation?(comment)
-          allow_rbs_inline_annotation? && comment.text.start_with?(/#:|#\[.+\]/)
+          allow_rbs_inline_annotation? && comment.text.start_with?(/#:|#\[.+\]|#\|/)
         end
 
         def allow_steep_annotation?
