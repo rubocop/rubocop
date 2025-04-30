@@ -197,9 +197,7 @@ module RuboCop
 
           expressions.each do |expression|
             add_offense(expression) do |corrector|
-              if (node.if_type? && node.ternary?) || node.loc.begin&.source&.start_with?('then')
-                next
-              end
+              next if node.if_type? && (node.ternary? || node.then?)
 
               range = range_by_whole_lines(expression.source_range, include_final_newline: true)
               corrector.remove(range)
