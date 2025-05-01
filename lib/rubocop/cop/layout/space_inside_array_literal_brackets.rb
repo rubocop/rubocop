@@ -6,6 +6,8 @@ module RuboCop
       # Checks that brackets used for array literals have or don't have
       # surrounding space depending on configuration.
       #
+      # Array pattern matching is handled in the same way.
+      #
       # @example EnforcedStyle: no_space (default)
       #   # The `no_space` style enforces that array literals have
       #   # no surrounding space.
@@ -82,7 +84,7 @@ module RuboCop
         EMPTY_MSG = '%<command>s space inside empty array brackets.'
 
         def on_array(node)
-          return unless node.square_brackets?
+          return if node.array_type? && !node.square_brackets?
 
           tokens, left, right = array_brackets(node)
 
@@ -95,6 +97,7 @@ module RuboCop
 
           issue_offenses(node, left, right, start_ok, end_ok)
         end
+        alias on_array_pattern on_array
 
         private
 
