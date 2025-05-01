@@ -293,6 +293,72 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
            ]
       RUBY
     end
+
+    context 'when using array pattern matching', :ruby27 do
+      it 'registers an offense when array pattern with spaces' do
+        expect_offense(<<~RUBY)
+          case foo
+          in [ bar, baz ]
+                       ^ Do not use space inside array brackets.
+              ^ Do not use space inside array brackets.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case foo
+          in [bar, baz]
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when array pattern with no spaces' do
+        expect_no_offenses(<<~RUBY)
+          case foo
+          in [bar, baz]
+          end
+        RUBY
+      end
+    end
+
+    context 'when using one-line array `in` pattern matching', :ruby27 do
+      it 'registers an offense when array pattern with spaces' do
+        expect_offense(<<~RUBY)
+          foo in [ bar, baz ]
+                           ^ Do not use space inside array brackets.
+                  ^ Do not use space inside array brackets.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo in [bar, baz]
+        RUBY
+      end
+
+      it 'does not register an offense when array pattern with no spaces' do
+        expect_no_offenses(<<~RUBY)
+          foo in [bar, baz]
+        RUBY
+      end
+    end
+
+    context 'when using one-line array `=>` pattern matching', :ruby30 do
+      it 'registers an offense when array pattern with spaces' do
+        expect_offense(<<~RUBY)
+          foo => [ bar, baz ]
+                           ^ Do not use space inside array brackets.
+                  ^ Do not use space inside array brackets.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo => [bar, baz]
+        RUBY
+      end
+
+      it 'does not register an offense when array pattern with no spaces' do
+        expect_no_offenses(<<~RUBY)
+          foo => [bar, baz]
+        RUBY
+      end
+    end
   end
 
   shared_examples 'space inside arrays' do
@@ -457,6 +523,72 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_no_offenses(<<~RUBY)
         [ 1, [ 2,3,4 ], [ 5,6,7 ] ]
       RUBY
+    end
+
+    context 'when using array pattern matching', :ruby27 do
+      it 'registers an offense when array pattern with no spaces' do
+        expect_offense(<<~RUBY)
+          case foo
+          in [bar, baz]
+                      ^ Use space inside array brackets.
+             ^ Use space inside array brackets.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case foo
+          in [ bar, baz ]
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when array pattern with spaces' do
+        expect_no_offenses(<<~RUBY)
+          case foo
+          in [ bar, baz ]
+          end
+        RUBY
+      end
+    end
+
+    context 'when using one-line array `in` pattern matching', :ruby27 do
+      it 'registers an offense when array pattern with no spaces' do
+        expect_offense(<<~RUBY)
+          foo in [bar, baz]
+                          ^ Use space inside array brackets.
+                 ^ Use space inside array brackets.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo in [ bar, baz ]
+        RUBY
+      end
+
+      it 'does not register an offense when array pattern with spaces' do
+        expect_no_offenses(<<~RUBY)
+          foo in [ bar, baz ]
+        RUBY
+      end
+    end
+
+    context 'when using one-line array `=>` pattern matching', :ruby30 do
+      it 'registers an offense when array pattern with no spaces' do
+        expect_offense(<<~RUBY)
+          foo => [bar, baz]
+                          ^ Use space inside array brackets.
+                 ^ Use space inside array brackets.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo => [ bar, baz ]
+        RUBY
+      end
+
+      it 'does not register an offense when array pattern with spaces' do
+        expect_no_offenses(<<~RUBY)
+          foo => [ bar, baz ]
+        RUBY
+      end
     end
   end
 
