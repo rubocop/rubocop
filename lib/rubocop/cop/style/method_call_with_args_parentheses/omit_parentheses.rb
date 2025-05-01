@@ -222,7 +222,8 @@ module RuboCop
           end
 
           def unary_literal?(node)
-            (node.numeric_type? && node.sign?) ||
+            (node.complex_type? && node.source.match?(/\A[+-]/)) ||
+              (node.numeric_type? && node.sign?) ||
               (node.parent&.send_type? && node.parent.unary_operation?)
           end
 
