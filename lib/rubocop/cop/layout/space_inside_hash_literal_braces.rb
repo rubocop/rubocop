@@ -6,6 +6,8 @@ module RuboCop
       # Checks that braces used for hash literals have or don't have
       # surrounding space depending on configuration.
       #
+      # Hash pattern matching is handled in the same way.
+      #
       # @example EnforcedStyle: space (default)
       #   # The `space` style enforces that hash literals have
       #   # surrounding space.
@@ -87,6 +89,7 @@ module RuboCop
           check(tokens[-2], tokens[-1]) if tokens.size > 2
           check_whitespace_only_hash(node) if enforce_no_space_style_for_empty_braces?
         end
+        alias on_hash_pattern on_hash
 
         private
 

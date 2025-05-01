@@ -112,6 +112,72 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
     RUBY
   end
 
+  context 'when using hash pattern matching', :ruby27 do
+    it 'registers an offense when hash pattern with no spaces' do
+      expect_offense(<<~RUBY)
+        case foo
+        in {k1: 0, k2: 1}
+                        ^ Space inside } missing.
+           ^ Space inside { missing.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        in { k1: 0, k2: 1 }
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when hash pattern with spaces' do
+      expect_no_offenses(<<~RUBY)
+        case foo
+        in { k1: 0, k2: 1 }
+        end
+      RUBY
+    end
+  end
+
+  context 'when using one-line hash `in` pattern matching', :ruby27 do
+    it 'registers an offense when hash pattern with no spaces' do
+      expect_offense(<<~RUBY)
+        foo in {k1: 0, k2: 1}
+                            ^ Space inside } missing.
+               ^ Space inside { missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo in { k1: 0, k2: 1 }
+      RUBY
+    end
+
+    it 'does not register an offense when hash pattern with spaces' do
+      expect_no_offenses(<<~RUBY)
+        foo in { k1: 0, k2: 1 }
+      RUBY
+    end
+  end
+
+  context 'when using one-line hash `=>` pattern matching', :ruby30 do
+    it 'registers an offense when hash pattern with no spaces' do
+      expect_offense(<<~RUBY)
+        foo => {k1: 0, k2: 1}
+                            ^ Space inside } missing.
+               ^ Space inside { missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo => { k1: 0, k2: 1 }
+      RUBY
+    end
+
+    it 'does not register an offense when hash pattern with spaces' do
+      expect_no_offenses(<<~RUBY)
+        foo => { k1: 0, k2: 1 }
+      RUBY
+    end
+  end
+
   context 'when EnforcedStyle is no_space' do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
@@ -179,6 +245,72 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
       it 'accepts hashes with no spaces' do
         expect_no_offenses(<<~RUBY)
           foo({key: value} => {key: value})
+        RUBY
+      end
+    end
+
+    context 'when using hash pattern matching', :ruby27 do
+      it 'registers an offense when hash with spaces' do
+        expect_offense(<<~RUBY)
+          case foo
+          in { k1: 0, k2: 1 }
+                           ^ Space inside } detected.
+              ^ Space inside { detected.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case foo
+          in {k1: 0, k2: 1}
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when hash pattern with no spaces' do
+        expect_no_offenses(<<~RUBY)
+          case foo
+          in {k1: 0, k2: 1}
+          end
+        RUBY
+      end
+    end
+
+    context 'when using one-line hash `in` pattern matching', :ruby27 do
+      it 'registers an offense when hash with spaces' do
+        expect_offense(<<~RUBY)
+          foo in { k1: 0, k2: 1 }
+                               ^ Space inside } detected.
+                  ^ Space inside { detected.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo in {k1: 0, k2: 1}
+        RUBY
+      end
+
+      it 'does not register an offense when hash with no spaces' do
+        expect_no_offenses(<<~RUBY)
+          foo in {k1: 0, k2: 1}
+        RUBY
+      end
+    end
+
+    context 'when using one-line hash `=>` pattern matching', :ruby30 do
+      it 'registers an offense when hash with spaces' do
+        expect_offense(<<~RUBY)
+          foo => { k1: 0, k2: 1 }
+                               ^ Space inside } detected.
+                  ^ Space inside { detected.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo => {k1: 0, k2: 1}
+        RUBY
+      end
+
+      it 'does not register an offense when hash with no spaces' do
+        expect_no_offenses(<<~RUBY)
+          foo => {k1: 0, k2: 1}
         RUBY
       end
     end
