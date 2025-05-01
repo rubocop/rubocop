@@ -51,10 +51,9 @@ module RuboCop
                       'in a regexp.'
 
         def on_interpolation(begin_node)
-          final_node = begin_node.children.last
-
-          return unless begin_node.parent.regexp_type?
+          return unless (final_node = begin_node.children.last)
           return unless final_node.array_type?
+          return unless begin_node.parent.regexp_type?
 
           if array_of_literal_values?(final_node)
             register_array_of_literal_values(begin_node, final_node)

@@ -82,4 +82,10 @@ RSpec.describe RuboCop::Cop::Lint::ArrayLiteralInRegexp, :config do
       "#{%w[a b c]}"
     RUBY
   end
+
+  it 'does not register an offense with empty interpolation' do
+    expect_no_offenses(<<~'RUBY')
+      /#{}/
+    RUBY
+  end
 end
