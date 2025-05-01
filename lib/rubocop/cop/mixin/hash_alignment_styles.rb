@@ -10,7 +10,7 @@ module RuboCop
           true
         end
 
-        def deltas_for_first_pair(first_pair, _node)
+        def deltas_for_first_pair(first_pair)
           {
             separator: separator_delta(first_pair),
             value: value_delta(first_pair)
@@ -81,13 +81,7 @@ module RuboCop
       class TableAlignment
         include ValueAlignment
 
-        def initialize
-          self.max_key_width = 0
-        end
-
-        def deltas_for_first_pair(first_pair, node)
-          self.max_key_width = node.keys.map { |key| key.source.length }.max
-
+        def deltas_for_first_pair(first_pair)
           separator_delta = separator_delta(first_pair, first_pair, 0)
           {
             separator: separator_delta,
@@ -97,22 +91,29 @@ module RuboCop
 
         private
 
-        attr_accessor :max_key_width
-
         def key_delta(first_pair, current_pair)
           first_pair.key_delta(current_pair)
         end
 
         def hash_rocket_delta(first_pair, current_pair)
-          first_pair.loc.column + max_key_width + 1 - current_pair.loc.operator.column
+          first_pair.loc.column + max_key_width(first_pair.parent) + 1 -
+            current_pair.loc.operator.column
         end
 
         def value_delta(first_pair, current_pair)
           correct_value_column = first_pair.key.loc.column +
-                                 current_pair.delimiter(true).length +
-                                 max_key_width
+                                 max_key_width(first_pair.parent) +
+                                 max_delimiter_width(first_pair.parent)
 
           current_pair.value_omission? ? 0 : correct_value_column - current_pair.value.loc.column
+        end
+
+        def max_key_width(hash_node)
+          hash_node.keys.map { |key| key.source.length }.max
+        end
+
+        def max_delimiter_width(hash_node)
+          hash_node.pairs.map { |pair| pair.delimiter(true).length }.max
         end
       end
 
@@ -120,7 +121,7 @@ module RuboCop
       class SeparatorAlignment
         include ValueAlignment
 
-        def deltas_for_first_pair(*_nodes)
+        def deltas_for_first_pair(_first_pair)
           {}
         end
 

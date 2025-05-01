@@ -250,7 +250,7 @@ module RuboCop
           reset!
 
           alignment_for(first_pair).each do |alignment|
-            delta = alignment.deltas_for_first_pair(first_pair, node)
+            delta = alignment.deltas_for_first_pair(first_pair)
             check_delta delta, node: first_pair, alignment: alignment
           end
 

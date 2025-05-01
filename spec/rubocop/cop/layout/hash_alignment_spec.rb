@@ -1375,6 +1375,23 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           }
         RUBY
       end
+
+      it 'corrects a hash with mixed separators into table alignment' do
+        expect_offense(<<~RUBY)
+          other = {
+            foo:  1,
+            ^^^^^^^ Align the keys and values of a hash literal if they span more than one line.
+            'bar' => 2,
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          other = {
+            foo:     1,
+            'bar' => 2,
+          }
+        RUBY
+      end
     end
   end
 
