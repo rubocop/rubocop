@@ -878,6 +878,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       expect_no_offenses('foo(+1)')
       expect_no_offenses('foo(+"")')
       expect_no_offenses('foo(-"")')
+      expect_no_offenses('foo(-1 + 3i)')
+      expect_no_offenses('foo(+1 + 3i)')
+      expect_no_offenses('foo(-3i)')
+      expect_no_offenses('foo(+3i)')
+      expect_no_offenses('foo(-1.3i)')
+      expect_no_offenses('foo(+1.3i)')
     end
 
     it 'accepts parens in args splat' do
