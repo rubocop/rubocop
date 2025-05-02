@@ -674,5 +674,17 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
 
       expect_no_corrections
     end
+
+    it 'registers an offense when there is no body for `if` node' do
+      expect_offense(<<~RUBY)
+        if 42
+           ^^ Literal `42` appeared as a condition.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+      RUBY
+    end
   end
 end

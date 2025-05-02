@@ -248,7 +248,7 @@ module RuboCop
             add_offense(cond) do |corrector|
               corrector.replace(node, "else\n  #{node.else_branch.source}")
             end
-          elsif result
+          elsif node.if_branch && result
             add_offense(cond) do |corrector|
               corrector.replace(node, node.if_branch.source)
             end
