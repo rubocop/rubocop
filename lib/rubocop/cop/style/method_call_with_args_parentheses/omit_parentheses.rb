@@ -222,8 +222,10 @@ module RuboCop
           end
 
           def unary_literal?(node)
-            (node.complex_type? && node.source.match?(/\A[+-]/)) ||
-              (node.numeric_type? && node.sign?) ||
+            # NOTE: should be removed after releasing https://github.com/rubocop/rubocop-ast/pull/379
+            return node.source.match?(/\A[+-]/) if node.complex_type?
+
+            (node.numeric_type? && node.sign?) ||
               (node.parent&.send_type? && node.parent.unary_operation?)
           end
 
