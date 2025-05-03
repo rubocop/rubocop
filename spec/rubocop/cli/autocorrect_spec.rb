@@ -1804,6 +1804,16 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Layout/SpaceAfterSemicolon` with `Layout/SpaceBeforeSemicolon`' do
+    create_file('example.rb', <<~RUBY)
+      foo;;bar
+    RUBY
+    expect(cli.run(%w[-a --only Layout/SpaceAfterSemicolon,Layout/SpaceBeforeSemicolon])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      foo;; bar
+    RUBY
+  end
+
   it 'can correct SpaceAfterComma and HashSyntax offenses' do
     create_file('example.rb', "I18n.t('description',:property_name => property.name)")
     expect(cli.run(%w[-D --autocorrect-all --format emacs
