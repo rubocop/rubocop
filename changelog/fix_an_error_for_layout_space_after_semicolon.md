@@ -1,0 +1,1 @@
+* [#14148](https://github.com/rubocop/rubocop/pull/14148): Fix an infinite loop error for `Layout/SpaceAfterSemicolon` with `Layout/SpaceBeforeSemicolon` when a sequence of semicolons appears. ([@koic][])
