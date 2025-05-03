@@ -1151,4 +1151,10 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       puts :ok
     RUBY
   end
+
+  it 'does not register an offense for nested empty `begin`' do
+    expect_no_offenses(<<~RUBY)
+      ((); 1)
+    RUBY
+  end
 end
