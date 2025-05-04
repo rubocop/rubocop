@@ -128,8 +128,8 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_void_op(node, &block)
-          node = node.children.first while node.begin_type?
-          return unless node.call_type? && OPERATORS.include?(node.method_name)
+          node = node.children.first while node&.begin_type?
+          return unless node&.call_type? && OPERATORS.include?(node.method_name)
           if !UNARY_OPERATORS.include?(node.method_name) && node.loc.dot && node.arguments.none?
             return
           end
