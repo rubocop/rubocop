@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.75.5 (2025-05-05)
+
 ### Bug fixes
 
 * [#14148](https://github.com/rubocop/rubocop/pull/14148): Fix an infinite loop error for `Layout/SpaceAfterSemicolon` with `Layout/SpaceBeforeSemicolon` when a sequence of semicolons appears. ([@koic][])

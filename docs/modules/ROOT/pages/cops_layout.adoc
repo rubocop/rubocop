@@ -833,7 +833,7 @@ end
 | Name | Default value | Configurable values
 
 | Categories
-| `{"module_inclusion" => ["include", "prepend", "extend"]}`
+| `{"module_inclusion"=>["include", "prepend", "extend"]}`
 | 
 
 | ExpectedOrder
@@ -4425,6 +4425,12 @@ include Enumerable #[Integer]
 
 attr_reader :name #: String
 attr_reader :age  #: Integer?
+
+#: (
+#|   Integer,
+#|   String
+#| ) -> void
+def foo; end
 ----
 
 [#allowrbsinlineannotation_-true-layoutleadingcommentspace]
@@ -4438,6 +4444,12 @@ include Enumerable #[Integer]
 
 attr_reader :name #: String
 attr_reader :age  #: Integer?
+
+#: (
+#|   Integer,
+#|   String
+#| ) -> void
+def foo; end
 ----
 
 [#allowsteepannotation_-false-_default_-layoutleadingcommentspace]
@@ -7212,6 +7224,8 @@ a = -> (x, y) { x + y }
 Checks that brackets used for array literals have or don't have
 surrounding space depending on configuration.
 
+Array pattern matching is handled in the same way.
+
 [#examples-layoutspaceinsidearrayliteralbrackets]
 === Examples
 
@@ -7503,6 +7517,8 @@ some_array.each {   }
 
 Checks that braces used for hash literals have or don't have
 surrounding space depending on configuration.
+
+Hash pattern matching is handled in the same way.
 
 [#examples-layoutspaceinsidehashliteralbraces]
 === Examples
