@@ -514,10 +514,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     end
   end
 
+  shared_examples 'array pattern without brackets' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        case ary
+        in a, b, c, d
+        end
+      RUBY
+    end
+  end
+
   context 'when EnforcedStyle is space' do
     let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
     it_behaves_like 'space inside arrays'
+    it_behaves_like 'array pattern without brackets'
 
     it 'does not register offense for valid 2-dimensional array' do
       expect_no_offenses(<<~RUBY)
@@ -596,6 +607,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
     it_behaves_like 'space inside arrays'
+    it_behaves_like 'array pattern without brackets'
 
     it 'does not register offense for valid 2-dimensional array' do
       expect_no_offenses(<<~RUBY)

@@ -87,6 +87,7 @@ module RuboCop
           return if node.array_type? && !node.square_brackets?
 
           tokens, left, right = array_brackets(node)
+          return unless left && right
 
           if empty_brackets?(left, right, tokens: tokens)
             return empty_offenses(node, left, right, EMPTY_MSG)
