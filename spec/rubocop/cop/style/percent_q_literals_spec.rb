@@ -79,6 +79,12 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
         expect_no_offenses('%Q(hi)')
       end
 
+      it 'does not register an offense when correcting leads to a parsing error' do
+        expect_no_offenses(<<~'RUBY')
+          %q(\u)
+        RUBY
+      end
+
       include_examples 'accepts quote characters'
       include_examples 'accepts any q string with backslash t'
     end
