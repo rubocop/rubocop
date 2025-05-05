@@ -11,6 +11,24 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14148](https://github.com/rubocop/rubocop/pull/14148): Fix an infinite loop error for `Layout/SpaceAfterSemicolon` with `Layout/SpaceBeforeSemicolon` when a sequence of semicolons appears. ([@koic][])
+* [#14145](https://github.com/rubocop/rubocop/pull/14145): Fix `Lint/ArrayLiteralInRegexp` cop error on empty interpolation. ([@viralpraxis][])
+* [#14072](https://github.com/rubocop/rubocop/issues/14072): Fix autocorrect issue in `Layout/HashAlignment`. ([@jonas054][])
+* [#14131](https://github.com/rubocop/rubocop/issues/14131): Fix false positives for `Style/ArgumentsForwarding` when using anonymous block argument forwarding to a method with a block. ([@koic][])
+* [#14140](https://github.com/rubocop/rubocop/pull/14140): Fix `Layout/LeadingCommentSpace` to allow splitting long inline RBS comment signatures across multiple lines. ([@Morriar][])
+* [#14147](https://github.com/rubocop/rubocop/pull/14147): Fix `Lint/LiteralAsCondition` cop error on `if` without body. ([@viralpraxis][])
+* [#14151](https://github.com/rubocop/rubocop/pull/14151): Fix `Lint/Void` cop error on nested empty `begin`. ([@viralpraxis][])
+* [#13547](https://github.com/rubocop/rubocop/pull/13547): Fix `Style/IdenticalConditionalBranches` cop failure in case of `if` node with implicit `then`. ([@viralpraxis][])
+* [#14146](https://github.com/rubocop/rubocop/pull/14146): Fix `Style/MethodCallWithArgsParentheses` cop error on complex numbers when `EnforcedStyle` is set to `omit_parentheses`. ([@viralpraxis][])
+* [#14137](https://github.com/rubocop/rubocop/issues/14137): Fix `Style/TrailingCommaInArguments` cop error if `EnforcedStyleForMultiline` is set to `comma`. ([@viralpraxis][])
+
+### Changes
+
+* [#14144](https://github.com/rubocop/rubocop/pull/14144): `Layout/SpaceInsideArrayLiteralBrackets` make aware of array pattern matching. ([@koic][])
+* [#14142](https://github.com/rubocop/rubocop/issues/14142): `Layout/SpaceInsideHashLiteralBraces` make aware of hash pattern matching. ([@koic][])
+
 ## 1.75.4 (2025-04-28)
 
 ### Bug fixes
@@ -4038,3 +4056,4 @@
 [@jtannas]: https://github.com/jtannas
 [@flavorjones]: https://github.com/flavorjones
 [@sferik]: https://github.com/sferik
+[@Morriar]: https://github.com/Morriar
