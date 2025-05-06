@@ -294,6 +294,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       RUBY
     end
 
+    it 'accepts spaces for array pattern within constant pattenr' do
+      expect_no_offenses(<<~RUBY)
+        case value
+        in ADT[*head, tail]
+        end
+      RUBY
+    end
+
     context 'when using array pattern matching', :ruby27 do
       it 'registers an offense when array pattern with spaces' do
         expect_offense(<<~RUBY)
@@ -510,6 +518,16 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
 
       expect_correction(<<~RUBY)
         [ 2, 3, 4 ] - [ 3, 4 ]
+      RUBY
+    end
+
+    it 'registers an offense for array pattern within constant pattenr' do
+      expect_offense(<<~RUBY)
+        case value
+        in ADT[*head, tail]
+              ^ #{use_space_message}
+                          ^ #{use_space_message}
+        end
       RUBY
     end
   end
