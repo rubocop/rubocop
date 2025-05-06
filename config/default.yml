@@ -1975,6 +1975,12 @@ Lint/HashCompareByIdentity:
   Safe: false
   VersionAdded: '0.93'
 
+Lint/HashMissingClass:
+  Description: 'Include `self.class` in `hash` to ensure instances of different classes have distinct hash values.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Lint/HashNewWithKeywordArgumentsAsDefault:
   Description: 'Checks for the deprecated use of keyword arguments for hash default in `Hash.new`.'
   Enabled: pending
