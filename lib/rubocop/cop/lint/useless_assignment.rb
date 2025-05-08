@@ -104,6 +104,8 @@ module RuboCop
         end
 
         def chained_assignment?(node)
+          return true if node.lvasgn_type? && node.expression&.send_type?
+
           node.respond_to?(:expression) && node.expression&.lvasgn_type?
         end
 
