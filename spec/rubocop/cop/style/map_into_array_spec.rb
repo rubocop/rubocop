@@ -221,7 +221,7 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects when using a itblock', :ruby34parser do
+  it 'registers an offense and corrects when using a itblock', :ruby34 do
     expect_offense(<<~RUBY)
       dest = []
       src.each { dest << it * 2 }
