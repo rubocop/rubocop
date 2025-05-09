@@ -833,6 +833,21 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     end
   end
 
+  shared_examples 'with `if` node in condition' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        if a =
+          if b
+            1
+          else
+            2
+          end
+          42
+        end
+      RUBY
+    end
+  end
+
   context 'SingleLineConditionsOnly true' do
     let(:config) do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
@@ -912,6 +927,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     it_behaves_like('with `dstr` node in branch')
     it_behaves_like('with multiline regex in branch')
     it_behaves_like('with indexed assignment without arguments')
+    it_behaves_like('with `if` node in condition')
 
     it 'allows a method call in the subject of a ternary operator' do
       expect_no_offenses('bar << foo? ? 1 : 2')
@@ -1195,6 +1211,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     it_behaves_like('with `dstr` node in branch')
     it_behaves_like('with multiline regex in branch')
     it_behaves_like('with indexed assignment without arguments')
+    it_behaves_like('with `if` node in condition')
 
     it 'corrects assignment to a multiline if else condition' do
       expect_offense(<<~RUBY)
