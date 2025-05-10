@@ -2612,6 +2612,13 @@ Lint/UselessConstantScoping:
   Enabled: pending
   VersionAdded: '1.72'
 
+Lint/UselessDefaultValueArgument:
+  Description: 'Checks for usage of `fetch` or `Array.new` with default value argument and block.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Safe: false
+  AllowedReceivers: []
+
 Lint/UselessDefined:
   Description: 'Checks for calls to `defined?` with strings and symbols. The result of such a call will always be truthy.'
   Enabled: pending
