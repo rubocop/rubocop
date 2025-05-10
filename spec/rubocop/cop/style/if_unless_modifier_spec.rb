@@ -426,6 +426,24 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
     include_examples 'one-line pattern matching'
   end
 
+  context 'when using endless method definition', :ruby30 do
+    it 'does not register an offense when using method definition in the branch' do
+      expect_no_offenses(<<~RUBY)
+        if condition
+          def method_name = body
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when using singleton method definition in the branch' do
+      expect_no_offenses(<<~RUBY)
+        if condition
+          def self.method_name = body
+        end
+      RUBY
+    end
+  end
+
   context 'when using omitted hash values in an assignment', :ruby31 do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

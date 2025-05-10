@@ -23,6 +23,17 @@ module RuboCop
       # end
       # ----
       #
+      # The code `def method_name = body if condition` is considered a bad case by
+      # `Style/AmbiguousEndlessMethodDefinition` cop. So, to respect the user's intention to use
+      # an endless method definition in the `if` body, the following code is allowed:
+      #
+      # [source,ruby]
+      # ----
+      # if condition
+      #   def method_name = body
+      # end
+      # ----
+      #
       # NOTE: It is allowed when `defined?` argument has an undefined value,
       # because using the modifier form causes the following incompatibility:
       #
@@ -77,10 +88,14 @@ module RuboCop
           [Style::SoleNestedConditional]
         end
 
+        # rubocop:disable Metrics/AbcSize
         def on_if(node)
+          return if endless_method?(node.body)
+
           condition = node.condition
           return if defined_nodes(condition).any? { |n| defined_argument_is_undefined?(node, n) } ||
                     pattern_matching_nodes(condition).any?
+
           return unless (msg = message(node))
 
           add_offense(node.loc.keyword, message: format(msg, keyword: node.keyword)) do |corrector|
@@ -90,8 +105,13 @@ module RuboCop
             ignore_node(node)
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
+
+        def endless_method?(body)
+          body&.any_def_type? && body.endless?
+        end
 
         def defined_nodes(condition)
           if condition.defined_type?
