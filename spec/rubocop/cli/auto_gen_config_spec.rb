@@ -300,6 +300,17 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                                       '#' * 125,
                                       'y ',
                                       'puts x'])
+          create_file('example2.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            module M1::M2
+              class C # :nodoc:
+                def m
+                  puts '!'
+                end
+              end
+            end
+          RUBY
           create_file('.rubocop_todo.yml', <<~YAML)
             Layout/LineLength:
               Enabled: false
@@ -324,6 +335,17 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                     'Layout/TrailingWhitespace:',
                     '  Exclude:',
                     "    - 'example1.rb'",
+                    '',
+                    '# Offense count: 1',
+                    '# This cop supports unsafe autocorrection (--autocorrect-all).',
+                    '# Configuration parameters: EnforcedStyle, EnforcedStyleForClasses, ' \
+                    'EnforcedStyleForModules.',
+                    '# SupportedStyles: nested, compact',
+                    '# SupportedStylesForClasses: ~, nested, compact',
+                    '# SupportedStylesForModules: ~, nested, compact',
+                    'Style/ClassAndModuleChildren:',
+                    '  Exclude:',
+                    "    - 'example2.rb'",
                     '',
                     '# Offense count: 1',
                     '# This cop supports safe autocorrection (--autocorrect).',

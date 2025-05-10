@@ -178,6 +178,7 @@ module RuboCop
           next unless value.is_a?(Array)
           next if value.empty?
 
+          value.map! { |v| v.nil? ? '~' : v } # Change nil back to ~ as in the YAML file.
           output_buffer.puts "# #{param}: #{value.uniq.join(', ')}"
         end
       end
