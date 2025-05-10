@@ -83,8 +83,11 @@ module RuboCop
         MSG = '%<command>s space inside array brackets.'
         EMPTY_MSG = '%<command>s space inside empty array brackets.'
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_array(node)
           return if node.array_type? && !node.square_brackets?
+
+          node = node.ancestors.find(&:const_pattern_type?) || node # temporary solution
 
           tokens, left, right = array_brackets(node)
           return unless left && right
@@ -98,6 +101,7 @@ module RuboCop
 
           issue_offenses(node, left, right, start_ok, end_ok)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         alias on_array_pattern on_array
 
         private
@@ -119,8 +123,13 @@ module RuboCop
         def array_brackets(node)
           tokens = processed_source.tokens_within(node)
 
-          left = tokens.find(&:left_array_bracket?)
-          right = tokens.reverse_each.find(&:right_bracket?)
+          if node.const_pattern_type?
+            left = tokens.find(&:left_bracket?)
+            right = tokens.find(&:right_bracket?)
+          else
+            left = tokens.find(&:left_array_bracket?)
+            right = tokens.reverse_each.find(&:right_bracket?)
+          end
 
           [tokens, left, right]
         end
