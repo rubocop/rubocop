@@ -642,6 +642,37 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
+      it 'registers an offense when modifier is within `begin` node with the definition' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          %{access_modifier};
+          ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+          def foo
+          end
+
+          def bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{access_modifier} def foo
+          end
+
+          #{access_modifier} def bar
+          end
+        RUBY
+      end
+
+      it 'registers an offense when modifier is within `begin` node with the definition in the same line' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          %{access_modifier}; def foo; end
+          ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{access_modifier} def foo; end
+        RUBY
+      end
+
       it "offends when #{access_modifier} is not inlined and has a comment" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Test
