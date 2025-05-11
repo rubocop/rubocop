@@ -50,7 +50,7 @@ module RuboCop
 
       def disable_offense(offense_range)
         unbreakable_range = multiline_ranges(offense_range)&.find do |range|
-          range_overlaps_offense?(offense_range, range)
+          eol_comment_would_be_inside_literal?(offense_range, range)
         end
 
         if unbreakable_range
@@ -75,18 +75,22 @@ module RuboCop
       end
 
       def disable_offense_with_eol_or_surround_comment(range)
-        eol_comment = " # rubocop:todo #{cop_name}"
-        needed_line_length = (range.source_line + eol_comment).length
-
-        if needed_line_length <= max_line_length
-          disable_offense_at_end_of_line(range_of_first_line(range), eol_comment)
-        else
+        if line_with_eol_comment_too_long?(range)
           disable_offense_before_and_after(range_by_lines(range))
+        else
+          disable_offense_at_end_of_line(range_of_first_line(range))
         end
       end
 
-      def range_overlaps_offense?(offense_range, range)
-        offense_range.begin_pos > range.begin_pos && range.overlaps?(offense_range)
+      def eol_comment_would_be_inside_literal?(offense_range, literal_range)
+        return true if line_with_eol_comment_too_long?(offense_range)
+
+        offense_line = offense_range.line
+        offense_line >= literal_range.first_line && offense_line < literal_range.last_line
+      end
+
+      def line_with_eol_comment_too_long?(range)
+        (range.source_line + eol_comment).length > max_line_length
       end
 
       def surrounding_heredoc?(node)
@@ -132,8 +136,12 @@ module RuboCop
         config.for_cop('Layout/LineLength')['Max'] || 120
       end
 
-      def disable_offense_at_end_of_line(range, eol_comment)
+      def disable_offense_at_end_of_line(range)
         Corrector.new(range).insert_after(range, eol_comment)
+      end
+
+      def eol_comment
+        " # rubocop:todo #{cop_name}"
       end
 
       def disable_offense_before_and_after(range_by_lines)
