@@ -230,11 +230,11 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     end
   end
 
-  context 'prefer `Addrinfo#getaddrinfo` over `Socket.gethostbyname`' do
+  context 'prefer `Addrinfo.getaddrinfo` over `Socket.gethostbyname`' do
     it 'registers an offense for Socket.gethostbyname' do
       expect_offense(<<~RUBY)
         Socket.gethostbyname("hal")
-        ^^^^^^^^^^^^^^^^^^^^ `Socket.gethostbyname` is deprecated in favor of `Addrinfo#getaddrinfo`.
+        ^^^^^^^^^^^^^^^^^^^^ `Socket.gethostbyname` is deprecated in favor of `Addrinfo.getaddrinfo`.
       RUBY
 
       expect_no_corrections
@@ -243,7 +243,7 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedClassMethods, :config do
     it 'registers an offense for ::Socket.gethostbyname' do
       expect_offense(<<~RUBY)
         ::Socket.gethostbyname("hal")
-        ^^^^^^^^^^^^^^^^^^^^^^ `::Socket.gethostbyname` is deprecated in favor of `Addrinfo#getaddrinfo`.
+        ^^^^^^^^^^^^^^^^^^^^^^ `::Socket.gethostbyname` is deprecated in favor of `Addrinfo.getaddrinfo`.
       RUBY
 
       expect_no_corrections

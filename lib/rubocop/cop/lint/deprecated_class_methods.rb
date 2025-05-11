@@ -43,7 +43,7 @@ module RuboCop
           dup: 'to_h',
           exists?: 'exist?',
           gethostbyaddr: 'Addrinfo#getnameinfo',
-          gethostbyname: 'Addrinfo#getaddrinfo',
+          gethostbyname: 'Addrinfo.getaddrinfo',
           iterator?: 'block_given?'
         }.freeze
 
