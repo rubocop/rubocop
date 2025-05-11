@@ -633,11 +633,13 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           class Test
             %{access_modifier}
             ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+            def foo; end
           end
         RUBY
 
         expect_correction(<<~RUBY)
           class Test
+            #{access_modifier} def foo; end
           end
         RUBY
       end
@@ -647,11 +649,13 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           class Test
             %{access_modifier} # hey
             ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+            def foo; end
           end
         RUBY
 
         expect_correction(<<~RUBY)
           class Test
+            #{access_modifier} def foo; end
           end
         RUBY
       end
@@ -683,11 +687,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           class TestTwo
             #{access_modifier}
             ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
-          end
-
-          class TestThree
-            #{access_modifier}
-            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+            def foo; end
           end
         RUBY
 
@@ -697,10 +697,14 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
           end
 
           class TestTwo
+            #{access_modifier} def foo; end
           end
+        RUBY
+      end
 
-          class TestThree
-          end
+      it "does not register an offense for #{access_modifier} without method definitions" do
+        expect_no_offenses(<<~RUBY)
+          #{access_modifier}
         RUBY
       end
 
