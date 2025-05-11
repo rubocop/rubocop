@@ -51,7 +51,6 @@ module RuboCop
       #   Pathname.new('/') + 'test'
       #
       class StringConcatenation < Base
-        include RangeHelp
         extend AutoCorrector
 
         MSG = 'Prefer string interpolation to string concatenation.'
@@ -147,7 +146,7 @@ module RuboCop
             when :str
               adjust_str(part)
             when :dstr
-              part.children.all?(&:str_type?) ? adjust_str(part) : contents_range(part).source
+              part.children.all?(&:str_type?) ? adjust_str(part) : part.value
             else
               "\#{#{part.source}}"
             end

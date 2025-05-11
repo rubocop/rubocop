@@ -85,6 +85,17 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
         "abcd"
       RUBY
     end
+
+    it 'registers an offense and corrects with string interpolation' do
+      expect_offense(<<~'RUBY')
+        "string #{interpolation}" 'foo' + 'bar'
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "string #{interpolation}foobar"
+      RUBY
+    end
   end
 
   context 'multiline' do
