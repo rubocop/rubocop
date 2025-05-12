@@ -3,7 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for inheritance from Struct.new.
+      # Checks for inheritance from `Struct.new`. Inheriting from `Struct.new`
+      # adds a superfluous level in inheritance tree.
       #
       # @safety
       #   Autocorrection is unsafe because it will change the inheritance
@@ -17,12 +18,18 @@ module RuboCop
       #     end
       #   end
       #
+      #   Person.ancestors
+      #   # => [Person, #<Class:0x000000010b4e14a0>, Struct, (...)]
+      #
       #   # good
       #   Person = Struct.new(:first_name, :last_name) do
       #     def age
       #       42
       #     end
       #   end
+      #
+      #   Person.ancestors
+      #   # => [Person, Struct, (...)]
       class StructInheritance < Base
         include RangeHelp
         extend AutoCorrector
