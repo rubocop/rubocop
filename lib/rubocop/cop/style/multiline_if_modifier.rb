@@ -23,11 +23,13 @@ module RuboCop
               'clause in a multiline statement.'
 
         def on_if(node)
+          return if part_of_ignored_node?(node)
           return unless node.modifier_form? && node.body.multiline?
 
           add_offense(node, message: format(MSG, keyword: node.keyword)) do |corrector|
             corrector.replace(node, to_normal_if(node))
           end
+          ignore_node(node)
         end
 
         private
