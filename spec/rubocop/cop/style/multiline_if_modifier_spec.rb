@@ -48,6 +48,23 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfModifier, :config do
         |  end
       RUBY
     end
+
+    it 'registers an offense when nested modifier' do
+      expect_offense(<<~RUBY)
+        [
+        ^ Favor a normal if-statement over a modifier clause in a multiline statement.
+        ] if inner if outer
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if outer
+          if inner
+            [
+            ]
+          end
+        end
+      RUBY
+    end
   end
 
   context 'unless guard clause' do
@@ -95,6 +112,23 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfModifier, :config do
         |      result: run
         |    }
         |  end
+      RUBY
+    end
+
+    it 'registers an offense when nested modifier' do
+      expect_offense(<<~RUBY)
+        [
+        ^ Favor a normal unless-statement over a modifier clause in a multiline statement.
+        ] unless inner unless outer
+      RUBY
+
+      expect_correction(<<~RUBY)
+        unless outer
+          unless inner
+            [
+            ]
+          end
+        end
       RUBY
     end
   end
