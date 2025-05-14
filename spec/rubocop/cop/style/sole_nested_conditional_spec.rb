@@ -473,6 +473,57 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using nested `if` and `not` in the inner condition' do
+    expect_offense(<<~RUBY)
+      if foo
+        if not bar
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && (not bar)
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` and `not` in the outer condition' do
+    expect_offense(<<~RUBY)
+      if not foo
+        if bar
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (not foo) && bar
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` and `!` in the inner condition' do
+    expect_offense(<<~RUBY)
+      if foo
+        if !bar
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && !bar
+          do_something
+        end
+    RUBY
+  end
+
   context 'when disabling `Style/IfUnlessModifier`' do
     let(:config) { RuboCop::Config.new('Style/IfUnlessModifier' => { 'Enabled' => false }) }
 

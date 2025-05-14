@@ -185,8 +185,10 @@ module RuboCop
         end
 
         def add_parentheses?(node)
-          node.assignment? || (node.operator_keyword? && !node.and_type?) ||
-            (node.call_type? && node.arguments.any? && !node.parenthesized?)
+          return true if node.assignment? || (node.operator_keyword? && !node.and_type?)
+          return false unless node.call_type?
+
+          (node.arguments.any? && !node.parenthesized?) || node.prefix_not?
         end
 
         def parenthesized_method_arguments(node)
