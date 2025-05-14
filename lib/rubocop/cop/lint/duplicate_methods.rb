@@ -39,9 +39,35 @@ module RuboCop
       #   end
       #
       #   alias bar foo
+      #
+      # @example AllCops:ActiveSupportExtensionsEnabled: false (default)
+      #
+      #   # good
+      #   def foo
+      #     1
+      #   end
+      #
+      #   delegate :foo, to: :bar
+      #
+      # @example AllCops:ActiveSupportExtensionsEnabled: true
+      #
+      #   # bad
+      #   def foo
+      #     1
+      #   end
+      #
+      #   delegate :foo, to: :bar
+      #
+      #   # good
+      #   def foo
+      #     1
+      #   end
+      #
+      #   delegate :baz, to: :bar
       class DuplicateMethods < Base
         MSG = 'Method `%<method>s` is defined at both %<defined>s and %<current>s.'
-        RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr].freeze
+        RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr
+                              delegate].freeze
 
         def initialize(config = nil, options = nil)
           super
@@ -85,15 +111,25 @@ module RuboCop
           (send nil? :alias_method (sym $_name) _)
         PATTERN
 
+        # @!method delegate_method?(node)
+        def_node_matcher :delegate_method?, <<~PATTERN
+          (send nil? :delegate (sym $_)+ (hash _))
+        PATTERN
+
         # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'
-        def on_send(node)
+
+        def on_send(node) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           if (name = alias_method?(node))
             return if node.ancestors.any?(&:if_type?)
 
             found_instance_method(node, name)
           elsif (attr = node.attribute_accessor?)
             on_attr(node, *attr)
+          elsif active_support_extensions_enabled? && (names = delegate_method?(node))
+            return if node.ancestors.any?(&:if_type?)
+
+            on_delegate(node, names)
           end
         end
 
@@ -116,6 +152,12 @@ module RuboCop
         def message_for_dup(node, method_name, key)
           format(MSG, method: method_name, defined: source_location(@definitions[key]),
                       current: source_location(node))
+        end
+
+        def on_delegate(node, method_names)
+          method_names.each do |name|
+            found_instance_method(node, name)
+          end
         end
 
         def found_instance_method(node, name)
