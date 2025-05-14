@@ -9,6 +9,9 @@ module RuboCop
       # although the difference generally isn't observable. If you require maximum
       # performance, consider using logical comparison.
       #
+      # @safety
+      #   This cop is unsafe because the receiver may not respond to `between?`.
+      #
       # @example
       #
       #   # bad
