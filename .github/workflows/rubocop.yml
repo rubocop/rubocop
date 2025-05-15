@@ -65,9 +65,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          # FIXME: When the MSYS2 issue https://github.com/ruby/setup-msys2-gcc/pull/26#issuecomment-2874639475 is resolved,
-          # please uncomment the following oldest supported version.
-          # - '2.7'  # Oldest supported version
+          - '2.7'  # Oldest supported version
           - 'ruby' # Latest stable CRuby version
 
     steps:
@@ -112,9 +110,7 @@ jobs:
       matrix:
         os: [ubuntu, windows]
         ruby:
-          # FIXME: When the MSYS2 issue https://github.com/ruby/setup-msys2-gcc/pull/26#issuecomment-2874639475 is resolved,
-          # please uncomment the following oldest supported version.
-          # - '2.7'  # Oldest supported version
+          - '2.7'  # Oldest supported version
           - 'ruby' # Latest stable CRuby version
 
     steps:
