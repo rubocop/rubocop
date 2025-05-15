@@ -2644,6 +2644,11 @@ Lint/UselessNumericOperation:
   Enabled: pending
   VersionAdded: '1.66'
 
+Lint/UselessOr:
+  Description: 'Checks for useless OR expressions.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UselessRescue:
   Description: 'Checks for useless `rescue`s.'
   Enabled: pending
