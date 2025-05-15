@@ -1,1 +1,0 @@
-* [#14164](https://github.com/rubocop/rubocop/pull/14164): Fix an error for `Lint/UselessAssignment` when variables are assigned using unary operator in chained assignment and remain unreferenced. ([@koic][])
