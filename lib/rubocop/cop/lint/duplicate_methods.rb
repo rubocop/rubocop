@@ -64,6 +64,23 @@ module RuboCop
       #   end
       #
       #   delegate :baz, to: :bar
+      #
+      #   # good - delegate with splat arguments is ignored
+      #   def foo
+      #     1
+      #   end
+      #
+      #   delegate :foo, **options
+      #
+      #   # good - delegate inside a condition is ignored
+      #   def foo
+      #     1
+      #   end
+      #
+      #   if cond
+      #     delegate :foo, to: :bar
+      #   end
+      #
       class DuplicateMethods < Base
         MSG = 'Method `%<method>s` is defined at both %<defined>s and %<current>s.'
         RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr
@@ -113,7 +130,10 @@ module RuboCop
 
         # @!method delegate_method?(node)
         def_node_matcher :delegate_method?, <<~PATTERN
-          (send nil? :delegate (sym $_)+ (hash _))
+          (send nil? :delegate
+            ({sym str} $_)+
+            (hash <(pair (sym :to) _) ...>)
+          )
         PATTERN
 
         # @!method sym_name(node)
@@ -155,9 +175,29 @@ module RuboCop
         end
 
         def on_delegate(node, method_names)
+          name_prefix = delegate_prefix(node)
+
           method_names.each do |name|
+            name = "#{name_prefix}_#{name}" if name_prefix
+
             found_instance_method(node, name)
           end
+        end
+
+        def delegate_prefix(node)
+          kwargs_node = node.last_argument
+
+          return unless (prefix = hash_value(kwargs_node, :prefix))
+
+          if prefix.true_type?
+            hash_value(kwargs_node, :to).value
+          elsif prefix.type?(:sym, :str)
+            prefix.value
+          end
+        end
+
+        def hash_value(node, key)
+          node.pairs.find { |pair| pair.key.value == key }&.value
         end
 
         def found_instance_method(node, name)
