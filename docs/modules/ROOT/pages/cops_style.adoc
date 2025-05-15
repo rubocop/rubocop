@@ -2350,7 +2350,7 @@ items.include?
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `{"collect"=>"map", "collect!"=>"map!", "collect_concat"=>"flat_map", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
+| `{"collect" => "map", "collect!" => "map!", "collect_concat" => "flat_map", "inject" => "reduce", "detect" => "find", "find_all" => "select", "member?" => "include?"}`
 | 
 
 | MethodsAcceptingSymbol
@@ -2853,10 +2853,10 @@ end
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
 | Pending
-| Yes
-| Always
+| No
+| Always (Unsafe)
 | 1.74
-| -
+| 1.75
 |===
 
 Checks for logical comparison which can be replaced with `Comparable#between?`.
@@ -2864,6 +2864,11 @@ Checks for logical comparison which can be replaced with `Comparable#between?`.
 NOTE: `Comparable#between?` is on average slightly slower than logical comparison,
 although the difference generally isn't observable. If you require maximum
 performance, consider using logical comparison.
+
+[#safety-stylecomparablebetween]
+=== Safety
+
+This cop is unsafe because the receiver may not respond to `between?`.
 
 [#examples-stylecomparablebetween]
 === Examples
@@ -3248,6 +3253,7 @@ NOTE: Requires Ruby version 3.2
 |===
 
 Checks for inheritance from `Data.define` to avoid creating the anonymous parent class.
+Inheriting from `Data.define` adds a superfluous level in inheritance tree.
 
 [#safety-styledatainheritance]
 === Safety
@@ -3267,12 +3273,18 @@ class Person < Data.define(:first_name, :last_name)
   end
 end
 
+Person.ancestors
+# => [Person, #<Class:0x000000010b4e14a0>, Data, (...)]
+
 # good
 Person = Data.define(:first_name, :last_name) do
   def age
     42
   end
 end
+
+Person.ancestors
+# => [Person, Data, (...)]
 ----
 
 [#references-styledatainheritance]
@@ -7499,6 +7511,17 @@ if [42] in [x]
 end
 ----
 
+The code `def method_name = body if condition` is considered a bad case by
+`Style/AmbiguousEndlessMethodDefinition` cop. So, to respect the user's intention to use
+an endless method definition in the `if` body, the following code is allowed:
+
+[source,ruby]
+----
+if condition
+  def method_name = body
+end
+----
+
 NOTE: It is allowed when `defined?` argument has an undefined value,
 because using the modifier form causes the following incompatibility:
 
@@ -7917,11 +7940,11 @@ end
 | Name | Default value | Configurable values
 
 | InverseMethods
-| `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
+| `{any?: :none?, even?: :odd?, "==": :!=, "=~": :!~, "<": :>=, ">": :<=}`
 | 
 
 | InverseBlocks
-| `{:select=>:reject, :select!=>:reject!}`
+| `{select: :reject, select!: :reject!}`
 | 
 |===
 
@@ -7999,7 +8022,7 @@ foo if !condition
 | Name | Default value | Configurable values
 
 | InverseMethods
-| `{:!==>:==, :>=>:<=, :<==>:>, :<=>:>=, :>==>:<, :!~=>:=~, :zero?=>:nonzero?, :nonzero?=>:zero?, :any?=>:none?, :none?=>:any?, :even?=>:odd?, :odd?=>:even?}`
+| `{"!=": :==, ">": :<=, "<=": :>, "<": :>=, ">=": :<, "!~": :=~, zero?: :nonzero?, nonzero?: :zero?, any?: :none?, none?: :any?, even?: :odd?, odd?: :even?}`
 | 
 |===
 
@@ -12427,7 +12450,7 @@ default.
 | Name | Default value | Configurable values
 
 | PreferredDelimiters
-| `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
+| `{"default" => "()", "%i" => "[]", "%I" => "[]", "%r" => "{}", "%w" => "[]", "%W" => "[]"}`
 | 
 |===
 
@@ -12913,7 +12936,7 @@ A.foo
 | Name | Default value | Configurable values
 
 | Methods
-| `{"join"=>"", "sum"=>0, "exit"=>true, "exit!"=>false, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
+| `{"join" => "", "sum" => 0, "exit" => true, "exit!" => false, "split" => " ", "chomp" => "\n", "chomp!" => "\n"}`
 | 
 |===
 
@@ -16072,7 +16095,7 @@ end
 | Name | Default value | Configurable values
 
 | Methods
-| `{"reduce"=>["acc", "elem"]}`, `{"inject"=>["acc", "elem"]}`
+| `{"reduce" => ["acc", "elem"]}`, `{"inject" => ["acc", "elem"]}`
 | Array
 |===
 
@@ -16988,7 +17011,7 @@ from the `String` class.
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `{"intern"=>"to_sym"}`
+| `{"intern" => "to_sym"}`
 | 
 |===
 
@@ -17034,7 +17057,8 @@ Identifies places where `lstrip.rstrip` can be replaced by
 | 1.20
 |===
 
-Checks for inheritance from Struct.new.
+Checks for inheritance from `Struct.new`. Inheriting from `Struct.new`
+adds a superfluous level in inheritance tree.
 
 [#safety-stylestructinheritance]
 === Safety
@@ -17054,12 +17078,18 @@ class Person < Struct.new(:first_name, :last_name)
   end
 end
 
+Person.ancestors
+# => [Person, #<Class:0x000000010b4e14a0>, Struct, (...)]
+
 # good
 Person = Struct.new(:first_name, :last_name) do
   def age
     42
   end
 end
+
+Person.ancestors
+# => [Person, Struct, (...)]
 ----
 
 [#references-stylestructinheritance]

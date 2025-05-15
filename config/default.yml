@@ -3704,7 +3704,7 @@ Style/ComparableBetween:
   Enabled: pending
   Safe: false
   VersionAdded: '1.74'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.75'
   StyleGuide: '#ranges-or-between'
 
 Style/ComparableClamp:
