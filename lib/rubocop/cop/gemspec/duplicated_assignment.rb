@@ -6,10 +6,11 @@ module RuboCop
       # An attribute assignment method calls should be listed only once
       # in a gemspec.
       #
-      # Assigning to an attribute with the same name using `spec.foo =` will be
-      # an unintended usage. On the other hand, duplication of methods such
-      # as `spec.requirements`, `spec.add_runtime_dependency`, and others are
-      # permitted because it is the intended use of appending values.
+      # Assigning to an attribute with the same name using `spec.foo =` or
+      # `spec.attribute#[]=` will be an unintended usage. On the other hand,
+      # duplication of methods such # as `spec.requirements`,
+      # `spec.add_runtime_dependency`, and others are permitted because it is
+      # the intended use of appending values.
       #
       # @example
       #   # bad
@@ -34,6 +35,18 @@ module RuboCop
       #     spec.add_dependency('parallel', '~> 1.10')
       #     spec.add_dependency('parser', '>= 2.3.3.1', '< 3.0')
       #   end
+      #
+      #   # bad
+      #   Gem::Specification.new do |spec|
+      #     spec.metadata["key"] = "value"
+      #     spec.metadata["key"] = "value"
+      #   end
+      #
+      #   # good
+      #   Gem::Specification.new do |spec|
+      #     spec.metadata["key"] = "value"
+      #   end
+      #
       class DuplicatedAssignment < Base
         include RangeHelp
         include GemspecHelp
@@ -47,9 +60,26 @@ module RuboCop
             (lvar #match_block_variable_name?) _ ...)
         PATTERN
 
+        # @!method indexed_assignment_method_declarations(node)
+        def_node_search :indexed_assignment_method_declarations, <<~PATTERN
+          (send
+            (send (lvar #match_block_variable_name?) _)
+            :[]=
+            literal?
+            _
+          )
+        PATTERN
+
         def on_new_investigation
           return if processed_source.blank?
 
+          process_assignment_method_nodes
+          process_indexed_assignment_method_nodes
+        end
+
+        private
+
+        def process_assignment_method_nodes
           duplicated_assignment_method_nodes.each do |nodes|
             nodes[1..].each do |node|
               register_offense(node, node.method_name, nodes.first.first_line)
@@ -57,7 +87,14 @@ module RuboCop
           end
         end
 
-        private
+        def process_indexed_assignment_method_nodes
+          duplicated_indexed_assignment_method_nodes.each do |nodes|
+            nodes[1..].each do |node|
+              assignment = "#{node.children.first.method_name}[#{node.first_argument.source}]="
+              register_offense(node, assignment, nodes.first.first_line)
+            end
+          end
+        end
 
         def match_block_variable_name?(receiver_name)
           gem_specification(processed_source.ast) do |block_variable_name|
@@ -69,6 +106,13 @@ module RuboCop
           assignment_method_declarations(processed_source.ast)
             .select(&:assignment_method?)
             .group_by(&:method_name)
+            .values
+            .select { |nodes| nodes.size > 1 }
+        end
+
+        def duplicated_indexed_assignment_method_nodes
+          indexed_assignment_method_declarations(processed_source.ast)
+            .group_by { |node| [node.children.first.method_name, node.first_argument] }
             .values
             .select { |nodes| nodes.size > 1 }
         end
