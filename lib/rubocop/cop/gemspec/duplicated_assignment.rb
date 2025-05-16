@@ -47,9 +47,26 @@ module RuboCop
             (lvar #match_block_variable_name?) _ ...)
         PATTERN
 
+        # @!method indexed_assignment_method_declarations(node)
+        def_node_search :indexed_assignment_method_declarations, <<~PATTERN
+          (send
+            (send (lvar #match_block_variable_name?) _)
+            :[]=
+            #literal?
+            _
+          )
+        PATTERN
+
         def on_new_investigation
           return if processed_source.blank?
 
+          process_assignment_method_nodes
+          process_indexed_assignment_method_nodes
+        end
+
+        private
+
+        def process_assignment_method_nodes
           duplicated_assignment_method_nodes.each do |nodes|
             nodes[1..].each do |node|
               register_offense(node, node.method_name, nodes.first.first_line)
@@ -57,7 +74,14 @@ module RuboCop
           end
         end
 
-        private
+        def process_indexed_assignment_method_nodes
+          duplicated_indexed_assignment_method_nodes.each do |nodes|
+            nodes[1..].each do |node|
+              assignment = "#{node.children.fetch(0).method_name}[#{node.first_argument.source}]="
+              register_offense(node, assignment, nodes.first.first_line)
+            end
+          end
+        end
 
         def match_block_variable_name?(receiver_name)
           gem_specification(processed_source.ast) do |block_variable_name|
@@ -73,6 +97,13 @@ module RuboCop
             .select { |nodes| nodes.size > 1 }
         end
 
+        def duplicated_indexed_assignment_method_nodes
+          indexed_assignment_method_declarations(processed_source.ast)
+            .group_by { |node| [node.children.fetch(0).method_name, node.arguments.fetch(0)] }
+            .values
+            .select { |nodes| nodes.size > 1 }
+        end
+
         def register_offense(node, assignment, line_of_first_occurrence)
           line_range = node.loc.column...node.loc.last_column
           offense_location = source_range(processed_source.buffer, node.first_line, line_range)
@@ -82,6 +113,10 @@ module RuboCop
             line_of_first_occurrence: line_of_first_occurrence
           )
           add_offense(offense_location, message: message)
+        end
+
+        def literal?(node)
+          node.literal?
         end
       end
     end

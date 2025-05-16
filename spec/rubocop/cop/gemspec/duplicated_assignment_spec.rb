@@ -43,6 +43,19 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
     RUBY
   end
 
+  it 'registers an offense when using `metadata#[]=` with same key twice' do
+    expect_offense(<<~RUBY)
+      ::Gem::Specification.new do |spec|
+        spec.metadata['key'] = 1
+        spec.metadata[:key] = 2
+        spec.metadata['key'] = 2
+        ^^^^^^^^^^^^^^^^^^^^^^^^ `metadata['key']=` method calls already given on line 2 of the gemspec.
+        spec.metadata['key'] = 3
+        ^^^^^^^^^^^^^^^^^^^^^^^^ `metadata['key']=` method calls already given on line 2 of the gemspec.
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `<<` twice' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
@@ -67,6 +80,51 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
         foo = Foo.new
         foo.name = :foo
         foo.name = :bar
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `metadata#[]=` with different keys' do
+    expect_no_offenses(<<~RUBY)
+      Gem::Specification.new do |spec|
+        spec.metadata[:foo] = 1
+        spec.metadata[:bar] = 2
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `#[]=` with same keys and different receivers' do
+    expect_no_offenses(<<~RUBY)
+      Gem::Specification.new do |spec|
+        spec.misc[:foo] = 1
+        spec.metadata[:foo] = 2
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using both `metadata#[]=` and `metadata=`' do
+    expect_no_offenses(<<~RUBY)
+      Gem::Specification.new do |spec|
+        spec.metadata = { foo: 1 }
+        spec.metadata[:bar] = 1
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `metadata#[]=` with same key twice but without value' do
+    expect_no_offenses(<<~RUBY)
+      Gem::Specification.new do |spec|
+        spec.metadata.[]=(1)
+        spec.metadata.[]=(2)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using `metadata#[]=` with same key twice which are not literals' do
+    expect_no_offenses(<<~RUBY)
+      Gem::Specification.new do |spec|
+        spec.metadata[foo()] = 1
+        spec.metadata[foo()] = 2
       end
     RUBY
   end
