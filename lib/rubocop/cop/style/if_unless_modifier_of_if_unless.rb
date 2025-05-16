@@ -28,19 +28,16 @@ module RuboCop
 
         MSG = 'Avoid modifier `%<keyword>s` after another conditional.'
 
+        # rubocop:disable Metrics/AbcSize
         def on_if(node)
           return unless node.modifier_form? && node.body.if_type?
 
           add_offense(node.loc.keyword, message: format(MSG, keyword: node.keyword)) do |corrector|
-            keyword = node.if? ? 'if' : 'unless'
-
-            corrector.replace(node, <<~RUBY.chop)
-              #{keyword} #{node.condition.source}
-              #{node.if_branch.source}
-              end
-            RUBY
+            corrector.wrap(node.if_branch, "#{node.keyword} #{node.condition.source}\n", "\nend")
+            corrector.remove(node.if_branch.source_range.end.join(node.condition.source_range.end))
           end
         end
+        # rubocop:enable Metrics/AbcSize
       end
     end
   end
