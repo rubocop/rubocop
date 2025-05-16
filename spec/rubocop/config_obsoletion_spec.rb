@@ -215,7 +215,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
       let(:expected_warnings) do
         [
           <<~OUTPUT.chomp
-            The `Style/PredicateName` cop has been moved to `Naming/PredicateName`.
+            The `Style/PredicateName` cop has been renamed to `Naming/PredicatePrefix`.
             (obsolete configuration found in example/.rubocop.yml, please update it)
           OUTPUT
         ]
