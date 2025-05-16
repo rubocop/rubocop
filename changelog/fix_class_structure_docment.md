@@ -1,0 +1,1 @@
+* [#14186](https://github.com/rubocop/rubocop/pull/14186): Fix Layout/ClassStructure document. ([@Okkun555][])
