@@ -224,9 +224,13 @@ module RuboCop
         end
 
         def offense?(node)
-          (group_style? && access_modifier_is_inlined?(node) &&
-            !node.parent&.if_type? && !right_siblings_same_inline_method?(node)) ||
-            (inline_style? && access_modifier_is_not_inlined?(node))
+          if group_style?
+            return false if node.parent&.if_type?
+
+            access_modifier_is_inlined?(node) && !right_siblings_same_inline_method?(node)
+          else
+            access_modifier_is_not_inlined?(node) && select_grouped_def_nodes(node).any?
+          end
         end
 
         def correctable_group_offense?(node)
