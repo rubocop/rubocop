@@ -29,6 +29,24 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless, :config do
     end
   end
 
+  context 'using nested mofifier' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        condition ? then_part : else_part if inner_condition if outer_condition
+                                                             ^^ Avoid modifier `if` after another conditional.
+                                          ^^ Avoid modifier `if` after another conditional.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if outer_condition
+        if inner_condition
+        condition ? then_part : else_part
+        end
+        end
+      RUBY
+    end
+  end
+
   context 'conditional with modifier' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
