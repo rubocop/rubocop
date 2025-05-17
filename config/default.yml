@@ -5151,6 +5151,12 @@ Style/RedundantArrayConstructor:
   Enabled: pending
   VersionAdded: '1.52'
 
+Style/RedundantArrayFlatten:
+  Description: 'Checks for redundant calls of `Array#flatten`.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'
   Enabled: true
