@@ -128,6 +128,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBrackets, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when using space between receiver and left brackets, and a space inside left bracket' do
+      expect_offense(<<~RUBY)
+        @correction [ index_or_key] = :value
+                   ^ Remove the space before the opening brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @correction[ index_or_key] = :value
+      RUBY
+    end
+
     it 'does not register an offense when not using space between receiver and left brackets' do
       expect_no_offenses(<<~RUBY)
         @correction[index_or_key] = :value
