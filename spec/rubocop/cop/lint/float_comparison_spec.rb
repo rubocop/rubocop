@@ -115,4 +115,48 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
       ^^^^^^^^^^^^^^ Avoid equality comparisons of floats as they are unreliable.
     RUBY
   end
+
+  it 'registers an offense when using float in case statement' do
+    expect_offense(<<~RUBY)
+      case value
+      when 1.0
+           ^^^ Avoid using float literals in `when` clauses. Use epsilon comparison instead.
+        foo
+      when 2.0
+           ^^^ Avoid using float literals in `when` clauses. Use epsilon comparison instead.
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using float in case statement with multiple conditions' do
+    expect_offense(<<~RUBY)
+      case value
+      when 1.0, 2.0
+                ^^^ Avoid using float literals in `when` clauses. Use epsilon comparison instead.
+           ^^^ Avoid using float literals in `when` clauses. Use epsilon comparison instead.
+        foo
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using zero float in case statement' do
+    expect_no_offenses(<<~RUBY)
+      case value
+      when 0.0
+        foo
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when using non-float in case statement' do
+    expect_no_offenses(<<~RUBY)
+      case value
+      when 1
+        foo
+      when 'string'
+        bar
+      end
+    RUBY
+  end
 end
