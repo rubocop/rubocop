@@ -48,6 +48,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBrackets, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when using space between method argument parentheses and left bracket' do
+      expect_offense(<<~RUBY)
+        collection.call(arg) [index_or_key]
+                            ^ Remove the space before the opening brackets.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        collection.call(arg)[index_or_key]
+      RUBY
+    end
+
     it 'does not register an offense when using space between method call and left brackets' do
       expect_no_offenses(<<~RUBY)
         do_something [item_of_array_literal]
