@@ -26,7 +26,6 @@ module RuboCop
           selector_begin_pos = node.loc.selector.begin_pos
           return if receiver_end_pos >= selector_begin_pos
           return if dot_before_brackets?(node, receiver_end_pos, selector_begin_pos)
-          return if !reference_variable_with_brackets?(node) && !node.method?(:[]=)
 
           range = range_between(receiver_end_pos, selector_begin_pos)
 
@@ -41,10 +40,6 @@ module RuboCop
           return false unless node.loc.respond_to?(:dot) && (dot = node.loc.dot)
 
           dot.begin_pos == receiver_end_pos && dot.end_pos == selector_begin_pos
-        end
-
-        def reference_variable_with_brackets?(node)
-          node.receiver&.variable? && node.method?(:[]) && node.arguments.size == 1
         end
       end
     end

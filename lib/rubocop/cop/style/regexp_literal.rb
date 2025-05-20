@@ -155,7 +155,7 @@ module RuboCop
         end
 
         def preferred_delimiters
-          config.for_cop('Style/PercentLiteralDelimiters') ['PreferredDelimiters']['%r'].chars
+          config.for_cop('Style/PercentLiteralDelimiters')['PreferredDelimiters']['%r'].chars
         end
 
         def allowed_omit_parentheses_with_percent_r_literal?(node)
