@@ -125,8 +125,8 @@ RSpec.describe RuboCop::Cop::VariableForce::Assignment do
         RUBY
       end
 
-      it 'returns splat node' do
-        expect(assignment.meta_assignment_node.type).to eq(:splat)
+      it 'returns masgn node' do
+        expect(assignment.meta_assignment_node.type).to eq(:masgn)
       end
     end
 

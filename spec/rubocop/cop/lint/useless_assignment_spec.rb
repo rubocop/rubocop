@@ -1440,12 +1440,48 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when part of a multiple assignment is enclosed in parentheses with splat' do
+    it 'registers an offense when the variable is not used' do
+      expect_offense(<<~RUBY)
+        def some_method
+          (foo, bar), *baz = do_something
+                       ^^^ Useless assignment to variable - `baz`. Use `_` or `_baz` as a variable name to indicate that it won't be used.
+          puts foo, bar
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          (foo, bar), *_ = do_something
+          puts foo, bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the variable is not used in nested assignment' do
+      expect_offense(<<~RUBY)
+        def some_method
+          foo, (*bar, baz) = do_something
+                 ^^^ Useless assignment to variable - `bar`. Use `_` or `_bar` as a variable name to indicate that it won't be used.
+          puts foo, baz
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          foo, (*_, baz) = do_something
+          puts foo, baz
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned with rest assignment and unreferenced' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         def some_method
           foo, *bar = do_something
-                ^^^ Useless assignment to variable - `bar`.
+                ^^^ Useless assignment to variable - `bar`. Use `_` or `_bar` as a variable name to indicate that it won't be used.
           puts foo
         end
       RUBY
