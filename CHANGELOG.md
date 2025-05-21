@@ -11,6 +11,21 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14185](https://github.com/rubocop/rubocop/pull/14185): Fix an error for `Style/IfUnlessModifierOfIfUnless` when using nested modifier. ([@koic][])
+* [#14192](https://github.com/rubocop/rubocop/pull/14192): Fix negatives for `Layout/SpaceBeforeBrackets` when using space between method argument parentheses and left bracket. ([@koic][])
+* [#14189](https://github.com/rubocop/rubocop/issues/14189): Fix incorrect autocorrect for `Layout/SpaceBeforeBrackets` when using space between receiver and left brackets, and a space inside left bracket. ([@koic][])
+* [#14170](https://github.com/rubocop/rubocop/pull/14170): Fix `Style/AccessModifierDeclarations` cop error on semicolon after modifier. ([@viralpraxis][])
+* [#14195](https://github.com/rubocop/rubocop/pull/14195): Fix `Style/AccessModifierDeclarations` cop error on symbol modifier without surrounding scope. ([@viralpraxis][])
+* [#14172](https://github.com/rubocop/rubocop/pull/14172): Fix `Style/AccessModifierDeclarations` cop false positives when there are no method definitions and style is `inline`. ([@viralpraxis][])
+* [#14193](https://github.com/rubocop/rubocop/issues/14193): Fix `Lint/UselessAssignment` cop error when using nested assignment with splat. ([@earlopain][])
+
+### Changes
+
+* [#14188](https://github.com/rubocop/rubocop/pull/14188): Enhance `Gemspec/DuplicatedAssignment` cop to detect duplicated indexed assignment. ([@viralpraxis][])
+* [#14183](https://github.com/rubocop/rubocop/pull/14183): Recognize `prefix` argument for `delegate` method in `Lint/DuplicateMethods`. ([@lovro-bikic][])
+
 ## 1.75.6 (2025-05-15)
 
 ### Bug fixes

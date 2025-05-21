@@ -1,1 +1,0 @@
-* [#14189](https://github.com/rubocop/rubocop/issues/14189): Fix incorrect autocorrect for `Layout/SpaceBeforeBrackets` when using space between receiver and left brackets, and a space inside left bracket. ([@koic][])
