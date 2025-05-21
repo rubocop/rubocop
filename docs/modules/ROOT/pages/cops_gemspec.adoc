@@ -329,10 +329,11 @@ gem "bar"
 An attribute assignment method calls should be listed only once
 in a gemspec.
 
-Assigning to an attribute with the same name using `spec.foo =` will be
-an unintended usage. On the other hand, duplication of methods such
-as `spec.requirements`, `spec.add_runtime_dependency`, and others are
-permitted because it is the intended use of appending values.
+Assigning to an attribute with the same name using `spec.foo =` or
+`spec.attribute#[]=` will be an unintended usage. On the other hand,
+duplication of methods such # as `spec.requirements`,
+`spec.add_runtime_dependency`, and others are permitted because it is
+the intended use of appending values.
 
 [#examples-gemspecduplicatedassignment]
 === Examples
@@ -360,6 +361,17 @@ end
 Gem::Specification.new do |spec|
   spec.add_dependency('parallel', '~> 1.10')
   spec.add_dependency('parser', '>= 2.3.3.1', '< 3.0')
+end
+
+# bad
+Gem::Specification.new do |spec|
+  spec.metadata["key"] = "value"
+  spec.metadata["key"] = "value"
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata["key"] = "value"
 end
 ----
 

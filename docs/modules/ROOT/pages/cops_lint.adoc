@@ -1813,6 +1813,22 @@ def foo
 end
 
 delegate :baz, to: :bar
+
+# good - delegate with splat arguments is ignored
+def foo
+  1
+end
+
+delegate :foo, **options
+
+# good - delegate inside a condition is ignored
+def foo
+  1
+end
+
+if cond
+  delegate :foo, to: :bar
+end
 ----
 
 [#lintduplicateregexpcharacterclasselement]
