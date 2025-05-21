@@ -39,7 +39,7 @@ module RuboCop
       class AbcSize < Base
         include MethodComplexity
 
-        MSG = 'Assignment Branch Condition size for %<method>s is too high. ' \
+        MSG = 'Assignment Branch Condition size for `%<method>s` is too high. ' \
               '[%<abc_vector>s %<complexity>.4g/%<max>.4g]'
 
         private
