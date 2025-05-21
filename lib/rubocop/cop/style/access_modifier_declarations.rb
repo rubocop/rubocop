@@ -237,7 +237,7 @@ module RuboCop
 
         def offense?(node)
           if group_style?
-            return false if node.parent&.if_type?
+            return false if node.parent ? node.parent.if_type? : access_modifier_with_symbol?(node)
 
             access_modifier_is_inlined?(node) && !right_siblings_same_inline_method?(node)
           else

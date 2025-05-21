@@ -63,6 +63,12 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
     context 'do not allow access modifiers on symbols' do
       let(:cop_config) { { 'AllowModifiersOnSymbols' => false } }
 
+      it "does not register an offense when argument to #{access_modifier} is a symbol and there is no surrounding scope" do
+        expect_no_offenses(<<~RUBY)
+          #{access_modifier} :foo
+        RUBY
+      end
+
       it "registers an offense when argument to #{access_modifier} is a symbol" do
         expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Foo
