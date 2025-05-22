@@ -580,6 +580,32 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
         RUBY
       end
 
+      it "does not register an offense for dynamically specified `to` option with enabled prefix in #{type}" do
+        expect_no_offenses(<<~RUBY, 'example.rb')
+          #{opening_line}
+            def some_method
+              implement 1
+            end
+
+            %w[any none some].each do |type|
+              delegate :method, prefix: true, to: type
+            end
+          end
+        RUBY
+      end
+
+      it "does not register an offense for dynamically specified `prefix` in #{type}" do
+        expect_no_offenses(<<~RUBY, 'example.rb')
+          #{opening_line}
+            def some_method
+              implement 1
+            end
+
+            delegate :method, prefix: some_condition, to: :some
+          end
+        RUBY
+      end
+
       it "does not register an offense for non-duplicate delegate in #{type}" do
         expect_no_offenses(<<~RUBY, 'example.rb')
           #{opening_line}

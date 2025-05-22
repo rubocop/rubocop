@@ -132,7 +132,7 @@ module RuboCop
         def_node_matcher :delegate_method?, <<~PATTERN
           (send nil? :delegate
             ({sym str} $_)+
-            (hash <(pair (sym :to) _) ...>)
+            (hash <(pair (sym :to) {sym str}) ...>)
           )
         PATTERN
 
