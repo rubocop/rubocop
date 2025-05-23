@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'debug'
 module RuboCop
   module Cop
     module Lint
@@ -41,6 +42,9 @@ module RuboCop
           return unless after_private_modifier?(node.left_siblings)
           return if private_constantize?(node.right_siblings, node.name)
 
+          # For handling cases where declarations are on multiple lines
+          set_last_location(node)
+
           add_offense(node)
         end
 
@@ -64,6 +68,13 @@ module RuboCop
           end
 
           private_constant_values.include?(const_value)
+        end
+
+        def set_last_location(node)
+          last_line = node.loc.expression.last_line
+          last_range = node.loc.expression.source_buffer.line_range(last_line)
+          last_location = Parser::Source::Map::Constant.new(nil, node.loc.name, last_range)
+          node.instance_variable_set(:@location, last_location)
         end
       end
     end

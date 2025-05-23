@@ -1,14 +1,29 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::UselessConstantScoping, :config do
-  it 'registers an offense when using constant after `private` access modifier' do
-    expect_offense(<<~RUBY)
-      class Foo
-        private
-        CONST = 42
-        ^^^^^^^^^^ Useless `private` access modifier for constant scope.
-      end
-    RUBY
+  context 'When the constant is declared on a single line' do
+    it 'registers an offense when using constant after `private` access modifier' do
+      expect_offense(<<~RUBY)
+        class Foo
+          private
+          CONST = 42
+          ^^^^^^^^^^ Useless `private` access modifier for constant scope.
+        end
+      RUBY
+    end
+  end
+
+  context 'When the constant is declared on multiple lines' do
+    it 'registers an offense when using constant after `private` access modifier' do
+      expect_offense(<<~RUBY)
+        class Foo
+          private
+          CONST = [42,
+                   43].freeze
+                   ^^^^^^^^^^ Useless `private` access modifier for constant scope.
+        end
+      RUBY
+    end
   end
 
   it 'registers an offense when using constant not defined in `private_constant`' do
