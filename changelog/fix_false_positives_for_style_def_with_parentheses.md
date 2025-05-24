@@ -1,0 +1,1 @@
+* [#14200](https://github.com/rubocop/rubocop/pull/14200): Fix false positives for `Style/DefWithParentheses` when using endless method definition with empty parentheses and a space before `=`. ([@koic][])
