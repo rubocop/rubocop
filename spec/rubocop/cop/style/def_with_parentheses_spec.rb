@@ -40,6 +40,29 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses, :config do
         def foo = do_something
       RUBY
     end
+
+    it 'reports an offense for endless method definition with empty parens followed by a space before `=`' do
+      expect_offense(<<~RUBY)
+        def foo() =do_something
+               ^^ Omit the parentheses in defs when the method doesn't accept any arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo =do_something
+      RUBY
+    end
+
+    it 'does not register an offense for endless method definition with empty parens followed by no space before `=`' do
+      expect_no_offenses(<<~RUBY)
+        def foo()= do_something
+      RUBY
+    end
+
+    it 'does not register an offense for endless method definition with empty parens followed by no spaces around `=`' do
+      expect_no_offenses(<<~RUBY)
+        def foo()=do_something
+      RUBY
+    end
   end
 
   it 'accepts def with arg and parens' do
