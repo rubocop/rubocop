@@ -116,7 +116,7 @@ module RuboCop
         def allowed_only_before_style?(node)
           if node.special_modifier?
             return true if processed_source[node.last_line] == 'end'
-            return false if next_line_empty?(node.last_line)
+            return false if next_line_empty_and_exists?(node.last_line)
           end
 
           previous_line_empty?(node.first_line)
@@ -129,7 +129,7 @@ module RuboCop
           when :around
             corrector.insert_after(line, "\n") unless next_line_empty?(node.last_line)
           when :only_before
-            if next_line_empty?(node.last_line)
+            if next_line_empty_and_exists?(node.last_line)
               range = next_empty_line_range(node)
 
               corrector.remove(range)
@@ -152,6 +152,10 @@ module RuboCop
           next_line = processed_source[last_send_line]
 
           body_end?(last_send_line) || next_line.blank?
+        end
+
+        def next_line_empty_and_exists?(last_send_line)
+          next_line_empty?(last_send_line) && last_send_line.next != processed_source.lines.size
         end
 
         def empty_lines_around?(node)
