@@ -45,6 +45,11 @@ module RuboCop
           }
         PATTERN
 
+        # @!method destructuring_argument(node)
+        def_node_matcher :destructuring_argument, <<~PATTERN
+          (args $(mlhs (arg _)+))
+        PATTERN
+
         def self.autocorrect_incompatible_with
           [Layout::SingleLineBlockChain]
         end
@@ -73,6 +78,12 @@ module RuboCop
             corrector.replace(map_dot, to_h.loc.dot.source)
           end
           corrector.replace(map.loc.selector, 'to_h')
+
+          return unless map.parent.block_type?
+
+          if (argument = destructuring_argument(map.parent.arguments))
+            corrector.replace(argument, argument.source[1..-2])
+          end
         end
         # rubocop:enable Metrics/AbcSize
       end
