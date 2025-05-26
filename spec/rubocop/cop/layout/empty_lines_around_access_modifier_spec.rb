@@ -566,6 +566,12 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAccessModifier, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when modifier is on the last line' do
+        expect_no_offenses(<<~RUBY)
+          #{access_modifier}
+        RUBY
+      end
     end
   end
 
