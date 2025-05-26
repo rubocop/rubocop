@@ -22,6 +22,11 @@ module RuboCop
       # * Private attribute macros (`attr_accessor`, `attr_writer`, `attr_reader`)
       # * Private instance methods
       #
+      # NOTE: Simply enabling the cop with `Enabled: true` will not use
+      # the example order shown below.
+      # To enforce the order of macros like `attr_reader`,
+      # you must define both `ExpectedOrder` *and* `Categories`.
+      #
       # You can configure the following order:
       #
       # [source,yaml]
@@ -66,6 +71,36 @@ module RuboCop
       #        - include
       #        - prepend
       #        - extend
+      # ----
+      #
+      # If you only set `ExpectedOrder`
+      # without defining `Categories`,
+      # macros such as `attr_reader` or `has_many`
+      # will not be recognized as part of a category, and their order will not be validated.
+      # For example, the following will NOT raise any offenses, even if the order is incorrect:
+      #
+      # [source,yaml]
+      # ----
+      # Layout/ClassStructure:
+      #   Enabled: true
+      #   ExpectedOrder:
+      #     - public_attribute_macros
+      #     - initializer
+      # ----
+      #
+      # To make it work as expected, you must also specify `Categories` like this:
+      #
+      # [source,yaml]
+      # ----
+      # Layout/ClassStructure:
+      #   ExpectedOrder:
+      #     - public_attribute_macros
+      #     - initializer
+      #   Categories:
+      #     attribute_macros:
+      #       - attr_reader
+      #       - attr_writer
+      #       - attr_accessor
       # ----
       #
       # @safety
