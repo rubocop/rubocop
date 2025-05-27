@@ -78,7 +78,7 @@ module RuboCop
           node.when_branches.each do |when_branch|
             when_branch.each_condition do |condition|
               next if literal_safe?(condition)
-              
+
               add_offense(condition, message: MSG_CASE) if float?(condition)
             end
           end
