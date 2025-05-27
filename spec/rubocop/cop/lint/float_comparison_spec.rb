@@ -120,10 +120,10 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
     expect_offense(<<~RUBY)
       case value
       when 1.0
-           ^^^ Avoid using float literals in `when` clauses. Use epsilon comparison instead.
+           ^^^ Avoid float literal comparisons in case statements as they are unreliable.
         foo
       when 2.0
-           ^^^ Avoid using float literals in `when` clauses. Use epsilon comparison instead.
+           ^^^ Avoid float literal comparisons in case statements as they are unreliable.
         bar
       end
     RUBY
@@ -133,8 +133,8 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
     expect_offense(<<~RUBY)
       case value
       when 1.0, 2.0
-                ^^^ Avoid using float literals in `when` clauses. Use epsilon comparison instead.
-           ^^^ Avoid using float literals in `when` clauses. Use epsilon comparison instead.
+                ^^^ Avoid float literal comparisons in case statements as they are unreliable.
+           ^^^ Avoid float literal comparisons in case statements as they are unreliable.
         foo
       end
     RUBY
