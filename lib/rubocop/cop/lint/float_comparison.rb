@@ -54,7 +54,7 @@ module RuboCop
       class FloatComparison < Base
         MSG_EQUALITY = 'Avoid equality comparisons of floats as they are unreliable.'
         MSG_INEQUALITY = 'Avoid inequality comparisons of floats as they are unreliable.'
-        MSG_CASE = 'Avoid using float literals in `when` clauses. Use epsilon comparison instead.'
+        MSG_CASE = 'Avoid float literal comparisons in case statements as they are unreliable.'
 
         EQUALITY_METHODS = %i[== != eql? equal?].freeze
         FLOAT_RETURNING_METHODS = %i[to_f Float fdiv].freeze
