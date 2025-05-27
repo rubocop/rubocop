@@ -1119,11 +1119,11 @@ require 'my_debugger/start'
 | Name | Default value | Configurable values
 
 | DebuggerMethods
-| `{"Kernel"=>["binding.irb", "Kernel.binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["page.save_and_open_page", "page.save_and_open_screenshot", "page.save_page", "page.save_screenshot", "save_and_open_page", "save_and_open_screenshot", "save_page", "save_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue", "pry"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
+| `{"Kernel" => ["binding.irb", "Kernel.binding.irb"], "Byebug" => ["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara" => ["page.save_and_open_page", "page.save_and_open_screenshot", "page.save_page", "page.save_screenshot", "save_and_open_page", "save_and_open_screenshot", "save_page", "save_screenshot"], "debug.rb" => ["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry" => ["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue", "pry"], "Rails" => ["debugger", "Kernel.debugger"], "RubyJard" => ["jard"], "WebConsole" => ["binding.console"]}`
 | 
 
 | DebuggerRequires
-| `{"debug.rb"=>["debug/open", "debug/start"]}`
+| `{"debug.rb" => ["debug/open", "debug/start"]}`
 | 
 |===
 
@@ -1230,7 +1230,7 @@ Etc::Passwd
 | Name | Default value | Configurable values
 
 | DeprecatedConstants
-| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Net::HTTPServerException"=>{"Alternative"=>"Net::HTTPClientException", "DeprecatedVersion"=>"2.6"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}, "Struct::Group"=>{"Alternative"=>"Etc::Group", "DeprecatedVersion"=>"3.0"}, "Struct::Passwd"=>{"Alternative"=>"Etc::Passwd", "DeprecatedVersion"=>"3.0"}}`
+| `{"NIL" => {"Alternative" => "nil", "DeprecatedVersion" => "2.4"}, "TRUE" => {"Alternative" => "true", "DeprecatedVersion" => "2.4"}, "FALSE" => {"Alternative" => "false", "DeprecatedVersion" => "2.4"}, "Net::HTTPServerException" => {"Alternative" => "Net::HTTPClientException", "DeprecatedVersion" => "2.6"}, "Random::DEFAULT" => {"Alternative" => "Random.new", "DeprecatedVersion" => "3.0"}, "Struct::Group" => {"Alternative" => "Etc::Group", "DeprecatedVersion" => "3.0"}, "Struct::Passwd" => {"Alternative" => "Etc::Passwd", "DeprecatedVersion" => "3.0"}}`
 | 
 |===
 
@@ -1813,22 +1813,6 @@ def foo
 end
 
 delegate :baz, to: :bar
-
-# good - delegate with splat arguments is ignored
-def foo
-  1
-end
-
-delegate :foo, **options
-
-# good - delegate inside a condition is ignored
-def foo
-  1
-end
-
-if cond
-  delegate :foo, to: :bar
-end
 ----
 
 [#lintduplicateregexpcharacterclasselement]
@@ -2916,14 +2900,6 @@ if you perform any arithmetic operations involving precision loss.
 x == 0.1
 x != 0.1
 
-# bad
-case value
-when 1.0
-  foo
-when 2.0
-  bar
-end
-
 # good - using BigDecimal
 x.to_d == 0.1.to_d
 
@@ -2940,13 +2916,6 @@ tolerance = 0.0001
 
 # good - comparing against nil
 Float(x, exception: false) == nil
-
-# good - using epsilon comparison in case statement
-if (value - 1.0).abs < Float::EPSILON
-  foo
-elsif (value - 2.0).abs < Float::EPSILON
-  bar
-end
 
 # Or some other epsilon based type of comparison:
 # https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
@@ -7349,7 +7318,7 @@ values.sort { |*x| x[0] <=> x[1] }
 | Name | Default value | Configurable values
 
 | Methods
-| `{"chunk_while"=>2, "each_with_index"=>2, "each_with_object"=>2, "inject"=>2, "max"=>2, "min"=>2, "minmax"=>2, "reduce"=>2, "slice_when"=>2, "sort"=>2}`
+| `{"chunk_while" => 2, "each_with_index" => 2, "each_with_object" => 2, "inject" => 2, "max" => 2, "min" => 2, "minmax" => 2, "reduce" => 2, "slice_when" => 2, "sort" => 2}`
 | 
 |===
 
