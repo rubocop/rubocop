@@ -155,7 +155,7 @@ module RuboCop
         def on_send(node)
           return unless should_check?(node)
           return if same_line?(node, node.first_argument)
-          return if style != :consistent && enforce_first_argument_with_fixed_indentation? &&
+          return if enforce_first_argument_with_fixed_indentation? &&
                     !enable_layout_first_method_argument_line_break?
 
           indent = base_indentation(node) + configured_indentation_width

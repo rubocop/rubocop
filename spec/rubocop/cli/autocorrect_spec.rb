@@ -2502,6 +2502,46 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
+     '`EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation` and ' \
+     '`Layout/HashAlignment`' do
+    create_file('example.rb', <<~RUBY)
+      do_something(
+         **params,
+        key:,
+        other_key: value,
+      )
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.1
+
+      Layout/ArgumentAlignment:
+        EnforcedStyle: with_fixed_indentation
+      Layout/FirstArgumentIndentation:
+        EnforcedStyle: consistent
+    YAML
+
+    expect(
+      cli.run(
+        [
+          '--autocorrect',
+          '--only',
+          'Layout/ArgumentAlignment,Layout/FirstArgumentIndentation,Layout/HashAlignment'
+        ]
+      )
+    ).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      do_something(
+        **params,
+        key:,
+        other_key: value,
+      )
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArrayAlignment` and ' \
      '`Layout/FirstArrayElementIndentation`' do
     create_file('example.rb', <<~RUBY)
