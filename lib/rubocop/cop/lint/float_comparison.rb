@@ -40,10 +40,11 @@ module RuboCop
       #   # good - comparing against nil
       #   Float(x, exception: false) == nil
       #
-      #   # good - using epsilon comparison in case statement
-      #   if (value - 1.0).abs < Float::EPSILON
+      #   # good - using epsilon comparison in case expression
+      #   case
+      #   when (value - 1.0).abs < Float::EPSILON
       #     foo
-      #   elsif (value - 2.0).abs < Float::EPSILON
+      #   when (value - 2.0).abs < Float::EPSILON
       #     bar
       #   end
       #
