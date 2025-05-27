@@ -275,8 +275,11 @@ RSpec.describe RuboCop::Server::Cache do
 
   unless RuboCop::Platform.windows?
     describe '.restart_key', :isolated_environment do
-      subject(:restart_key) { described_class.restart_key }
+      subject(:restart_key) do
+        described_class.restart_key(args_config_file_path: args_config_file_path)
+      end
 
+      let(:args_config_file_path) { nil }
       let(:hexdigest) do
         Digest::SHA1.hexdigest(contents)
       end
@@ -397,6 +400,22 @@ RSpec.describe RuboCop::Server::Cache do
             expect { restart_key }.not_to raise_error
           end
         end
+      end
+
+      context 'when args_config_file_path is specified' do
+        let(:args_config_file_path) { '.rubocop_todo.yml' }
+        let(:contents) do
+          RuboCop::Version::STRING + File.read('.rubocop_todo.yml')
+        end
+
+        before do
+          create_file('.rubocop_todo.yml', <<~YAML)
+            Metrics/ClassLength:
+              Max: 192
+          YAML
+        end
+
+        it { expect(restart_key).to eq(hexdigest) }
       end
     end
 

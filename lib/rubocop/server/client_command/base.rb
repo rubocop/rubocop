@@ -38,6 +38,16 @@ module RuboCop
             warn 'RuboCop server is not running.' unless running
           end
         end
+
+        class << self
+          def args_config_file_path
+            first_args_config_key_index = ARGV.index { |value| ['-c', '--config'].include?(value) }
+
+            return if first_args_config_key_index.nil?
+
+            ARGV[first_args_config_key_index + 1]
+          end
+        end
       end
     end
   end
