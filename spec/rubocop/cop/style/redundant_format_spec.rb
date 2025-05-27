@@ -368,6 +368,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
             RUBY
           end
         end
+
+        context 'with invalid format arguments' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              format('%{y}-%{m}-%{d}', 2015, 1, 1)
+            RUBY
+          end
+        end
       end
 
       context 'with constants' do
