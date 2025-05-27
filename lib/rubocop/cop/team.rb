@@ -279,7 +279,7 @@ module RuboCop
         @errors << message
         warn message
         if debug?
-          puts error.message, error.backtrace
+          puts error.full_message
         else
           warn 'To see the complete backtrace run rubocop -d.'
         end
