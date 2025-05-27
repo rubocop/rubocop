@@ -121,7 +121,12 @@ module RuboCop
         def register_all_fields_literal(node, string, arguments)
           return unless all_fields_literal?(string, arguments.dup)
 
-          formatted_string = format(string, *argument_values(arguments))
+          format_arguments = argument_values(arguments)
+          begin
+            formatted_string = format(string, *format_arguments)
+          rescue ArgumentError
+            return
+          end
           replacement = quote(formatted_string, node)
 
           add_offense(node, message: message(node, replacement)) do |corrector|
