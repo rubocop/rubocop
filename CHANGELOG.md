@@ -11,6 +11,17 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14191](https://github.com/rubocop/rubocop/pull/14191): Fix `Lint/FloatComparison` cop to detect floating-point number comparisons in `case` statements. ([@daisuke][])
+* [#14209](https://github.com/rubocop/rubocop/pull/14209): Fix an error for `Style/RedundantFormat` with invalid format arguments. ([@earlopain][])
+* [#14200](https://github.com/rubocop/rubocop/pull/14200): Fix false positives for `Style/DefWithParentheses` when using endless method definition with empty parentheses and a space before `=`. ([@koic][])
+* [#14197](https://github.com/rubocop/rubocop/issues/14197): Fix infinite loop error for `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and `EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation` and `Layout/HashAlignment`. ([@koic][])
+* [#14204](https://github.com/rubocop/rubocop/pull/14204): Fix `Layout/EmptyLinesAroundAccessModifier` cop error on trailing access modifier. ([@viralpraxis][])
+* [#14198](https://github.com/rubocop/rubocop/pull/14198): Fix `Lint/DuplicateMethods` cop error on `to` option is dynamically generated and `prefix` is enabled. ([@viralpraxis][])
+* [#14199](https://github.com/rubocop/rubocop/pull/14199): Fix wrong autocorrection for `Style/MapToHash` with destructuring argument. ([@lovro-bikic][])
+* [#14050](https://github.com/rubocop/rubocop/issues/14050): Modify condition for `rubocop:todo` EOL comment. ([@jonas054][])
+
 ## 1.75.7 (2025-05-21)
 
 ### Bug fixes
@@ -4094,3 +4105,4 @@
 [@flavorjones]: https://github.com/flavorjones
 [@sferik]: https://github.com/sferik
 [@Morriar]: https://github.com/Morriar
+[@daisuke]: https://github.com/daisuke
