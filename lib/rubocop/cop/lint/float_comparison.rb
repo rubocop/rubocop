@@ -15,6 +15,14 @@ module RuboCop
       #   x == 0.1
       #   x != 0.1
       #
+      #   # bad
+      #   case value
+      #   when 1.0
+      #     foo
+      #   when 2.0
+      #     bar
+      #   end
+      #
       #   # good - using BigDecimal
       #   x.to_d == 0.1.to_d
       #
@@ -32,12 +40,21 @@ module RuboCop
       #   # good - comparing against nil
       #   Float(x, exception: false) == nil
       #
+      #   # good - using epsilon comparison in case expression
+      #   case
+      #   when (value - 1.0).abs < Float::EPSILON
+      #     foo
+      #   when (value - 2.0).abs < Float::EPSILON
+      #     bar
+      #   end
+      #
       #   # Or some other epsilon based type of comparison:
       #   # https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
       #
       class FloatComparison < Base
         MSG_EQUALITY = 'Avoid equality comparisons of floats as they are unreliable.'
         MSG_INEQUALITY = 'Avoid inequality comparisons of floats as they are unreliable.'
+        MSG_CASE = 'Avoid float literal comparisons in case statements as they are unreliable.'
 
         EQUALITY_METHODS = %i[== != eql? equal?].freeze
         FLOAT_RETURNING_METHODS = %i[to_f Float fdiv].freeze
@@ -57,6 +74,16 @@ module RuboCop
           add_offense(node, message: message) if float?(lhs) || float?(rhs)
         end
         alias on_csend on_send
+
+        def on_case(node)
+          node.when_branches.each do |when_branch|
+            when_branch.each_condition do |condition|
+              next if !float?(condition) || literal_safe?(condition)
+
+              add_offense(condition, message: MSG_CASE)
+            end
+          end
+        end
 
         private
 
