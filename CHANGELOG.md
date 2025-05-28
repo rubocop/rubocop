@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.75.8 (2025-05-28)
+
 ### Bug fixes
 
 * [#14191](https://github.com/rubocop/rubocop/pull/14191): Fix `Lint/FloatComparison` cop to detect floating-point number comparisons in `case` statements. ([@daisuke][])

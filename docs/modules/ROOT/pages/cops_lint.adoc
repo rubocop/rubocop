@@ -2916,6 +2916,14 @@ if you perform any arithmetic operations involving precision loss.
 x == 0.1
 x != 0.1
 
+# bad
+case value
+when 1.0
+  foo
+when 2.0
+  bar
+end
+
 # good - using BigDecimal
 x.to_d == 0.1.to_d
 
@@ -2932,6 +2940,14 @@ tolerance = 0.0001
 
 # good - comparing against nil
 Float(x, exception: false) == nil
+
+# good - using epsilon comparison in case expression
+case
+when (value - 1.0).abs < Float::EPSILON
+  foo
+when (value - 2.0).abs < Float::EPSILON
+  bar
+end
 
 # Or some other epsilon based type of comparison:
 # https://www.embeddeduse.com/2019/08/26/qt-compare-two-floats/
