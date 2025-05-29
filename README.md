@@ -36,10 +36,11 @@ Working on RuboCop is often fun, but it also requires a great deal of time and e
 **RuboCop**'s installation is pretty standard:
 
 ```sh
-$ gem install rubocop
+gem install rubocop
 ```
 
-If you'd rather install RuboCop using `bundler`, add a line for it in your `Gemfile` (but set the `require` option to `false`, as it is a standalone tool):
+If you'd rather install RuboCop using `bundler`, add a line for it in your
+`Gemfile` (but set the `require` option to `false`, as it is a standalone tool):
 
 ```rb
 gem 'rubocop', require: false
@@ -61,12 +62,15 @@ See [our versioning policy](https://docs.rubocop.org/rubocop/versioning.html) fo
 
 Just type `rubocop` in a Ruby project's folder and watch the magic happen.
 
-```
-$ cd my/cool/ruby/project
-$ rubocop
+```sh
+cd my/cool/ruby/project
+rubocop
 ```
 
-You can also use this magic in your favorite editor with RuboCop's [built-in LSP server](https://docs.rubocop.org/rubocop/usage/lsp.html).
+> [!TIP]
+>
+> You can also use this magic in your favorite editor with RuboCop's
+> [built-in LSP server](https://docs.rubocop.org/rubocop/usage/lsp.html).
 
 ## Documentation
 
@@ -79,7 +83,7 @@ RuboCop officially supports the following runtime Ruby implementations:
 * MRI 2.7+
 * JRuby 9.4+
 
-Targets Ruby 2.0+ code analysis.
+It targets Ruby 2.0+ for code analysis.
 
 See the [compatibility documentation](https://docs.rubocop.org/rubocop/compatibility.html) for further details.
 
@@ -90,7 +94,6 @@ If you use RuboCop in your project, you can include one of these badges in your 
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-rubocop-brightgreen.svg)](https://github.com/rubocop/rubocop)
 
 [![Ruby Style Guide](https://img.shields.io/badge/code_style-community-brightgreen.svg)](https://rubystyle.guide)
-
 
 Here are the Markdown snippets for the two badges:
 
@@ -168,8 +171,11 @@ You can support the development of RuboCop via
 and [Tidelift](https://tidelift.com/subscription/pkg/rubygems-rubocop?utm_source=rubygems-rubocop&utm_medium=referral&utm_campaign=readme)
 .
 
-**Note:** If doing a sponsorship in the form of donation is problematic for your company from an accounting standpoint, we'd recommend
-the use of Tidelift, where you can get a support-like subscription instead.
+> [!NOTE]
+>
+> If doing a sponsorship in the form of donation is problematic for your company
+> from an accounting standpoint, we'd recommend the use of Tidelift, where you
+> can get a support-like subscription instead.
 
 ### Open Collective for Individuals
 
