@@ -4472,6 +4472,16 @@ Style/ItBlockParameter:
   VersionAdded: '1.75'
   VersionChanged: '<<next>>'
 
+Style/Itself:
+  Description: 'Checks for consistency for blocks that only return the block variable.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  EnforcedStyle: itself
+  SupportedStyles:
+    - itself
+    - it
+    - named_parameter
+
 Style/KeywordArgumentsMerging:
   Description: >-
                  When passing an existing hash as keyword arguments, provide additional arguments
