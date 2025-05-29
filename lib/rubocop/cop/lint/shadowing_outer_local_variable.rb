@@ -8,6 +8,11 @@ module RuboCop
       # given by `ruby -cw` prior to Ruby 2.6:
       # "shadowing outer local variable - foo".
       #
+      # The cop is now disabled by default to match the upstream Ruby behavior.
+      # It's useful, however, if you'd like to avoid shadowing variables from outer
+      # scopes, which some people consider an anti-pattern that makes it harder
+      # to keep track of what's going on in a program.
+      #
       # NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
       # because `Ractor` should not access outer variables.
       # eg. following style is encouraged:
