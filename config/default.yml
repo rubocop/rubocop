@@ -3963,10 +3963,10 @@ Style/EmptyStringInsideInterpolation:
   Description: 'Checks for empty strings being assigned inside string interpolation.'
   StyleGuide: '#empty-strings-in-interpolation'
   Enabled: pending
-  EnforcedStyle: ternary
+  EnforcedStyle: trailing_conditional
   SupportedStyles:
-    - ternary
     - trailing_conditional
+    - ternary
   VersionAdded: '<<next>>'
 
 Style/Encoding:

@@ -11,7 +11,7 @@ module RuboCop
       # While this cop would also apply to variables that are only going to be used as strings,
       # RuboCop can't detect that, so we only check inside of string interpolation.
       #
-      # @example EnforcedStyle: ternary (default)
+      # @example EnforcedStyle: trailing_conditional (default)
       #   # bad
       #   "#{condition ? 'foo' : ''}"
       #
@@ -24,7 +24,7 @@ module RuboCop
       #   # good
       #   "#{'foo' unless condition}"
       #
-      # @example EnforcedStyle: trailing_conditional
+      # @example EnforcedStyle: ternary
       #   # bad
       #   "#{'foo' if condition}"
       #
@@ -41,13 +41,14 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include Interpolation
         extend AutoCorrector
-        MSG_TERNARY = 'Do not return empty strings in string interpolation.'
+
         MSG_TRAILING_CONDITIONAL = 'Do not use trailing conditionals in string interpolation.'
+        MSG_TERNARY = 'Do not return empty strings in string interpolation.'
 
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
         def on_interpolation(node)
           node.each_child_node(:if) do |child_node|
-            if style == :ternary
+            if style == :trailing_conditional
               if empty_if_outcome?(child_node)
                 ternary_style_autocorrect(child_node, child_node.else_branch.source, 'unless')
               end
@@ -55,7 +56,7 @@ module RuboCop
               if empty_else_outcome?(child_node)
                 ternary_style_autocorrect(child_node, child_node.if_branch.source, 'if')
               end
-            elsif style == :trailing_conditional
+            elsif style == :ternary
               next unless child_node.modifier_form?
 
               ternary_component = if child_node.unless?
