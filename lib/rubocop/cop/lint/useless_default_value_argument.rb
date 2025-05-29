@@ -15,8 +15,8 @@ module RuboCop
       #   of `fetch`, or be a class other than the one listed above.
       #
       #   It is also unsafe because default value argument could have side effects:
-      #   [source,ruby]
       #
+      #   [source,ruby]
       #   ----
       #   def x(a) = puts "side effect"
       #   Array.new(5, x(1)) { 2 }
