@@ -153,7 +153,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRegexpQuantifiers, :config do
   end
 
   context 'with multiple redundant quantifiers' do
-    it 'registers offenses and corrects with leading optional quantifer' do
+    it 'registers offenses and corrects with leading optional quantifier' do
       expect_offense(<<~RUBY)
         foo = /(?:(?:a?)+)+/
                         ^^^ Replace redundant quantifiers `+` and `+` with a single `+`.
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRegexpQuantifiers, :config do
       RUBY
     end
 
-    it 'registers offenses and corrects with interspersed optional quantifer' do
+    it 'registers offenses and corrects with interspersed optional quantifier' do
       expect_offense(<<~RUBY)
         foo = /(?:(?:a+)?)+/
                         ^^^ Replace redundant quantifiers `?` and `+` with a single `*`.
@@ -177,7 +177,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRegexpQuantifiers, :config do
       RUBY
     end
 
-    it 'registers offenses and corrects with trailing optional quantifer' do
+    it 'registers offenses and corrects with trailing optional quantifier' do
       expect_offense(<<~RUBY)
         foo = /(?:(?:a+)+)?/
                         ^^^ Replace redundant quantifiers `+` and `?` with a single `*`.
