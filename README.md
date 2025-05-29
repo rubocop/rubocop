@@ -160,8 +160,8 @@ wide array of funding channels to account for your preferences
 currently [Open Collective](https://opencollective.com/rubocop) is our
 preferred funding platform).
 
-**If you're working in a company that's making significant use of RuboCop we'd appreciate it if you suggest to your company
-to become a RuboCop sponsor.**
+**If you're working in a company that's making significant use of RuboCop we'd
+appreciate it if you suggest to your company to become a RuboCop sponsor.**
 
 You can support the development of RuboCop via
 [GitHub Sponsors](https://github.com/sponsors/bbatsov),
