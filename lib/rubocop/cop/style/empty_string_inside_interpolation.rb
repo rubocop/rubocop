@@ -48,11 +48,11 @@ module RuboCop
         def on_interpolation(node)
           node.each_child_node(:if) do |child_node|
             if style == :ternary
-              if empty_if_outcome(child_node)
+              if empty_if_outcome?(child_node)
                 ternary_style_autocorrect(child_node, child_node.else_branch.source, 'unless')
               end
 
-              if empty_else_outcome(child_node)
+              if empty_else_outcome?(child_node)
                 ternary_style_autocorrect(child_node, child_node.if_branch.source, 'if')
               end
             elsif style == :trailing_conditional
@@ -74,12 +74,18 @@ module RuboCop
 
         private
 
-        def empty_if_outcome(node)
-          node.if_branch&.nil_type? || node.if_branch&.value&.empty?
+        def empty_if_outcome?(node)
+          empty_branch_outcome?(node.if_branch)
         end
 
-        def empty_else_outcome(node)
-          node.else_branch&.nil_type? || node.else_branch&.value&.empty?
+        def empty_else_outcome?(node)
+          empty_branch_outcome?(node.else_branch)
+        end
+
+        def empty_branch_outcome?(branch)
+          return false unless branch
+
+          branch.nil_type? || (branch.literal? && branch.value.empty?)
         end
 
         def ternary_style_autocorrect(node, outcome, condition)

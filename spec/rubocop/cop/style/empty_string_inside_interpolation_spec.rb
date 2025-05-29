@@ -4,6 +4,24 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
   context 'when EnforcedStyle is ternary' do
     let(:cop_config) { { 'EnforcedStyle' => 'ternary' } }
 
+    it 'does not register an offense when if branch is not a literal' do
+      expect_no_offenses(<<~'RUBY')
+        "#{condition ? send_node : 'foo'}"
+      RUBY
+    end
+
+    it 'does not register an offense when else branch is not a literal' do
+      expect_no_offenses(<<~'RUBY')
+        "#{condition ? 'foo' : send_node}"
+      RUBY
+    end
+
+    it 'does not register an offense when both if and else branches are not literals' do
+      expect_no_offenses(<<~'RUBY')
+        "#{condition ? send_node : another_send_node}"
+      RUBY
+    end
+
     %w['' "" nil].each do |empty|
       it "registers an offense when #{empty} is the false outcome of a ternary" do
         expect_offense(<<~'RUBY', empty: empty)
