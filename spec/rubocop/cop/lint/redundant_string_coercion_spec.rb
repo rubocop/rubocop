@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantStringCoercion, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects `to_s` with safe naviagation in `puts` arguments' do
+  it 'registers an offense and corrects `to_s` with safe navigation in `puts` arguments' do
     expect_offense(<<~RUBY)
       puts first&.to_s, second&.to_s
                   ^^^^ Redundant use of `Object#to_s` in `puts`.

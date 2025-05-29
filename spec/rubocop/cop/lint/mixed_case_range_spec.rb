@@ -139,7 +139,7 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
     RUBY
   end
 
-  it 'registers an offense for unsafe range with full octal escape preceeding' do
+  it 'registers an offense for unsafe range with full octal escape preceding' do
     expect_offense(<<~'RUBY'.sub(/\#{message}/, message))
       foo = /[\001A-z123]/
                   ^^^ #{message}
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Lint::MixedCaseRange, :config do
     RUBY
   end
 
-  it 'registers an offense for unsafe range with short octal escape preceeding' do
+  it 'registers an offense for unsafe range with short octal escape preceding' do
     expect_offense(<<~'RUBY'.sub(/\#{message}/, message))
       foo = /[\1A-z123]/
                 ^^^ #{message}

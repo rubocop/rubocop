@@ -514,7 +514,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
     end
 
-    context 'with one-liner class defintiion' do
+    context 'with one-liner class definition' do
       it 'registers an offense for classes with nested one-liner children' do
         expect_offense(<<~RUBY)
           class FooClass
@@ -581,7 +581,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         RUBY
       end
 
-      it 'registers an offense when one-liner class definition has multitple whitespaces before the `end` token' do
+      it 'registers an offense when one-liner class definition has multiple whitespaces before the `end` token' do
         expect_offense(<<~RUBY)
           class A < B
             class C
