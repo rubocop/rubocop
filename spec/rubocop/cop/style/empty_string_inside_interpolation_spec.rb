@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
-  context 'when EnforcedStyle is ternary' do
-    let(:cop_config) { { 'EnforcedStyle' => 'ternary' } }
+  context 'when EnforcedStyle is trailing_conditional' do
+    let(:cop_config) { { 'EnforcedStyle' => 'trailing_conditional' } }
 
     it 'does not register an offense when if branch is not a literal' do
       expect_no_offenses(<<~'RUBY')
@@ -66,11 +66,17 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
           "#{'foo' unless condition}"
         RUBY
       end
+
+      it 'does not register an offense when a trailing if is used inside string interpolation' do
+        expect_no_offenses(<<~'RUBY')
+          "#{'foo' if condition}"
+        RUBY
+      end
     end
   end
 
-  context 'when EnforcedStyle is trailing_conditional' do
-    let(:cop_config) { { 'EnforcedStyle' => 'trailing_conditional' } }
+  context 'when EnforcedStyle is ternary' do
+    let(:cop_config) { { 'EnforcedStyle' => 'ternary' } }
 
     it 'registers an offense when a trailing if is used inside string interpolation' do
       expect_offense(<<~'RUBY')
@@ -91,6 +97,12 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
 
       expect_correction(<<~'RUBY')
         "#{condition ? '' : 'foo'}"
+      RUBY
+    end
+
+    it 'does not register an offense when empty string is the false outcome of a ternary' do
+      expect_no_offenses(<<~'RUBY')
+        "#{condition ? 'foo' : ''}"
       RUBY
     end
   end
