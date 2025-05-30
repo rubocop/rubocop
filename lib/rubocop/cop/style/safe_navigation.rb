@@ -235,7 +235,7 @@ module RuboCop
           return false if !matching_nodes?(lhs_receiver, rhs_receiver) || rhs_receiver.nil?
           return false if use_var_only_in_unless_modifier?(node, lhs_receiver)
           return false if chain_length(rhs, rhs_receiver) > max_chain_length
-          return false if unsafe_method_used?(rhs, rhs_receiver.parent)
+          return false if unsafe_method_used?(node, rhs, rhs_receiver.parent)
           return false if rhs.send_type? && rhs.method?(:empty?)
 
           true
@@ -334,21 +334,24 @@ module RuboCop
           end
         end
 
-        def unsafe_method_used?(method_chain, method)
-          return true if unsafe_method?(method)
+        def unsafe_method_used?(node, method_chain, method)
+          return true if unsafe_method?(node, method)
 
           method.each_ancestor(:send).any? do |ancestor|
             break true unless config.cop_enabled?('Lint/SafeNavigationChain')
 
-            break true if unsafe_method?(ancestor)
+            break true if unsafe_method?(node, ancestor)
             break true if nil_methods.include?(ancestor.method_name)
             break false if ancestor == method_chain
           end
         end
 
-        def unsafe_method?(send_node)
-          negated?(send_node) ||
-            send_node.assignment? ||
+        def unsafe_method?(node, send_node)
+          return true if negated?(send_node)
+
+          return false if node.respond_to?(:ternary?) && node.ternary?
+
+          send_node.assignment? ||
             (!send_node.dot? && !send_node.safe_navigation?)
         end
 

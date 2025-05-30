@@ -806,6 +806,33 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           RUBY
         end
 
+        it 'registers an offense for ternary expressions in a method argument' do
+          expect_offense(<<~RUBY, variable: variable)
+            puts(%{variable} ? %{variable}.bar : nil)
+                 ^{variable}^^^^{variable}^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+
+            results << (%{variable} ? %{variable}.bar : nil)
+                        ^{variable}^^^^{variable}^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            puts(#{variable}&.bar)
+
+            results << (#{variable}&.bar)
+          RUBY
+        end
+
+        it 'registers an offense for ternary expressions in a collection assignment' do
+          expect_offense(<<~RUBY, variable: variable)
+            results[0] = %{variable} ? %{variable}.bar : nil
+                         ^{variable}^^^^{variable}^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            results[0] = #{variable}&.bar
+          RUBY
+        end
+
         it 'registers an offense for convertible ternary expressions' do
           expect_offense(<<~RUBY, variable: variable)
             %{variable} ? %{variable}.bar : nil
