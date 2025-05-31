@@ -1154,6 +1154,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  # Ruby 2.7's one-line `in` pattern node type is `match-pattern`.
+  it 'accepts parentheses when using one-line hash `in` pattern matching in a method argument', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      foo((bar in baz))
+    RUBY
+  end
+
+  # Ruby 3.0's one-line `in` pattern node type is `match-pattern-p`.
+  it 'accepts parentheses when using one-line hash `in` pattern matching in a method argument', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      foo((bar in baz))
+    RUBY
+  end
+
   context 'when the first argument in a method call begins with a hash literal' do
     it 'accepts parentheses if the argument list is not parenthesized' do
       expect_no_offenses('x ({ y: 1 }), z')

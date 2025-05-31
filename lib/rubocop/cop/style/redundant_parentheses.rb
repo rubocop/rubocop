@@ -49,6 +49,7 @@ module RuboCop
           empty_parentheses?(node) ||
             first_arg_begins_with_hash_literal?(node) ||
             rescue?(node) ||
+            in_pattern_matching_in_method_argument?(node) ||
             allowed_pin_operator?(node) ||
             allowed_expression?(node)
         end
@@ -120,6 +121,12 @@ module RuboCop
             parenthesized = root_method.parenthesized_call?
           end
           hash_literal && first_argument?(node) && !parentheses?(hash_literal) && !parenthesized
+        end
+
+        def in_pattern_matching_in_method_argument?(begin_node)
+          return false unless (node = begin_node.children.first)
+
+          target_ruby_version <= 2.7 ? node.match_pattern_type? : node.match_pattern_p_type?
         end
 
         def method_chain_begins_with_hash_literal(node)
