@@ -87,8 +87,8 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
   it 'does not register an offense when using `#[]=` with different keys' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
-        spec.metadata[:foo] = 1
-        spec.metadata[:bar] = 2
+        spec.metadata['foo'] = 1
+        spec.metadata['bar'] = 2
       end
     RUBY
   end
@@ -96,8 +96,8 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
   it 'does not register an offense when using `#[]=` with same keys and different receivers' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
-        spec.misc[:foo] = 1
-        spec.metadata[:foo] = 2
+        spec.misc['foo'] = 1
+        spec.metadata['foo'] = 2
       end
     RUBY
   end
@@ -105,8 +105,8 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
   it 'does not register an offense when using both `metadata#[]=` and `metadata=`' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
-        spec.metadata = { foo: 1 }
-        spec.metadata[:foo] = 1
+        spec.metadata = { 'foo' => 1 }
+        spec.metadata['foo'] = 1
       end
     RUBY
   end
