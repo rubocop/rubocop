@@ -111,6 +111,18 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
     RUBY
   end
 
+  it 'does not register an offense when using indexed array assignment' do
+    expect_no_offenses(<<~RUBY)
+      Gem::Specification.new do |spec|
+        spec.authors = []
+        spec.authors[0] = "author-1"
+        spec.authors[1] = "author-2"
+        spec.authors << "author-3"
+        spec.authors << "author-4"
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `metadata#[]=` with same key twice which are not literals' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
