@@ -11,6 +11,26 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
     RUBY
   end
 
+  it 'registers an offense when using `name=` twice and using `_1` as a specification variable' do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new do
+        _1.name = 'rubocop'
+        _1.name = 'rubocop2'
+        ^^^^^^^^^^^^^^^^^^^^ `name=` method calls already given on line 2 of the gemspec.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `name=` twice and using `it` as a specification variable', :ruby34 do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new do
+        it.name = 'rubocop'
+        it.name = 'rubocop2'
+        ^^^^^^^^^^^^^^^^^^^^ `name=` method calls already given on line 2 of the gemspec.
+      end
+    RUBY
+  end
+
   it 'registers an offense when using `version=` twice' do
     expect_offense(<<~RUBY)
       require 'rubocop/version'

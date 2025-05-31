@@ -57,13 +57,13 @@ module RuboCop
         # @!method assignment_method_declarations(node)
         def_node_search :assignment_method_declarations, <<~PATTERN
           (send
-            (lvar #match_block_variable_name?) _ ...)
+            (lvar {#match_block_variable_name? :_1 :it}) _ ...)
         PATTERN
 
         # @!method indexed_assignment_method_declarations(node)
         def_node_search :indexed_assignment_method_declarations, <<~PATTERN
           (send
-            (send (lvar #match_block_variable_name?) _)
+            (send (lvar {#match_block_variable_name? :_1 :it}) _)
             :[]=
             literal?
             _
