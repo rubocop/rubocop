@@ -281,6 +281,13 @@ Gemspec/AddRuntimeDependency:
   Include:
     - '**/*.gemspec'
 
+Gemspec/AttributeAssignment:
+  Description: 'Use consistent style for Gemspec attributes assignment.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Include:
+    - '**/*.gemspec'
+
 Gemspec/DependencyVersion:
   Description: 'Requires or forbids specifying gem dependency versions.'
   Enabled: false
