@@ -34,13 +34,23 @@ module RuboCop
               exit 0
             end
 
-            Cache.write_version_file(Cache.restart_key)
+            write_version_file
 
             host = ENV.fetch('RUBOCOP_SERVER_HOST', '127.0.0.1')
             port = ENV.fetch('RUBOCOP_SERVER_PORT', 0)
 
             Server::Core.new.start(host, port, detach: @detach)
           end
+        end
+
+        private
+
+        def write_version_file
+          Cache.write_version_file(
+            Cache.restart_key(
+              args_config_file_path: self.class.args_config_file_path
+            )
+          )
         end
       end
     end
