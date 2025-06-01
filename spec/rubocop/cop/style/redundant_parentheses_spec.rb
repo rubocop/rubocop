@@ -1155,9 +1155,52 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   end
 
   # Ruby 2.7's one-line `in` pattern node type is `match-pattern`.
+  it 'registers parentheses when using one-line hash `in` pattern matching in a redundant parentheses', :ruby27 do
+    expect_offense(<<~RUBY)
+      (expression in pattern)
+      ^^^^^^^^^^^^^^^^^^^^^^^ Don't use parentheses around a one-line pattern matching.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      expression in pattern
+    RUBY
+  end
+
+  # Ruby 3.0's one-line `in` pattern node type is `match-pattern-p`.
+  it 'registers parentheses when using one-line hash `in` pattern matching in a redundant parentheses', :ruby30 do
+    expect_offense(<<~RUBY)
+      (expression in pattern)
+      ^^^^^^^^^^^^^^^^^^^^^^^ Don't use parentheses around a one-line pattern matching.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      expression in pattern
+    RUBY
+  end
+
+  # Ruby 3.0's one-line `=>` pattern node type is `match-pattern`.
+  it 'registers an offense when using one-line hash `=>` pattern matching in a redundant parentheses', :ruby30 do
+    expect_offense(<<~RUBY)
+      (expression => pattern)
+      ^^^^^^^^^^^^^^^^^^^^^^^ Don't use parentheses around a one-line pattern matching.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      expression => pattern
+    RUBY
+  end
+
+  # Ruby 2.7's one-line `in` pattern node type is `match-pattern`.
   it 'accepts parentheses when using one-line hash `in` pattern matching in a method argument', :ruby27 do
     expect_no_offenses(<<~RUBY)
       foo((bar in baz))
+    RUBY
+  end
+
+  # Ruby 2.7's one-line `in` pattern node type is `match-pattern`.
+  it 'accepts parentheses when using one-line hash `in` pattern matching in a method argument with safe navigation', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      obj&.foo((bar in baz))
     RUBY
   end
 
@@ -1165,6 +1208,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it 'accepts parentheses when using one-line hash `in` pattern matching in a method argument', :ruby30 do
     expect_no_offenses(<<~RUBY)
       foo((bar in baz))
+    RUBY
+  end
+
+  # Ruby 3.0's one-line `in` pattern node type is `match-pattern-p`.
+  it 'accepts parentheses when using one-line hash `in` pattern matching in a method argument with safe navigation', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      obj&.foo((bar in baz))
     RUBY
   end
 
