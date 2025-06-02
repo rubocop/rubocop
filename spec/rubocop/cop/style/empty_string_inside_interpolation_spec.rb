@@ -34,6 +34,17 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
         RUBY
       end
 
+      it "registers an offense when #{empty} is the false outcome of a ternary and another value is a non-string literal" do
+        expect_offense(<<~'RUBY', empty: empty)
+          "#{condition ? 42 : %{empty}}"
+             ^^^^^^^^^^^^^^^^^^{empty} Do not return empty strings in string interpolation.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          "#{42 if condition}"
+        RUBY
+      end
+
       it "registers an offense when #{empty} is the false outcome of a single-line conditional" do
         expect_offense(<<~'RUBY', empty: empty)
           "#{if condition; 'foo' else %{empty} end}"

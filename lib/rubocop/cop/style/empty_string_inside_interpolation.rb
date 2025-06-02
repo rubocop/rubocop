@@ -86,7 +86,7 @@ module RuboCop
         def empty_branch_outcome?(branch)
           return false unless branch
 
-          branch.nil_type? || (branch.literal? && branch.value.empty?)
+          branch.nil_type? || (branch.str_type? && branch.value.empty?)
         end
 
         def ternary_style_autocorrect(node, outcome, condition)
