@@ -240,30 +240,22 @@ module RuboCop
         def correct_if_node(node, cond)
           result = condition_evaluation(node, cond)
 
-          if node.elsif? && result
-            add_offense(cond) do |corrector|
-              corrector.replace(node, "else\n  #{node.if_branch.source}")
-            end
-          elsif node.elsif? && !result
-            add_offense(cond) do |corrector|
-              corrector.replace(node, "else\n  #{node.else_branch.source}")
-            end
-          elsif node.if_branch && result
-            add_offense(cond) do |corrector|
-              corrector.replace(node, node.if_branch.source)
-            end
-          elsif node.elsif_conditional?
-            add_offense(cond) do |corrector|
-              corrector.replace(node, "#{node.else_branch.source.sub('elsif', 'if')}\nend")
-            end
-          elsif node.else? || node.ternary?
-            add_offense(cond) do |corrector|
-              corrector.replace(node, node.else_branch.source)
-            end
-          else
-            add_offense(cond) do |corrector|
-              corrector.remove(node)
-            end
+          new_node = if node.elsif? && result
+                       "else\n  #{range_with_comments(node.if_branch).source}"
+                     elsif node.elsif? && !result
+                       "else\n  #{node.else_branch.source}"
+                     elsif node.if_branch && result
+                       node.if_branch.source
+                     elsif node.elsif_conditional?
+                       "#{node.else_branch.source.sub('elsif', 'if')}\nend"
+                     elsif node.else? || node.ternary?
+                       node.else_branch.source
+                     else
+                       '' # Equivalent to removing the node
+                     end
+
+          add_offense(cond) do |corrector|
+            corrector.replace(node, new_node)
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
