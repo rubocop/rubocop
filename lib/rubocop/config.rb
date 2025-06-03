@@ -40,6 +40,16 @@ module RuboCop
           # This is necessary to allow a renamed cop have its old configuration merged in
           # before being used (which is necessary to allow it to be disabled via config).
           cop_options = self[cop_name].dup || {}
+
+          # For deprecated cops, we need to ensure they get proper enabled status calculation
+          # to prevent issues with auto-gen-config. If the deprecated cop is mentioned in
+          # config but doesn't have explicit enabled status, we should calculate it properly.
+          # If the deprecated cop is explicitly configured in the user's config,
+          # it should be enabled to maintain backward compatibility and ensure
+          # auto-gen-config works correctly
+          if !cop_options.key?('Enabled') && key?(cop_name)
+            cop_options['Enabled'] = !for_all_cops['DisabledByDefault']
+          end
         else
           qualified_cop_name = Cop::Registry.qualified_cop_name(cop_name, loaded_path, warn: false)
           cop_options = self[qualified_cop_name].dup || {}
@@ -60,7 +70,24 @@ module RuboCop
               Warning: Using `#{deprecated_cop_name}` configuration in #{loaded_path} for `#{cop}`.
             WARNING
 
-            cop_options.merge!(@for_cop[deprecated_cop_name])
+            # When merging deprecated config, we need to be careful with the Enabled status.
+            # If the deprecated cop was explicitly disabled, we should respect that.
+            # But if it was just mentioned without explicit enable/disable, we shouldn't
+            # let it override the current cop's enabled status.
+            deprecated_enabled = deprecated_config['Enabled']
+            current_enabled = cop_options['Enabled']
+
+            cop_options.merge!(deprecated_config)
+
+            # Restore proper enabled status handling
+            if deprecated_enabled == false
+              # Explicitly disabled deprecated cop should disable current cop
+              cop_options['Enabled'] = false
+            elsif deprecated_enabled.nil? && current_enabled
+              # If deprecated cop wasn't explicitly enabled/disabled but current cop
+              # should be enabled, keep it enabled
+              cop_options['Enabled'] = current_enabled
+            end
           end
         end
 

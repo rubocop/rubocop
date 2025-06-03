@@ -778,6 +778,98 @@ RSpec.describe RuboCop::Config do
     end
   end
 
+  describe '#for_cop with deprecated cop handling for auto-gen-config', :isolated_environment, :mock_obsoletion do
+    before do
+      create_file(obsoletion_configuration_path, <<~YAML)
+        renamed:
+          Style/PredicateName: Naming/PredicatePrefix
+          Naming/PredicateName: Naming/PredicatePrefix
+      YAML
+    end
+
+    context 'when deprecated cop is mentioned without explicit enable status' do
+      let(:hash) { { 'Naming/PredicateName' => {} } }
+
+      it 'keeps the current cop enabled for auto-gen-config compatibility' do
+        expect(configuration).not_to be_cop_enabled('Naming/PredicateName')
+        expect(configuration).to be_cop_enabled('Naming/PredicatePrefix')
+      end
+
+      it 'preserves the current cop configuration' do
+        config = configuration.for_cop('Naming/PredicatePrefix')
+        expect(config['Enabled']).to be true
+      end
+    end
+
+    context 'when deprecated cop is explicitly disabled' do
+      let(:hash) { { 'Naming/PredicateName' => { 'Enabled' => false } } }
+
+      it 'respects the explicit disable for both cops' do
+        expect(configuration).not_to be_cop_enabled('Naming/PredicateName')
+        expect(configuration).not_to be_cop_enabled('Naming/PredicatePrefix')
+      end
+    end
+
+    context 'when deprecated cop is explicitly enabled' do
+      let(:hash) { { 'Naming/PredicateName' => { 'Enabled' => true } } }
+
+      it 'enables both cops' do
+        expect(configuration).to be_cop_enabled('Naming/PredicateName')
+        expect(configuration).to be_cop_enabled('Naming/PredicatePrefix')
+      end
+    end
+
+    context 'when deprecated cop has other configuration options' do
+      let(:hash) { { 'Naming/PredicateName' => { 'NamePrefix' => ['custom_'] } } }
+
+      it 'merges configuration while preserving enabled status' do
+        config = configuration.for_cop('Naming/PredicatePrefix')
+        expect(config['Enabled']).to be true
+        expect(config['NamePrefix']).to eq(['custom_'])
+      end
+
+      it 'shows deprecation warning when accessing current cop' do
+        configuration.for_cop('Naming/PredicatePrefix')
+        expected_warning = 'Warning: Using `Naming/PredicateName` configuration in ' \
+                           'example/.rubocop.yml for `Naming/PredicatePrefix`.'
+        expect($stderr.string).to include(expected_warning)
+      end
+    end
+
+    context 'when both deprecated and current cop are configured' do
+      let(:hash) do
+        {
+          'Naming/PredicateName' => { 'NamePrefix' => ['old_'] },
+          'Naming/PredicatePrefix' => { 'NamePrefix' => ['new_'], 'Enabled' => true }
+        }
+      end
+
+      it 'merges deprecated config on top of current config' do
+        config = configuration.for_cop('Naming/PredicatePrefix')
+        expect(config['Enabled']).to be true
+        expect(config['NamePrefix']).to eq(['old_']) # deprecated config wins
+      end
+    end
+
+    context 'with multiple deprecated names (Style/PredicateName -> Naming/PredicateName -> Naming/PredicatePrefix)' do
+      let(:hash) { { 'Style/PredicateName' => { 'NamePrefix' => ['style_'] } } }
+
+      before do
+        create_file(obsoletion_configuration_path, <<~YAML)
+          renamed:
+            Style/PredicateName: Naming/PredicatePrefix
+            Naming/PredicateName: Naming/PredicatePrefix
+        YAML
+      end
+
+      it 'handles multiple levels of deprecation correctly' do
+        config = configuration.for_cop('Naming/PredicatePrefix')
+        expect(config['Enabled']).to be true
+        expect(config['NamePrefix']).to eq(['style_'])
+      end
+    end
+  end
+
   describe '#for_badge' do
     let(:hash) do
       {
