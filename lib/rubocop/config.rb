@@ -27,69 +27,16 @@ module RuboCop
       config
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
     def initialize(hash = RuboCop::ConfigLoader.default_configuration, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
         cop_name = cop.respond_to?(:cop_name) ? cop.cop_name : cop
 
-        if ConfigObsoletion.deprecated_cop_name?(cop)
-          # Since a deprecated cop will no longer have a qualified name (as the badge is no
-          # longer valid), and since we do not want to automatically enable the cop, we just
-          # set the configuration to an empty hash if it is unset.
-          # This is necessary to allow a renamed cop have its old configuration merged in
-          # before being used (which is necessary to allow it to be disabled via config).
-          cop_options = self[cop_name].dup || {}
-
-          # For deprecated cops, we need to ensure they get proper enabled status calculation
-          # to prevent issues with auto-gen-config. If the deprecated cop is mentioned in
-          # config but doesn't have explicit enabled status, we should calculate it properly.
-          # If the deprecated cop is explicitly configured in the user's config,
-          # it should be enabled to maintain backward compatibility and ensure
-          # auto-gen-config works correctly
-          if !cop_options.key?('Enabled') && key?(cop_name)
-            cop_options['Enabled'] = !for_all_cops['DisabledByDefault']
-          end
-        else
-          qualified_cop_name = Cop::Registry.qualified_cop_name(cop_name, loaded_path, warn: false)
-          cop_options = self[qualified_cop_name].dup || {}
-          cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
-
-          # If the cop has deprecated names (ie. it has been renamed), it is possible that
-          # users will still have old configuration for the cop's old name. In this case,
-          # if `ConfigObsoletion` is configured to warn rather than error (and therefore
-          # RuboCop runs), we want to respect the old configuration, so merge it in.
-          #
-          # NOTE: If there is configuration for both the cop and a deprecated names, the old
-          # configuration will be merged on top of the new configuration!
-          ConfigObsoletion.deprecated_names_for(cop).each do |deprecated_cop_name|
-            deprecated_config = @for_cop[deprecated_cop_name]
-            next if deprecated_config.empty?
-
-            warn Rainbow(<<~WARNING).yellow
-              Warning: Using `#{deprecated_cop_name}` configuration in #{loaded_path} for `#{cop}`.
-            WARNING
-
-            # When merging deprecated config, we need to be careful with the Enabled status.
-            # If the deprecated cop was explicitly disabled, we should respect that.
-            # But if it was just mentioned without explicit enable/disable, we shouldn't
-            # let it override the current cop's enabled status.
-            deprecated_enabled = deprecated_config['Enabled']
-            current_enabled = cop_options['Enabled']
-
-            cop_options.merge!(deprecated_config)
-
-            # Restore proper enabled status handling
-            if deprecated_enabled == false
-              # Explicitly disabled deprecated cop should disable current cop
-              cop_options['Enabled'] = false
-            elsif deprecated_enabled.nil? && current_enabled
-              # If deprecated cop wasn't explicitly enabled/disabled but current cop
-              # should be enabled, keep it enabled
-              cop_options['Enabled'] = current_enabled
-            end
-          end
-        end
+        cop_options = if ConfigObsoletion.deprecated_cop_name?(cop)
+                        handle_deprecated_cop(cop_name)
+                      else
+                        handle_current_cop(cop, cop_name, loaded_path)
+                      end
 
         h[cop] = h[cop_name] = cop_options
       end
@@ -99,7 +46,6 @@ module RuboCop
       @badge_config_cache = {}.compare_by_identity
       @clusivity_config_exists_cache = {}
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def loaded_plugins
       @loaded_plugins ||= ConfigLoader.loaded_plugins
@@ -421,6 +367,65 @@ module RuboCop
       return nil if cop_department.empty?
 
       self[cop_department.join('/')]
+    end
+
+    def handle_deprecated_cop(cop_name)
+      # Since a deprecated cop will no longer have a qualified name (as the badge is no
+      # longer valid), and since we do not want to automatically enable the cop, we just
+      # set the configuration to an empty hash if it is unset.
+      # This is necessary to allow a renamed cop have its old configuration merged in
+      # before being used (which is necessary to allow it to be disabled via config).
+      self[cop_name].dup || {}
+    end
+
+    def handle_current_cop(cop, cop_name, loaded_path)
+      qualified_cop_name = Cop::Registry.qualified_cop_name(cop_name, loaded_path, warn: false)
+      cop_options = self[qualified_cop_name].dup || {}
+      cop_options['Enabled'] = enable_cop?(qualified_cop_name, cop_options)
+
+      merge_deprecated_cop_configs(cop, cop_options)
+      cop_options
+    end
+
+    def merge_deprecated_cop_configs(cop, cop_options)
+      # If the cop has deprecated names (ie. it has been renamed), it is possible that
+      # users will still have old configuration for the cop's old name. In this case,
+      # if `ConfigObsoletion` is configured to warn rather than error (and therefore
+      # RuboCop runs), we want to respect the old configuration, so merge it in.
+      #
+      # NOTE: If there is configuration for both the cop and a deprecated names, the old
+      # configuration will be merged on top of the new configuration!
+      ConfigObsoletion.deprecated_names_for(cop).each do |deprecated_cop_name|
+        deprecated_config = @for_cop[deprecated_cop_name]
+        next if deprecated_config.empty?
+
+        warn Rainbow(<<~WARNING).yellow
+          Warning: Using `#{deprecated_cop_name}` configuration in #{loaded_path} for `#{cop}`.
+        WARNING
+
+        merge_deprecated_config_with_enabled_handling(cop_options, deprecated_config)
+      end
+    end
+
+    def merge_deprecated_config_with_enabled_handling(cop_options, deprecated_config)
+      # When merging deprecated config, we need to be careful with the Enabled status.
+      # If the deprecated cop was explicitly disabled, we should respect that.
+      # But if it was just mentioned without explicit enable/disable, we shouldn't
+      # let it override the current cop's enabled status.
+      current_enabled = cop_options['Enabled']
+      has_explicit_enabled = deprecated_config.key?('Enabled')
+
+      cop_options.merge!(deprecated_config)
+
+      # Restore proper enabled status handling for auto-gen-config compatibility
+      return if has_explicit_enabled
+
+      # If deprecated cop wasn't explicitly enabled/disabled but current cop
+      # should be enabled, keep it enabled. This prevents auto-gen-config issues
+      # where deprecated cops mentioned without explicit status would disable current cops.
+      cop_options['Enabled'] = current_enabled if current_enabled
+
+      # If has_explicit_enabled is true, the merge already set the correct value
     end
   end
 end
