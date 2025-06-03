@@ -201,6 +201,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'plausible', 'while (var = 42); end'
   it_behaves_like 'plausible', 'until (var = 42); end'
   it_behaves_like 'plausible', '(var + 42) > do_something'
+  it_behaves_like 'plausible', 'foo((bar rescue baz))'
 
   it_behaves_like 'redundant', '(!x)', '!x', 'a unary operation'
   it_behaves_like 'redundant', '(~x)', '~x', 'a unary operation'
