@@ -806,6 +806,12 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           RUBY
         end
 
+        it 'allows ternary expression with index access call' do
+          expect_no_offenses(<<~RUBY)
+            #{variable} ? #{variable}[index] : nil
+          RUBY
+        end
+
         it 'registers an offense for ternary expressions in a method argument' do
           expect_offense(<<~RUBY, variable: variable)
             puts(%{variable} ? %{variable}.bar : nil)

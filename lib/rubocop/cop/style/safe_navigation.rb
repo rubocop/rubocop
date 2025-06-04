@@ -86,6 +86,8 @@ module RuboCop
       #   foo.baz = bar if foo
       #   foo.baz + bar if foo
       #   foo.bar > 2 if foo
+      #
+      #   foo ? foo[index] : nil # Ignored `foo&.[](index)` due to unclear readability benefit.
       class SafeNavigation < Base # rubocop:disable Metrics/ClassLength
         include NilMethods
         include RangeHelp
@@ -146,6 +148,7 @@ module RuboCop
 
           body = extract_if_body(node)
           method_call = receiver.parent
+          return if method_call.method?(:[])
 
           removal_ranges = [begin_range(node, body), end_range(node, body)]
 
