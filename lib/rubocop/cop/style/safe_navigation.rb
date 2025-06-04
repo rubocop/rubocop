@@ -148,7 +148,7 @@ module RuboCop
 
           body = extract_if_body(node)
           method_call = receiver.parent
-          return if method_call.method?(:[])
+          return if method_call.method?(:[]) || method_call.method?(:[]=)
 
           removal_ranges = [begin_range(node, body), end_range(node, body)]
 
