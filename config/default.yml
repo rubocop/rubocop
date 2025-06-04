@@ -1923,7 +1923,7 @@ Lint/EmptyInterpolation:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.20'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.76'
 
 Lint/EmptyWhen:
   Description: 'Checks for `when` branches with empty bodies.'
@@ -2425,7 +2425,7 @@ Lint/ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: false
   VersionAdded: '0.9'
-  VersionChanged: <<next>>
+  VersionChanged: '1.76'
 
 Lint/SharedMutableDefault:
   Description: 'Checks for mutable literals used as default arguments during Hash initialization.'
@@ -2616,7 +2616,7 @@ Lint/UselessConstantScoping:
 Lint/UselessDefaultValueArgument:
   Description: 'Checks for usage of `fetch` or `Array.new` with default value argument and block.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.76'
   Safe: false
   AllowedReceivers: []
 
@@ -2647,7 +2647,7 @@ Lint/UselessNumericOperation:
 Lint/UselessOr:
   Description: 'Checks for useless OR expressions.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.76'
 
 Lint/UselessRescue:
   Description: 'Checks for useless `rescue`s.'
@@ -3062,7 +3062,7 @@ Naming/MethodParameterName:
 Naming/PredicateMethod:
   Description: 'Checks that predicate methods end with `?` and non-predicate methods do not.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.76'
   # In `aggressive` mode, the cop will register an offense for predicate methods that
   #   may return a non-boolean value.
   # In `conservative` mode, the cop will *not* register an offense for predicate methods
@@ -3972,7 +3972,7 @@ Style/EmptyStringInsideInterpolation:
   SupportedStyles:
     - trailing_conditional
     - ternary
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.76'
 
 Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
@@ -4475,7 +4475,7 @@ Style/ItBlockParameter:
     - always
     - disallow
   VersionAdded: '1.75'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.76'
 
 Style/KeywordArgumentsMerging:
   Description: >-
@@ -5192,7 +5192,7 @@ Style/RedundantArrayFlatten:
   Description: 'Checks for redundant calls of `Array#flatten`.'
   Enabled: pending
   Safe: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.76'
 
 Style/RedundantAssignment:
   Description: 'Checks for redundant assignment before returning.'

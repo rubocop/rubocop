@@ -1196,8 +1196,119 @@ end
 | Array
 |===
 
-[#namingpredicatename]
-== Naming/PredicateName
+[#namingpredicatemethod]
+== Naming/PredicateMethod
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.76
+| -
+|===
+
+Checks that predicate methods end with `?` and non-predicate methods do not.
+
+The names of predicate methods (methods that return a boolean value) should end
+in a question mark. Methods that don’t return a boolean, shouldn’t
+end in a question mark.
+
+The cop assesses a predicate method as one that returns boolean values. Likewise,
+a method that only returns literal values is assessed as non-predicate. The cop does
+not make an assessment if the return type is unknown (method calls, variables, etc.).
+
+NOTE: Operator methods (`def ==`, etc.) are ignored.
+
+By default, the cop runs in `conservative` mode, which allows a method to be named
+with a question mark as long as at least one return value is boolean. In `aggressive`
+mode, methods with a question mark will register an offense if any known non-boolean
+return values are detected.
+
+The cop also has `AllowedMethods` configuration in order to prevent the cop from
+registering an offense from a method name that does not confirm to the naming
+guidelines. By default, `call` is allowed.
+
+[#examples-namingpredicatemethod]
+=== Examples
+
+[#mode_-conservative-_default_-namingpredicatemethod]
+==== Mode: conservative (default)
+
+[source,ruby]
+----
+# bad
+def foo
+  bar == baz
+end
+
+# good
+def foo?
+  bar == baz
+end
+
+# bad
+def foo?
+  5
+end
+
+# good
+def foo
+  5
+end
+
+# good - operator method
+def ==(other)
+  hash == other.hash
+end
+
+# good - at least one return value is boolean
+def foo?
+  return unless bar?
+  true
+end
+
+# ok - return type is not known
+def foo?
+  bar
+end
+
+# ok - return type is not known
+def foo
+  bar?
+end
+----
+
+[#mode_-aggressive-namingpredicatemethod]
+==== Mode: aggressive
+
+[source,ruby]
+----
+# bad - the method returns nil in some cases
+def foo?
+  return unless bar?
+  true
+end
+----
+
+[#configurable-attributes-namingpredicatemethod]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Mode
+| `conservative`
+| String
+
+| AllowedMethods
+| `call`
+| Array
+|===
+
+[#namingpredicateprefix]
+== Naming/PredicatePrefix
 
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
@@ -1227,10 +1338,10 @@ When `UseSorbetSigs` set to true (optional), the cop will only report
 offenses if the method has a Sorbet `sig` with a return type of
 `T::Boolean`. Dynamic methods are not supported with this configuration.
 
-[#examples-namingpredicatename]
+[#examples-namingpredicateprefix]
 === Examples
 
-[#nameprefix_-__is___-_has___-_have___-_default_-namingpredicatename]
+[#nameprefix_-__is___-_has___-_have___-_default_-namingpredicateprefix]
 ==== NamePrefix: ['is_', 'has_', 'have_'] (default)
 
 [source,ruby]
@@ -1250,7 +1361,7 @@ def is_even?(value)
 end
 ----
 
-[#nameprefix_-__seems_to_be___-namingpredicatename]
+[#nameprefix_-__seems_to_be___-namingpredicateprefix]
 ==== NamePrefix: ['seems_to_be_']
 
 [source,ruby]
@@ -1270,7 +1381,7 @@ def seems_to_be_even?(value)
 end
 ----
 
-[#allowedmethods_-__is_a___-_default_-namingpredicatename]
+[#allowedmethods_-__is_a___-_default_-namingpredicateprefix]
 ==== AllowedMethods: ['is_a?'] (default)
 
 [source,ruby]
@@ -1281,7 +1392,7 @@ def is_a?(value)
 end
 ----
 
-[#allowedmethods_-__is_even___-namingpredicatename]
+[#allowedmethods_-__is_even___-namingpredicateprefix]
 ==== AllowedMethods: ['is_even?']
 
 [source,ruby]
@@ -1291,7 +1402,7 @@ def is_even?(value)
 end
 ----
 
-[#usesorbetsigs_-false-_default_-namingpredicatename]
+[#usesorbetsigs_-false-_default_-namingpredicateprefix]
 ==== UseSorbetSigs: false (default)
 
 [source,ruby]
@@ -1309,7 +1420,7 @@ def is_this_thing_on?
 end
 ----
 
-[#usesorbetsigs_-true-namingpredicatename]
+[#usesorbetsigs_-true-namingpredicateprefix]
 ==== UseSorbetSigs: true
 
 [source,ruby]
@@ -1325,7 +1436,7 @@ def odd?(value)
 end
 ----
 
-[#methoddefinitionmacros_-__define_method__-_define_singleton_method__-_default_-namingpredicatename]
+[#methoddefinitionmacros_-__define_method__-_define_singleton_method__-_default_-namingpredicateprefix]
 ==== MethodDefinitionMacros: ['define_method', 'define_singleton_method'] (default)
 
 [source,ruby]
@@ -1337,7 +1448,7 @@ define_method(:is_even) { |value| }
 define_method(:even?) { |value| }
 ----
 
-[#methoddefinitionmacros_-__def_node_matcher__-namingpredicatename]
+[#methoddefinitionmacros_-__def_node_matcher__-namingpredicateprefix]
 ==== MethodDefinitionMacros: ['def_node_matcher']
 
 [source,ruby]
@@ -1349,7 +1460,7 @@ def_node_matcher(:is_even) { |value| }
 def_node_matcher(:even?) { |value| }
 ----
 
-[#configurable-attributes-namingpredicatename]
+[#configurable-attributes-namingpredicateprefix]
 === Configurable attributes
 
 |===
@@ -1380,7 +1491,7 @@ def_node_matcher(:even?) { |value| }
 | Array
 |===
 
-[#references-namingpredicatename]
+[#references-namingpredicateprefix]
 === References
 
 * https://rubystyle.guide#bool-methods-qmark

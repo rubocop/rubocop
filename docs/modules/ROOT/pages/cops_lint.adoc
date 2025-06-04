@@ -2618,7 +2618,7 @@ end
 | Yes
 | Command-line only
 | 0.20
-| 1.61
+| 1.76
 |===
 
 Checks for empty interpolation.
@@ -3189,9 +3189,11 @@ Prefer `equal?` over `==` when comparing `object_id`.
 ----
 # bad
 foo.object_id == bar.object_id
+foo.object_id != baz.object_id
 
 # good
 foo.equal?(bar)
+!foo.equal?(baz)
 ----
 
 [#references-lintidentitycomparison]
@@ -6484,17 +6486,22 @@ end
 |===
 | Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
 
-| Enabled
+| Disabled
 | Yes
 | No
 | 0.9
-| -
+| 1.76
 |===
 
 Checks for the use of local variable names from an outer scope
 in block arguments or block-local variables. This mirrors the warning
 given by `ruby -cw` prior to Ruby 2.6:
 "shadowing outer local variable - foo".
+
+The cop is now disabled by default to match the upstream Ruby behavior.
+It's useful, however, if you'd like to avoid shadowing variables from outer
+scopes, which some people consider an anti-pattern that makes it harder
+to keep track of what's going on in a program.
 
 NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
 because `Ractor` should not access outer variables.
@@ -8221,6 +8228,83 @@ class Foo
 end
 ----
 
+[#lintuselessdefaultvalueargument]
+== Lint/UselessDefaultValueArgument
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Always (Unsafe)
+| 1.76
+| -
+|===
+
+Checks for usage of method `fetch` or `Array.new` with default value argument
+and block. In such cases, block will always be used as default value.
+
+This cop emulates Ruby warning "block supersedes default value argument" which
+applies to `Array.new`, `Array#fetch`, `Hash#fetch`, `ENV.fetch` and
+`Thread#fetch`.
+
+[#safety-lintuselessdefaultvalueargument]
+=== Safety
+
+This cop is unsafe because the receiver could have nonstandard implementation
+of `fetch`, or be a class other than the one listed above.
+
+It is also unsafe because default value argument could have side effects:
+
+[source,ruby]
+----
+def x(a) = puts "side effect"
+Array.new(5, x(1)) { 2 }
+----
+
+so removing it would change behavior.
+
+[#examples-lintuselessdefaultvalueargument]
+=== Examples
+
+[source,ruby]
+----
+# bad
+x.fetch(key, default_value) { block_value }
+Array.new(size, default_value) { block_value }
+
+# good
+x.fetch(key) { block_value }
+Array.new(size) { block_value }
+
+# also good - in case default value argument is desired instead
+x.fetch(key, default_value)
+Array.new(size, default_value)
+
+# good - keyword arguments aren't registered as offenses
+x.fetch(key, keyword: :arg) { block_value }
+----
+
+[#allowedreceivers_-__rails_cache__-lintuselessdefaultvalueargument]
+==== AllowedReceivers: ['Rails.cache']
+
+[source,ruby]
+----
+# good
+Rails.cache.fetch(name, options) { block }
+----
+
+[#configurable-attributes-lintuselessdefaultvalueargument]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedReceivers
+| `[]`
+| Array
+|===
+
 [#lintuselessdefined]
 == Lint/UselessDefined
 
@@ -8409,6 +8493,83 @@ x **= 1
 
 # good
 x = x
+----
+
+[#lintuselessor]
+== Lint/UselessOr
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.76
+| -
+|===
+
+Checks for useless OR (`||` and `or`) expressions.
+
+Some methods always return a truthy value, even when called
+on `nil` (e.g. `nil.to_i` evaluates to `0`). Therefore, OR expressions
+appended after these methods will never evaluate.
+
+[#examples-lintuselessor]
+=== Examples
+
+[source,ruby]
+----
+# bad
+x.to_a || fallback
+x.to_c || fallback
+x.to_d || fallback
+x.to_i || fallback
+x.to_f || fallback
+x.to_h || fallback
+x.to_r || fallback
+x.to_s || fallback
+x.to_sym || fallback
+x.intern || fallback
+x.inspect || fallback
+x.hash || fallback
+x.object_id || fallback
+x.__id__ || fallback
+
+x.to_s or fallback
+
+# good - if fallback is same as return value of method called on nil
+x.to_a # nil.to_a returns []
+x.to_c # nil.to_c returns (0+0i)
+x.to_d # nil.to_d returns 0.0
+x.to_i # nil.to_i returns 0
+x.to_f # nil.to_f returns 0.0
+x.to_h # nil.to_h returns {}
+x.to_r # nil.to_r returns (0/1)
+x.to_s # nil.to_s returns ''
+x.to_sym # nil.to_sym raises an error
+x.intern # nil.intern raises an error
+x.inspect # nil.inspect returns "nil"
+x.hash # nil.hash returns an Integer
+x.object_id # nil.object_id returns an Integer
+x.__id__ # nil.object_id returns an Integer
+
+# good - if the intention is not to call the method on nil
+x&.to_a || fallback
+x&.to_c || fallback
+x&.to_d || fallback
+x&.to_i || fallback
+x&.to_f || fallback
+x&.to_h || fallback
+x&.to_r || fallback
+x&.to_s || fallback
+x&.to_sym || fallback
+x&.intern || fallback
+x&.inspect || fallback
+x&.hash || fallback
+x&.object_id || fallback
+x&.__id__ || fallback
+
+x&.to_s or fallback
 ----
 
 [#lintuselessrescue]
