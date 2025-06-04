@@ -165,7 +165,7 @@ module RuboCop
             return 'an expression'
           end
 
-          return 'a one-line pattern matching' if node.type?(:match_pattern, :match_pattern_p)
+          return 'a one-line pattern matching' if node.any_match_pattern_type?
           return 'an interpolated expression' if interpolation?(begin_node)
           return 'a method argument' if argument_of_parenthesized_method_call?(begin_node, node)
 

@@ -36,6 +36,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodePatternGroups, :config do
 
   it_behaves_like 'node group', 'any_block', %i[itblock numblock block]
   it_behaves_like 'node group', 'any_def', %i[def defs]
+  it_behaves_like 'node group', 'any_match_pattern', %i[match_pattern match_pattern_p]
   it_behaves_like 'node group', 'argument',
                   %i[arg blockarg forward_arg kwarg kwoptarg kwrestarg optarg restarg shadowarg]
   it_behaves_like 'node group', 'boolean', %i[false true]

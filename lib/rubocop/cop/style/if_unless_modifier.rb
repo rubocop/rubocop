@@ -132,12 +132,10 @@ module RuboCop
         end
 
         def pattern_matching_nodes(condition)
-          if condition.type?(:match_pattern, :match_pattern_p)
+          if condition.any_match_pattern_type?
             [condition]
           else
-            condition.each_descendant.select do |node|
-              node.type?(:match_pattern, :match_pattern_p)
-            end
+            condition.each_descendant.select(&:any_match_pattern_type?)
           end
         end
 

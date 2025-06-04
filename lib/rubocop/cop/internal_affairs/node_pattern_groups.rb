@@ -29,6 +29,7 @@ module RuboCop
         NODE_GROUPS = {
           any_block: %i[block numblock itblock],
           any_def: %i[def defs],
+          any_match_pattern: %i[match_pattern match_pattern_p],
           argument: %i[arg optarg restarg kwarg kwoptarg kwrestarg blockarg forward_arg shadowarg],
           boolean: %i[true false],
           call: %i[send csend],

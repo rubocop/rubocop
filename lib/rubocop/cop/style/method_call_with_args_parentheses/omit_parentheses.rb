@@ -167,7 +167,7 @@ module RuboCop
           def call_in_match_pattern?(node)
             return false unless (parent = node.parent)
 
-            parent.type?(:match_pattern, :match_pattern_p)
+            parent.any_match_pattern_type?
           end
 
           def hash_literal_in_arguments?(node)
