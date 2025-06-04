@@ -169,7 +169,7 @@ module RuboCop
 
         def last_value(node)
           value = node.begin_type? ? node.children.last : node
-          value.return_type? ? extract_return_value(value) : value
+          value&.return_type? ? extract_return_value(value) : value
         end
 
         def process_return_values(return_values)
