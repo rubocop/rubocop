@@ -806,15 +806,21 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           RUBY
         end
 
-        it 'allows ternary expression with index access call' do
+        it 'allows ternary expression with index access call without dot' do
           expect_no_offenses(<<~RUBY)
             #{variable} ? #{variable}[index] : nil
           RUBY
         end
 
-        it 'allows ternary expression with indexed assignment call' do
+        it 'allows ternary expression with indexed assignment call without dot' do
           expect_no_offenses(<<~RUBY)
             #{variable} ? #{variable}[index] = 1 : nil
+          RUBY
+        end
+
+        it 'allows ternary expression with operator method call without dot' do
+          expect_no_offenses(<<~RUBY)
+            #{variable}.nil? ? nil : #{variable} * 42
           RUBY
         end
 
@@ -831,6 +837,50 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
             puts(#{variable}&.bar)
 
             results << (#{variable}&.bar)
+          RUBY
+        end
+
+        it 'registers an offense for ternary expression with index access call with dot' do
+          expect_offense(<<~RUBY, variable: variable)
+            #{variable} ? #{variable}&.[](index) : nil
+            ^{variable}^^^^{variable}^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{variable}&.[](index)
+          RUBY
+        end
+
+        it 'registers an offense for ternary expression with indexed assignment with dot' do
+          expect_offense(<<~RUBY, variable: variable)
+            #{variable} ? #{variable}&.[]=(index) : nil
+            ^{variable}^^^^{variable}^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{variable}&.[]=(index)
+          RUBY
+        end
+
+        it 'registers an offense for ternary expression with operator method call with dot' do
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable}.nil? ? nil : %{variable}.*(42)
+            ^{variable}^^^^^^^^^^^^^^^{variable}^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{variable}&.*(42)
+          RUBY
+        end
+
+        it 'registers an offense for ternary expression with operator method call with method chain' do
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable}.nil? ? nil : %{variable}.foo * 42
+            ^{variable}^^^^^^^^^^^^^^^{variable}^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{variable}&.foo * 42
           RUBY
         end
 
