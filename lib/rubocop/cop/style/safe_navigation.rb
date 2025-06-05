@@ -150,7 +150,7 @@ module RuboCop
 
           body = extract_if_body(node)
           method_call = receiver.parent
-          return if dotless_operator_call?(method_call)
+          return if dotless_operator_call?(method_call) || method_call.double_colon?
 
           removal_ranges = [begin_range(node, body), end_range(node, body)]
 

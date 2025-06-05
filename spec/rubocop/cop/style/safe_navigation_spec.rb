@@ -818,6 +818,12 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           RUBY
         end
 
+        it 'allows ternary expression with double colon method call' do
+          expect_no_offenses(<<~RUBY)
+            #{variable} ? #{variable}::foo : nil
+          RUBY
+        end
+
         it 'allows ternary expression with operator method call without dot' do
           expect_no_offenses(<<~RUBY)
             #{variable}.nil? ? nil : #{variable} * 42
