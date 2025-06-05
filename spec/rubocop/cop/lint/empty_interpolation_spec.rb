@@ -70,4 +70,10 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation, :config do
   it 'accepts non-empty interpolation' do
     expect_no_offenses('"this is #{top} silly"')
   end
+
+  it 'does not register an offense when using an integer inside interpolation' do
+    expect_no_offenses(<<~'RUBY')
+      "this is the #{1}"
+    RUBY
+  end
 end
