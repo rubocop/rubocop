@@ -282,9 +282,15 @@ describe RuboCop::Cop::Style::SimplifyNotEmptyWithAny, :config do
 end
 ----
 
-If your code has variables of different lengths, you can use `%{foo}`,
-`^{foo}`, and `_{foo}` to format your template; you can also abbreviate
-offense messages with `[...]`:
+If your code has variables of different lengths, you can use the following
+markers to format your template by passing the variables as a keyword
+arguments:
+
+- `%{foo}`: Interpolates `foo`
+- `^{foo}`: Inserts `'^' * foo.size` for dynamic offense range length
+- `_{foo}`: Inserts `' ' * foo.size` for dynamic offense range indentation
+
+You can also abbreviate offense messages with `[...]`.
 
 [source,ruby]
 ----
