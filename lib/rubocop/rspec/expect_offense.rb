@@ -72,9 +72,15 @@ module RuboCop
     #
     #   expect_no_corrections
     #
-    # If your code has variables of different lengths, you can use `%{foo}`,
-    # `^{foo}`, and `_{foo}` to format your template; you can also abbreviate
-    # offense messages with `[...]`:
+    # If your code has variables of different lengths, you can use the
+    # following markers to format your template by passing the variables as a
+    # keyword arguments:
+    #
+    # - `%{foo}`: Interpolates `foo`
+    # - `^{foo}`: Inserts `'^' * foo.size` for dynamic offense range length
+    # - `_{foo}`: Inserts `' ' * foo.size` for dynamic offense range indentation
+    #
+    # You can also abbreviate offense messages with `[...]`.
     #
     #   %w[raise fail].each do |keyword|
     #     expect_offense(<<~RUBY, keyword: keyword)
