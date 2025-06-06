@@ -12,6 +12,8 @@ module RuboCop
       #   Cop is unsafe because the receiver of `flatten` method might not
       #   be an `Array`, so it's possible it won't respond to `join` method,
       #   or the end result would be different.
+      #   Also, if the global variable `$,` is set to a value other than the default `nil`,
+      #   false positives may occur.
       #
       # @example
       #   # bad
@@ -30,7 +32,7 @@ module RuboCop
 
         # @!method flatten_join?(node)
         def_node_matcher :flatten_join?, <<~PATTERN
-          (call (call !nil? :flatten _?) :join _?)
+          (call (call !nil? :flatten _?) :join (nil)?)
         PATTERN
 
         def on_send(node)
