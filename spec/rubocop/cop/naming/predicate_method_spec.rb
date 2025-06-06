@@ -254,6 +254,22 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       RUBY
     end
 
+    it 'does not register an offense for a `def` with empty parentheses body' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          ()
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a `defs` with empty parentheses body' do
+      expect_no_offenses(<<~RUBY)
+        def self.foo
+          ()
+        end
+      RUBY
+    end
+
     context 'bare return' do
       it_behaves_like 'non-predicate', '', implicit: false
 
