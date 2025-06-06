@@ -12,14 +12,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantArrayFlatten, :config do
     RUBY
   end
 
-  it 'registers an offense for `x.flatten.join(separator)`' do
+  it 'registers an offense for `x.flatten.join(nil)`' do
     expect_offense(<<~RUBY)
-      x.flatten.join(separator)
+      x.flatten.join(nil)
        ^^^^^^^^ Remove the redundant `flatten`.
     RUBY
 
     expect_correction(<<~RUBY)
-      x.join(separator)
+      x.join(nil)
     RUBY
   end
 
@@ -54,6 +54,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantArrayFlatten, :config do
   it 'does not register an offense for `x.flatten`' do
     expect_no_offenses(<<~RUBY)
       x.flatten
+    RUBY
+  end
+
+  it 'does not register an offense for `x.flatten.join(separator)`' do
+    expect_no_offenses(<<~RUBY)
+      x.flatten.join(separator)
     RUBY
   end
 
