@@ -16,7 +16,10 @@ gem 'rubocop-performance', '~> 1.25.0'
 gem 'rubocop-rake', '~> 0.7.0'
 gem 'rubocop-rspec', '~> 3.6.0'
 # Ruby LSP supports Ruby 3.0+.
-gem 'ruby-lsp', '~> 0.23', platform: :mri if RUBY_VERSION >= '3.0'
+# FIXME: This is a workaround to avoid build errors in the Ruby LSP add-on with Ruby LSP 0.24.
+#        Once https://github.com/rubocop/rubocop-ast/pull/382 is released,
+#        please specify `~> 0.24` instead of `~> 0.23.0`.
+gem 'ruby-lsp', '~> 0.23.0', platform: :mri if RUBY_VERSION >= '3.0'
 gem 'simplecov', '~> 0.20'
 gem 'stackprof', platform: :mri
 gem 'test-queue'
