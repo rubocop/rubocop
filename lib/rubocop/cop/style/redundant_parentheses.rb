@@ -164,8 +164,9 @@ module RuboCop
           if node.lambda_or_proc? && (node.braces? || node.send_node.lambda_literal?)
             return 'an expression'
           end
-
-          return 'a one-line pattern matching' if node.any_match_pattern_type?
+          if node.any_match_pattern_type? && node.each_ancestor.none?(&:operator_keyword?)
+            return 'a one-line pattern matching'
+          end
           return 'an interpolated expression' if interpolation?(begin_node)
           return 'a method argument' if argument_of_parenthesized_method_call?(begin_node, node)
 
