@@ -100,6 +100,7 @@ namespace :cut_release do
     Bump::Bump.run(release_type, commit: false, bundle: false, tag: false)
     new_version = Bump::Bump.current
 
+    Rake::Task['references:verify'].invoke
     update_cop_versions(old_version, new_version)
     Rake::Task['update_cops_documentation'].invoke
     update_readme(old_version, new_version)
