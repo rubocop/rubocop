@@ -4,10 +4,10 @@ module RuboCop
   module Cop
     module Lint
       # Checks for redundant access modifiers, including those with no
-      # code, those which are repeated, and leading `public` modifiers in a
-      # class or module body. Conditionally-defined methods are considered as
-      # always being defined, and thus access modifiers guarding such methods
-      # are not redundant.
+      # code, those which are repeated, those which are on top-level, and
+      # leading `public` modifiers in a class or module body.
+      # Conditionally-defined methods are considered as always being defined,
+      # and thus access modifiers guarding such methods are not redundant.
       #
       # This cop has `ContextCreatingMethods` option. The default setting value
       # is an empty array that means no method is specified.
@@ -56,6 +56,12 @@ module RuboCop
       #   # bad
       #   class Foo
       #     private # this is redundant (no following methods are defined)
+      #   end
+      #
+      #   # bad
+      #   private # this is useless (access modifiers have no effect on top-level)
+      #
+      #   def method
       #   end
       #
       #   # good
@@ -144,6 +150,17 @@ module RuboCop
 
         alias on_numblock on_block
         alias on_itblock on_block
+
+        def on_begin(node)
+          return if node.parent
+
+          node.child_nodes.each do |child|
+            next unless child.send_type? && access_modifier?(child)
+
+            # This call always registers an offense for access modifier `child.method_name`
+            check_send_node(child, child.method_name, true)
+          end
+        end
 
         private
 

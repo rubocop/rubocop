@@ -29,6 +29,30 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
     end
   end
 
+  context 'when an access modifier is used on top-level' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        def some_method
+          puts 10
+        end
+        private
+        ^^^^^^^ Useless `private` access modifier.
+        def other_method
+          puts 10
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def some_method
+          puts 10
+        end
+        def other_method
+          puts 10
+        end
+      RUBY
+    end
+  end
+
   context 'when an access modifier has no methods' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
