@@ -114,6 +114,12 @@ RSpec.describe RuboCop::Cop::Lint::UselessDefaultValueArgument, :config do
         x.fetch(key, **kwarg) { block_value }
       RUBY
     end
+
+    it 'does not register an offense for `fetch(key, default_value) { |arg| arg }`' do
+      expect_no_offenses(<<~RUBY)
+        fetch(key, default_value) { |arg| arg }
+      RUBY
+    end
   end
 
   context 'with `Array.new`' do
