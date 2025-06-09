@@ -10,6 +10,9 @@ module RuboCop
       # applies to `Array.new`, `Array#fetch`, `Hash#fetch`, `ENV.fetch` and
       # `Thread#fetch`.
       #
+      # A `fetch` call without a receiver is considered a custom method and does not register
+      # an offense.
+      #
       # @safety
       #   This cop is unsafe because the receiver could have nonstandard implementation
       #   of `fetch`, or be a class other than the one listed above.
@@ -56,7 +59,7 @@ module RuboCop
         def_node_matcher :default_value_argument_and_block, <<~PATTERN
           (any_block
             {
-              (call _receiver :fetch $_key $_default_value)
+              (call !nil? :fetch $_key $_default_value)
               (send (const _ :Array) :new $_size $_default_value)
             }
             _args
