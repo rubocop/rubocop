@@ -67,7 +67,7 @@ module RuboCop
           unless (prev_arg_node, default_value_node = default_value_argument_and_block(node.parent))
             return
           end
-          return if allowed_receiver?(node.receiver)
+          return if node.receiver && allowed_receiver?(node.receiver)
           return if hash_without_braces?(default_value_node)
 
           add_offense(default_value_node) do |corrector|

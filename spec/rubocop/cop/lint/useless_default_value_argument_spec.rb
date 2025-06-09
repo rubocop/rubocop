@@ -114,6 +114,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessDefaultValueArgument, :config do
         x.fetch(key, **kwarg) { block_value }
       RUBY
     end
+
+    it 'registers an offense with no receiver' do
+      expect_offense(<<~RUBY)
+        fetch(key, default_value) { block_value }
+                   ^^^^^^^^^^^^^ Block supersedes default value argument.
+      RUBY
+    end
   end
 
   context 'with `Array.new`' do
