@@ -11,6 +11,17 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14245](https://github.com/rubocop/rubocop/pull/14245): Fix an error for `Lint/EmptyInterpolation` when using primitives in interpolation. ([@ka8725][])
+* [#14233](https://github.com/rubocop/rubocop/issues/14233): Fix an error for `Style/SafeNavigation` when using ternary expression with index access call. ([@koic][])
+* [#14236](https://github.com/rubocop/rubocop/issues/14236): Fix an error for `Style/SafeNavigation` when using ternary expression with operator method call. ([@koic][])
+* [#14249](https://github.com/rubocop/rubocop/issues/14249): Fix false positives for `Style/RedundantArrayFlatten` when `Array#join` is used with an argument other than the default `nil`. ([@koic][])
+* [#14239](https://github.com/rubocop/rubocop/issues/14239): Fix false positives for `Style/RedundantParentheses` when using one-line `in` pattern matching in operator. ([@koic][])
+* [#14240](https://github.com/rubocop/rubocop/issues/14240): Fix `Naming/PredicateMethod` cop error on empty parentheses method body. ([@viralpraxis][])
+* [#14235](https://github.com/rubocop/rubocop/pull/14235): Fix `Style/SafeNavigation` cop error on indexed assignment in ternary expression. ([@viralpraxis][])
+* [#14247](https://github.com/rubocop/rubocop/pull/14247): Fix `Style/SafeNavigation` invalid autocorrection on double colon method call. ([@viralpraxis][])
+
 ## 1.76.0 (2025-06-04)
 
 ### New features
@@ -4133,3 +4144,4 @@
 [@Morriar]: https://github.com/Morriar
 [@daisuke]: https://github.com/daisuke
 [@steiley]: https://github.com/steiley
+[@ka8725]: https://github.com/ka8725
