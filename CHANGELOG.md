@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.76.1 (2025-06-09)
+
 ### Bug fixes
 
 * [#14245](https://github.com/rubocop/rubocop/pull/14245): Fix an error for `Lint/EmptyInterpolation` when using primitives in interpolation. ([@ka8725][])

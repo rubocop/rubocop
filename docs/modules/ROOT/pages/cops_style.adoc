@@ -12096,7 +12096,7 @@ allow(test_double).to receive(:a).and_return('b')
 [#references-styleopenstructuse]
 === References
 
-* https://docs.ruby-lang.org/en/3.0.0/OpenStruct.html#class-OpenStruct-label-Caveats
+* https://docs.ruby-lang.org/en/3.0/OpenStruct.html#class-OpenStruct-label-Caveats
 
 [#styleoperatormethodcall]
 == Style/OperatorMethodCall
@@ -13095,6 +13095,8 @@ beforehand is redundant.
 Cop is unsafe because the receiver of `flatten` method might not
 be an `Array`, so it's possible it won't respond to `join` method,
 or the end result would be different.
+Also, if the global variable `$,` is set to a value other than the default `nil`,
+false positives may occur.
 
 [#examples-styleredundantarrayflatten]
 === Examples
@@ -15568,6 +15570,10 @@ foo.nil? || foo.bar
 foo.baz = bar if foo
 foo.baz + bar if foo
 foo.bar > 2 if foo
+
+foo ? foo[index] : nil    # Ignored `foo&.[](index)` due to unclear readability benefit.
+foo ? foo[idx] = v : nil  # Ignored `foo&.[]=(idx, v)` due to unclear readability benefit.
+foo ? foo * 42 : nil      # Ignored `foo&.*(42)` due to unclear readability benefit.
 ----
 
 [#configurable-attributes-stylesafenavigation]

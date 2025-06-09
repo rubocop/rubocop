@@ -85,7 +85,7 @@ end
 [#references-metricsabcsize]
 === References
 
-* http://c2.com/cgi/wiki?AbcMetric
+* https://wiki.c2.com/?AbcMetric
 * https://en.wikipedia.org/wiki/ABC_Software_Metric
 
 [#metricsblocklength]
