@@ -76,4 +76,10 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation, :config do
       "this is the #{1}"
     RUBY
   end
+
+  it 'does not register an offense when using a boolean literal inside interpolation' do
+    expect_no_offenses(<<~'RUBY')
+      "this is the #{true}"
+    RUBY
+  end
 end
