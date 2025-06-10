@@ -2,10 +2,14 @@
 
 RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
   let(:allowed_methods) { [] }
+  let(:allowed_patterns) { [] }
+  let(:allow_bang_methods) { false }
   let(:cop_config) do
     {
       'Mode' => mode,
-      'AllowedMethods' => allowed_methods
+      'AllowedMethods' => allowed_methods,
+      'AllowedPatterns' => allowed_patterns,
+      'AllowBangMethods' => allow_bang_methods
     }
   end
 
@@ -509,6 +513,52 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
         expect_no_offenses(<<~RUBY)
           def on_defined?(node)
             add_offense(node)
+          end
+        RUBY
+      end
+    end
+
+    context 'with AllowedPatterns' do
+      let(:allowed_patterns) { %w[\Afoo] }
+
+      it 'does not register an offense for a method name that matches the pattern' do
+        expect_no_offenses(<<~RUBY)
+          def foo?
+            'foo'
+          end
+        RUBY
+      end
+
+      it 'registers an offense for a method name that does not match the pattern' do
+        expect_offense(<<~RUBY)
+          def barfoo?
+              ^^^^^^^ Non-predicate method names should not end with `?`.
+            'bar'
+          end
+        RUBY
+      end
+    end
+
+    context 'with AllowBangMethods: true' do
+      let(:allow_bang_methods) { true }
+
+      it 'does not register an offense for a bang method that returns a boolean' do
+        expect_no_offenses(<<~RUBY)
+          def save!
+            true
+          end
+        RUBY
+      end
+    end
+
+    context 'with AllowBangMethods: false' do
+      let(:allow_bang_methods) { false }
+
+      it 'registers an offense for a bang method that returns a boolean' do
+        expect_offense(<<~RUBY)
+          def save!
+              ^^^^^ Predicate method names should end with `?`.
+            true
           end
         RUBY
       end
