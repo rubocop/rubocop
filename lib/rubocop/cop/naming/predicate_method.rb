@@ -22,7 +22,11 @@ module RuboCop
       #
       # The cop also has `AllowedMethods` configuration in order to prevent the cop from
       # registering an offense from a method name that does not confirm to the naming
-      # guidelines. By default, `call` is allowed.
+      # guidelines. By default, `call` is allowed. The cop also has `AllowedPatterns`
+      # configuration to allow method names by regular expression.
+      #
+      # The cop can furthermore be configured to allow all bang methods (method names
+      # ending with `!`), with `AllowBangMethods: true` (default false).
       #
       # @example Mode: conservative (default)
       #   # bad
@@ -73,8 +77,21 @@ module RuboCop
       #     true
       #   end
       #
+      # @example AllowBangMethods: false (default)
+      #   # bad
+      #   def save!
+      #     true
+      #   end
+      #
+      # @example AllowBangMethods: true
+      #   # good
+      #   def save!
+      #     true
+      #   end
+      #
       class PredicateMethod < Base
         include AllowedMethods
+        include AllowedPattern
 
         MSG_PREDICATE = 'Predicate method names should end with `?`.'
         MSG_NON_PREDICATE = 'Non-predicate method names should not end with `?`.'
@@ -97,6 +114,8 @@ module RuboCop
 
         def allowed?(node)
           allowed_method?(node.method_name) ||
+            matches_allowed_pattern?(node.method_name) ||
+            allowed_bang_method?(node) ||
             node.operator_method? ||
             node.body.nil?
         end
@@ -209,6 +228,16 @@ module RuboCop
 
         def conservative?
           cop_config.fetch('Mode', :conservative).to_sym == :conservative
+        end
+
+        def allowed_bang_method?(node)
+          return false unless allow_bang_methods?
+
+          node.bang_method?
+        end
+
+        def allow_bang_methods?
+          cop_config.fetch('AllowBangMethods', false)
         end
       end
     end
