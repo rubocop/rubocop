@@ -27,7 +27,9 @@ module RuboCop
       # @example
       #   # bad
       #   x || 1..2
+      #   x - 1..2
       #   (x || 1..2)
+      #   x || 1..y || 2
       #   1..2.to_a
       #
       #   # good, unambiguous
@@ -41,6 +43,7 @@ module RuboCop
       #
       #   # good, ambiguity removed
       #   x || (1..2)
+      #   (x - 1)..2
       #   (x || 1)..2
       #   (x || 1)..(y || 2)
       #   (1..2).to_a
@@ -95,6 +98,8 @@ module RuboCop
           # Require parentheses when making a method call on a literal
           # to avoid the ambiguity of `1..2.to_a`.
           return false if node.receiver&.basic_literal?
+
+          return false if node.operator_method? && !node.method?(:[])
 
           require_parentheses_for_method_chain? || node.receiver.nil?
         end

@@ -89,7 +89,7 @@ module RuboCop
 
         if first_non_comment_token
           # `line` is 1-indexed so we need to subtract 1 to get the array index
-          processed_source.lines[0...first_non_comment_token.line - 1]
+          processed_source.lines[0...(first_non_comment_token.line - 1)]
         else
           processed_source.lines
         end

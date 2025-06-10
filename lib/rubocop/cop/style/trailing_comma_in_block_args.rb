@@ -97,7 +97,7 @@ module RuboCop
           pipes = tokens.select { |token| token.type == :tPIPE }
           begin_pos, end_pos = pipes.map { |pipe| tokens.index(pipe) }
 
-          tokens[begin_pos + 1..end_pos - 1]
+          tokens[(begin_pos + 1)..(end_pos - 1)]
         end
       end
     end

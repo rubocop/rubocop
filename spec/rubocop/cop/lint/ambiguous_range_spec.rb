@@ -14,6 +14,17 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRange, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when boundary is an operator expression' do
+        expect_offense(<<~RUBY)
+          x - 1#{operator}2
+          ^^^^^ Wrap complex range boundaries with parentheses to avoid ambiguity.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          (x - 1)#{operator}2
+        RUBY
+      end
+
       it 'registers an offense and corrects when the entire range is parenthesized but contains complex boundaries' do
         expect_offense(<<~RUBY)
           (x || 1#{operator}2)
@@ -52,6 +63,12 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRange, :config do
         expect_no_offenses(<<~RUBY)
           x || (1#{operator}2)
           (x || 1)#{operator}2
+        RUBY
+      end
+
+      it 'does not register an offense when boundary is an element reference' do
+        expect_no_offenses(<<~RUBY)
+          x[1]#{operator}2
         RUBY
       end
 
