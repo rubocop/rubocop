@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
   # where x.y.z indicates the Language Server Protocol Specification, t is an incrementing number.
   s.add_dependency('language_server-protocol', '~> 3.17.0.2')
   s.add_dependency('lint_roller', '~> 1.1.0')
+  s.add_dependency('mcp', '~> 0.6')
   s.add_dependency('parallel', '~> 1.10')
   s.add_dependency('parser', '>= 3.3.0.2')
   s.add_dependency('rainbow', '>= 2.2.2', '< 4.0')

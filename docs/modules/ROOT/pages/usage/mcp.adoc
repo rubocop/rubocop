@@ -1,0 +1,44 @@
+= MCP (Model Context Protocol)
+
+NOTE: The built-in MCP server was introduced in RuboCop 1.85. This feature is experimental and should not be considered stable. Changes to its behavior or interface may occur.
+
+https://modelcontextprotocol.io/[Model Context Protocol] is an open-source standard for connecting AI applications to external systems.
+
+This feature enables interactions through MCP clients that communicate with RuboCop via the Model Context Protocol.
+
+Through MCP, RuboCop operations are initiated by an MCP client, with decisions made by an LLM.
+
+The MCP server runs as a long-lived process over stdio, allowing an MCP client to request analysis and autocorrection without spawning a new RuboCop process for each request.
+This is based on the same principles as xref:usage/server.adoc[Server Mode] and xref:usage/lsp.adoc[LSP].
+
+== Examples of MCP Client
+
+For tools that support MCP clients, please refer to the following:
+https://modelcontextprotocol.io/clients
+
+Below is an example for https://claude.com/product/claude-code[Claude Code]'s MCP config:
+
+```console
+$ claude mcp add rubocop -- bundle exec rubocop --mcp
+```
+
+Or edit path/to/.mcp.json or something like that:
+
+```json
+{
+  "mcpServers": {
+    "rubocop": {
+      "type": "stdio",
+      "command": "/Users/user/.rbenv/shims/bundle",
+      "args": [
+        "exec",
+        "rubocop",
+        "--mcp"
+      ],
+      "cwd": "/Users/user/path/to/repo"
+    }
+  }
+}
+```
+
+NOTE: `rubocop --mcp` starts the MCP server and is intended to be invoked by an MCP client, not run manually by users.

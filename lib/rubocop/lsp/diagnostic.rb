@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'language_server-protocol'
 require_relative 'disable_comment_edits'
 require_relative 'severity'
 

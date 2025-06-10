@@ -105,6 +105,10 @@ RSpec.describe RuboCop::Options, :isolated_environment do
           LSP Option:
                   --lsp                        Start a language server listening on STDIN.
 
+          MCP Option:
+                  --mcp                        Start an MCP (Model Context Protocol) server that
+                                               communicates over stdio.
+
           Server Options:
                   --[no-]server                If a server process has not been started yet, start
                                                the server process and execute inspection with server.

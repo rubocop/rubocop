@@ -6,6 +6,7 @@
 ** xref:usage/autocorrect.adoc[Autocorrect]
 ** xref:usage/caching.adoc[Caching]
 ** xref:usage/lsp.adoc[LSP]
+** xref:usage/mcp.adoc[MCP]
 ** xref:usage/server.adoc[Server]
 ** xref:usage/profiling.adoc[Profiling]
 * xref:configuration.adoc[Configuration]
