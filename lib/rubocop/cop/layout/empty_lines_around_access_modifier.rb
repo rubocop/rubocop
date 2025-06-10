@@ -138,7 +138,7 @@ module RuboCop
         end
 
         def previous_line_ignoring_comments(processed_source, send_line)
-          processed_source[0..send_line - 2].reverse.find { |line| !comment_line?(line) }
+          processed_source[0..(send_line - 2)].reverse.find { |line| !comment_line?(line) }
         end
 
         def previous_line_empty?(send_line)
