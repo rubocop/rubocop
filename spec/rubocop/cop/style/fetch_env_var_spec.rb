@@ -1,27 +1,45 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
-  let(:cop_config) { { 'ExceptedEnvVars' => [] } }
+  let(:cop_config) { { 'ExceptedEnvVars' => [], 'DefaultToNil' => default_to_nil } }
+  let(:default_to_nil) { true }
 
   context 'when it is evaluated with no default values' do
-    it 'registers an offense' do
-      expect_offense(<<~RUBY)
-        ENV['X']
-        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
-      RUBY
+    context 'when DefaultToNil is true' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          ENV['X']
+          ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        ENV.fetch('X', nil)
-      RUBY
+        expect_correction(<<~RUBY)
+          ENV.fetch('X', nil)
+        RUBY
 
-      expect_offense(<<~RUBY)
-        ENV['X' + 'Y']
-        ^^^^^^^^^^^^^^ Use `ENV.fetch('X' + 'Y')` or `ENV.fetch('X' + 'Y', nil)` instead of `ENV['X' + 'Y']`.
-      RUBY
+        expect_offense(<<~RUBY)
+          ENV['X' + 'Y']
+          ^^^^^^^^^^^^^^ Use `ENV.fetch('X' + 'Y')` or `ENV.fetch('X' + 'Y', nil)` instead of `ENV['X' + 'Y']`.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        ENV.fetch('X' + 'Y', nil)
-      RUBY
+        expect_correction(<<~RUBY)
+          ENV.fetch('X' + 'Y', nil)
+        RUBY
+      end
+    end
+
+    context 'when DefaultToNil is false' do
+      let(:default_to_nil) { false }
+
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          ENV['X']
+          ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ENV.fetch('X')
+        RUBY
+      end
     end
   end
 

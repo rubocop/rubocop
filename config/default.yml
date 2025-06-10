@@ -4058,6 +4058,7 @@ Style/FetchEnvVar:
   VersionAdded: '1.28'
   # Environment variables to be excluded from the inspection.
   AllowedVars: []
+  DefaultToNil: true
 
 Style/FileEmpty:
   Description: >-

@@ -22,6 +22,22 @@ module RuboCop
       #   !ENV['X']
       #   ENV['X'].some_method # (e.g. `.nil?`)
       #
+      # @example DefaultToNil: true (default)
+      #   # Correct with nil argument
+      #   # bad
+      #   ENV['X']
+      #
+      #   # good
+      #   ENV.fetch('X', nil)
+      #
+      # @example DefaultToNil: false
+      #   # Correct without nil argument
+      #   # bad
+      #   ENV['X']
+      #
+      #   # good
+      #   ENV.fetch('X')  # raises KeyError when missing
+      #
       class FetchEnvVar < Base
         extend AutoCorrector
 
@@ -125,7 +141,7 @@ module RuboCop
         end
 
         def new_code(name_node)
-          "ENV.fetch(#{name_node.source}, nil)"
+          "ENV.fetch(#{name_node.source}#{', nil' if cop_config['DefaultToNil']})"
         end
       end
     end
