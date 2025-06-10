@@ -5371,6 +5371,27 @@ specified default value.
 [#examples-stylefetchenvvar]
 === Examples
 
+[#defaulttonil_true_stylefetchenvvar]
+==== DefaultToNil: true (default)
+
+[source,ruby]
+----
+# bad
+ENV['X']
+x = ENV['X']
+
+# good
+ENV.fetch('X', nil)
+x = ENV.fetch('X', nil)
+
+# also good
+!ENV['X']
+ENV['X'].some_method # (e.g. `.nil?`)
+----
+
+[#defaulttonil_false_stylefetchenvvar]
+==== DefaultToNil: false
+
 [source,ruby]
 ----
 # bad
@@ -5395,6 +5416,10 @@ ENV['X'].some_method # (e.g. `.nil?`)
 | AllowedVars
 | `[]`
 | Array
+
+| DefaultToNil 
+| `true`
+| Boolean
 |===
 
 [#references-stylefetchenvvar]
