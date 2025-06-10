@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
-  let(:cop_config) { { 'ExceptedEnvVars' => [] } }
+  let(:cop_config) { { 'AllowedVars' => [] } }
 
   context 'when it is evaluated with no default values' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         ENV['X']
-        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+        ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -16,7 +16,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
 
       expect_offense(<<~RUBY)
         ENV['X' + 'Y']
-        ^^^^^^^^^^^^^^ Use `ENV.fetch('X' + 'Y')` or `ENV.fetch('X' + 'Y', nil)` instead of `ENV['X' + 'Y']`.
+        ^^^^^^^^^^^^^^ Use `ENV.fetch('X' + 'Y', nil)` instead of `ENV['X' + 'Y']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         y ||= ENV['X']
-              ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+              ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
     end
   end
@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         y &&= ENV['X']
-              ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+              ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
     end
   end
@@ -105,7 +105,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         some_method(ENV['X'])
-                    ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+                    ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
 
       expect_offense(<<~RUBY)
         x.some_method(ENV['X'])
-                      ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+                      ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -125,11 +125,11 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
         some_method(
           ENV['A'].some_method,
           ENV['B'] || ENV['C'],
-                      ^^^^^^^^ Use `ENV.fetch('C')` or `ENV.fetch('C', nil)` instead of `ENV['C']`.
+                      ^^^^^^^^ Use `ENV.fetch('C', nil)` instead of `ENV['C']`.
           ENV['X'],
-          ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+          ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
           ENV['Y']
-          ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+          ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         )
       RUBY
 
@@ -148,7 +148,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     it 'registers an offense when using single assignment' do
       expect_offense(<<~RUBY)
         x = ENV['X']
-            ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+            ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -159,9 +159,9 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     it 'registers an offense when using multiple assignment' do
       expect_offense(<<~RUBY)
         x, y = ENV['X'],
-               ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+               ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
                ENV['Y']
-               ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+               ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -176,9 +176,9 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       expect_offense(<<~RUBY)
         [
           ENV['X'],
-          ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+          ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
           ENV['Y']
-          ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+          ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         ]
       RUBY
 
@@ -196,9 +196,9 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       expect_offense(<<~RUBY)
         {
           ENV['X'] => :x,
-          ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+          ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
           ENV['Y'] => :y
-          ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+          ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         }
       RUBY
 
@@ -216,9 +216,9 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       expect_offense(<<~RUBY)
         {
           x: ENV['X'],
-             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+             ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
           y: ENV['Y']
-             ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+             ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         }
       RUBY
 
@@ -235,7 +235,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         "\#{ENV['X']}"
-           ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+           ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -282,9 +282,9 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     it 'registers an offense with `case`' do
       expect_offense(<<~RUBY)
         case ENV['X']
-             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+             ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
         when ENV['Y']
-             ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+             ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
           puts x
         end
       RUBY
@@ -354,7 +354,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       expect_offense(<<~RUBY)
         if ENV['X']
           puts ENV['Y']
-               ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+               ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         end
       RUBY
 
@@ -377,7 +377,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
       expect_offense(<<~RUBY)
         if ENV['X'] = x
           puts ENV['Y']
-               ^^^^^^^^ Use `ENV.fetch('Y')` or `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
+               ^^^^^^^^ Use `ENV.fetch('Y', nil)` instead of `ENV['Y']`.
         end
       RUBY
 
@@ -393,7 +393,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     expect_offense(<<~RUBY)
       if ENV && x
         ENV[x]
-        ^^^^^^ Use `ENV.fetch(x)` or `ENV.fetch(x, nil)` instead of `ENV[x]`.
+        ^^^^^^ Use `ENV.fetch(x, nil)` instead of `ENV[x]`.
       end
     RUBY
 
@@ -408,7 +408,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     expect_offense(<<~RUBY)
       if ENV || x
         ENV[x]
-        ^^^^^^ Use `ENV.fetch(x)` or `ENV.fetch(x, nil)` instead of `ENV[x]`.
+        ^^^^^^ Use `ENV.fetch(x, nil)` instead of `ENV[x]`.
       end
     RUBY
 
@@ -423,7 +423,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     expect_offense(<<~RUBY)
       if a == b
         ENV['X']
-        ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+        ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       end
     RUBY
 
@@ -438,7 +438,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     expect_offense(<<~RUBY)
       if a || b && c
         puts ENV['X']
-             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+             ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       end
     RUBY
 
@@ -463,10 +463,10 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         y || ENV['X']
-             ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+             ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
 
         y || z || ENV['X']
-                  ^^^^^^^^ Use `ENV.fetch('X')` or `ENV.fetch('X', nil)` instead of `ENV['X']`.
+                  ^^^^^^^^ Use `ENV.fetch('X', nil)` instead of `ENV['X']`.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -483,6 +483,43 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
         ENV['X'] || y
 
         z || ENV['X'] || y
+      RUBY
+    end
+  end
+
+  context 'when `DefaultToNil` is false' do
+    let(:cop_config) { { 'DefaultToNil' => false } }
+
+    it 'registers an offense and corrects to ENV.fetch without nil' do
+      expect_offense(<<~RUBY)
+        ENV['X']
+        ^^^^^^^^ Use `ENV.fetch('X')` instead of `ENV['X']`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ENV.fetch('X')
+      RUBY
+    end
+
+    it 'registers an offense for variable assignment' do
+      expect_offense(<<~RUBY)
+        x = ENV['X']
+            ^^^^^^^^ Use `ENV.fetch('X')` instead of `ENV['X']`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = ENV.fetch('X')
+      RUBY
+    end
+
+    it 'registers an offense for method argument' do
+      expect_offense(<<~RUBY)
+        some_method(ENV['X'])
+                    ^^^^^^^^ Use `ENV.fetch('X')` instead of `ENV['X']`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        some_method(ENV.fetch('X'))
       RUBY
     end
   end

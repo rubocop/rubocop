@@ -9,7 +9,20 @@ module RuboCop
       # On the other hand, `ENV.fetch` raises `KeyError` or returns the explicitly
       # specified default value.
       #
-      # @example
+      # @example DefaultToNil: true (default)
+      #   # bad
+      #   ENV['X']
+      #   x = ENV['X']
+      #
+      #   # good
+      #   ENV.fetch('X', nil)
+      #   x = ENV.fetch('X', nil)
+      #
+      #   # also good
+      #   !ENV['X']
+      #   ENV['X'].some_method # (e.g. `.nil?`)
+      #
+      # @example DefaultToNil: false
       #   # bad
       #   ENV['X']
       #   x = ENV['X']
@@ -25,7 +38,8 @@ module RuboCop
       class FetchEnvVar < Base
         extend AutoCorrector
 
-        MSG = 'Use `ENV.fetch(%<key>s)` or `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
+        MSG_WITH_NIL = 'Use `ENV.fetch(%<key>s, nil)` instead of `ENV[%<key>s]`.'
+        MSG_WITHOUT_NIL = 'Use `ENV.fetch(%<key>s)` instead of `ENV[%<key>s]`.'
         RESTRICT_ON_SEND = [:[]].freeze
 
         # @!method env_with_bracket?(node)
@@ -37,7 +51,7 @@ module RuboCop
           env_with_bracket?(node) do |name_node|
             break unless offensive?(node)
 
-            message = format(MSG, key: name_node.source)
+            message = format(offense_message, key: name_node.source)
             add_offense(node, message: message) do |corrector|
               corrector.replace(node, new_code(name_node))
             end
@@ -45,6 +59,14 @@ module RuboCop
         end
 
         private
+
+        def default_to_nil?
+          cop_config.fetch('DefaultToNil', true)
+        end
+
+        def offense_message
+          default_to_nil? ? MSG_WITH_NIL : MSG_WITHOUT_NIL
+        end
 
         def allowed_var?(node)
           env_key_node = node.children.last
@@ -125,7 +147,11 @@ module RuboCop
         end
 
         def new_code(name_node)
-          "ENV.fetch(#{name_node.source}, nil)"
+          if default_to_nil?
+            "ENV.fetch(#{name_node.source}, nil)"
+          else
+            "ENV.fetch(#{name_node.source})"
+          end
         end
       end
     end
