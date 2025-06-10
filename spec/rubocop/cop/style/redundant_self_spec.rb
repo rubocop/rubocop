@@ -32,6 +32,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     expect_no_offenses('a, b = self.a if self.a')
   end
 
+  it 'does not report an offense when lvasgn name is used in nested `if`' do
+    expect_no_offenses(<<~RUBY)
+      if self.a
+        a = self.a
+      end if self.a
+    RUBY
+  end
+
+  it 'does not report an offense when masgn name is used in nested `if`' do
+    expect_no_offenses(<<~RUBY)
+      if self.a
+        a, b = self.a
+      end if self.a
+    RUBY
+  end
+
   it 'does not report an offense when lvasgn name is used in `unless`' do
     expect_no_offenses('a = self.a unless self.a')
   end
