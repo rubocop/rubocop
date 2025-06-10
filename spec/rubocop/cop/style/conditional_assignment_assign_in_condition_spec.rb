@@ -924,6 +924,40 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
+    it 'registers an offense for assignment with one-line `else` and `end`' do
+      expect_offense(<<~RUBY)
+        bar = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals.
+                    1
+              else 2 end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+          bar = 1
+        else bar = 2 end
+      RUBY
+    end
+
+    it 'registers an offense for assignment with one-line `else` and `end` with nested branch' do
+      expect_offense(<<~RUBY)
+        bar = if foo
+        ^^^^^^^^^^^^ Assign variables inside of conditionals.
+                    1
+              elsif baz
+                2
+              else 3 end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+          bar = 1
+        elsif baz
+          bar = 2
+        else bar = 3 end
+      RUBY
+    end
+
     it 'registers an offense for an assignment that uses if branch bodies including a block' do
       expect_offense(<<~RUBY)
         result = if condition
