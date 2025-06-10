@@ -123,11 +123,11 @@ module RuboCop
         def on_if(node)
           # Allow conditional nodes to use `self` in the condition if that variable
           # name is used in an `lvasgn` or `masgn` within the `if`.
-          node.child_nodes.each do |child_node|
-            if child_node.lvasgn_type?
-              add_lhs_to_local_variables_scopes(node.condition, child_node.lhs)
-            elsif child_node.masgn_type?
-              add_masgn_lhs_variables(node.condition, child_node.lhs)
+          node.each_descendant(:lvasgn, :masgn) do |descendant_node|
+            if descendant_node.lvasgn_type?
+              add_lhs_to_local_variables_scopes(node.condition, descendant_node.lhs)
+            else
+              add_masgn_lhs_variables(node.condition, descendant_node.lhs)
             end
           end
         end
