@@ -16,7 +16,7 @@ module RuboCop
                       'root of the project. RuboCop will use this path to determine which ' \
                       'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
                       'like Naming/FileName can be checked.'
-    EXITING_OPTIONS = %i[version verbose_version show_cops show_docs_url lsp].freeze
+    EXITING_OPTIONS = %i[version verbose_version show_cops show_docs_url lsp mcp].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
@@ -57,6 +57,7 @@ module RuboCop
         add_check_options(opts)
         add_cache_options(opts)
         add_lsp_option(opts)
+        add_mcp_option(opts)
         add_server_options(opts)
         add_output_options(opts)
         add_autocorrection_options(opts)
@@ -212,6 +213,12 @@ module RuboCop
     def add_lsp_option(opts)
       section(opts, 'LSP Option') do
         option(opts, '--lsp')
+      end
+    end
+
+    def add_mcp_option(opts)
+      section(opts, 'MCP Option') do
+        option(opts, '--mcp')
       end
     end
 
@@ -651,6 +658,8 @@ module RuboCop
       server_status:                    'Show server status.',
       no_detach:                        'Run the server process in the foreground.',
       lsp:                              'Start a language server listening on STDIN.',
+      mcp:                              ['Start an MCP (Model Context Protocol) server that',
+                                         'communicates over stdio.'],
       raise_cop_error:                  ['Raise cop-related errors with cause and location.',
                                          'This is used to prevent cops from failing silently.',
                                          'Default is false.'],

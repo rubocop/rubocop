@@ -2416,6 +2416,23 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--mcp' do
+    let(:initialize_request) { { jsonrpc: '2.0', id: '1', method: 'initialize' }.to_json }
+
+    it 'starts MCP server and responds to initialize request' do
+      # Using `cli.run` would not detect missing requires because spec_helper.rb
+      # has already loaded the gems in the same process.
+      stdout, stderr, status = Open3.capture3(
+        'ruby', '-I', '.', rubocop, '--mcp', stdin_data: initialize_request
+      )
+
+      expect(status.exitstatus).to eq(0), "MCP server failed to start: #{stderr}"
+      response = JSON.parse(stdout.lines.first, symbolize_names: true)
+      expect(response).to include(jsonrpc: '2.0', id: '1')
+      expect(response[:result]).to include(:protocolVersion, :capabilities, :serverInfo)
+    end
+  end
+
   describe '--require', :restore_registry do
     context 'when adding an extension' do
       before do
