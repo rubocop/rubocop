@@ -11,6 +11,14 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
     end
   end
 
+  shared_examples 'with parser error' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~'RUBY')
+        %q(\«)
+      RUBY
+    end
+  end
+
   shared_examples 'accepts any q string with backslash t' do
     context 'with special characters' do
       it 'accepts %q' do
@@ -44,6 +52,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
 
       include_examples 'accepts quote characters'
       include_examples 'accepts any q string with backslash t'
+      include_examples 'with parser error'
     end
 
     context 'with interpolation' do
@@ -57,6 +66,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
       end
 
       include_examples 'accepts quote characters'
+      include_examples 'with parser error'
     end
   end
 
@@ -87,6 +97,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
 
       include_examples 'accepts quote characters'
       include_examples 'accepts any q string with backslash t'
+      include_examples 'with parser error'
     end
 
     context 'with interpolation' do
@@ -102,6 +113,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
       end
 
       include_examples 'accepts quote characters'
+      include_examples 'with parser error'
     end
   end
 end

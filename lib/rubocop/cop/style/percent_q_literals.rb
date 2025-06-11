@@ -44,7 +44,7 @@ module RuboCop
 
           # Report offense only if changing case doesn't change semantics,
           # i.e., if the string would become dynamic or has special characters.
-          ast = parse(corrected(node.source)).ast
+          ast = parse(corrected(node.source))
           return if node.children != ast&.children
 
           add_offense(node.loc.begin) do |corrector|
@@ -63,6 +63,12 @@ module RuboCop
 
         def corrected(src)
           src.sub(src[1], src[1].swapcase)
+        end
+
+        def parse(source)
+          super.ast
+        rescue ArgumentError => e
+          raise unless e.message.include?('invalid byte sequence')
         end
       end
     end
