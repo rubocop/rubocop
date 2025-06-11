@@ -54,22 +54,6 @@ module RuboCop
         MSG = '`%<assignment>s` method calls already given on line ' \
               '%<line_of_first_occurrence>d of the gemspec.'
 
-        # @!method assignment_method_declarations(node)
-        def_node_search :assignment_method_declarations, <<~PATTERN
-          (send
-            (lvar {#match_block_variable_name? :_1 :it}) _ ...)
-        PATTERN
-
-        # @!method indexed_assignment_method_declarations(node)
-        def_node_search :indexed_assignment_method_declarations, <<~PATTERN
-          (send
-            (send (lvar {#match_block_variable_name? :_1 :it}) _)
-            :[]=
-            literal?
-            _
-          )
-        PATTERN
-
         def on_new_investigation
           return if processed_source.blank?
 
@@ -93,12 +77,6 @@ module RuboCop
               assignment = "#{node.children.first.method_name}[#{node.first_argument.source}]="
               register_offense(node, assignment, nodes.first.first_line)
             end
-          end
-        end
-
-        def match_block_variable_name?(receiver_name)
-          gem_specification(processed_source.ast) do |block_variable_name|
-            return block_variable_name == receiver_name
           end
         end
 
