@@ -164,7 +164,7 @@ module RuboCop
           if node.lambda_or_proc? && (node.braces? || node.send_node.lambda_literal?)
             return 'an expression'
           end
-          if node.any_match_pattern_type? && node.each_ancestor.none?(&:operator_keyword?)
+          if disallowed_one_line_pattern_matching?(begin_node, node)
             return 'a one-line pattern matching'
           end
           return 'an interpolated expression' if interpolation?(begin_node)
@@ -252,6 +252,12 @@ module RuboCop
           else
             !raised_to_power_negative_numeric?(begin_node, node)
           end
+        end
+
+        def disallowed_one_line_pattern_matching?(begin_node, node)
+          return false if begin_node.parent&.any_def_type? && begin_node.parent.endless?
+
+          node.any_match_pattern_type? && node.each_ancestor.none?(&:operator_keyword?)
         end
 
         def raised_to_power_negative_numeric?(begin_node, node)
