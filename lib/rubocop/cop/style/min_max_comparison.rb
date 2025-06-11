@@ -39,13 +39,21 @@ module RuboCop
         include RangeHelp
 
         MSG = 'Use `%<prefer>s` instead.'
-        GRATER_OPERATORS = %i[> >=].freeze
+        GREATER_OPERATORS = %i[> >=].freeze
         LESS_OPERATORS = %i[< <=].freeze
-        COMPARISON_OPERATORS = GRATER_OPERATORS + LESS_OPERATORS
+        COMPARISON_OPERATORS = (GREATER_OPERATORS + LESS_OPERATORS).to_set.freeze
+
+        # @!method comparison_condition(node, name)
+        def_node_matcher :comparison_condition, <<~PATTERN
+          {
+            (send $_lhs $COMPARISON_OPERATORS $_rhs)
+            (begin (send $_lhs $COMPARISON_OPERATORS $_rhs))
+          }
+        PATTERN
 
         def on_if(node)
-          lhs, operator, rhs = *node.condition
-          return unless COMPARISON_OPERATORS.include?(operator)
+          lhs, operator, rhs = comparison_condition(node.condition)
+          return unless operator
 
           if_branch = node.if_branch
           else_branch = node.else_branch
@@ -63,7 +71,7 @@ module RuboCop
 
         def preferred_method(operator, lhs, rhs, if_branch, else_branch)
           if lhs == if_branch && rhs == else_branch
-            GRATER_OPERATORS.include?(operator) ? 'max' : 'min'
+            GREATER_OPERATORS.include?(operator) ? 'max' : 'min'
           elsif lhs == else_branch && rhs == if_branch
             LESS_OPERATORS.include?(operator) ? 'max' : 'min'
           end
