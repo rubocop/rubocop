@@ -89,6 +89,18 @@ RSpec.describe RuboCop::Cop::Style::MinMaxComparison, :config do
     RUBY
   end
 
+  # Consider `Style/TernaryParentheses` cop with `EnforcedStyle: require_parentheses_when_complex`
+  it 'registers and corrects an offense when using `(a >= b) ? b : a`' do
+    expect_offense(<<~RUBY)
+      (a >= b) ? b : a
+      ^^^^^^^^^^^^^^^^ Use `[a, b].min` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [a, b].min
+    RUBY
+  end
+
   it 'registers and corrects an offense when using `a > b a : b` with `if/else`' do
     expect_offense(<<~RUBY)
       if a > b
