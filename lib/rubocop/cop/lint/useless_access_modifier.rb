@@ -274,6 +274,10 @@ module RuboCop
 
         def any_method_definition?(child)
           cop_config.fetch('MethodCreatingMethods', []).any? do |m|
+            # Some users still have `"included"` in their `MethodCreatingMethods` configurations,
+            # so to prevent Ruby method redefinition warnings let's just skip this value.
+            next if m == 'included'
+
             matcher_name = :"#{m}_method?"
             unless respond_to?(matcher_name)
               self.class.def_node_matcher matcher_name, <<~PATTERN
@@ -296,7 +300,11 @@ module RuboCop
         end
 
         def any_context_creating_methods?(child)
+          # Some users still have `"included"` in their `ContextCreatingMethods` configurations,
+          # so to prevent Ruby method redefinition warnings let's just skip this value.
           cop_config.fetch('ContextCreatingMethods', []).any? do |m|
+            next if m == 'included'
+
             matcher_name = :"#{m}_block?"
             unless respond_to?(matcher_name)
               self.class.def_node_matcher matcher_name, <<~PATTERN
