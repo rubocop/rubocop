@@ -398,6 +398,17 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'registers an offense for safe navigation on the left-hand side of a `-` operator when inside an array' do
+      expect_offense(<<~RUBY)
+        [foo, a&.baz - 1]
+                    ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [foo, (a&.baz&. - 1)]
+      RUBY
+    end
+
     it 'registers an offense for safe navigation on the left-hand side of a `-` operator when inside a hash' do
       expect_offense(<<~RUBY)
         { foo: a&.baz - 1 }
