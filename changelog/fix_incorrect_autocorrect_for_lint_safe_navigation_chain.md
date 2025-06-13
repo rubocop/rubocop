@@ -1,0 +1,1 @@
+* [#14286](https://github.com/rubocop/rubocop/issues/14286): Fix incorrect autocorrect for `Lint/SafeNavigationChain` when a safe navigation is used on the left-hand side of a `-` operator when inside an array. ([@koic][])
