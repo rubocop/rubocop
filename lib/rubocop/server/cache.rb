@@ -46,12 +46,14 @@ module RuboCop
         end
 
         # rubocop:disable Metrics/AbcSize
-        def restart_key
+        def restart_key(args_config_file_path: nil)
           lockfile_path = LOCKFILE_NAMES.map do |lockfile_name|
             Pathname(project_dir).join(lockfile_name)
           end.find(&:exist?)
           version_data = lockfile_path&.read || RuboCop::Version::STRING
-          config_data = Pathname(ConfigFinder.find_config_path(Dir.pwd)).read
+          config_data = Pathname(
+            args_config_file_path || ConfigFinder.find_config_path(Dir.pwd)
+          ).read
           yaml = load_erb_templated_yaml(config_data)
 
           inherit_from_data = inherit_from_data(yaml)
