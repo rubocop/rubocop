@@ -4061,6 +4061,9 @@ Style/FetchEnvVar:
   VersionAdded: '1.28'
   # Environment variables to be excluded from the inspection.
   AllowedVars: []
+  # When `true`, autocorrects `ENV["key"]` to `ENV.fetch("key", nil)`.
+  # When `false`, autocorrects `ENV["key"]` to `ENV.fetch("key")`.
+  DefaultToNil: true
 
 Style/FileEmpty:
   Description: >-
