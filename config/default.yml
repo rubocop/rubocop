@@ -3660,6 +3660,13 @@ Style/CollectionMethods:
     - inject
     - reduce
 
+Style/CollectionQuerying:
+  Description: 'Prefer `Enumerable` predicate methods over expressions with `count`.'
+  StyleGuide: '#collection-querying'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Safe: false
+
 Style/ColonMethodCall:
   Description: 'Do not use :: for method call.'
   StyleGuide: '#double-colons'

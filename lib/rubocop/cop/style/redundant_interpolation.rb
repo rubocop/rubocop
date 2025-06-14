@@ -130,7 +130,7 @@ module RuboCop
         end
 
         def require_parentheses?(node)
-          node.send_type? && !node.arguments.count.zero? && !node.parenthesized_call?
+          node.send_type? && node.arguments.any? && !node.parenthesized_call?
         end
       end
     end

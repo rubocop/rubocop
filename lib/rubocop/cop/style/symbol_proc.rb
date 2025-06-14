@@ -270,7 +270,7 @@ module RuboCop
         end
 
         def allow_if_method_has_argument?(send_node)
-          !!cop_config.fetch('AllowMethodsWithArguments', false) && !send_node.arguments.count.zero?
+          !!cop_config.fetch('AllowMethodsWithArguments', false) && send_node.arguments.any?
         end
 
         def allow_comments?

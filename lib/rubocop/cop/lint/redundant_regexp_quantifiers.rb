@@ -73,7 +73,7 @@ module RuboCop
         end
 
         def redundant_group?(expr)
-          expr.is?(:passive, :group) && expr.count { |child| child.type != :free_space } == 1
+          expr.is?(:passive, :group) && expr.one? { |child| child.type != :free_space }
         end
 
         def redundantly_quantifiable?(node)
