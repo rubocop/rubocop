@@ -161,7 +161,7 @@ module RuboCop
             elements.flat_map do |e|
               e.loc.column
             end
-          end.uniq.count == 1
+          end.uniq.one?
         end
 
         def first_argument_line(elements)
