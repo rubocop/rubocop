@@ -63,7 +63,7 @@ module RuboCop
           # If there is 0 or 2+ arguments:
           #   Hash[a1, a2, a3, a4] => {a1 => a2, a3 => a4}
           #   ...but don't suggest correction if there is odd number of them (it is a bug)
-          node.arguments.count == 1 ? single_argument(node) : multi_argument(node)
+          node.arguments.one? ? single_argument(node) : multi_argument(node)
         end
 
         private

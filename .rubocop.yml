@@ -368,6 +368,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/lint/it_without_arguments_in_block.rb'
     - 'lib/rubocop/cop/lint/safe_navigation_chain.rb'
     - 'lib/rubocop/cop/lint/useless_times.rb'
+    - 'lib/rubocop/cop/style/collection_querying.rb'
     - 'lib/rubocop/cop/style/colon_method_call.rb'
     - 'lib/rubocop/cop/style/numeric_predicate.rb'
     - 'lib/rubocop/cop/style/single_argument_dig.rb'

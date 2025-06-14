@@ -24,7 +24,7 @@ module RuboCop
 
         return unless output.tty?
 
-        file_phrase = target_files.count == 1 ? 'file' : 'files'
+        file_phrase = target_files.one? ? 'file' : 'files'
 
         # 185/407 files |====== 45 ======>                    |  ETA: 00:00:04
         # %c / %C       |       %w       >         %i         |       %e
