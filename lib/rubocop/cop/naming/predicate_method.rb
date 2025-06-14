@@ -6,7 +6,7 @@ module RuboCop
       # Checks that predicate methods end with `?` and non-predicate methods do not.
       #
       # The names of predicate methods (methods that return a boolean value) should end
-      # in a question mark. Methods that don’t return a boolean, shouldn’t
+      # in a question mark. Methods that don't return a boolean, shouldn't
       # end in a question mark.
       #
       # The cop assesses a predicate method as one that returns boolean values. Likewise,
