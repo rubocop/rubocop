@@ -269,7 +269,7 @@ module RuboCop
         end
 
         def regexp_with_named_captures?(node)
-          node.regexp_type? && node.each_capture(named: true).count.positive?
+          node.regexp_type? && node.each_capture(named: true).any?
         end
       end
     end
