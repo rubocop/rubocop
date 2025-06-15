@@ -86,6 +86,7 @@ module RuboCop
         def on_array(node)
           return if node.array_type? && !node.square_brackets?
 
+          node = find_node_with_brackets(node)
           tokens, left, right = array_brackets(node)
           return unless left && right
 
@@ -101,6 +102,10 @@ module RuboCop
         alias on_array_pattern on_array
 
         private
+
+        def find_node_with_brackets(node)
+          node.ancestors.find(&:const_pattern_type?) || node
+        end
 
         def autocorrect(corrector, node)
           tokens, left, right = array_brackets(node)
@@ -119,7 +124,7 @@ module RuboCop
         def array_brackets(node)
           tokens = processed_source.tokens_within(node)
 
-          left = tokens.find(&:left_array_bracket?)
+          left = tokens.find(&:left_bracket?)
           right = tokens.reverse_each.find(&:right_bracket?)
 
           [tokens, left, right]
@@ -192,7 +197,7 @@ module RuboCop
           if side == :right
             processed_source.tokens_within(node)[i].right_bracket?
           else
-            processed_source.tokens_within(node)[i].left_array_bracket?
+            processed_source.tokens_within(node)[i].left_bracket?
           end
         end
 
