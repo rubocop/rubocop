@@ -1807,6 +1807,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           - Max
           - AllowHeredoc
           - AllowURI
+          - AllowQualifiedName
           - URISchemes
           - IgnoreCopDirectives
           - AllowedPatterns

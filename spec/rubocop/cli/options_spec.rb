@@ -1891,7 +1891,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     context 'when the cop has the "info" severity' do
       before do
         create_file(target_file, <<~RUBY)
-          Long::Line::Not::Autocorrectable
+          some_object.some_method.another_method.yet_another_method
         RUBY
 
         create_file('.rubocop.yml', <<~YAML)
