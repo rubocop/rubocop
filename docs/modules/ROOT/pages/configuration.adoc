@@ -151,7 +151,7 @@ inherit_from:
   - ../.rubocop.yml
 ----
 
-You can inherit from a repo with basic auth that is authorized to access the repo as follow:
+You can inherit from a repo with basic auth that is authorized to access the repo as follows:
 
 [source,yaml]
 ----
@@ -160,7 +160,7 @@ inherit_from:
 ----
 
 A link:https://docs.github.com/en/developers/apps/about-apps#personal-access-token[GitHub personal access token]
-can also be configured as follow:
+can also be configured as follows:
 
 [source,yaml]
 ----
@@ -345,7 +345,7 @@ AllCops:
     - foo.rb
 ----
 
-If `foo.rb` specified as a RuboCop's command line argument, the result is:
+If `foo.rb` is specified as a RuboCop's command line argument, the result is:
 
 [source,sh]
 ----
@@ -373,7 +373,7 @@ This is unlikely to be what you wanted.
 
 RuboCop comes with a comprehensive list of common ruby file names and
 extensions. But, if you'd like RuboCop to check files that are not included by
-default, you'll need to pass them in on the command line, or to add entries for
+default, you'll need to pass them in on the command line, or add entries for
 them under `AllCops`/`Include`. Remember that your configuration files override
 https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCops's defaults]. In the following example, we want to include
 `foo.unusual_extension`, but we also must copy any other patterns we need from
@@ -761,7 +761,7 @@ number of excluded files is higher than the exclude limit.
 Some cops have a configurable option named `EnforcedStyle`.
 By default, when generating the `.rubocop_todo.yml`, if one style is used
 for all files, these cops will add the settings for the style being used.
-If you want to excluded on a file-by-file basis,
+If you want to exclude on a file-by-file basis,
 add the `--no-auto-gen-enforced-style` option along with `--auto-gen-config`.
 
 == Updating the configuration file
@@ -1003,7 +1003,7 @@ Those will be pretty useful for the documentation (so the manual generation has 
 
 == Enable checking Active Support extensions
 
-Some cops for checking specified methods (e.g. `Style/HashExcept`) supports Active Support extensions.
+Some cops for checking specified methods (e.g. `Style/HashExcept`) support Active Support extensions.
 This is off by default, but can be enabled by the `ActiveSupportExtensionsEnabled` option.
 
 [source,yaml]
