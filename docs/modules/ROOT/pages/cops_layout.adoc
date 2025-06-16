@@ -4935,6 +4935,10 @@ bar: "0000000000", baz: "0000000000"}
 | `[]`
 | Array
 
+| AllowQualifiedName
+| `true`
+| Boolean
+
 | SplitStrings
 | `false`
 | Boolean

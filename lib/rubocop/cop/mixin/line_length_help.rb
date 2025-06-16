@@ -25,20 +25,24 @@ module RuboCop
         config.for_cop('Layout/LineLength')['AllowURI']
       end
 
-      def allowed_uri_position?(line, uri_range)
-        uri_range.begin < max_line_length && uri_range.end == line_length(line)
+      def allow_qualified_name?
+        config.for_cop('Layout/LineLength')['AllowQualifiedName']
+      end
+
+      def allowed_position?(line, range)
+        range.begin < max_line_length && range.end == line_length(line)
       end
 
       def line_length(line)
         line.length + indentation_difference(line)
       end
 
-      def find_excessive_uri_range(line)
-        last_uri_match = match_uris(line).last
-        return nil unless last_uri_match
+      def find_excessive_range(line, type)
+        last_match = (type == :uri ? match_uris(line) : match_qualified_names(line)).last
+        return nil unless last_match
 
-        begin_position, end_position = last_uri_match.offset(0)
-        end_position = extend_uri_end_position(line, end_position)
+        begin_position, end_position = last_match.offset(0)
+        end_position = extend_end_position(line, end_position)
 
         line_indentation_difference = indentation_difference(line)
         begin_position += line_indentation_difference
@@ -57,6 +61,14 @@ module RuboCop
         matches
       end
 
+      def match_qualified_names(string)
+        matches = []
+        string.scan(qualified_name_regexp) do
+          matches << $LAST_MATCH_INFO
+        end
+        matches
+      end
+
       def indentation_difference(line)
         return 0 unless tab_indentation_width
 
@@ -70,7 +82,7 @@ module RuboCop
         index * (tab_indentation_width - 1)
       end
 
-      def extend_uri_end_position(line, end_position)
+      def extend_end_position(line, end_position)
         # Extend the end position YARD comments with linked URLs of the form {<uri> <title>}
         if line&.match(/{(\s|\S)*}$/)
           match = line[end_position..line_length(line)]&.match(/(\s|\S)*}/)
@@ -99,6 +111,10 @@ module RuboCop
           parser = defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::DEFAULT_PARSER
           parser.make_regexp(config.for_cop('Layout/LineLength')['URISchemes'])
         end
+      end
+
+      def qualified_name_regexp
+        /\b(?:[A-Z][A-Za-z0-9_]*::)+[A-Za-z_][A-Za-z0-9_]*\b/
       end
 
       def valid_uri?(uri_ish_string)

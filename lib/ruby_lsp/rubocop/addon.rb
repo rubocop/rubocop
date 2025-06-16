@@ -34,7 +34,7 @@ module RubyLsp
         @runtime_adapter = nil
       end
 
-      # rubocop:disable Layout/LineLength, Metrics/MethodLength
+      # rubocop:disable Metrics/MethodLength
       def register_additional_file_watchers(global_state, message_queue)
         return unless global_state.supports_watching_files
 
@@ -59,7 +59,7 @@ module RubyLsp
           )
         )
       end
-      # rubocop:enable Layout/LineLength, Metrics/MethodLength
+      # rubocop:enable Metrics/MethodLength
 
       def workspace_did_change_watched_files(changes)
         return unless changes.any? { |change| change[:uri].end_with?('.rubocop.yml') }

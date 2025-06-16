@@ -79,7 +79,7 @@ module RuboCop
         LanguageServer::Protocol::Interface::CodeDescription.new(href: doc_url)
       end
 
-      # rubocop:disable Layout/LineLength, Metrics/MethodLength
+      # rubocop:disable Metrics/MethodLength
       def autocorrect_action
         LanguageServer::Protocol::Interface::CodeAction.new(
           title: "Autocorrect #{@offense.cop_name}",
@@ -98,7 +98,7 @@ module RuboCop
           is_preferred: true
         )
       end
-      # rubocop:enable Layout/LineLength, Metrics/MethodLength
+      # rubocop:enable Metrics/MethodLength
 
       # rubocop:disable Metrics/MethodLength
       def offense_replacements
@@ -120,7 +120,7 @@ module RuboCop
       end
       # rubocop:enable Metrics/MethodLength
 
-      # rubocop:disable Layout/LineLength, Metrics/MethodLength
+      # rubocop:disable Metrics/MethodLength
       def disable_line_action
         LanguageServer::Protocol::Interface::CodeAction.new(
           title: "Disable #{@offense.cop_name} for this line",
@@ -138,7 +138,7 @@ module RuboCop
           )
         )
       end
-      # rubocop:enable Layout/LineLength, Metrics/MethodLength
+      # rubocop:enable Metrics/MethodLength
 
       def line_disable_comment
         new_text = if @offense.source_line.include?(' # rubocop:disable ')

@@ -51,7 +51,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 2
               # This cop supports safe autocorrection (--autocorrect).
-              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, SplitStrings.
+              # Configuration parameters: AllowHeredoc, AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, AllowedPatterns, SplitStrings.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 138
@@ -163,7 +163,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 1
               # This cop supports safe autocorrection (--autocorrect).
-              # Configuration parameters: Max, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, SplitStrings.
+              # Configuration parameters: Max, AllowHeredoc, AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, AllowedPatterns, SplitStrings.
               # URISchemes: http, https
               Layout/LineLength:
                 Exclude:
@@ -350,7 +350,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                     '# Offense count: 1',
                     '# This cop supports safe autocorrection (--autocorrect).',
                     '# Configuration parameters: AllowHeredoc, ' \
-                    'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+                    'AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, ' \
                     'AllowedPatterns, SplitStrings.',
                     '# URISchemes: http, https',
                     'Layout/LineLength:',
@@ -428,7 +428,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
                 '# Offense count: 1',
                 '# This cop supports safe autocorrection (--autocorrect).',
                 '# Configuration parameters: AllowHeredoc, ' \
-                'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+                'AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, ' \
                 'AllowedPatterns, SplitStrings.',
                 '# URISchemes: http, https',
                 'Layout/LineLength:',
@@ -499,7 +499,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
               # Offense count: 2
               # This cop supports safe autocorrection (--autocorrect).
-              # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns, SplitStrings.
+              # Configuration parameters: AllowHeredoc, AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, AllowedPatterns, SplitStrings.
               # URISchemes: http, https
               Layout/LineLength:
                 Max: 138
@@ -930,7 +930,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# Offense count: 2',
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowHeredoc, ' \
-         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+         'AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, ' \
          'AllowedPatterns, SplitStrings.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
@@ -1024,7 +1024,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '# Offense count: 3',
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowHeredoc, ' \
-         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+         'AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, ' \
          'AllowedPatterns, SplitStrings.',
          '# URISchemes: http, https',
          'Layout/LineLength:',
@@ -1328,7 +1328,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# This cop supports safe autocorrection (--autocorrect).',
          '# Configuration parameters: AllowHeredoc, ' \
-         'AllowURI, URISchemes, IgnoreCopDirectives, ' \
+         'AllowURI, AllowQualifiedName, URISchemes, IgnoreCopDirectives, ' \
          'AllowedPatterns, SplitStrings.',
          '# URISchemes: http, https',
          'Layout/LineLength:',

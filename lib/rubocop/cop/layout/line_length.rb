@@ -258,7 +258,7 @@ module RuboCop
           if ignore_cop_directives? && directive_on_source_line?(line_index)
             return check_directive_line(line, line_index)
           end
-          return check_uri_line(line, line_index) if allow_uri?
+          return check_line_for_exemptions(line, line_index) if allow_uri? || allow_qualified_name?
 
           register_offense(excess_range(nil, line, line_index), line, line_index)
         end
@@ -358,11 +358,32 @@ module RuboCop
           )
         end
 
-        def check_uri_line(line, line_index)
-          uri_range = find_excessive_uri_range(line)
-          return if uri_range && allowed_uri_position?(line, uri_range)
+        def check_line_for_exemptions(line, line_index)
+          uri_range            = range_if_applicable(line, :uri)
+          qualified_name_range = range_if_applicable(line, :qualified_name)
 
-          register_offense(excess_range(uri_range, line, line_index), line, line_index)
+          return if allowed_combination?(line, uri_range, qualified_name_range)
+
+          range = uri_range || qualified_name_range
+          register_offense(excess_range(range, line, line_index), line, line_index)
+        end
+
+        def range_if_applicable(line, type)
+          return unless type == :uri ? allow_uri? : allow_qualified_name?
+
+          find_excessive_range(line, type)
+        end
+
+        def allowed_combination?(line, uri_range, qualified_name_range)
+          if uri_range && qualified_name_range
+            allowed_position?(line, uri_range) && allowed_position?(line, qualified_name_range)
+          elsif uri_range
+            allowed_position?(line, uri_range)
+          elsif qualified_name_range
+            allowed_position?(line, qualified_name_range)
+          else
+            false
+          end
         end
 
         def breakable_dstr?(node)

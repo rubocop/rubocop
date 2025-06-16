@@ -65,7 +65,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
   end
 
   context 'when AllowURI option is enabled' do
-    let(:cop_config) { { 'Max' => 80, 'AllowURI' => true } }
+    let(:cop_config) { { 'Max' => 80, 'AllowURI' => true, 'AllowQualifiedName' => true } }
 
     context 'and the URL fits within the max allowed characters' do
       it 'registers an offense for the line' do
@@ -229,6 +229,136 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           #{'x' * 40} "https://a.very.long.line.which.violates.LineLength/sadf"
           #{'x' * 40}('https://a.very.long.line.which.violates.LineLength/sadf')
           #{'x' * 40} 'https://a.very.long.line.which.violates.LineLength/sadf'
+        RUBY
+      end
+    end
+  end
+
+  context 'when AllowQualifiedName option is enabled' do
+    let(:cop_config) { { 'Max' => 80, 'AllowQualifiedName' => true } }
+
+    context 'and the namespace fits within the max allowed characters' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # invoke the normal migration method
+          # Should call ActiveRecord::Oracle::SchemaStatements::create_table in the end
+                                                                                ^^^^^^^ Line is too long. [87/80]
+        RUBY
+      end
+    end
+
+    context 'and all the excessive characters are part of a qualifed name' do
+      it 'accepts the line' do
+        expect_no_offenses(<<-RUBY)
+          # invoke the normal migration method
+          # should end up calling ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table
+        RUBY
+      end
+
+      context 'and the qualifed name is wrapped in single quotes' do
+        it 'accepts the line' do
+          expect_no_offenses(<<-RUBY)
+            # should end up calling 'ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table'
+          RUBY
+        end
+      end
+
+      context 'and the qualifed name is wrapped in double quotes' do
+        it 'accepts the line' do
+          expect_no_offenses(<<-RUBY)
+            # should end up calling "ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table"
+          RUBY
+        end
+      end
+
+      context 'and the qualifed name is wrapped in braces' do
+        it 'accepts the line' do
+          expect_no_offenses(<<-RUBY)
+            # should end up calling {ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table}
+          RUBY
+        end
+      end
+    end
+
+    context 'and the excessive characters include a complete qualifed name' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # Invoke the normal migration method, in oracle envs should end up calling ActiveRecord::Oracle::create_table
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [119/80]
+        RUBY
+      end
+    end
+
+    context 'and the excessive characters include a complete qualifed name when multiple entries are present' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # Refer ActiveRecord::Migrations, in oracle envs should end up calling ActiveRecord::Oracle::create_table
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [115/80]
+        RUBY
+      end
+    end
+
+    context 'and the excessive characters include part of a qualifed name and another word' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # Should call ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table and
+                                                                                                        ^^^^ Line is too long. [108/80]
+          #   ActiveRecord::Example
+        RUBY
+      end
+    end
+
+    context 'and the excessive characters include part of a qualifed name in double quotes' do
+      it 'does not include the quote as part of the offense' do
+        expect_offense(<<-RUBY)
+          # Should call "ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table" and
+                                                                                                          ^^^^ Line is too long. [110/80]
+          #   "ActiveRecord::Example"
+        RUBY
+      end
+    end
+
+    context 'and the excessive characters include part of a qualifed name in braces and another word' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # Should call {ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table} and
+                                                                                                          ^^^^ Line is too long. [110/80]
+          #   {ActiveRecord::Example}
+        RUBY
+      end
+    end
+
+    context 'and the excessive characters include part of a qualifed name and trailing whitespace' do
+      it 'registers an offense for the line' do
+        expect_offense(<<-RUBY)
+          # Should call ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table#{trailing_whitespace}
+                                                                                                        ^ Line is too long. [105/80]
+          #   http://google.com/
+        RUBY
+      end
+    end
+
+    context 'and the qualifed name is an argument' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          #{'x' * 40}("ActiveRecord::Oracle::SchemaStatements::create_table")
+          #{'x' * 40} "ActiveRecord::Oracle::SchemaStatements::create_table"
+          #{'x' * 40}('ActiveRecord::Oracle::SchemaStatements::create_table')
+          #{'x' * 40} 'ActiveRecord::Oracle::SchemaStatements::create_table'
+        RUBY
+      end
+    end
+  end
+
+  context 'when AllowQualifiedName option is not enabled' do
+    let(:cop_config) { { 'Max' => 80 } }
+
+    context 'and all the excessive characters are part of a qualifed name' do
+      it 'registers an offense' do
+        expect_offense(<<-RUBY)
+          # invoke the normal migration method
+          # should end up calling ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table
+                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [114/80]
         RUBY
       end
     end
@@ -492,8 +622,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
 
       it 'registers the line which looks like YARD comment' do
         expect_offense(<<-RUBY)
-	        \texpect(some_exception_variable) {|e| e.url.should == 'http://host/path'}
-                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [83/30]
+          \texpect(some_exception_variable) {|e| e.url.should == 'http://host/path'}
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [83/30]
         RUBY
       end
     end
