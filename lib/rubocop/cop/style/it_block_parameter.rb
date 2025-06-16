@@ -57,7 +57,7 @@ module RuboCop
 
         MSG_USE_IT_PARAMETER = 'Use `it` block parameter.'
         MSG_AVOID_IT_PARAMETER = 'Avoid using `it` block parameter.'
-        MSG_AVOID_IT_PARAMETER_MULTI_LINE = 'Avoid using numbered parameters for multi-line blocks.'
+        MSG_AVOID_IT_PARAMETER_MULTILINE = 'Avoid using `it` block parameter for multi-line blocks.'
 
         minimum_target_ruby_version 3.4
 
@@ -96,7 +96,7 @@ module RuboCop
           when :allow_single_line
             return if node.single_line?
 
-            add_offense(node, message: MSG_AVOID_IT_PARAMETER_MULTI_LINE)
+            add_offense(node, message: MSG_AVOID_IT_PARAMETER_MULTILINE)
           when :disallow
             variables = find_block_variables(node, 'it')
 
