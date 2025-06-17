@@ -361,6 +361,36 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
     end
 
     context 'when using constant pattern matching', :ruby27 do
+      it 'registers an offense for empty pattern with spaces' do
+        expect_offense(<<~RUBY)
+          case value
+          in ADT[ ]
+                ^^^ #{no_space_in_empty_message}
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ADT[]
+          end
+        RUBY
+      end
+
+      it 'registers an offense for empty nested pattern with spaces' do
+        expect_offense(<<~RUBY)
+          case value
+          in ADT[*head, ADT[ ]]
+                           ^^^ #{no_space_in_empty_message}
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ADT[*head, ADT[]]
+          end
+        RUBY
+      end
+
       it 'registers an offense for pattern with spaces' do
         expect_offense(<<~RUBY)
           case value
@@ -848,7 +878,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
         RUBY
       end
 
-      it 'registers an offense for nested constant with no spaces' do
+      it 'registers an offense for nested constant pattern with no spaces' do
         expect_offense(<<~RUBY)
           case value
           in ADT[*head, ADT[*headhead, tail]]
