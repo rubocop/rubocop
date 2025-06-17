@@ -304,6 +304,13 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       end
     end
 
+    context 'methods returning negations' do
+      ['5', 'true', 'false', 'nil', '[]', 'a', 'a?', '(a == b)'].each do |value|
+        it_behaves_like 'predicate', "!#{value}"
+        it_behaves_like 'predicate', "(not #{value})"
+      end
+    end
+
     context 'methods returning boolean literals' do
       it_behaves_like 'predicate', 'true'
       it_behaves_like 'predicate', 'false'
