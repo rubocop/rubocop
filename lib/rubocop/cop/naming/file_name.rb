@@ -152,7 +152,7 @@ module RuboCop
 
             const_namespace, const_name = *const
             next if name != const_name && !match_acronym?(name, const_name)
-            next unless namespace.empty? || match_namespace(child, const_namespace, namespace)
+            next unless namespace.empty? || namespace_matches?(child, const_namespace, namespace)
 
             return node
           end
@@ -169,7 +169,7 @@ module RuboCop
           s(:const, namespace, name) if name
         end
 
-        def match_namespace(node, namespace, expected)
+        def namespace_matches?(node, namespace, expected)
           match_partial = partial_matcher!(expected)
 
           match_partial.call(namespace)

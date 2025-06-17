@@ -94,7 +94,7 @@ module RuboCop
           when :float
             true
           when :send
-            check_send(node)
+            float_send?(node)
           when :begin
             float?(node.children.first)
           else
@@ -108,18 +108,18 @@ module RuboCop
           (node.numeric_type? && node.value.zero?) || node.nil_type?
         end
 
-        def check_send(node)
+        def float_send?(node)
           if node.arithmetic_operation?
             float?(node.receiver) || float?(node.first_argument)
           elsif FLOAT_RETURNING_METHODS.include?(node.method_name)
             true
           elsif node.receiver&.float_type?
             FLOAT_INSTANCE_METHODS.include?(node.method_name) ||
-              check_numeric_returning_method(node)
+              numeric_returning_method?(node)
           end
         end
 
-        def check_numeric_returning_method(node)
+        def numeric_returning_method?(node)
           return false unless node.receiver
 
           case node.method_name

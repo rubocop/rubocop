@@ -228,7 +228,7 @@ module RuboCop
           )
         end
 
-        def condition_evaluation(node, cond)
+        def condition_evaluation?(node, cond)
           if node.unless?
             cond.falsey_literal?
           else
@@ -238,7 +238,7 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def correct_if_node(node, cond)
-          result = condition_evaluation(node, cond)
+          result = condition_evaluation?(node, cond)
 
           new_node = if node.elsif? && result
                        "else\n  #{range_with_comments(node.if_branch).source}"

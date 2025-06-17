@@ -10,8 +10,9 @@ module RuboCop
       # end in a question mark.
       #
       # The cop assesses a predicate method as one that returns boolean values. Likewise,
-      # a method that only returns literal values is assessed as non-predicate. The cop does
-      # not make an assessment if the return type is unknown (method calls, variables, etc.).
+      # a method that only returns literal values is assessed as non-predicate. Other predicate
+      # method calls are assumed to return boolean values. The cop does not make an assessment
+      # if the return type is unknown (non-predicate method calls, variables, etc.).
       #
       # NOTE: Operator methods (`def ==`, etc.) are ignored.
       #
@@ -47,6 +48,16 @@ module RuboCop
       #   # good
       #   def foo
       #     5
+      #   end
+      #
+      #   # bad - returns the value of another predicate method
+      #   def foo
+      #     bar?
+      #   end
+      #
+      #   # good
+      #   def foo?
+      #     bar?
       #   end
       #
       #   # good - operator method
@@ -126,12 +137,12 @@ module RuboCop
           return false unless conservative?
 
           return_values.any? do |value|
-            value.type?(:super, :zsuper) || non_comparison_call?(value)
+            value.type?(:super, :zsuper) || unknown_method_call?(value)
           end
         end
 
-        def non_comparison_call?(value)
-          value.call_type? && !value.comparison_method?
+        def unknown_method_call?(value)
+          value.call_type? && !value.comparison_method? && !value.predicate_method?
         end
 
         def return_values(node)
@@ -156,7 +167,9 @@ module RuboCop
         end
 
         def boolean_return?(value)
-          value.boolean_type? || (value.call_type? && value.comparison_method?)
+          return true if value.boolean_type?
+
+          value.call_type? && (value.comparison_method? || value.predicate_method?)
         end
 
         def potential_non_predicate?(return_values)

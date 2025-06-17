@@ -53,12 +53,12 @@ module RuboCop
 
         def used_as_flag?(node)
           return false if node.root?
-          return true if used_if_condition_in_body(node)
+          return true if used_if_condition_in_body?(node)
 
           node.parent.send_type? && (node.parent.prefix_bang? || node.parent.comparison_method?)
         end
 
-        def used_if_condition_in_body(node)
+        def used_if_condition_in_body?(node)
           if_node = node.ancestors.find(&:if_type?)
 
           return false unless (condition = if_node&.condition)
