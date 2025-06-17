@@ -257,7 +257,9 @@ intent of the program).
 ----
 # bad
 x || 1..2
+x - 1..2
 (x || 1..2)
+x || 1..y || 2
 1..2.to_a
 
 # good, unambiguous
@@ -271,6 +273,7 @@ a..b
 
 # good, ambiguity removed
 x || (1..2)
+(x - 1)..2
 (x || 1)..2
 (x || 1)..(y || 2)
 (1..2).to_a
@@ -7977,10 +7980,10 @@ URI::RFC2396_PARSER.make_regexp('http://example.com')
 |===
 
 Checks for redundant access modifiers, including those with no
-code, those which are repeated, and leading `public` modifiers in a
-class or module body. Conditionally-defined methods are considered as
-always being defined, and thus access modifiers guarding such methods
-are not redundant.
+code, those which are repeated, those which are on top-level, and
+leading `public` modifiers in a class or module body.
+Conditionally-defined methods are considered as always being defined,
+and thus access modifiers guarding such methods are not redundant.
 
 This cop has `ContextCreatingMethods` option. The default setting value
 is an empty array that means no method is specified.
@@ -8033,6 +8036,12 @@ end
 # bad
 class Foo
   private # this is redundant (no following methods are defined)
+end
+
+# bad
+private # this is useless (access modifiers have no effect on top-level)
+
+def method
 end
 
 # good
@@ -8247,6 +8256,9 @@ and block. In such cases, block will always be used as default value.
 This cop emulates Ruby warning "block supersedes default value argument" which
 applies to `Array.new`, `Array#fetch`, `Hash#fetch`, `ENV.fetch` and
 `Thread#fetch`.
+
+A `fetch` call without a receiver is considered a custom method and does not register
+an offense.
 
 [#safety-lintuselessdefaultvalueargument]
 === Safety

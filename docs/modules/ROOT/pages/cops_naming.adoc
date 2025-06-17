@@ -1206,13 +1206,13 @@ end
 | Yes
 | No
 | 1.76
-| -
+| 1.76
 |===
 
 Checks that predicate methods end with `?` and non-predicate methods do not.
 
 The names of predicate methods (methods that return a boolean value) should end
-in a question mark. Methods that don’t return a boolean, shouldn’t
+in a question mark. Methods that don't return a boolean, shouldn't
 end in a question mark.
 
 The cop assesses a predicate method as one that returns boolean values. Likewise,
@@ -1228,7 +1228,11 @@ return values are detected.
 
 The cop also has `AllowedMethods` configuration in order to prevent the cop from
 registering an offense from a method name that does not confirm to the naming
-guidelines. By default, `call` is allowed.
+guidelines. By default, `call` is allowed. The cop also has `AllowedPatterns`
+configuration to allow method names by regular expression.
+
+The cop can furthermore be configured to allow all bang methods (method names
+ending with `!`), with `AllowBangMethods: true` (default false).
 
 [#examples-namingpredicatemethod]
 === Examples
@@ -1292,6 +1296,28 @@ def foo?
 end
 ----
 
+[#allowbangmethods_-false-_default_-namingpredicatemethod]
+==== AllowBangMethods: false (default)
+
+[source,ruby]
+----
+# bad
+def save!
+  true
+end
+----
+
+[#allowbangmethods_-true-namingpredicatemethod]
+==== AllowBangMethods: true
+
+[source,ruby]
+----
+# good
+def save!
+  true
+end
+----
+
 [#configurable-attributes-namingpredicatemethod]
 === Configurable attributes
 
@@ -1305,6 +1331,14 @@ end
 | AllowedMethods
 | `call`
 | Array
+
+| AllowedPatterns
+| `[]`
+| Array
+
+| AllowBangMethods
+| `false`
+| Boolean
 |===
 
 [#namingpredicateprefix]
