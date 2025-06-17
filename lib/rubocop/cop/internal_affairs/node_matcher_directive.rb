@@ -110,8 +110,8 @@ module RuboCop
         def directive_offense_type(directive, actual_name)
           return :missing_directive unless directive
 
-          return :wrong_scope if wrong_scope(directive, actual_name)
-          return :no_scope if no_scope(directive, actual_name)
+          return :wrong_scope if wrong_scope?(directive, actual_name)
+          return :no_scope if no_scope?(directive, actual_name)
 
           # The method directive being prefixed by 'self.' is always an offense.
           # The matched method_name does not contain the receiver but the
@@ -121,11 +121,11 @@ module RuboCop
           end
         end
 
-        def wrong_scope(directive, actual_name)
+        def wrong_scope?(directive, actual_name)
           !actual_name.start_with?('self.') && directive[:has_scope_directive]
         end
 
-        def no_scope(directive, actual_name)
+        def no_scope?(directive, actual_name)
           actual_name.start_with?('self.') && !directive[:has_scope_directive]
         end
 

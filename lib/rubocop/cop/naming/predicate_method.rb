@@ -50,6 +50,26 @@ module RuboCop
       #     5
       #   end
       #
+      #   # bad
+      #   def foo
+      #     x == y
+      #   end
+      #
+      #   # good
+      #   def foo?
+      #     x == y
+      #   end
+      #
+      #   # bad
+      #   def foo
+      #     !x
+      #   end
+      #
+      #   # good
+      #   def foo?
+      #     !x
+      #   end
+      #
       #   # bad - returns the value of another predicate method
       #   def foo
       #     bar?
@@ -142,7 +162,9 @@ module RuboCop
         end
 
         def unknown_method_call?(value)
-          value.call_type? && !value.comparison_method? && !value.predicate_method?
+          return false unless value.call_type?
+
+          !value.comparison_method? && !value.predicate_method? && !value.negation_method?
         end
 
         def return_values(node)
@@ -168,8 +190,9 @@ module RuboCop
 
         def boolean_return?(value)
           return true if value.boolean_type?
+          return false unless value.call_type?
 
-          value.call_type? && (value.comparison_method? || value.predicate_method?)
+          value.comparison_method? || value.predicate_method? || value.negation_method?
         end
 
         def potential_non_predicate?(return_values)
