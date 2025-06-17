@@ -1,1 +1,0 @@
-* [#14275](https://github.com/rubocop/rubocop/issues/14275): Fix false positives for `Style/RedundantParentheses` when using parenthesized one-line pattern matching in endless method definition. ([@koic][])
