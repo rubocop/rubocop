@@ -20,8 +20,8 @@ AllCops:
   SuggestExtensions: false
 
 Naming/PredicateMethod:
-  AllowedMethods:
-    - on_defined?
+  AllowedPatterns:
+    - !ruby/regexp /\Aon_/ # ignore Node#on_* methods
 
 Naming/PredicatePrefix:
   # Method define macros for dynamically generated method.

@@ -87,7 +87,7 @@ module RuboCop
           true
         end
 
-        def integral(node)
+        def integral?(node)
           mantissa, = node.source.split('e')
           /^-?[1-9](\d*[1-9])?$/.match?(mantissa)
         end
@@ -101,7 +101,7 @@ module RuboCop
           when :engineering
             !engineering?(node)
           when :integral
-            !integral(node)
+            !integral?(node)
           else
             false
           end

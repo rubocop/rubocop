@@ -66,7 +66,7 @@ module RuboCop
       end
 
       # @deprecated Use processed_source.line_with_comment?(line)
-      def end_of_line_comment(line)
+      def end_of_line_comment(line) # rubocop:disable Naming/PredicateMethod
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
           `end_of_line_comment` is deprecated. Use `processed_source.line_with_comment?` instead.
         WARNING

@@ -105,7 +105,7 @@ module RuboCop
 
         # @!method dynamic_method_define(node)
         def_node_matcher :dynamic_method_define, <<~PATTERN
-          (send nil? #method_definition_macros
+          (send nil? #method_definition_macro?
             (sym $_)
             ...)
         PATTERN
@@ -195,7 +195,7 @@ module RuboCop
           cop_config['UseSorbetSigs']
         end
 
-        def method_definition_macros(macro_name)
+        def method_definition_macro?(macro_name)
           cop_config['MethodDefinitionMacros'].include?(macro_name.to_s)
         end
       end

@@ -89,7 +89,7 @@ module RuboCop
         private
 
         def inspect_def(node, def_node)
-          return if allowed_arguments(def_node.arguments)
+          return if allowed_arguments?(def_node.arguments)
 
           add_offense(node.loc.selector, message: format(MSG, method_name: def_node.method_name))
         end
@@ -101,7 +101,7 @@ module RuboCop
           definition = find_method_definition(node, method_name)
 
           return unless definition
-          return if allowed_arguments(definition.arguments)
+          return if allowed_arguments?(definition.arguments)
 
           add_offense(node, message: format(MSG, method_name: method_name))
         end
@@ -115,7 +115,7 @@ module RuboCop
         end
 
         # `ruby2_keywords` is only allowed if there's a `restarg` and no keyword arguments
-        def allowed_arguments(arguments)
+        def allowed_arguments?(arguments)
           return false if arguments.empty?
 
           arguments.each_child_node(:restarg).any? &&

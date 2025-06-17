@@ -465,7 +465,21 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       it_behaves_like 'acceptable', 'bar'
       it_behaves_like 'acceptable', 'bar()'
       it_behaves_like 'acceptable', 'bar(baz)'
-      it_behaves_like 'acceptable', 'bar?'
+    end
+
+    context 'methods returning other predicates' do
+      it_behaves_like 'predicate', 'bar?'
+      it_behaves_like 'predicate', 'bar?()'
+      it_behaves_like 'predicate', 'bar?(baz)'
+      it_behaves_like 'predicate', 'bar.baz?'
+
+      it_behaves_like 'predicate', <<~RUBY, explicit: false
+        if bar
+          baz?
+        else
+          false
+        end
+      RUBY
     end
 
     context 'variables' do
@@ -633,6 +647,11 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
     context 'method calls' do
       it_behaves_like 'acceptable', <<~RUBY, explicit: false
         return if something
+        true
+      RUBY
+
+      it_behaves_like 'acceptable', <<~RUBY, explicit: false
+        return if something
         bar?
       RUBY
     end
@@ -703,6 +722,11 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
     end
 
     context 'method calls' do
+      it_behaves_like 'non-predicate', <<~RUBY, explicit: false
+        return if something
+        true
+      RUBY
+
       it_behaves_like 'non-predicate', <<~RUBY, explicit: false
         return if something
         bar?
