@@ -359,6 +359,50 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
         RUBY
       end
     end
+
+    context 'when using constant pattern matching', :ruby27 do
+      it 'registers an offense for pattern with spaces' do
+        expect_offense(<<~RUBY)
+          case value
+          in ADT[ *head, tail ]
+                 ^ Do not use space inside array brackets.
+                             ^ Do not use space inside array brackets.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ADT[*head, tail]
+          end
+        RUBY
+      end
+
+      it 'registers an offense for nested constant with spaces' do
+        expect_offense(<<~RUBY)
+          case value
+          in ADT[ *head, ADT[ *headhead, tail ] ]
+                 ^ Do not use space inside array brackets.
+                             ^ Do not use space inside array brackets.
+                                             ^ Do not use space inside array brackets.
+                                               ^ Do not use space inside array brackets.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ADT[*head, ADT[*headhead, tail]]
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for pattern with no spaces' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in ADT[*head, ADT[*headhead, tail]]
+          end
+        RUBY
+      end
+    end
   end
 
   shared_examples 'space inside arrays' do
@@ -601,6 +645,50 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
         RUBY
       end
     end
+
+    context 'when using constant pattern matching', :ruby27 do
+      it 'registers an offense for pattern with no spaces' do
+        expect_offense(<<~RUBY)
+          case value
+          in ADT[*head, tail]
+                ^ #{use_space_message}
+                            ^ #{use_space_message}
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ADT[ *head, tail ]
+          end
+        RUBY
+      end
+
+      it 'registers an offense for nested constant with no spaces' do
+        expect_offense(<<~RUBY)
+          case value
+          in ADT[*head, ADT[*headhead, tail]]
+                ^ #{use_space_message}
+                           ^ #{use_space_message}
+                                           ^ #{use_space_message}
+                                            ^ #{use_space_message}
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ADT[ *head, ADT[ *headhead, tail ] ]
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for pattern with spaces' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in ADT[ *head, ADT[ *headhead, tail ] ]
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is compact' do
@@ -741,6 +829,49 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideArrayLiteralBrackets, :config do
       expect_correction(<<~RUBY)
         [[ a, b ], [ foo, [ bar, baz ]]]
       RUBY
+    end
+
+    context 'when using constant pattern matching', :ruby27 do
+      it 'registers an offense for pattern with no spaces' do
+        expect_offense(<<~RUBY)
+          case value
+          in ADT[*head, tail]
+                ^ #{use_space_message}
+                            ^ #{use_space_message}
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ADT[ *head, tail ]
+          end
+        RUBY
+      end
+
+      it 'registers an offense for nested constant with no spaces' do
+        expect_offense(<<~RUBY)
+          case value
+          in ADT[*head, ADT[*headhead, tail]]
+                ^ #{use_space_message}
+                           ^ #{use_space_message}
+                                           ^ #{use_space_message}
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case value
+          in ADT[ *head, ADT[ *headhead, tail ]]
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for pattern with spaces' do
+        expect_no_offenses(<<~RUBY)
+          case value
+          in ADT[ *head, ADT[ *headhead, tail ]]
+          end
+        RUBY
+      end
     end
   end
 end
