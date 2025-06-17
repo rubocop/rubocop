@@ -23,11 +23,11 @@ All popular editors provide some form of linter integration. Typically this is d
 either via LSP (if supported by the underlying server) or by shelling out to a linter and processing its output so it could be displayed inside the editor.
 
 As noted above, the `rubocop` binary starts relatively slowly which makes it problematic in the shelling out case. The RuboCop xref:usage/server.adoc["Server"] functionality
-has designed to address this problem and provide lightning fast editor integration.
+has been designed to address this problem and provide lightning-fast editor integration.
 
 === LSP
 
-https://microsoft.github.io/language-server-protocol/[The Language Server Protocol] is the modern standard for providing cross-editor support for various programming languages. The RuboCop xref:usage/lsp.adoc[LSP] functionality has designed to provide built-in language server. The following is a LSP client for interacting with the built-in server:
+https://microsoft.github.io/language-server-protocol/[The Language Server Protocol] is the modern standard for providing cross-editor support for various programming languages. The RuboCop xref:usage/lsp.adoc[LSP] functionality has been designed to provide a built-in language server. The following is an LSP client for interacting with the built-in server:
 
 - https://github.com/rubocop/vscode-rubocop[vscode-rubocop]
 
@@ -90,7 +90,7 @@ provides LightTable integration.
 
 === RubyMine / Intellij IDEA
 
-RuboCop support is https://www.jetbrains.com/help/idea/2017.1/rubocop.html[available] as of the 2017.1 releases.
+RuboCop support is https://www.jetbrains.com/idea/download/other.html[available] as of the 2017.1 releases.
 
 === Visual Studio Code
 
@@ -161,7 +161,7 @@ to run RuboCop automatically on every PR, and also lint all file
 types detected in your repository.
 
 Please follow the
-https://megalinter.io/latest/installation[installation instructions]
+https://megalinter.io/latest/install-assisted[installation instructions]
 to activate RuboCop without any additional configuration.
 
 https://megalinter.io/latest/flavors/ruby/[Mega-Linter's Ruby flavor]
