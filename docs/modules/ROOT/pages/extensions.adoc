@@ -188,7 +188,7 @@ There are currently three types of obsoletions that can be defined for cops:
 * `removed`: A cop was deleted (usually this is configured with `alternatives` or a `reason` why it was removed).
 * `split`: A cop was removed and replaced with multiple other cops.
 
-Two additional types are available to be defined for parameter changes. These configurations can apply to multiple cops and multiple parameters at the same time (so are expressed in YAML as an array of hashes):
+Two additional types are available to be defined for parameter changes. These configurations can apply to multiple cops and multiple parameters at the same time (so they are expressed in YAML as an array of hashes):
 
 * `changed_parameters`: A parameter has been renamed.
 * `changed_enforced_styles`: A previously accepted `EnforcedStyle` value has been changed or removed.
@@ -211,7 +211,7 @@ removed:
   Layout/SpaceAfterControlKeyword:
     alternatives: Layout/SpaceAroundKeyword
   Lint/InvalidCharacterLiteral:
-    reason: it was never being actually triggered
+    reason: it was never actually triggered
 
 split:
   Style/MethodMissing:
@@ -250,7 +250,7 @@ Please see the documents below for more formatter API details.
 
 * https://www.rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter[RuboCop::Formatter::BaseFormatter]
 * https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense[RuboCop::Cop::Offense]
-* https://www.rubydoc.info/gems/parser/Parser/Source/Range[Parser::Source::Range]
+* https://whitequark.github.io/parser/Parser/Source/Range.html[Parser::Source::Range]
 
 === Using a Custom Formatter from the Command Line
 
@@ -266,11 +266,11 @@ $ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
 
 == Template support
 
-RuboCop has API for extensions to support templates such as ERB, Haml, Slim, etc.
+RuboCop has an API for extensions to support templates such as ERB, Haml, Slim, etc.
 
 Normally, RuboCop extracts one Ruby code from one Ruby file, however there are multiple embedded Ruby codes in one template file. To solve this problem, RuboCop has a mechanism called `RuboCop::Runner.ruby_extractors`, to which any Ruby extractor can be added on the extension side.
 
-Ruby extractor must be a callable object that takes a `RuboCop::ProcessedSource` and returns an `Array` of `Hash` that contains Ruby source codes and their offsets from original source code, or returns `nil` for unrelated file.
+Ruby extractor must be a callable object that takes a `RuboCop::ProcessedSource` and returns an `Array` of `Hash`-es that contains Ruby source codes and their offsets from original source code, or returns `nil` for unrelated file.
 
 [source,ruby]
 ----
