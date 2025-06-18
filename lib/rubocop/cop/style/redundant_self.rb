@@ -67,6 +67,9 @@ module RuboCop
 
         def on_or_asgn(node)
           allow_self(node.lhs)
+
+          lhs_name = node.lhs.lvasgn_type? ? node.lhs.name : node.lhs
+          add_lhs_to_local_variables_scopes(node.rhs, lhs_name)
         end
         alias on_and_asgn on_or_asgn
 
