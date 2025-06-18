@@ -23,6 +23,14 @@ module RuboCop
       #   # good (method calls possibly can return different results)
       #   hash[foo] = hash[foo]
       #
+      # @example AllowRBSInlineAnnotation:true
+      #   # good
+      #   foo = foo #: Integer
+      #   foo, bar = foo, bar #: Integer
+      #   Foo = Foo #: Integer
+      #   hash['foo'] = hash['foo'] #: Integer
+      #   obj.attr = obj.attr #: Integer
+      #
       class SelfAssignment < Base
         MSG = 'Self-assignment detected.'
 
@@ -34,6 +42,8 @@ module RuboCop
         }.freeze
 
         def on_send(node)
+          return if allow_rbs_inline_annotation? && rbs_inline_annotation?(node.receiver)
+
           if node.method?(:[]=)
             handle_key_assignment(node) if node.arguments.size == 2
           elsif node.assignment_method?
@@ -44,6 +54,7 @@ module RuboCop
 
         def on_lvasgn(node)
           return unless node.rhs
+          return if allow_rbs_inline_annotation? && rbs_inline_annotation?(node.rhs)
 
           rhs_type = ASSIGNMENT_TYPE_TO_RHS_TYPE[node.type]
 
@@ -55,16 +66,22 @@ module RuboCop
 
         def on_casgn(node)
           return unless node.rhs&.const_type?
+          return if allow_rbs_inline_annotation? && rbs_inline_annotation?(node.rhs)
 
           add_offense(node) if node.namespace == node.rhs.namespace &&
                                node.short_name == node.rhs.short_name
         end
 
         def on_masgn(node)
+          first_lhs = node.lhs.assignments.first
+          return if allow_rbs_inline_annotation? && rbs_inline_annotation?(first_lhs)
+
           add_offense(node) if multiple_self_assignment?(node)
         end
 
         def on_or_asgn(node)
+          return if allow_rbs_inline_annotation? && rbs_inline_annotation?(node.lhs)
+
           add_offense(node) if rhs_matches_lhs?(node.rhs, node.lhs)
         end
         alias on_and_asgn on_or_asgn
@@ -107,6 +124,14 @@ module RuboCop
              first_argument.method_name.to_s == node.method_name.to_s.delete_suffix('=')
             add_offense(node)
           end
+        end
+
+        def rbs_inline_annotation?(node)
+          processed_source.ast_with_comments[node].any? { |comment| comment.text.start_with?('#:') }
+        end
+
+        def allow_rbs_inline_annotation?
+          cop_config['AllowRBSInlineAnnotation']
         end
       end
     end

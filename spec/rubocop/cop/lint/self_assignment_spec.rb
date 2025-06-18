@@ -318,4 +318,81 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
     RUBY
   end
+
+  describe 'RBS::Inline annotation' do
+    context 'when config option is enabled' do
+      let(:cop_config) { { 'AllowRBSInlineAnnotation' => true } }
+
+      it 'does not register an offense and it has a comment' do
+        expect_no_offenses(<<~RUBY)
+          foo = foo #: Integer
+          @foo = @foo #: Integer
+          @@foo = @@foo #: Integer
+          $foo = $foo #: Integer
+          Foo = Foo #: Integer
+          foo, bar = foo, bar #: Integer
+          foo ||= foo #: Integer
+          foo &&= foo #: Integer
+          foo.bar = foo.bar #: Integer
+          foo&.bar = foo&.bar #: Integer
+          foo["bar"] = foo["bar"] #: Integer
+          foo&.[]=("bar", foo["bar"]) #: Integer
+        RUBY
+      end
+
+      it 'registers an offense and it has a no comment' do
+        expect_offense(<<~RUBY)
+          foo = foo
+          ^^^^^^^^^ Self-assignment detected.
+          @foo = @foo
+          ^^^^^^^^^^^ Self-assignment detected.
+          @@foo = @@foo
+          ^^^^^^^^^^^^^ Self-assignment detected.
+          $foo = $foo
+          ^^^^^^^^^^^ Self-assignment detected.
+          Foo = Foo
+          ^^^^^^^^^ Self-assignment detected.
+          foo, bar = foo, bar
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo ||= foo
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo &&= foo
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo.bar = foo.bar
+          ^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.bar = foo&.bar
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo["bar"] = foo["bar"]
+          ^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.[]=("bar", foo["bar"])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+
+          foo = foo # comment
+          ^^^^^^^^^ Self-assignment detected.
+          @foo = @foo # comment
+          ^^^^^^^^^^^ Self-assignment detected.
+          @@foo = @@foo # comment
+          ^^^^^^^^^^^^^ Self-assignment detected.
+          $foo = $foo # comment
+          ^^^^^^^^^^^ Self-assignment detected.
+          Foo = Foo # comment
+          ^^^^^^^^^ Self-assignment detected.
+          foo, bar = foo, bar # comment
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo ||= foo # comment
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo &&= foo # comment
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo.bar = foo.bar # comment
+          ^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.bar = foo&.bar # comment
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo["bar"] = foo["bar"] # comment
+          ^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.[]=("bar", foo["bar"]) # comment
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+        RUBY
+      end
+    end
+  end
 end
