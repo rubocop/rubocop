@@ -251,7 +251,7 @@ module RuboCop
             return false unless (last_argument = node.last_argument)
             return true if last_argument.forwarded_restarg_type?
 
-            last_argument.hash_type? && last_argument.children.first&.forwarded_kwrestarg_type?
+            last_argument.hash_type? && last_argument.children.any?(&:forwarded_kwrestarg_type?)
           end
         end
         # rubocop:enable Metrics/ModuleLength, Metrics/CyclomaticComplexity

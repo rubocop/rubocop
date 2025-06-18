@@ -529,6 +529,14 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when forwarded keyword argument has additional nodes' do
+        expect_no_offenses(<<~RUBY)
+          def foo(**)
+            foo(name: value, **)
+          end
+        RUBY
+      end
     end
 
     it 'registers an offense for parens in method call without args' do
