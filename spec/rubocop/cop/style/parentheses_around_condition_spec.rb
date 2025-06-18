@@ -302,10 +302,8 @@ RSpec.describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
       RUBY
 
       expect_correction(<<~RUBY)
-        if#{trailing_whitespace}
-          x > 3 &&
+        if x > 3 &&
           x < 10
-
           return true
         end
       RUBY

@@ -339,8 +339,27 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
     expect_correction(<<~RUBY)
       x.y(foo &&
-        bar
-      )
+        bar)
+    RUBY
+  end
+
+  it 'registers an offense for parens around method call chained to an `&&` expression' do
+    # Style/MultipleComparison autocorrects:
+    # (
+    #   foo == 'a' ||
+    #   foo == 'b' ||
+    #   foo == 'c'
+    # ) && bar
+    # to the following:
+    expect_offense(<<~RUBY)
+      (
+      ^ Don't use parentheses around a method call.
+        ['a', 'b', 'c'].include?(foo)
+      ) && bar
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ['a', 'b', 'c'].include?(foo) && bar
     RUBY
   end
 
@@ -391,8 +410,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      [1
-      ]
+      [1]
     RUBY
   end
 
@@ -410,9 +428,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
         expect_correction(<<~RUBY)
           [
-          #{trailing_whitespace * 2}
-              1
-          #{trailing_whitespace * 2}
+            1
           ]
         RUBY
       end
@@ -442,8 +458,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
         expect_correction(<<~RUBY)
           [
-          #{trailing_whitespace * 2}
-              1,
+            1,
             2
           ]
         RUBY
@@ -462,8 +477,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
         expect_correction(<<~RUBY)
           [
-            x =#{trailing_whitespace}
-              1,
+            x = 1,
             y = 2
           ]
         RUBY
@@ -490,8 +504,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      {a: 1
-      }
+      {a: 1}
     RUBY
   end
 
@@ -1484,8 +1497,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
     expect_correction(<<~RUBY)
       foo(
-      #{trailing_whitespace * 2}
-          1,
+        1,
         2
       )
     RUBY
@@ -1511,15 +1523,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
     expect_correction(<<~RUBY)
       [
-      #{trailing_whitespace * 2}
         <<-STRING,
           foo
         STRING
-      #{trailing_whitespace * 2}
         <<-STRING
           bar
         STRING
-      #{trailing_whitespace * 2}
       ]
     RUBY
   end

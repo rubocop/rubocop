@@ -10,8 +10,11 @@ module RuboCop
         COMMA_REGEXP = /(?<=\))\s*,/.freeze
 
         def correct(corrector, node)
-          corrector.remove(node.loc.begin)
-          corrector.remove(node.loc.end)
+          buffer = node.source_range.source_buffer
+          corrector.remove(range_with_surrounding_space(range: node.loc.begin, buffer: buffer,
+                                                        side: :right, whitespace: true))
+          corrector.remove(range_with_surrounding_space(range: node.loc.end, buffer: buffer,
+                                                        side: :left))
           handle_orphaned_comma(corrector, node)
 
           return unless ternary_condition?(node) && next_char_is_question_mark?(node)
