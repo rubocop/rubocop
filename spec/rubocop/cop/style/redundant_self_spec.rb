@@ -16,6 +16,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     expect_no_offenses('a = self.a')
   end
 
+  it 'does not report an offense when receiver and lvalue have the same name in or-assignment' do
+    expect_no_offenses('foo ||= self.foo')
+  end
+
+  it 'does not report an offense when receiver and lvalue have the same name in and-assignment' do
+    expect_no_offenses('foo &&= self.foo')
+  end
+
   it 'accepts when nested receiver and lvalue have the same name' do
     expect_no_offenses('a = self.a || b || c')
   end
