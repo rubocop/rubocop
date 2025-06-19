@@ -255,7 +255,10 @@ module RuboCop
         end
 
         def disallowed_one_line_pattern_matching?(begin_node, node)
-          return false if begin_node.parent&.any_def_type? && begin_node.parent.endless?
+          if (parent = begin_node.parent)
+            return false if parent.any_def_type? && parent.endless?
+            return false if parent.assignment?
+          end
 
           node.any_match_pattern_type? && node.each_ancestor.none?(&:operator_keyword?)
         end
