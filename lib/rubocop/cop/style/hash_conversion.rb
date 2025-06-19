@@ -54,7 +54,7 @@ module RuboCop
         def_node_matcher :hash_from_array?, '(send (const {nil? cbase} :Hash) :[] ...)'
 
         def on_send(node)
-          return unless hash_from_array?(node)
+          return if part_of_ignored_node?(node) || !hash_from_array?(node)
 
           # There are several cases:
           # If there is one argument:
@@ -68,6 +68,7 @@ module RuboCop
 
         private
 
+        # rubocop:disable Metrics/MethodLength
         def single_argument(node)
           first_argument = node.first_argument
           if first_argument.hash_type?
@@ -82,8 +83,11 @@ module RuboCop
               replacement = "(#{replacement})" if requires_parens?(first_argument)
               corrector.replace(node, "#{replacement}.to_h")
             end
+
+            ignore_node(node)
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         def use_zip_method_without_argument?(first_argument)
           return false unless first_argument&.send_type?
@@ -111,7 +115,12 @@ module RuboCop
         end
 
         def requires_parens?(node)
-          (node.call_type? && node.arguments.any? && !node.parenthesized?) || node.operator_keyword?
+          if node.call_type?
+            return false if node.method?(:[])
+            return true if node.arguments.any? && !node.parenthesized?
+          end
+
+          node.operator_keyword?
         end
 
         def multi_argument(node)

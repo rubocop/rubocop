@@ -175,6 +175,28 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'reports an offense when using nested `Hash[]` without arguments' do
+    expect_offense(<<~RUBY)
+      Hash[Hash[]]
+      ^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Hash[].to_h
+    RUBY
+  end
+
+  it 'reports an offense when using nested `Hash[]` with arguments' do
+    expect_offense(<<~RUBY)
+      Hash[Hash[k, v]]
+      ^^^^^^^^^^^^^^^^ Prefer ary.to_h to Hash[ary].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Hash[k, v].to_h
+    RUBY
+  end
+
   context 'AllowSplatArgument: true' do
     let(:cop_config) { { 'AllowSplatArgument' => true } }
 
