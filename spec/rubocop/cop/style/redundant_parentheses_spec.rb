@@ -1231,6 +1231,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'accepts parentheses when assigning a parenthesized one-line `in` pattern matching', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      foo = (bar in baz)
+    RUBY
+  end
+
+  it 'accepts parentheses when or-assigning a parenthesized one-line `in` pattern matching', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      foo ||= (bar in baz)
+    RUBY
+  end
+
   it 'accepts parentheses when using parenthesized one-line `in` pattern matching in endless method definition', :ruby30 do
     expect_no_offenses(<<~RUBY)
       def foo = (bar in baz | qux)
