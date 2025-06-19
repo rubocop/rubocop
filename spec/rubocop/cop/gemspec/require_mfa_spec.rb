@@ -121,6 +121,26 @@ RSpec.describe RuboCop::Cop::Gemspec::RequireMFA, :config do
           end
         RUBY
       end
+
+      context 'when `metadata` assignment is not the last one' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY, 'my.gemspec')
+            Gem::Specification.new do |spec|
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `metadata['rubygems_mfa_required']` must be set to `'true'`.
+              spec.metadata['foo'] = 'bar'
+              spec.author = 'viralpraxis'
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            Gem::Specification.new do |spec|
+              spec.metadata['foo'] = 'bar'
+            spec.metadata['rubygems_mfa_required'] = 'true'
+              spec.author = 'viralpraxis'
+            end
+          RUBY
+        end
+      end
     end
   end
 

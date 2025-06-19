@@ -74,6 +74,14 @@ module RuboCop
           }
         PATTERN
 
+        # @!method metadata_assignment(node)
+        def_node_search :metadata_assignment, <<~PATTERN
+          `{
+            (send _ :metadata= _)
+            (send (send _ :metadata) :[]= (str _) _)
+          }
+        PATTERN
+
         # @!method rubygems_mfa_required(node)
         def_node_search :rubygems_mfa_required, <<~PATTERN
           (pair (str "rubygems_mfa_required") $_)
@@ -131,9 +139,15 @@ module RuboCop
         end
 
         def insert_mfa_required(corrector, node, block_var)
-          corrector.insert_before(node.loc.end, <<~RUBY)
+          require_mfa_directive = <<~RUBY.strip
             #{block_var}.metadata['rubygems_mfa_required'] = 'true'
           RUBY
+
+          if (last_assignment = metadata_assignment(processed_source.ast).to_a.last)
+            corrector.insert_after(last_assignment, "\n#{require_mfa_directive}")
+          else
+            corrector.insert_before(node.loc.end, "#{require_mfa_directive}\n")
+          end
         end
 
         def change_value(corrector, value)
