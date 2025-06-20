@@ -108,6 +108,30 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeBrackets, :config do
       RUBY
     end
 
+    it 'does not register an offense when call desugared `Hash#[]` to lvar receiver with a space after the dot' do
+      expect_no_offenses(<<~RUBY)
+        collection. [](index_or_key)
+      RUBY
+    end
+
+    it 'does not register an offense when call desugared `Hash#[]` to lvar receiver with a space before the dot' do
+      expect_no_offenses(<<~RUBY)
+        collection .[](index_or_key)
+      RUBY
+    end
+
+    it 'does not register an offense when call desugared `Hash#[]` to lvar receiver with a space after safe navigation operator' do
+      expect_no_offenses(<<~RUBY)
+        collection&. [](index_or_key)
+      RUBY
+    end
+
+    it 'does not register an offense when call desugared `Hash#[]` to lvar receiver with a space before safe navigation operator' do
+      expect_no_offenses(<<~RUBY)
+        collection &.[](index_or_key)
+      RUBY
+    end
+
     it 'does not register an offense when call desugared `Hash#[]` to ivar receiver' do
       expect_no_offenses(<<~RUBY)
         @collection.[](index_or_key)
