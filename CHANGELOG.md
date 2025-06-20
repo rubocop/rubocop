@@ -11,6 +11,31 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#14223](https://github.com/rubocop/rubocop/pull/14223): Add new `Gemspec/AttributeAssignment` cop. ([@viralpraxis][])
+* [#14128](https://github.com/rubocop/rubocop/issues/14128): Allow long fully-qualified namespace strings to exceed max length. ([@niranjan-patil][])
+* [#14288](https://github.com/rubocop/rubocop/pull/14288): Add new cop `Style/CollectionQuerying`. ([@lovro-bikic][])
+* [#14165](https://github.com/rubocop/rubocop/issues/14165): Add new `DefaultToNil` option to `Style/FetchEnvVar` cop. ([@Yuhi-Sato][])
+* [#14314](https://github.com/rubocop/rubocop/pull/14314): Enhance `Gemspec/RequireMFA` cop autocorrect to insert MFA directive after last `metadata` assignment. ([@viralpraxis][])
+* [#14159](https://github.com/rubocop/rubocop/pull/14159): Enhance `Layout/SpaceInsideArrayLiteralBrackets` cop to analyze nested constant patterns. ([@viralpraxis][])
+
+### Bug fixes
+
+* [#14306](https://github.com/rubocop/rubocop/issues/14306): Fix an error for `Style/HashConversion` when using nested `Hash[]`. ([@koic][])
+* [#14298](https://github.com/rubocop/rubocop/issues/14298): Fix an error for `Style/SoleNestedConditional` when autocorrecting nested if/unless/if. ([@ssagara00][])
+* [#14313](https://github.com/rubocop/rubocop/issues/14313): Fix a false positive for `Layout/SpaceBeforeBrackets` when call desugared `Hash#[]` to lvar receiver with a space around the dot. ([@koic][])
+* [#14292](https://github.com/rubocop/rubocop/issues/14292): Fix false positives for `Style/RedundantParentheses` when assigning a parenthesized one-line `in` pattern matching. ([@koic][])
+* [#14296](https://github.com/rubocop/rubocop/issues/14296): Fix false positives for `Style/RedundantSelf` when receiver and lvalue have the same name in or-assignment. ([@koic][])
+* [#14303](https://github.com/rubocop/rubocop/pull/14303): Fix `Lint/SelfAssignment` to allow inline RBS comments. ([@Morriar][])
+* [#14307](https://github.com/rubocop/rubocop/issues/14307): Fix `Style/MethodCallWithArgsParentheses` false positive on forwarded keyword argument with additional arguments. ([@viralpraxis][])
+* [#14301](https://github.com/rubocop/rubocop/issues/14301): Fix autocorrection syntax error for multiline expressions in `Style/RedundantParentheses`. ([@lovro-bikic][])
+
+### Changes
+
+* [#14295](https://github.com/rubocop/rubocop/pull/14295): Update `Naming/PredicateMethod` to consider negation (`!`/`not`) as boolean values. ([@dvandersluis][])
+* [#14255](https://github.com/rubocop/rubocop/issues/14255): Update `Naming/PredicateMethod` to treat returned predicate method calls as boolean values. ([@dvandersluis][])
+
 ## 1.76.2 (2025-06-17)
 
 ### Bug fixes
@@ -4165,3 +4190,6 @@
 [@daisuke]: https://github.com/daisuke
 [@steiley]: https://github.com/steiley
 [@ka8725]: https://github.com/ka8725
+[@ssagara00]: https://github.com/ssagara00
+[@niranjan-patil]: https://github.com/niranjan-patil
+[@Yuhi-Sato]: https://github.com/Yuhi-Sato

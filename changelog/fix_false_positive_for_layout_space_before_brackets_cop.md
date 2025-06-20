@@ -1,1 +1,0 @@
-* [#14313](https://github.com/rubocop/rubocop/issues/14313): Fix a false positive for `Layout/SpaceBeforeBrackets` when call desugared `Hash#[]` to lvar receiver with a space around the dot. ([@koic][])
