@@ -180,6 +180,7 @@ require_relative 'rubocop/cop/bundler/insecure_protocol_source'
 require_relative 'rubocop/cop/bundler/ordered_gems'
 
 require_relative 'rubocop/cop/gemspec/add_runtime_dependency'
+require_relative 'rubocop/cop/gemspec/attribute_assignment'
 require_relative 'rubocop/cop/gemspec/dependency_version'
 require_relative 'rubocop/cop/gemspec/deprecated_attribute_assignment'
 require_relative 'rubocop/cop/gemspec/development_dependencies'
