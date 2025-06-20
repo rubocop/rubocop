@@ -446,7 +446,7 @@ class MyCop < Base
   requires_gem "my-gem"
 
   def on_send(node)
-    if target_gem_version("my-gem) < "2.0"
+    if target_gem_version("my-gem") < "2.0"
       # ...
     else
       # ...
