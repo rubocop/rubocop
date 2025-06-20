@@ -2363,6 +2363,128 @@ items.include?
 
 * https://rubystyle.guide#map-find-select-reduce-include-size
 
+[#stylecollectionquerying]
+== Style/CollectionQuerying
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Always (Unsafe)
+| 1.77
+| -
+|===
+
+Prefer `Enumerable` predicate methods over expressions with `count`.
+
+The cop checks calls to `count` without arguments, or with a
+block. It doesn't register offenses for `count` with a positional
+argument because its behavior differs from predicate methods (`count`
+matches the argument using `==`, while `any?`, `none?` and `one?` use
+`===`).
+
+NOTE: This cop doesn't check `length` and `size` methods because they
+would yield false positives. For example, `String` implements `length`
+and `size`, but it doesn't include `Enumerable`.
+
+[#safety-stylecollectionquerying]
+=== Safety
+
+The cop is unsafe because receiver might not include `Enumerable`, or
+it has nonstandard implementation of `count` or any replacement
+methods.
+
+It's also unsafe because for collections with falsey values, expressions
+with `count` without a block return a different result than methods `any?`,
+`none?` and `one?`:
+
+[source,ruby]
+----
+[nil, false].count.positive?
+[nil].count == 1
+# => true
+
+[nil, false].any?
+[nil].one?
+# => false
+
+[nil].count == 0
+# => false
+
+[nil].none?
+# => true
+----
+
+Autocorrection is unsafe when replacement methods don't iterate over
+every element in collection and the given block runs side effects:
+
+[source,ruby]
+----
+x.count(&:method_with_side_effects).positive?
+# calls `method_with_side_effects` on every element
+
+x.any?(&:method_with_side_effects)
+# calls `method_with_side_effects` until first element returns a truthy value
+----
+
+[#examples-stylecollectionquerying]
+=== Examples
+
+[source,ruby]
+----
+# bad
+x.count.positive?
+x.count > 0
+x.count != 0
+
+x.count(&:foo?).positive?
+x.count { |item| item.foo? }.positive?
+
+# good
+x.any?
+
+x.any?(&:foo?)
+x.any? { |item| item.foo? }
+
+# bad
+x.count.zero?
+x.count == 0
+
+# good
+x.none?
+
+# bad
+x.count == 1
+x.one?
+----
+
+[#allcops_activesupportextensionsenabled_-false-_default_-stylecollectionquerying]
+==== AllCops:ActiveSupportExtensionsEnabled: false (default)
+
+[source,ruby]
+----
+# good
+x.count > 1
+----
+
+[#allcops_activesupportextensionsenabled_-true-stylecollectionquerying]
+==== AllCops:ActiveSupportExtensionsEnabled: true
+
+[source,ruby]
+----
+# bad
+x.count > 1
+
+# good
+x.many?
+----
+
+[#references-stylecollectionquerying]
+=== References
+
+* https://rubystyle.guide#collection-querying
+
 [#stylecolonmethodcall]
 == Style/ColonMethodCall
 
@@ -5371,7 +5493,7 @@ specified default value.
 [#examples-stylefetchenvvar]
 === Examples
 
-[#defaulttonil_true_stylefetchenvvar]
+[#defaulttonil_-true-_default_-stylefetchenvvar]
 ==== DefaultToNil: true (default)
 
 [source,ruby]
@@ -5389,7 +5511,7 @@ x = ENV.fetch('X', nil)
 ENV['X'].some_method # (e.g. `.nil?`)
 ----
 
-[#defaulttonil_false_stylefetchenvvar]
+[#defaulttonil_-false-stylefetchenvvar]
 ==== DefaultToNil: false
 
 [source,ruby]
@@ -5417,7 +5539,7 @@ ENV['X'].some_method # (e.g. `.nil?`)
 | `[]`
 | Array
 
-| DefaultToNil 
+| DefaultToNil
 | `true`
 | Boolean
 |===

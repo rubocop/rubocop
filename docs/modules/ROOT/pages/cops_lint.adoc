@@ -6267,6 +6267,30 @@ obj.attr = obj.attr2
 hash[foo] = hash[foo]
 ----
 
+[#allowrbsinlineannotation_true-lintselfassignment]
+==== AllowRBSInlineAnnotation:true
+
+[source,ruby]
+----
+# good
+foo = foo #: Integer
+foo, bar = foo, bar #: Integer
+Foo = Foo #: Integer
+hash['foo'] = hash['foo'] #: Integer
+obj.attr = obj.attr #: Integer
+----
+
+[#configurable-attributes-lintselfassignment]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowRBSInlineAnnotation
+| `false`
+| Boolean
+|===
+
 [#lintsendwithmixinargument]
 == Lint/SendWithMixinArgument
 

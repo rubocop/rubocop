@@ -1216,8 +1216,9 @@ in a question mark. Methods that don't return a boolean, shouldn't
 end in a question mark.
 
 The cop assesses a predicate method as one that returns boolean values. Likewise,
-a method that only returns literal values is assessed as non-predicate. The cop does
-not make an assessment if the return type is unknown (method calls, variables, etc.).
+a method that only returns literal values is assessed as non-predicate. Other predicate
+method calls are assumed to return boolean values. The cop does not make an assessment
+if the return type is unknown (non-predicate method calls, variables, etc.).
 
 NOTE: Operator methods (`def ==`, etc.) are ignored.
 
@@ -1260,6 +1261,36 @@ end
 # good
 def foo
   5
+end
+
+# bad
+def foo
+  x == y
+end
+
+# good
+def foo?
+  x == y
+end
+
+# bad
+def foo
+  !x
+end
+
+# good
+def foo?
+  !x
+end
+
+# bad - returns the value of another predicate method
+def foo
+  bar?
+end
+
+# good
+def foo?
+  bar?
 end
 
 # good - operator method

@@ -87,6 +87,7 @@ In the following section you find all available cops:
 === Department xref:cops_gemspec.adoc[Gemspec]
 
 * xref:cops_gemspec.adoc#gemspecaddruntimedependency[Gemspec/AddRuntimeDependency]
+* xref:cops_gemspec.adoc#gemspecattributeassignment[Gemspec/AttributeAssignment]
 * xref:cops_gemspec.adoc#gemspecdependencyversion[Gemspec/DependencyVersion]
 * xref:cops_gemspec.adoc#gemspecdeprecatedattributeassignment[Gemspec/DeprecatedAttributeAssignment]
 * xref:cops_gemspec.adoc#gemspecdevelopmentdependencies[Gemspec/DevelopmentDependencies]
@@ -434,6 +435,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#styleclassvars[Style/ClassVars]
 * xref:cops_style.adoc#stylecollectioncompact[Style/CollectionCompact]
 * xref:cops_style.adoc#stylecollectionmethods[Style/CollectionMethods]
+* xref:cops_style.adoc#stylecollectionquerying[Style/CollectionQuerying]
 * xref:cops_style.adoc#stylecolonmethodcall[Style/ColonMethodCall]
 * xref:cops_style.adoc#stylecolonmethoddefinition[Style/ColonMethodDefinition]
 * xref:cops_style.adoc#stylecombinabledefined[Style/CombinableDefined]

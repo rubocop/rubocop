@@ -55,6 +55,85 @@ end
 * https://rubystyle.guide#add_dependency_vs_add_runtime_dependency
 * https://github.com/rubygems/rubygems/issues/7799#issuecomment-2192720316
 
+[#gemspecattributeassignment]
+== Gemspec/AttributeAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.77
+| -
+|===
+
+Use consistent style for Gemspec attributes assignment.
+
+[#examples-gemspecattributeassignment]
+=== Examples
+
+[source,ruby]
+----
+# bad
+# This example uses two styles for assignment of metadata attribute.
+Gem::Specification.new do |spec|
+  spec.metadata = { 'key' => 'value' }
+  spec.metadata['another-key'] = 'another-value'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata['key'] = 'value'
+  spec.metadata['another-key'] = 'another-value'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.metadata = { 'key' => 'value', 'another-key' => 'another-value' }
+end
+
+# bad
+# This example uses two styles for assignment of authors attribute.
+Gem::Specification.new do |spec|
+  spec.authors = %w[author-0 author-1]
+  spec.authors[2] = 'author-2'
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.authors = %w[author-0 author-1 author-2]
+end
+
+# good
+Gem::Specification.new do |spec|
+  spec.authors[0] = 'author-0'
+  spec.authors[1] = 'author-1'
+  spec.authors[2] = 'author-2'
+end
+
+# good
+# This example uses consistent assignment per attribute,
+# even though two different styles are used overall.
+Gem::Specification.new do |spec|
+  spec.metadata = { 'key' => 'value' }
+  spec.authors[0] = 'author-0'
+  spec.authors[1] = 'author-1'
+  spec.authors[2] = 'author-2'
+end
+----
+
+[#configurable-attributes-gemspecattributeassignment]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Include
+| `+**/*.gemspec+`
+| Array
+|===
+
 [#gemspecdependencyversion]
 == Gemspec/DependencyVersion
 

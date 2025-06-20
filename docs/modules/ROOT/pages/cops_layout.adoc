@@ -4923,6 +4923,10 @@ bar: "0000000000", baz: "0000000000"}
 | `true`
 | Boolean
 
+| AllowQualifiedName
+| `true`
+| Boolean
+
 | URISchemes
 | `http`, `https`
 | Array
@@ -4934,10 +4938,6 @@ bar: "0000000000", baz: "0000000000"}
 | AllowedPatterns
 | `[]`
 | Array
-
-| AllowQualifiedName
-| `true`
-| Boolean
 
 | SplitStrings
 | `false`

@@ -284,7 +284,7 @@ Gemspec/AddRuntimeDependency:
 Gemspec/AttributeAssignment:
   Description: 'Use consistent style for Gemspec attributes assignment.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.77'
   Include:
     - '**/*.gemspec'
 
@@ -3673,7 +3673,7 @@ Style/CollectionQuerying:
   Description: 'Prefer `Enumerable` predicate methods over expressions with `count`.'
   StyleGuide: '#collection-querying'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.77'
   Safe: false
 
 Style/ColonMethodCall:

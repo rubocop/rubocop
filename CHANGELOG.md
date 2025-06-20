@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.77.0 (2025-06-20)
+
 ### New features
 
 * [#14223](https://github.com/rubocop/rubocop/pull/14223): Add new `Gemspec/AttributeAssignment` cop. ([@viralpraxis][])
