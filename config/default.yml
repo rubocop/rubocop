@@ -5953,6 +5953,11 @@ Style/UnlessLogicalOperators:
     - forbid_mixed_logical_operators
     - forbid_logical_operators
 
+Style/UnlessMinimizeNegations:
+  Description: 'Minimizes the number of negations in an `unless` using De Morgan’s laws.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/UnpackFirst:
   Description: >-
                  Checks for accessing the first element of `String#unpack`
