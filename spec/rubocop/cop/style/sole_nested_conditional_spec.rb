@@ -1001,4 +1001,24 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
       RUBY
     end
   end
+
+  it 'registers an offense and corrects when using nested `unless` within `if` followed by another `if`' do
+    expect_offense(<<~RUBY)
+      if foo
+        unless bar
+        ^^^^^^ Consider merging nested conditions into outer `if` conditions.
+          if baz
+          ^^ Consider merging nested conditions into outer `unless` conditions.
+            do_something
+          end
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && !bar && baz
+            do_something
+          end
+    RUBY
+  end
 end
