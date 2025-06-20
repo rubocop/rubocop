@@ -185,9 +185,9 @@ module RuboCop
           (hash (pair (sym :exception) false))
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
         def on_send(node)
-          return if hash_or_set_with_block?(node)
+          return if node.arguments.any? || hash_or_set_with_block?(node)
 
           receiver = find_receiver(node)
           return unless literal_receiver?(node, receiver) ||
@@ -198,10 +198,10 @@ module RuboCop
           message = format(MSG, method: node.method_name)
 
           add_offense(node.loc.selector, message: message) do |corrector|
-            corrector.remove(node.loc.dot.join(node.loc.selector))
+            corrector.remove(node.loc.dot.join(node.loc.end || node.loc.selector))
           end
         end
-        # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
         alias on_csend on_send
 
         private
