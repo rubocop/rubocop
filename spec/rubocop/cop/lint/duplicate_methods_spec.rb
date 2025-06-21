@@ -261,6 +261,17 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
       RUBY
     end
 
+    it "does not register an offense for duplicate self-alias in #{type}" do
+      expect_no_offenses(<<~RUBY, 'example.rb')
+        #{opening_line}
+          alias some_method some_method
+          def some_method
+            implement 1
+          end
+        end
+      RUBY
+    end
+
     it "doesn't register an offense for non-duplicate alias in #{type}" do
       expect_no_offenses(<<~RUBY)
         #{opening_line}
@@ -280,6 +291,28 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           end
           alias_method :some_method, :any_method
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+        end
+      RUBY
+    end
+
+    it "does not register an offense for duplicate self-alias_method in #{type}" do
+      expect_no_offenses(<<~RUBY, 'example.rb')
+        #{opening_line}
+          alias_method :some_method, :some_method
+          def some_method
+            implement 1
+          end
+        end
+      RUBY
+    end
+
+    it "does not register an offense for duplicate self-alias_method with dynamic original name in #{type}" do
+      expect_no_offenses(<<~RUBY, 'example.rb')
+        #{opening_line}
+          alias_method :some_method, unknown()
+          def some_method
+            implement 1
+          end
         end
       RUBY
     end
