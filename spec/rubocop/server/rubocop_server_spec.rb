@@ -45,6 +45,42 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
       end
     end
 
+    context 'when using --config option after update specified config file' do
+      it 'displays a restart information message' do
+        create_file('.rubocop_todo.yml', <<~RUBY)
+          AllCops:
+            NewCops: enable
+            SuggestExtensions: false
+          Layout/LineLength:
+            Max: 100
+        RUBY
+
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          x = 0
+          puts x
+        RUBY
+
+        options = '--server --only Style/StringLiterals --config .rubocop_todo.yml example.rb'
+        `ruby -I . \"#{rubocop}\" #{options}`
+
+        # Update .rubocop_todo.yml
+        create_file('.rubocop_todo.yml', <<~RUBY)
+          AllCops:
+            NewCops: enable
+            SuggestExtensions: false
+          Layout/LineLength:
+            Max: 101
+        RUBY
+
+        _stdout, stderr, _status = Open3.capture3("ruby -I . \"#{rubocop}\" #{options}")
+        expect(stderr).to start_with(
+          'RuboCop version incompatibility found, RuboCop server restarting...'
+        )
+      end
+    end
+
     context 'when using `--server` with `--stderr`' do
       it 'sends corrected source to stdout and rest to stderr' do
         create_file('example.rb', <<~RUBY)
