@@ -25,6 +25,24 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
 
       expect_correction("#{receiver}#{suffix}\n")
     end
+
+    it "registers an offense and corrects on `#{receiver}.#{conversion}()`" do
+      expect_offense(<<~RUBY, receiver: receiver, conversion: conversion)
+        #{receiver}.#{conversion}()
+        _{receiver} ^{conversion} Redundant `#{conversion}` detected.
+      RUBY
+
+      expect_correction("#{receiver}\n")
+    end
+
+    it "registers an offense and corrects on `#{receiver}&.#{conversion}()`" do
+      expect_offense(<<~RUBY, receiver: receiver, conversion: conversion)
+        #{receiver}&.#{conversion}()
+        _{receiver}  ^{conversion} Redundant `#{conversion}` detected.
+      RUBY
+
+      expect_correction("#{receiver}\n")
+    end
   end
 
   shared_examples 'conversion' do |conversion|
@@ -45,6 +63,16 @@ RSpec.describe RuboCop::Cop::Lint::RedundantTypeConversion, :config do
     it_behaves_like 'accepted', "[].#{conversion}" unless conversion == :to_a
     it_behaves_like 'accepted', "{}.#{conversion}" unless conversion == :to_h
     it_behaves_like 'accepted', "Set.new.#{conversion}" unless conversion == :to_set
+
+    it_behaves_like 'accepted', "'string'.#{conversion}(arg)"
+    it_behaves_like 'accepted', ":sym.#{conversion}(arg)"
+    it_behaves_like 'accepted', "1.#{conversion}(arg)"
+    it_behaves_like 'accepted', "1.0.#{conversion}(arg)"
+    it_behaves_like 'accepted', "1r.#{conversion}(arg)"
+    it_behaves_like 'accepted', "1i.#{conversion}(arg)"
+    it_behaves_like 'accepted', "[].#{conversion}(arg)"
+    it_behaves_like 'accepted', "{}.#{conversion}(arg)"
+    it_behaves_like 'accepted', "Set.new.#{conversion}(arg)"
 
     it "does not register an offense when calling `#{conversion}` on an local variable named `#{conversion}`" do
       expect_no_offenses(<<~RUBY)
