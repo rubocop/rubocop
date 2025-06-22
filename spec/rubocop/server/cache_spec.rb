@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Server::Cache do
 
       it 'is the specified path' do
         if RuboCop::Platform.windows?
-          expect(cache_class.cache_path).to eq('C:/tmp/rubocop_cache/server')
+          expect(cache_class.cache_path).to eq('D:/tmp/rubocop_cache/server')
         else
           expect(cache_class.cache_path).to eq('/tmp/rubocop_cache/server')
         end
@@ -62,7 +62,7 @@ RSpec.describe RuboCop::Server::Cache do
           expect(described_class).to receive(:require).with('yaml')
 
           if RuboCop::Platform.windows?
-            expect(cache_class.cache_path).to eq(cache_path.prepend('C:'))
+            expect(cache_class.cache_path).to eq(cache_path.prepend('D:'))
           else
             expect(cache_class.cache_path).to eq(cache_path)
           end
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Server::Cache do
           YAML
 
           if RuboCop::Platform.windows?
-            expect(cache_class.cache_path).to eq(cache_path.prepend('C:'))
+            expect(cache_class.cache_path).to eq(cache_path.prepend('D:'))
           else
             expect(cache_class.cache_path).to eq(cache_path)
           end
@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Server::Cache do
           YAML
 
           if RuboCop::Platform.windows?
-            expect(cache_class.cache_path).to eq(File.join('C:/tmp', 'rubocop_cache', 'server'))
+            expect(cache_class.cache_path).to eq(File.join('D:/tmp', 'rubocop_cache', 'server'))
           else
             expect(cache_class.cache_path).to eq(File.join('/tmp', 'rubocop_cache', 'server'))
           end
@@ -136,7 +136,7 @@ RSpec.describe RuboCop::Server::Cache do
 
         it 'contains the root from `RUBOCOP_CACHE_ROOT`' do
           if RuboCop::Platform.windows?
-            expect(cache_class.cache_path).to eq(cache_path.prepend('C:'))
+            expect(cache_class.cache_path).to eq(cache_path.prepend('D:'))
           else
             expect(cache_class.cache_path).to eq(cache_path)
           end
@@ -159,7 +159,7 @@ RSpec.describe RuboCop::Server::Cache do
 
         it 'contains the root from `RUBOCOP_CACHE_ROOT`' do
           if RuboCop::Platform.windows?
-            expect(cache_class.cache_path).to eq(cache_path.prepend('C:'))
+            expect(cache_class.cache_path).to eq(cache_path.prepend('D:'))
           else
             expect(cache_class.cache_path).to eq(cache_path)
           end
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Server::Cache do
 
         it 'contains the root from cache root path' do
           if RuboCop::Platform.windows?
-            expect(cache_class.cache_path).to eq(File.join('C:/tmp', 'rubocop_cache', 'server'))
+            expect(cache_class.cache_path).to eq(File.join('D:/tmp', 'rubocop_cache', 'server'))
           else
             expect(cache_class.cache_path).to eq(File.join('/tmp', 'rubocop_cache', 'server'))
           end
@@ -201,7 +201,7 @@ RSpec.describe RuboCop::Server::Cache do
 
         it 'contains the root from `XDG_CACHE_HOME`' do
           if RuboCop::Platform.windows?
-            expect(cache_class.cache_path).to eq(cache_path.prepend('C:'))
+            expect(cache_class.cache_path).to eq(cache_path.prepend('D:'))
           else
             expect(cache_class.cache_path).to eq(cache_path)
           end
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Server::Cache do
 
         it 'contains the root from cache root path' do
           if RuboCop::Platform.windows?
-            expect(cache_class.cache_path).to eq(File.join('C:/tmp', 'rubocop_cache', 'server'))
+            expect(cache_class.cache_path).to eq(File.join('D:/tmp', 'rubocop_cache', 'server'))
           else
             expect(cache_class.cache_path).to eq(File.join('/tmp', 'rubocop_cache', 'server'))
           end
