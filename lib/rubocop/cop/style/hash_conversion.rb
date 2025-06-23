@@ -64,11 +64,11 @@ module RuboCop
           #   Hash[a1, a2, a3, a4] => {a1 => a2, a3 => a4}
           #   ...but don't suggest correction if there is odd number of them (it is a bug)
           node.arguments.one? ? single_argument(node) : multi_argument(node)
+          ignore_node(node)
         end
 
         private
 
-        # rubocop:disable Metrics/MethodLength
         def single_argument(node)
           first_argument = node.first_argument
           if first_argument.hash_type?
@@ -83,11 +83,8 @@ module RuboCop
               replacement = "(#{replacement})" if requires_parens?(first_argument)
               corrector.replace(node, "#{replacement}.to_h")
             end
-
-            ignore_node(node)
           end
         end
-        # rubocop:enable Metrics/MethodLength
 
         def use_zip_method_without_argument?(first_argument)
           return false unless first_argument&.send_type?
