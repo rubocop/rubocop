@@ -323,9 +323,18 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       RUBY
     end
 
-    it "accepts literal #{lit} in non-toplevel and/or" do
+    it "accepts literal #{lit} in non-toplevel and/or as an `if` condition" do
       expect_no_offenses(<<~RUBY)
         if (a || #{lit}).something
+          top
+        end
+      RUBY
+    end
+
+    it "accepts literal #{lit} in non-toplevel and/or as a `case` condition" do
+      expect_no_offenses(<<~RUBY)
+        case a || #{lit}
+        when b
           top
         end
       RUBY
@@ -634,6 +643,16 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       expect_correction(<<~RUBY)
         top
         foo
+      RUBY
+    end
+
+    it "registers an offense for falsey literal #{lit} in `case`" do
+      expect_offense(<<~RUBY, lit: lit)
+        case %{lit}
+             ^{lit} Literal `#{lit}` appeared as a condition.
+        when x
+          top
+        end
       RUBY
     end
   end
