@@ -4,12 +4,14 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
   let(:allowed_methods) { [] }
   let(:allowed_patterns) { [] }
   let(:allow_bang_methods) { false }
+  let(:wayward_predicates) { [] }
   let(:cop_config) do
     {
       'Mode' => mode,
       'AllowedMethods' => allowed_methods,
       'AllowedPatterns' => allowed_patterns,
-      'AllowBangMethods' => allow_bang_methods
+      'AllowBangMethods' => allow_bang_methods,
+      'WaywardPredicates' => wayward_predicates
     }
   end
 
@@ -583,6 +585,12 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
           end
         RUBY
       end
+    end
+
+    context 'with WaywardPredicates' do
+      let(:wayward_predicates) { %w[nonzero?] }
+
+      it_behaves_like 'acceptable', 'nonzero?'
     end
   end
 

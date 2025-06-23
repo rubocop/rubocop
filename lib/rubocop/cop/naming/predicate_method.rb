@@ -26,6 +26,11 @@ module RuboCop
       # guidelines. By default, `call` is allowed. The cop also has `AllowedPatterns`
       # configuration to allow method names by regular expression.
       #
+      # Although returning a call to another predicate method is treated as a boolean value,
+      # certain method names can be known to not return a boolean, despite ending in a `?`
+      # (for example, `Numeric#nonzero?` returns `self` or `nil`). These methods can be
+      # configured using `NonBooleanPredicates`.
+      #
       # The cop can furthermore be configured to allow all bang methods (method names
       # ending with `!`), with `AllowBangMethods: true` (default false).
       #
@@ -164,7 +169,7 @@ module RuboCop
         def unknown_method_call?(value)
           return false unless value.call_type?
 
-          !value.comparison_method? && !value.predicate_method? && !value.negation_method?
+          !method_returning_boolean?(value)
         end
 
         def return_values(node)
@@ -190,7 +195,13 @@ module RuboCop
 
         def boolean_return?(value)
           return true if value.boolean_type?
+
+          method_returning_boolean?(value)
+        end
+
+        def method_returning_boolean?(value)
           return false unless value.call_type?
+          return false if wayward_predicate?(value.method_name)
 
           value.comparison_method? || value.predicate_method? || value.negation_method?
         end
@@ -274,6 +285,17 @@ module RuboCop
 
         def allow_bang_methods?
           cop_config.fetch('AllowBangMethods', false)
+        end
+
+        # If a method ending in `?` is known to not return a boolean value,
+        # (for example, `Numeric#nonzero?`) it should be treated as a non-boolean
+        # value, despite the method naming.
+        def wayward_predicate?(name)
+          wayward_predicates.include?(name.to_s)
+        end
+
+        def wayward_predicates
+          Array(cop_config.fetch('WaywardPredicates', []))
         end
       end
     end
