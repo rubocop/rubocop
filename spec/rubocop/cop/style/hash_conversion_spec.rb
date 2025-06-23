@@ -197,6 +197,17 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects nested `Hash[]` calls with multiple arguments' do
+    expect_offense(<<~RUBY)
+      Hash[1, Hash[k, v]]
+      ^^^^^^^^^^^^^^^^^^^ Prefer literal hash to Hash[arg1, arg2, ...].
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {1 => Hash[k, v]}
+    RUBY
+  end
+
   context 'AllowSplatArgument: true' do
     let(:cop_config) { { 'AllowSplatArgument' => true } }
 
