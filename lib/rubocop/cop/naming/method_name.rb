@@ -47,6 +47,12 @@ module RuboCop
       #   define_method :foo_bar do
       #   end
       #
+      #   # bad
+      #   Struct.new(:fooBar)
+      #
+      #   # good
+      #   Struct.new(:foo_bar)
+      #
       # @example EnforcedStyle: camelCase
       #   # bad
       #   def foo_bar; end
@@ -61,6 +67,12 @@ module RuboCop
       #   # good
       #   define_method :fooBar do
       #   end
+      #
+      #   # bad
+      #   Struct.new(:foo_bar)
+      #
+      #   # good
+      #   Struct.new(:fooBar)
       #
       # @example ForbiddenIdentifiers: ['def', 'super']
       #   # bad
@@ -88,9 +100,14 @@ module RuboCop
         # @!method str_name(node)
         def_node_matcher :str_name, '(str $_name)'
 
+        # @!method new_struct?(node)
+        def_node_matcher :new_struct?, '(send (const {nil? cbase} :Struct) :new ...)'
+
         def on_send(node)
           if node.method?(:define_method) || node.method?(:define_singleton_method)
             handle_define_method(node)
+          elsif new_struct?(node)
+            handle_new_struct(node)
           else
             handle_attr_accessor(node)
           end
@@ -113,6 +130,13 @@ module RuboCop
           return unless node.first_argument&.type?(:str, :sym)
 
           handle_method_name(node, node.first_argument.value)
+        end
+
+        def handle_new_struct(node)
+          arguments = node.first_argument&.str_type? ? node.arguments[1..] : node.arguments
+          arguments.select { |argument| argument.type?(:sym, :str) }.each do |name|
+            handle_method_name(name, name.value)
+          end
         end
 
         def handle_attr_accessor(node)
@@ -144,10 +168,14 @@ module RuboCop
           forbidden_identifier?(name) || forbidden_pattern?(name)
         end
 
+        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         def register_forbidden_name(node)
           if node.any_def_type?
             name_node = node.loc.name
             method_name = node.method_name
+          elsif node.literal?
+            name_node = node
+            method_name = node.value
           elsif (attrs = node.attribute_accessor?)
             name_node = attrs.last.last
             method_name = attr_name(name_node)
@@ -158,16 +186,21 @@ module RuboCop
           message = format(MSG_FORBIDDEN, identifier: method_name)
           add_offense(name_node, message: message)
         end
+        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         def attr_name(name_item)
           sym_name(name_item) || str_name(name_item)
         end
 
         def range_position(node)
-          selector_end_pos = node.loc.selector.end_pos + 1
-          expr_end_pos = node.source_range.end_pos
+          if node.loc.respond_to?(:selector)
+            selector_end_pos = node.loc.selector.end_pos + 1
+            expr_end_pos = node.source_range.end_pos
 
-          range_between(selector_end_pos, expr_end_pos)
+            range_between(selector_end_pos, expr_end_pos)
+          else
+            node.source_range
+          end
         end
 
         def message(style)
