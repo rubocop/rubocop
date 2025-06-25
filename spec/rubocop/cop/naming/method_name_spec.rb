@@ -258,6 +258,22 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
           expect_no_corrections
         end
       end
+
+      context 'for define_method' do
+        it 'registers an offense when method with forbidden name is defined using `define_method`' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            define_method :%{identifier}
+                          ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+        end
+
+        it 'registers an offense when method with forbidden name is defined using `define_singleton_method`' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            define_singleton_method :%{identifier}
+                                    ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+        end
+      end
     end
   end
 
@@ -302,6 +318,56 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
 
           expect_no_corrections
         end
+      end
+
+      context 'for define_method' do
+        it 'registers an offense when method with forbidden name is defined using `define_method`' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            define_method :%{identifier}
+                          ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+        end
+
+        it 'registers an offense when method with forbidden name is defined using `define_singleton_method`' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            define_singleton_method :%{identifier}
+                                    ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+        end
+      end
+    end
+  end
+
+  shared_examples 'define_method method call' do |enforced_style, identifier|
+    %i[define_method define_singleton_method].each do |name|
+      it 'registers an offense when method name is passed as a symbol' do
+        expect_offense(<<~RUBY, name: name, enforced_style: enforced_style, identifier: identifier)
+          %{name} :%{identifier} do
+          _{name} ^^{identifier} Use %{enforced_style} for method names.
+          end
+        RUBY
+      end
+
+      it 'registers an offense when method name is passed as a string' do
+        expect_offense(<<~RUBY, name: name, enforced_style: enforced_style, identifier: identifier)
+          %{name} '%{identifier}' do
+          _{name} ^^{identifier}^ Use %{enforced_style} for method names.
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when `define_method` is called without any arguments`' do
+        expect_no_offenses(<<~RUBY)
+          #{name} do
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when `define_method` is called with a variable`' do
+        expect_no_offenses(<<~RUBY)
+          #{name} foo do
+          end
+        RUBY
       end
     end
   end
@@ -380,6 +446,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     include_examples 'multiple attr methods', 'snake_case'
     include_examples 'forbidden identifiers', 'super'
     include_examples 'forbidden patterns', '_v1\z', 'api_v1'
+    include_examples 'define_method method call', 'snake_case', 'fooBar'
   end
 
   context 'when configured for camelCase' do
@@ -458,6 +525,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     include_examples 'multiple attr methods', 'camelCase'
     include_examples 'forbidden identifiers', 'super'
     include_examples 'forbidden patterns', '_gen\d+\z', 'user_gen1'
+    include_examples 'define_method method call', 'camelCase', 'foo_bar'
   end
 
   it 'accepts for non-ascii characters' do
