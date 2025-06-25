@@ -123,7 +123,9 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize
 
         def on_case(case_node)
-          if case_node.condition
+          if (cond = case_node.condition)
+            return if !cond.falsey_literal? && !cond.truthy_literal?
+
             check_case(case_node)
           else
             case_node.when_branches.each do |when_node|
