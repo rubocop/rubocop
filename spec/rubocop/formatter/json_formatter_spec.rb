@@ -121,11 +121,11 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
     end
 
     it 'sets Offense#correctable? value for :correctable key' do
-      expect(hash[:correctable]).to be_truthy
+      expect(hash[:correctable]).to be(true)
     end
 
     it 'sets Offense#corrected? value for :corrected key' do
-      expect(hash[:corrected]).to be_truthy
+      expect(hash[:corrected]).to be(true)
     end
 
     it 'sets value of #hash_for_location for :location key' do

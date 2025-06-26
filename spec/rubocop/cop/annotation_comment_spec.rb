@@ -36,19 +36,19 @@ RSpec.describe RuboCop::Cop::AnnotationComment do
     context 'when annotated with a non keyword' do
       let(:text) { 'SOMETHING: note' }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_nil }
     end
 
     context 'when given as the first word of a sentence' do
       let(:text) { 'Todo in the future' }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be(false) }
     end
 
     context 'when it includes a keyword' do
       let(:text) { 'TODO2' }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -58,13 +58,13 @@ RSpec.describe RuboCop::Cop::AnnotationComment do
     shared_examples 'correct' do |text|
       let(:text) { text }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be(true) }
     end
 
     shared_examples 'incorrect' do |text|
       let(:text) { text }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be(false) }
     end
 
     let(:colon) { true }

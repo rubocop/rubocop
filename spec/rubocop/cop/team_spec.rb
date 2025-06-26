@@ -59,13 +59,13 @@ RSpec.describe RuboCop::Cop::Team do
     context 'when the option argument of .mobilize is omitted' do
       subject { described_class.mobilize(cop_classes, config).autocorrect? }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_nil }
     end
 
     context 'when { autocorrect: true } is passed to .mobilize' do
       let(:options) { { autocorrect: true } }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -75,13 +75,13 @@ RSpec.describe RuboCop::Cop::Team do
     context 'when the option argument of .mobilize is omitted' do
       subject { described_class.mobilize(cop_classes, config).debug? }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to be_nil }
     end
 
     context 'when { debug: true } is passed to .mobilize' do
       let(:options) { { debug: true } }
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be(true) }
     end
   end
 

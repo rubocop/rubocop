@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Offense do
     o1 = described_class.new(:convention, location, 'message', 'CopName')
     o2 = described_class.new(:convention, location, 'message', 'CopName')
 
-    expect(o1 == o2).to be_truthy
+    expect(o1 == o2).to be(true)
   end
 
   it 'is frozen' do

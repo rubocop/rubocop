@@ -25,12 +25,12 @@ RSpec.describe RuboCop::Cop::VariableForce::Variable do
     let(:variable) { described_class.new(name, declaration_node, scope) }
 
     context 'when the variable is not assigned' do
-      it { is_expected.to be_falsey }
+      it { is_expected.to be(false) }
 
       context 'and the variable is referenced' do
         before { variable.reference!(s(:lvar, name)) }
 
-        it { is_expected.to be_truthy }
+        it { is_expected.to be(true) }
       end
     end
 
@@ -38,13 +38,13 @@ RSpec.describe RuboCop::Cop::VariableForce::Variable do
       before { variable.assign(s(:lvasgn, name)) }
 
       context 'and the variable is not yet referenced' do
-        it { is_expected.to be_falsey }
+        it { is_expected.to be(false) }
       end
 
       context 'and the variable is referenced' do
         before { variable.reference!(s(:lvar, name)) }
 
-        it { is_expected.to be_truthy }
+        it { is_expected.to be(true) }
       end
     end
   end

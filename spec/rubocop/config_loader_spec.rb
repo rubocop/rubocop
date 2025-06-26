@@ -2113,7 +2113,7 @@ RSpec.describe RuboCop::ConfigLoader do
       it 'is enabled by default' do
         default_config = described_class.default_configuration
         symbol_name_config = default_config.for_cop('Lint/AssignmentInCondition')
-        expect(symbol_name_config['AllowSafeAssignment']).to be_truthy
+        expect(symbol_name_config['AllowSafeAssignment']).to be(true)
       end
     end
   end
@@ -2129,14 +2129,14 @@ RSpec.describe RuboCop::ConfigLoader do
     it 'requires the passed path' do
       config_path = described_class.configuration_file_for('.')
       described_class.configuration_from_file(config_path)
-      expect(defined?(MyClass)).to be_truthy
+      expect(defined?(MyClass)).to eq('constant')
     end
 
     it 'uses paths relative to the .rubocop.yml, not cwd' do
       config_path = described_class.configuration_file_for('.')
       Dir.chdir '..' do
         described_class.configuration_from_file(config_path)
-        expect(defined?(MyClass)).to be_truthy
+        expect(defined?(MyClass)).to eq('constant')
       end
     end
   end
@@ -2154,7 +2154,7 @@ RSpec.describe RuboCop::ConfigLoader do
       $LOAD_PATH.unshift(File.dirname(config_path))
       Dir.chdir '..' do
         described_class.configuration_from_file(config_path)
-        expect(defined?(MyClass)).to be_truthy
+        expect(defined?(MyClass)).to eq('constant')
       end
     end
   end
