@@ -44,10 +44,10 @@ module RuboCop
       class HashConversion < Base
         extend AutoCorrector
 
-        MSG_TO_H = 'Prefer ary.to_h to Hash[ary].'
-        MSG_LITERAL_MULTI_ARG = 'Prefer literal hash to Hash[arg1, arg2, ...].'
-        MSG_LITERAL_HASH_ARG = 'Prefer literal hash to Hash[key: value, ...].'
-        MSG_SPLAT = 'Prefer array_of_pairs.to_h to Hash[*array].'
+        MSG_TO_H = 'Prefer `ary.to_h` to `Hash[ary]`.'
+        MSG_LITERAL_MULTI_ARG = 'Prefer literal hash to `Hash[arg1, arg2, ...]`.'
+        MSG_LITERAL_HASH_ARG = 'Prefer literal hash to `Hash[key: value, ...]`.'
+        MSG_SPLAT = 'Prefer `array_of_pairs.to_h` to `Hash[*array]`.'
         RESTRICT_ON_SEND = %i[[]].freeze
 
         # @!method hash_from_array?(node)
