@@ -12,7 +12,7 @@ RSpec.describe RuboCop::ConfigStore do
       # dir/subdir/file3
       "#{arg.include?('dir') ? 'dir' : '.'}/.rubocop.yml"
     end
-    allow(RuboCop::ConfigLoader).to receive(:configuration_from_file) { |arg| arg }
+    allow(RuboCop::ConfigLoader).to receive(:configuration_from_file) { |arg| arg } # rubocop:disable Style/Itself
     allow(RuboCop::ConfigLoader).to receive(:load_file) { |arg| RuboCop::Config.new(arg) }
     allow(RuboCop::ConfigLoader)
       .to receive(:merge_with_default) { |config| "merged #{config.to_h}" }
