@@ -41,7 +41,8 @@ module RuboCop
         end
 
         def incompatible_version?
-          Cache.version_path.read != Cache.restart_key
+          Cache.version_path.read !=
+            Cache.restart_key(args_config_file_path: self.class.args_config_file_path)
         end
 
         def stderr
