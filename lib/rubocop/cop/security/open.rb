@@ -34,6 +34,7 @@ module RuboCop
       #   # good (literal strings)
       #   open("foo.text")
       #   URI.open("http://example.com")
+      #   URI.parse(url).open
       class Open < Base
         MSG = 'The use of `%<receiver>sopen` is a serious security risk.'
         RESTRICT_ON_SEND = %i[open].freeze
