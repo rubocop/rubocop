@@ -60,7 +60,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     context 'configured supported types' do
       let(:supported_types) { %w[array] }
 
-      it 'allows supported types to be configured' do
+      it 'registers an offense when supported types are configured' do
         expect_offense(<<~RUBY)
           a, b = 4,
           ^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
@@ -182,7 +182,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
     context 'configured supported types' do
       let(:supported_types) { %w[array] }
 
-      it 'allows supported types to be configured' do
+      it 'registers an offense when supported types are configured' do
         expect_offense(<<~RUBY)
           a, b =
           ^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.

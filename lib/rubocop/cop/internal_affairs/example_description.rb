@@ -46,7 +46,7 @@ module RuboCop
           /\A(does not|doesn't) (register|find|flag|report)/ => 'registers',
           /\A(does not|doesn't) add (a|an|any )?offense/ => 'registers an offense',
           /\Aregisters no offense/ => 'registers an offense',
-          /\A(accepts|register)\b/ => 'registers'
+          /\A(accepts|allows|register)\b/ => 'registers'
         }.freeze
 
         EXPECT_NO_CORRECTIONS_DESCRIPTION_MAPPING = {
