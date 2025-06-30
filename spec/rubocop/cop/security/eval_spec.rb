@@ -22,6 +22,20 @@ RSpec.describe RuboCop::Cop::Security::Eval, :config do
     RUBY
   end
 
+  it 'registers an offense for `Kernel.eval`' do
+    expect_offense(<<~RUBY)
+      Kernel.eval something
+             ^^^^ The use of `eval` is a serious security risk.
+    RUBY
+  end
+
+  it 'registers an offense for `::Kernel.eval`' do
+    expect_offense(<<~RUBY)
+      ::Kernel.eval something
+               ^^^^ The use of `eval` is a serious security risk.
+    RUBY
+  end
+
   it 'registers an offense for eval with string that has an interpolation' do
     expect_offense(<<~'RUBY')
       eval "something#{foo}"
