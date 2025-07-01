@@ -132,6 +132,23 @@ module RuboCop
       #     bar :baz
       #   end
       #
+      # @example AllowedMethods: ["puts", "print"]
+      #
+      #   # good
+      #   puts "Hello world"
+      #   print "Hello world"
+      #   # still enforces parentheses on other methods
+      #   array.delete(e)
+      #
+      # @example AllowedPatterns: ["^assert"]
+      #
+      #   # good
+      #   assert_equal 'test', x
+      #   assert_match(/foo/, bar)
+      #   # still enforces parentheses on other methods
+      #   array.delete(e)
+
+      #
       # @example AllowParenthesesInMultilineCall: false (default)
       #
       #   # bad
