@@ -102,6 +102,17 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
         RUBY
       end
 
+      it 'registers an offense when using a single numbered parameter after multiple numbered parameters in a method chain' do
+        expect_offense(<<~RUBY)
+          foo { bar(_1, _2) }.baz { qux(_1) }
+                                        ^^ Use `it` block parameter.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo { bar(_1, _2) }.baz { qux(it) }
+        RUBY
+      end
+
       it 'does not register an offense when using `it` block parameters' do
         expect_no_offenses(<<~RUBY)
           block { do_something(it) }

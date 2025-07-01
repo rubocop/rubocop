@@ -1,0 +1,1 @@
+* [#14336](https://github.com/rubocop/rubocop/issues/14336): Fix incorrect autocorrect for `Style/ItBlockParameter` when using a single numbered parameter after multiple numbered parameters in a method chain. ([@koic][])
