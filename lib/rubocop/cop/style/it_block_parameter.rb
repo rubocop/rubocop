@@ -109,7 +109,7 @@ module RuboCop
         private
 
         def find_block_variables(node, block_argument_name)
-          node.each_descendant(:lvar).select do |descendant|
+          node.body.each_descendant(:lvar).select do |descendant|
             descendant.source == block_argument_name
           end
         end
