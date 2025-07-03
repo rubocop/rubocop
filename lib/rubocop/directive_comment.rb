@@ -36,6 +36,11 @@ module RuboCop
     MALFORMED_DIRECTIVE_WITHOUT_COP_NAME_REGEXP = Regexp.new(
       "\\A#{DIRECTIVE_HEADER_PATTERN}\\s*\\z".gsub(' ', '\s*')
     )
+    # @api private
+    CUSTOM_MODE_COMMENT_REGEXP = Regexp.new(
+      "#{DIRECTIVE_MARKER_PATTERN}((?:\\S+)).*\\b"
+        .gsub(' ', '\s*')
+    )
 
     def self.before_comment(line)
       line.split(DIRECTIVE_COMMENT_REGEXP).first
@@ -43,11 +48,20 @@ module RuboCop
 
     attr_reader :comment, :cop_registry, :mode, :cops
 
-    def initialize(comment, cop_registry = Cop::Registry.global)
+    def initialize(comment, cop_registry = Cop::Registry.global, custom_modes: [])
       @comment = comment
       @cop_registry = cop_registry
+      @custom_modes = custom_modes
       @match_data = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
       @mode, @cops = match_captures
+    end
+
+    def custom_mode?
+      return false if @custom_modes.empty?
+
+      mode, = CUSTOM_MODE_COMMENT_REGEXP.match(comment.text).captures
+
+      @custom_modes.include?(mode)
     end
 
     # Checks if the comment starts with `# rubocop:` marker

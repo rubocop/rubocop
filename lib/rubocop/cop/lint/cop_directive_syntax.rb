@@ -47,7 +47,11 @@ module RuboCop
 
         def on_new_investigation
           processed_source.comments.each do |comment|
-            directive_comment = DirectiveComment.new(comment)
+            directive_comment = DirectiveComment.new(
+              comment,
+              custom_modes: config.for_all_cops.fetch('CustomDirectiveModes', [])
+            )
+            next if directive_comment.custom_mode?
             next unless directive_comment.start_with_marker?
             next unless directive_comment.malformed?
 
