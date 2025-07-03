@@ -381,9 +381,9 @@ This can be implemented using the `IgnoredNode` module:
  end
 ----
 
-This works because the correcting a file is implemented by repeating investigation and correction until the file no longer requires correction, meaning all nested nodes will eventually be processed.
+This works because file correction is implemented by repeating investigation and correction until the file no longer requires correction, meaning all nested nodes will eventually be processed.
 
-Note that `expect_correction` in `Cop` specs only asserts the result after one pass.
+Note that `expect_correction` in `Cop` specs asserts the result after all passes.
 
 === Limit by Ruby or Gem versions
 
