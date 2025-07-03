@@ -12,7 +12,7 @@ module RuboCop
     STATUS_INTERRUPTED = Signal.list['INT'] + 128
     DEFAULT_PARALLEL_OPTIONS = %i[
       color config debug display_style_guide display_time display_only_fail_level_offenses
-      display_only_failed editor_mode except extra_details fail_level fix_layout format
+      display_only_failed editor_mode except extra_details fail_level fix_layout format formatters
       ignore_disable_comments lint only only_guide_cops require safe
       autocorrect safe_autocorrect autocorrect_all
     ].freeze
