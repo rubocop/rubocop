@@ -147,7 +147,6 @@ module RuboCop
       #   assert_match(/foo/, bar)
       #   # still enforces parentheses on other methods
       #   array.delete(e)
-
       #
       # @example AllowParenthesesInMultilineCall: false (default)
       #
