@@ -49,7 +49,7 @@ module RuboCop
           (block
             $(call _ :fetch _)
             (args)
-            ${nil? #basic_literal? #const_type?})
+            ${nil? basic_literal? const_type?})
         PATTERN
 
         def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
@@ -70,14 +70,6 @@ module RuboCop
         end
 
         private
-
-        def basic_literal?(node)
-          node&.basic_literal?
-        end
-
-        def const_type?(node)
-          node&.const_type?
-        end
 
         def should_not_check?(send, body)
           (body&.const_type? && !check_for_constant?) ||
