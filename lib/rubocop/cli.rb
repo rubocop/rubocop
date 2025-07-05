@@ -48,6 +48,7 @@ module RuboCop
           validate_options_vs_config
           parallel_by_default!
           apply_default_formatter
+          report_pending_cops
           execute_runners
         end
       end
@@ -155,6 +156,7 @@ module RuboCop
 
     def act_on_options
       set_options_to_config_loader
+      set_options_to_pending_cops_reporter
       handle_editor_mode
 
       @config_store.options_config = @options[:config] if @options[:config]
@@ -177,6 +179,11 @@ module RuboCop
       ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
       ConfigLoader.ignore_unrecognized_cops = @options[:ignore_unrecognized_cops]
+    end
+
+    def set_options_to_pending_cops_reporter
+      PendingCopsReporter.disable_pending_cops = @options[:disable_pending_cops]
+      PendingCopsReporter.enable_pending_cops = @options[:enable_pending_cops]
     end
 
     def handle_editor_mode
@@ -207,6 +214,10 @@ module RuboCop
         end
         [[formatter, @options[:output_path]]]
       end
+    end
+
+    def report_pending_cops
+      PendingCopsReporter.warn_if_needed(@config_store.for_pwd)
     end
   end
 end

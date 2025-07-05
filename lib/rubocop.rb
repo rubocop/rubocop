@@ -812,6 +812,7 @@ require_relative 'rubocop/options'
 require_relative 'rubocop/remote_config'
 require_relative 'rubocop/target_ruby'
 require_relative 'rubocop/yaml_duplication_checker'
+require_relative 'rubocop/pending_cops_reporter'
 
 # rubocop:enable Style/RequireOrder
 

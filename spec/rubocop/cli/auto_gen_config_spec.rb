@@ -1086,7 +1086,10 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           actual = File.read('.rubocop_todo.yml').lines.grep_v(/^(#.*)?$/)
           expect(actual.join).to eq(expected)
 
-          expect(cli.run([])).to eq(0)
+          # NOTE: Reload CLI to ensure updated config with rubocop_todo is properly picked up.
+          #       ConfigStore#for_pwd caches results; re-create CLI to avoid using stale config.
+          fresh_cli = RuboCop::CLI.new
+          expect(fresh_cli.run([])).to eq(0)
         end
       end
 
@@ -1726,7 +1729,11 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
               - '**/*.arb'
               - 'file.rb'
         YAML
-        expect(cli.run([])).to eq(0)
+
+        # NOTE: Reload CLI to ensure updated config with rubocop_todo is properly picked up.
+        #       ConfigStore#for_pwd caches results; re-create CLI to avoid using stale config.
+        fresh_cli = RuboCop::CLI.new
+        expect(fresh_cli.run([])).to eq(0)
       end
     end
   end

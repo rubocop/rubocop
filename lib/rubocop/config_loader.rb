@@ -22,14 +22,6 @@ module RuboCop
     class << self
       include FileFinder
 
-      PENDING_BANNER = <<~BANNER
-        The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
-
-        Please also note that you can opt-in to new cops by default by adding this to your config:
-          AllCops:
-            NewCops: enable
-      BANNER
-
       attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops,
                     :ignore_unrecognized_cops
       attr_writer :default_configuration
@@ -132,21 +124,7 @@ module RuboCop
           add_excludes_from_files(config, config_file)
         end
 
-        merge_with_default(config, config_file).tap do |merged_config|
-          unless possible_new_cops?(merged_config)
-            pending_cops = pending_cops_only_qualified(merged_config.pending_cops)
-            warn_on_pending_cops(pending_cops) unless pending_cops.empty?
-          end
-        end
-      end
-
-      def pending_cops_only_qualified(pending_cops)
-        pending_cops.select { |cop| Cop::Registry.qualified_cop?(cop.name) }
-      end
-
-      def possible_new_cops?(config)
-        disable_pending_cops || enable_pending_cops ||
-          config.disabled_new_cops? || config.enabled_new_cops?
+        merge_with_default(config, config_file)
       end
 
       def add_excludes_from_files(config, config_file)
@@ -206,21 +184,6 @@ module RuboCop
         WARNING
 
         ConfigFinder.project_root
-      end
-
-      def warn_on_pending_cops(pending_cops)
-        warn Rainbow(PENDING_BANNER).yellow
-
-        pending_cops.each { |cop| warn_pending_cop cop }
-
-        warn Rainbow('For more information: https://docs.rubocop.org/rubocop/versioning.html').yellow
-      end
-
-      def warn_pending_cop(cop)
-        version = cop.metadata['VersionAdded'] || 'N/A'
-
-        warn Rainbow("#{cop.name}: # new in #{version}").yellow
-        warn Rainbow('  Enabled: true').yellow
       end
 
       # Merges the given configuration with the default one.
