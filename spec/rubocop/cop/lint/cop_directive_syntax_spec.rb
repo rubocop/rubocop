@@ -102,4 +102,20 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
     RUBY
   end
+
+  context 'with custom modes' do
+    let(:all_cops_config) { { 'CustomDirectiveModes' => ['foobar'] } }
+
+    it 'does not register an offense when configured custom directive mode is used' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:foobar abc
+      RUBY
+    end
+
+    it 'does not register an offense when configured custom directive mode is used without arguments' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:foobar
+      RUBY
+    end
+  end
 end
