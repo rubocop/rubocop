@@ -5,6 +5,9 @@ module RuboCop
     module Lint
       # Checks for duplicated instance (or singleton) method
       # definitions.
+      # NOTE: Aliasing a method to itself is allowed, as it indicates that
+      # the developer intends to suppress Ruby's method redefinition warnings.
+      # See https://bugs.ruby-lang.org/issues/13574.
       #
       # @example
       #
@@ -39,6 +42,18 @@ module RuboCop
       #   end
       #
       #   alias bar foo
+      #
+      #   # good
+      #   alias foo foo
+      #   def foo
+      #     1
+      #   end
+      #
+      #   # good
+      #   alias_method :foo, :foo
+      #   def foo
+      #     1
+      #   end
       #
       # @example AllCops:ActiveSupportExtensionsEnabled: false (default)
       #
@@ -113,11 +128,13 @@ module RuboCop
 
         # @!method method_alias?(node)
         def_node_matcher :method_alias?, <<~PATTERN
-          (alias (sym $_name) sym)
+          (alias (sym $_name) (sym $_original_name))
         PATTERN
 
         def on_alias(node)
-          return unless (name = method_alias?(node))
+          name, original_name = method_alias?(node)
+          return unless name && original_name
+          return if name == original_name
           return if node.ancestors.any?(&:if_type?)
 
           found_instance_method(node, name)
@@ -125,7 +142,7 @@ module RuboCop
 
         # @!method alias_method?(node)
         def_node_matcher :alias_method?, <<~PATTERN
-          (send nil? :alias_method (sym $_name) _)
+          (send nil? :alias_method (sym $_name) (sym $_original_name))
         PATTERN
 
         # @!method delegate_method?(node)
@@ -140,7 +157,10 @@ module RuboCop
         def_node_matcher :sym_name, '(sym $_name)'
 
         def on_send(node) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-          if (name = alias_method?(node))
+          name, original_name = alias_method?(node)
+
+          if name && original_name
+            return if name == original_name
             return if node.ancestors.any?(&:if_type?)
 
             found_instance_method(node, name)
