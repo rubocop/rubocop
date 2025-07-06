@@ -128,7 +128,9 @@ module RuboCop
               corrector.replace(node, args_to_hash(node.arguments))
 
               parent = node.parent
-              add_parentheses(parent, corrector) if parent&.send_type? && !parent.parenthesized?
+              if parent&.send_type? && !parent.method?(:to_h) && !parent.parenthesized?
+                add_parentheses(parent, corrector)
+              end
             end
           end
         end
