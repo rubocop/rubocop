@@ -208,6 +208,17 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'reports an offense for `Hash[].to_h`' do
+    expect_offense(<<~RUBY)
+      Hash[].to_h
+      ^^^^^^ Prefer literal hash to `Hash[arg1, arg2, ...]`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {}.to_h
+    RUBY
+  end
+
   context 'AllowSplatArgument: true' do
     let(:cop_config) { { 'AllowSplatArgument' => true } }
 
