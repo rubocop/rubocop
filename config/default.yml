@@ -2278,6 +2278,7 @@ Lint/RedundantSafeNavigation:
   Description: 'Checks for redundant safe navigation calls.'
   Enabled: true
   VersionAdded: '0.93'
+  VersionChanged: '<<next>>'
   AllowedMethods:
     - instance_of?
     - kind_of?
@@ -2285,6 +2286,12 @@ Lint/RedundantSafeNavigation:
     - eql?
     - respond_to?
     - equal?
+  InferNonNilReceiver: false
+  AdditionalNilMethods:
+    - present?
+    - blank?
+    - try
+    - try!
   Safe: false
 
 Lint/RedundantSplatExpansion:
