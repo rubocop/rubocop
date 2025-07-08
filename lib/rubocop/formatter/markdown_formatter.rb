@@ -6,6 +6,7 @@ module RuboCop
     class MarkdownFormatter < BaseFormatter
       include TextUtil
       include PathUtil
+
       attr_reader :files, :summary
 
       def initialize(output, options = {})

@@ -638,6 +638,12 @@ Layout/EmptyLines:
   Enabled: true
   VersionAdded: '0.49'
 
+Layout/EmptyLinesAfterModuleInclusion:
+  Description: 'Keeps track of empty lines after module inclusion methods.'
+  StyleGuide: '#empty-lines-after-module-inclusion'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Layout/EmptyLinesAroundAccessModifier:
   Description: "Keep blank lines around access modifiers."
   StyleGuide: '#empty-lines-around-access-modifier'

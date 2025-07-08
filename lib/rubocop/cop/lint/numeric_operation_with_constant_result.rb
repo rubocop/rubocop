@@ -45,6 +45,7 @@ module RuboCop
       #
       class NumericOperationWithConstantResult < Base
         extend AutoCorrector
+
         MSG = 'Numeric operation with a constant result detected.'
         RESTRICT_ON_SEND = %i[* / **].freeze
 

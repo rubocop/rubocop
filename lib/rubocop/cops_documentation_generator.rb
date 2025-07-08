@@ -7,6 +7,7 @@ require 'yard'
 # @api private
 class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
   include ::RuboCop::Cop::Documentation
+
   CopData = Struct.new(
     :cop, :description, :example_objects, :safety_objects, :see_objects, :config, keyword_init: true
   )

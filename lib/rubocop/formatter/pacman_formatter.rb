@@ -9,6 +9,7 @@ module RuboCop
     # https://github.com/go-labs/rspec_pacman_formatter
     class PacmanFormatter < ClangStyleFormatter
       include TextUtil
+
       attr_accessor :progress_line
 
       FALLBACK_TERMINAL_WIDTH = 80

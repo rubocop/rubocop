@@ -59,6 +59,7 @@ module RuboCop
       #
       class ExponentialNotation < Base
         include ConfigurableEnforcedStyle
+
         MESSAGES = {
           scientific: 'Use a mantissa >= 1 and < 10.',
           engineering: 'Use an exponent divisible by 3 and a mantissa >= 0.1 and < 1000.',
