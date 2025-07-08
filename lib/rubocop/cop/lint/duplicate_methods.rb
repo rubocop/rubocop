@@ -5,6 +5,7 @@ module RuboCop
     module Lint
       # Checks for duplicated instance (or singleton) method
       # definitions.
+      #
       # NOTE: Aliasing a method to itself is allowed, as it indicates that
       # the developer intends to suppress Ruby's method redefinition warnings.
       # See https://bugs.ruby-lang.org/issues/13574.
