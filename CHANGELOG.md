@@ -11,6 +11,29 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#14331](https://github.com/rubocop/rubocop/pull/14331): Enhance `Naming/MethodName` cop to detect offenses within `define_method` calls. ([@viralpraxis][])
+* [#14325](https://github.com/rubocop/rubocop/pull/14325): Enhance `Naming/MethodName` cop to handle offenses within `Struct` members. ([@viralpraxis][])
+* [#14335](https://github.com/rubocop/rubocop/pull/14335): Enhance `Security/Eval` cop to detect `Kernel.eval` calls. ([@viralpraxis][])
+
+### Bug fixes
+
+* [#14343](https://github.com/rubocop/rubocop/pull/14343): Fix autocorrect code for `Style/HashConversion` to avoid syntax error. ([@koic][])
+* [#14346](https://github.com/rubocop/rubocop/issues/14346): Avoid requiring parentheses for `Style/SingleLineMethods`. ([@koic][])
+* [#14339](https://github.com/rubocop/rubocop/pull/14339): Fix bug where specifying `--format` disables parallelization. ([@r7kamura][])
+* [#14300](https://github.com/rubocop/rubocop/pull/14300): Fix false positives for `Lint/DuplicateMethods` cop when self-alias trick is used. ([@viralpraxis][])
+* [#14329](https://github.com/rubocop/rubocop/issues/14329): Fix false positives for `Lint/LiteralAsCondition` when a literal is used inside `||` in `case` condition. ([@koic][])
+* [#14326](https://github.com/rubocop/rubocop/issues/14326): Fix additional autocorrection errors in `Style/HashConversion` for nested `Hash[]` calls. ([@dvandersluis][])
+* [#14031](https://github.com/rubocop/rubocop/issues/14031): Honor --config options on server mode. ([@steiley][])
+* [#14319](https://github.com/rubocop/rubocop/pull/14319): Fix the following incorrect autocorrect for `Lint/RedundantTypeConversion` when using parentheses with no arguments or any arguments. ([@koic][])
+* [#14336](https://github.com/rubocop/rubocop/issues/14336): Fix incorrect autocorrect for `Style/ItBlockParameter` when using a single numbered parameter after multiple numbered parameters in a method chain. ([@koic][])
+* [#11782](https://github.com/rubocop/rubocop/issues/11782): Move pending cops warning out of ConfigLoader. ([@nobuyo][])
+
+### Changes
+
+* [#14318](https://github.com/rubocop/rubocop/issues/14318): Add `WaywardPredicates` config to `Naming/PredicateMethod` to handle methods that look like predicates but aren't. ([@dvandersluis][])
+
 ## 1.77.0 (2025-06-20)
 
 ### New features

@@ -1,1 +1,0 @@
-* [#14319](https://github.com/rubocop/rubocop/pull/14319): Fix the following incorrect autocorrect for `Lint/RedundantTypeConversion` when using parentheses with no arguments or any arguments. ([@koic][])
