@@ -326,6 +326,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/internal_affairs/style_detected_api_use.rb'
     - 'lib/rubocop/cop/internal_affairs/undefined_config.rb'
     - 'lib/rubocop/cop/layout/def_end_alignment.rb'
+    - 'lib/rubocop/cop/layout/empty_lines_after_module_inclusion.rb'
     - 'lib/rubocop/cop/layout/empty_lines_around_access_modifier.rb'
     - 'lib/rubocop/cop/layout/empty_lines_around_attribute_accessor.rb'
     - 'lib/rubocop/cop/layout/space_around_keyword.rb'

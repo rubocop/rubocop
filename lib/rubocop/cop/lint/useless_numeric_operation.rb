@@ -31,6 +31,7 @@ module RuboCop
       #
       class UselessNumericOperation < Base
         extend AutoCorrector
+
         MSG = 'Do not apply inconsequential numeric operations to variables.'
         RESTRICT_ON_SEND = %i[+ - * / **].freeze
 
