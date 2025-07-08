@@ -3675,7 +3675,7 @@ Style/CollectionMethods:
 Style/CollectionQuerying:
   Description: 'Prefer `Enumerable` predicate methods over expressions with `count`.'
   StyleGuide: '#collection-querying'
-  Enabled: pending
+  Enabled: false
   VersionAdded: '1.77'
   Safe: false
 
