@@ -130,7 +130,10 @@ module RuboCop
         end
 
         def require_parentheses?(method_body)
-          method_body.send_type? && !method_body.arguments.empty? && !method_body.comparison_method?
+          return false unless method_body.send_type?
+          return false if method_body.arithmetic_operation?
+
+          !method_body.arguments.empty? && !method_body.comparison_method?
         end
 
         def disallow_endless_method_style?

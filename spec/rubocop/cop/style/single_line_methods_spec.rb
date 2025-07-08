@@ -232,6 +232,14 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         end
       end
 
+      RuboCop::AST::MethodDispatchNode.const_get(:ARITHMETIC_OPERATORS).each do |op|
+        it "corrects to an endless class method definition when using #{op}" do
+          expect_correction(<<~RUBY.strip, source: "def foo() bar #{op} baz end")
+            def foo() = bar #{op} baz
+          RUBY
+        end
+      end
+
       it 'does not to an endless class method definition when using `return`' do
         expect_correction(<<~RUBY.strip, source: 'def foo(argument) return bar(argument); end')
           def foo(argument)#{trailing_whitespace}
