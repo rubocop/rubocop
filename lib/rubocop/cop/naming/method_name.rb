@@ -94,6 +94,9 @@ module RuboCop
         MSG = 'Use %<style>s for method names.'
         MSG_FORBIDDEN = '`%<identifier>s` is forbidden, use another method name instead.'
 
+        OPERATOR_METHODS = %i[| ^ & <=> == === =~ > >= < <= << >> + - * /
+                              % ** ~ +@ -@ !@ ~@ [] []= ! != !~ `].to_set.freeze
+
         # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'
 
@@ -159,7 +162,7 @@ module RuboCop
 
           if forbidden_name?(name.to_s)
             register_forbidden_name(node)
-          else
+          elsif !OPERATOR_METHODS.include?(name)
             check_name(node, name, range_position(node))
           end
         end
