@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.78.0 (2025-07-08)
+
 ### New features
 
 * [#14331](https://github.com/rubocop/rubocop/pull/14331): Enhance `Naming/MethodName` cop to detect offenses within `define_method` calls. ([@viralpraxis][])

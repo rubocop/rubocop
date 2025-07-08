@@ -1052,6 +1052,20 @@ def fooBar; end
 
 # good
 def foo_bar; end
+
+# bad
+define_method :fooBar do
+end
+
+# good
+define_method :foo_bar do
+end
+
+# bad
+Struct.new(:fooBar)
+
+# good
+Struct.new(:foo_bar)
 ----
 
 [#enforcedstyle_-camelcase-namingmethodname]
@@ -1064,6 +1078,20 @@ def foo_bar; end
 
 # good
 def fooBar; end
+
+# bad
+define_method :foo_bar do
+end
+
+# good
+define_method :fooBar do
+end
+
+# bad
+Struct.new(:foo_bar)
+
+# good
+Struct.new(:fooBar)
 ----
 
 [#forbiddenidentifiers_-__def__-_super__-namingmethodname]
@@ -1206,7 +1234,7 @@ end
 | Yes
 | No
 | 1.76
-| 1.76
+| 1.78
 |===
 
 Checks that predicate methods end with `?` and non-predicate methods do not.
@@ -1231,6 +1259,11 @@ The cop also has `AllowedMethods` configuration in order to prevent the cop from
 registering an offense from a method name that does not confirm to the naming
 guidelines. By default, `call` is allowed. The cop also has `AllowedPatterns`
 configuration to allow method names by regular expression.
+
+Although returning a call to another predicate method is treated as a boolean value,
+certain method names can be known to not return a boolean, despite ending in a `?`
+(for example, `Numeric#nonzero?` returns `self` or `nil`). These methods can be
+configured using `NonBooleanPredicates`.
 
 The cop can furthermore be configured to allow all bang methods (method names
 ending with `!`), with `AllowBangMethods: true` (default false).
@@ -1370,6 +1403,10 @@ end
 | AllowBangMethods
 | `false`
 | Boolean
+
+| WaywardPredicates
+| `nonzero?`
+| Array
 |===
 
 [#namingpredicateprefix]

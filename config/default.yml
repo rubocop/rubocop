@@ -3072,7 +3072,7 @@ Naming/PredicateMethod:
   Description: 'Checks that predicate methods end with `?` and non-predicate methods do not.'
   Enabled: pending
   VersionAdded: '1.76'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.78'
   # In `aggressive` mode, the cop will register an offense for predicate methods that
   #   may return a non-boolean value.
   # In `conservative` mode, the cop will *not* register an offense for predicate methods

@@ -9262,6 +9262,30 @@ class Foo
 end
 ----
 
+[#allowedmethods_-__puts__-_print__-stylemethodcallwithargsparentheses]
+==== AllowedMethods: ["puts", "print"]
+
+[source,ruby]
+----
+# good
+puts "Hello world"
+print "Hello world"
+# still enforces parentheses on other methods
+array.delete(e)
+----
+
+[#allowedpatterns_-___assert__-stylemethodcallwithargsparentheses]
+==== AllowedPatterns: ["^assert"]
+
+[source,ruby]
+----
+# good
+assert_equal 'test', x
+assert_match(/foo/, bar)
+# still enforces parentheses on other methods
+array.delete(e)
+----
+
 [#allowparenthesesinmultilinecall_-false-_default_-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInMultilineCall: false (default)
 

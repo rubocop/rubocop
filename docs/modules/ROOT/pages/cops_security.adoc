@@ -74,6 +74,7 @@ Checks for the use of `Kernel#eval` and `Binding#eval`.
 
 eval(something)
 binding.eval(something)
+Kernel.eval(something)
 ----
 
 [#securityiomethods]
@@ -252,6 +253,7 @@ URI.parse(something).open
 # good (literal strings)
 open("foo.text")
 URI.open("http://example.com")
+URI.parse(url).open
 ----
 
 [#securityyamlload]
