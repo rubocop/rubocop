@@ -139,6 +139,17 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       end
     end
 
+    %i[define_method define_singleton_method].each do |name|
+      %w[== >= <= > < =~ ! [] []= gärten].each do |method_name|
+        it "does not register an offense when `#{name}` is called with a `#{method_name}` method name" do
+          expect_no_offenses(<<~RUBY)
+            #{name} :#{method_name} do
+            end
+          RUBY
+        end
+      end
+    end
+
     context 'when specifying `AllowedPatterns`' do
       let(:cop_config) do
         {
@@ -493,6 +504,9 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     include_examples 'forbidden identifiers', 'super'
     include_examples 'forbidden patterns', '_v1\z', 'api_v1'
     include_examples 'define_method method call', 'snake_case', 'fooBar'
+    include_examples 'define_method method call', 'snake_case', 'fooBar?'
+    include_examples 'define_method method call', 'snake_case', 'fooBar!'
+    include_examples 'define_method method call', 'snake_case', 'fooBar='
   end
 
   context 'when configured for camelCase' do
@@ -588,6 +602,9 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
     include_examples 'forbidden identifiers', 'super'
     include_examples 'forbidden patterns', '_gen\d+\z', 'user_gen1'
     include_examples 'define_method method call', 'camelCase', 'foo_bar'
+    include_examples 'define_method method call', 'camelCase', 'foo_bar?'
+    include_examples 'define_method method call', 'camelCase', 'foo_bar!'
+    include_examples 'define_method method call', 'camelCase', 'foo_bar='
   end
 
   it 'accepts for non-ascii characters' do
