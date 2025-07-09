@@ -240,6 +240,38 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         end
       end
 
+      it 'registers an offense when a single-line method definition contains `if` modifier' do
+        expect_correction(<<~RUBY.strip, source: 'def foo() bar if baz end')
+          def foo()#{trailing_whitespace}
+            bar if baz#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'registers an offense when a single-line method definition contains `unless` modifier' do
+        expect_correction(<<~RUBY.strip, source: 'def foo() bar unless baz end')
+          def foo()#{trailing_whitespace}
+            bar unless baz#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'registers an offense when a single-line method definition contains `while` modifier' do
+        expect_correction(<<~RUBY.strip, source: 'def foo() bar while baz end')
+          def foo()#{trailing_whitespace}
+            bar while baz#{trailing_whitespace}
+          end
+        RUBY
+      end
+
+      it 'registers an offense when a single-line method definition contains `until` modifier' do
+        expect_correction(<<~RUBY.strip, source: 'def foo() bar until baz end')
+          def foo()#{trailing_whitespace}
+            bar until baz#{trailing_whitespace}
+          end
+        RUBY
+      end
+
       it 'does not to an endless class method definition when using `return`' do
         expect_correction(<<~RUBY.strip, source: 'def foo(argument) return bar(argument); end')
           def foo(argument)#{trailing_whitespace}
