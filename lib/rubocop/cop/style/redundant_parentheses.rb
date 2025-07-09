@@ -169,6 +169,7 @@ module RuboCop
           end
           return 'an interpolated expression' if interpolation?(begin_node)
           return 'a method argument' if argument_of_parenthesized_method_call?(begin_node, node)
+          return 'a one-line rescue' if !begin_node.parent&.call_type? && node.rescue_type?
 
           return if begin_node.chained?
 
