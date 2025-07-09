@@ -65,7 +65,7 @@ module RuboCop
           return false if target_ruby_version < 3.0
           return false if disallow_endless_method_style?
           return false unless body_node
-          return false if body_node.parent.assignment_method? ||
+          return false if body_node.basic_conditional? || body_node.parent.assignment_method? ||
                           NOT_SUPPORTED_ENDLESS_METHOD_BODY_TYPES.include?(body_node.type)
 
           !body_node.type?(:begin, :kwbegin)
