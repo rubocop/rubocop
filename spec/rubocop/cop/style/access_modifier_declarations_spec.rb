@@ -735,6 +735,35 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
             end
           RUBY
         end
+
+        it 'registers an offense when using a grouped access modifier declaration' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Test
+              def something_else; end
+
+              def a_method_that_is_public; end
+
+              #{access_modifier}
+              ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+
+              def my_other_private_method; end
+
+              def bar; end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+              def something_else; end
+
+              def a_method_that_is_public; end
+
+              #{access_modifier} def my_other_private_method; end
+
+              #{access_modifier} def bar; end
+            end
+          RUBY
+        end
       end
 
       context 'with `begin` parent node' do
