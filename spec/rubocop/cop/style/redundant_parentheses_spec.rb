@@ -1386,6 +1386,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense when parentheses around a `rescue` expression on a one-line' do
+    expect_offense(<<~RUBY)
+      (foo rescue bar)
+      ^^^^^^^^^^^^^^^^ Don't use parentheses around a one-line rescue.
+      (foo rescue bar)
+      ^^^^^^^^^^^^^^^^ Don't use parentheses around a one-line rescue.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo rescue bar
+      foo rescue bar
+    RUBY
+  end
+
   it 'accepts parentheses around a constant passed to when' do
     expect_no_offenses(<<~RUBY)
       case foo
