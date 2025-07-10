@@ -348,7 +348,7 @@ module RuboCop
         end
 
         def remove_modifier_node_within_begin(corrector, modifier_node, begin_node)
-          def_node = begin_node.children[1]
+          def_node = begin_node.children[begin_node.children.index(modifier_node) + 1]
           range = modifier_node.source_range.begin.join(def_node.source_range.begin)
           corrector.remove(range)
         end
