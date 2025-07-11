@@ -269,7 +269,10 @@ module RuboCop
             node.body ? [last_value(node.body)] : [s(:nil)]
           else
             # Branches with no value act as an implicit `nil`.
-            node.branches.filter_map { |branch| branch ? last_value(branch) : s(:nil) }
+            branches = node.branches.map { |branch| branch ? last_value(branch) : s(:nil) }
+            # Missing else branches also act as an implicit `nil`.
+            branches.push(s(:nil)) unless node.else_branch
+            branches
           end
         end
 

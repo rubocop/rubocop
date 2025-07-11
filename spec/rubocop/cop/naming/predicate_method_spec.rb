@@ -398,12 +398,14 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       it_behaves_like 'predicate', <<~RUBY, explicit: false
         case x
           in y then true
+          else false
         end
       RUBY
 
       it_behaves_like 'predicate', <<~RUBY, explicit: false
         case x
           in y then return true
+          else return false
         end
       RUBY
 
@@ -447,10 +449,6 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
         else
           return baz
         end
-      RUBY
-
-      it_behaves_like 'acceptable', <<~RUBY, explicit: false
-        bar if x
       RUBY
 
       it_behaves_like 'acceptable', <<~RUBY, explicit: false
@@ -647,6 +645,30 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       RUBY
     end
 
+    context 'conditionals without else' do
+      it_behaves_like 'acceptable', <<~RUBY, explicit: false
+        true if x
+      RUBY
+
+      it_behaves_like 'acceptable', <<~RUBY, explicit: false
+        if x
+          true
+        end
+      RUBY
+
+      it_behaves_like 'acceptable', <<~RUBY, explicit: false
+        case x
+          when y then true
+        end
+      RUBY
+
+      it_behaves_like 'acceptable', <<~RUBY, explicit: false
+        case x
+          in y then true
+        end
+      RUBY
+    end
+
     context 'super' do
       it_behaves_like 'acceptable', <<~RUBY, explicit: false
         return if something
@@ -716,6 +738,30 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
         if x
         else
           false
+        end
+      RUBY
+    end
+
+    context 'conditionals without else' do
+      it_behaves_like 'non-predicate', <<~RUBY, explicit: false
+        true if x
+      RUBY
+
+      it_behaves_like 'non-predicate', <<~RUBY, explicit: false
+        if x
+          true
+        end
+      RUBY
+
+      it_behaves_like 'non-predicate', <<~RUBY, explicit: false
+        case x
+          when y then true
+        end
+      RUBY
+
+      it_behaves_like 'non-predicate', <<~RUBY, explicit: false
+        case x
+          in y then true
         end
       RUBY
     end
