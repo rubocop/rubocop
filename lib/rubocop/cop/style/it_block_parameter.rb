@@ -109,6 +109,8 @@ module RuboCop
         private
 
         def find_block_variables(node, block_argument_name)
+          return [] unless node.body
+
           node.body.each_descendant(:lvar).select do |descendant|
             descendant.source == block_argument_name
           end
