@@ -222,6 +222,13 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
           block { |foo, bar| do_something(foo, bar) }
         RUBY
       end
+
+      it 'does not register an offense for block with parameter and missing body' do
+        expect_no_offenses(<<~RUBY)
+          block do |_|
+          end
+        RUBY
+      end
     end
 
     context 'EnforcedStyle: disallow' do
