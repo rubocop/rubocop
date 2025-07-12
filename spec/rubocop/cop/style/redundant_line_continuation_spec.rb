@@ -145,8 +145,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      let :foo do#{' '}
-        foo(bar,#{' '}
+      let :foo do#{trailing_whitespace}
+        foo(bar,#{trailing_whitespace}
             baz)
       end
     RUBY
@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      if foo#{' '}
+      if foo#{trailing_whitespace}
       then bar
       end
     RUBY
@@ -317,7 +317,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     expect_no_offenses(<<~RUBY)
       obj
        .foo(42) \\
-      #{' '}
+      #{trailing_whitespace}
        .bar
     RUBY
   end
@@ -332,7 +332,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
 
     expect_correction(<<~RUBY)
       obj
-       .foo(42)#{' '}
+       .foo(42)#{trailing_whitespace}
        .bar
     RUBY
   end
@@ -348,7 +348,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
 
     expect_correction(<<~RUBY)
       obj.
-       foo(42).#{' '}
+       foo(42).#{trailing_whitespace}
 
        bar
     RUBY
@@ -364,7 +364,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
 
     expect_correction(<<~RUBY)
       obj.
-       foo(42).#{' '}
+       foo(42).#{trailing_whitespace}
        bar
     RUBY
   end
