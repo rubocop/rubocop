@@ -42,5 +42,6 @@ Gem::Specification.new do |s|
   s.add_dependency('regexp_parser', '>= 2.9.3', '< 3.0')
   s.add_dependency('rubocop-ast', '>= 1.45.1', '< 2.0')
   s.add_dependency('ruby-progressbar', '~> 1.7')
+  s.add_dependency('tsort', '>= 0.2.0')
   s.add_dependency('unicode-display_width', '>= 2.4.0', '< 4.0')
 end
