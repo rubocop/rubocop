@@ -75,3 +75,5 @@ tmp/*
 
 # For vscode:
 .vscode
+
+rubocop-*.gem
