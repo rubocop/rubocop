@@ -57,4 +57,11 @@ RSpec.describe RuboCop::Cop::Lint::RequireRangeParentheses, :config do
       42..do_something
     RUBY
   end
+
+  it 'does not register an offense when the begin element ends on another line' do
+    expect_no_offenses(<<~RUBY)
+      foo(
+        bar)..baz(quux)
+    RUBY
+  end
 end
