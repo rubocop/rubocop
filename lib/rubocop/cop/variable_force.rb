@@ -296,7 +296,7 @@ module RuboCop
         variable_table.accessible_variables.each { |variable| variable.reference!(node) }
       end
 
-      # Mark all assignments which are referenced in the same loop
+      # Mark last assignments which are referenced in the same loop
       # as referenced by ignoring AST order since they would be referenced
       # in next iteration.
       def mark_assignments_as_referenced_in_loop(node)
@@ -308,13 +308,12 @@ module RuboCop
           # would be skipped here.
           next unless variable
 
-          variable.assignments.each do |assignment|
-            next if assignment_nodes_in_loop.none? do |assignment_node|
-                      assignment_node.equal?(assignment.node)
-                    end
-
-            assignment.reference!(node)
+          loop_assignments = variable.assignments.select do |assignment|
+            assignment_nodes_in_loop.include?(assignment.node)
           end
+          next unless loop_assignments.any?
+
+          reference_assignments(loop_assignments, node)
         end
       end
 
@@ -351,6 +350,16 @@ module RuboCop
           AssignmentReference.new(node)
         when *OPERATOR_ASSIGNMENT_TYPES
           VariableReference.new(node.lhs.name) if node.lhs.lvasgn_type?
+        end
+      end
+
+      def reference_assignments(loop_assignments, node)
+        # If inside a case statement, mark all as referenced.
+        # Otherwise, mark only the last assignment as referenced.
+        if loop_assignments.first.node.each_ancestor(:case, :case_match).any?
+          loop_assignments.each { |assignment| assignment.reference!(node) }
+        else
+          loop_assignments.last&.reference!(node)
         end
       end
 

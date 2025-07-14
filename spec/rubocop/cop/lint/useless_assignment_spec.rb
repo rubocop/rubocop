@@ -2349,4 +2349,49 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
       RUBY
     end
   end
+
+  context 'when duplicate assignments in the loop body' do
+    context 'while loop' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          while
+            foo = 1
+            ^^^ Useless assignment to variable - `foo`.
+            foo = 1
+            p foo
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when duplicate assignments in a case branch inside a loop' do
+    context 'while loop' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          while
+            case
+            when fizz then foo += 1
+            when buzz then foo -= 1
+            end
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when duplicate assignments in a case-match branch inside a loop', :ruby27 do
+    context 'while loop' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          while
+            case expr
+            in fizz then foo += 1
+            in buzz then foo -= 1
+            end
+          end
+        RUBY
+      end
+    end
+  end
 end
