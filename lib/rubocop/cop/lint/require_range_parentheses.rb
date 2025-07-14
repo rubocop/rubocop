@@ -43,7 +43,7 @@ module RuboCop
         def on_irange(node)
           return if node.parent&.begin_type?
           return unless node.begin && node.end
-          return if same_line?(node.begin, node.end)
+          return if same_line?(node.loc.operator, node.end)
 
           message = format(MSG, range: "#{node.begin.source}#{node.loc.operator.source}")
 
