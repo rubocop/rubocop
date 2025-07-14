@@ -151,6 +151,14 @@ module RuboCop
           check_operator(:match_pattern, node.loc.operator, node)
         end
 
+        def on_match_alt(node)
+          check_operator(:match_alt, node.loc.operator, node)
+        end
+
+        def on_match_as(node)
+          check_operator(:match_as, node.loc.operator, node)
+        end
+
         alias on_or       on_binary
         alias on_and      on_binary
         alias on_lvasgn   on_assignment
