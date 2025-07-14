@@ -280,6 +280,60 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
   context '>= Ruby 2.7', :ruby27 do
     let(:target_ruby_version) { 2.7 }
 
+    it 'registers an offense for alternative pattern matching syntax' do
+      expect_offense(<<~RUBY)
+        case foo
+        in bar|baz|qux
+                  ^ Surrounding space missing for operator `|`.
+              ^ Surrounding space missing for operator `|`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        in bar | baz | qux
+        end
+      RUBY
+    end
+
+    it 'registers an offense for as pattern matching syntax' do
+      expect_offense(<<~RUBY)
+        case foo
+        in bar=>baz
+              ^^ Surrounding space missing for operator `=>`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo
+        in bar => baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense for one-line alternative pattern matching syntax' do
+      expect_offense(<<~RUBY)
+        foo in bar|baz|qux
+                      ^ Surrounding space missing for operator `|`.
+                  ^ Surrounding space missing for operator `|`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo in bar | baz | qux
+      RUBY
+    end
+
+    it 'registers an offense for one-line as pattern matching syntax' do
+      expect_offense(<<~RUBY)
+        foo in bar=>baz
+                  ^^ Surrounding space missing for operator `=>`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo in bar => baz
+      RUBY
+    end
+
     # NOTE: It is `Layout/SpaceAroundKeyword` cop's role to detect this offense.
     it 'does not register an offense for one-line pattern matching syntax (`in`)' do
       expect_no_offenses(<<~RUBY)
