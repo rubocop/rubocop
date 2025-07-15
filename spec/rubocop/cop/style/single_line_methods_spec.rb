@@ -187,6 +187,12 @@ RSpec.describe RuboCop::Cop::Style::SingleLineMethods, :config do
         RUBY
       end
 
+      it 'corrects to an endless singleton method definition' do
+        expect_correction(<<~RUBY.strip, source: 'def foo.some_method; body end')
+          def foo.some_method() = body
+        RUBY
+      end
+
       it 'retains comments' do
         source = 'def some_method; body end # comment'
         expect_correction(<<~RUBY.strip, source: source)
