@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Check for arguments to `rescue` that will result in a `TypeError`
+      # Checks for arguments to `rescue` that will result in a `TypeError`
       # if an exception is raised.
       #
       # @example

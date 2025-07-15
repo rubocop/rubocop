@@ -4,7 +4,7 @@
 module RuboCop
   module Cop
     module Style
-      # Check for uses of braces or do/end around single line or
+      # Checks for uses of braces or do/end around single line or
       # multi-line blocks.
       #
       # Methods that can be either procedural or functional and cannot be

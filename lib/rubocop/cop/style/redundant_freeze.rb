@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Check for uses of `Object#freeze` on immutable objects.
+      # Checks for uses of `Object#freeze` on immutable objects.
       #
       # NOTE: `Regexp` and `Range` literals are frozen objects since Ruby 3.0.
       #

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Check for chained `dig` calls that can be collapsed into a single `dig`.
+      # Checks for chained `dig` calls that can be collapsed into a single `dig`.
       #
       # @safety
       #   This cop is unsafe because it cannot be guaranteed that the receiver

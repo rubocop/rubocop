@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module InternalAffairs
-      # Check for useless `RESTRICT_ON_SEND`.
+      # Checks for useless `RESTRICT_ON_SEND`.
       #
       # @example
       #   # bad
