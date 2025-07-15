@@ -4499,7 +4499,7 @@ Style/IpAddresses:
     - '**/*.gemspec'
 
 Style/ItAssignment:
-  Description: 'Checks for assignment to `it` inside a block.'
+  Description: 'Checks for local variables and method parameters named `it`.'
   Enabled: pending
   VersionAdded: '1.70'
 
