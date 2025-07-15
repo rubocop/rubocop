@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Check for parentheses around stabby lambda arguments.
+      # Checks for parentheses around stabby lambda arguments.
       # There are two different styles. Defaults to `require_parentheses`.
       #
       # @example EnforcedStyle: require_parentheses (default)

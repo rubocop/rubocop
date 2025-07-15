@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Check for redundant line continuation.
+      # Checks for redundant line continuation.
       #
       # This cop marks a line continuation as redundant if removing the backslash
       # does not result in a syntax error.

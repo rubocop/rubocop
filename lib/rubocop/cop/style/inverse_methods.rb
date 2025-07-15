@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Check for usages of not (`not` or `!`) called on a method
+      # Checks for usages of not (`not` or `!`) called on a method
       # when an inverse of that method can be used instead.
       #
       # Methods that can be inverted by a not (`not` or `!`) should be defined
