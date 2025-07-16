@@ -86,10 +86,10 @@ module RuboCop
         end
 
         def correct_to_endless(corrector, node)
-          self_receiver = node.self_receiver? ? 'self.' : ''
+          receiver = "#{node.receiver.source}." if node.receiver
           arguments = node.arguments.any? ? node.arguments.source : '()'
           body_source = method_body_source(node.body)
-          replacement = "def #{self_receiver}#{node.method_name}#{arguments} = #{body_source}"
+          replacement = "def #{receiver}#{node.method_name}#{arguments} = #{body_source}"
 
           corrector.replace(node, replacement)
         end
