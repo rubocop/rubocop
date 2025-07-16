@@ -175,6 +175,8 @@ module RuboCop
 
           if parenthesize_method?(condition)
             parenthesized_method_arguments(condition)
+          elsif condition.and_type?
+            parenthesized_and(condition)
           else
             "(#{condition.source})"
           end
@@ -186,10 +188,17 @@ module RuboCop
         end
 
         def add_parentheses?(node)
-          return true if node.assignment? || (node.operator_keyword? && !node.and_type?)
+          return true if node.assignment? || node.or_type?
+          return true if assignment_in_and?(node)
           return false unless node.call_type?
 
           (node.arguments.any? && !node.parenthesized?) || node.prefix_not?
+        end
+
+        def assignment_in_and?(node)
+          return false unless node.and_type?
+
+          node.each_descendant.any?(&:assignment?)
         end
 
         def parenthesized_method_arguments(node)
@@ -197,6 +206,26 @@ module RuboCop
           arguments = node.first_argument.source_range.begin.join(node.source_range.end).source
 
           "#{method_call}(#{arguments})"
+        end
+
+        def parenthesized_and(node)
+          # We only need to add parentheses around the last clause if it's an assignment,
+          # because other clauses will be unchanged by merging conditionals.
+          lhs = node.lhs.source
+          rhs = parenthesized_and_clause(node.rhs)
+          operator = range_with_surrounding_space(node.loc.operator, whitespace: true).source
+
+          "#{lhs}#{operator}#{rhs}"
+        end
+
+        def parenthesized_and_clause(node)
+          if node.and_type?
+            parenthesized_and(node)
+          elsif node.assignment?
+            "(#{node.source})"
+          else
+            node.source
+          end
         end
 
         def allow_modifier?
