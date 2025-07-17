@@ -3298,6 +3298,12 @@ Style/AndOr:
     - always
     - conditionals
 
+Style/AnyPredicate:
+  Description: 'Prefer OR expressions over `Array#any?`.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Style/ArgumentsForwarding:
   Description: 'Use arguments forwarding.'
   StyleGuide: '#arguments-forwarding'
