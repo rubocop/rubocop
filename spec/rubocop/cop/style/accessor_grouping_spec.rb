@@ -503,7 +503,7 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       RUBY
     end
 
-    context 'when there are comments for attributes' do
+    context 'when there are comments for attributes with parentheses' do
       it 'registers and corrects an offense' do
         expect_offense(<<~RUBY)
           class Foo
@@ -527,6 +527,30 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
             attr_reader :two
             # comment three
             attr_reader :three
+          end
+        RUBY
+      end
+    end
+
+    context 'when there are comments for attributes without parentheses' do
+      it 'registers and corrects an offense' do
+        expect_offense(<<~RUBY)
+          class Foo
+            attr_reader :a, # comment a
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+              :b, # comment b
+              :c # comment c
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            # comment a
+          attr_reader :a
+            # comment b
+            attr_reader :b
+            # comment c
+            attr_reader :c
           end
         RUBY
       end

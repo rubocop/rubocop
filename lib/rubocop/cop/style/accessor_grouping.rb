@@ -84,7 +84,10 @@ module RuboCop
 
         def autocorrect(corrector, node)
           if (preferred_accessors = preferred_accessors(node))
-            corrector.replace(node, preferred_accessors)
+            corrector.replace(
+              grouped_style? ? node : range_with_trailing_argument_comment(node),
+              preferred_accessors
+            )
           else
             range = range_with_surrounding_space(node.source_range, side: :left)
             corrector.remove(range)
@@ -195,6 +198,15 @@ module RuboCop
               lines.map { |line| "#{indent}#{line}" }
             end
           end.join("\n")
+        end
+
+        def range_with_trailing_argument_comment(node)
+          comment = processed_source.ast_with_comments[node.last_argument].last
+          if comment
+            add_range(node.source_range, comment.source_range)
+          else
+            node
+          end
         end
       end
     end
