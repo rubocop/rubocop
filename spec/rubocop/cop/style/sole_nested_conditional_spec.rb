@@ -89,6 +89,163 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using nested `if` within `if foo = bar` as the LHS of an `and`' do
+    # `and` is used in the source code for precedence without parentheses
+    expect_offense(<<~RUBY)
+      if foo = bar and baz
+        if quux
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo = bar and baz && quux
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` within `if foo = bar` as the RHS of an `and`' do
+    expect_offense(<<~RUBY)
+      if baz && foo = bar
+        if quux
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if baz && (foo = bar) && quux
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` within `if foo = bar` in a multiline `and`' do
+    expect_offense(<<~RUBY)
+      if baz &&
+         foo = bar
+        if quux
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if baz &&
+         (foo = bar) && quux
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` within `if foo = bar` in a nested `and`' do
+    expect_offense(<<~RUBY)
+      if baz && foo = bar and fred = garply
+        if corge
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if baz && foo = bar and (fred = garply) && corge
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` within `if (foo = bar)` in an `and`' do
+    expect_offense(<<~RUBY)
+      if baz && (foo = bar)
+        if quux
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if baz && (foo = bar) && quux
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects assignment within nested `if`' do
+    expect_offense(<<~RUBY)
+      if foo
+        if bar = baz
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && (bar = baz)
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects assignment within `and` within nested `if`' do
+    expect_offense(<<~RUBY)
+      if foo
+        if quux && bar = baz
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && quux && (bar = baz)
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` within `if foo = bar` as the LHS of an `or`' do
+    # `or` is used in the source code for precedence without parentheses
+    expect_offense(<<~RUBY)
+      if foo = bar or baz
+        if quux
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (foo = bar or baz) && quux
+          do_something
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects when using nested `if` within `if foo = bar` as the RHS of an `or`' do
+    expect_offense(<<~RUBY)
+      if baz || foo = bar
+        if quux
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          do_something
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if (baz || foo = bar) && quux
+          do_something
+        end
+    RUBY
+  end
+
   it 'registers an offense and corrects when using nested `if` within `unless foo & bar`' do
     expect_offense(<<~RUBY)
       unless foo & bar
