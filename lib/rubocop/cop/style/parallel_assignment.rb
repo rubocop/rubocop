@@ -29,6 +29,8 @@ module RuboCop
         MSG = 'Do not use parallel assignment.'
 
         def on_masgn(node) # rubocop:disable Metrics/AbcSize
+          return if part_of_ignored_node?(node)
+
           rhs = node.rhs
           rhs = rhs.body if rhs.rescue_type?
           rhs_elements = Array(rhs).compact # edge case for one constant
@@ -41,6 +43,7 @@ module RuboCop
           add_offense(range) do |corrector|
             autocorrect(corrector, node, rhs)
           end
+          ignore_node(node)
         end
 
         private
