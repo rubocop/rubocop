@@ -192,6 +192,18 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
+  it 'registers an offense when a lambda with parallel assignment is used on the RHS' do
+    expect_offense(<<~RUBY)
+      a, b = x, -> { a, b = x, y }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use parallel assignment.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = x
+      b = -> { a, b = x, y }
+    RUBY
+  end
+
   shared_examples('allowed') do |source|
     it "allows assignment of: #{source.gsub(/\s*\n\s*/, '; ')}" do
       expect_no_offenses(source)
