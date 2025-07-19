@@ -106,11 +106,16 @@ module RuboCop
         # @!method new_struct?(node)
         def_node_matcher :new_struct?, '(send (const {nil? cbase} :Struct) :new ...)'
 
+        # @!method define_data?(node)
+        def_node_matcher :define_data?, '(send (const {nil? cbase} :Data) :define ...)'
+
         def on_send(node)
           if node.method?(:define_method) || node.method?(:define_singleton_method)
             handle_define_method(node)
           elsif new_struct?(node)
             handle_new_struct(node)
+          elsif define_data?(node)
+            handle_define_data(node)
           else
             handle_attr_accessor(node)
           end
@@ -138,6 +143,12 @@ module RuboCop
         def handle_new_struct(node)
           arguments = node.first_argument&.str_type? ? node.arguments[1..] : node.arguments
           arguments.select { |argument| argument.type?(:sym, :str) }.each do |name|
+            handle_method_name(name, name.value)
+          end
+        end
+
+        def handle_define_data(node)
+          node.arguments.select { |argument| argument.type?(:sym, :str) }.each do |name|
             handle_method_name(name, name.value)
           end
         end
