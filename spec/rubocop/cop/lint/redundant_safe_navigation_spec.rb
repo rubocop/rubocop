@@ -722,4 +722,123 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
       RUBY
     end
   end
+
+  it 'registers an offense when `&.` is used for `to_s`' do
+    expect_offense(<<~RUBY)
+      foo.to_s&.strip
+              ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_s.strip
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used for `to_s` with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      foo&.to_s&.zero?
+    RUBY
+  end
+
+  it 'registers an offense when `&.` is used for `to_i`' do
+    expect_offense(<<~RUBY)
+      foo.to_i&.zero?
+              ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_i.zero?
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used for `to_i` with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      foo&.to_i&.zero?
+    RUBY
+  end
+
+  it 'registers an offense when `&.` is used for `to_f`' do
+    expect_offense(<<~RUBY)
+      foo.to_f&.zero?
+              ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_f.zero?
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used for `to_f` with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      foo&.to_f&.zero?
+    RUBY
+  end
+
+  it 'registers an offense when `&.` is used for `to_a`' do
+    expect_offense(<<~RUBY)
+      foo.to_a&.size
+              ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_a.size
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used for `to_a` with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      foo&.to_a&.zero?
+    RUBY
+  end
+
+  it 'registers an offense when `&.` is used for `to_h`' do
+    expect_offense(<<~RUBY)
+      foo.to_h&.size
+              ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_h.size
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used for `to_h` with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      foo&.to_h&.zero?
+    RUBY
+  end
+
+  it 'registers an offense when `&.` is used for `to_h` with block' do
+    expect_offense(<<~RUBY)
+      foo.to_h { |entry| do_something(entry) }&.keys
+                                              ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_h { |entry| do_something(entry) }.keys
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used for `to_h { ... }` with block with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      foo&.to_h { |entry| do_something(entry) }&.keys
+    RUBY
+  end
+
+  it 'registers an offense when `&.` is used for `to_h` with numbered block' do
+    expect_offense(<<~RUBY)
+      foo.to_h { do_something(_1) }&.keys
+                                   ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_h { do_something(_1) }.keys
+    RUBY
+  end
+
+  it 'does not register an offense when `&.` is used for `to_h { ... }` with numbered block with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      foo&.to_h { do_something(_1) }&.keys
+    RUBY
+  end
 end

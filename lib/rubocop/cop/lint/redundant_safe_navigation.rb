@@ -42,6 +42,20 @@ module RuboCop
       #   CamelCaseConst.do_something
       #
       #   # bad
+      #   foo.to_s&.strip
+      #   foo.to_i&.zero?
+      #   foo.to_f&.zero?
+      #   foo.to_a&.size
+      #   foo.to_h&.size
+      #
+      #   # good
+      #   foo.to_s.strip
+      #   foo.to_i.zero?
+      #   foo.to_f.zero?
+      #   foo.to_a.size
+      #   foo.to_h.size
+      #
+      #   # bad
       #   do_something if attrs&.respond_to?(:[])
       #
       #   # good
@@ -141,6 +155,8 @@ module RuboCop
 
         SNAKE_CASE = /\A[[:digit:][:upper:]_]+\z/.freeze
 
+        GUARANTEED_INSTANCE_METHODS = %i[to_s to_i to_f to_a to_h].freeze
+
         # @!method respond_to_nil_specific_method?(node)
         def_node_matcher :respond_to_nil_specific_method?, <<~PATTERN
           (csend _ :respond_to? (sym %NIL_SPECIFIC_METHODS))
@@ -172,13 +188,15 @@ module RuboCop
           end
 
           unless assume_receiver_instance_exists?(node.receiver)
-            return unless check?(node) && allowed_method?(node.method_name)
+            return if !guaranteed_instance?(node.receiver) && !check?(node)
             return if respond_to_nil_specific_method?(node)
           end
 
           add_offense(range) { |corrector| corrector.replace(range, '.') }
         end
+        # rubocop:enable Metrics/AbcSize
 
+        # rubocop:disable Metrics/AbcSize
         def on_or(node)
           conversion_with_default?(node) do |send_node|
             range = send_node.loc.dot.begin.join(node.source_range.end)
@@ -201,7 +219,20 @@ module RuboCop
           receiver.self_type? || (receiver.literal? && !receiver.nil_type?)
         end
 
+        def guaranteed_instance?(node)
+          receiver = if node.any_block_type?
+                       node.send_node
+                     else
+                       node
+                     end
+          return false unless receiver.send_type?
+
+          GUARANTEED_INSTANCE_METHODS.include?(receiver.method_name)
+        end
+
         def check?(node)
+          return false unless allowed_method?(node.method_name)
+
           parent = node.parent
           return false unless parent
 
