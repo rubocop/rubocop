@@ -118,7 +118,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'rescue', 'a rescue""', 'a rescue ""'
   it_behaves_like 'accept after', 'rescue', 'begin; rescue(Error); end', 'begin; rescue(Error); end'
   it_behaves_like 'missing after', 'return', 'return""', 'return ""'
-  it_behaves_like 'accept after', '(', 'return(1)'
+  it_behaves_like 'missing after', 'return', 'return(1)', 'return (1)'
   it_behaves_like 'missing after', 'super', 'super""', 'super ""'
   it_behaves_like 'accept after', '(', 'super(1)'
   it_behaves_like 'missing after', 'super', 'super{}', 'super {}'
