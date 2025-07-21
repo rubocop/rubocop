@@ -16,6 +16,8 @@ module RuboCop
       #
       #   something = 123if test
       #
+      #   return(foo + bar)
+      #
       #   # good
       #   something 'test' do |x|
       #   end
@@ -24,6 +26,9 @@ module RuboCop
       #   end
       #
       #   something = 123 if test
+      #
+      #   return (foo + bar)
+      #
       class SpaceAroundKeyword < Base
         extend AutoCorrector
 
@@ -33,7 +38,7 @@ module RuboCop
         DO = 'do'
         SAFE_NAVIGATION = '&.'
         NAMESPACE_OPERATOR = '::'
-        ACCEPT_LEFT_PAREN = %w[break defined? next not rescue return super yield].freeze
+        ACCEPT_LEFT_PAREN = %w[break defined? next not rescue super yield].freeze
         ACCEPT_LEFT_SQUARE_BRACKET = %w[super yield].freeze
         ACCEPT_NAMESPACE_OPERATOR = 'super'
         RESTRICT_ON_SEND = %i[!].freeze
