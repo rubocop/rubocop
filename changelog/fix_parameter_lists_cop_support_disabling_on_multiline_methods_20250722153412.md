@@ -1,0 +1,1 @@
+* [#14379](https://github.com/rubocop/rubocop/issues/14379): Fixes `Metrics/ParameterLists` cop to support inline disabling with `rubocop:disable Metrics/ParameterLists` on multi-line method definitions. ([@Benjamin-deVries][])

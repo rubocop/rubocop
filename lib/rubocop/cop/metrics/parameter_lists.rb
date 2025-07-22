@@ -90,6 +90,7 @@ module RuboCop
         def on_def(node)
           optargs = node.arguments.select(&:optarg_type?)
           return if optargs.count <= max_optional_parameters
+          return if inline_disabled_on_any_line?(node)
 
           message = format(
             OPTIONAL_PARAMETERS_MSG,
@@ -109,6 +110,7 @@ module RuboCop
           return unless count > max_params
 
           return if argument_to_lambda_or_proc?(node)
+          return if inline_disabled_on_any_line?(node)
 
           add_offense(node, message: format(MSG, max: max_params, count: args_count(node))) do
             self.max = count
@@ -121,6 +123,17 @@ module RuboCop
         def_node_matcher :argument_to_lambda_or_proc?, <<~PATTERN
           ^lambda_or_proc?
         PATTERN
+
+        def inline_disabled_on_any_line?(node)
+          return false unless processed_source
+
+          start_line = node.first_line
+          end_line = node.last_line
+
+          (start_line..end_line).any? do |line_number|
+            !processed_source.comment_config.cop_enabled_at_line?(self, line_number)
+          end
+        end
 
         def args_count(node)
           if count_keyword_args?
