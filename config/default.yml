@@ -3348,6 +3348,13 @@ Style/ArrayJoin:
   VersionAdded: '0.20'
   VersionChanged: '0.31'
 
+Style/ArrayLiteralAsLogicalExpression:
+  Description: 'Prefer logical expressions over predicates on `Array` literals.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+  MaxCheckedSize: 3
+
 Style/AsciiComments:
   Description: 'Use only ascii symbols in comments.'
   StyleGuide: '#english-comments'
