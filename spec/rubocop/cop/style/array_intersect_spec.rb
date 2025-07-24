@@ -7,70 +7,84 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
         (array1 & array2).any?
       RUBY
     end
+
+    it 'does not register an offense when using `array1.any? { |e| array2.member?(e) }`' do
+      expect_no_offenses(<<~RUBY)
+        array1.any? { |e| array2.member?(e) }
+      RUBY
+    end
+
+    it 'does not register an offense when using `array1.none? { |e| array2.member?(e) }`' do
+      expect_no_offenses(<<~RUBY)
+        array1.none? { |e| array2.member?(e) }
+      RUBY
+    end
   end
 
   context 'when TargetRubyVersion >= 3.1', :ruby31 do
-    it 'registers an offense when using `(array1 & array2).any?`' do
-      expect_offense(<<~RUBY)
-        (array1 & array2).any?
-        ^^^^^^^^^^^^^^^^^^^^^^ Use `array1.intersect?(array2)` instead of `(array1 & array2).any?`.
-      RUBY
+    context 'with Array#&' do
+      it 'registers an offense when using `(array1 & array2).any?`' do
+        expect_offense(<<~RUBY)
+          (array1 & array2).any?
+          ^^^^^^^^^^^^^^^^^^^^^^ Use `array1.intersect?(array2)` instead of `(array1 & array2).any?`.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        array1.intersect?(array2)
-      RUBY
-    end
+        expect_correction(<<~RUBY)
+          array1.intersect?(array2)
+        RUBY
+      end
 
-    it 'registers an offense when using `(customer_country_codes & SUPPORTED_COUNTRIES).empty?`' do
-      expect_offense(<<~RUBY)
-        (customer_country_codes & SUPPORTED_COUNTRIES).empty?
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!customer_country_codes.intersect?(SUPPORTED_COUNTRIES)` instead of `(customer_country_codes & SUPPORTED_COUNTRIES).empty?`.
-      RUBY
+      it 'registers an offense when using `(customer_country_codes & SUPPORTED_COUNTRIES).empty?`' do
+        expect_offense(<<~RUBY)
+          (customer_country_codes & SUPPORTED_COUNTRIES).empty?
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!customer_country_codes.intersect?(SUPPORTED_COUNTRIES)` instead of `(customer_country_codes & SUPPORTED_COUNTRIES).empty?`.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        !customer_country_codes.intersect?(SUPPORTED_COUNTRIES)
-      RUBY
-    end
+        expect_correction(<<~RUBY)
+          !customer_country_codes.intersect?(SUPPORTED_COUNTRIES)
+        RUBY
+      end
 
-    it 'registers an offense when using `none?`' do
-      expect_offense(<<~RUBY)
-        (a & b).none?
-        ^^^^^^^^^^^^^ Use `!a.intersect?(b)` instead of `(a & b).none?`.
-      RUBY
+      it 'registers an offense when using `none?`' do
+        expect_offense(<<~RUBY)
+          (a & b).none?
+          ^^^^^^^^^^^^^ Use `!a.intersect?(b)` instead of `(a & b).none?`.
+        RUBY
 
-      expect_correction(<<~RUBY)
-        !a.intersect?(b)
-      RUBY
-    end
+        expect_correction(<<~RUBY)
+          !a.intersect?(b)
+        RUBY
+      end
 
-    it 'does not register an offense when using `(array1 & array2).any?` with block' do
-      expect_no_offenses(<<~RUBY)
-        (array1 & array2).any? { |x| false }
-      RUBY
-    end
+      it 'does not register an offense when using `(array1 & array2).any?` with block' do
+        expect_no_offenses(<<~RUBY)
+          (array1 & array2).any? { |x| false }
+        RUBY
+      end
 
-    it 'does not register an offense when using `(array1 & array2).any?` with symbol block' do
-      expect_no_offenses(<<~RUBY)
-        (array1 & array2).any?(&:block)
-      RUBY
-    end
+      it 'does not register an offense when using `(array1 & array2).any?` with symbol block' do
+        expect_no_offenses(<<~RUBY)
+          (array1 & array2).any?(&:block)
+        RUBY
+      end
 
-    it 'does not register an offense when using `(array1 & array2).any?` with numbered block' do
-      expect_no_offenses(<<~RUBY)
-        (array1 & array2).any? { do_something(_1) }
-      RUBY
-    end
+      it 'does not register an offense when using `(array1 & array2).any?` with numbered block' do
+        expect_no_offenses(<<~RUBY)
+          (array1 & array2).any? { do_something(_1) }
+        RUBY
+      end
 
-    it 'does not register an offense when using `([1, 2, 3] & [4, 5, 6]).present?`' do
-      expect_no_offenses(<<~RUBY)
-        ([1, 2, 3] & [4, 5, 6]).present?
-      RUBY
-    end
+      it 'does not register an offense when using `([1, 2, 3] & [4, 5, 6]).present?`' do
+        expect_no_offenses(<<~RUBY)
+          ([1, 2, 3] & [4, 5, 6]).present?
+        RUBY
+      end
 
-    it 'does not register an offense when using `([1, 2, 3] & [4, 5, 6]).blank?`' do
-      expect_no_offenses(<<~RUBY)
-        ([1, 2, 3] & [4, 5, 6]).blank?
-      RUBY
+      it 'does not register an offense when using `([1, 2, 3] & [4, 5, 6]).blank?`' do
+        expect_no_offenses(<<~RUBY)
+          ([1, 2, 3] & [4, 5, 6]).blank?
+        RUBY
+      end
     end
 
     context 'with Array#intersection' do
@@ -128,6 +142,118 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
         expect_no_offenses(<<~RUBY)
           array1.intersection(array2, array3).any?
         RUBY
+      end
+    end
+
+    context 'with Array#any?' do
+      it 'registers an offense when using `array1.any? { |e| array2.member?(e) }`' do
+        expect_offense(<<~RUBY)
+          array1.any? { |e| array2.member?(e) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `array1.intersect?(array2)` instead of `array1.any? { |e| array2.member?(e) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array1.intersect?(array2)
+        RUBY
+      end
+
+      it 'registers an offense when using `array1&.any? { |e| array2.member?(e) }`' do
+        expect_offense(<<~RUBY)
+          array1&.any? { |e| array2.member?(e) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `array1&.intersect?(array2)` instead of `array1&.any? { |e| array2.member?(e) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array1&.intersect?(array2)
+        RUBY
+      end
+
+      it 'registers an offense when using `array1.any? { array2.member?(_1) }`' do
+        expect_offense(<<~RUBY)
+          array1.any? { array2.member?(_1) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `array1.intersect?(array2)` instead of `array1.any? { array2.member?(_1) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array1.intersect?(array2)
+        RUBY
+      end
+
+      context '>= Ruby 3.4', :ruby34 do
+        it 'registers an offense when using `array1.any? { array2.member?(it) }`' do
+          expect_offense(<<~RUBY)
+            array1.any? { array2.member?(it) }
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `array1.intersect?(array2)` instead of `array1.any? { array2.member?(it) }`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            array1.intersect?(array2)
+          RUBY
+        end
+      end
+
+      context '<= Ruby 3.3', :ruby33 do
+        it 'does not register an offense when using `array1.any? { array2.member?(it) }`' do
+          expect_no_offenses(<<~RUBY)
+            array1.any? { array2.member?(it) }
+          RUBY
+        end
+      end
+    end
+
+    context 'with Array#none?' do
+      it 'registers an offense when using `array1.none? { |e| array2.member?(e) }`' do
+        expect_offense(<<~RUBY)
+          array1.none? { |e| array2.member?(e) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!array1.intersect?(array2)` instead of `array1.none? { |e| array2.member?(e) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          !array1.intersect?(array2)
+        RUBY
+      end
+
+      it 'registers an offense when using `array1&.none? { |e| array2.member?(e) }`' do
+        expect_offense(<<~RUBY)
+          array1&.none? { |e| array2.member?(e) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!array1&.intersect?(array2)` instead of `array1&.none? { |e| array2.member?(e) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          !array1&.intersect?(array2)
+        RUBY
+      end
+
+      it 'registers an offense when using `array1.none? { array2.member?(_1) }`' do
+        expect_offense(<<~RUBY)
+          array1.none? { array2.member?(_1) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!array1.intersect?(array2)` instead of `array1.none? { array2.member?(_1) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          !array1.intersect?(array2)
+        RUBY
+      end
+
+      context '>= Ruby 3.4', :ruby34 do
+        it 'registers an offense when using `array1.none? { array2.member?(it) }`' do
+          expect_offense(<<~RUBY)
+            array1.none? { array2.member?(it) }
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!array1.intersect?(array2)` instead of `array1.none? { array2.member?(it) }`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            !array1.intersect?(array2)
+          RUBY
+        end
+      end
+
+      context '<= Ruby 3.3', :ruby33 do
+        it 'does not register an offense when using `array1.none? { array2.member?(it) }`' do
+          expect_no_offenses(<<~RUBY)
+            array1.none? { array2.member?(it) }
+          RUBY
+        end
       end
     end
 
