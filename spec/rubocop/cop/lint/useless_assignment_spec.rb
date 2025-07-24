@@ -2365,6 +2365,22 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when duplicate assignments in `if` branch inside a loop' do
+    context 'while loop' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          while
+            if cond
+              var += 1
+            else
+              var -= 1
+            end
+          end
+        RUBY
+      end
+    end
+  end
+
   context 'when duplicate assignments in a case branch inside a loop' do
     context 'while loop' do
       it 'does not register an offense' do
