@@ -1,1 +1,0 @@
-* [#13835](https://github.com/rubocop/rubocop/issues/13835): Add `InferNonNilReceiver` config to `Lint/RedundantSafeNavigation` to check previous code paths if the receiver is non-nil. ([@fatkodima][])

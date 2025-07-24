@@ -1,1 +1,0 @@
-* [#14381](https://github.com/rubocop/rubocop/pull/14381): Offend `array1.any? { |elem| array2.member?(elem) }` and `array1.none? { |elem| array2.member?(elem) }` in `Style/ArrayIntersect`. ([@lovro-bikic][])
