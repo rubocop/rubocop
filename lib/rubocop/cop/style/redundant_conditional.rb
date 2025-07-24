@@ -24,14 +24,35 @@ module RuboCop
       #
       #   # good
       #   x != y
+      #
+      #   # bad
+      #   x.nil? ? true : false
+      #
+      #   # good
+      #   x.nil?
+      #
+      # @example AllCops:ActiveSupportExtensionsEnabled: false (default)
+      #   # good
+      #   x.present? ? true : false
+      #   x.blank? ? true : false
+      #
+      # @example AllCops:ActiveSupportExtensionsEnabled: true
+      #   # bad
+      #   x.present? ? true : false
+      #   x.blank? ? true : false
+      #
+      #   # good
+      #   x.present?
+      #   x.blank?
+      #
       class RedundantConditional < Base
         include Alignment
         extend AutoCorrector
 
-        operators = RuboCop::AST::Node::COMPARISON_OPERATORS.to_a
-        COMPARISON_OPERATOR_MATCHER = "{:#{operators.join(' :')}}"
-
         MSG = 'This conditional expression can just be replaced by `%<msg>s`.'
+
+        PREDICATE_METHODS = [:nil?].freeze
+        ACTIVE_SUPPORT_PREDICATE_METHODS = (PREDICATE_METHODS + %i[present? blank?]).freeze
 
         def on_if(node)
           return unless offense?(node)
@@ -53,14 +74,22 @@ module RuboCop
         end
 
         # @!method redundant_condition?(node)
-        def_node_matcher :redundant_condition?, <<~RUBY
-          (if (send _ #{COMPARISON_OPERATOR_MATCHER} _) true false)
-        RUBY
+        def_node_matcher :redundant_condition?, <<~PATTERN
+          (if #boolean_expression? true false)
+        PATTERN
 
         # @!method redundant_condition_inverted?(node)
-        def_node_matcher :redundant_condition_inverted?, <<~RUBY
-          (if (send _ #{COMPARISON_OPERATOR_MATCHER} _) false true)
-        RUBY
+        def_node_matcher :redundant_condition_inverted?, <<~PATTERN
+          (if #boolean_expression? false true)
+        PATTERN
+
+        # @!method boolean_expression?(node)
+        def_node_matcher :boolean_expression?, <<~PATTERN
+          {
+            (send _ %RuboCop::AST::Node::COMPARISON_OPERATORS _)
+            (send _ #predicate_method?)
+          }
+        PATTERN
 
         def offense?(node)
           return false if node.modifier_form?
@@ -69,14 +98,41 @@ module RuboCop
         end
 
         def replacement_condition(node)
-          condition = node.condition.source
-          expression = redundant_condition_inverted?(node) ? "!(#{condition})" : condition
+          expression = replacement_expression(node)
 
           node.elsif? ? indented_else_node(expression, node) : expression
         end
 
+        def replacement_expression(node)
+          condition = node.condition.source
+
+          if redundant_condition?(node)
+            condition
+          elsif needs_parentheses?(node)
+            "!(#{condition})"
+          else
+            "!#{condition}"
+          end
+        end
+
+        def needs_parentheses?(node)
+          !predicate_method?(node.condition.method_name)
+        end
+
         def indented_else_node(expression, node)
           "else\n#{indentation(node)}#{expression}"
+        end
+
+        def predicate_method?(method_name)
+          available_predicate_methods.include?(method_name)
+        end
+
+        def available_predicate_methods
+          if active_support_extensions_enabled?
+            ACTIVE_SUPPORT_PREDICATE_METHODS
+          else
+            PREDICATE_METHODS
+          end
         end
       end
     end

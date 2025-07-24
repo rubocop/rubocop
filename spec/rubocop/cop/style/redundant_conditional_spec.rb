@@ -150,4 +150,83 @@ RSpec.describe RuboCop::Cop::Style::RedundantConditional, :config do
       end
     RUBY
   end
+
+  it 'registers an offense for ternary with `nil?` predicate with negated boolean results' do
+    expect_offense(<<~RUBY)
+      x.nil? ? false : true
+      ^^^^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `!x.nil?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      !x.nil?
+    RUBY
+  end
+
+  it 'registers an offense for ternary with `nil?` predicate' do
+    expect_offense(<<~RUBY)
+      x.nil? ? true : false
+      ^^^^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `x.nil?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.nil?
+    RUBY
+  end
+
+  it 'registers an offense for ternary with `nil?` predicate without a receiver' do
+    expect_offense(<<~RUBY)
+      nil? ? true : false
+      ^^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `nil?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      nil?
+    RUBY
+  end
+
+  context 'when `AllCops/ActiveSupportExtensionsEnabled: false`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => false })
+    end
+
+    it 'does not register an offense for ternary with `present?` predicate' do
+      expect_no_offenses(<<~RUBY)
+        x.present? ? true : false
+      RUBY
+    end
+
+    it 'does not register an offense for ternary with `blank?` predicate' do
+      expect_no_offenses(<<~RUBY)
+        x.blank? ? true : false
+      RUBY
+    end
+  end
+
+  context 'when `AllCops/ActiveSupportExtensionsEnabled: true`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => true })
+    end
+
+    it 'registers an offense for ternary with `present?` predicate' do
+      expect_offense(<<~RUBY)
+        x.present? ? true : false
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `x.present?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.present?
+      RUBY
+    end
+
+    it 'registers an offense for ternary with `blank?` predicate' do
+      expect_offense(<<~RUBY)
+        x.blank? ? true : false
+        ^^^^^^^^^^^^^^^^^^^^^^^ This conditional expression can just be replaced by `x.blank?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.blank?
+      RUBY
+    end
+  end
 end
