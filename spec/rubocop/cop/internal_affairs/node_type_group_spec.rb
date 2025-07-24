@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypeGroup, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      node.numeric_type?()
+      node.numeric_type?
     RUBY
   end
 
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypeGroup, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      node.numeric_type?()
+      node.numeric_type?
     RUBY
   end
 
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::NodeTypeGroup, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      node&.range_type?()
+      node&.range_type?
     RUBY
   end
 

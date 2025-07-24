@@ -66,8 +66,9 @@ module RuboCop
         end
 
         def autocorrect_to_explicit_predicate(corrector, node, group_name)
-          corrector.replace(node.selector, "#{group_name}_type?")
-          corrector.remove(arguments_range(node))
+          range = node.loc.selector.begin.join(node.source_range.end)
+
+          corrector.replace(range, "#{group_name}_type?")
         end
 
         def autocorrect_keep_method(corrector, symbol_args, group_name, group_types)
