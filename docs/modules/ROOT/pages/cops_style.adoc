@@ -846,12 +846,13 @@ NOTE: Requires Ruby version 3.1
 
 In Ruby 3.1, `Array#intersect?` has been added.
 
-This cop identifies places where `(array1 & array2).any?`
-or `(array1.intersection(array2)).any?` can be replaced by
-`array1.intersect?(array2)`.
+This cop identifies places where:
+* `(array1 & array2).any?`
+* `(array1.intersection(array2)).any?`
+* `array1.any? { |elem| array2.member?(elem) }`
+can be replaced with `array1.intersect?(array2)`.
 
-The `array1.intersect?(array2)` method is faster than
-`(array1 & array2).any?` and is more readable.
+`array1.intersect?(array2)` is faster and more readable.
 
 In cases like the following, compatibility is not ensured,
 so it will not be detected when using block argument.
@@ -886,6 +887,10 @@ actually arrays while method `intersect?` is for arrays only.
 array1.intersection(array2).any?
 array1.intersection(array2).empty?
 array1.intersection(array2).none?
+
+# bad
+array1.any? { |elem| array2.member?(elem) }
+array1.none? { |elem| array2.member?(elem) }
 
 # good
 array1.intersect?(array2)
@@ -1295,7 +1300,7 @@ of comments...
 | 0.35
 |===
 
-Check for uses of braces or do/end around single line or
+Checks for uses of braces or do/end around single line or
 multi-line blocks.
 
 Methods that can be either procedural or functional and cannot be
@@ -3111,7 +3116,7 @@ list.push(qux, quux, corge)
 | 0.47
 |===
 
-Check for `if` and `case` statements where each branch is used for
+Checks for `if` and `case` statements where each branch is used for
 both the assignment and comparison of the same variable
 when using the return of the condition can be used instead.
 
@@ -3572,7 +3577,7 @@ end
 | -
 |===
 
-Check for chained `dig` calls that can be collapsed into a single `dig`.
+Checks for chained `dig` calls that can be collapsed into a single `dig`.
 
 [#safety-styledigchain]
 === Safety
@@ -8112,7 +8117,7 @@ end
 | -
 |===
 
-Check for usages of not (`not` or `!`) called on a method
+Checks for usages of not (`not` or `!`) called on a method
 when an inverse of that method can be used instead.
 
 Methods that can be inverted by a not (`not` or `!`) should be defined
@@ -8309,13 +8314,12 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | -
 |===
 
-Checks for assignments to a local `it` variable inside a block
+Checks for local variables and method parameters named `it`,
 where `it` can refer to the first anonymous parameter as of Ruby 3.4.
+Use a meaningful variable name instead.
 
-Although Ruby allows reassigning `it` in these cases, it could
+NOTE: Although Ruby allows reassigning `it` in these cases, it could
 cause confusion if `it` is used as a block parameter elsewhere.
-For consistency, this also applies to numblocks and blocks with
-parameters, even though `it` cannot be used in those cases.
 
 [#examples-styleitassignment]
 === Examples
@@ -8323,14 +8327,66 @@ parameters, even though `it` cannot be used in those cases.
 [source,ruby]
 ----
 # bad
-foo { it = 5 }
-foo { |bar| it = bar }
-foo { it = _2 }
+it = 5
 
-# good - use a different variable name
-foo { var = 5 }
-foo { |bar| var = bar }
-foo { bar = _2 }
+# good
+var = 5
+
+# bad
+def foo(it)
+end
+
+# good
+def foo(arg)
+end
+
+# bad
+def foo(it = 5)
+end
+
+# good
+def foo(arg = 5)
+end
+
+# bad
+def foo(*it)
+end
+
+# good
+def foo(*args)
+end
+
+# bad
+def foo(it:)
+end
+
+# good
+def foo(arg:)
+end
+
+# bad
+def foo(it: 5)
+end
+
+# good
+def foo(arg: 5)
+end
+
+# bad
+def foo(**it)
+end
+
+# good
+def foo(**kwargs)
+end
+
+# bad
+def foo(&it)
+end
+
+# good
+def foo(&block)
+end
 ----
 
 [#styleitblockparameter]
@@ -14062,7 +14118,7 @@ sprintf('%s %s', 'foo', 'bar')
 | 0.66
 |===
 
-Check for uses of `Object#freeze` on immutable objects.
+Checks for uses of `Object#freeze` on immutable objects.
 
 NOTE: `Regexp` and `Range` literals are frozen objects since Ruby 3.0.
 
@@ -14361,7 +14417,7 @@ unfreezing them redundant.
 | -
 |===
 
-Check for redundant line continuation.
+Checks for redundant line continuation.
 
 This cop marks a line continuation as redundant if removing the backslash
 does not result in a syntax error.
@@ -16825,7 +16881,7 @@ puts $*
 | -
 |===
 
-Check for parentheses around stabby lambda arguments.
+Checks for parentheses around stabby lambda arguments.
 There are two different styles. Defaults to `require_parentheses`.
 
 [#examples-stylestabbylambdaparentheses]

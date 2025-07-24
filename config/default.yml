@@ -642,7 +642,7 @@ Layout/EmptyLinesAfterModuleInclusion:
   Description: 'Keeps track of empty lines after module inclusion methods.'
   StyleGuide: '#empty-lines-after-module-inclusion'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.79'
 
 Layout/EmptyLinesAroundAccessModifier:
   Description: "Keep blank lines around access modifiers."
@@ -2284,7 +2284,7 @@ Lint/RedundantSafeNavigation:
   Description: 'Checks for redundant safe navigation calls.'
   Enabled: true
   VersionAdded: '0.93'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.79'
   AllowedMethods:
     - instance_of?
     - kind_of?

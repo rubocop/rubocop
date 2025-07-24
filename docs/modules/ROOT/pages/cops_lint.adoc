@@ -5301,7 +5301,7 @@ require 'unloaded_feature'
 | No
 | Always (Unsafe)
 | 0.93
-| -
+| 1.79
 |===
 
 Checks for redundant safe navigation calls.
@@ -5321,6 +5321,15 @@ for which to suppress (allow) this cop's check.
 In the example below, the safe navigation operator (`&.`) is unnecessary
 because `NilClass` has methods like `respond_to?` and `is_a?`.
 
+The `InferNonNilReceiver` option specifies whether to look into previous code
+paths to infer if the receiver can't be nil. This check is unsafe because the receiver
+can be redefined between the safe navigation call and previous regular method call.
+It does the inference only in the current scope, e.g. within the same method definition etc.
+
+The `AdditionalNilMethods` option specifies additional custom methods which are
+defined on `NilClass`. When `InferNonNilReceiver` is set, they are used to determine
+whether the receiver can be nil.
+
 [#safety-lintredundantsafenavigation]
 === Safety
 
@@ -5338,6 +5347,20 @@ CamelCaseConst&.do_something
 
 # good
 CamelCaseConst.do_something
+
+# bad
+foo.to_s&.strip
+foo.to_i&.zero?
+foo.to_f&.zero?
+foo.to_a&.size
+foo.to_h&.size
+
+# good
+foo.to_s.strip
+foo.to_i.zero?
+foo.to_f.zero?
+foo.to_a.size
+foo.to_h.size
 
 # bad
 do_something if attrs&.respond_to?(:[])
@@ -5394,6 +5417,59 @@ do_something if attrs.nil_safe_method(:[])
 do_something if attrs&.not_nil_safe_method(:[])
 ----
 
+[#infernonnilreceiver_-false-_default_-lintredundantsafenavigation]
+==== InferNonNilReceiver: false (default)
+
+[source,ruby]
+----
+# good
+foo.bar
+foo&.baz
+----
+
+[#infernonnilreceiver_-true-lintredundantsafenavigation]
+==== InferNonNilReceiver: true
+
+[source,ruby]
+----
+# bad
+foo.bar
+foo&.baz # would raise on previous line if `foo` is nil
+
+# good
+foo.bar
+foo.baz
+
+# bad
+if foo.condition?
+  foo&.bar
+end
+
+# good
+if foo.condition?
+  foo.bar
+end
+
+# good (different scopes)
+def method1
+  foo.bar
+end
+
+def method2
+  foo&.bar
+end
+----
+
+[#additionalnilmethods_-_present__-lintredundantsafenavigation]
+==== AdditionalNilMethods: [present?]
+
+[source,ruby]
+----
+# good
+foo.present?
+foo&.bar
+----
+
 [#configurable-attributes-lintredundantsafenavigation]
 === Configurable attributes
 
@@ -5402,6 +5478,14 @@ do_something if attrs&.not_nil_safe_method(:[])
 
 | AllowedMethods
 | `instance_of?`, `kind_of?`, `is_a?`, `eql?`, `respond_to?`, `equal?`
+| Array
+
+| InferNonNilReceiver
+| `false`
+| Boolean
+
+| AdditionalNilMethods
+| `present?`, `blank?`, `try`, `try!`
 | Array
 |===
 
@@ -5974,7 +6058,7 @@ end
 | -
 |===
 
-Check for arguments to `rescue` that will result in a `TypeError`
+Checks for arguments to `rescue` that will result in a `TypeError`
 if an exception is raised.
 
 [#examples-lintrescuetype]

@@ -1816,6 +1816,53 @@ some_method
 
 * https://rubystyle.guide#two-or-more-empty-lines
 
+[#layoutemptylinesaftermoduleinclusion]
+== Layout/EmptyLinesAfterModuleInclusion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.79
+| -
+|===
+
+Checks for an empty line after a module inclusion method (`extend`,
+`include` and `prepend`), or a group of them.
+
+[#examples-layoutemptylinesaftermoduleinclusion]
+=== Examples
+
+[source,ruby]
+----
+# bad
+class Foo
+  include Bar
+  attr_reader :baz
+end
+
+# good
+class Foo
+  include Bar
+
+  attr_reader :baz
+end
+
+# also good - multiple module inclusions grouped together
+class Foo
+  extend Bar
+  include Baz
+  prepend Qux
+end
+----
+
+[#references-layoutemptylinesaftermoduleinclusion]
+=== References
+
+* https://rubystyle.guide#empty-lines-after-module-inclusion
+
 [#layoutemptylinesaroundaccessmodifier]
 == Layout/EmptyLinesAroundAccessModifier
 
@@ -6744,6 +6791,8 @@ end
 
 something = 123if test
 
+return(foo + bar)
+
 # good
 something 'test' do |x|
 end
@@ -6752,6 +6801,8 @@ while (something)
 end
 
 something = 123 if test
+
+return (foo + bar)
 ----
 
 [#layoutspacearoundmethodcalloperator]

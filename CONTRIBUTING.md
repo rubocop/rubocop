@@ -17,7 +17,7 @@ do so.
 
 ```console
 $ rubocop -V
-1.78.0 (using Parser 3.3.5.0, rubocop-ast 1.32.3, analyzing as Ruby 3.3, running on ruby 3.3.5) [x86_64-linux]
+1.79.0 (using Parser 3.3.5.0, rubocop-ast 1.32.3, analyzing as Ruby 3.3, running on ruby 3.3.5) [x86_64-linux]
   - rubocop-performance 1.22.1
   - rubocop-rspec 3.1.0
 ```

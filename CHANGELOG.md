@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.79.0 (2025-07-24)
+
 ### New features
 
 * [#14348](https://github.com/rubocop/rubocop/pull/14348): Add new cop `Layout/EmptyLinesAfterModuleInclusion`. ([@lovro-bikic][])

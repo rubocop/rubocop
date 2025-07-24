@@ -121,6 +121,7 @@ In the following section you find all available cops:
 * xref:cops_layout.adoc#layoutemptylineaftermultilinecondition[Layout/EmptyLineAfterMultilineCondition]
 * xref:cops_layout.adoc#layoutemptylinebetweendefs[Layout/EmptyLineBetweenDefs]
 * xref:cops_layout.adoc#layoutemptylines[Layout/EmptyLines]
+* xref:cops_layout.adoc#layoutemptylinesaftermoduleinclusion[Layout/EmptyLinesAfterModuleInclusion]
 * xref:cops_layout.adoc#layoutemptylinesaroundaccessmodifier[Layout/EmptyLinesAroundAccessModifier]
 * xref:cops_layout.adoc#layoutemptylinesaroundarguments[Layout/EmptyLinesAroundArguments]
 * xref:cops_layout.adoc#layoutemptylinesaroundattributeaccessor[Layout/EmptyLinesAroundAttributeAccessor]

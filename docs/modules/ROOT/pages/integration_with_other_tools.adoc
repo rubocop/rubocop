@@ -125,7 +125,7 @@ following to your `.pre-commit-config.yaml` file:
 [source,yaml]
 ----
 - repo: https://github.com/rubocop/rubocop
-  rev: v1.78.0
+  rev: v1.79.0
   hooks:
     - id: rubocop
 ----
@@ -136,7 +136,7 @@ entries in `additional_dependencies`:
 [source,yaml]
 ----
 - repo: https://github.com/rubocop/rubocop
-  rev: v1.78.0
+  rev: v1.79.0
   hooks:
     - id: rubocop
       additional_dependencies:
