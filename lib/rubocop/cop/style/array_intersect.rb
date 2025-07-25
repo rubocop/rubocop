@@ -6,9 +6,11 @@ module RuboCop
       # In Ruby 3.1, `Array#intersect?` has been added.
       #
       # This cop identifies places where:
+      #
       # * `(array1 & array2).any?`
       # * `(array1.intersection(array2)).any?`
       # * `array1.any? { |elem| array2.member?(elem) }`
+      #
       # can be replaced with `array1.intersect?(array2)`.
       #
       # `array1.intersect?(array2)` is faster and more readable.
