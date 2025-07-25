@@ -356,7 +356,7 @@ module RuboCop
       def reference_assignments(loop_assignments, node)
         # If inside a case statement, mark all as referenced.
         # Otherwise, mark only the last assignment as referenced.
-        if loop_assignments.first.node.each_ancestor(:case, :case_match).any?
+        if loop_assignments.first.node.each_ancestor(:if, :case, :case_match).any?
           loop_assignments.each { |assignment| assignment.reference!(node) }
         else
           loop_assignments.last&.reference!(node)
