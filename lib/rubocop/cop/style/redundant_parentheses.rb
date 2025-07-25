@@ -169,7 +169,7 @@ module RuboCop
           end
           return 'an interpolated expression' if interpolation?(begin_node)
           return 'a method argument' if argument_of_parenthesized_method_call?(begin_node, node)
-          return 'a one-line rescue' if !begin_node.parent&.call_type? && node.rescue_type?
+          return 'a one-line rescue' if oneline_rescue_parentheses_required?(begin_node, node)
 
           return if begin_node.chained?
 
@@ -199,6 +199,13 @@ module RuboCop
           return false unless (parent = begin_node.parent)
 
           parent.call_type? && parent.parenthesized? && parent.receiver != begin_node
+        end
+
+        def oneline_rescue_parentheses_required?(begin_node, node)
+          return false unless node.rescue_type?
+          return false unless (parent = begin_node.parent)
+
+          !parent.type?(:call, :array, :pair)
         end
 
         def method_call_parentheses_required?(node)

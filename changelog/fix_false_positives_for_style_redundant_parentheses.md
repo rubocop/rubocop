@@ -1,0 +1,1 @@
+* [#14386](https://github.com/rubocop/rubocop/issues/14386): Fix false positives for `Style/RedundantParentheses` when parentheses are used around a one-line `rescue` expression inside array or hash literals. ([@koic][])
