@@ -2343,6 +2343,22 @@ RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
       RUBY
     end
 
+    it 'registers an offense if an additional positional parameter `self` is present with anonymous arguments' do
+      expect_offense(<<~RUBY)
+        def foo(m, *, **, &)
+                   ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+          bar(self, *, **, &)
+                    ^^^^^^^^ Use shorthand syntax `...` for arguments forwarding.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(m, ...)
+          bar(self, ...)
+        end
+      RUBY
+    end
+
     it 'does not register an offense when forwarding partial anonymous arguments' do
       expect_no_offenses(<<~RUBY)
         def foo(*, &)
