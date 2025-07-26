@@ -655,6 +655,21 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
         end
       RUBY
     end
+
+    it "registers an offense for falsey literal #{lit} on the lhs of ||" do
+      expect_offense(<<~RUBY, lit: lit)
+        if %{lit} || x
+           ^{lit} Literal `#{lit}` appeared as a condition.
+          top
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if x
+          top
+        end
+      RUBY
+    end
   end
 
   it 'registers an offense for `nil` literal in `until`' do
@@ -693,6 +708,17 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
         def foo
           puts 123 && return if bar?
                ^^^ Literal `123` appeared as a condition.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense but does not autocorrect when `return` is used after `||`' do
+      expect_offense(<<~RUBY)
+        def foo
+          puts nil || return if bar?
+               ^^^ Literal `nil` appeared as a condition.
         end
       RUBY
 

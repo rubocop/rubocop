@@ -54,6 +54,18 @@ module RuboCop
           end
         end
 
+        def on_or(node)
+          return unless node.lhs.falsey_literal?
+
+          add_offense(node.lhs) do |corrector|
+            # Don't autocorrect `'foo' && return` because having `return` as
+            # the leftmost node can lead to a void value expression syntax error.
+            next if node.rhs.type?(:return, :break, :next)
+
+            corrector.replace(node, node.rhs.source)
+          end
+        end
+
         def on_if(node)
           cond = condition(node)
 
