@@ -142,4 +142,29 @@ RSpec.describe RuboCop::Cop::Metrics::ParameterLists, :config do
       end
     RUBY
   end
+
+  context 'inline disable comments' do
+    it 'works with single-line method definitions' do
+      expect_no_offenses(<<~RUBY)
+        def self.foo(a:, b:, c:, d:, e:, f:) # rubocop:disable Metrics/ParameterLists
+        end
+      RUBY
+    end
+
+    it 'works with multi-line method definitions when comment is on the last parameter line' do
+      expect_no_offenses(<<~RUBY)
+        def self.foo(a:, b:, c:,
+                     d:, e:, f:) # rubocop:disable Metrics/ParameterLists
+        end
+      RUBY
+    end
+
+    it 'works with multi-line method definitions when comment is on the method name line' do
+      expect_no_offenses(<<~RUBY)
+        def self.foo(a:, b:, c:, # rubocop:disable Metrics/ParameterLists
+                     d:, e:, f:)
+        end
+      RUBY
+    end
+  end
 end
