@@ -54,6 +54,14 @@ module RuboCop
           end
         end
 
+        def on_or(node)
+          return unless node.lhs.falsey_literal?
+
+          add_offense(node.lhs) do |corrector|
+            corrector.replace(node, node.rhs.source)
+          end
+        end
+
         def on_if(node)
           cond = condition(node)
 
