@@ -146,7 +146,6 @@ module RuboCop
         minimum_target_ruby_version 2.7
 
         FORWARDING_LVAR_TYPES = %i[splat kwsplat block_pass].freeze
-        ADDITIONAL_ARG_TYPES = %i[lvar arg optarg].freeze
 
         FORWARDING_MSG = 'Use shorthand syntax `...` for arguments forwarding.'
         ARGS_MSG = 'Use anonymous positional arguments forwarding (`*`).'
@@ -198,9 +197,9 @@ module RuboCop
           send_classifications.all? { |_, c, _, _| all_classifications.include?(c) }
         end
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def add_forward_all_offenses(node, send_classifications, forwardable_args)
-          _rest_arg, _kwrest_arg, block_arg = *forwardable_args
+          rest_arg, kwrest_arg, block_arg = *forwardable_args
           registered_block_arg_offense = false
 
           send_classifications.each do |send_node, c, forward_rest, forward_kwrest, forward_block_arg| # rubocop:disable Layout/LineLength
@@ -212,16 +211,20 @@ module RuboCop
               registered_block_arg_offense = true
               break
             else
-              register_forward_all_offense(send_node, send_node, forward_rest)
+              first_arg = forward_rest || forward_kwrest || forward_all_first_argument(send_node)
+              register_forward_all_offense(send_node, send_node, first_arg)
             end
           end
 
           return if registered_block_arg_offense
 
-          rest_arg, _kwrest_arg, _block_arg = *forwardable_args
-          register_forward_all_offense(node, node.arguments, rest_arg)
+          register_forward_all_offense(node, node.arguments, rest_arg || kwrest_arg)
         end
-        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+
+        def forward_all_first_argument(node)
+          node.arguments.reverse_each.find(&:forwarded_restarg_type?)
+        end
 
         # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def add_post_ruby_32_offenses(def_node, send_classifications, forwardable_args)
@@ -361,18 +364,9 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
         def arguments_range(node, first_node)
-          arguments = node.arguments.reject do |arg|
-            next true if ADDITIONAL_ARG_TYPES.include?(arg.type) || arg.variable? || arg.call_type?
-
-            arg.literal? && arg.each_descendant(:kwsplat).none?
-          end
-
-          start_node = first_node || arguments.first
-          start_node.source_range.begin.join(arguments.last.source_range.end)
+          first_node.source_range.begin.join(node.last_argument.source_range.end)
         end
-        # rubocop:enable Metrics/AbcSize
 
         def allow_only_rest_arguments?
           cop_config.fetch('AllowOnlyRestArgument', true)
