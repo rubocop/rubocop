@@ -35,15 +35,8 @@ jobs:
       - name: spec
         env:
           CI_RUBY_VERSION: ${{ matrix.ruby }}
-          CC_TEST_REPORTER_ID: dummy # Value doesn't matter, enables json formatter
           STRICT_WARNINGS: 1
-        run: COVERAGE=true bundle exec rake spec
-      - name: Upload Coverage Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-ubuntu-${{ matrix.ruby }}
-          path: coverage/coverage.json
-          if-no-files-found: error
+        run: bundle exec rake spec
 
   spec-jruby:
     name: Spec - JRuby
@@ -81,25 +74,6 @@ jobs:
         env:
           CI_RUBY_VERSION: ${{ matrix.ruby }}
         run: bundle exec rake spec
-
-  upload_coverage:
-    name: Upload Coverage
-    needs: spec-ubuntu
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        name: Download Coverage Artifacts
-        with:
-          pattern: coverage-*
-      - uses: paambaati/codeclimate-action@v9
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        if: ${{ env.CC_TEST_REPORTER_ID != '' }}
-        with:
-          coverageLocations: |
-            ${{github.workspace}}/coverage-*/coverage.json:simplecov
 
   ascii_spec:
     name: Ascii Spec - ${{ matrix.os }} ${{ matrix.ruby }}
