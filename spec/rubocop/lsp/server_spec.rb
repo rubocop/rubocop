@@ -1381,4 +1381,33 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
       expect(messages.count).to eq(0)
     end
   end
+
+  describe 'when URI includes spaces' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: "puts 'hi'",
+              uri: 'file:///path/with%20spaces/file.rb',
+              version: 0
+            }
+          }
+        }
+      ]
+    end
+
+    it 'decodes URI-encoded paths for file system operations' do
+      # rubocop:disable RSpec/AnyInstance
+      expect_any_instance_of(RuboCop::Runner).to receive(:run).with(
+        ['/path/with spaces/file.rb']
+      ).and_call_original
+      # rubocop:enable RSpec/AnyInstance
+
+      result
+    end
+  end
 end
