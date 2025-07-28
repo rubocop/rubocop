@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'tsort'
-
 module RuboCop
   module Cop
     module Style
@@ -94,15 +92,9 @@ module RuboCop
         def find_valid_order(left_elements, right_elements)
           # arrange left_elements in an order such that no corresponding right
           # element refers to a left element earlier in the sequence
-          # this can be done using an algorithm called a "topological sort"
-          # fortunately for us, Ruby's stdlib contains an implementation
           assignments = left_elements.zip(right_elements)
 
-          begin
-            AssignmentSorter.new(assignments).tsort
-          rescue TSort::Cyclic
-            nil
-          end
+          AssignmentSorter.new(assignments).tsort
         end
 
         # Converts (send nil :something) nodes to (send (:self) :something).
@@ -117,10 +109,9 @@ module RuboCop
         # @!method implicit_self_getter?(node)
         def_node_matcher :implicit_self_getter?, '(send nil? $_)'
 
-        # Helper class necessitated by silly design of TSort prior to Ruby 2.1
-        # Newer versions have a better API, but that doesn't help us
+        # Topologically sorts the assignments with Kahn's algorithm.
+        # https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm
         class AssignmentSorter
-          include TSort
           extend RuboCop::NodePattern::Macros
 
           # @!method var_name(node)
@@ -136,21 +127,39 @@ module RuboCop
             @assignments = assignments
           end
 
-          def tsort_each_node(...)
-            @assignments.each(...)
+          def tsort
+            dependencies = @assignments.to_h do |assignment|
+              [assignment, dependencies_for_assignment(assignment)]
+            end
+            result = []
+
+            while (matched_node, = dependencies.find { |_node, edges| edges.empty? })
+              dependencies.delete(matched_node)
+              result.push(matched_node)
+
+              dependencies.each do |node, edges|
+                dependencies[node].delete(matched_node) if edges.include?(matched_node)
+              end
+            end
+            # Cyclic dependency
+            return nil if dependencies.any?
+
+            result
           end
 
-          def tsort_each_child(assignment)
-            # yield all the assignments which must come after `assignment`
-            # (due to dependencies on the previous value of the assigned var)
+          # Returns all the assignments which must come after `assignment`
+          # (due to dependencies on the previous value of the assigned var)
+          def dependencies_for_assignment(assignment)
             my_lhs, _my_rhs = *assignment
 
-            @assignments.each do |other|
-              _other_lhs, other_rhs = *other
+            @assignments.filter_map do |other|
+              # Exclude self, there are no dependencies in cases such as `a, b = a, b`.
+              next if other == assignment
 
+              _other_lhs, other_rhs = *other
               next unless dependency?(my_lhs, other_rhs)
 
-              yield other
+              other
             end
           end
 
