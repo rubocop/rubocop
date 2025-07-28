@@ -2381,6 +2381,20 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when duplicate assignments in `rescue` branch with `retry`' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        def testing
+        rescue Foo
+          attempts += 1
+          retry
+        rescue Bar
+          attempts += 1
+        end
+      RUBY
+    end
+  end
+
   context 'when duplicate assignments in a case branch inside a loop' do
     context 'while loop' do
       it 'does not register an offense' do
