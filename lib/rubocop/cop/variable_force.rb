@@ -354,9 +354,11 @@ module RuboCop
       end
 
       def reference_assignments(loop_assignments, node)
-        # If inside a case statement, mark all as referenced.
+        # If inside a branching statement, mark all as referenced.
         # Otherwise, mark only the last assignment as referenced.
-        if loop_assignments.first.node.each_ancestor(:if, :case, :case_match).any?
+        # Note that `rescue` must be considered as branching because of
+        # the `retry` keyword.
+        if loop_assignments.first.node.each_ancestor(:if, :rescue, :case, :case_match).any?
           loop_assignments.each { |assignment| assignment.reference!(node) }
         else
           loop_assignments.last&.reference!(node)
