@@ -204,6 +204,7 @@ module RuboCop
         def oneline_rescue_parentheses_required?(begin_node, node)
           return false unless node.rescue_type?
           return false unless (parent = begin_node.parent)
+          return false if parent.if_type? && parent.ternary?
 
           !parent.type?(:call, :array, :pair)
         end
