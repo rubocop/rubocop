@@ -1416,6 +1416,31 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense when parentheses are used around a one-line `rescue` expression inside an `if` expression' do
+    expect_offense(<<~RUBY)
+      if cond
+        (foo rescue bar)
+        ^^^^^^^^^^^^^^^^ Don't use parentheses around a one-line rescue.
+      else
+        42
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if cond
+        foo rescue bar
+      else
+        42
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when parentheses are used around a one-line `rescue` expression inside a ternary operator' do
+    expect_no_offenses(<<~RUBY)
+      cond ? (foo rescue bar) : 42
+    RUBY
+  end
+
   it 'accepts parentheses around a constant passed to when' do
     expect_no_offenses(<<~RUBY)
       case foo

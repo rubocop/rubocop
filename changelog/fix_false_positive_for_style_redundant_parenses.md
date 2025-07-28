@@ -1,0 +1,1 @@
+* [#14396](https://github.com/rubocop/rubocop/pull/14396): Fix a false positive for `Style/RedundantParentheses` when parentheses are used around a one-line `rescue` expression inside a ternary operator. ([@koic][])
