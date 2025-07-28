@@ -194,7 +194,7 @@ module RuboCop
           return []
         end
 
-        new_text = @server.format(remove_file_protocol_from(file_uri), text, command: command)
+        new_text = @server.format(convert_file_uri_to_path(file_uri), text, command: command)
 
         return [] if new_text == text
 
@@ -214,13 +214,13 @@ module RuboCop
           method: 'textDocument/publishDiagnostics',
           params: {
             uri: file_uri,
-            diagnostics: @server.offenses(remove_file_protocol_from(file_uri), text)
+            diagnostics: @server.offenses(convert_file_uri_to_path(file_uri), text)
           }
         }
       end
 
-      def remove_file_protocol_from(uri)
-        uri.delete_prefix('file://')
+      def convert_file_uri_to_path(uri)
+        URI.decode_www_form_component(uri.delete_prefix('file://'))
       end
     end
   end
