@@ -183,6 +183,30 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
       RUBY
     end
 
+    it "does not register an offense when #{method} is used with block method" do
+      expect_no_offenses(<<~RUBY)
+        #{method} Module.new do |arg|
+          do_something(arg)
+        end
+      RUBY
+    end
+
+    it "does not register an offense when #{method} is used with numbered block method", :ruby27 do
+      expect_no_offenses(<<~RUBY)
+        #{method} Module.new do
+          do_something(_1)
+        end
+      RUBY
+    end
+
+    it "does not register an offense when #{method} is used with `it` block method", :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        #{method} Module.new do
+          do_something(it)
+        end
+      RUBY
+    end
+
     it "does not register an offense when using #{method} in `if` ... `else` branches" do
       expect_no_offenses(<<~RUBY)
         if condition

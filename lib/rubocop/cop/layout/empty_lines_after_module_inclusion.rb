@@ -39,7 +39,7 @@ module RuboCop
 
         def on_send(node)
           return if node.receiver
-          return if node.parent&.send_type?
+          return if node.parent&.type?(:send, :any_block)
 
           return if next_line_empty_or_enable_directive_comment?(node.last_line)
 
