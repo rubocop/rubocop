@@ -99,6 +99,26 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
+    it 'accepts `alias_method` with non-intern first argument' do
+      expect_no_offenses(<<~RUBY)
+        alias_method foo, :bar
+        alias_method fooBar, :bar
+      RUBY
+    end
+
+    it 'accepts `alias_method` with array splat' do
+      expect_no_offenses(<<~RUBY)
+        alias_method *ary
+      RUBY
+    end
+
+    it 'accepts `alias_method` with unexpected arity' do
+      expect_no_offenses(<<~RUBY)
+        alias_method :foo, :bar, :baz
+        alias_method :fooBar, :bar, :baz
+      RUBY
+    end
+
     %w[class module].each do |kind|
       it "accepts class emitter method in a #{kind}" do
         expect_no_offenses(<<~RUBY)
@@ -315,6 +335,28 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
           expect_no_corrections
         end
       end
+
+      context 'for `alias` arguments' do
+        it 'registers an offense when member with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            alias %{identifier} foo
+                  ^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for `alias_method` arguments' do
+        it 'registers an offense when member with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            alias_method :%{identifier}, :foo
+                         ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
     end
   end
 
@@ -393,6 +435,28 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
           expect_offense(<<~RUBY, identifier: identifier)
             Data.define(:%{identifier})
                         ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for `alias` arguments' do
+        it 'registers an offense when member with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            alias %{identifier} foo
+                  ^{identifier} `%{identifier}` is forbidden, use another method name instead.
+          RUBY
+
+          expect_no_corrections
+        end
+      end
+
+      context 'for `alias_method` arguments' do
+        it 'registers an offense when member with forbidden name is defined' do
+          expect_offense(<<~RUBY, identifier: identifier)
+            alias_method :%{identifier}, :foo
+                         ^^{identifier} `%{identifier}` is forbidden, use another method name instead.
           RUBY
 
           expect_no_corrections
@@ -536,6 +600,27 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
+    it 'registers an offense for `alias` camelCase argument' do
+      expect_offense(<<~RUBY)
+        alias fooBar foo
+              ^^^^^^ Use snake_case for method names.
+      RUBY
+    end
+
+    it 'registers an offense for `alias_method` camelCase argument' do
+      expect_offense(<<~RUBY)
+        alias_method :fooBar, :foo
+                     ^^^^^^^ Use snake_case for method names.
+      RUBY
+    end
+
+    it 'registers an offense for `alias_method` snake_case string argument' do
+      expect_offense(<<~RUBY)
+        alias_method "fooBar", "foo"
+                     ^^^^^^^^ Use snake_case for method names.
+      RUBY
+    end
+
     include_examples 'never accepted',  'snake_case'
     include_examples 'always accepted', 'snake_case'
     include_examples 'multiple attr methods', 'snake_case'
@@ -647,6 +732,27 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
         ::Data.define(var, *args, :snake_case, :camelCase, :snake_case_2, "camelCase2")
                                   ^^^^^^^^^^^ Use camelCase for method names.
                                                            ^^^^^^^^^^^^^ Use camelCase for method names.
+      RUBY
+    end
+
+    it 'registers an offense for `alias` snake_case argument' do
+      expect_offense(<<~RUBY)
+        alias foo_bar foo
+              ^^^^^^^ Use camelCase for method names.
+      RUBY
+    end
+
+    it 'registers an offense for `alias_method` snake_case symbol argument' do
+      expect_offense(<<~RUBY)
+        alias_method :foo_bar, :foo
+                     ^^^^^^^^ Use camelCase for method names.
+      RUBY
+    end
+
+    it 'registers an offense for `alias_method` snake_case string argument' do
+      expect_offense(<<~RUBY)
+        alias_method "foo_bar", "foo"
+                     ^^^^^^^^^ Use camelCase for method names.
       RUBY
     end
 

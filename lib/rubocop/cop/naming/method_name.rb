@@ -53,6 +53,12 @@ module RuboCop
       #   # good
       #   Struct.new(:foo_bar)
       #
+      #   # bad
+      #   alias_method :fooBar, :some_method
+      #
+      #   # good
+      #   alias_method :foo_bar, :some_method
+      #
       # @example EnforcedStyle: camelCase
       #   # bad
       #   def foo_bar; end
@@ -73,6 +79,12 @@ module RuboCop
       #
       #   # good
       #   Struct.new(:fooBar)
+      #
+      #   # bad
+      #   alias_method :foo_bar, :some_method
+      #
+      #   # good
+      #   alias_method :fooBar, :some_method
       #
       # @example ForbiddenIdentifiers: ['def', 'super']
       #   # bad
@@ -116,6 +128,8 @@ module RuboCop
             handle_new_struct(node)
           elsif define_data?(node)
             handle_define_data(node)
+          elsif node.method?(:alias_method)
+            handle_alias_method(node)
           else
             handle_attr_accessor(node)
           end
@@ -131,6 +145,10 @@ module RuboCop
           end
         end
         alias on_defs on_def
+
+        def on_alias(node)
+          handle_method_name(node.new_identifier, node.new_identifier.value)
+        end
 
         private
 
@@ -151,6 +169,13 @@ module RuboCop
           node.arguments.select { |argument| argument.type?(:sym, :str) }.each do |name|
             handle_method_name(name, name.value)
           end
+        end
+
+        def handle_alias_method(node)
+          return unless node.arguments.size == 2
+          return unless node.first_argument.type?(:str, :sym)
+
+          handle_method_name(node.first_argument, node.first_argument.value)
         end
 
         def handle_attr_accessor(node)
