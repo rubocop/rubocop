@@ -703,7 +703,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
-    it 'registers an offense for `Struct` camelCase member' do
+    it 'registers an offense for `Struct` snake_case member' do
       expect_offense(<<~RUBY)
         Struct.new("foo_bar", var, *args, :snake_case, :camelCase, :snake_case_2, "camelCase2")
                                           ^^^^^^^^^^^ Use camelCase for method names.
@@ -711,7 +711,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
-    it 'registers an offense for `::Struct` camelCase member' do
+    it 'registers an offense for `::Struct` snake_case member' do
       expect_offense(<<~RUBY)
         ::Struct.new("foo_bar", var, *args, :snake_case, :camelCase, :snake_case_2, "camelCase2")
                                             ^^^^^^^^^^^ Use camelCase for method names.
@@ -719,7 +719,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
-    it 'registers an offense for `Data` camelCase member' do
+    it 'registers an offense for `Data` snake_case member' do
       expect_offense(<<~RUBY)
         Data.define(var, *args, :snake_case, :camelCase, :snake_case_2, "camelCase2")
                                 ^^^^^^^^^^^ Use camelCase for method names.
@@ -727,7 +727,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
-    it 'registers an offense for `::Data` camelCase member' do
+    it 'registers an offense for `::Data` snake_case member' do
       expect_offense(<<~RUBY)
         ::Data.define(var, *args, :snake_case, :camelCase, :snake_case_2, "camelCase2")
                                   ^^^^^^^^^^^ Use camelCase for method names.
