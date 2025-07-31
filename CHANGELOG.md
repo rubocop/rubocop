@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.79.1 (2025-07-31)
+
 ### Bug fixes
 
 * [#14390](https://github.com/rubocop/rubocop/issues/14390): Fix wrong autocorrect for `Style/ArgumentsForwarding` when the method arguments contain `*`, `**` or `&`, and the method call contains `self` as the first argument. ([@earlopain][])
