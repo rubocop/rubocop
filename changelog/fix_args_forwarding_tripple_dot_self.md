@@ -1,1 +1,0 @@
-* [#14390](https://github.com/rubocop/rubocop/issues/14390): Fix wrong autocorrect for `Style/ArgumentsForwarding` when the method arguments contain `*, **, &` and the method call contains `self` as the first argument. ([@earlopain][])
