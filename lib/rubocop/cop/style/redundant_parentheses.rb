@@ -149,7 +149,7 @@ module RuboCop
             return offense(begin_node, message)
           end
 
-          check_send(begin_node, node) if node.call_type?
+          check_send(begin_node, node) if call_node?(node)
         end
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
@@ -219,7 +219,13 @@ module RuboCop
           !!config.for_enabled_cop('Style/ParenthesesAroundCondition')['AllowInMultilineConditions']
         end
 
+        def call_node?(node)
+          node.call_type? || (node.any_block_type? && !node.lambda_or_proc?)
+        end
+
         def check_send(begin_node, node)
+          node = node.send_node if node.any_block_type?
+
           return check_unary(begin_node, node) if node.unary_operation?
 
           return unless method_call_with_redundant_parentheses?(node)
