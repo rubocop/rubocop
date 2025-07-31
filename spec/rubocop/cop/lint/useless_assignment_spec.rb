@@ -2363,6 +2363,21 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         RUBY
       end
     end
+
+    context 'while loop with parenthesized body' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          while
+            (
+              foo = 1
+              ^^^ Useless assignment to variable - `foo`.
+              foo = 1
+            )
+            p foo
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when duplicate assignments in `if` branch inside a loop' do
@@ -2374,6 +2389,25 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
               var += 1
             else
               var -= 1
+            end
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when duplicate assignments appear in `if` branch inside a loop and the variable is used outside `while` loop' do
+    context 'while loop' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          var = false
+          while loop_cond
+            if var
+              var = false
+              foo
+            else
+              var = true
+              bar
             end
           end
         RUBY

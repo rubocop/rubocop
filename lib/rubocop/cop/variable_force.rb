@@ -71,6 +71,8 @@ module RuboCop
         end
       end
 
+      BRANCH_NODES = %i[if case case_match rescue].freeze
+
       def variable_table
         @variable_table ||= VariableTable.new(self)
       end
@@ -353,15 +355,17 @@ module RuboCop
         end
       end
 
-      def reference_assignments(loop_assignments, node)
+      def reference_assignments(loop_assignments, loop_node)
+        node = loop_assignments.first.node
+
         # If inside a branching statement, mark all as referenced.
         # Otherwise, mark only the last assignment as referenced.
         # Note that `rescue` must be considered as branching because of
         # the `retry` keyword.
-        if loop_assignments.first.node.each_ancestor(:if, :rescue, :case, :case_match).any?
-          loop_assignments.each { |assignment| assignment.reference!(node) }
+        if node.each_ancestor(*BRANCH_NODES).any? || node.parent.each_descendant(*BRANCH_NODES).any?
+          loop_assignments.each { |assignment| assignment.reference!(loop_node) }
         else
-          loop_assignments.last&.reference!(node)
+          loop_assignments.last&.reference!(loop_node)
         end
       end
 
