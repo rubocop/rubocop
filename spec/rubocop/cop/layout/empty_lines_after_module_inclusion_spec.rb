@@ -241,4 +241,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense when module inclusion is called with modifier' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        include Bar
+        include Baz if condition
+        include Qux
+      end
+    RUBY
+  end
 end

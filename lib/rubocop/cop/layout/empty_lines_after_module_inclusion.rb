@@ -83,6 +83,8 @@ module RuboCop
         end
 
         def allowed_method?(node)
+          node = node.body if node.respond_to?(:modifier_form?) && node.modifier_form?
+
           return false unless node.send_type?
 
           MODULE_INCLUSION_METHODS.include?(node.method_name)
