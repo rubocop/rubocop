@@ -683,6 +683,29 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers a multiline expression around block wrapped in parens with a chained method' do
+    expect_offense(<<~RUBY)
+      (
+      ^ Don't use parentheses around a method call.
+        x.select { |item| item.foo }
+      ).map(&:bar)
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x.select { |item| item.foo }.map(&:bar)
+    RUBY
+  end
+
+  it_behaves_like 'redundant', '(x.select { |item| item })', 'x.select { |item| item }', 'a method call'
+
+  context 'when Ruby 2.7', :ruby27 do
+    it_behaves_like 'redundant', '(x.select { _1 })', 'x.select { _1 }', 'a method call'
+  end
+
+  context 'when Ruby 3.4', :ruby34 do
+    it_behaves_like 'redundant', '(x.select { it })', 'x.select { it }', 'a method call'
+  end
+
   it_behaves_like 'plausible', '(-2)**2'
   it_behaves_like 'plausible', '(-2.1)**2'
 
