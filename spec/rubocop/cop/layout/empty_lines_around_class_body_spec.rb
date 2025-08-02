@@ -72,6 +72,28 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when a class body starts with a blank line and defines a multiline superclass' do
+      expect_offense(<<~RUBY)
+        class SomeClass < Struct.new(
+          :attr,
+          keyword_init: true
+        )
+
+        ^{} #{extra_begin}
+          do_something
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class SomeClass < Struct.new(
+          :attr,
+          keyword_init: true
+        )
+          do_something
+        end
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is empty_lines' do

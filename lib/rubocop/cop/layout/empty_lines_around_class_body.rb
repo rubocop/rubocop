@@ -71,7 +71,7 @@ module RuboCop
         KIND = 'class'
 
         def on_class(node)
-          first_line = node.parent_class.first_line if node.parent_class
+          first_line = node.parent_class.last_line if node.parent_class
 
           check(node, node.body, adjusted_first_line: first_line)
         end
