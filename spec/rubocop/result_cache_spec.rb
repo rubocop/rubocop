@@ -479,4 +479,20 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       end
     end
   end
+
+  describe '#rubocop_extra_features' do
+    it 'memoizes the value in @rubocop_extra_features' do
+      expect(cache.instance_variable_get(:@rubocop_extra_features)).to be_nil
+
+      first_result = cache.send(:rubocop_extra_features)
+
+      expect(cache.instance_variable_get(:@rubocop_extra_features)).to equal(first_result)
+
+      sentinel = Object.new
+      cache.instance_variable_set(:@rubocop_extra_features, sentinel)
+
+      second_result = cache.send(:rubocop_extra_features)
+      expect(second_result).to equal(sentinel)
+    end
+  end
 end

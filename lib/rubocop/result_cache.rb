@@ -198,20 +198,22 @@ module RuboCop
     end
 
     def rubocop_extra_features
-      lib_root = File.join(File.dirname(__FILE__), '..')
-      exe_root = File.join(lib_root, '..', 'exe')
+      @rubocop_extra_features ||= begin
+        lib_root = File.join(File.dirname(__FILE__), '..')
+        exe_root = File.join(lib_root, '..', 'exe')
 
-      # Make sure to use an absolute path to prevent errors on Windows
-      # when traversing the relative paths with symlinks.
-      exe_root = File.absolute_path(exe_root)
+        # Make sure to use an absolute path to prevent errors on Windows
+        # when traversing the relative paths with symlinks.
+        exe_root = File.absolute_path(exe_root)
 
-      # These are all the files we have `require`d plus everything in the
-      # exe directory. A change to any of them could affect the cop output
-      # so we include them in the cache hash.
-      source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
-      source_files -= ResultCache.rubocop_required_features # Rely on gem versions
+        # These are all the files we have `require`d plus everything in the
+        # exe directory. A change to any of them could affect the cop output
+        # so we include them in the cache hash.
+        source_files = $LOADED_FEATURES + Find.find(exe_root).to_a
+        source_files -= ResultCache.rubocop_required_features # Rely on gem versions
 
-      source_files
+        source_files
+      end
     end
 
     # Return a hash of the options given at invocation, minus the ones that have
