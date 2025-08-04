@@ -195,14 +195,27 @@ RSpec.describe RuboCop::Cop::Style::MapToHash, :config do
         end
       end
 
-      context "`#{method}.to_h` with a block on `to_h`" do
-        it 'registers an offense but does not correct' do
-          expect_offense(<<~RUBY, method: method)
+      context "`#{method}` followed by `to_h` with a block passed to `to_h`" do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
             foo.#{method} { |x| x * 2 }.to_h { |x| [x.to_s, x] }
-                ^{method} Pass a block to `to_h` instead of calling `#{method}.to_h`.
           RUBY
+        end
+      end
 
-          expect_no_corrections
+      context "`#{method}` followed by `to_h` with a numbered block passed to `to_h`", :ruby27 do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            foo.#{method} { |x| x * 2 }.to_h { |x| [x.to_s, x] }
+          RUBY
+        end
+      end
+
+      context "`#{method}` followed by `to_h` with an `it` block passed to `to_h`", :ruby34 do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            foo.#{method} { |x| x * 2 }.to_h { [it.to_s, it] }
+          RUBY
         end
       end
 

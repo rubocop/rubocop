@@ -56,12 +56,10 @@ module RuboCop
 
         def on_send(node)
           return unless (to_h_node, map_node = map_to_h(node))
+          return if to_h_node.block_literal?
 
           message = format(MSG, method: map_node.loc.selector.source, dot: to_h_node.loc.dot.source)
           add_offense(map_node.loc.selector, message: message) do |corrector|
-            # If the `to_h` call already has a block, do not autocorrect.
-            next if to_h_node.block_literal?
-
             autocorrect(corrector, to_h_node, map_node)
           end
         end
