@@ -40,12 +40,10 @@ module RuboCop
 
         def on_send(node)
           return unless (to_set_node, map_node = map_to_set?(node))
+          return if to_set_node.block_literal?
 
           message = format(MSG, method: map_node.loc.selector.source)
           add_offense(map_node.loc.selector, message: message) do |corrector|
-            # If the `to_set` call already has a block, do not autocorrect.
-            next if to_set_node.block_literal?
-
             autocorrect(corrector, to_set_node, map_node)
           end
         end
