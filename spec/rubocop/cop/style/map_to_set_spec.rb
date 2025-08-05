@@ -116,14 +116,27 @@ RSpec.describe RuboCop::Cop::Style::MapToSet, :config do
       end
     end
 
-    context "`#{method}.to_set` with a block on `to_set`" do
-      it 'registers an offense but does not correct' do
-        expect_offense(<<~RUBY, method: method)
+    context "`#{method}` followed by `to_set` with a block passed to `to_set`" do
+      it 'does not register an offense but does not correct' do
+        expect_no_offenses(<<~RUBY)
           foo.#{method} { |x| x * 2 }.to_set { |x| [x.to_s, x] }
-              ^{method} Pass a block to `to_set` instead of calling `#{method}.to_set`.
         RUBY
+      end
+    end
 
-        expect_no_corrections
+    context "`#{method}` followed by `to_set` with a numbered block passed to `to_set`", :ruby27 do
+      it 'does not register an offense but does not correct' do
+        expect_no_offenses(<<~RUBY)
+          foo.#{method} { |x| x * 2 }.to_set { |x| [x.to_s, x] }
+        RUBY
+      end
+    end
+
+    context "`#{method}` followed by `to_set` with an `it` block passed to `to_set`", :ruby34 do
+      it 'does not register an offense but does not correct' do
+        expect_no_offenses(<<~RUBY)
+          foo.#{method} { |x| x * 2 }.to_set { |x| [x.to_s, x] }
+        RUBY
       end
     end
 
