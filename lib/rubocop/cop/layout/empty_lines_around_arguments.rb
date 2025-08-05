@@ -62,40 +62,19 @@ module RuboCop
           node.receiver && node.receiver.loc.last_line != node.loc.selector&.line
         end
 
-        def empty_lines(node)
-          lines = processed_lines(node)
-          lines.select! { |code, _| code.empty? }
-          lines.map { |_, line| line }
-        end
-
-        def extra_lines(node)
-          empty_lines(node).each do |line|
-            range = source_range(processed_source.buffer, line, 0)
-            yield(range)
+        def extra_lines(node, &block)
+          node.arguments.each do |arg|
+            empty_range_for_starting_point(arg.source_range.begin, &block)
           end
+
+          empty_range_for_starting_point(node.loc.end.begin, &block) if node.loc.end
         end
 
-        def processed_lines(node)
-          line_numbers(node).each_with_object([]) do |num, array|
-            array << [processed_source.lines[num - 1], num]
-          end
-        end
+        def empty_range_for_starting_point(start)
+          range = range_with_surrounding_space(start, whitespace: true, side: :left)
+          return unless range.last_line - range.first_line > 1
 
-        def line_numbers(node)
-          inner_lines = []
-          line_nums = node.arguments.each_with_object([]) do |arg_node, lines|
-            lines << outer_lines(arg_node)
-            inner_lines << inner_lines(arg_node) if arg_node.multiline?
-          end
-          line_nums.flatten.uniq - inner_lines.flatten - outer_lines(node)
-        end
-
-        def inner_lines(node)
-          [node.first_line + 1, node.last_line - 1]
-        end
-
-        def outer_lines(node)
-          [node.first_line - 1, node.last_line + 1]
+          yield range.source_buffer.line_range(range.last_line - 1).adjust(end_pos: 1)
         end
       end
     end
