@@ -300,6 +300,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundArguments, :config do
       RUBY
     end
 
+    it 'ignores a multiline string with only whitespace on one line and []-style method call after' do
+      expect_no_offenses(<<~RUBY)
+        format('%d
+
+        ', 1)[0]
+      RUBY
+    end
+
     context 'with one argument' do
       it 'ignores empty lines inside of method arguments' do
         expect_no_offenses(<<~RUBY)
