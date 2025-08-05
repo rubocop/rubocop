@@ -2415,6 +2415,33 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when duplicate assignments appear in nested `if` branches inside a loop and the variable is used outside `while` loop' do
+    context 'while loop' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def parse_options
+            index = -1
+            while loop_cond
+              index += 1
+
+              if first_cond
+                index += 1
+              else
+                if second_cond
+                  index += 1
+                else
+                  if third_cond
+                    index += 1
+                  end
+                end
+              end
+            end
+          end
+        RUBY
+      end
+    end
+  end
+
   context 'when duplicate assignments in `rescue` branch with `retry`' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
