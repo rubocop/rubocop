@@ -1,1 +1,0 @@
-* [#14411](https://github.com/rubocop/rubocop/issues/14411): Fix false negatives for `Layout/EmptyLinesAroundClassBody` when a class body starts with a blank line and defines a multiline superclass. ([@koic][])

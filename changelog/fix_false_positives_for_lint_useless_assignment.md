@@ -1,1 +1,0 @@
-* [#14402](https://github.com/rubocop/rubocop/issues/14402): Fix false positives for `Lint/UselessAssignment` when duplicate assignments appear in `if` branch inside a loop and the variable is used outside `while` loop. ([@koic][])
