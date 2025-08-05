@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.79.2 (2025-08-05)
+
 ### Bug fixes
 
 * [#11664](https://github.com/rubocop/rubocop/issues/11664): Cache wasn't getting used when using parallelization. ([@jvlara][])
