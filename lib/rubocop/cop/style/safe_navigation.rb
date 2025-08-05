@@ -259,6 +259,8 @@ module RuboCop
         end
 
         def dotless_operator_call?(method_call)
+          method_call = method_call.parent while method_call.parent.send_type?
+
           return false if method_call.loc.dot
 
           method_call.method?(:[]) || method_call.method?(:[]=) || method_call.operator_method?
