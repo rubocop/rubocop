@@ -220,7 +220,7 @@ module RuboCop
         end
 
         def call_node?(node)
-          node.call_type? || (node.any_block_type? && !node.lambda_or_proc?)
+          node.call_type? || (node.any_block_type? && node.braces? && !node.lambda_or_proc?)
         end
 
         def check_send(begin_node, node)
