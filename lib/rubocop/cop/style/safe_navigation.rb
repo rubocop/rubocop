@@ -142,6 +142,7 @@ module RuboCop
         # @!method strip_begin(node)
         def_node_matcher :strip_begin, '{ (begin $!begin) $!(begin) }'
 
+        # rubocop:disable Metrics/AbcSize
         def on_if(node)
           return if allowed_if_condition?(node)
 
@@ -155,9 +156,11 @@ module RuboCop
           removal_ranges = [begin_range(node, body), end_range(node, body)]
 
           report_offense(node, method_chain, method_call, *removal_ranges) do |corrector|
+            corrector.replace(receiver, checked_variable.source) if checked_variable.csend_type?
             corrector.insert_before(method_call.loc.dot, '&') unless method_call.safe_navigation?
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def on_and(node) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
           collect_and_clauses(node).each do |(lhs, lhs_operator_range), (rhs, _rhs_operator_range)|
@@ -335,8 +338,14 @@ module RuboCop
 
         def matching_call_nodes?(left, right)
           return false unless left && right.respond_to?(:call_type?)
+          return false unless left.call_type? && right.call_type?
 
-          left.call_type? && right.call_type? && left.children == right.children
+          # Compare receiver and method name, but ignore the difference between
+          # safe navigation method call (`&.`) and dot method call (`.`).
+          left_receiver, left_method = left.children.take(2)
+          right_receiver, right_method = right.children.take(2)
+
+          left_method == right_method && matching_nodes?(left_receiver, right_receiver)
         end
 
         def chain_length(method_chain, method)

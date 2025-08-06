@@ -1437,6 +1437,41 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
               #{variable}&.one&.two(baz) { |e| e.qux }
             RUBY
           end
+
+          it 'corrects a ternary expression with safe navigation object check followed by a chained method call' do
+            expect_offense(<<~RUBY, variable: variable)
+              %{variable}&.bar ? %{variable}.bar.baz : nil
+              ^{variable}^^^^^^^^^{variable}^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              #{variable}&.bar&.baz
+            RUBY
+          end
+
+          it 'corrects an object check with safe navigation followed by a chained method call' do
+            expect_offense(<<~RUBY, variable: variable)
+              %{variable}&.bar && %{variable}.bar.baz
+              ^{variable}^^^^^^^^^^{variable}^^^^^^^^ Use safe navigation (`&.`) instead [...]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              #{variable}&.bar&.baz
+            RUBY
+          end
+
+          it 'corrects a check with safe navigation followed by a chained method call' do
+            expect_offense(<<~RUBY, variable: variable)
+              if %{variable}&.bar
+              ^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+                %{variable}.bar.baz
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              #{variable}&.bar&.baz
+            RUBY
+          end
         end
       end
 
