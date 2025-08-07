@@ -59,7 +59,7 @@ module RuboCop
           raise ::RubyLsp::Requests::Formatting::Error, e.message
         end
 
-        raise e
+        raise
       rescue RuboCop::ValidationError => e
         raise ConfigurationError, e.message
       rescue StandardError => e
@@ -67,7 +67,7 @@ module RuboCop
           raise ::RubyLsp::Requests::Support::InternalRuboCopError, e
         end
 
-        raise e
+        raise
       end
       # rubocop:enable Metrics/MethodLength
 

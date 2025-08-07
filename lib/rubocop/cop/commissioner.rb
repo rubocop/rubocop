@@ -170,7 +170,7 @@ module RuboCop
       def with_cop_error_handling(cop, node = nil)
         yield
       rescue StandardError => e
-        raise e if @options[:raise_error] # For internal testing
+        raise if @options[:raise_error] # For internal testing
 
         err = ErrorWithAnalyzedFileLocation.new(cause: e, node: node, cop: cop)
         raise err if @options[:raise_cop_error] # From user-input option
