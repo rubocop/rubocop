@@ -683,6 +683,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense when braces block is wrapped in parentheses as a method argument' do
+    expect_offense(<<~RUBY)
+      foo (x.select { |item| item }).y
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't use parentheses around a method call.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo x.select { |item| item }.y
+    RUBY
+  end
+
+  it 'does not register an offense when `do`...`end` block is wrapped in parentheses as a method argument' do
+    expect_no_offenses(<<~RUBY)
+      foo (x.select do |item| item end).y
+    RUBY
+  end
+
   it 'registers a multiline expression around block wrapped in parens with a chained method' do
     expect_offense(<<~RUBY)
       (
