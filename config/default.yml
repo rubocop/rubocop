@@ -5376,6 +5376,11 @@ Style/RedundantPercentQ:
   Enabled: true
   VersionAdded: '0.76'
 
+Style/RedundantRaiseArgument:
+  Description: 'Checks for redundant argument to `raise` when re-raising exceptions.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantRegexpArgument:
   Description: 'Identifies places where argument can be replaced from a deterministic regexp to a string.'
   Enabled: pending

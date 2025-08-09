@@ -153,7 +153,7 @@ module RuboCop
       file_started(file)
       offenses = file_offenses(file)
     rescue InfiniteCorrectionLoop => e
-      raise e if @options[:raise_cop_error]
+      raise if @options[:raise_cop_error]
 
       errors << e
       warn Rainbow(e.message).red
