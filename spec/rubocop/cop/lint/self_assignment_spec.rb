@@ -319,6 +319,32 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
     RUBY
   end
 
+  it 'registers an offense when ussing `[]=` self-assignment with multiple key arguments' do
+    expect_offense(<<~RUBY)
+      matrix[1, 2] = matrix[1, 2]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense when ussing `[]=` self-assignment with multiple key arguments with arguments mismatch' do
+    expect_no_offenses(<<~RUBY)
+      matrix[1, 2] = matrix[1, 3]
+    RUBY
+  end
+
+  it 'does not register an offense when ussing `[]=` self-assignment with multiple key arguments with method call argument' do
+    expect_no_offenses(<<~RUBY)
+      matrix[1, foo] = matrix[1, foo]
+    RUBY
+  end
+
+  it 'registers an offense when ussing `[]=` self-assignment with using zero key arguments' do
+    expect_offense(<<~RUBY)
+      singleton[] = singleton[]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
   describe 'RBS::Inline annotation' do
     context 'when config option is enabled' do
       let(:cop_config) { { 'AllowRBSInlineAnnotation' => true } }

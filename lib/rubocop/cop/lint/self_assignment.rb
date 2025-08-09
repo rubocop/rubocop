@@ -45,7 +45,7 @@ module RuboCop
           return if allow_rbs_inline_annotation? && rbs_inline_annotation?(node.receiver)
 
           if node.method?(:[]=)
-            handle_key_assignment(node) if node.arguments.size == 2
+            handle_key_assignment(node)
           elsif node.assignment_method?
             handle_attribute_assignment(node) if node.arguments.size == 1
           end
@@ -105,12 +105,13 @@ module RuboCop
         end
 
         def handle_key_assignment(node)
-          value_node = node.arguments[1]
+          value_node = node.last_argument
+          node_arguments = node.arguments[0...-1]
 
           if value_node.send_type? && value_node.method?(:[]) &&
              node.receiver == value_node.receiver &&
-             !node.first_argument.call_type? &&
-             node.first_argument == value_node.first_argument
+             node_arguments.none?(&:call_type?) &&
+             node_arguments == value_node.arguments
             add_offense(node)
           end
         end
