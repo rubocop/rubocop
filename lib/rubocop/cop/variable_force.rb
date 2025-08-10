@@ -238,7 +238,7 @@ module RuboCop
       end
 
       def process_loop(node)
-        if POST_CONDITION_LOOP_TYPES.include?(node.type)
+        if node.post_condition_loop?
           # See the comment at the end of file for this behavior.
           condition_node, body_node = *node
           process_node(body_node)
