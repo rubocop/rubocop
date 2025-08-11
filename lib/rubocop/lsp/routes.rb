@@ -51,7 +51,7 @@ module RuboCop
             capabilities: LanguageServer::Protocol::Interface::ServerCapabilities.new(
               document_formatting_provider: true,
               text_document_sync: LanguageServer::Protocol::Interface::TextDocumentSyncOptions.new(
-                change: LanguageServer::Protocol::Constant::TextDocumentSyncKind::FULL,
+                change: LanguageServer::Protocol::Constant::TextDocumentSyncKind::INCREMENTAL,
                 open_close: true
               )
             )
@@ -76,7 +76,8 @@ module RuboCop
 
       handle 'textDocument/didChange' do |request|
         params = request[:params]
-        result = diagnostic(params[:textDocument][:uri], params[:contentChanges][0][:text])
+        content = params[:contentChanges][0]
+        result = diagnostic(params[:textDocument][:uri], content[:text], content[:range])
         @server.write(result)
       end
 
@@ -207,16 +208,34 @@ module RuboCop
         ]
       end
 
-      def diagnostic(file_uri, text)
-        @text_cache[file_uri] = text
+      def diagnostic(file_uri, text, range = nil)
+        if range
+          start_pos = text_pos(@text_cache[file_uri], range[:start])
+          end_pos = text_pos(@text_cache[file_uri], range[:end])
+          @text_cache[file_uri].bytesplice(start_pos...end_pos, text)
+        else
+          @text_cache[file_uri] = text
+        end
 
         {
           method: 'textDocument/publishDiagnostics',
           params: {
             uri: file_uri,
-            diagnostics: @server.offenses(convert_file_uri_to_path(file_uri), text)
+            diagnostics: @server.offenses(convert_file_uri_to_path(file_uri), @text_cache[file_uri])
           }
         }
+      end
+
+      def text_pos(text, range)
+        line = range[:line]
+        char = range[:character]
+        pos = 0
+        text.each_line.with_index do |l, i|
+          return pos + char if i == line
+
+          pos += l.bytesize
+        end
+        pos
       end
 
       def convert_file_uri_to_path(uri)
