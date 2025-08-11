@@ -40,7 +40,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
         id: 2,
         result: {
           capabilities: {
-            textDocumentSync: { openClose: true, change: 1 },
+            textDocumentSync: { openClose: true, change: 2 },
             documentFormattingProvider: true
           }
         }
