@@ -2066,14 +2066,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           require: unknownlibrary
         YAML
 
-        regexp =
-          if RUBY_ENGINE == 'jruby'
-            /no such file to load -- unknownlibrary/
-          else
-            /cannot load such file -- unknownlibrary/
-          end
         expect(cli.run([])).to eq(2)
-        expect($stderr.string).to match(regexp)
+        expect($stderr.string).to match(/cannot load such file -- unknownlibrary/)
       end
     end
 
