@@ -85,7 +85,7 @@ module RuboCop
 
     def wanted_dir_patterns(base_dir, exclude_pattern, flags)
       # Escape glob characters in base_dir to avoid unwanted behavior.
-      base_dir = base_dir.gsub(/[\\\{\}\[\]\*\?]/) do |reserved_glob_character|
+      base_dir = base_dir.gsub(/[\\{}\[\]*?]/) do |reserved_glob_character|
         "\\#{reserved_glob_character}"
       end
 
