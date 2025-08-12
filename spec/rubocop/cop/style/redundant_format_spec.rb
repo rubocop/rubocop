@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it_behaves_like 'offending format specifier', '% d', '5', "' 5'"
         it_behaves_like 'offending format specifier', '%+d', '5', "'+5'"
         it_behaves_like 'offending format specifier', '%.3d', '10', "'010'"
-        it_behaves_like 'offending format specifier', '%.d', '0', "''", broken_on: :jruby
+        it_behaves_like 'offending format specifier', '%.d', '0', "''"
         it_behaves_like 'offending format specifier', '%05d', '5', "'00005'"
         it_behaves_like 'offending format specifier', '%.2f', '5', "'5.00'"
         it_behaves_like 'offending format specifier', '%10.2f', '5', "'      5.00'"
