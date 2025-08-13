@@ -76,9 +76,10 @@ module RuboCop
 
       handle 'textDocument/didChange' do |request|
         params = request[:params]
-        content = params[:contentChanges][0]
-        result = diagnostic(params[:textDocument][:uri], content[:text], content[:range])
-        @server.write(result)
+        params[:contentChanges].each do |content|
+          result = diagnostic(params[:textDocument][:uri], content[:text], content[:range])
+          @server.write(result)
+        end
       end
 
       handle 'textDocument/didOpen' do |request|
