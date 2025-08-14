@@ -342,10 +342,12 @@ module RuboCop
 
           # Compare receiver and method name, but ignore the difference between
           # safe navigation method call (`&.`) and dot method call (`.`).
-          left_receiver, left_method = left.children.take(2)
-          right_receiver, right_method = right.children.take(2)
+          left_receiver, left_method, *left_args = left.children
+          right_receiver, right_method, *right_args = right.children
 
-          left_method == right_method && matching_nodes?(left_receiver, right_receiver)
+          left_method == right_method &&
+            matching_nodes?(left_receiver, right_receiver) &&
+            left_args == right_args
         end
 
         def chain_length(method_chain, method)
