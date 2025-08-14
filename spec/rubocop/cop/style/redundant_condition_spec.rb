@@ -678,6 +678,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and autocorrects when true is used the the true branch and the condition is a parenthesized predicate call with arguments' do
+        expect_offense(<<~RUBY)
+          if foo?(arg)
+          ^^^^^^^^^^^^ Use double pipes `||` instead.
+            true
+          else
+            bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo?(arg) || bar
+        RUBY
+      end
+
       it 'registers an offense and autocorrects when true is used as the true branch and the condition takes arguments with safe navigation' do
         expect_offense(<<~RUBY)
           if obj&.foo? arg
