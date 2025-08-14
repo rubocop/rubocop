@@ -20,6 +20,11 @@ bearing on which offenses are reported
 * version of the `rubocop` program (or to be precise, anything in the
 source code of the invoked `rubocop` program)
 
+In rare cases, you may need to invalidate the cache when changing
+external dependencies. This happens when your cop depends on external
+configuration. In this case, override the method
+`RuboCop::Cop::Base#external_dependency_checksum`.
+
 == Enabling and Disabling the Cache
 
 The caching functionality is enabled if the configuration parameter
