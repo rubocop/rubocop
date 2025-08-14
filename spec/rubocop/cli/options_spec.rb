@@ -997,7 +997,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             1  Layout/SpaceAroundOperators [Safe Correctable]
             1  Layout/TrailingWhitespace [Safe Correctable]
             1  Lint/MissingCopEnableDirective
-            1  Lint/UselessAssignment [Safe Correctable]
+            1  Lint/UselessAssignment [Unsafe Correctable]
             1  Migration/DepartmentName [Safe Correctable]
             1  Style/FrozenStringLiteralComment [Unsafe Correctable]
             1  Style/NumericPredicate [Unsafe Correctable]
@@ -2044,7 +2044,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
   describe 'with --autocorrect' do
     let(:target_file) { 'example.rb' }
 
-    context 'all offenses are corrected' do
+    context 'with frozen string literal and variable usage' do
       before do
         create_file('.rubocop.yml', <<~YAML)
           Style/FrozenStringLiteralComment:
@@ -2052,15 +2052,17 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         YAML
       end
 
-      it 'succeeds when there is only a disabled offense' do
+      it 'fails when there is an uncorrected offense' do
         create_file(target_file, <<~RUBY)
           a = "Hello"
         RUBY
 
-        expect(cli.run(['--autocorrect', '--format', 'simple', target_file])).to eq(0)
+        expect(cli.run(['--autocorrect', '--format', 'simple', target_file])).to eq(1)
 
-        expect($stdout.string.lines.to_a.last)
-          .to eq("1 file inspected, 3 offenses detected, 3 offenses corrected\n")
+        expect($stdout.string.lines.to_a.last).to eq(
+          '1 file inspected, 2 offenses detected, 1 offense corrected, ' \
+          "1 more offense can be corrected with `rubocop -A`\n"
+        )
       end
     end
 

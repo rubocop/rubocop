@@ -42,6 +42,10 @@ module RuboCop
 
         include RangeHelp
 
+        def self.support_autocorrect?
+          :unsafe
+        end
+
         MSG = 'Useless assignment to variable - `%<variable>s`.'
 
         def self.joining_forces

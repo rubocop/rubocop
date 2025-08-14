@@ -2627,6 +2627,7 @@ Lint/UselessAssignment:
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
   AutoCorrect: contextual
+  Safe: false
   VersionAdded: '0.11'
   VersionChanged: '1.66'
 
