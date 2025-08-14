@@ -247,7 +247,7 @@ module RuboCop
             "#{if_branch.receiver.source} #{if_branch.method_name} (#{argument_source}"
           elsif if_branch.true_type?
             condition = if_branch.parent.condition
-            return condition.source if condition.arguments.empty?
+            return condition.source if condition.arguments.empty? || condition.parenthesized?
 
             wrap_arguments_with_parens(condition)
           else
