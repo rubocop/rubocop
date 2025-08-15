@@ -242,6 +242,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
     RUBY
   end
 
+  it 'does not register an offense when `include` does not have exactly one argument' do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        includes = [include, sdk_include].compact.map do |inc|
+          inc + "blah"
+        end.join(' ')
+      end
+    RUBY
+  end
+
   it 'does not register an offense when module inclusion is called with modifier' do
     expect_no_offenses(<<~RUBY)
       class Foo
