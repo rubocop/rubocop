@@ -85,6 +85,75 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
           ([1, 2, 3] & [4, 5, 6]).blank?
         RUBY
       end
+
+      described_class::ARRAY_SIZE_METHODS.each do |method|
+        it "registers an offense when using `.#{method} > 0`" do
+          expect_offense(<<~RUBY, method: method)
+            (a & b).#{method} > 0
+            ^^^^^^^^^{method}^^^^ Use `a.intersect?(b)` instead of `(a & b).#{method} > 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `.#{method} == 0`" do
+          expect_offense(<<~RUBY, method: method)
+            (a & b).#{method} == 0
+            ^^^^^^^^^{method}^^^^^ Use `!a.intersect?(b)` instead of `(a & b).#{method} == 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            !a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `.#{method} != 0`" do
+          expect_offense(<<~RUBY, method: method)
+            (a & b).#{method} != 0
+            ^^^^^^^^^{method}^^^^^ Use `a.intersect?(b)` instead of `(a & b).#{method} != 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `.#{method}.zero?`" do
+          expect_offense(<<~RUBY, method: method)
+            (a & b).#{method}.zero?
+            ^^^^^^^^^{method}^^^^^^ Use `!a.intersect?(b)` instead of `(a & b).#{method}.zero?`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            !a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `.#{method}.positive?`" do
+          expect_offense(<<~RUBY, method: method)
+            (a & b).#{method}.positive?
+            ^^^^^^^^^{method}^^^^^^^^^^ Use `a.intersect?(b)` instead of `(a & b).#{method}.positive?`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a.intersect?(b)
+          RUBY
+        end
+
+        it "does not register an offense when using `.#{method} > 1`" do
+          expect_no_offenses(<<~RUBY)
+            (a & b).#{method} > 1
+          RUBY
+        end
+
+        it "does not register an offense when using `.#{method} == 1`" do
+          expect_no_offenses(<<~RUBY)
+            (a & b).#{method} == 1
+          RUBY
+        end
+      end
     end
 
     context 'with Array#intersection' do
@@ -142,6 +211,86 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
         expect_no_offenses(<<~RUBY)
           array1.intersection(array2, array3).any?
         RUBY
+      end
+
+      described_class::ARRAY_SIZE_METHODS.each do |method|
+        it "registers an offense when using `.#{method} > 0`" do
+          expect_offense(<<~RUBY, method: method)
+            a.intersection(b).#{method} > 0
+            ^^^^^^^^^^^^^^^^^^^{method}^^^^ Use `a.intersect?(b)` instead of `a.intersection(b).#{method} > 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `.#{method} == 0`" do
+          expect_offense(<<~RUBY, method: method)
+            a.intersection(b).#{method} == 0
+            ^^^^^^^^^^^^^^^^^^^{method}^^^^^ Use `!a.intersect?(b)` instead of `a.intersection(b).#{method} == 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            !a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `.#{method} != 0`" do
+          expect_offense(<<~RUBY, method: method)
+            a.intersection(b).#{method} != 0
+            ^^^^^^^^^^^^^^^^^^^{method}^^^^^ Use `a.intersect?(b)` instead of `a.intersection(b).#{method} != 0`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `.#{method}.zero?`" do
+          expect_offense(<<~RUBY, method: method)
+            a.intersection(b).#{method}.zero?
+            ^^^^^^^^^^^^^^^^^^^{method}^^^^^^ Use `!a.intersect?(b)` instead of `a.intersection(b).#{method}.zero?`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            !a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `.#{method}.positive?`" do
+          expect_offense(<<~RUBY, method: method)
+            a.intersection(b).#{method}.positive?
+            ^^^^^^^^^^^^^^^^^^^{method}^^^^^^^^^^ Use `a.intersect?(b)` instead of `a.intersection(b).#{method}.positive?`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a.intersect?(b)
+          RUBY
+        end
+
+        it "registers an offense when using `&.#{method}&.positive?`" do
+          expect_offense(<<~RUBY, method: method)
+            a&.intersection(b)&.#{method}&.positive?
+            ^^^^^^^^^^^^^^^^^^^^^{method}^^^^^^^^^^^ Use `a&.intersect?(b)` instead of `a&.intersection(b)&.#{method}&.positive?`.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a&.intersect?(b)
+          RUBY
+        end
+
+        it "does not register an offense when using `.#{method} > 1`" do
+          expect_no_offenses(<<~RUBY)
+            a.intersection(b).#{method} > 1
+          RUBY
+        end
+
+        it "does not register an offense when using `.#{method} == 1`" do
+          expect_no_offenses(<<~RUBY)
+            a.intersection(b).#{method} == 1
+          RUBY
+        end
       end
     end
 
