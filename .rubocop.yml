@@ -335,6 +335,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/lint/duplicate_require.rb'
     - 'lib/rubocop/cop/lint/lambda_without_literal_block.rb'
     - 'lib/rubocop/cop/lint/raise_exception.rb'
+    - 'lib/rubocop/cop/lint/rake_method_definition.rb'
     - 'lib/rubocop/cop/lint/rand_one.rb'
     - 'lib/rubocop/cop/lint/redundant_require_statement.rb'
     - 'lib/rubocop/cop/lint/redundant_string_coercion.rb'

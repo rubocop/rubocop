@@ -2242,6 +2242,9 @@ Lint/RaiseException:
   AllowedImplicitNamespaces:
     - 'Gem'
 
+Lint/RakeMethodDefinition:
+  Enabled: true
+
 Lint/RandOne:
   Description: >-
                  Checks for `rand(1)` calls. Such calls always return `0`
