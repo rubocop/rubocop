@@ -28,6 +28,10 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     expect_no_offenses('foo && foo[:bar]')
   end
 
+  it 'allows hash key access and then a different hash key access' do
+    expect_no_offenses('return if foo[:bar] && foo[:baz].blank?')
+  end
+
   it 'allows an object check before a negated predicate' do
     expect_no_offenses('foo && !foo.bar?')
   end
