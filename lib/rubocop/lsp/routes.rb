@@ -76,10 +76,13 @@ module RuboCop
 
       handle 'textDocument/didChange' do |request|
         params = request[:params]
+        file_uri = params[:textDocument][:uri]
+        text = @text_cache[file_uri]
         params[:contentChanges].each do |content|
-          result = diagnostic(params[:textDocument][:uri], content[:text], content[:range])
-          @server.write(result)
+          text = change_text(text, content[:text], content[:range])
         end
+        result = diagnostic(file_uri, text)
+        @server.write(result)
       end
 
       handle 'textDocument/didOpen' do |request|
@@ -209,22 +212,26 @@ module RuboCop
         ]
       end
 
-      def diagnostic(file_uri, text, range = nil)
-        if range
-          start_pos = text_pos(@text_cache[file_uri], range[:start])
-          end_pos = text_pos(@text_cache[file_uri], range[:end])
-          @text_cache[file_uri].bytesplice(start_pos...end_pos, text)
-        else
-          @text_cache[file_uri] = text
-        end
+      def diagnostic(file_uri, text)
+        @text_cache[file_uri] = text
 
         {
           method: 'textDocument/publishDiagnostics',
           params: {
             uri: file_uri,
-            diagnostics: @server.offenses(convert_file_uri_to_path(file_uri), @text_cache[file_uri])
+            diagnostics: @server.offenses(convert_file_uri_to_path(file_uri), text)
           }
         }
+      end
+
+      def change_text(orig_text, text, range)
+        return text unless range
+
+        start_pos = text_pos(orig_text, range[:start])
+        end_pos = text_pos(orig_text, range[:end])
+        text_bin = orig_text.b
+        text_bin[start_pos...end_pos] = text.b
+        text_bin.force_encoding(orig_text.encoding)
       end
 
       def text_pos(text, range)
@@ -232,8 +239,10 @@ module RuboCop
         char = range[:character]
         pos = 0
         text.each_line.with_index do |l, i|
-          return pos + char if i == line
-
+          if i == line
+            pos += l.encode('utf-16be').b[0, char * 2].encode('utf-8', 'utf-16be').bytesize
+            return pos
+          end
           pos += l.bytesize
         end
         pos

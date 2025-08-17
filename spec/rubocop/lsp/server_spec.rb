@@ -1356,7 +1356,7 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     end
 
     it 'handles requests' do
-      expect(messages.count).to eq(4)
+      expect(messages.count).to eq(3)
       expect(messages.last).to eq(
         jsonrpc: '2.0', id: 20, result: [
           {
@@ -1410,6 +1410,65 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     it 'handles requests' do
       format_result = messages.last
       expect(format_result).to eq(jsonrpc: '2.0', id: 20, result: [])
+    end
+  end
+
+  describe 'did change with multibyte character' do
+    let(:requests) do
+      [
+        {
+          jsonrpc: '2.0',
+          method: 'textDocument/didOpen',
+          params: {
+            textDocument: {
+              languageId: 'ruby',
+              text: "puts '🍣🍺'",
+              uri: 'file:///path/to/file.rb',
+              version: 0
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          method: 'textDocument/didChange',
+          params: {
+            contentChanges: [
+              {
+                text: '💎',
+                range: {
+                  start: { line: 0, character: 6 },
+                  end: { line: 0, character: 10 }
+                }
+              }
+            ],
+            textDocument: {
+              uri: 'file:///path/to/file.rb',
+              version: 10
+            }
+          }
+        }, {
+          jsonrpc: '2.0',
+          id: 20,
+          method: 'textDocument/formatting',
+          params: {
+            options: { insertSpaces: true, tabSize: 2 },
+            textDocument: { uri: 'file:///path/to/file.rb' }
+          }
+        }
+      ]
+    end
+
+    it 'handles requests' do
+      expect(messages.count).to eq(3)
+      expect(messages.last).to eq(
+        jsonrpc: '2.0', id: 20, result: [
+          {
+            newText: "puts '💎'\n",
+            range: {
+              end: { character: 0, line: 1 }, start: { character: 0, line: 0 }
+            }
+          }
+        ]
+      )
     end
   end
 
