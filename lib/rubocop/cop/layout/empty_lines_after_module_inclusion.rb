@@ -38,7 +38,7 @@ module RuboCop
         RESTRICT_ON_SEND = MODULE_INCLUSION_METHODS
 
         def on_send(node)
-          return if node.receiver || !node.arguments.one?
+          return if node.receiver || node.arguments.empty?
           return if node.parent&.type?(:send, :any_block)
 
           return if next_line_empty_or_enable_directive_comment?(node.last_line)

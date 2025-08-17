@@ -94,6 +94,26 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
       RUBY
     end
 
+    it "registers an offense and corrects when #{method} has multiple arguments" do
+      expect_offense(<<~RUBY, method: method)
+        class Foo
+          #{method} Bar, Baz
+          ^{method}^^^^^^^^^ Add an empty line after module inclusion.
+          def do_something
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          #{method} Bar, Baz
+
+          def do_something
+          end
+        end
+      RUBY
+    end
+
     it "registers an offense and corrects for code that immediately follows #{method} inside a class" do
       expect_offense(<<~RUBY, method: method)
         class Bar
@@ -242,7 +262,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
     RUBY
   end
 
-  it 'does not register an offense when `include` does not have exactly one argument' do
+  it 'does not register an offense when `include` has zero arguments' do
     expect_no_offenses(<<~RUBY)
       class Foo
         includes = [include, sdk_include].compact.map do |inc|
