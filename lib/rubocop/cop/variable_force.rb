@@ -243,6 +243,11 @@ module RuboCop
           condition_node, body_node = *node
           process_node(body_node)
           process_node(condition_node)
+        elsif node.for_type?
+          # In `for item in items` the rightmost expression is evaluated first.
+          process_node(node.collection)
+          process_node(node.variable)
+          process_node(node.body) if node.body
         else
           process_children(node)
         end

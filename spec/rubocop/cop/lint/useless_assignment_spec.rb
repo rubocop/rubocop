@@ -270,6 +270,34 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is assigned before `for`' do
+    it 'registers an offense when it is not referenced' do
+      expect_offense(<<~RUBY)
+        node = foo
+        ^^^^ Useless assignment to variable - `node`.
+        for node in bar
+          return node if baz?
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo
+        for node in bar
+          return node if baz?
+        end
+      RUBY
+    end
+
+    it 'registers no offense when the variable is referenced in the collection' do
+      expect_no_offenses(<<~RUBY)
+        node = foo
+        for node in node.children
+          return node if bar?
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is assigned and unreferenced in `for` with multiple variables' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
