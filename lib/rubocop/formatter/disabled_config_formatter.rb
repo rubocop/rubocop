@@ -4,7 +4,7 @@ module RuboCop
   module Formatter
     # This formatter displays a YAML configuration file where all cops that
     # detected any offenses are configured to not detect the offense.
-    class DisabledConfigFormatter < BaseFormatter
+    class DisabledConfigFormatter < BaseFormatter # rubocop:disable Metrics/ClassLength
       include PathUtil
 
       HEADING = <<~COMMENTS
@@ -16,6 +16,22 @@ module RuboCop
         # Note that changes in the inspected code, or installation of new
         # versions of RuboCop, may require this file to be generated again.
       COMMENTS
+
+      EXCLUDED_CONFIG_KEYS = %w[
+        AutoCorrect
+        Description
+        Enabled
+        Exclude
+        Include
+        Reference
+        References
+        Safe
+        SafeAutoCorrect
+        StyleGuide
+        VersionAdded
+        VersionChanged
+        VersionRemoved
+      ].freeze
 
       @config_to_allow_offenses = {}
       @detected_styles = {}
@@ -163,10 +179,7 @@ module RuboCop
       end
 
       def cop_config_params(default_cfg, cfg)
-        default_cfg.keys -
-          %w[Description StyleGuide Reference References Enabled Exclude Safe
-             SafeAutoCorrect VersionAdded VersionChanged VersionRemoved] -
-          cfg.keys
+        default_cfg.keys - EXCLUDED_CONFIG_KEYS - cfg.keys
       end
 
       def output_cop_param_comments(output_buffer, params, default_cfg)
