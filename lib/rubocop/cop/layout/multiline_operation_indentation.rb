@@ -10,6 +10,8 @@ module RuboCop
       # condition, an explicit `return` statement, etc. In other contexts, the second operand should
       # be indented regardless of enforced style.
       #
+      # In both styles, operators should be aligned when an assignment begins on the next line.
+      #
       # @example EnforcedStyle: aligned (default)
       #   # bad
       #   if a +
