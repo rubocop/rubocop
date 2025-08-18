@@ -6,7 +6,7 @@ module RuboCop
     class ForToEachCorrector
       extend NodePattern::Macros
 
-      CORRECTION = '%<collection>s.each do |%<argument>s|'
+      CORRECTION = '%<collection>s%<dot>seach do |%<argument>s|'
 
       def initialize(for_node)
         @for_node        = for_node
@@ -25,7 +25,12 @@ module RuboCop
       attr_reader :for_node, :variable_node, :collection_node
 
       def correction
-        format(CORRECTION, collection: collection_source, argument: variable_node.source)
+        format(
+          CORRECTION,
+          collection: collection_source,
+          dot: collection_node.csend_type? ? '&.' : '.',
+          argument: variable_node.source
+        )
       end
 
       def collection_source

@@ -370,6 +370,19 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
           end
         RUBY
       end
+
+      it 'corrects to `each` with safe navigation if collection ends with safe navigation' do
+        expect_offense(<<~RUBY)
+          for item in foo&.items
+          ^^^^^^^^^^^^^^^^^^^^^^ Prefer `each` over `for`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo&.items&.each do |item|
+          end
+        RUBY
+      end
     end
 
     it 'accepts multiline each' do
