@@ -1187,6 +1187,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         end
       RUBY
     end
+
+    it 'registers an offense when the reassignment is the last statement' do
+      expect_offense(<<~RUBY)
+        foo = [1, 2]
+        foo = foo.map { |i| i + 1 }
+        ^^^ Useless assignment to variable - `foo`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = [1, 2]
+        foo.map { |i| i + 1 }
+      RUBY
+    end
   end
 
   context 'when a variable is reassigned with binary operator assignment and referenced' do
