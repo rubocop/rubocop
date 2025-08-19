@@ -37,6 +37,8 @@ module RuboCop
     #
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def run(args = ARGV)
+      time_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
       @options, paths = Options.new.parse(args)
       @env = Environment.new(@options, @config_store, paths)
 
@@ -72,6 +74,9 @@ module RuboCop
       warn e.message
       warn e.backtrace
       STATUS_ERROR
+    ensure
+      elapsed_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - time_start
+      puts "Finished in #{elapsed_time} seconds" if @options[:debug] || @options[:display_time]
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 

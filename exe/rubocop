@@ -12,13 +12,6 @@ if RuboCop::Server.running?
   exit_status = RuboCop::Server::ClientCommand::Exec.new.run
 else
   require 'rubocop'
-
-  cli = RuboCop::CLI.new
-
-  time_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-  exit_status = cli.run
-  elapsed_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - time_start
-
-  puts "Finished in #{elapsed_time} seconds" if cli.options[:debug] || cli.options[:display_time]
+  exit_status = RuboCop::CLI.new.run
 end
 exit exit_status
