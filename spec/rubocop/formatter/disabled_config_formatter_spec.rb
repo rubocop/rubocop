@@ -29,13 +29,13 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     format(
       described_class::HEADING,
       command: expected_heading_command,
-      timestamp: expected_heading_timestamp
+      stamp: expected_heading_stamp
     )
   end
 
   let(:expected_heading_command) { 'rubocop --auto-gen-config' }
 
-  let(:expected_heading_timestamp) { "on #{Time.now} " }
+  let(:expected_heading_stamp) { "on #{Time.now} using RuboCop version #{RuboCop::Version::STRING}." }
   let(:config_store) { instance_double(RuboCop::ConfigStore) }
   let(:options) { { config_store: config_store } }
 
