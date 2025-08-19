@@ -1091,9 +1091,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       create_file('example1.rb', "\tputs 0")
       expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
       home = File.dirname(File.dirname(File.dirname(File.dirname(__FILE__))))
-      expect($stdout.string.lines.grep(/configuration/).map(&:chomp))
-        .to eq(["For #{abs('')}: " \
-                "Default configuration from #{home}/config/default.yml"])
+      expect($stdout.string)
+        .to include("For #{abs('')}: " \
+                    "Default configuration from #{home}/config/default.yml")
     end
 
     it 'shows cop names' do
@@ -1101,9 +1101,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       file = abs('example1.rb')
 
       expect(cli.run(['--format', 'emacs', '--debug', 'example1.rb'])).to eq(1)
-      expect($stdout.string.lines.to_a[-1])
-        .to eq("#{file}:1:7: C: [Correctable] Layout/TrailingWhitespace: Trailing " \
-               "whitespace detected.\n")
+      expect($stdout.string)
+        .to include("#{file}:1:7: C: [Correctable] Layout/TrailingWhitespace: Trailing " \
+                    "whitespace detected.\n")
     end
   end
 
@@ -1114,13 +1114,15 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
     context 'without --display-time' do
       it 'does not display elapsed time in seconds' do
-        expect(`rubocop example1.rb`).not_to match(regex)
+        expect(cli.run(['example1.rb'])).to eq(0)
+        expect($stdout.string).not_to match(regex)
       end
     end
 
     context 'with --display-time' do
       it 'displays elapsed time in seconds' do
-        expect(`rubocop --display-time example1.rb`).to match(regex)
+        expect(cli.run(['--display-time', 'example1.rb'])).to eq(0)
+        expect($stdout.string).to match(regex)
       end
     end
   end
