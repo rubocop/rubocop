@@ -79,7 +79,7 @@ module RuboCop
           parent = parent.parent if parent&.begin_type?
           return false if parent.nil?
 
-          parent.type?(:if, :while, :until) && parent.modifier_form?
+          parent.basic_conditional? && parent.modifier_form?
         end
 
         def capture_with_block!
