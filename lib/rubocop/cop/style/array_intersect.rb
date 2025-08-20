@@ -10,6 +10,8 @@ module RuboCop
       # * `(array1 & array2).any?`
       # * `(array1.intersection(array2)).any?`
       # * `array1.any? { |elem| array2.member?(elem) }`
+      # * `(array1 & array2).count > 0`
+      # * `(array1 & array2).size > 0`
       #
       # can be replaced with `array1.intersect?(array2)`.
       #
@@ -51,6 +53,19 @@ module RuboCop
       #   array1.intersect?(array2)
       #   !array1.intersect?(array2)
       #
+      #   # bad
+      #   (array1 & array2).count > 0
+      #   (array1 & array2).count.positive?
+      #   (array1 & array2).count != 0
+      #
+      #   (array1 & array2).count == 0
+      #   (array1 & array2).count.zero?
+      #
+      #   # good
+      #   array1.intersect?(array2)
+      #
+      #   !array1.intersect?(array2)
+      #
       # @example AllCops:ActiveSupportExtensionsEnabled: false (default)
       #   # good
       #   (array1 & array2).present?
@@ -73,14 +88,30 @@ module RuboCop
         PREDICATES = %i[any? empty? none?].to_set.freeze
         ACTIVE_SUPPORT_PREDICATES = (PREDICATES + %i[present? blank?]).freeze
 
+        ARRAY_SIZE_METHODS = %i[count length size].to_set.freeze
+
         # @!method bad_intersection_check?(node, predicates)
         def_node_matcher :bad_intersection_check?, <<~PATTERN
-          (call
+          $(call
             {
               (begin (send $_ :& $_))
               (call $_ :intersection $_)
             }
             $%1
+          )
+        PATTERN
+
+        # @!method intersection_size_check?(node, predicates)
+        def_node_matcher :intersection_size_check?, <<~PATTERN
+          (call
+            $(call
+              {
+                (begin (send $_ :& $_))
+                (call $_ :intersection $_)
+              }
+              %ARRAY_SIZE_METHODS
+            )
+            {$:> (int 0) | $:positive? | $:!= (int 0) | $:== (int 0) | $:zero?}
           )
         PATTERN
 
@@ -104,15 +135,15 @@ module RuboCop
         PATTERN
 
         MSG = 'Use `%<replacement>s` instead of `%<existing>s`.'
-        STRAIGHT_METHODS = %i[present? any?].freeze
-        NEGATED_METHODS = %i[blank? empty? none?].freeze
+        STRAIGHT_METHODS = %i[present? any? > positive? !=].freeze
+        NEGATED_METHODS = %i[blank? empty? none? == zero?].freeze
         RESTRICT_ON_SEND = (STRAIGHT_METHODS + NEGATED_METHODS).freeze
 
         def on_send(node)
           return if node.block_literal?
-          return unless (receiver, argument, method_name = bad_intersection?(node))
+          return unless (dot_node, receiver, argument, method_name = bad_intersection?(node))
 
-          dot = node.loc.dot.source
+          dot = dot_node.loc.dot.source
           bang = straight?(method_name) ? '' : '!'
           replacement = "#{bang}#{receiver.source}#{dot}intersect?(#{argument.source})"
 
@@ -135,13 +166,16 @@ module RuboCop
         private
 
         def bad_intersection?(node)
-          predicates = if active_support_extensions_enabled?
-                         ACTIVE_SUPPORT_PREDICATES
-                       else
-                         PREDICATES
-                       end
+          bad_intersection_check?(node, bad_intersection_predicates) ||
+            intersection_size_check?(node)
+        end
 
-          bad_intersection_check?(node, predicates)
+        def bad_intersection_predicates
+          if active_support_extensions_enabled?
+            ACTIVE_SUPPORT_PREDICATES
+          else
+            PREDICATES
+          end
         end
 
         def straight?(method_name)
