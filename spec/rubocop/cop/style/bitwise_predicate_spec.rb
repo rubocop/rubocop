@@ -91,11 +91,11 @@ RSpec.describe RuboCop::Cop::Style::BitwisePredicate, :config do
       it 'registers an offense when using `&` with LHS flags in conjunction with `==` for comparisons' do
         expect_offense(<<~RUBY)
           (flags & variable) == flags
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace with `flags.allbits?(variable)` for comparison with bit flags.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace with `variable.allbits?(flags)` for comparison with bit flags.
         RUBY
 
         expect_correction(<<~RUBY)
-          flags.allbits?(variable)
+          variable.allbits?(flags)
         RUBY
       end
 

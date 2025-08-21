@@ -1,0 +1,1 @@
+* [#14469](https://github.com/rubocop/rubocop/issues/14469): Fix an incorrect autocorrect for `Style/BitwisePredicate` when using `&` with LHS flags in conjunction with `==` for comparisons. ([@koic][])

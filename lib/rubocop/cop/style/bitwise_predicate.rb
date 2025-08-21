@@ -70,18 +70,25 @@ module RuboCop
             (send _ :& _))
         PATTERN
 
+        # rubocop:disable Metrics/AbcSize
         def on_send(node)
           return unless node.receiver&.begin_type?
           return unless (preferred_method = preferred_method(node))
 
           bit_operation = node.receiver.children.first
           lhs, _operator, rhs = *bit_operation
-          preferred = "#{lhs.source}.#{preferred_method}(#{rhs.source})"
+
+          preferred = if preferred_method == 'allbits?' && lhs.source == node.first_argument.source
+                        "#{rhs.source}.allbits?(#{lhs.source})"
+                      else
+                        "#{lhs.source}.#{preferred_method}(#{rhs.source})"
+                      end
 
           add_offense(node, message: format(MSG, preferred: preferred)) do |corrector|
             corrector.replace(node, preferred)
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 
