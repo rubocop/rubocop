@@ -198,7 +198,7 @@ module RuboCop
 
           if forbidden_name?(name.to_s)
             register_forbidden_name(node)
-          elsif !OPERATOR_METHODS.include?(name)
+          elsif !OPERATOR_METHODS.include?(name.to_sym)
             check_name(node, name, range_position(node))
           end
         end
