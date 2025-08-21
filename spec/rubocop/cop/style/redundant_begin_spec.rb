@@ -357,7 +357,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it 'registers and corrects an offense when a multiline `begin` block is inside `case-when`' do
+  it 'registers and corrects an offense when a multiline `begin` block is inside `case`/`when`' do
     expect_offense(<<~RUBY)
       case condition
         when foo
@@ -380,7 +380,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     RUBY
   end
 
-  it 'registers and corrects an offense when a multiline `begin` block is inside `case-else`' do
+  it 'registers and corrects an offense when a multiline `begin` block is inside `case`/`when`/`else`' do
     expect_offense(<<~RUBY)
       case condition
         when foo
@@ -397,6 +397,56 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     expect_correction(<<~RUBY)
       case condition
         when foo
+          bar
+        else
+         #{trailing_whitespace}
+            baz
+            quux
+         #{trailing_whitespace}
+      end
+    RUBY
+  end
+
+  it 'registers and corrects an offense when a multiline `begin` block is inside `case`/`in`' do
+    expect_offense(<<~RUBY)
+      case condition
+        in foo
+          begin
+          ^^^^^ Redundant `begin` block detected.
+            bar
+            baz
+          end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case condition
+        in foo
+         #{trailing_whitespace}
+            bar
+            baz
+         #{trailing_whitespace}
+      end
+    RUBY
+  end
+
+  it 'registers and corrects an offense when a multiline `begin` block is inside `case`/`in`/`else`' do
+    expect_offense(<<~RUBY)
+      case condition
+        in foo
+          bar
+        else
+          begin
+          ^^^^^ Redundant `begin` block detected.
+            baz
+            quux
+          end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case condition
+        in foo
           bar
         else
          #{trailing_whitespace}

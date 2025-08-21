@@ -94,6 +94,7 @@ module RuboCop
         def on_case(node)
           inspect_branches(node)
         end
+        alias on_case_match on_case
 
         def on_while(node)
           return if node.modifier_form?
