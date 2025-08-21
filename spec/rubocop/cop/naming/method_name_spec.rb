@@ -496,6 +496,13 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when an operator method is defined using a string' do
+        expect_no_offenses(<<~RUBY)
+          #{name} '`' do
+          end
+        RUBY
+      end
     end
   end
 
