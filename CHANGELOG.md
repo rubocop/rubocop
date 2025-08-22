@@ -11,6 +11,30 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14469](https://github.com/rubocop/rubocop/issues/14469): Fix an incorrect autocorrect for `Style/BitwisePredicate` when using `&` with LHS flags in conjunction with `==` for comparisons. ([@koic][])
+* [#14459](https://github.com/rubocop/rubocop/pull/14459): Fix wrong autocorrect for `Style/For` with save navigation in the collection. ([@earlopain][])
+* [#14435](https://github.com/rubocop/rubocop/issues/14435): Fix false negatives for regexp cops when `Lint/DuplicateRegexpCharacterClassElement` is enabled. ([@earlopain][])
+* [#14419](https://github.com/rubocop/rubocop/issues/14419): Fix false positives for `Lint/UselessAssignment` when duplicate assignments appear in nested `if` branches inside a loop and the variable is used outside `while` loop. ([@koic][])
+* [#14468](https://github.com/rubocop/rubocop/issues/14468): Fix false positives for `Naming/MethodName` when an operator method is defined using a string. ([@koic][])
+* [#14427](https://github.com/rubocop/rubocop/pull/14427): Fix false positives for `Style/RedundantParentheses` when `do`...`end` block is wrapped in parentheses as a method argument. ([@koic][])
+* [#14441](https://github.com/rubocop/rubocop/issues/14441): Better hash access handling in `Style/SafeNavigation`. ([@issyl0][])
+* [#14443](https://github.com/rubocop/rubocop/issues/14443): Fix false positive in `Layout/EmptyLinesAfterModuleInclusion` when `include` does not have exactly one argument. ([@issyl0][])
+* [#14424](https://github.com/rubocop/rubocop/pull/14424): Fix `Style/SafeNavigation` cop to preserve existing safe navigation in fixed code. ([@martinemde][])
+* [#14455](https://github.com/rubocop/rubocop/pull/14455): Follow module inclusion with nonzero args with an empty line. ([@issyl0][])
+* [#14445](https://github.com/rubocop/rubocop/issues/14445): Fix false positives for `Lint/UselessAssignment` with `for` loops when the variable is referenced in the collection. ([@earlopain][])
+* [#14447](https://github.com/rubocop/rubocop/pull/14447): Fix wrong autocorrect for `Style/RedundantCondition` with a parenthesised method call in the condition. ([@earlopain][])
+
+### Changes
+
+* [#14428](https://github.com/rubocop/rubocop/pull/14428): Enhance `Lint/SelfAssignment` to handle indexed assignment with multiple arguments. ([@viralpraxis][])
+* [#14464](https://github.com/rubocop/rubocop/pull/14464): Exclude `AutoCorrect` and `Include` from configuration parameters. ([@r7kamura][])
+* [#14472](https://github.com/rubocop/rubocop/pull/14472): Make `Style/RedundantBegin` aware of `case` pattern matching. ([@koic][])
+* [#14448](https://github.com/rubocop/rubocop/pull/14448): Register array intersection size checks as offenses under `Style/ArrayIntersect`. ([@lovro-bikic][])
+* [#14431](https://github.com/rubocop/rubocop/pull/14431): Support LSP `TextDocumentSyncKind.Incremental`. ([@tmtm][])
+* [#14453](https://github.com/rubocop/rubocop/issues/14453): Update `Style/RedundantBegin` to register `begin` blocks inside `if`, `unless`, `case`, `while` and `until` as redundant. ([@dvandersluis][])
+
 ## 1.79.2 (2025-08-05)
 
 ### Bug fixes
@@ -4290,3 +4314,5 @@
 [@girasquid]: https://github.com/girasquid
 [@hakanensari]: https://github.com/hakanensari
 [@jvlara]: https://github.com/jvlara
+[@tmtm]: https://github.com/tmtm
+[@martinemde]: https://github.com/martinemde

@@ -1,1 +1,0 @@
-* [#14453](https://github.com/rubocop/rubocop/issues/14453): Update `Style/RedundantBegin` to register `begin` blocks inside `if`, `unless`, `case`, `while` and `until` as redundant. ([@dvandersluis][])
