@@ -100,7 +100,7 @@ module RuboCop
           node.receiver.str_type? &&
             node.first_argument.str_type? &&
             node.multiline? &&
-            node.source =~ /\+\s*\n/
+            node.source.match?(/\+\s*\n/)
         end
 
         def find_topmost_plus_node(node)
