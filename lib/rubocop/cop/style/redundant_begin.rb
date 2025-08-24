@@ -203,6 +203,8 @@ module RuboCop
         end
 
         def begin_block_has_multiline_statements?(node)
+          return false unless node.parent
+
           node.children.count >= 2
         end
 
