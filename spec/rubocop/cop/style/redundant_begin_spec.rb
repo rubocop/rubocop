@@ -166,6 +166,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantBegin, :config do
     expect_correction("\n  do_something\n\n")
   end
 
+  it 'registers an offense and corrects when using `begin` with multiple statements without `rescue` or `ensure`' do
+    expect_offense(<<~RUBY)
+      begin
+      ^^^^^ Redundant `begin` block detected.
+        foo
+        bar
+      end
+    RUBY
+
+    expect_correction("\n  foo\n  bar\n\n")
+  end
+
   it 'does not register an offense when using `begin` with `rescue`' do
     expect_no_offenses(<<~RUBY)
       begin
