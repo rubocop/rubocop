@@ -51,8 +51,8 @@ module RuboCop
         @runtime.format(path, text, command: command)
       end
 
-      def offenses(path, text)
-        @runtime.offenses(path, text)
+      def offenses(path, text, position_encoding)
+        @runtime.offenses(path, text, position_encoding)
       end
 
       def configure(options)

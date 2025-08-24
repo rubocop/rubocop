@@ -44,14 +44,14 @@ module RuboCop
         @runner.formatted_source
       end
 
-      def offenses(path, text, document_encoding = nil, prism_result: nil)
+      def offenses(path, text, position_encoding, prism_result: nil)
         diagnostic_options = {}
         diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode
 
         @runner.run(path, text, diagnostic_options, prism_result: prism_result)
         @runner.offenses.map do |offense|
           Diagnostic.new(
-            document_encoding, offense, path, @cop_registry[offense.cop_name]&.first
+            position_encoding, offense, path, @cop_registry[offense.cop_name]&.first
           ).to_lsp_diagnostic(@runner.config_for_working_directory)
         end
       end
