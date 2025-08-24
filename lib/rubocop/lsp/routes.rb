@@ -15,7 +15,7 @@ module RuboCop
   module LSP
     # Routes for Language Server Protocol of RuboCop.
     # @api private
-    class Routes
+    class Routes # rubocop:disable Metrics/ClassLength
       CONFIGURATION_FILE_PATTERNS = [
         RuboCop::ConfigFinder::DOTFILE,
         RuboCop::CLI::Command::AutoGenerateConfig::AUTO_GENERATED_FILE
@@ -42,6 +42,7 @@ module RuboCop
 
       handle 'initialize' do |request|
         initialization_options = extract_initialization_options_from(request)
+        @position_encoding = initialization_options[:position_encoding]
 
         @server.configure(initialization_options)
 
@@ -53,7 +54,8 @@ module RuboCop
               text_document_sync: LanguageServer::Protocol::Interface::TextDocumentSyncOptions.new(
                 change: LanguageServer::Protocol::Constant::TextDocumentSyncKind::INCREMENTAL,
                 open_close: true
-              )
+              ),
+              position_encoding: @position_encoding
             )
           )
         )
@@ -184,12 +186,24 @@ module RuboCop
 
       def extract_initialization_options_from(request)
         safe_autocorrect = request.dig(:params, :initializationOptions, :safeAutocorrect)
+        position_encodings = request.dig(:params, :capabilities, :general, :positionEncodings)
 
         {
           safe_autocorrect: safe_autocorrect.nil? || safe_autocorrect == true,
           lint_mode: request.dig(:params, :initializationOptions, :lintMode) == true,
-          layout_mode: request.dig(:params, :initializationOptions, :layoutMode) == true
+          layout_mode: request.dig(:params, :initializationOptions, :layoutMode) == true,
+          position_encoding: position_encoding(position_encodings)
         }
+      end
+
+      def position_encoding(position_encodings)
+        if position_encodings&.include?('utf-8')
+          'utf-8'
+        elsif position_encodings&.include?('utf-32')
+          'utf-32'
+        else
+          'utf-16'
+        end
       end
 
       def format_file(file_uri, command: nil)
@@ -229,9 +243,8 @@ module RuboCop
 
         start_pos = text_pos(orig_text, range[:start])
         end_pos = text_pos(orig_text, range[:end])
-        text_bin = orig_text.b
-        text_bin[start_pos...end_pos] = text.b
-        text_bin.force_encoding(orig_text.encoding)
+        orig_text[start_pos...end_pos] = text
+        orig_text
       end
 
       def text_pos(text, range)
@@ -240,12 +253,23 @@ module RuboCop
         pos = 0
         text.each_line.with_index do |l, i|
           if i == line
-            pos += l.encode('utf-16be').b[0, char * 2].encode('utf-8', 'utf-16be').bytesize
+            pos += line_pos(l, char)
             return pos
           end
-          pos += l.bytesize
+          pos += l.size
         end
         pos
+      end
+
+      def line_pos(line, char)
+        case @position_encoding
+        when 'utf-32'
+          char
+        when 'utf-8'
+          line.byteslice(0, char).size
+        else # 'utf-16'
+          line.encode('utf-16be').byteslice(0, char * 2).size
+        end
       end
 
       def convert_file_uri_to_path(uri)
