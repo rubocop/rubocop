@@ -10,6 +10,8 @@ require 'ruby_lsp/rubocop/addon'
 RuboCop::LSP.disable
 
 describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
+  include FileHelper
+
   let(:addon) do
     RubyLsp::RuboCop::Addon.new
   end
@@ -115,6 +117,37 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
         puts s
       RUBY
     end
+
+    context 'with prism as the parser' do
+      before do
+        create_file('.rubocop.yml', <<~YML)
+          AllCops:
+            TargetRubyVersion: 3.4
+        YML
+      end
+
+      context 'with a `Layout/DefEndAlignment` offense' do
+        let(:source) do
+          <<~RUBY
+            class Foo
+                def bar
+              end
+            end
+          RUBY
+        end
+
+        it 'has autocorrected code' do
+          expect(result).to be_an_instance_of(RubyLsp::Result)
+          expect(result.response.size).to eq 1
+          expect(result.response.first.new_text).to eq <<~RUBY
+            class Foo
+              def bar
+              end
+            end
+          RUBY
+        end
+      end
+    end
   end
 
   describe 'workspace/didChangeWatchedFiles' do
@@ -151,35 +184,33 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
   #
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def with_server(
-    source = nil, path = 'fake.rb', pwd: '..', stub_no_typechecker: false, load_addons: true
+    source = nil, path = 'fake.rb', stub_no_typechecker: false, load_addons: true
   )
-    Dir.chdir(pwd) do
-      server = RubyLsp::Server.new(test_mode: true)
-      uri = URI(File.join(server.global_state.workspace_path, path))
-      server.global_state.formatter = 'rubocop'
-      server.global_state.instance_variable_set(:@linters, ['rubocop'])
-      server.global_state.stubs(:typechecker).returns(false) if stub_no_typechecker
+    server = RubyLsp::Server.new(test_mode: true)
+    uri = URI(File.join(server.global_state.workspace_path, path))
+    server.global_state.formatter = 'rubocop'
+    server.global_state.instance_variable_set(:@linters, ['rubocop'])
+    server.global_state.stubs(:typechecker).returns(false) if stub_no_typechecker
 
-      if source
-        server.process_message(
-          method: 'textDocument/didOpen',
-          params: {
-            textDocument: {
-              uri: uri,
-              text: source,
-              version: 1
-            }
+    if source
+      server.process_message(
+        method: 'textDocument/didOpen',
+        params: {
+          textDocument: {
+            uri: uri,
+            text: source,
+            version: 1
           }
-        )
-      end
-
-      server.global_state.index.index_single(
-        URI::Generic.from_path(path: uri.to_standardized_path), source
+        }
       )
-      server.load_addons if load_addons
-
-      yield server, uri
     end
+
+    server.global_state.index.index_single(
+      URI::Generic.from_path(path: uri.to_standardized_path), source
+    )
+    server.load_addons if load_addons
+
+    yield server, uri
   ensure
     if load_addons
       RubyLsp::Addon.addons.each(&:deactivate)
