@@ -503,10 +503,37 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   end
 
   context 'when end is preceded by something else than whitespace' do
-    it 'does not register an offense' do
-      expect_no_offenses(<<~RUBY)
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
         module A
         puts a end
+               ^^^ `end` at 2, 7 is not aligned with `module` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module A
+        puts a#{trailing_whitespace}
+        end
+      RUBY
+    end
+  end
+
+  context 'when end is on the same line as `else` body' do
+    it 'registers an offense and corrects' do
+      expect_offense(<<~RUBY)
+        if test
+          foo
+        else
+          bar end
+              ^^^ `end` at 4, 6 is not aligned with `if` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if test
+          foo
+        else
+          bar#{trailing_whitespace}
+        end
       RUBY
     end
   end
