@@ -73,7 +73,7 @@ module RuboCop
         rescue ArgumentError => e
           return false if e.message.start_with?('invalid byte sequence')
 
-          raise e
+          raise
         end
       end
     end

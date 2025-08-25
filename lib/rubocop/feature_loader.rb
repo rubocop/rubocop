@@ -45,7 +45,7 @@ module RuboCop
         # https://github.com/jruby/jruby/issues/7316
         raise LoadError, e if error_for_namespaced_target.path == namespaced_target
 
-        raise error_for_namespaced_target
+        raise
       end
     end
 
