@@ -9,7 +9,7 @@ module RuboCop
   # Provides functionality for caching RuboCop runs.
   # @api private
   class ResultCache
-    NON_CHANGING = %i[color format formatters out debug fail_level
+    NON_CHANGING = %i[color format formatters out debug display_time fail_level
                       fix_layout autocorrect safe_autocorrect autocorrect_all
                       cache fail_fast stdin parallel].freeze
 
