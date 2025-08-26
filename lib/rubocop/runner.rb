@@ -274,7 +274,7 @@ module RuboCop
 
     def do_inspection_loop(file)
       # We can reuse the prism result since the source did not change yet.
-      processed_source = get_processed_source(file, prism_result: @prism_result)
+      processed_source = get_processed_source(file, @prism_result)
       # This variable is 2d array used to track corrected offenses after each
       # inspection iteration. This is used to output meaningful infinite loop
       # error message.
@@ -297,7 +297,7 @@ module RuboCop
         break unless updated_source_file
 
         # Autocorrect has happened, don't use the prism result since it is stale.
-        processed_source = get_processed_source(file, prism_result: nil)
+        processed_source = get_processed_source(file, nil)
       end
 
       # Return summary of corrected offenses after all iterations
@@ -484,7 +484,7 @@ module RuboCop
     end
 
     # rubocop:disable Metrics/MethodLength
-    def get_processed_source(file, prism_result:)
+    def get_processed_source(file, prism_result)
       config = @config_store.for_file(file)
       ruby_version = config.target_ruby_version
       parser_engine = config.parser_engine
