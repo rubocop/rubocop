@@ -29,10 +29,13 @@ module RuboCop
         def align_end(corrector, processed_source, node, align_to)
           @processed_source = processed_source
           whitespace = whitespace_range(node)
-          return false unless whitespace.source.strip.empty?
-
           column = alignment_column(align_to)
-          corrector.replace(whitespace, ' ' * column)
+
+          if whitespace.source.strip.empty?
+            corrector.replace(whitespace, ' ' * column)
+          else
+            corrector.insert_after(whitespace, "\n#{' ' * column}")
+          end
         end
 
         private
