@@ -117,6 +117,12 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       include_examples 'single line lists', ', unless each item is on its own line'
     end
 
+    context 'when EnforcedStyleForMultiline is diff_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'diff_comma' } }
+
+      include_examples 'single line lists', ', unless that item immediately precedes a newline'
+    end
+
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
@@ -440,6 +446,100 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
               foo.bar#{start_bracket}
                 baz: 1,
               #{end_bracket}&.fetch(:qux)
+            RUBY
+          end
+        end
+      end
+    end
+
+    context 'when EnforcedStyleForMultiline is diff_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'diff_comma' } }
+
+      [%w[( )], %w[[ ]]].each do |start_bracket, end_bracket|
+        context "with `#{start_bracket}#{end_bracket}` brackets" do
+          it 'registers an offense for no trailing comma when last argument precedes newline' do
+            expect_offense(<<~RUBY, start_bracket: start_bracket, end_bracket: end_bracket)
+              some_method#{start_bracket}
+                           a,
+                           b,
+                           c: 0,
+                           d: 1
+                           ^^^^ Put a comma after the last parameter of a multiline method call.
+                         #{end_bracket}
+            RUBY
+
+            expect_correction(<<~RUBY)
+              some_method#{start_bracket}
+                           a,
+                           b,
+                           c: 0,
+                           d: 1,
+                         #{end_bracket}
+            RUBY
+          end
+
+          it 'registers an offense for trailing comma when last argument is on same line as closing bracket' do
+            expect_offense(<<~RUBY, start_bracket: start_bracket, end_bracket: end_bracket)
+              some_method#{start_bracket}a: "b",
+                          c: "d",#{end_bracket}
+                                ^ Avoid comma after the last parameter of a method call, unless that item immediately precedes a newline.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              some_method#{start_bracket}a: "b",
+                          c: "d"#{end_bracket}
+            RUBY
+          end
+
+          it 'registers an offense for trailing comma when last argument is array literal on same line as closing bracket' do
+            expect_offense(<<~RUBY, start_bracket: start_bracket, end_bracket: end_bracket)
+              method#{start_bracket}1, [
+                2,
+              ],#{end_bracket}
+               ^ Avoid comma after the last parameter of a method call, unless that item immediately precedes a newline.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              method#{start_bracket}1, [
+                2,
+              ]#{end_bracket}
+            RUBY
+          end
+
+          it 'accepts trailing comma when last argument precedes newline' do
+            expect_no_offenses(<<~RUBY)
+              some_method#{start_bracket}
+                           a,
+                           b,
+                           c: 0,
+                           d: 1,
+                         #{end_bracket}
+            RUBY
+          end
+
+          it 'accepts no trailing comma when last argument is on same line as closing bracket' do
+            expect_no_offenses(<<~RUBY)
+              some_method#{start_bracket}a: "b",
+                          c: "d"#{end_bracket}
+            RUBY
+          end
+
+          it 'accepts no trailing comma when last argument is array literal on same line as closing bracket' do
+            expect_no_offenses(<<~RUBY)
+              method#{start_bracket}1, [
+                2,
+              ]#{end_bracket}
+            RUBY
+          end
+
+          it 'accepts trailing comma when last argument has inline comment and precedes newline' do
+            expect_no_offenses(<<~RUBY)
+              some_method#{start_bracket}
+                           a,
+                           b,
+                           c: 0,
+                           d: 1, # comment
+                         #{end_bracket}
             RUBY
           end
         end
