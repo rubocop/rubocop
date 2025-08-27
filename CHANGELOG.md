@@ -11,6 +11,16 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14479](https://github.com/rubocop/rubocop/issues/14479): Don't invalidate cache when `--display-time` option is used on the CLI. ([@lovro-bikic][])
+* [#14473](https://github.com/rubocop/rubocop/pull/14473): Fix a false negative for `Style/RedundantBegin` using `begin` with multiple statements without `rescue` or `ensure`. ([@koic][])
+* [#14475](https://github.com/rubocop/rubocop/issues/14475): Fix cop errors during autocorrect for the build in LSP when analyzing as Ruby 3.4. ([@earlopain][])
+
+### Changes
+
+* [#14474](https://github.com/rubocop/rubocop/pull/14474): Fix false negative for `Layout/EndAlignment` when `end` is not on a separate line. ([@lovro-bikic][])
+
 ## 1.80.0 (2025-08-22)
 
 ### Bug fixes
