@@ -816,6 +816,12 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
           RUBY
         end
 
+        it 'allows ternary expression with index access call with method chain' do
+          expect_no_offenses(<<~RUBY)
+            #{variable} ? #{variable}[index].do_something : nil
+          RUBY
+        end
+
         it 'allows ternary expression with indexed assignment call without dot' do
           expect_no_offenses(<<~RUBY)
             #{variable} ? #{variable}[index] = 1 : nil
