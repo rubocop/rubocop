@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.80.1 (2025-08-27)
+
 ### Bug fixes
 
 * [#14479](https://github.com/rubocop/rubocop/issues/14479): Don't invalidate cache when `--display-time` option is used on the CLI. ([@lovro-bikic][])
