@@ -17,6 +17,7 @@ module RuboCop
       #
       #   # good
       #   CGI.escape('http://example.com')
+      #   URI.encode_uri_component(uri) # Since Ruby 3.1
       #   URI.encode_www_form([['example', 'param'], ['lang', 'en']])
       #   URI.encode_www_form(page: 10, locale: 'en')
       #   URI.encode_www_form_component('http://example.com')
@@ -27,6 +28,7 @@ module RuboCop
       #
       #   # good
       #   CGI.unescape(enc_uri)
+      #   URI.decode_uri_component(uri) # Since Ruby 3.1
       #   URI.decode_www_form(enc_uri)
       #   URI.decode_www_form_component(enc_uri)
       class UriEscapeUnescape < Base
