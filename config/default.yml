@@ -5844,10 +5844,14 @@ Style/TrailingCommaInArguments:
   # parenthesized method calls where each argument is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last argument,
   # for all parenthesized method calls with arguments.
+  # If `diff_comma`, the cop requires a comma after the last argument, but only
+  # when that argument is followed by an immediate newline, even if
+  # there is an inline comment.
   EnforcedStyleForMultiline: no_comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma
+    - diff_comma
     - no_comma
 
 Style/TrailingCommaInArrayLiteral:
