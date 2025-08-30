@@ -59,6 +59,7 @@ module RuboCop
         @runtime.safe_autocorrect = options[:safe_autocorrect]
         @runtime.lint_mode = options[:lint_mode]
         @runtime.layout_mode = options[:layout_mode]
+        @runtime.position_encoding = options[:position_encoding]
       end
 
       def stop(&block)
