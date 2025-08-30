@@ -501,6 +501,16 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       it_behaves_like 'non-predicate', '[1, 2]'
     end
 
+    context '`initialize` method' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def initialize
+            foo?
+          end
+        RUBY
+      end
+    end
+
     context 'operator methods' do
       it 'does not register an offense if it would otherwise be treated as a predicate' do
         expect_no_offenses(<<~RUBY)
