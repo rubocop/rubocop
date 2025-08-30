@@ -24,9 +24,6 @@ module RuboCop
           (send `{(send _recv _msg) str array hash const #variable?} :[] ...)
         PATTERN
 
-        # @!method method_node_and_args(node)
-        def_node_matcher :method_node_and_args, '$(call _recv _msg $...)'
-
         # @!method rescue?(node)
         def_node_matcher :rescue?, '{^resbody ^^resbody}'
 
@@ -228,7 +225,7 @@ module RuboCop
 
           return check_unary(begin_node, node) if node.unary_operation?
 
-          return unless method_call_with_redundant_parentheses?(node)
+          return unless method_call_with_redundant_parentheses?(begin_node, node)
           return if call_chain_starts_with_int?(begin_node, node) ||
                     do_end_block_in_method_chain?(begin_node, node)
 
@@ -239,8 +236,7 @@ module RuboCop
           return if begin_node.chained?
 
           node = node.children.first while suspect_unary?(node)
-
-          return if node.send_type? && !method_call_with_redundant_parentheses?(node)
+          return unless method_call_with_redundant_parentheses?(begin_node, node)
 
           offense(begin_node, 'a unary operation')
         end
@@ -302,13 +298,19 @@ module RuboCop
           end
         end
 
-        def method_call_with_redundant_parentheses?(node)
-          return false unless node.call_type?
+        def method_call_with_redundant_parentheses?(begin_node, node)
+          return false unless node.type?(:call, :super, :yield, :defined?)
           return false if node.prefix_not?
+          return true if singular_parenthesized_parent?(begin_node)
 
-          send_node, args = method_node_and_args(node)
+          node.arguments.empty? || parentheses?(node) || square_brackets?(node)
+        end
 
-          args.empty? || parentheses?(send_node) || square_brackets?(send_node)
+        def singular_parenthesized_parent?(begin_node)
+          return true unless begin_node.parent
+          return false if begin_node.parent.type?(:splat, :kwsplat)
+
+          parentheses?(begin_node) && begin_node.parent.children.one?
         end
 
         def only_begin_arg?(args)
