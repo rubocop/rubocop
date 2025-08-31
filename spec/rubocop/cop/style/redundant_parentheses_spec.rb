@@ -164,6 +164,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '(proc { x })', 'proc { x }', 'an expression'
 
   it_behaves_like 'redundant', '(x)', 'x', 'a method call'
+  it_behaves_like 'redundant', '(x y)', 'x y', 'a method call'
   it_behaves_like 'redundant', '(x(1, 2))', 'x(1, 2)', 'a method call'
   it_behaves_like 'redundant', '("x".to_sym)', '"x".to_sym', 'a method call'
   it_behaves_like 'redundant', '("x"&.to_sym)', '"x"&.to_sym', 'a method call'
@@ -207,12 +208,37 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   it_behaves_like 'redundant', '(~x)', '~x', 'a unary operation'
   it_behaves_like 'redundant', '(-x)', '-x', 'a unary operation'
   it_behaves_like 'redundant', '(+x)', '+x', 'a unary operation'
-  it_behaves_like 'plausible', '(!x.m arg)'
+
+  # No problem removing the parens when it is the only expression.
+  it_behaves_like 'redundant', '(!x arg)', '!x arg', 'a unary operation'
+  it_behaves_like 'redundant', '(!x.m arg)', '!x.m arg', 'a unary operation'
+  it_behaves_like 'redundant', '(!super arg)', '!super arg', 'a unary operation'
+  it_behaves_like 'redundant', '(!yield arg)', '!yield arg', 'a unary operation'
+  it_behaves_like 'redundant', '(!defined? arg)', '!defined? arg', 'a unary operation'
+
+  # Removing the parens leads to semantic differences.
+  it_behaves_like 'plausible', '(!x arg) && foo'
+  it_behaves_like 'plausible', '(!x.m arg) && foo'
+  it_behaves_like 'plausible', '(!super arg) && foo'
+  it_behaves_like 'plausible', '(!yield arg) && foo'
+  it_behaves_like 'plausible', '(!defined? arg) && foo'
+
+  # Removing the parens leads to a syntax error.
+  it_behaves_like 'plausible', 'foo && (!x arg)'
+  it_behaves_like 'plausible', 'foo && (!x.m arg)'
+  it_behaves_like 'plausible', 'foo && (!super arg)'
+  it_behaves_like 'plausible', 'foo && (!yield arg)'
+  it_behaves_like 'plausible', 'foo && (!defined? arg)'
+
   it_behaves_like 'plausible', '(!x).y'
   it_behaves_like 'plausible', '-(1.foo)'
   it_behaves_like 'plausible', '+(1.foo)'
   it_behaves_like 'plausible', '-(1.foo.bar)'
   it_behaves_like 'plausible', '+(1.foo.bar)'
+  it_behaves_like 'plausible', 'foo(*(bar & baz))'
+  it_behaves_like 'plausible', 'foo(*(bar + baz))'
+  it_behaves_like 'plausible', 'foo(**(bar + baz))'
+  it_behaves_like 'plausible', 'foo + (bar baz)'
   it_behaves_like 'plausible', '()'
 
   it 'registers an offense for parens around a receiver of a method call with an argument' do
@@ -256,6 +282,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
     expect_correction(<<~RUBY)
       x.y(z, w)
+    RUBY
+  end
+
+  it 'registers an offense for parens around a method call with argument and no parens around the argument' do
+    expect_offense(<<~RUBY)
+      (x y)
+      ^^^^^ Don't use parentheses around a method call.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x y
     RUBY
   end
 
@@ -411,6 +448,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
     expect_correction(<<~RUBY)
       [1]
+    RUBY
+  end
+
+  it 'registers an offense for parens around a binary operator in an array' do
+    expect_offense(<<~RUBY)
+      [(foo + bar)]
+       ^^^^^^^^^^^ Don't use parentheses around a method call.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [foo + bar]
     RUBY
   end
 
@@ -1538,6 +1586,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
 
     expect_correction(<<~RUBY)
       return 42
+    RUBY
+  end
+
+  it 'registers an offense when parentheses in `return` with binary method call' do
+    expect_offense(<<~RUBY)
+      return (foo + bar)
+             ^^^^^^^^^^^ Don't use parentheses around a method call.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      return foo + bar
     RUBY
   end
 
