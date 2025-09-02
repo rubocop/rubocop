@@ -42,7 +42,29 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      "\#{(user.vip? ? "\#{greeting}, " : '')}\#{user.name} <\#{user.email}>"
+      "\#{user.vip? ? "\#{greeting}, " : ''}\#{user.name} <\#{user.email}>"
+    RUBY
+  end
+
+  it 'correctly handles nested concatenatable parts and escaped double-quotes' do
+    expect_offense(<<~'RUBY')
+      "foo" + "\"#{bar}\"" + 'baz'
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "foo\"#{bar}\"baz"
+    RUBY
+  end
+
+  it 'correctly handles nested concatenatable parts and escaped single-quotes' do
+    expect_offense(<<~'RUBY')
+      "foo" + "\'#{bar}\'" + 'baz'
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "foo'#{bar}'baz"
     RUBY
   end
 
