@@ -149,7 +149,11 @@ module RuboCop
         def adjust_str(part)
           case part.type
           when :str
-            single_quoted?(part) ? part.value.gsub(/(\\|")/, '\\\\\&') : part.value.inspect[1..-2]
+            if single_quoted?(part)
+              part.value.gsub(/(\\|"|#\{|#@|#\$)/, '\\\\\&')
+            else
+              part.value.inspect[1..-2]
+            end
           when :dstr, :begin
             part.children.map do |child|
               adjust_str(child)

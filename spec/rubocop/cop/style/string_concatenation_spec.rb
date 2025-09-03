@@ -293,6 +293,52 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
     end
   end
 
+  context 'characters for interpolation inside single quotes' do
+    it 'registers an offense for `#{}`' do
+      expect_offense(<<~'RUBY')
+        "foo" + '#{bar}'
+        ^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "foo\#{bar}"
+      RUBY
+    end
+
+    it 'registers an offense for `#@`' do
+      expect_offense(<<~'RUBY')
+        "foo" + '#@bar'
+        ^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "foo\#@bar"
+      RUBY
+    end
+
+    it 'registers an offense for `#@@`' do
+      expect_offense(<<~'RUBY')
+        "foo" + '#@@bar'
+        ^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "foo\#@@bar"
+      RUBY
+    end
+
+    it 'registers an offense for `#$`' do
+      expect_offense(<<~'RUBY')
+        "foo" + '#$bar'
+        ^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "foo\#$bar"
+      RUBY
+    end
+  end
+
   context 'Mode = conservative' do
     let(:cop_config) { { 'Mode' => 'conservative' } }
 
