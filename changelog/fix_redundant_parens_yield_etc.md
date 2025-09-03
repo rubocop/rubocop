@@ -1,1 +1,0 @@
-* [#14489](https://github.com/rubocop/rubocop/pull/14489): Fix false negatives for `Style/RedundantParentheses` with method calls taking argument without parentheses like `return (x y) if z`. ([@earlopain][])

@@ -1,1 +1,0 @@
-* [#14499](https://github.com/rubocop/rubocop/issues/14499): Fix wrong autocorrect for `Style/StringConcatenation` when a double-quoted string contains escaped quotes and interpolation. ([@earlopain][])
