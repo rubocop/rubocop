@@ -980,6 +980,14 @@ Layout/HashAlignment:
     - ignore_implicit
     - ignore_explicit
 
+Layout/HashValueIndentation:
+  Description: 'Checks the indentation of hash values that start on the next line.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  # By default the indentation width from `Layout/IndentationWidth` is used,
+  # but it can be overridden by setting this parameter.
+  IndentationWidth: ~
+
 Layout/HeredocArgumentClosingParenthesis:
   Description: >-
                  Checks for the placement of the closing parenthesis in a
