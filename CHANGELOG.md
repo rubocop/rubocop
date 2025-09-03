@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.80.2 (2025-09-03)
+
 ### Bug fixes
 
 * [#14477](https://github.com/rubocop/rubocop/issues/14477): Fix a false positive for `Style/SafeNavigation` when using ternary expression with index access call with method chain. ([@koic][])
