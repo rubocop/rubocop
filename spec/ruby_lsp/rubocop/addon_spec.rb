@@ -142,14 +142,39 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
   end
 
   describe 'workspace/didChangeWatchedFiles' do
-    context 'when `.rubocop.yml` changes' do
-      let(:path) { '.rubocop.yml' }
+    before do
+      # Ensure initial indexing is complete before trying to process did change watched file
+      # notifications.
+      server.global_state.index.index_all(uris: [])
+    end
 
-      it 'creates new runtime adapter' do
-        # Ensure initial indexing is complete before trying to process did change watched file
-        # notifications
-        server.global_state.index.index_all(uris: [])
+    %w[.rubocop.yml .rubocop_todo.yml].each do |path|
+      context "when `#{path}` changes" do
+        let(:path) { path }
 
+        it 'creates new runtime adapter' do
+          addon = RubyLsp::Addon.addons.find { |a| a.name == 'RuboCop' }
+          expect(addon).to be_an_instance_of(RubyLsp::RuboCop::Addon)
+          original_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
+
+          process_message(
+            'workspace/didChangeWatchedFiles',
+            changes: [{
+              uri: uri.to_s,
+              type: RubyLsp::Constant::FileChangeType::CHANGED
+            }]
+          )
+
+          new_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
+          expect(new_runtime_adapter).not_to eq original_runtime_adapter
+        end
+      end
+    end
+
+    context 'when `test.rb` file changes' do
+      let(:path) { 'test.rb' }
+
+      it "doesn't create new runtime adapter" do
         addon = RubyLsp::Addon.addons.find { |a| a.name == 'RuboCop' }
         expect(addon).to be_an_instance_of(RubyLsp::RuboCop::Addon)
         original_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
@@ -163,7 +188,7 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
         )
 
         new_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
-        expect(new_runtime_adapter).not_to eq original_runtime_adapter
+        expect(new_runtime_adapter).to eq original_runtime_adapter
       end
     end
   end

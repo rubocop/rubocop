@@ -8,6 +8,8 @@ module RubyLsp
   module RuboCop
     # A Ruby LSP add-on for RuboCop.
     class Addon < RubyLsp::Addon
+      RESTART_WATCHERS = %w[.rubocop.yml .rubocop_todo.yml].freeze
+
       def initializer
         @runtime_adapter = nil
       end
@@ -49,7 +51,7 @@ module RubyLsp
                 register_options: Interface::DidChangeWatchedFilesRegistrationOptions.new(
                   watchers: [
                     Interface::FileSystemWatcher.new(
-                      glob_pattern: '**/.rubocop{,_todo}.yml',
+                      glob_pattern: "**/{#{RESTART_WATCHERS.join(',')}}",
                       kind: Constant::WatchKind::CREATE | Constant::WatchKind::CHANGE | Constant::WatchKind::DELETE
                     )
                   ]
@@ -62,13 +64,21 @@ module RubyLsp
       # rubocop:enable Metrics/MethodLength
 
       def workspace_did_change_watched_files(changes)
-        return unless changes.any? { |change| change[:uri].end_with?('.rubocop.yml') }
+        if (changed_config_file = changed_config_file(changes))
+          @runtime_adapter = RuntimeAdapter.new
 
-        @runtime_adapter = RuntimeAdapter.new
+          ::RuboCop::LSP::Logger.log(<<~MESSAGE, prefix: '[RuboCop]')
+            Re-initialized RuboCop LSP addon #{::RuboCop::Version::STRING} due to #{changed_config_file} change.
+          MESSAGE
+        end
+      end
 
-        ::RuboCop::LSP::Logger.log(<<~MESSAGE, prefix: '[RuboCop]')
-          Re-initialized RuboCop LSP addon #{::RuboCop::Version::STRING} due to .rubocop.yml file change.
-        MESSAGE
+      private
+
+      def changed_config_file(changes)
+        RESTART_WATCHERS.find do |file_name|
+          changes.any? { |change| change[:uri].end_with?(file_name) }
+        end
       end
     end
   end
