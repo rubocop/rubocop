@@ -19,7 +19,7 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
   end
 
   let(:path) { 'example.rb' }
-  let(:uri) { URI(File.absolute_path(path)) }
+  let(:uri) { path_to_uri(path) }
   let(:source) do
     <<~RUBY
       s = "hello"
@@ -29,11 +29,6 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
 
   let(:request_id) { (1..).to_enum }
   let(:server) { create_server(source, uri) }
-
-  before do
-    # Suppress Ruby LSP's add-on logging.
-    allow(RuboCop::LSP::Logger).to receive(:log)
-  end
 
   after do
     RubyLsp::Addon.addons.each(&:deactivate)
@@ -148,25 +143,65 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
       server.global_state.index.index_all(uris: [])
     end
 
-    %w[.rubocop.yml .rubocop_todo.yml].each do |path|
-      context "when `#{path}` changes" do
-        let(:path) { path }
+    context 'when `.rubocop.yml` changes' do
+      let(:source) do
+        <<~RUBY
+          # frozen_string_literal: true
 
-        it 'creates new runtime adapter' do
-          addon = RubyLsp::Addon.addons.find { |a| a.name == 'RuboCop' }
-          expect(addon).to be_an_instance_of(RubyLsp::RuboCop::Addon)
-          original_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
+          ""
+        RUBY
+      end
 
+      it 'reloads the addon and uses the updated config' do
+        create_file('.rubocop.yml', <<~YML)
+          Style/StringLiterals:
+            EnforcedStyle: single_quotes
+        YML
+        process_message('textDocument/diagnostic', textDocument: { uri: uri })
+        diagnostics_result = server.pop_response
+        expect(diagnostics_result).to be_an_instance_of(RubyLsp::Result)
+        rubocop_diagnostics = diagnostics_result.response.items.select do |diag|
+          diag.source == 'RuboCop'
+        end
+        expect(rubocop_diagnostics.size).to eq(1)
+        expect(rubocop_diagnostics[0].code).to eq('Style/StringLiterals')
+
+        create_file('.rubocop.yml', <<~YML)
+          Style/StringLiterals:
+            EnforcedStyle: double_quotes
+        YML
+        expect do
           process_message(
             'workspace/didChangeWatchedFiles',
             changes: [{
-              uri: uri.to_s,
+              uri: path_to_uri('.rubocop.yml').to_s,
               type: RubyLsp::Constant::FileChangeType::CHANGED
             }]
           )
+        end.to output.to_stderr
 
-          new_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
-          expect(new_runtime_adapter).not_to eq original_runtime_adapter
+        process_message('textDocument/diagnostic', textDocument: { uri: uri })
+        diagnostics_result = server.pop_response
+        expect(diagnostics_result).to be_an_instance_of(RubyLsp::Result)
+        rubocop_diagnostics = diagnostics_result.response.items.select do |diag|
+          diag.source == 'RuboCop'
+        end
+        expect(rubocop_diagnostics).to be_empty
+      end
+    end
+
+    %w[.rubocop.yml .rubocop_todo.yml].each do |path|
+      context "when `#{path}` changes" do
+        it 'logs a message that the add-on got re-initialized' do
+          expect do
+            process_message(
+              'workspace/didChangeWatchedFiles',
+              changes: [{
+                uri: path_to_uri(path).to_s,
+                type: RubyLsp::Constant::FileChangeType::CHANGED
+              }]
+            )
+          end.to output(/Re-initialized RuboCop LSP addon/).to_stderr
         end
       end
     end
@@ -174,21 +209,16 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
     context 'when `test.rb` file changes' do
       let(:path) { 'test.rb' }
 
-      it "doesn't create new runtime adapter" do
-        addon = RubyLsp::Addon.addons.find { |a| a.name == 'RuboCop' }
-        expect(addon).to be_an_instance_of(RubyLsp::RuboCop::Addon)
-        original_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
-
-        process_message(
-          'workspace/didChangeWatchedFiles',
-          changes: [{
-            uri: uri.to_s,
-            type: RubyLsp::Constant::FileChangeType::CHANGED
-          }]
-        )
-
-        new_runtime_adapter = addon.instance_variable_get(:@runtime_adapter)
-        expect(new_runtime_adapter).to eq original_runtime_adapter
+      it "doesn't log a message about re-initializing the addon" do
+        expect do
+          process_message(
+            'workspace/didChangeWatchedFiles',
+            changes: [{
+              uri: uri.to_s,
+              type: RubyLsp::Constant::FileChangeType::CHANGED
+            }]
+          )
+        end.not_to output.to_stderr
       end
     end
   end
@@ -225,5 +255,9 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
 
   def process_message(method, **params)
     server.process_message(id: request_id.next, method: method, params: params)
+  end
+
+  def path_to_uri(path)
+    URI(File.absolute_path(path))
   end
 end

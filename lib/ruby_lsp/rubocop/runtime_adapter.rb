@@ -10,6 +10,10 @@ module RubyLsp
       include RubyLsp::Requests::Support::Formatter
 
       def initialize
+        reload_config
+      end
+
+      def reload_config
         config_store = ::RuboCop::ConfigStore.new
 
         @runtime = ::RuboCop::LSP::Runtime.new(config_store)

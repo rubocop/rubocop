@@ -10,7 +10,8 @@ module RubyLsp
     class Addon < RubyLsp::Addon
       RESTART_WATCHERS = %w[.rubocop.yml .rubocop_todo.yml].freeze
 
-      def initializer
+      def initialize
+        super
         @runtime_adapter = nil
       end
 
@@ -65,7 +66,7 @@ module RubyLsp
 
       def workspace_did_change_watched_files(changes)
         if (changed_config_file = changed_config_file(changes))
-          @runtime_adapter = RuntimeAdapter.new
+          @runtime_adapter.reload_config
 
           ::RuboCop::LSP::Logger.log(<<~MESSAGE, prefix: '[RuboCop]')
             Re-initialized RuboCop LSP addon #{::RuboCop::Version::STRING} due to #{changed_config_file} change.
