@@ -75,7 +75,9 @@ module RuboCop
 
         puts "configuration from #{absolute_path}" if debug?
 
-        raise(TypeError, "Malformed configuration in #{absolute_path}") unless hash.is_a?(Hash)
+        unless hash.is_a?(Hash)
+          raise(ValidationError, "Malformed configuration in #{absolute_path}")
+        end
 
         hash
       end

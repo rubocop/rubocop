@@ -1788,10 +1788,10 @@ RSpec.describe RuboCop::ConfigLoader do
       expect(configuration['Style/Encoding']).to eq('Exclude' => [abs('dir/c.rb')])
     end
 
-    it 'fails with a TypeError when loading a malformed configuration file' do
+    it 'fails with a ValidationError when loading a malformed configuration file' do
       create_file(configuration_path, 'This string is not a YAML hash')
       expect { load_file }.to raise_error(
-        TypeError, /^Malformed configuration in .*\.rubocop\.yml$/
+        RuboCop::ValidationError, /^Malformed configuration in .*\.rubocop\.yml$/
       )
     end
 
