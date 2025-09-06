@@ -1022,13 +1022,13 @@ RSpec.describe RuboCop::ConfigLoader do
           default_config.merge(
             'Layout/LineLength' => {
               'Description' =>
-              default_config['Layout/LineLength']['Description'],
+                default_config['Layout/LineLength']['Description'],
               'StyleGuide' => '#max-line-length',
               'Enabled' => true,
               'VersionAdded' =>
-              default_config['Layout/LineLength']['VersionAdded'],
+                default_config['Layout/LineLength']['VersionAdded'],
               'VersionChanged' =>
-              default_config['Layout/LineLength']['VersionChanged'],
+                default_config['Layout/LineLength']['VersionChanged'],
               'Max' => 77,
               'AllowHeredoc' => true,
               'AllowURI' => true,
@@ -1040,13 +1040,13 @@ RSpec.describe RuboCop::ConfigLoader do
             },
             'Metrics/MethodLength' => {
               'Description' =>
-              default_config['Metrics/MethodLength']['Description'],
+                default_config['Metrics/MethodLength']['Description'],
               'StyleGuide' => '#short-methods',
               'Enabled' => true,
               'VersionAdded' =>
-              default_config['Metrics/MethodLength']['VersionAdded'],
+                default_config['Metrics/MethodLength']['VersionAdded'],
               'VersionChanged' =>
-              default_config['Metrics/MethodLength']['VersionChanged'],
+                default_config['Metrics/MethodLength']['VersionChanged'],
               'CountComments' => false,
               'Max' => 5,
               'CountAsOne' => [],
@@ -1127,13 +1127,13 @@ RSpec.describe RuboCop::ConfigLoader do
           default_config.merge(
             'Layout/LineLength' => {
               'Description' =>
-              default_config['Layout/LineLength']['Description'],
+                default_config['Layout/LineLength']['Description'],
               'StyleGuide' => '#max-line-length',
               'Enabled' => true,
               'VersionAdded' =>
-              default_config['Layout/LineLength']['VersionAdded'],
+                default_config['Layout/LineLength']['VersionAdded'],
               'VersionChanged' =>
-              default_config['Layout/LineLength']['VersionChanged'],
+                default_config['Layout/LineLength']['VersionChanged'],
               'Max' => 120,             # overridden in line_length.yml
               'AllowHeredoc' => false,  # overridden in rubocop.yml
               'AllowURI' => true,
