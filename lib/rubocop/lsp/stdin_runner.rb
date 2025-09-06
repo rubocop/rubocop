@@ -40,7 +40,6 @@ module RuboCop
         super(@options, config_store)
       end
 
-      # rubocop:disable Metrics/MethodLength
       def run(path, contents, options, prism_result: nil)
         @options = options.merge(DEFAULT_RUBOCOP_OPTIONS)
         @options[:stdin] = contents
@@ -54,22 +53,7 @@ module RuboCop
         super([path])
 
         raise Interrupt if aborting?
-      rescue RuboCop::Runner::InfiniteCorrectionLoop => e
-        if defined?(::RubyLsp::Requests::Formatting::Error)
-          raise ::RubyLsp::Requests::Formatting::Error, e.message
-        end
-
-        raise e
-      rescue RuboCop::ValidationError => e
-        raise ConfigurationError, e.message
-      rescue StandardError => e
-        if defined?(::RubyLsp::Requests::Formatting::Error)
-          raise ::RubyLsp::Requests::Support::InternalRuboCopError, e
-        end
-
-        raise e
       end
-      # rubocop:enable Metrics/MethodLength
 
       def formatted_source
         @options[:stdin]

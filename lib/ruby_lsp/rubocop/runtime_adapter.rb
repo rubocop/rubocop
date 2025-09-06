@@ -9,32 +9,42 @@ module RubyLsp
     class RuntimeAdapter
       include RubyLsp::Requests::Support::Formatter
 
-      def initialize
+      def initialize(message_queue)
+        @message_queue = message_queue
         reload_config
       end
 
       def reload_config
+        @runtime = nil
         config_store = ::RuboCop::ConfigStore.new
-
         @runtime = ::RuboCop::LSP::Runtime.new(config_store)
+      rescue ::RuboCop::Error => e
+        @message_queue << Notification.window_show_message(
+          "RuboCop configuration error: #{e.message}. Formatting will not be available.",
+          type: Constant::MessageType::ERROR
+        )
       end
 
       def run_diagnostic(uri, document)
-        @runtime.offenses(
-          uri_to_path(uri),
-          document.source,
-          document.encoding,
-          prism_result: prism_result(document)
-        )
+        with_error_handling do
+          @runtime.offenses(
+            uri_to_path(uri),
+            document.source,
+            document.encoding,
+            prism_result: prism_result(document)
+          )
+        end
       end
 
       def run_formatting(uri, document)
-        @runtime.format(
-          uri_to_path(uri),
-          document.source,
-          command: 'rubocop.formatAutocorrects',
-          prism_result: prism_result(document)
-        )
+        with_error_handling do
+          @runtime.format(
+            uri_to_path(uri),
+            document.source,
+            command: 'rubocop.formatAutocorrects',
+            prism_result: prism_result(document)
+          )
+        end
       end
 
       def run_range_formatting(_uri, _partial_source, _base_indentation)
@@ -46,6 +56,25 @@ module RubyLsp
       end
 
       private
+
+      def with_error_handling
+        return unless @runtime
+
+        yield
+      rescue StandardError => e
+        ::RuboCop::LSP::Logger.log(e.full_message, prefix: '[RuboCop]')
+
+        message = if e.is_a?(::RuboCop::ErrorWithAnalyzedFileLocation)
+                    "for the #{e.cop.name} cop"
+                  else
+                    "- #{e.message}"
+                  end
+        raise Requests::Formatting::Error, <<~MSG
+          An internal error occurred #{message}.
+          Updating to a newer version of RuboCop may solve this.
+          For more details, run RuboCop on the command line.
+        MSG
+      end
 
       # duplicated from: lib/standard/lsp/routes.rb
       # modified to incorporate Ruby LSP's to_standardized_path method
