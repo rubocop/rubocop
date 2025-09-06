@@ -7,8 +7,6 @@ module RubyLsp
     # Provides an adapter to bridge RuboCop's built-in LSP runtime with Ruby LSP's add-on.
     # @api private
     class RuntimeAdapter
-      include RubyLsp::Requests::Support::Formatter
-
       def initialize
         reload_config
       end
