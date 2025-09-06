@@ -16,8 +16,8 @@ module RuboCop
     # Diagnostic for Language Server Protocol of RuboCop.
     # @api private
     class Diagnostic
-      def initialize(document_encoding, offense, uri, cop_class)
-        @document_encoding = document_encoding
+      def initialize(position_encoding, offense, uri, cop_class)
+        @position_encoding = position_encoding
         @offense = offense
         @uri = uri
         @cop_class = cop_class
@@ -45,11 +45,11 @@ module RuboCop
           range: LanguageServer::Protocol::Interface::Range.new(
             start: LanguageServer::Protocol::Interface::Position.new(
               line: @offense.line - 1,
-              character: highlighted.begin_pos
+              character: char_pos(highlighted.begin_pos)
             ),
             end: LanguageServer::Protocol::Interface::Position.new(
               line: @offense.line - 1,
-              character: highlighted.end_pos
+              character: char_pos(highlighted.end_pos)
             )
           ),
           data: {
@@ -107,11 +107,11 @@ module RuboCop
             range: LanguageServer::Protocol::Interface::Range.new(
               start: LanguageServer::Protocol::Interface::Position.new(
                 line: range.line - 1,
-                character: range.column
+                character: char_pos(range.column)
               ),
               end: LanguageServer::Protocol::Interface::Position.new(
                 line: range.last_line - 1,
-                character: range.last_column
+                character: char_pos(range.last_column)
               )
             ),
             new_text: replacement
@@ -149,7 +149,7 @@ module RuboCop
 
         eol = LanguageServer::Protocol::Interface::Position.new(
           line: @offense.line - 1,
-          character: length_of_line(@offense.source_line)
+          character: char_pos
         )
 
         # TODO: fails for multiline strings - may be preferable to use block
@@ -162,19 +162,6 @@ module RuboCop
         [inline_comment]
       end
 
-      def length_of_line(line)
-        if @document_encoding == Encoding::UTF_16LE
-          line_length = 0
-          line.codepoints.each do |codepoint|
-            line_length += 1
-            line_length += 1 if codepoint > RubyLsp::Document::Scanner::SURROGATE_PAIR_START
-          end
-          line_length
-        else
-          line.length
-        end
-      end
-
       def correctable?
         !@offense.corrector.nil?
       end
@@ -183,6 +170,18 @@ module RuboCop
         uri = URI.parse(uri)
         uri.scheme = 'file' if uri.scheme.nil?
         uri
+      end
+
+      def char_pos(nchars = nil)
+        str = nchars ? @offense.source_line[0, nchars] : @offense.source_line
+        case @position_encoding
+        when 'utf-32'
+          str.size
+        when 'utf-8'
+          str.bytesize
+        else # 'utf-16'
+          str.size + str.count("\u{10000}-\u{10FFFF}")
+        end
       end
     end
   end
