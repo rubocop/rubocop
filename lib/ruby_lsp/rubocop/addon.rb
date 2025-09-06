@@ -19,6 +19,10 @@ module RubyLsp
         'RuboCop'
       end
 
+      def version
+        ::RuboCop::Version::STRING
+      end
+
       def activate(global_state, message_queue)
         ::RuboCop::LSP::Logger.log(
           "Activating RuboCop LSP addon #{::RuboCop::Version::STRING}.", prefix: '[RuboCop]'
