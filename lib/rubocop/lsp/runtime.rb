@@ -17,7 +17,7 @@ module RuboCop
     # Runtime for Language Server Protocol of RuboCop.
     # @api private
     class Runtime
-      attr_writer :safe_autocorrect, :lint_mode, :layout_mode
+      attr_writer :safe_autocorrect, :lint_mode, :layout_mode, :position_encoding
 
       def initialize(config_store)
         RuboCop::LSP.enable
@@ -28,6 +28,7 @@ module RuboCop
         @safe_autocorrect = true
         @lint_mode = false
         @layout_mode = false
+        @position_encoding = 'utf-16'
       end
 
       def format(path, text, command:, prism_result: nil)
@@ -44,14 +45,14 @@ module RuboCop
         @runner.formatted_source
       end
 
-      def offenses(path, text, document_encoding = nil, prism_result: nil)
+      def offenses(path, text, prism_result: nil)
         diagnostic_options = {}
         diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode
 
         @runner.run(path, text, diagnostic_options, prism_result: prism_result)
         @runner.offenses.map do |offense|
           Diagnostic.new(
-            document_encoding, offense, path, @cop_registry[offense.cop_name]&.first
+            @position_encoding, offense, path, @cop_registry[offense.cop_name]&.first
           ).to_lsp_diagnostic(@runner.config_for_working_directory)
         end
       end

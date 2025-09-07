@@ -18,12 +18,7 @@ module RubyLsp
       end
 
       def run_diagnostic(uri, document)
-        @runtime.offenses(
-          uri_to_path(uri),
-          document.source,
-          document.encoding,
-          prism_result: prism_result(document)
-        )
+        @runtime.offenses(uri_to_path(uri), document.source, prism_result: prism_result(document))
       end
 
       def run_formatting(uri, document)
