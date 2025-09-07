@@ -14,10 +14,6 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
 
   include_context 'mock console output'
 
-  let(:addon) do
-    RubyLsp::RuboCop::Addon.new
-  end
-
   let(:path) { 'example.rb' }
   let(:uri) { path_to_uri(path) }
   let(:source) do
@@ -35,9 +31,17 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
     RubyLsp::Addon.addons.clear
   end
 
-  describe 'Add-on name' do
-    it 'is RuboCop' do
+  context 'Add-on metadata' do
+    let(:addon) do
+      RubyLsp::RuboCop::Addon.new
+    end
+
+    it 'has a name' do
       expect(addon.name).to eq 'RuboCop'
+    end
+
+    it 'has a version' do
+      expect(addon.version).to match(/\A\d+\.\d+\.\d+\z/)
     end
   end
 
