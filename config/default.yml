@@ -3341,6 +3341,12 @@ Style/ArrayIntersect:
   Safe: false
   VersionAdded: '1.40'
 
+Style/ArrayIntersectWithSingleElement:
+  Description: 'Use `include?(element)` instead of `intersect?([element])`.'
+  Enabled: 'pending'
+  Safe: false
+  VersionAdded: <<next>>
+
 Style/ArrayJoin:
   Description: 'Use Array#join instead of Array#*.'
   StyleGuide: '#array-join'
