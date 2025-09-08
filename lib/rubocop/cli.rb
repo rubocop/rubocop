@@ -164,8 +164,7 @@ module RuboCop
       set_options_to_pending_cops_reporter
       handle_editor_mode
 
-      @config_store.options_config = @options[:config] if @options[:config]
-      @config_store.force_default_config! if @options[:force_default_config]
+      @config_store.apply_options!(@options)
 
       handle_exiting_options
 

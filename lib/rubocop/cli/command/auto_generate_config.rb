@@ -83,7 +83,7 @@ module RuboCop
           execute_runner
           @options.delete(:only)
           @config_store = ConfigStore.new
-          @config_store.options_config = @options[:config] if @options[:config]
+          @config_store.apply_options!(@options)
           # Save the todo configuration of the LineLength cop.
           File.read(AUTO_GENERATED_FILE).lines.drop_while { |line| line.start_with?('#') }.join
         end
@@ -99,7 +99,7 @@ module RuboCop
 
         def reset_config_and_auto_gen_file
           @config_store = ConfigStore.new
-          @config_store.options_config = @options[:config] if @options[:config]
+          @config_store.apply_options!(@options)
           File.open(AUTO_GENERATED_FILE, 'w') {} # create or truncate if exists
           add_inheritance_from_auto_generated_file(@options[:config])
         end
