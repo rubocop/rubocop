@@ -28,7 +28,7 @@ module RubyLsp
           "Activating RuboCop LSP addon #{::RuboCop::Version::STRING}.", prefix: '[RuboCop]'
         )
 
-        @runtime_adapter = RuntimeAdapter.new
+        @runtime_adapter = RuntimeAdapter.new(message_queue)
         global_state.register_formatter('rubocop', @runtime_adapter)
         register_additional_file_watchers(global_state, message_queue)
 

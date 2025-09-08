@@ -138,6 +138,93 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
         end
       end
     end
+
+    context 'when an error occurs' do
+      context 'when `.rubocop.yml` is invalid' do
+        it 'handles it gracefully' do
+          create_file('.rubocop.yml', 'Not valid YAML!')
+          server.global_state.index.index_all(uris: [])
+
+          init_response = server.pop_response
+          expect(init_response).to be_an_instance_of(RubyLsp::Notification)
+          expect(init_response.params.attributes[:message]).to match(
+            /RuboCop configuration error: Malformed configuration/
+          )
+
+          process_message(
+            'textDocument/formatting',
+            textDocument: { uri: uri },
+            position: { line: 0, character: 0 }
+          )
+          formatting_response = server.pop_response
+
+          expect(formatting_response).to be_an_instance_of(RubyLsp::Result)
+          expect(formatting_response.response).to be_nil
+
+          create_empty_file('.rubocop.yml')
+          expect do
+            process_message(
+              'workspace/didChangeWatchedFiles',
+              changes: [{
+                uri: path_to_uri('.rubocop.yml').to_s,
+                type: RubyLsp::Constant::FileChangeType::CHANGED
+              }]
+            )
+          end.to output.to_stderr
+
+          process_message(
+            'textDocument/formatting',
+            textDocument: { uri: uri },
+            position: { line: 0, character: 0 }
+          )
+          formatting_response = server.pop_response
+
+          expect(formatting_response).to be_an_instance_of(RubyLsp::Result)
+          expect(formatting_response.response).not_to be_nil
+        end
+      end
+
+      context 'runtime error' do
+        before do
+          allow_any_instance_of(RuboCop::Cop::Style::StringLiterals) # rubocop:disable RSpec/AnyInstance
+            .to receive(:on_str)
+            .and_raise(RuntimeError, 'oops')
+        end
+
+        let(:source) { '""' }
+
+        it 'handles infinite loop errors' do
+          expect { result }.to output.to_stderr
+          expect(result).to be_an_instance_of(RubyLsp::Notification)
+          expect(result.params.attributes[:message]).to match(<<~MSG)
+            Formatting error: An internal error occurred for the Style/StringLiterals cop.
+          MSG
+        end
+      end
+
+      context 'infinite loop error' do
+        before do
+          allow(RuboCop::Cop::Registry).to receive(:all).and_return([cop])
+        end
+
+        let(:cop) { RuboCop::Cop::Test::InfiniteLoopDuringAutocorrectWithChangeCop }
+
+        let(:source) do
+          <<~RUBY
+            class Test
+            end
+          RUBY
+        end
+
+        it 'handles infinite loop errors' do
+          expect { result }.to output.to_stderr
+          expect(result).to be_an_instance_of(RubyLsp::Notification)
+          expect(result.params.attributes[:message]).to match(<<~MSG)
+            Formatting error: An internal error occurred - Infinite loop detected in #{uri} and caused by #{cop.badge}.
+          MSG
+        end
+      end
+    end
   end
 
   describe 'workspace/didChangeWatchedFiles' do
