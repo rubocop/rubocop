@@ -835,6 +835,7 @@ Layout/FirstArrayElementLineBreak:
                  multi-line array.
   Enabled: false
   VersionAdded: '0.49'
+  AllowImplicitArrayLiterals: false
   AllowMultilineFinalElement: false
 
 Layout/FirstHashElementIndentation:
