@@ -20,6 +20,27 @@ module RuboCop
       #   # good
       #   [:a, :b]
       #
+      # @example AllowImplicitArrayLiterals: false (default)
+      #
+      #   # bad
+      #   a = b,
+      #       c
+      #
+      #   # good
+      #   a =
+      #     b,
+      #     c
+      #
+      # @example AllowImplicitArrayLiterals: true
+      #
+      #   # good
+      #   a = b,
+      #       c
+      #
+      #   a =
+      #     b,
+      #     c
+      #
       # @example AllowMultilineFinalElement: false (default)
       #
       #   # bad
@@ -48,6 +69,7 @@ module RuboCop
 
         def on_array(node)
           return if !node.loc.begin && !assignment_on_same_line?(node)
+          return if allow_implicit_array_brackets? && !node.bracketed?
 
           check_children_line_break(node, node.children, ignore_last: ignore_last_element?)
         end
@@ -57,6 +79,10 @@ module RuboCop
         def assignment_on_same_line?(node)
           source = node.source_range.source_line[0...node.loc.column]
           /\s*=\s*$/.match?(source)
+        end
+
+        def allow_implicit_array_brackets?
+          !!cop_config['AllowImplicitArrayLiterals']
         end
 
         def ignore_last_element?

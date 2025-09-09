@@ -51,49 +51,86 @@ RSpec.describe RuboCop::Cop::Layout::FirstArrayElementLineBreak, :config do
     end
   end
 
-  context 'masgn implicit arrays' do
-    it 'registers and corrects the offense' do
-      expect_offense(<<~RUBY)
-        a, b,
-        c = 1,
-            ^ Add a line break before the first element of a multi-line array.
-        2, 3
-      RUBY
+  context 'when `AllowImplicitArrayLiterals` is false' do
+    let(:cop_config) { { 'AllowImplicitArrayLiterals' => false } }
 
-      expect_correction(<<~RUBY)
+    context 'masgn implicit arrays' do
+      it 'registers and corrects the offense' do
+        expect_offense(<<~RUBY)
+          a, b,
+          c = 1,
+              ^ Add a line break before the first element of a multi-line array.
+          2, 3
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a, b,
+          c =#{trailing_whitespace}
+          1,
+          2, 3
+        RUBY
+      end
+    end
+
+    context 'send implicit arrays' do
+      it 'registers and corrects the offense' do
+        expect_offense(<<~RUBY)
+          a
+          .c = 1,
+               ^ Add a line break before the first element of a multi-line array.
+          2, 3
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a
+          .c =#{trailing_whitespace}
+          1,
+          2, 3
+        RUBY
+      end
+    end
+
+    it 'ignores properly formatted implicit arrays' do
+      expect_no_offenses(<<~RUBY)
         a, b,
-        c =#{trailing_whitespace}
-        1,
-        2, 3
+        c =
+        1, 2,
+        3
       RUBY
     end
   end
 
-  context 'send implicit arrays' do
-    it 'registers and corrects the offense' do
-      expect_offense(<<~RUBY)
-        a
-        .c = 1,
-             ^ Add a line break before the first element of a multi-line array.
-        2, 3
-      RUBY
+  context 'when `AllowImplicitArrayLiterals` is true' do
+    let(:cop_config) { { 'AllowImplicitArrayLiterals' => true } }
 
-      expect_correction(<<~RUBY)
-        a
-        .c =#{trailing_whitespace}
-        1,
-        2, 3
+    context 'masgn implicit arrays' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          a, b,
+          c = 1,
+          2, 3
+        RUBY
+      end
+    end
+
+    context 'send implicit arrays' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          a
+          .c = 1,
+          2, 3
+        RUBY
+      end
+    end
+
+    it 'ignores properly formatted implicit arrays' do
+      expect_no_offenses(<<~RUBY)
+        a, b,
+        c =
+        1, 2,
+        3
       RUBY
     end
-  end
-
-  it 'ignores properly formatted implicit arrays' do
-    expect_no_offenses(<<~RUBY)
-      a, b,
-      c =
-      1, 2,
-      3
-    RUBY
   end
 
   it 'ignores elements listed on a single line' do
