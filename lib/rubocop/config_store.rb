@@ -25,6 +25,11 @@ module RuboCop
       @validated = true
     end
 
+    def apply_options!(options)
+      self.options_config = options[:config] if options[:config]
+      force_default_config! if options[:force_default_config]
+    end
+
     def options_config=(options_config)
       loaded_config = ConfigLoader.load_file(options_config)
       @options_config = ConfigLoader.merge_with_default(loaded_config, options_config)

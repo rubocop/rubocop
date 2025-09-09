@@ -14,7 +14,10 @@ module RubyLsp
 
       def reload_config
         @runtime = nil
+        options, _paths = ::RuboCop::Options.new.parse([])
+
         config_store = ::RuboCop::ConfigStore.new
+        config_store.apply_options!(options)
         @runtime = ::RuboCop::LSP::Runtime.new(config_store)
       rescue ::RuboCop::Error => e
         @message_queue << Notification.window_show_message(

@@ -8,7 +8,7 @@ module RubyLsp
   module RuboCop
     # A Ruby LSP add-on for RuboCop.
     class Addon < RubyLsp::Addon
-      RESTART_WATCHERS = %w[.rubocop.yml .rubocop_todo.yml].freeze
+      RESTART_WATCHERS = %w[.rubocop.yml .rubocop_todo.yml .rubocop].freeze
 
       def initialize
         super

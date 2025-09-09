@@ -84,6 +84,19 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
         Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       MESSAGE
     end
+
+    context 'when `.rubocop` points to a different config file' do
+      before do
+        create_file('.rubocop', '-c custom.yml')
+        create_file('custom.yml', <<~YML)
+          <%= warn "Hello from 'custom.yml'" %>
+        YML
+      end
+
+      it 'uses the config file' do
+        expect { result }.to output(/Hello from 'custom\.yml'/).to_stderr
+      end
+    end
   end
 
   describe 'textDocument/formatting' do
@@ -281,7 +294,7 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
       end
     end
 
-    %w[.rubocop.yml .rubocop_todo.yml].each do |path|
+    %w[.rubocop.yml .rubocop_todo.yml .rubocop].each do |path|
       context "when `#{path}` changes" do
         it 'logs a message that the add-on got re-initialized' do
           expect do
