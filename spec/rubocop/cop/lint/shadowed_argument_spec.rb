@@ -395,6 +395,38 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedArgument, :config do
           end
         end
       end
+
+      context 'and shadowed within `rescue`' do
+        context 'and assigned before the `rescue`' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              def do_something(foo)
+                foo = bar
+                ^^^^^^^^^ Argument `foo` was shadowed by a local variable before it was used.
+                begin
+                rescue
+                  foo = baz
+                end
+                puts foo
+              end
+            RUBY
+          end
+        end
+
+        context 'and the argument was not shadowed outside the `rescue`' do
+          it 'registers no offense' do
+            expect_no_offenses(<<~RUBY)
+                def do_something(foo)
+                begin
+                rescue
+                  foo = bar
+                end
+                puts foo
+              end
+            RUBY
+          end
+        end
+      end
     end
 
     context 'when multiple arguments are shadowed' do

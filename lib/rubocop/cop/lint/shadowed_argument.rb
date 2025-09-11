@@ -125,13 +125,13 @@ module RuboCop
             next false if assignment_node.shorthand_asgn?
             next false unless assignment_node.parent
 
-            node_within_block_or_conditional =
-              node_within_block_or_conditional?(assignment_node.parent, argument.scope.node)
+            conditional_assignment =
+              conditional_assignment?(assignment_node.parent, argument.scope.node)
 
             unless uses_var?(assignment_node, argument.name)
               # It's impossible to decide whether a branch or block is executed,
               # so the precise reassignment location is undecidable.
-              next false if node_within_block_or_conditional
+              next false if conditional_assignment
 
               yield(assignment.node, location_known)
               break
@@ -147,13 +147,13 @@ module RuboCop
           node.source_range.begin_pos
         end
 
-        # Check whether the given node is nested into block or conditional.
+        # Check whether the given node is always executed or not
         #
-        def node_within_block_or_conditional?(node, stop_search_node)
+        def conditional_assignment?(node, stop_search_node)
           return false if node == stop_search_node
 
-          node.conditional? || node.block_type? ||
-            node_within_block_or_conditional?(node.parent, stop_search_node)
+          node.conditional? || node.type?(:block, :rescue) ||
+            conditional_assignment?(node.parent, stop_search_node)
         end
 
         # Get argument references without assignments' references
