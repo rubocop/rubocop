@@ -87,7 +87,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
 
     it 'registers an offense rescuing exceptions that are ancestors of each other' do
       expect_offense(<<~RUBY)
-        def
+        def foo
           something
         rescue StandardError, RuntimeError
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
