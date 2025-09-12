@@ -271,6 +271,40 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
       RUBY
     end
 
+    it 'registers indented code on LHS of equality operator in the method definition' do
+      expect_offense(<<~RUBY)
+        def config_to_allow_offenses
+          a +
+          b == c
+          ^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def config_to_allow_offenses
+          a +
+            b == c
+        end
+      RUBY
+    end
+
+    it 'registers indented code on LHS of equality operator in the modifier method definition' do
+      expect_offense(<<~RUBY)
+        private def config_to_allow_offenses
+          a +
+          b == c
+          ^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        private def config_to_allow_offenses
+          a +
+            b == c
+        end
+      RUBY
+    end
+
     it 'accepts indented code on LHS of equality operator' do
       expect_no_offenses(<<~RUBY)
         def config_to_allow_offenses

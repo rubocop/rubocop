@@ -102,10 +102,12 @@ module RuboCop
             return true if begins_its_line?(assignment_rhs.source_range)
           end
 
-          given_style == :aligned &&
-            (kw_node_with_special_indentation(node) ||
-             assignment_node ||
-             argument_in_method_call(node, :with_or_without_parentheses))
+          return false unless given_style == :aligned
+          return true if kw_node_with_special_indentation(node) || assignment_node
+
+          node = argument_in_method_call(node, :with_or_without_parentheses)
+
+          node.respond_to?(:def_modifier?) && !node.def_modifier?
         end
 
         def message(node, lhs, rhs)
