@@ -1,0 +1,1 @@
+* [#14525](https://github.com/rubocop/rubocop/pull/14525): Fix false positives for `Style/RedundantRegexpEscape` when an escaped variable sigil follows `#` (e.g., `/#\@foo/`, `/#\@@bar/`, `/#\$baz/`). ([@koic][])
