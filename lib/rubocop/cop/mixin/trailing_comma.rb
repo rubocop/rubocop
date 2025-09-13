@@ -140,7 +140,7 @@ module RuboCop
       end
 
       def last_item_precedes_newline?(node)
-        after_last_item = node.children.last.source_range.end.join(node.loc.end.begin)
+        after_last_item = node.children.last.source_range.end.join(node.source_range.end)
 
         after_last_item.source.start_with?(/,?\s*(#.*)?\n/)
       end
