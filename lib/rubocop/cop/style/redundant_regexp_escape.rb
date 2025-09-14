@@ -41,6 +41,7 @@ module RuboCop
         ALLOWED_ALWAYS_ESCAPES = " \n[]^\\#".chars.freeze
         ALLOWED_WITHIN_CHAR_CLASS_METACHAR_ESCAPES = '-'.chars.freeze
         ALLOWED_OUTSIDE_CHAR_CLASS_METACHAR_ESCAPES = '.*+?{}()|$'.chars.freeze
+        INTERPOLATION_SIGILS = %w[@ $].freeze
 
         def on_regexp(node)
           each_escape(node) do |char, index, within_character_class|
@@ -64,6 +65,7 @@ module RuboCop
           # different versions of Ruby so that e.g. /\i/ != /i/
           return true if /[[:alnum:]]/.match?(char)
           return true if ALLOWED_ALWAYS_ESCAPES.include?(char) || delimiter?(node, char)
+          return true if requires_escape_to_avoid_interpolation?(node.source[index], char)
 
           if within_character_class
             ALLOWED_WITHIN_CHAR_CLASS_METACHAR_ESCAPES.include?(char) &&
@@ -93,6 +95,12 @@ module RuboCop
           delimiters = [node.loc.begin.source[-1], node.loc.end.source[0]]
 
           delimiters.include?(char)
+        end
+
+        def requires_escape_to_avoid_interpolation?(char_before_escape, escaped_char)
+          # Preserve escapes after '#' that would otherwise trigger interpolation:
+          # '#@ivar', '#@@cvar', and '#$gvar'.
+          char_before_escape == '#' && INTERPOLATION_SIGILS.include?(escaped_char)
         end
 
         def each_escape(node)

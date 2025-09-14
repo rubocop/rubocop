@@ -257,6 +257,30 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
       end
     end
 
+    context 'with an escaped instance variable after `#`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~'RUBY')
+          foo = /[#\@not_ivar]/
+        RUBY
+      end
+    end
+
+    context 'with an escaped class variable after `#`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~'RUBY')
+          foo = /[#\@@not_cvar]/
+        RUBY
+      end
+    end
+
+    context 'with an escaped global variable after `#`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~'RUBY')
+          foo = /[#\$not_gvar]/
+        RUBY
+      end
+    end
+
     context 'with an escape inside an interpolated string' do
       it 'does not register an offense' do
         expect_no_offenses('foo = /#{"\""}/')
