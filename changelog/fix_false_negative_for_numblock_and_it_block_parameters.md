@@ -1,0 +1,1 @@
+* [#14527](https://github.com/rubocop/rubocop/pull/14527): Fix false negatives for `Style/NumberedParameters` and `Style/ItBlockParameter` when using multiline method chain with `EnforcedStyle: allow_single_line`. ([@koic][])

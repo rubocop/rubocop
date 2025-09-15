@@ -102,7 +102,7 @@ module RuboCop
       def reference_urls
         urls = cop_config
                .values_at('References', 'Reference') # Support legacy Reference key
-               .flat_map { Array(_1) }
+               .flat_map { |url| Array(url) }
                .reject(&:empty?)
 
         urls unless urls.empty?
