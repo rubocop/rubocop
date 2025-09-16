@@ -113,6 +113,18 @@ module RuboCop
       #     true
       #   end
       #
+      # @example AllowedMethods: [call] (default)
+      #   # good
+      #   def call
+      #     foo == bar
+      #   end
+      #
+      # @example AllowedPatterns: [\Afoo]
+      #   # good
+      #   def foo?
+      #     'foo'
+      #   end
+      #
       # @example AllowBangMethods: false (default)
       #   # bad
       #   def save!
