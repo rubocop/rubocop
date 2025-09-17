@@ -194,6 +194,14 @@ module RuboCop
         def alignment_location(alignment_node)
           if begin_end_alignment_style == 'start_of_line'
             start_line_range(alignment_node)
+          elsif alignment_node.any_block_type?
+            # If the alignment node is a block, the `rescue`/`ensure` keyword should
+            # be aligned to the start of the block. It is possible that the block's
+            # `send_node` spans multiple lines, in which case it should align to the
+            # start of the last line.
+            send_node = alignment_node.send_node
+            range = processed_source.buffer.line_range(send_node.last_line)
+            range.adjust(begin_pos: range.source =~ /\S/)
           else
             alignment_node.source_range
           end
