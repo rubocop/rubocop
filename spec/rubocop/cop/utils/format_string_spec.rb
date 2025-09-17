@@ -2,10 +2,10 @@
 
 RSpec.describe RuboCop::Cop::Utils::FormatString do
   def format_sequences(string)
-    described_class.new(string).format_sequences
+    RuboCop::Cop::Utils::FormatString.new(string).format_sequences
   end
 
-  it 'finds the correct number of fields' do
+  it 'finds the correct number of fields' do # rubocop:disable RSpec/MultipleExpectations
     expect(format_sequences('').size).to eq(0)
     expect(format_sequences('%s').size).to eq(1)
     expect(format_sequences('%s %s').size).to eq(2)
@@ -32,6 +32,8 @@ RSpec.describe RuboCop::Cop::Utils::FormatString do
     expect(format_sequences('%+g:% g:%-g').size).to eq(3)
     expect(format_sequences('%+-d').size) # multiple flags
       .to eq(1)
+    expect(format_sequences('%*s').size).to eq(1)
+    expect(format_sequences('%-*s').size).to eq(1)
   end
 
   describe '#named_interpolation?' do
@@ -88,6 +90,88 @@ RSpec.describe RuboCop::Cop::Utils::FormatString do
     it 'returns false when there are numbered and named formats' do
       fs = described_class.new('%1$s %{foo}d')
       expect(fs).not_to be_valid
+    end
+  end
+
+  describe described_class::FormatSequence do
+    subject(:sequence) { format_sequences(format_string).first }
+
+    describe '#variable_width?' do
+      context 'when no width is given' do
+        let(:format_string) { '%s' }
+
+        it { is_expected.not_to be_variable_width }
+      end
+
+      context 'when a fixed width is given' do
+        let(:format_string) { '%2s' }
+
+        it { is_expected.not_to be_variable_width }
+      end
+
+      context 'when a negative fixed width is given' do
+        let(:format_string) { '%-2s' }
+
+        it { is_expected.not_to be_variable_width }
+      end
+
+      context 'when a variable width is given' do
+        let(:format_string) { '%*s' }
+
+        it { is_expected.to be_variable_width }
+      end
+
+      context 'when a negative variable width is given' do
+        let(:format_string) { '%-*s' }
+
+        it { is_expected.to be_variable_width }
+      end
+
+      context 'when a variable width with an explicit argument number is given' do
+        let(:format_string) { '%*2$s' }
+
+        it { is_expected.to be_variable_width }
+      end
+    end
+
+    describe '#variable_width_argument_number' do
+      subject { sequence.variable_width_argument_number }
+
+      context 'when no width is given' do
+        let(:format_string) { '%s' }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when a fixed width is given' do
+        let(:format_string) { '%2s' }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when a negative fixed width is given' do
+        let(:format_string) { '%-2s' }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when a variable width is given' do
+        let(:format_string) { '%*s' }
+
+        it { is_expected.to eq(1) }
+      end
+
+      context 'when a negative variable width is given' do
+        let(:format_string) { '%-*s' }
+
+        it { is_expected.to eq(1) }
+      end
+
+      context 'when a variable width with an explicit argument number is given' do
+        let(:format_string) { '%*2$s' }
+
+        it { is_expected.to eq(2) }
+      end
     end
   end
 end

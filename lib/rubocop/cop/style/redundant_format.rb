@@ -134,6 +134,7 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def all_fields_literal?(string, arguments)
           count = 0
           sequences = RuboCop::Cop::Utils::FormatString.new(string).format_sequences
@@ -141,6 +142,7 @@ module RuboCop
 
           sequences.each do |sequence|
             next if sequence.percent?
+            next if unknown_variable_width?(sequence, arguments)
 
             hash = arguments.detect(&:hash_type?)
             next unless (argument = find_argument(sequence, arguments, hash))
@@ -151,19 +153,32 @@ module RuboCop
 
           sequences.size == count
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
+        # If the sequence has a variable (`*`) width, it cannot be autocorrected
+        # if the width is not given as a numeric literal argument
+        def unknown_variable_width?(sequence, arguments)
+          return false unless sequence.variable_width?
+
+          argument = arguments[sequence.variable_width_argument_number - 1]
+          !numeric?(argument)
+        end
+
+        # rubocop:disable Metrics/AbcSize
         def find_argument(sequence, arguments, hash)
           if hash && (sequence.annotated? || sequence.template?)
             find_hash_value_node(hash, sequence.name.to_sym).first
+          elsif sequence.variable_width?
+            # If the specifier contains `*`, the argument for the width can be ignored.
+            arguments.delete_at(sequence.variable_width_argument_number - 1)
+            arguments.shift
           elsif sequence.arg_number
             arguments[sequence.arg_number.to_i - 1]
           else
-            # If the specifier contains `*`, the following arguments will be used
-            # to specify the width and can be ignored.
-            (sequence.arity - 1).times { arguments.shift }
             arguments.shift
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         def matching_argument?(sequence, argument)
           # Template specifiers don't give a type, any acceptable literal type is ok.
