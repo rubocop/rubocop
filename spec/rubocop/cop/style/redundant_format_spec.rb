@@ -249,7 +249,58 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
             RUBY
           end
 
-          it 'does not register an offense when the argument is not literal' do
+          it 'registers an offense and corrects with a negative `*`' do
+            expect_offense(<<~RUBY, method: method)
+              %{method}('%-*d', 5, 14)
+              ^{method}^^^^^^^^^^^^^^^ Use `'14   '` directly instead of `%{method}`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              '14   '
+            RUBY
+          end
+
+          it 'registers an offense and corrects with a variable width and a specified argument' do
+            expect_offense(<<~RUBY, method: method)
+              %{method}('%1$*2$s', 14, 5)
+              ^{method}^^^^^^^^^^^^^^^^^^ Use `'   14'` directly instead of `%{method}`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              '   14'
+            RUBY
+          end
+
+          it 'registers an offense and corrects with a negative variable width and a specified argument' do
+            expect_offense(<<~RUBY, method: method)
+              %{method}('%1$-*2$s', 14, 5)
+              ^{method}^^^^^^^^^^^^^^^^^^^ Use `'14   '` directly instead of `%{method}`.
+            RUBY
+
+            expect_correction(<<~RUBY)
+              '14   '
+            RUBY
+          end
+
+          it 'does not register an offense when the variable width argument is not numeric' do
+            expect_no_offenses(<<~RUBY)
+              #{method}('%*d', 'a', 'foo')
+            RUBY
+          end
+
+          it 'does not register an offense when the star argument is not literal' do
+            expect_no_offenses(<<~RUBY)
+              #{method}('%*s', foo, 'bar')
+            RUBY
+          end
+
+          it 'does not register an offense when the star argument is negative and not literal' do
+            expect_no_offenses(<<~RUBY)
+              #{method}('%-*s', foo, 'bar')
+            RUBY
+          end
+
+          it 'does not register an offense when the format argument is not literal' do
             expect_no_offenses(<<~RUBY)
               #{method}('%*d', 5, foo)
             RUBY

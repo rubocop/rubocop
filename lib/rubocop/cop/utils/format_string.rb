@@ -71,6 +71,16 @@ module RuboCop
             name && @source.include?('{')
           end
 
+          def variable_width?
+            !!width&.start_with?('*')
+          end
+
+          def variable_width_argument_number
+            return unless variable_width?
+
+            width == '*' ? 1 : width.match(DIGIT_DOLLAR)['arg_number'].to_i
+          end
+
           # Number of arguments required for the format sequence
           def arity
             @source.scan('*').count + 1
