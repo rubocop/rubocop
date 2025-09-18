@@ -56,7 +56,7 @@ module RuboCop
 
         def initialize(config = nil, options = nil)
           super
-          @def_nodes = Set.new
+          @def_nodes = Set.new.compare_by_identity
         end
 
         def on_yield(node)

@@ -266,4 +266,47 @@ RSpec.describe RuboCop::Cop::Style::ExplicitBlockArgument, :config do
       end
     RUBY
   end
+
+  it 'registers an offense and corrects when there are two methods with the same implementation and name' do
+    expect_offense(<<~RUBY)
+      def foo
+        bar { |baz| yield baz }
+        ^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+
+      def foo
+        bar { |baz| yield baz }
+        ^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo(&block)
+        bar(&block)
+      end
+
+      def foo(&block)
+        bar(&block)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when there are nested method definitions' do
+    expect_offense(<<~RUBY)
+      def foo
+        def bar.baz
+          qux { |quux| yield quux }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Consider using explicit block argument in the surrounding method's signature over `yield`.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        def bar.baz(&block)
+          qux(&block)
+        end
+      end
+    RUBY
+  end
 end
