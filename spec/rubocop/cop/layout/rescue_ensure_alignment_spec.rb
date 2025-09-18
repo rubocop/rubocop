@@ -459,7 +459,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
-  it 'accepts aligned rescue with do-end block that line break with leading dot for method calls' do
+  it 'accepts aligned `rescue` with do-end block that line break with leading dot for method calls' do
     expect_no_offenses(<<~RUBY)
       [1, 2, 3]
         .each do |el|
@@ -470,12 +470,202 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     RUBY
   end
 
-  it 'accepts aligned rescue with do-end block that line break with trailing dot for method calls' do
+  it 'registers an offense and corrects indented `rescue` with do-end block that line break with leading dot for method calls' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+            rescue StandardError => _exception
+            ^^^^^^ `rescue` at 4, 6 is not aligned with `.each do` at 2, 2.
+          next
+        end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects unindented `rescue` with do-end block that line break with leading dot for method calls' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+      rescue StandardError => _exception
+      ^^^^^^ `rescue` at 4, 0 is not aligned with `.each do` at 2, 2.
+          next
+        end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
+  it 'accepts aligned `rescue` with do-end block that line break with trailing dot for method calls' do
     expect_no_offenses(<<~RUBY)
       [1, 2, 3].
         each do |el|
           el.to_s
         rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects indented `rescue` with do-end block that line break with trailing dot for method calls' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+            rescue StandardError => _exception
+            ^^^^^^ `rescue` at 4, 6 is not aligned with `each do` at 2, 2.
+          next
+        end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects unindented `rescue` with do-end block that line break with trailing dot for method calls' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+      rescue StandardError => _exception
+      ^^^^^^ `rescue` at 4, 0 is not aligned with `each do` at 2, 2.
+          next
+        end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+        rescue StandardError => _exception
+          next
+        end
+    RUBY
+  end
+
+  it 'accepts aligned `ensure` with do-end block that line break with leading dot for method calls' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+        ensure
+          next
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects indented `ensure` with do-end block that line break with leading dot for method calls' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+            ensure
+            ^^^^^^ `ensure` at 4, 6 is not aligned with `.each do` at 2, 2.
+          next
+        end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+        ensure
+          next
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects unindented `ensure` with do-end block that line break with leading dot for method calls' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+      ensure
+      ^^^^^^ `ensure` at 4, 0 is not aligned with `.each do` at 2, 2.
+          next
+        end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3]
+        .each do |el|
+          el.to_s
+        ensure
+          next
+        end
+    RUBY
+  end
+
+  it 'accepts aligned `ensure` with do-end block that line break with trailing dot for method calls' do
+    expect_no_offenses(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+        ensure
+          next
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects indented `ensure` with do-end block that line break with trailing dot for method calls' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+            ensure
+            ^^^^^^ `ensure` at 4, 6 is not aligned with `each do` at 2, 2.
+          next
+        end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+        ensure
+          next
+        end
+    RUBY
+  end
+
+  it 'registers an offense and corrects unindented `ensure` with do-end block that line break with trailing dot for method calls' do
+    expect_offense(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+      ensure
+      ^^^^^^ `ensure` at 4, 0 is not aligned with `each do` at 2, 2.
+          next
+        end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1, 2, 3].
+        each do |el|
+          el.to_s
+        ensure
           next
         end
     RUBY
