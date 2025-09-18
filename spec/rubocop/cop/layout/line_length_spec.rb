@@ -1956,6 +1956,101 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         end
       end
 
+      context 'heredoc in receiver' do
+        context 'receiver is a heredoc' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY)
+              <<~FOO.select { |bar| 4444000039123123129993912312312999199291203123123 }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [73/40]
+                text
+              FOO
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'receiver is an array containing a heredoc' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY)
+              [<<~FOO].select { |bar| 4444000039123123129993912312312999199291203123123 }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [75/40]
+                text
+              FOO
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'receiver is an array containing multiple heredocs' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY)
+              [<<~FOO, <<~BAR].select { |bar| 4444000039123123129993912312312999199291203123123 }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [83/40]
+                text
+              FOO
+                text 2
+              BAR
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'receiver is a heredoc chain' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY)
+              <<~FOO.bar.baz.select { |qux| 4444000039123123129993912312312999199291203123123 }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [81/40]
+                text
+              FOO
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'receiver contains a heredoc as a method argument' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY)
+              bar.baz(<<~FOO).select { |qux| 4444000039123123129993912312312999199291203123123 }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [82/40]
+                text
+              FOO
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'receiver is a dstr heredoc' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~'RUBY')
+              <<~FOO.select { |bar| 4444000039123123129993912312312999199291203123123 }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [73/40]
+                #{text}
+              FOO
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+
+        context 'receiver is an xstr heredoc' do
+          it 'registers an offense but does not correct' do
+            expect_offense(<<~RUBY)
+              <<~`FOO`.select { |bar| 4444000039123123129993912312312999199291203123123 }
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [75/40]
+                text
+              FOO
+            RUBY
+
+            expect_no_corrections
+          end
+        end
+      end
+
       context 'Ruby 3.4', :ruby34 do
         it 'adds an offense for {} block does correct it' do
           expect_offense(<<~RUBY)
