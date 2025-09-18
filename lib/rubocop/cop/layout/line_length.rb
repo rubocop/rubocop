@@ -134,6 +134,7 @@ module RuboCop
 
         def check_for_breakable_block(block_node)
           return unless block_node.single_line?
+          return if receiver_contains_heredoc?(block_node)
 
           line_index = block_node.loc.line - 1
           range = breakable_block_range(block_node)
@@ -339,6 +340,13 @@ module RuboCop
 
         def line_in_heredoc?(line_number)
           heredocs.any? { |range, _delimiter| range.cover?(line_number) }
+        end
+
+        def receiver_contains_heredoc?(node)
+          return false unless (receiver = node.receiver)
+          return true if receiver.type?(:str, :dstr, :xstr) && receiver.heredoc?
+
+          receiver.each_descendant(:str, :dstr, :xstr).any?(&:heredoc?)
         end
 
         def check_directive_line(line, line_index)
