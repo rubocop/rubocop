@@ -357,7 +357,7 @@ module RuboCop
         end
 
         def find_heredoc(node)
-          node.each_node(:str, :dstr, :xstr).find(&:heredoc?)
+          node.each_node(:any_str).find(&:heredoc?)
         end
 
         def buffer

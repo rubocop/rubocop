@@ -113,7 +113,7 @@ module RuboCop
           return [] unless ast
 
           heredocs = []
-          ast.each_node(:str, :dstr, :xstr) do |node|
+          ast.each_node(:any_str) do |node|
             next unless node.heredoc?
 
             body = node.location.heredoc_body
