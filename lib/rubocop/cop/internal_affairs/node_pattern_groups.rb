@@ -30,6 +30,8 @@ module RuboCop
           any_block: %i[block numblock itblock],
           any_def: %i[def defs],
           any_match_pattern: %i[match_pattern match_pattern_p],
+          any_str: %i[str dstr xstr],
+          any_sym: %i[sym dsym],
           argument: %i[arg optarg restarg kwarg kwoptarg kwrestarg blockarg forward_arg shadowarg],
           boolean: %i[true false],
           call: %i[send csend],
@@ -210,7 +212,7 @@ module RuboCop
         # A heredoc can be a `dstr` without interpolation, but if there is interpolation
         # there'll be a `begin` node, in which case, we cannot evaluate the pattern.
         def acceptable_heredoc?(node)
-          node.type?(:str, :dstr) && node.heredoc? && node.each_child_node(:begin).none?
+          node.any_str_type? && node.heredoc? && node.each_child_node(:begin).none?
         end
 
         def process_pattern(pattern_node)
