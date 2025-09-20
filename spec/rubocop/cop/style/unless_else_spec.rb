@@ -85,6 +85,27 @@ RSpec.describe RuboCop::Cop::Style::UnlessElse, :config do
     end
   end
 
+  context 'when using `unless` with `then`' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        unless x then
+        ^^^^^^^^^^^^^ Do not use `unless` with `else`. Rewrite these with the positive case first.
+          a = 1
+        else
+          a = 0
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if x then
+          a = 0
+        else
+          a = 1
+        end
+      RUBY
+    end
+  end
+
   context 'unless without else' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
