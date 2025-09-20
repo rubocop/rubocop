@@ -94,7 +94,7 @@ module RuboCop
       end
 
       def surrounding_heredoc?(node)
-        node.type?(:str, :dstr, :xstr) && node.heredoc?
+        node.any_str_type? && node.heredoc?
       end
 
       def heredoc_range(node)
@@ -106,7 +106,7 @@ module RuboCop
       end
 
       def string_continuation?(node)
-        node.type?(:str, :dstr, :xstr) && node.source.match?(/\\\s*$/)
+        node.any_str_type? && node.source.match?(/\\\s*$/)
       end
 
       def multiline_string?(node)
