@@ -839,10 +839,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       end
     RUBY
 
-    expect_correction(<<~RUBY)
-      def foo=(rhs)
-      end
-    RUBY
+    expect_no_corrections
   end
 
   it 'registers two offenses for void literals in a class setter method' do
@@ -855,10 +852,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       end
     RUBY
 
-    expect_correction(<<~RUBY)
-      def self.foo=(rhs)
-      end
-    RUBY
+    expect_no_corrections
   end
 
   it 'registers two offenses for void literals in a `#each` method' do

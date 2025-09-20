@@ -16,6 +16,12 @@ module RuboCop
       # enumerator.each { |item| item >= 2 } #=> [2, 3]
       # ----
       #
+      # NOTE: Return values in assignment method definitions such as `def foo=(arg)` are
+      # detected because they are in a void context. However, autocorrection does not remove
+      # the return value, as that would change behavior. In such cases, whether to remove
+      # the return value or rename the method to something more appropriate should be left to
+      # the user.
+      #
       # @example CheckForMethodsWithNoSideEffects: false (default)
       #   # bad
       #   def some_method
@@ -233,6 +239,7 @@ module RuboCop
 
         def autocorrect_void_expression(corrector, node)
           return if node.parent.if_type?
+          return if (def_node = node.each_ancestor(:any_def).first) && def_node.assignment_method?
 
           corrector.remove(range_with_surrounding_space(range: node.source_range, side: :left))
         end
