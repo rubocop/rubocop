@@ -444,6 +444,75 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when ParserEngine is in base config and gemspec needs to be parsed' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        # This reproduces the issue from https://github.com/rubocop/rubocop/issues/14541
+        # ParserEngine is in base file but no TargetRubyVersion is set anywhere
+        create_file('.rubocop_base.yml', <<~YAML)
+          AllCops:
+            ParserEngine: parser_prism
+        YAML
+
+        create_file('.rubocop.yml', <<~YAML)
+          inherit_from: .rubocop_base.yml
+        YAML
+
+        # The gemspec will be parsed to detect Ruby version since TargetRubyVersion is not set
+        create_file('test.gemspec', <<~RUBY)
+          Gem::Specification.new do |s|
+            s.name = 'test'
+            s.required_ruby_version = '>= 2.7.0'
+          end
+        RUBY
+      end
+
+      it 'can parse gemspec without error even when parser_prism is configured' do
+        # Without the fix, this would raise:
+        # ArgumentError: RuboCop supports target Ruby versions 3.3 and above with Prism.
+        # Specified target Ruby version: 2.7
+        expect { configuration_from_file }.not_to raise_error
+        config = configuration_from_file
+        expect(config.for_all_cops['ParserEngine']).to eq('parser_prism')
+        expect(config.target_ruby_version).to eq(2.7)
+      end
+    end
+
+    context 'when TargetRubyVersion and ParserEngine are in separate inherited configs' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        # When TargetRubyVersion is explicitly set, there's no issue
+        create_file('.rubocop_base.yml', <<~YAML)
+          AllCops:
+            ParserEngine: parser_prism
+        YAML
+
+        create_file('.rubocop.yml', <<~YAML)
+          inherit_from: .rubocop_base.yml
+
+          AllCops:
+            TargetRubyVersion: 3.3
+        YAML
+
+        create_file('test.gemspec', <<~RUBY)
+          Gem::Specification.new do |s|
+            s.name = 'test'
+            s.required_ruby_version = '>= 2.7.0'
+          end
+        RUBY
+      end
+
+      it 'loads configuration without error when using parser_prism' do
+        expect { configuration_from_file }.not_to raise_error
+        config = configuration_from_file
+        expect(config.for_all_cops['TargetRubyVersion']).to eq(3.3)
+        expect(config.for_all_cops['ParserEngine']).to eq('parser_prism')
+        expect(config.target_ruby_version).to eq(3.3)
+      end
+    end
+
     context 'when a file inherits from multiple files using a glob' do
       let(:file_path) { '.rubocop.yml' }
 
