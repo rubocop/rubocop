@@ -283,6 +283,22 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
+      context 'when parser_prism is configured' do
+        let(:hash) { { 'AllCops' => { 'ParserEngine' => 'parser_prism' } } }
+
+        it 'can parse gemspec file without error' do
+          content = <<~HEREDOC
+            Gem::Specification.new do |s|
+              s.name = 'test'
+              s.required_ruby_version = '>= 3.3.0'
+              s.licenses = ['MIT']
+            end
+          HEREDOC
+          create_file(gemspec_file_path, content)
+          expect(target_ruby.version).to eq 3.3
+        end
+      end
+
       context 'when file does not contain `required_ruby_version`' do
         before do
           content = <<~HEREDOC
