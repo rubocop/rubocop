@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
   s.add_dependency('parser', '>= 3.3.0.2')
   s.add_dependency('rainbow', '>= 2.2.2', '< 4.0')
   s.add_dependency('regexp_parser', '>= 2.9.3', '< 3.0')
-  s.add_dependency('rubocop-ast', '>= 1.46.0', '< 2.0')
+  s.add_dependency('rubocop-ast', '>= 1.47.1', '< 2.0')
   s.add_dependency('ruby-progressbar', '~> 1.7')
   s.add_dependency('unicode-display_width', '>= 2.4.0', '< 4.0')
 end

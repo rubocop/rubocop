@@ -227,7 +227,7 @@ module RuboCop
 
       def chained_to_heredoc?(node)
         while (node = node.receiver)
-          return true if node.type?(:str, :dstr, :xstr) && node.heredoc?
+          return true if node.any_str_type? && node.heredoc?
         end
 
         false

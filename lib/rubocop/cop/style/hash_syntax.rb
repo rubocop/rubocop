@@ -212,7 +212,7 @@ module RuboCop
         end
 
         def word_symbol_pair?(pair)
-          return false unless pair.key.type?(:sym, :dsym)
+          return false unless pair.key.any_sym_type?
 
           acceptable_19_syntax_symbol?(pair.key.source)
         end

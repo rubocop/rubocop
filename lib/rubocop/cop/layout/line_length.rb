@@ -322,7 +322,7 @@ module RuboCop
         def extract_heredocs(ast)
           return [] unless ast
 
-          ast.each_node(:str, :dstr, :xstr).select(&:heredoc?).map do |node|
+          ast.each_node(:any_str).select(&:heredoc?).map do |node|
             body = node.location.heredoc_body
             delimiter = node.location.heredoc_end.source.strip
             [body.first_line...body.last_line, delimiter]
@@ -344,9 +344,9 @@ module RuboCop
 
         def receiver_contains_heredoc?(node)
           return false unless (receiver = node.receiver)
-          return true if receiver.type?(:str, :dstr, :xstr) && receiver.heredoc?
+          return true if receiver.any_str_type? && receiver.heredoc?
 
-          receiver.each_descendant(:str, :dstr, :xstr).any?(&:heredoc?)
+          receiver.each_descendant(:any_str).any?(&:heredoc?)
         end
 
         def check_directive_line(line, line_index)
