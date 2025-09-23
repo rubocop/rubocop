@@ -96,7 +96,7 @@ module RuboCop
           elsif last_child.type?(:pair, :hash) || last_child.parent.array_type?
             false
           else
-            last_child.last_line <= node.last_line
+            last_child.first_line <= node.first_line
           end
         end
 

@@ -493,6 +493,17 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
       RUBY
     end
 
+    it 'does not register an offense for a line-broken `!!` expression when using `return` keyword' do
+      expect_no_offenses(<<~RUBY)
+        def foo?
+          return !!bar.do_something if condition
+          baz
+          !!qux &&
+            quux
+        end
+      RUBY
+    end
+
     it 'does not register an offense for `!!` when return location by `define_method`' do
       expect_no_offenses(<<~RUBY)
         define_method :foo? do
