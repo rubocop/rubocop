@@ -1488,6 +1488,31 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'does not register an offense when parentheses are used around a one-line `rescue` expression as a branch condition' do
+    expect_no_offenses(<<~RUBY)
+      if (foo rescue bar)
+        do_something
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when parentheses are used around a one-line `rescue` expression as a loop condition' do
+    expect_no_offenses(<<~RUBY)
+      while (foo rescue bar)
+        do_something
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when parentheses are used around a one-line `rescue` expression as a case condition' do
+    expect_no_offenses(<<~RUBY)
+      case (foo rescue bar)
+      when foo
+        do_something
+      end
+    RUBY
+  end
+
   it 'does not register an offense when parentheses are used around a one-line `rescue` expression inside an array literal' do
     expect_no_offenses(<<~RUBY)
       [
