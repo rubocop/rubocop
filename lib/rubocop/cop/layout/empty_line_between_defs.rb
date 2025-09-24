@@ -76,28 +76,40 @@ module RuboCop
       #   # good
       #   class ErrorA < BaseError; end
       #   class ErrorB < BaseError; end
-      #   class ErrorC < BaseError; end
       #
       #   # good
       #   class ErrorA < BaseError; end
       #
       #   class ErrorB < BaseError; end
       #
-      #   class ErrorC < BaseError; end
+      #   # good - DefLikeMacros: [memoize]
+      #   memoize :attribute_a
+      #   memoize :attribute_b
+      #
+      #   # good
+      #   memoize :attribute_a
+      #
+      #   memoize :attribute_b
       #
       # @example AllowAdjacentOneLineDefs: false
       #
       #   # bad
       #   class ErrorA < BaseError; end
       #   class ErrorB < BaseError; end
-      #   class ErrorC < BaseError; end
       #
       #   # good
       #   class ErrorA < BaseError; end
       #
       #   class ErrorB < BaseError; end
       #
-      #   class ErrorC < BaseError; end
+      #   # bad - DefLikeMacros: [memoize]
+      #   memoize :attribute_a
+      #   memoize :attribute_b
+      #
+      #   # good
+      #   memoize :attribute_a
+      #
+      #   memoize :attribute_b
       #
       class EmptyLineBetweenDefs < Base
         include RangeHelp
@@ -158,6 +170,8 @@ module RuboCop
         def def_location(correction_node)
           if correction_node.any_block_type?
             correction_node.source_range.join(correction_node.children.first.source_range)
+          elsif correction_node.send_type?
+            correction_node.source_range
           else
             correction_node.loc.keyword.join(correction_node.loc.name)
           end
@@ -175,8 +189,14 @@ module RuboCop
         end
 
         def macro_candidate?(node)
-          node.any_block_type? && node.children.first.macro? &&
-            empty_line_between_macros.include?(node.children.first.method_name)
+          macro_candidate = if node.any_block_type?
+                              node.send_node
+                            elsif node.send_type?
+                              node
+                            end
+          return false unless macro_candidate
+
+          macro_candidate.macro? && empty_line_between_macros.include?(macro_candidate.method_name)
         end
 
         def method_candidate?(node)
@@ -240,7 +260,9 @@ module RuboCop
         end
 
         def def_start(node)
-          if node.any_block_type? && node.children.first.send_type?
+          node = node.send_node if node.any_block_type?
+
+          if node.send_type?
             node.source_range.line
           else
             node.loc.keyword.line
@@ -252,11 +274,7 @@ module RuboCop
         end
 
         def end_loc(node)
-          if node.any_def_type? && node.endless?
-            node.source_range.end
-          else
-            node.loc.end
-          end
+          node.source_range.end
         end
 
         def autocorrect_remove_lines(corrector, newline_pos, count)

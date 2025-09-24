@@ -1,0 +1,1 @@
+* [#14496](https://github.com/rubocop/rubocop/issues/14496): Fix false negatives for `Layout/EmptyLineBetweenDefs` for `AllowAdjacentOneLineDefs: false` and `DefLikeMacros` that take no block. ([@earlopain][])
