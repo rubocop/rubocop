@@ -202,6 +202,7 @@ module RuboCop
           return false unless node.rescue_type?
           return false unless (parent = begin_node.parent)
           return false if parent.if_type? && parent.ternary?
+          return false if parent.conditional? && parent.condition == begin_node
 
           !parent.type?(:call, :array, :pair)
         end
