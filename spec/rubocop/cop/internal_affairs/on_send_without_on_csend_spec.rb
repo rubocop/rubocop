@@ -67,4 +67,16 @@ RSpec.describe RuboCop::Cop::InternalAffairs::OnSendWithoutOnCSend, :config do
       end
     RUBY
   end
+
+  it 'registers an offense when `alias_method` takes no arguments' do
+    expect_offense(<<~RUBY)
+      class MyCop < RuboCop::Cop:Base
+        def on_send(node)
+        ^^^^^^^^^^^^^^^^^ Cop defines `on_send` but not `on_csend`.
+          # ...
+        end
+        alias_method
+      end
+    RUBY
+  end
 end

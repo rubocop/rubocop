@@ -76,7 +76,7 @@ module RuboCop
         end
 
         def on_send(node) # rubocop:disable InternalAffairs/OnSendWithoutOnCSend
-          new_identifier = node.first_argument
+          return unless (new_identifier = node.first_argument)
           return unless new_identifier.basic_literal?
 
           new_identifier = new_identifier.value
