@@ -660,7 +660,13 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   context 'DefLikeMacros: [\'foo\']' do
-    let(:cop_config) { { 'DefLikeMacros' => ['foo'] } }
+    let(:allow_adjacent_one_line_defs) { true }
+    let(:cop_config) do
+      {
+        'DefLikeMacros' => ['foo'],
+        'AllowAdjacentOneLineDefs' => allow_adjacent_one_line_defs
+      }
+    end
 
     it 'registers offense' do
       expect_offense(<<~RUBY)
@@ -776,6 +782,31 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
           #foo body
         end
       RUBY
+    end
+
+    it 'does not register an offense for single-line macros' do
+      expect_no_offenses(<<~RUBY)
+        foo :first_attribute
+        foo :second_attribute
+      RUBY
+    end
+
+    context 'and AllowAdjacentOneLineDefs: false' do
+      let(:allow_adjacent_one_line_defs) { false }
+
+      it 'registers an offense for macros that take no block' do
+        expect_offense(<<~RUBY)
+          foo :first_attribute
+          foo :second_attribute
+          ^^^^^^^^^^^^^^^^^^^^^ Expected 1 empty line between send definitions; found 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo :first_attribute
+
+          foo :second_attribute
+        RUBY
+      end
     end
   end
 end
