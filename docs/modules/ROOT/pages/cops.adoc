@@ -415,6 +415,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylearraycoercion[Style/ArrayCoercion]
 * xref:cops_style.adoc#stylearrayfirstlast[Style/ArrayFirstLast]
 * xref:cops_style.adoc#stylearrayintersect[Style/ArrayIntersect]
+* xref:cops_style.adoc#stylearrayintersectwithsingleelement[Style/ArrayIntersectWithSingleElement]
 * xref:cops_style.adoc#stylearrayjoin[Style/ArrayJoin]
 * xref:cops_style.adoc#styleasciicomments[Style/AsciiComments]
 * xref:cops_style.adoc#styleattr[Style/Attr]

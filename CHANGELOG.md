@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.81.0 (2025-09-25)
+
 ### New features
 
 * [#14512](https://github.com/rubocop/rubocop/pull/14512): Add `Style/ArrayIntersectWithSingleElement` cop. ([@r7kamura][])

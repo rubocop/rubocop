@@ -938,6 +938,38 @@ array1.intersect?(array2)
 !array1.intersect?(array2)
 ----
 
+[#stylearrayintersectwithsingleelement]
+== Style/ArrayIntersectWithSingleElement
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Always (Unsafe)
+| 1.81
+| -
+|===
+
+Use `include?(element)` instead of `intersect?([element])`.
+
+[#safety-stylearrayintersectwithsingleelement]
+=== Safety
+
+The receiver might not be an array.
+
+[#examples-stylearrayintersectwithsingleelement]
+=== Examples
+
+[source,ruby]
+----
+# bad
+array.intersect?([element])
+
+# good
+array.include?(element)
+----
+
 [#stylearrayjoin]
 == Style/ArrayJoin
 
@@ -2372,7 +2404,7 @@ items.include?
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `{"collect" => "map", "collect!" => "map!", "collect_concat" => "flat_map", "inject" => "reduce", "detect" => "find", "find_all" => "select", "member?" => "include?"}`
+| `{"collect"=>"map", "collect!"=>"map!", "collect_concat"=>"flat_map", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
 | 
 
 | MethodsAcceptingSymbol
@@ -8186,11 +8218,11 @@ end
 | Name | Default value | Configurable values
 
 | InverseMethods
-| `{any?: :none?, even?: :odd?, "==": :!=, "=~": :!~, "<": :>=, ">": :<=}`
+| `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
 | 
 
 | InverseBlocks
-| `{select: :reject, select!: :reject!}`
+| `{:select=>:reject, :select!=>:reject!}`
 | 
 |===
 
@@ -8268,7 +8300,7 @@ foo if !condition
 | Name | Default value | Configurable values
 
 | InverseMethods
-| `{"!=": :==, ">": :<=, "<=": :>, "<": :>=, ">=": :<, "!~": :=~, zero?: :nonzero?, nonzero?: :zero?, any?: :none?, none?: :any?, even?: :odd?, odd?: :even?}`
+| `{:!==>:==, :>=>:<=, :<==>:>, :<=>:>=, :>==>:<, :!~=>:=~, :zero?=>:nonzero?, :nonzero?=>:zero?, :any?=>:none?, :none?=>:any?, :even?=>:odd?, :odd?=>:even?}`
 | 
 |===
 
@@ -12789,7 +12821,7 @@ default.
 | Name | Default value | Configurable values
 
 | PreferredDelimiters
-| `{"default" => "()", "%i" => "[]", "%I" => "[]", "%r" => "{}", "%w" => "[]", "%W" => "[]"}`
+| `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
 | 
 |===
 
@@ -13275,7 +13307,7 @@ A.foo
 | Name | Default value | Configurable values
 
 | Methods
-| `{"join" => "", "sum" => 0, "exit" => true, "exit!" => false, "split" => " ", "chomp" => "\n", "chomp!" => "\n"}`
+| `{"join"=>"", "sum"=>0, "exit"=>true, "exit!"=>false, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
 | 
 |===
 
@@ -16478,7 +16510,7 @@ end
 | Name | Default value | Configurable values
 
 | Methods
-| `{"reduce" => ["acc", "elem"]}`, `{"inject" => ["acc", "elem"]}`
+| `{"reduce"=>["acc", "elem"]}`, `{"inject"=>["acc", "elem"]}`
 | Array
 |===
 
@@ -17394,7 +17426,7 @@ from the `String` class.
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `{"intern" => "to_sym"}`
+| `{"intern"=>"to_sym"}`
 | 
 |===
 
@@ -18262,6 +18294,9 @@ The supported styles are:
 for all parenthesized multi-line method calls with arguments.
 * `comma`: Requires a comma after the last argument, but only for
 parenthesized method calls where each argument is on its own line.
+* `diff_comma`: Requires a comma after the last argument, but only
+when that argument is followed by an immediate newline, even if
+there is an inline comment on the same line.
 * `no_comma`: Requires that there is no comma after the last
 argument.
 
@@ -18340,6 +18375,53 @@ method(
 )
 ----
 
+[#enforcedstyleformultiline_-diff_comma-styletrailingcommainarguments]
+==== EnforcedStyleForMultiline: diff_comma
+
+[source,ruby]
+----
+# bad
+method(1, 2,)
+
+# good
+method(1, 2)
+
+# good
+method(
+  1, 2,
+  3,
+)
+
+# good
+method(
+  1, 2, 3,
+)
+
+# good
+method(
+  1,
+  2,
+)
+
+# bad
+method(1, [
+  2,
+],)
+
+# good
+method(1, [
+  2,
+])
+
+# bad
+object[1, 2,
+       3, 4,]
+
+# good
+object[1, 2,
+       3, 4]
+----
+
 [#enforcedstyleformultiline_-no_comma-_default_-styletrailingcommainarguments]
 ==== EnforcedStyleForMultiline: no_comma (default)
 
@@ -18372,7 +18454,7 @@ method(
 
 | EnforcedStyleForMultiline
 | `no_comma`
-| `comma`, `consistent_comma`, `no_comma`
+| `comma`, `consistent_comma`, `diff_comma`, `no_comma`
 |===
 
 [#references-styletrailingcommainarguments]

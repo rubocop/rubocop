@@ -3345,7 +3345,7 @@ Style/ArrayIntersectWithSingleElement:
   Description: 'Use `include?(element)` instead of `intersect?([element])`.'
   Enabled: 'pending'
   Safe: false
-  VersionAdded: <<next>>
+  VersionAdded: '1.81'
 
 Style/ArrayJoin:
   Description: 'Use Array#join instead of Array#*.'

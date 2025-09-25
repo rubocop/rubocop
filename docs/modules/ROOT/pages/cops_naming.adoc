@@ -806,7 +806,7 @@ TeslaVehicle
 | Boolean
 
 | FlaggedTerms
-| `{"whitelist" => {"Regex" => /white[-_\s]?list/, "Suggestions" => ["allowlist", "permit"]}, "blacklist" => {"Regex" => /black[-_\s]?list/, "Suggestions" => ["denylist", "block"]}, "slave" => {"WholeWord" => true, "Suggestions" => ["replica", "secondary", "follower"]}}`
+| `{"whitelist"=>{"Regex"=>/white[-_\s]?list/, "Suggestions"=>["allowlist", "permit"]}, "blacklist"=>{"Regex"=>/black[-_\s]?list/, "Suggestions"=>["denylist", "block"]}, "slave"=>{"WholeWord"=>true, "Suggestions"=>["replica", "secondary", "follower"]}}`
 | 
 |===
 
@@ -1369,6 +1369,28 @@ end
 def foo?
   return unless bar?
   true
+end
+----
+
+[#allowedmethods_-_call_-_default_-namingpredicatemethod]
+==== AllowedMethods: [call] (default)
+
+[source,ruby]
+----
+# good
+def call
+  foo == bar
+end
+----
+
+[#allowedpatterns_-__afoo_-namingpredicatemethod]
+==== AllowedPatterns: [\Afoo]
+
+[source,ruby]
+----
+# good
+def foo?
+  'foo'
 end
 ----
 
