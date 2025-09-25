@@ -43,24 +43,26 @@ module RuboCop
         # @!method nil_check?(node)
         def_node_matcher :nil_check?, '(send _ :nil?)'
 
+        # rubocop:disable Metrics/AbcSize
         def on_send(node)
           return unless node.receiver
 
           style_check?(node) do
             add_offense(node.loc.selector) do |corrector|
-              new_code = if prefer_comparison?
-                           node.source.sub('.nil?', ' == nil')
-                         else
-                           node.source.sub(/\s*={2,3}\s*nil/, '.nil?')
-                         end
-
-              corrector.replace(node, new_code)
+              if prefer_comparison?
+                range = node.loc.dot.join(node.loc.selector.end)
+                corrector.replace(range, ' == nil')
+              else
+                range = node.receiver.source_range.end.join(node.source_range.end)
+                corrector.replace(range, '.nil?')
+              end
 
               parent = node.parent
               corrector.wrap(node, '(', ')') if parent.respond_to?(:method?) && parent.method?(:!)
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 

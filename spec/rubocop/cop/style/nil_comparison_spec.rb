@@ -36,6 +36,28 @@ RSpec.describe RuboCop::Cop::Style::NilComparison, :config do
         bar if x.nil?
       RUBY
     end
+
+    it 'registers and corrects an offense when using `x.==(nil)` syntax' do
+      expect_offense(<<~RUBY)
+        x.==(nil)
+          ^^ Prefer the use of the `nil?` predicate.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.nil?
+      RUBY
+    end
+
+    it 'registers and corrects an offense when using `x.===(nil)` syntax' do
+      expect_offense(<<~RUBY)
+        x.===(nil)
+          ^^^ Prefer the use of the `nil?` predicate.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.nil?
+      RUBY
+    end
   end
 
   context 'configured with comparison preferred' do
