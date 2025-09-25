@@ -33,7 +33,7 @@ module RuboCop
           symbol_args = node.arguments.select(&:sym_type?)
           return if symbol_args.none?
 
-          NodePatternGroups::NODE_GROUPS.each do |group_name, group_types|
+          Commissioner::TYPES_FOR_GROUP.each do |group_name, group_types|
             next unless group_satisfied?(group_types, symbol_args)
 
             offense_range = arguments_range(node)

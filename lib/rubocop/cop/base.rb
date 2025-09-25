@@ -74,7 +74,19 @@ module RuboCop
       def self.inherited(subclass)
         super
         subclass.instance_variable_set(:@gem_requirements, gem_requirements.dup)
+
+        subclass.instance_variable_set(:@callbacks_needed, callbacks_needed.dup)
+        def subclass.method_added(method_name)
+          super
+          record_callback(method_name)
+        end
+
         Registry.global.enlist(subclass)
+      end
+
+      def self.include(mod)
+        super
+        mod.instance_methods.each { |method_name| record_callback(method_name) }
       end
 
       # Call for abstract Cop classes
@@ -319,24 +331,35 @@ module RuboCop
 
       ### Reserved for Commissioner
 
-      # rubocop:disable Layout/ClassStructure
+      @callbacks_needed = Set.new
+
       # @api private
       def callbacks_needed
         self.class.callbacks_needed
       end
 
-      # @api private
-      def self.callbacks_needed
-        @callbacks_needed ||= public_instance_methods.select do |m|
-          # OPTIMIZE: Check method existence first to make fewer `start_with?` calls.
-          # At the time of writing this comment, this excludes 98 of ~104 methods.
-          # `start_with?` with two string arguments instead of a regex is faster
-          # in this specific case as well.
-          !Base.method_defined?(m) && # exclude standard "callbacks" like 'on_begin_investigation'
-            m.start_with?('on_', 'after_')
+      class << self
+        attr_reader :callbacks_needed
+
+        # Called whenever a new instance method is added. Works both with methods added via
+        # `def` and methods that are included through a module.
+        # @api private
+        def record_callback(method_name)
+          # exclude standard "callbacks" like 'on_begin_investigation'
+          return if Base.method_defined?(method_name)
+
+          method_name.match(/\A(?<prefix>on_|after_)(?<type>.*)/) do |matchdata|
+            if (types = Commissioner::TYPES_FOR_GROUP[matchdata[:type].to_sym])
+              # For `on_any_block` and similar, add methods `on_block`/`on_numblock`/`on_itblock`.
+              methods = types.map { |type| :"#{matchdata[:prefix]}#{type}" }
+              @callbacks_needed.merge(methods)
+              methods.each { |method| alias_method(method, method_name) }
+            else
+              @callbacks_needed << method_name
+            end
+          end
         end
       end
-      # rubocop:enable Layout/ClassStructure
 
       # Called before any investigation
       # @api private

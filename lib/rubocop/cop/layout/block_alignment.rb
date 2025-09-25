@@ -81,12 +81,9 @@ module RuboCop
            (send equal?(%1) !:[] ...)}
         PATTERN
 
-        def on_block(node)
+        def on_any_block(node)
           check_block_alignment(start_for_block_node(node), node)
         end
-
-        alias on_numblock on_block
-        alias on_itblock on_block
 
         def style_parameter_name
           'EnforcedStyleAlignWith'

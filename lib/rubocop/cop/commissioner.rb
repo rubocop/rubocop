@@ -39,6 +39,14 @@ module RuboCop
         end
       end
 
+      # Contains a mapping of group types to all the node types they contain.
+      # For example, `TYPES_FOR_GROUP[:any_def] == [:def, :defs]`.
+      # @api private
+      TYPES_FOR_GROUP = AST::Node::GROUP_FOR_TYPE.each_with_object({}) do |(node_type, group), hash|
+        hash[group] ||= []
+        hash[group] << node_type
+      end
+
       attr_reader :errors
 
       def initialize(cops, forces = [], options = {})

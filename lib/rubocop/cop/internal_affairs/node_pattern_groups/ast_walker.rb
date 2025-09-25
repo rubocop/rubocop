@@ -86,7 +86,7 @@ module RuboCop
             # Find all node groups where all of the members are present in the union
             type_names = types_to_check.map(&:child)
 
-            NODE_GROUPS.select { |_, group| group & type_names == group }.each_key do |name|
+            Commissioner::TYPES_FOR_GROUP.select { |_, group| group & type_names == group }.each_key do |name|
               nodes = get_relevant_nodes(types_to_check, name)
 
               yield name, nodes
@@ -95,7 +95,7 @@ module RuboCop
 
           def get_relevant_nodes(node_types, group_name)
             node_types.each_with_object([]) do |node_type, arr|
-              next unless NODE_GROUPS[group_name].include?(node_type.child)
+              next unless Commissioner::TYPES_FOR_GROUP[group_name].include?(node_type.child)
 
               arr << node_type
             end

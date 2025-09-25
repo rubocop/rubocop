@@ -85,11 +85,11 @@ module RuboCop
         alias on_defs on_def
 
         def on_args(node)
-          node.children.each { |arg| on_argument(arg) }
+          node.children.each { |arg| handle_argument(arg) }
         end
 
         def on_blockarg(node)
-          on_argument(node)
+          handle_argument(node)
         end
 
         def on_masgn(node)
@@ -176,7 +176,7 @@ module RuboCop
             node.implicit_call?)
         end
 
-        def on_argument(node)
+        def handle_argument(node)
           if node.mlhs_type?
             on_args(node)
           elsif node.respond_to?(:name)
