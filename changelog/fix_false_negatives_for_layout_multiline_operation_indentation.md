@@ -1,1 +1,0 @@
-* [#14522](https://github.com/rubocop/rubocop/issues/14522): Fix false negatives for `Layout/MultilineOperationIndentation` when using indented code on LHS of equality operator in modifier method definition. ([@koic][])
