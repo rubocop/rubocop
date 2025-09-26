@@ -94,7 +94,7 @@ module RuboCop
         def on_itblock(node)
           case style
           when :allow_single_line
-            return if same_line?(node.source_range.begin, node.source_range.end)
+            return if node.single_line?
 
             add_offense(node, message: MSG_AVOID_IT_PARAMETER_MULTILINE)
           when :disallow

@@ -1,0 +1,1 @@
+* [#14565](https://github.com/rubocop/rubocop/pull/14565): Allow multiline method chain for `Style/NumberedParameters` and `Style/ItBlockParameter` with `EnforcedStyle: allow_single_line` when the block itself is on a single line. ([@earlopain][])
