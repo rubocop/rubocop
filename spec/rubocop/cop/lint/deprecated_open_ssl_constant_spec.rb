@@ -45,6 +45,17 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedOpenSSLConstant, :config do
     RUBY
   end
 
+  it 'registers an offense when the `Cipher` constant appears twice and autocorrects' do
+    expect_offense(<<~RUBY)
+      OpenSSL::Cipher::Cipher.new('AES-256-ECB')
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `OpenSSL::Cipher.new('AES-256-ECB')` instead of `OpenSSL::Cipher::Cipher.new('AES-256-ECB')`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      OpenSSL::Cipher.new('AES-256-ECB')
+    RUBY
+  end
+
   it 'registers an offense with cipher constant and `ecb` argument and corrects' do
     expect_offense(<<~RUBY)
       OpenSSL::Cipher::BF.new('ecb')
