@@ -11,6 +11,14 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14563](https://github.com/rubocop/rubocop/issues/14563): Fix incorrect autocorrection for `Lint/DeprecatedOpenSSLConstant` when `Cipher` appears twice. ([@koic][])
+
+### Changes
+
+* [#14565](https://github.com/rubocop/rubocop/pull/14565): Allow multiline method chain for `Style/NumberedParameters` and `Style/ItBlockParameter` with `EnforcedStyle: allow_single_line` when the block itself is on a single line. ([@earlopain][])
+
 ## 1.81.0 (2025-09-25)
 
 ### New features
