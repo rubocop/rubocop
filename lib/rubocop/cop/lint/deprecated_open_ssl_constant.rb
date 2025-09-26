@@ -118,8 +118,11 @@ module RuboCop
 
         def replacement_args(node)
           algorithm_constant, = algorithm_const(node)
-          algorithm_name = algorithm_name(algorithm_constant)
+          if algorithm_constant.source == 'OpenSSL::Cipher::Cipher'
+            return node.first_argument.source
+          end
 
+          algorithm_name = algorithm_name(algorithm_constant)
           if openssl_class(algorithm_constant) == 'OpenSSL::Cipher'
             build_cipher_arguments(node, algorithm_name, node.arguments.empty?)
           else
