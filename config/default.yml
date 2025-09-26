@@ -1660,6 +1660,12 @@ Lint/BinaryOperatorWithIdenticalOperands:
   VersionAdded: '0.89'
   VersionChanged: '1.69'
 
+Lint/BooleanMemoization:
+  Description: 'Checks for boolean memoization using `||=` operator.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Lint/BooleanSymbol:
   Description: 'Checks for `:true` and `:false` symbols.'
   Enabled: true
