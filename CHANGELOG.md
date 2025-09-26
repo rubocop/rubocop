@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.81.1 (2025-09-26)
+
 ### Bug fixes
 
 * [#14563](https://github.com/rubocop/rubocop/issues/14563): Fix incorrect autocorrection for `Lint/DeprecatedOpenSSLConstant` when `Cipher` appears twice. ([@koic][])
