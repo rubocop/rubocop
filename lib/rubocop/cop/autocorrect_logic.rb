@@ -35,8 +35,8 @@ module RuboCop
         # `false` is the same as `disabled` for backward compatibility.
         return false if ['disabled', false].include?(cop_config['AutoCorrect'])
 
-        # When LSP is enabled, it is considered as editing source code,
-        # and autocorrection with `AutoCorrect: contextual` will not be performed.
+        # When LSP is enabled or the `--editor-mode` option is on, it is considered as editing
+        # source code, and autocorrection with `AutoCorrect: contextual` will not be performed.
         return false if contextual_autocorrect? && LSP.enabled?
 
         # :safe_autocorrect is a derived option based on several command-line
