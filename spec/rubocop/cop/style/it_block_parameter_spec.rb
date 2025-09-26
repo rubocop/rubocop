@@ -16,10 +16,9 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
         expect_no_corrections
       end
 
-      it 'registers an offense when using `it` block parameter with multi-line method chain' do
-        expect_offense(<<~RUBY)
+      it 'registers no offense when using `it` block parameter with multi-line method chain' do
+        expect_no_offenses(<<~RUBY)
           collection.each
-          ^^^^^^^^^^^^^^^ Avoid using `it` block parameter for multi-line blocks.
                     .foo { puts it }
         RUBY
       end

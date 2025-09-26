@@ -36,7 +36,7 @@ module RuboCop
         def on_numblock(node)
           if style == :disallow
             add_offense(node, message: MSG_DISALLOW)
-          elsif !same_line?(node.source_range.begin, node.source_range.end)
+          elsif node.multiline?
             add_offense(node, message: MSG_MULTI_LINE)
           end
         end
