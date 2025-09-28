@@ -4552,8 +4552,9 @@ Style/LambdaCall:
   Description: 'Use lambda.call(...) instead of lambda.(...).'
   StyleGuide: '#proc-call'
   Enabled: true
+  AutoCorrect: contextual
   VersionAdded: '0.13'
-  VersionChanged: '0.14'
+  VersionChanged: '<<next>>'
   EnforcedStyle: call
   SupportedStyles:
     - call
