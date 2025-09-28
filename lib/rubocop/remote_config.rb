@@ -84,6 +84,8 @@ module RuboCop
     end
 
     def cache_path_exists?
+      return @cache_path_exists if defined?(@cache_path_exists)
+
       @cache_path_exists ||= File.exist?(cache_path)
     end
 
