@@ -72,20 +72,6 @@ module CopHelper
     end
   end
 
-  def autocorrect_source_file(source)
-    Tempfile.open('tmp') { |f| autocorrect_source(source, f) }
-  end
-
-  def autocorrect_source(source, file = nil)
-    RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
-    RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
-    cop.instance_variable_get(:@options)[:autocorrect] = true
-    processed_source = parse_source(source, file)
-    _investigate(cop, processed_source)
-
-    @last_corrector.rewrite
-  end
-
   def _investigate(cop, processed_source)
     team = RuboCop::Cop::Team.new([cop], configuration, raise_error: true)
     report = team.investigate(processed_source)
