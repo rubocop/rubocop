@@ -95,7 +95,7 @@ module RuboCop
           $(call
             {
               (begin (send $_ :& $_))
-              (call $_ :intersection $_)
+              (call $!nil? :intersection $_)
             }
             $%1
           )
@@ -107,7 +107,7 @@ module RuboCop
             $(call
               {
                 (begin (send $_ :& $_))
-                (call $_ :intersection $_)
+                (call $!nil? :intersection $_)
               }
               %ARRAY_SIZE_METHODS
             )
