@@ -213,6 +213,12 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
         RUBY
       end
 
+      it 'does not register an offense for `intersection(other).any?` without a receiver' do
+        expect_no_offenses(<<~RUBY)
+          intersection(other).any?
+        RUBY
+      end
+
       described_class::ARRAY_SIZE_METHODS.each do |method|
         it "registers an offense when using `.#{method} > 0`" do
           expect_offense(<<~RUBY, method: method)
@@ -289,6 +295,12 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
         it "does not register an offense when using `.#{method} == 1`" do
           expect_no_offenses(<<~RUBY)
             a.intersection(b).#{method} == 1
+          RUBY
+        end
+
+        it "does not register an offense for `intersection(other).#{method}` without a receiver" do
+          expect_no_offenses(<<~RUBY)
+            intersection(other).#{method} == 0
           RUBY
         end
       end
