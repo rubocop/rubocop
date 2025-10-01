@@ -221,6 +221,44 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
     RUBY
   end
 
+  it 'registers an offense for a one-line `in` pattern matching', :ruby27 do
+    # `42 in var` is `match-pattern` node.
+    expect_offense(<<~'RUBY')
+      "#{42 in var}"
+      ^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (42 in var).to_s
+    RUBY
+  end
+
+  it 'registers an offense for a one-line `in` pattern matching', :ruby30 do
+    # `42 in var` is `match-pattern-p` node.
+    expect_offense(<<~'RUBY')
+      "#{42 in var}"
+      ^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (42 in var).to_s
+    RUBY
+  end
+
+  it 'accepts an offense for a one-line `=>` pattern matching', :ruby30 do
+    # `42 => var` is `match-pattern` node.
+    expect_no_offenses(<<~'RUBY')
+      "#{42 => var}"
+    RUBY
+  end
+
+  it 'accepts an offense for a part of one-line `=>` pattern matching', :ruby30 do
+    # `42 => var` is `match-pattern` node.
+    expect_no_offenses(<<~'RUBY')
+      "#{x; 42 => var}"
+    RUBY
+  end
+
   it 'accepts strings with characters before the interpolation' do
     expect_no_offenses('"this is #{@sparta}"')
   end
