@@ -31,7 +31,7 @@ module RuboCop
 
         # @!method overwritten_constant(node)
         def_node_matcher :overwritten_constant, <<~PATTERN
-          (resbody nil? (casgn {cbase nil?} $_) nil?)
+          (resbody nil? (casgn {cbase nil? const} $_) nil?)
         PATTERN
 
         def self.autocorrect_incompatible_with
