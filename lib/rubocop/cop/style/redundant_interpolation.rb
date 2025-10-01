@@ -49,9 +49,10 @@ module RuboCop
         def on_dstr(node)
           return unless single_interpolation?(node)
 
-          add_offense(node) do |corrector|
-            embedded_node = node.children.first
+          embedded_node = node.children.first
+          return if use_match_pattern?(embedded_node)
 
+          add_offense(node) do |corrector|
             if variable_interpolation?(embedded_node)
               autocorrect_variable_interpolation(corrector, embedded_node, node)
             elsif single_variable_interpolation?(embedded_node)
@@ -69,6 +70,14 @@ module RuboCop
             interpolation?(node.children.first) &&
             !implicit_concatenation?(node) &&
             !embedded_in_percent_array?(node)
+        end
+
+        def use_match_pattern?(node)
+          return false if target_ruby_version <= 2.7
+
+          node.children.any? do |child|
+            child.respond_to?(:match_pattern_type?) && child.match_pattern_type?
+          end
         end
 
         def single_variable_interpolation?(node)
