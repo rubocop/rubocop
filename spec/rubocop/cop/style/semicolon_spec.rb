@@ -267,6 +267,60 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     end
   end
 
+  it 'registers an offense for a method call with keyword arguments without parentheses when terminated with a semicolon' do
+    expect_offense(<<~RUBY)
+      m key: value;
+                  ^ Do not use semicolons to terminate expressions.
+      do_something
+    RUBY
+
+    expect_correction(<<~RUBY)
+      m key: value
+      do_something
+    RUBY
+  end
+
+  context 'Ruby >= 3.1', :ruby31 do
+    it 'registers an offense for a method call using multiple hash value omission without parentheses when terminated with a semicolon' do
+      expect_offense(<<~RUBY)
+        m key1:, key2:;
+                      ^ Do not use semicolons to terminate expressions.
+        do_something
+      RUBY
+
+      expect_correction(<<~RUBY)
+        m(key1:, key2:)
+        do_something
+      RUBY
+    end
+
+    it 'registers an offense for a method call using hash value omission with parentheses when terminated with a semicolon' do
+      expect_offense(<<~RUBY)
+        m(key:);
+               ^ Do not use semicolons to terminate expressions.
+        do_something
+      RUBY
+
+      expect_correction(<<~RUBY)
+        m(key:)
+        do_something
+      RUBY
+    end
+
+    it 'registers an offense for a safe navigation method call using hash value omission without parentheses when terminated with a semicolon' do
+      expect_offense(<<~RUBY)
+        obj&.m key:;
+                   ^ Do not use semicolons to terminate expressions.
+        do_something
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj&.m(key:)
+        do_something
+      RUBY
+    end
+  end
+
   context 'with a multi-expression line without a semicolon' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)

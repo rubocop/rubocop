@@ -1,0 +1,1 @@
+* [#14577](https://github.com/rubocop/rubocop/pull/14577): Fix an incorrect autocorrect for `Style/Semicolon` when a method call using hash value omission without parentheses is terminated with a semicolon. ([@koic][])
