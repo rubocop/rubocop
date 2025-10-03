@@ -24,10 +24,7 @@ module RuboCop
         MSG = 'Avoid rescuing the `Exception` class. Perhaps you meant to rescue `StandardError`?'
 
         def on_resbody(node)
-          return unless node.children.first
-
-          rescue_args = node.children.first.children
-          return unless rescue_args.any? { |a| targets_exception?(a) }
+          return unless node.exceptions.any? { |exception| targets_exception?(exception) }
 
           add_offense(node)
         end
