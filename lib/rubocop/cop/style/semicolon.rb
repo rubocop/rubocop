@@ -119,6 +119,7 @@ module RuboCop
           tokens[1]&.type == :tSTRING_DBEG && tokens[2]&.semicolon?
         end
 
+        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
         def register_semicolon(line, column, after_expression, token_before_semicolon = nil)
           range = source_range(processed_source.buffer, line, column)
 
@@ -130,14 +131,19 @@ module RuboCop
               # without parentheses.
               # See: https://github.com/rubocop/rubocop/issues/10791
               if token_before_semicolon&.regexp_dots?
-                range_node = find_range_node(token_before_semicolon)
-                corrector.wrap(range_node, '(', ')') if range_node
+                node = find_node(range_nodes, token_before_semicolon)
+              elsif token_before_semicolon&.type == :tLABEL
+                node = find_node(value_omission_pair_nodes, token_before_semicolon).parent
+                space = node.parent.loc.selector.end.join(node.source_range.begin)
+                corrector.remove(space)
               end
 
+              corrector.wrap(node, '(', ')') if node
               corrector.remove(range)
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         def expressions_per_line(exprs)
           # create a map matching lines to the number of expressions on them
@@ -153,9 +159,9 @@ module RuboCop
           end
         end
 
-        def find_range_node(token_before_semicolon)
-          range_nodes.detect do |range_node|
-            range_node.source_range.contains?(token_before_semicolon.pos)
+        def find_node(nodes, token_before_semicolon)
+          nodes.detect do |node|
+            node.source_range.overlaps?(token_before_semicolon.pos)
           end
         end
 
@@ -165,6 +171,15 @@ module RuboCop
           ast = processed_source.ast
           @range_nodes = ast.range_type? ? [ast] : []
           @range_nodes.concat(ast.each_descendant(:range).to_a)
+        end
+
+        def value_omission_pair_nodes
+          if instance_variable_defined?(:@value_omission_pair_nodes)
+            return @value_omission_pair_nodes
+          end
+
+          ast = processed_source.ast
+          @value_omission_pair_nodes = ast.each_descendant(:pair).to_a.select(&:value_omission?)
         end
       end
     end
