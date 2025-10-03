@@ -2405,7 +2405,7 @@ items.include?
 
 | PreferredMethods
 | `{"collect"=>"map", "collect!"=>"map!", "collect_concat"=>"flat_map", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
-| 
+|
 
 | MethodsAcceptingSymbol
 | `inject`, `reduce`
@@ -8219,11 +8219,11 @@ end
 
 | InverseMethods
 | `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
-| 
+|
 
 | InverseBlocks
 | `{:select=>:reject, :select!=>:reject!}`
-| 
+|
 |===
 
 [#styleinvertibleunlesscondition]
@@ -8301,7 +8301,7 @@ foo if !condition
 
 | InverseMethods
 | `{:!==>:==, :>=>:<=, :<==>:>, :<=>:>=, :>==>:<, :!~=>:=~, :zero?=>:nonzero?, :nonzero?=>:zero?, :any?=>:none?, :none?=>:any?, :even?=>:odd?, :odd?=>:even?}`
-| 
+|
 |===
 
 [#styleipaddresses]
@@ -8983,7 +8983,7 @@ end
 
 | ValueCapitalization
 | `<none>`
-| 
+|
 |===
 
 [#stylemapcompactwithconditionalblock]
@@ -9226,13 +9226,15 @@ In the default style (require_parentheses), macro methods are allowed.
 Additional methods can be added to the `AllowedMethods` or
 `AllowedPatterns` list. These options are valid only in the default
 style. Macros can be included by either setting `IgnoreMacros` to false
-or adding specific macros to the `IncludedMacros` list.
+or adding specific macros to the `IncludedMacros` list. Alternatively,
+macro methods matching patterns in `IncludedMacroPatterns` will be enforced.
 
 Precedence of options is as follows:
 
 1. `AllowedMethods`
 2. `AllowedPatterns`
 3. `IncludedMacros`
+4. `IncludedMacroPatterns`
 
 If a method is listed in both `IncludedMacros` and `AllowedMethods`,
 then the latter takes precedence (that is, the method is allowed).
@@ -9391,6 +9393,24 @@ assert_match(/foo/, bar)
 array.delete(e)
 ----
 
+[#includedmacropatterns_-___assert__-__refute__-stylemethodcallwithargsparentheses]
+==== IncludedMacroPatterns: ["^assert", "^refute"]
+
+[source,ruby]
+----
+# bad
+class TestClass
+  assert_equal 'test', x
+  refute_nil value
+end
+
+# good
+class TestClass
+  assert_equal('test', x)
+  refute_nil(value)
+end
+----
+
 [#allowparenthesesinmultilinecall_-false-_default_-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInMultilineCall: false (default)
 
@@ -9512,6 +9532,10 @@ Array 1
 | Array
 
 | IncludedMacros
+| `[]`
+| Array
+
+| IncludedMacroPatterns
 | `[]`
 | Array
 
@@ -12822,7 +12846,7 @@ default.
 
 | PreferredDelimiters
 | `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
-| 
+|
 |===
 
 [#references-stylepercentliteraldelimiters]
@@ -13308,7 +13332,7 @@ A.foo
 
 | Methods
 | `{"join"=>"", "sum"=>0, "exit"=>true, "exit!"=>false, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
-| 
+|
 |===
 
 [#styleredundantarrayconstructor]
@@ -17427,7 +17451,7 @@ from the `String` class.
 
 | PreferredMethods
 | `{"intern"=>"to_sym"}`
-| 
+|
 |===
 
 [#stylestrip]
@@ -19612,7 +19636,7 @@ array of 2 or fewer elements.
 
 | WordRegex
 | `(?-mix:\A(?:\p{Word}\|\p{Word}-\p{Word}\|\n\|\t)+\z)`
-| 
+|
 |===
 
 [#references-stylewordarray]

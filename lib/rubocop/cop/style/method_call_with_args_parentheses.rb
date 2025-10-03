@@ -148,6 +148,16 @@ module RuboCop
       #   # still enforces parentheses on other methods
       #   array.delete(e)
       #
+      # @example IncludedMacroPatterns: ["^assert", "^refute"]
+      #
+      #   # bad
+      #   assert_equal 'test', x
+      #   refute_nil value
+      #
+      #   # good
+      #   assert_equal('test', x)
+      #   refute_nil(value)
+      #
       # @example AllowParenthesesInMultilineCall: false (default)
       #
       #   # bad
