@@ -189,8 +189,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                when running --auto-gen-config, except if the
                                                number of files with offenses is bigger than
                                                exclude-limit. Default is false.
-                  --[no-]auto-gen-timestamp    Include the date and time when the --auto-gen-config
+                  --[no-]auto-gen-timestamp    Include the date and time when --auto-gen-config
                                                was run in the file it generates. Default is true.
+                  --[no-]auto-gen-version      Include the current RuboCop version when generating
+                                               a TODO configuration with --auto-gen-config.
+                                               Default is true.
                   --[no-]auto-gen-enforced-style
                                                Add a setting to the TODO configuration file to enforce
                                                the style used, rather than a per-file exclusion
