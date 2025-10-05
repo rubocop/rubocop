@@ -55,19 +55,21 @@ module RuboCop
         include OnNormalIfUnless
         extend AutoCorrector
 
-        MSG = 'Favor the ternary operator (`?:`) or multi-line constructs ' \
-              'over single-line `%<keyword>s/then/else/end` constructs.'
+        MSG_SUFFIX = 'over single-line `%<keyword>s/then/else/end` constructs.'
+        MSG_TERNARY = "Favor the ternary operator (`?:`) #{MSG_SUFFIX}"
+        MSG_MULTILINE = "Favor multi-line `%<keyword>s` #{MSG_SUFFIX}"
 
         def on_normal_if_unless(node)
           return unless node.single_line?
           return unless node.else_branch
           return if node.elsif? || node.if_branch&.begin_type?
 
-          message = message(node)
-          add_offense(node, message: message) do |corrector|
+          multiline = multiline?(node)
+
+          add_offense(node, message: message(node, multiline)) do |corrector|
             next if part_of_ignored_node?(node)
 
-            autocorrect(corrector, node)
+            autocorrect(corrector, node, multiline)
 
             ignore_node(node)
           end
@@ -75,12 +77,18 @@ module RuboCop
 
         private
 
-        def message(node)
-          format(MSG, keyword: node.keyword)
+        def multiline?(node)
+          always_multiline? || cannot_replace_to_ternary?(node)
         end
 
-        def autocorrect(corrector, node)
-          if always_multiline? || cannot_replace_to_ternary?(node)
+        def message(node, multiline)
+          template = multiline ? MSG_MULTILINE : MSG_TERNARY
+
+          format(template, keyword: node.keyword)
+        end
+
+        def autocorrect(corrector, node, multiline)
+          if multiline
             IfThenCorrector.new(node, indentation: configured_indentation_width).call(corrector)
           else
             corrector.replace(node, ternary_correction(node))

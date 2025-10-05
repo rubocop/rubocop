@@ -10,14 +10,6 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       }
     }
   end
-  let(:if_offense_message) do
-    'Favor the ternary operator (`?:`) or multi-line constructs over single-line ' \
-      '`if/then/else/end` constructs.'
-  end
-  let(:unless_offense_message) do
-    'Favor the ternary operator (`?:`) or multi-line constructs over single-line ' \
-      '`unless/then/else/end` constructs.'
-  end
 
   context 'when AlwaysCorrectToMultiline is false' do
     let(:always_correct_to_multiline) { false }
@@ -25,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it 'registers and corrects an offense with ternary operator for if/then/else/end' do
       expect_offense(<<~RUBY)
         if cond then run else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -41,7 +33,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        '`then` without body' do
       expect_offense(<<~RUBY)
         if cond then else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -62,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it 'registers and corrects an offense with ternary operator for unless/then/else/end' do
       expect_offense(<<~RUBY)
         unless cond then run else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{unless_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `unless/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -73,8 +65,8 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it 'registers and corrects an offense with ternary operator for nested if/then/else/end' do
       expect_offense(<<~RUBY)
         if cond then foo else if cond2; bar else baz end; end
-                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -85,7 +77,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it 'registers and corrects an offense when the else branch of a ternary operator has multiple expressions' do
       expect_offense(<<~RUBY)
         if cond; foo; else bar; baz; end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -110,7 +102,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
          'when if/then/else/end is preceded by an operator' do
         expect_offense(<<~RUBY, operator: operator)
           a %{operator} if cond then run else dont end
-            _{operator} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+            _{operator} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -124,7 +116,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
          "for if/then/else/end with `#{expr}` constructs inside inner branches" do
         expect_offense(<<~RUBY, expr: expr)
           if %{expr} then %{expr} else %{expr} end
-          ^^^^{expr}^^^^^^^{expr}^^^^^^^{expr}^^^^ #{if_offense_message}
+          ^^^^{expr}^^^^^^^{expr}^^^^^^^{expr}^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -148,7 +140,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if/then/else/end that contains method calls with unparenthesized arguments' do
       expect_offense(<<~RUBY)
         if check 1 then run 2 else dont_run 3 end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -160,7 +152,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if/then/else/end that contains method calls with parenthesized arguments' do
       expect_offense(<<~RUBY)
         if a(0) then puts(1) else yield(2) end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -172,7 +164,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if/then/else/end that contains unparenthesized operator method calls' do
       expect_offense(<<~RUBY)
         if 0 + 0 then 1 + 1 else 2 + 2 end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -185,7 +177,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
          "if/then/else/end contains `#{keyword}` keyword", *options do
         expect_offense(<<~RUBY, keyword: keyword)
           if true then %{keyword} else 7 end
-          ^^^^^^^^^^^^^^{keyword}^^^^^^^^^^^ #{if_offense_message}
+          ^^^^^^^^^^^^^^{keyword}^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -207,7 +199,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if/then/else/end contains `next` keyword' do
       expect_offense(<<~RUBY)
         map { |line| if line.match(/^\s*#/) || line.strip.empty? then next else line end }
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -218,7 +210,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it 'registers and corrects an offense with multi-line construct for if-then-elsif-then-end' do
       expect_offense(<<~RUBY)
         if cond1 then run elsif cond2 then maybe end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -234,7 +226,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if-then-elsif-then-else-end' do
       expect_offense(<<~RUBY)
         if cond1 then run elsif cond2 then maybe else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -252,7 +244,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if-then-elsif-then-elsif-then-else-end' do
       expect_offense(<<~RUBY)
         if cond1 then run elsif cond2 then maybe elsif cond3 then perhaps else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -275,7 +267,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it 'registers and corrects an offense with multi-line construct for if/then/else/end' do
       expect_offense(<<~RUBY)
         if cond then run else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -295,7 +287,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        '`then` without body' do
       expect_offense(<<~RUBY)
         if cond then else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -314,7 +306,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it 'registers and corrects an offense with multi-line construct for unless/then/else/end' do
       expect_offense(<<~RUBY)
         unless cond then run else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{unless_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `unless` over single-line `unless/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -329,8 +321,8 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
     it 'registers and corrects an offense with ternary operator for nested if/then/else/end' do
       expect_offense(<<~RUBY)
         if cond then foo else if cond2; bar else baz end; end
-                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -355,7 +347,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
          'when if/then/else/end is preceded by an operator' do
         expect_offense(<<~RUBY, operator: operator)
           a %{operator} if cond then run else dont end
-            _{operator} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+            _{operator} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -373,7 +365,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
          "parentheses for if/then/else/end with `#{expr}` constructs inside inner branches" do
         expect_offense(<<~RUBY, expr: expr)
           if %{expr} then %{expr} else %{expr} end
-          ^^^^{expr}^^^^^^^{expr}^^^^^^^{expr}^^^^ #{if_offense_message}
+          ^^^^{expr}^^^^^^^{expr}^^^^^^^{expr}^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -402,7 +394,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'for if/then/else/end that contains method calls with unparenthesized arguments' do
       expect_offense(<<~RUBY)
         if check 1 then run 2 else dont_run 3 end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -418,7 +410,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if/then/else/end that contains method calls with parenthesized arguments' do
       expect_offense(<<~RUBY)
         if a(0) then puts(1) else yield(2) end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -434,7 +426,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if/then/else/end that contains unparenthesized operator method calls' do
       expect_offense(<<~RUBY)
         if 0 + 0 then 1 + 1 else 2 + 2 end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -451,7 +443,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
          "of if/then/else/end contains `#{keyword}` keyword", *options do
         expect_offense(<<~RUBY, keyword: keyword)
           if true then %{keyword} else 7 end
-          ^^^^^^^^^^^^^^{keyword}^^^^^^^^^^^ #{if_offense_message}
+          ^^^^^^^^^^^^^^{keyword}^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
         RUBY
 
         expect_correction(<<~RUBY)
@@ -477,7 +469,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if/then/else/end contains `next` keyword' do
       expect_offense(<<~RUBY)
         map { |line| if line.match(/^\s*#/) || line.strip.empty? then next else line end }
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -493,7 +485,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if-then-elsif-then-else-end' do
       expect_offense(<<~RUBY)
         if cond1 then run elsif cond2 then maybe else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -511,7 +503,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
        'if-then-elsif-then-elsif-then-else-end' do
       expect_offense(<<~RUBY)
         if cond1 then run elsif cond2 then maybe elsif cond3 then perhaps else dont end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -533,7 +525,7 @@ RSpec.describe RuboCop::Cop::Style::OneLineConditional, :config do
       it 'registers and corrects an offense with multi-line construct for if/then/else/end' do
         expect_offense(<<~RUBY)
           if cond then run else dont end
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{if_offense_message}
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Favor multi-line `if` over single-line `if/then/else/end` constructs.
         RUBY
 
         expect_correction(<<~RUBY)
