@@ -17,6 +17,11 @@ rule with your own words.*
 
 --------
 
+## Steps to reproduce the problem
+
+This is extremely important! Providing us with a reliable way to reproduce
+a problem will expedite its solution.
+
 ## Expected behavior
 
 Describe here how you expected RuboCop to behave in this particular situation.
@@ -25,11 +30,6 @@ Describe here how you expected RuboCop to behave in this particular situation.
 
 Describe here what actually happened.
 Please use `rubocop --debug` when pasting rubocop output as it contains additional information.
-
-## Steps to reproduce the problem
-
-This is extremely important! Providing us with a reliable way to reproduce
-a problem will expedite its solution.
 
 ## RuboCop version
 
