@@ -188,8 +188,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 "if it's surely a splat operator, or add a whitespace to the " \
                 'right of the `*` if it should be a multiplication.',
                 "#{abs('example.rb')}:4:1: C: [Correctable] Style/OneLineConditional: " \
-                'Favor the ternary operator (`?:`) or multi-line constructs over ' \
-                'single-line `if/then/else/end` constructs.',
+                'Favor the ternary operator (`?:`) over single-line `if/then/else/end` constructs.',
                 ''].join("\n"))
     end
   end
