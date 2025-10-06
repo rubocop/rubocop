@@ -46,6 +46,8 @@ $ rubocop -V
 * [Squash related commits together][5].
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
+* Your pull request will be reviewed automatically.
+  There is no need to ping anyone.
 
 ### Spell Checking
 
