@@ -108,7 +108,7 @@ module RuboCop
           value_node = node.last_argument
           node_arguments = node.arguments[0...-1]
 
-          if value_node.send_type? && value_node.method?(:[]) &&
+          if value_node.respond_to?(:method?) && value_node.method?(:[]) &&
              node.receiver == value_node.receiver &&
              node_arguments.none?(&:call_type?) &&
              node_arguments == value_node.arguments
