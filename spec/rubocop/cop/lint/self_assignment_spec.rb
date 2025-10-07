@@ -345,6 +345,12 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `[]=` assignment with no arguments' do
+    expect_no_offenses(<<~RUBY)
+      foo.[]=
+    RUBY
+  end
+
   describe 'RBS::Inline annotation' do
     context 'when config option is enabled' do
       let(:cop_config) { { 'AllowRBSInlineAnnotation' => true } }
