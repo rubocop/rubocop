@@ -1,1 +1,1 @@
-* [#14567](https://github.com/rubocop/rubocop/pull/14567): Make `Style/LambdaCall` autocorrection contextual. ([@koic][])
+* [#14568](https://github.com/rubocop/rubocop/pull/14568): Make `Style/LambdaCall` autocorrection contextual. ([@koic][])
