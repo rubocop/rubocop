@@ -194,10 +194,10 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
 
   def configurations(department, cop, cop_config)
     header = ['Name', 'Default value', 'Configurable values']
-    configs = cop_config
-              .each_key
-              .reject { |key| key.start_with?('Supported') }
-              .reject { |key| key.start_with?('AllowMultipleStyles') }
+    configs = cop_config.each_key.reject do |key|
+      key == 'AllowMultipleStyles' ||
+        (key != 'SupportedTypes' && key.start_with?('Supported'))
+    end
     return '' if configs.empty?
 
     content = configs.map do |name|
