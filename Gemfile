@@ -22,9 +22,6 @@ gem 'stackprof', platform: :mri
 gem 'test-queue'
 gem 'yard', '~> 0.9'
 
-# FIXME: Remove when the next prism version is released.
-gem 'prism', '< 1.5.0' if RUBY_VERSION < '3.0' || RUBY_ENGINE == 'jruby'
-
 group :test do
   gem 'webmock', require: false
 end
