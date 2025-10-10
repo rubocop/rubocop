@@ -3814,6 +3814,14 @@ Style/ConstantVisibility:
   VersionChanged: '1.10'
   IgnoreModules: false
 
+Style/CopDisabledForEntireFile:
+  Description: >-
+          Enforces that disabling cops for an entire file happens in a config
+          file, rather than by wrapping the entire file in `rubocop:disable`
+          and `rubocop:enable` comments.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 # Checks that you have put a copyright in a comment before any code.
 #
 # You can override the default Notice in your .rubocop.yml file.
