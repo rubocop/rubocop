@@ -31,7 +31,7 @@ module RuboCop
 
         # @!method overwritten_constant(node)
         def_node_matcher :overwritten_constant, <<~PATTERN
-          (resbody nil? (casgn {cbase nil? const} $_) nil?)
+          (resbody nil? $(casgn _ _) nil?)
         PATTERN
 
         def self.autocorrect_incompatible_with
@@ -41,7 +41,8 @@ module RuboCop
         def on_resbody(node)
           return unless (constant = overwritten_constant(node))
 
-          add_offense(node.loc.assoc, message: format(MSG, constant: constant)) do |corrector|
+          message = format(MSG, constant: constant.source)
+          add_offense(node.loc.assoc, message: message) do |corrector|
             corrector.remove(range_between(node.loc.keyword.end_pos, node.loc.assoc.end_pos))
           end
         end
