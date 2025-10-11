@@ -6,22 +6,40 @@ module RuboCop
       # Checks for the use of JSON class methods which have potential
       # security issues.
       #
+      # `JSON.load` and similar methods allow deserialization of arbitrary ruby objects:
+      #
+      # [source,ruby]
+      # ----
+      # require 'json/add/string'
+      # result = JSON.load('{ "json_class": "String", "raw": [72, 101, 108, 108, 111] }')
+      # pp result # => "Hello"
+      # ----
+      #
+      # Never use `JSON.load` for untrusted user input. Prefer `JSON.parse` unless you have
+      # a concrete use-case for `JSON.load`.
+      #
+      # NOTE: Starting with `json` gem version 2.8.0, triggering this behavior without explicitly
+      # passing the `create_additions` keyword argument emits a deprecation warning, with the
+      # goal of being secure by default in the next major version 3.0.0.
+      #
       # @safety
       #   This cop's autocorrection is unsafe because it's potentially dangerous.
-      #   If using a stream, like `JSON.load(open('file'))`, it will need to call
+      #   If using a stream, like `JSON.load(open('file'))`, you will need to call
       #   `#read` manually, like `JSON.parse(open('file').read)`.
-      #   If reading single values (rather than proper JSON objects), like
-      #   `JSON.load('false')`, it will need to pass the `quirks_mode: true`
-      #   option, like `JSON.parse('false', quirks_mode: true)`.
       #   Other similar issues may apply.
       #
       # @example
       #   # bad
-      #   JSON.load("{}")
-      #   JSON.restore("{}")
+      #   JSON.load('{}')
+      #   JSON.restore('{}')
       #
       #   # good
-      #   JSON.parse("{}")
+      #   JSON.parse('{}')
+      #   JSON.unsafe_load('{}')
+      #
+      #   # good - explicit use of `create_additions` option
+      #   JSON.load('{}', create_additions: true)
+      #   JSON.load('{}', create_additions: false)
       #
       class JSONLoad < Base
         extend AutoCorrector
@@ -29,13 +47,17 @@ module RuboCop
         MSG = 'Prefer `JSON.parse` over `JSON.%<method>s`.'
         RESTRICT_ON_SEND = %i[load restore].freeze
 
-        # @!method json_load(node)
-        def_node_matcher :json_load, <<~PATTERN
-          (send (const {nil? cbase} :JSON) ${:load :restore} ...)
+        # @!method insecure_json_load(node)
+        def_node_matcher :insecure_json_load, <<~PATTERN
+          (
+            send (const {nil? cbase} :JSON) ${:load :restore}
+            ...
+            !(hash `(sym $:create_additions))
+          )
         PATTERN
 
         def on_send(node)
-          json_load(node) do |method|
+          insecure_json_load(node) do |method|
             add_offense(node.loc.selector, message: format(MSG, method: method)) do |corrector|
               corrector.replace(node.loc.selector, 'parse')
             end

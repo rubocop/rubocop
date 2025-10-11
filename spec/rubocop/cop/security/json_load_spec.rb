@@ -15,6 +15,27 @@ RSpec.describe RuboCop::Cop::Security::JSONLoad, :config do
     RUBY
   end
 
+  it 'registers no offense when `create_additions` option is passed' do
+    expect_no_offenses(<<~RUBY)
+      JSON.load(arg, create_additions: true)
+      ::JSON.load(arg, create_additions: false)
+    RUBY
+  end
+
+  it 'registers an offense when an unrelated option is passed' do
+    expect_offense(<<~RUBY)
+      JSON.load(arg, max_nesting: 1)
+           ^^^^ Prefer `JSON.parse` over `JSON.load`.
+      ::JSON.load(arg, max_nesting: 1)
+             ^^^^ Prefer `JSON.parse` over `JSON.load`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      JSON.parse(arg, max_nesting: 1)
+      ::JSON.parse(arg, max_nesting: 1)
+    RUBY
+  end
+
   it 'registers an offense and corrects JSON.restore' do
     expect_offense(<<~RUBY)
       JSON.restore(arg)

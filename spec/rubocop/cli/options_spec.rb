@@ -1221,12 +1221,13 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     it 'shows reference entry' do
       create_file('example1.rb', "JSON.load('{}')")
       file = abs('example1.rb')
-      url = 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load'
+      urls = 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load, ' \
+             'https://bugs.ruby-lang.org/issues/19528'
 
       expect(cli.run(['--format', 'emacs', '--display-style-guide', 'example1.rb'])).to eq(1)
 
       output = "#{file}:1:6: C: [Correctable] Security/JSONLoad: " \
-               "Prefer `JSON.parse` over `JSON.load`. (#{url})"
+               "Prefer `JSON.parse` over `JSON.load`. (#{urls})"
       expect($stdout.string.lines.to_a[-1]).to eq([output, ''].join("\n"))
     end
 
