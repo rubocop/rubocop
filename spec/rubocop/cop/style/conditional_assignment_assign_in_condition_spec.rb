@@ -777,6 +777,54 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     end
   end
 
+  shared_examples 'with multiline regex in branch' do
+    it 'registers an offense for a multiline %r{} regex' do
+      expect_offense(<<~RUBY)
+        x = if condition
+        ^^^^^^^^^^^^^^^^ Assign variables inside of conditionals.
+          %r{a
+            b}x
+        else
+          %r{c
+            d}x
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if condition
+          x = %r{a
+            b}x
+        else
+          x = %r{c
+            d}x
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a multiline regex assignment with interpolation and comments' do
+      expect_offense(<<~'RUBY')
+        x = if condition
+        ^^^^^^^^^^^^^^^^ Assign variables inside of conditionals.
+          %r{#{foo}
+            b}x
+        else
+          %r{#{bar}
+            d}x
+        end
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        if condition
+          x = %r{#{foo}
+            b}x
+        else
+          x = %r{#{bar}
+            d}x
+        end
+      RUBY
+    end
+  end
+
   shared_examples 'with indexed assignment without arguments' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
@@ -862,6 +910,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
     it_behaves_like('multiline all assignment types allow', '<<')
 
     it_behaves_like('with `dstr` node in branch')
+    it_behaves_like('with multiline regex in branch')
     it_behaves_like('with indexed assignment without arguments')
 
     it 'allows a method call in the subject of a ternary operator' do
@@ -1144,6 +1193,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
 
     it_behaves_like('single line condition autocorrect')
     it_behaves_like('with `dstr` node in branch')
+    it_behaves_like('with multiline regex in branch')
     it_behaves_like('with indexed assignment without arguments')
 
     it 'corrects assignment to a multiline if else condition' do
