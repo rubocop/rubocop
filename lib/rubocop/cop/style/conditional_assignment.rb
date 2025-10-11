@@ -444,7 +444,7 @@ module RuboCop
             next if child.parent.dstr_type?
 
             white_space = white_space_range(child, column)
-            corrector.remove(white_space) if white_space.source.strip.empty?
+            corrector.remove(white_space) if white_space
           end
 
           if condition.loc.else && !same_line?(condition.else_branch, condition)
@@ -465,9 +465,13 @@ module RuboCop
 
         def white_space_range(node, column)
           expression = node.source_range
-          begin_pos = expression.begin_pos - (expression.column - column - 2)
+          end_pos = expression.begin_pos
+          begin_pos = end_pos - (expression.column - column - 2)
 
-          Parser::Source::Range.new(expression.source_buffer, begin_pos, expression.begin_pos)
+          return nil if begin_pos > end_pos
+
+          white_space = Parser::Source::Range.new(expression.source_buffer, begin_pos, end_pos)
+          white_space if white_space.source.strip.empty?
         end
 
         def assignment(node)
