@@ -3207,6 +3207,7 @@ Security/JSONLoad:
                  security issues. See reference for more information.
   References:
     - 'https://ruby-doc.org/stdlib-2.7.0/libdoc/json/rdoc/JSON.html#method-i-load'
+    - 'https://bugs.ruby-lang.org/issues/19528'
   Enabled: true
   VersionAdded: '0.43'
   VersionChanged: '1.22'
