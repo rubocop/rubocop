@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MultilineIfThen, :config do
-  # if
-
   it 'does not get confused by empty elsif branch' do
     expect_no_offenses(<<~RUBY)
       if cond
