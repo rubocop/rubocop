@@ -82,4 +82,27 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation, :config do
       "this is the #{true}"
     RUBY
   end
+
+  it 'does not register an offense for an empty string interpolation inside a `%W` literal' do
+    expect_no_offenses(<<~'RUBY')
+      %W[#{''} one two]
+    RUBY
+  end
+
+  it 'does not register an offense for an empty string interpolation inside a `%I` literal' do
+    expect_no_offenses(<<~'RUBY')
+      %I[#{''} one two]
+    RUBY
+  end
+
+  it 'registers an offense for an empty string interpolation inside an array' do
+    expect_offense(<<~'RUBY')
+      ["#{''}", one, two]
+        ^^^^^ Empty interpolation detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ["", one, two]
+    RUBY
+  end
 end
