@@ -134,7 +134,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def all_fields_literal?(string, arguments)
           count = 0
           sequences = RuboCop::Cop::Utils::FormatString.new(string).format_sequences
@@ -147,13 +147,14 @@ module RuboCop
             hash = arguments.detect(&:hash_type?)
             next unless (argument = find_argument(sequence, arguments, hash))
             next unless matching_argument?(sequence, argument)
+            next if (sequence.width || sequence.precision) && argument.dstr_type?
 
             count += 1
           end
 
           sequences.size == count
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         # If the sequence has a variable (`*`) width, it cannot be autocorrected
         # if the width is not given as a numeric literal argument

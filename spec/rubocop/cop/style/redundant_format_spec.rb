@@ -206,6 +206,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it_behaves_like 'offending format specifier', '%10.2f', '5', "'      5.00'"
         it_behaves_like 'offending format specifier', '%-10.2f', '5', "'5.00      '"
 
+        # Width or precision with interpolation
+        it_behaves_like 'non-offending format specifier', '%10s', '"#{foo}"'
+        it_behaves_like 'non-offending format specifier', '%.1s', '"#{foo}"'
+
         it 'is able to handle `%%` specifiers' do
           expect_no_offenses(<<~RUBY)
             #{method}('%% %s', foo)
