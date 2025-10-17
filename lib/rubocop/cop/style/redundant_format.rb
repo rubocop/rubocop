@@ -89,7 +89,7 @@ module RuboCop
 
         def on_send(node)
           format_without_additional_args?(node) do |value|
-            replacement = value.source
+            replacement = escape_control_chars(value.source)
 
             add_offense(node, message: message(node, replacement)) do |corrector|
               corrector.replace(node, replacement)
@@ -229,7 +229,12 @@ module RuboCop
             end
           end
 
-          "#{start_delimiter}#{string}#{end_delimiter}"
+          "#{start_delimiter}#{escape_control_chars(string)}#{end_delimiter}"
+        end
+
+        # Escape any control characters in the string (eg. `\t` or `\n` become `\\t` or `\\n`)
+        def escape_control_chars(string)
+          string.gsub(/\p{Cc}/) { |s| s.dump[1..-2] }
         end
 
         def argument_values(arguments)
