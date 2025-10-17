@@ -793,6 +793,8 @@ file by adding a comment such as
 # rubocop:enable Layout/LineLength, Style/StringLiterals
 ----
 
+Note that if disabling a cop for an entire file, it is preferable to disable it in your config file.
+
 You can also disable entire departments by giving a department name in the comment.
 
 [source,ruby]

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# rubocop:disable Lint/RedundantCopDisableDirective
 module RuboCop
   module Cop
+    # rubocop:disable Lint/RedundantCopDisableDirective
     module Lint
       # Checks that there is an `# rubocop:enable ...` statement
       # after a `# rubocop:disable ...` statement. This will prevent leaving
@@ -43,6 +43,7 @@ module RuboCop
       #   # rubocop:enable Layout/SpaceAroundOperators
       #
       class MissingCopEnableDirective < Base
+        # rubocop:enable Lint/RedundantCopDisableDirective
         include RangeHelp
 
         MSG = 'Re-enable %<cop>s %<type>s with `# rubocop:enable` after disabling it.'
@@ -107,4 +108,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Lint/RedundantCopDisableDirective
