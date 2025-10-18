@@ -1327,4 +1327,399 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
   end
+
+  context 'when inspecting macro methods with IncludedMacroPatterns' do
+    let(:cop_config) do
+      { 'IgnoreMacros' => 'true', 'IncludedMacroPatterns' => ['^assert', '^refute'] }
+    end
+
+    it_behaves_like 'endless methods'
+
+    context 'basic pattern matching functionality' do
+      it 'finds offenses for methods matching assert pattern' do
+        expect_offense(<<~RUBY)
+          class TestClass
+            assert_equal 'expected', actual
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            assert_match /pattern/, string
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            assert_nil value
+            ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class TestClass
+            assert_equal('expected', actual)
+            assert_match(/pattern/, string)
+            assert_nil(value)
+          end
+        RUBY
+      end
+
+      it 'finds offenses for methods matching refute pattern' do
+        expect_offense(<<~RUBY)
+          class TestClass
+            refute_equal 'expected', actual
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            refute_match /pattern/, string
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            refute_nil value
+            ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class TestClass
+            refute_equal('expected', actual)
+            refute_match(/pattern/, string)
+            refute_nil(value)
+          end
+        RUBY
+      end
+
+      it 'allows macro methods that do not match patterns' do
+        expect_no_offenses(<<~RUBY)
+          class TestClass
+            has_many :posts
+            validates :name
+            before_action :authenticate
+          end
+        RUBY
+      end
+
+      it 'registers methods that match patterns but are not macros' do
+        expect_offense(<<~RUBY)
+          def test_method
+            assert_equal 'expected', actual
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def test_method
+            assert_equal('expected', actual)
+          end
+        RUBY
+      end
+    end
+
+    context 'original bug scenario with test blocks' do
+      it 'finds offenses in both def test_ and test "name" do blocks' do
+        expect_offense(<<~RUBY)
+          require "minitest/autorun"
+
+          class MethodCallParenthesesTest < Minitest::Test
+            def test_with_def_style
+              assert_equal(1, 1)  # This has parentheses
+              assert_equal 1, 1   # This should be flagged
+              ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+
+            test "with do/end block" do
+              assert_equal(1, 1)  # This has parentheses
+              assert_equal 1, 1   # This should now be flagged
+              ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          require "minitest/autorun"
+
+          class MethodCallParenthesesTest < Minitest::Test
+            def test_with_def_style
+              assert_equal(1, 1)  # This has parentheses
+              assert_equal(1, 1)   # This should be flagged
+            end
+
+            test "with do/end block" do
+              assert_equal(1, 1)  # This has parentheses
+              assert_equal(1, 1)   # This should now be flagged
+            end
+          end
+        RUBY
+      end
+
+      it 'preserves test method as macro while enforcing assertion methods' do
+        expect_offense(<<~RUBY)
+          class TestClass < Minitest::Test
+            test "description" do
+              assert_nil value
+              ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+              refute_empty array
+              ^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+
+            context "with context" do
+              setup do
+                assert_equal expected, actual
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+              end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class TestClass < Minitest::Test
+            test "description" do
+              assert_nil(value)
+              refute_empty(array)
+            end
+
+            context "with context" do
+              setup do
+                assert_equal(expected, actual)
+              end
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'integration with multiple patterns' do
+      let(:cop_config) do
+        { 'IgnoreMacros' => 'true', 'IncludedMacroPatterns' => ['^assert', '^refute', '^expect'] }
+      end
+
+      it 'matches multiple patterns' do
+        expect_offense(<<~RUBY)
+          class TestClass
+            assert_equal 'test', result
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            refute_nil value
+            ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            expect_equal 'test', result
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class TestClass
+            assert_equal('test', result)
+            refute_nil(value)
+            expect_equal('test', result)
+          end
+        RUBY
+      end
+    end
+
+    context 'complex pattern matching' do
+      let(:cop_config) do
+        { 'IgnoreMacros' => 'true', 'IncludedMacroPatterns' => ['.*_equal$', '^verify_'] }
+      end
+
+      it 'matches suffix patterns' do
+        expect_offense(<<~RUBY)
+          class TestClass
+            assert_equal 'test', result
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            custom_equal 'test', result
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class TestClass
+            assert_equal('test', result)
+            custom_equal('test', result)
+          end
+        RUBY
+      end
+
+      it 'matches prefix patterns' do
+        expect_offense(<<~RUBY)
+          class TestClass
+            verify_condition value
+            ^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            verify_state object
+            ^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class TestClass
+            verify_condition(value)
+            verify_state(object)
+          end
+        RUBY
+      end
+    end
+
+    context 'edge cases' do
+      context 'with empty patterns array' do
+        let(:cop_config) { { 'IgnoreMacros' => 'true', 'IncludedMacroPatterns' => [] } }
+
+        it 'allows all macro methods when no patterns specified' do
+          expect_no_offenses(<<~RUBY)
+            class TestClass
+              assert_equal 'test', result
+              refute_nil value
+              has_many :posts
+            end
+          RUBY
+        end
+      end
+
+      context 'with pattern that matches everything' do
+        let(:cop_config) { { 'IgnoreMacros' => 'true', 'IncludedMacroPatterns' => ['.*'] } }
+
+        it 'enforces parentheses on all macro methods' do
+          expect_offense(<<~RUBY)
+            class TestClass
+              assert_equal 'test', result
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+              has_many :posts
+              ^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+              validates :name
+              ^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class TestClass
+              assert_equal('test', result)
+              has_many(:posts)
+              validates(:name)
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'precedence with other configuration options' do
+      context 'with both IncludedMacroPatterns and AllowedMethods' do
+        let(:cop_config) do
+          {
+            'IgnoreMacros' => 'true',
+            'IncludedMacroPatterns' => ['^assert'],
+            'AllowedMethods' => ['assert_equal']
+          }
+        end
+
+        it 'allows methods in AllowedMethods even if they match patterns' do
+          expect_no_offenses(<<~RUBY)
+            class TestClass
+              assert_equal 'test', result  # allowed by AllowedMethods
+            end
+          RUBY
+        end
+
+        it 'enforces parentheses on other methods matching patterns' do
+          expect_offense(<<~RUBY)
+            class TestClass
+              assert_nil value
+              ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class TestClass
+              assert_nil(value)
+            end
+          RUBY
+        end
+      end
+
+      context 'with both IncludedMacroPatterns and AllowedPatterns' do
+        let(:cop_config) do
+          {
+            'IgnoreMacros' => 'true',
+            'IncludedMacroPatterns' => ['^assert'],
+            'AllowedPatterns' => ['^assert_equal']
+          }
+        end
+
+        it 'allows methods matching AllowedPatterns even if they match IncludedMacroPatterns' do
+          expect_no_offenses(<<~RUBY)
+            class TestClass
+              assert_equal 'test', result  # allowed by AllowedPatterns
+            end
+          RUBY
+        end
+
+        it 'enforces parentheses on other methods matching IncludedMacroPatterns' do
+          expect_offense(<<~RUBY)
+            class TestClass
+              assert_nil value
+              ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class TestClass
+              assert_nil(value)
+            end
+          RUBY
+        end
+      end
+
+      context 'with both IncludedMacroPatterns and IncludedMacros' do
+        let(:cop_config) do
+          {
+            'IgnoreMacros' => 'true',
+            'IncludedMacroPatterns' => ['^assert'],
+            'IncludedMacros' => ['refute_nil']
+          }
+        end
+
+        it 'enforces parentheses on methods matching either patterns or explicit list' do
+          expect_offense(<<~RUBY)
+            class TestClass
+              assert_equal 'test', result  # matches pattern
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+              refute_nil value            # in explicit list
+              ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class TestClass
+              assert_equal('test', result)  # matches pattern
+              refute_nil(value)            # in explicit list
+            end
+          RUBY
+        end
+
+        it 'allows other macro methods' do
+          expect_no_offenses(<<~RUBY)
+            class TestClass
+              has_many :posts
+              validates :name
+            end
+          RUBY
+        end
+      end
+
+      context 'with IgnoreMacros disabled' do
+        let(:cop_config) do
+          {
+            'IgnoreMacros' => false,
+            'IncludedMacroPatterns' => ['^assert']
+          }
+        end
+
+        it 'enforces parentheses on all macro methods when IgnoreMacros is false' do
+          expect_offense(<<~RUBY)
+            class TestClass
+              assert_equal 'test', result
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+              has_many :posts
+              ^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+              validates :name
+              ^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class TestClass
+              assert_equal('test', result)
+              has_many(:posts)
+              validates(:name)
+            end
+          RUBY
+        end
+      end
+    end
+  end
 end
