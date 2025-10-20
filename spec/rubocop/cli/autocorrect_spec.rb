@@ -2337,6 +2337,11 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         arg, foo: bar,
           baz: qux
       )
+
+      do_something(
+        **opts, foo: bar,
+          baz: qux
+      )
     RUBY
 
     create_file('.rubocop.yml', <<~YAML)
@@ -2366,6 +2371,11 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
       do_something(
         arg, foo: bar,
+        baz: qux
+      )
+
+      do_something(
+        **opts, foo: bar,
         baz: qux
       )
     RUBY

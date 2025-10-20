@@ -232,6 +232,8 @@ module RuboCop
         end
 
         def argument_before_hash(hash_node)
+          return hash_node.children.first.children.first if hash_node.children.first.kwsplat_type?
+
           hash_node.left_sibling.respond_to?(:loc) ? hash_node.left_sibling : nil
         end
 
