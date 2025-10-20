@@ -13,13 +13,22 @@ module RuboCop
       # @example
       #   # bad
       #   # rubocop:disable Layout/LineLength Style/Encoding
-      #   #                                  ^ missing comma
+      #
+      #   # good
+      #   # rubocop:disable Layout/LineLength, Style/Encoding
       #
       #   # bad
       #   # rubocop:disable
       #
+      #   # good
+      #   # rubocop:disable all
+      #
       #   # bad
       #   # rubocop:disable Layout/LineLength # rubocop:disable Style/Encoding
+      #
+      #   # good
+      #   # rubocop:disable Layout/LineLength
+      #   # rubocop:disable Style/Encoding
       #
       #   # bad
       #   # rubocop:wrongmode Layout/LineLength
@@ -27,14 +36,11 @@ module RuboCop
       #   # good
       #   # rubocop:disable Layout/LineLength
       #
-      #   # good
-      #   # rubocop:disable Layout/LineLength, Style/Encoding
+      #   # bad
+      #   # rubocop:disable Layout/LineLength comment
       #
       #   # good
-      #   # rubocop:disable all
-      #
-      #   # good
-      #   # rubocop:disable Layout/LineLength -- This is a good comment.
+      #   # rubocop:disable Layout/LineLength -- comment
       #
       class CopDirectiveSyntax < Base
         COMMON_MSG = 'Malformed directive comment detected.'
