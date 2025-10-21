@@ -275,7 +275,7 @@ Gemspec/AddRuntimeDependency:
   Description: 'Prefer `add_dependency` over `add_runtime_dependency`.'
   StyleGuide: '#add_dependency_vs_add_runtime_dependency'
   References:
-    - https://github.com/rubygems/rubygems/issues/7799#issuecomment-2192720316
+    - https://github.com/ruby/rubygems/issues/7799#issuecomment-2192720316
   Enabled: pending
   VersionAdded: '1.65'
   Include:
