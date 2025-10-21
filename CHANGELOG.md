@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.81.6 (2025-10-21)
+
 ### Bug fixes
 
 * [#14587](https://github.com/rubocop/rubocop/issues/14587): Fix an error for `Lint/SelfAssignment` when using `[]=` assignment with no arguments. ([@koic][])

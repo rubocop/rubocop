@@ -868,7 +868,7 @@ end
 | Name | Default value | Configurable values
 
 | Categories
-| `{"module_inclusion"=>["include", "prepend", "extend"]}`
+| `{"module_inclusion" => ["include", "prepend", "extend"]}`
 | 
 
 | ExpectedOrder
@@ -5308,6 +5308,10 @@ foo =
 
 |===
 | Name | Default value | Configurable values
+
+| SupportedTypes
+| `block`, `case`, `class`, `if`, `kwbegin`, `module`
+| Array
 
 | EnforcedStyle
 | `new_line`

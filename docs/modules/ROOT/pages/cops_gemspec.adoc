@@ -53,7 +53,7 @@ end
 === References
 
 * https://rubystyle.guide#add_dependency_vs_add_runtime_dependency
-* https://github.com/rubygems/rubygems/issues/7799#issuecomment-2192720316
+* https://github.com/ruby/rubygems/issues/7799#issuecomment-2192720316
 
 [#gemspecattributeassignment]
 == Gemspec/AttributeAssignment

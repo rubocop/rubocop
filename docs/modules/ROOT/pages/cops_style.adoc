@@ -2404,7 +2404,7 @@ items.include?
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `{"collect"=>"map", "collect!"=>"map!", "collect_concat"=>"flat_map", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
+| `{"collect" => "map", "collect!" => "map!", "collect_concat" => "flat_map", "inject" => "reduce", "detect" => "find", "find_all" => "select", "member?" => "include?"}`
 | 
 
 | MethodsAcceptingSymbol
@@ -8218,11 +8218,11 @@ end
 | Name | Default value | Configurable values
 
 | InverseMethods
-| `{:any?=>:none?, :even?=>:odd?, :===>:!=, :=~=>:!~, :<=>:>=, :>=>:<=}`
+| `{any?: :none?, even?: :odd?, "==": :!=, "=~": :!~, "<": :>=, ">": :<=}`
 | 
 
 | InverseBlocks
-| `{:select=>:reject, :select!=>:reject!}`
+| `{select: :reject, select!: :reject!}`
 | 
 |===
 
@@ -8300,7 +8300,7 @@ foo if !condition
 | Name | Default value | Configurable values
 
 | InverseMethods
-| `{:!==>:==, :>=>:<=, :<==>:>, :<=>:>=, :>==>:<, :!~=>:=~, :zero?=>:nonzero?, :nonzero?=>:zero?, :any?=>:none?, :none?=>:any?, :even?=>:odd?, :odd?=>:even?}`
+| `{"!=": :==, ">": :<=, "<=": :>, "<": :>=, ">=": :<, "!~": :=~, zero?: :nonzero?, nonzero?: :zero?, any?: :none?, none?: :any?, even?: :odd?, odd?: :even?}`
 | 
 |===
 
@@ -8722,9 +8722,9 @@ f = ->(x) do
 
 | Enabled
 | Yes
-| Always
+| Command-line only
 | 0.13
-| 0.14
+| 1.81
 |===
 
 Checks for use of the lambda.(args) syntax.
@@ -12821,7 +12821,7 @@ default.
 | Name | Default value | Configurable values
 
 | PreferredDelimiters
-| `{"default"=>"()", "%i"=>"[]", "%I"=>"[]", "%r"=>"{}", "%w"=>"[]", "%W"=>"[]"}`
+| `{"default" => "()", "%i" => "[]", "%I" => "[]", "%r" => "{}", "%w" => "[]", "%W" => "[]"}`
 | 
 |===
 
@@ -13307,7 +13307,7 @@ A.foo
 | Name | Default value | Configurable values
 
 | Methods
-| `{"join"=>"", "sum"=>0, "exit"=>true, "exit!"=>false, "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
+| `{"join" => "", "sum" => 0, "exit" => true, "exit!" => false, "split" => " ", "chomp" => "\n", "chomp!" => "\n"}`
 | 
 |===
 
@@ -16510,7 +16510,7 @@ end
 | Name | Default value | Configurable values
 
 | Methods
-| `{"reduce"=>["acc", "elem"]}`, `{"inject"=>["acc", "elem"]}`
+| `{"reduce" => ["acc", "elem"]}`, `{"inject" => ["acc", "elem"]}`
 | Array
 |===
 
@@ -17426,7 +17426,7 @@ from the `String` class.
 | Name | Default value | Configurable values
 
 | PreferredMethods
-| `{"intern"=>"to_sym"}`
+| `{"intern" => "to_sym"}`
 | 
 |===
 

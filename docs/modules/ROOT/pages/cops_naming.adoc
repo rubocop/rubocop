@@ -806,7 +806,7 @@ TeslaVehicle
 | Boolean
 
 | FlaggedTerms
-| `{"whitelist"=>{"Regex"=>/white[-_\s]?list/, "Suggestions"=>["allowlist", "permit"]}, "blacklist"=>{"Regex"=>/black[-_\s]?list/, "Suggestions"=>["denylist", "block"]}, "slave"=>{"WholeWord"=>true, "Suggestions"=>["replica", "secondary", "follower"]}}`
+| `{"whitelist" => {"Regex" => /white[-_\s]?list/, "Suggestions" => ["allowlist", "permit"]}, "blacklist" => {"Regex" => /black[-_\s]?list/, "Suggestions" => ["denylist", "block"]}, "slave" => {"WholeWord" => true, "Suggestions" => ["replica", "secondary", "follower"]}}`
 | 
 |===
 

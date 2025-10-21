@@ -997,13 +997,22 @@ A comment can be added to the directive by prefixing it with `--`.
 ----
 # bad
 # rubocop:disable Layout/LineLength Style/Encoding
-#                                  ^ missing comma
+
+# good
+# rubocop:disable Layout/LineLength, Style/Encoding
 
 # bad
 # rubocop:disable
 
+# good
+# rubocop:disable all
+
 # bad
 # rubocop:disable Layout/LineLength # rubocop:disable Style/Encoding
+
+# good
+# rubocop:disable Layout/LineLength
+# rubocop:disable Style/Encoding
 
 # bad
 # rubocop:wrongmode Layout/LineLength
@@ -1011,14 +1020,11 @@ A comment can be added to the directive by prefixing it with `--`.
 # good
 # rubocop:disable Layout/LineLength
 
-# good
-# rubocop:disable Layout/LineLength, Style/Encoding
+# bad
+# rubocop:disable Layout/LineLength comment
 
 # good
-# rubocop:disable all
-
-# good
-# rubocop:disable Layout/LineLength -- This is a good comment.
+# rubocop:disable Layout/LineLength -- comment
 ----
 
 [#lintdebugger]
@@ -1122,11 +1128,11 @@ require 'my_debugger/start'
 | Name | Default value | Configurable values
 
 | DebuggerMethods
-| `{"Kernel"=>["binding.irb", "Kernel.binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["page.save_and_open_page", "page.save_and_open_screenshot", "page.save_page", "page.save_screenshot", "save_and_open_page", "save_and_open_screenshot", "save_page", "save_screenshot"], "debug.rb"=>["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue", "pry"], "Rails"=>["debugger", "Kernel.debugger"], "RubyJard"=>["jard"], "WebConsole"=>["binding.console"]}`
+| `{"Kernel" => ["binding.irb", "Kernel.binding.irb"], "Byebug" => ["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara" => ["page.save_and_open_page", "page.save_and_open_screenshot", "page.save_page", "page.save_screenshot", "save_and_open_page", "save_and_open_screenshot", "save_page", "save_screenshot"], "debug.rb" => ["binding.b", "binding.break", "Kernel.binding.b", "Kernel.binding.break"], "Pry" => ["binding.pry", "binding.remote_pry", "binding.pry_remote", "Kernel.binding.pry", "Kernel.binding.remote_pry", "Kernel.binding.pry_remote", "Pry.rescue", "pry"], "Rails" => ["debugger", "Kernel.debugger"], "RubyJard" => ["jard"], "WebConsole" => ["binding.console"]}`
 | 
 
 | DebuggerRequires
-| `{"debug.rb"=>["debug/open", "debug/start"]}`
+| `{"debug.rb" => ["debug/open", "debug/start"]}`
 | 
 |===
 
@@ -1233,7 +1239,7 @@ Etc::Passwd
 | Name | Default value | Configurable values
 
 | DeprecatedConstants
-| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Net::HTTPServerException"=>{"Alternative"=>"Net::HTTPClientException", "DeprecatedVersion"=>"2.6"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}, "Struct::Group"=>{"Alternative"=>"Etc::Group", "DeprecatedVersion"=>"3.0"}, "Struct::Passwd"=>{"Alternative"=>"Etc::Passwd", "DeprecatedVersion"=>"3.0"}}`
+| `{"NIL" => {"Alternative" => "nil", "DeprecatedVersion" => "2.4"}, "TRUE" => {"Alternative" => "true", "DeprecatedVersion" => "2.4"}, "FALSE" => {"Alternative" => "false", "DeprecatedVersion" => "2.4"}, "Net::HTTPServerException" => {"Alternative" => "Net::HTTPClientException", "DeprecatedVersion" => "2.6"}, "Random::DEFAULT" => {"Alternative" => "Random.new", "DeprecatedVersion" => "3.0"}, "Struct::Group" => {"Alternative" => "Etc::Group", "DeprecatedVersion" => "3.0"}, "Struct::Passwd" => {"Alternative" => "Etc::Passwd", "DeprecatedVersion" => "3.0"}}`
 | 
 |===
 
@@ -7484,7 +7490,7 @@ values.sort { |*x| x[0] <=> x[1] }
 | Name | Default value | Configurable values
 
 | Methods
-| `{"chunk_while"=>2, "each_with_index"=>2, "each_with_object"=>2, "inject"=>2, "max"=>2, "min"=>2, "minmax"=>2, "reduce"=>2, "slice_when"=>2, "sort"=>2}`
+| `{"chunk_while" => 2, "each_with_index" => 2, "each_with_object" => 2, "inject" => 2, "max" => 2, "min" => 2, "minmax" => 2, "reduce" => 2, "slice_when" => 2, "sort" => 2}`
 | 
 |===
 
