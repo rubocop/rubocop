@@ -1,1 +1,0 @@
-* [#14604](https://github.com/rubocop/rubocop/issues/14604): Fix `Style/RedundantFormat` false positive when a interpolated value is given to a specifier with a width or precision. ([@dvandersluis][])

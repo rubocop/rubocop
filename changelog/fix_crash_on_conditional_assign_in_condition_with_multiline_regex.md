@@ -1,1 +1,0 @@
-* [#14599](https://github.com/rubocop/rubocop/pull/14599): Fix a crash when `Style/ConditionalAssignment` is configured with `assign_inside_conditional` and the conditional contains a multi-line regex. ([@martinemde][])
