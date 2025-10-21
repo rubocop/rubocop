@@ -1658,7 +1658,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
     # Being immune to bad configuration files in excluded directories has
     # become important due to a bug in rubygems
-    # (https://github.com/rubygems/rubygems/issues/680) that makes
+    # (https://github.com/ruby/rubygems/issues/680) that makes
     # installations of, for example, RuboCop lack their .rubocop.yml in the
     # root directory.
     it 'can exclude a vendor directory with an erroneous config file' do
