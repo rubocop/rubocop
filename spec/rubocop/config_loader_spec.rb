@@ -1351,6 +1351,18 @@ RSpec.describe RuboCop::ConfigLoader do
               expect { configuration_from_file }.not_to raise_error
             end
           end
+
+          context 'when the gemfile fails to load' do
+            before do
+              create_file('Gemfile', <<~GEMFILE)
+                eval_gemfile 'file_that_does_not_exist'
+              GEMFILE
+            end
+
+            it 'loads' do
+              expect { configuration_from_file }.not_to raise_error
+            end
+          end
         end
       end
 

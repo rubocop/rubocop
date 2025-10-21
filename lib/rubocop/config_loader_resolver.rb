@@ -295,10 +295,11 @@ module RuboCop
         begin
           gem = Bundler.load.specs[gem_name].first
           gem_path = gem.full_gem_path if gem
-        rescue Bundler::GemfileNotFound
-          # No Gemfile found. Bundler may be loaded manually
-        rescue Bundler::GitError
-          # The Gemfile exists but contains an uninstalled git source
+        rescue StandardError
+          # The Gemfile has a problem, which could be one of:
+          # - No Gemfile found. Bundler may be loaded manually
+          # - The Gemfile exists but contains an uninstalled git source
+          # - The Gemfile exists but cannot be loaded for some other reason
         end
       end
 
