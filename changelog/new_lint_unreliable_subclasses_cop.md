@@ -1,0 +1,1 @@
+* [#14618](https://github.com/rubocop/rubocop/issues/14618): Add new `Lint/UnreliableSubclasses` cop to warn against using `Class#subclasses` due to autoloading and garbage collection reliability issues. ([@alexanderadam][])

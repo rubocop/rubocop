@@ -2574,6 +2574,12 @@ Lint/UnreachableLoop:
     # eg. `exactly(2).times`
     - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
 
+Lint/UnreliableSubclasses:
+  Description: 'Checks for usage of `Class#subclasses` which is unreliable with autoloading and garbage collection.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  Safe: false
+
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: '#underscore-unused-vars'
