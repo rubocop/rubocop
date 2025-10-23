@@ -276,6 +276,17 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       RUBY
     end
 
+    it 'does not register an offense for an `in` pattern with empty parentheses body' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          case expr
+          in pattern
+            ()
+          end
+        end
+      RUBY
+    end
+
     context 'bare return' do
       it_behaves_like 'non-predicate', '', implicit: false
 

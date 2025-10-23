@@ -193,8 +193,7 @@ module RuboCop
             return_values << extract_return_value(return_node)
           end
 
-          last_value = last_value(node)
-          return_values << last_value if last_value
+          return_values << last_value(node)
 
           process_return_values(return_values)
         end
@@ -247,8 +246,9 @@ module RuboCop
         end
 
         def last_value(node)
-          value = node.begin_type? ? node.children.last : node
-          value&.return_type? ? extract_return_value(value) : value
+          value = node.begin_type? ? node.children.last || s(:nil) : node
+
+          value.return_type? ? extract_return_value(value) : value
         end
 
         def process_return_values(return_values)
