@@ -621,10 +621,22 @@ RSpec.describe RuboCop::Cop::Naming::MethodName, :config do
       RUBY
     end
 
+    it 'accepts `alias` with interpolated symbol argument' do
+      expect_no_offenses(<<~'RUBY')
+        alias :"foo#{bar}" :baz
+      RUBY
+    end
+
     it 'registers an offense for `alias_method` snake_case string argument' do
       expect_offense(<<~RUBY)
         alias_method "fooBar", "foo"
                      ^^^^^^^^ Use snake_case for method names.
+      RUBY
+    end
+
+    it 'accepts `alias_method` with interpolated string argument' do
+      expect_no_offenses(<<~'RUBY')
+        alias_method "foo#{bar}", "baz"
       RUBY
     end
 

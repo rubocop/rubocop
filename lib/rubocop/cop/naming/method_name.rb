@@ -147,7 +147,9 @@ module RuboCop
         alias on_defs on_def
 
         def on_alias(node)
-          handle_method_name(node.new_identifier, node.new_identifier.value)
+          return unless (new_identifier = node.new_identifier).sym_type?
+
+          handle_method_name(new_identifier, new_identifier.value)
         end
 
         private
