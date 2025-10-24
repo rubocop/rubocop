@@ -48,6 +48,11 @@ module RuboCop
         MSG = 'Explicitly make `%<constant_name>s` public or private using ' \
               'either `#public_constant` or `#private_constant`.'
 
+        # @!method visibility_declaration_for(node)
+        def_node_matcher :visibility_declaration_for, <<~PATTERN
+          (send nil? {:public_constant :private_constant} $...)
+        PATTERN
+
         def on_casgn(node)
           return unless class_or_module_scope?(node)
           return if visibility_declaration?(node)
@@ -77,20 +82,20 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/AbcSize
         def visibility_declaration?(node)
           node.parent.each_child_node(:send).any? do |child|
-            visibility_declaration_for?(child, node.name)
+            next false unless (arguments = visibility_declaration_for(child))
+
+            arguments = arguments.first.children.first.to_a if arguments.first&.splat_type?
+            constant_values = arguments.map do |argument|
+              argument.value.to_sym if argument.respond_to?(:value)
+            end
+
+            constant_values.include?(node.name)
           end
         end
-
-        # @!method visibility_declaration_for?(node, const_name)
-        def_node_matcher :visibility_declaration_for?, <<~PATTERN
-          (send nil? {:public_constant :private_constant} ({sym str} #match_name?(%1)))
-        PATTERN
-
-        def match_name?(name, constant_name)
-          name.to_sym == constant_name.to_sym
-        end
+        # rubocop:enable Metrics/AbcSize
       end
     end
   end
