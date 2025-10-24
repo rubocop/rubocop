@@ -7,9 +7,12 @@ module RuboCop
       # It is recommended to either always use `fdiv` or coerce one side only.
       # This cop also provides other options for code consistency.
       #
+      # For `Regexp.last_match` and nth reference (e.g., `$1`), it assumes that the value
+      # is a string matched by a regular expression, and allows conversion with `#to_f`.
+      #
       # @safety
       #   This cop is unsafe, because if the operand variable is a string object
-      #   then `.to_f` will be removed and an error will occur.
+      #   then `#to_f` will be removed and an error will occur.
       #
       #   [source,ruby]
       #   ----
@@ -84,6 +87,14 @@ module RuboCop
           (send !nil? :to_f)
         PATTERN
 
+        # @!method regexp_last_match?(node)
+        def_node_matcher :regexp_last_match?, <<~PATTERN
+          {
+            (send (const {nil? cbase} :Regexp) :last_match int)
+            (:nth_ref _)
+          }
+        PATTERN
+
         def on_send(node)
           return unless offense_condition?(node)
 
@@ -104,6 +115,9 @@ module RuboCop
         private
 
         def offense_condition?(node)
+          return false if regexp_last_match?(node.receiver.receiver) ||
+                          regexp_last_match?(node.first_argument.receiver)
+
           case style
           when :left_coerce
             right_coerce?(node)
