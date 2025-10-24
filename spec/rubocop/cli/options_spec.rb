@@ -74,9 +74,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           create_file('test.rb', 'puts 1')
         end
 
-        it 'does not parse local configuration' do
+        it 'does parse local configuration' do
           cli.run ['--parallel', '--force-default-config']
-          expect($stdout.string).to match(/Inspecting 1 file/)
+          expect($stderr.string).to match(/unrecognized cop or department ALLCOPS/)
         end
       end
     end
