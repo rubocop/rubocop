@@ -15,6 +15,18 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
       RUBY
     end
 
+    it 'does not register an offense for right coerce with `nth_ref`' do
+      expect_no_offenses(<<~RUBY)
+        a / $1.to_f
+      RUBY
+    end
+
+    it 'does not register an offense for right coerce with `Regexp.last_match(1)`' do
+      expect_no_offenses(<<~RUBY)
+        a / Regexp.last_match(1).to_f
+      RUBY
+    end
+
     it 'registers offense and corrects for both coerce' do
       expect_offense(<<~RUBY)
         a.to_f / b.to_f
@@ -23,6 +35,24 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
 
       expect_correction(<<~RUBY)
         a.to_f / b
+      RUBY
+    end
+
+    it 'does not register an offense for both coerce with `nth_ref`' do
+      expect_no_offenses(<<~RUBY)
+        $1.to_f / $2.to_f
+      RUBY
+    end
+
+    it 'does not register an offense for both coerce with `Regexp.last_match`' do
+      expect_no_offenses(<<~RUBY)
+        Regexp.last_match(1).to_f / Regexp.last_match(1).to_f
+      RUBY
+    end
+
+    it 'does not register an offense for both coerce with `::Regexp.last_match`' do
+      expect_no_offenses(<<~RUBY)
+        ::Regexp.last_match(1).to_f / ::Regexp.last_match(1).to_f
       RUBY
     end
 
@@ -57,6 +87,18 @@ RSpec.describe RuboCop::Cop::Style::FloatDivision, :config do
 
       expect_correction(<<~RUBY)
         a / b.to_f
+      RUBY
+    end
+
+    it 'does not register an offense for left coerce with `nth_ref`' do
+      expect_no_offenses(<<~RUBY)
+        $1.to_f / b
+      RUBY
+    end
+
+    it 'does not register an offense for left coerce with `Regexp.last_match(1)`' do
+      expect_no_offenses(<<~RUBY)
+        Regexp.last_match(1).to_f / b
       RUBY
     end
 
