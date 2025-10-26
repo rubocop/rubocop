@@ -6,7 +6,6 @@ gemspec
 
 gem 'asciidoctor'
 gem 'bump', require: false
-gem 'bundler', '>= 1.15.0', '< 3.0'
 gem 'fiddle', platform: :windows if RUBY_VERSION >= '3.4'
 gem 'irb'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
