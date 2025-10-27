@@ -681,6 +681,17 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when using nested single line `if`' do
+    expect_offense(<<~RUBY)
+      if foo; if bar; end; end
+              ^^ Consider merging nested conditions into outer `if` conditions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if foo && bar; end;#{' '}
+    RUBY
+  end
+
   context 'when disabling `Style/IfUnlessModifier`' do
     let(:config) { RuboCop::Config.new('Style/IfUnlessModifier' => { 'Enabled' => false }) }
 
