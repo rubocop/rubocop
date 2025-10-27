@@ -46,10 +46,14 @@ module RuboCop
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
-        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, or `todo`.'
+        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `todo`, ' \
+                                '`push`, or `pop`.'
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
         MALFORMED_COP_NAMES_MSG = 'Cop names must be separated by commas. ' \
                                   'Comment in the directive must start with `--`.'
+        POP_WITH_COPS_MSG = 'The `pop` directive does not accept cop names.'
+        PUSH_WITHOUT_ACTION_MSG = 'The `push` directive requires `disable` or `enable` ' \
+                                  'followed by cop names.'
 
         def on_new_investigation
           processed_source.comments.each do |comment|
@@ -64,24 +68,28 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength,Lint/MissingCopEnableDirective
         def offense_message(directive_comment)
-          comment = directive_comment.comment
-          after_marker = comment.text.sub(DirectiveComment::DIRECTIVE_MARKER_REGEXP, '')
-          mode = after_marker.split(' ', 2).first
-          additional_msg = if mode.nil?
-                             MISSING_MODE_NAME_MSG
-                           elsif !DirectiveComment::AVAILABLE_MODES.include?(mode)
-                             INVALID_MODE_NAME_MSG
-                           elsif directive_comment.missing_cop_name?
-                             MISSING_COP_NAME_MSG
-                           else
-                             MALFORMED_COP_NAMES_MSG
-                           end
+          text = directive_comment.comment.text
+          mode = text.sub(DirectiveComment::DIRECTIVE_MARKER_REGEXP, '').split(' ', 2).first
 
-          "#{COMMON_MSG} #{additional_msg}"
+          msg = if mode.nil?
+                  MISSING_MODE_NAME_MSG
+                elsif !DirectiveComment::AVAILABLE_MODES.include?(mode)
+                  INVALID_MODE_NAME_MSG
+                elsif mode == 'pop' && directive_comment.cops
+                  POP_WITH_COPS_MSG
+                elsif mode == 'push' && !directive_comment.sub_mode
+                  PUSH_WITHOUT_ACTION_MSG
+                elsif directive_comment.missing_cop_name?
+                  MISSING_COP_NAME_MSG
+                else
+                  MALFORMED_COP_NAMES_MSG
+                end
+
+          "#{COMMON_MSG} #{msg}"
         end
-        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity,Metrics/MethodLength,Lint/MissingCopEnableDirective
       end
     end
   end

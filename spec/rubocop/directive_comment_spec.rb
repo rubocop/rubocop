@@ -440,4 +440,124 @@ RSpec.describe RuboCop::DirectiveComment do
       it { is_expected.to eq(%w[Style Lint/Void]) }
     end
   end
+
+  describe '#push?' do
+    subject { directive_comment.push? }
+
+    context 'when push directive' do
+      let(:text) { '# rubocop:push disable Style/StringLiterals' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when not push directive' do
+      let(:text) { '# rubocop:disable Style/StringLiterals' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#pop?' do
+    subject { directive_comment.pop? }
+
+    context 'when pop directive' do
+      let(:text) { '# rubocop:pop' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when not pop directive' do
+      let(:text) { '# rubocop:disable Style/StringLiterals' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
+  describe 'push directive parsing' do
+    context 'with disable sub-mode' do
+      let(:text) { '# rubocop:push disable Style/StringLiterals, Layout/LineLength' }
+
+      it 'parses mode correctly' do
+        expect(directive_comment.mode).to eq('push')
+      end
+
+      it 'parses sub_mode correctly' do
+        expect(directive_comment.sub_mode).to eq('disable')
+      end
+
+      it 'parses cops correctly' do
+        expect(directive_comment.cops).to eq('Style/StringLiterals, Layout/LineLength')
+      end
+
+      it 'returns cop names' do
+        expect(directive_comment.cop_names).to eq(%w[Style/StringLiterals Layout/LineLength])
+      end
+
+      it 'is disabled' do
+        expect(directive_comment).to be_disabled
+      end
+    end
+
+    context 'with enable sub-mode' do
+      let(:text) { '# rubocop:push enable Style/StringLiterals' }
+
+      it 'parses sub_mode correctly' do
+        expect(directive_comment.sub_mode).to eq('enable')
+      end
+
+      it 'is enabled' do
+        expect(directive_comment).to be_enabled
+      end
+    end
+
+    context 'without sub-mode' do
+      let(:text) { '# rubocop:push' }
+
+      it 'parses mode correctly' do
+        expect(directive_comment.mode).to eq('push')
+      end
+
+      it 'has no sub_mode' do
+        expect(directive_comment.sub_mode).to be_nil
+      end
+
+      it 'has no cops' do
+        expect(directive_comment.cops).to be_nil
+      end
+
+      it 'returns empty cop names' do
+        expect(directive_comment.cop_names).to eq([])
+      end
+    end
+  end
+
+  describe 'pop directive parsing' do
+    context 'basic pop' do
+      let(:text) { '# rubocop:pop' }
+
+      it 'parses mode correctly' do
+        expect(directive_comment.mode).to eq('pop')
+      end
+
+      it 'has no cops' do
+        expect(directive_comment.cops).to be_nil
+      end
+
+      it 'returns empty cop names' do
+        expect(directive_comment.cop_names).to eq([])
+      end
+    end
+
+    context 'pop with comment' do
+      let(:text) { '# rubocop:pop -- restore previous state' }
+
+      it 'parses mode correctly' do
+        expect(directive_comment.mode).to eq('pop')
+      end
+
+      it 'has no cops' do
+        expect(directive_comment.cops).to be_nil
+      end
+    end
+  end
 end

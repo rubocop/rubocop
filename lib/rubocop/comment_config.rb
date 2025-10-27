@@ -3,6 +3,7 @@
 module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
+  # rubocop:disable Metrics/ClassLength,Lint/MissingCopEnableDirective
   class CommentConfig
     extend SimpleForwardable
 
@@ -26,6 +27,7 @@ module RuboCop
     end
 
     CopAnalysis = Struct.new(:line_ranges, :start_line_number)
+    StateSnapshot = Struct.new(:line_number, :analyses_snapshot)
 
     attr_reader :processed_source
 
@@ -93,16 +95,24 @@ module RuboCop
       end
     end
 
-    def analyze # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    def analyze
       return {} if @no_directives
 
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
       inject_disabled_cops_directives(analyses)
+      state_stack = []
 
       each_directive do |directive|
-        directive.cop_names.each do |cop_name|
-          cop_name = qualified_cop_name(cop_name)
-          analyses[cop_name] = analyze_cop(analyses[cop_name], directive)
+        if directive.push?
+          handle_push_directive(directive, analyses, state_stack)
+        elsif directive.pop?
+          handle_pop_directive(directive, analyses, state_stack)
+        else
+          directive.cop_names.each do |cop_name|
+            cop_name = qualified_cop_name(cop_name)
+            analyses[cop_name] = analyze_cop(analyses[cop_name], directive)
+          end
         end
       end
 
@@ -111,6 +121,63 @@ module RuboCop
         hash[cop_name] = cop_line_ranges(analysis)
       end
     end
+
+    def handle_push_directive(directive, analyses, state_stack)
+      state_stack.push(create_state_snapshot(directive.line_number, analyses))
+      directive.cop_names.each do |cop_name|
+        qualified_name = qualified_cop_name(cop_name)
+        analyses[qualified_name] = analyze_cop(analyses[qualified_name], directive)
+      end
+    end
+
+    def handle_pop_directive(directive, analyses, state_stack)
+      if state_stack.empty?
+        return "RuboCop: Pop directive at line #{directive.line_number} has no matching push."
+      end
+
+      restore_state_snapshot(directive.line_number, state_stack.pop, analyses)
+    end
+
+    def create_state_snapshot(line_number, analyses)
+      StateSnapshot.new(
+        line_number,
+        analyses.transform_values { |a| CopAnalysis.new(a.line_ranges.dup, a.start_line_number) }
+      )
+    end
+
+    # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def restore_state_snapshot(pop_line, snapshot, analyses)
+      snapshot.analyses_snapshot.each do |cop_name, old_analysis|
+        current = analyses[cop_name]
+        ranges = current.line_ranges.dup
+        old_start = old_analysis.start_line_number
+        curr_start = current.start_line_number
+
+        new_start = if curr_start && curr_start >= snapshot.line_number && curr_start != old_start
+                      ranges << (curr_start..pop_line)
+                      old_start
+                    elsif old_start && !curr_start
+                      pop_line
+                    elsif !old_start && curr_start
+                      ranges << (curr_start..pop_line)
+                      nil
+                    else
+                      old_start
+                    end
+
+        analyses[cop_name] = CopAnalysis.new(ranges, new_start)
+      end
+
+      (analyses.keys.to_set - snapshot.analyses_snapshot.keys.to_set).each do |cop_name|
+        current = analyses[cop_name]
+        next unless current.start_line_number && current.start_line_number >= snapshot.line_number
+
+        analyses[cop_name] = CopAnalysis.new(
+          current.line_ranges + [current.start_line_number..pop_line], nil
+        )
+      end
+    end
+    # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
 
     def inject_disabled_cops_directives(analyses)
       registry.disabled(config).each do |cop|

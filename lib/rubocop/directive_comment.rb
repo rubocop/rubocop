@@ -18,7 +18,7 @@ module RuboCop
     # @api private
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
     # @api private
-    AVAILABLE_MODES = %w[disable enable todo].freeze
+    AVAILABLE_MODES = %w[disable enable todo push pop].freeze
     # @api private
     DIRECTIVE_MARKER_PATTERN = '# rubocop : '
     # @api private
@@ -26,10 +26,20 @@ module RuboCop
     # @api private
     DIRECTIVE_HEADER_PATTERN = "#{DIRECTIVE_MARKER_PATTERN}((?:#{AVAILABLE_MODES.join('|')}))\\b"
     # @api private
+    # Pattern for push with optional sub-mode and cops: "Cop1, Cop2"
+    PUSH_DIRECTIVE_PATTERN = "#{DIRECTIVE_MARKER_PATTERN}(push)(?:\\s+(disable|enable)\\s+#{COPS_PATTERN})?" # rubocop:disable Layout/LineLength
+    # @api private
+    # Pattern for pop (no cops allowed): "# rubocop:pop"
+    POP_DIRECTIVE_PATTERN = "#{DIRECTIVE_MARKER_PATTERN}(pop)\\s*(?:--.*)?\\s*$"
+    # @api private
     DIRECTIVE_COMMENT_REGEXP = Regexp.new(
       "#{DIRECTIVE_HEADER_PATTERN} #{COPS_PATTERN}"
         .gsub(' ', '\s*')
     )
+    # @api private
+    PUSH_DIRECTIVE_REGEXP = Regexp.new(PUSH_DIRECTIVE_PATTERN.gsub(' ', '\s*'))
+    # @api private
+    POP_DIRECTIVE_REGEXP = Regexp.new(POP_DIRECTIVE_PATTERN.gsub(' ', '\s*'))
     # @api private
     TRAILING_COMMENT_MARKER = '--'
     # @api private
@@ -41,13 +51,25 @@ module RuboCop
       line.split(DIRECTIVE_COMMENT_REGEXP).first
     end
 
-    attr_reader :comment, :cop_registry, :mode, :cops
+    attr_reader :comment, :cop_registry, :mode, :cops, :sub_mode
 
-    def initialize(comment, cop_registry = Cop::Registry.global)
+    def initialize(comment, cop_registry = Cop::Registry.global) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       @comment = comment
       @cop_registry = cop_registry
-      @match_data = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
-      @mode, @cops = match_captures
+      @match_data = comment.text.match(POP_DIRECTIVE_REGEXP) ||
+                    comment.text.match(PUSH_DIRECTIVE_REGEXP) ||
+                    comment.text.match(DIRECTIVE_COMMENT_REGEXP)
+
+      if comment.text.match(POP_DIRECTIVE_REGEXP)
+        @mode = 'pop'
+        @cops = @sub_mode = nil
+      elsif comment.text.match(PUSH_DIRECTIVE_REGEXP)
+        @mode = 'push'
+        @sub_mode, @cops = @match_data.captures[1, 2]
+      else
+        @mode, @cops = match_captures
+        @sub_mode = nil
+      end
     end
 
     # Checks if the comment starts with `# rubocop:` marker
@@ -91,13 +113,27 @@ module RuboCop
       @match_captures ||= @match_data&.captures
     end
 
+    # Checks if this directive is a push directive
+    def push?
+      mode == 'push'
+    end
+
+    # Checks if this directive is a pop directive
+    def pop?
+      mode == 'pop'
+    end
+
     # Checks if this directive disables cops
     def disabled?
+      return sub_mode == 'disable' if push?
+
       %w[disable todo].include?(mode)
     end
 
     # Checks if this directive enables cops
     def enabled?
+      return sub_mode == 'enable' if push?
+
       mode == 'enable'
     end
 
@@ -118,6 +154,8 @@ module RuboCop
 
     # Returns array of specified in this directive cop names
     def cop_names
+      return [] if pop?
+
       @cop_names ||= all_cops? ? all_cop_names : parsed_cop_names
     end
 
