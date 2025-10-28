@@ -112,19 +112,33 @@ module RuboCop
 
         def each_line_range(cop, line_ranges)
           line_ranges.each_with_index do |line_range, line_range_index|
-            next if ignore_offense?(line_range)
-            next if expected_final_disable?(cop, line_range)
+            next if should_skip_line_range?(cop, line_range)
 
             comment = processed_source.comment_at_line(line_range.begin)
-            redundant = if all_disabled?(comment)
-                          find_redundant_all(line_range, line_ranges[line_range_index + 1])
-                        elsif department_disabled?(cop, comment)
-                          find_redundant_department(cop, line_range)
-                        else
-                          find_redundant_cop(cop, line_range)
-                        end
+            next if skip_directive?(comment)
 
+            next_range = line_ranges[line_range_index + 1]
+            redundant = find_redundant_directive(cop, comment, line_range, next_range)
             yield comment, redundant if redundant
+          end
+        end
+
+        def should_skip_line_range?(cop, line_range)
+          ignore_offense?(line_range) || expected_final_disable?(cop, line_range)
+        end
+
+        def skip_directive?(comment)
+          directive = DirectiveComment.new(comment)
+          directive.push? || directive.pop?
+        end
+
+        def find_redundant_directive(cop, comment, line_range, next_range)
+          if all_disabled?(comment)
+            find_redundant_all(line_range, next_range)
+          elsif department_disabled?(cop, comment)
+            find_redundant_department(cop, line_range)
+          else
+            find_redundant_cop(cop, line_range)
           end
         end
 

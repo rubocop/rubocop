@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
   it 'registers an offense for incorrect mode' do
     expect_offense(<<~RUBY)
       # rubocop:disabled Layout/LineLength
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, or `todo`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `todo`, `push`, or `pop`.
     RUBY
   end
 
