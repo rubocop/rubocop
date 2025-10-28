@@ -265,4 +265,333 @@ RSpec.describe RuboCop::CommentConfig do
       end
     end
   end
+
+  describe 'push/pop directives' do
+    def disabled_lines_of_cop(cop)
+      (1..source.size).each_with_object([]) do |line_number, disabled_lines|
+        enabled = comment_config.cop_enabled_at_line?(cop, line_number)
+        disabled_lines << line_number unless enabled
+      end
+    end
+
+    context 'temporarily disable a cop for a problematic block' do
+      let(:source) do
+        <<~RUBY
+          def process_data(input)
+            result = input.upcase
+            # rubocop:push
+            # rubocop:disable Style/GuardClause
+            if result.present?
+              return result.strip
+            end
+            # rubocop:pop
+            nil
+          end
+        RUBY
+      end
+
+      it 'disables GuardClause only inside push/pop block' do
+        disabled = disabled_lines_of_cop('Style/GuardClause')
+
+        # Lines 4-7 should be disabled (push to pop)
+        expect(disabled).to include(4, 5, 6, 7)
+        # Lines outside push/pop should be enabled
+        expect(disabled).not_to include(1, 2, 3, 8, 9, 10)
+      end
+    end
+
+    context 'enable a disabled cop temporarily' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Metrics/MethodLength
+          def long_method
+            line1
+            line2
+            # rubocop:push
+            # rubocop:enable Metrics/MethodLength
+            def short_method
+              line3
+            end
+            # rubocop:pop
+            line4
+            line5
+          end
+        RUBY
+      end
+
+      it 'enables MethodLength only inside push/pop block' do
+        disabled = disabled_lines_of_cop('Metrics/MethodLength')
+
+        # Lines 1-6 should be disabled (before and including enable)
+        expect(disabled).to include(1, 2, 3, 4, 5, 6)
+        # Lines 7-9 should be enabled (after enable, inside push/pop)
+        expect(disabled).not_to include(7, 8, 9)
+        # Lines 10-13 should be disabled (after pop restores state)
+        expect(disabled).to include(10, 11, 12, 13)
+      end
+    end
+
+    context 'multiple cops disabled then one enabled in push/pop' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style/For, Style/Not
+          for x in [1, 2, 3]
+            not x.nil?
+          end
+          # rubocop:push
+          # rubocop:enable Style/For
+          for y in [4, 5, 6]
+            not y.nil?
+          end
+          # rubocop:pop
+          for z in [7, 8, 9]
+            not z.nil?
+          end
+        RUBY
+      end
+
+      it 'enables only Style/For inside push/pop, keeps Style/Not disabled' do
+        for_disabled = disabled_lines_of_cop('Style/For')
+        not_disabled = disabled_lines_of_cop('Style/Not')
+
+        # Style/For: disabled 1-6 (including enable line), enabled 7-9, disabled 10-13
+        expect(for_disabled).to include(1, 2, 3, 4, 5, 6)
+        expect(for_disabled).not_to include(7, 8, 9)
+        expect(for_disabled).to include(10, 11, 12, 13)
+
+        # Style/Not: disabled everywhere (never enabled)
+        expect(not_disabled).to include(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)
+      end
+    end
+
+    context 'disable new cop in push/pop, original stays enabled' do
+      let(:source) do
+        <<~RUBY
+          def process
+            x = 1
+            y = 2
+            # rubocop:push
+            # rubocop:disable Style/NumericPredicate
+            if x.size == 0
+              puts 'empty'
+            end
+            # rubocop:pop
+            if y.size == 0
+              puts 'also empty'
+            end
+          end
+        RUBY
+      end
+
+      it 'disables NumericPredicate only inside push/pop' do
+        disabled = disabled_lines_of_cop('Style/NumericPredicate')
+
+        # Lines 5-8 should be disabled (inside push/pop)
+        expect(disabled).to include(5, 6, 7, 8)
+        # Lines outside should be enabled
+        expect(disabled).not_to include(1, 2, 3, 4, 9, 10, 11, 12)
+      end
+    end
+
+    context 'nested push/pop for complex refactoring' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Metrics/MethodLength
+          def complex_method
+            step1
+            # rubocop:push
+            # rubocop:enable Metrics/MethodLength
+            # rubocop:disable Style/GuardClause
+            def helper_method
+              # rubocop:push
+              # rubocop:enable Style/GuardClause
+              if condition
+                return value
+              end
+              # rubocop:pop
+              other_code
+            end
+            # rubocop:pop
+            step2
+          end
+        RUBY
+      end
+
+      it 'handles nested enable/disable correctly' do
+        method_length_disabled = disabled_lines_of_cop('Metrics/MethodLength')
+        guard_clause_disabled = disabled_lines_of_cop('Style/GuardClause')
+
+        # Metrics/MethodLength: disabled 1-5 (including enable line),
+        # enabled 6-15 (after enable), disabled 16-18 (after pop)
+        expect(method_length_disabled).to include(1, 2, 3, 4, 5)
+        expect(method_length_disabled).not_to include(6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+        expect(method_length_disabled).to include(16, 17, 18)
+
+        # Style/GuardClause: enabled 1-5, disabled 6-9 (including enable line),
+        # enabled 10-12, disabled 13-15 (after nested pop), enabled 16-18
+        expect(guard_clause_disabled).not_to include(1, 2, 3, 4, 5)
+        expect(guard_clause_disabled).to include(6, 7, 8, 9)
+        expect(guard_clause_disabled).not_to include(10, 11, 12)
+        expect(guard_clause_disabled).to include(13, 14, 15)
+        expect(guard_clause_disabled).not_to include(16, 17, 18)
+      end
+    end
+
+    context 'disable cop for multi-line assignment with push/pop' do
+      let(:source) do
+        <<~RUBY
+          def configure(stage)
+            # rubocop:push
+            # rubocop:disable Layout/SpaceAroundMethodCallOperator
+            self.stage =
+              if    'macro'  .start_with? stage; Langeod::MACRO
+              elsif 'dynamic'.start_with? stage; Langeod::DYNAMIC
+              elsif 'static' .start_with? stage; Langeod::STATIC
+              else raise ArgumentError, "invalid stage: \#{stage}"
+              end
+            # rubocop:pop
+            validate_stage
+          end
+        RUBY
+      end
+
+      it 'disables SpaceAroundMethodCallOperator only inside push/pop block' do
+        disabled = disabled_lines_of_cop('Layout/SpaceAroundMethodCallOperator')
+
+        # Lines 3-9 should be disabled (from disable to before pop)
+        expect(disabled).to include(3, 4, 5, 6, 7, 8, 9)
+        # Lines outside push/pop should be enabled
+        expect(disabled).not_to include(1, 2, 10, 11, 12)
+      end
+    end
+
+    context 'push with inline arguments: disable cop temporarily' do
+      let(:source) do
+        <<~RUBY
+          def process_data(input)
+            result = input.upcase
+            # rubocop:push -Style/GuardClause
+            if result.present?
+              return result.strip
+            end
+            # rubocop:pop
+            nil
+          end
+        RUBY
+      end
+
+      it 'disables GuardClause only inside push/pop block' do
+        disabled = disabled_lines_of_cop('Style/GuardClause')
+
+        # Lines 3-6 should be disabled (from push line to before pop)
+        expect(disabled).to include(3, 4, 5, 6)
+        # Lines outside push/pop should be enabled
+        expect(disabled).not_to include(1, 2, 7, 8, 9)
+      end
+    end
+
+    context 'push with inline arguments: enable cop temporarily' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Metrics/MethodLength
+          def long_method
+            line1
+            line2
+            # rubocop:push +Metrics/MethodLength
+            def short_method
+              line3
+            end
+            # rubocop:pop
+            line4
+            line5
+          end
+        RUBY
+      end
+
+      it 'enables MethodLength only inside push/pop block' do
+        disabled = disabled_lines_of_cop('Metrics/MethodLength')
+
+        # Lines 1-4 should be disabled (before push)
+        expect(disabled).to include(1, 2, 3, 4)
+        # Lines 6-8 should be enabled (after +enable, inside push/pop)
+        expect(disabled).not_to include(6, 7, 8)
+        # Lines 10-12 should be disabled (after pop restores state)
+        expect(disabled).to include(10, 11, 12)
+      end
+    end
+
+    context 'push with multiple inline arguments' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style/For, Style/Not
+          for x in [1, 2, 3]
+            not x.nil?
+          end
+          # rubocop:push +Style/For -Style/GuardClause
+          for y in [4, 5, 6]
+            not y.nil?
+            if true
+              return 1
+            end
+          end
+          # rubocop:pop
+          for z in [7, 8, 9]
+            not z.nil?
+          end
+        RUBY
+      end
+
+      it 'enables Style/For and disables Style/GuardClause inside push/pop' do
+        for_disabled = disabled_lines_of_cop('Style/For')
+        not_disabled = disabled_lines_of_cop('Style/Not')
+        guard_disabled = disabled_lines_of_cop('Style/GuardClause')
+
+        # Style/For: disabled 1-5, enabled 5-11, disabled 12-16
+        expect(for_disabled).to include(1, 2, 3, 4, 5)
+        expect(for_disabled).not_to include(6, 7, 8, 9, 10, 11)
+        expect(for_disabled).to include(12, 13, 14, 15, 16)
+
+        # Style/Not: disabled everywhere (never enabled)
+        expect(not_disabled).to include(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+
+        # Style/GuardClause: only disabled inside push/pop (5-11)
+        expect(guard_disabled).to include(5, 6, 7, 8, 9, 10, 11)
+        expect(guard_disabled).not_to include(1, 2, 3, 4, 12, 13, 14, 15, 16)
+      end
+    end
+
+    context 'push with arguments should work without separate enable/disable lines' do
+      let(:source) do
+        <<~RUBY
+          def process
+            x = 1
+            y = 2
+            # rubocop:push -Style/NumericPredicate +Metrics/MethodLength
+            if x.size == 0
+              puts 'empty'
+            end
+            if y.size == 1
+              puts 'one'
+            end
+            # rubocop:pop
+            if y.size == 2
+              puts 'two'
+            end
+          end
+        RUBY
+      end
+
+      it 'disables NumericPredicate and enables MethodLength only inside push/pop' do
+        numeric_disabled = disabled_lines_of_cop('Style/NumericPredicate')
+        method_disabled = disabled_lines_of_cop('Metrics/MethodLength')
+
+        # Style/NumericPredicate: disabled 4-10
+        expect(numeric_disabled).to include(4, 5, 6, 7, 8, 9, 10)
+        expect(numeric_disabled).not_to include(1, 2, 3, 11, 12, 13, 14, 15, 16)
+
+        # Metrics/MethodLength: enabled 4-10
+        expect(method_disabled).not_to include(4, 5, 6, 7, 8, 9, 10)
+      end
+    end
+  end
 end

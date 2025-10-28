@@ -81,19 +81,19 @@ RSpec.describe RuboCop::DirectiveComment do
     context 'when disable' do
       let(:text) { '# rubocop:disable all' }
 
-      it { is_expected.to eq(['disable', 'all', nil, nil]) }
+      it { is_expected.to eq(%w[disable all]) }
     end
 
     context 'when enable' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
-      it { is_expected.to eq(['enable', 'Foo/Bar', nil, 'Foo/']) }
+      it { is_expected.to eq(['enable', 'Foo/Bar']) }
     end
 
     context 'when todo' do
       let(:text) { '# rubocop:todo all' }
 
-      it { is_expected.to eq(['todo', 'all', nil, nil]) }
+      it { is_expected.to eq(%w[todo all]) }
     end
 
     context 'when typo' do
