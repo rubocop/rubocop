@@ -3,7 +3,7 @@
 module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
-  class CommentConfig
+  class CommentConfig # rubocop:disable Metrics/ClassLength
     extend SimpleForwardable
 
     CONFIG_DISABLED_LINE_RANGE_MIN = -Float::INFINITY
@@ -34,6 +34,7 @@ module RuboCop
     def initialize(processed_source)
       @processed_source = processed_source
       @no_directives = !processed_source.raw_source.include?('rubocop')
+      @stack = []
     end
 
     def cop_enabled_at_line?(cop, line_number)
@@ -93,22 +94,84 @@ module RuboCop
       end
     end
 
-    def analyze # rubocop:todo Metrics/AbcSize
+    def analyze # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       return {} if @no_directives
 
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
       inject_disabled_cops_directives(analyses)
 
       each_directive do |directive|
-        directive.cop_names.each do |cop_name|
-          cop_name = qualified_cop_name(cop_name)
-          analyses[cop_name] = analyze_cop(analyses[cop_name], directive)
+        if directive.push?
+          @stack.push(snapshot_analyses(analyses))
+          apply_push_pop_args(analyses, directive)
+        elsif directive.pop?
+          pop_state(analyses, directive.line_number) if @stack.any?
+        else
+          directive.cop_names.each do |cop_name|
+            cop_name = qualified_cop_name(cop_name)
+            analyses[cop_name] = analyze_cop(analyses[cop_name], directive)
+          end
         end
       end
 
       analyses.each_with_object({}) do |element, hash|
         cop_name, analysis = *element
         hash[cop_name] = cop_line_ranges(analysis)
+      end
+    end
+
+    def snapshot_analyses(analyses)
+      analyses.transform_values do |analysis|
+        CopAnalysis.new(analysis.line_ranges.dup, analysis.start_line_number)
+      end
+    end
+
+    def pop_state(analyses, pop_line)
+      finalize_open_ranges(analyses, pop_line)
+      restore_state(analyses, pop_line)
+    end
+
+    def finalize_open_ranges(analyses, pop_line)
+      analyses.each do |cop_name, analysis|
+        next unless analysis.start_line_number
+
+        analyses[cop_name] = CopAnalysis.new(
+          analysis.line_ranges + [analysis.start_line_number..(pop_line - 1)],
+          nil
+        )
+      end
+    end
+
+    def restore_state(analyses, pop_line)
+      @stack.pop.each do |cop_name, saved_analysis|
+        current = analyses[cop_name]
+        new_start = saved_analysis.start_line_number ? pop_line : nil
+        analyses[cop_name] = CopAnalysis.new(current.line_ranges, new_start)
+      end
+    end
+
+    def apply_push_pop_args(analyses, directive)
+      directive.push_pop_args.each do |operation, cop_names|
+        cop_names.each do |cop_name|
+          apply_cop_operation(analyses, operation, qualified_cop_name(cop_name),
+                              directive.line_number)
+        end
+      end
+    end
+
+    def apply_cop_operation(analyses, operation, cop_name, line)
+      analysis = analyses[cop_name]
+      start_line = analysis.start_line_number
+
+      case operation
+      when '+' # Enable cop
+        return unless start_line
+
+        analyses[cop_name] = CopAnalysis.new(analysis.line_ranges + [start_line..line], nil)
+      when '-' # Disable cop
+        return if start_line
+
+        analyses[cop_name] = CopAnalysis.new(analysis.line_ranges, line)
       end
     end
 

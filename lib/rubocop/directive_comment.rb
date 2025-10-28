@@ -14,11 +14,17 @@ module RuboCop
     # @api private
     COP_NAME_PATTERN = '([A-Za-z]\w+/)*(?:[A-Za-z]\w+)'
     # @api private
+    COP_NAME_PATTERN_NC = '(?:[A-Za-z]\w+/)*[A-Za-z]\w+'
+    # @api private
+    COP_NAMES_PATTERN_NC = "(?:#{COP_NAME_PATTERN_NC} , )*#{COP_NAME_PATTERN_NC}"
+    # @api private
     COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
     # @api private
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
     # @api private
-    AVAILABLE_MODES = %w[disable enable todo].freeze
+    PUSH_POP_ARGS_PATTERN = "([+\\-]#{COP_NAME_PATTERN_NC}(?:\\s+[+\\-]#{COP_NAME_PATTERN_NC})*)"
+    # @api private
+    AVAILABLE_MODES = %w[disable enable todo push pop].freeze
     # @api private
     DIRECTIVE_MARKER_PATTERN = '# rubocop : '
     # @api private
@@ -27,7 +33,7 @@ module RuboCop
     DIRECTIVE_HEADER_PATTERN = "#{DIRECTIVE_MARKER_PATTERN}((?:#{AVAILABLE_MODES.join('|')}))\\b"
     # @api private
     DIRECTIVE_COMMENT_REGEXP = Regexp.new(
-      "#{DIRECTIVE_HEADER_PATTERN} #{COPS_PATTERN}"
+      "#{DIRECTIVE_HEADER_PATTERN}(?:\\s+#{COPS_PATTERN}|\\s+#{PUSH_POP_ARGS_PATTERN})?"
         .gsub(' ', '\s*')
     )
     # @api private
@@ -47,7 +53,7 @@ module RuboCop
       @comment = comment
       @cop_registry = cop_registry
       @match_data = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
-      @mode, @cops = match_captures
+      extract_mode_and_cops
     end
 
     # Checks if the comment starts with `# rubocop:` marker
@@ -58,6 +64,7 @@ module RuboCop
     # Checks if the comment is malformed as a `# rubocop:` directive
     def malformed?
       return true if !start_with_marker? || @match_data.nil?
+      return true if missing_cop_name?
 
       tail = @match_data.post_match.lstrip
       !(tail.empty? || tail.start_with?(TRAILING_COMMENT_MARKER))
@@ -65,6 +72,8 @@ module RuboCop
 
     # Checks if the directive comment is missing a cop name
     def missing_cop_name?
+      return false if push? || pop?
+
       MALFORMED_DIRECTIVE_WITHOUT_COP_NAME_REGEXP.match?(comment.text)
     end
 
@@ -99,6 +108,21 @@ module RuboCop
     # Checks if this directive enables cops
     def enabled?
       mode == 'enable'
+    end
+
+    # Checks if this directive is a push
+    def push?
+      mode == 'push'
+    end
+
+    # Checks if this directive is a pop
+    def pop?
+      mode == 'pop'
+    end
+
+    # Returns the push/pop arguments as a hash of cop names with their operations
+    def push_pop_args
+      @push_pop_args ||= parse_push_pop_args
     end
 
     # Checks if this directive enables all cops
@@ -153,17 +177,6 @@ module RuboCop
 
     private
 
-    def parsed_cop_names
-      cops = raw_cop_names.map do |name|
-        department?(name) ? cop_names_for_department(name) : name
-      end.flatten
-      cops - [LINT_SYNTAX_COP]
-    end
-
-    def department?(name)
-      cop_registry.department?(name)
-    end
-
     def all_cop_names
       exclude_lint_department_cops(cop_registry.names)
     end
@@ -173,8 +186,41 @@ module RuboCop
       department == LINT_DEPARTMENT ? exclude_lint_department_cops(names) : names
     end
 
+    def department?(name)
+      cop_registry.department?(name)
+    end
+
     def exclude_lint_department_cops(cops)
       cops - [LINT_REDUNDANT_DIRECTIVE_COP, LINT_SYNTAX_COP]
+    end
+
+    def extract_mode_and_cops
+      captures = match_captures
+      return unless captures
+
+      @mode = captures[0]
+      # COPS_PATTERN is at captures[1], PUSH_POP_ARGS_PATTERN is at captures[4]
+      @cops = captures[1] || captures[4]
+    end
+
+    def parsed_cop_names
+      cops = raw_cop_names.map do |name|
+        department?(name) ? cop_names_for_department(name) : name
+      end.flatten
+      cops - [LINT_SYNTAX_COP]
+    end
+
+    def parse_push_pop_args
+      return {} unless (push? || pop?) && cops
+
+      args = {}
+      cops.split.each do |cop_spec|
+        op = cop_spec[0]
+        cop_name = cop_spec[1..]
+        args[op] ||= []
+        args[op] << cop_name
+      end
+      args
     end
   end
 end
