@@ -9,9 +9,21 @@ module RuboCop
       # cop disables on wide ranges of code, that latter contributors to
       # a file wouldn't be aware of.
       #
-      # @example
-      #   # Lint/MissingCopEnableDirective:
-      #   #   MaximumRangeSize: .inf
+      # You can set `MaximumRangeSize` to define the maximum number of
+      # consecutive lines a cop can be disabled for.
+      #
+      # - `.inf` any size (default)
+      # - `0` allows only single-line disables
+      # - `1` means the maximum allowed is as follows:
+      #
+      # [source,ruby]
+      # ----
+      # # rubocop:disable SomeCop
+      # a = 1
+      # # rubocop:enable SomeCop
+      # ----
+      #
+      # @example MaximumRangeSize: .inf (default)
       #
       #   # good
       #   # rubocop:disable Layout/SpaceAroundOperators
@@ -25,9 +37,7 @@ module RuboCop
       #   x= 0
       #   # EOF
       #
-      # @example
-      #   # Lint/MissingCopEnableDirective:
-      #   #   MaximumRangeSize: 2
+      # @example MaximumRangeSize: 2
       #
       #   # good
       #   # rubocop:disable Layout/SpaceAroundOperators
