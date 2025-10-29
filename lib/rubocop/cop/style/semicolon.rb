@@ -69,10 +69,11 @@ module RuboCop
 
         def each_semicolon
           tokens_for_lines.each do |line, tokens|
-            semicolon_pos = semicolon_position(tokens)
+            next unless (semicolon_pos = semicolon_position(tokens))
+
             after_expr_pos = semicolon_pos == -1 ? -2 : semicolon_pos
 
-            yield line, tokens[semicolon_pos].column, tokens[after_expr_pos] if semicolon_pos
+            yield line, tokens[semicolon_pos].column, tokens[after_expr_pos]
           end
         end
 
