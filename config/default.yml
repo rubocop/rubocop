@@ -1977,6 +1977,11 @@ Lint/FloatOutOfRange:
   Enabled: true
   VersionAdded: '0.36'
 
+Lint/FloatPrecision:
+  Description: 'Catches Float literals that lose precision when parsed.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/FormatParameterMismatch:
   Description: 'The number of parameters to format/sprint must match the fields.'
   Enabled: true
