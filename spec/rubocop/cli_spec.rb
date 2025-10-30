@@ -394,6 +394,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to include('F:  2:  7: Lint/Syntax: unexpected token tINTEGER')
     end
 
+    it '`Style/DisableCopsWithinSourceCodeDirective` can be prevented from being disabled with PreventDisabling config' do
+      create_file('.rubocop.yml', <<~YAML)
+        Style/DisableCopsWithinSourceCodeDirective:
+          Enabled: true
+          PreventDisabling: true
+      YAML
+      create_file('example.rb', <<~RUBY)
+        # rubocop:disable Style/DisableCopsWithinSourceCodeDirective
+        # rubocop:disable Metrics/AbcSize
+        def foo
+        end
+      RUBY
+
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include(
+        'Style/DisableCopsWithinSourceCodeDirective: RuboCop disable/enable directives'
+      )
+    end
+
     it '`Naming/FileName` must be be disabled for global offenses' do
       create_file('Example.rb', <<~RUBY)
         # rubocop:disable Naming/FileName

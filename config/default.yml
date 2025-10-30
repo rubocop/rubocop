@@ -2488,6 +2488,7 @@ Lint/SymbolConversion:
 Lint/Syntax:
   Description: 'Checks for syntax errors.'
   Enabled: true
+  PreventDisabling: true
   VersionAdded: '0.9'
 
 Lint/ToEnumArguments:

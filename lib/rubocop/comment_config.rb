@@ -116,7 +116,8 @@ module RuboCop
       registry.disabled(config).each do |cop|
         analyses[cop.cop_name] = analyze_cop(
           analyses[cop.cop_name],
-          DirectiveComment.new(ConfigDisabledCopDirectiveComment.new(cop.cop_name))
+          DirectiveComment.new(ConfigDisabledCopDirectiveComment.new(cop.cop_name),
+                               Cop::Registry.global, config)
         )
       end
     end
@@ -171,7 +172,7 @@ module RuboCop
       return if @no_directives
 
       processed_source.comments.each do |comment|
-        directive = DirectiveComment.new(comment)
+        directive = DirectiveComment.new(comment, Cop::Registry.global, config)
         yield directive if directive.cop_names
       end
     end

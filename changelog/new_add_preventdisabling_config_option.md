@@ -1,0 +1,1 @@
+* [#14598](https://github.com/rubocop/rubocop/issues/14598): Add new `PreventDisabling` configuration option to allow cops to prevent being disabled via directive comments. Set to `true` for `Lint/Syntax` by default. ([@rafaelfranca][])
