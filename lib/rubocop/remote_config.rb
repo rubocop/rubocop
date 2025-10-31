@@ -11,13 +11,13 @@ module RuboCop
 
     CACHE_LIFETIME = 24 * 60 * 60
 
-    def initialize(url, base_dir)
+    def initialize(url, cache_root)
       begin
         @uri = URI.parse(url)
       rescue URI::InvalidURIError
         raise ConfigNotFoundError, "Failed to resolve configuration: '#{url}' is not a valid URI"
       end
-      @base_dir = base_dir
+      @cache_root = cache_root
     end
 
     def file
@@ -27,16 +27,17 @@ module RuboCop
         next if response.is_a?(Net::HTTPNotModified)
         next if response.is_a?(SocketError)
 
+        FileUtils.mkdir_p(File.dirname(cache_path))
         File.write(cache_path, response.body)
       end
 
       cache_path
     end
 
-    def inherit_from_remote(file, path)
+    def inherit_from_remote(file)
       new_uri = @uri.dup
       new_uri.path.gsub!(%r{/[^/]*$}, "/#{file.delete_prefix('./')}")
-      RemoteConfig.new(new_uri.to_s, File.dirname(path))
+      RemoteConfig.new(new_uri.to_s, @cache_root)
     end
 
     private
@@ -80,7 +81,7 @@ module RuboCop
     end
 
     def cache_path
-      File.expand_path(".rubocop-#{cache_name_from_uri}", @base_dir)
+      @cache_path ||= File.expand_path(".rubocop-remote-#{cache_name_from_uri}", @cache_root)
     end
 
     def cache_path_exists?
@@ -97,9 +98,7 @@ module RuboCop
     end
 
     def cache_name_from_uri
-      uri = cloned_url
-      uri.query = nil
-      uri.to_s.gsub!(/[^0-9A-Za-z]/, '-')
+      "#{Digest::MD5.hexdigest(@uri.to_s)}.yml"
     end
 
     def cloned_url

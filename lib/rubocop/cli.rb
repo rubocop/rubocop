@@ -183,6 +183,7 @@ module RuboCop
       ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
       ConfigLoader.ignore_unrecognized_cops = @options[:ignore_unrecognized_cops]
+      ConfigLoader.cache_root = ResultCache.cache_root(@config_store, @options[:cache_root])
     end
 
     def set_options_to_pending_cops_reporter

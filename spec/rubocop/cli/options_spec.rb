@@ -74,9 +74,9 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           create_file('test.rb', 'puts 1')
         end
 
-        it 'does not parse local configuration' do
+        it 'does parse local configuration' do
           cli.run ['--parallel', '--force-default-config']
-          expect($stdout.string).to match(/Inspecting 1 file/)
+          expect($stderr.string).to match(/unrecognized cop or department ALLCOPS/)
         end
       end
     end
@@ -302,7 +302,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     context 'when requiring extension cops' do
       before do
         create_file('.rubocop.yml', <<~YAML)
-          require:
+          plugins:
             - rubocop-performance
             - rubocop-rspec
         YAML
@@ -323,13 +323,13 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     context 'when requiring extension cops in multiple layers' do
       before do
         create_file('.rubocop-parent.yml', <<~YAML)
-          require:
+          plugins:
             - rubocop-performance
         YAML
 
         create_file('.rubocop.yml', <<~YAML)
           inherit_from: ./.rubocop-parent.yml
-          require:
+          plugins:
             - rubocop-rspec
         YAML
       end
@@ -349,12 +349,12 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     context 'when requiring redundant extension cop' do
       before do
         create_file('ext.yml', <<~YAML)
-          require:
+          plugins:
             - rubocop-rspec
         YAML
         create_file('.rubocop.yml', <<~YAML)
           inherit_from: ext.yml
-          require:
+          plugins:
             - rubocop-performance
             - rubocop-rspec
         YAML
