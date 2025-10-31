@@ -4625,6 +4625,7 @@ Style/MethodCallWithArgsParentheses:
   AllowedMethods: []
   AllowedPatterns: []
   IncludedMacros: []
+  IncludedMacroPatterns: []
   AllowParenthesesInMultilineCall: false
   AllowParenthesesInChaining: false
   AllowParenthesesInCamelCaseMethod: false
