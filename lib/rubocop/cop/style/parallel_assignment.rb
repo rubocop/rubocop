@@ -14,7 +14,7 @@ module RuboCop
       #
       #   # good
       #   one, two = *foo
-      #   a, b = foo()
+      #   a, b = foo
       #   a, b = b, a
       #
       #   a = 1

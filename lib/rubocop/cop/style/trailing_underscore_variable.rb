@@ -7,26 +7,26 @@ module RuboCop
       #
       # @example
       #   # bad
-      #   a, b, _ = foo()
-      #   a, b, _, = foo()
-      #   a, _, _ = foo()
-      #   a, _, _, = foo()
+      #   a, b, _ = foo
+      #   a, b, _, = foo
+      #   a, _, _ = foo
+      #   a, _, _, = foo
       #
       #   # good
-      #   a, b, = foo()
-      #   a, = foo()
-      #   *a, b, _ = foo()
+      #   a, b, = foo
+      #   a, = foo
+      #   *a, b, _ = foo
       #   # => We need to know to not include 2 variables in a
-      #   a, *b, _ = foo()
-      #   # => The correction `a, *b, = foo()` is a syntax error
+      #   a, *b, _ = foo
+      #   # => The correction `a, *b, = foo` is a syntax error
       #
       # @example AllowNamedUnderscoreVariables: true (default)
       #   # good
-      #   a, b, _something = foo()
+      #   a, b, _something = foo
       #
       # @example AllowNamedUnderscoreVariables: false
       #   # bad
-      #   a, b, _something = foo()
+      #   a, b, _something = foo
       #
       class TrailingUnderscoreVariable < Base
         include SurroundingSpace

@@ -29,19 +29,19 @@ module RuboCop
       # @example IgnoreModules: false (default)
       #   # bad
       #   class Foo
-      #     MyClass = Struct.new()
+      #     MyClass = Struct.new
       #   end
       #
       #   # good
       #   class Foo
-      #     MyClass = Struct.new()
+      #     MyClass = Struct.new
       #     public_constant :MyClass
       #   end
       #
       # @example IgnoreModules: true
       #   # good
       #   class Foo
-      #     MyClass = Struct.new()
+      #     MyClass = Struct.new
       #   end
       #
       class ConstantVisibility < Base
