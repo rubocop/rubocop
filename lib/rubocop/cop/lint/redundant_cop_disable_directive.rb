@@ -110,12 +110,16 @@ module RuboCop
           end
         end
 
-        def each_line_range(cop, line_ranges)
+        def each_line_range(cop, line_ranges) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
           line_ranges.each_with_index do |line_range, line_range_index|
             next if ignore_offense?(line_range)
             next if expected_final_disable?(cop, line_range)
 
             comment = processed_source.comment_at_line(line_range.begin)
+
+            directive = DirectiveComment.new(comment)
+            next if directive.push? || directive.pop?
+
             redundant = if all_disabled?(comment)
                           find_redundant_all(line_range, line_ranges[line_range_index + 1])
                         elsif department_disabled?(cop, comment)
