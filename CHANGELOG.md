@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.81.7 (2025-10-31)
+
 ### Bug fixes
 
 * [#14597](https://github.com/rubocop/rubocop/issues/14597): Fix an infinite loop error for `Layout/HashAlignment` when `EnforcedStyle: with_fixed_indentation` is specified for `Layout/ArgumentAlignment`. ([@koic][])

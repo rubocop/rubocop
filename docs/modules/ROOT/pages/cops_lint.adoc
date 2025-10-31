@@ -3759,14 +3759,28 @@ after a `# rubocop:disable ...` statement. This will prevent leaving
 cop disables on wide ranges of code, that latter contributors to
 a file wouldn't be aware of.
 
-[#examples-lintmissingcopenabledirective]
-=== Examples
+You can set `MaximumRangeSize` to define the maximum number of
+consecutive lines a cop can be disabled for.
+
+- `.inf` any size (default)
+- `0` allows only single-line disables
+- `1` means the maximum allowed is as follows:
 
 [source,ruby]
 ----
-# Lint/MissingCopEnableDirective:
-#   MaximumRangeSize: .inf
+# rubocop:disable SomeCop
+a = 1
+# rubocop:enable SomeCop
+----
 
+[#examples-lintmissingcopenabledirective]
+=== Examples
+
+[#maximumrangesize_-_inf-_default_-lintmissingcopenabledirective]
+==== MaximumRangeSize: .inf (default)
+
+[source,ruby]
+----
 # good
 # rubocop:disable Layout/SpaceAroundOperators
 x= 0
@@ -3780,11 +3794,11 @@ x= 0
 # EOF
 ----
 
+[#maximumrangesize_-2-lintmissingcopenabledirective]
+==== MaximumRangeSize: 2
+
 [source,ruby]
 ----
-# Lint/MissingCopEnableDirective:
-#   MaximumRangeSize: 2
-
 # good
 # rubocop:disable Layout/SpaceAroundOperators
 x= 0

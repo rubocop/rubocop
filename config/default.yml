@@ -4555,7 +4555,7 @@ Style/LambdaCall:
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.13'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.81'
   EnforcedStyle: call
   SupportedStyles:
     - call
