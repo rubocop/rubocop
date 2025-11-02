@@ -246,7 +246,7 @@ module RuboCop
     def inherited_file(path, inherit_from, file)
       if PathUtil.remote_file?(inherit_from)
         # A remote configuration, e.g. `inherit_from: http://example.com/rubocop.yml`.
-        RemoteConfig.new(inherit_from, File.dirname(path))
+        RemoteConfig.new(inherit_from, ConfigLoader.cache_root)
       elsif Pathname.new(inherit_from).absolute?
         # An absolute path to a config, e.g. `inherit_from: /Users/me/rubocop.yml`.
         # The path may come from `inherit_gem` option, where a gem name is expanded
@@ -256,7 +256,7 @@ module RuboCop
       elsif file.is_a?(RemoteConfig)
         # A path relative to a URL, e.g. `inherit_from: configs/default.yml`
         # in a config included with `inherit_from: http://example.com/rubocop.yml`
-        file.inherit_from_remote(inherit_from, path)
+        file.inherit_from_remote(inherit_from)
       else
         # A local relative path, e.g. `inherit_from: default.yml`
         print 'Inheriting ' if ConfigLoader.debug?

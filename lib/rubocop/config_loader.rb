@@ -23,7 +23,7 @@ module RuboCop
       include FileFinder
 
       attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops,
-                    :ignore_unrecognized_cops
+                    :ignore_unrecognized_cops, :cache_root
       attr_writer :default_configuration
       attr_reader :loaded_plugins, :loaded_features
 
@@ -38,6 +38,7 @@ module RuboCop
         @enable_pending_cops = nil
         @ignore_parent_exclusion = nil
         @ignore_unrecognized_cops = nil
+        @cache_root = nil
         FileFinder.root_level = nil
       end
 

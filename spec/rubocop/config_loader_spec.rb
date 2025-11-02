@@ -1434,9 +1434,11 @@ RSpec.describe RuboCop::ConfigLoader do
 
     context 'when a file inherits from a url' do
       let(:file_path) { '.rubocop.yml' }
-      let(:cache_file) { '.rubocop-http---example-com-rubocop-yml' }
+      let(:cache_file) { '.rubocop-remote-e32e465e27910f2bc7262515eebe6b63.yml' }
 
       before do
+        described_class.cache_root = Dir.pwd
+
         stub_request(:get, /example.com/)
           .to_return(status: 200, body: <<~YAML)
             Style/Encoding:
@@ -1456,7 +1458,7 @@ RSpec.describe RuboCop::ConfigLoader do
         FileUtils.rm_rf cache_file
       end
 
-      it 'creates the cached file alongside the owning file' do
+      it 'creates the cached file at the cache root' do
         expect { configuration_from_file }.not_to output.to_stderr
         expect(File).to exist(cache_file)
       end
@@ -1464,10 +1466,12 @@ RSpec.describe RuboCop::ConfigLoader do
 
     context 'when a file inherits from a url inheriting from another file' do
       let(:file_path) { '.rubocop.yml' }
-      let(:cache_file) { '.rubocop-http---example-com-rubocop-yml' }
-      let(:cache_file2) { '.rubocop-http---example-com-inherit-yml' }
+      let(:cache_file) { '.rubocop-remote-1e2eaf67d5bc989f4bc3c5a900039224.yml' }
+      let(:cache_file2) { '.rubocop-remote-e32e465e27910f2bc7262515eebe6b63.yml' }
 
       before do
+        described_class.cache_root = Dir.pwd
+
         stub_request(:get, %r{example.com/rubocop})
           .to_return(status: 200, body: "inherit_from:\n    - inherit.yml")
 
