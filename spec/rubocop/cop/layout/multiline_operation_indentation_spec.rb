@@ -243,7 +243,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
   context 'when EnforcedStyle is aligned' do
     let(:cop_config) { { 'EnforcedStyle' => 'aligned' } }
 
-    include_examples 'common'
+    it_behaves_like 'common'
 
     it 'accepts aligned operands in if condition' do
       expect_no_offenses(<<~RUBY)
@@ -469,7 +469,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
   context 'when EnforcedStyle is indented' do
     let(:cop_config) { { 'EnforcedStyle' => 'indented' } }
 
-    include_examples 'common'
+    it_behaves_like 'common'
 
     it 'accepts indented operands in if condition' do
       expect_no_offenses(<<~RUBY)

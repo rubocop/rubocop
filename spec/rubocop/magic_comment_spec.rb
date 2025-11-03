@@ -26,159 +26,159 @@ RSpec.describe RuboCop::MagicComment do
     end
   end
 
-  include_examples 'magic comment', '#'
+  it_behaves_like 'magic comment', '#'
 
-  include_examples 'magic comment', '# encoding: utf-8', encoding: 'utf-8'
+  it_behaves_like 'magic comment', '# encoding: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment', '# ENCODING: utf-8', encoding: 'utf-8'
+  it_behaves_like 'magic comment', '# ENCODING: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment', '# eNcOdInG: utf-8', encoding: 'utf-8'
+  it_behaves_like 'magic comment', '# eNcOdInG: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment', '# coding: utf-8', encoding: 'utf-8'
+  it_behaves_like 'magic comment', '# coding: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment', '    # coding: utf-8', encoding: 'utf-8'
+  it_behaves_like 'magic comment', '    # coding: utf-8', encoding: 'utf-8'
 
-  include_examples 'magic comment', '# incoding: utf-8'
+  it_behaves_like 'magic comment', '# incoding: utf-8'
 
-  include_examples 'magic comment',
-                   '# encoding: stateless-iso-2022-jp-kddi',
-                   encoding: 'stateless-iso-2022-jp-kddi'
+  it_behaves_like 'magic comment',
+                  '# encoding: stateless-iso-2022-jp-kddi',
+                  encoding: 'stateless-iso-2022-jp-kddi'
 
-  include_examples 'magic comment', '# frozen_string_literal: true', frozen_string_literal: true
+  it_behaves_like 'magic comment', '# frozen_string_literal: true', frozen_string_literal: true
 
-  include_examples 'magic comment', '    # frozen_string_literal: true', frozen_string_literal: true
+  it_behaves_like 'magic comment', '    # frozen_string_literal: true', frozen_string_literal: true
 
-  include_examples 'magic comment', '# frozen_string_literal:true', frozen_string_literal: true
+  it_behaves_like 'magic comment', '# frozen_string_literal:true', frozen_string_literal: true
 
-  include_examples 'magic comment', '# frozen_string_literal: false', frozen_string_literal: false
+  it_behaves_like 'magic comment', '# frozen_string_literal: false', frozen_string_literal: false
 
-  include_examples 'magic comment', '# frozen-string-literal: true', frozen_string_literal: true
+  it_behaves_like 'magic comment', '# frozen-string-literal: true', frozen_string_literal: true
 
-  include_examples 'magic comment', '# FROZEN-STRING-LITERAL: true', frozen_string_literal: true
+  it_behaves_like 'magic comment', '# FROZEN-STRING-LITERAL: true', frozen_string_literal: true
 
-  include_examples 'magic comment', '# fRoZeN-sTrInG_lItErAl: true', frozen_string_literal: true
+  it_behaves_like 'magic comment', '# fRoZeN-sTrInG_lItErAl: true', frozen_string_literal: true
 
-  include_examples 'magic comment', '# shareable_constant_value: literal', shareable_constant_value: 'literal'
+  it_behaves_like 'magic comment', '# shareable_constant_value: literal', shareable_constant_value: 'literal'
 
-  include_examples 'magic comment', '# shareable_constant_value:literal', shareable_constant_value: 'literal'
+  it_behaves_like 'magic comment', '# shareable_constant_value:literal', shareable_constant_value: 'literal'
 
-  include_examples 'magic comment', '# shareable-constant-value: literal', shareable_constant_value: 'literal'
+  it_behaves_like 'magic comment', '# shareable-constant-value: literal', shareable_constant_value: 'literal'
 
-  include_examples 'magic comment', '# SHAREABLE-CONSTANT-VALUE: literal', shareable_constant_value: 'literal'
+  it_behaves_like 'magic comment', '# SHAREABLE-CONSTANT-VALUE: literal', shareable_constant_value: 'literal'
 
-  include_examples 'magic comment', '# sHaReaBLE-CoNstANT-ValUE: literal', shareable_constant_value: 'literal'
+  it_behaves_like 'magic comment', '# sHaReaBLE-CoNstANT-ValUE: literal', shareable_constant_value: 'literal'
 
-  include_examples 'magic comment', '# shareable_constant_value: none', shareable_constant_value: 'none'
+  it_behaves_like 'magic comment', '# shareable_constant_value: none', shareable_constant_value: 'none'
 
-  include_examples 'magic comment', '# xyz shareable_constant_value: literal'
+  it_behaves_like 'magic comment', '# xyz shareable_constant_value: literal'
 
-  include_examples 'magic comment', '# xyz shareable_constant_value: literal xyz'
+  it_behaves_like 'magic comment', '# xyz shareable_constant_value: literal xyz'
 
-  include_examples 'magic comment', '# typed: ignore', typed: 'ignore'
+  it_behaves_like 'magic comment', '# typed: ignore', typed: 'ignore'
 
-  include_examples 'magic comment', '# typed: false', typed: 'false'
+  it_behaves_like 'magic comment', '# typed: false', typed: 'false'
 
-  include_examples 'magic comment', '# typed: true', typed: 'true'
+  it_behaves_like 'magic comment', '# typed: true', typed: 'true'
 
-  include_examples 'magic comment', '# typed: strict', typed: 'strict'
+  it_behaves_like 'magic comment', '# typed: strict', typed: 'strict'
 
-  include_examples 'magic comment', '# typed: strong', typed: 'strong'
+  it_behaves_like 'magic comment', '# typed: strong', typed: 'strong'
 
-  include_examples 'magic comment', '#typed:strict', typed: 'strict'
+  it_behaves_like 'magic comment', '#typed:strict', typed: 'strict'
 
-  include_examples 'magic comment', '#    typed:strict', typed: 'strict'
+  it_behaves_like 'magic comment', '#    typed:strict', typed: 'strict'
 
-  include_examples 'magic comment', '# @typed'
+  it_behaves_like 'magic comment', '# @typed'
 
-  include_examples(
+  it_behaves_like(
     'magic comment',
     '# shareable_constant_value: experimental_everything',
     shareable_constant_value: 'experimental_everything'
   )
 
-  include_examples(
+  it_behaves_like(
     'magic comment',
     '# shareable_constant_value: experimental_copy',
     shareable_constant_value: 'experimental_copy'
   )
 
-  include_examples 'magic comment',
-                   '# -*- frozen-string-literal: true -*-',
-                   frozen_string_literal: true
+  it_behaves_like 'magic comment',
+                  '# -*- frozen-string-literal: true -*-',
+                  frozen_string_literal: true
 
-  include_examples 'magic comment',
-                   '# frozen_string_literal: invalid',
-                   frozen_string_literal: 'invalid'
+  it_behaves_like 'magic comment',
+                  '# frozen_string_literal: invalid',
+                  frozen_string_literal: 'invalid'
 
-  include_examples 'magic comment',
-                   '# -*- encoding : ascii-8bit -*-',
-                   encoding: 'ascii-8bit',
-                   frozen_string_literal: nil
+  it_behaves_like 'magic comment',
+                  '# -*- encoding : ascii-8bit -*-',
+                  encoding: 'ascii-8bit',
+                  frozen_string_literal: nil
 
-  include_examples 'magic comment',
-                   '# encoding: ascii-8bit frozen_string_literal: true',
-                   encoding: 'ascii-8bit',
-                   frozen_string_literal: nil
+  it_behaves_like 'magic comment',
+                  '# encoding: ascii-8bit frozen_string_literal: true',
+                  encoding: 'ascii-8bit',
+                  frozen_string_literal: nil
 
-  include_examples 'magic comment',
-                   '# frozen_string_literal: true encoding: ascii-8bit',
-                   encoding: 'ascii-8bit',
-                   frozen_string_literal: nil
+  it_behaves_like 'magic comment',
+                  '# frozen_string_literal: true encoding: ascii-8bit',
+                  encoding: 'ascii-8bit',
+                  frozen_string_literal: nil
 
-  include_examples 'magic comment',
-                   ' CSV.generate(encoding: Encoding::UTF_8) do |csv|',
-                   encoding: nil,
-                   frozen_string_literal: nil
+  it_behaves_like 'magic comment',
+                  ' CSV.generate(encoding: Encoding::UTF_8) do |csv|',
+                  encoding: nil,
+                  frozen_string_literal: nil
 
-  include_examples(
+  it_behaves_like(
     'magic comment',
     '# -*- encoding: ASCII-8BIT; frozen_string_literal: true -*-',
     encoding: 'ascii-8bit',
     frozen_string_literal: true
   )
 
-  include_examples(
+  it_behaves_like(
     'magic comment',
     '# coding: utf-8 -*- encoding: ASCII-8BIT; frozen_string_literal: true -*-',
     encoding: 'ascii-8bit',
     frozen_string_literal: true
   )
 
-  include_examples(
+  it_behaves_like(
     'magic comment',
     '# -*- coding: ASCII-8BIT; typed: strict -*-',
     encoding: 'ascii-8bit'
   )
 
-  include_examples 'magic comment',
-                   '# vim: filetype=ruby, fileencoding=ascii-8bit',
-                   encoding: 'ascii-8bit'
+  it_behaves_like 'magic comment',
+                  '# vim: filetype=ruby, fileencoding=ascii-8bit',
+                  encoding: 'ascii-8bit'
 
-  include_examples 'magic comment', '# vim: filetype=ruby,fileencoding=ascii-8bit', encoding: nil
+  it_behaves_like 'magic comment', '# vim: filetype=ruby,fileencoding=ascii-8bit', encoding: nil
 
-  include_examples 'magic comment',
-                   '# vim: filetype=ruby,  fileencoding=ascii-8bit',
-                   encoding: 'ascii-8bit'
+  it_behaves_like 'magic comment',
+                  '# vim: filetype=ruby,  fileencoding=ascii-8bit',
+                  encoding: 'ascii-8bit'
 
-  include_examples 'magic comment',
-                   '#vim: filetype=ruby, fileencoding=ascii-8bit',
-                   encoding: 'ascii-8bit'
+  it_behaves_like 'magic comment',
+                  '#vim: filetype=ruby, fileencoding=ascii-8bit',
+                  encoding: 'ascii-8bit'
 
-  include_examples 'magic comment',
-                   '#vim: filetype=ruby, fileencoding=ascii-8bit, typed=strict',
-                   encoding: 'ascii-8bit'
+  it_behaves_like 'magic comment',
+                  '#vim: filetype=ruby, fileencoding=ascii-8bit, typed=strict',
+                  encoding: 'ascii-8bit'
 
-  include_examples(
+  it_behaves_like(
     'magic comment',
     '# coding: utf-8 vim: filetype=ruby, fileencoding=ascii-8bit',
     encoding: 'utf-8'
   )
 
-  include_examples 'magic comment',
-                   '# vim: filetype=python, fileencoding=ascii-8bit',
-                   encoding: 'ascii-8bit'
+  it_behaves_like 'magic comment',
+                  '# vim: filetype=python, fileencoding=ascii-8bit',
+                  encoding: 'ascii-8bit'
 
-  include_examples 'magic comment', '# vim:fileencoding=utf-8', encoding: nil
+  it_behaves_like 'magic comment', '# vim:fileencoding=utf-8', encoding: nil
 
   describe '#valid?' do
     subject { described_class.parse(comment).valid? }

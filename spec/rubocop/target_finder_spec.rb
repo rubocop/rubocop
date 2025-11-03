@@ -330,7 +330,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
-    include_examples 'common behavior for #find'
+    it_behaves_like 'common behavior for #find'
 
     context 'when some non-known Ruby files are specified in the ' \
             'configuration Include and they are not explicitly passed ' \
@@ -351,7 +351,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
-    include_examples 'when input is passed on stdin'
+    it_behaves_like 'when input is passed on stdin'
   end
 
   describe '#find(..., :all_file_types)' do
@@ -359,7 +359,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
     let(:found_basenames) { found_files.map { |f| File.basename(f) } }
     let(:args) { [] }
 
-    include_examples 'common behavior for #find'
+    it_behaves_like 'common behavior for #find'
 
     context 'when a non-ruby file is passed' do
       let(:args) { ['dir2/file'] }
@@ -378,7 +378,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
 
       let(:args) { ruby_extensions.map { |ext| "dir2/file#{ext}" } }
 
-      include_examples 'picks all the ruby files'
+      it_behaves_like 'picks all the ruby files'
 
       context 'when local AllCops/Include lists two patterns' do
         before do
@@ -390,7 +390,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
           YAML
         end
 
-        include_examples 'picks all the ruby files'
+        it_behaves_like 'picks all the ruby files'
 
         context 'when a subdirectory AllCops/Include only lists one pattern' do
           before do
@@ -401,7 +401,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
             YAML
           end
 
-          include_examples 'picks all the ruby files'
+          it_behaves_like 'picks all the ruby files'
         end
       end
     end
@@ -427,7 +427,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
-    include_examples 'when input is passed on stdin'
+    it_behaves_like 'when input is passed on stdin'
   end
 
   describe '#find_files' do

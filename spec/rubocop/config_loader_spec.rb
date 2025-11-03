@@ -1000,10 +1000,10 @@ RSpec.describe RuboCop::ConfigLoader do
         end
       end
 
-      include_examples 'resolves enabled/disabled for all cops', false, false, 'Foo/Bar'
-      include_examples 'resolves enabled/disabled for all cops', false, true, 'Foo/Bar'
-      include_examples 'resolves enabled/disabled for all cops', true, false, 'Foo/Bar'
-      include_examples 'resolves enabled/disabled for all cops', false, false, 'Foo'
+      it_behaves_like 'resolves enabled/disabled for all cops', false, false, 'Foo/Bar'
+      it_behaves_like 'resolves enabled/disabled for all cops', false, true, 'Foo/Bar'
+      it_behaves_like 'resolves enabled/disabled for all cops', true, false, 'Foo/Bar'
+      it_behaves_like 'resolves enabled/disabled for all cops', false, false, 'Foo'
     end
 
     context 'when a third party require defines a new gem', :restore_registry do

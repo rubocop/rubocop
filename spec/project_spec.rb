@@ -291,7 +291,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
     let(:path) { File.expand_path('../CHANGELOG.md', __dir__) }
     let(:entries) { lines.grep(/^\*/).map(&:chomp) }
 
+    # rubocop:disable RSpec/IncludeExamples
     include_examples 'has Changelog format'
+    # rubocop:enable RSpec/IncludeExamples
 
     context 'future entries' do
       let(:allowed_cop_names) do
@@ -319,7 +321,9 @@ RSpec.describe 'RuboCop Project', type: :feature do
         context "For #{path}" do
           let(:path) { path }
 
+          # rubocop:disable RSpec/IncludeExamples
           include_examples 'has Changelog format'
+          # rubocop:enable RSpec/IncludeExamples
 
           it 'has a link to the issue or pull request address at the beginning' do
             repo = 'rubocop/rubocop'

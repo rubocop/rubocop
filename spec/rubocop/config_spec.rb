@@ -352,8 +352,8 @@ RSpec.describe RuboCop::Config do
       end
     end
 
-    include_examples 'obsolete MaxLineLength parameter', 'Style/WhileUntilModifier'
-    include_examples 'obsolete MaxLineLength parameter', 'Style/IfUnlessModifier'
+    it_behaves_like 'obsolete MaxLineLength parameter', 'Style/WhileUntilModifier'
+    it_behaves_like 'obsolete MaxLineLength parameter', 'Style/IfUnlessModifier'
 
     context 'when the configuration includes obsolete parameters and cops' do
       before do

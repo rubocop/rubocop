@@ -37,25 +37,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     context 'and the directory is absolute' do
       let(:checked_path) { abs('..') }
 
-      include_examples 'checks Rakefile'
+      it_behaves_like 'checks Rakefile'
     end
 
     context 'and the directory is relative' do
       let(:checked_path) { '..' }
 
-      include_examples 'checks Rakefile'
+      it_behaves_like 'checks Rakefile'
     end
 
     context 'and the Rakefile path is absolute' do
       let(:checked_path) { abs('../Rakefile') }
 
-      include_examples 'checks Rakefile'
+      it_behaves_like 'checks Rakefile'
     end
 
     context 'and the Rakefile path is relative' do
       let(:checked_path) { '../Rakefile' }
 
-      include_examples 'checks Rakefile'
+      it_behaves_like 'checks Rakefile'
     end
   end
 
@@ -691,22 +691,22 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
-      include_examples 'RedundantCopDisableDirective not run',
-                       'individually disabled', <<~YAML
-                         Lint/RedundantCopDisableDirective:
-                           Enabled: false
-                       YAML
-      include_examples 'RedundantCopDisableDirective not run',
-                       'individually excluded', <<~YAML
-                         Lint/RedundantCopDisableDirective:
-                           Exclude:
-                             - example.rb
-                       YAML
-      include_examples 'RedundantCopDisableDirective not run',
-                       'disabled through department', <<~YAML
-                         Lint:
-                           Enabled: false
-                       YAML
+      it_behaves_like 'RedundantCopDisableDirective not run',
+                      'individually disabled', <<~YAML
+                        Lint/RedundantCopDisableDirective:
+                          Enabled: false
+                      YAML
+      it_behaves_like 'RedundantCopDisableDirective not run',
+                      'individually excluded', <<~YAML
+                        Lint/RedundantCopDisableDirective:
+                          Exclude:
+                            - example.rb
+                      YAML
+      it_behaves_like 'RedundantCopDisableDirective not run',
+                      'disabled through department', <<~YAML
+                        Lint:
+                          Enabled: false
+                      YAML
     end
   end
 
@@ -1104,13 +1104,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       context 'when no config file specified' do
         let(:args) { %w[--format simple --force-default-config] }
 
-        include_examples 'ignores config file'
+        it_behaves_like 'ignores config file'
       end
 
       context 'when config file specified with -c' do
         let(:args) { %w[--format simple --force-default-config -c .rubocop.yml] }
 
-        include_examples 'ignores config file'
+        it_behaves_like 'ignores config file'
       end
     end
 
@@ -1892,8 +1892,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    include_examples 'specified Severity', 'Layout/LineLength'
-    include_examples 'specified Severity', 'Layout'
+    it_behaves_like 'specified Severity', 'Layout/LineLength'
+    it_behaves_like 'specified Severity', 'Layout'
 
     it 'fails when a configuration file specifies an invalid Severity' do
       create_file('example/example1.rb', '#' * 130)

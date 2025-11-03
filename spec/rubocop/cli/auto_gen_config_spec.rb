@@ -65,64 +65,64 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       end
     end
 
-    include_examples 'LineLength handling',
-                     'when .rubocop.yml does not exist',
-                     nil,
-                     ['inherit_from: .rubocop_todo.yml']
+    it_behaves_like 'LineLength handling',
+                    'when .rubocop.yml does not exist',
+                    nil,
+                    ['inherit_from: .rubocop_todo.yml']
 
-    include_examples 'LineLength handling',
-                     'when .rubocop.yml is empty',
-                     [''],
-                     ['inherit_from: .rubocop_todo.yml']
+    it_behaves_like 'LineLength handling',
+                    'when .rubocop.yml is empty',
+                    [''],
+                    ['inherit_from: .rubocop_todo.yml']
 
-    include_examples 'LineLength handling',
-                     'when .rubocop.yml inherits only from .rubocop_todo.yml',
-                     ['inherit_from: .rubocop_todo.yml'],
-                     ['inherit_from: .rubocop_todo.yml']
+    it_behaves_like 'LineLength handling',
+                    'when .rubocop.yml inherits only from .rubocop_todo.yml',
+                    ['inherit_from: .rubocop_todo.yml'],
+                    ['inherit_from: .rubocop_todo.yml']
 
-    include_examples 'LineLength handling',
-                     'when .rubocop.yml inherits only from .rubocop_todo.yml ' \
-                     'in an array',
-                     ['inherit_from:',
-                      '  - .rubocop_todo.yml'],
-                     ['inherit_from:',
-                      '  - .rubocop_todo.yml']
+    it_behaves_like 'LineLength handling',
+                    'when .rubocop.yml inherits only from .rubocop_todo.yml ' \
+                    'in an array',
+                    ['inherit_from:',
+                     '  - .rubocop_todo.yml'],
+                    ['inherit_from:',
+                     '  - .rubocop_todo.yml']
 
-    include_examples 'LineLength handling',
-                     'when .rubocop.yml inherits from another file and ' \
-                     '.rubocop_todo.yml',
-                     ['inherit_from:',
-                      '  - common.yml',
-                      '  - .rubocop_todo.yml'],
-                     ['inherit_from:',
-                      '  - common.yml',
-                      '  - .rubocop_todo.yml']
+    it_behaves_like 'LineLength handling',
+                    'when .rubocop.yml inherits from another file and ' \
+                    '.rubocop_todo.yml',
+                    ['inherit_from:',
+                     '  - common.yml',
+                     '  - .rubocop_todo.yml'],
+                    ['inherit_from:',
+                     '  - common.yml',
+                     '  - .rubocop_todo.yml']
 
-    include_examples 'LineLength handling',
-                     'when .rubocop.yml inherits from two other files',
-                     ['inherit_from:',
-                      '  - common1.yml',
-                      '  - common2.yml'],
-                     ['inherit_from:',
-                      '  - .rubocop_todo.yml',
-                      '  - common1.yml',
-                      '  - common2.yml']
+    it_behaves_like 'LineLength handling',
+                    'when .rubocop.yml inherits from two other files',
+                    ['inherit_from:',
+                     '  - common1.yml',
+                     '  - common2.yml'],
+                    ['inherit_from:',
+                     '  - .rubocop_todo.yml',
+                     '  - common1.yml',
+                     '  - common2.yml']
 
-    include_examples 'LineLength handling',
-                     'when .rubocop.yml inherits from another file',
-                     ['inherit_from: common.yml'],
-                     ['inherit_from:',
-                      '  - .rubocop_todo.yml',
-                      '  - common.yml']
+    it_behaves_like 'LineLength handling',
+                    'when .rubocop.yml inherits from another file',
+                    ['inherit_from: common.yml'],
+                    ['inherit_from:',
+                     '  - .rubocop_todo.yml',
+                     '  - common.yml']
 
-    include_examples 'LineLength handling',
-                     "when .rubocop.yml doesn't inherit",
-                     ['Style/For:',
-                      '  Enabled: false'],
-                     ['inherit_from: .rubocop_todo.yml',
-                      '',
-                      'Style/For:',
-                      '  Enabled: false']
+    it_behaves_like 'LineLength handling',
+                    "when .rubocop.yml doesn't inherit",
+                    ['Style/For:',
+                     '  Enabled: false'],
+                    ['inherit_from: .rubocop_todo.yml',
+                     '',
+                     'Style/For:',
+                     '  Enabled: false']
 
     context 'with Layout/LineLength:Max overridden' do
       before do
@@ -365,26 +365,26 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       end
     end
 
-    include_examples 'overwrites todo file',
-                     'only the inherit_from line',
-                     ['inherit_from: .rubocop_todo.yml']
+    it_behaves_like 'overwrites todo file',
+                    'only the inherit_from line',
+                    ['inherit_from: .rubocop_todo.yml']
 
     # Makes the shared example work the same with the conditional as without.
     ENV['HZPKCEAXTFQLOWB'] = 'true'
 
-    include_examples 'overwrites todo file',
-                     'a single line inherit_from in an ERB conditional',
-                     ['<% if ENV["HZPKCEAXTFQLOWB"] %>',
-                      'inherit_from: .rubocop_todo.yml',
-                      '<% end %>']
+    it_behaves_like 'overwrites todo file',
+                    'a single line inherit_from in an ERB conditional',
+                    ['<% if ENV["HZPKCEAXTFQLOWB"] %>',
+                     'inherit_from: .rubocop_todo.yml',
+                     '<% end %>']
 
-    include_examples 'overwrites todo file',
-                     'a multiline inherit_from in an ERB conditional',
-                     ['<% if ENV["HZPKCEAXTFQLOWB"] %>',
-                      'inherit_from:',
-                      '  - .rubocop_todo.yml',
-                      '  - other.yml',
-                      '<% end %>']
+    it_behaves_like 'overwrites todo file',
+                    'a multiline inherit_from in an ERB conditional',
+                    ['<% if ENV["HZPKCEAXTFQLOWB"] %>',
+                     'inherit_from:',
+                     '  - .rubocop_todo.yml',
+                     '  - other.yml',
+                     '<% end %>']
 
     it 'honors rubocop:disable comments' do
       create_file('example1.rb', ['#' * 121,
@@ -1093,7 +1093,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         end
       end
 
-      include_examples 'leaves out Excludes', 'globally', <<~YAML
+      it_behaves_like 'leaves out Excludes', 'globally', <<~YAML
         inherit_mode:
           merge:
             - Exclude
@@ -1102,7 +1102,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
           Exclude:
             - 'example1.rb'
       YAML
-      include_examples 'leaves out Excludes', 'for the cop', <<~YAML
+      it_behaves_like 'leaves out Excludes', 'for the cop', <<~YAML
         Layout/TrailingWhitespace:
           inherit_mode:
             merge:

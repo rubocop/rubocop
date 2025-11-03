@@ -136,21 +136,21 @@ RSpec.describe RuboCop::Cop::RangeHelp do
       let(:input_source) { "'example'" }
       let(:expected) { "puts 'example'" }
 
-      include_examples 'final newline behavior'
+      it_behaves_like 'final newline behavior'
     end
 
     context 'with a whole line except newline selected' do
       let(:input_source) { "puts 'example'" }
       let(:expected) { "puts 'example'" }
 
-      include_examples 'final newline behavior'
+      it_behaves_like 'final newline behavior'
     end
 
     context 'with a whole line plus beginning of next line' do
       let(:input_source) { "puts 'example'\n" }
       let(:expected) { "puts 'example'\nputs 'another example'" }
 
-      include_examples 'final newline behavior'
+      it_behaves_like 'final newline behavior'
     end
 
     context 'with end of one line' do
@@ -158,7 +158,7 @@ RSpec.describe RuboCop::Cop::RangeHelp do
       let(:end_pos) { 14 }
       let(:expected) { "puts 'example'" }
 
-      include_examples 'final newline behavior'
+      it_behaves_like 'final newline behavior'
     end
 
     context 'with beginning of one line' do
@@ -166,21 +166,21 @@ RSpec.describe RuboCop::Cop::RangeHelp do
       let(:end_pos) { 15 }
       let(:expected) { "puts 'another example'" }
 
-      include_examples 'final newline behavior'
+      it_behaves_like 'final newline behavior'
     end
 
     context 'with parts of two lines' do
       let(:input_source) { "'example'\nputs 'another" }
       let(:expected) { "puts 'example'\nputs 'another example'" }
 
-      include_examples 'final newline behavior'
+      it_behaves_like 'final newline behavior'
     end
 
     context 'with parts of four lines' do
       let(:input_source) { "'example'\nputs 'another example'\n\nso" }
       let(:expected) { source.chomp }
 
-      include_examples 'final newline behavior'
+      it_behaves_like 'final newline behavior'
     end
 
     context "when source doesn't end with a newline" do

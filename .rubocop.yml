@@ -379,6 +379,3 @@ Gemspec/DependencyVersion:
 
 Style/RequireOrder:
   Enabled: true
-
-RSpec/IncludeExamples:
-  Enabled: false

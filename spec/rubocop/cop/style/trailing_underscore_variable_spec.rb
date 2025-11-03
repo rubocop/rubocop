@@ -212,7 +212,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       )
     end
 
-    include_examples 'common functionality'
+    it_behaves_like 'common functionality'
 
     it 'does not register an offense for named variables that start with an underscore' do
       expect_no_offenses('a, b, _c = foo()')
@@ -243,7 +243,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
       )
     end
 
-    include_examples 'common functionality'
+    it_behaves_like 'common functionality'
 
     it 'registers an offense for named variables that start with an underscore' do
       expect_offense(<<~RUBY)

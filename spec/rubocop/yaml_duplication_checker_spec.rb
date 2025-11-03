@@ -22,7 +22,7 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
         Enabled: false
     YAML
 
-    include_examples 'call block'
+    it_behaves_like 'call block'
 
     it 'calls block with keys' do
       key1 = nil
@@ -45,7 +45,7 @@ RSpec.describe RuboCop::YAMLDuplicationChecker do
         Enabled: false
     YAML
 
-    include_examples 'call block'
+    it_behaves_like 'call block'
 
     it 'calls block with keys' do
       key1 = nil

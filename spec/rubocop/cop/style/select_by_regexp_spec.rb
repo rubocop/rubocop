@@ -647,35 +647,35 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
   end
 
   context 'when Ruby >= 3.4', :ruby34 do
-    include_examples('regexp match with `itblock`s', 'select', 'grep')
-    include_examples('regexp match with `itblock`s', 'find_all', 'grep')
-    include_examples('regexp match with `itblock`s', 'filter', 'grep')
-    include_examples('regexp mismatch with `itblock`s', 'reject', 'grep')
+    it_behaves_like('regexp match with `itblock`s', 'select', 'grep')
+    it_behaves_like('regexp match with `itblock`s', 'find_all', 'grep')
+    it_behaves_like('regexp match with `itblock`s', 'filter', 'grep')
+    it_behaves_like('regexp mismatch with `itblock`s', 'reject', 'grep')
 
-    include_examples('regexp match with `itblock`s', 'reject', 'grep_v')
-    include_examples('regexp mismatch with `itblock`s', 'select', 'grep_v')
-    include_examples('regexp mismatch with `itblock`s', 'find_all', 'grep_v')
-    include_examples('regexp mismatch with `itblock`s', 'filter', 'grep_v')
+    it_behaves_like('regexp match with `itblock`s', 'reject', 'grep_v')
+    it_behaves_like('regexp mismatch with `itblock`s', 'select', 'grep_v')
+    it_behaves_like('regexp mismatch with `itblock`s', 'find_all', 'grep_v')
+    it_behaves_like('regexp mismatch with `itblock`s', 'filter', 'grep_v')
   end
 
   context 'when Ruby >= 2.7', :ruby27 do
-    include_examples('regexp match with `numblock`s', 'select', 'grep')
-    include_examples('regexp match with `numblock`s', 'find_all', 'grep')
-    include_examples('regexp match with `numblock`s', 'filter', 'grep')
-    include_examples('regexp mismatch with `numblock`s', 'reject', 'grep')
+    it_behaves_like('regexp match with `numblock`s', 'select', 'grep')
+    it_behaves_like('regexp match with `numblock`s', 'find_all', 'grep')
+    it_behaves_like('regexp match with `numblock`s', 'filter', 'grep')
+    it_behaves_like('regexp mismatch with `numblock`s', 'reject', 'grep')
 
-    include_examples('regexp match with `numblock`s', 'reject', 'grep_v')
-    include_examples('regexp mismatch with `numblock`s', 'select', 'grep_v')
-    include_examples('regexp mismatch with `numblock`s', 'find_all', 'grep_v')
-    include_examples('regexp mismatch with `numblock`s', 'filter', 'grep_v')
+    it_behaves_like('regexp match with `numblock`s', 'reject', 'grep_v')
+    it_behaves_like('regexp mismatch with `numblock`s', 'select', 'grep_v')
+    it_behaves_like('regexp mismatch with `numblock`s', 'find_all', 'grep_v')
+    it_behaves_like('regexp mismatch with `numblock`s', 'filter', 'grep_v')
   end
 
   context 'when Ruby >= 2.6', :ruby26 do
-    include_examples('regexp match', 'filter', 'grep')
-    include_examples('regexp match with safe navigation', 'filter', 'grep')
+    it_behaves_like('regexp match', 'filter', 'grep')
+    it_behaves_like('regexp match with safe navigation', 'filter', 'grep')
 
-    include_examples('regexp mismatch', 'filter', 'grep_v')
-    include_examples('regexp mismatch with safe navigation', 'filter', 'grep_v')
+    it_behaves_like('regexp mismatch', 'filter', 'grep_v')
+    it_behaves_like('regexp mismatch with safe navigation', 'filter', 'grep_v')
   end
 
   context 'when Ruby <= 2.5', :ruby25, unsupported_on: :prism do
@@ -693,25 +693,25 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
   end
 
   context 'when Ruby >= 2.3', :ruby23 do
-    include_examples('regexp match', 'select', 'grep')
-    include_examples('regexp match with safe navigation', 'select', 'grep')
-    include_examples('regexp match', 'find_all', 'grep')
-    include_examples('regexp match with safe navigation', 'find_all', 'grep')
-    include_examples('regexp mismatch', 'reject', 'grep')
-    include_examples('regexp mismatch with safe navigation', 'reject', 'grep')
+    it_behaves_like('regexp match', 'select', 'grep')
+    it_behaves_like('regexp match with safe navigation', 'select', 'grep')
+    it_behaves_like('regexp match', 'find_all', 'grep')
+    it_behaves_like('regexp match with safe navigation', 'find_all', 'grep')
+    it_behaves_like('regexp mismatch', 'reject', 'grep')
+    it_behaves_like('regexp mismatch with safe navigation', 'reject', 'grep')
 
-    include_examples('regexp match', 'reject', 'grep_v')
-    include_examples('regexp match with safe navigation', 'reject', 'grep_v')
-    include_examples('regexp mismatch', 'select', 'grep_v')
-    include_examples('regexp mismatch with safe navigation', 'select', 'grep_v')
-    include_examples('regexp mismatch', 'find_all', 'grep_v')
-    include_examples('regexp mismatch with safe navigation', 'find_all', 'grep_v')
+    it_behaves_like('regexp match', 'reject', 'grep_v')
+    it_behaves_like('regexp match with safe navigation', 'reject', 'grep_v')
+    it_behaves_like('regexp mismatch', 'select', 'grep_v')
+    it_behaves_like('regexp mismatch with safe navigation', 'select', 'grep_v')
+    it_behaves_like('regexp mismatch', 'find_all', 'grep_v')
+    it_behaves_like('regexp mismatch with safe navigation', 'find_all', 'grep_v')
   end
 
   context 'when Ruby <= 2.2', :ruby22, unsupported_on: :prism do
-    include_examples('regexp match', 'select', 'grep')
-    include_examples('regexp match', 'find_all', 'grep')
-    include_examples('regexp mismatch', 'reject', 'grep')
+    it_behaves_like('regexp match', 'select', 'grep')
+    it_behaves_like('regexp match', 'find_all', 'grep')
+    it_behaves_like('regexp mismatch', 'reject', 'grep')
 
     it 'does not register an offense when `reject` with regexp match' do
       expect_no_offenses(<<~RUBY)

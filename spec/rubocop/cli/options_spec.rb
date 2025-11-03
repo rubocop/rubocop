@@ -1343,7 +1343,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         end
       end
 
-      include_examples 'prints config'
+      it_behaves_like 'prints config'
     end
 
     context 'with one cop given' do
@@ -1362,7 +1362,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         )
       end
 
-      include_examples 'prints config'
+      it_behaves_like 'prints config'
     end
 
     context 'with one cop given and inherit_mode set in its local configuration' do
@@ -1414,13 +1414,13 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         ['Layout/IndentationConsistency', 'Layout/IndentationStyle', 'Layout/IndentationWidth']
       end
 
-      include_examples 'prints config'
+      it_behaves_like 'prints config'
     end
 
     context 'with two cops given' do
       let(:arguments) { ['Layout/IndentationStyle,Layout/LineLength'] }
 
-      include_examples 'prints config'
+      it_behaves_like 'prints config'
     end
 
     context 'with one of the cops misspelled' do

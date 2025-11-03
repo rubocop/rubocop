@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
         expect_no_offenses('%Q(hi)')
       end
 
-      include_examples 'accepts other delimiters'
+      it_behaves_like 'accepts other delimiters'
     end
 
     context 'and strings are dynamic' do
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
         expect_no_offenses('%Q(#{x})')
       end
 
-      include_examples 'accepts other delimiters'
+      it_behaves_like 'accepts other delimiters'
     end
   end
 
@@ -96,7 +96,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
         expect_no_offenses('%(hi)')
       end
 
-      include_examples 'accepts other delimiters'
+      it_behaves_like 'accepts other delimiters'
     end
 
     context 'and strings are dynamic' do
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
         expect_no_offenses('%(#{x})')
       end
 
-      include_examples 'accepts other delimiters'
+      it_behaves_like 'accepts other delimiters'
     end
   end
 end

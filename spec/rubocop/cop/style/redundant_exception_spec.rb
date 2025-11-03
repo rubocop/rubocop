@@ -55,10 +55,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantException, :config do
     end
   end
 
-  include_examples 'common behavior', 'raise', 'RuntimeError'
-  include_examples 'common behavior', 'raise', '::RuntimeError'
-  include_examples 'common behavior', 'fail', 'RuntimeError'
-  include_examples 'common behavior', 'fail', '::RuntimeError'
+  it_behaves_like 'common behavior', 'raise', 'RuntimeError'
+  it_behaves_like 'common behavior', 'raise', '::RuntimeError'
+  it_behaves_like 'common behavior', 'fail', 'RuntimeError'
+  it_behaves_like 'common behavior', 'fail', '::RuntimeError'
 
   it 'registers an offense for raise with RuntimeError, "#{message}"' do
     expect_offense(<<~'RUBY')

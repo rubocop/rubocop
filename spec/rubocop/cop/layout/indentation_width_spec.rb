@@ -637,7 +637,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
             { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'variable' }
           end
 
-          include_examples 'assignment with if statement'
+          it_behaves_like 'assignment with if statement'
         end
 
         context 'when alignment style is start_of_line' do
@@ -645,7 +645,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
             { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
           end
 
-          include_examples 'assignment with if statement'
+          it_behaves_like 'assignment with if statement'
         end
 
         context 'when alignment style is keyword' do
@@ -1064,7 +1064,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
         end
 
-        include_examples 'without modifier on the same line'
+        it_behaves_like 'without modifier on the same line'
 
         context 'when modifier and def are on the same line' do
           it 'accepts a correctly aligned body' do
@@ -1162,7 +1162,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'def' }
         end
 
-        include_examples 'without modifier on the same line'
+        it_behaves_like 'without modifier on the same line'
 
         context 'when modifier and def are on the same line' do
           it 'accepts a correctly aligned body' do

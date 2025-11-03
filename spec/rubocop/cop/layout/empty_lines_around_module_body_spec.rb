@@ -267,5 +267,5 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundModuleBody, :config do
     end
   end
 
-  include_examples 'empty_lines_around_class_or_module_body', 'module'
+  it_behaves_like 'empty_lines_around_class_or_module_body', 'module'
 end

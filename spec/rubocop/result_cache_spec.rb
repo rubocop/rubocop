@@ -150,7 +150,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     context 'when no option is given' do
       let(:options2) { {} }
 
-      include_examples 'valid'
+      it_behaves_like 'valid'
 
       context 'when file contents have changed' do
         it 'is invalid' do
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     context 'when --format is given' do
       let(:options2) { { format: 'simple' } }
 
-      include_examples 'valid'
+      it_behaves_like 'valid'
     end
 
     context 'when --only is given' do

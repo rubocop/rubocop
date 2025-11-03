@@ -109,7 +109,7 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
       end
     end
 
-    include_examples 'pattern matching'
+    it_behaves_like 'pattern matching'
   end
 
   context 'UnlessElse disabled' do
@@ -215,7 +215,7 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
       end
     end
 
-    include_examples 'pattern matching'
+    it_behaves_like 'pattern matching'
   end
 
   context 'EmptyElse enabled and set to warn on empty' do
@@ -355,7 +355,7 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
       end
     end
 
-    include_examples 'pattern matching'
+    it_behaves_like 'pattern matching'
   end
 
   context 'EmptyElse enabled and set to warn on nil' do
@@ -495,7 +495,7 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
       end
     end
 
-    include_examples 'pattern matching'
+    it_behaves_like 'pattern matching'
   end
 
   context 'configured to warn only on empty if' do
@@ -628,7 +628,7 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
       end
     end
 
-    include_examples 'pattern matching'
+    it_behaves_like 'pattern matching'
   end
 
   context 'configured to warn only on empty case' do
@@ -732,6 +732,6 @@ RSpec.describe RuboCop::Cop::Style::MissingElse, :config do
       end
     end
 
-    include_examples 'pattern matching'
+    it_behaves_like 'pattern matching'
   end
 end

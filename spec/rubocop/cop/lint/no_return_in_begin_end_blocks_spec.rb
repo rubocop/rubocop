@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks, :config do
   end
 
   %w[= += -= *= /= **= ||=].each do |operator|
-    include_examples 'rejects return inside a block', operator
-    include_examples 'accepts a block with no return', operator
+    it_behaves_like 'rejects return inside a block', operator
+    it_behaves_like 'accepts a block with no return', operator
   end
 end

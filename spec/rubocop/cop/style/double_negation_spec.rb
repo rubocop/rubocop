@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
   context 'when `EnforcedStyle: allowed_in_returns`' do
     let(:enforced_style) { 'allowed_in_returns' }
 
-    include_examples 'common'
+    it_behaves_like 'common'
 
     it 'registers an offense and corrects for `!!` when not return location and using `unless`' do
       expect_offense(<<~RUBY)
@@ -803,7 +803,7 @@ RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
   context 'when `EnforcedStyle: forbidden`' do
     let(:enforced_style) { 'forbidden' }
 
-    include_examples 'common'
+    it_behaves_like 'common'
 
     it 'registers an offense and corrects for `!!` when return location' do
       expect_offense(<<~RUBY)

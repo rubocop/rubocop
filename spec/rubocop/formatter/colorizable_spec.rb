@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Formatter::Colorizable do
       context "and the formatter's output is not a tty" do
         before { allow(output).to receive(:tty?).and_return(false) }
 
-        include_examples 'does nothing'
+        it_behaves_like 'does nothing'
       end
 
       context 'and output is not a tty, but --color option was provided' do
@@ -66,13 +66,13 @@ RSpec.describe RuboCop::Formatter::Colorizable do
       context "and the formatter's output is a tty" do
         before { allow(output).to receive(:tty?).and_return(true) }
 
-        include_examples 'does nothing'
+        it_behaves_like 'does nothing'
       end
 
       context "and the formatter's output is not a tty" do
         before { allow(output).to receive(:tty?).and_return(false) }
 
-        include_examples 'does nothing'
+        it_behaves_like 'does nothing'
       end
     end
   end

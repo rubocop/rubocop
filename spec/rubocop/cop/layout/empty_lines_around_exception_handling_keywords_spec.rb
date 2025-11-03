@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords, 
     RUBY
   end
 
-  include_examples 'accepts', 'no empty line', <<~RUBY
+  it_behaves_like 'accepts', 'no empty line', <<~RUBY
     begin
       f1
     rescue
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords, 
     end
   RUBY
 
-  include_examples 'accepts', 'empty lines around begin body', <<~RUBY
+  it_behaves_like 'accepts', 'empty lines around begin body', <<~RUBY
     begin
 
       f1
@@ -261,55 +261,55 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords, 
     end
   RUBY
 
-  include_examples 'accepts', 'empty begin', <<~RUBY
+  it_behaves_like 'accepts', 'empty begin', <<~RUBY
     begin
     end
   RUBY
 
-  include_examples 'accepts', 'empty method definition', <<~RUBY
+  it_behaves_like 'accepts', 'empty method definition', <<~RUBY
     def foo
     end
   RUBY
 
-  include_examples 'accepts', '`begin` and `rescue` are on the same line', <<~RUBY
+  it_behaves_like 'accepts', '`begin` and `rescue` are on the same line', <<~RUBY
     begin; foo; rescue => e; end
   RUBY
 
-  include_examples 'accepts', '`rescue` and `end` are on the same line', <<~RUBY
+  it_behaves_like 'accepts', '`rescue` and `end` are on the same line', <<~RUBY
     begin
       foo
     rescue => e; end
   RUBY
 
-  include_examples 'accepts', 'last `rescue` and `end` are on the same line', <<~RUBY
+  it_behaves_like 'accepts', 'last `rescue` and `end` are on the same line', <<~RUBY
     begin
       foo
     rescue => x
     rescue => y; end
   RUBY
 
-  include_examples 'accepts', '`def` and `rescue` are on the same line', <<~RUBY
+  it_behaves_like 'accepts', '`def` and `rescue` are on the same line', <<~RUBY
     def do_something; foo; rescue => e; end
   RUBY
 
-  include_examples 'accepts', '`ensure` and `end` are on the same line', <<~RUBY
+  it_behaves_like 'accepts', '`ensure` and `end` are on the same line', <<~RUBY
     def do_something
     ensure end
   RUBY
 
-  include_examples 'accepts', '`else` and `end` are on the same line', <<~RUBY
+  it_behaves_like 'accepts', '`else` and `end` are on the same line', <<~RUBY
     def do_something
     rescue
     else end
   RUBY
 
-  include_examples 'accepts', '`ensure` body expression and `end` are on the same line', <<~RUBY
+  it_behaves_like 'accepts', '`ensure` body expression and `end` are on the same line', <<~RUBY
     def do_something
     foo
     ensure bar end
   RUBY
 
-  include_examples 'accepts', '`else` body expression and `end` are on the same line', <<~RUBY
+  it_behaves_like 'accepts', '`else` body expression and `end` are on the same line', <<~RUBY
     def do_something
     rescue
     else foo end

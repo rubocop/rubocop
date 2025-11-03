@@ -418,12 +418,12 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
 
   # The node type for one-line `in` pattern matching in Ruby 2.7 is `match_pattern`.
   context 'using `match_pattern` as a one-line pattern matching', :ruby27 do
-    include_examples 'one-line pattern matching'
+    it_behaves_like 'one-line pattern matching'
   end
 
   # The node type for one-line `in` pattern matching in Ruby 3.0 is `match_pattern_p`.
   context 'using `match_pattern_p` as a one-line pattern matching', :ruby30 do
-    include_examples 'one-line pattern matching'
+    it_behaves_like 'one-line pattern matching'
   end
 
   context 'when using endless method definition', :ruby30 do

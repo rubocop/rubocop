@@ -358,7 +358,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
     let(:style) { 'special_for_inner_method_call' }
     let(:indentation_width) { 2 }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     context 'for method calls within method calls' do
       context 'with outer parentheses' do
@@ -391,7 +391,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
     let(:style) { 'special_for_inner_method_call_in_parentheses' }
     let(:indentation_width) { 2 }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     context 'for method calls within method calls' do
       context 'with outer parentheses' do
@@ -458,7 +458,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
     let(:style) { 'consistent' }
     let(:indentation_width) { 2 }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     context 'for method calls within method calls' do
       it 'registers an offense and corrects an over-indented first argument' do

@@ -948,14 +948,14 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     end
   end
 
-  include_examples('on if nodes which exit current scope', 'return')
-  include_examples(
+  it_behaves_like('on if nodes which exit current scope', 'return')
+  it_behaves_like(
     'on if nodes which exit current scope', 'next', [:ruby32, { unsupported_on: :prism }]
   )
-  include_examples(
+  it_behaves_like(
     'on if nodes which exit current scope', 'break', [:ruby32, { unsupported_on: :prism }]
   )
-  include_examples('on if nodes which exit current scope', 'raise "error"')
+  it_behaves_like('on if nodes which exit current scope', 'raise "error"')
 
   context 'method in module' do
     it 'registers an offense for instance method' do

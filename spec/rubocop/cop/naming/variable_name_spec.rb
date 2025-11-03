@@ -513,11 +513,11 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
       RUBY
     end
 
-    include_examples 'always accepted'
-    include_examples 'allowed identifiers', 'firstArg'
-    include_examples 'allowed patterns', 'st[A-Z]', 'firstArg'
-    include_examples 'forbidden identifiers', 'first_arg'
-    include_examples 'forbidden patterns', 'st_[a-z]', 'first_arg'
+    it_behaves_like 'always accepted'
+    it_behaves_like 'allowed identifiers', 'firstArg'
+    it_behaves_like 'allowed patterns', 'st[A-Z]', 'firstArg'
+    it_behaves_like 'forbidden identifiers', 'first_arg'
+    it_behaves_like 'forbidden patterns', 'st_[a-z]', 'first_arg'
   end
 
   context 'when configured for camelCase' do
@@ -613,10 +613,10 @@ RSpec.describe RuboCop::Cop::Naming::VariableName, :config do
       expect_no_offenses('léo = 1')
     end
 
-    include_examples 'always accepted'
-    include_examples 'allowed identifiers', 'first_arg'
-    include_examples 'allowed patterns', 'st_[a-z]', 'first_arg'
-    include_examples 'forbidden identifiers', 'first_arg'
-    include_examples 'forbidden patterns', 'st_[a-z]', 'first_arg'
+    it_behaves_like 'always accepted'
+    it_behaves_like 'allowed identifiers', 'first_arg'
+    it_behaves_like 'allowed patterns', 'st_[a-z]', 'first_arg'
+    it_behaves_like 'forbidden identifiers', 'first_arg'
+    it_behaves_like 'forbidden patterns', 'st_[a-z]', 'first_arg'
   end
 end

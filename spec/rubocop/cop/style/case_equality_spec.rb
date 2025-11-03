@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       RUBY
     end
 
-    include_examples 'offenses'
+    it_behaves_like 'offenses'
   end
 
   context 'when AllowOnConstant is true' do
@@ -71,7 +71,7 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       RUBY
     end
 
-    include_examples 'offenses'
+    it_behaves_like 'offenses'
   end
 
   context 'when AllowOnSelfClass is false' do
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       RUBY
     end
 
-    include_examples 'offenses'
+    it_behaves_like 'offenses'
   end
 
   context 'when AllowOnSelfClass is true' do
@@ -109,6 +109,6 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       expect_no_corrections
     end
 
-    include_examples 'offenses'
+    it_behaves_like 'offenses'
   end
 end

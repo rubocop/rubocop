@@ -30,25 +30,25 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInHashLiteral, :config do
     context 'when EnforcedStyleForMultiline is no_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
 
-      include_examples 'single line lists', ''
+      it_behaves_like 'single line lists', ''
     end
 
     context 'when EnforcedStyleForMultiline is comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
 
-      include_examples 'single line lists', ', unless each item is on its own line'
+      it_behaves_like 'single line lists', ', unless each item is on its own line'
     end
 
     context 'when EnforcedStyleForMultiline is diff_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'diff_comma' } }
 
-      include_examples 'single line lists', ', unless that item immediately precedes a newline'
+      it_behaves_like 'single line lists', ', unless that item immediately precedes a newline'
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
-      include_examples 'single line lists', ', unless items are split onto multiple lines'
+      it_behaves_like 'single line lists', ', unless items are split onto multiple lines'
     end
   end
 

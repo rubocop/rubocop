@@ -602,7 +602,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       end
 
-      include_examples 'always accepted', access_modifier
+      it_behaves_like 'always accepted', access_modifier
     end
 
     it 'offends when multiple groupable access modifiers are defined' do
@@ -821,7 +821,7 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         end
       end
 
-      include_examples 'always accepted', access_modifier
+      it_behaves_like 'always accepted', access_modifier
     end
   end
 end

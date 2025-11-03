@@ -1248,15 +1248,15 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
 
     context 'with private modifier' do
-      include_examples 'access modifier', 'private'
+      it_behaves_like 'access modifier', 'private'
     end
 
     context 'with private_class_method modifier' do
-      include_examples 'access modifier', 'private_class_method'
+      it_behaves_like 'access modifier', 'private_class_method'
     end
 
     context 'with public_class_method modifier' do
-      include_examples 'access modifier', 'public_class_method'
+      it_behaves_like 'access modifier', 'public_class_method'
     end
   end
 
