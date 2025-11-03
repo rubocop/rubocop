@@ -27,57 +27,57 @@ RSpec.describe RuboCop::Cop::Bundler::GemFilename, :config do
     context 'with gems.rb file path' do
       let(:filename) { 'gems.rb' }
 
-      include_examples 'invalid gem file',
-                       '`gems.rb` file was found but `Gemfile` is required ' \
-                       '(file path: gems.rb).'
+      it_behaves_like 'invalid gem file',
+                      '`gems.rb` file was found but `Gemfile` is required ' \
+                      '(file path: gems.rb).'
     end
 
     context 'with non-root gems.rb file path' do
       let(:filename) { 'spec/gems.rb' }
 
-      include_examples 'invalid gem file',
-                       '`gems.rb` file was found but `Gemfile` is required ' \
-                       '(file path: spec/gems.rb).'
+      it_behaves_like 'invalid gem file',
+                      '`gems.rb` file was found but `Gemfile` is required ' \
+                      '(file path: spec/gems.rb).'
     end
 
     context 'with gems.locked file path' do
       let(:filename) { 'gems.locked' }
 
-      include_examples 'invalid gem file',
-                       'Expected a `Gemfile.lock` with `Gemfile` but found `gems.locked` file ' \
-                       '(file path: gems.locked).'
+      it_behaves_like 'invalid gem file',
+                      'Expected a `Gemfile.lock` with `Gemfile` but found `gems.locked` file ' \
+                      '(file path: gems.locked).'
     end
 
     context 'with non-root gems.locked file path' do
       let(:filename) { 'spec/gems.locked' }
 
-      include_examples 'invalid gem file',
-                       'Expected a `Gemfile.lock` with `Gemfile` but found `gems.locked` file ' \
-                       '(file path: spec/gems.locked).'
+      it_behaves_like 'invalid gem file',
+                      'Expected a `Gemfile.lock` with `Gemfile` but found `gems.locked` file ' \
+                      '(file path: spec/gems.locked).'
     end
 
     context 'with Gemfile file path' do
       let(:filename) { 'Gemfile' }
 
-      include_examples 'valid gem file'
+      it_behaves_like 'valid gem file'
     end
 
     context 'with non-root Gemfile file path' do
       let(:filename) { 'spec/Gemfile' }
 
-      include_examples 'valid gem file'
+      it_behaves_like 'valid gem file'
     end
 
     context 'with Gemfile.lock file path' do
       let(:filename) { 'Gemfile.lock' }
 
-      include_examples 'valid gem file'
+      it_behaves_like 'valid gem file'
     end
 
     context 'with non-root Gemfile.lock file path' do
       let(:filename) { 'spec/Gemfile.lock' }
 
-      include_examples 'valid gem file'
+      it_behaves_like 'valid gem file'
     end
   end
 
@@ -91,49 +91,49 @@ RSpec.describe RuboCop::Cop::Bundler::GemFilename, :config do
     context 'with Gemfile file path' do
       let(:filename) { 'Gemfile' }
 
-      include_examples 'invalid gem file', '`Gemfile` was found but `gems.rb` file is required ' \
-                                           '(file path: Gemfile).'
+      it_behaves_like 'invalid gem file', '`Gemfile` was found but `gems.rb` file is required ' \
+                                          '(file path: Gemfile).'
     end
 
     context 'with non-root Gemfile file path' do
       let(:filename) { 'spec/Gemfile' }
 
-      include_examples 'invalid gem file', '`Gemfile` was found but `gems.rb` file is required ' \
-                                           '(file path: spec/Gemfile).'
+      it_behaves_like 'invalid gem file', '`Gemfile` was found but `gems.rb` file is required ' \
+                                          '(file path: spec/Gemfile).'
     end
 
     context 'with Gemfile.lock file path' do
       let(:filename) { 'Gemfile.lock' }
 
-      include_examples 'invalid gem file',
-                       'Expected a `gems.locked` file with `gems.rb` but found `Gemfile.lock` ' \
-                       '(file path: Gemfile.lock).'
+      it_behaves_like 'invalid gem file',
+                      'Expected a `gems.locked` file with `gems.rb` but found `Gemfile.lock` ' \
+                      '(file path: Gemfile.lock).'
     end
 
     context 'with non-root Gemfile.lock file path' do
       let(:filename) { 'spec/Gemfile.lock' }
 
-      include_examples 'invalid gem file',
-                       'Expected a `gems.locked` file with `gems.rb` but found `Gemfile.lock` ' \
-                       '(file path: spec/Gemfile.lock).'
+      it_behaves_like 'invalid gem file',
+                      'Expected a `gems.locked` file with `gems.rb` but found `Gemfile.lock` ' \
+                      '(file path: spec/Gemfile.lock).'
     end
 
     context 'with gems.rb file path' do
       let(:filename) { 'gems.rb' }
 
-      include_examples 'valid gem file'
+      it_behaves_like 'valid gem file'
     end
 
     context 'with non-root gems.rb file path' do
       let(:filename) { 'spec/gems.rb' }
 
-      include_examples 'valid gem file'
+      it_behaves_like 'valid gem file'
     end
 
     context 'with non-root gems.locked file path' do
       let(:filename) { 'spec/gems.locked' }
 
-      include_examples 'valid gem file'
+      it_behaves_like 'valid gem file'
     end
   end
 end

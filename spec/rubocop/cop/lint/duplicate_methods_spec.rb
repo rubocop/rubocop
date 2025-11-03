@@ -719,11 +719,11 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
   end
 
-  include_examples('in scope', 'class', 'class A')
-  include_examples('in scope', 'module', 'module A')
-  include_examples('in scope', 'dynamic class', 'A = Class.new do')
-  include_examples('in scope', 'dynamic module', 'A = Module.new do')
-  include_examples('in scope', 'class_eval block', 'A.class_eval do')
+  it_behaves_like('in scope', 'class', 'class A')
+  it_behaves_like('in scope', 'module', 'module A')
+  it_behaves_like('in scope', 'dynamic class', 'A = Class.new do')
+  it_behaves_like('in scope', 'dynamic module', 'A = Module.new do')
+  it_behaves_like('in scope', 'class_eval block', 'A.class_eval do')
 
   %w[class module].each do |type|
     it "registers an offense for duplicate class methods with named receiver in #{type}" do

@@ -10,35 +10,35 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
   end
 
   context 'dot operator' do
-    include_examples 'offense', 'space after method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after method call', <<~OFFENSE, <<~CORRECTION
       foo. bar
           ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar
     CORRECTION
 
-    include_examples 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
       foo .bar
          ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar
     CORRECTION
 
-    include_examples 'offense', 'spaces before method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'spaces before method call', <<~OFFENSE, <<~CORRECTION
       foo  .bar
          ^^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar
     CORRECTION
 
-    include_examples 'offense', 'spaces after method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'spaces after method call', <<~OFFENSE, <<~CORRECTION
       foo.  bar
           ^^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar
     CORRECTION
 
-    include_examples 'offense', 'spaces around method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'spaces around method call', <<~OFFENSE, <<~CORRECTION
       foo . bar
            ^ Avoid using spaces around a method call operator.
          ^ Avoid using spaces around a method call operator.
@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
       foo.bar
     CORRECTION
 
-    include_examples 'offense', 'spaces after `Proc#call` shorthand call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'spaces after `Proc#call` shorthand call', <<~OFFENSE, <<~CORRECTION
       foo. ()
           ^ Avoid using spaces around a method call operator.
     OFFENSE
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
     CORRECTION
 
     context 'when multi line method call' do
-      include_examples 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
+      it_behaves_like 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
         foo
           . bar
            ^ Avoid using spaces around a method call operator.
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
           .bar
       CORRECTION
 
-      include_examples 'offense', 'space before method call in suffix chaining', <<~OFFENSE, <<~CORRECTION
+      it_behaves_like 'offense', 'space before method call in suffix chaining', <<~OFFENSE, <<~CORRECTION
         foo .
            ^ Avoid using spaces around a method call operator.
           bar
@@ -86,42 +86,42 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
       RUBY
     end
 
-    include_examples 'offense', 'space after last method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after last method call operator', <<~OFFENSE, <<~CORRECTION
       foo.bar. buzz
               ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar.buzz
     CORRECTION
 
-    include_examples 'offense', 'space after first method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after first method call operator', <<~OFFENSE, <<~CORRECTION
       foo. bar.buzz
           ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar.buzz
     CORRECTION
 
-    include_examples 'offense', 'space before first method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space before first method call operator', <<~OFFENSE, <<~CORRECTION
       foo .bar.buzz
          ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar.buzz
     CORRECTION
 
-    include_examples 'offense', 'space before last method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space before last method call operator', <<~OFFENSE, <<~CORRECTION
       foo.bar .buzz
              ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar.buzz
     CORRECTION
 
-    include_examples 'offense', 'space around intermediate method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space around intermediate method call operator', <<~OFFENSE, <<~CORRECTION
       foo.bar .buzz.bat
              ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo.bar.buzz.bat
     CORRECTION
 
-    include_examples 'offense', 'space around multiple method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space around multiple method call operator', <<~OFFENSE, <<~CORRECTION
       foo. bar. buzz.bat
                ^ Avoid using spaces around a method call operator.
           ^ Avoid using spaces around a method call operator.
@@ -159,35 +159,35 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
   end
 
   context 'safe navigation operator' do
-    include_examples 'offense', 'space after method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after method call', <<~OFFENSE, <<~CORRECTION
       foo&. bar
            ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar
     CORRECTION
 
-    include_examples 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
       foo &.bar
          ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar
     CORRECTION
 
-    include_examples 'offense', 'spaces before method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'spaces before method call', <<~OFFENSE, <<~CORRECTION
       foo  &.bar
          ^^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar
     CORRECTION
 
-    include_examples 'offense', 'spaces after method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'spaces after method call', <<~OFFENSE, <<~CORRECTION
       foo&.  bar
            ^^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar
     CORRECTION
 
-    include_examples 'offense', 'spaces around method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'spaces around method call', <<~OFFENSE, <<~CORRECTION
       foo &. bar
             ^ Avoid using spaces around a method call operator.
          ^ Avoid using spaces around a method call operator.
@@ -196,7 +196,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
     CORRECTION
 
     context 'when multi line method call' do
-      include_examples 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
+      it_behaves_like 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
         foo
           &. bar
             ^ Avoid using spaces around a method call operator.
@@ -205,7 +205,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
           &.bar
       CORRECTION
 
-      include_examples 'offense', 'space before method call in suffix chaining', <<~OFFENSE, <<~CORRECTION
+      it_behaves_like 'offense', 'space before method call in suffix chaining', <<~OFFENSE, <<~CORRECTION
         foo &.
            ^ Avoid using spaces around a method call operator.
           bar
@@ -228,42 +228,42 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
       RUBY
     end
 
-    include_examples 'offense', 'space after last method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after last method call operator', <<~OFFENSE, <<~CORRECTION
       foo&.bar&. buzz
                 ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar&.buzz
     CORRECTION
 
-    include_examples 'offense', 'space after first method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after first method call operator', <<~OFFENSE, <<~CORRECTION
       foo&. bar&.buzz
            ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar&.buzz
     CORRECTION
 
-    include_examples 'offense', 'space before first method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space before first method call operator', <<~OFFENSE, <<~CORRECTION
       foo &.bar&.buzz
          ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar&.buzz
     CORRECTION
 
-    include_examples 'offense', 'space before last method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space before last method call operator', <<~OFFENSE, <<~CORRECTION
       foo&.bar &.buzz
               ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar&.buzz
     CORRECTION
 
-    include_examples 'offense', 'space around intermediate method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space around intermediate method call operator', <<~OFFENSE, <<~CORRECTION
       foo&.bar &.buzz&.bat
               ^ Avoid using spaces around a method call operator.
     OFFENSE
       foo&.bar&.buzz&.bat
     CORRECTION
 
-    include_examples 'offense', 'space around multiple method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space around multiple method call operator', <<~OFFENSE, <<~CORRECTION
       foo&. bar&. buzz&.bat
                  ^ Avoid using spaces around a method call operator.
            ^ Avoid using spaces around a method call operator.
@@ -279,14 +279,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
   end
 
   context ':: operator' do
-    include_examples 'offense', 'space after method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after method call', <<~OFFENSE, <<~CORRECTION
       RuboCop:: Cop
                ^ Avoid using spaces around a method call operator.
     OFFENSE
       RuboCop::Cop
     CORRECTION
 
-    include_examples 'offense', 'spaces after method call', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'spaces after method call', <<~OFFENSE, <<~CORRECTION
       RuboCop::  Cop
                ^^ Avoid using spaces around a method call operator.
     OFFENSE
@@ -294,7 +294,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
     CORRECTION
 
     context 'when multi line method call' do
-      include_examples 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
+      it_behaves_like 'offense', 'space before method call', <<~OFFENSE, <<~CORRECTION
         RuboCop
           :: Cop
             ^ Avoid using spaces around a method call operator.
@@ -317,21 +317,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
       RUBY
     end
 
-    include_examples 'offense', 'space after last method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after last method call operator', <<~OFFENSE, <<~CORRECTION
       RuboCop::Cop:: Cop
                     ^ Avoid using spaces around a method call operator.
     OFFENSE
       RuboCop::Cop::Cop
     CORRECTION
 
-    include_examples 'offense', 'space around intermediate method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space around intermediate method call operator', <<~OFFENSE, <<~CORRECTION
       RuboCop::Cop:: Cop::Cop
                     ^ Avoid using spaces around a method call operator.
     OFFENSE
       RuboCop::Cop::Cop::Cop
     CORRECTION
 
-    include_examples 'offense', 'space around multiple method call operator', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space around multiple method call operator', <<~OFFENSE, <<~CORRECTION
       :: RuboCop:: Cop:: Cop::Cop
                         ^ Avoid using spaces around a method call operator.
                   ^ Avoid using spaces around a method call operator.
@@ -340,7 +340,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
       ::RuboCop::Cop::Cop::Cop
     CORRECTION
 
-    include_examples 'offense', 'space after first operator with assignment', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'space after first operator with assignment', <<~OFFENSE, <<~CORRECTION
       klass = :: RuboCop::Cop
                 ^ Avoid using spaces around a method call operator.
     OFFENSE
@@ -372,7 +372,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundMethodCallOperator, :config do
       RUBY
     end
 
-    include_examples 'offense', 'multiple spaces with assignment', <<~OFFENSE, <<~CORRECTION
+    it_behaves_like 'offense', 'multiple spaces with assignment', <<~OFFENSE, <<~CORRECTION
       :: RuboCop:: Cop || :: RuboCop
                             ^ Avoid using spaces around a method call operator.
                   ^ Avoid using spaces around a method call operator.

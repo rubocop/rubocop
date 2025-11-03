@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
   context 'when EnforcedStyle is crlf' do
     let(:cop_config) { { 'EnforcedStyle' => 'crlf' } }
 
-    include_examples 'all configurations'
+    it_behaves_like 'all configurations'
 
     it 'registers an offense for CR+LF' do
       expect_offense(<<~RUBY)
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
         RUBY
       end
 
-      include_examples 'iso-8859-15', ''
+      it_behaves_like 'iso-8859-15', ''
     end
 
     context 'and the default external encoding is US_ASCII' do
@@ -106,14 +106,14 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
         RUBY
       end
 
-      include_examples 'iso-8859-15', ''
+      it_behaves_like 'iso-8859-15', ''
     end
   end
 
   context 'when EnforcedStyle is lf' do
     let(:cop_config) { { 'EnforcedStyle' => 'lf' } }
 
-    include_examples 'all configurations'
+    it_behaves_like 'all configurations'
 
     it 'registers an offense for CR+LF' do
       expect_offense(<<~RUBY)
@@ -149,7 +149,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
         RUBY
       end
 
-      include_examples 'iso-8859-15', "\r"
+      it_behaves_like 'iso-8859-15', "\r"
     end
 
     context 'and the default external encoding is US_ASCII' do
@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Cop::Layout::EndOfLine, :config do
         RUBY
       end
 
-      include_examples 'iso-8859-15', "\r"
+      it_behaves_like 'iso-8859-15', "\r"
     end
   end
 end

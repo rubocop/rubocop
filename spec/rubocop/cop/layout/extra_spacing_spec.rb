@@ -255,7 +255,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   context 'when AllowForAlignment is true' do
     let(:cop_config) { { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => false } }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     context 'with extra spacing for alignment purposes' do
       sources.each do |reason, src|
@@ -287,7 +287,7 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
   context 'when AllowForAlignment is false' do
     let(:cop_config) { { 'AllowForAlignment' => false, 'ForceEqualSignAlignment' => false } }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     context 'with extra spacing for alignment purposes' do
       sources.each do |reason, src|

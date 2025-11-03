@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       ['safe navigation with `+@` method', '+str&.to_i'],
       ['safe navigation with `-@` method', '-str&.to_i']
     ].each do |name, code|
-      include_examples 'accepts', name, code
+      it_behaves_like 'accepts', name, code
     end
 
     it 'registers an offense for ordinary method call exists after safe navigation method call' do

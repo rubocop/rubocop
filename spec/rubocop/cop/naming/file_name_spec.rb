@@ -219,7 +219,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     end
 
     context 'on a file which defines a nested module' do
-      include_examples 'matching module or class', <<~RUBY
+      it_behaves_like 'matching module or class', <<~RUBY
         module A
           module B
           end
@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     end
 
     context 'on a file which defines a nested class' do
-      include_examples 'matching module or class', <<~RUBY
+      it_behaves_like 'matching module or class', <<~RUBY
         module A
           class B
           end
@@ -237,7 +237,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     end
 
     context 'on a file which uses Name::Spaced::Module syntax' do
-      include_examples 'matching module or class', <<~RUBY
+      it_behaves_like 'matching module or class', <<~RUBY
         begin
           module A::B
           end
@@ -246,7 +246,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     end
 
     context 'on a file which defines multiple classes' do
-      include_examples 'matching module or class', <<~RUBY
+      it_behaves_like 'matching module or class', <<~RUBY
         class X
         end
         module M
@@ -259,7 +259,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     end
 
     context 'on a file which defines a Struct without a block' do
-      include_examples 'matching module or class', <<~RUBY
+      it_behaves_like 'matching module or class', <<~RUBY
         module A
           B = Struct.new(:foo, :bar)
         end
@@ -267,7 +267,7 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     end
 
     context 'on a file which defines a Struct with a block' do
-      include_examples 'matching module or class', <<~RUBY
+      it_behaves_like 'matching module or class', <<~RUBY
         module A
           B = Struct.new(:foo, :bar) do
           end

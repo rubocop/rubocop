@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Naming::AsciiIdentifiers, :config do
   context 'when AsciiConstants is true' do
     let(:cop_config) { { 'AsciiConstants' => true } }
 
-    include_examples 'checks identifiers'
+    it_behaves_like 'checks identifiers'
 
     it 'registers an offense for a constant name with non-ascii chars' do
       expect_offense(<<~RUBY)
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Naming::AsciiIdentifiers, :config do
   context 'when AsciiConstants is false' do
     let(:cop_config) { { 'AsciiConstants' => false } }
 
-    include_examples 'checks identifiers'
+    it_behaves_like 'checks identifiers'
 
     it 'accepts constants with only ascii chars' do
       expect_no_offenses(<<~RUBY)

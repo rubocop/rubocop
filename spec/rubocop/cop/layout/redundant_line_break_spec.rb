@@ -591,7 +591,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
   context 'when InspectBlocks is true' do
     let(:inspect_blocks) { true }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     context 'for a block' do
       let(:max_line_length) { 82 }
@@ -664,7 +664,7 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
   context 'when InspectBlocks is false' do
     let(:inspect_blocks) { false }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     context 'for a block' do
       let(:max_line_length) { 100 }

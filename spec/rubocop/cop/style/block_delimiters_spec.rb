@@ -206,7 +206,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     let(:cop_config) { cop_config }
 
-    include_examples 'always accepted'
+    it_behaves_like 'always accepted'
 
     it 'accepts a multi-line block with braces if the return value is assigned' do
       expect_no_offenses(<<~RUBY)
@@ -566,8 +566,8 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     let(:cop_config) { cop_config }
 
-    include_examples 'always accepted'
-    include_examples 'syntactic styles'
+    it_behaves_like 'always accepted'
+    it_behaves_like 'syntactic styles'
 
     it 'autocorrects do-end for single line blocks to { and }' do
       expect_offense(<<~RUBY)
@@ -917,8 +917,8 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     let(:cop_config) { cop_config }
 
-    include_examples 'always accepted'
-    include_examples 'syntactic styles'
+    it_behaves_like 'always accepted'
+    it_behaves_like 'syntactic styles'
 
     it 'registers an offense for multi-line chained do-end blocks' do
       expect_offense(<<~RUBY)
@@ -1105,7 +1105,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
 
     let(:cop_config) { cop_config }
 
-    include_examples 'always accepted'
+    it_behaves_like 'always accepted'
 
     it 'registers an offense for a single line block with do-end' do
       expect_offense(<<~RUBY)

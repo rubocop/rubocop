@@ -181,10 +181,10 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral, :config do
   end
 
   context 'Ruby <= 2.7', :ruby27, unsupported_on: :prism do
-    include_examples 'with a regexp literal in the first argument'
+    it_behaves_like 'with a regexp literal in the first argument'
   end
 
   context 'Ruby >= 3.0', :ruby30 do
-    include_examples 'with a regexp literal in the first argument'
+    it_behaves_like 'with a regexp literal in the first argument'
   end
 end

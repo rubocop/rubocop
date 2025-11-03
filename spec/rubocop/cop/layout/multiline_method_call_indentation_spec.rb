@@ -374,8 +374,8 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
   context 'when EnforcedStyle is aligned' do
     let(:cop_config) { { 'EnforcedStyle' => 'aligned' } }
 
-    include_examples 'common'
-    include_examples 'common for aligned and indented'
+    it_behaves_like 'common'
+    it_behaves_like 'common for aligned and indented'
 
     it "doesn't fail on unary operators" do
       expect_offense(<<~RUBY)
@@ -858,8 +858,8 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
   context 'when EnforcedStyle is indented_relative_to_receiver' do
     let(:cop_config) { { 'EnforcedStyle' => 'indented_relative_to_receiver' } }
 
-    include_examples 'common'
-    include_examples 'both indented* styles'
+    it_behaves_like 'common'
+    it_behaves_like 'both indented* styles'
 
     it "doesn't fail on unary operators" do
       expect_offense(<<~RUBY)
@@ -1017,9 +1017,9 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
   context 'when EnforcedStyle is indented' do
     let(:cop_config) { { 'EnforcedStyle' => 'indented' } }
 
-    include_examples 'common'
-    include_examples 'common for aligned and indented'
-    include_examples 'both indented* styles'
+    it_behaves_like 'common'
+    it_behaves_like 'common for aligned and indented'
+    it_behaves_like 'both indented* styles'
 
     it "doesn't fail on unary operators" do
       expect_offense(<<~RUBY)
@@ -1221,8 +1221,8 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       end
     end
 
-    include_examples 'assignment', 'a'
-    include_examples 'assignment', 'a[:key]'
+    it_behaves_like 'assignment', 'a'
+    it_behaves_like 'assignment', 'a[:key]'
 
     it 'registers an offense and corrects correct + unrecognized style' do
       expect_offense(<<~RUBY)

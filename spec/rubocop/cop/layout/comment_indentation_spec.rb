@@ -265,7 +265,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
   context 'when allow_for_alignment is false' do
     let(:allow_for_alignment) { false }
 
-    include_examples 'any allow_for_alignment'
+    it_behaves_like 'any allow_for_alignment'
 
     it 'registers an offense for comments with extra indentation' do
       expect_offense(<<~RUBY)
@@ -297,7 +297,7 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
   context 'when allow_for_alignment is true' do
     let(:allow_for_alignment) { true }
 
-    include_examples 'any allow_for_alignment'
+    it_behaves_like 'any allow_for_alignment'
 
     it 'accepts comments with extra indentation if aligned with comment on previous line' do
       expect_no_offenses(<<~RUBY)

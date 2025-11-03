@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Lint::MultipleComparison, :config do
   end
 
   %w[< > <= >=].repeated_permutation(2) do |operator1, operator2|
-    include_examples 'Check to use two comparison operator', operator1, operator2
+    it_behaves_like 'Check to use two comparison operator', operator1, operator2
   end
 
   it 'accepts to use one compare operator' do

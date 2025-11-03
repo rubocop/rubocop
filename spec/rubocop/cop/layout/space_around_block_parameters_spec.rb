@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
   context 'when EnforcedStyleInsidePipes is no_space' do
     let(:cop_config) { { 'EnforcedStyleInsidePipes' => 'no_space' } }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     it 'accepts a block with spaces in the right places' do
       expect_no_offenses('{}.each { |x, y| puts x }')
@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundBlockParameters, :config do
   context 'when EnforcedStyleInsidePipes is space' do
     let(:cop_config) { { 'EnforcedStyleInsidePipes' => 'space' } }
 
-    include_examples 'common behavior'
+    it_behaves_like 'common behavior'
 
     it 'accepts a block with spaces in the right places' do
       expect_no_offenses('{}.each { | x, y | puts x }')

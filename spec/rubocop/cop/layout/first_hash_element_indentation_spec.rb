@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
       RUBY
     end
 
-    include_examples 'right brace'
+    it_behaves_like 'right brace'
   end
 
   context 'when the HashAlignment style is separator for =>' do
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
       RUBY
     end
 
-    include_examples 'right brace'
+    it_behaves_like 'right brace'
   end
 
   context 'when hash is operand' do
@@ -138,7 +138,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
       RUBY
     end
 
-    include_examples 'right brace'
+    it_behaves_like 'right brace'
   end
 
   context 'when hash is argument to setter' do

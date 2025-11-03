@@ -42,8 +42,8 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
         RUBY
       end
 
-      include_examples 'accepts quote characters'
-      include_examples 'accepts any q string with backslash t'
+      it_behaves_like 'accepts quote characters'
+      it_behaves_like 'accepts any q string with backslash t'
     end
 
     context 'with interpolation' do
@@ -56,7 +56,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
         expect_no_offenses('%q(#{1 + 2})')
       end
 
-      include_examples 'accepts quote characters'
+      it_behaves_like 'accepts quote characters'
     end
   end
 
@@ -85,8 +85,8 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
         RUBY
       end
 
-      include_examples 'accepts quote characters'
-      include_examples 'accepts any q string with backslash t'
+      it_behaves_like 'accepts quote characters'
+      it_behaves_like 'accepts any q string with backslash t'
     end
 
     context 'with interpolation' do
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
         expect_no_offenses('%q(#{1 + 2})')
       end
 
-      include_examples 'accepts quote characters'
+      it_behaves_like 'accepts quote characters'
     end
   end
 end

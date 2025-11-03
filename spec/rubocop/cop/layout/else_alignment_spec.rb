@@ -268,7 +268,7 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
           { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'keyword' }
         end
 
-        include_examples 'assignment and if with keyword alignment'
+        it_behaves_like 'assignment and if with keyword alignment'
       end
     end
 

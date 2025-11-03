@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout, :conf
     RUBY
   end
 
-  include_examples 'multiline literal brace layout' do
+  it_behaves_like 'multiline literal brace layout' do
     let(:prefix) { 'def foo' }
     let(:suffix) { 'end' }
     let(:open) { '(' }

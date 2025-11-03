@@ -78,12 +78,12 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     end
 
     describe '#started' do
-      include_examples 'sends all file paths', :started
+      it_behaves_like 'sends all file paths', :started
     end
 
     describe '#finished' do
       context 'when RuboCop finished inspecting all files normally' do
-        include_examples 'sends all file paths', :started
+        it_behaves_like 'sends all file paths', :started
       end
 
       context 'when RuboCop is interrupted by user' do
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     end
 
     describe '#file_started' do
-      include_examples 'sends a file path', :file_started
+      it_behaves_like 'sends a file path', :file_started
 
       it 'sends file specific information hash' do
         expect(formatter).to receive(:file_started)
@@ -151,7 +151,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     end
 
     describe '#file_finished' do
-      include_examples 'sends a file path', :file_finished
+      it_behaves_like 'sends a file path', :file_finished
 
       it 'sends an array of detected offenses for the file' do
         expect(formatter).to receive(:file_finished).exactly(3).times do |file, offenses|

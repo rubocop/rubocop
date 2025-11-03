@@ -28,13 +28,13 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
     context 'when no offenses are detected' do
       let(:offenses) { [] }
 
-      include_examples 'calls #report_file_as_mark'
+      it_behaves_like 'calls #report_file_as_mark'
     end
 
     context 'when any offenses are detected' do
       let(:offenses) { [instance_double(RuboCop::Cop::Offense).as_null_object] }
 
-      include_examples 'calls #report_file_as_mark'
+      it_behaves_like 'calls #report_file_as_mark'
     end
   end
 

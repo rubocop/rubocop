@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
   context 'when EnforcedStyleAlignWith is start_of_line' do
     let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true } }
 
-    include_examples 'misaligned', <<~RUBY, false
+    it_behaves_like 'misaligned', <<~RUBY, false
       def test
         end
         ^^^ `end` at 2, 2 is not aligned with `def` at 1, 0.
@@ -14,14 +14,14 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
         ^^^ `end` at 2, 2 is not aligned with `def` at 1, 0.
     RUBY
 
-    include_examples 'aligned', "\xef\xbb\xbfdef", 'test', 'end'
-    include_examples 'aligned', 'def',       'test',       'end'
-    include_examples 'aligned', 'def',       'Test.test',  'end', 'defs'
+    it_behaves_like 'aligned', "\xef\xbb\xbfdef", 'test', 'end'
+    it_behaves_like 'aligned', 'def',       'test',       'end'
+    it_behaves_like 'aligned', 'def',       'Test.test',  'end', 'defs'
 
-    include_examples 'aligned', 'foo def', 'test', 'end'
-    include_examples 'aligned', 'foo bar def', 'test', 'end'
+    it_behaves_like 'aligned', 'foo def', 'test', 'end'
+    it_behaves_like 'aligned', 'foo bar def', 'test', 'end'
 
-    include_examples 'misaligned', <<~RUBY, :def
+    it_behaves_like 'misaligned', <<~RUBY, :def
       foo def test
           end
           ^^^ `end` at 2, 4 is not aligned with `foo def` at 1, 0.
@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
   context 'when EnforcedStyleAlignWith is def' do
     let(:cop_config) { { 'EnforcedStyleAlignWith' => 'def', 'AutoCorrect' => true } }
 
-    include_examples 'misaligned', <<~RUBY, false
+    it_behaves_like 'misaligned', <<~RUBY, false
       def test
         end
         ^^^ `end` at 2, 2 is not aligned with `def` at 1, 0.
@@ -93,12 +93,12 @@ RSpec.describe RuboCop::Cop::Layout::DefEndAlignment, :config do
         ^^^ `end` at 2, 2 is not aligned with `def` at 1, 0.
     RUBY
 
-    include_examples 'aligned', 'def', 'test',      'end'
-    include_examples 'aligned', 'def', 'Test.test', 'end', 'defs'
+    it_behaves_like 'aligned', 'def', 'test',      'end'
+    it_behaves_like 'aligned', 'def', 'Test.test', 'end', 'defs'
 
-    include_examples('aligned', 'foo def', 'test', '    end')
+    it_behaves_like('aligned', 'foo def', 'test', '    end')
 
-    include_examples 'misaligned', <<~RUBY, :start_of_line
+    it_behaves_like 'misaligned', <<~RUBY, :start_of_line
       foo def test
       end
       ^^^ `end` at 2, 0 is not aligned with `def` at 1, 4.

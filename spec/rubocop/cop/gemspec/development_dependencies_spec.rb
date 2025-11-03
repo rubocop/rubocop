@@ -61,13 +61,13 @@ RSpec.describe RuboCop::Cop::Gemspec::DevelopmentDependencies, :config do
   context 'with `EnforcedStyle: Gemfile`' do
     let(:enforced_style) { 'Gemfile' }
 
-    include_examples 'prefer gem file'
+    it_behaves_like 'prefer gem file'
   end
 
   context 'with `EnforcedStyle: gems.rb`' do
     let(:enforced_style) { 'gems.rb' }
 
-    include_examples 'prefer gem file'
+    it_behaves_like 'prefer gem file'
   end
 
   context 'with `EnforcedStyle: gemspec`' do

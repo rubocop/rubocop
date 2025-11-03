@@ -22,10 +22,10 @@ RSpec.describe RuboCop::Cop::Badge do
       end
     end
 
-    include_examples 'assignment of department and name', %w[Foo], nil, 'Foo'
-    include_examples 'assignment of department and name', %w[Foo Bar], :Foo, 'Bar'
-    include_examples 'assignment of department and name', %w[Foo Bar Baz], :'Foo/Bar', 'Baz'
-    include_examples 'assignment of department and name', %w[Foo Bar Baz Qux], :'Foo/Bar/Baz', 'Qux'
+    it_behaves_like 'assignment of department and name', %w[Foo], nil, 'Foo'
+    it_behaves_like 'assignment of department and name', %w[Foo Bar], :Foo, 'Bar'
+    it_behaves_like 'assignment of department and name', %w[Foo Bar Baz], :'Foo/Bar', 'Baz'
+    it_behaves_like 'assignment of department and name', %w[Foo Bar Baz Qux], :'Foo/Bar/Baz', 'Qux'
   end
 
   describe '.parse' do
@@ -35,12 +35,12 @@ RSpec.describe RuboCop::Cop::Badge do
       end
     end
 
-    include_examples 'cop identifier parsing', 'bar', %w[Bar]
-    include_examples 'cop identifier parsing', 'Bar', %w[Bar]
-    include_examples 'cop identifier parsing', 'snake_case/example', %w[SnakeCase Example]
-    include_examples 'cop identifier parsing', 'Foo/Bar', %w[Foo Bar]
-    include_examples 'cop identifier parsing', 'Foo/Bar/Baz', %w[Foo Bar Baz]
-    include_examples 'cop identifier parsing', 'Foo/Bar/Baz/Qux', %w[Foo Bar Baz Qux]
+    it_behaves_like 'cop identifier parsing', 'bar', %w[Bar]
+    it_behaves_like 'cop identifier parsing', 'Bar', %w[Bar]
+    it_behaves_like 'cop identifier parsing', 'snake_case/example', %w[SnakeCase Example]
+    it_behaves_like 'cop identifier parsing', 'Foo/Bar', %w[Foo Bar]
+    it_behaves_like 'cop identifier parsing', 'Foo/Bar/Baz', %w[Foo Bar Baz]
+    it_behaves_like 'cop identifier parsing', 'Foo/Bar/Baz/Qux', %w[Foo Bar Baz Qux]
   end
 
   describe '.for' do
@@ -50,11 +50,11 @@ RSpec.describe RuboCop::Cop::Badge do
       end
     end
 
-    include_examples 'cop class name parsing', 'Foo', %w[Foo]
-    include_examples 'cop class name parsing', 'Foo::Bar', %w[Foo Bar]
-    include_examples 'cop class name parsing', 'RuboCop::Cop::Foo', %w[Cop Foo]
-    include_examples 'cop class name parsing', 'RuboCop::Cop::Foo::Bar', %w[Foo Bar]
-    include_examples 'cop class name parsing', 'RuboCop::Cop::Foo::Bar::Baz', %w[Foo Bar Baz]
+    it_behaves_like 'cop class name parsing', 'Foo', %w[Foo]
+    it_behaves_like 'cop class name parsing', 'Foo::Bar', %w[Foo Bar]
+    it_behaves_like 'cop class name parsing', 'RuboCop::Cop::Foo', %w[Cop Foo]
+    it_behaves_like 'cop class name parsing', 'RuboCop::Cop::Foo::Bar', %w[Foo Bar]
+    it_behaves_like 'cop class name parsing', 'RuboCop::Cop::Foo::Bar::Baz', %w[Foo Bar Baz]
   end
 
   it 'compares by value' do

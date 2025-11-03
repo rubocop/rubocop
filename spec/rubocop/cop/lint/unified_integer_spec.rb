@@ -71,8 +71,8 @@ RSpec.describe RuboCop::Cop::Lint::UnifiedInteger, :config do
     end
   end
 
-  include_examples 'registers an offense', 'Fixnum'
-  include_examples 'registers an offense', 'Bignum'
+  it_behaves_like 'registers an offense', 'Fixnum'
+  it_behaves_like 'registers an offense', 'Bignum'
 
   context 'when Integer' do
     context 'without any decorations' do

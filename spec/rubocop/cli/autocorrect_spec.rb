@@ -734,7 +734,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         RUBY
       end
 
-      include_examples 'corrects offenses without producing a double comma'
+      it_behaves_like 'corrects offenses without producing a double comma'
     end
 
     context 'when the style is `consistent_comma`' do
@@ -761,7 +761,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         RUBY
       end
 
-      include_examples 'corrects offenses without producing a double comma'
+      it_behaves_like 'corrects offenses without producing a double comma'
     end
   end
 
@@ -812,7 +812,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         RUBY
       end
 
-      include_examples 'corrects offenses'
+      it_behaves_like 'corrects offenses'
     end
 
     context 'when array style is no_space & reference style is space' do
@@ -828,7 +828,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         RUBY
       end
 
-      include_examples 'corrects offenses'
+      it_behaves_like 'corrects offenses'
     end
 
     context 'when array style is compact & reference style is no_space' do
@@ -844,7 +844,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         RUBY
       end
 
-      include_examples 'corrects offenses'
+      it_behaves_like 'corrects offenses'
     end
 
     context 'when array style is compact & reference style is space' do
@@ -860,7 +860,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
         RUBY
       end
 
-      include_examples 'corrects offenses'
+      it_behaves_like 'corrects offenses'
     end
   end
 

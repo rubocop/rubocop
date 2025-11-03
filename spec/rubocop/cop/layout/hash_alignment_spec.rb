@@ -825,7 +825,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     end
   end
 
-  include_examples 'not on separate lines'
+  it_behaves_like 'not on separate lines'
 
   context 'with table alignment configuration' do
     let(:cop_config) do
@@ -835,7 +835,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       }
     end
 
-    include_examples 'not on separate lines'
+    it_behaves_like 'not on separate lines'
 
     it 'accepts aligned hash keys and values' do
       expect_no_offenses(<<~RUBY)
@@ -1107,7 +1107,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    include_examples 'not on separate lines'
+    it_behaves_like 'not on separate lines'
 
     it 'registers an offense and corrects mixed indentation and spacing' do
       expect_offense(<<~RUBY)

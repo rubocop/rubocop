@@ -3,22 +3,22 @@
 RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   let(:cop_config) { { 'EnforcedStyleAlignWith' => 'keyword', 'AutoCorrect' => true } }
 
-  include_examples 'aligned', "\xef\xbb\xbfclass", 'Test', 'end'
+  it_behaves_like 'aligned', "\xef\xbb\xbfclass", 'Test', 'end'
 
-  include_examples 'aligned', 'class',          'Test',      'end'
-  include_examples 'aligned', 'class << self;', 'Test',      'end'
-  include_examples 'aligned', 'module',         'Test',      'end'
-  include_examples 'aligned', 'if',             'test',      'end'
-  include_examples 'aligned', 'unless',         'test',      'end'
-  include_examples 'aligned', 'while',          'test',      'end'
-  include_examples 'aligned', 'until',          'test',      'end'
-  include_examples 'aligned', 'case',           'a when b',  'end'
+  it_behaves_like 'aligned', 'class',          'Test',      'end'
+  it_behaves_like 'aligned', 'class << self;', 'Test',      'end'
+  it_behaves_like 'aligned', 'module',         'Test',      'end'
+  it_behaves_like 'aligned', 'if',             'test',      'end'
+  it_behaves_like 'aligned', 'unless',         'test',      'end'
+  it_behaves_like 'aligned', 'while',          'test',      'end'
+  it_behaves_like 'aligned', 'until',          'test',      'end'
+  it_behaves_like 'aligned', 'case',           'a when b',  'end'
 
   context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-    include_examples 'aligned', 'case', 'a; in b', 'end'
+    it_behaves_like 'aligned', 'case', 'a; in b', 'end'
   end
 
-  include_examples 'misaligned', <<~RUBY, false
+  it_behaves_like 'misaligned', <<~RUBY, false
     puts 1; class Test
       end
       ^^^ `end` at 2, 2 is not aligned with `class` at 1, 8.
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   RUBY
 
   context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-    include_examples 'misaligned', <<~RUBY, false
+    it_behaves_like 'misaligned', <<~RUBY, false
       puts 1; case a; in b
         end
         ^^^ `end` at 2, 2 is not aligned with `case` at 1, 8.
@@ -96,16 +96,16 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     RUBY
   end
 
-  include_examples 'aligned', 'puts 1; class',          'Test',     '        end'
-  include_examples 'aligned', 'puts 1; class << self;', 'Test',     '        end'
-  include_examples 'aligned', 'puts 1; module',         'Test',     '        end'
-  include_examples 'aligned', 'puts 1; if',             'Test',     '        end'
-  include_examples 'aligned', 'puts 1; unless',         'Test',     '        end'
-  include_examples 'aligned', 'puts 1; while',          'Test',     '        end'
-  include_examples 'aligned', 'puts 1; until',          'Test',     '        end'
-  include_examples 'aligned', 'puts 1; case',           'a when b', '        end'
+  it_behaves_like 'aligned', 'puts 1; class',          'Test',     '        end'
+  it_behaves_like 'aligned', 'puts 1; class << self;', 'Test',     '        end'
+  it_behaves_like 'aligned', 'puts 1; module',         'Test',     '        end'
+  it_behaves_like 'aligned', 'puts 1; if',             'Test',     '        end'
+  it_behaves_like 'aligned', 'puts 1; unless',         'Test',     '        end'
+  it_behaves_like 'aligned', 'puts 1; while',          'Test',     '        end'
+  it_behaves_like 'aligned', 'puts 1; until',          'Test',     '        end'
+  it_behaves_like 'aligned', 'puts 1; case',           'a when b', '        end'
   context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-    include_examples 'aligned', 'puts 1; case', 'a; in b', '        end'
+    it_behaves_like 'aligned', 'puts 1; case', 'a; in b', '        end'
   end
 
   it 'can handle ternary if' do
@@ -119,19 +119,19 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
   context 'when EnforcedStyleAlignWith is start_of_line' do
     let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true } }
 
-    include_examples 'aligned', 'puts 1; class',          'Test',     'end'
-    include_examples 'aligned', 'puts 1; class << self;', 'Test',     'end'
-    include_examples 'aligned', 'puts 1; module',         'Test',     'end'
-    include_examples 'aligned', 'puts 1; if',             'test',     'end'
-    include_examples 'aligned', 'puts 1; unless',         'test',     'end'
-    include_examples 'aligned', 'puts 1; while',          'test',     'end'
-    include_examples 'aligned', 'puts 1; until',          'test',     'end'
-    include_examples 'aligned', 'puts 1; case',           'a when b', 'end'
+    it_behaves_like 'aligned', 'puts 1; class',          'Test',     'end'
+    it_behaves_like 'aligned', 'puts 1; class << self;', 'Test',     'end'
+    it_behaves_like 'aligned', 'puts 1; module',         'Test',     'end'
+    it_behaves_like 'aligned', 'puts 1; if',             'test',     'end'
+    it_behaves_like 'aligned', 'puts 1; unless',         'test',     'end'
+    it_behaves_like 'aligned', 'puts 1; while',          'test',     'end'
+    it_behaves_like 'aligned', 'puts 1; until',          'test',     'end'
+    it_behaves_like 'aligned', 'puts 1; case',           'a when b', 'end'
     context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      include_examples 'aligned', 'puts 1; case', 'a; in b', 'end'
+      it_behaves_like 'aligned', 'puts 1; case', 'a; in b', 'end'
     end
 
-    include_examples 'misaligned', <<~RUBY, false
+    it_behaves_like 'misaligned', <<~RUBY, false
       puts 1; class Test
         end
         ^^^ `end` at 2, 2 is not aligned with `puts 1; class Test` at 1, 0.
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     RUBY
 
     context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      include_examples 'misaligned', <<~RUBY, false
+      it_behaves_like 'misaligned', <<~RUBY, false
         case a
         in b
           end
@@ -198,13 +198,13 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
-    include_examples 'misaligned', <<~RUBY, :keyword
+    it_behaves_like 'misaligned', <<~RUBY, :keyword
       puts(if test
            end)
            ^^^ `end` at 2, 5 is not aligned with `puts(if test` at 1, 0.
     RUBY
 
-    include_examples 'misaligned', <<~RUBY, :keyword
+    it_behaves_like 'misaligned', <<~RUBY, :keyword
       var = if test
             end
             ^^^ `end` at 2, 6 is not aligned with `var = if test` at 1, 0.
@@ -247,7 +247,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     RUBY
 
     context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      include_examples 'misaligned', <<~RUBY, :keyword
+      it_behaves_like 'misaligned', <<~RUBY, :keyword
         var << case a
                in b
                end
@@ -255,21 +255,21 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
-    include_examples 'misaligned', <<~RUBY, false
+    it_behaves_like 'misaligned', <<~RUBY, false
       var =
         if test
       end
       ^^^ `end` at 3, 0 is not aligned with `if test` at 2, 2.
     RUBY
 
-    include_examples 'aligned', 'var = if',     'test',     'end'
-    include_examples 'aligned', 'var = unless', 'test',     'end'
-    include_examples 'aligned', 'var = while',  'test',     'end'
-    include_examples 'aligned', 'var << while', 'test',     'end'
-    include_examples 'aligned', 'var = until',  'test',     'end'
-    include_examples 'aligned', 'var = case',   'a when b', 'end'
+    it_behaves_like 'aligned', 'var = if',     'test',     'end'
+    it_behaves_like 'aligned', 'var = unless', 'test',     'end'
+    it_behaves_like 'aligned', 'var = while',  'test',     'end'
+    it_behaves_like 'aligned', 'var << while', 'test',     'end'
+    it_behaves_like 'aligned', 'var = until',  'test',     'end'
+    it_behaves_like 'aligned', 'var = case',   'a when b', 'end'
 
-    include_examples 'aligned', "var =\n  if",  'test', '  end'
+    it_behaves_like 'aligned', "var =\n  if",  'test', '  end'
   end
 
   context 'when EnforcedStyleAlignWith is variable' do
@@ -277,7 +277,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     # as long as assignments or `case` are not involved
     let(:cop_config) { { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true } }
 
-    include_examples 'misaligned', <<~RUBY, false
+    it_behaves_like 'misaligned', <<~RUBY, false
       class Test
         end
         ^^^ `end` at 2, 2 is not aligned with `class` at 1, 0.
@@ -311,19 +311,19 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         ^^^ `end` at 2, 2 is not aligned with `case` at 1, 0.
     RUBY
 
-    include_examples 'aligned', 'class',          'Test',     'end'
-    include_examples 'aligned', 'class << self;', 'Test',     'end'
-    include_examples 'aligned', 'module',         'Test',     'end'
-    include_examples 'aligned', 'if',             'test',     'end'
-    include_examples 'aligned', 'unless',         'test',     'end'
-    include_examples 'aligned', 'while',          'test',     'end'
-    include_examples 'aligned', 'until',          'test',     'end'
-    include_examples 'aligned', 'case',           'a when b', 'end'
+    it_behaves_like 'aligned', 'class',          'Test',     'end'
+    it_behaves_like 'aligned', 'class << self;', 'Test',     'end'
+    it_behaves_like 'aligned', 'module',         'Test',     'end'
+    it_behaves_like 'aligned', 'if',             'test',     'end'
+    it_behaves_like 'aligned', 'unless',         'test',     'end'
+    it_behaves_like 'aligned', 'while',          'test',     'end'
+    it_behaves_like 'aligned', 'until',          'test',     'end'
+    it_behaves_like 'aligned', 'case',           'a when b', 'end'
     context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      include_examples 'aligned', 'case', 'a; in b', 'end'
+      it_behaves_like 'aligned', 'case', 'a; in b', 'end'
     end
 
-    include_examples 'misaligned', <<~RUBY, :start_of_line
+    it_behaves_like 'misaligned', <<~RUBY, :start_of_line
       puts 1; class Test
       end
       ^^^ `end` at 2, 0 is not aligned with `class` at 1, 8.
@@ -358,7 +358,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     RUBY
 
     context 'Ruby >= 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
-      include_examples 'misaligned', <<~RUBY, :start_of_line
+      it_behaves_like 'misaligned', <<~RUBY, :start_of_line
         puts 1; case a
                 in b
         end
@@ -366,14 +366,14 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
-    include_examples 'aligned', 'puts 1; class',          'Test',     '        end'
-    include_examples 'aligned', 'puts 1; class << self;', 'Test',     '        end'
-    include_examples 'aligned', 'puts 1; module',         'Test',     '        end'
-    include_examples 'aligned', 'puts 1; if',             'Test',     '        end'
-    include_examples 'aligned', 'puts 1; unless',         'Test',     '        end'
-    include_examples 'aligned', 'puts 1; while',          'Test',     '        end'
-    include_examples 'aligned', 'puts 1; until',          'Test',     '        end'
-    include_examples 'aligned', 'puts 1; case',           'a when b', '        end'
+    it_behaves_like 'aligned', 'puts 1; class',          'Test',     '        end'
+    it_behaves_like 'aligned', 'puts 1; class << self;', 'Test',     '        end'
+    it_behaves_like 'aligned', 'puts 1; module',         'Test',     '        end'
+    it_behaves_like 'aligned', 'puts 1; if',             'Test',     '        end'
+    it_behaves_like 'aligned', 'puts 1; unless',         'Test',     '        end'
+    it_behaves_like 'aligned', 'puts 1; while',          'Test',     '        end'
+    it_behaves_like 'aligned', 'puts 1; until',          'Test',     '        end'
+    it_behaves_like 'aligned', 'puts 1; case',           'a when b', '        end'
 
     it 'registers an offense when using `+` operator method and `end` is not aligned' do
       expect_offense(<<~RUBY)
@@ -542,9 +542,9 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     context 'when EnforcedStyleAlignWith is keyword' do
       let(:cop_config) { { 'EnforcedStyleAlignWith' => 'keyword', 'AutoCorrect' => true } }
 
-      include_examples 'aligned', 'test case', 'a when b', '     end'
+      it_behaves_like 'aligned', 'test case', 'a when b', '     end'
 
-      include_examples 'misaligned', <<~RUBY, :start_of_line
+      it_behaves_like 'misaligned', <<~RUBY, :start_of_line
         test case a when b
         end
         ^^^ `end` at 2, 0 is not aligned with `case` at 1, 5.
@@ -554,9 +554,9 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     context 'when EnforcedStyleAlignWith is variable' do
       let(:cop_config) { { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true } }
 
-      include_examples 'aligned', 'test case', 'a when b', 'end'
+      it_behaves_like 'aligned', 'test case', 'a when b', 'end'
 
-      include_examples 'misaligned', <<~RUBY, :keyword
+      it_behaves_like 'misaligned', <<~RUBY, :keyword
         test case a when b
              end
              ^^^ `end` at 2, 5 is not aligned with `test case` at 1, 0.
@@ -566,9 +566,9 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     context 'when EnforcedStyleAlignWith is start_of_line' do
       let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true } }
 
-      include_examples 'aligned', 'test case a when b', '', 'end'
+      it_behaves_like 'aligned', 'test case a when b', '', 'end'
 
-      include_examples 'misaligned', <<~RUBY, :keyword
+      it_behaves_like 'misaligned', <<~RUBY, :keyword
         test case a when b
              end
              ^^^ `end` at 2, 5 is not aligned with `test case a when b` at 1, 0.
@@ -580,9 +580,9 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     context 'when EnforcedStyleAlignWith is keyword' do
       let(:cop_config) { { 'EnforcedStyleAlignWith' => 'keyword', 'AutoCorrect' => true } }
 
-      include_examples 'aligned', 'test case', 'a; in b', '     end'
+      it_behaves_like 'aligned', 'test case', 'a; in b', '     end'
 
-      include_examples 'misaligned', <<~RUBY, :start_of_line
+      it_behaves_like 'misaligned', <<~RUBY, :start_of_line
         test case a; in b
         end
         ^^^ `end` at 2, 0 is not aligned with `case` at 1, 5.
@@ -592,9 +592,9 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     context 'when EnforcedStyleAlignWith is variable' do
       let(:cop_config) { { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true } }
 
-      include_examples 'aligned', 'test case', 'a; in b', 'end'
+      it_behaves_like 'aligned', 'test case', 'a; in b', 'end'
 
-      include_examples 'misaligned', <<~RUBY, :keyword
+      it_behaves_like 'misaligned', <<~RUBY, :keyword
         test case a; in b
              end
              ^^^ `end` at 2, 5 is not aligned with `test case` at 1, 0.
@@ -604,9 +604,9 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
     context 'when EnforcedStyleAlignWith is start_of_line' do
       let(:cop_config) { { 'EnforcedStyleAlignWith' => 'start_of_line', 'AutoCorrect' => true } }
 
-      include_examples 'aligned', 'test case a; in b', '', 'end'
+      it_behaves_like 'aligned', 'test case a; in b', '', 'end'
 
-      include_examples 'misaligned', <<~RUBY, :keyword
+      it_behaves_like 'misaligned', <<~RUBY, :keyword
         test case a; in b
              end
              ^^^ `end` at 2, 5 is not aligned with `test case a; in b` at 1, 0.
@@ -616,7 +616,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
   context 'regarding assignment' do
     context 'when EnforcedStyleAlignWith is keyword' do
-      include_examples 'misaligned', <<~RUBY, :start_of_line
+      it_behaves_like 'misaligned', <<~RUBY, :start_of_line
         var = if test
         end
         ^^^ `end` at 2, 0 is not aligned with `if` at 1, 6.
@@ -638,37 +638,37 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         ^^^ `end` at 2, 0 is not aligned with `until` at 1, 7.
       RUBY
 
-      include_examples 'aligned', 'var = if',     'test',     '      end'
-      include_examples 'aligned', 'var = unless', 'test',     '      end'
-      include_examples 'aligned', 'var = while',  'test',     '      end'
-      include_examples 'aligned', 'var = until',  'test',     '      end'
-      include_examples 'aligned', 'var = case',   'a when b', '      end'
+      it_behaves_like 'aligned', 'var = if',     'test',     '      end'
+      it_behaves_like 'aligned', 'var = unless', 'test',     '      end'
+      it_behaves_like 'aligned', 'var = while',  'test',     '      end'
+      it_behaves_like 'aligned', 'var = until',  'test',     '      end'
+      it_behaves_like 'aligned', 'var = case',   'a when b', '      end'
 
-      include_examples 'aligned', 'var[0] = case', 'a when b', '         end'
+      it_behaves_like 'aligned', 'var[0] = case', 'a when b', '         end'
 
       context 'Ruby >= 2.7', :ruby27 do
-        include_examples 'aligned', 'var = case', 'a; in b', '      end'
-        include_examples 'aligned', 'var[0] = case', 'a; in b', '         end'
+        it_behaves_like 'aligned', 'var = case', 'a; in b', '      end'
+        it_behaves_like 'aligned', 'var[0] = case', 'a; in b', '         end'
       end
     end
 
     context 'when EnforcedStyleAlignWith is variable' do
       let(:cop_config) { { 'EnforcedStyleAlignWith' => 'variable', 'AutoCorrect' => true } }
 
-      include_examples 'aligned', 'var << if',    'test',     'end'
-      include_examples 'aligned', 'var = if',     'test',     'end'
-      include_examples 'aligned', 'var = unless', 'test',     'end'
-      include_examples 'aligned', 'var = while',  'test',     'end'
-      include_examples 'aligned', 'var = until',  'test',     'end'
-      include_examples 'aligned', 'var = until',  'test',     'end.ab.join("")'
-      include_examples 'aligned', 'var = until',  'test',     'end.ab.tap {}'
-      include_examples 'aligned', 'var = case',   'a when b', 'end'
-      include_examples 'aligned', "var =\n  if",  'test', '  end'
+      it_behaves_like 'aligned', 'var << if',    'test',     'end'
+      it_behaves_like 'aligned', 'var = if',     'test',     'end'
+      it_behaves_like 'aligned', 'var = unless', 'test',     'end'
+      it_behaves_like 'aligned', 'var = while',  'test',     'end'
+      it_behaves_like 'aligned', 'var = until',  'test',     'end'
+      it_behaves_like 'aligned', 'var = until',  'test',     'end.ab.join("")'
+      it_behaves_like 'aligned', 'var = until',  'test',     'end.ab.tap {}'
+      it_behaves_like 'aligned', 'var = case',   'a when b', 'end'
+      it_behaves_like 'aligned', "var =\n  if",  'test', '  end'
       context 'Ruby >= 2.7', :ruby27 do
-        include_examples 'aligned', 'var = case', 'a; in b', 'end'
+        it_behaves_like 'aligned', 'var = case', 'a; in b', 'end'
       end
 
-      include_examples 'misaligned', <<~RUBY, :keyword
+      it_behaves_like 'misaligned', <<~RUBY, :keyword
         var = if test
               end
               ^^^ `end` at 2, 6 is not aligned with `var = if` at 1, 0.
@@ -704,7 +704,7 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
 
       # If there's a line break after = we align with the keyword even if the
       # style is `variable`.
-      include_examples 'misaligned', <<~RUBY, false
+      it_behaves_like 'misaligned', <<~RUBY, false
         var =
           if test
         end
@@ -728,24 +728,24 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
             ^^^ `end` at 4, 4 is not aligned with `until` at 2, 2.
       RUBY
 
-      include_examples 'misaligned', <<~RUBY, :keyword
+      it_behaves_like 'misaligned', <<~RUBY, :keyword
         var = until test
               end.j
               ^^^ `end` at 2, 6 is not aligned with `var = until` at 1, 0.
       RUBY
 
-      include_examples 'aligned', '@var = if',  'test', 'end'
-      include_examples 'aligned', '@@var = if', 'test', 'end'
-      include_examples 'aligned', '$var = if',  'test', 'end'
-      include_examples 'aligned', 'CNST = if',  'test', 'end'
-      include_examples 'aligned', 'a, b = if',  'test', 'end'
-      include_examples 'aligned', 'var ||= if', 'test', 'end'
-      include_examples 'aligned', 'var &&= if', 'test', 'end'
-      include_examples 'aligned', 'var += if',  'test', 'end'
-      include_examples 'aligned', 'h[k] = if',  'test', 'end'
-      include_examples 'aligned', 'h.k = if',   'test', 'end'
+      it_behaves_like 'aligned', '@var = if',  'test', 'end'
+      it_behaves_like 'aligned', '@@var = if', 'test', 'end'
+      it_behaves_like 'aligned', '$var = if',  'test', 'end'
+      it_behaves_like 'aligned', 'CNST = if',  'test', 'end'
+      it_behaves_like 'aligned', 'a, b = if',  'test', 'end'
+      it_behaves_like 'aligned', 'var ||= if', 'test', 'end'
+      it_behaves_like 'aligned', 'var &&= if', 'test', 'end'
+      it_behaves_like 'aligned', 'var += if',  'test', 'end'
+      it_behaves_like 'aligned', 'h[k] = if',  'test', 'end'
+      it_behaves_like 'aligned', 'h.k = if',   'test', 'end'
 
-      include_examples 'misaligned', <<~RUBY, :keyword
+      it_behaves_like 'misaligned', <<~RUBY, :keyword
         var = case a when b
               end
               ^^^ `end` at 2, 6 is not aligned with `var = case` at 1, 0.
@@ -811,14 +811,14 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
                 ^^^ `end` at 2, 8 is not aligned with `h[k] << if` at 1, 0.
       RUBY
 
-      include_examples 'misaligned', <<~RUBY, false
+      it_behaves_like 'misaligned', <<~RUBY, false
         h.k = if test
                  end
                  ^^^ `end` at 2, 9 is not aligned with `h.k = if` at 1, 0.
       RUBY
 
       context 'Ruby 2.7', :ruby27 do
-        include_examples 'misaligned', <<~RUBY, :keyword
+        it_behaves_like 'misaligned', <<~RUBY, :keyword
           var = case a; in b
                 end
                 ^^^ `end` at 2, 6 is not aligned with `var = case` at 1, 0.
