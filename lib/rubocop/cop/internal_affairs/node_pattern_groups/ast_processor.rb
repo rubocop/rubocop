@@ -7,7 +7,7 @@ module RuboCop
         # AST Processor for NodePattern ASTs, for use with `InternalAffairs/NodePatternGroups`.
         #
         # Looks for sequences and subsequences where the first item is a `node_type` node,
-        # and converts them to `node_sequence` nodes (not a true `Rubocop::AST::NodePattern`
+        # and converts them to `node_sequence` nodes (not a true `RuboCop::AST::NodePattern`
         # node type).
         #
         # The resulting AST will be walked by `InternalAffairs::NodePatternGroups::ASTWalker`
