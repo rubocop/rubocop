@@ -14,7 +14,25 @@ RSpec.describe RuboCop::Cop::Gemspec::RubyVersionGlobalsUsage, :config do
     expect_offense(<<~RUBY)
       Gem::Specification.new do |spec|
         ::RUBY_VERSION
-        ^^^^^^^^^^^^^^ Do not use `RUBY_VERSION` in gemspec file.
+        ^^^^^^^^^^^^^^ Do not use `::RUBY_VERSION` in gemspec file.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `Ruby::VERSION`' do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new do |spec|
+        Ruby::VERSION
+        ^^^^^^^^^^^^^ Do not use `Ruby::VERSION` in gemspec file.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using `::Ruby::VERSION`' do
+    expect_offense(<<~RUBY)
+      Gem::Specification.new do |spec|
+        ::Ruby::VERSION
+        ^^^^^^^^^^^^^^^ Do not use `::Ruby::VERSION` in gemspec file.
       end
     RUBY
   end
