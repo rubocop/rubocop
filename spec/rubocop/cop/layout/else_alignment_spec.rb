@@ -195,7 +195,26 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
 
       shared_examples 'assignment and if with keyword alignment' do
         context 'and end is aligned with variable' do
-          it 'registers an offense for an if' do
+          it 'registers an offense for an `if`' do
+            expect_offense(<<~RUBY)
+              var = if a
+                0
+              else b
+              ^^^^ Align `else` with `if`.
+                1
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              var = if a
+                0
+                    else b
+                1
+              end
+            RUBY
+          end
+
+          it 'registers an offense for an `elsif`' do
             expect_offense(<<~RUBY)
               var = if a
                 0
@@ -209,6 +228,48 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
               var = if a
                 0
                     elsif b
+                1
+              end
+            RUBY
+          end
+
+          it 'registers an offense for an `case`...`when`' do
+            expect_offense(<<~RUBY)
+              var = case condition
+                    when a
+                      0
+              else
+              ^^^^ Align `else` with `when`.
+                1
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              var = case condition
+                    when a
+                      0
+                    else
+                1
+              end
+            RUBY
+          end
+
+          it 'registers an offense for an `case`...`in`' do
+            expect_offense(<<~RUBY)
+              var = case expr
+                    in a
+                      0
+              else
+              ^^^^ Align `else` with `in`.
+                1
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              var = case expr
+                    in a
+                      0
+                    else
                 1
               end
             RUBY
