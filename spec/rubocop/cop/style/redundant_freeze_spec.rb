@@ -101,10 +101,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantFreeze, :config do
   context 'when the receiver is a string literal' do
     # TODO : It is not yet decided when frozen string will be the default.
     # It has been abandoned in the Ruby 3.0 period, but may default in
-    # the long run. So these tests are left with a provisional value of 4.0.
-    if RuboCop::TargetRuby.supported_versions.include?(4.0)
-      context 'when the target ruby version >= 4.0' do
-        let(:ruby_version) { 4.0 }
+    # the long run. So these tests are left with a provisional value of 5.0.
+    if RuboCop::TargetRuby.supported_versions.include?(5.0)
+      context 'when the target ruby version >= 5.0' do
+        let(:ruby_version) { 5.0 }
 
         context 'when the frozen string literal comment is missing' do
           it_behaves_like 'immutable objects', '"#{a}"'
