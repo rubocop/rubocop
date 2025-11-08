@@ -36,7 +36,7 @@ The following table is the runtime support matrix.
 | 3.2 | -
 | 3.3 | -
 | 3.4 | -
-| 3.5 (experimental) | -
+| 4.0 (experimental) | -
 |===
 
 RuboCop targets Ruby 2.0+ code analysis with Parser gem as a parser since RuboCop 1.30. It restored code analysis support that had been removed earlier by mistake, together with dropping runtime support for unsupported Ruby versions.

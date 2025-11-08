@@ -2024,14 +2024,14 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       it 'fails with an error message' do
         create_file('.rubocop.yml', <<~YAML)
           AllCops:
-            TargetRubyVersion: 4.0
+            TargetRubyVersion: 5.0
         YAML
         expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to start_with(
-          'Error: RuboCop found unknown Ruby version 4.0 in `TargetRubyVersion`'
+          'Error: RuboCop found unknown Ruby version 5.0 in `TargetRubyVersion`'
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2, 3.3, 3.4, 3.5/
+          /Supported versions: 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2, 3.3, 3.4, 4.0/
         )
       end
     end

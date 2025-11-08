@@ -266,6 +266,6 @@ RSpec.shared_context 'ruby 3.4' do
   let(:ruby_version) { 3.4 }
 end
 
-RSpec.shared_context 'ruby 3.5' do
-  let(:ruby_version) { 3.5 }
+RSpec.shared_context 'ruby 4.0' do
+  let(:ruby_version) { 4.0 }
 end
