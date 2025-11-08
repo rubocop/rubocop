@@ -4516,6 +4516,7 @@ Style/ItBlockParameter:
   EnforcedStyle: allow_single_line
   SupportedStyles:
     - allow_single_line
+    - allow_exact_single_line
     - only_numbered_parameters
     - always
     - disallow
@@ -4969,6 +4970,7 @@ Style/NumberedParameters:
   EnforcedStyle: allow_single_line
   SupportedStyles:
     - allow_single_line
+    - allow_exact_single_line
     - disallow
 
 Style/NumberedParametersLimit:
