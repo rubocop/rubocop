@@ -144,7 +144,9 @@ module RuboCop
             expression = node.parent.source_range if node.parent.array_type?
             [expression, variable.source]
           elsif !variable.array_type?
-            [expression, "[#{variable.source}]"]
+            replacement = variable.source
+            replacement = "[#{replacement}]" if wrap_in_brackets?(node)
+            [expression, replacement]
           elsif redundant_brackets?(node)
             [expression, remove_brackets(variable)]
           else
@@ -174,6 +176,10 @@ module RuboCop
 
           parent.when_type? || method_argument?(node) || part_of_an_array?(node) ||
             grandparent&.resbody_type?
+        end
+
+        def wrap_in_brackets?(node)
+          node.parent.array_type? && !node.parent.bracketed?
         end
 
         def remove_brackets(array)
