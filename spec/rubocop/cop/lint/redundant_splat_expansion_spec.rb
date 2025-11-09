@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
         RUBY
 
         expect_correction(<<~RUBY)
-          array.push(#{as_array})
+          array.push(#{literal})
         RUBY
       end
     end
@@ -284,6 +284,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
 
       expect_correction(<<~RUBY)
         ["a", "b", "\#{one}", "two"]
+      RUBY
+    end
+
+    it 'registers an offense and corrects expansion of splatted string literal' do
+      expect_offense(<<~RUBY)
+        ["a", "b", *"c"]
+                   ^^^^ Replace splat expansion with comma separated values.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ["a", "b", "c"]
       RUBY
     end
   end
