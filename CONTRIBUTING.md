@@ -49,7 +49,7 @@ $ rubocop -V
 
 ### Spell Checking
 
-We are running[codespell](https://github.com/codespell-project/codespell) with GitHub Actions to check spelling and
+We are running [codespell](https://github.com/codespell-project/codespell) with GitHub Actions to check spelling and
 [codespell](https://pypi.org/project/codespell/) runs against a [small custom dictionary](https://github.com/rubocop/rubocop/blob/master/.codespellrc).
 
 If you have `codespell` locally available in your `$PATH`, `bundle exec rake` will run it for you.
