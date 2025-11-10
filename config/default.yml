@@ -3051,6 +3051,11 @@ Naming/MethodName:
     - __send__
   ForbiddenPatterns: []
 
+Naming/MethodNameGetPrefix:
+  Description: 'Avoid using `get_` prefix for methods with arguments.'
+  Enabled: false
+  VersionAdded: '1.64'
+
 Naming/MethodParameterName:
   Description: >-
                  Checks for method parameter names that contain capital letters,
