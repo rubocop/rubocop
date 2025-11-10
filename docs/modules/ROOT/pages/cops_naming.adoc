@@ -524,7 +524,7 @@ anything/using_snake_case.rake
 
 | Regex
 | `<none>`
-| 
+|
 
 | IgnoreExecutableScripts
 | `true`
@@ -807,7 +807,7 @@ TeslaVehicle
 
 | FlaggedTerms
 | `{"whitelist" => {"Regex" => /white[-_\s]?list/, "Suggestions" => ["allowlist", "permit"]}, "blacklist" => {"Regex" => /black[-_\s]?list/, "Suggestions" => ["denylist", "block"]}, "slave" => {"WholeWord" => true, "Suggestions" => ["replica", "secondary", "follower"]}}`
-| 
+|
 |===
 
 [#namingmemoizedinstancevariablename]
@@ -1153,6 +1153,54 @@ def api_gen1; end
 === References
 
 * https://rubystyle.guide#snake-case-symbols-methods-vars
+
+== Naming/MethodNameGetPrefix
+
+[source,ruby]
+----
+# bad
+def get_user(id)
+  SpecializedUserClass.find(id)
+end
+
+def get_db_line_item(order_id, line_item_id)
+  # ...
+end
+
+# good
+def user_for(id)
+  SpecializedUserClass.find(id)
+end
+
+def db_line_item_for(order_id, line_item_id)
+  # ...
+end
+
+# Also good - using find_ pattern
+def find_user(id)
+  SpecializedUserClass.find(id)
+end
+----
+
+Flags methods that start with `get_` prefix and take arguments, suggesting
+more idiomatic Ruby naming conventions.
+
+The cop automatically excludes:
+* Accessor methods (methods without arguments) - handled by `Naming/AccessorMethodName`
+* Methods that make HTTP GET requests (e.g., `connection.get`, `HTTP.get`, `Net::HTTP::Get.new`)
+* API client methods in files matching patterns like `*client*.rb`, `*controller*.rb`, etc. that call `get()`
+
+=== Configurable attributes
+
+[cols="1,1,2"]
+|===
+|Name | Default value | Configurable values
+
+|Enabled
+|`true`
+|Boolean
+|===
+
 
 [#namingmethodparametername]
 == Naming/MethodParameterName
