@@ -1,0 +1,3 @@
+### New features
+
+- [#xxxx] Add new `Naming/MethodNameGetPrefix` cop that flags methods with `get_` prefix that take arguments, suggesting more idiomatic Ruby naming conventions like `*_for` or `find_*` patterns. The cop automatically excludes accessor methods, HTTP GET requests, and API client methods.
