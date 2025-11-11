@@ -458,6 +458,46 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     end
   end
 
+  context 'when AllowRBSInlineAnnotation is disabled' do
+    let(:cop_config) { { 'Max' => 10, 'AllowRBSInlineAnnotation' => false } }
+
+    it 'registers an offense for a long line with an RBS::Inline annotation' do
+      expect_offense(<<~RUBY)
+        #: () -> String
+                  ^^^^^ Line is too long. [15/10]
+        def hash
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a long line with an RBS::Inline annotation on the same line as the code' do
+      expect_offense(<<~RUBY)
+        def each_address(&block) #: void
+                  ^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [32/10]
+        end
+      RUBY
+    end
+  end
+
+  context 'when AllowRBSInlineAnnotation is enabled' do
+    let(:cop_config) { { 'Max' => 10, 'AllowRBSInlineAnnotation' => true } }
+
+    it 'does not register an offense for a long line with an RBS::Inline annotation' do
+      expect_no_offenses(<<~RUBY)
+        #: () -> String
+        def hash
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for a long line with an RBS::Inline annotation on the same line as the code' do
+      expect_no_offenses(<<~RUBY)
+        def each_address(&block) #: void
+        end
+      RUBY
+    end
+  end
+
   context 'when IgnoreCopDirectives is disabled' do
     let(:cop_config) { { 'Max' => 80, 'IgnoreCopDirectives' => false } }
 

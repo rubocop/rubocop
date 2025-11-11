@@ -1808,6 +1808,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           - AllowURI
           - AllowQualifiedName
           - URISchemes
+          - AllowRBSInlineAnnotation
           - IgnoreCopDirectives
           - AllowedPatterns
           - SplitStrings

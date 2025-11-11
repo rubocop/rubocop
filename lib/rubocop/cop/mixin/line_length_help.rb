@@ -8,6 +8,19 @@ module RuboCop
 
       private
 
+      def allow_rbs_inline_annotation?
+        config.for_cop('Layout/LineLength')['AllowRBSInlineAnnotation']
+      end
+
+      def rbs_inline_annotation_on_source_line?(line_index)
+        source_line_number = line_index + processed_source.buffer.first_line
+        comment = processed_source.comment_at_line(source_line_number)
+
+        return false unless comment
+
+        comment.text.start_with?(/#:|#\[.+\]|#\|/)
+      end
+
       def ignore_cop_directives?
         config.for_cop('Layout/LineLength')['IgnoreCopDirectives']
       end
