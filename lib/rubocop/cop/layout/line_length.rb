@@ -252,9 +252,13 @@ module RuboCop
           [max - indentation_difference(line), 0].max
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_line(line, line_index)
           return if line_length(line) <= max
           return if allowed_line?(line, line_index)
+          if allow_rbs_inline_annotation? && rbs_inline_annotation_on_source_line?(line_index)
+            return
+          end
 
           if ignore_cop_directives? && directive_on_source_line?(line_index)
             return check_directive_line(line, line_index)
@@ -263,6 +267,7 @@ module RuboCop
 
           register_offense(excess_range(nil, line, line_index), line, line_index)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def allowed_line?(line, line_index)
           matches_allowed_pattern?(line) ||

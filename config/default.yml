@@ -1112,6 +1112,9 @@ Layout/LineLength:
   URISchemes:
     - http
     - https
+  # The AllowRBSInlineAnnotation option makes LineLength allow RBS::Inline annotations
+  # such as `#: (?date: Date) -> Foo` when calculating line length.
+  AllowRBSInlineAnnotation: false
   # The IgnoreCopDirectives option causes the LineLength rule to ignore cop
   # directives like '# rubocop: enable ...' when calculating a line's length.
   IgnoreCopDirectives: true
