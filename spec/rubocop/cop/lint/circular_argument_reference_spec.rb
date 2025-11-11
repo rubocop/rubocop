@@ -14,6 +14,49 @@ RSpec.describe RuboCop::Cop::Lint::CircularArgumentReference, :config, :ruby34 d
       end
     end
 
+    context 'when the method contains a triple circular argument reference' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def omg_wow(msg = msg = msg)
+                                  ^^^ Circular argument reference - `msg`.
+            puts msg
+          end
+        RUBY
+      end
+    end
+
+    context 'when the method contains a circular argument reference with intermediate argument' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def omg_wow(msg = foo = msg)
+                                  ^^^ Circular argument reference - `msg`.
+            puts msg
+          end
+        RUBY
+      end
+    end
+
+    context 'when the method contains a circular argument reference with two intermediate arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          def omg_wow(msg = foo = msg2 = foo)
+                                         ^^^ Circular argument reference - `msg`.
+            puts msg
+          end
+        RUBY
+      end
+    end
+
+    context 'when the method does not contain a circular argument among assignments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def omg_wow(msg = foo = self.msg)
+            puts msg
+          end
+        RUBY
+      end
+    end
+
     context 'when the method does not contain a circular argument reference' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
