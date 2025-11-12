@@ -1432,6 +1432,20 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
       expect(File.readlines('.rubocop_todo.yml')[2]).to match(/# using RuboCop version .*/)
     end
 
+    it 'does not include a version when --no-auto-gen-version is used' do
+      create_file('example1.rb', ['$!'])
+      expect(cli.run(['--auto-gen-config', '--no-auto-gen-version'])).to eq(0)
+      expect(File.readlines('.rubocop_todo.yml')[2])
+        .to match(/# on \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} UTC.$/)
+    end
+
+    it 'does not include a timestamp or version when --no-auto-gen-timestamp and -no-auto-gen-version is used' do
+      create_file('example1.rb', ['$!'])
+      expect(cli.run(['--auto-gen-config', '--no-auto-gen-timestamp',
+                      '--no-auto-gen-version'])).to eq(0)
+      expect(File.readlines('.rubocop_todo.yml')[2]).to match(/# $/)
+    end
+
     describe 'when --no-exclude-limit is given' do
       let(:offending_files_count) do
         RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS + 1
