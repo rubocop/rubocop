@@ -100,12 +100,6 @@ module RuboCop
         node.parent.send_type?
       end
 
-      def max_line_length
-        return unless config.cop_enabled?('Layout/LineLength')
-
-        config.for_cop('Layout/LineLength')['Max']
-      end
-
       def comment_disables_cop?(comment)
         regexp_pattern = "# rubocop : (disable|todo) ([^,],)* (all|#{cop_name})"
         Regexp.new(regexp_pattern.gsub(' ', '\s*')).match?(comment)

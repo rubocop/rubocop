@@ -85,10 +85,6 @@ module RuboCop
         def definition_width(node)
           node.source_range.begin.join(node.arguments.source_range.end).length
         end
-
-        def max_line_length
-          config.for_cop('Layout/LineLength')['Max'] || 120
-        end
       end
     end
   end

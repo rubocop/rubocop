@@ -108,10 +108,6 @@ module RuboCop
           config.for_cop('Layout/LineLength')['AllowHeredoc']
         end
 
-        def max_line_length
-          config.for_cop('Layout/LineLength')['Max']
-        end
-
         def adjust_squiggly(corrector, node)
           corrector.replace(node.loc.heredoc_body, indented_body(node))
           corrector.replace(node.loc.heredoc_end, indented_end(node))

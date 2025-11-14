@@ -107,12 +107,6 @@ module RuboCop
         def expanded_style?
           style == :expanded
         end
-
-        def max_line_length
-          return unless config.cop_enabled?('Layout/LineLength')
-
-          config.for_cop('Layout/LineLength')['Max']
-        end
       end
     end
   end

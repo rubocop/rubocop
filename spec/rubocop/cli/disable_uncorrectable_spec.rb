@@ -404,6 +404,8 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
           create_file('.rubocop.yml', <<~YAML)
             AllCops:
               DisabledByDefault: true
+            Layout/LineLength:
+              Enabled: true
             Lint/DuplicateHashKey:
               Enabled: true
           YAML
@@ -432,6 +434,8 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
           create_file('.rubocop.yml', <<~YAML)
             AllCops:
               DisabledByDefault: true
+            Layout/LineLength:
+              Enabled: true
             Lint/DuplicateHashKey:
               Enabled: true
           YAML

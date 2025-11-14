@@ -213,9 +213,7 @@ module RuboCop
         ASSIGN_TO_CONDITION_MSG = 'Assign variables inside of conditionals.'
         VARIABLE_ASSIGNMENT_TYPES = %i[casgn cvasgn gvasgn ivasgn lvasgn].freeze
         ASSIGNMENT_TYPES = VARIABLE_ASSIGNMENT_TYPES + %i[and_asgn or_asgn op_asgn masgn].freeze
-        LINE_LENGTH = 'Layout/LineLength'
         ENABLED = 'Enabled'
-        MAX = 'Max'
         SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'
 
         # The shovel operator `<<` does not have its own type. It is a `send`
@@ -399,7 +397,7 @@ module RuboCop
         # of the longest line + the length of the corrected assignment is
         # greater than the max configured line length
         def correction_exceeds_line_limit?(node, branches)
-          return false unless line_length_cop_enabled?
+          return false unless config.cop_enabled?('Layout/LineLength')
 
           assignment = lhs(tail(branches[0]))
 
@@ -415,14 +413,6 @@ module RuboCop
           lines = node.source.lines.map { |line| line.chomp.sub(assignment_regex, '') }
           longest_line = lines.max_by(&:length)
           assignment + longest_line
-        end
-
-        def line_length_cop_enabled?
-          config.for_cop(LINE_LENGTH)[ENABLED]
-        end
-
-        def max_line_length
-          config.for_cop(LINE_LENGTH)[MAX]
         end
 
         def single_line_conditions_only?
