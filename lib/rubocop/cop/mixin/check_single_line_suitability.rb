@@ -27,10 +27,6 @@ module RuboCop
           .gsub(/\s*\\?\n\s*/, ' ')       # Any other line break, with or without backslash
       end
 
-      def max_line_length
-        config.for_cop('Layout/LineLength')['Max']
-      end
-
       def comment_within?(node)
         comment_line_numbers = processed_source.comments.map { |comment| comment.loc.line }
 

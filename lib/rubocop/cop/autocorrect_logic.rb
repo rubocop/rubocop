@@ -133,6 +133,8 @@ module RuboCop
       end
 
       def max_line_length
+        return unless config.cop_enabled?('Layout/LineLength')
+
         config.for_cop('Layout/LineLength')['Max'] || 120
       end
 
