@@ -145,6 +145,10 @@ changed_parameters:
   - cops: Layout/CaseIndentation
     parameters: IndentWhenRelativeTo
     alternative: EnforcedStyle
+  - cops: Layout/LineLength
+    parameters: IgnoreCopDirectives
+    alternative: AllowCopDirectives
+    severity: warning
   - cops:
       - Lint/BlockAlignment
       - Layout/BlockAlignment

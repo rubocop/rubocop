@@ -1102,7 +1102,7 @@ Layout/LineLength:
   StyleGuide: '#max-line-length'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '1.69'
+  VersionChanged: '<<next>>'
   Max: 120
   AllowHeredoc: true
   # To make it possible to copy or click on URIs in the code, we allow lines
@@ -1115,9 +1115,9 @@ Layout/LineLength:
   # The AllowRBSInlineAnnotation option makes LineLength allow RBS::Inline annotations
   # such as `#: (?date: Date) -> Foo` when calculating line length.
   AllowRBSInlineAnnotation: false
-  # The IgnoreCopDirectives option causes the LineLength rule to ignore cop
+  # The AllowCopDirectives option causes the LineLength rule to ignore cop
   # directives like '# rubocop: enable ...' when calculating a line's length.
-  IgnoreCopDirectives: true
+  AllowCopDirectives: true
   # The AllowedPatterns option is a list of !ruby/regexp and/or string
   # elements. Strings will be converted to Regexp objects. A line that matches
   # any regular expression listed in this option will be ignored by LineLength.

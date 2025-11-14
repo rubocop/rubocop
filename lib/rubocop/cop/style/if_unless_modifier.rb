@@ -207,14 +207,14 @@ module RuboCop
         def too_long_line_based_on_config?(range, line)
           return false if matches_allowed_pattern?(line)
 
-          too_long = too_long_line_based_on_ignore_cop_directives?(range, line)
+          too_long = too_long_line_based_on_allow_cop_directives?(range, line)
           return too_long unless too_long == :undetermined
 
           too_long_line_based_on_allow_uri?(line)
         end
 
-        def too_long_line_based_on_ignore_cop_directives?(range, line)
-          if ignore_cop_directives? && directive_on_source_line?(range.line - 1)
+        def too_long_line_based_on_allow_cop_directives?(range, line)
+          if allow_cop_directives? && directive_on_source_line?(range.line - 1)
             return line_length_without_directive(line) > max_line_length
           end
 

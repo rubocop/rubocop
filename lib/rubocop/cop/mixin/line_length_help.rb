@@ -21,8 +21,14 @@ module RuboCop
         comment.text.start_with?(/#:|#\[.+\]|#\|/)
       end
 
-      def ignore_cop_directives?
-        config.for_cop('Layout/LineLength')['IgnoreCopDirectives']
+      def allow_cop_directives?
+        # TODO: This logic for backward compatibility with deprecated `IgnoreCopDirectives` option.
+        # The following three lines will be removed in RuboCop 2.0.
+        ignore_cop_directives = config.for_cop('Layout/LineLength')['IgnoreCopDirectives']
+        return true if ignore_cop_directives
+        return false if ignore_cop_directives == false
+
+        config.for_cop('Layout/LineLength')['AllowCopDirectives']
       end
 
       def directive_on_source_line?(line_index)
