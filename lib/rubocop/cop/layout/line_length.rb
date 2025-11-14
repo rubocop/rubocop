@@ -260,7 +260,7 @@ module RuboCop
             return
           end
 
-          if ignore_cop_directives? && directive_on_source_line?(line_index)
+          if allow_cop_directives? && directive_on_source_line?(line_index)
             return check_directive_line(line, line_index)
           end
           return check_line_for_exemptions(line, line_index) if allow_uri? || allow_qualified_name?

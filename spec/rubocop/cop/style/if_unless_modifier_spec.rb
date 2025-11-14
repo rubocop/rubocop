@@ -4,14 +4,14 @@
 # Note: most of these tests probably belong in the shared context "condition modifier cop"
 ######
 RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
-  let(:ignore_cop_directives) { true }
+  let(:allow_cop_directives) { true }
   let(:allow_uri) { true }
   let(:line_length_config) do
     {
       'Enabled' => true,
       'Max' => 80,
       'AllowURI' => allow_uri,
-      'IgnoreCopDirectives' => ignore_cop_directives,
+      'AllowCopDirectives' => allow_cop_directives,
       'URISchemes' => %w[http https]
     }
   end
@@ -141,12 +141,12 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         end
       end
 
-      describe 'IgnoreCopDirectives' do
+      describe 'AllowCopDirectives' do
         let(:spaces) { ' ' * 57 }
         let(:comment) { '# rubocop:disable Style/For' }
         let(:body) { "puts '#{spaces}'" }
 
-        context 'and the long line is allowed because IgnoreCopDirectives is true' do
+        context 'and the long line is allowed because AllowCopDirectives is true' do
           it 'accepts' do
             expect("#{body} if condition".length).to eq(77) # That's 79 including indentation.
             expect_no_offenses(<<~RUBY)
@@ -157,8 +157,8 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
           end
         end
 
-        context 'and the long line is too long because IgnoreCopDirectives is false' do
-          let(:ignore_cop_directives) { false }
+        context 'and the long line is too long because AllowCopDirectives is false' do
+          let(:allow_cop_directives) { false }
 
           it 'registers an offense' do
             expect_offense(<<~RUBY, body: body)

@@ -498,8 +498,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     end
   end
 
-  context 'when IgnoreCopDirectives is disabled' do
-    let(:cop_config) { { 'Max' => 80, 'IgnoreCopDirectives' => false } }
+  context 'when AllowCopDirectives is disabled' do
+    let(:cop_config) { { 'Max' => 80, 'AllowCopDirectives' => false } }
 
     context 'and the source is acceptable length' do
       context 'with a trailing RuboCop directive' do
@@ -531,8 +531,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     end
   end
 
-  context 'when IgnoreCopDirectives is enabled' do
-    let(:cop_config) { { 'Max' => 80, 'IgnoreCopDirectives' => true } }
+  context 'when AllowCopDirectives is enabled' do
+    let(:cop_config) { { 'Max' => 80, 'AllowCopDirectives' => true } }
 
     context 'and the RuboCop directive is excessively long' do
       it 'accepts the line' do

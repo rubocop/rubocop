@@ -1103,7 +1103,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowURI' => true,
               'URISchemes' => %w[http https],
               'AllowRBSInlineAnnotation' => false,
-              'IgnoreCopDirectives' => true,
+              'AllowCopDirectives' => true,
               'AllowedPatterns' => [],
               'AllowQualifiedName' => true,
               'SplitStrings' => false
@@ -1209,7 +1209,7 @@ RSpec.describe RuboCop::ConfigLoader do
               'AllowURI' => true,
               'URISchemes' => %w[http https],
               'AllowRBSInlineAnnotation' => false,
-              'IgnoreCopDirectives' => true,
+              'AllowCopDirectives' => true,
               'AllowedPatterns' => [],
               'AllowQualifiedName' => true,
               'SplitStrings' => false

@@ -1809,7 +1809,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           - AllowQualifiedName
           - URISchemes
           - AllowRBSInlineAnnotation
-          - IgnoreCopDirectives
+          - AllowCopDirectives
           - AllowedPatterns
           - SplitStrings
         Warning: Style/GlobalVars does not support Min parameter.
