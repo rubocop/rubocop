@@ -19,7 +19,8 @@ module RuboCop
       #   * 2.2+ ... Add `rational` and `complex` above
       #   * 2.7+ ... Add `ruby2_keywords` above
       #   * 3.1+ ... Add `fiber` above
-      #   * 3.2+ ... `set`
+      #   * 3.2+ ... Add `set` above
+      #   * 4.0+ ... Add `pathname` above
       #
       # This cop target those features.
       #
@@ -69,7 +70,8 @@ module RuboCop
             (target_ruby_version >= 2.2 && RUBY_22_LOADED_FEATURES.include?(feature_name)) ||
             (target_ruby_version >= 2.7 && feature_name == 'ruby2_keywords') ||
             (target_ruby_version >= 3.1 && feature_name == 'fiber') ||
-            (target_ruby_version >= 3.2 && feature_name == 'set')
+            (target_ruby_version >= 3.2 && feature_name == 'set') ||
+            (target_ruby_version >= 4.0 && feature_name == 'pathname')
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
