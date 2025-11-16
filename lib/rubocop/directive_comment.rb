@@ -18,7 +18,7 @@ module RuboCop
     # @api private
     COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
     # @api private
-    AVAILABLE_MODES = %w[disable enable todo].freeze
+    AVAILABLE_MODES = %w[disable enable todo push pop].freeze
     # @api private
     DIRECTIVE_MARKER_PATTERN = '# rubocop : '
     # @api private
@@ -27,7 +27,7 @@ module RuboCop
     DIRECTIVE_HEADER_PATTERN = "#{DIRECTIVE_MARKER_PATTERN}((?:#{AVAILABLE_MODES.join('|')}))\\b"
     # @api private
     DIRECTIVE_COMMENT_REGEXP = Regexp.new(
-      "#{DIRECTIVE_HEADER_PATTERN} #{COPS_PATTERN}"
+      "#{DIRECTIVE_HEADER_PATTERN}(?:\\s+#{COPS_PATTERN})?"
         .gsub(' ', '\s*')
     )
     # @api private
@@ -58,6 +58,7 @@ module RuboCop
     # Checks if the comment is malformed as a `# rubocop:` directive
     def malformed?
       return true if !start_with_marker? || @match_data.nil?
+      return true if missing_cop_name?
 
       tail = @match_data.post_match.lstrip
       !(tail.empty? || tail.start_with?(TRAILING_COMMENT_MARKER))
@@ -65,6 +66,8 @@ module RuboCop
 
     # Checks if the directive comment is missing a cop name
     def missing_cop_name?
+      return false if push? || pop?
+
       MALFORMED_DIRECTIVE_WITHOUT_COP_NAME_REGEXP.match?(comment.text)
     end
 
@@ -99,6 +102,16 @@ module RuboCop
     # Checks if this directive enables cops
     def enabled?
       mode == 'enable'
+    end
+
+    # Checks if this directive is a push
+    def push?
+      mode == 'push'
+    end
+
+    # Checks if this directive is a pop
+    def pop?
+      mode == 'pop'
     end
 
     # Checks if this directive enables all cops
