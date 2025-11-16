@@ -23,7 +23,15 @@ module RuboCop
       #   # good (method calls possibly can return different results)
       #   hash[foo] = hash[foo]
       #
-      # @example AllowRBSInlineAnnotation:true
+      # @example AllowRBSInlineAnnotation: false (default)
+      #   # bad
+      #   foo = foo #: Integer
+      #   foo, bar = foo, bar #: Integer
+      #   Foo = Foo #: Integer
+      #   hash['foo'] = hash['foo'] #: Integer
+      #   obj.attr = obj.attr #: Integer
+      #
+      # @example AllowRBSInlineAnnotation: true
       #   # good
       #   foo = foo #: Integer
       #   foo, bar = foo, bar #: Integer

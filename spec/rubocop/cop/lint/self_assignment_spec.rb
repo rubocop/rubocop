@@ -352,6 +352,93 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
   end
 
   describe 'RBS::Inline annotation' do
+    context 'when config option is disabled' do
+      let(:cop_config) { { 'AllowRBSInlineAnnotation' => false } }
+
+      it 'registers offenses and it has a comment' do
+        expect_offense(<<~RUBY)
+          foo = foo #: Integer
+          ^^^^^^^^^ Self-assignment detected.
+          @foo = @foo #: Integer
+          ^^^^^^^^^^^ Self-assignment detected.
+          @@foo = @@foo #: Integer
+          ^^^^^^^^^^^^^ Self-assignment detected.
+          $foo = $foo #: Integer
+          ^^^^^^^^^^^ Self-assignment detected.
+          Foo = Foo #: Integer
+          ^^^^^^^^^ Self-assignment detected.
+          foo, bar = foo, bar #: Integer
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo ||= foo #: Integer
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo &&= foo #: Integer
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo.bar = foo.bar #: Integer
+          ^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.bar = foo&.bar #: Integer
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo["bar"] = foo["bar"] #: Integer
+          ^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.[]=("bar", foo["bar"]) #: Integer
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+        RUBY
+      end
+
+      it 'registers an offense and it has a no comment' do
+        expect_offense(<<~RUBY)
+          foo = foo
+          ^^^^^^^^^ Self-assignment detected.
+          @foo = @foo
+          ^^^^^^^^^^^ Self-assignment detected.
+          @@foo = @@foo
+          ^^^^^^^^^^^^^ Self-assignment detected.
+          $foo = $foo
+          ^^^^^^^^^^^ Self-assignment detected.
+          Foo = Foo
+          ^^^^^^^^^ Self-assignment detected.
+          foo, bar = foo, bar
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo ||= foo
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo &&= foo
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo.bar = foo.bar
+          ^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.bar = foo&.bar
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo["bar"] = foo["bar"]
+          ^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.[]=("bar", foo["bar"])
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+
+          foo = foo # comment
+          ^^^^^^^^^ Self-assignment detected.
+          @foo = @foo # comment
+          ^^^^^^^^^^^ Self-assignment detected.
+          @@foo = @@foo # comment
+          ^^^^^^^^^^^^^ Self-assignment detected.
+          $foo = $foo # comment
+          ^^^^^^^^^^^ Self-assignment detected.
+          Foo = Foo # comment
+          ^^^^^^^^^ Self-assignment detected.
+          foo, bar = foo, bar # comment
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo ||= foo # comment
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo &&= foo # comment
+          ^^^^^^^^^^^ Self-assignment detected.
+          foo.bar = foo.bar # comment
+          ^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.bar = foo&.bar # comment
+          ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo["bar"] = foo["bar"] # comment
+          ^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+          foo&.[]=("bar", foo["bar"]) # comment
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+        RUBY
+      end
+    end
+
     context 'when config option is enabled' do
       let(:cop_config) { { 'AllowRBSInlineAnnotation' => true } }
 
