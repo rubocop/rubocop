@@ -9,6 +9,13 @@ module RuboCop
       # on `nil` (e.g. `nil.to_i` evaluates to `0`). Therefore, OR expressions
       # appended after these methods will never evaluate.
       #
+      # @safety
+      #   As shown in the examples below, there are generally two possible ways to correct the
+      #   offense, but this cop’s autocorrection always chooses the option that preserves the
+      #   current behavior. While this does not change how the code behaves, that option is not
+      #   necessarily the appropriate fix in every situation. For this reason, the autocorrection
+      #   provided by this cop is considered unsafe.
+      #
       # @example
       #
       #   # bad
@@ -64,6 +71,8 @@ module RuboCop
       #   x&.to_s or fallback
       #
       class UselessOr < Base
+        extend AutoCorrector
+
         MSG = '`%<rhs>s` will never evaluate because `%<lhs>s` always returns a truthy value.'
 
         TRUTHY_RETURN_VALUE_METHODS = Set[:to_a, :to_c, :to_d, :to_i, :to_f, :to_h, :to_r,
@@ -89,8 +98,12 @@ module RuboCop
         private
 
         def report_offense(or_node, truthy_node)
-          add_offense(or_node.loc.operator.join(or_node.rhs.source_range),
-                      message: format(MSG, lhs: truthy_node.source, rhs: or_node.rhs.source))
+          add_offense(
+            or_node.loc.operator.join(or_node.rhs.source_range),
+            message: format(MSG, lhs: truthy_node.source, rhs: or_node.rhs.source)
+          ) do |corrector|
+            corrector.replace(or_node, or_node.lhs.source)
+          end
         end
       end
     end
