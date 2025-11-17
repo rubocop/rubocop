@@ -269,7 +269,11 @@ module RuboCop
                      end
 
           add_offense(cond) do |corrector|
+            next if part_of_ignored_node?(node)
+
             corrector.replace(node, new_node)
+
+            ignore_node(node)
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

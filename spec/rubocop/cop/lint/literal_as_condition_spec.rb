@@ -49,6 +49,22 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAsCondition, :config do
       RUBY
     end
 
+    it 'registers offenses for truthy literals in both the branches in `if`' do
+      expect_offense(<<~RUBY, lit: lit)
+        if %{lit}
+           ^{lit} Literal `#{lit}` appeared as a condition.
+          x = 1
+        elsif %{lit}
+              ^{lit} Literal `#{lit}` appeared as a condition.
+          x = 2
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = 1
+      RUBY
+    end
+
     it "registers an offense for truthy literal #{lit} in if-elsif-else" do
       expect_offense(<<~RUBY, lit: lit)
         if condition
