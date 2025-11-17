@@ -200,7 +200,7 @@ module RuboCop
 
         def use_heredoc?(node)
           return false unless (body = node.body)
-          return true if body.str_type? && body.heredoc?
+          return true if body.any_str_type? && body.heredoc?
 
           body.each_descendant(:str).any?(&:heredoc?)
         end
