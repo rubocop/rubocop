@@ -2669,7 +2669,10 @@ Lint/UselessNumericOperation:
 Lint/UselessOr:
   Description: 'Checks for useless OR expressions.'
   Enabled: pending
+  SafeAutoCorrect: false
+  AutoCorrect: contextual
   VersionAdded: '1.76'
+  VersionChanged: '<<next>>'
 
 Lint/UselessRescue:
   Description: 'Checks for useless `rescue`s.'

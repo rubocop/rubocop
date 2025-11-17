@@ -7,12 +7,20 @@ RSpec.describe RuboCop::Cop::Lint::UselessOr, :config do
         x.#{method} || fallback
           _{method} ^^^^^^^^^^^ `fallback` will never evaluate because `x.#{method}` always returns a truthy value.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x.#{method}
+      RUBY
     end
 
     it "registers an offense with `x.#{method} or fallback`" do
       expect_offense(<<~RUBY, method: method)
         x.#{method} or fallback
           _{method} ^^^^^^^^^^^ `fallback` will never evaluate because `x.#{method}` always returns a truthy value.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.#{method}
       RUBY
     end
 
@@ -21,6 +29,10 @@ RSpec.describe RuboCop::Cop::Lint::UselessOr, :config do
         x.#{method} || fallback || other_fallback
           _{method} ^^^^^^^^^^^ `fallback` will never evaluate because `x.#{method}` always returns a truthy value.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x.#{method}
+      RUBY
     end
 
     it "registers an offense with `foo || x.#{method} || fallback`" do
@@ -28,12 +40,20 @@ RSpec.describe RuboCop::Cop::Lint::UselessOr, :config do
         foo || x.#{method} || fallback
                  _{method} ^^^^^^^^^^^ `fallback` will never evaluate because `x.#{method}` always returns a truthy value.
       RUBY
+
+      expect_correction(<<~RUBY)
+        foo || x.#{method}
+      RUBY
     end
 
     it "registers an offense with `(foo || x.#{method}) || fallback`" do
       expect_offense(<<~RUBY, method: method)
         (foo || x.#{method}) || fallback
                   _{method}  ^^^^^^^^^^^ `fallback` will never evaluate because `x.#{method}` always returns a truthy value.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (foo || x.#{method})
       RUBY
     end
 
