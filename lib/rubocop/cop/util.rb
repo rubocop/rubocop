@@ -118,7 +118,7 @@ module RuboCop
       def first_part_of_call_chain(node)
         while node
           case node.type
-          when :send
+          when :send, :csend
             node = node.receiver
           when :block
             node = node.send_node

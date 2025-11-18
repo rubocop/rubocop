@@ -438,6 +438,22 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
+    it 'does not register an offense when using a conditional assignment on the same line and `end` with method call is aligned' do
+      expect_no_offenses(<<~RUBY)
+        value = if condition
+          do_something
+        end.method_call
+      RUBY
+    end
+
+    it 'does not register an offense when using a conditional assignment in a method argument on the same line and `end` with safe navigation method call is aligned' do
+      expect_no_offenses(<<~RUBY)
+        value = if condition
+          do_something
+        end&.method_call
+      RUBY
+    end
+
     it 'registers an offense when using a conditional statement in a method argument on the same line and `end` with method call is not aligned' do
       expect_offense(<<~RUBY)
         do_something case condition
