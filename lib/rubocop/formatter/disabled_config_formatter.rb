@@ -27,6 +27,7 @@ module RuboCop
         References
         Safe
         SafeAutoCorrect
+        Severity
         StyleGuide
         VersionAdded
         VersionChanged
