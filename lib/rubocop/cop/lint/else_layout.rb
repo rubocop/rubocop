@@ -38,6 +38,24 @@ module RuboCop
       #   elsif do_this
       #     do_that
       #   end
+      #
+      #   # bad
+      #
+      #   # For single-line conditionals using `then` the layout is disallowed
+      #   # when the `else` body is multiline because it is treated as a lint offense.
+      #   if something then on_the_same_line_as_then
+      #   else first_line
+      #     second_line
+      #   end
+      #
+      #   # good
+      #
+      #   # For single-line conditional using `then` the layout is allowed
+      #   # when `else` body is a single-line because it is treated as intentional.
+      #
+      #   if something then on_the_same_line_as_then
+      #   else single_line
+      #   end
       class ElseLayout < Base
         include Alignment
         include RangeHelp
@@ -47,6 +65,7 @@ module RuboCop
 
         def on_if(node)
           return if node.ternary?
+          return if node.then? && !node.else_branch&.begin_type?
 
           # If the if is on a single line, it'll be handled by `Style/OneLineConditional`
           return if node.single_line?
