@@ -149,6 +149,25 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
   end
 
+  context 'with a braced hash argument spanning multiple lines after an argument' do
+    context 'when EnforcedStyleForMultiline is consistent_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
+
+      [%w[( )], %w[[ ]]].each do |start_bracket, end_bracket|
+        context "with `#{start_bracket}#{end_bracket}` brackets" do
+          it 'accepts multiple arguments with no trailing comma' do
+            expect_no_offenses(<<~RUBY)
+              EmailWorker.perform_async#{start_bracket}arg, {
+                subject: "hey there",
+                email: "foo@bar.com"
+              }#{end_bracket}
+            RUBY
+          end
+        end
+      end
+    end
+  end
+
   context 'with a single argument of anonymous function spanning multiple lines' do
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
