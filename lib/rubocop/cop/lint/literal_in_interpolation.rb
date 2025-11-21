@@ -66,7 +66,7 @@ module RuboCop
 
         def special_keyword?(node)
           # handle strings like __FILE__
-          (node.str_type? && !node.loc.respond_to?(:begin)) || node.source_range.is?('__LINE__')
+          (node.str_type? && !node.loc?(:begin)) || node.source_range.is?('__LINE__')
         end
 
         def array_in_regexp?(node)

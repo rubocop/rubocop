@@ -223,7 +223,7 @@ module RuboCop
             # __FILE__ is treated as a StrNode but has no begin
             if node.str_type? && loc.respond_to?(:begin) && loc.begin.nil?
               "'#{node.source}'"
-            elsif node.sym_type? && loc.begin.nil?
+            elsif node.sym_type? && !node.loc?(:begin)
               ":#{node.source}"
             else
               node.source

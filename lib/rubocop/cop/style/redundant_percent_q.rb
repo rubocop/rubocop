@@ -80,8 +80,7 @@ module RuboCop
         end
 
         def string_literal?(node)
-          node.loc.respond_to?(:begin) && node.loc.respond_to?(:end) &&
-            node.loc.begin && node.loc.end
+          node.loc?(:begin) && node.loc?(:end)
         end
 
         def start_with_percent_q_variant?(string)

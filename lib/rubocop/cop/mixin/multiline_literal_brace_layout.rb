@@ -127,7 +127,7 @@ module RuboCop
         parent ||= node
 
         if node.respond_to?(:loc) &&
-           node.loc.respond_to?(:heredoc_end) &&
+           node.loc?(:heredoc_end) &&
            node.loc.heredoc_end.last_line >= parent.last_line
           return true
         end

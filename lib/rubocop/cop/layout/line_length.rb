@@ -406,9 +406,7 @@ module RuboCop
 
         def string_delimiter(node)
           delimiter = node.loc.begin
-          if node.parent&.dstr_type? && node.parent.loc.respond_to?(:begin)
-            delimiter ||= node.parent.loc.begin
-          end
+          delimiter ||= node.parent.loc.begin if node.parent&.dstr_type? && node.parent.loc?(:begin)
           delimiter = delimiter&.source
 
           delimiter if %w[' "].include?(delimiter)

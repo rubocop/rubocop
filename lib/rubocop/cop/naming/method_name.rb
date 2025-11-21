@@ -234,7 +234,7 @@ module RuboCop
         end
 
         def range_position(node)
-          if node.loc.respond_to?(:selector)
+          if node.loc?(:selector)
             selector_end_pos = node.loc.selector.end_pos + 1
             expr_end_pos = node.source_range.end_pos
 

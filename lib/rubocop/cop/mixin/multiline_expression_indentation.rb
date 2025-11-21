@@ -200,7 +200,7 @@ module RuboCop
       end
 
       def grouped_expression?(node)
-        node.begin_type? && node.loc.respond_to?(:begin) && node.loc.begin
+        node.begin_type? && node.loc?(:begin) && node.loc.begin
       end
 
       def inside_arg_list_parentheses?(node, ancestor)

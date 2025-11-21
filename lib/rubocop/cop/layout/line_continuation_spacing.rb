@@ -101,7 +101,7 @@ module RuboCop
               ranges << loc.expression
             elsif literal.heredoc?
               ranges << loc.heredoc_body
-            elsif (loc.respond_to?(:begin) && loc.begin) || ignored_parent?(literal)
+            elsif literal.loc?(:begin) || ignored_parent?(literal)
               ranges << loc.expression
             end
           end

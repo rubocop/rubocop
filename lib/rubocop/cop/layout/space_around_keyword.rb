@@ -167,7 +167,7 @@ module RuboCop
 
         def check(node, locations, begin_keyword = DO)
           locations.each do |loc|
-            next unless node.loc.respond_to?(loc)
+            next unless node.loc?(loc)
 
             range = node.loc.public_send(loc)
             next unless range
