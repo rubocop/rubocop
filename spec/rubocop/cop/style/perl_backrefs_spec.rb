@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::Style::PerlBackrefs, :config do
     RUBY
   end
 
-  it 'autocorrects $\' to Regexp.last_match.post_match' do
+  it "autocorrects $' to Regexp.last_match.post_match" do
     expect_offense(<<~RUBY)
       $'
       ^^ Prefer `Regexp.last_match.post_match` over `$'`.

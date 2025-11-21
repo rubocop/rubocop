@@ -93,7 +93,7 @@ RSpec.describe RuboCop::Cop::Util do
     end
 
     it 'returns literal for string which requires escaping' do
-      expect(TestUtil.new.send(:to_string_literal, 'foo\'')).to eq('"foo\'"')
+      expect(TestUtil.new.send(:to_string_literal, "foo'")).to eq(%q("foo'"))
     end
   end
 end

@@ -202,7 +202,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     context 'when not supporting server' do
       describe 'no server options' do
         it 'displays a warning message' do
-          stdout, stderr, status = Open3.capture3("ruby -I . \"#{rubocop}\"")
+          stdout, stderr, status = Open3.capture3(%(ruby -I . "#{rubocop}"))
           expect(stdout).to eq(<<~RESULT)
             Inspecting 0 files
 
@@ -216,7 +216,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       describe '--start-server' do
         it 'displays a warning message' do
-          stdout, stderr, status = Open3.capture3("ruby -I . \"#{rubocop}\" --start-server")
+          stdout, stderr, status = Open3.capture3(%(ruby -I . "#{rubocop}" --start-server))
           expect(stdout).to eq ''
           expect(stderr).to include("RuboCop server is not supported by this Ruby.\n")
           expect(status.exitstatus).to eq 2

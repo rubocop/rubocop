@@ -435,7 +435,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       it { is_expected.to be(true) }
     end
 
-    context 'when the file doesn\'t match the Include configuration' do
+    context "when the file doesn't match the Include configuration" do
       let(:file) { 'bar.rb' }
 
       it { is_expected.to be(false) }
@@ -462,13 +462,13 @@ RSpec.describe RuboCop::Cop::Cop, :config do
         allow(config).to receive(:gem_versions_in_target).and_return(gem_versions_in_target)
       end
 
-      context 'the target doesn\'t satisfy any of the gem requirements' do
+      context "the target doesn't satisfy any of the gem requirements" do
         let(:gem_versions_in_target) { {} }
 
         it { is_expected.to be(false) }
       end
 
-      context 'the target has a required gem, but in a version that\'s too old' do
+      context "the target has a required gem, but in a version that's too old" do
         let(:gem_versions_in_target) { { 'gem1' => Gem::Version.new('1.2.2') } }
 
         it { is_expected.to be(false) }

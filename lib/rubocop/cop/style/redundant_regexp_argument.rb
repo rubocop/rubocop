@@ -76,7 +76,7 @@ module RuboCop
             quote = "'"
           elsif new_argument.include?("\\'")
             quote = "'"
-          elsif new_argument.include?('\'')
+          elsif new_argument.include?("'")
             new_argument.gsub!("'", "\\\\'")
             quote = "'"
           elsif new_argument.include?('\\')

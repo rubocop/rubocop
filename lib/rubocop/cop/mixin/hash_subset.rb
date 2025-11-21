@@ -179,8 +179,8 @@ module RuboCop
       end
 
       def decorate_source(value)
-        return ":\"#{value.source}\"" if value.dsym_type?
-        return "\"#{value.source}\"" if value.dstr_type?
+        return %(:"#{value.source}") if value.dsym_type?
+        return %("#{value.source}") if value.dstr_type?
         return ":#{value.source}" if value.sym_type?
 
         "'#{value.source}'"

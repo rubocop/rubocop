@@ -143,7 +143,7 @@ module RuboCop
         def replacement(parts)
           interpolated_parts = parts.map { |part| adjust_str(part) }
 
-          "\"#{handle_quotes(interpolated_parts).join}\""
+          %("#{handle_quotes(interpolated_parts).join}")
         end
 
         def adjust_str(part)
