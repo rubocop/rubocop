@@ -3287,7 +3287,7 @@ Style/Alias:
 
 Style/AmbiguousEndlessMethodDefinition:
   Description: 'Checks for endless methods inside operators of lower precedence.'
-  StyleGuide: '#ambiguous-endless-method-defintions'
+  StyleGuide: '#ambiguous-endless-method-definitions'
   Enabled: pending
   VersionAdded: '1.68'
 
