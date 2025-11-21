@@ -199,5 +199,19 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
         RUBY
       end
     end
+
+    context 'target ruby version >= 4.0', :ruby40 do
+      it 'registers an offense and corrects when requiring `pathname`' do
+        expect_offense(<<~RUBY)
+          require 'pathname'
+          ^^^^^^^^^^^^^^^^^^ Remove unnecessary `require` statement.
+          require 'uri'
+        RUBY
+
+        expect_correction(<<~RUBY)
+          require 'uri'
+        RUBY
+      end
+    end
   end
 end
