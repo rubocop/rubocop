@@ -76,9 +76,7 @@ module RuboCop
         #   nil.
         # - The source map of `__FILE__` responds to neither :begin nor :end.
         def delimited_string_literal?(node)
-          loc = node.location
-
-          loc.respond_to?(:begin) && loc.begin && loc.respond_to?(:end) && loc.end
+          node.loc?(:begin) && node.loc?(:end)
         end
 
         def block_comment_within?(expr)

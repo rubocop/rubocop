@@ -73,7 +73,7 @@ module RuboCop
 
       def location(node)
         if LSP.enabled?
-          end_range = node.loc.respond_to?(:name) ? node.loc.name : node.loc.begin
+          end_range = node.loc?(:name) ? node.loc.name : node.loc.begin
           node.source_range.begin.join(end_range)
         else
           node.source_range

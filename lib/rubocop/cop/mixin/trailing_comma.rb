@@ -184,7 +184,7 @@ module RuboCop
 
       def heredoc?(node)
         return false unless node.is_a?(RuboCop::AST::Node)
-        return true if node.loc.respond_to?(:heredoc_body)
+        return true if node.loc?(:heredoc_body)
 
         return heredoc_send?(node) if node.send_type?
 

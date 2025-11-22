@@ -168,7 +168,7 @@ module RuboCop
 
         def subsequent_closing_parentheses_in_same_line?(outermost_send)
           last_arg_of_outer_send = outermost_send.last_argument
-          return false unless last_arg_of_outer_send&.loc.respond_to?(:end) &&
+          return false unless last_arg_of_outer_send&.loc?(:end) &&
                               (end_of_last_arg_of_outer_send = last_arg_of_outer_send.loc.end)
 
           end_of_outer_send = outermost_send.loc.end
@@ -230,7 +230,7 @@ module RuboCop
 
         def find_most_bottom_of_heredoc_end(arguments)
           arguments.filter_map do |argument|
-            argument.loc.heredoc_end.end_pos if argument.loc.respond_to?(:heredoc_end)
+            argument.loc.heredoc_end.end_pos if argument.loc?(:heredoc_end)
           end.max
         end
 

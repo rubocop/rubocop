@@ -99,7 +99,7 @@ module RuboCop
 
             if str.heredoc?
               ranges << loc.heredoc_body
-            elsif loc.respond_to?(:begin) && loc.begin
+            elsif str.loc?(:begin)
               ranges << loc.expression
             end
           end

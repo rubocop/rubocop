@@ -41,8 +41,7 @@ module RuboCop
 
         def check(node)
           return if node.heredoc?
-          return unless node.loc.respond_to?(:begin)
-          return unless node.loc.begin
+          return unless node.loc?(:begin)
 
           source = node.loc.begin.source
           if requires_percent_q?(source)

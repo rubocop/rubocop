@@ -13,7 +13,7 @@ module RuboCop
 
       DefNode = Struct.new(:node) do
         def selector
-          if node.loc.respond_to?(:selector)
+          if node.loc?(:selector)
             node.loc.selector
           else
             node.loc.keyword
