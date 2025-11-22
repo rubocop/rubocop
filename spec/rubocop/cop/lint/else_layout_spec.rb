@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects for the entire else body being on the same line' do
+  it 'registers an offense and corrects for the entire else body being on the same line without `then` single-line' do
     expect_offense(<<~RUBY)
       if something
         test
@@ -37,6 +37,32 @@ RSpec.describe RuboCop::Cop::Lint::ElseLayout, :config do
         test
       else
         something_else
+      end
+    RUBY
+  end
+
+  it 'registers an offense for a part of `else` body being on the same line with `then` single-line' do
+    expect_offense(<<~RUBY)
+      if something then test
+      else something_else
+           ^^^^^^^^^^^^^^ Odd `else` layout detected. Did you mean to use `elsif`?
+        other
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      if something then test
+      else
+        something_else
+        other
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the single line `else` body being on the same line with `then` single-line' do
+    expect_no_offenses(<<~RUBY)
+      if something then test
+      else something_else
       end
     RUBY
   end
