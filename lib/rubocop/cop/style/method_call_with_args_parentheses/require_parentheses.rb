@@ -36,10 +36,21 @@ module RuboCop
             cop_config.fetch('IncludedMacros', []).map(&:to_sym)
           end
 
+          def included_macro_patterns
+            cop_config.fetch('IncludedMacroPatterns', [])
+          end
+
+          def matches_included_macro_pattern?(method_name)
+            included_macro_patterns.any? do |pattern|
+              Regexp.new(pattern).match?(method_name.to_s)
+            end
+          end
+
           def ignored_macro?(node)
             cop_config['IgnoreMacros'] &&
               node.macro? &&
-              !included_macros_list.include?(node.method_name)
+              !included_macros_list.include?(node.method_name) &&
+              !matches_included_macro_pattern?(node.method_name)
           end
         end
       end
