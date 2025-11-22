@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
     end
 
     it 'accepts a line with tab in a string' do
-      expect_no_offenses("(x = \"\t\")")
+      expect_no_offenses(%q{(x = "\t")})
     end
 
     it 'accepts a line which begins with tab in a string' do
@@ -155,7 +155,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationStyle, :config do
     end
 
     it 'accepts a line with tab in a string' do
-      expect_no_offenses("(x = \"\t\")")
+      expect_no_offenses(%q{(x = "\t")})
     end
 
     it 'accepts a line which begins with tab in a string' do
