@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
     {
       'Methods' => {
         'join' => '', 'sum' => 0, 'exit' => true, 'exit!' => false,
-        'split' => ' ', 'chomp' => "\n", 'chomp!' => "\n"
+        'to_i' => 10, 'split' => ' ', 'chomp' => "\n", 'chomp!' => "\n"
       }
     }
   end
@@ -20,6 +20,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
           ^^^^^^ Argument true is redundant because it is implied by default.
       exit!(false)
            ^^^^^^^ Argument false is redundant because it is implied by default.
+      foo.to_i(10)
+              ^^^^ Argument 10 is redundant because it is implied by default.
       foo.split(' ')
                ^^^^^ Argument ' ' is redundant because it is implied by default.
       foo.chomp("\n")
@@ -33,6 +35,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantArgument, :config do
       foo.sum
       exit
       exit!
+      foo.to_i
       foo.split
       foo.chomp
       foo.chomp!

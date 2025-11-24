@@ -37,6 +37,7 @@ module RuboCop
       #   array.sum(0)
       #   exit(true)
       #   exit!(false)
+      #   string.to_i(10)
       #   string.split(" ")
       #   "first\nsecond".split(" ")
       #   string.chomp("\n")
@@ -49,6 +50,7 @@ module RuboCop
       #   array.sum
       #   exit
       #   exit!
+      #   string.to_i
       #   string.split
       #   "first second".split
       #   string.chomp
