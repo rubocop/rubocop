@@ -2440,4 +2440,52 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       RESULT
     end
   end
+
+  describe 'option is ambiguous' do
+    it 'suggests to use the --help flag' do
+      ambiguous_option = '--no'
+
+      expect(cli.run([ambiguous_option])).to eq(2)
+      expect($stderr.string).to eq(<<~RESULT)
+        ambiguous option: #{ambiguous_option}
+        For usage information, use --help
+      RESULT
+    end
+  end
+
+  describe 'argument is needless' do
+    it 'suggests to use the --help flag' do
+      option = '--help=yes'
+
+      expect(cli.run([option])).to eq(2)
+      expect($stderr.string).to eq(<<~RESULT)
+        needless argument: #{option}
+        For usage information, use --help
+      RESULT
+    end
+  end
+
+  describe 'argument is missing' do
+    it 'suggests to use the --help flag' do
+      option = '--exclude-limit'
+
+      expect(cli.run([option])).to eq(2)
+      expect($stderr.string).to eq(<<~RESULT)
+        missing argument: #{option}
+        For usage information, use --help
+      RESULT
+    end
+  end
+
+  describe 'argument is invalid' do
+    it 'suggests to use the --help flag' do
+      option = '--fail-level=Z'
+
+      expect(cli.run([option])).to eq(2)
+      expect($stderr.string).to eq(<<~RESULT)
+        invalid argument: #{option}
+        For usage information, use --help
+      RESULT
+    end
+  end
 end
