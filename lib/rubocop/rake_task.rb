@@ -75,7 +75,7 @@ module RuboCop
     def setup_subtasks(name, *args, &task_block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       namespace(name) do
         # rubocop:todo Naming/InclusiveLanguage
-        task(:auto_correct, *args) do
+        task(:auto_correct, *args) do |_, task_args|
           require 'rainbow'
           warn Rainbow(
             'rubocop:auto_correct task is deprecated; ' \
