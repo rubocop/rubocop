@@ -5228,6 +5228,8 @@ Style/RedundantArgument:
     exit: true
     # Kernel.#exit!
     exit!: false
+    # String#to_i
+    to_i: 10
     # String#split
     split: ' '
     # String#chomp
