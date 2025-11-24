@@ -14,5 +14,5 @@ jobs:
     name: Check spelling of all files with codespell
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: codespell-project/actions-codespell@v2
