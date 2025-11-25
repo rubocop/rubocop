@@ -66,7 +66,7 @@ module RuboCop
       STATUS_INTERRUPTED
     rescue Finished
       STATUS_SUCCESS
-    rescue OptionParser::InvalidOption => e
+    rescue OptionParser::ParseError => e
       warn e.message
       warn 'For usage information, use --help'
       STATUS_ERROR
