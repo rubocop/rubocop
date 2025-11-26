@@ -7,7 +7,7 @@ module RuboCop
       #
       # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
       # the case equality operator is a constant.
-
+      #
       # If `AllowOnSelfClass` option is enabled, the cop will ignore violations when the receiver of
       # the case equality operator is `self.class`. Note intermediate variables are not accepted.
       #
