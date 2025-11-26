@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for uses of the case equality operator(===).
+      # Checks for uses of the case equality operator (`===`).
       #
       # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
       # the case equality operator is a constant.
@@ -11,23 +11,28 @@ module RuboCop
       # If `AllowOnSelfClass` option is enabled, the cop will ignore violations when the receiver of
       # the case equality operator is `self.class`. Note intermediate variables are not accepted.
       #
+      # NOTE: Regexp case equality (`/regexp/ === var`) is allowed because changing it to
+      # `/regexp/.match?(var)` needs to take into account `Regexp.last_match?`, `$~`, `$1`, etc.
+      # This potentially incompatible transformation is handled by `Performance/RegexpMatch` cop.
+      #
       # @example
       #   # bad
       #   (1..100) === 7
-      #   /something/ === some_string
       #
       #   # good
-      #   something.is_a?(Array)
       #   (1..100).include?(7)
-      #   /something/.match?(some_string)
       #
       # @example AllowOnConstant: false (default)
       #   # bad
       #   Array === something
       #
+      #   # good
+      #   something.is_a?(Array)
+      #
       # @example AllowOnConstant: true
       #   # good
       #   Array === something
+      #   something.is_a?(Array)
       #
       # @example AllowOnSelfClass: false (default)
       #   # bad
@@ -51,7 +56,7 @@ module RuboCop
 
         def on_send(node)
           case_equality?(node) do |lhs, rhs|
-            return if lhs.const_type? && !lhs.module_name?
+            return if lhs.regexp_type? || (lhs.const_type? && !lhs.module_name?)
 
             add_offense(node.loc.selector) do |corrector|
               replacement = replacement(lhs, rhs)
@@ -71,13 +76,6 @@ module RuboCop
 
         def replacement(lhs, rhs)
           case lhs.type
-          when :regexp
-            # The automatic correction from `a === b` to `a.match?(b)` needs to
-            # consider `Regexp.last_match?`, `$~`, `$1`, and etc.
-            # This correction is expected to be supported by `Performance/Regexp` cop.
-            # See: https://github.com/rubocop/rubocop-performance/issues/152
-            #
-            # So here is noop.
           when :begin
             begin_replacement(lhs, rhs)
           when :const

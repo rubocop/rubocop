@@ -14,14 +14,11 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       RUBY
     end
 
-    it 'registers an offense but does not correct for === when the receiver is a regexp' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for === when the receiver is a regexp' do
+      # This detection is expected to be supported by `Performance/RegexpMatch`.
+      expect_no_offenses(<<~RUBY)
         /OMG/ === var
-              ^^^ Avoid the use of the case equality operator `===`.
       RUBY
-
-      # This correction is expected to be supported by `Performance/Regexp`.
-      expect_no_corrections
     end
 
     it 'registers an offense and corrects for === when the receiver is a range' do
