@@ -9,17 +9,20 @@ module RuboCop
       # In the default style (require_parentheses), macro methods are allowed.
       # Additional methods can be added to the `AllowedMethods` or
       # `AllowedPatterns` list. These options are valid only in the default
-      # style. Macros can be included by either setting `IgnoreMacros` to false
-      # or adding specific macros to the `IncludedMacros` list.
+      # style. Macros can be included by either setting `IgnoreMacros` to false,
+      # adding specific macros to the `IncludedMacros` list, or using
+      # `IncludedMacroPatterns` for pattern-based matching.
       #
       # Precedence of options is as follows:
       #
       # 1. `AllowedMethods`
       # 2. `AllowedPatterns`
       # 3. `IncludedMacros`
+      # 4. `IncludedMacroPatterns`
       #
-      # If a method is listed in both `IncludedMacros` and `AllowedMethods`,
-      # then the latter takes precedence (that is, the method is allowed).
+      # If a method is listed in both `IncludedMacros`/`IncludedMacroPatterns`
+      # and `AllowedMethods`, then the latter takes precedence (that is, the
+      # method is allowed).
       #
       # In the alternative style (omit_parentheses), there are three additional
       # options.
@@ -147,6 +150,16 @@ module RuboCop
       #   assert_match(/foo/, bar)
       #   # still enforces parentheses on other methods
       #   array.delete(e)
+      #
+      # @example IncludedMacroPatterns: ["^assert", "^refute"]
+      #
+      #   # bad
+      #   assert_equal 'test', x
+      #   refute_nil value
+      #
+      #   # good
+      #   assert_equal('test', x)
+      #   refute_nil(value)
       #
       # @example AllowParenthesesInMultilineCall: false (default)
       #

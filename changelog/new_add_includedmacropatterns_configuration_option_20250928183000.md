@@ -1,0 +1,1 @@
+* [#14569](https://github.com/rubocop/rubocop/issues/14569): Add `IncludedMacroPatterns` configuration option to `Style/MethodCallWithArgsParentheses` for pattern-based macro method enforcement. ([@mmenanno][])

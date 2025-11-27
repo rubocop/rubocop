@@ -1309,6 +1309,29 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
       end
     end
 
+    context 'for macros called within a block' do
+      let(:cop_config) { { 'IgnoreMacros' => 'true', 'IncludedMacros' => ['assert_equal'] } }
+
+      it 'finds offense' do
+        expect_offense(<<~RUBY)
+          class Foo
+            test "description" do
+              assert_equal 1, 1
+              ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            test "description" do
+              assert_equal(1, 1)
+            end
+          end
+        RUBY
+      end
+    end
+
     context 'for a macro in both IncludedMacros and AllowedMethods' do
       let(:cop_config) do
         {
@@ -1322,6 +1345,81 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         expect_no_offenses(<<~RUBY)
           module Foo
             bar :abc
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'when inspecting macro methods with IncludedMacroPatterns' do
+    let(:cop_config) do
+      { 'IgnoreMacros' => 'true', 'IncludedMacroPatterns' => ['^assert', '^refute'] }
+    end
+
+    context 'in a class body' do
+      it 'finds offense for methods matching patterns' do
+        expect_offense(<<~RUBY)
+          class Foo
+            assert_equal 'expected', actual
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            refute_nil value
+            ^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            assert_equal('expected', actual)
+            refute_nil(value)
+          end
+        RUBY
+      end
+    end
+
+    context 'for macros called within a block' do
+      it 'finds offense' do
+        expect_offense(<<~RUBY)
+          class Foo
+            test "description" do
+              assert_equal 1, 1
+              ^^^^^^^^^^^^^^^^^ Use parentheses for method calls with arguments.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            test "description" do
+              assert_equal(1, 1)
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'for a macro not matching included patterns' do
+      it 'allows' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            has_many :posts
+          end
+        RUBY
+      end
+    end
+
+    context 'for a macro in both IncludedMacroPatterns and AllowedMethods' do
+      let(:cop_config) do
+        {
+          'IgnoreMacros' => 'true',
+          'IncludedMacroPatterns' => ['^assert'],
+          'AllowedMethods' => ['assert_equal']
+        }
+      end
+
+      it 'allows' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            assert_equal 'test', result
           end
         RUBY
       end
