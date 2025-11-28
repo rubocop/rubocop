@@ -1847,6 +1847,30 @@ verification that the outer parent is defined elsewhere. RuboCop does not
 have the knowledge to perform either operation safely and thus requires
 manual oversight.
 
+NOTE: When using `nested` style, this cop does not register an offense for
+compact style definitions inside another class or module (e.g., `class Foo::Bar`
+inside `module Baz`), because autocorrection would change semantics:
+
+[source,ruby]
+----
+module Baz
+  class Foo::Bar  # References top-level ::Foo, not Baz::Foo
+  end
+end
+----
+
+If this were autocorrected to nested style, it would become:
+
+[source,ruby]
+----
+module Baz
+  class Foo       # Creates Baz::Foo, not ::Foo
+    class Bar
+    end
+  end
+end
+----
+
 [#examples-styleclassandmodulechildren]
 === Examples
 

@@ -183,6 +183,7 @@ module RuboCop
 
         def check_nested_style(node)
           return unless compact_node_name?(node)
+          return if node.parent&.type?(:class, :module)
 
           add_offense(node.loc.name, message: NESTED_MSG) do |corrector|
             autocorrect(corrector, node)
