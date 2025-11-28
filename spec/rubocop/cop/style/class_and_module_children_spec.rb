@@ -185,6 +185,24 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         end
       RUBY
     end
+
+    it 'accepts compact style when inside another module' do
+      expect_no_offenses(<<~RUBY)
+        module Z
+          module X::Y
+          end
+        end
+      RUBY
+    end
+
+    it 'accepts compact style when inside another class' do
+      expect_no_offenses(<<~RUBY)
+        class Z
+          module X::Y
+          end
+        end
+      RUBY
+    end
   end
 
   context 'compact style' do
