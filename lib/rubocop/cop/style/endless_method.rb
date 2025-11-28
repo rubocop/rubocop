@@ -234,7 +234,7 @@ module RuboCop
 
           offset = modifier_offset(node)
 
-          endless_replacement(node).length + offset > config.for_cop('Layout/LineLength')['Max']
+          endless_replacement(node).length + offset > max_line_length
         end
 
         def modifier_offset(node)
