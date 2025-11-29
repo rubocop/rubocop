@@ -3531,9 +3531,11 @@ Style/BlockDelimiters:
   BracesRequiredMethods: []
 
 Style/CaseEquality:
-  Description: 'Avoid explicit use of the case equality operator(===).'
+  Description: 'Avoid explicit use of the case equality operator (`===`).'
   StyleGuide: '#no-case-equality'
   Enabled: true
+  References:
+    - 'https://docs.rubocop.org/rubocop-performance/cops_performance.html#performanceregexpmatch'
   VersionAdded: '0.9'
   VersionChanged: '0.89'
   # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
