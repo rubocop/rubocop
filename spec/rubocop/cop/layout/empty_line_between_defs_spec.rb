@@ -659,7 +659,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
     end
   end
 
-  context 'DefLikeMacros: [\'foo\']' do
+  context "DefLikeMacros: ['foo']" do
     let(:allow_adjacent_one_line_defs) { true }
     let(:cop_config) do
       {

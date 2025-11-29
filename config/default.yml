@@ -4055,6 +4055,15 @@ Style/EnvHome:
   Safe: false
   VersionAdded: '1.29'
 
+Style/EscapedQuotes:
+  Description: 'Avoid escaping quotation marks within a string.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  EnforcedStyle: prefer_quoted_strings
+  SupportedStyles:
+    - prefer_quoted_strings
+    - always_percent_literal
+
 Style/EvalWithLocation:
   Description: 'Pass `__FILE__` and `__LINE__` to `eval` method, as they are used by backtraces.'
   Enabled: true
