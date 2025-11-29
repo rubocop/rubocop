@@ -678,6 +678,11 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       it_behaves_like 'aligned', 'var = until',  'test',     'end'
       it_behaves_like 'aligned', 'var = until',  'test',     'end.ab.join("")'
       it_behaves_like 'aligned', 'var = until',  'test',     'end.ab.tap {}'
+      it_behaves_like 'aligned', 'var = until', 'test', 'end.ab.tap { _1 }'
+      context 'Ruby >= 3.4', :ruby34 do
+        it_behaves_like 'aligned', 'var = until', 'test', 'end.ab.tap { it }'
+      end
+
       it_behaves_like 'aligned', 'var = case',   'a when b', 'end'
       it_behaves_like 'aligned', "var =\n  if",  'test', '  end'
       context 'Ruby >= 2.7', :ruby27 do
