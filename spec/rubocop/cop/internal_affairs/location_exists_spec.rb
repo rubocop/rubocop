@@ -258,13 +258,15 @@ RSpec.describe RuboCop::Cop::InternalAffairs::LocationExists, :config do
       RUBY
     end
 
-    it 'registers an offense but does not correct on `loc.respond_to?` without receiver' do
+    it 'registers an offense and autocorrects on `loc.respond_to?` without receiver' do
       expect_offense(<<~RUBY)
         loc.respond_to?(:begin)
-        ^^^^^^^^^^^^^^^^^^^^^^^ Use `node.loc?` instead of `loc.respond_to?`.
+        ^^^^^^^^^^^^^^^^^^^^^^^ Use `loc?(:begin)` instead of `loc.respond_to?(:begin)`.
       RUBY
 
-      expect_no_corrections
+      expect_correction(<<~RUBY)
+        loc?(:begin)
+      RUBY
     end
 
     it 'registers an offense within an `if` node' do
@@ -281,10 +283,12 @@ RSpec.describe RuboCop::Cop::InternalAffairs::LocationExists, :config do
     it 'registers an offense within an `if` node without receiver' do
       expect_offense(<<~RUBY)
         foo if loc.respond_to?(:begin)
-               ^^^^^^^^^^^^^^^^^^^^^^^ Use `node.loc?` instead of `loc.respond_to?`.
+               ^^^^^^^^^^^^^^^^^^^^^^^ Use `loc?(:begin)` instead of `loc.respond_to?(:begin)`.
       RUBY
 
-      expect_no_corrections
+      expect_correction(<<~RUBY)
+        foo if loc?(:begin)
+      RUBY
     end
   end
 end
