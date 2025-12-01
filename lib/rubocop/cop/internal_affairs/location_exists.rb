@@ -83,11 +83,7 @@ module RuboCop
           return if ignored_node?(node.parent)
 
           loc_respond_to?(node) do |receiver, location|
-            if receiver
-              register_correctable_offense(node, replacement(receiver, "loc?(#{location.source})"))
-            else
-              add_offense(node)
-            end
+            register_offense(node, replacement(receiver, "loc?(#{location.source})"))
           end
         end
         alias on_csend on_send
@@ -97,9 +93,9 @@ module RuboCop
         def replace_with_loc(node)
           replaceable_with_loc(node) do |receiver, location|
             if node.parent&.assignment?
-              register_correctable_offense(node, replace_assignment(receiver, location))
+              register_offense(node, replace_assignment(receiver, location))
             else
-              register_correctable_offense(node, replacement(receiver, "loc?(#{location.source})"))
+              register_offense(node, replacement(receiver, "loc?(#{location.source})"))
             end
           end
         end
@@ -107,11 +103,11 @@ module RuboCop
         def replace_with_loc_is(node)
           replaceable_with_loc_is(node) do |receiver, location, value|
             replacement = replacement(receiver, "loc_is?(#{location.source}, #{value.source})")
-            register_correctable_offense(node, replacement)
+            register_offense(node, replacement)
           end
         end
 
-        def register_correctable_offense(node, replacement)
+        def register_offense(node, replacement)
           message = format(MSG_CORRECTABLE, replacement: replacement, source: node.source)
 
           add_offense(node, message: message) do |corrector|
