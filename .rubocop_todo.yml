@@ -26,16 +26,6 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Max: 128
 
-# Offense count: 3
-# Configuration parameters: Mode, AllowedMethods, AllowedPatterns, AllowBangMethods, WaywardPredicates.
-# AllowedMethods: call
-# WaywardPredicates: nonzero?
-Naming/PredicateMethod:
-  Exclude:
-    - 'lib/rubocop/cop/lint/unreachable_code.rb'
-    - 'lib/rubocop/cop/metrics/utils/abc_size_calculator.rb'
-    - 'lib/rubocop/cop/style/super_arguments.rb'
-
 # Offense count: 13
 RSpec/AnyInstance:
   Exclude:

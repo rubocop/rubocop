@@ -84,7 +84,10 @@ module RuboCop
           end
 
           def assignment?(node)
-            return compound_assignment(node) if node.masgn_type? || node.shorthand_asgn?
+            if node.masgn_type? || node.shorthand_asgn?
+              compound_assignment(node)
+              return false
+            end
 
             node.for_type? ||
               (node.respond_to?(:setter_method?) && node.setter_method?) ||
@@ -101,8 +104,6 @@ module RuboCop
               child.respond_to?(:setter_method?) && !child.setter_method?
             end
             @assignment += will_be_miscounted
-
-            false
           end
 
           def simple_assignment?(node)

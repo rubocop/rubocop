@@ -109,7 +109,7 @@ module RuboCop
 
           def_args.zip(super_args).each do |def_arg, super_arg|
             next if positional_arg_same?(def_arg, super_arg)
-            next if positional_rest_arg_same(def_arg, super_arg)
+            next if positional_rest_arg_same?(def_arg, super_arg)
             next if keyword_arg_same?(def_arg, super_arg)
             next if keyword_rest_arg_same?(def_arg, super_arg)
             next if block_arg_same?(def_node, super_node, def_arg, super_arg)
@@ -147,7 +147,7 @@ module RuboCop
           def_arg.name == super_arg.children.first
         end
 
-        def positional_rest_arg_same(def_arg, super_arg)
+        def positional_rest_arg_same?(def_arg, super_arg)
           return false unless def_arg.restarg_type?
           # anonymous forwarding
           return true if def_arg.name.nil? && super_arg.forwarded_restarg_type?
