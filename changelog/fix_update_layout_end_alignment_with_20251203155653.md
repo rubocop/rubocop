@@ -1,0 +1,1 @@
+* [#14281](https://github.com/rubocop/rubocop/issues/14281): Update `Layout/EndAlignment` with `EnforcedStyleAlignWith: variable` to handle conditionals inside `begin` nodes properly. ([@dvandersluis][])

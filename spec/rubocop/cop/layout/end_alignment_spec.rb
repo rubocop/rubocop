@@ -413,6 +413,36 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       RUBY
     end
 
+    it 'registers an offense when using `+` operator method with `if` inside `begin` and `end` is not aligned' do
+      expect_offense(<<~RUBY)
+        variable + (if bar
+                      baz
+                    end)
+                    ^^^ `end` at 3, 12 is not aligned with `variable + (if` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        variable + (if bar
+                      baz
+        end)
+      RUBY
+    end
+
+    it 'registers an offense when using `+` operator method with `if` inside multiple `begin`s and `end` is not aligned' do
+      expect_offense(<<~RUBY)
+        variable + ((if bar
+                      baz
+                    end))
+                    ^^^ `end` at 3, 12 is not aligned with `variable + ((if` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        variable + ((if bar
+                      baz
+        end))
+      RUBY
+    end
+
     it 'registers an offense when using a conditional statement in a method argument and `end` is not aligned' do
       expect_offense(<<~RUBY)
         format(
