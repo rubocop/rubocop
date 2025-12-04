@@ -340,9 +340,9 @@ RSpec.describe RuboCop::Server::Cache do
         end
 
         before do
-          create_file('local_file.rb', <<~YAML)
+          create_file('local_file.rb', <<~RUBY)
             do_something
-          YAML
+          RUBY
         end
 
         context 'when `inherit_from` is specified as a string path' do
