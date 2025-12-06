@@ -19,6 +19,11 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
   if RuboCop::Server.support_server?
     context 'when using `--server` option after updating RuboCop' do
       it 'displays a restart information message' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            NewCops: disable
+        YAML
+
         create_file('example.rb', <<~RUBY)
           # frozen_string_literal: true
 
