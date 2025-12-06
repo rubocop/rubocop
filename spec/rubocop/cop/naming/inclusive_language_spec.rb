@@ -119,7 +119,7 @@ RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
   context 'allowed use' do
     let(:cop_config) do
       { 'FlaggedTerms' => {
-        'master' => { 'AllowedRegex' => 'master\'s degree' }
+        'master' => { 'AllowedRegex' => "master's degree" }
       } }
     end
 

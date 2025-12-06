@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts double quotes when single quotes are used' do
-      expect_no_offenses('"\'"')
+      expect_no_offenses(%q("'"))
     end
 
     it 'accepts double quotes when interpolating an instance variable' do
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts double quotes in interpolation' do
-      expect_no_offenses("\"\#{\"A\"}\"")
+      expect_no_offenses(%q("\#{\"A\"}"))
     end
 
     it 'detects unneeded double quotes within concatenated string' do
@@ -273,11 +273,11 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
     end
 
-    it 'accepts single quotes in string with escaped non-\' character' do
+    it "accepts single quotes in string with escaped non-' character" do
       expect_no_offenses(%q('\n'))
     end
 
-    it 'accepts escaped single quote in string with escaped non-\' character' do
+    it "accepts escaped single quote in string with escaped non-' character" do
       expect_no_offenses(%q('\'\n'))
     end
 

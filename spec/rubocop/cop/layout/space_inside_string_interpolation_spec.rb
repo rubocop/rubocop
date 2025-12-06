@@ -91,7 +91,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     end
 
     it 'accepts empty interpolation' do
-      expect_no_offenses("\"\#{}\"")
+      expect_no_offenses(%q("\#{}"))
     end
 
     context 'when interpolation starts or ends with a line break' do
@@ -171,7 +171,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideStringInterpolation, :config do
     end
 
     it 'accepts empty interpolation' do
-      expect_no_offenses("\"\#{}\"")
+      expect_no_offenses(%q("\#{}"))
     end
   end
 end

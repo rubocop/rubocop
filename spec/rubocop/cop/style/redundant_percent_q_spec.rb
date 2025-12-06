@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
     end
 
     it 'accepts a string with single quotes and double quotes' do
-      expect_no_offenses("%q('\"hi\"')")
+      expect_no_offenses("%q('\"hi\"')") # rubocop:disable Style/EscapedQuotes
     end
 
     it 'registers an offense for a string containing escaped backslashes' do
@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
     end
 
     it 'accepts a string with single quotes and double quotes' do
-      expect_no_offenses("%Q('\"hi\"')")
+      expect_no_offenses("%Q('\"hi\"')") # rubocop:disable Style/EscapedQuotes
     end
 
     it 'accepts a string with double quotes and an escaped special character' do
@@ -123,7 +123,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
     end
 
     it 'accepts a dynamic %Q string with double quotes' do
-      expect_no_offenses("%Q(\"hi\#{4}\")")
+      expect_no_offenses("%Q(\"hi\#{4}\")") # rubocop:disable Style/EscapedQuotes
     end
 
     it 'accepts regular expressions starting with %Q' do
@@ -169,11 +169,11 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
   end
 
   it 'accepts %q at the beginning of a double quoted string with interpolation' do
-    expect_no_offenses("\"%q(a)\#{b}\"")
+    expect_no_offenses("\"%q(a)\#{b}\"") # rubocop:disable Style/EscapedQuotes
   end
 
   it 'accepts %Q at the beginning of a double quoted string with interpolation' do
-    expect_no_offenses("\"%Q(a)\#{b}\"")
+    expect_no_offenses("\"%Q(a)\#{b}\"") # rubocop:disable Style/EscapedQuotes
   end
 
   it 'accepts %q at the beginning of a section of a double quoted string with interpolation' do

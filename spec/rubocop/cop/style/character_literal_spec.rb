@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::CharacterLiteral, :config do
     expect_no_offenses('%w{? A}')
   end
 
-  it 'autocorrects ?\' to "\'"' do
+  it %q(autocorrects ?' to "'") do
     expect_offense(<<~RUBY)
       x = ?'
           ^^ Do not use the character literal - use string literal instead.
