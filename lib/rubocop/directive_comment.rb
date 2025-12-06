@@ -10,6 +10,8 @@ module RuboCop
     # @api private
     LINT_REDUNDANT_DIRECTIVE_COP = "#{LINT_DEPARTMENT}/RedundantCopDisableDirective"
     # @api private
+    LINT_COPS_NOT_ALLOWED_TO_DISABLE = [LINT_REDUNDANT_DIRECTIVE_COP].freeze
+    # @api private
     LINT_SYNTAX_COP = "#{LINT_DEPARTMENT}/Syntax"
     # @api private
     COP_NAME_PATTERN = '([A-Za-z]\w+/)*(?:[A-Za-z]\w+)'
@@ -43,9 +45,10 @@ module RuboCop
 
     attr_reader :comment, :cop_registry, :mode, :cops
 
-    def initialize(comment, cop_registry = Cop::Registry.global)
+    def initialize(comment, cop_registry = Cop::Registry.global, config = nil)
       @comment = comment
       @cop_registry = cop_registry
+      @config = config
       @match_data = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
       @mode, @cops = match_captures
     end
@@ -157,7 +160,7 @@ module RuboCop
       cops = raw_cop_names.map do |name|
         department?(name) ? cop_names_for_department(name) : name
       end.flatten
-      cops - [LINT_SYNTAX_COP]
+      exclude_cops_that_cannot_be_disabled(cops)
     end
 
     def department?(name)
@@ -170,11 +173,32 @@ module RuboCop
 
     def cop_names_for_department(department)
       names = cop_registry.names_for_department(department)
-      department == LINT_DEPARTMENT ? exclude_lint_department_cops(names) : names
+
+      if department == LINT_DEPARTMENT
+        exclude_lint_department_cops(names)
+      else
+        exclude_cops_that_cannot_be_disabled(names)
+      end
     end
 
-    def exclude_lint_department_cops(cops)
-      cops - [LINT_REDUNDANT_DIRECTIVE_COP, LINT_SYNTAX_COP]
+    def exclude_lint_department_cops(names)
+      exclude_cops_that_cannot_be_disabled(names - LINT_COPS_NOT_ALLOWED_TO_DISABLE)
+    end
+
+    def exclude_cops_that_cannot_be_disabled(cop_names)
+      cops_to_exclude = []
+
+      if @config
+        cop_names.each do |cop_name|
+          cop_config = @config.for_cop(cop_name)
+          cops_to_exclude << cop_name if cop_config['PreventDisabling']
+        end
+      else
+        # Fallback to old behavior if config is not provided (for backward compatibility)
+        cops_to_exclude << LINT_SYNTAX_COP
+      end
+
+      cop_names - cops_to_exclude
     end
   end
 end
