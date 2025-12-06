@@ -4904,6 +4904,14 @@ Style/NegatedWhile:
   Enabled: true
   VersionAdded: '0.20'
 
+Style/NegativeArrayIndex:
+  Description: >-
+    Use negative array indices instead of calculating array length minus a value.
+    Also handles range patterns with length calculations. Recognizes preserving methods
+    and their combinations, allowing safe replacement when the receiver matches.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/NestedFileDirname:
   Description: 'Checks for nested `File.dirname`.'
   Enabled: pending
