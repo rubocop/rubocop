@@ -46,7 +46,7 @@ module RuboCop
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
-        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, or `todo`.'
+        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `todo`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
         MALFORMED_COP_NAMES_MSG = 'Cop names must be separated by commas. ' \
                                   'Comment in the directive must start with `--`.'

@@ -34,6 +34,7 @@ module RuboCop
     def initialize(processed_source)
       @processed_source = processed_source
       @no_directives = !processed_source.raw_source.include?('rubocop')
+      @stack = []
     end
 
     def cop_enabled_at_line?(cop, line_number)
@@ -93,22 +94,74 @@ module RuboCop
       end
     end
 
-    def analyze # rubocop:todo Metrics/AbcSize
+    def analyze # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       return {} if @no_directives
 
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
       inject_disabled_cops_directives(analyses)
 
       each_directive do |directive|
-        directive.cop_names.each do |cop_name|
-          cop_name = qualified_cop_name(cop_name)
-          analyses[cop_name] = analyze_cop(analyses[cop_name], directive)
+        if directive.push?
+          @stack.push(snapshot_analyses(analyses))
+          apply_push_args(analyses, directive)
+        elsif directive.pop?
+          pop_state(analyses, directive.line_number) if @stack.any?
+        else
+          directive.cop_names.each do |cop_name|
+            cop_name = qualified_cop_name(cop_name)
+            analyses[cop_name] = analyze_cop(analyses[cop_name], directive)
+          end
         end
       end
 
       analyses.each_with_object({}) do |element, hash|
         cop_name, analysis = *element
         hash[cop_name] = cop_line_ranges(analysis)
+      end
+    end
+
+    def snapshot_analyses(analyses)
+      analyses.transform_values { |a| CopAnalysis.new(a.line_ranges.dup, a.start_line_number) }
+    end
+
+    def pop_state(analyses, pop_line)
+      analyses.each do |cop_name, analysis|
+        next unless analysis.start_line_number
+
+        analyses[cop_name] = CopAnalysis.new(
+          analysis.line_ranges + [analysis.start_line_number...pop_line], nil
+        )
+      end
+
+      @stack.pop.each do |cop_name, saved_analysis|
+        current = analyses[cop_name]
+        new_start = saved_analysis.start_line_number ? pop_line : nil
+        analyses[cop_name] = CopAnalysis.new(current.line_ranges, new_start)
+      end
+    end
+
+    def apply_push_args(analyses, directive)
+      directive.push_args.each do |operation, cop_names|
+        cop_names.each do |cop_name|
+          apply_cop_operation(analyses, operation, qualified_cop_name(cop_name),
+                              directive.line_number)
+        end
+      end
+    end
+
+    def apply_cop_operation(analyses, operation, cop_name, line)
+      analysis = analyses[cop_name]
+      start_line = analysis.start_line_number
+
+      case operation
+      when '+' # Enable cop
+        return unless start_line
+
+        analyses[cop_name] = CopAnalysis.new(analysis.line_ranges + [start_line..line], nil)
+      when '-' # Disable cop
+        return if start_line
+
+        analyses[cop_name] = CopAnalysis.new(analysis.line_ranges, line)
       end
     end
 
@@ -136,29 +189,21 @@ module RuboCop
       return analysis unless directive.disabled?
 
       line = directive.line_number
-      start_line = analysis.start_line_number
-
-      CopAnalysis.new(analysis.line_ranges + [(line..line)], start_line)
+      CopAnalysis.new(analysis.line_ranges + [(line..line)], analysis.start_line_number)
     end
 
     def analyze_disabled(analysis, directive)
       line = directive.line_number
       start_line = analysis.start_line_number
-
-      # Cop already disabled on this line, so we end the current disabled
-      # range before we start a new range.
-      return CopAnalysis.new(analysis.line_ranges + [start_line..line], line) if start_line
-
-      CopAnalysis.new(analysis.line_ranges, line)
+      new_ranges = start_line ? analysis.line_ranges + [start_line..line] : analysis.line_ranges
+      CopAnalysis.new(new_ranges, line)
     end
 
     def analyze_rest(analysis, directive)
       line = directive.line_number
       start_line = analysis.start_line_number
-
-      return CopAnalysis.new(analysis.line_ranges + [start_line..line], nil) if start_line
-
-      CopAnalysis.new(analysis.line_ranges, nil)
+      new_ranges = start_line ? analysis.line_ranges + [start_line..line] : analysis.line_ranges
+      CopAnalysis.new(new_ranges, nil)
     end
 
     def cop_line_ranges(analysis)
