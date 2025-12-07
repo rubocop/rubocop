@@ -26,17 +26,17 @@ module RuboCop
       #
       #   [source,ruby]
       #   ----
-      #     class MyString < String; end
-      #     strings = [MyString.new('test'), 'test']
-      #     strings.sort.last.class   #=> String
-      #     strings.max.class         #=> MyString
+      #   class MyString < String; end
+      #   strings = [MyString.new('test'), 'test']
+      #   strings.sort.last.class #=> String
+      #   strings.max.class       #=> MyString
       #   ----
       #
       #   [source,ruby]
       #   ----
-      #     words = %w(dog horse mouse)
-      #     words.sort_by { |word| word.length }.last   #=> 'mouse'
-      #     words.max_by { |word| word.length }         #=> 'horse'
+      #   words = %w(dog horse mouse)
+      #   words.sort_by { |word| word.length }.last #=> 'mouse'
+      #   words.max_by { |word| word.length }       #=> 'horse'
       #   ----
       #
       # @example
