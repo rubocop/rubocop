@@ -15,6 +15,41 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     RUBY
   end
 
+  it 'registers an offense when code that immediately follows `rbs_inline: enabled` comment' do
+    expect_offense(<<~RUBY)
+      # rbs_inline: enabled
+      class Foo; end
+      ^ Add an empty line after magic comments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rbs_inline: enabled
+
+      class Foo; end
+    RUBY
+  end
+
+  it 'registers an offense when code that immediately follows `rbs_inline: disabled` comment' do
+    expect_offense(<<~RUBY)
+      # rbs_inline: disabled
+      class Foo; end
+      ^ Add an empty line after magic comments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # rbs_inline: disabled
+
+      class Foo; end
+    RUBY
+  end
+
+  it 'does not register an offense when code that immediately follows `rbs_inline: invalid_value` comment' do
+    expect_no_offenses(<<~RUBY)
+      # rbs_inline: invalid_value
+      class Foo; end
+    RUBY
+  end
+
   it 'registers an offense when code that immediately follows typed comment' do
     expect_offense(<<~RUBY)
       # typed: true
@@ -80,6 +115,38 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
 
     expect_no_offenses(<<~RUBY)
       # shareable_constant_value: experimental_everything
+      # frozen_string_literal: true
+
+      class Foo; end
+    RUBY
+  end
+
+  it 'accepts magic comment with `rbs_inline: enabled`' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+      # rbs_inline: enabled
+
+      class Foo; end
+    RUBY
+
+    expect_no_offenses(<<~RUBY)
+      # rbs_inline: enabled
+      # frozen_string_literal: true
+
+      class Foo; end
+    RUBY
+  end
+
+  it 'accepts magic comment with `rbs_inline: disabled`' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+      # rbs_inline: disabled
+
+      class Foo; end
+    RUBY
+
+    expect_no_offenses(<<~RUBY)
+      # rbs_inline: disabled
       # frozen_string_literal: true
 
       class Foo; end
