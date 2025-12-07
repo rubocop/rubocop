@@ -214,6 +214,28 @@ RSpec.describe RuboCop::MagicComment do
     end
   end
 
+  describe '#valid_rbs_inline_value?' do
+    subject { described_class.parse(comment).valid_rbs_inline_value? }
+
+    context 'when given comment specified as `enabled`' do
+      let(:comment) { '# rbs_inline: enabled' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when given comment specified as `disabled`' do
+      let(:comment) { '# rbs_inline: disabled' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when given comment specified as an invalid value`' do
+      let(:comment) { '# rbs_inline: invalid' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#valid_shareable_constant_value?' do
     subject { described_class.parse(comment).valid_shareable_constant_value? }
 

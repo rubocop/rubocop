@@ -11,6 +11,7 @@ module RuboCop
     KEYWORDS = {
       encoding: '(?:en)?coding',
       frozen_string_literal: 'frozen[_-]string[_-]literal',
+      rbs_inline: 'rbs_inline',
       shareable_constant_value: 'shareable[_-]constant[_-]value',
       typed: 'typed'
     }.freeze
@@ -36,6 +37,7 @@ module RuboCop
     def any?
       frozen_string_literal_specified? ||
         encoding_specified? ||
+        rbs_inline_specified? ||
         shareable_constant_value_specified? ||
         typed_specified?
     end
@@ -58,6 +60,10 @@ module RuboCop
 
     def valid_literal_value?
       [true, false].include?(frozen_string_literal)
+    end
+
+    def valid_rbs_inline_value?
+      %w[enabled disabled].include?(extract_rbs_inline_value)
     end
 
     def valid_shareable_constant_value?
@@ -103,6 +109,10 @@ module RuboCop
 
     def encoding_specified?
       specified?(encoding)
+    end
+
+    def rbs_inline_specified?
+      valid_rbs_inline_value?
     end
 
     # Was the Sorbet `typed` sigil specified?
@@ -203,6 +213,9 @@ module RuboCop
         match(KEYWORDS[:frozen_string_literal])
       end
 
+      # Emacs comments cannot specify RBS::inline behavior.
+      def extract_rbs_inline_value; end
+
       def extract_shareable_constant_value
         match(KEYWORDS[:shareable_constant_value])
       end
@@ -241,6 +254,9 @@ module RuboCop
 
       # Vim comments cannot specify frozen string literal behavior.
       def frozen_string_literal; end
+
+      # Vim comments cannot specify RBS::inline behavior.
+      def extract_rbs_inline_value; end
 
       # Vim comments cannot specify shareable constant values behavior.
       def shareable_constant_value; end
@@ -294,6 +310,10 @@ module RuboCop
       # @see https://github.com/ruby/ruby/blob/78b95b49f8/parse.y#L7134-L7138
       def extract_frozen_string_literal
         extract(/\A\s*#\s*#{KEYWORDS[:frozen_string_literal]}:\s*#{TOKEN}\s*\z/io)
+      end
+
+      def extract_rbs_inline_value
+        extract(/\A\s*#\s*#{KEYWORDS[:rbs_inline]}:\s*#{TOKEN}\s*\z/io)
       end
 
       def extract_shareable_constant_value
