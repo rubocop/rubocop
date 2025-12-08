@@ -4741,6 +4741,11 @@ Style/ModuleFunction:
   Autocorrect: false
   SafeAutoCorrect: false
 
+Style/ModuleMemberExistenceCheck:
+  Description: 'Checks for usage of `Module` methods returning arrays that can be replaced with equivalent predicates.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'
   StyleGuide: '#single-line-blocks'
