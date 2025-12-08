@@ -90,7 +90,7 @@ module RuboCop
             check_if(node)
           when :case, :case_match
             check_case(node)
-          when :def
+          when :def, :defs
             register_redefinition(node)
             false
           else

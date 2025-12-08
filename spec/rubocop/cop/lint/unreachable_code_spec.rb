@@ -268,6 +268,38 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
       RUBY
     end
 
+    it "registers an offense for `self.#{t}` with nested redefinition" do
+      expect_offense <<~RUBY
+        def foo
+          def self.#{t}; end
+        end
+
+        #{t}
+        bar
+        ^^^ Unreachable code detected.
+      RUBY
+    end
+
+    it "accepts `self.#{t}` if redefined" do
+      expect_no_offenses(wrap(<<~RUBY))
+        def self.#{t}; end
+        #{t}
+        bar
+      RUBY
+    end
+
+    it "accepts `self.#{t}` if redefined even if it's called recursively" do
+      expect_no_offenses(wrap(<<~RUBY))
+        def self.#{t}
+          #{t}
+          bar
+        end
+
+        #{t}
+        bar
+      RUBY
+    end
+
     it "accepts `#{t}` if called in `instance_eval`" do
       expect_no_offenses <<~RUBY
         class Dummy
