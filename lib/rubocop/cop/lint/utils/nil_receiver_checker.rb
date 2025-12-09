@@ -31,7 +31,7 @@ module RuboCop
             @checked_nodes[node] = true
 
             case node.type
-            when :def, :class, :module, :sclass
+            when :def, :defs, :class, :module, :sclass
               return false
             when :send
               return non_nil_method?(node.method_name) if node.receiver == receiver
