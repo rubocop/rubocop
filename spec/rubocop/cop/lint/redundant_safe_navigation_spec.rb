@@ -662,11 +662,21 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
       RUBY
     end
 
-    it 'ignores offenses outside of the scope' do
+    it 'ignores offenses outside of the method definition scope' do
       expect_no_offenses(<<~RUBY)
         foo.bar
 
         def x
+          foo&.bar
+        end
+      RUBY
+    end
+
+    it 'ignores offenses outside of the singleton method definition scope' do
+      expect_no_offenses(<<~RUBY)
+        foo.bar
+
+        def self.x
           foo&.bar
         end
       RUBY
