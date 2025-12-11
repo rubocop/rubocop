@@ -264,6 +264,27 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
     end
   end
 
+  context 'rescue with self class' do
+    it 'registers an offense when rescue used with class' do
+      expect_offense(<<~RUBY)
+        class << self
+          something
+            rescue
+            ^^^^^^ `rescue` at 3, 4 is not aligned with `class << self` at 1, 0.
+            error
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class << self
+          something
+        rescue
+            error
+        end
+      RUBY
+    end
+  end
+
   context 'ensure with begin' do
     it 'registers an offense when ensure used with begin' do
       expect_offense(<<~RUBY)
@@ -361,6 +382,27 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
 
       expect_correction(<<~RUBY)
         module M
+          something
+        ensure
+            error
+        end
+      RUBY
+    end
+  end
+
+  context 'ensure with self class' do
+    it 'registers an offense when ensure used with self class' do
+      expect_offense(<<~RUBY)
+        class << self
+          something
+            ensure
+            ^^^^^^ `ensure` at 3, 4 is not aligned with `class << self` at 1, 0.
+            error
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class << self
           something
         ensure
             error
