@@ -93,4 +93,69 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       end
     end
   end
+
+  context 'with DisallowedCops' do
+    let(:cop_config) { { 'DisallowedCops' => ['Lint/Debugger', 'Security/Eval'] } }
+
+    context 'when a disallowed cop is disabled' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def foo # rubocop:disable Lint/Debugger
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives for `Lint/Debugger` are not permitted.
+            debugger
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo#{trailing_whitespace}
+            debugger
+          end
+        RUBY
+      end
+    end
+
+    context 'when a non-disallowed cop is disabled' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo # rubocop:disable Metrics/AbcSize
+          end
+        RUBY
+      end
+    end
+
+    context 'when disabling all cops' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo # rubocop:disable all
+          end
+        RUBY
+      end
+    end
+
+    context 'when a mix of cops are disabled' do
+      it 'registers an offense only for the disallowed cops and corrects' do
+        expect_offense(<<~RUBY)
+          def foo # rubocop:disable Metrics/AbcSize, Lint/Debugger, Metrics/CyclomaticComplexity, Security/Eval
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives for `Lint/Debugger`, `Security/Eval` are not permitted.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+          end
+        RUBY
+      end
+    end
+
+    context 'when using leading source comment' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          # comment
+
+          class Foo
+          end
+        RUBY
+      end
+    end
+  end
 end

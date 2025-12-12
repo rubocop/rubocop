@@ -1,0 +1,1 @@
+* [#14598](https://github.com/rubocop/rubocop/issues/14598): Add `DisallowedCops` configuration option to `Style/DisableCopsWithinSourceCodeDirective` to prevent specific cops from being disabled. ([@corsonknowles][])
