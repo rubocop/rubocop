@@ -172,7 +172,38 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
-          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+          return unless node
+
+          send_node = node.parent
+          return unless send_node
+
+          top_level_send = find_top_level_send(send_node)
+          node_to_correct =
+            if top_level_send != send_node || should_correct_entire_method_call?(top_level_send)
+              top_level_send
+            else
+              node
+            end
+
+          AlignmentCorrector.correct(corrector, processed_source, node_to_correct, column_delta)
+        end
+
+        def find_top_level_send(send_node)
+          top_level_send = send_node
+          while top_level_send.parent&.send_type? &&
+                top_level_send.parent.receiver == top_level_send &&
+                top_level_send.parent.loc.dot
+            top_level_send = top_level_send.parent
+          end
+          top_level_send
+        end
+
+        def should_correct_entire_method_call?(send_node)
+          return false unless style == :special_for_inner_method_call_in_parentheses
+          return false unless special_inner_call_indentation?(send_node)
+
+          closing_paren = send_node.loc.end
+          closing_paren && begins_its_line?(closing_paren)
         end
 
         def bare_operator?(node)

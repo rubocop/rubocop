@@ -441,6 +441,77 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
                                a))
           RUBY
         end
+
+        it 'corrects the entire method call when closing parenthesis is on a separate line' do
+          expect_offense(<<~RUBY)
+            instance_variable_set(
+              "@diagnostics",
+              Diagnostic.where(
+                          'limit >= 10 and limit < 100',
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Indent the first argument one step more than `Diagnostic.where(`.
+                        )
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            instance_variable_set(
+              "@diagnostics",
+              Diagnostic.where(
+                'limit >= 10 and limit < 100',
+              )
+            )
+          RUBY
+        end
+
+        it 'corrects the entire method call with multiple arguments' do
+          expect_offense(<<~RUBY)
+            instance_variable_set(
+              "@diagnostics",
+              Diagnostic.where(
+                    'limit >= ? and limit < ?',
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ Indent the first argument one step more than `Diagnostic.where(`.
+                    LIMITS[:lowest_value], LIMITS[:highest_value]
+                  )
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            instance_variable_set(
+              "@diagnostics",
+              Diagnostic.where(
+                'limit >= ? and limit < ?',
+                LIMITS[:lowest_value], LIMITS[:highest_value]
+              )
+            )
+          RUBY
+        end
+
+        it 'corrects the entire method call chain' do
+          expect_offense(<<~RUBY)
+            instance_variable_set(
+              "@diagnostic_ids",
+              Diagnostic.where(
+                    'limit >= ? and limit < ?',
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ Indent the first argument one step more than the start of the previous line.
+                    LIMITS[:lowest_value], LIMITS[:highest_value]
+                  )
+                  .where(id: 1)
+                  .ids,
+            )
+          RUBY
+
+          expect_correction(<<~RUBY)
+            instance_variable_set(
+              "@diagnostic_ids",
+              Diagnostic.where(
+                'limit >= ? and limit < ?',
+                LIMITS[:lowest_value], LIMITS[:highest_value]
+              )
+              .where(id: 1)
+              .ids,
+            )
+          RUBY
+        end
       end
 
       context 'without outer parentheses' do
