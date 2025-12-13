@@ -908,6 +908,99 @@ class Ingredient
 end
 ----
 
+== Scoped disabling with push/pop directives
+
+When you want to temporarily change cop settings for a specific section of code
+and then automatically restore the previous state, you can use `rubocop:push` and
+`rubocop:pop` directives. This is particularly useful when you need to disable
+cops for a block of code without affecting the rest of the file.
+
+=== Basic push/pop usage
+
+The `push` directive saves the current state of all cop settings, and `pop`
+restores them:
+
+[source,ruby]
+----
+def process_data(input)
+  result = input.upcase
+  # rubocop:push
+  # rubocop:disable Style/GuardClause
+  if result.present?
+    return result.strip
+  end
+  # rubocop:pop
+  nil
+end
+----
+
+After `pop`, the `Style/GuardClause` cop is automatically re-enabled, returning
+to its state before `push`.
+
+=== Inline push arguments
+
+For convenience, you can combine `push` with enable/disable operations using
+inline arguments. Use `-` to disable a cop and `+` to enable a cop:
+
+[source,ruby]
+----
+def process_data(input)
+  result = input.upcase
+  # rubocop:push -Style/GuardClause
+  if result.present?
+    return result.strip
+  end
+  # rubocop:pop
+  nil
+end
+----
+
+You can specify multiple cops with different operations:
+
+[source,ruby]
+----
+# rubocop:disable Style/For
+for x in [1, 2, 3]
+  puts x
+end
+# rubocop:push +Style/For -Style/GuardClause
+for y in [4, 5, 6]  # Style/For is re-enabled here
+  if y > 0
+    return y        # Style/GuardClause is disabled here
+  end
+end
+# rubocop:pop
+# Back to original state: Style/For disabled, Style/GuardClause enabled
+----
+
+=== Nested push/pop
+
+Push/pop directives can be nested for complex scenarios:
+
+[source,ruby]
+----
+# rubocop:disable Metrics/MethodLength
+def complex_method
+  step1
+  # rubocop:push
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:disable Style/GuardClause
+  def helper_method
+    # rubocop:push
+    # rubocop:enable Style/GuardClause
+    if condition
+      return value
+    end
+    # rubocop:pop
+    other_code
+  end
+  # rubocop:pop
+  step2
+end
+----
+
+Each `pop` restores the state to what it was at the corresponding `push`.
+
 == Setting the style guide URL
 
 You can specify the base URL of the style guide using `StyleGuideBaseURL`.
