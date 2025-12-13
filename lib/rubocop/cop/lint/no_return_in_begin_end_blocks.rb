@@ -45,6 +45,10 @@ module RuboCop
             end
           end
         end
+        alias on_ivasgn on_lvasgn
+        alias on_cvasgn on_lvasgn
+        alias on_gvasgn on_lvasgn
+        alias on_casgn on_lvasgn
         alias on_or_asgn on_lvasgn
         alias on_op_asgn on_lvasgn
       end
