@@ -3967,6 +3967,15 @@ Style/EmptyCaseCondition:
   Enabled: true
   VersionAdded: '0.40'
 
+Style/EmptyClassDefinition:
+  Description: 'Enforces consistent style for empty class definitions.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  EnforcedStyle: class_definition
+  SupportedStyles:
+    - class_definition
+    - class_new
+
 Style/EmptyElse:
   Description: 'Avoid empty else-clauses.'
   Enabled: true
