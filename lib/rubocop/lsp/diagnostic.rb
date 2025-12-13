@@ -45,11 +45,11 @@ module RuboCop
           range: LanguageServer::Protocol::Interface::Range.new(
             start: LanguageServer::Protocol::Interface::Position.new(
               line: @offense.line - 1,
-              character: highlighted.begin_pos
+              character: to_position_character(highlighted.begin_pos)
             ),
             end: LanguageServer::Protocol::Interface::Position.new(
               line: @offense.line - 1,
-              character: highlighted.end_pos
+              character: to_position_character(highlighted.end_pos)
             )
           ),
           data: {
@@ -107,11 +107,11 @@ module RuboCop
             range: LanguageServer::Protocol::Interface::Range.new(
               start: LanguageServer::Protocol::Interface::Position.new(
                 line: range.line - 1,
-                character: range.column
+                character: to_position_character(range.column)
               ),
               end: LanguageServer::Protocol::Interface::Position.new(
                 line: range.last_line - 1,
-                character: range.last_column
+                character: to_position_character(range.last_column)
               )
             ),
             new_text: replacement
@@ -149,7 +149,7 @@ module RuboCop
 
         eol = LanguageServer::Protocol::Interface::Position.new(
           line: @offense.line - 1,
-          character: length_of_line(@offense.source_line)
+          character: to_position_character(@offense.source_line.length)
         )
 
         # TODO: fails for multiline strings - may be preferable to use block
@@ -162,16 +162,12 @@ module RuboCop
         [inline_comment]
       end
 
-      def length_of_line(line)
-        if @document_encoding == Encoding::UTF_16LE
-          line_length = 0
-          line.codepoints.each do |codepoint|
-            line_length += 1
-            line_length += 1 if codepoint > RubyLsp::Document::Scanner::SURROGATE_PAIR_START
-          end
-          line_length
+      def to_position_character(utf8_index)
+        str = @offense.source_line[0, utf8_index]
+        if @document_encoding == Encoding::UTF_16LE || @document_encoding.nil?
+          str.length + str.b.count("\xf0-\xff".b)
         else
-          line.length
+          str.length
         end
       end
 
