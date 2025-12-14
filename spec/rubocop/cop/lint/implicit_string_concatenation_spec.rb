@@ -120,7 +120,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitStringConcatenation, :config do
 
   context 'on a string with interpolations' do
     it 'does register an offense' do
-      expect_no_offenses("array = [\"abc\#{something}def\#{something_else}\"]")
+      expect_no_offenses(%q(array = ["abc\#{something}def\#{something_else}"]))
     end
   end
 

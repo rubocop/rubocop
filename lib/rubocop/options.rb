@@ -621,7 +621,7 @@ module RuboCop
                                          'autocorrected source. This is especially useful',
                                          'when combined with --autocorrect and --stdin.'],
       list_target_files:                'List all files RuboCop will inspect.',
-      autocorrect:                      'Autocorrect offenses (only when it\'s safe).',
+      autocorrect:                      "Autocorrect offenses (only when it's safe).",
       auto_correct:                     '(same, deprecated)',
       safe_auto_correct:                '(same, deprecated)',
       autocorrect_all:                  'Autocorrect offenses (safe and unsafe).',

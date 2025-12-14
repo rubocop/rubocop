@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEndWith, :config do
       RUBY
     end
 
-    it 'registers offense if argument for Symbol#end_with? is \'?\'' do
+    it "registers offense if argument for Symbol#end_with? is '?'" do
       expect_offense(<<~RUBY)
         node.method_name.end_with?('?')
              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `predicate_method?` instead of `method_name.end_with?('?')`.
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEndWith, :config do
       RUBY
     end
 
-    it 'registers offense if argument for Symbol#end_with? is \'?\' with safe navigation operator' do
+    it "registers offense if argument for Symbol#end_with? is '?' with safe navigation operator" do
       expect_offense(<<~RUBY)
         node.method_name&.end_with?('?')
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `predicate_method?` instead of `method_name&.end_with?('?')`.
@@ -110,7 +110,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEndWith, :config do
       RUBY
     end
 
-    it 'registers offense if argument for Symbol#end_with? is \'!\'' do
+    it "registers offense if argument for Symbol#end_with? is '!'" do
       expect_offense(<<~RUBY)
         node.method_name.end_with?('!')
              ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name.end_with?('!')`.
@@ -121,7 +121,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::MethodNameEndWith, :config do
       RUBY
     end
 
-    it 'registers offense if argument for Symbol#end_with? is \'!\' with safe navigation operator' do
+    it "registers offense if argument for Symbol#end_with? is '!' with safe navigation operator" do
       expect_offense(<<~RUBY)
         node.method_name&.end_with?('!')
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `bang_method?` instead of `method_name&.end_with?('!')`.
