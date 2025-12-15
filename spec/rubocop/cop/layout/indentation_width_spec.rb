@@ -1659,6 +1659,53 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
     end
+
+    context 'with method chain blocks' do
+      it 'registers an offense for bad indentation in chained block' do
+        expect_offense(<<~RUBY)
+          foo
+            .bar do |x|
+            x
+            ^{} Use 2 (not 0) spaces for indentation.
+          end
+        RUBY
+      end
+
+      it 'accepts correct indentation in chained block' do
+        expect_no_offenses(<<~RUBY)
+          foo
+            .bar do |x|
+              x
+            end
+        RUBY
+      end
+
+      it 'accepts correct indentation for block without method chain' do
+        expect_no_offenses(<<~RUBY)
+          foo bar do
+            baz
+          end
+        RUBY
+      end
+
+      it 'accepts correct indentation when dot is on the same line as receiver' do
+        expect_no_offenses(<<~RUBY)
+          foo.bar do |x|
+            x
+          end
+        RUBY
+      end
+
+      it 'does not raise error for block without dot (e.g., super)' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            super do |x|
+              x
+            end
+          end
+        RUBY
+      end
+    end
   end
 
   it 'does not register an offense for blocks with a very large offset' do

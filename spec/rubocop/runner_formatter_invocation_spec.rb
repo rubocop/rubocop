@@ -27,8 +27,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     describe 'invocation order' do
       let(:formatter) do
         formatter = instance_spy(RuboCop::Formatter::BaseFormatter)
-        %i[started file_started file_finished finished output]
-          .each do |message|
+        %i[started file_started file_finished finished output].each do |message|
           allow(formatter).to receive(message) do
             puts message unless message == :output
           end

@@ -477,8 +477,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
     end
 
     it 'registers an offense for a non-empty block with multiple unused args' do
-      (arg1_message, arg2_message, others_message) = %w[arg1 arg2 others]
-                                                     .map do |arg|
+      (arg1_msg, arg2_msg, others_msg) = %w[arg1 arg2 others].map do |arg|
         "Unused block argument - `#{arg}`. If it's necessary, use `_` or " \
           "`_#{arg}` as an argument name to indicate that it won't be used. " \
           'Also consider using a proc without arguments instead of a lambda ' \
@@ -487,9 +486,9 @@ RSpec.describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
       expect_offense(<<~RUBY)
         ->(arg1, arg2, *others) { 1 }
-                        ^^^^^^ #{others_message}
-                 ^^^^ #{arg2_message}
-           ^^^^ #{arg1_message}
+                        ^^^^^^ #{others_msg}
+                 ^^^^ #{arg2_msg}
+           ^^^^ #{arg1_msg}
       RUBY
 
       expect_correction(<<~RUBY)
