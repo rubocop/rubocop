@@ -75,6 +75,11 @@ module RuboCop
             new_argument.gsub!('\"', '"')
             quote = "'"
           elsif new_argument.include?("\\'")
+            # Add a backslash before single quotes preceded by an even number of backslashes.
+            # An even number (including zero) of backslashes before a quote means the quote itself
+            # is not escaped.
+            # Otherwise an odd number means the quote is already escaped so this doesn't touch it.
+            new_argument.gsub!(/(?<!\\)((?:\\\\)*)'/) { "#{::Regexp.last_match(1)}\\'" }
             quote = "'"
           elsif new_argument.include?('\'')
             new_argument.gsub!("'", "\\\\'")

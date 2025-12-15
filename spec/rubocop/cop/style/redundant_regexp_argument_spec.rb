@@ -69,6 +69,52 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpArgument, :config do
     RUBY
   end
 
+  context 'single quote with escape character(s)' do
+    it 'registers an offense and corrects when using single backslash and single quote' do
+      expect_offense(<<~'RUBY')
+        str.gsub!(/\\'/, "'")
+                  ^^^^^ Use string `'\\\''` as argument instead of regexp `/\\'/`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        str.gsub!('\\\'', "'")
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using single backslash and escaped single quote' do
+      expect_offense(<<~'RUBY')
+        str.gsub!(/\\\'/, "'")
+                  ^^^^^^ Use string `'\\\''` as argument instead of regexp `/\\\'/`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        str.gsub!('\\\'', "'")
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using double backslash and single quote' do
+      expect_offense(<<~'RUBY')
+        str.gsub!(/\\\\'/, "'")
+                  ^^^^^^^ Use string `'\\\\\''` as argument instead of regexp `/\\\\'/`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        str.gsub!('\\\\\'', "'")
+      RUBY
+    end
+
+    it 'registers an offense and corrects when using double backslash and escaped single quote' do
+      expect_offense(<<~'RUBY')
+        str.gsub!(/\\\\\'/, "'")
+                  ^^^^^^^^ Use string `'\\\\\''` as argument instead of regexp `/\\\\\'/`.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        str.gsub!('\\\\\'', "'")
+      RUBY
+    end
+  end
+
   it 'registers an offense and corrects when using escaped double quote character' do
     expect_offense(<<~'RUBY')
       str.gsub(/\"/)
