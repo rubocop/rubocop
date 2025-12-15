@@ -306,7 +306,22 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
-      it 'registers an offense and corrects when the branches contains assignment' do
+      it 'registers an offense and corrects when the branches contains local variable assignment' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            value = foo
+          else
+            value = 'bar'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          value = foo || 'bar'
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains instance variable assignment' do
         expect_offense(<<~RUBY)
           if foo
           ^^^^^^ Use double pipes `||` instead.
@@ -318,6 +333,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
 
         expect_correction(<<~RUBY)
           @value = foo || 'bar'
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains class variable assignment' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            @@value = foo
+          else
+            @@value = 'bar'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          @@value = foo || 'bar'
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the branches contains global variable assignment' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            $value = foo
+          else
+            $value = 'bar'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          $value = foo || 'bar'
         RUBY
       end
 
