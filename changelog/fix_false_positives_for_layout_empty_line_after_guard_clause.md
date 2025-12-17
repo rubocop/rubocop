@@ -1,0 +1,1 @@
+* [#14715](https://github.com/rubocop/rubocop/pull/14715): Fix false positives for `Layout/EmptyLineAfterGuardClause` when a guard clause follows a multiline heredoc in a parenthesized method call. ([@koic][])
