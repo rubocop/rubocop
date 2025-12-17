@@ -414,7 +414,7 @@ def foo = (true if bar)
 [#references-styleambiguousendlessmethoddefinition]
 === References
 
-* https://rubystyle.guide#ambiguous-endless-method-defintions
+* https://rubystyle.guide#ambiguous-endless-method-definitions
 
 [#styleandor]
 == Style/AndOr
@@ -1602,8 +1602,17 @@ things.map { |thing|
 | 0.89
 |===
 
+Checks for uses of the case equality operator (`===`).
+
+If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
+the case equality operator is a constant.
+
 If `AllowOnSelfClass` option is enabled, the cop will ignore violations when the receiver of
 the case equality operator is `self.class`. Note intermediate variables are not accepted.
+
+NOTE: Regexp case equality (`/regexp/ === var`) is allowed because changing it to
+`/regexp/.match?(var)` needs to take into account `Regexp.last_match?`, `$~`, `$1`, etc.
+This potentially incompatible transformation is handled by `Performance/RegexpMatch` cop.
 
 [#examples-stylecaseequality]
 === Examples
@@ -1612,12 +1621,9 @@ the case equality operator is `self.class`. Note intermediate variables are not 
 ----
 # bad
 (1..100) === 7
-/something/ === some_string
 
 # good
-something.is_a?(Array)
 (1..100).include?(7)
-/something/.match?(some_string)
 ----
 
 [#allowonconstant_-false-_default_-stylecaseequality]
@@ -1627,6 +1633,9 @@ something.is_a?(Array)
 ----
 # bad
 Array === something
+
+# good
+something.is_a?(Array)
 ----
 
 [#allowonconstant_-true-stylecaseequality]
@@ -1636,6 +1645,7 @@ Array === something
 ----
 # good
 Array === something
+something.is_a?(Array)
 ----
 
 [#allowonselfclass_-false-_default_-stylecaseequality]
@@ -1675,6 +1685,7 @@ self.class === something
 === References
 
 * https://rubystyle.guide#no-case-equality
+* https://docs.rubocop.org/rubocop-performance/cops_performance.html#performanceregexpmatch
 
 [#stylecaselikeif]
 == Style/CaseLikeIf
@@ -1846,30 +1857,6 @@ outer parent is a module or a class. Moving from `nested` to `compact` requires
 verification that the outer parent is defined elsewhere. RuboCop does not
 have the knowledge to perform either operation safely and thus requires
 manual oversight.
-
-NOTE: When using `nested` style, this cop does not register an offense for
-compact style definitions inside another class or module (e.g., `class Foo::Bar`
-inside `module Baz`), because autocorrection would change semantics:
-
-[source,ruby]
-----
-module Baz
-  class Foo::Bar  # References top-level ::Foo, not Baz::Foo
-  end
-end
-----
-
-If this were autocorrected to nested style, it would become:
-
-[source,ruby]
-----
-module Baz
-  class Foo       # Creates Baz::Foo, not ::Foo
-    class Bar
-    end
-  end
-end
-----
 
 [#examples-styleclassandmodulechildren]
 === Examples
@@ -3362,12 +3349,12 @@ end
 ----
 # bad
 class Foo
-  MyClass = Struct.new()
+  MyClass = Struct.new
 end
 
 # good
 class Foo
-  MyClass = Struct.new()
+  MyClass = Struct.new
   public_constant :MyClass
 end
 ----
@@ -3379,7 +3366,7 @@ end
 ----
 # good
 class Foo
-  MyClass = Struct.new()
+  MyClass = Struct.new
 end
 ----
 
@@ -6648,17 +6635,6 @@ raise 'exception' if something
 ok
 
 # bad
-if something
-  foo || raise('exception')
-else
-  ok
-end
-
-# good
-foo || raise('exception') if something
-ok
-
-# bad
 define_method(:test) do
   if something
     work
@@ -9252,17 +9228,20 @@ method calls containing arguments.
 In the default style (require_parentheses), macro methods are allowed.
 Additional methods can be added to the `AllowedMethods` or
 `AllowedPatterns` list. These options are valid only in the default
-style. Macros can be included by either setting `IgnoreMacros` to false
-or adding specific macros to the `IncludedMacros` list.
+style. Macros can be included by either setting `IgnoreMacros` to false,
+adding specific macros to the `IncludedMacros` list, or using
+`IncludedMacroPatterns` for pattern-based matching.
 
 Precedence of options is as follows:
 
 1. `AllowedMethods`
 2. `AllowedPatterns`
 3. `IncludedMacros`
+4. `IncludedMacroPatterns`
 
-If a method is listed in both `IncludedMacros` and `AllowedMethods`,
-then the latter takes precedence (that is, the method is allowed).
+If a method is listed in both `IncludedMacros`/`IncludedMacroPatterns`
+and `AllowedMethods`, then the latter takes precedence (that is, the
+method is allowed).
 
 In the alternative style (omit_parentheses), there are three additional
 options.
@@ -9418,6 +9397,20 @@ assert_match(/foo/, bar)
 array.delete(e)
 ----
 
+[#includedmacropatterns_-___assert__-__refute__-stylemethodcallwithargsparentheses]
+==== IncludedMacroPatterns: ["^assert", "^refute"]
+
+[source,ruby]
+----
+# bad
+assert_equal 'test', x
+refute_nil value
+
+# good
+assert_equal('test', x)
+refute_nil(value)
+----
+
 [#allowparenthesesinmultilinecall_-false-_default_-stylemethodcallwithargsparentheses]
 ==== AllowParenthesesInMultilineCall: false (default)
 
@@ -9539,6 +9532,10 @@ Array 1
 | Array
 
 | IncludedMacros
+| `[]`
+| Array
+
+| IncludedMacroPatterns
 | `[]`
 | Array
 
@@ -10374,6 +10371,47 @@ end
 === References
 
 * https://rubystyle.guide#module-function
+
+[#stylemodulememberexistencecheck]
+== Style/ModuleMemberExistenceCheck
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.82
+| -
+|===
+
+Checks for usage of `Module` methods returning arrays that can be replaced
+with equivalent predicates.
+
+Calling a method returning an array then checking if an element is inside
+it is much slower than using an equivalent predicate method. For example,
+`instance_methods.include?` will return an array of all public and protected
+instance methods in the module, then check if a given method is inside that
+array, while `method_defined?` will do direct method lookup, which is much
+faster and consumes less memory.
+
+[#examples-stylemodulememberexistencecheck]
+=== Examples
+
+[source,ruby]
+----
+# bad
+Array.instance_methods.include?(:size)
+Array.instance_methods.member?(:size)
+Array.instance_methods(true).include?(:size)
+
+Array.instance_methods(false).include?(:find)
+
+# good
+Array.method_defined?(:size)
+
+Array.method_defined?(:find, false)
+----
 
 [#stylemultilineblockchain]
 == Style/MultilineBlockChain
@@ -12681,7 +12719,7 @@ a, b, c = [1, 2, 3]
 
 # good
 one, two = *foo
-a, b = foo()
+a, b = foo
 a, b = b, a
 
 a = 1
@@ -13308,6 +13346,7 @@ array.join('')
 array.sum(0)
 exit(true)
 exit!(false)
+string.to_i(10)
 string.split(" ")
 "first\nsecond".split(" ")
 string.chomp("\n")
@@ -13320,6 +13359,7 @@ array.join
 array.sum
 exit
 exit!
+string.to_i
 string.split
 "first second".split
 string.chomp
@@ -13334,7 +13374,7 @@ A.foo
 | Name | Default value | Configurable values
 
 | Methods
-| `{"join" => "", "sum" => 0, "exit" => true, "exit!" => false, "split" => " ", "chomp" => "\n", "chomp!" => "\n"}`
+| `{"join" => "", "sum" => 0, "exit" => true, "exit!" => false, "to_i" => 10, "split" => " ", "chomp" => "\n", "chomp!" => "\n"}`
 | 
 |===
 
@@ -15061,17 +15101,17 @@ For example:
 
 [source,ruby]
 ----
-  class MyString < String; end
-  strings = [MyString.new('test'), 'test']
-  strings.sort.last.class   #=> String
-  strings.max.class         #=> MyString
+class MyString < String; end
+strings = [MyString.new('test'), 'test']
+strings.sort.last.class #=> String
+strings.max.class       #=> MyString
 ----
 
 [source,ruby]
 ----
-  words = %w(dog horse mouse)
-  words.sort_by { |word| word.length }.last   #=> 'mouse'
-  words.max_by { |word| word.length }         #=> 'horse'
+words = %w(dog horse mouse)
+words.sort_by { |word| word.length }.last #=> 'mouse'
+words.max_by { |word| word.length }       #=> 'horse'
 ----
 
 [#examples-styleredundantsort]
@@ -18974,18 +19014,18 @@ Checks for extra underscores in variable assignment.
 [source,ruby]
 ----
 # bad
-a, b, _ = foo()
-a, b, _, = foo()
-a, _, _ = foo()
-a, _, _, = foo()
+a, b, _ = foo
+a, b, _, = foo
+a, _, _ = foo
+a, _, _, = foo
 
 # good
-a, b, = foo()
-a, = foo()
-*a, b, _ = foo()
+a, b, = foo
+a, = foo
+*a, b, _ = foo
 # => We need to know to not include 2 variables in a
-a, *b, _ = foo()
-# => The correction `a, *b, = foo()` is a syntax error
+a, *b, _ = foo
+# => The correction `a, *b, = foo` is a syntax error
 ----
 
 [#allownamedunderscorevariables_-true-_default_-styletrailingunderscorevariable]
@@ -18994,7 +19034,7 @@ a, *b, _ = foo()
 [source,ruby]
 ----
 # good
-a, b, _something = foo()
+a, b, _something = foo
 ----
 
 [#allownamedunderscorevariables_-false-styletrailingunderscorevariable]
@@ -19003,7 +19043,7 @@ a, b, _something = foo()
 [source,ruby]
 ----
 # bad
-a, b, _something = foo()
+a, b, _something = foo
 ----
 
 [#configurable-attributes-styletrailingunderscorevariable]

@@ -543,6 +543,7 @@ In the following section you find all available cops:
 * xref:cops_style.adoc#stylemixingrouping[Style/MixinGrouping]
 * xref:cops_style.adoc#stylemixinusage[Style/MixinUsage]
 * xref:cops_style.adoc#stylemodulefunction[Style/ModuleFunction]
+* xref:cops_style.adoc#stylemodulememberexistencecheck[Style/ModuleMemberExistenceCheck]
 * xref:cops_style.adoc#stylemultilineblockchain[Style/MultilineBlockChain]
 * xref:cops_style.adoc#stylemultilineifmodifier[Style/MultilineIfModifier]
 * xref:cops_style.adoc#stylemultilineifthen[Style/MultilineIfThen]

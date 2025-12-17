@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.82.0 (2025-12-17)
+
 ### New features
 
 * [#14655](https://github.com/rubocop/rubocop/issues/14655): Add `AllowRBSInlineAnnotation` option to `Layout/LineLength`. ([@koic][])

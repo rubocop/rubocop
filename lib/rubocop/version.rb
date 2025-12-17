@@ -3,7 +3,7 @@
 module RuboCop
   # This module holds the RuboCop version information.
   module Version
-    STRING = '1.81.7'
+    STRING = '1.82.0'
 
     MSG = '%<version>s (using %<parser_version>s, ' \
           'rubocop-ast %<rubocop_ast_version>s, ' \

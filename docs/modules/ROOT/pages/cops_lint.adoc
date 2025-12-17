@@ -660,6 +660,26 @@ end
 def cook(dry_ingredients = self.dry_ingredients)
   dry_ingredients.combine
 end
+
+# bad
+def foo(pie = pie = pie)
+  pie.heat_up
+end
+
+# good
+def foo(pie)
+  pie.heat_up
+end
+
+# bad
+def foo(pie = cake = pie)
+  [pie, cake].each(&:heat_up)
+end
+
+# good
+def foo(cake = pie)
+  [pie, cake].each(&:heat_up)
+end
 ----
 
 [#lintconstantdefinitioninblock]
@@ -2102,6 +2122,24 @@ if something
   # ...
 elsif do_this
   do_that
+end
+
+# bad
+
+# For single-line conditionals using `then` the layout is disallowed
+# when the `else` body is multiline because it is treated as a lint offense.
+if something then on_the_same_line_as_then
+else first_line
+  second_line
+end
+
+# good
+
+# For single-line conditional using `then` the layout is allowed
+# when `else` body is a single-line because it is treated as intentional.
+
+if something then on_the_same_line_as_then
+else single_line
 end
 ----
 
@@ -5294,7 +5332,8 @@ Below are the features that each `TargetRubyVersion` targets.
   * 2.2+ ... Add `rational` and `complex` above
   * 2.7+ ... Add `ruby2_keywords` above
   * 3.1+ ... Add `fiber` above
-  * 3.2+ ... `set`
+  * 3.2+ ... Add `set` above
+  * 4.0+ ... Add `pathname` above
 
 This cop target those features.
 
@@ -6387,8 +6426,21 @@ obj.attr = obj.attr2
 hash[foo] = hash[foo]
 ----
 
-[#allowrbsinlineannotation_true-lintselfassignment]
-==== AllowRBSInlineAnnotation:true
+[#allowrbsinlineannotation_-false-_default_-lintselfassignment]
+==== AllowRBSInlineAnnotation: false (default)
+
+[source,ruby]
+----
+# bad
+foo = foo #: Integer
+foo, bar = foo, bar #: Integer
+Foo = Foo #: Integer
+hash['foo'] = hash['foo'] #: Integer
+obj.attr = obj.attr #: Integer
+----
+
+[#allowrbsinlineannotation_-true-lintselfassignment]
+==== AllowRBSInlineAnnotation: true
 
 [source,ruby]
 ----
@@ -8661,9 +8713,9 @@ x = x
 
 | Pending
 | Yes
-| No
+| Command-line only (Unsafe)
 | 1.76
-| -
+| 1.82
 |===
 
 Checks for useless OR (`||` and `or`) expressions.
@@ -8671,6 +8723,15 @@ Checks for useless OR (`||` and `or`) expressions.
 Some methods always return a truthy value, even when called
 on `nil` (e.g. `nil.to_i` evaluates to `0`). Therefore, OR expressions
 appended after these methods will never evaluate.
+
+[#safety-lintuselessor]
+=== Safety
+
+As shown in the examples below, there are generally two possible ways to correct the
+offense, but this cop’s autocorrection always chooses the option that preserves the
+current behavior. While this does not change how the code behaves, that option is not
+necessarily the appropriate fix in every situation. For this reason, the autocorrection
+provided by this cop is considered unsafe.
 
 [#examples-lintuselessor]
 === Examples

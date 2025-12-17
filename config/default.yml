@@ -1102,7 +1102,7 @@ Layout/LineLength:
   StyleGuide: '#max-line-length'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.82'
   Max: 120
   AllowHeredoc: true
   # To make it possible to copy or click on URIs in the code, we allow lines
@@ -2675,7 +2675,7 @@ Lint/UselessOr:
   SafeAutoCorrect: false
   AutoCorrect: contextual
   VersionAdded: '1.76'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.82'
 
 Lint/UselessRescue:
   Description: 'Checks for useless `rescue`s.'
@@ -4747,7 +4747,7 @@ Style/ModuleFunction:
 Style/ModuleMemberExistenceCheck:
   Description: 'Checks for usage of `Module` methods returning arrays that can be replaced with equivalent predicates.'
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.82'
 
 Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'

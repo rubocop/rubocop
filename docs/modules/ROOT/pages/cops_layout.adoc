@@ -4901,7 +4901,7 @@ my_hash = {
 | Yes
 | Always
 | 0.25
-| 1.69
+| 1.82
 |===
 
 Checks the length of lines in the source code.
@@ -4990,7 +4990,11 @@ bar: "0000000000", baz: "0000000000"}
 | `http`, `https`
 | Array
 
-| IgnoreCopDirectives
+| AllowRBSInlineAnnotation
+| `false`
+| Boolean
+
+| AllowCopDirectives
 | `true`
 | Boolean
 

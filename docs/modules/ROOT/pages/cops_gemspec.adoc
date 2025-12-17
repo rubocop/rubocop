@@ -763,8 +763,8 @@ end
 | 1.40
 |===
 
-Checks that `RUBY_VERSION` constant is not used in gemspec.
-Using `RUBY_VERSION` is dangerous because value of the
+Checks that `RUBY_VERSION` and `Ruby::VERSION` constants are not used in gemspec.
+Using `RUBY_VERSION` and `Ruby::VERSION` are dangerous because value of the
 constant is determined by `rake release`.
 It's possible to have dependency based on ruby version used
 to execute `rake release` and not user's ruby version.
