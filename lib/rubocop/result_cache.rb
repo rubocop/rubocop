@@ -27,6 +27,7 @@ module RuboCop
     # there's parallel execution and the cache is shared.
     def self.cleanup(config_store, verbose, cache_root_override = nil)
       return if inhibit_cleanup # OPTIMIZE: For faster testing
+      return unless config_store.for_pwd.for_all_cops['MaxFilesInCache']
 
       rubocop_cache_dir = cache_root(config_store, cache_root_override)
       return unless File.exist?(rubocop_cache_dir)
