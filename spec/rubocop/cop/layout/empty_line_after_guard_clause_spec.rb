@@ -521,6 +521,19 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'accepts a guard clause that is after a multiline heredoc with parenthesized method call' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        raise ArgumentError, (<<~END.squish) unless guard
+          A multiline message
+          that will be squished.
+        END
+
+        return_value
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `return` before guard condition with heredoc' do
     expect_no_offenses(<<~RUBY)
       def foo

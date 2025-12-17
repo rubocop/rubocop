@@ -145,8 +145,10 @@ module RuboCop
           next_sibling.if_type? && contains_guard_clause?(next_sibling)
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def last_heredoc_argument(node)
           n = last_heredoc_argument_node(node)
+          n = n.children.first while n.respond_to?(:begin_type?) && n.begin_type?
 
           return n if heredoc?(n)
           return unless n.respond_to?(:arguments)
@@ -158,6 +160,7 @@ module RuboCop
 
           last_heredoc_argument(n.receiver) if n.respond_to?(:receiver)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def last_heredoc_argument_node(node)
           return node unless node.respond_to?(:if_branch)
