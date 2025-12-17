@@ -1,1 +1,0 @@
-* [#10173](https://github.com/rubocop/rubocop/issues/10173): Fix false positives for `Style/TrailingCommaInArguments` when `EnforcedStyleForMultiline` is set to `consistent_comma` and a multiline braced hash argument appears after another argument. ([@koic][])

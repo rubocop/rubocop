@@ -1,1 +1,0 @@
-* [#14688](https://github.com/rubocop/rubocop/pull/14688): Fix false positives for `Layout/EndAlignment` when a conditional assignment is used on the same line and the `end` with a numbered block or `it` block method call is aligned. ([@koic][])

@@ -1,1 +1,0 @@
-* [#14706](https://github.com/rubocop/rubocop/issues/14706): Fix false negatives for `Lint/NoReturnInBeginEndBlocks` when assigning instance variable, class variable, global variable, or constant. ([@koic][])

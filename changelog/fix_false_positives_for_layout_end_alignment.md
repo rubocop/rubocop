@@ -1,1 +1,0 @@
-* [#14667](https://github.com/rubocop/rubocop/issues/14667): Fix false positives for `Layout/EndAlignment` when a conditional assignment is used on the same line and the `end` with a safe navigation method call is aligned. ([@koic][])

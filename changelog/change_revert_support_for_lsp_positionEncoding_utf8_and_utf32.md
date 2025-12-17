@@ -1,1 +1,0 @@
-* [#14492](https://github.com/rubocop/rubocop/issues/14492): Revert #14492, which added support for LSP positionEncoding 'utf-8' and 'utf-32' due to critical performance regression reports. ([@koic][])

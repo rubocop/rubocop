@@ -1,1 +1,0 @@
-* [#14476](https://github.com/rubocop/rubocop/issues/14476): Fix `Style/ClassAndModuleChildren` to skip compact style definitions inside another class or module when `EnforcedStyle: nested`. ([@rscq][])
