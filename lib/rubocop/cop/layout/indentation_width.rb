@@ -83,7 +83,10 @@ module RuboCop
 
           return unless begins_its_line?(end_loc)
 
-          check_indentation(end_loc, node.body)
+          # For blocks where the dot is on a new line, use the dot position as the base.
+          # Otherwise, use the end keyword position as the base.
+          base_loc = dot_on_new_line?(node) ? node.send_node.loc.dot : end_loc
+          check_indentation(base_loc, node.body)
 
           return unless indented_internal_methods_style?
 
@@ -382,6 +385,14 @@ module RuboCop
           return node unless node.parent&.send_type?
 
           leftmost_modifier_of(node.parent)
+        end
+
+        def dot_on_new_line?(node)
+          send_node = node.send_node
+          return false unless send_node.loc?(:dot)
+
+          receiver = send_node.receiver
+          receiver && receiver.last_line < send_node.loc.dot.line
         end
       end
     end
