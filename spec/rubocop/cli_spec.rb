@@ -2044,7 +2044,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           'Error: RuboCop found unknown Ruby version 5.0 in `TargetRubyVersion`'
         )
         expect($stderr.string.strip).to match(
-          /Supported versions: 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, 3.1, 3.2, 3.3, 3.4, 4.0/
+          Regexp.new(<<~MESSAGE.chomp.tr("\n", ' '))
+            Supported versions:
+            2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7,
+            3.0, 3.1, 3.2, 3.3, 3.4,
+            4.0, 4.1
+          MESSAGE
         )
       end
     end
