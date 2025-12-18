@@ -78,6 +78,8 @@ module RuboCop
         end
 
         def line_break_necessary_in_args?(node)
+          return false unless max_line_length
+
           needed_length_for_args(node) > max_line_length
         end
 

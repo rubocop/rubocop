@@ -248,4 +248,22 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
       end
     end
   end
+
+  context 'when `Layout/LineLength` is disabled' do
+    let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => false } } }
+
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        def foo(bar
+        ^^^^^^^^^^^ Avoid multi-line method signatures.
+            )
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(bar)
+        end
+      RUBY
+    end
+  end
 end

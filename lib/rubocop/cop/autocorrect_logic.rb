@@ -90,6 +90,8 @@ module RuboCop
       end
 
       def line_with_eol_comment_too_long?(range)
+        return false unless max_line_length
+
         (range.source_line + eol_comment).length > max_line_length
       end
 

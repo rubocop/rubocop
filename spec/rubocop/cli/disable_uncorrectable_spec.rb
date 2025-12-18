@@ -623,6 +623,55 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
       end
     end
 
+    context 'when `Layout/LineLength` is disabled' do
+      it 'adds comment at EOL or before and after depending on where it fits' do
+        create_file('.rubocop.yml', <<~YAML)
+          Lint/UselessConstantScoping:
+            Enabled: true
+          Style/IpAddresses:
+            Enabled: true
+          Layout/LineLength:
+            Enabled: false
+        YAML
+
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          class Foo # :nodoc:
+            private
+
+            ALLOWED_VALUES = %w[ value1
+                                 value2 ].freeze + [ip('1.2.3.4')]
+
+            def lolol; end
+          end
+        RUBY
+
+        expect(exit_code).to eq(0)
+        expect($stdout.string).to eq(<<~OUTPUT)
+          == example.rb ==
+          W:  6:  3: [Todo] Lint/UselessConstantScoping: Useless private access modifier for constant scope.
+          C:  7: 46: [Todo] Style/IpAddresses: Do not hardcode IP addresses.
+
+          1 file inspected, 2 offenses detected, 2 offenses corrected
+        OUTPUT
+        expect(File.read('example.rb')).to eq(<<~RUBY)
+          # frozen_string_literal: true
+
+          class Foo # :nodoc:
+            private
+
+            # rubocop:todo Lint/UselessConstantScoping
+            ALLOWED_VALUES = %w[ value1
+                                 value2 ].freeze + [ip('1.2.3.4')] # rubocop:todo Style/IpAddresses
+            # rubocop:enable Lint/UselessConstantScoping
+
+            def lolol; end
+          end
+        RUBY
+      end
+    end
+
     context 'when exist offense for Layout/SpaceInsideArrayLiteralBrackets' do
       context 'when `EnforcedStyle: no_space`' do
         it 'does not disable anything for cops that support autocorrect' do
