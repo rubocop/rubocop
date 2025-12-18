@@ -32,47 +32,47 @@ RSpec.describe RuboCop::Cop::Style::InPatternThen, :config do
       RUBY
     end
 
-    it 'registers an offense for `in b | c | d;` (alternative pattern)' do
+    it 'registers an offense for `in 0 | 1 | 2;` (alternative pattern)' do
       expect_offense(<<~RUBY)
         case a
-        in b | c | d; e
-                    ^ Do not use `in b | c | d;`. Use `in b | c | d then` instead.
+        in 0 | 1 | 2; x
+                    ^ Do not use `in 0 | 1 | 2;`. Use `in 0 | 1 | 2 then` instead.
         end
       RUBY
 
       expect_correction(<<~RUBY)
         case a
-        in b | c | d then e
+        in 0 | 1 | 2 then x
         end
       RUBY
     end
 
-    it 'registers an offense for `in b | c | d | e;` (alternative pattern)' do
+    it 'registers an offense for `in 0 | 1 | 2 | 3;` (alternative pattern)' do
       expect_offense(<<~RUBY)
         case a
-        in b | c | d | e; f
-                        ^ Do not use `in b | c | d | e;`. Use `in b | c | d | e then` instead.
+        in 0 | 1 | 2 | 3; x
+                        ^ Do not use `in 0 | 1 | 2 | 3;`. Use `in 0 | 1 | 2 | 3 then` instead.
         end
       RUBY
 
       expect_correction(<<~RUBY)
         case a
-        in b | c | d | e then f
+        in 0 | 1 | 2 | 3 then x
         end
       RUBY
     end
 
-    it 'registers an offense for `in b, c | d;`' do
+    it 'registers an offense for `in 0, 1 | 2;`' do
       expect_offense(<<~RUBY)
         case a
-        in b, c | d; e
-                   ^ Do not use `in b, c | d;`. Use `in b, c | d then` instead.
+        in 0, 1 | 2; x
+                   ^ Do not use `in 0, 1 | 2;`. Use `in 0, 1 | 2 then` instead.
         end
       RUBY
 
       expect_correction(<<~RUBY)
         case a
-        in b, c | d then e
+        in 0, 1 | 2 then x
         end
       RUBY
     end

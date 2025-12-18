@@ -283,15 +283,15 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     it 'registers an offense for alternative pattern matching syntax' do
       expect_offense(<<~RUBY)
         case foo
-        in bar|baz|qux
-                  ^ Surrounding space missing for operator `|`.
+        in 0|1|2
               ^ Surrounding space missing for operator `|`.
+            ^ Surrounding space missing for operator `|`.
         end
       RUBY
 
       expect_correction(<<~RUBY)
         case foo
-        in bar | baz | qux
+        in 0 | 1 | 2
         end
       RUBY
     end
@@ -313,13 +313,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
 
     it 'registers an offense for one-line alternative pattern matching syntax' do
       expect_offense(<<~RUBY)
-        foo in bar|baz|qux
-                      ^ Surrounding space missing for operator `|`.
+        foo in 0|1|2
                   ^ Surrounding space missing for operator `|`.
+                ^ Surrounding space missing for operator `|`.
       RUBY
 
       expect_correction(<<~RUBY)
-        foo in bar | baz | qux
+        foo in 0 | 1 | 2
       RUBY
     end
 

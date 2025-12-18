@@ -47,10 +47,10 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMatchPattern, :config, :ruby27 do
   it 'registers multiple offenses for repeated alternative patterns' do
     expect_offense(<<~RUBY)
       case x
-      in foo | bar
+      in 0 | 1
         first_method
-      in bar | foo
-         ^^^^^^^^^ Duplicate `in` pattern detected.
+      in 1 | 0
+         ^^^^^ Duplicate `in` pattern detected.
         second_method
       end
     RUBY
@@ -59,9 +59,9 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMatchPattern, :config, :ruby27 do
   it 'does not register for not equivalent alternative patterns' do
     expect_no_offenses(<<~RUBY)
       case x
-      in foo | bar | baz
+      in 0 | 1 | 2
         first_method
-      in foo | bar
+      in 3 | 4
         second_method
       end
     RUBY

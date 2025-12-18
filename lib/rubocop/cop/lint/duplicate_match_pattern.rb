@@ -25,17 +25,17 @@ module RuboCop
       #
       #   # bad - repeated alternate patterns with the same conditions don't depend on the order
       #   case x
-      #   in foo | bar
+      #   in 0 | 1
       #     first_method
-      #   in bar | foo
+      #   in 1 | 0
       #     second_method
       #   end
       #
       #   # good
       #   case x
-      #   in foo | bar
+      #   in 0 | 1
       #     first_method
-      #   in bar | baz
+      #   in 2 | 3
       #     second_method
       #   end
       #
