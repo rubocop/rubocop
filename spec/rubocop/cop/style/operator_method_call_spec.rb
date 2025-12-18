@@ -146,13 +146,15 @@ RSpec.describe RuboCop::Cop::Style::OperatorMethodCall, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `foo.!@bar`' do
+  # FIXME: Remove `broken_on: :prism` after https://github.com/ruby/prism/issues/3820 is resolved.
+  it 'does not register an offense when using `foo.!@bar`', broken_on: :prism do
     expect_no_offenses(<<~RUBY)
       foo.!@ bar
     RUBY
   end
 
-  it 'does not register an offense when using `foo.~@bar`' do
+  # FIXME: Remove `broken_on: :prism` after https://github.com/ruby/prism/issues/3820 is resolved.
+  it 'does not register an offense when using `foo.~@bar`', broken_on: :prism do
     expect_no_offenses(<<~RUBY)
       foo.~@ bar
     RUBY
