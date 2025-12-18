@@ -249,6 +249,25 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
         RUBY
       end
     end
+
+    context 'when `Layout/LineLength` is disabled' do
+      let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => false } } }
+
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          <<~#{quote}RUBY2#{quote}
+          something
+          ^^^^^^^^^ Use 2 spaces for indentation in a heredoc.
+          RUBY2
+        RUBY
+
+        expect_correction(<<~RUBY)
+          <<~#{quote}RUBY2#{quote}
+            something
+          RUBY2
+        RUBY
+      end
+    end
   end
 
   context 'when Ruby >= 2.3', :ruby23 do

@@ -75,6 +75,8 @@ module RuboCop
         end
 
         def correction_exceeds_max_line_length?(node)
+          return false unless max_line_length
+
           indentation_width(node) + definition_width(node) > max_line_length
         end
 

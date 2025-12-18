@@ -349,6 +349,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
     RUBY
   end
 
+  context 'when `Layout/LineLength` is disabled' do
+    let(:config) do
+      RuboCop::Config.new('Layout/LineLength' => { 'Enabled' => false })
+    end
+
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        test do
+        |(x, y)|
+        ^^^^^^^^ Block argument expression is not on the same line as the block start.
+          play_with(x, y)
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        test do |(x, y)|
+          play_with(x, y)
+        end
+      RUBY
+    end
+  end
+
   context 'Ruby 2.7', :ruby27 do
     it 'registers an offense and corrects for missing newline in {} block w/o params' do
       expect_offense(<<~RUBY)
