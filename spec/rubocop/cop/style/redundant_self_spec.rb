@@ -436,8 +436,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
       it 'accepts a self receiver with a `match-alt`' do
         expect_no_offenses(<<~RUBY)
           case pattern
-            in [foo] | { x: bar }
-              self.foo + self.bar + foo + bar
+            in _foo | _bar
+              self._foo + self._bar + _foo + _bar
           end
         RUBY
       end
