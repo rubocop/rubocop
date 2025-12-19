@@ -311,6 +311,7 @@ module RuboCop
         def max
           cop_config['Max']
         end
+        alias max_line_length max
 
         def allow_heredoc?
           allowed_heredoc
