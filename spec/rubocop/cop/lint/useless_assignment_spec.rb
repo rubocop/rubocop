@@ -2526,4 +2526,31 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
       end
     end
   end
+
+  context 'when a variable is assigned in loop body and used in loop condition' do
+    it 'does not register an offense when variable is used directly in condition' do
+      expect_no_offenses(<<~RUBY)
+        keep_going = true
+        while keep_going
+          keep_going = false
+          if rand < 0.5
+            keep_going = true
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when variable is used in condition expression' do
+      expect_no_offenses(<<~RUBY)
+        try = 0
+        while try < max_tries
+          try += 1
+          next if weak?
+          try = 0
+        end
+
+        raise(CombinationPoolExhaustedError)
+      RUBY
+    end
+  end
 end

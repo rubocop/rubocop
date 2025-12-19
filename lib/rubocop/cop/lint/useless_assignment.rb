@@ -52,32 +52,39 @@ module RuboCop
           scope.variables.each_value { |variable| check_for_unused_assignments(variable) }
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
         def check_for_unused_assignments(variable)
           return if variable.should_be_unused?
 
           variable.assignments.reverse_each do |assignment|
-            assignment_node = assignment.node
-            next if assignment.used? || part_of_ignored_node?(assignment_node)
-
-            message = message_for_useless_assignment(assignment)
-            range = offense_range(assignment)
-
-            add_offense(range, message: message) do |corrector|
-              # In cases like `x = 1, y = 2`, where removing a variable would cause a syntax error,
-              # and where changing `x ||= 1` to `x = 1` would cause `NameError`,
-              # the autocorrect will be skipped, even if the variable is unused.
-              if sequential_assignment?(assignment_node) || assignment_node.parent&.or_asgn_type?
-                next
-              end
-
-              autocorrect(corrector, assignment)
-            end
-
-            ignore_node(assignment_node) if chained_assignment?(assignment_node)
+            check_for_unused_assignment(variable, assignment)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+
+        def check_for_unused_assignment(variable, assignment)
+          assignment_node = assignment.node
+
+          return if ignored_assignment?(variable, assignment_node, assignment)
+
+          message = message_for_useless_assignment(assignment)
+          range = offense_range(assignment)
+
+          add_offense(range, message: message) do |corrector|
+            # In cases like `x = 1, y = 2`, where removing a variable would cause a syntax error,
+            # and where changing `x ||= 1` to `x = 1` would cause `NameError`,
+            # the autocorrect will be skipped, even if the variable is unused.
+            next if sequential_assignment?(assignment_node) ||
+                    assignment_node.parent&.or_asgn_type?
+
+            autocorrect(corrector, assignment)
+          end
+
+          ignore_node(assignment_node) if chained_assignment?(assignment_node)
+        end
+
+        def ignored_assignment?(variable, assignment_node, assignment)
+          assignment.used? || part_of_ignored_node?(assignment_node) ||
+            variable_in_loop_condition?(assignment_node, variable)
+        end
 
         def message_for_useless_assignment(assignment)
           variable = assignment.variable
@@ -207,6 +214,27 @@ module RuboCop
 
         def remove_local_variable_assignment_part(corrector, node)
           corrector.replace(node, node.expression.source)
+        end
+
+        def variable_in_loop_condition?(assignment_node, variable)
+          return false if assignment_node.each_ancestor(:any_def).any?
+
+          loop_node = assignment_node.each_ancestor.find do |ancestor|
+            ancestor.type?(*VariableForce::LOOP_TYPES)
+          end
+
+          return false unless loop_node.respond_to?(:condition)
+
+          condition_node = loop_node.condition
+          variable_name = variable.name
+
+          return true if condition_node.lvar_type? && condition_node.children.first == variable_name
+
+          condition_node.each_descendant(:lvar) do |lvar_node|
+            return true if lvar_node.children.first == variable_name
+          end
+
+          false
         end
       end
     end
