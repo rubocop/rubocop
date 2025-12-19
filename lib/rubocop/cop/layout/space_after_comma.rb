@@ -32,7 +32,7 @@ module RuboCop
         def before_semicolon?(token)
           tokens = processed_source.tokens
 
-          tokens[tokens.index(token) + 1].semicolon?
+          tokens[processed_source.token_index(token) + 1].semicolon?
         end
       end
     end
