@@ -20,7 +20,7 @@ module RuboCop
           cfg['EnforcedStyle'] || 'space'
         end
 
-        def kind(token)
+        def kind(token, _next_token)
           'semicolon' if token.semicolon?
         end
 
