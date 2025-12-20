@@ -26,9 +26,10 @@ module RuboCop
           splat kwsplat forwarded_args forwarded_restarg forwarded_kwrestarg block_pass
         ].freeze
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return unless (dot = node.loc.dot)
+          return if unary_method_no_operator?(node)
           return if node.receiver.const_type? || !node.arguments.one?
 
           return unless (rhs = node.first_argument)
@@ -43,9 +44,17 @@ module RuboCop
             corrector.insert_after(selector, ' ') if insert_space_after?(node)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
+
+        # `foo.~@` and `foo.!@` call the method `~` and `!` respectively. While those
+        # are operator methods, we don't want to actually consider them as such.
+        def unary_method_no_operator?(node)
+          return false unless node.nonmutating_unary_operator_method?
+
+          node.method_name.to_s != node.selector.source
+        end
 
         # Checks for an acceptable case of `foo.+(bar).baz`.
         def method_call_with_parenthesized_arg?(argument)
