@@ -22,7 +22,7 @@ module RuboCop
     # Remove old files so that the cache doesn't grow too big. When the
     # threshold MaxFilesInCache has been exceeded, the oldest 50% of all the
     # files in the cache are removed. The reason for removing so much is that
-    # cleaning should be done relatively seldom, since there is a slight risk
+    # removing should be done relatively seldom, since there is a slight risk
     # that some other RuboCop process was just about to read the file, when
     # there's parallel execution and the cache is shared.
     def self.cleanup(config_store, verbose, cache_root_override = nil)
@@ -31,10 +31,12 @@ module RuboCop
       rubocop_cache_dir = cache_root(config_store, cache_root_override)
       return unless File.exist?(rubocop_cache_dir)
 
-      files, dirs = Find.find(rubocop_cache_dir).partition { |path| File.file?(path) }
+      # We know the cache entries are 3 level deep, so globing
+      # for `*/*/*` only returns files.
+      files = Dir[File.join(rubocop_cache_dir, '*/*/*')]
       return unless requires_file_removal?(files.length, config_store)
 
-      remove_oldest_files(files, dirs, rubocop_cache_dir, verbose)
+      remove_oldest_files(files, rubocop_cache_dir, verbose)
     end
 
     class << self
@@ -49,26 +51,36 @@ module RuboCop
         file_count > 1 && file_count > config_store.for_pwd.for_all_cops['MaxFilesInCache']
       end
 
-      def remove_oldest_files(files, dirs, rubocop_cache_dir, verbose)
+      def remove_oldest_files(files, rubocop_cache_dir, verbose)
         # Add 1 to half the number of files, so that we remove the file if
         # there's only 1 left.
         remove_count = (files.length / 2) + 1
         puts "Removing the #{remove_count} oldest files from #{rubocop_cache_dir}" if verbose
         sorted = files.sort_by { |path| File.mtime(path) }
-        remove_files(sorted, dirs, remove_count)
+        remove_files(sorted, remove_count)
       rescue Errno::ENOENT
         # This can happen if parallel RuboCop invocations try to remove the
         # same files. No problem.
         puts $ERROR_INFO if verbose
       end
 
-      def remove_files(files, dirs, remove_count)
+      def remove_files(files, remove_count)
         # Batch file deletions, deleting over 130,000+ files will crash
         # File.delete.
         files[0, remove_count].each_slice(10_000).each do |files_slice|
           File.delete(*files_slice)
         end
-        dirs.each { |dir| Dir.rmdir(dir) if Dir["#{dir}/*"].empty? }
+
+        dirs = files.map { |f| File.dirname(f) }.uniq
+        until dirs.empty?
+          dirs.select! do |dir|
+            Dir.rmdir(dir)
+            true
+          rescue SystemCallError # ENOTEMPTY etc
+            false
+          end
+          dirs = dirs.map { |f| File.dirname(f) }.uniq
+        end
       end
     end
 
