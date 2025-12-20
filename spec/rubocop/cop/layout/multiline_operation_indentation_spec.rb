@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
       RUBY
     end
 
-    it 'accepts `[]=` operator without arguments', broken_on: :prism do
+    it 'accepts `[]=` operator without arguments' do
       expect_no_offenses(<<~RUBY)
         begin
         rescue =>
