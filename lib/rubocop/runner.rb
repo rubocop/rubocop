@@ -65,6 +65,10 @@ module RuboCop
     end
 
     def run(paths)
+      # Compute the cache source checksum once to avoid potential
+      # inconsistencies between workers.
+      ResultCache.source_checksum
+
       target_files = find_target_files(paths)
       if @options[:list_target_files]
         list_files(target_files)

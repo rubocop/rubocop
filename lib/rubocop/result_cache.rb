@@ -90,7 +90,7 @@ module RuboCop
       @allow_symlinks_in_cache_location =
         ResultCache.allow_symlinks_in_cache_location?(config_store)
       @path = File.join(rubocop_cache_dir,
-                        rubocop_checksum,
+                        self.class.source_checksum,
                         context_checksum(team, options),
                         file_checksum(file, config_store))
       @cached_data = CachedData.new(file)
@@ -167,13 +167,11 @@ module RuboCop
     end
 
     class << self
-      attr_accessor :source_checksum, :inhibit_cleanup
-    end
+      attr_accessor :inhibit_cleanup
 
-    # The checksum of the RuboCop program running the inspection.
-    def rubocop_checksum
-      ResultCache.source_checksum ||=
-        begin
+      # The checksum of the RuboCop program running the inspection.
+      def source_checksum
+        @source_checksum ||= begin
           digest = Digest::SHA1.new
           rubocop_extra_features
             .select { |path| File.file?(path) }
@@ -184,21 +182,22 @@ module RuboCop
           digest << RuboCop::Version::STRING << RuboCop::AST::Version::STRING
           digest.hexdigest
         end
-    end
+      end
 
-    def digest(path)
-      content = if path.end_with?(*DL_EXTENSIONS)
-                  # Shared libraries often contain timestamps of when
-                  # they were compiled and other non-stable data.
-                  File.basename(path)
-                else
-                  File.binread(path) # mtime not reliable
-                end
-      Zlib.crc32(content).to_s
-    end
+      private
 
-    def rubocop_extra_features
-      @rubocop_extra_features ||= begin
+      def digest(path)
+        content = if path.end_with?(*DL_EXTENSIONS)
+                    # Shared libraries often contain timestamps of when
+                    # they were compiled and other non-stable data.
+                    File.basename(path)
+                  else
+                    File.binread(path) # mtime not reliable
+                  end
+        Zlib.crc32(content).to_s
+      end
+
+      def rubocop_extra_features
         lib_root = File.join(File.dirname(__FILE__), '..')
         exe_root = File.join(lib_root, '..', 'exe')
 
