@@ -2120,6 +2120,18 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it { expect { rubocop_config }.not_to raise_error }
     end
+
+    context 'when config path is a directory' do
+      let(:config_path) { 'config' }
+
+      before do
+        FileUtils.mkdir_p(config_path)
+      end
+
+      it 'raises an ArgumentError' do
+        expect { rubocop_config }.to raise_error(ArgumentError, /project root directory/)
+      end
+    end
   end
 
   describe 'configuration for CharacterLiteral', :isolated_environment do
