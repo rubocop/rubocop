@@ -717,6 +717,30 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         end
       end
 
+      context 'when specifying disabled `Layout/LineLength` cop' do
+        let(:line) { "Object::#{'A' * 100}".inspect }
+
+        it 'enables the given cop' do
+          create_file('example.rb', [line])
+
+          create_file('.rubocop.yml', <<~YAML)
+            Layout/LineLength:
+              Enabled: false
+              Max: 80
+          YAML
+
+          expect(cli.run(['--format', 'simple',
+                          '--only', 'Layout/LineLength',
+                          'example.rb'])).to be_zero
+          expect($stderr.string).to eq('')
+          expect($stdout.string)
+            .to eq(<<~RESULT)
+
+              1 file inspected, no offenses detected
+            RESULT
+        end
+      end
+
       context 'without using namespace' do
         it 'runs just one cop' do
           create_file('example.rb', ['if x== 0 ', "\ty", 'end'])
