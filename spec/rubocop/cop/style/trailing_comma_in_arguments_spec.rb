@@ -168,17 +168,24 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
     end
   end
 
-  context 'with a single argument of anonymous function spanning multiple lines' do
+  context 'with multiple arguments of anonymous function spanning multiple lines' do
     context 'when EnforcedStyleForMultiline is consistent_comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
 
-      it 'accepts a single argument with no trailing comma' do
+      it 'accepts multiple arguments with trailing comma' do
         expect_no_offenses(<<~RUBY)
           func.(
             'foo',
             'bar',
             'baz',
           )
+        RUBY
+      end
+
+      it 'accepts keyword arguments with trailing comma' do
+        expect_no_offenses(<<~RUBY)
+          func.(foo: 1,
+                bar: 2,)
         RUBY
       end
     end

@@ -95,12 +95,16 @@ module RuboCop
         node.multiline? && !allowed_multiline_argument?(node)
       end
 
+      # rubocop:disable Metrics/AbcSize
       def method_name_and_arguments_on_same_line?(node)
         return false if !node.call_type? || node.last_line != node.last_argument.last_line
         return true if node.last_argument.hash_type? && node.last_argument.braces?
 
-        node.loc.selector.line == node.last_argument.last_line
+        line = node.loc.selector&.line || node.loc.line
+
+        line == node.last_argument.last_line
       end
+      # rubocop:enable Metrics/AbcSize
 
       # A single argument with the closing bracket on the same line as the end
       # of the argument is not considered multiline, even if the argument
