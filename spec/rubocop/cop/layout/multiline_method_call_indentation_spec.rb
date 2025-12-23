@@ -124,6 +124,25 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         )
       RUBY
     end
+
+    it 'accepts method call chain starting with implicit receiver' do
+      expect_no_offenses(<<~RUBY)
+        def slugs(type, path_prefix)
+          expanded_links_item(type)
+            .reject { |item| item["base_path"].nil? }
+            .map { |item| item["base_path"].gsub(%r{^#\{path_prefix}}, "") }
+        end
+      RUBY
+    end
+
+    it 'accepts method chain with multiline parenthesized receiver' do
+      expect_no_offenses(<<~RUBY)
+        (a +
+         b)
+          .foo
+          .bar
+      RUBY
+    end
   end
 
   shared_examples 'common for aligned and indented' do
@@ -369,6 +388,33 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         RUBY
       end
     end
+
+    it 'registers an offense for misaligned method chain after parenthesized expression' do
+      expect_offense(<<~RUBY)
+        def run
+          (date_columns + candidate_columns).uniq
+                                            .select { |column_name|
+                                            ^^^^^^^ Use 2 (not 34) spaces for indenting an expression spanning multiple lines.
+              castable?(column_name)
+            }
+            .each { |column_name|
+              cast(column_name)
+            }
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def run
+          (date_columns + candidate_columns).uniq
+            .select { |column_name|
+              castable?(column_name)
+            }
+            .each { |column_name|
+              cast(column_name)
+            }
+        end
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is aligned' do
@@ -390,6 +436,107 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
     # We call it semantic alignment when a dot is aligned with the first dot in
     # a chain of calls, and that first dot does not begin its line.
     context 'for semantic alignment' do
+      context 'when inside a hash pair without block receiver' do
+        it 'accepts method chain aligned with receiver start inside hash pair' do
+          expect_no_offenses(<<~RUBY)
+            {
+              key: Foo.bar
+                   .baz
+            }
+          RUBY
+        end
+
+        it 'accepts method chain aligned with receiver start inside hash pair with multiple chains' do
+          expect_no_offenses(<<~RUBY)
+            {
+              key: Foo.bar
+                   .baz
+                   .qux
+            }
+          RUBY
+        end
+
+        it 'accepts method chain inside nested hash pair' do
+          expect_no_offenses(<<~RUBY)
+            {
+              outer: {
+                inner: Foo.bar
+                       .baz
+              }
+            }
+          RUBY
+        end
+
+        it 'accepts method chain in hash pair passed to method' do
+          expect_no_offenses(<<~RUBY)
+            method_call(
+              key: Foo.bar
+                   .baz
+            )
+          RUBY
+        end
+
+        it 'registers an offense for misaligned method chain in hash pair' do
+          expect_offense(<<~RUBY)
+            {
+              key: Foo.bar
+                      .baz
+                      ^^^^ Align `.baz` with `Foo.bar` on line 2.
+            }
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {
+              key: Foo.bar
+                   .baz
+            }
+          RUBY
+        end
+      end
+
+      context 'when inside a hash pair with block receiver' do
+        it 'accepts method chain after block inside hash pair' do
+          expect_no_offenses(<<~RUBY)
+            {
+              key: Foo.bar { |x| x }
+                   .baz
+            }
+          RUBY
+        end
+
+        it 'accepts method chain after do-end block inside hash pair' do
+          expect_no_offenses(<<~RUBY)
+            {
+              key: Foo.bar do |x|
+                x
+              end.baz
+                   .qux
+            }
+          RUBY
+        end
+
+        it 'registers an offense for misaligned method chain after do-end block in hash pair' do
+          expect_offense(<<~RUBY)
+            {
+              key: Foo.bar do |x|
+                x
+              end.baz
+                 .qux
+                 ^^^^ Align `.qux` with `Foo.bar do |x|` on line 2.
+            }
+          RUBY
+
+          expect_correction(<<~RUBY)
+            {
+              key: Foo.bar do |x|
+                x
+              end.baz
+                   .qux
+            }
+          RUBY
+        end
+      end
+
       it 'accepts method being aligned with method' do
         expect_no_offenses(<<~RUBY)
           User.all.first
@@ -838,6 +985,197 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
               .b(c)
       RUBY
     end
+
+    it 'registers an offense and corrects method call inside hash pair value shifted left' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+         .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align `.veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name` with `VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName` on line 3.
+          )
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+                 .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+          )
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call inside hash pair value shifted right' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+                        .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Align `.veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name` with `VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName` on line 3.
+          )
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+                 .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+          )
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call with block inside hash pair value' do
+      expect_offense(<<~RUBY)
+        parsed_params = refusal_advice_params.merge(
+          actions: refusal_advice_params.fetch(:actions).
+                      each_pair do |_, suggestions|
+                      ^^^^^^^^^ Align `each_pair` with `refusal_advice_params.fetch(:actions).` on line 2.
+                        suggestions.transform_values! { |v| v == 'true' }
+                      end
+        ).to_h
+      RUBY
+
+      expect_correction(<<~RUBY)
+        parsed_params = refusal_advice_params.merge(
+          actions: refusal_advice_params.fetch(:actions).
+                   each_pair do |_, suggestions|
+                     suggestions.transform_values! { |v| v == 'true' }
+                   end
+        ).to_h
+      RUBY
+    end
+
+    it 'registers an offense and corrects method chain inside hash pair value' do
+      expect_offense(<<~RUBY)
+        def payload
+          {
+            type: 'action',
+            params: {
+              page: get_page_name,
+              email: @action.member.email,
+              mailing_id: @mailing_id
+            }.reverse_merge(@action.form_data)
+              .merge(UserLanguageISO.for(page.language))
+              ^^^^^^ Align `.merge` with `.reverse_merge` on line 8.
+              .tap do |params|
+              ^^^^ Align `.tap` with `.reverse_merge` on line 8.
+                params[:country] = country(member.country) if member.country.present?
+                params[:action_bucket] = data[:bucket] if data.key? :bucket
+              end
+          }.deep_symbolize_keys
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def payload
+          {
+            type: 'action',
+            params: {
+              page: get_page_name,
+              email: @action.member.email,
+              mailing_id: @mailing_id
+            }.reverse_merge(@action.form_data)
+             .merge(UserLanguageISO.for(page.language))
+             .tap do |params|
+               params[:country] = country(member.country) if member.country.present?
+               params[:action_bucket] = data[:bucket] if data.key? :bucket
+             end
+          }.deep_symbolize_keys
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call after block in hash pair value' do
+      expect_offense(<<~RUBY)
+        add_to_git_repo(
+          initial_repo,
+          "about.json" =>
+            JSON
+              .parse(about_json(about_url: "https://updated.site.com"))
+              ^^^^^^ Align `.parse` with `JSON` on line 4.
+              .tap { |h| h[:component] = true }
+              ^^^^ Align `.tap` with `JSON` on line 4.
+              .to_json,
+              ^^^^^^^^ Align `.to_json` with `JSON` on line 4.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        add_to_git_repo(
+          initial_repo,
+          "about.json" =>
+            JSON
+            .parse(about_json(about_url: "https://updated.site.com"))
+            .tap { |h| h[:component] = true }
+            .to_json,
+        )
+      RUBY
+    end
+
+    it 'registers an offense for method chain when dot is on same line as multiline parens' do
+      expect_offense(<<~RUBY)
+        (a +
+         b).foo
+           .bar
+           ^^^^ Use 2 (not 3) spaces for indenting an expression spanning multiple lines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a +
+         b).foo
+          .bar
+      RUBY
+    end
+
+    it 'registers an offense and corrects method chain with array literal receiver' do
+      expect_offense(<<~RUBY)
+        def targets_for(path)
+          fullpath = fullpath_for(path)
+          [
+            Dir.glob(fullpath),
+          ].flatten
+            .uniq
+            ^^^^^ Align `.uniq` with `.flatten` on line 5.
+            .delete_if { |entry| dot_directory?(entry) }
+        end
+      RUBY
+
+      # NOTE: There's a minor issue where the space after |entry| gets removed
+      expect_correction(<<~RUBY)
+        def targets_for(path)
+          fullpath = fullpath_for(path)
+          [
+            Dir.glob(fullpath),
+          ].flatten
+           .uniq
+           .delete_if { |entry|dot_directory?(entry) }
+        end
+      RUBY
+    end
+
+    it 'accepts method chain with hash literal receiver' do
+      expect_no_offenses(<<~RUBY)
+        { a: 1, b: 2 }.keys
+                      .first
+      RUBY
+    end
+
+    it 'registers an offense and corrects method chain with hash literal receiver' do
+      expect_offense(<<~RUBY)
+        { a: 1, b: 2 }.keys
+          .first
+          ^^^^^^ Align `.first` with `.keys` on line 1.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        { a: 1, b: 2 }.keys
+                      .first
+      RUBY
+    end
   end
 
   shared_examples 'both indented* styles' do
@@ -852,6 +1190,19 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
             .b
         RUBY
       end
+    end
+
+    it 'accepts method chain with array literal receiver' do
+      expect_no_offenses(<<~RUBY)
+        def targets_for(path)
+          fullpath = fullpath_for(path)
+          [
+            Dir.glob(fullpath),
+          ].flatten
+            .uniq
+            .delete_if { |entry| dot_directory?(entry) }
+        end
+      RUBY
     end
   end
 
@@ -1070,6 +1421,191 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
          a.
            b
         ]
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call inside hash pair value shifted left' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+         .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Indent `.veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name` 2 spaces more than `VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName` on line 3.
+          )
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+                   .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+          )
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call inside hash pair value shifted right' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+                        .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Indent `.veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name` 2 spaces more than `VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName` on line 3.
+          )
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+                   .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+          )
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call with block inside hash pair value' do
+      expect_offense(<<~RUBY)
+        parsed_params = refusal_advice_params.merge(
+          actions: refusal_advice_params.fetch(:actions).
+            each_pair do |_, suggestions|
+            ^^^^^^^^^ Indent `each_pair` 2 spaces more than `refusal_advice_params` on line 2.
+              suggestions.transform_values! { |v| v == 'true' }
+            end
+        ).to_h
+      RUBY
+
+      expect_correction(<<~RUBY)
+        parsed_params = refusal_advice_params.merge(
+          actions: refusal_advice_params.fetch(:actions).
+                     each_pair do |_, suggestions|
+                       suggestions.transform_values! { |v| v == 'true' }
+                     end
+        ).to_h
+      RUBY
+    end
+
+    it 'registers an offense and corrects method chain inside hash pair value' do
+      expect_offense(<<~RUBY)
+        def payload
+          {
+            type: 'action',
+            params: {
+              page: get_page_name,
+              email: @action.member.email,
+              mailing_id: @mailing_id
+            }.reverse_merge(@action.form_data)
+              .merge(UserLanguageISO.for(page.language))
+              ^^^^^^ Indent `.merge` 2 spaces more than `.reverse_merge` on line 8.
+              .tap do |params|
+              ^^^^ Indent `.tap` 2 spaces more than `.reverse_merge` on line 8.
+                params[:country] = country(member.country) if member.country.present?
+                params[:action_bucket] = data[:bucket] if data.key? :bucket
+              end
+          }.deep_symbolize_keys
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def payload
+          {
+            type: 'action',
+            params: {
+              page: get_page_name,
+              email: @action.member.email,
+              mailing_id: @mailing_id
+            }.reverse_merge(@action.form_data)
+               .merge(UserLanguageISO.for(page.language))
+               .tap do |params|
+                 params[:country] = country(member.country) if member.country.present?
+                 params[:action_bucket] = data[:bucket] if data.key? :bucket
+               end
+          }.deep_symbolize_keys
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method chain with block in hash pair value' do
+      expect_offense(<<~RUBY)
+        add_to_git_repo(
+          initial_repo,
+          "about.json" =>
+            JSON
+                .parse(about_json(about_url: "https://updated.site.com"))
+                ^^^^^^ Indent `.parse` 2 spaces more than `JSON` on line 4.
+                .tap { |h| h[:component] = true }
+                ^^^^ Indent `.tap` 2 spaces more than `JSON` on line 4.
+                .to_json,
+                ^^^^^^^^ Indent `.to_json` 2 spaces more than `JSON` on line 4.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        add_to_git_repo(
+          initial_repo,
+          "about.json" =>
+            JSON
+              .parse(about_json(about_url: "https://updated.site.com"))
+              .tap { |h| h[:component] = true }
+              .to_json,
+        )
+      RUBY
+    end
+
+    it 'registers an offense for method chain with parenthesized expression receiver' do
+      expect_offense(<<~RUBY)
+        def run
+          (date_columns + candidate_columns).uniq
+                                            .select { |column_name| castable?(column_name) }
+                                            ^^^^^^^ Indent `.select` 2 spaces more than `.uniq` on line 2.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def run
+          (date_columns + candidate_columns).uniq
+                                              .select { |column_name| castable?(column_name) }
+        end
+      RUBY
+    end
+
+    it 'accepts correctly indented method chain with parenthesized expression receiver' do
+      expect_no_offenses(<<~RUBY)
+        def run
+          (date_columns + candidate_columns).uniq
+                                              .select { |column_name| castable?(column_name) }
+                                              .each { |column_name| cast(column_name) }
+        end
+      RUBY
+    end
+
+    it 'registers an offense for method chain when dot is on same line as multiline parens' do
+      expect_offense(<<~RUBY)
+        (a +
+         b).foo
+           .bar
+           ^^^^ Indent `.bar` 2 spaces more than `.foo` on line 2.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a +
+         b).foo
+             .bar
+      RUBY
+    end
+
+    it 'registers an offense and corrects method chain with hash literal receiver' do
+      expect_offense(<<~RUBY)
+        { a: 1, b: 2 }.keys
+                      .first
+                      ^^^^^^ Indent `.first` 2 spaces more than `.keys` on line 1.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        { a: 1, b: 2 }.keys
+                        .first
       RUBY
     end
   end
@@ -1314,6 +1850,136 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         formatted_int = int_part
           .abs
           .reverse
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call inside hash pair value using standard indentation width shifted left' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+         .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 2 (not -3) spaces for indenting an expression spanning multiple lines.
+          )
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+              .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+          )
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call inside hash pair value using standard indentation width shifted right' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+                        .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 2 (not 12) spaces for indenting an expression spanning multiple lines.
+          )
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          bar(
+            key: VeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeryLongClassName
+              .veeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeery_long_method_name
+          )
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method call with block inside hash pair value' do
+      expect_offense(<<~RUBY)
+        parsed_params = refusal_advice_params.merge(
+          actions: refusal_advice_params.fetch(:actions).
+              each_pair do |_, suggestions|
+              ^^^^^^^^^ Use 2 (not 4) spaces for indenting an expression in an assignment spanning multiple lines.
+                suggestions.transform_values! { |v| v == 'true' }
+              end
+        ).to_h
+      RUBY
+
+      expect_correction(<<~RUBY)
+        parsed_params = refusal_advice_params.merge(
+          actions: refusal_advice_params.fetch(:actions).
+            each_pair do |_, suggestions|
+              suggestions.transform_values! { |v| v == 'true' }
+            end
+        ).to_h
+      RUBY
+    end
+
+    it 'registers an offense and corrects method chain inside hash pair value' do
+      expect_offense(<<~RUBY)
+        def payload
+          {
+            type: 'action',
+            params: {
+              page: get_page_name,
+              email: @action.member.email,
+              mailing_id: @mailing_id
+            }.reverse_merge(@action.form_data)
+              .merge(UserLanguageISO.for(page.language))
+              ^^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+              .tap do |params|
+              ^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+                params[:country] = country(member.country) if member.country.present?
+                params[:action_bucket] = data[:bucket] if data.key? :bucket
+              end
+          }.deep_symbolize_keys
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def payload
+          {
+            type: 'action',
+            params: {
+              page: get_page_name,
+              email: @action.member.email,
+              mailing_id: @mailing_id
+            }.reverse_merge(@action.form_data)
+                .merge(UserLanguageISO.for(page.language))
+                .tap do |params|
+                  params[:country] = country(member.country) if member.country.present?
+                  params[:action_bucket] = data[:bucket] if data.key? :bucket
+                end
+          }.deep_symbolize_keys
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects method chain with block in hash pair value' do
+      expect_offense(<<~RUBY)
+        add_to_git_repo(
+          initial_repo,
+          "about.json" =>
+            JSON
+                .parse(about_json(about_url: "https://updated.site.com"))
+                ^^^^^^ Use 2 (not 4) spaces for indenting an expression spanning multiple lines.
+                .tap { |h| h[:component] = true }
+                ^^^^ Use 2 (not 4) spaces for indenting an expression spanning multiple lines.
+                .to_json,
+                ^^^^^^^^ Use 2 (not 4) spaces for indenting an expression spanning multiple lines.
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        add_to_git_repo(
+          initial_repo,
+          "about.json" =>
+            JSON
+              .parse(about_json(about_url: "https://updated.site.com"))
+              .tap { |h| h[:component] = true }
+              .to_json,
+        )
       RUBY
     end
 
