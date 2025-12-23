@@ -2,13 +2,17 @@
 
 RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
   let(:config) do
-    RuboCop::Config.new('Layout/LineLength' => { 'Max' => max_line_length },
+    RuboCop::Config.new('Layout/LineLength' => {
+                          'Enabled' => line_length_enabled, 'Max' => max_line_length
+                        },
                         'Layout/RedundantLineBreak' => { 'InspectBlocks' => inspect_blocks },
                         'Layout/SingleLineBlockChain' => {
                           'Enabled' => single_line_block_chain_enabled
                         })
   end
+  let(:line_length_enabled) { true }
   let(:max_line_length) { 31 }
+  let(:inspect_blocks) { false }
   let(:single_line_block_chain_enabled) { true }
 
   shared_examples 'common behavior' do
@@ -772,6 +776,23 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
           RUBY
         end
       end
+    end
+  end
+
+  context 'when `Layout/LineLength` is disabled' do
+    let(:line_length_enabled) { false }
+
+    it 'registers an offense for a method call on multiple lines' do
+      expect_offense(<<~RUBY)
+        my_method(1,
+        ^^^^^^^^^^^^ Redundant line break detected.
+                  2,
+                  "x")
+      RUBY
+
+      expect_correction(<<~RUBY)
+        my_method(1, 2, "x")
+      RUBY
     end
   end
 end
