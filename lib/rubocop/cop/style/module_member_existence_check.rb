@@ -26,33 +26,58 @@ module RuboCop
       #
       #   Array.method_defined?(:find, false)
       #
+      #   # bad
+      #   Array.class_variables.include?(:foo)
+      #   Array.constants.include?(:foo)
+      #   Array.private_instance_methods.include?(:foo)
+      #   Array.protected_instance_methods.include?(:foo)
+      #   Array.public_instance_methods.include?(:foo)
+      #   Array.included_modules.include?(:foo)
+      #
+      #   # good
+      #   Array.class_variable_defined?(:foo)
+      #   Array.const_defined?(:foo)
+      #   Array.private_method_defined?(:foo)
+      #   Array.protected_method_defined?(:foo)
+      #   Array.public_method_defined?(:foo)
+      #   Array.include?(:foo)
+      #
       class ModuleMemberExistenceCheck < Base
         extend AutoCorrector
 
         MSG = 'Use `%<replacement>s` instead.'
 
-        RESTRICT_ON_SEND = %i[instance_methods].freeze
-
-        # @!method instance_methods_inclusion?(node)
-        def_node_matcher :instance_methods_inclusion?, <<~PATTERN
+        # @!method module_member_inclusion?(node)
+        def_node_matcher :module_member_inclusion?, <<~PATTERN
           (call
-            (call _ :instance_methods _?)
+            {(call _ %METHODS_WITH_INHERIT_PARAM _?) (call _ %METHODS_WITHOUT_INHERIT_PARAM)}
             {:include? :member?}
             _)
         PATTERN
 
-        def on_send(node) # rubocop:disable Metrics/AbcSize
+        METHOD_REPLACEMENTS = {
+          class_variables: :class_variable_defined?,
+          constants: :const_defined?,
+          included_modules: :include?,
+          instance_methods: :method_defined?,
+          private_instance_methods: :private_method_defined?,
+          protected_instance_methods: :protected_method_defined?,
+          public_instance_methods: :public_method_defined?
+        }.freeze
+
+        METHODS_WITHOUT_INHERIT_PARAM = Set[:class_variables, :included_modules].freeze
+        METHODS_WITH_INHERIT_PARAM =
+          (METHOD_REPLACEMENTS.keys.to_set - METHODS_WITHOUT_INHERIT_PARAM).freeze
+
+        RESTRICT_ON_SEND = METHOD_REPLACEMENTS.keys.freeze
+
+        def on_send(node)
           return unless (parent = node.parent)
-          return unless instance_methods_inclusion?(parent)
+          return unless module_member_inclusion?(parent)
           return unless simple_method_argument?(node) && simple_method_argument?(parent)
 
           offense_range = node.location.selector.join(parent.source_range.end)
-          replacement =
-            if node.first_argument.nil? || node.first_argument.true_type?
-              "method_defined?(#{parent.first_argument.source})"
-            else
-              "method_defined?(#{parent.first_argument.source}, #{node.first_argument.source})"
-            end
+          replacement = replacement_for(node, parent)
 
           add_offense(offense_range, message: format(MSG, replacement: replacement)) do |corrector|
             corrector.replace(offense_range, replacement)
@@ -61,6 +86,17 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        def replacement_for(node, parent)
+          replacement_method = METHOD_REPLACEMENTS.fetch(node.method_name)
+          without_inherit_param = METHODS_WITHOUT_INHERIT_PARAM.include?(node.method_name)
+
+          if without_inherit_param || node.first_argument.nil? || node.first_argument.true_type?
+            "#{replacement_method}(#{parent.first_argument.source})"
+          else
+            "#{replacement_method}(#{parent.first_argument.source}, #{node.first_argument.source})"
+          end
+        end
 
         def simple_method_argument?(node)
           return false if node.splat_argument? || node.block_argument?
