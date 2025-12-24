@@ -84,19 +84,23 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/AbcSize
         def offending_range(node, lhs, rhs, given_style)
           return false unless begins_its_line?(rhs)
           return false if not_for_this_cop?(node)
 
           @base = alignment_base(node, rhs, given_style)
           correct_column = if @base
-                             @base.column + extra_indentation(given_style, node.parent)
+                             parent = node.parent
+                             parent = parent.parent if parent&.any_block_type?
+                             @base.column + extra_indentation(given_style, parent)
                            else
                              indentation(lhs) + correct_indentation(node)
                            end
           @column_delta = correct_column - rhs.column
           rhs if @column_delta.nonzero?
         end
+        # rubocop:enable Metrics/AbcSize
 
         def extra_indentation(given_style, parent)
           if given_style == :indented_relative_to_receiver

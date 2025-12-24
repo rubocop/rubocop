@@ -1,0 +1,1 @@
+* [#14743](https://github.com/rubocop/rubocop/issues/14743): Fix false positives for `Layout/MultilineMethodCallIndentation` when multiline method chain with block has expected indent width and the method is preceded by splat or double splat. ([@koic][])
