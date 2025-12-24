@@ -938,6 +938,36 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'does not register an offense when multiline method chain with block has expected indent width and ' \
+       'the method is preceded by splat' do
+      expect_no_offenses(<<~RUBY)
+        [
+          *foo
+            .bar { |arg| baz(arg) }
+        ]
+      RUBY
+    end
+
+    it 'does not register an offense when multiline method chain with numbered block has expected indent width and ' \
+       'the method is preceded by splat' do
+      expect_no_offenses(<<~RUBY)
+        [
+          *foo
+            .bar { baz(_1) }
+        ]
+      RUBY
+    end
+
+    it 'does not register an offense when multiline method chain with `it` block has expected indent width and ' \
+       'the method is preceded by splat', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        [
+          *foo
+            .bar { baz(it) }
+        ]
+      RUBY
+    end
+
     it 'does not register an offense when multiline method chain has expected indent width and ' \
        'the method is preceded by double splat' do
       expect_no_offenses(<<~RUBY)
@@ -945,6 +975,36 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           **foo
             .bar(
               arg)
+        ]
+      RUBY
+    end
+
+    it 'does not register an offense when multiline method chain with block has expected indent width and ' \
+       'the method is preceded by double splat' do
+      expect_no_offenses(<<~RUBY)
+        [
+          **foo
+            .bar { |arg| baz(arg) }
+        ]
+      RUBY
+    end
+
+    it 'does not register an offense when multiline method chain with numbered block has expected indent width and ' \
+       'the method is preceded by double splat' do
+      expect_no_offenses(<<~RUBY)
+        [
+          **foo
+            .bar { baz(_1) }
+        ]
+      RUBY
+    end
+
+    it 'does not register an offense when multiline method chain with `it` block has expected indent width and ' \
+       'the method is preceded by double splat', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        [
+          **foo
+            .bar { baz(it) }
         ]
       RUBY
     end
