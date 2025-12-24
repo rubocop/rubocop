@@ -1,1 +1,0 @@
-* [#14736](https://github.com/rubocop/rubocop/issues/14736): Fix an error for `Style/TrailingCommaInArguments` when `EnforcedStyleForMultiline` is `consistent_comma` and keyword arguments use a trailing comma. ([@koic][])

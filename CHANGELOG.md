@@ -11,6 +11,16 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14736](https://github.com/rubocop/rubocop/issues/14736): Fix an error for `Style/TrailingCommaInArguments` when `EnforcedStyleForMultiline` is `consistent_comma` and keyword arguments use a trailing comma. ([@koic][])
+* [#14737](https://github.com/rubocop/rubocop/issues/14737): Fix crash in `Layout/RedundantLineBreak` when `Layout/LineLength` is disabled. ([@ydakuka][])
+* [#14719](https://github.com/rubocop/rubocop/pull/14719): Fix crash on long lines when `Layout/LineLength` is disabled. ([@floriandejonckheere][])
+* [#14743](https://github.com/rubocop/rubocop/issues/14743): Fix false positives for `Layout/MultilineMethodCallIndentation` when multiline method chain with block has expected indent width and the method is preceded by splat or double splat. ([@koic][])
+* [#12297](https://github.com/rubocop/rubocop/issues/12297): Fix false negative in `Layout/IndentationWidth` for multiline method chain blocks. ([@rscq][])
+* [#14730](https://github.com/rubocop/rubocop/pull/14730): Fix the cache implementation to use consistent cache keys across workers. ([@byroot][])
+* [#14559](https://github.com/rubocop/rubocop/issues/14559): Fix false positives for `Lint/UselessAssignment` when a variable is assigned in loop body and used in loop condition. ([@ydakuka][])
+
 ## 1.82.0 (2025-12-17)
 
 ### New features
@@ -4471,3 +4481,5 @@
 [@Jack12816]: https://github.com/Jack12816
 [@rscq]: https://github.com/rscq
 [@mmenanno]: https://github.com/mmenanno
+[@ydakuka]: https://github.com/ydakuka
+[@floriandejonckheere]: https://github.com/floriandejonckheere
