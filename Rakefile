@@ -67,7 +67,7 @@ task documentation_syntax_check: :yard_for_generate_documentation do
                elsif cop == RuboCop::Cop::Lint::NumberedParameterAssignment
                  Parser::Ruby27.new(RuboCop::AST::Builder.new)
                else
-                 Prism::Translation::Parser35.new(RuboCop::AST::BuilderPrism.new)
+                 Prism::Translation::Parser41.new(RuboCop::AST::BuilderPrism.new)
                end
       parser.diagnostics.all_errors_are_fatal = true
       parser.parse(buffer)

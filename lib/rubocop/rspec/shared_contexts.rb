@@ -269,3 +269,7 @@ end
 RSpec.shared_context 'ruby 4.0' do
   let(:ruby_version) { 4.0 }
 end
+
+RSpec.shared_context 'ruby 4.1' do
+  let(:ruby_version) { 4.1 }
+end

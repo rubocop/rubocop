@@ -31,4 +31,5 @@ RSpec.configure do |config|
   config.include_context 'ruby 3.3', :ruby33
   config.include_context 'ruby 3.4', :ruby34
   config.include_context 'ruby 4.0', :ruby40
+  config.include_context 'ruby 4.1', :ruby41
 end
