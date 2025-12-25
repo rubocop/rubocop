@@ -160,7 +160,7 @@ module RuboCop
 
       raise ValidationError,
             "configuration for Lint/Syntax cop found in #{smart_loaded_path}\n" \
-            'It\'s not possible to disable this cop.'
+            "It's not possible to disable this cop."
     end
 
     def validate_new_cops_parameter

@@ -81,7 +81,7 @@ module RuboCop
             # Otherwise an odd number means the quote is already escaped so this doesn't touch it.
             new_argument.gsub!(/(?<!\\)((?:\\\\)*)'/) { "#{::Regexp.last_match(1)}\\'" }
             quote = "'"
-          elsif new_argument.include?('\'')
+          elsif new_argument.include?("'")
             new_argument.gsub!("'", "\\\\'")
             quote = "'"
           elsif new_argument.include?('\\')

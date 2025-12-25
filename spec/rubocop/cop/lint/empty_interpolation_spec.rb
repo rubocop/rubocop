@@ -23,7 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::EmptyInterpolation, :config do
     RUBY
   end
 
-  it 'registers an offense and corrects #{\'\'} in interpolation' do
+  it "registers an offense and corrects \#{''} in interpolation" do
     expect_offense(<<~'RUBY')
       "this is the #{''}"
                    ^^^^^ Empty interpolation detected.

@@ -327,7 +327,7 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
     shared_examples 'invalid cache location' do |error, message|
       include_context 'mock console output'
 
-      it 'doesn\'t raise an exception' do
+      it "doesn't raise an exception" do
         allow(FileUtils).to receive(:mkdir_p).with(start_with(cache_root)).and_raise(error)
         expect { cache.save([]) }.not_to raise_error
         expect($stderr.string).to eq(<<~WARN)

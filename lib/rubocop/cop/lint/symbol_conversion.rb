@@ -81,7 +81,7 @@ module RuboCop
           if node.receiver.type?(:str, :sym)
             register_offense(node, correction: node.receiver.value.to_sym.inspect)
           elsif node.receiver.dstr_type?
-            register_offense(node, correction: ":\"#{node.receiver.value.to_sym}\"")
+            register_offense(node, correction: %(:"#{node.receiver.value.to_sym}"))
           end
         end
 

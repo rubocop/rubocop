@@ -1433,7 +1433,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       YAML
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(2)
       expect($stderr.string).to include('Error: configuration for Lint/Syntax cop found')
-      expect($stderr.string).to include('It\'s not possible to disable this cop.')
+      expect($stderr.string).to include("It's not possible to disable this cop.")
     end
 
     it 'can be configured to merge a parameter that is a hash' do

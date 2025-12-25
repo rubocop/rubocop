@@ -43,7 +43,7 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
         RuboCop::Server::Cache.write_version_file(RuboCop::Server::Cache.restart_key)
 
         expect(`ruby -I . "#{rubocop}" --server-status`).to match(/RuboCop server .* is running/)
-        _stdout, stderr, _status = Open3.capture3("ruby -I . \"#{rubocop}\" #{options}")
+        _stdout, stderr, _status = Open3.capture3(%(ruby -I . "#{rubocop}" #{options}))
         expect(stderr).to start_with(
           'RuboCop version incompatibility found, RuboCop server restarting...'
         )
@@ -79,7 +79,7 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
             Max: 101
         YAML
 
-        _stdout, stderr, _status = Open3.capture3("ruby -I . \"#{rubocop}\" #{options}")
+        _stdout, stderr, _status = Open3.capture3(%(ruby -I . "#{rubocop}" #{options}))
         expect(stderr).to start_with(
           'RuboCop version incompatibility found, RuboCop server restarting...'
         )

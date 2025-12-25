@@ -106,17 +106,17 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
   describe 'type str' do
     it_behaves_like('literal interpolation', '"double_quot_string"', 'double_quot_string')
     it_behaves_like('literal interpolation', "'single_quot_string'", 'single_quot_string')
-    it_behaves_like('literal interpolation', '"double_quot_string: \'"', "double_quot_string: '")
-    it_behaves_like('literal interpolation', "'single_quot_string: \"'", 'single_quot_string: \"')
+    it_behaves_like('literal interpolation', %q("double_quot_string: '"), "double_quot_string: '")
+    it_behaves_like('literal interpolation', %q('single_quot_string: "'), 'single_quot_string: \"')
   end
 
   describe 'type sym' do
     it_behaves_like('literal interpolation', ':symbol', 'symbol')
     it_behaves_like('literal interpolation', ':"symbol"', 'symbol')
     it_behaves_like('literal interpolation',
-                    ':"single quot in symbol: \'"', "single quot in symbol: '")
+                    %q(:"single quot in symbol: '"), "single quot in symbol: '")
     it_behaves_like('literal interpolation',
-                    ":'double quot in symbol: \"'", 'double quot in symbol: \"')
+                    %q(:'double quot in symbol: "'), 'double quot in symbol: \"')
   end
 
   describe 'type array' do
@@ -133,7 +133,7 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
 
   describe 'type hash' do
     it_behaves_like('literal interpolation', '{"a" => "b"}', '{\"a\"=>\"b\"}')
-    it_behaves_like('literal interpolation', "{ foo: 'bar', :fiz => \"buzz\" }",
+    it_behaves_like('literal interpolation', %q({ foo: 'bar', :fiz => "buzz" }),
                     '{:foo=>\"bar\", :fiz=>\"buzz\"}')
     it_behaves_like('literal interpolation', "{ foo: { fiz: 'buzz' } }", '{:foo=>{:fiz=>\"buzz\"}}')
     it_behaves_like(
@@ -145,12 +145,12 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
                     '{:n_adic_num=>{:hex=>43707, :oct=>255}}')
     it_behaves_like(
       'literal interpolation',
-      '{ double_quot: { simple: "double_quot", single_in_double: "double_quot: \'" } }',
-      '{:double_quot=>{:simple=>\"double_quot\", :single_in_double=>\"double_quot: \'\"}}'
+      %q({ double_quot: { simple: "double_quot", single_in_double: "double_quot: '" } }),
+      %q({:double_quot=>{:simple=>\\"double_quot\\", :single_in_double=>\\"double_quot: '\\"}})
     )
     it_behaves_like(
       'literal interpolation',
-      "{ single_quot: { simple: 'single_quot', double_in_single: 'single_quot: \"' } }",
+      %q({ single_quot: { simple: 'single_quot', double_in_single: 'single_quot: "' } }),
       '{:single_quot=>{:simple=>\"single_quot\", :double_in_single=>\"single_quot: \\\\\\"\"}}'
     )
     it_behaves_like('literal interpolation', '{ bool: { key: true } }', '{:bool=>{:key=>true}}')
@@ -161,14 +161,14 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     it_behaves_like('literal interpolation', '{ symbol: { key: :"symbol" } }',
                     '{:symbol=>{:key=>:symbol}}')
     it_behaves_like('literal interpolation',
-                    '{ single_quot_symbol: { key: :"single_quot_in_symbol: \'" } }',
-                    '{:single_quot_symbol=>{:key=>:\"single_quot_in_symbol: \'\"}}')
+                    %q({ single_quot_symbol: { key: :"single_quot_in_symbol: '" } }),
+                    %q({:single_quot_symbol=>{:key=>:\\"single_quot_in_symbol: '\\"}}))
     it_behaves_like('literal interpolation',
-                    "{ double_quot_symbol: { key: :'double_quot_in_symbol: \"' } }",
+                    %q({ double_quot_symbol: { key: :'double_quot_in_symbol: "' } }),
                     '{:double_quot_symbol=>{:key=>:\"double_quot_in_symbol: \\\\\"\"}}')
     it_behaves_like('literal interpolation',
-                    '{ single_quot_symbol_not_in_space: { key: :"single_quot_in_symbol:\'" } }',
-                    '{:single_quot_symbol_not_in_space=>{:key=>:\"single_quot_in_symbol:\'\"}}')
+                    %q({ single_quot_symbol_not_in_space: { key: :"single_quot_in_symbol:'" } }),
+                    %q({:single_quot_symbol_not_in_space=>{:key=>:\\"single_quot_in_symbol:'\\"}}))
     it_behaves_like('literal interpolation',
                     '{ single_quot_symbol_in_space: { key: :"single_quot_in_symbol: " } }',
                     '{:single_quot_symbol_in_space=>{:key=>:\"single_quot_in_symbol: \"}}')

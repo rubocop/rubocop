@@ -89,11 +89,11 @@ module RuboCop
         include RequireLibrary
         extend AutoCorrector
 
-        MSG_BOTH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
-                   'module (don\'t forget to require it) or `%<regular>s` over ' \
+        MSG_BOTH = "Prefer `%<prefer>s` from the stdlib 'English' " \
+                   "module (don't forget to require it) or `%<regular>s` over " \
                    '`%<global>s`.'
-        MSG_ENGLISH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
-                      'module (don\'t forget to require it) over `%<global>s`.'
+        MSG_ENGLISH = "Prefer `%<prefer>s` from the stdlib 'English' " \
+                      "module (don't forget to require it) over `%<global>s`."
         MSG_REGULAR = 'Prefer `%<prefer>s` over `%<global>s`.'
 
         ENGLISH_VARS = { # rubocop:disable Style/MutableConstant

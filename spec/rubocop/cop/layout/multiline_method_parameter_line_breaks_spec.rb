@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodParameterLineBreaks, :config
     end
   end
 
-  context 'when parameter\'s default value starts on same line but ends on different line' do
+  context "when parameter's default value starts on same line but ends on different line" do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         def taz(abc, foo = {
