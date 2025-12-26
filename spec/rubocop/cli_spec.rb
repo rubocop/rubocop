@@ -1112,6 +1112,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
         it_behaves_like 'ignores config file'
       end
+
+      context 'when config file has invalid inherit_from' do
+        it 'ignores config file with invalid inherit_from' do
+          create_file('example.rb', ['# frozen_string_literal: true', '', 'x = 0', 'puts x'])
+          create_file('.rubocop.yml', <<~YAML)
+            inherit_from: config/nonexistent.yml
+          YAML
+
+          expect(cli.run(%w[--format simple --force-default-config])).to eq(0)
+          expect($stdout.string).to include('1 file inspected, no offenses detected')
+        end
+      end
     end
 
     it 'displays cop names if DisplayCopNames is false' do
