@@ -1,0 +1,1 @@
+* [#12343](https://github.com/rubocop/rubocop/issues/12343): Add new `Style/EmptyClassDefinition` cop to enforce consistent style for empty class definitions. The cop can enforce either a two-line class definition or `Class.new` for classes with no body. ([@ydakuka][])
