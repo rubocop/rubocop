@@ -1,0 +1,1 @@
+* [#12051](https://github.com/rubocop/rubocop/issues/12051): Add new `Style/NegativeArrayIndex` cop to enforce using negative array indices instead of calculating array length minus a value. The cop handles both simple index patterns and range patterns, and recognizes preserving methods and their combinations. ([@ydakuka][])
