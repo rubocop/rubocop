@@ -137,6 +137,10 @@ Naming/InclusiveLanguage:
     'register no offense':
       Suggestions:
         - registers no offense
+    'register an offense':
+      Regex: !ruby/regexp /\Aregister an offense/
+      Suggestions:
+        - registers an offense
     'register an error':
       Suggestions:
         - register an offense
