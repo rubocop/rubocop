@@ -25,19 +25,19 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
     end
   end
 
-  shared_examples 'accept before' do |after, expr|
+  shared_examples 'accepts before' do |after, expr|
     it "accepts `#{after}` before keyword in `#{expr}`" do
       expect_no_offenses(expr)
     end
   end
 
-  shared_examples 'accept after' do |after, expr, options|
+  shared_examples 'accepts after' do |after, expr, options|
     it "accepts `#{after}` after keyword in `#{expr}`", *options do
       expect_no_offenses(expr)
     end
   end
 
-  shared_examples 'accept around' do |after, expr, options|
+  shared_examples 'accepts around' do |after, expr, options|
     it "accepts `#{after}` around keyword in `#{expr}`", *options do
       expect_no_offenses(expr)
     end
@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'begin', 'begin"" end', 'begin "" end'
 
   it_behaves_like 'missing after', 'break', 'break""', 'break ""', [:ruby32, { unsupported_on: :prism }]
-  it_behaves_like 'accept after', '(', 'break(1)', [:ruby32, { unsupported_on: :prism }]
+  it_behaves_like 'accepts after', '(', 'break(1)', [:ruby32, { unsupported_on: :prism }]
 
   it_behaves_like 'missing after', 'case', 'case"" when 1; end', 'case "" when 1; end'
 
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing before', 'end', 'while 1 do "x"end', 'while 1 do "x" end'
   it_behaves_like 'missing before', 'end', 'until 1 do "x"end', 'until 1 do "x" end'
   it_behaves_like 'missing before', 'end', 'for x in [] do "x"end', 'for x in [] do "x" end'
-  it_behaves_like 'accept after', '.', 'begin end.inspect'
+  it_behaves_like 'accepts after', '.', 'begin end.inspect'
 
   it_behaves_like 'missing before', 'else', 'if a; ""else end', 'if a; "" else end'
   it_behaves_like 'missing after', 'else', 'if a; else"" end', 'if a; else "" end'
@@ -107,22 +107,22 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   it_behaves_like 'missing after', 'if', 'if""; end', 'if ""; end'
 
   it_behaves_like 'missing after', 'next', 'next""', 'next ""', [:ruby32, { unsupported_on: :prism }]
-  it_behaves_like 'accept after', '(', 'next(1)', [:ruby32, { unsupported_on: :prism }]
+  it_behaves_like 'accepts after', '(', 'next(1)', [:ruby32, { unsupported_on: :prism }]
 
   it_behaves_like 'missing after', 'not', 'not""', 'not ""'
-  it_behaves_like 'accept after', '(', 'not(1)'
+  it_behaves_like 'accepts after', '(', 'not(1)'
   it_behaves_like 'missing before', 'or', '1or 2', '1 or 2'
   it_behaves_like 'missing after', 'or', '1 or(2)', '1 or (2)'
 
   it_behaves_like 'missing before', 'rescue', '""rescue a', '"" rescue a'
   it_behaves_like 'missing after', 'rescue', 'a rescue""', 'a rescue ""'
-  it_behaves_like 'accept after', 'rescue', 'begin; rescue(Error); end', 'begin; rescue(Error); end'
+  it_behaves_like 'accepts after', 'rescue', 'begin; rescue(Error); end', 'begin; rescue(Error); end'
   it_behaves_like 'missing after', 'return', 'return""', 'return ""'
   it_behaves_like 'missing after', 'return', 'return(1)', 'return (1)'
   it_behaves_like 'missing after', 'super', 'super""', 'super ""'
-  it_behaves_like 'accept after', '(', 'super(1)'
+  it_behaves_like 'accepts after', '(', 'super(1)'
   it_behaves_like 'missing after', 'super', 'super{}', 'super {}'
-  it_behaves_like 'accept after', '(', 'defined?(1)'
+  it_behaves_like 'accepts after', '(', 'defined?(1)'
   it_behaves_like 'missing after', 'defined?', 'defined?1', 'defined? 1'
 
   it_behaves_like 'missing before', 'then', 'if ""then a end', 'if "" then a end'
@@ -145,85 +145,85 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   end
 
   context '>= Ruby 3.0', :ruby30 do
-    it_behaves_like 'accept before', '=>', '""=> a'
-    it_behaves_like 'accept after', '=>', 'a =>""'
+    it_behaves_like 'accepts before', '=>', '""=> a'
+    it_behaves_like 'accepts after', '=>', 'a =>""'
   end
 
   it_behaves_like 'missing before', 'while', '1while ""', '1 while ""'
   it_behaves_like 'missing after', 'while', '1 while""', '1 while ""'
 
   it_behaves_like 'missing after', 'yield', 'yield""', 'yield ""'
-  it_behaves_like 'accept after', '(', 'yield(1)'
+  it_behaves_like 'accepts after', '(', 'yield(1)'
 
-  it_behaves_like 'accept after', '+', '+begin end'
+  it_behaves_like 'accepts after', '+', '+begin end'
   it_behaves_like 'missing after', 'begin', 'begin+1 end', 'begin +1 end'
 
   # Common exceptions
-  it_behaves_like 'accept after', '\\', "test do\\\nend"
-  it_behaves_like 'accept after', '\n', "test do\nend"
+  it_behaves_like 'accepts after', '\\', "test do\\\nend"
+  it_behaves_like 'accepts after', '\n', "test do\nend"
 
-  it_behaves_like 'accept around', '()', '(next)', [:ruby32, { unsupported_on: :prism }]
-  it_behaves_like 'accept before', '!', '!yield'
-  it_behaves_like 'accept after', '.', 'yield.method'
-  it_behaves_like 'accept before', '!', '!yield.method'
+  it_behaves_like 'accepts around', '()', '(next)', [:ruby32, { unsupported_on: :prism }]
+  it_behaves_like 'accepts before', '!', '!yield'
+  it_behaves_like 'accepts after', '.', 'yield.method'
+  it_behaves_like 'accepts before', '!', '!yield.method'
 
-  it_behaves_like 'accept before', '!', '!super.method'
-  it_behaves_like 'accept after', '::', 'super::ModuleName'
+  it_behaves_like 'accepts before', '!', '!super.method'
+  it_behaves_like 'accepts after', '::', 'super::ModuleName'
 
   context '&.' do
-    it_behaves_like 'accept after', '&.', 'super&.foo'
-    it_behaves_like 'accept after', '&.', 'yield&.foo'
+    it_behaves_like 'accepts after', '&.', 'super&.foo'
+    it_behaves_like 'accepts after', '&.', 'yield&.foo'
   end
 
-  it_behaves_like 'accept after', '[', 'super[1]'
-  it_behaves_like 'accept after', '[', 'yield[1]'
+  it_behaves_like 'accepts after', '[', 'super[1]'
+  it_behaves_like 'accepts after', '[', 'yield[1]'
 
   # Layout/SpaceAroundBlockParameters
-  it_behaves_like 'accept before', '|', 'loop { |x|break }'
+  it_behaves_like 'accepts before', '|', 'loop { |x|break }'
 
   # Layout/SpaceInsideRangeLiteral
-  it_behaves_like 'accept before', '..', '1..super.size'
-  it_behaves_like 'accept before', '...', '1...super.size'
+  it_behaves_like 'accepts before', '..', '1..super.size'
+  it_behaves_like 'accepts before', '...', '1...super.size'
 
   # Layout/SpaceAroundOperators
-  it_behaves_like 'accept before', '=', 'a=begin end'
-  it_behaves_like 'accept before', '==', 'a==begin end'
-  it_behaves_like 'accept before', '+', 'a+begin end'
-  it_behaves_like 'accept before', '+', 'a+begin; end.method'
-  it_behaves_like 'accept before', '-', 'a-begin end'
-  it_behaves_like 'accept before', '*', 'a*begin end'
-  it_behaves_like 'accept before', '**', 'a**begin end'
-  it_behaves_like 'accept before', '/', 'a/begin end'
-  it_behaves_like 'accept before', '<', 'a<begin end'
-  it_behaves_like 'accept before', '>', 'a>begin end'
-  it_behaves_like 'accept before', '&&', 'a&&begin end'
-  it_behaves_like 'accept before', '||', 'a||begin end'
-  it_behaves_like 'accept before', '=*', 'a=*begin end'
+  it_behaves_like 'accepts before', '=', 'a=begin end'
+  it_behaves_like 'accepts before', '==', 'a==begin end'
+  it_behaves_like 'accepts before', '+', 'a+begin end'
+  it_behaves_like 'accepts before', '+', 'a+begin; end.method'
+  it_behaves_like 'accepts before', '-', 'a-begin end'
+  it_behaves_like 'accepts before', '*', 'a*begin end'
+  it_behaves_like 'accepts before', '**', 'a**begin end'
+  it_behaves_like 'accepts before', '/', 'a/begin end'
+  it_behaves_like 'accepts before', '<', 'a<begin end'
+  it_behaves_like 'accepts before', '>', 'a>begin end'
+  it_behaves_like 'accepts before', '&&', 'a&&begin end'
+  it_behaves_like 'accepts before', '||', 'a||begin end'
+  it_behaves_like 'accepts before', '=*', 'a=*begin end'
 
   # Layout/SpaceBeforeBlockBraces
-  it_behaves_like 'accept after', '{', 'loop{}'
+  it_behaves_like 'accepts after', '{', 'loop{}'
 
   # Layout/SpaceBeforeComma, Layout/SpaceAfterComma
-  it_behaves_like 'accept around', ',', 'a 1,foo,1'
+  it_behaves_like 'accepts around', ',', 'a 1,foo,1'
 
   # Layout/SpaceBeforeComment
-  it_behaves_like 'accept after', '#', 'next#comment', [:ruby32, { unsupported_on: :prism }]
+  it_behaves_like 'accepts after', '#', 'next#comment', [:ruby32, { unsupported_on: :prism }]
 
   # Layout/SpaceBeforeSemicolon, Layout/SpaceAfterSemicolon
-  it_behaves_like 'accept around', ';', 'test do;end'
+  it_behaves_like 'accepts around', ';', 'test do;end'
 
   # Layout/SpaceInsideArrayLiteralBrackets
-  it_behaves_like 'accept around', '[]', '[begin end]'
+  it_behaves_like 'accepts around', '[]', '[begin end]'
 
   # Layout/SpaceInsideBlockBraces
-  it_behaves_like 'accept around', '{}', 'loop {next}'
+  it_behaves_like 'accepts around', '{}', 'loop {next}'
 
   # Layout/SpaceInsideHashLiteralBraces
-  it_behaves_like 'accept around', '{}', '{a: begin end}'
+  it_behaves_like 'accepts around', '{}', '{a: begin end}'
 
   # Layout/SpaceInsideReferenceBrackets
-  it_behaves_like 'accept around', '[]', 'a[begin end]'
+  it_behaves_like 'accepts around', '[]', 'a[begin end]'
 
   # Layout/SpaceInsideStringInterpolation
-  it_behaves_like 'accept around', '{}', '"#{begin end}"'
+  it_behaves_like 'accepts around', '{}', '"#{begin end}"'
 end

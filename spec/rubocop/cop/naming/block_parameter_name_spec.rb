@@ -111,7 +111,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
   context 'with AllowNamesEndingInNumbers' do
     let(:cop_config) { { 'AllowNamesEndingInNumbers' => true } }
 
-    it 'accept params that end in numbers' do
+    it 'accepts params that end in numbers' do
       expect_no_offenses(<<~RUBY)
         something { |foo1, bar2, qux3| do_that_stuff }
       RUBY
