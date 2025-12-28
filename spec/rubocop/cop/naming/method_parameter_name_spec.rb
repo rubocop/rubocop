@@ -210,7 +210,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
   context 'with AllowNamesEndingInNumbers' do
     let(:cop_config) { { 'AllowNamesEndingInNumbers' => true } }
 
-    it 'accept parameters that end in numbers' do
+    it 'accepts parameters that end in numbers' do
       expect_no_offenses(<<~RUBY)
         def something(foo1, bar2, qux3)
           do_stuff

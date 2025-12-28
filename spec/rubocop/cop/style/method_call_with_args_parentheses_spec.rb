@@ -1146,7 +1146,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         expect_no_offenses('foo().bar(3).wait 4')
       end
 
-      it 'accept parens when previously chained sends have numblocks', :ruby27 do
+      it 'accepts parens when previously chained sends have numblocks', :ruby27 do
         expect_no_offenses(<<~RUBY)
           [a, b].map { _1.call 'something' }.uniq.join(' - ')
         RUBY

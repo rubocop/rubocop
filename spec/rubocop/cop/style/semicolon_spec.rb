@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
-  it 'accept semicolons inside strings' do
+  it 'accepts semicolons inside strings' do
     expect_no_offenses(<<~RUBY)
       string = ";
       multi-line string"

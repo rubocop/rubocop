@@ -119,6 +119,10 @@ Naming/InclusiveLanguage:
     ' and offense':
       Suggestions:
         - ' an offense'
+    accept:
+      Regex: !ruby/regexp /\Aaccept /
+      Suggestions:
+        - 'accepts '
     auto-correct:
       Suggestions:
         - autocorrect
