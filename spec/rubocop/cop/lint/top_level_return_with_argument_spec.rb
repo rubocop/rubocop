@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
       RUBY
     end
 
-    it 'expects multiple offense from the return with arguments' do
+    it 'expects multiple offenses from the return with arguments' do
       expect_offense(<<~RUBY)
         foo
         return 1, 2, 3 if 1 == 1
