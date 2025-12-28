@@ -49,14 +49,24 @@ module RuboCop
         diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode
 
         @runner.run(path, text, diagnostic_options, prism_result: prism_result)
+        processed_source = @runner.processed_source
+        config = @runner.config_for_working_directory
         @runner.offenses.map do |offense|
-          Diagnostic.new(
-            document_encoding, offense, path, @cop_registry[offense.cop_name]&.first
-          ).to_lsp_diagnostic(@runner.config_for_working_directory)
+          build_diagnostic(offense, path, document_encoding, processed_source, config)
         end
       end
 
       private
+
+      def build_diagnostic(offense, path, document_encoding, processed_source, config)
+        Diagnostic.new(
+          document_encoding,
+          offense,
+          path,
+          @cop_registry[offense.cop_name]&.first,
+          processed_source
+        ).to_lsp_diagnostic(config)
+      end
 
       def config_only_options
         only_options = []
