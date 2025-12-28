@@ -1005,7 +1005,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
-  it 'registers two offense for void literals in an `ensure`' do
+  it 'registers two offenses for void literals in an `ensure`' do
     expect_offense(<<~RUBY)
       def foo
       ensure

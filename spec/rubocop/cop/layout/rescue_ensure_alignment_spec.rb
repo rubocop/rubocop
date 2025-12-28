@@ -1184,7 +1184,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           RUBY
         end
 
-        it 'correct alignment' do
+        it 'corrects alignment' do
           expect_no_offenses(<<~RUBY)
             #{modifier} def test
               'foo'
@@ -1215,7 +1215,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           RUBY
         end
 
-        it 'correct alignment' do
+        it 'corrects alignment' do
           expect_no_offenses(<<~RUBY)
             #{modifier} def Test.test
               'foo'
@@ -1246,7 +1246,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           RUBY
         end
 
-        it 'correct alignment' do
+        it 'corrects alignment' do
           expect_no_offenses(<<~RUBY)
             #{modifier} def test
               'foo'
@@ -1277,7 +1277,7 @@ RSpec.describe RuboCop::Cop::Layout::RescueEnsureAlignment, :config do
           RUBY
         end
 
-        it 'correct alignment' do
+        it 'corrects alignment' do
           expect_no_offenses(<<~RUBY)
             #{modifier} def Test.test
               'foo'

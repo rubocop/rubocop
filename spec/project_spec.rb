@@ -172,7 +172,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
   describe 'cop message' do
     let(:cops) { RuboCop::Cop::Registry.all }
 
-    it 'end with a period or a question mark' do
+    it 'ends with a period or a question mark' do
       cops.each do |cop|
         begin
           msg = cop.const_get(:MSG)
