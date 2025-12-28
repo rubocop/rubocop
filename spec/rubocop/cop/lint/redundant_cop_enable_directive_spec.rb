@@ -21,7 +21,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
     end
   end
 
-  it 'registers offense and corrects unnecessary enable' do
+  it 'registers an offense and corrects unnecessary enable' do
     expect_offense(<<~RUBY)
       foo
       # rubocop:enable Layout/LineLength
@@ -97,7 +97,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
     RUBY
   end
 
-  it 'registers offense and corrects redundant enabling of same cop' do
+  it 'registers an offense and corrects redundant enabling of same cop' do
     expect_offense(<<~RUBY)
       # rubocop:disable Layout/LineLength
       fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
@@ -122,7 +122,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
   end
 
   context 'all switch' do
-    it 'registers offense and corrects unnecessary enable all' do
+    it 'registers an offense and corrects unnecessary enable all' do
       expect_offense(<<~RUBY)
         foo
         # rubocop:enable all
@@ -248,7 +248,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
   end
 
   context 'when all department enabled' do
-    it 'registers offense and corrects unnecessary enable' do
+    it 'registers an offense and corrects unnecessary enable' do
       expect_offense(<<~RUBY)
         foo
         # rubocop:enable Layout
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
       RUBY
     end
 
-    it 'registers offense and corrects redundant enabling of same department' do
+    it 'registers an offense and corrects redundant enabling of same department' do
       expect_offense(<<~RUBY)
         # rubocop:disable Layout
         fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
@@ -331,7 +331,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
       RUBY
     end
 
-    it 'registers offense and corrects redundant enabling of cop of same department' do
+    it 'registers an offense and corrects redundant enabling of cop of same department' do
       expect_offense(<<~RUBY)
         # rubocop:disable Layout
         fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr
@@ -346,7 +346,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
       RUBY
     end
 
-    it 'registers offense and corrects redundant enabling of department of same cop' do
+    it 'registers an offense and corrects redundant enabling of department of same cop' do
       expect_offense(<<~RUBY)
         # rubocop:disable Layout/LineLength
         fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo = barrrrrrrrrrrrrrrrrrrrrrrrrr

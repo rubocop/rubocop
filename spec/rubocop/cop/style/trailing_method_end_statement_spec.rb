@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
   let(:config) { RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 2 }) }
 
-  it 'registers offense with trailing end on 2 line method' do
+  it 'registers an offense with trailing end on 2 line method' do
     expect_offense(<<~RUBY)
       def some_method
       foo; end
@@ -17,7 +17,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
     RUBY
   end
 
-  it 'registers offense with trailing end on 3 line method' do
+  it 'registers an offense with trailing end on 3 line method' do
     expect_offense(<<~RUBY)
       def a
         b
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
     RUBY
   end
 
-  it 'registers offense with trailing end on method with comment' do
+  it 'registers an offense with trailing end on method with comment' do
     expect_offense(<<~RUBY)
       def c
         b = calculation
@@ -49,7 +49,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
     RUBY
   end
 
-  it 'registers offense with trailing end on method with block' do
+  it 'registers an offense with trailing end on method with block' do
     expect_offense(<<~RUBY)
       def d
         block do
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
     RUBY
   end
 
-  it 'registers offense with trailing end inside class' do
+  it 'registers an offense with trailing end inside class' do
     expect_offense(<<~RUBY)
       class Foo
         def some_method

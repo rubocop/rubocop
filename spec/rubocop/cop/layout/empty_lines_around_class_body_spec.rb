@@ -183,7 +183,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offense for namespace body starting with a blank' do
+      it 'registers an offense for namespace body starting with a blank' do
         expect_offense(<<~RUBY)
           class Parent
 
@@ -197,7 +197,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offense for namespace body ending with a blank' do
+      it 'registers an offense for namespace body ending with a blank' do
         expect_offense(<<~RUBY)
           class Parent
             class Child
@@ -273,7 +273,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offense for namespace body starting with a blank' do
+      it 'registers an offense for namespace body starting with a blank' do
         expect_offense(<<~RUBY)
           class Parent
 
@@ -285,7 +285,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundClassBody, :config do
         RUBY
       end
 
-      it 'registers offense for namespace body ending with a blank' do
+      it 'registers an offense for namespace body ending with a blank' do
         expect_offense(<<~RUBY)
           class Parent
             module Child

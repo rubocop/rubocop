@@ -381,7 +381,7 @@ RSpec.describe RuboCop::Cop::Layout::AccessModifierIndentation, :config do
   context 'when EnforcedStyle is set to outdent' do
     let(:cop_config) { { 'EnforcedStyle' => 'outdent' } }
 
-    it 'registers offense and corrects private indented to method depth in a class' do
+    it 'registers an offense and corrects private indented to method depth in a class' do
       expect_offense(<<~RUBY)
         class Test
 

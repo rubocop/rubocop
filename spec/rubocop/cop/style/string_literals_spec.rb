@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
   context 'configured with single quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
-    it 'registers offense for double quotes when single quotes suffice' do
+    it 'registers an offense for double quotes when single quotes suffice' do
       expect_offense(<<~'RUBY')
         s = "abc"
             ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
     end
 
-    it 'registers offense for correct + opposite' do
+    it 'registers an offense for correct + opposite' do
       expect_offense(<<~RUBY)
         s = "abc"
             ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
@@ -190,7 +190,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
   context 'configured with double quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'double_quotes' } }
 
-    it 'registers offense for single quotes when double quotes would be equivalent' do
+    it 'registers an offense for single quotes when double quotes would be equivalent' do
       expect_offense(<<~RUBY)
         s = 'abc'
             ^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
@@ -202,7 +202,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
     end
 
-    it 'registers offense for opposite + correct' do
+    it 'registers an offense for opposite + correct' do
       expect_offense(<<~RUBY)
         s = "abc"
         x = 'abc'
@@ -216,7 +216,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
     end
 
-    it 'registers offense for escaped single quote in single quotes' do
+    it 'registers an offense for escaped single quote in single quotes' do
       expect_offense(<<~'RUBY')
         '\''
         ^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.

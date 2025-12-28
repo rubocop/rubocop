@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationLeadingSpace, :config do
       RUBY
     end
 
-    it 'registers offense in the right location when 1st line is not the string' do
+    it 'registers an offense in the right location when 1st line is not the string' do
       expect_offense(<<~'RUBY')
         something_unrelated_to_the_line_continuation_below
         'this text is too' \
@@ -264,7 +264,7 @@ RSpec.describe RuboCop::Cop::Layout::LineContinuationLeadingSpace, :config do
       RUBY
     end
 
-    it 'registers offense in the right location when 1st line is not the string' do
+    it 'registers an offense in the right location when 1st line is not the string' do
       expect_offense(<<~'RUBY')
         something_unrelated_to_the_line_continuation_below
         'this text is too ' \

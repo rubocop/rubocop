@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     RUBY
   end
 
-  it 'registers offense when frozen_string_literal used with shareable_constant_value without empty line' do
+  it 'registers an offense when frozen_string_literal used with shareable_constant_value without empty line' do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       # shareable_constant_value: none

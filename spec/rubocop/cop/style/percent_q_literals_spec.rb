@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
         expect_no_offenses('%q(hi)')
       end
 
-      it 'registers offense for %Q' do
+      it 'registers an offense for %Q' do
         expect_offense(<<~RUBY)
           %Q(hi)
           ^^^ Do not use `%Q` unless interpolation is needed. Use `%q`.
@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Style::PercentQLiterals, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'upper_case_q' } }
 
     context 'without interpolation' do
-      it 'registers offense for %q' do
+      it 'registers an offense for %q' do
         expect_offense(<<~RUBY)
           %q(hi)
           ^^^ Use `%Q` instead of `%q`.

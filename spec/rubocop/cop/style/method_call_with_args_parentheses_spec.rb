@@ -1112,7 +1112,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         }
       end
 
-      it 'registers offense for single-line chaining without previous parens' do
+      it 'registers an offense for single-line chaining without previous parens' do
         expect_offense(<<~RUBY)
           Rails.convoluted.example.logger.error("something")
                                                ^^^^^^^^^^^^^ Omit parentheses for method calls with arguments.
@@ -1123,7 +1123,7 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithArgsParentheses, :config do
         RUBY
       end
 
-      it 'registers offense for multi-line chaining without previous parens' do
+      it 'registers an offense for multi-line chaining without previous parens' do
         expect_offense(<<~RUBY)
           Rails
             .convoluted

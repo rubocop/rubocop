@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::Cop, :config do
   describe 'for a cop with a name' do
     let(:cop_class) { RuboCop::Cop::Style::For }
 
-    it 'registers offense with its name' do
+    it 'registers an offense with its name' do
       offenses = cop.add_offense(location, message: 'message')
       expect(offenses.first.cop_name).to eq('Style/For')
     end

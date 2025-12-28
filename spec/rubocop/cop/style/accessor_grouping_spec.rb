@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
       RUBY
     end
 
-    it 'registers offense and corrects if at least two separate accessors without comments' do
+    it 'registers an offense and corrects if at least two separate accessors without comments' do
       expect_offense(<<~RUBY)
         class Foo
           # @return [String] value of foo

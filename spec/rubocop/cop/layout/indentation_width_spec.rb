@@ -161,7 +161,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
-      it 'registers offense for bad indentation of ternary inside else' do
+      it 'registers an offense for bad indentation of ternary inside else' do
         expect_offense(<<~RUBY)
           if a
             b
@@ -172,7 +172,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
-      it 'registers offense for bad indentation of modifier if in else' do
+      it 'registers an offense for bad indentation of modifier if in else' do
         expect_offense(<<~RUBY)
           if a
             b

@@ -175,7 +175,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
     RUBY
   end
 
-  it 'registers offense for non-empty class with frozen string comment' do
+  it 'registers an offense for non-empty class with frozen string comment' do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       class MyClass
@@ -307,7 +307,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
       end
     end
 
-    it 'registers offense with custom macro' do
+    it 'registers an offense with custom macro' do
       expect_offense(<<~RUBY)
         class Foo < ApplicationRecord
         ^^^^^^^^^ Missing top-level documentation comment for `class Foo`.
@@ -352,7 +352,7 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
         RUBY
       end
 
-      it 'registers offense for include statement with other methods' do
+      it 'registers an offense for include statement with other methods' do
         expect_offense(<<~RUBY)
           module Foo
           ^^^^^^^^^^ Missing top-level documentation comment for `module Foo`.

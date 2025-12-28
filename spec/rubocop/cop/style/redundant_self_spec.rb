@@ -192,7 +192,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
   end
 
   context 'Ruby 2.7', :ruby27 do
-    it 'registers offense for self usage in numblocks' do
+    it 'registers an offense for self usage in numblocks' do
       expect_offense(<<~RUBY)
         %w[x y z].select do
           self.axis == _1
@@ -209,7 +209,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
   end
 
   context 'Ruby 3.4', :ruby34 do
-    it 'registers offense for self usage in itblocks' do
+    it 'registers an offense for self usage in itblocks' do
       expect_offense(<<~RUBY)
         %w[x y z].select do
           self.axis == it

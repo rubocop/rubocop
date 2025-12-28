@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Style::UnpackFirst, :config do
   context 'ruby version >= 2.4', :ruby24 do
-    context 'registers offense' do
+    context 'registers an offense' do
       it 'when using `#unpack` with `#first`' do
         expect_offense(<<~RUBY)
           x.unpack('h*').first

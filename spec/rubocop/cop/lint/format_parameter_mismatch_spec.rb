@@ -77,7 +77,7 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
     expect_no_offenses('format(A_CONST, 1, 2, 3)')
   end
 
-  it 'registers offense with sprintf' do
+  it 'registers an offense with sprintf' do
     expect_offense(<<~RUBY)
       sprintf("%s %s", 1, 2, 3)
       ^^^^^^^ Number of arguments (3) to `sprintf` doesn't match the number of fields (2).

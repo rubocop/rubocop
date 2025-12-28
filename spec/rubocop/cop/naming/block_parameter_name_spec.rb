@@ -23,14 +23,14 @@ RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
     RUBY
   end
 
-  it 'registers offense when param ends in number' do
+  it 'registers an offense when param ends in number' do
     expect_offense(<<~RUBY)
       something { |foo1, bar| do_stuff }
                    ^^^^ Do not end block parameter with a number.
     RUBY
   end
 
-  it 'registers offense when param is less than minimum length' do
+  it 'registers an offense when param is less than minimum length' do
     expect_offense(<<~RUBY)
       something do |x|
                     ^ Block parameter must be at least 2 characters long.
@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
     RUBY
   end
 
-  it 'registers offense when param with prefix is less than minimum length' do
+  it 'registers an offense when param with prefix is less than minimum length' do
     expect_offense(<<~RUBY)
       something do |_a, __b, *c, **__d|
                     ^^ Block parameter must be at least 2 characters long.
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
     RUBY
   end
 
-  it 'registers offense when param contains uppercase characters' do
+  it 'registers an offense when param contains uppercase characters' do
     expect_offense(<<~RUBY)
       something { |number_One| do_stuff }
                    ^^^^^^^^^^ Only use lowercase characters for block parameter.
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
   context 'with ForbiddenNames' do
     let(:cop_config) { { 'ForbiddenNames' => %w[arg] } }
 
-    it 'registers offense for param listed as forbidden' do
+    it 'registers an offense for param listed as forbidden' do
       expect_offense(<<~RUBY)
         something { |arg| do_stuff }
                      ^^^ Do not use arg as a name for a block parameter.

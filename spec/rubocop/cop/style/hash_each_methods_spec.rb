@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
   context 'when node matches a keys#each or values#each' do
     context 'when receiver is a send' do
-      it 'registers offense, autocorrects foo#keys.each to foo#each_key' do
+      it 'registers an offense autocorrects foo#keys.each to foo#each_key' do
         expect_offense(<<~RUBY)
           foo.keys.each { |k| p k }
               ^^^^^^^^^ Use `each_key` instead of `keys.each`.
@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects `foo&.keys&.each` to `foo&.each_key`' do
+      it 'registers an offense autocorrects `foo&.keys&.each` to `foo&.each_key`' do
         expect_offense(<<~RUBY)
           foo&.keys&.each { |k| p k }
                ^^^^^^^^^^ Use `each_key` instead of `keys&.each`.
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects foo#values.each to foo#each_value' do
+      it 'registers an offense autocorrects foo#values.each to foo#each_value' do
         expect_offense(<<~RUBY)
           foo.values.each { |v| p v }
               ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects `foo&.values&.each` to `foo&.each_value`' do
+      it 'registers an offense autocorrects `foo&.values&.each` to `foo&.each_value`' do
         expect_offense(<<~RUBY)
           foo&.values&.each { |v| p v }
                ^^^^^^^^^^^^ Use `each_value` instead of `values&.each`.
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects foo#keys.each to foo#each_key with a symbol proc argument' do
+      it 'registers an offense autocorrects foo#keys.each to foo#each_key with a symbol proc argument' do
         expect_offense(<<~RUBY)
           foo.keys.each(&:bar)
               ^^^^^^^^^ Use `each_key` instead of `keys.each`.
@@ -58,7 +58,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects foo#values.each to foo#each_value with a symbol proc argument' do
+      it 'registers an offense autocorrects foo#values.each to foo#each_value with a symbol proc argument' do
         expect_offense(<<~RUBY)
           foo.values.each(&:bar)
               ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
@@ -316,7 +316,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
       end
 
       context 'Ruby 2.7', :ruby27 do
-        it 'registers offense, autocorrects foo#keys.each to foo#each_key with numblock' do
+        it 'registers an offense autocorrects foo#keys.each to foo#each_key with numblock' do
           expect_offense(<<~RUBY)
             foo.keys.each { p _1 }
                 ^^^^^^^^^ Use `each_key` instead of `keys.each`.
@@ -329,7 +329,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
       end
 
       context 'Ruby 3.4', :ruby34 do
-        it 'registers offense, autocorrects foo#keys.each to foo#each_key with itblock' do
+        it 'registers an offense autocorrects foo#keys.each to foo#each_key with itblock' do
           expect_offense(<<~RUBY)
             foo.keys.each { p it }
                 ^^^^^^^^^ Use `each_key` instead of `keys.each`.
@@ -343,7 +343,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
     end
 
     context 'when receiver is a hash literal' do
-      it 'registers offense, autocorrects {}#keys.each with {}#each_key' do
+      it 'registers an offense autocorrects {}#keys.each with {}#each_key' do
         expect_offense(<<~RUBY)
           {}.keys.each { |k| p k }
              ^^^^^^^^^ Use `each_key` instead of `keys.each`.
@@ -354,7 +354,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects {}#values.each with {}#each_value' do
+      it 'registers an offense autocorrects {}#values.each with {}#each_value' do
         expect_offense(<<~RUBY)
           {}.values.each { |k| p k }
              ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
@@ -365,7 +365,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects {}#keys.each to {}#each_key with a symbol proc argument' do
+      it 'registers an offense autocorrects {}#keys.each to {}#each_key with a symbol proc argument' do
         expect_offense(<<~RUBY)
           {}.keys.each(&:bar)
              ^^^^^^^^^ Use `each_key` instead of `keys.each`.
@@ -376,7 +376,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects `{}&.keys&.each` to `{}&.each_key` with a symbol proc argument' do
+      it 'registers an offense autocorrects `{}&.keys&.each` to `{}&.each_key` with a symbol proc argument' do
         expect_offense(<<~RUBY)
           {}&.keys&.each(&:bar)
               ^^^^^^^^^^ Use `each_key` instead of `keys&.each`.
@@ -387,7 +387,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects {}#values.each to {}#each_value with a symbol proc argument' do
+      it 'registers an offense autocorrects {}#values.each to {}#each_value with a symbol proc argument' do
         expect_offense(<<~RUBY)
           {}.values.each(&:bar)
              ^^^^^^^^^^^ Use `each_value` instead of `values.each`.
@@ -398,7 +398,7 @@ RSpec.describe RuboCop::Cop::Style::HashEachMethods, :config do
         RUBY
       end
 
-      it 'registers offense, autocorrects `{}&.values.each` to `{}&.each_value` with a symbol proc argument' do
+      it 'registers an offense autocorrects `{}&.values.each` to `{}&.each_value` with a symbol proc argument' do
         expect_offense(<<~RUBY)
           {}&.values&.each(&:bar)
               ^^^^^^^^^^^^ Use `each_value` instead of `values&.each`.

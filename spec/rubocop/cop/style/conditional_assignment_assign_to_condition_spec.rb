@@ -1624,7 +1624,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
         RUBY
       end
 
-      it 'registers offense for multiple assignment in if elsif elsif else' do
+      it 'registers an offense for multiple assignment in if elsif elsif else' do
         expect_offense(<<~RUBY)
           if baz
           ^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1661,7 +1661,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
 
       it_behaves_like 'allows out of order multiple assignment in if elsif else'
 
-      it 'registers offense for multiple assignment in unless else' do
+      it 'registers an offense for multiple assignment in unless else' do
         expect_offense(<<~RUBY)
           unless baz
           ^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1684,7 +1684,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
         RUBY
       end
 
-      it 'registers offense for multiple assignments in case when with only one when' do
+      it 'registers an offense for multiple assignments in case when with only one when' do
         expect_offense(<<~RUBY)
           case foo
           ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
@@ -1709,7 +1709,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
         RUBY
       end
 
-      it 'registers offense for multiple assignments in case when with multiple whens' do
+      it 'registers an offense for multiple assignments in case when with multiple whens' do
         expect_offense(<<~RUBY)
           case foo
           ^^^^^^^^ Use the return of the conditional for variable assignment and comparison.

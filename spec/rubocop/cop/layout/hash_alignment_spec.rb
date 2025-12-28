@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
   context 'always inspect last argument hash' do
     let(:cop_config) { { 'EnforcedLastArgumentHashStyle' => 'always_inspect' } }
 
-    it 'registers offense and corrects misaligned keys in implicit hash' do
+    it 'registers an offense and corrects misaligned keys in implicit hash' do
       expect_offense(<<~RUBY)
         func(a: 0,
           b: 1)
@@ -81,7 +81,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
       RUBY
     end
 
-    it 'registers offense and corrects misaligned keys in explicit hash' do
+    it 'registers an offense and corrects misaligned keys in explicit hash' do
       expect_offense(<<~RUBY)
         func({a: 0,
           b: 1})
@@ -173,7 +173,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     end
 
     context 'when using hash value omission', :ruby31 do
-      it 'registers offense and corrects misaligned keys in implicit hash' do
+      it 'registers an offense and corrects misaligned keys in implicit hash' do
         expect_offense(<<~RUBY)
           func(a:,
             b:)
@@ -186,7 +186,7 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
         RUBY
       end
 
-      it 'registers offense and corrects misaligned keys in explicit hash' do
+      it 'registers an offense and corrects misaligned keys in explicit hash' do
         expect_offense(<<~RUBY)
           func({a:,
             b:})

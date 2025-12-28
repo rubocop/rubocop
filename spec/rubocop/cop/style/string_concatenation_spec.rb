@@ -259,7 +259,7 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
   end
 
   context 'empty quotes' do
-    it 'registers offense and corrects' do
+    it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
         '"' + "foo" + '"'
         ^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
@@ -353,7 +353,7 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
     end
 
     context 'when first operand is string literal' do
-      it 'registers offense' do
+      it 'registers an offense' do
         expect_offense(<<~RUBY)
           "Hello " + user.name
           ^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.

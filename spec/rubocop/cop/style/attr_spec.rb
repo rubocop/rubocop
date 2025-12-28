@@ -10,7 +10,7 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
     RUBY
   end
 
-  it 'registers offense for attr within class_eval' do
+  it 'registers an offense for attr within class_eval' do
     expect_offense(<<~RUBY)
       SomeClass.class_eval do
         attr :name
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::Attr, :config do
     RUBY
   end
 
-  it 'registers offense for attr within module_eval' do
+  it 'registers an offense for attr within module_eval' do
     expect_offense(<<~RUBY)
       SomeClass.module_eval do
         attr :name

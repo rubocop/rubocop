@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnClass, :config do
     RUBY
   end
 
-  it 'registers offense with multi-line class' do
+  it 'registers an offense with multi-line class' do
     expect_offense(<<~RUBY)
       class Foo; body
                  ^^^^ Place the first line of class body on its own line.

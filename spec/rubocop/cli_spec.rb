@@ -952,7 +952,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       %w[class module].each do |parent|
-        it "registers offense for normal indentation in #{parent}" do
+        it "registers an offense for normal indentation in #{parent}" do
           create_file('.rubocop.yml', <<~YAML)
             Layout/IndentationConsistency:
               EnforcedStyle: indented_internal_methods
