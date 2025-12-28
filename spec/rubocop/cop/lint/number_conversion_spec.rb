@@ -169,7 +169,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
   end
 
   context 'to_method in symbol form' do
-    it 'registers offense and autocorrects' do
+    it 'registers an offense and autocorrects' do
       expect_offense(<<~RUBY)
         "1,2,3,foo,5,6,7,8".split(',').map(&:to_i)
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `&:to_i`, use stricter `{ |i| Integer(i, 10) }`.
@@ -180,7 +180,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
-    it 'registers offense and autocorrects when using safe navigation operator' do
+    it 'registers an offense and autocorrects when using safe navigation operator' do
       expect_offense(<<~RUBY)
         "1,2,3,foo,5,6,7,8".split(',')&.map(&:to_i)
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `&:to_i`, use stricter `{ |i| Integer(i, 10) }`.
@@ -191,7 +191,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
-    it 'registers offense and autocorrects without parentheses' do
+    it 'registers an offense and autocorrects without parentheses' do
       expect_offense(<<~RUBY)
         "1,2,3,foo,5,6,7,8".split(',').map &:to_i
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `&:to_i`, use stricter `{ |i| Integer(i, 10) }`.
@@ -202,7 +202,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
-    it 'registers offense with try' do
+    it 'registers an offense with try' do
       expect_offense(<<~RUBY)
         "foo".try(:to_f)
         ^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `:to_f`, use stricter `{ |i| Float(i) }`.
@@ -213,7 +213,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
-    it 'registers offense with `&.try`' do
+    it 'registers an offense with `&.try`' do
       expect_offense(<<~RUBY)
         "foo"&.try(:to_f)
         ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `:to_f`, use stricter `{ |i| Float(i) }`.
@@ -275,7 +275,7 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
-    it 'registers offense with send' do
+    it 'registers an offense with send' do
       expect_offense(<<~RUBY)
         "foo".send(:to_c)
         ^^^^^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `:to_c`, use stricter `{ |i| Complex(i) }`.

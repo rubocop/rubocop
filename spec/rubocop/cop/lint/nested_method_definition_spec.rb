@@ -500,7 +500,7 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
       RUBY
     end
 
-    it 'registers offense for nested definition inside `denied_method`' do
+    it 'registers an offense for nested definition inside `denied_method`' do
       expect_offense(<<~RUBY)
         def do_something
           denied_method :articles do
@@ -529,7 +529,7 @@ RSpec.describe RuboCop::Cop::Lint::NestedMethodDefinition, :config do
       RUBY
     end
 
-    it 'registers offense for nested definition inside `do_qux`' do
+    it 'registers an offense for nested definition inside `do_qux`' do
       expect_offense(<<~RUBY)
         def foo(obj)
           obj.do_qux do

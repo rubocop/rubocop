@@ -513,7 +513,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       RuboCop::Config.new('Lint/Void' => { 'CheckForMethodsWithNoSideEffects' => true })
     end
 
-    it 'registers offense for nonmutating method that takes a block' do
+    it 'registers an offense for nonmutating method that takes a block' do
       expect_offense(<<~RUBY)
         [1,2,3].collect do |n|
         ^^^^^^^^^^^^^^^^^^^^^^ Method `#collect` used in void context. Did you mean `#each`?
@@ -531,7 +531,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     end
 
     context 'Ruby 2.7', :ruby27 do
-      it 'registers offense for nonmutating method that takes a numbered parameter block' do
+      it 'registers an offense for nonmutating method that takes a numbered parameter block' do
         expect_offense(<<~RUBY)
           [1,2,3].map do
           ^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#each`?
@@ -550,7 +550,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     end
 
     context 'Ruby 3.4', :ruby34 do
-      it 'registers offense for nonmutating method that takes an `it` parameter block' do
+      it 'registers an offense for nonmutating method that takes an `it` parameter block' do
         expect_offense(<<~RUBY)
           [1,2,3].map do
           ^^^^^^^^^^^^^^ Method `#map` used in void context. Did you mean `#each`?
@@ -1121,7 +1121,7 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
-  it 'registers offense when using special __ENCODING__' do
+  it 'registers an offense when using special __ENCODING__' do
     expect_offense(<<~RUBY)
       def foo
         __ENCODING__

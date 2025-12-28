@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       expect_no_offenses('a[ ]')
     end
 
-    it 'registers offense and corrects empty brackets with no space inside' do
+    it 'registers an offense and corrects empty brackets with no space inside' do
       expect_offense(<<~RUBY)
         foo[]
            ^^ Use one space inside empty reference brackets.
@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers offense and corrects empty brackets with more than one space inside' do
+    it 'registers an offense and corrects empty brackets with more than one space inside' do
       expect_offense(<<~RUBY)
         a[      ]
          ^^^^^^^^ Use one space inside empty reference brackets.
@@ -72,7 +72,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideReferenceBrackets, :config do
       RUBY
     end
 
-    it 'registers offense and corrects empty brackets with newline inside' do
+    it 'registers an offense and corrects empty brackets with newline inside' do
       expect_offense(<<~RUBY)
         a[
          ^ Use one space inside empty reference brackets.

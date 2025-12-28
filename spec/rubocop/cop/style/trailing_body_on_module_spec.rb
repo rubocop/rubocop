@@ -35,7 +35,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
     RUBY
   end
 
-  it 'registers offense with multi-line module' do
+  it 'registers an offense with multi-line module' do
     expect_offense(<<~RUBY)
       module Foo body
                  ^^^^ Place the first line of module body on its own line.
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingBodyOnModule, :config do
     RUBY
   end
 
-  it 'registers offense when module definition uses semicolon' do
+  it 'registers an offense when module definition uses semicolon' do
     expect_offense(<<~RUBY)
       module Foo; do_stuff
                   ^^^^^^^^ Place the first line of module body on its own line.

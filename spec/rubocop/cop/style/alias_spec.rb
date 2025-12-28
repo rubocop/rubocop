@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
       RUBY
     end
 
-    it 'register an offense for alias_method when calling with no arguments' do
+    it 'does not register an offense for alias_method when calling with no arguments' do
       expect_no_offenses('alias_method')
     end
 

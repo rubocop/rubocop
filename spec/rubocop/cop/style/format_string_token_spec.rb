@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       end
 
       if correctable_sequence
-        it 'registers offense for dual unannotated' do
+        it 'registers an offense for dual unannotated' do
           expect_offense(<<~RUBY)
             format('%#{token} %s', foo, bar)
                     ^^ Prefer [...]

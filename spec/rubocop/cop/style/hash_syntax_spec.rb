@@ -26,7 +26,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
       let(:cop_config_overrides) { {} }
 
-      it 'registers offense for hash rocket syntax when new is possible' do
+      it 'registers an offense for hash rocket syntax when new is possible' do
         expect_offense(<<~RUBY)
           x = { :a => 0, :b   =>  2}
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
@@ -140,7 +140,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_no_offenses('x = { :[] => 0 }')
       end
 
-      it 'registers offense when keys start with an uppercase letter' do
+      it 'registers an offense when keys start with an uppercase letter' do
         expect_offense(<<~RUBY)
           x = { :A => 0 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
@@ -369,7 +369,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
       }
     end
 
-    it 'registers offense for Ruby 1.9 style' do
+    it 'registers an offense for Ruby 1.9 style' do
       expect_offense(<<~RUBY)
         x = { a: 0, b: 2}
               ^^ Use hash rockets syntax.
@@ -454,7 +454,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_no_offenses('x = { a: 0, b: 1 }')
       end
 
-      it 'registers offense for hash rocket syntax when new is possible' do
+      it 'registers an offense for hash rocket syntax when new is possible' do
         expect_offense(<<~RUBY)
           x = { :a => 0, :b => 2 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.
@@ -634,7 +634,7 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         expect_no_offenses('x = { a: 0, b: 1 }')
       end
 
-      it 'registers offense for hash rocket syntax when new is possible' do
+      it 'registers an offense for hash rocket syntax when new is possible' do
         expect_offense(<<~RUBY)
           x = { :a => 0, :b => 2 }
                 ^^^^^ Use the new Ruby 1.9 hash syntax.

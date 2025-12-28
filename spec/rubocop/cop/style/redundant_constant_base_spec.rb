@@ -50,7 +50,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
   end
 
   context 'with prefixed constant in sclass' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         class << self
           ::Bar
@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
   end
 
   context 'with prefixed constant as super class' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         class Foo < ::Bar
                     ^^ Remove redundant `::`.
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
   end
 
   context 'with prefixed constant and prefixed super class' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         class Foo < ::Bar
                     ^^ Remove redundant `::`.

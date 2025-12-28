@@ -22,21 +22,21 @@ RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral, :config do
     expect_no_offenses('%w[1%+ 2]')
   end
 
-  it 'registers offense for nested percent literals' do
+  it 'registers an offense for nested percent literals' do
     expect_offense(<<~RUBY)
       %i[a b %i[c d] xyz]
       ^^^^^^^^^^^^^^^^^^^ Within percent literals, nested percent literals do not function and may be unwanted in the result.
     RUBY
   end
 
-  it 'registers offense for repeated nested percent literals' do
+  it 'registers an offense for repeated nested percent literals' do
     expect_offense(<<~RUBY)
       %i[a b %i[c d] %i[xyz]]
       ^^^^^^^^^^^^^^^^^^^^^^^ Within percent literals, nested percent literals do not function and may be unwanted in the result.
     RUBY
   end
 
-  it 'registers offense for multiply nested percent literals' do
+  it 'registers an offense for multiply nested percent literals' do
     # TODO: This emits only one offense for the entire snippet, though it
     # would be more correct to emit two offenses. This is tricky to fix, as
     # the AST parses %i[b, %i[c, and d]] as separate tokens.
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral, :config do
       expect_no_offenses('%W[\xff]')
     end
 
-    it 'registers offense for nested percent literal' do
+    it 'registers an offense for nested percent literal' do
       expect_offense(<<~RUBY)
         %W[\\xff %W[]]
         ^^^^^^^^^^^^^ Within percent literals, nested percent literals do not function and may be unwanted in the result.

@@ -432,7 +432,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   context 'EmptyLineBetweenClassDefs' do
-    it 'registers offense when no empty lines between class and method definitions' do
+    it 'registers an offense when no empty lines between class and method definitions' do
       expect_offense(<<~RUBY)
         class Foo
         end
@@ -484,7 +484,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   context 'EmptyLineBetweenModuleDefs' do
-    it 'registers offense when no empty lines between module and method definitions' do
+    it 'registers an offense when no empty lines between module and method definitions' do
       expect_offense(<<~RUBY)
         module Foo
         end
@@ -525,7 +525,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
   end
 
   context 'when empty lines between classes and modules together' do
-    it 'registers offense when no empty lines between module and method definitions' do
+    it 'registers an offense when no empty lines between module and method definitions' do
       expect_offense(<<~RUBY)
         class Foo
         end
@@ -668,7 +668,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       }
     end
 
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         foo 'first foo' do
           #foo body
@@ -690,7 +690,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       RUBY
     end
 
-    it 'registers offense if next to method' do
+    it 'registers an offense if next to method' do
       expect_offense(<<~RUBY)
         def foo_first_foo
           #foo body
@@ -712,7 +712,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       RUBY
     end
 
-    it 'registers offense if next to numblock' do
+    it 'registers an offense if next to numblock' do
       expect_offense(<<~RUBY)
         foo 'first foo' do
           #foo body
@@ -734,7 +734,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       RUBY
     end
 
-    it 'registers offense if next to itblock', :ruby34 do
+    it 'registers an offense if next to itblock', :ruby34 do
       expect_offense(<<~RUBY)
         foo 'first foo' do
           #foo body

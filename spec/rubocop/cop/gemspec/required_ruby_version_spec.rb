@@ -31,7 +31,7 @@ RSpec.describe RuboCop::Cop::Gemspec::RequiredRubyVersion, :config do
       RUBY
     end
 
-    it 'recognizes Gem::Requirement and registers offense' do
+    it 'recognizes Gem::Requirement and registers an offense' do
       expect_offense(<<~RUBY, '/path/to/foo.gemspec')
         Gem::Specification.new do |spec|
           spec.required_ruby_version = Gem::Requirement.new(">= 3.3.0")

@@ -67,7 +67,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     RUBY
   end
 
-  it 'registers offense when parameter ends in number' do
+  it 'registers an offense when parameter ends in number' do
     expect_offense(<<~RUBY)
       def something(foo1, bar)
                     ^^^^ Do not end method parameter with a number.
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     RUBY
   end
 
-  it 'registers offense when parameter ends in number on class method' do
+  it 'registers an offense when parameter ends in number on class method' do
     expect_offense(<<~RUBY)
       def self.something(foo, bar1)
                               ^^^^ Do not end method parameter with a number.
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     RUBY
   end
 
-  it 'registers offense when parameter is less than minimum length' do
+  it 'registers an offense when parameter is less than minimum length' do
     expect_offense(<<~RUBY)
       def something(ab)
                     ^^ Method parameter must be at least 3 characters long.
@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     RUBY
   end
 
-  it 'registers offense when parameter with prefix is less than minimum length' do
+  it 'registers an offense when parameter with prefix is less than minimum length' do
     expect_offense(<<~RUBY)
       def something(_a, __b, *c, **__d)
                     ^^ Method parameter must be at least 3 characters long.
@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     RUBY
   end
 
-  it 'registers offense when parameter contains uppercase characters' do
+  it 'registers an offense when parameter contains uppercase characters' do
     expect_offense(<<~RUBY)
       def something(number_One)
                     ^^^^^^^^^^ Only use lowercase characters for method parameter.
@@ -115,7 +115,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     RUBY
   end
 
-  it 'registers offense for offensive default parameter' do
+  it 'registers an offense for offensive default parameter' do
     expect_offense(<<~RUBY)
       def self.something(foo1 = Pwd.dir)
                          ^^^^ Do not end method parameter with a number.
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
     RUBY
   end
 
-  it 'registers offense for offensive keyword parameters' do
+  it 'registers an offense for offensive keyword parameters' do
     expect_offense(<<~RUBY)
       def something(fooBar:)
                     ^^^^^^ Only use lowercase characters for method parameter.
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Naming::MethodParameterName, :config do
   context 'with ForbiddenNames' do
     let(:cop_config) { { 'ForbiddenNames' => %w[arg] } }
 
-    it 'registers offense for parameter listed as forbidden' do
+    it 'registers an offense for parameter listed as forbidden' do
       expect_offense(<<~RUBY)
         def baz(arg)
                 ^^^ Do not use arg as a name for a method parameter.

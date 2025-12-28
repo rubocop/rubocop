@@ -147,6 +147,10 @@ Naming/InclusiveLanguage:
     'registers an error':
       Suggestions:
         - registers an offense
+    'registers offense':
+      Regex: !ruby/regexp /registers offense(?!\(|s)/
+      Suggestions:
+        - registers an offense
     'does not register and corrects':
       Suggestions:
         does not register

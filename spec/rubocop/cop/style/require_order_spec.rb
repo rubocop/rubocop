@@ -38,7 +38,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when `require` is not sorted' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         require 'b'
         require 'a'
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when unsorted `require` has some inline comments' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         require 'b' # comment
         require 'a'
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when unsorted `require` has some full-line comments' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         require 'b'
         # comment
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when `require_relative` is not sorted' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         require_relative 'b'
         require_relative 'a'
@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when multiple `require` are not sorted' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         require 'd'
         require 'a'
@@ -253,7 +253,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when modifier conditional `if` is used between `require`' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         require 'c'
         require 'a' if foo
@@ -271,7 +271,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when modifier conditional `unless` is used between `require`' do
-    it 'registers offense' do
+    it 'registers an offense' do
       expect_offense(<<~RUBY)
         require 'c'
         require 'a' unless foo
@@ -289,7 +289,7 @@ RSpec.describe RuboCop::Cop::Style::RequireOrder, :config do
   end
 
   context 'when rescue block' do
-    it 'registers offense for multiple unsorted `require`s' do
+    it 'registers an offense for multiple unsorted `require`s' do
       expect_offense(<<~RUBY)
         begin
           do_something

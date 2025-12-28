@@ -228,7 +228,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
   end
 
   context 'constant is not a literal' do
-    it 'registers offense but does not autocorrect' do
+    it 'registers an offense but does not autocorrect' do
       expect_offense <<~RUBY
         class Person
           def name; end
