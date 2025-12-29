@@ -7,7 +7,7 @@ RSpec.describe RuboCop::RemoteConfig do
 
   let(:remote_config_url) { 'http://example.com/rubocop.yml' }
   let(:base_dir) { '.' }
-  let(:cached_file_name) { '.rubocop-remote-e32e465e27910f2bc7262515eebe6b63.yml' }
+  let(:cached_file_name) { 'rubocop-e32e465e27910f2bc7262515eebe6b63.yml' }
   let(:cached_file_path) { File.expand_path(cached_file_name, base_dir) }
 
   before do
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::RemoteConfig do
       let(:token) { 'personal_access_token' }
       let(:remote_config_url) { "http://#{token}@example.com/rubocop.yml" }
       let(:stripped_remote_config_url) { 'http://example.com/rubocop.yml' }
-      let(:cached_file_name) { '.rubocop-remote-ab4a54bcd0d0314614a65a4394745105.yml' }
+      let(:cached_file_name) { 'rubocop-ab4a54bcd0d0314614a65a4394745105.yml' }
 
       before do
         stub_request(:get, stripped_remote_config_url)
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::RemoteConfig do
       let(:password) { 'password' }
       let(:remote_config_url) { "http://#{username}:#{password}@example.com/rubocop.yml" }
       let(:stripped_remote_config_url) { 'http://example.com/rubocop.yml' }
-      let(:cached_file_name) { '.rubocop-remote-4a2057b5f7fe601a137248a7cfe411d1.yml' }
+      let(:cached_file_name) { 'rubocop-4a2057b5f7fe601a137248a7cfe411d1.yml' }
 
       before do
         stub_request(:get, stripped_remote_config_url)

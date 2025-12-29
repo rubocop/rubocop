@@ -1436,7 +1436,7 @@ RSpec.describe RuboCop::ConfigLoader do
 
     context 'when a file inherits from a url' do
       let(:file_path) { '.rubocop.yml' }
-      let(:cache_file) { '.rubocop-remote-e32e465e27910f2bc7262515eebe6b63.yml' }
+      let(:cache_file) { 'rubocop-e32e465e27910f2bc7262515eebe6b63.yml' }
 
       before do
         described_class.cache_root = Dir.pwd
@@ -1468,8 +1468,8 @@ RSpec.describe RuboCop::ConfigLoader do
 
     context 'when a file inherits from a url inheriting from another file' do
       let(:file_path) { '.rubocop.yml' }
-      let(:cache_file) { '.rubocop-remote-1e2eaf67d5bc989f4bc3c5a900039224.yml' }
-      let(:cache_file2) { '.rubocop-remote-e32e465e27910f2bc7262515eebe6b63.yml' }
+      let(:cache_file) { 'inherit-1e2eaf67d5bc989f4bc3c5a900039224.yml' }
+      let(:cache_file2) { 'rubocop-e32e465e27910f2bc7262515eebe6b63.yml' }
 
       before do
         described_class.cache_root = Dir.pwd
