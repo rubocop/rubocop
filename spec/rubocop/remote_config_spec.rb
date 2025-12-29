@@ -7,7 +7,7 @@ RSpec.describe RuboCop::RemoteConfig do
 
   let(:remote_config_url) { 'http://example.com/rubocop.yml' }
   let(:base_dir) { '.' }
-  let(:cached_file_name) { '.rubocop-remote-e32e465e27910f2bc7262515eebe6b63.yml' }
+  let(:cached_file_name) { 'rubocop-e32e465e27910f2bc7262515eebe6b63.yml' }
   let(:cached_file_path) { File.expand_path(cached_file_name, base_dir) }
 
   before do
@@ -53,7 +53,7 @@ RSpec.describe RuboCop::RemoteConfig do
       let(:token) { 'personal_access_token' }
       let(:remote_config_url) { "http://#{token}@example.com/rubocop.yml" }
       let(:stripped_remote_config_url) { 'http://example.com/rubocop.yml' }
-      let(:cached_file_name) { '.rubocop-remote-ab4a54bcd0d0314614a65a4394745105.yml' }
+      let(:cached_file_name) { 'rubocop-ab4a54bcd0d0314614a65a4394745105.yml' }
 
       before do
         stub_request(:get, stripped_remote_config_url)
@@ -99,7 +99,7 @@ RSpec.describe RuboCop::RemoteConfig do
       let(:password) { 'password' }
       let(:remote_config_url) { "http://#{username}:#{password}@example.com/rubocop.yml" }
       let(:stripped_remote_config_url) { 'http://example.com/rubocop.yml' }
-      let(:cached_file_name) { '.rubocop-remote-4a2057b5f7fe601a137248a7cfe411d1.yml' }
+      let(:cached_file_name) { 'rubocop-4a2057b5f7fe601a137248a7cfe411d1.yml' }
 
       before do
         stub_request(:get, stripped_remote_config_url)
@@ -207,6 +207,80 @@ RSpec.describe RuboCop::RemoteConfig do
         includes_config = remote_config.inherit_from_remote(includes_file)
 
         expect(includes_config.uri).to eq URI.parse('http://example.com/base.yml')
+      end
+    end
+  end
+
+  describe '.cache_name_from_uri' do
+    subject(:remote_config) { described_class.new(remote_config_url, base_dir) }
+
+    let(:action) { remote_config.send(:cache_name_from_uri) }
+
+    context 'without query parameters on the URL' do
+      let(:remote_config_url) { 'http://example.com/rubocop.yml' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('rubocop-e32e465e27910f2bc7262515eebe6b63.yml')
+      end
+    end
+
+    context 'with query parameters on the URL' do
+      let(:remote_config_url) { 'http://example.com/rubocop.yml?query=test' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('rubocop-f1299382a3413262e0cad599fcb89efa.yml')
+      end
+    end
+
+    context 'with basic auth on the URL' do
+      let(:remote_config_url) { 'http://user:pass@example.com/rubocop.yml' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('rubocop-89a9d79de790d798117fa34875199de3.yml')
+      end
+    end
+
+    context 'with nested path on the URL' do
+      let(:remote_config_url) { 'http://example.com/a/b/c/rubocop.yml' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('rubocop-817dac820aa899cae8b77bfb00fe4d7f.yml')
+      end
+    end
+
+    context 'with yaml file extension on the URL' do
+      let(:remote_config_url) { 'http://example.com/rubocop.yaml' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('rubocop-639250d27b76fc041f5a001712b47dff.yml')
+      end
+    end
+
+    context 'with YAML file extension on the URL' do
+      let(:remote_config_url) { 'http://example.com/rubocop.YAML' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('rubocop-eba7c77758f4655c5b5f576d7596849a.yml')
+      end
+    end
+
+    context 'with YML file extension on the URL' do
+      let(:remote_config_url) { 'http://example.com/rubocop.YML' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('rubocop-290a70e2e8136e0ac522ae9666202faf.yml')
+      end
+    end
+
+    context 'with very long file name the URL' do
+      let(:remote_config_url) { "http://example.com/rubocop-#{'a' * 500}.yml" }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq("rubocop-#{'a' * 209}-4a4922719c4b0200afe9487254bd6a0c.yml")
+      end
+
+      it 'returns the truncated cache name' do
+        expect(action.size).to be(254)
       end
     end
   end
