@@ -81,7 +81,7 @@ module RuboCop
     end
 
     def cache_path
-      @cache_path ||= File.expand_path(".rubocop-remote-#{cache_name_from_uri}", @cache_root)
+      @cache_path ||= File.expand_path(cache_name_from_uri, @cache_root)
     end
 
     def cache_path_exists?
@@ -98,7 +98,10 @@ module RuboCop
     end
 
     def cache_name_from_uri
-      "#{Digest::MD5.hexdigest(@uri.to_s)}.yml"
+      # The md5 checksum suffix is 37 bytes, so we play it save and
+      # allow 254 bytes total - this should be safe on Linux/macOS/Windows
+      filename = File.basename(@uri.path).gsub(/\.ya?ml\z/i, '').byteslice(0, 217).scrub('')
+      "#{filename}-#{Digest::MD5.hexdigest(@uri.to_s)}.yml"
     end
 
     def cloned_url
