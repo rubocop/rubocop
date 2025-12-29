@@ -200,7 +200,7 @@ module RuboCop
         end
 
         def asgn_type?(node)
-          node.type?(:lvasgn, :ivasgn, :cvasgn, :gvasgn)
+          node.type?(:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn)
         end
 
         def branches_have_method?(node)
