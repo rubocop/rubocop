@@ -366,6 +366,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects when the branches contains constant assignment' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^^^^^ Use double pipes `||` instead.
+            CONST = foo
+          else
+            CONST = 'bar'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = foo || 'bar'
+        RUBY
+      end
+
       it 'registers an offense and corrects when the branches contains assignment method' do
         expect_offense(<<~RUBY)
           if foo
