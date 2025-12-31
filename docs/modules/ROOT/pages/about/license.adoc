@@ -13,4 +13,4 @@ All the original Ruby code is available under the terms of the MIT license.
 
 == Copyright
 
-Copyright (c) 2012-2025 Bozhidar Batsov and RuboCop contributors.
+Copyright (c) 2012-2026 Bozhidar Batsov and RuboCop contributors.
