@@ -251,5 +251,5 @@ RuboCop's release notes are available [here](https://github.com/rubocop/rubocop/
 
 ## Copyright
 
-Copyright (c) 2012-2025 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
+Copyright (c) 2012-2026 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
 further details.
