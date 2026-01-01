@@ -89,6 +89,7 @@ module RuboCop
           check_indentation(base_loc, node.body)
 
           return unless indented_internal_methods_style?
+          return unless contains_access_modifier?(node.body)
 
           check_members(end_loc, [node.body])
         end
@@ -375,6 +376,12 @@ module RuboCop
           return false unless starting_node
 
           starting_node.send_type? && starting_node.bare_access_modifier?
+        end
+
+        def contains_access_modifier?(body_node)
+          return false unless body_node.begin_type?
+
+          body_node.children.any? { |child| child.send_type? && child.bare_access_modifier? }
         end
 
         def configured_indentation_width
