@@ -4120,4 +4120,62 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       /[.-]/
     RUBY
   end
+
+  it 'does not cause infinite loop with Layout/IndentationWidth when autocorrecting mixed tabs and spaces in blocks' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/IndentationStyle:
+        EnforcedStyle: tabs
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<-RUBY.gsub(/^    /, ''))
+    class SomeClient
+    \t conversation_request.get_messages(session_id, time_before).map do |message|
+     \t\t\t\tConversationMessagesResponse.new message
+          end
+    end
+    RUBY
+
+    status = cli.run(['--autocorrect-all'])
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<-RUBY.gsub(/^    /, ''))
+    # frozen_string_literal: true
+
+    class SomeClient
+    \tconversation_request.get_messages(session_id, time_before).map do |message|
+    \t\t\t\tConversationMessagesResponse.new message
+    \tend
+    end
+    RUBY
+  end
+
+  it 'does not cause infinite loop with Layout/DefEndAlignment when autocorrecting mixed tabs and spaces' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/IndentationStyle:
+        EnforcedStyle: tabs
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<-RUBY.gsub(/^    /, ''))
+    class MyClass
+    \tdef my_method
+    \t\tdo_something
+    end
+    end
+    RUBY
+
+    status = cli.run(['--autocorrect-all'])
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<-RUBY.gsub(/^    /, ''))
+    # frozen_string_literal: true
+
+    class MyClass
+    \tdef my_method
+    \t\tdo_something
+    \tend
+    end
+    RUBY
+  end
 end
