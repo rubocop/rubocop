@@ -179,6 +179,92 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
 
           expect_no_corrections
         end
+
+        it 'registers an offense and autocorrects when methods are all defined in self class' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class << self
+              def bar; end
+              def baz; end
+
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class << self
+
+            #{access_modifier}
+
+            def bar; end
+            def baz; end
+            end
+          RUBY
+        end
+
+        it 'registers an offense and autocorrects when methods are all defined in self class and there is a comment' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class << self
+              def bar; end
+              def baz; end
+
+              # comment
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class << self
+
+            #{access_modifier}
+
+            # comment
+            def bar; end
+            def baz; end
+            end
+          RUBY
+        end
+
+        it 'registers an offense and autocorrects when methods are all defined in self class and there is already a bare access modifier' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class << self
+              def bar; end
+              def baz; end
+
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+
+              %{access_modifier}
+              def quux; end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class << self
+
+
+              #{access_modifier}
+
+            def bar; end
+            def baz; end
+              def quux; end
+            end
+          RUBY
+        end
+
+        it 'registers an offense but does not correct when not all methods are defined in self class' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class << self
+              def bar; end
+
+              %{access_modifier} :bar, :baz
+              ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+            end
+          RUBY
+
+          expect_no_corrections
+        end
       end
 
       it "registers an offense when argument to #{access_modifier} is splat with a `%i` array literal" do
