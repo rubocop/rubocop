@@ -67,7 +67,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d (not %<indentation>d) ' \
-              'spaces for%<name>s indentation.'
+              '%<indentation_type>s for%<name>s indentation.'
 
         # @!method access_modifier?(node)
         def_node_matcher :access_modifier?, <<~PATTERN
@@ -183,6 +183,8 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
+          return unless node
+
           AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
         end
 
@@ -191,7 +193,7 @@ module RuboCop
 
           return unless members.any? && members.first.begin_type?
 
-          if indentation_consistency_style == 'indented_internal_methods'
+          if indented_internal_methods_style?
             check_members_for_indented_internal_methods_style(members)
           else
             check_members_for_normal_style(base, members)
@@ -320,10 +322,32 @@ module RuboCop
         end
 
         def message(configured_indentation_width, indentation, name)
+          if using_tabs?
+            message_for_tabs(configured_indentation_width, indentation, name)
+          else
+            message_for_spaces(configured_indentation_width, indentation, name)
+          end
+        end
+
+        def message_for_tabs(configured_indentation_width, indentation, name)
+          configured_tabs = 1
+          actual_tabs = indentation / configured_indentation_width
+
+          format(
+            MSG,
+            configured_indentation_width: configured_tabs,
+            indentation: actual_tabs,
+            indentation_type: 'tabs',
+            name: name
+          )
+        end
+
+        def message_for_spaces(configured_indentation_width, indentation, name)
           format(
             MSG,
             configured_indentation_width: configured_indentation_width,
             indentation: indentation,
+            indentation_type: 'spaces',
             name: name
           )
         end
@@ -379,7 +403,13 @@ module RuboCop
         def offending_range(body_node, indentation)
           expr = body_node.source_range
           begin_pos = expr.begin_pos
-          ind = expr.begin_pos - indentation
+
+          ind = if using_tabs?
+                  begin_pos - line_indentation(expr).length
+                else
+                  begin_pos - indentation
+                end
+
           pos = indentation >= 0 ? ind..begin_pos : begin_pos..ind
           range_between(pos.begin, pos.end)
         end
@@ -399,8 +429,41 @@ module RuboCop
           body_node.children.any? { |child| child.send_type? && child.bare_access_modifier? }
         end
 
-        def configured_indentation_width
-          cop_config['Width']
+        def indentation_style
+          config.for_cop('Layout/IndentationStyle')['EnforcedStyle'] || 'spaces'
+        end
+
+        def using_tabs?
+          indentation_style == 'tabs'
+        end
+
+        def column_offset_between(base_range, range)
+          return super unless using_tabs?
+
+          base_uses_tabs = line_uses_tabs?(base_range)
+          range_uses_tabs = line_uses_tabs?(range)
+
+          return super unless base_uses_tabs || range_uses_tabs
+
+          visual_column(base_range) - visual_column(range)
+        end
+
+        def line_indentation(range)
+          line = processed_source.lines[range.line - 1]
+          line[0...range.column]
+        end
+
+        def line_uses_tabs?(range)
+          line_indentation(range).include?("\t")
+        end
+
+        def visual_column(range)
+          indentation = line_indentation(range)
+
+          tab_count = indentation.count("\t")
+          space_count = indentation.count(' ')
+
+          (tab_count * configured_indentation_width) + space_count
         end
 
         def leftmost_modifier_of(node)

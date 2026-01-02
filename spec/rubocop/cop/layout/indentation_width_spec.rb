@@ -7,7 +7,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       'Layout/AccessModifierIndentation' => access_modifier_config,
       'Layout/IndentationConsistency' => consistency_config,
       'Layout/EndAlignment' => end_alignment_config,
-      'Layout/DefEndAlignment' => def_end_alignment_config
+      'Layout/DefEndAlignment' => def_end_alignment_config,
+      'Layout/IndentationStyle' => indentation_style_config
     )
   end
   let(:access_modifier_config) { { 'EnforcedStyle' => 'indent' } }
@@ -16,6 +17,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
   let(:def_end_alignment_config) do
     { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
   end
+  let(:indentation_style_config) { { 'EnforcedStyle' => 'spaces' } }
   let(:width) { 2 }
   let(:enforced_style_align_with) { 'start_of_line' }
   let(:allowed_patterns) { [] }
@@ -75,6 +77,62 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           ^ Use 4 (not 1) spaces for indentation.
           end
         RUBY
+      end
+    end
+
+    context 'with tabs indentation' do
+      let(:indentation_style_config) { { 'EnforcedStyle' => 'tabs' } }
+
+      it 'accepts correctly indented code with tabs' do
+        expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+        class A
+        \tdef test
+        \t\tputs 'hello'
+        \tend
+        end
+        RUBY
+      end
+
+      it 'accepts correctly indented if statement with tabs' do
+        expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+        if cond
+        \tfunc
+        end
+        RUBY
+      end
+
+      it 'detects excessive tab indentation in if statement' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        if cond
+        \t\tfunc
+        ^^ Use 1 (not 2) tabs for indentation.
+        end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'detects insufficient tab indentation in class' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        class A
+        def test
+        ^{} Use 1 (not 0) tabs for indentation.
+        end
+        end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'detects excessive tab indentation' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        def test
+        \t\t\tputs 'hello'
+        ^^^ Use 1 (not 3) tabs for indentation.
+        end
+        RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -1743,6 +1801,133 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
             end
           end
         RUBY
+      end
+    end
+
+    context 'with tabs indentation' do
+      let(:indentation_style_config) { { 'EnforcedStyle' => 'tabs' } }
+
+      it 'accepts correctly indented code with tabs' do
+        expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+        class A
+        \tdef test
+        \t\tputs 'hello'
+        \tend
+        end
+        RUBY
+      end
+
+      it 'accepts correctly indented if statement with tabs' do
+        expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+        if cond
+        \tfunc
+        end
+        RUBY
+      end
+
+      it 'detects excessive tab indentation in if statement' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        if cond
+        \t\tfunc
+        ^^ Use 1 (not 2) tabs for indentation.
+        end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'detects insufficient tab indentation in class' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        class A
+        def test
+        ^{} Use 1 (not 0) tabs for indentation.
+        end
+        end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'detects excessive tab indentation' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        def test
+        \t\t\tputs 'hello'
+        ^^^ Use 1 (not 3) tabs for indentation.
+        end
+        RUBY
+
+        expect_no_corrections
+      end
+    end
+
+    context 'with mixed tabs and spaces' do
+      context 'when spaces are enforced' do
+        let(:indentation_style_config) { { 'EnforcedStyle' => 'spaces' } }
+
+        it 'correctly autocorrects mixed tab and space indentation' do
+          expect_offense(<<-RUBY.gsub(/^      /, ''))
+          class Test
+            def foo
+           \t\tbar
+            ^ Use 2 (not 1) spaces for indentation.
+            end
+          end
+          RUBY
+
+          expect_correction(<<-RUBY.gsub(/^      /, ''))
+          class Test
+            def foo
+           \t\t bar
+            end
+          end
+          RUBY
+        end
+
+        it 'does not register space followed by tab in indentation' do
+          expect_no_offenses(<<-RUBY.gsub(/^      /, ''))
+          if condition
+           \tfoo
+          end
+          RUBY
+        end
+      end
+
+      context 'when tabs are enforced' do
+        let(:indentation_style_config) { { 'EnforcedStyle' => 'tabs' } }
+
+        it 'correctly autocorrects mixed tab and space indentation', pending: 'autocorrection for mixed indentation needs work' do
+          expect_offense(<<-RUBY.gsub(/^          /, ''))
+          class Test
+            def foo
+           \t\tbar
+          ^^^ Use 1 (not 1) tabs for indentation.
+            end
+          end
+          RUBY
+
+          expect_correction(<<-RUBY.gsub(/^      /, ''))
+          class Test
+            def foo
+          \tbar
+            end
+          end
+          RUBY
+        end
+
+        it 'handles space followed by tab in indentation', pending: 'autocorrection for mixed indentation needs work' do
+          expect_offense(<<-RUBY.gsub(/^          /, ''))
+          if condition
+           \tfoo
+          ^^ Use 1 (not 1) tabs for indentation.
+          end
+          RUBY
+
+          expect_correction(<<-RUBY.gsub(/^      /, ''))
+          if condition
+          \tfoo
+          end
+          RUBY
+        end
       end
     end
   end
