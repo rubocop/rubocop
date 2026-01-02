@@ -4327,6 +4327,7 @@ end
 
 Checks for indentation that doesn't use the specified number of spaces.
 The indentation width can be configured using the `Width` setting. The default width is 2.
+The block body indentation for method chain blocks can be configured using the `EnforcedStyle` setting.
 
 See also the `Layout/IndentationConsistency` cop which is the companion to this one.
 
@@ -4377,6 +4378,30 @@ end
 end
 ----
 
+[#enforcedstyle_start_of_line_-default_-layoutindentationwidth]
+==== EnforcedStyle: start_of_line (default)
+
+[source,ruby]
+----
+# good
+records.uniq { |el| el[:profile_id] }
+       .map do |message|
+  SomeJob.perform_later(message[:id])
+end
+----
+
+[#enforcedstyle_relative_to_receiver_-layoutindentationwidth]
+==== EnforcedStyle: relative_to_receiver
+
+[source,ruby]
+----
+# good
+records.uniq { |el| el[:profile_id] }
+       .map do |message|
+         SomeJob.perform_later(message[:id])
+       end
+----
+
 [#configurable-attributes-layoutindentationwidth]
 === Configurable attributes
 
@@ -4386,6 +4411,10 @@ end
 | Width
 | `2`
 | Integer
+
+| EnforcedStyle
+| `start_of_line`
+| `start_of_line`, `relative_to_receiver`
 
 | AllowedPatterns
 | `[]`
