@@ -5527,6 +5527,12 @@ Style/ReturnNilInPredicateMethodDefinition:
   VersionAdded: '1.53'
   VersionChanged: '1.67'
 
+Style/ReverseFind:
+  Description: 'Use `array.rfind` instead of `array.reverse.find`.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/SafeNavigation:
   Description: >-
                   Transforms usages of a method call safeguarded by
