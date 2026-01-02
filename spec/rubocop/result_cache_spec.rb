@@ -348,8 +348,10 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
   describe '.cleanup' do
     include_context 'mock console output'
 
+    let(:max_files_in_cache) { 1 }
+
     before do
-      cfg = RuboCop::Config.new('AllCops' => { 'MaxFilesInCache' => 1 })
+      cfg = RuboCop::Config.new('AllCops' => { 'MaxFilesInCache' => max_files_in_cache })
       allow(config_store).to receive(:for_pwd).and_return(cfg)
       allow(config_store).to receive(:for_file).with('other.rb').and_return(cfg)
       create_file('other.rb', ['x = 1'])
@@ -386,6 +388,27 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
       custom_cache.class.cleanup(config_store, :verbose, custom_cache_root)
       expect(File).not_to exist(underscore_dir)
       expect($stdout.string).to eq("Removing the 2 oldest files from #{custom_rubocop_cache_dir}\n")
+    end
+
+    context 'when MaxFilesInCache is `false`' do
+      let(:max_files_in_cache) { false }
+
+      it 'removes nothing' do
+        cache.save(offenses)
+        underscore_dir = Dir["#{rubocop_cache_dir}/*/*"].first
+        expect(Dir["#{underscore_dir}/*"].size).to eq(1)
+        cache.class.cleanup(config_store, :verbose, cache_root)
+        expect($stdout.string).to eq('')
+
+        cache2 = described_class.new('other.rb', team, options, config_store, cache_root)
+        cache2.save(offenses)
+        underscore_dir = Dir["#{rubocop_cache_dir}/*/*"].first
+        expect(Dir["#{underscore_dir}/*"].size).to eq(2)
+
+        cache.class.cleanup(config_store, :verbose, cache_root)
+        expect(File).to exist(underscore_dir)
+        expect($stdout.string).not_to include('Removing')
+      end
     end
   end
 
