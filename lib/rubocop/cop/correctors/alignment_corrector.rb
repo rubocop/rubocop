@@ -16,6 +16,9 @@ module RuboCop
           return unless node
 
           @processed_source = processed_source
+          # Disable autocorrection for tabs as it requires special handling
+          return if using_tabs?
+
           expr = node.respond_to?(:loc) ? node.source_range : node
           return if block_comment_within?(expr)
 
@@ -30,11 +33,12 @@ module RuboCop
           @processed_source = processed_source
           whitespace = whitespace_range(node)
           column = alignment_column(align_to)
+          indentation = indentation_string(column)
 
           if whitespace.source.strip.empty?
-            corrector.replace(whitespace, ' ' * column)
+            corrector.replace(whitespace, indentation)
           else
-            corrector.insert_after(whitespace, "\n#{' ' * column}")
+            corrector.insert_after(whitespace, "\n#{indentation}")
           end
         end
 
@@ -119,6 +123,20 @@ module RuboCop
           else
             align_to.column
           end
+        end
+
+        def indentation_string(column)
+          if using_tabs?
+            "\t" * column
+          else
+            ' ' * column
+          end
+        end
+
+        def using_tabs?
+          config = processed_source.config
+          indentation_style = config.for_cop('Layout/IndentationStyle')['EnforcedStyle']
+          indentation_style == 'tabs'
         end
       end
     end
