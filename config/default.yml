@@ -4318,6 +4318,16 @@ Style/HashLikeCase:
   # to trigger this cop
   MinBranchesCount: 3
 
+Style/HashLookupMethod:
+  Description: 'Enforces the use of either `Hash#[]` or `Hash#fetch` for hash lookup.'
+  Enabled: false
+  Safe: false
+  VersionAdded: '<<next>>'
+  EnforcedStyle: brackets
+  SupportedStyles:
+    - brackets
+    - fetch
+
 Style/HashSlice:
   Description: >-
                  Checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
