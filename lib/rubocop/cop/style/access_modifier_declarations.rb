@@ -326,8 +326,7 @@ module RuboCop
           argument_less_modifier_node = find_argument_less_modifier_node(node)
           if argument_less_modifier_node
             corrector.insert_after(argument_less_modifier_node, "\n\n#{source}")
-          elsif (ancestor = node.each_ancestor(:class, :module).first)
-
+          elsif (ancestor = node.each_ancestor(:class, :module, :sclass).first)
             corrector.insert_before(ancestor.loc.end, "#{node.method_name}\n\n#{source}\n")
           else
             corrector.replace(node, "#{node.method_name}\n\n#{source}")
