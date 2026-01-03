@@ -51,6 +51,7 @@ module RuboCop
 
         MSG = 'Use %<configured_indentation_width>d (not %<indentation>d) ' \
               'spaces for%<name>s indentation.'
+        BLOCK_BODY_INDENTATION_STYLES = %w[start_of_line relative_to_receiver].freeze
 
         # @!method access_modifier?(node)
         def_node_matcher :access_modifier?, <<~PATTERN
@@ -83,9 +84,7 @@ module RuboCop
 
           return unless begins_its_line?(end_loc)
 
-          # For blocks where the dot is on a new line, use the dot position as the base.
-          # Otherwise, use the end keyword position as the base.
-          base_loc = dot_on_new_line?(node) ? node.send_node.loc.dot : end_loc
+          base_loc = block_body_indentation_base(node, end_loc)
           check_indentation(base_loc, node.body)
 
           return unless indented_internal_methods_style?
@@ -392,6 +391,20 @@ module RuboCop
           return node unless node.parent&.send_type?
 
           leftmost_modifier_of(node.parent)
+        end
+
+        def block_body_indentation_base(node, end_loc)
+          return end_loc if block_body_indentation_style != 'relative_to_receiver'
+          return end_loc unless dot_on_new_line?(node)
+
+          node.send_node.loc.dot
+        end
+
+        def block_body_indentation_style
+          style = cop_config.fetch('EnforcedStyle', 'start_of_line').to_s
+          return style if BLOCK_BODY_INDENTATION_STYLES.include?(style)
+
+          raise "Unknown EnforcedStyle: #{style.inspect} for Layout/IndentationWidth."
         end
 
         def dot_on_new_line?(node)

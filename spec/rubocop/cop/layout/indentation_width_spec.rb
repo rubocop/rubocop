@@ -1665,8 +1665,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         expect_offense(<<~RUBY)
           foo
             .bar do |x|
-            x
-            ^{} Use 2 (not 0) spaces for indentation.
+          x
+          ^{} Use 2 (not 0) spaces for indentation.
           end
         RUBY
       end
@@ -1678,6 +1678,38 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
               x
             end
         RUBY
+      end
+
+      it 'accepts correct indentation when the chain receiver is long' do
+        expect_no_offenses(<<~RUBY)
+          ::Some::Very::Long::Module::Name.active
+                                          .in_batches do |batch|
+            process(batch)
+          end
+        RUBY
+      end
+
+      context 'when EnforcedStyle is relative_to_receiver' do
+        let(:cop_config) { { 'Width' => 2, 'EnforcedStyle' => 'relative_to_receiver' } }
+
+        it 'registers an offense for indentation relative to line start' do
+          expect_offense(<<~RUBY)
+            foo
+              .bar do |x|
+            x
+            ^ Use 2 (not -2) spaces for indentation.
+            end
+          RUBY
+        end
+
+        it 'accepts indentation relative to receiver position' do
+          expect_no_offenses(<<~RUBY)
+            foo
+              .bar do |x|
+                x
+            end
+          RUBY
+        end
       end
 
       it 'accepts correct indentation for block without method chain' do

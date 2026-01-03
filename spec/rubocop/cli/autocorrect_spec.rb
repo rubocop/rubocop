@@ -3823,8 +3823,8 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
             Model
               .some_scope
               .find_each do |record|
-                record.do_something
-                record.do_something_else
+              record.do_something
+              record.do_something_else
             end
           end
       end

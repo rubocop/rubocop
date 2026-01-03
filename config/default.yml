@@ -1037,6 +1037,15 @@ Layout/IndentationWidth:
   VersionAdded: '0.49'
   # Number of spaces for each indentation level.
   Width: 2
+  # Block body indentation for method chain blocks.
+  # The value `start_of_line` means that block bodies are indented
+  # relative to the start of the line where the block starts.
+  # The value `relative_to_receiver` means that block bodies are indented
+  # relative to the method call position in the chain.
+  EnforcedStyle: start_of_line
+  SupportedStyles:
+    - start_of_line
+    - relative_to_receiver
   AllowedPatterns: []
 
 Layout/InitialIndentation:
