@@ -568,4 +568,42 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       end
     end
   end
+
+  context 'when constants is in the Categories' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/ClassStructure' => {
+          'ExpectedOrder' => %w[
+            all_constants
+            attribute_macros
+          ],
+          'Categories' => {
+            'all_constants' => %w[
+              constants
+            ],
+            'attribute_macros' => %w[
+              attr_accessor
+            ]
+          }
+        }
+      )
+    end
+
+    it 'registers an offense and corrects when attribute macros after constant' do
+      expect_offense(<<~RUBY)
+        class Foo
+          attr_accessor :foo
+          CONST = 'wrong place'
+          ^^^^^^^^^^^^^^^^^^^^^ `all_constants` is supposed to appear before `attribute_macros`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          CONST = 'wrong place'
+          attr_accessor :foo
+        end
+      RUBY
+    end
+  end
 end
