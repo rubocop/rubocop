@@ -16,9 +16,20 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
   let(:def_end_alignment_config) do
     { 'Enabled' => true, 'EnforcedStyleAlignWith' => 'start_of_line' }
   end
+  let(:width) { 2 }
+  let(:enforced_style_align_with) { 'start_of_line' }
+  let(:allowed_patterns) { [] }
+  let(:cop_config) do
+    {
+      'Width' => width,
+      'EnforcedStyleAlignWith' => enforced_style_align_with,
+      'SupportedStylesAlignWith' => %w[start_of_line relative_to_receiver],
+      'AllowedPatterns' => allowed_patterns
+    }
+  end
 
   context 'with Width set to 4' do
-    let(:cop_config) { { 'Width' => 4 } }
+    let(:width) { 4 }
 
     context 'for a file with byte order mark' do
       let(:bom) { "\xef\xbb\xbf" }
@@ -34,12 +45,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
     end
 
     context 'with ignored patterns set' do
-      let(:cop_config) do
-        {
-          'Width' => 4,
-          'AllowedPatterns' => ['^\s*module', '^\s*(els)?if.*[A-Z][a-z]+']
-        }
-      end
+      let(:width) { 4 }
+      let(:allowed_patterns) { ['^\s*module', '^\s*(els)?if.*[A-Z][a-z]+'] }
 
       it 'accepts unindented lines for those keywords' do
         expect_no_offenses(<<~RUBY)
@@ -100,7 +107,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
   end
 
   context 'with Width set to 2' do
-    let(:cop_config) { { 'Width' => 2 } }
+    let(:width) { 2 }
 
     context 'with if statement' do
       it 'registers an offense for bad indentation of an if body' do
@@ -1665,8 +1672,8 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         expect_offense(<<~RUBY)
           foo
             .bar do |x|
-            x
-            ^{} Use 2 (not 0) spaces for indentation.
+          x
+          ^{} Use 2 (not 0) spaces for indentation.
           end
         RUBY
       end
@@ -1678,6 +1685,38 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
               x
             end
         RUBY
+      end
+
+      it 'accepts correct indentation when the chain receiver is long' do
+        expect_no_offenses(<<~RUBY)
+          ::Some::Very::Long::Module::Name.active
+                                          .in_batches do |batch|
+            process(batch)
+          end
+        RUBY
+      end
+
+      context 'when EnforcedStyleAlignWith is relative_to_receiver' do
+        let(:enforced_style_align_with) { 'relative_to_receiver' }
+
+        it 'registers an offense for indentation relative to line start' do
+          expect_offense(<<~RUBY)
+            foo
+              .bar do |x|
+            x
+            ^ Use 2 (not -2) spaces for indentation.
+            end
+          RUBY
+        end
+
+        it 'accepts indentation relative to receiver position' do
+          expect_no_offenses(<<~RUBY)
+            foo
+              .bar do |x|
+                x
+            end
+          RUBY
+        end
       end
 
       it 'accepts correct indentation for block without method chain' do
