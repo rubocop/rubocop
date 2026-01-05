@@ -53,7 +53,7 @@ module RuboCop
                 return true
               end
             when :when
-              node.each_condition do |condition|
+              node.conditions.each do |condition|
                 return true if _cant_be_nil?(condition, receiver)
               end
             when :lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn

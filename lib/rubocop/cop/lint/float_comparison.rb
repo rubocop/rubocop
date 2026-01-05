@@ -77,7 +77,7 @@ module RuboCop
 
         def on_case(node)
           node.when_branches.each do |when_branch|
-            when_branch.each_condition do |condition|
+            when_branch.conditions.each do |condition|
               next if !float?(condition) || literal_safe?(condition)
 
               add_offense(condition, message: MSG_CASE)

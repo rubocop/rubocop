@@ -157,7 +157,7 @@ module RuboCop
 
             check_case(case_match_node)
           else
-            case_match_node.each_in_pattern do |in_pattern_node|
+            case_match_node.in_pattern_branches.each do |in_pattern_node|
               next unless in_pattern_node.condition.literal?
 
               add_offense(in_pattern_node)

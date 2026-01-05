@@ -149,7 +149,7 @@ module RuboCop
         end
 
         def on_case_match(case_match)
-          case_match.each_in_pattern do |in_pattern_node|
+          case_match.in_pattern_branches.each do |in_pattern_node|
             check_indentation(in_pattern_node.loc.keyword, in_pattern_node.body)
           end
 

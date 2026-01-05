@@ -128,7 +128,9 @@ module RuboCop
           return if case_match_node.single_line?
           return if enforced_style_end? && end_and_last_conditional_same_line?(case_match_node)
 
-          case_match_node.each_in_pattern { |in_pattern_node| check_when(in_pattern_node, 'in') }
+          case_match_node.in_pattern_branches.each do |in_pattern_node|
+            check_when(in_pattern_node, 'in')
+          end
         end
 
         private
