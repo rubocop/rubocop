@@ -223,7 +223,7 @@ module RuboCop
         # @param node to be analysed
         # @return String when the node type is a `:block` then
         #   {classify} recursively with the first children
-        # @return String when the node type is a `:send` then {find_category}
+        # @return String when the node type is a `:send` then {find_send_node_category}
         #   by method name
         # @return String otherwise trying to {humanize_node} of the current node
         def classify(node)
@@ -233,9 +233,10 @@ module RuboCop
           when :block
             classify(node.send_node)
           when :send
-            find_category(node)
+            find_send_node_category(node)
           else
-            humanize_node(node)
+            name = humanize_node(node)
+            find_category(name) || name
           end.to_s
         end
 
@@ -244,9 +245,9 @@ module RuboCop
         # also its visibility.
         # @param node to be analysed.
         # @return [String] with the key category or the `method_name` as string
-        def find_category(node)
+        def find_send_node_category(node)
           name = node.method_name.to_s
-          category, = categories.find { |_, names| names.include?(name) }
+          category = find_category(name)
           key = category || name
           visibility_key =
             if node.def_modifier?
@@ -255,6 +256,12 @@ module RuboCop
               "#{node_visibility(node)}_#{key}"
             end
           expected_order.include?(visibility_key) ? visibility_key : key
+        end
+
+        def find_category(name)
+          name = name.to_s
+          category, = categories.find { |_, names| names.include?(name) }
+          category
         end
 
         def walk_over_nested_class_definition(class_node)
