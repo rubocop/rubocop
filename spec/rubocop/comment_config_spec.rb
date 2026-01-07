@@ -217,6 +217,27 @@ RSpec.describe RuboCop::CommentConfig do
     it 'has values as arrays of extra enabled cops' do
       expect(extra.values.first).to eq ['Metrics/MethodLength', 'Security/Eval']
     end
+
+    context 'with push directive disabling Style/GuardClause' do
+      let(:source) do
+        <<~RUBY
+          def process
+            # rubocop:push -Style/GuardClause
+            if condition
+              return value
+            end
+            # rubocop:pop
+          end
+        RUBY
+      end
+
+      it 'does not treat push with -CopName as an extra enable comment' do
+        # This test reproduces the bug where "# rubocop:push -..."
+        # was incorrectly interpreted as an enable directive, causing:
+        # "Unnecessary enabling of -Style/GuardClause. (error:Lint/RedundantCopEnableDirective)"
+        expect(extra).to be_empty
+      end
+    end
   end
 
   describe 'comment_only_line?' do
