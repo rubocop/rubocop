@@ -70,6 +70,7 @@ module RuboCop
     def extra_enabled_comments_with_names(extras:, names:)
       each_directive do |directive|
         next unless comment_only_line?(directive.line_number)
+        next if directive.push? || directive.pop?
 
         if directive.enabled_all?
           handle_enable_all(directive, names, extras)
