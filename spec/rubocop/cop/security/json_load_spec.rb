@@ -19,6 +19,12 @@ RSpec.describe RuboCop::Cop::Security::JSONLoad, :config do
     expect_no_offenses(<<~RUBY)
       JSON.load(arg, create_additions: true)
       ::JSON.load(arg, create_additions: false)
+      JSON.load(arg, { allow_nan: false, create_additions: true })
+      ::JSON.load(arg, { allow_nan: false, create_additions: true })
+      JSON.load(arg, proc {}, create_additions: false, max_nesting: 19)
+      ::JSON.load(arg, proc {}, create_additions: false, max_nesting: 19)
+      JSON.load(arg, -> {}, { max_nesting: 19, create_additions: false, allow_nan: true })
+      ::JSON.load(arg, -> {}, { max_nesting: 19, create_additions: false, allow_nan: true })
     RUBY
   end
 

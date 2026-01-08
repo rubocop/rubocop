@@ -52,7 +52,7 @@ module RuboCop
           (
             send (const {nil? cbase} :JSON) ${:load :restore}
             ...
-            !(hash `(sym $:create_additions))
+            !`(pair (sym :create_additions) _)
           )
         PATTERN
 
