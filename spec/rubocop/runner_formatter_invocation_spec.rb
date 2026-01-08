@@ -7,7 +7,6 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     include_context 'cli spec behavior'
 
     let(:formatter) { instance_double(RuboCop::Formatter::BaseFormatter).as_null_object }
-    let(:output) { $stdout.string }
 
     before do
       create_file('2_offense.rb', '#' * 130)
@@ -25,11 +24,12 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     end
 
     describe 'invocation order' do
+      let(:invocation_order) { [] }
       let(:formatter) do
         formatter = instance_spy(RuboCop::Formatter::BaseFormatter)
         %i[started file_started file_finished finished output].each do |message|
           allow(formatter).to receive(message) do
-            puts message unless message == :output
+            invocation_order << message unless message == :output
           end
         end
         formatter
@@ -37,16 +37,18 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
 
       it 'is called in the proper sequence' do
         run
-        expect(output).to eq(<<~OUTPUT)
-          started
-          file_started
-          file_finished
-          file_started
-          file_finished
-          file_started
-          file_finished
-          finished
-        OUTPUT
+        expect(invocation_order).to eq(
+          %i[
+            started
+            file_started
+            file_finished
+            file_started
+            file_finished
+            file_started
+            file_finished
+            finished
+          ]
+        )
       end
     end
 
