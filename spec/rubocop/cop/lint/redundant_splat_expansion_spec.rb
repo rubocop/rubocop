@@ -83,7 +83,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
   it_behaves_like 'splat expansion', '1.1', as_array: '[1.1]'
 
   context 'assignment to splat expansion' do
-    it 'registers an offense and corrects an array using a constructor' do
+    it 'registers an offense and corrects an array constructor in a local variable assignment' do
       expect_offense(<<~RUBY)
         a = *Array.new(3) { 42 }
             ^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
@@ -91,6 +91,39 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
 
       expect_correction(<<~RUBY)
         a = Array.new(3) { 42 }
+      RUBY
+    end
+
+    it 'registers an offense and corrects an array constructor in an instance variable assignment' do
+      expect_offense(<<~RUBY)
+        @a = *Array.new(3) { 42 }
+             ^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @a = Array.new(3) { 42 }
+      RUBY
+    end
+
+    it 'registers an offense and corrects an array constructor in a class variable assignment' do
+      expect_offense(<<~RUBY)
+        @@a = *Array.new(3) { 42 }
+              ^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        @@a = Array.new(3) { 42 }
+      RUBY
+    end
+
+    it 'registers an offense and corrects an array constructor in a global variable assignment' do
+      expect_offense(<<~RUBY)
+        $a = *Array.new(3) { 42 }
+             ^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        $a = Array.new(3) { 42 }
       RUBY
     end
 
