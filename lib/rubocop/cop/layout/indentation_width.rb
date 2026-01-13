@@ -5,6 +5,8 @@ module RuboCop
     module Layout
       # Checks for indentation that doesn't use the specified number of spaces.
       # The indentation width can be configured using the `Width` setting. The default width is 2.
+      # The block body indentation for method chain blocks can be configured using the
+      # `EnforcedStyleAlignWith` setting.
       #
       # See also the `Layout/IndentationConsistency` cop which is the companion to this one.
       #
@@ -41,7 +43,22 @@ module RuboCop
       #     end
       #   end
       #   end
+      #
+      # @example EnforcedStyleAlignWith: start_of_line (default)
+      #   # good
+      #   records.uniq { |el| el[:profile_id] }
+      #          .map do |message|
+      #     SomeJob.perform_later(message[:id])
+      #   end
+      #
+      # @example EnforcedStyleAlignWith: relative_to_receiver
+      #   # good
+      #   records.uniq { |el| el[:profile_id] }
+      #          .map do |message|
+      #            SomeJob.perform_later(message[:id])
+      #          end
       class IndentationWidth < Base # rubocop:disable Metrics/ClassLength
+        include ConfigurableEnforcedStyle
         include EndKeywordAlignment
         include Alignment
         include CheckAssignment
@@ -83,9 +100,7 @@ module RuboCop
 
           return unless begins_its_line?(end_loc)
 
-          # For blocks where the dot is on a new line, use the dot position as the base.
-          # Otherwise, use the end keyword position as the base.
-          base_loc = dot_on_new_line?(node) ? node.send_node.loc.dot : end_loc
+          base_loc = block_body_indentation_base(node, end_loc)
           check_indentation(base_loc, node.body)
 
           return unless indented_internal_methods_style?
@@ -392,6 +407,14 @@ module RuboCop
           return node unless node.parent&.send_type?
 
           leftmost_modifier_of(node.parent)
+        end
+
+        def block_body_indentation_base(node, end_loc)
+          if style != :relative_to_receiver || !dot_on_new_line?(node)
+            end_loc
+          else
+            node.send_node.loc.dot
+          end
         end
 
         def dot_on_new_line?(node)
