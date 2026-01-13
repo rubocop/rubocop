@@ -8,20 +8,20 @@ module RuboCop
       #
       # @example
       #
-      #  # bad
-      #  tired? ? 'stop' : 'go faster' if running?
+      #   # bad
+      #   tired? ? 'stop' : 'go faster' if running?
       #
-      #  # bad
-      #  if tired?
-      #    "please stop"
-      #  else
-      #    "keep going"
-      #  end if running?
+      #   # bad
+      #   if tired?
+      #     "please stop"
+      #   else
+      #     "keep going"
+      #   end if running?
       #
-      #  # good
-      #  if running?
-      #    tired? ? 'stop' : 'go faster'
-      #  end
+      #   # good
+      #   if running?
+      #     tired? ? 'stop' : 'go faster'
+      #   end
       class IfUnlessModifierOfIfUnless < Base
         include StatementModifier
         extend AutoCorrector

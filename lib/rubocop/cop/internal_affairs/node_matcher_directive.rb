@@ -8,16 +8,16 @@ module RuboCop
       # method.
       #
       # @example
-      #  # bad
-      #  def_node_matcher :foo?, <<~PATTERN
-      #    ...
-      #  PATTERN
+      #   # bad
+      #   def_node_matcher :foo?, <<~PATTERN
+      #     ...
+      #   PATTERN
       #
-      #  # good
-      #  # @!method foo?(node)
-      #  def_node_matcher :foo?, <<~PATTERN
-      #    ...
-      #  PATTERN
+      #   # good
+      #   # @!method foo?(node)
+      #   def_node_matcher :foo?, <<~PATTERN
+      #     ...
+      #   PATTERN
       #
       class NodeMatcherDirective < Base
         extend AutoCorrector

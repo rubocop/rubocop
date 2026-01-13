@@ -6,18 +6,18 @@ module RuboCop
       # Checks for use of the lambda.(args) syntax.
       #
       # @example EnforcedStyle: call (default)
-      #  # bad
-      #  lambda.(x, y)
+      #   # bad
+      #   lambda.(x, y)
       #
-      #  # good
-      #  lambda.call(x, y)
+      #   # good
+      #   lambda.call(x, y)
       #
       # @example EnforcedStyle: braces
-      #  # bad
-      #  lambda.call(x, y)
+      #   # bad
+      #   lambda.call(x, y)
       #
-      #  # good
-      #  lambda.(x, y)
+      #   # good
+      #   lambda.(x, y)
       class LambdaCall < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

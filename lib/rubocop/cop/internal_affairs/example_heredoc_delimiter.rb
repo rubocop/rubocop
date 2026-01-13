@@ -9,15 +9,15 @@ module RuboCop
       # the delimiter.
       #
       # @example
-      #  # bad
-      #  expect_offense(<<~CODE)
-      #    example_ruby_code
-      #  CODE
+      #   # bad
+      #   expect_offense(<<~CODE)
+      #     example_ruby_code
+      #   CODE
       #
-      #  # good
-      #  expect_offense(<<~RUBY)
-      #    example_ruby_code
-      #  RUBY
+      #   # good
+      #   expect_offense(<<~RUBY)
+      #     example_ruby_code
+      #   RUBY
       class ExampleHeredocDelimiter < Base
         extend AutoCorrector
 

@@ -62,12 +62,12 @@ module RuboCop
       #
       # @example AllowedConstants: ['ClassMethods']
       #
-      #    # good
-      #    module A
-      #      module ClassMethods
-      #        # ...
-      #      end
-      #    end
+      #   # good
+      #   module A
+      #     module ClassMethods
+      #       # ...
+      #     end
+      #   end
       #
       class Documentation < Base
         include DocumentationComment

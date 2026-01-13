@@ -14,22 +14,22 @@ module RuboCop
       #   is a `Hash` or responds to the replacement methods.
       #
       # @example EnforcedStyle: short (default)
-      #  # bad
-      #  Hash#has_key?
-      #  Hash#has_value?
+      #   # bad
+      #   Hash#has_key?
+      #   Hash#has_value?
       #
-      #  # good
-      #  Hash#key?
-      #  Hash#value?
+      #   # good
+      #   Hash#key?
+      #   Hash#value?
       #
       # @example EnforcedStyle: verbose
-      #  # bad
-      #  Hash#key?
-      #  Hash#value?
+      #   # bad
+      #   Hash#key?
+      #   Hash#value?
       #
-      #  # good
-      #  Hash#has_key?
-      #  Hash#has_value?
+      #   # good
+      #   Hash#has_key?
+      #   Hash#has_value?
       class PreferredHashMethods < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector

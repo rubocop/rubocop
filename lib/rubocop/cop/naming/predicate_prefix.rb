@@ -63,17 +63,17 @@ module RuboCop
       #   end
       #
       # @example UseSorbetSigs: false (default)
-      #  # bad
-      #  sig { returns(String) }
-      #  def is_this_thing_on
-      #    "yes"
-      #  end
+      #   # bad
+      #   sig { returns(String) }
+      #   def is_this_thing_on
+      #     "yes"
+      #   end
       #
-      #  # good - Sorbet signature is not evaluated
-      #  sig { returns(String) }
-      #  def is_this_thing_on?
-      #    "yes"
-      #  end
+      #   # good - Sorbet signature is not evaluated
+      #   sig { returns(String) }
+      #   def is_this_thing_on?
+      #     "yes"
+      #   end
       #
       # @example UseSorbetSigs: true
       #   # bad

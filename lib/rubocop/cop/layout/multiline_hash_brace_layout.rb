@@ -28,66 +28,66 @@ module RuboCop
       #
       # @example EnforcedStyle: symmetrical (default)
       #
-      #     # bad
-      #     { a: 1,
-      #       b: 2
-      #     }
-      #     # bad
-      #     {
-      #       a: 1,
-      #       b: 2 }
+      #   # bad
+      #   { a: 1,
+      #     b: 2
+      #   }
+      #   # bad
+      #   {
+      #     a: 1,
+      #     b: 2 }
       #
-      #     # good
-      #     { a: 1,
-      #       b: 2 }
+      #   # good
+      #   { a: 1,
+      #     b: 2 }
       #
-      #     # good
-      #     {
-      #       a: 1,
-      #       b: 2
-      #     }
+      #   # good
+      #   {
+      #     a: 1,
+      #     b: 2
+      #   }
       #
       # @example EnforcedStyle: new_line
-      #     # bad
-      #     {
-      #       a: 1,
-      #       b: 2 }
+      #   # bad
+      #   {
+      #     a: 1,
+      #     b: 2 }
       #
-      #     # bad
-      #     { a: 1,
-      #       b: 2 }
+      #   # bad
+      #   { a: 1,
+      #     b: 2 }
       #
-      #     # good
-      #     { a: 1,
-      #       b: 2
-      #     }
+      #   # good
+      #   { a: 1,
+      #     b: 2
+      #   }
       #
-      #     # good
-      #     {
-      #       a: 1,
-      #       b: 2
-      #     }
+      #   # good
+      #   {
+      #     a: 1,
+      #     b: 2
+      #   }
       #
       # @example EnforcedStyle: same_line
-      #     # bad
-      #     { a: 1,
-      #       b: 2
-      #     }
+      #   # bad
+      #   { a: 1,
+      #     b: 2
+      #   }
       #
-      #     # bad
-      #     {
-      #       a: 1,
-      #       b: 2
-      #     }
+      #   # bad
+      #   {
+      #     a: 1,
+      #     b: 2
+      #   }
       #
-      #     # good
-      #     {
-      #       a: 1,
-      #       b: 2 }
+      #   # good
+      #   {
+      #     a: 1,
+      #     b: 2 }
       #
-      #     # good
-      #     { a: 1,
-      #       b: 2 }
+      #   # good
+      #   { a: 1,
+      #     b: 2 }
       class MultilineHashBraceLayout < Base
         include MultilineLiteralBraceLayout
         extend AutoCorrector

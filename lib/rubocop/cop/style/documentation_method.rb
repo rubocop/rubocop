@@ -97,14 +97,14 @@ module RuboCop
       #
       # @example AllowedMethods: ['method_missing', 'respond_to_missing?']
       #
-      #    # good
-      #    class Foo
-      #      def method_missing(name, *args)
-      #      end
+      #   # good
+      #   class Foo
+      #     def method_missing(name, *args)
+      #     end
       #
-      #      def respond_to_missing?(symbol, include_private)
-      #      end
-      #    end
+      #     def respond_to_missing?(symbol, include_private)
+      #     end
+      #   end
       #
       class DocumentationMethod < Base
         include DocumentationComment

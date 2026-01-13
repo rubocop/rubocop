@@ -7,18 +7,18 @@ module RuboCop
       # parenthesis (`(`) in lambda literals.
       #
       # @example EnforcedStyle: require_no_space (default)
-      #     # bad
-      #     a = -> (x, y) { x + y }
+      #   # bad
+      #   a = -> (x, y) { x + y }
       #
-      #     # good
-      #     a = ->(x, y) { x + y }
+      #   # good
+      #   a = ->(x, y) { x + y }
       #
       # @example EnforcedStyle: require_space
-      #     # bad
-      #     a = ->(x, y) { x + y }
+      #   # bad
+      #   a = ->(x, y) { x + y }
       #
-      #     # good
-      #     a = -> (x, y) { x + y }
+      #   # good
+      #   a = -> (x, y) { x + y }
       class SpaceInLambdaLiteral < Base
         include ConfigurableEnforcedStyle
         include RangeHelp

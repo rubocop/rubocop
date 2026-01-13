@@ -7,11 +7,11 @@ module RuboCop
       #
       # @example
       #
-      #     # bad
-      #     expect(cop.messages).to eq([described_class::MSG])
+      #   # bad
+      #   expect(cop.messages).to eq([described_class::MSG])
       #
-      #     # good
-      #     expect(cop.messages).to eq(['Do not write bad code like that.'])
+      #   # good
+      #   expect(cop.messages).to eq(['Do not write bad code like that.'])
       #
       class UselessMessageAssertion < Base
         MSG = 'Do not specify cop behavior using `described_class::MSG`.'

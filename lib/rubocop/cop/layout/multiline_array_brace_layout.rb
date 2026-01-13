@@ -27,67 +27,67 @@ module RuboCop
       # line as the last element of the array.
       #
       # @example EnforcedStyle: symmetrical (default)
-      #     # bad
-      #     [ :a,
-      #       :b
-      #     ]
+      #   # bad
+      #   [ :a,
+      #     :b
+      #   ]
       #
-      #     # bad
-      #     [
-      #       :a,
-      #       :b ]
+      #   # bad
+      #   [
+      #     :a,
+      #     :b ]
       #
-      #     # good
-      #     [ :a,
-      #       :b ]
+      #   # good
+      #   [ :a,
+      #     :b ]
       #
-      #     # good
-      #     [
-      #       :a,
-      #       :b
-      #     ]
+      #   # good
+      #   [
+      #     :a,
+      #     :b
+      #   ]
       #
       # @example EnforcedStyle: new_line
-      #     # bad
-      #     [
-      #       :a,
-      #       :b ]
+      #   # bad
+      #   [
+      #     :a,
+      #     :b ]
       #
-      #     # bad
-      #     [ :a,
-      #       :b ]
+      #   # bad
+      #   [ :a,
+      #     :b ]
       #
-      #     # good
-      #     [ :a,
-      #       :b
-      #     ]
+      #   # good
+      #   [ :a,
+      #     :b
+      #   ]
       #
-      #     # good
-      #     [
-      #       :a,
-      #       :b
-      #     ]
+      #   # good
+      #   [
+      #     :a,
+      #     :b
+      #   ]
       #
       # @example EnforcedStyle: same_line
-      #     # bad
-      #     [ :a,
-      #       :b
-      #     ]
+      #   # bad
+      #   [ :a,
+      #     :b
+      #   ]
       #
-      #     # bad
-      #     [
-      #       :a,
-      #       :b
-      #     ]
+      #   # bad
+      #   [
+      #     :a,
+      #     :b
+      #   ]
       #
-      #     # good
-      #     [
-      #       :a,
-      #       :b ]
+      #   # good
+      #   [
+      #     :a,
+      #     :b ]
       #
-      #     # good
-      #     [ :a,
-      #       :b ]
+      #   # good
+      #   [ :a,
+      #     :b ]
       class MultilineArrayBraceLayout < Base
         include MultilineLiteralBraceLayout
         extend AutoCorrector
