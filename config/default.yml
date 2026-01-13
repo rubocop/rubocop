@@ -4666,6 +4666,12 @@ Style/MapToSet:
   Safe: false
   VersionAdded: '1.42'
 
+Style/MapToSum:
+  Description: 'Prefer `sum` with a block over `map.sum`.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '1.71'
+
 Style/MethodCallWithArgsParentheses:
   Description: 'Use parentheses for method calls with arguments.'
   StyleGuide: '#method-invocation-parens'
