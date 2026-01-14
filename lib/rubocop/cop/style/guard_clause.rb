@@ -227,12 +227,15 @@ module RuboCop
           remove_whole_lines(corrector, node.loc.end)
           return unless node.else?
 
-          remove_whole_lines(corrector, leave_branch.source_range)
+          if leave_branch
+            remove_whole_lines(corrector, leave_branch.source_range)
+            corrector.insert_after(
+              heredoc_branch.last_argument.loc.heredoc_end, "\n#{leave_branch.source}"
+            )
+          end
+
           remove_whole_lines(corrector, node.loc.else)
           remove_whole_lines(corrector, range_of_branch_to_remove(node, guard))
-          corrector.insert_after(
-            heredoc_branch.last_argument.loc.heredoc_end, "\n#{leave_branch.source}"
-          )
         end
 
         def range_of_branch_to_remove(node, guard)
