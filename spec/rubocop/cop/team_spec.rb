@@ -242,6 +242,58 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
+    context 'when autocorrecting with offset 0 and different source buffer' do
+      let(:options) { { autocorrect: true } }
+      let(:cop_classes) { RuboCop::Cop::Registry.new([RuboCop::Cop::Style::StringLiterals]) }
+
+      let(:original_source) do
+        source = RuboCop::ProcessedSource.new(
+          "'hello'",
+          ruby_version,
+          'test.erb',
+          parser_engine: parser_engine
+        )
+        source.config = config
+        source.registry = RuboCop::Cop::Registry.new(cop_classes.cops)
+        source
+      end
+
+      let(:extracted_source) do
+        source = RuboCop::ProcessedSource.new(
+          "'hello'",
+          ruby_version,
+          'test.erb',
+          parser_engine: parser_engine
+        )
+        source.config = config
+        source.registry = RuboCop::Cop::Registry.new(cop_classes.cops)
+        source
+      end
+
+      it 'uses import! instead of merge! to handle different source buffers' do
+        expect(original_source.buffer).not_to equal(extracted_source.buffer)
+
+        extracted_corrector = RuboCop::Cop::Corrector.new(extracted_source)
+        extracted_corrector.replace(
+          Parser::Source::Range.new(extracted_source.buffer, 0, 7),
+          '"hello"'
+        )
+
+        cop = team.cops.first
+        cop_report = RuboCop::Cop::Base::InvestigationReport.new(
+          cop, extracted_source, [], extracted_corrector
+        )
+
+        report = RuboCop::Cop::Commissioner::InvestigationReport.new(
+          extracted_source, [cop_report], []
+        )
+
+        expect do
+          team.send(:collate_corrections, report, offset: 0, original: original_source)
+        end.not_to raise_error
+      end
+    end
+
     context 'when done twice', :restore_registry do
       let(:persisting_cop_class) do
         stub_cop_class('Test::Persisting') do
