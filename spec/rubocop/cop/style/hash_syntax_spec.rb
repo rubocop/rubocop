@@ -219,6 +219,74 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
           method(:puts).(key: value)
         RUBY
       end
+
+      context 'Ruby >= 3.1', :ruby31 do
+        it 'registers an offense and adds parentheses for `if` condition' do
+          expect_offense(<<~RUBY)
+            if foo bar: bar
+                        ^^^ Omit the hash value.
+              baz
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            if foo(bar:)
+              baz
+            end
+          RUBY
+        end
+
+        it 'registers an offense and adds parentheses for `unless` condition' do
+          expect_offense(<<~RUBY)
+            unless foo bar: bar
+                            ^^^ Omit the hash value.
+              baz
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            unless foo(bar:)
+              baz
+            end
+          RUBY
+        end
+
+        it 'registers an offense and adds parentheses for `while` condition' do
+          expect_offense(<<~RUBY)
+            while foo bar: bar
+                           ^^^ Omit the hash value.
+              baz
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            while foo(bar:)
+              baz
+            end
+          RUBY
+        end
+
+        it 'registers an offense and adds parentheses for `until` condition' do
+          expect_offense(<<~RUBY)
+            until foo bar: bar
+                           ^^^ Omit the hash value.
+              baz
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            until foo(bar:)
+              baz
+            end
+          RUBY
+        end
+
+        it 'does not register an offense for modifier form' do
+          expect_no_offenses(<<~RUBY)
+            baz if foo bar: bar
+          RUBY
+        end
+      end
     end
 
     context 'with SpaceAroundOperators disabled' do
@@ -1520,6 +1588,72 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
         RUBY
       end
 
+      it 'registers an offense and adds parentheses for `if` condition' do
+        expect_offense(<<~RUBY)
+          if foo bar: bar
+                      ^^^ Omit the hash value.
+            baz
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if foo(bar:)
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and adds parentheses for `unless` condition' do
+        expect_offense(<<~RUBY)
+          unless foo bar: bar
+                          ^^^ Omit the hash value.
+            baz
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          unless foo(bar:)
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and adds parentheses for `while` condition' do
+        expect_offense(<<~RUBY)
+          while foo bar: bar
+                         ^^^ Omit the hash value.
+            baz
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          while foo(bar:)
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and adds parentheses for `until` condition' do
+        expect_offense(<<~RUBY)
+          until foo bar: bar
+                         ^^^ Omit the hash value.
+            baz
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          until foo(bar:)
+            baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for modifier form' do
+        expect_no_offenses(<<~RUBY)
+          baz if foo bar: bar
+        RUBY
+      end
+
       context 'when hash rocket syntax' do
         let(:enforced_style) { 'hash_rockets' }
 
@@ -1698,6 +1832,72 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
 
         expect_correction(<<~RUBY)
           {foo:, bar:}
+        RUBY
+      end
+
+      it 'registers an offense and adds parentheses for `if` condition' do
+        expect_offense(<<~RUBY)
+          if foo bar: bar
+                      ^^^ Omit the hash value.
+            baz
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if foo(bar:)
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and adds parentheses for `unless` condition' do
+        expect_offense(<<~RUBY)
+          unless foo bar: bar
+                          ^^^ Omit the hash value.
+            baz
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          unless foo(bar:)
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and adds parentheses for `while` condition' do
+        expect_offense(<<~RUBY)
+          while foo bar: bar
+                         ^^^ Omit the hash value.
+            baz
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          while foo(bar:)
+            baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and adds parentheses for `until` condition' do
+        expect_offense(<<~RUBY)
+          until foo bar: bar
+                         ^^^ Omit the hash value.
+            baz
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          until foo(bar:)
+            baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for modifier form' do
+        expect_no_offenses(<<~RUBY)
+          baz if foo bar: bar
         RUBY
       end
     end
