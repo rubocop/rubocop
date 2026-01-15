@@ -211,10 +211,10 @@ module RuboCop
 
         each_corrector(report) do |to_merge|
           suppress_clobbering do
-            if offset.positive?
-              corrector.import!(to_merge, offset: offset)
-            else
+            if corrector.source_buffer == to_merge.source_buffer
               corrector.merge!(to_merge)
+            else
+              corrector.import!(to_merge, offset: offset)
             end
           end
         end
