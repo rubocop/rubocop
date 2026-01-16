@@ -58,6 +58,16 @@ RSpec.describe RuboCop::Cop::Offense do
     end
   end
 
+  describe '#highlighted_area' do
+    subject(:highlighted_area) { offense.highlighted_area }
+
+    it 'returns a range with correct column and length' do
+      expect(highlighted_area).to be_a Parser::Source::Range
+      expect(highlighted_area.column).to eq(0)
+      expect(highlighted_area.length).to eq(1)
+    end
+  end
+
   describe '#severity_level' do
     subject(:severity_level) do
       described_class.new(severity, location, 'message', 'CopName').severity.level
