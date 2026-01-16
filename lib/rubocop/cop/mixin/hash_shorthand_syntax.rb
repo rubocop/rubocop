@@ -125,7 +125,7 @@ module RuboCop
         return if dispatch_node.assignment_method?
         return if dispatch_node.parenthesized?
         return if dispatch_node.parent && parentheses?(dispatch_node.parent)
-        return if last_expression?(dispatch_node) && !method_dispatch_as_argument?(dispatch_node)
+        return if last_expression?(dispatch_node) && !requires_parentheses_context?(dispatch_node)
 
         def_node = node.each_ancestor(:call, :super, :yield).first
 
@@ -164,11 +164,11 @@ module RuboCop
         !assignment_node.right_sibling
       end
 
-      def method_dispatch_as_argument?(method_dispatch_node)
-        parent = method_dispatch_node.parent
+      def requires_parentheses_context?(node)
+        parent = node.parent
         return false unless parent
 
-        parent.type?(:call, :super, :yield)
+        parent.type?(:call, :if, :super, :until, :while, :yield)
       end
 
       def breakdown_value_types_of_hash(hash_node)

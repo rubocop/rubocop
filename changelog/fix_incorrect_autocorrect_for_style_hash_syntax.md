@@ -1,0 +1,1 @@
+* [#14783](https://github.com/rubocop/rubocop/issues/14783): Fix incorrect autocorrect for `Style/HashSyntax` when shorthand syntax is used in condition of `if`/`unless`/`while`/`until`. ([@ydakuka][])
