@@ -38,6 +38,14 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
       expect_no_offenses('hash.fetch(key) { default }')
     end
 
+    it 'accepts `fetch` without receiver' do
+      expect_no_offenses('fetch(key)')
+    end
+
+    it 'accepts `fetch` without receiver and with block' do
+      expect_no_offenses('fetch(key) { default }')
+    end
+
     context 'when using safe navigation operator' do
       it 'registers an offense for fetch with one argument' do
         expect_offense(<<~RUBY)
