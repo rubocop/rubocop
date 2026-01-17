@@ -66,7 +66,8 @@ module RuboCop
         private
 
         def offense_for_brackets?(node)
-          style == :brackets && node.method?(:fetch) && node.arguments.one? && !node.block_literal?
+          style == :brackets && node.receiver && node.method?(:fetch) && node.arguments.one? &&
+            !node.block_literal?
         end
 
         def offense_for_fetch?(node)
