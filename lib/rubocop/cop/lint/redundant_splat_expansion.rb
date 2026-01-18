@@ -77,7 +77,7 @@ module RuboCop
         PERCENT_CAPITAL_W = '%W'
         PERCENT_I = '%i'
         PERCENT_CAPITAL_I = '%I'
-        ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
+        ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn casgn].freeze
 
         # @!method array_new?(node)
         def_node_matcher :array_new?, <<~PATTERN
