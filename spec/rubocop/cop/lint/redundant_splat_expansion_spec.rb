@@ -127,6 +127,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects an array constructor in a constant assignment' do
+      expect_offense(<<~RUBY)
+        A = *Array.new(3) { 42 }
+            ^^^^^^^^^^^^^^^^^^^^ Replace splat expansion with comma separated values.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        A = Array.new(3) { 42 }
+      RUBY
+    end
+
     it 'registers and corrects an array using top-level const' do
       expect_offense(<<~RUBY)
         a = *::Array.new(3) { 42 }
