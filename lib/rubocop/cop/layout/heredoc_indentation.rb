@@ -21,6 +21,23 @@ module RuboCop
       #     something
       #   RUBY
       #
+      # @example AllCops:ActiveSupportExtensionsEnabled: false (default)
+      #   # good
+      #   <<-RUBY.squish
+      #       something
+      #   RUBY
+      #
+      # @example AllCops:ActiveSupportExtensionsEnabled: true
+      #   # bad
+      #   <<-RUBY.squish
+      #       something
+      #   RUBY
+      #
+      #   # good
+      #   <<~RUBY.squish
+      #     something
+      #   RUBY
+      #
       class HeredocIndentation < Base
         include Alignment
         include Heredoc
@@ -33,6 +50,11 @@ module RuboCop
                    'heredoc by using `<<~` instead of `%<current_indent_type>s`.'
         WIDTH_MSG = 'Use %<indentation_width>d spaces for indentation in a heredoc.'
 
+        # @!method squish_method?(node)
+        def_node_matcher :squish_method?, <<~PATTERN
+          (send _ {:squish :squish!})
+        PATTERN
+
         def on_heredoc(node)
           body = heredoc_body(node)
           return if body.strip.empty?
@@ -44,7 +66,7 @@ module RuboCop
             expected_indent_level = base_indent_level(node) + configured_indentation_width
             return if expected_indent_level == body_indent_level
           else
-            return unless body_indent_level.zero?
+            return unless body_indent_level.zero? || heredoc_squish?(node)
           end
 
           return if line_too_long?(node)
@@ -60,6 +82,8 @@ module RuboCop
           add_offense(node.loc.heredoc_body, message: message) do |corrector|
             if heredoc_indent_type == '~'
               adjust_squiggly(corrector, node)
+            elsif heredoc_squish?(node)
+              adjust_heredoc_squish(corrector, node)
             else
               adjust_minus(corrector, node)
             end
@@ -109,6 +133,11 @@ module RuboCop
           config.for_cop('Layout/LineLength')['AllowHeredoc']
         end
 
+        def adjust_heredoc_squish(corrector, node)
+          adjust_squiggly(corrector, node)
+          adjust_minus(corrector, node)
+        end
+
         def adjust_squiggly(corrector, node)
           corrector.replace(node.loc.heredoc_body, indented_body(node))
           corrector.replace(node.loc.heredoc_end, indented_end(node))
@@ -155,6 +184,10 @@ module RuboCop
 
         def heredoc_end(node)
           node.loc.heredoc_end.source
+        end
+
+        def heredoc_squish?(node)
+          active_support_extensions_enabled? && squish_method?(node.parent)
         end
       end
     end
