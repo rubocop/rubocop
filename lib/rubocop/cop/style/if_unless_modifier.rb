@@ -48,6 +48,17 @@ module RuboCop
       # undefined_bar # => nil
       # ----
       #
+      # NOTE: Autocorrection is not applied when multiple `if`/`unless` modifiers
+      # are in an array or hash literal because it can cause an infinite loop
+      # with `Layout/EndAlignment` and `Layout/IndentationWidth` cops during
+      # autocorrection. The following example will be detected but not autocorrected:
+      #
+      # [source,ruby]
+      # ----
+      # # Detected but not autocorrected
+      # [(foo if condition1), (bar if condition2)]
+      # ----
+      #
       # @example
       #   # bad
       #   if condition
@@ -149,6 +160,8 @@ module RuboCop
 
         def autocorrect(corrector, node)
           replacement = if node.modifier_form?
+                          return if inside_complex_structure?(node)
+
                           replacement_for_modifier_form(corrector, node)
                         else
                           to_modifier_form(node)
@@ -316,6 +329,29 @@ module RuboCop
         def remove_comment(corrector, _node, comment)
           corrector.remove(range_with_surrounding_space(range: comment.source_range, side: :left))
         end
+
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def inside_complex_structure?(node)
+          return false unless node.parent&.begin_type?
+
+          grandparent = node.parent.parent
+          return false unless grandparent
+
+          container = if grandparent.type?(:array, :hash)
+                        grandparent
+                      elsif grandparent.pair_type? && grandparent.parent&.hash_type?
+                        grandparent.parent
+                      end
+          return false unless container
+
+          container.children.count do |child|
+            next false unless child.is_a?(AST::Node)
+
+            element = container.hash_type? ? child.children.last : child
+            element&.begin_type? && element.children.first&.if_type?
+          end > 1
+        end
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
     end
   end
