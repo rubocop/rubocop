@@ -9,7 +9,7 @@ module RuboCop
         self.command_name = :lsp
 
         def run
-          # Load on demand, `languge-server-protocol` is heavy to require.
+          # Load on demand, `language-server-protocol` is heavy to require.
           require_relative '../../lsp/server'
           RuboCop::LSP::Server.new(@config_store).start
         end
