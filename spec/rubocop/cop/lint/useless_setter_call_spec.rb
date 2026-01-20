@@ -83,6 +83,50 @@ RSpec.describe RuboCop::Cop::Lint::UselessSetterCall, :config do
     end
   end
 
+  context 'with method ending with cvar assignment' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def test
+          something
+          @@top = 5
+        end
+      RUBY
+    end
+  end
+
+  context 'with method ending with setter call on cvar' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def test
+          something
+          @@top.attr = 5
+        end
+      RUBY
+    end
+  end
+
+  context 'with method ending with gvar assignment' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def test
+          something
+          $top = 5
+        end
+      RUBY
+    end
+  end
+
+  context 'with method ending with setter call on gvar' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def test
+          something
+          $top.attr = 5
+        end
+      RUBY
+    end
+  end
+
   context 'with method ending with setter call on argument' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
