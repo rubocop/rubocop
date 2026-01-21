@@ -86,7 +86,7 @@ module RuboCop
 
       def builtin_formatter_class(specified_key)
         matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
-          /^\[#{specified_key}\]/.match?(key) || specified_key == key.delete('[]')
+          key.start_with?("[#{specified_key}]") || specified_key == key.delete('[]')
         end
 
         if matching_keys.empty?
