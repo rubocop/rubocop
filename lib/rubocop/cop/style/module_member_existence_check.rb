@@ -42,7 +42,13 @@ module RuboCop
       #   Array.public_method_defined?(:foo)
       #   Array.include?(:foo)
       #
+      #  @example AllowedMethods: [included_modules]
+      #
+      #   # good
+      #   Array.included_modules.include?(:foo)
+      #
       class ModuleMemberExistenceCheck < Base
+        include AllowedMethods
         extend AutoCorrector
 
         MSG = 'Use `%<replacement>s` instead.'
@@ -75,6 +81,7 @@ module RuboCop
           return unless (parent = node.parent)
           return unless module_member_inclusion?(parent)
           return unless simple_method_argument?(node) && simple_method_argument?(parent)
+          return if allowed_method?(node.method_name)
 
           offense_range = node.location.selector.join(parent.source_range.end)
           replacement = replacement_for(node, parent)
