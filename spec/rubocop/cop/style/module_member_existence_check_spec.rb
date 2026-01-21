@@ -133,6 +133,16 @@ RSpec.describe RuboCop::Cop::Style::ModuleMemberExistenceCheck, :config do
         x.#{array_returning_method}(*foo).include?(method)
       RUBY
     end
+
+    context "when #{array_returning_method} is in AllowedMethods" do
+      let(:cop_config) { { 'AllowedMethods' => [array_returning_method.to_s] } }
+
+      it "does not register an offense when using `.#{array_returning_method}.include?(method)`" do
+        expect_no_offenses(<<~RUBY)
+          x.#{array_returning_method}.include?(method)
+        RUBY
+      end
+    end
   end
 
   it_behaves_like 'module member inclusion', :class_variables, :class_variable_defined?, false
