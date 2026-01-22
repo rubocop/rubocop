@@ -1205,6 +1205,45 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when an unreferenced variable is reassigned ' \
+          'on the right side of &&= and referenced after the &&=' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(bar)
+          foo = 1
+          bar &&= (foo = 2)
+          [foo, bar]
+        end
+      RUBY
+    end
+  end
+
+  context 'when an unreferenced variable is reassigned ' \
+          'on the right side of ||= and referenced after the ||=' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(bar)
+          foo = 1
+          bar ||= (foo = 2)
+          [foo, bar]
+        end
+      RUBY
+    end
+  end
+
+  context 'when an unreferenced variable is reassigned ' \
+          'on the right side of += and referenced after the +=' do
+    it 'accepts' do
+      expect_no_offenses(<<~RUBY)
+        def some_method(bar)
+          foo = 1
+          bar += (foo = 2)
+          [foo, bar]
+        end
+      RUBY
+    end
+  end
+
   context 'when a variable is reassigned while referencing itself in rhs and referenced' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
