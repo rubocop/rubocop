@@ -254,8 +254,8 @@ module RuboCop
           end
         end
 
-        # Mix-in module for logical operator control structures.
-        module LogicalOperator
+        # Mix-in module for operator control structures.
+        module Operator
           def always_run?
             left_body?
           end
@@ -263,7 +263,15 @@ module RuboCop
 
         # left_body && right_body
         class And < Base
-          include LogicalOperator
+          include Operator
+
+          define_predicate :left_body?,  child_index: 0
+          define_predicate :right_body?, child_index: 1
+        end
+
+        # left_body &&= right_body
+        class AndAsgn < Base
+          include Operator
 
           define_predicate :left_body?,  child_index: 0
           define_predicate :right_body?, child_index: 1
@@ -271,7 +279,23 @@ module RuboCop
 
         # left_body || right_body
         class Or < Base
-          include LogicalOperator
+          include Operator
+
+          define_predicate :left_body?,  child_index: 0
+          define_predicate :right_body?, child_index: 1
+        end
+
+        # left_body ||= right_body
+        class OrAsgn < Base
+          include Operator
+
+          define_predicate :left_body?,  child_index: 0
+          define_predicate :right_body?, child_index: 1
+        end
+
+        # e.g. left_body += right_body
+        class OpAsgn < Base
+          include Operator
 
           define_predicate :left_body?,  child_index: 0
           define_predicate :right_body?, child_index: 1
