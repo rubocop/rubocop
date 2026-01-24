@@ -11,7 +11,7 @@ module RuboCop
       #
       # @safety
       #   As shown in the examples below, there are generally two possible ways to correct the
-      #   offense, but this cop’s autocorrection always chooses the option that preserves the
+      #   offense, but this cop's autocorrection always chooses the option that preserves the
       #   current behavior. While this does not change how the code behaves, that option is not
       #   necessarily the appropriate fix in every situation. For this reason, the autocorrection
       #   provided by this cop is considered unsafe.
