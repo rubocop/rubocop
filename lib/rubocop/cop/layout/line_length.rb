@@ -418,8 +418,11 @@ module RuboCop
           # The maximum allowed length of a string value is:
           # `Max` - end delimiter (quote) - continuation characters (space and slash)
           max_length = max - 3
-          # If the string doesn't start at the beginning of the line, the max length is offset
-          max_length -= column_offset_between(node.loc, node.parent.loc) if node.parent
+          # If the string is on the same line as its parent, offset by the column difference
+          # (Only apply when on same line to avoid negative offsets for multi-line dstr)
+          if same_line?(node, node.parent)
+            max_length -= column_offset_between(node.loc, node.parent.loc)
+          end
           node.source[0...(max_length)]
         end
       end

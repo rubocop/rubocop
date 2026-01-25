@@ -4178,4 +4178,30 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     end
     RUBY
   end
+
+  it 'does not cause an infinite loop for Layout/LineLength with SplitStrings' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/LineLength:
+        Enabled: true
+        Max: 30
+        SplitStrings: true
+    YAML
+
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      _const = '000000000000000 0000000000000000000000000000 000000000000000000000000000'
+    RUBY
+
+    status = cli.run(['--autocorrect-all'])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      _const = '000000000000000 ' \\
+      '00000000000000000000000000' \\
+      '00 ' \\
+      '000000000000000000000000000'
+    RUBY
+  end
 end
