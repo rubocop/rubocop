@@ -192,6 +192,67 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects only the key line when value starts on next line' do
+      expect_offense(<<~RUBY)
+        a = {
+            a:
+            ^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
+          {
+            b: 1
+          }
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = {
+          a:
+          {
+            b: 1
+          }
+        }
+      RUBY
+    end
+
+    it 'registers an offense and corrects key and value lines when value starts on the same line' do
+      expect_offense(<<~RUBY)
+        a = {
+            a: {
+            ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
+              b: 1
+            }
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = {
+          a: {
+            b: 1
+          }
+        }
+      RUBY
+    end
+
+    it 'registers an offense and corrects value lines when value starts on the same line' do
+      expect_offense(<<~RUBY)
+        a = {
+            a: [
+            ^^^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
+              1,
+              2
+            ]
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a = {
+          a: [
+            1,
+            2
+          ]
+        }
+      RUBY
+    end
+
     it 'accepts correctly indented first pair' do
       expect_no_offenses(<<~RUBY)
         a = {
@@ -358,6 +419,27 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
           RUBY
         end
 
+        it 'registers an offense and corrects only the key line when value starts on next line in a method call' do
+          expect_offense(<<~RUBY)
+            func({
+                     a:
+                     ^^ Use 2 spaces for indentation in a hash, relative to the first position after the preceding left parenthesis.
+                   {
+                     b: 1
+                   }
+                 })
+          RUBY
+
+          expect_correction(<<~RUBY)
+            func({
+                   a:
+                   {
+                     b: 1
+                   }
+                 })
+          RUBY
+        end
+
         it 'registers an offense for a hash that is a value of a multi pairs hash' \
            'when the indent of its elements is not based on the hash key' do
           expect_offense(<<~RUBY)
@@ -470,6 +552,27 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
           expect_correction(<<~RUBY)
             func(x: {
               a: 1, b: 2 })
+          RUBY
+        end
+
+        it 'registers an offense and corrects only the key line when value starts on next line in a method call' do
+          expect_offense(<<~RUBY)
+            func({
+                   a:
+                   ^^ Use 2 spaces for indentation in a hash, relative to the start of the line where the left curly brace is.
+              {
+                b: 1
+              }
+            })
+          RUBY
+
+          expect_correction(<<~RUBY)
+            func({
+              a:
+              {
+                b: 1
+              }
+            })
           RUBY
         end
 
@@ -680,6 +783,28 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementIndentation, :config do
           func({
                  a: 1
                })
+        RUBY
+      end
+
+      it 'registers an offense and corrects only the key line when value starts on next line' do
+        expect_offense(<<~RUBY)
+          var = {
+                    a:
+                    ^^ Use 2 spaces for indentation in a hash, relative to the position of the opening brace.
+                  {
+                    b: 1
+                  }
+                  }
+                  ^ Indent the right brace the same as the left brace.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = {
+                  a:
+                  {
+                    b: 1
+                  }
+                }
         RUBY
       end
     end
