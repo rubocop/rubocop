@@ -1058,6 +1058,24 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
               end
             end
           end
+
+          context 'when the string has no spaces and spans multiple words with `Max` set to 30' do
+            let(:cop_config) { super().merge('Max' => 30) }
+
+            it 'registers an offense and corrects by splitting the string' do
+              expect_offense(<<~RUBY)
+                _const = '000000000000000 0000000000000000000000000000 000000000000000000000000000'
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [83/30]
+              RUBY
+
+              expect_correction(<<~'RUBY')
+                _const = '000000000000000 ' \
+                '00000000000000000000000000' \
+                '00 ' \
+                '000000000000000000000000000'
+              RUBY
+            end
+          end
         end
 
         context 'when SplitStrings: false' do

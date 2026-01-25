@@ -1,0 +1,1 @@
+* [#14716](https://github.com/rubocop/rubocop/issues/14716): Fix an infinite loop error for `Layout/LineLength` when `SplitStrings` option is enabled and strings span multiple lines. ([@HariprasanthMSH][])
