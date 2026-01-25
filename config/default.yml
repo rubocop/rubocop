@@ -2139,6 +2139,15 @@ Lint/MultipleComparison:
   VersionAdded: '0.47'
   VersionChanged: '1.1'
 
+Lint/NestedDoubleQuotesInInterpolation:
+  Description: "Checks for double-quoted strings used in interpolations inside of double-quoted strings."
+  Enabled: pending
+  EnforcedStyle: percent_q
+  SupportedStyles:
+    - percent_q
+    - double_quotes
+  VersionAdded: '<<next>>'
+
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'
   StyleGuide: '#no-nested-methods'
