@@ -127,5 +127,27 @@ RSpec.describe RuboCop::Formatter::ClangStyleFormatter, :config do
         OUTPUT
       end
     end
+
+    context 'when the source contains tabs' do
+      let(:source) do
+        <<~RUBY
+          \t\t\tdo_something("[123]")
+        RUBY
+      end
+
+      it 'preserves tabs in highlighted area' do
+        range = source_range(source.index('[')..source.index(']'))
+
+        offenses = cop.add_offense(range, message: 'message 1')
+        formatter.report_file('test', offenses)
+
+        expect(output.string)
+          .to eq <<~OUTPUT
+            test:1:18: C: message 1
+            \t\t\tdo_something("[123]")
+            \t\t\t              ^^^^^
+        OUTPUT
+      end
+    end
   end
 end

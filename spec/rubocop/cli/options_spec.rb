@@ -1703,7 +1703,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
             'example2.rb:3:2: C: [Correctable] Layout/InitialIndentation: ' \
             'Indentation of first line in file detected.',
             "\tx",
-            ' ^',
+            "\t^",
             'example2.rb:4:1: C: [Correctable] Layout/IndentationConsistency: ' \
             'Inconsistent indentation detected.',
             'def a ...',

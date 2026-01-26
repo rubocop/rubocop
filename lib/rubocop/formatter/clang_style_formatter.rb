@@ -47,8 +47,11 @@ module RuboCop
       def report_highlighted_area(highlighted_area)
         space_area  = highlighted_area.source_buffer.slice(0...highlighted_area.begin_pos)
         source_area = highlighted_area.source
-        output.puts("#{' ' * Unicode::DisplayWidth.of(space_area)}" \
-                    "#{'^' * Unicode::DisplayWidth.of(source_area)}")
+        output.puts("#{to_whitespace(space_area)}#{'^' * Unicode::DisplayWidth.of(source_area)}")
+      end
+
+      def to_whitespace(string)
+        "#{string.delete("^\t")}#{' ' * Unicode::DisplayWidth.of(string.delete("\t"))}"
       end
     end
   end
