@@ -13,7 +13,7 @@ module RuboCop
       # * class_definition (default) - prefer two-line class definition over `Class.new`
       # * class_new - prefer `Class.new` over class definition
       #
-      # @example EnforcedStyle: class_definition
+      # @example EnforcedStyle: class_definition (default)
       #   # bad
       #   FooError = Class.new(StandardError)
       #
