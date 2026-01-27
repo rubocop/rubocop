@@ -5436,6 +5436,11 @@ Style/RedundantLineContinuation:
   Enabled: pending
   VersionAdded: '1.49'
 
+Style/RedundantMinMaxBy:
+  Description: 'Identifies places where `max_by`/`min_by` can be replaced by `max`/`min`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantParentheses:
   Description: "Checks for parentheses that seem not to serve any purpose."
   Enabled: true
