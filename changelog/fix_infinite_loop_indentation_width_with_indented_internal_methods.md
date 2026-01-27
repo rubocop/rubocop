@@ -1,1 +1,0 @@
-* [#14763](https://github.com/rubocop/rubocop/issues/14763): Fix an infinite loop error for `Layout/IndentationWidth` and `Layout/IndentationConsistency` when using `EnforcedStyle: indented_internal_methods` with method chain blocks. ([@ydakuka][])
