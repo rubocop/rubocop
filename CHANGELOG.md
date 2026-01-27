@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.84.0 (2026-01-27)
+
 ### New features
 
 * [#14516](https://github.com/rubocop/rubocop/issues/14516): Add `AllowImplicitArrayLiterals` to `Layout/FirstArrayElementLineBreak`. ([@koic][])

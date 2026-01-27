@@ -3163,6 +3163,35 @@ multi-line array.
 [:a, :b]
 ----
 
+[#allowimplicitarrayliterals_-false-_default_-layoutfirstarrayelementlinebreak]
+==== AllowImplicitArrayLiterals: false (default)
+
+[source,ruby]
+----
+# bad
+a = b,
+    c
+
+# good
+a =
+  b,
+  c
+----
+
+[#allowimplicitarrayliterals_-true-layoutfirstarrayelementlinebreak]
+==== AllowImplicitArrayLiterals: true
+
+[source,ruby]
+----
+# good
+a = b,
+    c
+
+a =
+  b,
+  c
+----
+
 [#allowmultilinefinalelement_-false-_default_-layoutfirstarrayelementlinebreak]
 ==== AllowMultilineFinalElement: false (default)
 
@@ -3196,6 +3225,10 @@ multi-line array.
 
 |===
 | Name | Default value | Configurable values
+
+| AllowImplicitArrayLiterals
+| `false`
+| Boolean
 
 | xref:cops_layout.adoc#allowmultilinefinalelement[AllowMultilineFinalElement]
 | `false`
@@ -4073,6 +4106,33 @@ RUBY
 RUBY
 ----
 
+[#allcops_activesupportextensionsenabled_-false-_default_-layoutheredocindentation]
+==== AllCops:ActiveSupportExtensionsEnabled: false (default)
+
+[source,ruby]
+----
+# good
+<<-RUBY.squish
+    something
+RUBY
+----
+
+[#allcops_activesupportextensionsenabled_-true-layoutheredocindentation]
+==== AllCops:ActiveSupportExtensionsEnabled: true
+
+[source,ruby]
+----
+# bad
+<<-RUBY.squish
+    something
+RUBY
+
+# good
+<<~RUBY.squish
+  something
+RUBY
+----
+
 [#references-layoutheredocindentation]
 === References
 
@@ -4327,6 +4387,8 @@ end
 
 Checks for indentation that doesn't use the specified number of spaces.
 The indentation width can be configured using the `Width` setting. The default width is 2.
+The block body indentation for method chain blocks can be configured using the
+`EnforcedStyleAlignWith` setting.
 
 See also the `Layout/IndentationConsistency` cop which is the companion to this one.
 
@@ -4377,6 +4439,30 @@ end
 end
 ----
 
+[#enforcedstylealignwith_-start_of_line-_default_-layoutindentationwidth]
+==== EnforcedStyleAlignWith: start_of_line (default)
+
+[source,ruby]
+----
+# good
+records.uniq { |el| el[:profile_id] }
+       .map do |message|
+  SomeJob.perform_later(message[:id])
+end
+----
+
+[#enforcedstylealignwith_-relative_to_receiver-layoutindentationwidth]
+==== EnforcedStyleAlignWith: relative_to_receiver
+
+[source,ruby]
+----
+# good
+records.uniq { |el| el[:profile_id] }
+       .map do |message|
+         SomeJob.perform_later(message[:id])
+       end
+----
+
 [#configurable-attributes-layoutindentationwidth]
 === Configurable attributes
 
@@ -4386,6 +4472,10 @@ end
 | Width
 | `2`
 | Integer
+
+| EnforcedStyleAlignWith
+| `start_of_line`
+| `start_of_line`, `relative_to_receiver`
 
 | AllowedPatterns
 | `[]`

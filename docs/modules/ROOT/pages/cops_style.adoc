@@ -4433,6 +4433,75 @@ else
 end
 ----
 
+[#styleemptyclassdefinition]
+== Style/EmptyClassDefinition
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.83
+| -
+|===
+
+Enforces consistent style for empty class definitions.
+
+This cop can enforce either a two-line class definition or `Class.new`
+for classes with no body.
+
+The supported styles are:
+
+* class_definition (default) - prefer two-line class definition over `Class.new`
+* class_new - prefer `Class.new` over class definition
+
+[#examples-styleemptyclassdefinition]
+=== Examples
+
+[#enforcedstyle_-class_definition-_default_-styleemptyclassdefinition]
+==== EnforcedStyle: class_definition (default)
+
+[source,ruby]
+----
+# bad
+FooError = Class.new(StandardError)
+
+# okish
+class FooError < StandardError; end
+
+# good
+class FooError < StandardError
+end
+----
+
+[#enforcedstyle_-class_new-styleemptyclassdefinition]
+==== EnforcedStyle: class_new
+
+[source,ruby]
+----
+# bad
+class FooError < StandardError
+end
+
+# bad
+class FooError < StandardError; end
+
+# good
+FooError = Class.new(StandardError)
+----
+
+[#configurable-attributes-styleemptyclassdefinition]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `class_definition`
+| `class_definition`, `class_new`
+|===
+
 [#styleemptyelse]
 == Style/EmptyElse
 
@@ -7153,6 +7222,83 @@ end
 | MinBranchesCount
 | `3`
 | Integer
+|===
+
+[#stylehashlookupmethod]
+== Style/HashLookupMethod
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| No
+| Always (Unsafe)
+| 1.83
+| -
+|===
+
+Enforces the use of either `Hash#[]` or `Hash#fetch` for hash lookup.
+
+This cop can be configured to prefer either bracket-style (`[]`)
+or fetch-style lookup. It is disabled by default.
+
+When enforcing `fetch` style, only single-argument bracket access is flagged.
+When enforcing `brackets` style, only `fetch` calls with a single key
+argument are flagged (not those with default values or blocks).
+
+[#safety-stylehashlookupmethod]
+=== Safety
+
+This cop is unsafe because `Hash#[]` and `Hash#fetch` have different
+semantics. `Hash#[]` returns `nil` for missing keys, while `Hash#fetch`
+raises a `KeyError`. Replacing one with the other can change program
+behavior in cases where the key is missing.
+
+Additionally, it cannot be guaranteed that the receiver is a `Hash`
+or responds to the replacement method.
+
+[#examples-stylehashlookupmethod]
+=== Examples
+
+[#enforcedstyle_-brackets-_default_-stylehashlookupmethod]
+==== EnforcedStyle: brackets (default)
+
+[source,ruby]
+----
+# bad
+hash.fetch(key)
+
+# good
+hash[key]
+
+# good - fetch with default value is allowed
+hash.fetch(key, default)
+
+# good - fetch with block is allowed
+hash.fetch(key) { default }
+----
+
+[#enforcedstyle_-fetch-stylehashlookupmethod]
+==== EnforcedStyle: fetch
+
+[source,ruby]
+----
+# bad
+hash[key]
+
+# good
+hash.fetch(key)
+----
+
+[#configurable-attributes-stylehashlookupmethod]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `brackets`
+| `brackets`, `fetch`
 |===
 
 [#stylehashslice]
@@ -10395,6 +10541,11 @@ instance methods in the module, then check if a given method is inside that
 array, while `method_defined?` will do direct method lookup, which is much
 faster and consumes less memory.
 
+ @example AllowedMethods: [included_modules]
+
+  # good
+  Array.included_modules.include?(:foo)
+
 [#examples-stylemodulememberexistencecheck]
 === Examples
 
@@ -10411,7 +10562,34 @@ Array.instance_methods(false).include?(:find)
 Array.method_defined?(:size)
 
 Array.method_defined?(:find, false)
+
+# bad
+Array.class_variables.include?(:foo)
+Array.constants.include?(:foo)
+Array.private_instance_methods.include?(:foo)
+Array.protected_instance_methods.include?(:foo)
+Array.public_instance_methods.include?(:foo)
+Array.included_modules.include?(:foo)
+
+# good
+Array.class_variable_defined?(:foo)
+Array.const_defined?(:foo)
+Array.private_method_defined?(:foo)
+Array.protected_method_defined?(:foo)
+Array.public_method_defined?(:foo)
+Array.include?(:foo)
 ----
+
+[#configurable-attributes-stylemodulememberexistencecheck]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedMethods
+| `[]`
+| Array
+|===
 
 [#stylemultilineblockchain]
 == Style/MultilineBlockChain
@@ -11289,6 +11467,47 @@ bar while !foo && baz
 === References
 
 * https://rubystyle.guide#until-for-negatives
+
+[#stylenegativearrayindex]
+== Style/NegativeArrayIndex
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| Always
+| 1.83
+| -
+|===
+
+Identifies usages of `arr[arr.length - n]`, `arr[arr.size - n]`, or
+`arr[arr.count - n]` and suggests to change them to use `arr[-n]` instead.
+Also handles range patterns like `arr[0..(arr.length - n)]`.
+
+The cop recognizes preserving methods (`sort`, `reverse`, `shuffle`, `rotate`)
+and their combinations, allowing safe replacement when the receiver matches.
+It works with variables, instance variables, class variables, and constants.
+
+[#examples-stylenegativearrayindex]
+=== Examples
+
+[source,ruby]
+----
+# bad
+arr[arr.count - 2]
+arr[0..(arr.length - 2)]
+arr[0...(arr.length - 4)]
+arr.sort[arr.reverse.length - 2]
+arr.sort.reverse[arr.sort.size - 2]
+
+# good
+arr[-2]
+arr[0..-2]
+arr[0...-4]
+arr.sort[-2]
+arr.sort.reverse[-2]
+----
 
 [#stylenestedfiledirname]
 == Style/NestedFileDirname
@@ -15808,6 +16027,44 @@ end
 === References
 
 * https://rubystyle.guide#bool-methods-qmark
+
+[#stylereversefind]
+== Style/ReverseFind
+
+NOTE: Requires Ruby version 4.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| No
+| Always (Unsafe)
+| 1.83
+| -
+|===
+
+Identifies places where `array.reverse.find` can be replaced by `array.rfind`.
+
+[#safety-stylereversefind]
+=== Safety
+
+This cop is unsafe because it cannot be guaranteed that the receiver
+is an `Array` or responds to the replacement method.
+
+[#examples-stylereversefind]
+=== Examples
+
+[source,ruby]
+----
+# bad
+array.reverse.find { |item| item.even? }
+array.reverse.detect { |item| item.even? }
+array.reverse_each.find { |item| item.even? }
+array.reverse_each.detect { |item| item.even? }
+
+# good
+array.rfind { |item| item.even? }
+----
 
 [#stylesafenavigation]
 == Style/SafeNavigation

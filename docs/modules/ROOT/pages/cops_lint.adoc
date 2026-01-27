@@ -1825,6 +1825,27 @@ alias_method :foo, :foo
 def foo
   1
 end
+
+# bad
+class MyClass
+  extend Forwardable
+
+  # or with: `def_instance_delegator`, `def_delegators`, `def_instance_delegators`
+  def_delegator :delegation_target, :delegated_method_name
+
+  def delegated_method_name
+  end
+end
+
+# good
+class MyClass
+  extend Forwardable
+
+  def_delegator :delegation_target, :delegated_method_name
+
+  def non_duplicated_delegated_method_name
+  end
+end
 ----
 
 [#allcops_activesupportextensionsenabled_-false-_default_-lintduplicatemethods]
@@ -7216,7 +7237,7 @@ end
 
 Checks to make sure `#to_json` includes an optional argument.
 When overriding `#to_json`, callers may invoke JSON
-generation via `JSON.generate(your_obj)`.  Since `JSON#generate` allows
+generation via `JSON.generate(your_obj)`. Since `JSON#generate` allows
 for an optional argument, your method should too.
 
 [#examples-linttojson]
@@ -7224,23 +7245,19 @@ for an optional argument, your method should too.
 
 [source,ruby]
 ----
-class Point
-  attr_reader :x, :y
+# bad - incorrect arity
+def to_json
+  JSON.generate([x, y])
+end
 
-  # bad, incorrect arity
-  def to_json
-    JSON.generate([x, y])
-  end
+# good - preserving args
+def to_json(*args)
+  JSON.generate([x, y], *args)
+end
 
-  # good, preserving args
-  def to_json(*args)
-    JSON.generate([x, y], *args)
-  end
-
-  # good, discarding args
-  def to_json(*_args)
-    JSON.generate([x, y])
-  end
+# good - discarding args
+def to_json(*_args)
+  JSON.generate([x, y])
 end
 ----
 
@@ -8728,7 +8745,7 @@ appended after these methods will never evaluate.
 === Safety
 
 As shown in the examples below, there are generally two possible ways to correct the
-offense, but this cop’s autocorrection always chooses the option that preserves the
+offense, but this cop's autocorrection always chooses the option that preserves the
 current behavior. While this does not change how the code behaves, that option is not
 necessarily the appropriate fix in every situation. For this reason, the autocorrection
 provided by this cop is considered unsafe.
