@@ -103,6 +103,7 @@ RSpec.describe RuboCop::Cop::Style::NegativeArrayIndex, :config do
 
     it_behaves_like 'does not register an offense', "arr.uniq[arr.uniq.compact.#{method_name} - 2]"
     it_behaves_like 'does not register an offense', "arr.flatten[arr.flatten.map(&:to_s).#{method_name} - 2]"
+    it_behaves_like 'does not register an offense', "arr[#{method_name} - 2]"
     it_behaves_like 'does not register an offense', "arr[other.#{method_name} - 2]"
     it_behaves_like 'does not register an offense', "@arr[@other.#{method_name} - 2]"
     it_behaves_like 'does not register an offense', "CONST[OTHER.#{method_name} - 2]"
@@ -241,5 +242,23 @@ RSpec.describe RuboCop::Cop::Style::NegativeArrayIndex, :config do
     it_behaves_like 'registers an offense for range with parentheses but without expression parentheses', 'arr', method_name, 2, '..', 2
     it_behaves_like 'registers an offense for range with parentheses but without expression parentheses', 'arr.sort', method_name, 0, '..', 2
     it_behaves_like 'registers an offense for range with parentheses but without expression parentheses', 'arr.reverse', method_name, 0, '..', 2
+
+    it "does not register an offense when using `self` as array with local variable receiver for #{method_name}" do
+      expect_no_offenses(<<~RUBY)
+        #{method_name} = do_something
+        self[#{method_name} - 1]
+      RUBY
+    end
+
+    it "registers an offense when using `self` as array with implicit receiver for #{method_name}" do
+      expect_offense(<<~RUBY, method_name: method_name)
+        self[%{method_name} - 1]
+             ^{method_name}^^^^ Use `self[-1]` instead of `self[#{method_name} - 1]`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        self[-1]
+      RUBY
+    end
   end
 end

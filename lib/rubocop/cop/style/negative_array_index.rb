@@ -182,6 +182,8 @@ module RuboCop
         end
 
         def receivers_match?(length_receiver, array_receiver)
+          return array_receiver.self_type? unless length_receiver
+
           unless preserving_method?(array_receiver) && preserving_method?(length_receiver)
             return false
           end
