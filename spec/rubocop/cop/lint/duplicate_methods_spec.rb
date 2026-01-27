@@ -717,6 +717,105 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
         RUBY
       end
     end
+
+    it 'registers an offense for duplicate method when `def_delegator` is used' do
+      expect_offense(<<~RUBY)
+        #{opening_line}
+          def_delegator :foo, :bar
+
+          def bar; end
+          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate method when `def_delegator` is used with string arguments' do
+      expect_offense(<<~RUBY)
+        #{opening_line}
+          def_delegator 'foo', 'bar'
+
+          def bar; end
+          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate method when `def_instance_delegator` is used' do
+      expect_offense(<<~RUBY)
+        #{opening_line}
+          def_instance_delegator :foo, :bar
+
+          def bar; end
+          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate method when `def_delegator` is used with alias' do
+      expect_offense(<<~RUBY)
+        #{opening_line}
+          def_delegator :foo, :bar, :baz
+
+          def bar; end
+
+          def baz; end
+          ^^^^^^^ Method `A#baz` is defined at both (string):2 and (string):6.
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for duplicate method when `def_delegator` is used within a condition' do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          def_delegator :foo, :bar if baz?
+
+          def bar; end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate method when `def_delegators` is used' do
+      expect_offense(<<~RUBY)
+        #{opening_line}
+          def_delegators :foo, :bar, :baz
+
+          def bar; end
+          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate method when `def_delegators` is used with string arguments' do
+      expect_offense(<<~RUBY)
+        #{opening_line}
+          def_delegators 'foo', 'bar', 'baz'
+
+          def bar; end
+          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+        end
+      RUBY
+    end
+
+    it 'registers an offense for duplicate method when `def_instance_delegators` is used' do
+      expect_offense(<<~RUBY)
+        #{opening_line}
+          def_instance_delegators :foo, :bar, :baz
+
+          def bar; end
+          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for duplicate method when `def_delegators` is used within a condition' do
+      expect_no_offenses(<<~RUBY)
+        #{opening_line}
+          def_delegators :foo, :bar, :baz if qux?
+
+          def bar; end
+        end
+      RUBY
+    end
   end
 
   it_behaves_like('in scope', 'class', 'class A')

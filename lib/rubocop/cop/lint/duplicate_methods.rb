@@ -56,6 +56,27 @@ module RuboCop
       #     1
       #   end
       #
+      #   # bad
+      #   class MyClass
+      #     extend Forwardable
+      #
+      #     # or with: `def_instance_delegator`, `def_delegators`, `def_instance_delegators`
+      #     def_delegator :delegation_target, :delegated_method_name
+      #
+      #     def delegated_method_name
+      #     end
+      #   end
+      #
+      #   # good
+      #   class MyClass
+      #     extend Forwardable
+      #
+      #     def_delegator :delegation_target, :delegated_method_name
+      #
+      #     def non_duplicated_delegated_method_name
+      #     end
+      #   end
+      #
       # @example AllCops:ActiveSupportExtensionsEnabled: false (default)
       #
       #   # good
@@ -97,10 +118,11 @@ module RuboCop
       #     delegate :foo, to: :bar
       #   end
       #
-      class DuplicateMethods < Base
+      class DuplicateMethods < Base # rubocop:disable Metrics/ClassLength
         MSG = 'Method `%<method>s` is defined at both %<defined>s and %<current>s.'
         RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr
-                              delegate].freeze
+                              delegate def_delegator def_instance_delegator def_delegators
+                              def_instance_delegators].freeze
 
         def initialize(config = nil, options = nil)
           super
@@ -154,23 +176,49 @@ module RuboCop
           )
         PATTERN
 
+        # @!method delegator?(node)
+        def_node_matcher :delegator?, <<~PATTERN
+          (send nil? {:def_delegator :def_instance_delegator}
+            {
+              {sym str} ({sym str} $_) |
+              {sym str} {sym str} ({sym str} $_)
+            }
+          )
+        PATTERN
+
+        # @!method delegators?(node)
+        def_node_matcher :delegators?, <<~PATTERN
+          (send nil? {:def_delegators :def_instance_delegators}
+            {sym str}
+            ({sym str} $_)+
+          )
+        PATTERN
+
         # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'
 
-        def on_send(node) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        def on_send(node) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
           name, original_name = alias_method?(node)
 
           if name && original_name
             return if name == original_name
-            return if node.ancestors.any?(&:if_type?)
+            return if inside_condition?(node)
 
             found_instance_method(node, name)
           elsif (attr = node.attribute_accessor?)
             on_attr(node, *attr)
           elsif active_support_extensions_enabled? && (names = delegate_method?(node))
-            return if node.ancestors.any?(&:if_type?)
+            return if inside_condition?(node)
 
             on_delegate(node, names)
+          elsif (name = delegator?(node))
+            return if inside_condition?(node)
+
+            found_instance_method(node, name)
+          elsif (names = delegators?(node))
+            return if inside_condition?(node)
+
+            names.each { |name| found_instance_method(node, name) }
           end
         end
 
@@ -188,6 +236,10 @@ module RuboCop
           return unless enclosing
 
           found_method(node, "#{enclosing}.#{name}")
+        end
+
+        def inside_condition?(node)
+          node.ancestors.any?(&:if_type?)
         end
 
         def message_for_dup(node, method_name, key)
