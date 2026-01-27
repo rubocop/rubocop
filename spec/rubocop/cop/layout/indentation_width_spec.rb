@@ -1598,6 +1598,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
             end
           RUBY
         end
+
+        it 'does not register an offense for an empty block body' do
+          expect_no_offenses(<<~RUBY)
+            some_block do
+              # intentionally left empty
+            end
+          RUBY
+        end
       end
 
       it 'registers an offense for bad indentation of a do/end body' do
