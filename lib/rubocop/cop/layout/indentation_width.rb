@@ -424,7 +424,7 @@ module RuboCop
         end
 
         def contains_access_modifier?(body_node)
-          return false unless body_node.begin_type?
+          return false unless body_node&.begin_type?
 
           body_node.children.any? { |child| child.send_type? && child.bare_access_modifier? }
         end
