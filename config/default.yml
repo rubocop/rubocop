@@ -5635,8 +5635,14 @@ Style/SelectByKind:
   SafeAutoCorrect: false
   VersionAdded: '<<next>>'
 
+Style/SelectByRange:
+  Description: 'Prefer grep/grep_v to select/reject/find/detect with a range check.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Style/SelectByRegexp:
-  Description: 'Prefer grep/grep_v to select/reject with a regexp match.'
+  Description: 'Prefer grep/grep_v to select/reject/find/detect with a regexp match.'
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.22'
