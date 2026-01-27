@@ -646,11 +646,298 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     end
   end
 
+  shared_examples 'find regexp match' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+    actual_correction = correction.sub('(...)', '(/regexp/)')
+
+    context "with #{method}" do
+      it 'registers an offense and corrects for `match?`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| x.match? /regexp/ }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{actual_correction}
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `Regexp#match?`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| /regexp/.match? x }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{actual_correction}
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `blockvar =~ regexp`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| x =~ /regexp/ }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{actual_correction}
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `regexp =~ blockvar`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| /regexp/ =~ x }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{actual_correction}
+        RUBY
+      end
+    end
+  end
+
+  shared_examples 'negated find regexp match' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+    actual_correction = correction.sub('(...)', '(/regexp/)')
+
+    context "with #{method}" do
+      it 'registers an offense and corrects for `blockvar !~ regexp`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| x !~ /regexp/ }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{actual_correction}
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `regexp !~ blockvar`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| /regexp/ !~ x }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{actual_correction}
+        RUBY
+      end
+    end
+  end
+
+  shared_examples 'negated regexp match' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+
+    context "with #{method}" do
+      it 'registers an offense and corrects for `!match?`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| !x.match?(/regexp/) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `!Regexp#match?`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| !/regexp/.match?(x) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `!(blockvar =~ regexp)`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| !(x =~ /regexp/) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `!(regexp =~ blockvar)`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| !(/regexp/ =~ x) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+    end
+  end
+
+  shared_examples 'find regexp match with `numblock`s' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+    actual_correction = correction.sub('(...)', '(/regexp/)')
+
+    it 'registers an offense and corrects for `match?`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { _1.match? /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `Regexp#match?`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/.match?(_1) }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `blockvar =~ regexp`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { _1 =~ /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `regexp =~ blockvar`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/ =~ _1 }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+  end
+
+  shared_examples 'negated find regexp match with `numblock`s' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+    actual_correction = correction.sub('(...)', '(/regexp/)')
+
+    it 'registers an offense and corrects for `blockvar !~ regexp`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { _1 !~ /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `regexp !~ blockvar`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/ !~ _1 }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+  end
+
+  shared_examples 'find regexp match with `itblock`s' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+    actual_correction = correction.sub('(...)', '(/regexp/)')
+
+    it 'registers an offense and corrects for `match?`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { it.match? /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `Regexp#match?`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/.match?(it) }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `blockvar =~ regexp`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { it =~ /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `regexp =~ blockvar`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/ =~ it }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+  end
+
+  shared_examples 'negated find regexp match with `itblock`s' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+    actual_correction = correction.sub('(...)', '(/regexp/)')
+
+    it 'registers an offense and corrects for `blockvar !~ regexp`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { it !~ /regexp/ }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+
+    it 'registers an offense and corrects for `regexp !~ blockvar`' do
+      expect_offense(<<~RUBY, method: method)
+        array.#{method} { /regexp/ !~ it }
+        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
+      RUBY
+
+      expect_correction(<<~RUBY)
+        array.#{actual_correction}
+      RUBY
+    end
+  end
+
   context 'when Ruby >= 3.4', :ruby34 do
     it_behaves_like('regexp match with `itblock`s', 'select', 'grep')
     it_behaves_like('regexp match with `itblock`s', 'find_all', 'grep')
     it_behaves_like('regexp match with `itblock`s', 'filter', 'grep')
     it_behaves_like('regexp mismatch with `itblock`s', 'reject', 'grep')
+
+    it_behaves_like('find regexp match with `itblock`s', 'find', 'grep(...).first')
+    it_behaves_like('find regexp match with `itblock`s', 'detect', 'grep(...).first')
+    it_behaves_like('negated find regexp match with `itblock`s', 'find', 'grep_v(...).first')
+    it_behaves_like('negated find regexp match with `itblock`s', 'detect', 'grep_v(...).first')
 
     it_behaves_like('regexp match with `itblock`s', 'reject', 'grep_v')
     it_behaves_like('regexp mismatch with `itblock`s', 'select', 'grep_v')
@@ -663,6 +950,11 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     it_behaves_like('regexp match with `numblock`s', 'find_all', 'grep')
     it_behaves_like('regexp match with `numblock`s', 'filter', 'grep')
     it_behaves_like('regexp mismatch with `numblock`s', 'reject', 'grep')
+
+    it_behaves_like('find regexp match with `numblock`s', 'find', 'grep(...).first')
+    it_behaves_like('find regexp match with `numblock`s', 'detect', 'grep(...).first')
+    it_behaves_like('negated find regexp match with `numblock`s', 'find', 'grep_v(...).first')
+    it_behaves_like('negated find regexp match with `numblock`s', 'detect', 'grep_v(...).first')
 
     it_behaves_like('regexp match with `numblock`s', 'reject', 'grep_v')
     it_behaves_like('regexp mismatch with `numblock`s', 'select', 'grep_v')
@@ -699,6 +991,15 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     it_behaves_like('regexp match with safe navigation', 'find_all', 'grep')
     it_behaves_like('regexp mismatch', 'reject', 'grep')
     it_behaves_like('regexp mismatch with safe navigation', 'reject', 'grep')
+
+    it_behaves_like('find regexp match', 'find', 'grep(...).first')
+    it_behaves_like('find regexp match', 'detect', 'grep(...).first')
+    it_behaves_like('negated find regexp match', 'find', 'grep_v(...).first')
+    it_behaves_like('negated find regexp match', 'detect', 'grep_v(...).first')
+
+    it_behaves_like('negated regexp match', 'select', 'grep_v')
+    it_behaves_like('negated regexp match', 'find_all', 'grep_v')
+    it_behaves_like('negated regexp match', 'reject', 'grep')
 
     it_behaves_like('regexp match', 'reject', 'grep_v')
     it_behaves_like('regexp match with safe navigation', 'reject', 'grep_v')
