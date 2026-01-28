@@ -103,8 +103,9 @@ module RuboCop
 
       each_directive do |directive|
         if directive.push?
-          @stack.push(snapshot_analyses(analyses))
-          apply_push_args(analyses, directive)
+          resolved = resolve_push_cops(directive)
+          @stack.push(snapshot_cops(analyses, resolved.values.flatten))
+          apply_push(analyses, resolved, directive.line_number)
         elsif directive.pop?
           pop_state(analyses, directive.line_number) if @stack.any?
         else
@@ -121,48 +122,46 @@ module RuboCop
       end
     end
 
-    def snapshot_analyses(analyses)
-      analyses.transform_values { |a| CopAnalysis.new(a.line_ranges.dup, a.start_line_number) }
+    def snapshot_cops(analyses, cop_names)
+      cop_names.to_h { |name| [name, analyses[name].dup] }
     end
 
-    def pop_state(analyses, pop_line)
-      analyses.each do |cop_name, analysis|
-        next unless analysis.start_line_number
-
-        analyses[cop_name] = CopAnalysis.new(
-          analysis.line_ranges + [analysis.start_line_number...pop_line], nil
-        )
-      end
-
-      @stack.pop.each do |cop_name, saved_analysis|
-        current = analyses[cop_name]
-        new_start = saved_analysis.start_line_number ? pop_line : nil
-        analyses[cop_name] = CopAnalysis.new(current.line_ranges, new_start)
+    def resolve_push_cops(directive)
+      directive.push_args.transform_values do |names|
+        names.flat_map { |name| expand_cop_name(name) }
       end
     end
 
-    def apply_push_args(analyses, directive)
-      directive.push_args.each do |operation, cop_names|
-        cop_names.each do |cop_name|
-          apply_cop_operation(analyses, operation, qualified_cop_name(cop_name),
-                              directive.line_number)
-        end
+    def expand_cop_name(name)
+      registry = Cop::Registry.global
+      cops = registry.department?(name) ? registry.names_for_department(name) : [name]
+      cops.map { |c| qualified_cop_name(c) }
+    end
+
+    def apply_push(analyses, resolved_cops, line)
+      resolved_cops.each do |op, cops|
+        cops.each { |cop| apply_cop_op(analyses, op, cop, line) }
       end
     end
 
-    def apply_cop_operation(analyses, operation, cop_name, line)
-      analysis = analyses[cop_name]
-      start_line = analysis.start_line_number
+    def apply_cop_op(analyses, operation, cop, line)
+      analysis = analyses[cop]
+      if operation == '-' && !analysis.start_line_number
+        analyses[cop] = CopAnalysis.new(analysis.line_ranges, line)
+      elsif operation == '+' && analysis.start_line_number
+        analyses[cop] =
+          CopAnalysis.new(analysis.line_ranges + [analysis.start_line_number..line], nil)
+      end
+    end
 
-      case operation
-      when '+' # Enable cop
-        return unless start_line
-
-        analyses[cop_name] = CopAnalysis.new(analysis.line_ranges + [start_line..line], nil)
-      when '-' # Disable cop
-        return if start_line
-
-        analyses[cop_name] = CopAnalysis.new(analysis.line_ranges, line)
+    def pop_state(analyses, line)
+      saved = @stack.pop
+      saved.each do |cop, old|
+        cur = analyses[cop]
+        new_range = cur.start_line_number ? [cur.start_line_number..(line - 1)] : []
+        ranges = cur.line_ranges + new_range
+        new_start = old.start_line_number ? line : nil
+        analyses[cop] = CopAnalysis.new(ranges, new_start)
       end
     end
 
