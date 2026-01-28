@@ -3980,7 +3980,7 @@ Style/EmptyCaseCondition:
 Style/EmptyClassDefinition:
   Description: 'Enforces consistent style for empty class definitions.'
   Enabled: pending
-  VersionAdded: '1.83'
+  VersionAdded: '1.84'
   EnforcedStyle: class_definition
   SupportedStyles:
     - class_definition
@@ -4341,7 +4341,7 @@ Style/HashLookupMethod:
   Description: 'Enforces the use of either `Hash#[]` or `Hash#fetch` for hash lookup.'
   Enabled: false
   Safe: false
-  VersionAdded: '1.83'
+  VersionAdded: '1.84'
   EnforcedStyle: brackets
   SupportedStyles:
     - brackets
@@ -4912,7 +4912,7 @@ Style/NegativeArrayIndex:
     Also handles range patterns with length calculations. Recognizes preserving methods
     and their combinations, allowing safe replacement when the receiver matches.
   Enabled: pending
-  VersionAdded: '1.83'
+  VersionAdded: '1.84'
 
 Style/NestedFileDirname:
   Description: 'Checks for nested `File.dirname`.'
@@ -5569,7 +5569,7 @@ Style/ReverseFind:
   Description: 'Use `array.rfind` instead of `array.reverse.find`.'
   Enabled: pending
   Safe: false
-  VersionAdded: '1.83'
+  VersionAdded: '1.84'
 
 Style/SafeNavigation:
   Description: >-
