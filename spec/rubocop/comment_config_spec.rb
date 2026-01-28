@@ -300,8 +300,7 @@ RSpec.describe RuboCop::CommentConfig do
         <<~RUBY
           def process_data(input)
             result = input.upcase
-            # rubocop:push
-            # rubocop:disable Style/GuardClause
+            # rubocop:push -Style/GuardClause
             if result.present?
               return result.strip
             end
@@ -315,9 +314,9 @@ RSpec.describe RuboCop::CommentConfig do
         disabled = disabled_lines_of_cop('Style/GuardClause')
 
         # Lines 4-7 should be disabled (push to pop)
-        expect(disabled).to include(4, 5, 6, 7)
+        expect(disabled).to include(4, 5, 6)
         # Lines outside push/pop should be enabled
-        expect(disabled).not_to include(1, 2, 3, 8, 9, 10)
+        expect(disabled).not_to include(1, 2, 7, 8, 9, 10)
       end
     end
 
@@ -328,8 +327,7 @@ RSpec.describe RuboCop::CommentConfig do
           def long_method
             line1
             line2
-            # rubocop:push
-            # rubocop:enable Metrics/MethodLength
+            # rubocop:push +Metrics/MethodLength
             def short_method
               line3
             end
@@ -344,11 +342,11 @@ RSpec.describe RuboCop::CommentConfig do
         disabled = disabled_lines_of_cop('Metrics/MethodLength')
 
         # Lines 1-6 should be disabled (before and including enable)
-        expect(disabled).to include(1, 2, 3, 4, 5, 6)
+        expect(disabled).to include(1, 2, 3, 4, 5)
         # Lines 7-9 should be enabled (after enable, inside push/pop)
-        expect(disabled).not_to include(7, 8, 9)
+        expect(disabled).not_to include(6, 7, 8)
         # Lines 10-13 should be disabled (after pop restores state)
-        expect(disabled).to include(10, 11, 12, 13)
+        expect(disabled).to include(9, 10, 11, 12, 13)
       end
     end
 
@@ -359,8 +357,7 @@ RSpec.describe RuboCop::CommentConfig do
           for x in [1, 2, 3]
             not x.nil?
           end
-          # rubocop:push
-          # rubocop:enable Style/For
+          # rubocop:push +Style/For
           for y in [4, 5, 6]
             not y.nil?
           end
@@ -376,9 +373,9 @@ RSpec.describe RuboCop::CommentConfig do
         not_disabled = disabled_lines_of_cop('Style/Not')
 
         # Style/For: disabled 1-6 (including enable line), enabled 7-9, disabled 10-13
-        expect(for_disabled).to include(1, 2, 3, 4, 5, 6)
-        expect(for_disabled).not_to include(7, 8, 9)
-        expect(for_disabled).to include(10, 11, 12, 13)
+        expect(for_disabled).to include(1, 2, 3, 4, 5)
+        expect(for_disabled).not_to include(6, 7, 8)
+        expect(for_disabled).to include(9, 10, 11, 12, 13)
 
         # Style/Not: disabled everywhere (never enabled)
         expect(not_disabled).to include(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)
@@ -391,8 +388,7 @@ RSpec.describe RuboCop::CommentConfig do
           def process
             x = 1
             y = 2
-            # rubocop:push
-            # rubocop:disable Style/NumericPredicate
+            # rubocop:push -Style/NumericPredicate
             if x.size == 0
               puts 'empty'
             end
@@ -408,9 +404,9 @@ RSpec.describe RuboCop::CommentConfig do
         disabled = disabled_lines_of_cop('Style/NumericPredicate')
 
         # Lines 5-8 should be disabled (inside push/pop)
-        expect(disabled).to include(5, 6, 7, 8)
+        expect(disabled).to include(5, 6, 7)
         # Lines outside should be enabled
-        expect(disabled).not_to include(1, 2, 3, 4, 9, 10, 11, 12)
+        expect(disabled).not_to include(1, 2, 3, 8, 9, 10, 11, 12)
       end
     end
 
@@ -420,12 +416,9 @@ RSpec.describe RuboCop::CommentConfig do
           # rubocop:disable Metrics/MethodLength
           def complex_method
             step1
-            # rubocop:push
-            # rubocop:enable Metrics/MethodLength
-            # rubocop:disable Style/GuardClause
+            # rubocop:push +Metrics/MethodLength -Style/GuardClause
             def helper_method
-              # rubocop:push
-              # rubocop:enable Style/GuardClause
+              # rubocop:push +Style/GuardClause
               if condition
                 return value
               end
@@ -442,19 +435,17 @@ RSpec.describe RuboCop::CommentConfig do
         method_length_disabled = disabled_lines_of_cop('Metrics/MethodLength')
         guard_clause_disabled = disabled_lines_of_cop('Style/GuardClause')
 
-        # Metrics/MethodLength: disabled 1-5 (including enable line),
-        # enabled 6-15 (after enable), disabled 16-18 (after pop)
-        expect(method_length_disabled).to include(1, 2, 3, 4, 5)
-        expect(method_length_disabled).not_to include(6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
-        expect(method_length_disabled).to include(16, 17, 18)
+        # Metrics/MethodLength: disabled 1-4, enabled 5-12, disabled 13+
+        expect(method_length_disabled).to include(1, 2, 3, 4)
+        expect(method_length_disabled).not_to include(5, 6, 7, 8, 9, 10, 11, 12)
+        expect(method_length_disabled).to include(13, 14, 15)
 
-        # Style/GuardClause: enabled 1-5, disabled 6-9 (including enable line),
-        # enabled 10-12, disabled 13-15 (after nested pop), enabled 16-18
-        expect(guard_clause_disabled).not_to include(1, 2, 3, 4, 5)
-        expect(guard_clause_disabled).to include(6, 7, 8, 9)
-        expect(guard_clause_disabled).not_to include(10, 11, 12)
-        expect(guard_clause_disabled).to include(13, 14, 15)
-        expect(guard_clause_disabled).not_to include(16, 17, 18)
+        # Style/GuardClause: enabled 1-3, disabled 4-6, enabled 7-9, disabled 10-12, enabled 13+
+        expect(guard_clause_disabled).not_to include(1, 2, 3)
+        expect(guard_clause_disabled).to include(4, 5, 6)
+        expect(guard_clause_disabled).not_to include(7, 8, 9)
+        expect(guard_clause_disabled).to include(10, 11, 12)
+        expect(guard_clause_disabled).not_to include(13, 14, 15)
       end
     end
 
@@ -462,8 +453,7 @@ RSpec.describe RuboCop::CommentConfig do
       let(:source) do
         <<~RUBY
           def configure(stage)
-            # rubocop:push
-            # rubocop:disable Layout/SpaceAroundMethodCallOperator
+            # rubocop:push -Layout/SpaceAroundMethodCallOperator
             self.stage =
               if    'macro'  .start_with? stage; Langeod::MACRO
               elsif 'dynamic'.start_with? stage; Langeod::DYNAMIC
@@ -480,9 +470,9 @@ RSpec.describe RuboCop::CommentConfig do
         disabled = disabled_lines_of_cop('Layout/SpaceAroundMethodCallOperator')
 
         # Lines 3-9 should be disabled (from disable to before pop)
-        expect(disabled).to include(3, 4, 5, 6, 7, 8, 9)
+        expect(disabled).to include(2, 3, 4, 5, 6, 7, 8)
         # Lines outside push/pop should be enabled
-        expect(disabled).not_to include(1, 2, 10, 11, 12)
+        expect(disabled).not_to include(1, 10, 11, 12)
       end
     end
 
@@ -612,6 +602,160 @@ RSpec.describe RuboCop::CommentConfig do
 
         # Metrics/MethodLength: enabled 4-10
         expect(method_disabled).not_to include(4, 5, 6, 7, 8, 9, 10)
+      end
+    end
+
+    context 'push/pop with departments' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style
+          def method_one
+            x = 1
+            # rubocop:push +Style
+            if condition
+              y = 2
+            end
+            # rubocop:pop
+            z = 3
+          end
+        RUBY
+      end
+
+      it 'enables all cops in a department temporarily' do
+        guard_clause_disabled = disabled_lines_of_cop('Style/GuardClause')
+        string_literals_disabled = disabled_lines_of_cop('Style/StringLiterals')
+
+        # Both Style cops should be disabled on lines 1-4
+        expect(guard_clause_disabled).to include(1, 2, 3, 4)
+        expect(string_literals_disabled).to include(1, 2, 3, 4)
+
+        # Both should be enabled on lines 5-7 (inside push/pop)
+        expect(guard_clause_disabled).not_to include(5, 6, 7)
+        expect(string_literals_disabled).not_to include(5, 6, 7)
+
+        # Both should be disabled again on lines 8-9 (after pop)
+        expect(guard_clause_disabled).to include(8, 9)
+        expect(string_literals_disabled).to include(8, 9)
+      end
+    end
+
+    context 'push/pop disabling a department' do
+      let(:source) do
+        <<~RUBY
+          def method_one
+            x = 1
+            # rubocop:push -Metrics
+            def long_method
+              line1
+              line2
+              line3
+            end
+            # rubocop:pop
+            y = 2
+          end
+        RUBY
+      end
+
+      it 'disables all cops in a department temporarily' do
+        method_length_disabled = disabled_lines_of_cop('Metrics/MethodLength')
+        abc_size_disabled = disabled_lines_of_cop('Metrics/AbcSize')
+
+        # Both Metrics cops should be enabled on lines 1-3
+        expect(method_length_disabled).not_to include(1, 2)
+        expect(abc_size_disabled).not_to include(1, 2)
+
+        # Both should be disabled on lines 4-8 (inside push/pop)
+        expect(method_length_disabled).to include(4, 5, 6, 7, 8)
+        expect(abc_size_disabled).to include(4, 5, 6, 7, 8)
+
+        # Both should be enabled again on lines 9-10 (after pop)
+        expect(method_length_disabled).not_to include(9, 10)
+        expect(abc_size_disabled).not_to include(9, 10)
+      end
+    end
+
+    context 'nested push/pop with mixed departments and cops' do
+      let(:source) do
+        <<~RUBY
+          def outer_method
+            # rubocop:push -Metrics
+            def middle_method
+              # rubocop:push +Metrics/MethodLength -Style/GuardClause
+              def inner_method
+                if condition
+                  return value
+                end
+              end
+              # rubocop:pop
+              code
+            end
+            # rubocop:pop
+            final
+          end
+        RUBY
+      end
+
+      it 'handles complex nested department and cop directives' do
+        method_length_disabled = disabled_lines_of_cop('Metrics/MethodLength')
+        abc_size_disabled = disabled_lines_of_cop('Metrics/AbcSize')
+        guard_clause_disabled = disabled_lines_of_cop('Style/GuardClause')
+
+        # Lines 1-2: all enabled
+        expect(method_length_disabled).not_to include(1)
+        expect(abc_size_disabled).not_to include(1)
+        expect(guard_clause_disabled).not_to include(1)
+
+        # Lines 3-4: Metrics department disabled
+        expect(method_length_disabled).to include(3, 4)
+        expect(abc_size_disabled).to include(3, 4)
+        expect(guard_clause_disabled).not_to include(3)
+
+        # Lines 5-9: MethodLength re-enabled, AbcSize remains disabled, GuardClause disabled
+        expect(method_length_disabled).not_to include(5, 6, 7, 8, 9)
+        expect(abc_size_disabled).to include(5, 6, 7, 8, 9)
+        expect(guard_clause_disabled).to include(5, 6, 7, 8, 9)
+
+        # Lines 10-11: back to Metrics department disabled, GuardClause enabled
+        expect(method_length_disabled).to include(10, 11)
+        expect(abc_size_disabled).to include(10, 11)
+        expect(guard_clause_disabled).not_to include(10, 11)
+
+        # Lines 12+: all enabled
+        expect(method_length_disabled).not_to include(13, 14)
+        expect(abc_size_disabled).not_to include(13, 14)
+        expect(guard_clause_disabled).not_to include(13, 14)
+      end
+    end
+
+    context 'push/pop with multiple departments' do
+      let(:source) do
+        <<~RUBY
+          def method_one
+            # rubocop:push -Metrics -Style
+            def method_two
+              code
+            end
+            # rubocop:pop
+            final
+          end
+        RUBY
+      end
+
+      it 'disables multiple departments at once' do
+        method_length_disabled = disabled_lines_of_cop('Metrics/MethodLength')
+        guard_clause_disabled = disabled_lines_of_cop('Style/GuardClause')
+
+        # Lines 1-2: both enabled
+        expect(method_length_disabled).not_to include(1)
+        expect(guard_clause_disabled).not_to include(1)
+
+        # Lines 3-5: both disabled
+        expect(method_length_disabled).to include(3, 4, 5)
+        expect(guard_clause_disabled).to include(3, 4, 5)
+
+        # Lines 6-7: both enabled again
+        expect(method_length_disabled).not_to include(6, 7)
+        expect(guard_clause_disabled).not_to include(6, 7)
       end
     end
   end
