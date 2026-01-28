@@ -908,6 +908,10 @@ class Ingredient
 end
 ----
 
+NOTE: If a file is excluded via configuration (e.g., in `.rubocop.yml` or `.rubocop_todo.yml`),
+`rubocop:enable` comments within that file will have no effect. Configuration-based exclusions take
+precedence over in-source opt-in directives.
+
 == Scoped disabling with push/pop directives
 
 When you want to temporarily change cop settings for a specific section of code
