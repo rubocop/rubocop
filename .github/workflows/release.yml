@@ -22,11 +22,11 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6.0.2
         with:
           persist-credentials: false
 
-      - uses: ruby/setup-ruby@d8d83c3960843afb664e821fed6be52f37da5267 # pin@v1.231.0
+      - uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b # pin@v1.275.0
         with:
           ruby-version: ruby # Latest stable CRuby version
           bundler-cache: false # do not using caching in the SLSA build process
@@ -40,7 +40,7 @@ jobs:
         run: script/build
 
       - name: upload artifact
-        uses: actions/upload-artifact@4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # pin@v6.0.0
         id: upload-artifact
         with:
           path: "${{ steps.build.outputs.gem_path }}"
@@ -54,21 +54,21 @@ jobs:
       packages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6.0.2
         with:
           persist-credentials: false
 
-      - uses: actions/download-artifact@54124fbd881f8ce794405a06896c93c49c17463e
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # pin@7.0.0
         with:
           artifact-ids: ${{ needs.build.outputs.artifact-id }}
 
-      - uses: ruby/setup-ruby@d8d83c3960843afb664e821fed6be52f37da5267 # pin@v1.231.0
+      - uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b # pin@v1.275.0
         with:
           ruby-version: ruby # Latest stable CRuby version
           bundler-cache: false # dot not using caching in the SLSA build process
 
       - name: Configure RubyGems Credentials
-        uses: rubygems/configure-rubygems-credentials@e3f5097339179e0d4c7321ab44209e7e02446746 # pin@main
+        uses: rubygems/configure-rubygems-credentials@079b868399574998fd0fe9df2e03528f38cc6fa0 # pin@main
 
       - name: sign ruby gem
         env:
@@ -88,7 +88,7 @@ jobs:
         env:
           GEM_NAME: ${{ needs.build.outputs.gem_name }}
           GEM_VERSION: ${{ needs.build.outputs.gem_version }}
-        run: gem exec rubygems-await:0.5.4 "${GEM_NAME}:${GEM_VERSION}" --timeout 120
+        run: gem exec rubygems-await:0.5.4 "${GEM_NAME}:${GEM_VERSION}" --timeout 300
 
   sign:
     needs: [build, release]
@@ -99,12 +99,12 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/download-artifact@54124fbd881f8ce794405a06896c93c49c17463e
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # pin@7.0.0
         with:
           artifact-ids: ${{ needs.build.outputs.artifact-id }}
 
       - name: attest build provenance
-        uses: actions/attest-build-provenance@2.2.3
+        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # pin@v3.2.0
         with:
           subject-path: "artifact/${{ needs.build.outputs.gem_path }}"
 
@@ -114,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@54124fbd881f8ce794405a06896c93c49c17463e
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # pin@7.0.0
         with:
           artifact-ids: ${{ needs.build.outputs.artifact-id }}
 
