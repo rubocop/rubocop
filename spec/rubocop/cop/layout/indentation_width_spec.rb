@@ -1739,7 +1739,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
           foo
             .bar do |x|
           x
-          ^{} Use 2 (not 0) spaces for indentation.
+          ^ Use 2 (not -2) spaces for indentation.
           end
         RUBY
       end
@@ -1753,12 +1753,42 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
+      it 'accepts block body indented relative to dot when end is at different column' do
+        expect_no_offenses(<<~RUBY)
+          out
+            .break
+            .sep_with_breaks(inner) { |v|
+              simplified_process(v)
+          }
+        RUBY
+      end
+
+      it 'accepts block body indented relative to dot with do...end' do
+        expect_no_offenses(<<~RUBY)
+          out
+            .break
+            .sep_with_breaks(inner) do |v|
+              simplified_process(v)
+          end
+        RUBY
+      end
+
+      it 'registers an offense when the chain receiver is long and body not indented relative to dot' do
+        expect_offense(<<~RUBY)
+          ::Some::Very::Long::Module::Name.active
+                                          .in_batches do |batch|
+            process(batch)
+            ^^^^^^^^^^^^^^ Use 2 (not -30) spaces for indentation.
+          end
+        RUBY
+      end
+
       it 'accepts correct indentation when the chain receiver is long' do
         expect_no_offenses(<<~RUBY)
           ::Some::Very::Long::Module::Name.active
                                           .in_batches do |batch|
-            process(batch)
-          end
+                                            process(batch)
+                                          end
         RUBY
       end
 
