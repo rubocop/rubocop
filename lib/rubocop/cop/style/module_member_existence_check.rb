@@ -42,7 +42,7 @@ module RuboCop
       #   Array.public_method_defined?(:foo)
       #   Array.include?(:foo)
       #
-      #  @example AllowedMethods: [included_modules]
+      # @example AllowedMethods: [included_modules]
       #
       #   # good
       #   Array.included_modules.include?(:foo)
