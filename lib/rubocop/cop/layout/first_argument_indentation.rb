@@ -179,13 +179,22 @@ module RuboCop
 
           top_level_send = find_top_level_send(send_node)
           node_to_correct =
-            if top_level_send != send_node || should_correct_entire_method_call?(top_level_send)
-              top_level_send
-            else
-              node
-            end
+            should_correct_entire_chain?(send_node, top_level_send) ? top_level_send : node
 
           AlignmentCorrector.correct(corrector, processed_source, node_to_correct, column_delta)
+        end
+
+        def should_correct_entire_chain?(send_node, top_level_send)
+          return false unless style == :special_for_inner_method_call_in_parentheses
+          return false unless inner_call?(top_level_send)
+
+          top_level_send != send_node || begins_its_line?(top_level_send.loc.end)
+        end
+
+        def inner_call?(top_level_send)
+          outer_call = top_level_send.parent
+
+          outer_call&.send_type? && outer_call.parenthesized?
         end
 
         def find_top_level_send(send_node)
@@ -196,14 +205,6 @@ module RuboCop
             top_level_send = top_level_send.parent
           end
           top_level_send
-        end
-
-        def should_correct_entire_method_call?(send_node)
-          return false unless style == :special_for_inner_method_call_in_parentheses
-          return false unless special_inner_call_indentation?(send_node)
-
-          closing_paren = send_node.loc.end
-          closing_paren && begins_its_line?(closing_paren)
         end
 
         def bare_operator?(node)
