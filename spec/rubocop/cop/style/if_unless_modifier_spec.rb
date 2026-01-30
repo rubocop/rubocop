@@ -922,6 +922,170 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         RUBY
       end
     end
+
+    context 'when array has multiple if/unless elements on same line' do
+      it 'accepts multiline if when sibling if starts on end line' do
+        expect_no_offenses(<<~RUBY)
+          [if a
+            b
+          end, if c
+            d
+          end]
+        RUBY
+      end
+
+      it 'accepts multiline if when sibling unless starts on end line' do
+        expect_no_offenses(<<~RUBY)
+          [(if a
+            b
+          end), (unless c
+            d
+          end)]
+        RUBY
+      end
+    end
+
+    context 'when array has single if element' do
+      it 'corrects to modifier form' do
+        expect_offense(<<~RUBY)
+          [(if a
+            ^^ Favor modifier `if` usage [...]
+            b
+          end)]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [(b if a)]
+        RUBY
+      end
+    end
+
+    context 'when array has multiple ifs on separate lines' do
+      it 'corrects to modifier form' do
+        expect_offense(<<~RUBY)
+          [
+            (if a
+             ^^ Favor modifier `if` usage [...]
+              b
+            end),
+            (if c
+             ^^ Favor modifier `if` usage [...]
+              d
+            end)
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            (b if a),
+            (d if c)
+          ]
+        RUBY
+      end
+    end
+
+    context 'when array has non-if begin sibling' do
+      it 'corrects to modifier form' do
+        expect_offense(<<~RUBY)
+          [
+            (1 + 2),
+            (if a
+             ^^ Favor modifier `if` usage [...]
+              b
+            end)
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            (1 + 2),
+            (b if a)
+          ]
+        RUBY
+      end
+    end
+
+    context 'when ifs are in nested arrays' do
+      it 'corrects to modifier form' do
+        expect_offense(<<~RUBY)
+          [
+            [(if a
+              ^^ Favor modifier `if` usage [...]
+              b
+            end)],
+            [(if c
+              ^^ Favor modifier `if` usage [...]
+              d
+            end)]
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            [(b if a)],
+            [(d if c)]
+          ]
+        RUBY
+      end
+    end
+
+    context 'when three ifs share lines' do
+      it 'accepts all multiline ifs' do
+        expect_no_offenses(<<~RUBY)
+          [if a
+            b
+          end, if c
+            d
+          end, if e
+            f
+          end]
+        RUBY
+      end
+    end
+  end
+
+  context 'when method call has multiple if/unless arguments on same line' do
+    it 'accepts multiline if when sibling if starts on end line' do
+      expect_no_offenses(<<~RUBY)
+        foo(if a
+          b
+        end, if c
+          d
+        end)
+      RUBY
+    end
+
+    it 'accepts multiline if when sibling unless starts on end line' do
+      expect_no_offenses(<<~RUBY)
+        foo((if a
+          b
+        end), (unless c
+          d
+        end))
+      RUBY
+    end
+  end
+
+  context 'when safe navigation method call has multiple if arguments on same line' do
+    it 'accepts multiline if when sibling if starts on end line' do
+      expect_no_offenses(<<~RUBY)
+        foo&.bar(if a
+          b
+        end, if c
+          d
+        end)
+      RUBY
+    end
+
+    it 'accepts multiline if when parenthesized sibling if starts on end line' do
+      expect_no_offenses(<<~RUBY)
+        foo&.bar((if a
+          b
+        end), (if c
+          d
+        end))
+      RUBY
+    end
   end
 
   context 'when if-end condition is a value in a hash' do
@@ -957,6 +1121,89 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
             x: if a
                  #{body}
                end
+          }
+        RUBY
+      end
+    end
+
+    context 'when hash value has sibling if on end line' do
+      it 'accepts multiline if statements' do
+        expect_no_offenses(<<~RUBY)
+          {
+            x: [(if a
+              b
+            end), (if c
+              d
+            end)]
+          }
+        RUBY
+      end
+    end
+
+    context 'when hash has multiple if values on same line' do
+      it 'accepts multiline if statements' do
+        expect_no_offenses(<<~RUBY)
+          {
+            x: if a
+              b
+            end, y: if c
+              d
+            end
+          }
+        RUBY
+      end
+    end
+
+    context 'when hash has multiple parenthesized if values on same line' do
+      it 'accepts multiline if statements' do
+        expect_no_offenses(<<~RUBY)
+          {x: (if a
+            b
+          end), y: (if c
+            d
+          end)}
+        RUBY
+      end
+    end
+
+    context 'when multiple pairs each have an if value' do
+      it 'corrects to modifier form' do
+        expect_offense(<<~RUBY)
+          {
+            x: (if a
+                ^^ Favor modifier `if` usage [...]
+              b
+            end),
+            y: (if c
+                ^^ Favor modifier `if` usage [...]
+              d
+            end)
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {
+            x: (b if a),
+            y: (d if c)
+          }
+        RUBY
+      end
+    end
+
+    context 'when single if is direct hash value' do
+      it 'corrects to modifier form' do
+        expect_offense(<<~RUBY)
+          {
+            x: if a
+               ^^ Favor modifier `if` usage [...]
+              b
+            end
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {
+            x: (b if a)
           }
         RUBY
       end
