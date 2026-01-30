@@ -196,7 +196,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize
         def autocorrect(corrector, node, condition, replacement, guard)
           corrector.replace(node.loc.keyword.join(condition.source_range), replacement)
 
@@ -205,10 +205,10 @@ module RuboCop
 
           corrector.replace(node.loc.begin, "\n") if node.then?
 
-          if if_branch&.send_type? && heredoc?(if_branch.last_argument)
-            autocorrect_heredoc_argument(corrector, node, if_branch, else_branch, guard)
-          elsif else_branch&.send_type? && heredoc?(else_branch.last_argument)
-            autocorrect_heredoc_argument(corrector, node, else_branch, if_branch, guard)
+          if (if_heredoc = find_heredoc_argument(if_branch))
+            autocorrect_heredoc_argument(corrector, node, if_heredoc, else_branch, guard)
+          elsif (else_heredoc = find_heredoc_argument(else_branch))
+            autocorrect_heredoc_argument(corrector, node, else_heredoc, if_branch, guard)
           else
             corrector.remove(node.loc.end)
             return unless node.else?
@@ -217,21 +217,31 @@ module RuboCop
             corrector.remove(range_of_branch_to_remove(node, guard))
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize
 
         def heredoc?(argument)
           argument.respond_to?(:heredoc?) && argument.heredoc?
         end
 
-        def autocorrect_heredoc_argument(corrector, node, heredoc_branch, leave_branch, guard)
+        def find_heredoc_argument(node)
+          return unless node&.call_type?
+
+          last_arg = node.last_argument
+
+          if heredoc?(last_arg)
+            last_arg
+          elsif last_arg&.call_type?
+            find_heredoc_argument(last_arg)
+          end
+        end
+
+        def autocorrect_heredoc_argument(corrector, node, heredoc_node, leave_branch, guard)
           remove_whole_lines(corrector, node.loc.end)
           return unless node.else?
 
           if leave_branch
             remove_whole_lines(corrector, leave_branch.source_range)
-            corrector.insert_after(
-              heredoc_branch.last_argument.loc.heredoc_end, "\n#{leave_branch.source}"
-            )
+            corrector.insert_after(heredoc_node.loc.heredoc_end, "\n#{leave_branch.source}")
           end
 
           remove_whole_lines(corrector, node.loc.else)
