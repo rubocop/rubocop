@@ -488,7 +488,33 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     RUBY
   end
 
-  it 'registers an offense when using heredoc as an argument of raise in `else` branch' do
+  it 'registers an offense when using heredoc as an argument of method call of raise in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise do_something(<<~MESSAGE) unless condition`) instead of wrapping the code inside a conditional expression.
+          foo
+        else
+          raise do_something(<<~MESSAGE)
+            text
+          MESSAGE
+        end
+      end
+    RUBY
+
+    # NOTE: Let `Layout/HeredocIndentation`, `Layout/ClosingHeredocIndentation`, and
+    #       `Layout/IndentationConsistency` cops autocorrect inconsistent indentations.
+    expect_correction(<<~RUBY)
+      def func
+        raise do_something(<<~MESSAGE) unless condition
+            text
+          MESSAGE
+      foo
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using heredoc as an argument of raise in `then` branch in `unless`' do
     expect_offense(<<~RUBY)
       def func
         unless condition
@@ -584,6 +610,60 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
             oops
           MESSAGE
       foo
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using heredoc in `else` branch and `then` branch has multiple expressions' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise <<~MESSAGE unless condition`) instead of wrapping the code inside a conditional expression.
+          x = 1
+          do_something(x)
+        else
+          raise <<~MESSAGE
+            oops
+          MESSAGE
+        end
+      end
+    RUBY
+
+    # NOTE: Let `Layout/HeredocIndentation`, `Layout/ClosingHeredocIndentation`, and
+    #       `Layout/IndentationConsistency` cops autocorrect inconsistent indentations.
+    expect_correction(<<~RUBY)
+      def func
+        raise <<~MESSAGE unless condition
+            oops
+          MESSAGE
+      x = 1
+          do_something(x)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using heredoc with safe navigation call in `else` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise obj&.do_something(<<~MESSAGE) unless condition`) instead of wrapping the code inside a conditional expression.
+          do_something
+        else
+          raise obj&.do_something(<<~MESSAGE)
+            oops
+          MESSAGE
+        end
+      end
+    RUBY
+
+    # NOTE: Let `Layout/HeredocIndentation`, `Layout/ClosingHeredocIndentation`, and
+    #       `Layout/IndentationConsistency` cops autocorrect inconsistent indentations.
+    expect_correction(<<~RUBY)
+      def func
+        raise obj&.do_something(<<~MESSAGE) unless condition
+            oops
+          MESSAGE
+      do_something
       end
     RUBY
   end
