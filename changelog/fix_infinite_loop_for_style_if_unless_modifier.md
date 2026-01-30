@@ -1,0 +1,1 @@
+* [#12754](https://github.com/rubocop/rubocop/issues/12754): Fix an infinite loop for `Style/IfUnlessModifier` when multiple `if`/`unless` statements share the same line in arrays, method arguments, or hash values. ([@ydakuka][])
