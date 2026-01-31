@@ -26,27 +26,19 @@ module RuboCop
       #   # bad (reject)
       #   array.reject { |x| x.is_a?(Foo) }
       #
-      #   # bad (find or detect)
-      #   array.find { |x| x.is_a?(Foo) }
-      #   array.detect { |x| x.is_a?(Foo) }
-      #
       #   # bad (negative form)
       #   array.reject { |x| !x.is_a?(Foo) }
-      #   array.find { |x| !x.is_a?(Foo) }
       #
       #   # good
       #   array.grep(Foo)
       #   array.grep_v(Foo)
-      #   array.grep(Foo).first
-      #   array.grep_v(Foo).first
       class SelectByKind < Base
         extend AutoCorrector
         include RangeHelp
 
         MSG = 'Prefer `%<replacement>s` to `%<original_method>s` with a kind check.'
-        RESTRICT_ON_SEND = %i[select filter find_all reject find detect].freeze
+        RESTRICT_ON_SEND = %i[select filter find_all reject].freeze
         SELECT_METHODS = %i[select filter find_all].freeze
-        FIND_METHODS = %i[find detect].freeze
         CLASS_CHECK_METHODS = %i[is_a? kind_of?].to_set.freeze
 
         # @!method class_check?(node)
@@ -114,8 +106,6 @@ module RuboCop
 
           if SELECT_METHODS.include?(method_name)
             negated ? 'grep_v' : 'grep'
-          elsif FIND_METHODS.include?(method_name)
-            negated ? 'grep_v(...).first' : 'grep(...).first'
           else # reject
             negated ? 'grep' : 'grep_v'
           end
@@ -127,9 +117,7 @@ module RuboCop
           add_offense(block_node, message: message) do |corrector|
             if class_constant
               range = range_between(node.loc.selector.begin_pos, block_node.loc.end.end_pos)
-              grep_method = replacement.include?('grep_v') ? 'grep_v' : 'grep'
-              suffix = replacement.include?('.first') ? '.first' : ''
-              corrector.replace(range, "#{grep_method}(#{class_constant.source})#{suffix}")
+              corrector.replace(range, "#{replacement}(#{class_constant.source})")
             end
           end
         end

@@ -39,27 +39,19 @@ module RuboCop
       #   array.reject { |x| x =~ /regexp/ }
       #   array.reject { |x| /regexp/ =~ x }
       #
-      #   # bad (find or detect)
-      #   array.find { |x| x.match? /regexp/ }
-      #   array.detect { |x| x.match? /regexp/ }
-      #
       #   # bad (negative form)
       #   array.reject { |x| !x.match? /regexp/ }
-      #   array.find { |x| !x.match? /regexp/ }
       #
       #   # good
       #   array.grep(regexp)
       #   array.grep_v(regexp)
-      #   array.grep(regexp).first
-      #   array.grep_v(regexp).first
       class SelectByRegexp < Base
         extend AutoCorrector
         include RangeHelp
 
         MSG = 'Prefer `%<replacement>s` to `%<original_method>s` with a regexp match.'
-        RESTRICT_ON_SEND = %i[select filter find_all reject find detect].freeze
+        RESTRICT_ON_SEND = %i[select filter find_all reject].freeze
         SELECT_METHODS = %i[select filter find_all].freeze
-        FIND_METHODS = %i[find detect].freeze
         REGEXP_METHODS = %i[match? =~].to_set.freeze
         REGEXP_METHODS_NEGATED = %i[!~].to_set.freeze
 
@@ -138,8 +130,6 @@ module RuboCop
 
           if SELECT_METHODS.include?(method_name)
             negated ? 'grep_v' : 'grep'
-          elsif FIND_METHODS.include?(method_name)
-            negated ? 'grep_v(...).first' : 'grep(...).first'
           else # reject
             negated ? 'grep' : 'grep_v'
           end
@@ -152,9 +142,7 @@ module RuboCop
             # Only correct if it can be determined what the regexp is
             if regexp
               range = range_between(node.loc.selector.begin_pos, block_node.loc.end.end_pos)
-              grep_method = replacement.include?('grep_v') ? 'grep_v' : 'grep'
-              suffix = replacement.include?('.first') ? '.first' : ''
-              corrector.replace(range, "#{grep_method}(#{regexp.source})#{suffix}")
+              corrector.replace(range, "#{replacement}(#{regexp.source})")
             end
           end
         end
