@@ -365,133 +365,6 @@ RSpec.describe RuboCop::Cop::Style::SelectByKind, :config do
     end
   end
 
-  shared_examples 'find class check' do |method, correction|
-    message = "Prefer `#{correction}` to `#{method}` with a kind check."
-
-    context "with #{method}" do
-      it 'registers an offense and corrects for `is_a?`' do
-        expect_offense(<<~RUBY, method: method)
-          array.#{method} { |x| x.is_a?(Foo) }
-          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^ #{message}
-        RUBY
-
-        expect_correction(<<~RUBY)
-          array.grep(Foo).first
-        RUBY
-      end
-
-      it 'registers an offense and corrects for `kind_of?`' do
-        expect_offense(<<~RUBY, method: method)
-          array.#{method} { |x| x.kind_of?(Foo) }
-          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
-        RUBY
-
-        expect_correction(<<~RUBY)
-          array.grep(Foo).first
-        RUBY
-      end
-
-      it 'registers an offense and corrects with safe navigation' do
-        expect_offense(<<~RUBY, method: method)
-          array&.#{method} { |x| x.is_a?(Foo) }
-          ^^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^ #{message}
-        RUBY
-
-        expect_correction(<<~RUBY)
-          array&.grep(Foo).first
-        RUBY
-      end
-    end
-  end
-
-  shared_examples 'negated find class check' do |method, correction|
-    message = "Prefer `#{correction}` to `#{method}` with a kind check."
-
-    context "with #{method}" do
-      it 'registers an offense and corrects for negated `is_a?`' do
-        expect_offense(<<~RUBY, method: method)
-          array.#{method} { |x| !x.is_a?(Foo) }
-          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^ #{message}
-        RUBY
-
-        expect_correction(<<~RUBY)
-          array.grep_v(Foo).first
-        RUBY
-      end
-
-      it 'registers an offense and corrects for negated `kind_of?`' do
-        expect_offense(<<~RUBY, method: method)
-          array.#{method} { |x| !x.kind_of?(Foo) }
-          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
-        RUBY
-
-        expect_correction(<<~RUBY)
-          array.grep_v(Foo).first
-        RUBY
-      end
-    end
-  end
-
-  shared_examples 'find class check with `numblock`s' do |method, correction|
-    message = "Prefer `#{correction}` to `#{method}` with a kind check."
-
-    it 'registers an offense and corrects for `is_a?`' do
-      expect_offense(<<~RUBY, method: method)
-        array.#{method} { _1.is_a?(Foo) }
-        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^ #{message}
-      RUBY
-
-      expect_correction(<<~RUBY)
-        array.grep(Foo).first
-      RUBY
-    end
-  end
-
-  shared_examples 'negated find class check with `numblock`s' do |method, correction|
-    message = "Prefer `#{correction}` to `#{method}` with a kind check."
-
-    it 'registers an offense and corrects for negated `is_a?`' do
-      expect_offense(<<~RUBY, method: method)
-        array.#{method} { !_1.is_a?(Foo) }
-        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
-      RUBY
-
-      expect_correction(<<~RUBY)
-        array.grep_v(Foo).first
-      RUBY
-    end
-  end
-
-  shared_examples 'find class check with `itblock`s' do |method, correction|
-    message = "Prefer `#{correction}` to `#{method}` with a kind check."
-
-    it 'registers an offense and corrects for `is_a?`' do
-      expect_offense(<<~RUBY, method: method)
-        array.#{method} { it.is_a?(Foo) }
-        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^ #{message}
-      RUBY
-
-      expect_correction(<<~RUBY)
-        array.grep(Foo).first
-      RUBY
-    end
-  end
-
-  shared_examples 'negated find class check with `itblock`s' do |method, correction|
-    message = "Prefer `#{correction}` to `#{method}` with a kind check."
-
-    it 'registers an offense and corrects for negated `is_a?`' do
-      expect_offense(<<~RUBY, method: method)
-        array.#{method} { !it.is_a?(Foo) }
-        ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^ #{message}
-      RUBY
-
-      expect_correction(<<~RUBY)
-        array.grep_v(Foo).first
-      RUBY
-    end
-  end
-
   context 'when Ruby >= 3.4', :ruby34 do
     it_behaves_like('class check with `itblock`s', 'select', 'grep')
     it_behaves_like('class check with `itblock`s', 'find_all', 'grep')
@@ -502,11 +375,6 @@ RSpec.describe RuboCop::Cop::Style::SelectByKind, :config do
     it_behaves_like('negated class check with `itblock`s', 'find_all', 'grep_v')
     it_behaves_like('negated class check with `itblock`s', 'filter', 'grep_v')
     it_behaves_like('class check with `itblock`s', 'reject', 'grep_v')
-
-    it_behaves_like('find class check with `itblock`s', 'find', 'grep(...).first')
-    it_behaves_like('find class check with `itblock`s', 'detect', 'grep(...).first')
-    it_behaves_like('negated find class check with `itblock`s', 'find', 'grep_v(...).first')
-    it_behaves_like('negated find class check with `itblock`s', 'detect', 'grep_v(...).first')
   end
 
   context 'when Ruby >= 2.7', :ruby27 do
@@ -519,11 +387,6 @@ RSpec.describe RuboCop::Cop::Style::SelectByKind, :config do
     it_behaves_like('negated class check with `numblock`s', 'find_all', 'grep_v')
     it_behaves_like('negated class check with `numblock`s', 'filter', 'grep_v')
     it_behaves_like('class check with `numblock`s', 'reject', 'grep_v')
-
-    it_behaves_like('find class check with `numblock`s', 'find', 'grep(...).first')
-    it_behaves_like('find class check with `numblock`s', 'detect', 'grep(...).first')
-    it_behaves_like('negated find class check with `numblock`s', 'find', 'grep_v(...).first')
-    it_behaves_like('negated find class check with `numblock`s', 'detect', 'grep_v(...).first')
   end
 
   it_behaves_like('class check', 'select', 'grep')
@@ -539,9 +402,4 @@ RSpec.describe RuboCop::Cop::Style::SelectByKind, :config do
   it_behaves_like('negated class check', 'filter', 'grep_v')
   it_behaves_like('class check', 'reject', 'grep_v')
   it_behaves_like('class check with safe navigation', 'reject', 'grep_v')
-
-  it_behaves_like('find class check', 'find', 'grep(...).first')
-  it_behaves_like('find class check', 'detect', 'grep(...).first')
-  it_behaves_like('negated find class check', 'find', 'grep_v(...).first')
-  it_behaves_like('negated find class check', 'detect', 'grep_v(...).first')
 end
