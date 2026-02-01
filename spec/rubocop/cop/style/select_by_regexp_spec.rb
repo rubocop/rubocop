@@ -646,6 +646,56 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     end
   end
 
+  shared_examples 'negated regexp match' do |method, correction|
+    message = "Prefer `#{correction}` to `#{method}` with a regexp match."
+
+    context "with #{method}" do
+      it 'registers an offense and corrects for `!match?`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| !x.match?(/regexp/) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `!Regexp#match?`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| !/regexp/.match?(x) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `!(blockvar =~ regexp)`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| !(x =~ /regexp/) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+
+      it 'registers an offense and corrects for `!(regexp =~ blockvar)`' do
+        expect_offense(<<~RUBY, method: method)
+          array.#{method} { |x| !(/regexp/ =~ x) }
+          ^^^^^^^{method}^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array.#{correction}(/regexp/)
+        RUBY
+      end
+    end
+  end
+
   context 'when Ruby >= 3.4', :ruby34 do
     it_behaves_like('regexp match with `itblock`s', 'select', 'grep')
     it_behaves_like('regexp match with `itblock`s', 'find_all', 'grep')
@@ -699,6 +749,10 @@ RSpec.describe RuboCop::Cop::Style::SelectByRegexp, :config do
     it_behaves_like('regexp match with safe navigation', 'find_all', 'grep')
     it_behaves_like('regexp mismatch', 'reject', 'grep')
     it_behaves_like('regexp mismatch with safe navigation', 'reject', 'grep')
+
+    it_behaves_like('negated regexp match', 'select', 'grep_v')
+    it_behaves_like('negated regexp match', 'find_all', 'grep_v')
+    it_behaves_like('negated regexp match', 'reject', 'grep')
 
     it_behaves_like('regexp match', 'reject', 'grep_v')
     it_behaves_like('regexp match with safe navigation', 'reject', 'grep_v')
