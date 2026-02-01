@@ -137,6 +137,17 @@ module RuboCop
       #     true
       #   end
       #
+      # @example WaywardPredicates: ['infinite?', 'nonzero?'] (default)
+      #   # good
+      #   def non_predicate_method(num)
+      #     num.infinite?
+      #   end
+      #
+      #   # good
+      #   def non_predicate_method(num)
+      #     num.nonzero?
+      #   end
+      #
       class PredicateMethod < Base
         include AllowedMethods
         include AllowedPattern

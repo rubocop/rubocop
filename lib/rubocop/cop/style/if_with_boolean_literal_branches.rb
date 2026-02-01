@@ -54,7 +54,10 @@ module RuboCop
       #   # good (but potentially an unsafe correction)
       #   foo.do_something?
       #
-      # @example AllowedMethods: ['nonzero?'] (default)
+      # @example AllowedMethods: ['infinite?', 'nonzero?'] (default)
+      #   # good
+      #   num.infinite? ? true : false
+      #
       #   # good
       #   num.nonzero? ? true : false
       #

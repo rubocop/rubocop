@@ -3113,6 +3113,7 @@ Naming/PredicateMethod:
   AllowBangMethods: false
   # Methods that are known to not return a boolean value, despite ending in `?`.
   WaywardPredicates:
+    - infinite?
     - nonzero?
 
 Naming/PredicatePrefix:
@@ -4444,6 +4445,7 @@ Style/IfWithBooleanLiteralBranches:
   VersionAdded: '1.9'
   SafeAutoCorrect: false
   AllowedMethods:
+    - infinite?
     - nonzero?
 
 Style/IfWithSemicolon:
@@ -5317,6 +5319,7 @@ Style/RedundantCondition:
   VersionAdded: '0.76'
   VersionChanged: '1.73'
   AllowedMethods:
+    - infinite?
     - nonzero?
 
 Style/RedundantConditional:
