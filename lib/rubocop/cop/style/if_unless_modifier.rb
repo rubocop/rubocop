@@ -71,7 +71,8 @@ module RuboCop
       #   if short_condition # a long comment that makes it too long if it were just a single line
       #     do_something
       #   end
-      class IfUnlessModifier < Base
+      #
+      class IfUnlessModifier < Base # rubocop:disable Metrics/ClassLength
         include StatementModifier
         include LineLengthHelp
         include AllowedPattern
@@ -230,15 +231,6 @@ module RuboCop
           true
         end
 
-        def too_long_line_based_on_allow_qualified_name?(line)
-          if allow_qualified_name?
-            namespace_range = find_excessive_range(line, :namespace)
-            return false if namespace_range && allowed_position?(line, namespace_range)
-          end
-
-          true
-        end
-
         def line_length_enabled_at_line?(line)
           processed_source.comment_config.cop_enabled_at_line?('Layout/LineLength', line)
         end
@@ -248,7 +240,44 @@ module RuboCop
         end
 
         def non_eligible_node?(node)
-          non_simple_if_unless?(node) || node.chained? || node.nested_conditional? || super
+          non_simple_if_unless?(node) || node.chained? || node.nested_conditional? ||
+            multiline_inside_collection?(node) || super
+        end
+
+        def multiline_inside_collection?(node)
+          return false if node.modifier_form?
+          return false unless (collection = find_containing_collection(node))
+
+          collection.children.any? { |child| sibling_if_shares_line?(child, node) }
+        end
+
+        def sibling_if_shares_line?(child, node)
+          inner = unwrap_begin(child)
+          inner&.if_type? && shares_line_with?(inner, node)
+        end
+
+        def unwrap_begin(node)
+          return unless node.is_a?(RuboCop::AST::Node)
+
+          node = node.value if node.pair_type?
+          node.begin_type? ? node.children.first : node
+        end
+
+        def shares_line_with?(inner, node)
+          inner.loc.line == node.loc.end.line || inner.loc.end.line == node.loc.line
+        end
+
+        def find_containing_collection(node)
+          parent = node.parent
+          return collection_from_ancestor(parent) unless parent&.begin_type?
+
+          collection_from_ancestor(parent.parent)
+        end
+
+        def collection_from_ancestor(node)
+          return node if node&.type?(:array, :call)
+
+          node.parent if node&.type?(:pair)
         end
 
         def non_simple_if_unless?(node)
