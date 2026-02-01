@@ -128,6 +128,20 @@ RSpec.describe RuboCop::Cop::Team do
           expect(cop_names).not_to include('Layout/LineLength')
         end
       end
+
+      context 'when a cop is excluded but has an opt-in comment' do
+        before do
+          create_file(file_path, ['# rubocop:enable Layout/LineLength', '#' * 130, 'puts *test'])
+        end
+
+        it 'still excludes the cop (exclude pattern takes precedence over opt-in)' do
+          allow_any_instance_of(RuboCop::Cop::Layout::LineLength)
+            .to receive(:excluded_file?).and_return(true)
+
+          expect(cop_names).to include('Lint/AmbiguousOperator')
+          expect(cop_names).not_to include('Layout/LineLength')
+        end
+      end
     end
 
     context 'when autocorrection is enabled' do
