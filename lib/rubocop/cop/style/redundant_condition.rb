@@ -58,7 +58,10 @@ module RuboCop
       #   # good
       #   a.nil? || a
       #
-      # @example AllowedMethods: ['nonzero?'] (default)
+      # @example AllowedMethods: ['infinite?', 'nonzero?'] (default)
+      #   # good
+      #   num.infinite? ? true : false
+      #
       #   # good
       #   num.nonzero? ? true : false
       #
