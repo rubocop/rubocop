@@ -182,6 +182,65 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     end
   end
 
+  describe 'did open with multiline literal offense' do
+    let(:long_line) { 'a' * 130 }
+    let(:requests) do
+      [
+        jsonrpc: '2.0',
+        method: 'textDocument/didOpen',
+        params: {
+          textDocument: {
+            languageId: 'ruby',
+            text: [
+              '# frozen_string_literal: true',
+              '',
+              'values = %w[',
+              "  #{long_line}",
+              ']',
+              'puts values',
+              ''
+            ].join(eol),
+            uri: 'file:///path/to/file.rb',
+            version: 0
+          }
+        }
+      ]
+    end
+
+    it 'uses block comments for disable quickfix inside multiline literals' do
+      expect(stderr).to eq('')
+      diagnostics = messages.first.dig(:params, :diagnostics)
+      diagnostic = diagnostics.find { |diag| diag[:code] == 'Layout/LineLength' }
+      expect(diagnostic).not_to be_nil
+
+      code_actions = diagnostic[:data][:code_actions]
+      disable_action = code_actions.find do |action|
+        action[:title] == 'Disable Layout/LineLength for this line'
+      end
+      expect(disable_action).not_to be_nil
+
+      edits = disable_action[:edit][:documentChanges].first[:edits]
+      expect(edits).to eq(
+        [
+          {
+            newText: "# rubocop:disable Layout/LineLength\n",
+            range: {
+              start: { line: 2, character: 0 },
+              end: { line: 2, character: 0 }
+            }
+          },
+          {
+            newText: "\n# rubocop:enable Layout/LineLength",
+            range: {
+              start: { line: 4, character: 1 },
+              end: { line: 4, character: 1 }
+            }
+          }
+        ]
+      )
+    end
+  end
+
   describe 'did open with multibyte character(utf-16)' do
     let(:requests) do
       [
