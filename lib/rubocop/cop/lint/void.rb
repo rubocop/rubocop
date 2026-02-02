@@ -94,6 +94,11 @@ module RuboCop
         alias on_numblock on_block
         alias on_itblock on_block
 
+        def on_next(node)
+          check_void_block_control(node)
+        end
+        alias on_break on_next
+
         def on_begin(node)
           check_begin(node)
         end
@@ -119,7 +124,16 @@ module RuboCop
           end
         end
 
+        def check_void_block_control(node)
+          return unless (value = node.children.first)
+          return unless node.each_ancestor(:any_block).first&.method?(:each)
+
+          check_expression(value)
+        end
+
         def check_expression(expr)
+          return check_case_branches(expr) if expr.type?(:case, :case_match)
+
           expr = expr.body if expr.if_type?
           return unless expr
 
@@ -127,9 +141,13 @@ module RuboCop
           check_var(expr)
           check_self(expr)
           check_void_expression(expr)
-          return unless cop_config['CheckForMethodsWithNoSideEffects']
+          check_nonmutating(expr) if cop_config['CheckForMethodsWithNoSideEffects']
+        end
 
-          check_nonmutating(expr)
+        def check_case_branches(node)
+          branches = node.case_type? ? node.when_branches : node.in_pattern_branches
+          branches.each { |b| check_expression(b.body) if b.body }
+          check_expression(node.else_branch) if node.else_branch
         end
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
