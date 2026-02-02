@@ -1416,6 +1416,22 @@ def save!
 end
 ----
 
+[#waywardpredicates_-__infinite___-_nonzero___-_default_-namingpredicatemethod]
+==== WaywardPredicates: ['infinite?', 'nonzero?'] (default)
+
+[source,ruby]
+----
+# good
+def non_predicate_method(num)
+  num.infinite?
+end
+
+# good
+def non_predicate_method(num)
+  num.nonzero?
+end
+----
+
 [#configurable-attributes-namingpredicatemethod]
 === Configurable attributes
 
@@ -1439,7 +1455,7 @@ end
 | Boolean
 
 | WaywardPredicates
-| `nonzero?`
+| `infinite?`, `nonzero?`
 | Array
 |===
 

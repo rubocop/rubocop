@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.84.1 (2026-02-02)
+
 ### Bug fixes
 
 * [#14803](https://github.com/rubocop/rubocop/pull/14803): Fix an error for `Layout/IndentationWidth` cop. ([@viralpraxis][])

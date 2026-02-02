@@ -4442,7 +4442,7 @@ end
 | Pending
 | Yes
 | Always
-| 1.83
+| 1.84
 | -
 |===
 
@@ -7233,7 +7233,7 @@ end
 | Disabled
 | No
 | Always (Unsafe)
-| 1.83
+| 1.84
 | -
 |===
 
@@ -8105,11 +8105,14 @@ end
 foo.do_something?
 ----
 
-[#allowedmethods_-__nonzero___-_default_-styleifwithbooleanliteralbranches]
-==== AllowedMethods: ['nonzero?'] (default)
+[#allowedmethods_-__infinite___-_nonzero___-_default_-styleifwithbooleanliteralbranches]
+==== AllowedMethods: ['infinite?', 'nonzero?'] (default)
 
 [source,ruby]
 ----
+# good
+num.infinite? ? true : false
+
 # good
 num.nonzero? ? true : false
 ----
@@ -8121,7 +8124,7 @@ num.nonzero? ? true : false
 | Name | Default value | Configurable values
 
 | AllowedMethods
-| `nonzero?`
+| `infinite?`, `nonzero?`
 | Array
 |===
 
@@ -10541,11 +10544,6 @@ instance methods in the module, then check if a given method is inside that
 array, while `method_defined?` will do direct method lookup, which is much
 faster and consumes less memory.
 
- @example AllowedMethods: [included_modules]
-
-  # good
-  Array.included_modules.include?(:foo)
-
 [#examples-stylemodulememberexistencecheck]
 === Examples
 
@@ -10578,6 +10576,15 @@ Array.private_method_defined?(:foo)
 Array.protected_method_defined?(:foo)
 Array.public_method_defined?(:foo)
 Array.include?(:foo)
+----
+
+[#allowedmethods_-_included_modules_-stylemodulememberexistencecheck]
+==== AllowedMethods: [included_modules]
+
+[source,ruby]
+----
+# good
+Array.included_modules.include?(:foo)
 ----
 
 [#configurable-attributes-stylemodulememberexistencecheck]
@@ -11477,7 +11484,7 @@ bar while !foo && baz
 | Pending
 | Yes
 | Always
-| 1.83
+| 1.84
 | -
 |===
 
@@ -13910,11 +13917,14 @@ end
 a.nil? || a
 ----
 
-[#allowedmethods_-__nonzero___-_default_-styleredundantcondition]
-==== AllowedMethods: ['nonzero?'] (default)
+[#allowedmethods_-__infinite___-_nonzero___-_default_-styleredundantcondition]
+==== AllowedMethods: ['infinite?', 'nonzero?'] (default)
 
 [source,ruby]
 ----
+# good
+num.infinite? ? true : false
+
 # good
 num.nonzero? ? true : false
 ----
@@ -13926,7 +13936,7 @@ num.nonzero? ? true : false
 | Name | Default value | Configurable values
 
 | AllowedMethods
-| `nonzero?`
+| `infinite?`, `nonzero?`
 | Array
 |===
 
@@ -16039,7 +16049,7 @@ NOTE: Requires Ruby version 4.0
 | Pending
 | No
 | Always (Unsafe)
-| 1.83
+| 1.84
 | -
 |===
 
