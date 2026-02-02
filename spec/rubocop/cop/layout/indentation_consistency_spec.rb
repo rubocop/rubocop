@@ -843,4 +843,81 @@ RSpec.describe RuboCop::Cop::Layout::IndentationConsistency, :config do
       RUBY
     end
   end
+
+  context 'with backslash line continuation' do
+    it 'registers an offense but does not autocorrect following a backslash continuation' do
+      expect_offense(<<~'RUBY')
+        specify do
+          expect { result }.to \
+            change { a }
+            change { b }
+            ^^^^^^^^^^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense but does not autocorrect following a multiline expression' do
+      expect_offense(<<~RUBY)
+        specify do
+          expect { result }
+            .to change { a }
+            change { b }
+            ^^^^^^^^^^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'still autocorrects when previous line does not end with backslash' do
+      expect_offense(<<~RUBY)
+        def test
+          foo
+            bar
+            ^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          foo
+          bar
+        end
+      RUBY
+    end
+
+    it 'handles multiple statements after backslash continuation' do
+      expect_offense(<<~'RUBY')
+        specify do
+          expect { result }.to \
+            change { a }
+            change { b }
+            ^^^^^^^^^^^^ Inconsistent indentation detected.
+            change { c }
+            ^^^^^^^^^^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not skip autocorrect when backslash is in a comment' do
+      expect_offense(<<~RUBY)
+        def test
+          foo # trailing comment \\
+            bar
+            ^^^ Inconsistent indentation detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test
+          foo # trailing comment \\
+          bar
+        end
+      RUBY
+    end
+  end
 end

@@ -135,6 +135,49 @@ module RuboCop
 
         private
 
+        def check_alignment(items, base_column = nil)
+          base_column ||= display_column(items.first.source_range) unless items.empty?
+
+          each_bad_alignment(items, base_column) do |current|
+            expr = current.source_range
+            skip_autocorrect = @current_offenses&.any? { |o| within?(expr, o.location) } ||
+                               follows_line_continuation?(current, items)
+
+            if skip_autocorrect
+              register_offense(expr, nil)
+            else
+              register_offense(current, current)
+            end
+          end
+        end
+
+        def follows_line_continuation?(node, items)
+          index = items.index(node)
+          return false unless index&.positive?
+
+          current_column = display_column(node.source_range)
+
+          # Check if any previous sibling has a multiline continuation
+          # and the current node matches its last line indentation
+          items[0...index].any? do |sibling|
+            sibling_matches_continuation?(sibling, current_column)
+          end
+        end
+
+        def sibling_matches_continuation?(sibling, current_column)
+          first_line = sibling.source_range.first_line
+          last_line = sibling.source_range.last_line
+
+          # Only applies if sibling spans multiple lines
+          return false unless first_line < last_line
+
+          # Check if current node's indentation matches the last line of sibling
+          last_line_content = processed_source.lines[last_line - 1]
+          last_line_indent = last_line_content[/\A\s*/].length
+
+          current_column == last_line_indent
+        end
+
         def autocorrect(corrector, node)
           AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
         end
