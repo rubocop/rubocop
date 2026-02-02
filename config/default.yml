@@ -2100,6 +2100,11 @@ Lint/Loop:
   VersionChanged: '1.3'
   Safe: false
 
+Lint/MethodCallConsistency:
+  Description: 'Identify inconsistent usage of receivers with safe navigation operators'  
+  Enabled: true
+  VersionAdded: '1.75'
+
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
