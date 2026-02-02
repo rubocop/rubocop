@@ -1,1 +1,0 @@
-* [#14823](https://github.com/rubocop/rubocop/issues/14823): Add the built-in `infinite?` method to the allowlists for `Naming/PredicateMethod`, `Style/IfWithBooleanLiteralBranches`, and `Style/RedundantCondition`, in addition to the existing `nonzero?`. ([@koic][])
