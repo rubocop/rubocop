@@ -17,7 +17,7 @@ module RuboCop
     class StdinRunner < RuboCop::Runner
       class ConfigurationError < StandardError; end
 
-      attr_reader :offenses, :config_for_working_directory
+      attr_reader :offenses, :config_for_working_directory, :processed_source
 
       DEFAULT_RUBOCOP_OPTIONS = {
         stderr: true,
@@ -45,6 +45,7 @@ module RuboCop
         @options[:stdin] = contents
 
         @prism_result = prism_result
+        @processed_source = nil
 
         @offenses = []
         @warnings = []
@@ -63,6 +64,12 @@ module RuboCop
 
       def file_finished(_file, offenses)
         @offenses = offenses
+      end
+
+      def do_inspection_loop(file)
+        source, offenses = super
+        @processed_source = source
+        [source, offenses]
       end
     end
   end

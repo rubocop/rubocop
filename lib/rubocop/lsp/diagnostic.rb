@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'disable_comment_edits'
 require_relative 'severity'
 
 #
@@ -16,11 +17,12 @@ module RuboCop
     # Diagnostic for Language Server Protocol of RuboCop.
     # @api private
     class Diagnostic
-      def initialize(document_encoding, offense, uri, cop_class)
+      def initialize(document_encoding, offense, uri, cop_class, processed_source = nil)
         @document_encoding = document_encoding
         @offense = offense
         @uri = uri
         @cop_class = cop_class
+        @processed_source = processed_source
       end
 
       def to_lsp_code_actions
@@ -141,25 +143,11 @@ module RuboCop
       # rubocop:enable Metrics/MethodLength
 
       def line_disable_comment
-        new_text = if @offense.source_line.include?(' # rubocop:disable ')
-                     ",#{@offense.cop_name}"
-                   else
-                     " # rubocop:disable #{@offense.cop_name}"
-                   end
-
-        eol = LanguageServer::Protocol::Interface::Position.new(
-          line: @offense.line - 1,
-          character: to_position_character(@offense.source_line.length)
-        )
-
-        # TODO: fails for multiline strings - may be preferable to use block
-        # comments to disable some offenses
-        inline_comment = LanguageServer::Protocol::Interface::TextEdit.new(
-          range: LanguageServer::Protocol::Interface::Range.new(start: eol, end: eol),
-          new_text: new_text
-        )
-
-        [inline_comment]
+        DisableCommentEdits.new(
+          offense: @offense,
+          document_encoding: @document_encoding,
+          processed_source: @processed_source
+        ).edits
       end
 
       def to_position_character(utf8_index)
