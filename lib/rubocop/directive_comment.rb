@@ -24,7 +24,7 @@ module RuboCop
     # @api private
     PUSH_POP_ARGS_PATTERN = "([+\\-]#{COP_NAME_PATTERN_NC}(?:\\s+[+\\-]#{COP_NAME_PATTERN_NC})*)"
     # @api private
-    AVAILABLE_MODES = %w[disable enable todo push pop].freeze
+    AVAILABLE_MODES = %w[disable-file disable enable todo push pop].freeze
     # @api private
     DIRECTIVE_MARKER_PATTERN = '# rubocop : '
     # @api private
@@ -83,6 +83,11 @@ module RuboCop
       !comment.text.start_with?(DIRECTIVE_COMMENT_REGEXP)
     end
 
+    # Checks if this directive relates to multiple lines
+    def multiline?
+      comment.text.start_with?(DIRECTIVE_COMMENT_REGEXP)
+    end
+
     # Checks if this directive contains all the given cop names
     def match?(cop_names)
       parsed_cop_names.uniq.sort == cop_names.uniq.sort
@@ -109,7 +114,12 @@ module RuboCop
 
     # Checks if this directive disables cops
     def disabled?
-      %w[disable todo].include?(mode)
+      %w[disable disable-file todo].include?(mode)
+    end
+
+    # Checks if this directive disables cops for the entire file
+    def disabled_file?
+      mode == 'disable-file'
     end
 
     # Checks if this directive enables cops

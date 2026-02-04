@@ -116,4 +116,43 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
       RUBY
     end
   end
+
+  context 'when using disable-file directive' do
+    let(:cop_config) do
+      { 'MaximumRangeSize' => Float::INFINITY }
+    end
+
+    it 'does not register an offense for disable-file' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable-file Layout/SpaceAroundOperators
+        x =   0
+        y = 1
+      RUBY
+    end
+
+    it 'does not register an offense for disable-file in the middle of a file' do
+      expect_no_offenses(<<~RUBY)
+        x = 1
+        # rubocop:disable-file Layout/SpaceAroundOperators
+        y =   2
+      RUBY
+    end
+
+    it 'does not register an offense for disable-file with a department' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable-file Layout
+        x =   0
+        y = 1
+      RUBY
+    end
+
+    it 'still registers an offense for regular disable without enable' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/SpaceAroundOperators
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Re-enable Layout/SpaceAroundOperators cop with `# rubocop:enable` after disabling it.
+        x =   0
+        y = 1
+      RUBY
+    end
+  end
 end
