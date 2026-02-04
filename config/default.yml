@@ -2104,6 +2104,7 @@ Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
   VersionAdded: '0.52'
+  VersionChanged: '<<next>>'
   # Maximum number of consecutive lines the cop can be disabled for.
   # 0 allows only single-line disables
   # 1 would mean the maximum allowed is the following:
@@ -2112,6 +2113,11 @@ Lint/MissingCopEnableDirective:
   #   # rubocop:enable SomeCop
   # .inf for any size
   MaximumRangeSize: .inf
+  # When set to true, a `# rubocop:disable` at the beginning of the file
+  # (on the first line or after only comments/blank lines) does not require
+  # a corresponding `# rubocop:enable`, as it's considered an intentional
+  # disable for the entire file.
+  AllowDisablesAtFileStart: false
 
 Lint/MissingSuper:
   Description: >-
