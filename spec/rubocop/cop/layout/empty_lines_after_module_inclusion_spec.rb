@@ -262,6 +262,14 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAfterModuleInclusion, :config do
     RUBY
   end
 
+  it 'does not register an offense for `include` inside an array' do
+    expect_no_offenses(<<~RUBY)
+      it 'something' do
+        match([include(foo), anything])
+      end
+    RUBY
+  end
+
   it 'does not register an offense when `include` has zero arguments' do
     expect_no_offenses(<<~RUBY)
       class Foo
