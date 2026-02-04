@@ -1208,6 +1208,27 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         RUBY
       end
     end
+
+    context 'when the first value uses a normal `if` and the others use modifier `if`' do
+      it 'corrects to modifier form' do
+        expect_offense(<<~RUBY)
+          {
+            first_key: if first_cond
+                       ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+                            first_expr
+                          end,
+            second_key: (second_expr if second_cond)
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          {
+            first_key: (first_expr if first_cond),
+            second_key: (second_expr if second_cond)
+          }
+        RUBY
+      end
+    end
   end
 
   context 'when if-end condition has a first line comment' do

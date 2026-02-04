@@ -264,7 +264,7 @@ module RuboCop
         end
 
         def shares_line_with?(inner, node)
-          inner.loc.line == node.loc.end.line || inner.loc.end.line == node.loc.line
+          same_line?(inner, node.loc.end) || same_line?(inner.loc.end, node)
         end
 
         def find_containing_collection(node)
