@@ -86,6 +86,16 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
 
               expect_correction('')
             end
+
+            context 'when that cop is configured in CopsToIgnore' do
+              let(:cop_config) { { 'CopsToIgnore' => ['Metrics/MethodLength'] } }
+
+              it 'returns no offense' do
+                expect_no_offenses(<<~RUBY)
+                  # rubocop:disable Metrics/MethodLength
+                RUBY
+              end
+            end
           end
 
           context 'an unknown cop' do
