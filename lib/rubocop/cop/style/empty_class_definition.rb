@@ -37,7 +37,6 @@ module RuboCop
       #
       class EmptyClassDefinition < Base
         include ConfigurableEnforcedStyle
-        include Alignment
         include RangeHelp
         extend AutoCorrector
 
@@ -45,27 +44,24 @@ module RuboCop
           'Prefer a two-line class definition over `Class.new` for classes with no body.'
         MSG_CLASS_NEW = 'Prefer `Class.new` over class definition for classes with no body.'
 
-        # @!method class_new_assignment?(node)
-        def_node_matcher :class_new_assignment?, <<~PATTERN
-          (casgn _ _ (send (const _ :Class) :new ...))
+        # @!method class_new_assignment(node)
+        def_node_matcher :class_new_assignment, <<~PATTERN
+          (casgn _ _ $(send (const _ :Class) :new ...))
         PATTERN
 
         def on_casgn(node)
           return unless style == :class_definition
-          return unless node.expression
-
-          class_new_node = find_class_new_node(node.expression)
-          return if chained_with_any_method?(node.expression, class_new_node)
-          return if variable_parent_class?(class_new_node)
+          return unless (class_new_node = class_new_assignment(node))
+          return if (arg = class_new_node.first_argument) && !arg.const_type?
 
           add_offense(node, message: MSG_CLASS_DEFINITION) do |corrector|
-            autocorrect_class_new(corrector, node)
+            autocorrect_class_new(corrector, node, class_new_node)
           end
         end
 
         def on_class(node)
           return unless style == :class_new
-          return unless empty_class?(node)
+          return if (body = node.body) && !body.children.empty?
 
           add_offense(node, message: MSG_CLASS_NEW) do |corrector|
             autocorrect_class_definition(corrector, node)
@@ -74,69 +70,25 @@ module RuboCop
 
         private
 
-        def autocorrect_class_new(corrector, node)
+        def autocorrect_class_new(corrector, node, class_new_node)
           indent = ' ' * node.loc.column
           class_name = node.name
-          class_new_node = find_class_new_node(node.expression)
-          parent_class = extract_parent_class(class_new_node)
+          if (parent_class = class_new_node.first_argument)
+            parent_class_name = " < #{parent_class.source}"
+          end
 
-          replacement = if parent_class
-                          "class #{class_name} < #{parent_class}\n#{indent}end"
-                        else
-                          "class #{class_name}\n#{indent}end"
-                        end
-
-          corrector.replace(node, replacement)
+          corrector.replace(node, "class #{class_name}#{parent_class_name}\n#{indent}end")
         end
 
         def autocorrect_class_definition(corrector, node)
-          source_line = processed_source.buffer.source_line(node.loc.line)
-          indent = source_line[/\A */]
+          indent = ' ' * node.loc.column
           class_name = node.identifier.source
-          parent_class = node.parent_class&.source
+          if (parent_class = node.parent_class)
+            parent_class_name = "(#{parent_class.source})"
+          end
           range = range_by_whole_lines(node.source_range, include_final_newline: true)
 
-          replacement = if parent_class
-                          "#{indent}#{class_name} = Class.new(#{parent_class})\n"
-                        else
-                          "#{indent}#{class_name} = Class.new\n"
-                        end
-
-          corrector.replace(range, replacement)
-        end
-
-        def extract_parent_class(class_new_node)
-          first_arg = class_new_node.first_argument
-          first_arg&.source
-        end
-
-        def variable_parent_class?(class_new_node)
-          first_arg = class_new_node.first_argument
-          return false unless first_arg
-
-          !first_arg.const_type?
-        end
-
-        def find_class_new_node(node)
-          return nil unless node.send_type?
-          return nil unless node.receiver&.const_type?
-
-          return node if node.receiver.const_name.to_sym == :Class && node.method?(:new)
-
-          nil
-        end
-
-        def chained_with_any_method?(expression_node, class_new_node)
-          return true unless expression_node == class_new_node
-
-          false
-        end
-
-        def empty_class?(node)
-          body = node.body
-          return true unless body
-
-          body.begin_type? && body.children.empty?
+          corrector.replace(range, "#{indent}#{class_name} = Class.new#{parent_class_name}\n")
         end
       end
     end
