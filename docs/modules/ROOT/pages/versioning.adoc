@@ -1,7 +1,7 @@
 = Versioning
 
 RuboCop is stable between major versions, both in terms of API and cop
-configuration. We aim the ease the maintenance of RuboCop extensions
+configuration. We aim to ease the maintenance of RuboCop extensions
 (by keeping the API stable) and the upgrades between RuboCop releases
 (by not enabling new cops and changing the configuration of existing cops).
 All big (breaking) changes are reserved for major releases.

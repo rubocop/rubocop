@@ -19,7 +19,7 @@ of the RuboCop core team, listed in the order of joining it:
 
 == RuboCop Alumni
 
-In addition, we'd like to extend a special thanks the following retired RuboCop
+In addition, we'd like to extend a special thanks to the following retired RuboCop
 core team members. Lovingly known as The Alumni:
 
 * https://github.com/yujinakayama[Yuji Nakayama] (also author of `guard-rubocop`)

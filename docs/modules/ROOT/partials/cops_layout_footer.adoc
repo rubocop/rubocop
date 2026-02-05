@@ -23,7 +23,7 @@ that are already short enough, and only considered multiline
 because of their last element.
 
 Each cop can be configured independently allowing for more fine-grained
-control over what is considered good ok in the codebase.
+control over what is considered ok in the codebase.
 
 === Examples
 

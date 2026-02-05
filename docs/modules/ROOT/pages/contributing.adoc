@@ -41,7 +41,7 @@ The manual is generated from the AsciiDoc files in the https://github.com/ruboco
 https://antora.org[Antora] is used to convert the manual into HTML.
 The filesystem layout is described at https://docs.antora.org/antora/2.0/component-structure/.
 
-To make changes to the manual you simply have to change the files under `doc`.
+To make changes to the manual you simply have to change the files under `docs`.
 The manual will be regenerated manually periodically.
 
 ==== Installing Antora
