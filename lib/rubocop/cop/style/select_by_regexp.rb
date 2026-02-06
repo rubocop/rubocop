@@ -39,6 +39,9 @@ module RuboCop
       #   array.reject { |x| x =~ /regexp/ }
       #   array.reject { |x| /regexp/ =~ x }
       #
+      #   # bad (negative form)
+      #   array.reject { |x| !x.match? /regexp/ }
+      #
       #   # good
       #   array.grep(regexp)
       #   array.grep_v(regexp)
@@ -48,18 +51,19 @@ module RuboCop
 
         MSG = 'Prefer `%<replacement>s` to `%<original_method>s` with a regexp match.'
         RESTRICT_ON_SEND = %i[select filter find_all reject].freeze
-        REPLACEMENTS = { select: 'grep', filter: 'grep', find_all: 'grep', reject: 'grep_v' }.freeze
-        OPPOSITE_REPLACEMENTS = {
-          select: 'grep_v', filter: 'grep_v', find_all: 'grep_v', reject: 'grep'
-        }.freeze
-        REGEXP_METHODS = %i[match? =~ !~].to_set.freeze
+        SELECT_METHODS = %i[select filter find_all].freeze
+        REGEXP_METHODS = %i[match? =~].to_set.freeze
+        REGEXP_METHODS_NEGATED = %i[!~].to_set.freeze
 
         # @!method regexp_match?(node)
         def_node_matcher :regexp_match?, <<~PATTERN
           {
-            (block call (args (arg $_)) ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
-            (numblock call $1 ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
-            (itblock call $_ ${(send _ %REGEXP_METHODS _) match-with-lvasgn})
+            (block call (args (arg $_)) ${(send _ %REGEXP_METHODS _) (send _ %REGEXP_METHODS_NEGATED _) match-with-lvasgn})
+            (block call (args (arg $_)) ${(send (send _ %REGEXP_METHODS _) :!) (send (begin (send _ %REGEXP_METHODS _)) :!) (send match-with-lvasgn :!) (send (begin match-with-lvasgn) :!)})
+            (numblock call $1 ${(send _ %REGEXP_METHODS _) (send _ %REGEXP_METHODS_NEGATED _) match-with-lvasgn})
+            (numblock call $1 ${(send (send _ %REGEXP_METHODS _) :!) (send (begin (send _ %REGEXP_METHODS _)) :!) (send match-with-lvasgn :!) (send (begin match-with-lvasgn) :!)})
+            (itblock call $_ ${(send _ %REGEXP_METHODS _) (send _ %REGEXP_METHODS_NEGATED _) match-with-lvasgn})
+            (itblock call $_ ${(send (send _ %REGEXP_METHODS _) :!) (send (begin (send _ %REGEXP_METHODS _)) :!) (send match-with-lvasgn :!) (send (begin match-with-lvasgn) :!)})
           }
         PATTERN
 
@@ -84,6 +88,12 @@ module RuboCop
             (send (lvar %1) ...)
             (send ... (lvar %1))
             (match-with-lvasgn regexp (lvar %1))
+            (send (send (lvar %1) ...) :!)
+            (send (send ... (lvar %1)) :!)
+            (send (match-with-lvasgn regexp (lvar %1)) :!)
+            (send (begin (send (lvar %1) ...)) :!)
+            (send (begin (send ... (lvar %1))) :!)
+            (send (begin (match-with-lvasgn regexp (lvar %1))) :!)
           }
         PATTERN
 
@@ -97,7 +107,7 @@ module RuboCop
           return if match_predicate_without_receiver?(regexp_method_send_node)
 
           replacement = replacement(regexp_method_send_node, node)
-          return if target_ruby_version <= 2.2 && replacement == 'grep_v'
+          return if target_ruby_version <= 2.2 && replacement.include?('grep_v')
 
           regexp = find_regexp(regexp_method_send_node, block_node)
 
@@ -115,11 +125,14 @@ module RuboCop
         end
 
         def replacement(regexp_method_send_node, node)
-          opposite = opposite?(regexp_method_send_node)
-
+          negated = negated?(regexp_method_send_node)
           method_name = node.method_name
 
-          opposite ? OPPOSITE_REPLACEMENTS[method_name] : REPLACEMENTS[method_name]
+          if SELECT_METHODS.include?(method_name)
+            negated ? 'grep_v' : 'grep'
+          else # reject
+            negated ? 'grep' : 'grep_v'
+          end
         end
 
         def register_offense(node, block_node, regexp, replacement)
@@ -138,30 +151,47 @@ module RuboCop
           return unless (block_arg_name, regexp_method_send_node = regexp_match?(block_node))
 
           block_arg_name = :"_#{block_arg_name}" if block_node.numblock_type?
+          block_arg_name = :it if block_node.type?(:itblock)
 
           return unless calls_lvar?(regexp_method_send_node, block_arg_name)
 
           regexp_method_send_node
         end
 
-        def opposite?(regexp_method_send_node)
-          regexp_method_send_node.send_type? && regexp_method_send_node.method?(:!~)
+        def negated?(regexp_method_send_node)
+          return true if regexp_method_send_node.send_type? && regexp_method_send_node.method?(:!)
+
+          inner = unwrap_negation(regexp_method_send_node)
+          inner.send_type? && inner.method?(:!~)
+        end
+
+        def unwrap_negation(node)
+          if node.send_type? && node.method?(:!)
+            receiver = node.receiver
+            receiver = receiver.children.first if receiver.begin_type?
+            receiver
+          else
+            node
+          end
         end
 
         def find_regexp(node, block)
-          return node.child_nodes.first if node.match_with_lvasgn_type?
+          inner = unwrap_negation(node)
 
-          if node.receiver.lvar_type? &&
+          return inner.child_nodes.first if inner.match_with_lvasgn_type?
+
+          if inner.receiver.lvar_type? &&
              (block.type?(:numblock, :itblock) ||
-              node.receiver.source == block.first_argument.source)
-            node.first_argument
-          elsif node.first_argument.lvar_type?
-            node.receiver
+              inner.receiver.source == block.first_argument.source)
+            inner.first_argument
+          elsif inner.first_argument&.lvar_type?
+            inner.receiver
           end
         end
 
         def match_predicate_without_receiver?(node)
-          node.send_type? && node.method?(:match?) && node.receiver.nil?
+          inner = unwrap_negation(node)
+          inner.send_type? && inner.method?(:match?) && inner.receiver.nil?
         end
       end
     end
