@@ -15,6 +15,17 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when the array contains only hash elements without braces' do
+      expect_offense(<<~RUBY)
+        [one: 1, two: 2]
+         ^^^^^^^^^^^^^^ Wrap hash in `{` and `}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [{one: 1, two: 2}]
+      RUBY
+    end
+
     it 'does not register an offense when hash with braces' do
       expect_no_offenses(<<~RUBY)
         [1, 2, { one: 1, two: 2 }]
@@ -68,6 +79,17 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
 
       expect_correction(<<~RUBY)
         [1, 2,  one: 1, two: 2, ]
+      RUBY
+    end
+
+    it 'registers an offense and corrects when the array contains only hash elements with braces' do
+      expect_offense(<<~RUBY)
+        [{one: 1, two: 2}]
+         ^^^^^^^^^^^^^^^^ Omit the braces around the hash.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [one: 1, two: 2]
       RUBY
     end
 
