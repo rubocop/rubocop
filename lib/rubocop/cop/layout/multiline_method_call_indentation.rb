@@ -322,9 +322,9 @@ module RuboCop
         end
 
         def method_on_receiver_last_line?(node, base_receiver, type)
-          base_receiver &&
-            node.loc.dot.line == base_receiver.last_line &&
-            base_receiver.type?(type)
+          return false unless base_receiver
+
+          same_line?(node.loc.dot, base_receiver.source_range.end) && base_receiver.type?(type)
         end
 
         def get_dot_right_above(node)
