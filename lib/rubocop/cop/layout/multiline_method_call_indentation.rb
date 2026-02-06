@@ -153,6 +153,7 @@ module RuboCop
 
         def check_hash_pair_indentation(node, lhs, rhs)
           @base = find_hash_pair_alignment_base(node) || lhs.source_range
+          return if aligned_with_first_line_dot?(node, rhs)
 
           calculate_column_delta_offense(rhs, @base.column)
         end
@@ -163,6 +164,16 @@ module RuboCop
 
           first_call = first_call_has_a_dot(node)
           first_call.loc.dot.join(first_call.loc.selector)
+        end
+
+        def aligned_with_first_line_dot?(node, rhs)
+          return false unless rhs.source.start_with?('.', '&.')
+
+          first_call = first_call_has_a_dot(node)
+          return false if first_call == node.receiver
+
+          dot = first_call.loc.dot
+          dot.line == node.first_line && dot.column == rhs.column
         end
 
         def check_regular_indentation(node, lhs, rhs, given_style)
