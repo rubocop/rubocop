@@ -1230,6 +1230,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'accepts correctly indented method calls after a hash access' do
+      expect_no_offenses(<<~RUBY)
+        hash[:key]
+          .do_something
+      RUBY
+    end
+
     it 'accepts indentation of consecutive lines in typical RSpec code' do
       expect_no_offenses(<<~RUBY)
         expect { Foo.new }.to change { Bar.count }
