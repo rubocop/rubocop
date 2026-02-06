@@ -476,6 +476,62 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           RUBY
         end
 
+        it 'accepts method chain in hash pair passed to method with non-constant receiver' do
+          expect_no_offenses(<<~RUBY)
+            method(key: value.chain1.chain2
+                             .chain3)
+          RUBY
+        end
+
+        it 'accepts method chain in hash literal with non-constant receiver' do
+          expect_no_offenses(<<~RUBY)
+            {
+              key: value.chain1.chain2
+                        .chain3
+            }
+          RUBY
+        end
+
+        it 'accepts safe navigation method chain in hash pair' do
+          expect_no_offenses(<<~RUBY)
+            method(key: value&.chain1&.chain2
+                             &.chain3)
+          RUBY
+        end
+
+        it 'accepts multi-dot chain aligned with receiver start in hash pair' do
+          expect_no_offenses(<<~RUBY)
+            method(key: value.chain1.chain2
+                        .chain3)
+          RUBY
+        end
+
+        it 'registers an offense for misaligned multi-dot chain in hash pair' do
+          expect_offense(<<~RUBY)
+            method(key: value.chain1.chain2
+                          .chain3)
+                          ^^^^^^^ Align `.chain3` with `value.chain1.chain2` on line 1.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            method(key: value.chain1.chain2
+                        .chain3)
+          RUBY
+        end
+
+        it 'registers an offense for trailing dot multi-dot chain in hash pair' do
+          expect_offense(<<~RUBY)
+            method(key: value.chain1.chain2.
+                             chain3)
+                             ^^^^^^ Align `chain3` with `value.chain1.chain2.` on line 1.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            method(key: value.chain1.chain2.
+                        chain3)
+          RUBY
+        end
+
         it 'registers an offense for misaligned method chain in hash pair' do
           expect_offense(<<~RUBY)
             {
@@ -1615,6 +1671,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
                         .first
       RUBY
     end
+
+    it 'accepts multi-dot method chain in hash pair passed to method' do
+      expect_no_offenses(<<~RUBY)
+        method(key: value.chain1.chain2
+                      .chain3)
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is indented' do
@@ -1987,6 +2050,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
               .tap { |h| h[:component] = true }
               .to_json,
         )
+      RUBY
+    end
+
+    it 'accepts multi-dot method chain in hash pair passed to method' do
+      expect_no_offenses(<<~RUBY)
+        method(key: value.chain1.chain2
+          .chain3)
       RUBY
     end
 
