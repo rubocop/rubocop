@@ -203,13 +203,13 @@ module RuboCop
 
         return [] if new_text == text
 
-        [
+        [{
           newText: new_text,
           range: {
             start: { line: 0, character: 0 },
             end: { line: text.count("\n") + 1, character: 0 }
           }
-        ]
+        }]
       end
 
       def diagnostic(file_uri, text)

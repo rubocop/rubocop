@@ -36,7 +36,7 @@ module RuboCop
         def on_hash(node)
           return if node.children.first&.kwsplat_type?
           return unless (array = containing_array(node))
-          return unless last_array_item?(array, node) && explicit_array?(array)
+          return unless expected_braced_last_array_item?(array, node) && explicit_array?(array)
 
           if braces_style?
             check_braces(node)
@@ -52,10 +52,12 @@ module RuboCop
           parent if parent&.array_type?
         end
 
-        def last_array_item?(array, node)
-          return false if array.child_nodes.all?(&:hash_type?)
+        def expected_braced_last_array_item?(array, node)
+          return false if array.each_value.all? do |node|
+            node.hash_type? && (braces_style? ? node.braces? : !node.braces?)
+          end
 
-          array.children.last.equal?(node)
+          !array.values[-2]&.hash_type? && array.values.last.equal?(node)
         end
 
         def explicit_array?(array)
