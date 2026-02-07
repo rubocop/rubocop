@@ -76,7 +76,9 @@ module RuboCop
       STATUS_ERROR
     ensure
       elapsed_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - time_start
-      puts "Finished in #{elapsed_time} seconds" if @options[:debug] || @options[:display_time]
+      if @options[:debug] || @options[:display_time]
+        puts format('Finished in %.5f seconds', elapsed_time)
+      end
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
