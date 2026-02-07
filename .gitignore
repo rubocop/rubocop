@@ -21,8 +21,9 @@ node_modules
 # dotenv environment variables file
 .env
 
-# Mac files
+# IDE / editor
 .DS_Store
+.ruby-lsp
 
 # Yarn
 yarn-error.log
@@ -40,3 +41,5 @@ yarn-debug.log*
 /tmp/pids/*
 !/tmp/pids/
 !/tmp/pids/.keep
+
+frontend/styles/jit-refresh.css

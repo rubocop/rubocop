@@ -1,11 +1,29 @@
-<header>
-  <img src="<%= relative_url '/images/logo.svg' %>" alt="Logo" />
-</header>
+<nav class="top-0 z-50 bg-white border-t-5 border-t-accent border-b border-b-gray-200">
+  <div class="max-w-5xl mx-auto flex items-center justify-between px-6 py-3">
+    <a href="/" class="block">
+      <img src="<%= @metadata.logo_url %>" alt="RuboCop" class="h-9" />
+    </a>
 
-<nav>
-  <ul>
-    <li><a href="<%= relative_url '/' %>">Home</a></li>
-    <li><a href="<%= relative_url '/about' %>">About</a></li>
-    <li><a href="<%= relative_url '/posts' %>">Posts</a></li>
-  </ul>
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium" id="navbar-links">
+      <a href="<%= @metadata.team_url %>" class="text-gray-700 hover:text-accent no-underline">Team</a>
+      <a href="<%= @metadata.style_guide_url %>" class="text-gray-700 hover:text-accent no-underline">Style Guide</a>
+      <a href="<%= @metadata.docs_url %>" class="text-gray-700 hover:text-accent no-underline">Docs</a>
+      <a href="<%= @metadata.github_url %>" class="text-gray-700 hover:text-accent no-underline">GitHub</a>
+      <a href="<%= @metadata.donate_url %>" class="bg-accent hover:bg-accent-hover text-white px-4 py-1.5 rounded-md font-semibold no-underline transition-colors">Donate</a>
+    </div>
+
+    <button class="relative flex md:hidden bg-transparent border-none cursor-pointer text-gray-700 size-9" id="nav-toggle" aria-label="Toggle menu">
+      <%= svg "images/menu.svg", id: "nav-icon-menu", class: "absolute inset-0 transition-opacity duration-200 opacity-100", width: 36, height: 36 %>
+      <%= svg "images/x.svg", id: "nav-icon-x", class: "absolute inset-0 transition-opacity duration-200 opacity-0", width: 36, height: 36 %>
+    </button>
+  </div>
+
+  <!-- Mobile menu (hidden by default, toggled via JS) -->
+  <div class="hidden flex-col bg-white border-b border-gray-200 max-w-5xl mx-auto px-6 py-4 gap-4 md:hidden" id="navbar-mobile">
+    <a href="<%= @metadata.team_url %>" class="text-gray-700 hover:text-accent no-underline">Team</a>
+    <a href="<%= @metadata.style_guide_url %>" class="text-gray-700 hover:text-accent no-underline">Style Guide</a>
+    <a href="<%= @metadata.docs_url %>" class="text-gray-700 hover:text-accent no-underline">Docs</a>
+    <a href="<%= @metadata.github_url %>" class="text-gray-700 hover:text-accent no-underline">GitHub</a>
+    <a href="<%= @metadata.donate_url %>" class="bg-accent hover:bg-accent-hover text-white px-4 py-1.5 rounded-md font-semibold no-underline transition-colors text-center">Donate</a>
+  </div>
 </nav>

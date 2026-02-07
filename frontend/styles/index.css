@@ -1,84 +1,79 @@
-:root {
-  --body-background: #f2f2f2;
-  --body-color: #444;
-  --heading-color: black;
-  --action-color: #d64045;
+/* If you need to add @import statements, do so up here */
+
+@import "jit-refresh.css"; /* triggers frontend rebuilds */
+
+/* Set up Tailwind imports */
+@import "tailwindcss";
+
+@source "../../src";
+
+@theme {
+  --color-accent: #bd362f;
+  --color-accent-hover: #972b25;
+  --color-heading: #1a1a2e;
+  --color-muted: #636e72;
+  --color-code-bg: #1e1e2e;
+  --color-code-text: #cdd6f4;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Lexend', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-body {
-  background: var(--body-background);
-  color: var(--body-color);
-  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    "Helvetica", "Arial", sans-serif;
-  margin: 0 8px;
-  font-size: 108%;
-  line-height: 1.5;
+/* ── Code Example (custom styles that don't map well to utilities) ── */
+
+.code-example {
+  @apply w-full rounded-xl overflow-hidden shadow-2xl;
 }
 
-a {
-  color: var(--action-color);
-  text-decoration: underline;
-  text-decoration-color: #ffb088;
+.code-example-header {
+  @apply flex items-center gap-1.5 px-4 py-3;
+  background: #181825;
 }
 
-h1 {
-  margin: 1rem 0 3rem;
-  text-align: center;
-  font-weight: 900;
-  font-size: 2.5rem;
-  color: var(--heading-color);
-  line-height: 1.2;
+.code-dot {
+  @apply w-3 h-3 rounded-full;
 }
 
-body > header {
-  margin: 1rem;
-  text-align: center;
+.code-example-body {
+  @apply m-0 px-4 font-mono text-sm/6.5;
+  background: var(--color-code-bg);
+  color: var(--color-code-text);
 }
 
-body > header img {
-  display: inline-block;
-  width: 400px;
-  max-width: 100%;
+.code-example-body .ln {
+  @apply inline-block w-[2ch] mr-5 text-right select-none;
+  color: #585b70;
 }
 
-body > nav ul {
-  margin: 2rem 0;
-  padding: 0;
-  list-style-type: none;
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  font-size: 1.3rem;
-  font-weight: bold;
+/* Syntax tokens (Catppuccin Mocha) */
+.code-example-body .keyword { color: #cba6f7; }
+.code-example-body .class { color: #f9e2af; }
+.code-example-body .function { color: #89b4fa; }
+.code-example-body .string { color: #a6e3a1; }
+.code-example-body .parameter { color: #eba0ac; }
+.code-example-body .numeric { color: #fab387; }
+.code-example-body .comment { color: #9399B2; }
+.code-example-body .brackets { color: #f38ba8; }
+.code-example-body .variable { color: #cdd6f4; }
+.code-example-body .operator { color: #94e2d5; }
+
+/* Offense squiggly underline + tooltip */
+.offense {
+  @apply relative cursor-help;
+  text-decoration: wavy underline var(--color-accent);
+  text-decoration-skip-ink: none;
+  text-underline-offset: 3px;
 }
 
-body > nav a {
-  text-decoration: none;
+.offense::after {
+  content: attr(data-cop) ": " attr(data-msg);
+  @apply absolute bottom-full left-0 mb-2 px-2.5 py-1.5 rounded-md text-xs opacity-0 pointer-events-none transition-opacity z-50;
+  white-space: normal;
+  max-width: 280px;
+  background: #313244;
+  color: #cdd6f4;
 }
 
-main {
-  margin: 2rem auto 4rem;
-  max-width: 65rem;
-  min-height: calc(100vh - 200px);
-  padding: 25px 25px 50px;
-  background: white;
-  box-shadow: 2px 3px 3px #ddd;
-  border-radius: 3px;
-
-  @media (max-width: 500px) {
-    padding: 16px 16px 50px;
-  }
-}
-
-footer {
-  text-align: center;
-  margin-bottom: 4rem;
-  font-size: 1em;
-}
-
-hr {
-  border: none;
-  border-top: 2px dotted #bbb;
-  margin: 3rem 0;
+.offense:hover::after {
+  @apply opacity-100;
 }

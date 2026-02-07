@@ -1,0 +1,154 @@
+---
+layout: default
+---
+
+<!-- Hero -->
+<section class="text-center py-8 md:py-20 px-6 max-w-5xl md:mt-10 mx-auto">
+  <h1 class="text-3xl md:text-7xl font-heading font-extrabold text-heading mb-4 ">The <span class="text-accent">Ruby</span> <br class="hidden md:inline"/>Linter/Formatter that <br class="hidden lg:inline"/> Serves and Protects</h1>
+  <p class="text-lg text-muted max-w-xl mx-auto mb-10">RuboCop is a Ruby static code checker (linter) and formatter based on the community-driven <a class="text-accent hover:text-accent-hover" href="https://rubystyle.guide/">Ruby Style Guide</a></p>
+
+  <div class="flex items-center justify-center gap-4 flex-wrap mb-6">
+    <a href="https://docs.rubocop.org/rubocop/usage/basic_usage.html" class="inline-block bg-accent hover:bg-accent-hover text-white px-7 py-2.5 rounded-lg font-semibold transition-colors no-underline">Basic Usage</a>
+    <div class="inline-flex items-center gap-2 bg-code-bg text-code-text px-4 py-3 rounded-lg font-mono text-sm">
+      <code>$ gem install rubocop</code>
+      <button class="copy-btn group relative bg-transparent border-none text-code-text/60 hover:text-code-text [&.copied]:text-code-text cursor-pointer p-0.5 transition-colors flex items-center" data-copy="gem install rubocop" aria-label="Copy to clipboard">
+        <%= svg "images/copy.svg", class: "size-4.5 group-[.copied]:hidden" %>
+        <%= svg "images/copy-check.svg", class: "size-4.5 hidden group-[.copied]:block" %>
+        <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-200 text-black text-xs rounded-md whitespace-nowrap opacity-0 group-[.copied]:opacity-100 transition-opacity pointer-events-none">Copied to clipboard!</span>
+      </button>
+    </div>
+  </div>
+
+  <p class="text-sm text-muted mb-3"> If you'd rather install using <code class="bg-gray-100 px-1.5 py-0.5 rounded font-mono text-accent text-xs">bundler</code>, add a line for it in your <code class="bg-gray-100 px-1.5 py-0.5 rounded font-mono text-accent text-xs">Gemfile</code> <br/> (set the <code class="bg-gray-100 px-1.5 py-0.5 rounded font-mono text-accent text-xs">require</code> option to <code class="bg-gray-100 px-1.5 py-0.5 rounded font-mono text-accent text-xs">false</code>, as it is a standalone tool):</p>
+  <div class="inline-flex items-center gap-2 bg-code-bg text-code-text px-4 py-3 rounded-lg font-mono text-sm">
+    <code>gem 'rubocop', require: false</code>
+    <button class="copy-btn group relative bg-transparent border-none text-code-text/60 hover:text-code-text [&.copied]:text-code-text cursor-pointer p-0.5 transition-colors flex items-center" data-copy="gem 'rubocop', require: false" aria-label="Copy to clipboard">
+      <%= svg "images/copy.svg", class: "size-4.5 group-[.copied]:hidden" %>
+      <%= svg "images/copy-check.svg", class: "size-4.5 hidden group-[.copied]:block" %>
+      <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-200 text-black text-xs rounded-md whitespace-nowrap opacity-0 group-[.copied]:opacity-100 transition-opacity pointer-events-none">Copied to clipboard!</span>
+    </button>
+  </div>
+
+  <div class="mt-6">
+    <a href="<%= site.metadata.donate_url %>" class="text-md text-muted hover:text-accent no-underline inline-flex items-center gap-1 underline">Help fund the project <%= svg "images/heart-handshake.svg", class:"size-6" %></a>
+  </div>
+</section>
+
+<!-- Features + Code Example -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto px-6 py-8 md:py-16 border-y border-gray-200">
+  <div class="flex flex-col gap-6">
+    <div class="p-6 border border-gray-200 rounded-xl hover:shadow-md transition-shadow">
+      <h3 class="font-heading font-semibold text-lg text-heading mb-2">Find &amp; autocorrect offenses</h3>
+      <p class="text-muted text-sm leading-relaxed mb-3">Check and automatically fix offenses on your Ruby code based on the Ruby Community Style Guide.</p>
+      <a target="_blank" href="https://docs.rubocop.org/rubocop/usage/autocorrect.html" class="inline-flex items-center gap-1 text-accent text-sm font-medium hover:text-accent-hover">Learn more <%= svg "images/external-link.svg", class:"inline size-4"%></a>
+    </div>
+
+    <div class="p-6 border border-gray-200 rounded-xl hover:shadow-md transition-shadow">
+      <h3 class="font-heading font-semibold text-lg text-heading mb-2">Configure cops</h3>
+      <p class="text-muted text-sm leading-relaxed mb-3">Edit the .rubocop.yml configuration file to enable/disable certain cops (checks) and alter their behavior.</p>
+      <a target="_blank" href="https://docs.rubocop.org/rubocop/configuration.html" class="inline-flex items-center gap-1 text-accent text-sm font-medium hover:text-accent-hover">Learn more <%= svg "images/external-link.svg", class:"inline size-4"%></a>
+    </div>
+
+    <div class="p-6 border border-gray-200 rounded-xl hover:shadow-md transition-shadow">
+      <h3 class="font-heading font-semibold text-lg text-heading mb-2">Extend with plugins</h3>
+      <p class="text-muted text-sm leading-relaxed mb-3">Extend RuboCop with additional cops and formatters. There are many official and third-party extensions available.</p>
+      <a target="_blank" href="https://docs.rubocop.org/rubocop/extensions.html" class="inline-flex items-center gap-1 text-accent text-sm font-medium hover:text-accent-hover">Learn more <%= svg "images/external-link.svg", class:"inline size-4"%></a>
+    </div>
+  </div>
+
+  <div class="flex items-center">
+    <div class="code-example flex flex-col h-full">
+      <div class="code-example-header">
+        <span class="code-dot bg-[#f38ba8]"></span>
+        <span class="code-dot bg-[#f9e2af]"></span>
+        <span class="code-dot bg-[#a6e3a1]"></span>
+        <span class="ml-2 font-mono text-xs text-gray-500">user_greeting.rb</span>
+      </div>
+      <pre class="code-example-body grow"><code><span><span class="ln"> 1</span><span class="comment"># frozen_string_literal: true</span></span>
+<span><span class="ln"> 2</span></span>
+<span><span class="ln"> 3</span><span class="comment"># Manages user greeting logic</span></span>
+<span><span class="ln"> 4</span><span class="keyword">class</span> <span class="class">UserGreeting</span></span>
+<span><span class="ln"> 5</span>  <span class="keyword">def</span> <span class="offense" data-cop="Naming/MethodName" data-msg="Use snake_case for method names."><span class="function">sayHello</span></span><span class="brackets">(</span><span class="parameter">name</span><span class="brackets">)</span></span>
+<span><span class="ln"> 6</span>    <span class="offense" data-cop="Style/IfUnlessModifier" data-msg="Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||."><span class="keyword">if</span></span> <span class="parameter">name</span><span class="function">.nil?</span></span>
+<span><span class="ln"> 7</span>      <span class="parameter">name</span> <span class="operator">=</span> <span class="offense" data-cop="Style/StringLiterals" data-msg="Prefer single-quoted strings when you don't need string interpolation or special symbols."><span class="string">"stranger"</span></span></span>
+<span><span class="ln"> 8</span>    <span class="keyword">end</span></span>
+<span><span class="ln"> 9</span></span>
+<span><span class="ln">10</span>    msg = <span class="string">"Hello,</span> <span class="comment">#</span><span class="brackets">{</span><span class="parameter">name</span><span class="brackets">}</span><span class="string">!"</span></span>
+<span><span class="ln">11</span></span>
+<span><span class="ln">12</span>    <span class="offense" data-cop="Style/IfUnlessModifier" data-msg="Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||."><span class="keyword">if</span></span> <span class="variable">msg</span><span class="function">.length</span> <span class="operator">></span> <span class="numeric">20</span></span>
+<span><span class="ln">13</span>      <span class="function">puts</span> msg<span class="function">.upcase</span></span>
+<span><span class="ln">14</span>    <span class="keyword">end</span></span>
+<span><span class="ln">15</span></span>
+<span><span class="ln">16</span>    <span class="offense" data-cop="Style/RedundantReturn" data-msg="Redundant return detected."><span class="keyword">return</span></span> <span class="variable">msg</span></span>
+<span><span class="ln">17</span>  <span class="keyword">end</span></span>
+<span><span class="ln">18</span><span class="keyword">end</span></span>
+<span><span class="ln">19</span></span></code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="text-center py-8 md:py-16 px-6 mx-auto max-w-5xl border-b border-gray-200">
+  <h2 class="font-heading text-3xl font-semibold text-heading mb-10">The Ruby linter used by the community</h2>
+  <div class="flex justify-center gap-16 max-w-3xl mx-auto flex-wrap">
+    <div class="flex flex-col items-center">
+      <span class="font-heading text-4xl font-extrabold text-heading"><%= site.metadata.stats.downloads %></span>
+      <span class="text-m text-muted mt-1">Downloads</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span class="font-heading text-4xl font-extrabold text-heading"><%= site.metadata.stats.stars %></span>
+      <span class="text-m text-muted mt-1">GitHub Stars</span>
+    </div>
+    <div class="flex flex-col items-center">
+      <span class="font-heading text-4xl font-extrabold text-heading"><%= site.metadata.stats.cops %></span>
+      <span class="text-m text-muted mt-1">Cops</span>
+    </div>
+  </div>
+</section>
+
+<!-- Latest Releases -->
+<% unless site.data[:latest_releases]&.empty? %>
+<section class="text-center py-8 md:py-16 px-6">
+  <h2 class="font-heading text-3xl font-bold text-heading mb-8">Latest Releases</h2>
+  <div class="flex justify-center max-w-4xl mx-auto flex-wrap gap-8 md:gap-0">
+    <% site.data[:latest_releases].each do |release| %>
+    <div class="flex flex-col items-center flex-1 min-w-[200px] max-w-xs">
+      <p class="font-heading text-2xl font-extrabold text-accent md:mb-2"><%= release[:tag] %></p>
+      <p class="text-lg text-heading mb-1"><%= release[:name] %></p>
+      <p class="text-sm text-muted mb-1"><%= release[:published_at] %></p>
+      <% unless release[:sections].empty? %>
+      <p class="text-sm text-muted mb-1 md:mb-4"><%= release[:sections].join(", ") %></p>
+      <% end %>
+      <a target="_blank" href="<%= release[:url] %>" class="inline-flex items-center gap-1 text-accent text-sm font-medium hover:text-accent-hover">View on GitHub <%= svg "images/external-link.svg", class: "inline size-4" %></a>
+    </div>
+    <% end %>
+  </div>
+</section>
+<% end %>
+
+<!-- Sponsors & Backers -->
+<section class="text-center max-w-5xl mx-auto py-8 md:py-16 px-6 border-t border-gray-200">
+  <h2 class="font-heading text-3xl font-bold text-heading mb-6">Funding</h2>
+
+  <h3 class="font-heading text-lg font-semibold text-muted mb-6">Individuals</h3>
+  <div class="flex justify-center gap-4 max-w-4xl mx-auto flex-wrap mb-12">
+    <% 30.times do |i| %>
+    <a href="https://opencollective.com/rubocop/individual/<%= i %>/website" class="no-underline opacity-80 hover:opacity-100 transition-opacity" target="_blank" rel="noopener noreferrer">
+      <img src="https://opencollective.com/rubocop/individual/<%= i %>/avatar.svg" class="size-10 md:size-15 rounded-full" loading="lazy" />
+    </a>
+    <% end %>
+  </div>
+  
+  <h3 class="font-heading text-lg font-semibold text-muted mb-6">Organizations</h3>
+  <div class="justify-center max-w-5xl mx-auto mb-12 grid grid-cols-5">
+    <% 30.times do |i| %>
+    <a href="https://opencollective.com/rubocop/organization/<%= i %>/website" class="no-underline opacity-80 hover:opacity-100 transition-opacity" target="_blank" rel="noopener noreferrer">
+      <img src="https://opencollective.com/rubocop/organization/<%= i %>/avatar.svg" class="" loading="lazy" />
+    </a>
+    <% end %>
+  </div>
+
+  <a href="<%= site.metadata.donate_url %>" class="inline-block bg-accent hover:bg-accent-hover text-white px-7 py-2.5 rounded-lg font-semibold transition-colors no-underline">Become a Sponsor</a>
+</section>
+
+

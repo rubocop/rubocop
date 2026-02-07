@@ -53,9 +53,17 @@ bin/bridgetown console
 
 > Learn more: [Bridgetown CLI Documentation](https://www.bridgetownrb.com/docs/command-line-usage)
 
+## Linting
+
+```sh
+bin/rubocop
+```
+
 ## Deployment
 
-You can deploy Bridgetown sites on hosts like statichost.eu and Render as well as traditional web servers by simply building and copying the output folder to your HTML root.
+The site is deployed to GitHub Pages via a [GitHub Actions workflow](.github/workflows/gh-pages.yml). On every push to the `gh-pages` branch, the workflow builds the site with `bin/bridgetown deploy` and deploys the `output/` directory.
+
+The workflow automatically sets `BASE_PATH` based on the repository. Forks get `/rubocop` so the site works at `<username>.github.io/rubocop/`, while the main repo uses `/` for the `rubocop.org` custom domain.
 
 > Read the [Bridgetown Deployment Documentation](https://www.bridgetownrb.com/docs/deployment) for more information.
 

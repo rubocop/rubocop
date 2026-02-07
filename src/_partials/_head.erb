@@ -5,6 +5,20 @@
 
 <meta name="description" content="<%= metadata.description %>" />
 
+<!-- Open Graph -->
+<meta property="og:title" content="<%= metadata.title %>: <%= metadata.tagline %>" />
+<meta property="og:description" content="<%= metadata.description %>" />
+<meta property="og:image" content="<%= metadata.logo_url %>" />
+<meta property="og:type" content="website" />
+
+<!-- Favicon -->
+<link rel="icon" href="<%= relative_url "/images/favicon.ico" %>" type="image/x-icon" />
+
+<!-- Fonts: Inter (body), Lexend (headings), JetBrains Mono (code) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Lexend:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
 <link rel="stylesheet" href="<%= asset_path :css %>" />
 <script src="<%= asset_path :js %>" defer></script>
 <%= live_reload_dev_js %>

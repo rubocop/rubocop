@@ -27,11 +27,13 @@ end
 namespace :frontend do
   desc "Build the frontend with esbuild for deployment"
   task :build do
+    sh "touch frontend/styles/jit-refresh.css"
     sh "npm run esbuild"
   end
 
   desc "Watch the frontend with esbuild during development"
   task :dev do
+    sh "touch frontend/styles/jit-refresh.css"
     sh "npm run esbuild-dev"
   rescue Interrupt
   end

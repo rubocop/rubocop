@@ -46,7 +46,7 @@ Bridgetown.configure do |config|
   # If you're using esbuild for frontend assets, edit `esbuild.config.js` to
   # update `publicPath`.
   #
-  # base_path "/"
+  base_path ENV.fetch("BASE_PATH", "/")
 
   # You can also modify options on this configuration object directly, like so:
   #
@@ -102,4 +102,7 @@ Bridgetown.configure do |config|
 
   # For more documentation on how to configure your site using this initializers file,
   # visit: https://edge.bridgetownrb.com/docs/configuration/initializers/
+
+  # Bridgetown svg inline utility
+  init :"bridgetown-svg-inliner"
 end

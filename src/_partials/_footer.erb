@@ -1,3 +1,10 @@
-<footer>
-  Contact me at <a href="mailto:<%= metadata.email %>"><%= metadata.email %></a>
+<footer class="text-center py-10 px-6 bg-gray-50 border-t border-gray-200">
+  <div class="flex justify-center gap-6 mb-4 text-sm">
+    <a href="<%= metadata.github_url %>" class="text-muted hover:text-accent no-underline">GitHub</a>
+    <a href="<%= metadata.docs_url %>" class="text-muted hover:text-accent no-underline">Docs</a>
+    <a href="<%= metadata.style_guide_url %>" class="text-muted hover:text-accent no-underline">Style Guide</a>
+    <a href="<%= metadata.team_url %>" class="text-muted hover:text-accent no-underline">Team</a>
+    <a href="<%= metadata.donate_url %>" class="text-muted hover:text-accent no-underline">Donate</a>
+  </div>
+  <p class="text-xs text-muted m-0">&copy; 2012-2026 Bozhidar Batsov and RuboCop contributors</p>
 </footer>
