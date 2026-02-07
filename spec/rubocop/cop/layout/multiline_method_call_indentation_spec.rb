@@ -1009,6 +1009,73 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'accepts aligned method chained after single-line block on both calls' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar { baz }
+                .qux { quux }
+      RUBY
+    end
+
+    it 'accepts aligned method chained after single-line block only on first call' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar { baz }
+                .qux
+      RUBY
+    end
+
+    it 'accepts aligned method chained after single-line block only on second call' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar
+                .qux { quux }
+      RUBY
+    end
+
+    it 'accepts aligned method chained after single-line block with safe navigation' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar { baz }
+                &.qux { quux }
+      RUBY
+    end
+
+    it 'registers an offense for misaligned method chained after single-line block on both calls' do
+      expect_offense(<<~RUBY)
+        (0..foo).bar { baz }
+          .qux { quux }
+          ^^^^ Align `.qux` with `.bar` on line 1.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (0..foo).bar { baz }
+                .qux { quux }
+      RUBY
+    end
+
+    it 'registers an offense for misaligned method chained after single-line block only on first call' do
+      expect_offense(<<~RUBY)
+        (0..foo).bar { baz }
+          .qux
+          ^^^^ Align `.qux` with `.bar` on line 1.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (0..foo).bar { baz }
+                .qux
+      RUBY
+    end
+
+    it 'registers an offense for misaligned method chained after single-line block only on second call' do
+      expect_offense(<<~RUBY)
+        (0..foo).bar
+          .qux { quux }
+          ^^^^ Align `.qux` with `.bar` on line 1.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (0..foo).bar
+                .qux { quux }
+      RUBY
+    end
+
     it 'registers an offense and corrects misaligned methods in local variable assignment' do
       expect_offense(<<~RUBY)
         a = b.c.
@@ -1433,6 +1500,27 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'accepts method chained after single-line block on both calls with receiver-relative indent' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar { baz }
+                  .qux { quux }
+      RUBY
+    end
+
+    it 'accepts method chained after single-line block only on first call with receiver-relative indent' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar { baz }
+                  .qux
+      RUBY
+    end
+
+    it 'accepts method chained after single-line block only on second call with receiver-relative indent' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar
+                  .qux { quux }
+      RUBY
+    end
+
     it 'registers an offense and corrects one space indentation of 2nd line' do
       expect_offense(<<~RUBY)
         a
@@ -1704,6 +1792,27 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           .nil?
           ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
         end
+      RUBY
+    end
+
+    it 'accepts indented method chained after single-line block on both calls' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar { baz }
+          .qux { quux }
+      RUBY
+    end
+
+    it 'accepts indented method chained after single-line block only on first call' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar { baz }
+          .qux
+      RUBY
+    end
+
+    it 'accepts indented method chained after single-line block only on second call' do
+      expect_no_offenses(<<~RUBY)
+        (0..foo).bar
+          .qux { quux }
       RUBY
     end
 

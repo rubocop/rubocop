@@ -348,24 +348,33 @@ module RuboCop
         end
 
         def find_multiline_block_chain_node(node)
-          return find_continuation_receiver(node) if node.block_node
+          return find_continuation_node(node) if node.block_node
 
           handle_descendant_block(node)
         end
 
-        def find_continuation_receiver(node)
+        def find_continuation_node(node)
           receiver = node.receiver
-          return unless receiver.call_type? && receiver.loc.dot && receiver.receiver
+          return receiver.send_node if single_line_block_receiver?(receiver)
+          return unless receiver.call_type? && receiver.loc.dot
+          return receiver if receiver.receiver.begin_type? && node.block_node.single_line?
           return unless receiver.loc.dot.line > receiver.receiver.last_line
 
           receiver
         end
 
+        def single_line_block_receiver?(receiver)
+          receiver.single_line? && receiver.any_block_type?
+        end
+
         def handle_descendant_block(node)
+          receiver = node.receiver
+          return receiver.send_node if single_line_block_receiver?(receiver)
+
           block_node = node.each_descendant(:any_block).first
           return unless block_node&.multiline?
 
-          node.receiver.call_type? ? node.receiver : block_node.parent
+          receiver.call_type? ? receiver : block_node.parent
         end
 
         def first_call_has_a_dot(node)
