@@ -337,13 +337,14 @@ module RuboCop
         end
 
         def find_multiline_block_chain_node(node)
-          return find_continuation_receiver(node) if node.block_node
+          return find_continuation_node(node) if node.block_node
 
           handle_descendant_block(node)
         end
 
-        def find_continuation_receiver(node)
+        def find_continuation_node(node)
           receiver = node.receiver
+          return receiver.send_node if receiver.single_line? && receiver.any_block_type?
           return unless receiver.call_type? && receiver.loc.dot && receiver.receiver
           return unless receiver.loc.dot.line > receiver.receiver.last_line
 
