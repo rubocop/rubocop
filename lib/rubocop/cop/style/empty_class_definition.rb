@@ -8,6 +8,18 @@ module RuboCop
       # This cop can enforce either a standard class definition or `Class.new`
       # for classes with no body.
       #
+      # The supported styles are:
+      #
+      # * class_definition (default) - prefer standard class definition over `Class.new`
+      # * class_new - prefer `Class.new` over class definition
+      #
+      # One difference between the two styles is that the `Class.new` form does not make
+      # the subclass name available to the base class's `inherited` callback.
+      # For this reason, `EnforcedStyle: class_definition` is set as the default style.
+      # Class definitions without a superclass, which are not involved in inheritance,
+      # are not detected. This ensures safe detection regardless of the applied style.
+      # This avoids overlapping responsibilities with the `Lint/EmptyClass` cop.
+      #
       # @example EnforcedStyle: class_keyword (default)
       #   # bad
       #   FooError = Class.new(StandardError)
@@ -32,7 +44,6 @@ module RuboCop
       #
       class EmptyClassDefinition < Base
         include ConfigurableEnforcedStyle
-        include RangeHelp
         extend AutoCorrector
 
         MSG_CLASS_KEYWORD =
@@ -41,7 +52,7 @@ module RuboCop
 
         # @!method class_new_assignment(node)
         def_node_matcher :class_new_assignment, <<~PATTERN
-          (casgn _ _ $(send (const _ :Class) :new ...))
+          (casgn _ _ $(send (const _ :Class) :new _))
         PATTERN
 
         def on_casgn(node)
@@ -56,6 +67,7 @@ module RuboCop
 
         def on_class(node)
           return unless style == :class_new
+          return unless node.parent_class
           return if (body = node.body) && !body.children.empty?
 
           add_offense(node, message: MSG_CLASS_NEW) do |corrector|
@@ -68,22 +80,16 @@ module RuboCop
         def autocorrect_class_new(corrector, node, class_new_node)
           indent = ' ' * node.loc.column
           class_name = node.name
-          if (parent_class = class_new_node.first_argument)
-            parent_class_name = " < #{parent_class.source}"
-          end
+          parent_class_name = class_new_node.first_argument.source
 
-          corrector.replace(node, "class #{class_name}#{parent_class_name}\n#{indent}end")
+          corrector.replace(node, "class #{class_name} < #{parent_class_name}\n#{indent}end")
         end
 
         def autocorrect_class_definition(corrector, node)
-          indent = ' ' * node.loc.column
           class_name = node.identifier.source
-          if (parent_class = node.parent_class)
-            parent_class_name = "(#{parent_class.source})"
-          end
-          range = range_by_whole_lines(node.source_range, include_final_newline: true)
+          parent_class_name = node.parent_class.source
 
-          corrector.replace(range, "#{indent}#{class_name} = Class.new#{parent_class_name}\n")
+          corrector.replace(node, "#{class_name} = Class.new(#{parent_class_name})")
         end
       end
     end
