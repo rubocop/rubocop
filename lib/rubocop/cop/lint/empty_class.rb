@@ -75,7 +75,8 @@ module RuboCop
 
         def on_class(node)
           add_offense(node, message: CLASS_MSG) unless body_or_allowed_comment_lines?(node) ||
-                                                       node.parent_class
+                                                       node.parent_class ||
+                                                       empty_class_definition_enforced?
         end
 
         def on_sclass(node)
@@ -83,6 +84,11 @@ module RuboCop
         end
 
         private
+
+        def empty_class_definition_enforced?
+          empty_class_definition_config = config.for_enabled_cop('Style/EmptyClassDefinition')
+          empty_class_definition_config['EnforcedStyle'] == 'class_definition'
+        end
 
         def body_or_allowed_comment_lines?(node)
           return true if node.body
