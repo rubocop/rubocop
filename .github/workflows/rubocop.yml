@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  spec-ubuntu:
+    name: Spec - ubuntu ${{ matrix.ruby }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['2.7', '3.0', '3.1', '3.2', '3.3', '3.4', '4.0', 'head']
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Check requiring libraries successfully
+        # See https://github.com/rubocop/rubocop/pull/4523#issuecomment-309136113
+        run: ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
+      - name: spec
+        env:
+          CI_RUBY_VERSION: ${{ matrix.ruby }}
+          STRICT_WARNINGS: 1
+        run: bundle exec rake spec
+
+  spec-jruby:
+    name: Spec - JRuby
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 'jruby' # Latest stable JRuby version
+          bundler-cache: true
+      - name: spec
+        run: bundle exec rake spec
+
+  spec-windows:
+    needs: spec-ubuntu # Don't spend CI resources on slow Windows specs if CI won't pass anyway.
+    name: Spec - windows ${{ matrix.ruby }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - '2.7'  # Oldest supported version
+          - 'ruby' # Latest stable CRuby version
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Check requiring libraries successfully
+        # See https://github.com/rubocop/rubocop/pull/4523#issuecomment-309136113
+        run: ruby -I lib -r bundler/setup -r rubocop -e 'exit 0'
+      - name: spec
+        env:
+          CI_RUBY_VERSION: ${{ matrix.ruby }}
+        run: bundle exec rake spec
+
+  ascii_spec:
+    name: Ascii Spec - ${{ matrix.os }} ${{ matrix.ruby }}
+    runs-on: ${{ matrix.os }}-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu, windows]
+        ruby:
+          - '2.7'  # Oldest supported version
+          - 'ruby' # Latest stable CRuby version
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: ascii_spec
+        env:
+          CI_RUBY_VERSION: ${{ matrix.ruby }}
+        run: bundle exec rake ascii_spec
+
+  documentation_check:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby # Latest stable CRuby version
+          bundler-cache: true
+      - name: Check documentation syntax
+        run: bundle exec rake documentation_syntax_check
+
+  prism:
+    runs-on: ubuntu-latest
+    name: Prism
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          # Specify the minimum Ruby version 2.7 required for Prism to run.
+          ruby-version: 2.7
+          bundler-cache: true
+      - name: spec
+        env:
+          PARSER_ENGINE: parser_prism
+        run: bundle exec rake prism_spec
+
+  rspec4:
+    runs-on: ubuntu-latest
+    name: RSpec 4
+    steps:
+      - uses: actions/checkout@v6
+      - name: Use latest RSpec 4 from `4-0-dev` branch
+        run: |
+          sed -e "/'rspec', '~> 3/d" -i Gemfile
+          cat << EOF > Gemfile.local
+            gem 'rspec', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-core', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-expectations', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-mocks', github: 'rspec/rspec', branch: '4-0-dev'
+            gem 'rspec-support', github: 'rspec/rspec', branch: '4-0-dev'
+          EOF
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+      - name: spec
+        run: bundle exec rake spec

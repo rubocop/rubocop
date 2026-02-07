@@ -1,0 +1,42 @@
+# Bridgetown
+output
+.bridgetown-cache
+.bridgetown-metadata
+.routes.json
+
+# Dependency folders
+node_modules
+
+# Caches
+.sass-cache
+.npm
+.node_repl_history
+
+# Ignore bundler config.
+/.bundle
+
+# Ignore Byebug command history file.
+.byebug_history
+
+# dotenv environment variables file
+.env
+
+# Mac files
+.DS_Store
+
+# Yarn
+yarn-error.log
+yarn-debug.log*
+.pnp/
+.pnp.js
+# Yarn Integrity file
+.yarn-integrity
+
+# Ignore all tempfiles.
+/tmp/*
+!/tmp/.keep
+
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep

@@ -1,0 +1,20 @@
+{
+  "name": "newsite",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "esbuild": "node esbuild.config.js --minify",
+    "esbuild-dev": "node esbuild.config.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.11",
+    "glob": "^11.0.3",
+    "postcss": "^8.5.6",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^16.1.0",
+    "postcss-load-config": "^6.0.1",
+    "postcss-preset-env": "^10.4.0",
+    "read-cache": "^1.0.0"
+  }
+}

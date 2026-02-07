@@ -1,0 +1,25 @@
+name: Create GitHub Release
+
+on:
+  push:
+    tags:
+      - "v*"  # Trigger when a version tag is pushed (e.g., v1.0.0)
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: RuboCop ${{ github.ref_name }}
+          bodyFile: relnotes/${{ github.ref_name }}.md
+          token: ${{ secrets.GITHUB_TOKEN }}
