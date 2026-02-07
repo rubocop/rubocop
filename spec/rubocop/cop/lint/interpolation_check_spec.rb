@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when containing a closing brace without double quotes' do
+    expect_offense(<<~'RUBY')
+      'foo #{bar} }'
+      ^^^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "foo #{bar} }"
+    RUBY
+  end
+
   it 'registers an offense and corrects when including interpolation and double quoted string in single quoted string' do
     expect_offense(<<~'RUBY')
       'foo "#{bar}"'
@@ -84,6 +95,18 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
   it 'does not register an offense when using invalid syntax in interpolation' do
     expect_no_offenses(<<~'RUBY')
       '#{%<expression>s}'
+    RUBY
+  end
+
+  it 'does not register an offense when using invalid syntax in interpolation with double quotes' do
+    expect_no_offenses(<<~'RUBY')
+      'Text `A("#{%<base>s}/%<path>s")` and `B` with C.'
+    RUBY
+  end
+
+  it 'does not register an offense when double quotes and unbalanced braces would break percent literal' do
+    expect_no_offenses(<<~'RUBY')
+      'a "b" } #{c}'
     RUBY
   end
 end

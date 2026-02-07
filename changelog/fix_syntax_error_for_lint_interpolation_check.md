@@ -1,0 +1,1 @@
+* [#14791](https://github.com/rubocop/rubocop/issues/14791): Fix autocorrect producing `SyntaxError` in `Lint/InterpolationCheck` when single quoted string contains double quotes with invalid interpolation. ([@ydakuka][])
