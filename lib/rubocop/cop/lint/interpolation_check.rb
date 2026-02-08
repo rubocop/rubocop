@@ -18,6 +18,7 @@ module RuboCop
       #
       #   # good
       #   foo = "something with #{interpolation} inside"
+      #
       class InterpolationCheck < Base
         extend AutoCorrector
 
@@ -54,9 +55,14 @@ module RuboCop
         end
 
         def valid_syntax?(node)
-          double_quoted_string = node.source.gsub(/\A'|'\z/, '"')
+          double_quoted_string = if node.source.include?('"')
+                                   node.source.sub(/\A'/, '%{').sub(/'\z/, '}')
+                                 else
+                                   node.source.gsub(/\A'|'\z/, '"')
+                                 end
 
-          parse(double_quoted_string).valid_syntax?
+          processed_source = parse(double_quoted_string)
+          processed_source.valid_syntax? && processed_source.ast.dstr_type?
         end
       end
     end
