@@ -152,7 +152,7 @@ module RuboCop
 
             const_namespace, const_name = *const
             next if name != const_name && !match_acronym?(name, const_name)
-            next unless namespace.empty? || namespace_matches?(child, const_namespace, namespace)
+            next if !namespace.empty? && !namespace_matches?(child, const_namespace, namespace)
 
             return node
           end

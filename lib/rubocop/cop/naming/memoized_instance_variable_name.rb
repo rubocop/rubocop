@@ -176,7 +176,7 @@ module RuboCop
           return unless method_node
 
           body = method_node.body
-          return unless body == node || body.children.last == node
+          return if body != node && body.children.last != node
 
           return if matches?(method_name, lhs)
 

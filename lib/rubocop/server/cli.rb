@@ -67,7 +67,7 @@ module RuboCop
 
         server_command = server_arguments.first
 
-        unless detach || NO_DETACH_OPTIONS.include?(server_command)
+        if !detach && !NO_DETACH_OPTIONS.include?(server_command)
           return error("#{server_command} cannot be combined with --no-detach.")
         end
 

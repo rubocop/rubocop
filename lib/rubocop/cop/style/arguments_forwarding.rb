@@ -442,7 +442,7 @@ module RuboCop
           end
 
           def classification
-            return nil unless forwarded_rest_arg || forwarded_kwrest_arg || forwarded_block_arg
+            return nil if !forwarded_rest_arg && !forwarded_kwrest_arg && !forwarded_block_arg
 
             if ruby_32_only_anonymous_forwarding?
               :all_anonymous

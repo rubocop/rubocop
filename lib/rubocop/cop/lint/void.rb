@@ -85,7 +85,7 @@ module RuboCop
                                METHODS_REPLACEABLE_BY_EACH).freeze
 
         def on_block(node)
-          return unless node.body && !node.body.begin_type?
+          return if !node.body || node.body.begin_type?
           return unless in_void_context?(node.body)
 
           check_void_op(node.body) { node.method?(:each) }
@@ -150,20 +150,21 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def check_var(node)
-          return unless node.variable? || node.const_type?
+          return if !node.variable? && !node.const_type?
 
-          if node.const_type?
-            template = node.special_keyword? ? VAR_MSG : CONST_MSG
-
-            offense_range = node
-            message = format(template, var: node.source)
-          else
-            offense_range = node.loc.name
-            message = format(VAR_MSG, var: node.loc.name.source)
-          end
+          offense_range, message = var_offense_details(node)
 
           add_offense(offense_range, message: message) do |corrector|
             autocorrect_void_expression(corrector, node)
+          end
+        end
+
+        def var_offense_details(node)
+          if node.const_type?
+            template = node.special_keyword? ? VAR_MSG : CONST_MSG
+            [node, format(template, var: node.source)]
+          else
+            [node.loc.name, format(VAR_MSG, var: node.loc.name.source)]
           end
         end
 
@@ -184,7 +185,7 @@ module RuboCop
         end
 
         def check_void_expression(node)
-          return unless node.defined_type? || node.lambda_or_proc?
+          return if !node.defined_type? && !node.lambda_or_proc?
 
           add_offense(node, message: format(EXPRESSION_MSG, expression: node.source)) do |corrector|
             autocorrect_void_expression(corrector, node)

@@ -59,7 +59,7 @@ module RuboCop
         def on_block(node)
           return if node.single_line?
 
-          unless args_on_beginning_line?(node) || line_break_necessary_in_args?(node)
+          if !args_on_beginning_line?(node) && !line_break_necessary_in_args?(node)
             add_offense_for_expression(node, node.arguments, ARG_MSG)
           end
 

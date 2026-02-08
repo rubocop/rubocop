@@ -174,7 +174,7 @@ module RuboCop
             # Since we are evaluating every clause in potentially a complex chain of `and` nodes,
             # we need to ensure that there isn't an object check happening
             lhs_method_chain = find_method_chain(lhs_receiver)
-            next unless lhs_method_chain == lhs_receiver || lhs_not_nil_check
+            next if lhs_method_chain != lhs_receiver && !lhs_not_nil_check
 
             report_offense(
               node,
@@ -235,7 +235,7 @@ module RuboCop
         def and_parts(node)
           parts = [node.loc.operator]
           parts << node.rhs unless and_inside_begin?(node.rhs)
-          parts << node.lhs unless node.lhs.and_type? || and_inside_begin?(node.lhs)
+          parts << node.lhs if !node.lhs.and_type? && !and_inside_begin?(node.lhs)
           parts
         end
 
