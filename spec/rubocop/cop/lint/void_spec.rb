@@ -1151,4 +1151,97 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       ((); 1)
     RUBY
   end
+
+  it 'registers an offense for void literal in case statement' do
+    expect_offense(<<~RUBY)
+      case foo when 1 then 2 end
+                           ^ Literal `2` used in void context.
+      top
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case foo when 1 then end
+      top
+    RUBY
+  end
+
+  it 'registers offenses for void literals in all case branches' do
+    expect_offense(<<~RUBY)
+      case foo
+      when 1 then 2
+                  ^ Literal `2` used in void context.
+      when 3 then 4
+                  ^ Literal `4` used in void context.
+      else 5
+           ^ Literal `5` used in void context.
+      end
+      top
+    RUBY
+  end
+
+  it 'does not register an offense for case statement on last line' do
+    expect_no_offenses(<<~RUBY)
+      case foo
+      when 1 then 2
+      else 3
+      end
+    RUBY
+  end
+
+  it 'registers an offense for void literal in `next` within `each` block' do
+    expect_offense(<<~RUBY)
+      [1].each { next 2 }
+                      ^ Literal `2` used in void context.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1].each { next }
+    RUBY
+  end
+
+  it 'does not register an offense for `next` with value in `map` block' do
+    expect_no_offenses(<<~RUBY)
+      [1].map { next 2 }
+    RUBY
+  end
+
+  it 'registers an offense for void literal in `break` within `each` block' do
+    expect_offense(<<~RUBY)
+      [1].each { break 2 }
+                       ^ Literal `2` used in void context.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      [1].each { break }
+    RUBY
+  end
+
+  it 'does not register an offense for `break` with value in `map` block' do
+    expect_no_offenses(<<~RUBY)
+      [1].map { break 2 }
+    RUBY
+  end
+
+  it 'registers an offense for void literal in case/in pattern matching' do
+    expect_offense(<<~RUBY)
+      case foo
+      in 1 then 2
+                ^ Literal `2` used in void context.
+      in 3 then 4
+                ^ Literal `4` used in void context.
+      else 5
+           ^ Literal `5` used in void context.
+      end
+      top
+    RUBY
+  end
+
+  it 'does not register an offense for case/in on last line' do
+    expect_no_offenses(<<~RUBY)
+      case foo
+      in 1 then 2
+      else 3
+      end
+    RUBY
+  end
 end
