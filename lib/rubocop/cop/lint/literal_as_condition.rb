@@ -69,7 +69,7 @@ module RuboCop
         def on_if(node)
           cond = condition(node)
 
-          return unless cond.falsey_literal? || cond.truthy_literal?
+          return if !cond.falsey_literal? && !cond.truthy_literal?
 
           correct_if_node(node, cond)
         end

@@ -3798,6 +3798,15 @@ Style/ComparableClamp:
   Enabled: pending
   VersionAdded: '1.44'
 
+Style/ComplexUnless:
+  Description: >-
+                 Prefer `if` over complex `unless` conditions for readability.
+                 Complex means conditions with `||`/`or`, negation combined with
+                 logical operators, or multiple negations (e.g. `!!foo`).
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  MinOperatorCount: 1
+
 Style/ConcatArrayLiterals:
   Description: 'Enforces the use of `Array#push(item)` instead of `Array#concat([item])` to avoid redundant array literals.'
   Enabled: pending

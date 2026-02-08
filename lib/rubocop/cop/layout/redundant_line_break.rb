@@ -63,7 +63,7 @@ module RuboCop
                                    convertible_block?(node) ||
                                    node.parent.is_a?(RuboCop::AST::BinaryOperatorNode)
 
-          return unless offense?(node) && !part_of_ignored_node?(node)
+          return if !offense?(node) || part_of_ignored_node?(node)
 
           register_offense(node)
         end
