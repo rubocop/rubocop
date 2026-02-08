@@ -79,14 +79,14 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
 
       it 'registers offenses for template style' do
         expect_offense(<<~RUBY, annotated: annotated, template: template)
-          <<-HEREDOC
+          format(<<-HEREDOC, foo: bar)
           foo %{annotated} + bar %{template}
               _{annotated}       ^{template} Prefer annotated tokens [...]
           HEREDOC
         RUBY
 
         expect_correction(<<~RUBY)
-          <<-HEREDOC
+          format(<<-HEREDOC, foo: bar)
           foo #{annotated} + bar #{template_to_annotated}
           HEREDOC
         RUBY
@@ -94,29 +94,29 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
 
       it 'supports dynamic string with interpolation' do
         expect_offense(<<~'RUBY', annotated: annotated, template: template)
-          "a#{b}%{annotated} c#{d}%{template} e#{f}"
-                _{annotated}      ^{template} Prefer annotated tokens [...]
+          format("a#{b}%{annotated} c#{d}%{template} e#{f}")
+                       _{annotated}      ^{template} Prefer annotated tokens [...]
         RUBY
 
         expect_correction(<<~RUBY)
-          "a\#{b}#{annotated} c\#{d}#{template_to_annotated} e\#{f}"
+          format("a\#{b}#{annotated} c\#{d}#{template_to_annotated} e\#{f}")
         RUBY
       end
 
       it 'sets the enforced style to annotated after inspecting "%<a>s"' do
-        expect_no_offenses('"%<a>s"')
+        expect_no_offenses('format("%<a>s", a: foo)')
 
         expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'annotated')
       end
 
       it 'detects when the cop must be disabled to avoid offenses' do
         expect_offense(<<~RUBY)
-          "%{a}"
-           ^^^^ Prefer annotated tokens [...]
+          format("%{a}", a: foo)
+                  ^^^^ Prefer annotated tokens [...]
         RUBY
 
         expect_correction(<<~RUBY)
-          "%<a>s"
+          format("%<a>s", a: foo)
         RUBY
 
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
@@ -135,14 +135,14 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       if template_correction
         it 'registers offenses for annotated style' do
           expect_offense(<<~RUBY, annotated: annotated, template: template)
-            <<-HEREDOC
+            format(<<-HEREDOC, foo: bar)
             foo %{template} + bar %{annotated}
                 _{template}       ^{annotated} Prefer template tokens [...]
             HEREDOC
           RUBY
 
           expect_correction(<<~RUBY)
-            <<-HEREDOC
+            format(<<-HEREDOC, foo: bar)
             foo #{template} + bar #{annotated_to_template}
             HEREDOC
           RUBY
@@ -150,7 +150,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       else
         it 'does not register offenses for annotated style' do
           expect_no_offenses(<<~RUBY)
-            <<-HEREDOC
+            format(<<-HEREDOC, foo: bar)
             foo %{template} + bar %{annotated}
             HEREDOC
           RUBY
@@ -160,35 +160,35 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       it 'supports dynamic string with interpolation' do
         if template_correction
           expect_offense(<<~'RUBY', annotated: annotated, template: template)
-            "a#{b}%{template} c#{d}%{annotated} e#{f}"
-                  _{template}      ^{annotated} Prefer template tokens [...]
+            format("a#{b}%{template} c#{d}%{annotated} e#{f}")
+                         _{template}      ^{annotated} Prefer template tokens [...]
           RUBY
 
           expect_correction(<<~RUBY)
-            "a\#{b}#{template} c\#{d}#{annotated_to_template} e\#{f}"
+            format("a\#{b}#{template} c\#{d}#{annotated_to_template} e\#{f}")
           RUBY
         else
           expect_no_offenses(<<~'RUBY')
-            "a#{b}%{template} c#{d}%{annotated} e#{f}"
+            format("a#{b}%{template} c#{d}%{annotated} e#{f}")
           RUBY
         end
       end
 
       it 'detects when the cop must be disabled to avoid offenses' do
         expect_offense(<<~RUBY)
-          "%<a>s"
-           ^^^^^ Prefer template tokens [...]
+          format("%<a>s", a: foo)
+                  ^^^^^ Prefer template tokens [...]
         RUBY
 
         expect_correction(<<~RUBY)
-          "%{a}"
+          format("%{a}", a: foo)
         RUBY
 
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
       it 'configures the enforced style to template after inspecting "%{a}"' do
-        expect_no_offenses('"%{a}"')
+        expect_no_offenses('format("%{a}", a: foo)')
 
         expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'template')
       end
@@ -241,8 +241,122 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
             ^^^^^^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
     RUBY
 
+    expect_no_corrections
+  end
+
+  it 'handles dstrs in format context' do
+    expect_offense(<<~'RUBY')
+      format("c#{b}%{template}")
+                   ^^^^^^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
     expect_correction(<<~'RUBY')
-      "c#{b}%<template>s"
+      format("c#{b}%<template>s")
+    RUBY
+  end
+
+  it 'autocorrects in sprintf context' do
+    expect_offense(<<~RUBY)
+      sprintf('%{foo}', foo: 'bar')
+               ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      sprintf('%<foo>s', foo: 'bar')
+    RUBY
+  end
+
+  it 'autocorrects in printf context' do
+    expect_offense(<<~RUBY)
+      printf('%{foo}', foo: 'bar')
+              ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      printf('%<foo>s', foo: 'bar')
+    RUBY
+  end
+
+  it 'autocorrects with the percent operator' do
+    expect_offense(<<~RUBY)
+      '%{foo}' % { foo: 'bar' }
+       ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      '%<foo>s' % { foo: 'bar' }
+    RUBY
+  end
+
+  it 'autocorrects dstr with the percent operator' do
+    expect_offense(<<~'RUBY')
+      "c#{b}%{foo}" % { foo: 'bar' }
+            ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "c#{b}%<foo>s" % { foo: 'bar' }
+    RUBY
+  end
+
+  it 'does not autocorrect when passed to a non-format method' do
+    expect_offense(<<~RUBY)
+      foo('%{bar}')
+           ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect a bare string outside of format context' do
+    expect_offense(<<~RUBY)
+      'https://gitlab.com/%{project_path}/-/blob/%{default_branch}/file'
+                          ^^^^^^^^^^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+                                                 ^^^^^^^^^^^^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect a string in a hash value' do
+    expect_offense(<<~RUBY)
+      validates :colour, format: { message: '%{colour} is not a valid hex colour' }
+                                             ^^^^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'does not autocorrect a bare heredoc' do
+    expect_offense(<<~RUBY)
+      <<-MSG
+        %{colour} is not valid
+        ^^^^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+      MSG
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'autocorrects with an explicit receiver on format' do
+    expect_offense(<<~RUBY)
+      Kernel.format('%{foo}', foo: 'bar')
+                     ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Kernel.format('%<foo>s', foo: 'bar')
+    RUBY
+  end
+
+  it 'autocorrects with an explicit receiver on sprintf' do
+    expect_offense(<<~RUBY)
+      Kernel.sprintf('%{foo}', foo: 'bar')
+                      ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Kernel.sprintf('%<foo>s', foo: 'bar')
     RUBY
   end
 
@@ -317,9 +431,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
          ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
       RUBY
 
-      expect_correction(<<~RUBY)
-        "%<foo>s"
-      RUBY
+      expect_no_corrections
     end
 
     context 'when AllowedMethods is enabled' do
@@ -400,9 +512,7 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
          ^^^^^^^ Prefer template tokens (like `%{foo}`) over annotated tokens (like `%<foo>s`).
       RUBY
 
-      expect_correction(<<~RUBY)
-        "%{foo}"
-      RUBY
+      expect_no_corrections
     end
   end
 

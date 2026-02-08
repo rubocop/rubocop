@@ -118,7 +118,7 @@ module RuboCop
           return if allowed_unannotated?(detections)
 
           detections.each do |detected_sequence, token_range|
-            check_sequence(detected_sequence, token_range)
+            check_sequence(node, detected_sequence, token_range)
           end
         end
 
@@ -143,15 +143,32 @@ module RuboCop
             matches_allowed_pattern?(send_parent.method_name))
         end
 
-        def check_sequence(detected_sequence, token_range)
+        def check_sequence(node, detected_sequence, token_range)
           if detected_sequence.style == style
             correct_style_detected
           elsif correctable_sequence?(detected_sequence.type)
             style_detected(detected_sequence.style)
-            add_offense(token_range, message: message(detected_sequence.style)) do |corrector|
+            register_offense(node, detected_sequence, token_range)
+          end
+        end
+
+        def register_offense(node, detected_sequence, token_range)
+          msg = message(detected_sequence.style)
+
+          if format_string_context?(node)
+            add_offense(token_range, message: msg) do |corrector|
               autocorrect_sequence(corrector, detected_sequence, token_range)
             end
+          else
+            add_offense(token_range, message: msg)
           end
+        end
+
+        def format_string_context?(node)
+          format_string_in_typical_context?(node) ||
+            node.each_ancestor(:dstr).any? do |dstr_node|
+              format_string_in_typical_context?(dstr_node)
+            end
         end
 
         def correctable_sequence?(detected_type)
