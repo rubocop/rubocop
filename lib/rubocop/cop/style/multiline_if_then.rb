@@ -21,8 +21,6 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        NON_MODIFIER_THEN = /then\s*(#.*)?$/.freeze
-
         MSG = 'Do not use `then` for multi-line `%<keyword>s`.'
 
         def on_normal_if_unless(node)
@@ -36,7 +34,7 @@ module RuboCop
         private
 
         def non_modifier_then?(node)
-          NON_MODIFIER_THEN.match?(node.loc.begin&.source_line)
+          node.then? && node.loc.begin.line != node.if_branch&.loc&.line
         end
       end
     end
