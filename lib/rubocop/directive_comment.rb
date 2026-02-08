@@ -91,7 +91,7 @@ module RuboCop
     # `pop` takes no arguments at all.
     def invalid_signed_args?
       return cops ? !cops.empty? : false if pop?
-      return false unless push? || next?
+      return false if !push? && !next?
       return false unless cops
 
       cops.split.any? { |cop_spec| !cop_spec.start_with?('+', '-') }
@@ -272,7 +272,7 @@ module RuboCop
     end
 
     def parse_signed_args
-      return {} unless (push? || next?) && cops
+      return {} if (!push? && !next?) || !cops
 
       args = {}
       cops.split.each do |cop_spec|

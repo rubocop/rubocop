@@ -270,7 +270,7 @@ module RuboCop
           corrector.replace(range, range.source.sub(/^:(.*\S)\s*=>\s*$/, "#{space}\\1: "))
 
           hash_node = pair_node.parent
-          return unless hash_node.parent&.return_type? && !hash_node.braces?
+          return if !hash_node.parent&.return_type? || hash_node.braces?
           # This runs once per pair, but the hash must only be wrapped once.
           return unless pair_node.equal?(hash_node.pairs.first)
 

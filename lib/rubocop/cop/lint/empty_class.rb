@@ -74,8 +74,9 @@ module RuboCop
         METACLASS_MSG = 'Empty metaclass detected.'
 
         def on_class(node)
-          add_offense(node, message: CLASS_MSG) unless body_or_allowed_comment_lines?(node) ||
-                                                       node.parent_class
+          return if body_or_allowed_comment_lines?(node) || node.parent_class
+
+          add_offense(node, message: CLASS_MSG)
         end
 
         def on_sclass(node)

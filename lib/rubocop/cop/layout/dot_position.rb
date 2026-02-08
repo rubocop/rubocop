@@ -32,7 +32,7 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless node.dot? || node.safe_navigation?
+          return if !node.dot? && !node.safe_navigation?
 
           return correct_style_detected if proper_dot_position?(node)
 

@@ -136,7 +136,7 @@ module RuboCop
         def merged_cops(directives)
           cops = directives.flat_map { |match| match[2].to_s.split(',').map(&:strip) }
           cops = cops.reject(&:empty?).uniq
-          cops unless cops.empty? || cops.include?('all')
+          cops if !cops.empty? && !cops.include?('all')
         end
 
         # Anything written between the directives is a `--` reason or prose,

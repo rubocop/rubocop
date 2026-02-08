@@ -143,7 +143,7 @@ module RuboCop
         alias on_sclass on_class
 
         def on_block(node)
-          return unless eval_call?(node) || included_block?(node)
+          return if !eval_call?(node) && !included_block?(node)
 
           check_node(node.body)
         end

@@ -177,7 +177,7 @@ module RuboCop
           return unless nameable_method?(method_name)
 
           body = method_node.body
-          return unless body == node || body.children.last == node
+          return if body != node && body.children.last != node
 
           return if matches?(method_name, lhs)
 

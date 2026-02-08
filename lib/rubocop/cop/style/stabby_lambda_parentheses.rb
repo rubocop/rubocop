@@ -29,7 +29,7 @@ module RuboCop
 
         def on_send(node)
           return unless stabby_lambda_with_args?(node)
-          return unless redundant_parentheses?(node) || missing_parentheses?(node)
+          return if !redundant_parentheses?(node) && !missing_parentheses?(node)
 
           arguments = node.block_node.arguments
 

@@ -37,7 +37,7 @@ module RuboCop
         array_style_detected(:percent, node.values.size)
 
         brackets_required = invalid_percent_array_contents?(node)
-        return unless style == :brackets || brackets_required
+        return if style != :brackets && !brackets_required
 
         # If in percent style but brackets are required due to
         # string content, the file should be excluded in auto-gen-config

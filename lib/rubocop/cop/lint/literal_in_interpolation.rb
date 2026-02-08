@@ -238,7 +238,7 @@ module RuboCop
         end
 
         def replacement(node, expanded_value)
-          return expanded_value unless node.str_type? && !node.value.valid_encoding?
+          return expanded_value if !node.str_type? || node.value.valid_encoding?
 
           node.source.delete_prefix('"').delete_suffix('"')
         end

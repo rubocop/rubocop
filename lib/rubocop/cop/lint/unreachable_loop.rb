@@ -120,8 +120,8 @@ module RuboCop
           break_statement = statements.find { |statement| break_statement?(statement) }
           return unless break_statement
 
-          unless preceded_by_continue_statement?(break_statement) ||
-                 conditional_continue_keyword?(break_statement)
+          if !preceded_by_continue_statement?(break_statement) &&
+             !conditional_continue_keyword?(break_statement)
             add_offense(node)
           end
         end

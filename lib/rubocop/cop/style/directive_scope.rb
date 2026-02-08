@@ -155,7 +155,7 @@ module RuboCop
         def each_directive_after(reference)
           processed_source.comments.each do |comment|
             directive = DirectiveComment.new(comment)
-            next unless directive.cop_names || directive.push? || directive.pop?
+            next if !directive.cop_names && !directive.push? && !directive.pop?
 
             yield directive if directive.line_number > reference.line_number
           end
@@ -217,7 +217,7 @@ module RuboCop
           return nil unless comment
 
           closing = DirectiveComment.new(comment)
-          return nil unless closing.disabled? && !closing.disable_next?
+          return nil if !closing.disabled? || closing.disable_next?
           return nil unless closing.raw_cop_names.sort == directive.raw_cop_names.sort
 
           closing

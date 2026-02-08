@@ -67,8 +67,8 @@ module RuboCop
 
             break if !assignment.branch || assignment.branch == reference.branch
 
-            unless assignment.branch.may_run_incompletely? ||
-                   exception_may_reach?(assignment.branch, node)
+            if !assignment.branch.may_run_incompletely? && !exception_may_reach?(assignment.branch,
+                                                                                 node)
               (consumed_branches ||= Set.new) << assignment.branch
             end
           end

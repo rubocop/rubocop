@@ -75,7 +75,7 @@ module RuboCop
         MSG = 'Remove debugger entry point `%<source>s`.'
 
         def on_send(node)
-          return unless debugger_method?(node) || debugger_require?(node)
+          return if !debugger_method?(node) && !debugger_require?(node)
           return if assumed_usage_context?(node)
 
           add_offense(node)

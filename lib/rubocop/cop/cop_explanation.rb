@@ -90,7 +90,7 @@ module RuboCop
 
         # Asks the cop, so `AutoCorrect` is read the way the cop reads it.
         cop = @cop_class.new(@config)
-        return 'disabled' unless cop.always_autocorrect? || cop.contextual_autocorrect?
+        return 'disabled' if !cop.always_autocorrect? && !cop.contextual_autocorrect?
 
         description = cop.safe_autocorrect? ? 'safe, applied by -a' : 'unsafe, applied by -A only'
         # Contextual corrections wait until the code is finished, which an

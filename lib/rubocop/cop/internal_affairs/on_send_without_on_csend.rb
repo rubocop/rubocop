@@ -60,7 +60,7 @@ module RuboCop
         end
 
         def on_investigation_end
-          return unless @on_send_definition && !@on_csend_definition
+          return if !@on_send_definition || @on_csend_definition
 
           add_offense(@on_send_definition)
         end

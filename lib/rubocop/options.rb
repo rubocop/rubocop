@@ -63,7 +63,7 @@ module RuboCop
     # `--diff` is a dry run of autocorrection, so it turns autocorrection on
     # unless the user already picked a mode with `-a`, `-A` or `-x`.
     def imply_autocorrect_for_diff
-      return unless @options[:diff] && !@options[:autocorrect]
+      return if !@options[:diff] || @options[:autocorrect]
 
       @options[:safe_autocorrect] = true
       @options[:autocorrect] = true

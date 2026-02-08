@@ -107,7 +107,7 @@ module RuboCop
 
             required = sibling_node(sibling)
             break unless required&.send_type? && required.method?(node.method_name)
-            break unless required.arguments? && !required.receiver
+            break if !required.arguments? || required.receiver
             break unless in_same_section?(required, node)
             break unless node.first_argument.str_type? && required.first_argument.str_type?
 
