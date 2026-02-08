@@ -1134,7 +1134,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
   describe '--display-time' do
     before { create_empty_file('example1.rb') }
 
-    regex = /Finished in [0-9]*\.[0-9]* seconds/
+    regex = /Finished in [0-9]*\.[0-9]{5} seconds/
 
     context 'without --display-time' do
       it 'does not display elapsed time in seconds' do
