@@ -198,12 +198,13 @@ module RuboCop
         alias on_csend on_send
 
         def on_block(node)
-          return if ignored_node?(node)
+          return if part_of_ignored_node?(node)
           return if proper_block_style?(node)
 
           message = message(node)
           add_offense(node.loc.begin, message: message) do |corrector|
             autocorrect(corrector, node)
+            ignore_node(node)
           end
         end
 
