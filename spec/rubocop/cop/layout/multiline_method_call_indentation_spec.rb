@@ -116,6 +116,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'does not register an offense when a keyword argument value is a method call with a block' do
+      expect_no_offenses(<<~RUBY)
+        Foo
+          .do_something(
+            key: value do
+            end
+          )
+      RUBY
+    end
+
     it 'accepts alignment of method with assignment and operator-like method' do
       expect_no_offenses(<<~RUBY)
         query = x.|(

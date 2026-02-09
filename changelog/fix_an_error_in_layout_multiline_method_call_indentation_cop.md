@@ -1,0 +1,1 @@
+* [#14859](https://github.com/rubocop/rubocop/issues/14859): Fix an error in `Layout/MultilineMethodCallIndentation` when a multiline method call includes a keyword argument whose value is a method call with a block. ([@koic][])
