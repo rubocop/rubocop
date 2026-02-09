@@ -188,6 +188,54 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       RUBY
     end
 
+    it 'registers an offense when using rest arguments without parentheses' do
+      expect_offense(<<~RUBY)
+        def foo *args
+                ^^^^^ Use def with parentheses when there are parameters.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(*args)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using keyword rest arguments without parentheses' do
+      expect_offense(<<~RUBY)
+        def foo **opts
+                ^^^^^^ Use def with parentheses when there are parameters.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(**opts)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using block argument without parentheses' do
+      expect_offense(<<~RUBY)
+        def foo &block
+                ^^^^^^ Use def with parentheses when there are parameters.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo(&block)
+        end
+      RUBY
+    end
+
+    it 'registers an offense when using forwarding arguments without parentheses', :ruby31 do
+      expect_offense(<<~RUBY)
+        def foo ...
+                ^^^ Use def with parentheses when there are parameters.
+          bar ...
+        end
+      RUBY
+    end
+
     it 'reports an offense for class def with parameters but no parens' do
       expect_offense(<<~RUBY)
         def Test.func a, b
