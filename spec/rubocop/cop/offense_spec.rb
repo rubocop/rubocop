@@ -229,5 +229,11 @@ RSpec.describe RuboCop::Cop::Offense do
     it 'returns a real column' do
       expect(offense.real_column).to eq 1
     end
+
+    it 'returns a highlighted area' do
+      expect(offense.highlighted_area).to be_a Parser::Source::Range
+      expect(offense.highlighted_area.column).to eq 0
+      expect(offense.highlighted_area.length).to eq 0
+    end
   end
 end
