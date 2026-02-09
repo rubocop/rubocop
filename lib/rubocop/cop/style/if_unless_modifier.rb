@@ -253,7 +253,7 @@ module RuboCop
 
         def sibling_if_shares_line?(child, node)
           inner = unwrap_begin(child)
-          inner&.if_type? && shares_line_with?(inner, node)
+          inner&.if_type? && !inner.ternary? && shares_line_with?(inner, node)
         end
 
         def unwrap_begin(node)
