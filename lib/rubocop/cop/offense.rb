@@ -66,6 +66,13 @@ module RuboCop
         alias_method :last_line, :line
         alias_method :last_column, :column
 
+        attr_reader :source_buffer
+
+        def initialize(line, column, source_line, begin_pos, end_pos)
+          super
+          @source_buffer = Parser::Source::Buffer.new('(pseudo)', source: source_line)
+        end
+
         def column_range
           column...last_column
         end
