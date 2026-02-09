@@ -103,8 +103,6 @@ module RuboCop
         MSG_MISSING = 'Use def with parentheses when there are parameters.'
 
         def on_def(node)
-          return if forced_parentheses?(node)
-
           args = node.arguments
 
           if require_parentheses?(args)
@@ -113,10 +111,10 @@ module RuboCop
             else
               correct_style_detected
             end
+          elsif forced_parentheses?(node)
+            correct_style_detected
           elsif parentheses?(args)
             unwanted_parentheses(args)
-          else
-            correct_style_detected
           end
         end
         alias on_defs on_def
