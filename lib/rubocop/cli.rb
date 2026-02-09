@@ -77,7 +77,7 @@ module RuboCop
     ensure
       elapsed_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - time_start
       if @options[:debug] || @options[:display_time]
-        puts format('Finished in %.5f seconds', elapsed_time)
+        puts "Finished in #{elapsed_time.round(5)} seconds"
       end
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
