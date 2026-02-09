@@ -269,7 +269,7 @@ module RuboCop
           return unless rhs.source.start_with?('.', '&.')
 
           node = semantic_alignment_node(node)
-          return unless node&.loc&.selector && node.loc.dot
+          return unless node&.loc?(:selector) && node.loc.dot
 
           node.loc.dot.join(node.loc.selector)
         end
