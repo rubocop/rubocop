@@ -624,6 +624,17 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'registers an offense for nested multi-line blocks with trailing comment' do
+        expect_offense(<<~RUBY)
+          blcck {
+                ^ Avoid using `{...}` for multi-line blocks.
+          }
+          block { foo {
+                ^ Avoid using `{...}` for multi-line blocks.
+          } }.bar # comment
+        RUBY
+      end
+
       it 'registers an offense when there is a comment after the closing brace and block body is not empty' do
         expect_offense(<<~RUBY)
           baz.map { |x|
@@ -815,16 +826,15 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       it 'autocorrects adjacent curly braces correctly' do
         expect_offense(<<~RUBY)
           (0..3).each { |a| a.times {
-                                    ^ Avoid using `{...}` for multi-line blocks.
                       ^ Avoid using `{...}` for multi-line blocks.
             puts a
           }}
         RUBY
 
         expect_correction(<<~RUBY)
-          (0..3).each do |a| a.times do
+          (0..3).each do |a| a.times {
             puts a
-          end end
+          } end
         RUBY
       end
 
