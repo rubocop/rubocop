@@ -1,0 +1,4 @@
+extends: default
+
+ignore: |
+  node_modules/

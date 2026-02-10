@@ -1,0 +1,16 @@
+---
+AllCops:
+  TargetRubyVersion: 3.4
+  NewCops: enable
+
+Lint/SuppressedException:
+  Exclude:
+    - Rakefile
+
+Lint/MissingSuper:
+  Exclude:
+    - src/_components/**/*.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - plugins/builders/tailwind_jit.rb

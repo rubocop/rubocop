@@ -1,0 +1,3 @@
+[codespell]
+skip = node_modules,package-lock.json,Gemfile.lock,output,.git
+ignore-words-list = vie

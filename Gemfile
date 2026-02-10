@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ####
 # Welcome to your project's Gemfile, used by Rubygems & Bundler.
 #
@@ -15,24 +17,24 @@
 ####
 
 # Gems source:
-source "https://rubygems.org"
+source 'https://rubygems.org'
 # Or you can switch the above to an alternate community-led server:
 # source "https://gem.coop"
 
 # Git-based sources:
-git_source(:github) { "https://github.com/#{_1}.git" }
-git_source(:codeberg) { "https://codeberg.org/#{_1}.git" }
+git_source(:github) { "https://github.com/#{it}.git" }
+git_source(:codeberg) { "https://codeberg.org/#{it}.git" }
 
 # If you need to upgrade/switch Bridgetown versions, change the line below
 # and then run `bundle update bridgetown`
-gem "bridgetown", "~> 2.1.1"
+gem 'bridgetown', '~> 2.1.1'
 
 # Uncomment to add file-based dynamic routing to your project:
 # gem "bridgetown-routes", "~> 2.1.1"
 
 # Puma is the Rack-compatible web server used by Bridgetown
 # (you can optionally limit this to the "development" group)
-gem "puma", "< 8"
+gem 'puma', '< 8'
 
 # Uncomment to use the Inspectors API to manipulate the output
 # of your HTML or XML resources:
@@ -41,4 +43,6 @@ gem "puma", "< 8"
 # Or for faster parsing of HTML-only resources via Inspectors, use Nokolexbor:
 # gem "nokolexbor", "~> 0.6"
 
-gem "bridgetown-svg-inliner", "~> 3.0"
+gem 'bridgetown-svg-inliner', '~> 3.0'
+
+gem 'rubocop', '~> 1.84', require: false

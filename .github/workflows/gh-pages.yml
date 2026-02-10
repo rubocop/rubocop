@@ -1,13 +1,19 @@
+---
 name: Deploy to GitHub pages
 
-on:
+"on":
   push:
     branches:
-      - refactor/redesign-landing-page
+      - gh-pages
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      BRIDGETOWN_ENV: production
+      BASE_PATH: >-
+        ${{ github.repository != 'rubocop/rubocop'
+            && '/rubocop' || '/' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -24,8 +30,6 @@ jobs:
       - run: npm install
 
       - name: Build
-        env:
-          BRIDGETOWN_ENV: production
         run: bin/bridgetown deploy
 
       - name: Upload build artifact

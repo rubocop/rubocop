@@ -8,9 +8,9 @@
 # this file is here to facilitate running it.
 #
 
-ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
-require "rubygems"
-require "bundler/setup"
+require 'rubygems'
+require 'bundler/setup'
 
-load Gem.bin_path("bridgetown-core", "bt")
+load Gem.bin_path('bridgetown-core', 'bt')
