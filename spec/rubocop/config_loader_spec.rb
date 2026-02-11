@@ -1496,6 +1496,50 @@ RSpec.describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'with early cache_root computation' do
+      around do |example|
+        original_rubocop_cache_root = ENV.fetch('RUBOCOP_CACHE_ROOT', nil)
+        original_xdg_cache_home = ENV.fetch('XDG_CACHE_HOME', nil)
+        ENV['RUBOCOP_CACHE_ROOT'] = nil
+        ENV['XDG_CACHE_HOME'] = nil
+        example.run
+        ENV['RUBOCOP_CACHE_ROOT'] = original_rubocop_cache_root
+        ENV['XDG_CACHE_HOME'] = original_xdg_cache_home
+      end
+
+      before do
+        described_class.cache_root = nil
+      end
+
+      context 'when a file inherits from a URL without explicit cache_root', :isolated_environment do
+        let(:file_path) { '.rubocop.yml' }
+        let(:cache_file) { 'rubocop-e32e465e27910f2bc7262515eebe6b63.yml' }
+
+        before do
+          stub_request(:get, %r{example.com/rubocop.yml})
+            .to_return(status: 200, body: <<~YAML)
+              Style/Encoding:
+                Enabled: true
+            YAML
+
+          create_file(file_path, <<~YAML)
+            inherit_from: http://example.com/rubocop.yml
+          YAML
+        end
+
+        it 'caches remote config in early-computed cache directory, not Dir.pwd' do
+          expect(File).not_to exist(File.join(Dir.home, '.cache', 'rubocop_cache', cache_file))
+
+          configuration_from_file
+
+          pwd_cache_files = Dir.glob('**/*', File::FNM_DOTMATCH).select { |f| File.file?(f) && f.include?('.yml') && f != '.rubocop.yml' }
+
+          expect(File).to exist(File.join(Dir.home, '.cache', 'rubocop_cache', cache_file))
+          expect(pwd_cache_files).to be_empty
+        end
+      end
+    end
+
     context 'when a file inherits a configuration that specifies TargetRubyVersion' do
       let(:file_path) { '.rubocop.yml' }
       let(:target_ruby_version) { configuration_from_file['AllCops']['TargetRubyVersion'] }

@@ -2,6 +2,7 @@
 
 require 'erb'
 require 'yaml'
+require_relative 'cache_config'
 require_relative 'config_finder'
 
 module RuboCop
@@ -23,12 +24,16 @@ module RuboCop
       include FileFinder
 
       attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops,
-                    :ignore_unrecognized_cops, :cache_root
-      attr_writer :default_configuration
+                    :ignore_unrecognized_cops
+      attr_writer :default_configuration, :cache_root
       attr_reader :loaded_plugins, :loaded_features
 
       alias debug? debug
       alias ignore_parent_exclusion? ignore_parent_exclusion
+
+      def cache_root(cache_root_override = nil)
+        @cache_root ||= CacheConfig.root_dir_from_toplevel_config(cache_root_override)
+      end
 
       def clear_options
         @debug = nil

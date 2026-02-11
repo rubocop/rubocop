@@ -73,31 +73,10 @@ module RuboCop
           cache_root_dir = if cache_root_path
                              File.join(cache_root_path, 'rubocop_cache')
                            else
-                             cache_root_dir_from_config
+                             CacheConfig.root_dir_from_toplevel_config
                            end
 
           File.expand_path(File.join(cache_root_dir, 'server'))
-        end
-
-        def cache_root_dir_from_config
-          CacheConfig.root_dir do
-            # `RuboCop::ConfigStore` has heavy dependencies, this is a lightweight implementation
-            # so that only the necessary `CacheRootDirectory` can be obtained.
-            config_path = ConfigFinder.find_config_path(Dir.pwd)
-            file_contents = File.read(config_path)
-
-            # Returns early if `CacheRootDirectory` is not used before requiring `erb` or `yaml`.
-            next unless file_contents.include?('CacheRootDirectory')
-
-            config_yaml = load_erb_templated_yaml(file_contents)
-
-            # For compatibility with Ruby 3.0 or lower.
-            if Gem::Version.new(Psych::VERSION) < Gem::Version.new('4.0.0')
-              config_yaml == false ? nil : config_yaml
-            end
-
-            config_yaml&.dig('AllCops', 'CacheRootDirectory')
-          end
         end
 
         def port_path

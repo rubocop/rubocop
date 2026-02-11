@@ -31,7 +31,7 @@ RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLe
         ENV['HOME'] = original_home
         ENV['XDG_CONFIG_HOME'] = original_xdg_config_home
 
-        RuboCop::FileFinder.root_level = nil
+        RuboCop::ConfigLoader.clear_options # This also resets RuboCop::FileFinder.root_level
       end
     end
   end
