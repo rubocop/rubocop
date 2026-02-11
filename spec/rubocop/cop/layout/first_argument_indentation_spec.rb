@@ -132,6 +132,50 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
       end
 
+      it 'registers an offense and corrects over-indented first arguments in nested method calls' do
+        expect_offense(<<~RUBY)
+          foo
+            .bar(
+            baz(
+            ^^^^ Indent the first argument one step more than the start of the previous line.
+                qux
+                ^^^ Bad indentation of the first argument.
+              )
+            )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo
+            .bar(
+              baz(
+                qux
+                )
+            )
+        RUBY
+      end
+
+      it 'registers an offense and corrects over-indented first arguments in nested method calls with hash arguments' do
+        expect_offense(<<~RUBY)
+          foo
+            .bar(
+            bar(
+            ^^^^ Indent the first argument one step more than the start of the previous line.
+                key: value
+                ^^^^^^^^^^ Bad indentation of the first argument.
+              )
+            )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo
+            .bar(
+              bar(
+                key: value
+                )
+            )
+        RUBY
+      end
+
       context 'when using safe navigation operator' do
         it 'registers an offense and corrects an under-indented 1st argument' do
           expect_offense(<<~RUBY)
