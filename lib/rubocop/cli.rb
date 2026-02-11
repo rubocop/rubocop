@@ -166,7 +166,9 @@ module RuboCop
 
       @config_store.apply_options!(@options)
       # Set cache root after apply_options! to ensure force_default_config is applied first.
+      early_cache_root = ConfigLoader.cache_root(@options[:cache_root])
       ConfigLoader.cache_root = ResultCache.cache_root(@config_store, @options[:cache_root])
+      warn_if_cache_root_changed(early_cache_root, ConfigLoader.cache_root)
 
       handle_exiting_options
 
@@ -224,6 +226,22 @@ module RuboCop
 
     def report_pending_cops
       PendingCopsReporter.warn_if_needed(@config_store.for_pwd)
+    end
+
+    def warn_if_cache_root_changed(early, desired)
+      return if early == desired
+      # Normalize paths to avoid false positives from symlink resolution differences
+      if File.exist?(early) && File.exist?(desired) &&
+         File.realpath(early) == File.realpath(desired)
+        return
+      end
+
+      warn Rainbow(
+        "Warning: Remote configuration cache files were stored in `#{early}` " \
+        "because a desired cache root (`#{desired}`) was not set at the top level. " \
+        'Consider setting `AllCops: CacheRootDirectory` in your toplevel configuration file, ' \
+        'using the `RUBOCOP_CACHE_ROOT` environment variable, or using CLI options.'
+      ).yellow
     end
   end
 end

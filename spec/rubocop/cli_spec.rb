@@ -2356,4 +2356,65 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
     end
   end
+
+  describe 'cache root warning' do
+    let(:warning) { 'Warning: Remote configuration cache files were stored' }
+
+    before do
+      create_file('example.rb', ['# frozen_string_literal: true', '', 'puts 1'])
+    end
+
+    context 'when cache roots match' do
+      it 'does not print a warning when using default cache root without overrides' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            DisabledByDefault: true
+        YAML
+
+        expect(cli.run(['example.rb'])).to eq(0)
+        expect($stderr.string).not_to include(warning)
+      end
+
+      context 'when --cache-root is given' do
+        it 'does not print a warning with no CacheRootDirectory in the configuration file' do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              DisabledByDefault: true
+          YAML
+
+          expect(cli.run(['--cache-root', '/tmp/.rubocop_cache', 'example.rb'])).to eq(0)
+          expect($stderr.string).not_to include(warning)
+        end
+
+        it 'does not print a warning with different CacheRootDirectory as --cache-root overrides it' do
+          create_file('.rubocop.yml', <<~YAML)
+            AllCops:
+              DisabledByDefault: true
+              CacheRootDirectory: /tmp/some-other-cache
+          YAML
+
+          expect(cli.run(['--cache-root', '/tmp/.rubocop_cache', 'example.rb'])).to eq(0)
+          expect($stderr.string).not_to include(warning)
+        end
+      end
+    end
+
+    context 'when cache roots differ' do
+      it 'prints a warning when non-default CacheRootDirectory is set in a inherited file' do
+        create_file('.rubocop.yml', <<~YAML)
+          inherit_from: inherited.yml
+          AllCops:
+            DisabledByDefault: true
+        YAML
+
+        create_file('inherited.yml', <<~YAML)
+          AllCops:
+            CacheRootDirectory: /tmp/inherited-cache
+        YAML
+
+        expect(cli.run(['example.rb'])).to eq(0)
+        expect($stderr.string).to include(warning)
+      end
+    end
+  end
 end

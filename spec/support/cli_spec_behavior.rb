@@ -25,5 +25,8 @@ RSpec.shared_context 'cli spec behavior' do
   # show information about expected and actual exit code
   around { |example| aggregate_failures(&example) }
 
-  after { RuboCop::ResultCache.inhibit_cleanup = false }
+  after do
+    RuboCop::ConfigLoader.clear_options
+    RuboCop::ResultCache.inhibit_cleanup = false
+  end
 end
