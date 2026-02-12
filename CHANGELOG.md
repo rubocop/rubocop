@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.84.2 (2026-02-12)
+
 ### Bug fixes
 
 * [#14854](https://github.com/rubocop/rubocop/issues/14854): Fix a clobbering error in `Style/BlockDelimiters` when autocorrecting nested multi-line blocks with adjacent curly braces. ([@koic][])
