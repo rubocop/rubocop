@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
       RUBY
     end
 
-    it 'registers an offense and corrects when the array contains only hash elements without braces' do
+    it 'registers an offense and corrects when the single-line array contains only hash elements without braces' do
       expect_offense(<<~RUBY)
         [one: 1, two: 2]
          ^^^^^^^^^^^^^^ Wrap hash in `{` and `}`.
@@ -23,6 +23,40 @@ RSpec.describe RuboCop::Cop::Style::HashAsLastArrayItem, :config do
 
       expect_correction(<<~RUBY)
         [{one: 1, two: 2}]
+      RUBY
+    end
+
+    it 'registers an offense and corrects when the multiline array contains only hash elements without braces' do
+      expect_offense(<<~RUBY)
+        [
+          one: 1,
+          ^^^^^^^ Wrap hash in `{` and `}`.
+          two: 2
+        ]
+      RUBY
+
+      # NOTE: Hash element indentation is handled by
+      # `Layout/FirstHashElementIndentation` and `Layout/HashAlignment` cops.
+      expect_correction(<<~RUBY)
+        [
+          {
+          one: 1,
+          two: 2
+          }
+        ]
+      RUBY
+    end
+
+    it 'registers an offense and corrects when the multiline array on the same line contains only hash elements without braces' do
+      expect_offense(<<~RUBY)
+        [one: 1,
+         ^^^^^^^ Wrap hash in `{` and `}`.
+         two: 2]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        [{one: 1,
+         two: 2}]
       RUBY
     end
 

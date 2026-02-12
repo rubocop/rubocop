@@ -69,7 +69,12 @@ module RuboCop
           return if node.braces?
 
           add_offense(node, message: 'Wrap hash in `{` and `}`.') do |corrector|
-            corrector.wrap(node, '{', '}')
+            if node.single_line? || same_line?(node, node.parent)
+              corrector.wrap(node, '{', '}')
+            else
+              indent = indent(node)
+              corrector.wrap(node, "{\n#{indent}", "\n#{indent}}")
+            end
           end
         end
 
