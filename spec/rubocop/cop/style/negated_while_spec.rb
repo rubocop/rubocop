@@ -55,6 +55,19 @@ RSpec.describe RuboCop::Cop::Style::NegatedWhile, :config do
     RUBY
   end
 
+  it 'registers an offense when the last expression of an `until` condition is negated' do
+    expect_offense(<<~RUBY)
+      until (var = foo; !bar)
+      ^^^^^^^^^^^^^^^^^^^^^^^ Favor `while` over `until` for negative conditions.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      while (var = foo; bar)
+      end
+    RUBY
+  end
+
   it 'accepts a while where only part of the condition is negated' do
     expect_no_offenses(<<~RUBY)
       while !a_condition && another_condition

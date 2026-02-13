@@ -16,7 +16,7 @@ module RuboCop
 
         def negated_condition(node)
           condition = node.condition
-          condition = condition.children.first while condition.begin_type?
+          condition = condition.children.last while condition.begin_type?
           condition
         end
       end
