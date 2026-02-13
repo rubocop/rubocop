@@ -2414,8 +2414,9 @@ Lint/SafeNavigationConsistency:
                  consistent and appropriate safe navigation, without excess or deficiency,
                  is used for all method calls on the same object.
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.55'
-  VersionChanged: '0.77'
+  VersionChanged: '<<next>>'
   AllowedMethods:
     - present?
     - blank?
