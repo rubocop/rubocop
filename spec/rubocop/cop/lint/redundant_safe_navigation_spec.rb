@@ -199,9 +199,15 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `&.respond_to?` with `nil` specific method as argument in condition' do
+  it 'does not register an offense when using `&.respond_to?` with a method that `nil` responds to as argument in condition' do
     expect_no_offenses(<<~RUBY)
       do_something if foo&.respond_to?(:to_a)
+    RUBY
+  end
+
+  it 'does not register an offense when using `&.respond_to?` with a method defined on `Object` as argument in condition' do
+    expect_no_offenses(<<~RUBY)
+      do_something if foo&.respond_to?(:class)
     RUBY
   end
 

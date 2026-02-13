@@ -1,0 +1,1 @@
+* [#14641](https://github.com/rubocop/rubocop/issues/14641): Fix false positive in `Lint/RedundantSafeNavigation` when using `&.respond_to?` with methods defined on `Object` (e.g., `:class`). ([@bbatsov][])
