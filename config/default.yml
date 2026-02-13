@@ -2469,9 +2469,10 @@ Lint/SharedMutableDefault:
   VersionAdded: '1.70'
 
 Lint/StructNewOverride:
-  Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
+  Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new` or the `Data` built-in methods via `Data.define`.'
   Enabled: true
   VersionAdded: '0.81'
+  VersionChanged: '<<next>>'
 
 Lint/SuppressedException:
   Description: "Don't suppress exceptions."
