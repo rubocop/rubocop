@@ -71,8 +71,9 @@ module RuboCop
       #     node = node.parent
       #   end
       #
-      #   # good - without `&.` this will always return `true`
+      #   # good - without `&.` this changes the return value for `nil`
       #   foo&.respond_to?(:to_a)
+      #   foo&.respond_to?(:class)
       #
       #   # bad - for `nil`s conversion methods return default values for the type
       #   foo&.to_h || {}
@@ -151,15 +152,15 @@ module RuboCop
         MSG_NON_NIL = 'Redundant safe navigation on non-nil receiver (detected by analyzing ' \
                       'previous code/method invocations).'
 
-        NIL_SPECIFIC_METHODS = (nil.methods - Object.new.methods).to_set.freeze
+        NIL_METHODS = nil.methods.to_set.freeze
 
         SNAKE_CASE = /\A[[:digit:][:upper:]_]+\z/.freeze
 
         GUARANTEED_INSTANCE_METHODS = %i[to_s to_i to_f to_a to_h].freeze
 
-        # @!method respond_to_nil_specific_method?(node)
-        def_node_matcher :respond_to_nil_specific_method?, <<~PATTERN
-          (csend _ :respond_to? (sym %NIL_SPECIFIC_METHODS))
+        # @!method respond_to_nil_method?(node)
+        def_node_matcher :respond_to_nil_method?, <<~PATTERN
+          (csend _ :respond_to? (sym %NIL_METHODS))
         PATTERN
 
         # @!method conversion_with_default?(node)
@@ -189,7 +190,7 @@ module RuboCop
 
           unless assume_receiver_instance_exists?(node.receiver)
             return if !guaranteed_instance?(node.receiver) && !check?(node)
-            return if respond_to_nil_specific_method?(node)
+            return if respond_to_nil_method?(node)
           end
 
           add_offense(range) { |corrector| corrector.replace(range, '.') }
