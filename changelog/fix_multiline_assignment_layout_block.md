@@ -1,0 +1,1 @@
+* [#14880](https://github.com/rubocop/rubocop/issues/14880): Fix a false negative in `Layout/MultilineAssignmentLayout` when using `numblock` or `itblock` with `SupportedTypes: ['block']`. ([@bbatsov][])

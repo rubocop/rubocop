@@ -171,6 +171,24 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
             end
         RUBY
       end
+
+      it 'registers an offense for numblock on the same line', :ruby27 do
+        expect_offense(<<~RUBY)
+          bars = foo.map {
+          ^^^^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
+            _1.bar
+          }
+        RUBY
+      end
+
+      it 'registers an offense for itblock on the same line', :ruby34 do
+        expect_offense(<<~RUBY)
+          bars = foo.map {
+          ^^^^^^^^^^^^^^^^ Right hand side of multi-line assignment is on the same line as the assignment operator `=`.
+            it.bar
+          }
+        RUBY
+      end
     end
   end
 
@@ -336,6 +354,26 @@ RSpec.describe RuboCop::Cop::Layout::MultilineAssignmentLayout, :config do
           foo = items.map do |item|
               item.do_something
             end
+        RUBY
+      end
+
+      it 'registers an offense for numblock on separate lines', :ruby27 do
+        expect_offense(<<~RUBY)
+          bars =
+          ^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
+            foo.map {
+              _1.bar
+            }
+        RUBY
+      end
+
+      it 'registers an offense for itblock on separate lines', :ruby34 do
+        expect_offense(<<~RUBY)
+          bars =
+          ^^^^^^ Right hand side of multi-line assignment is not on the same line as the assignment operator `=`.
+            foo.map {
+              it.bar
+            }
         RUBY
       end
     end
