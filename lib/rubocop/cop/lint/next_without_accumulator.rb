@@ -31,6 +31,7 @@ module RuboCop
           end
         end
         alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 
@@ -39,6 +40,7 @@ module RuboCop
           {
             (block (call _recv {:reduce :inject} !sym) _blockargs $(begin ...))
             (numblock (call _recv {:reduce :inject} !sym) _argscount $(begin ...))
+            (itblock (call _recv {:reduce :inject} !sym) _argscount $(begin ...))
           }
         PATTERN
 

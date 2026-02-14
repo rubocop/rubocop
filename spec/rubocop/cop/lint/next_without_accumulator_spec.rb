@@ -65,6 +65,28 @@ RSpec.describe RuboCop::Cop::Lint::NextWithoutAccumulator, :config do
           RUBY
         end
       end
+
+      context 'Ruby 3.4', :ruby34 do
+        it 'registers an offense for a bare next' do
+          expect_offense(<<~RUBY)
+            (1..4).#{reduce_alias}(0) do
+              next if it.odd?
+              ^^^^ Use `next` with an accumulator argument in a `reduce`.
+              it + 1
+            end
+          RUBY
+        end
+
+        it 'registers an offense for a bare `next` in the block of safe navigation method call' do
+          expect_offense(<<~RUBY)
+            (1..4)&.#{reduce_alias}(0) do
+              next if it.odd?
+              ^^^^ Use `next` with an accumulator argument in a `reduce`.
+              it + 1
+            end
+          RUBY
+        end
+      end
     end
   end
 

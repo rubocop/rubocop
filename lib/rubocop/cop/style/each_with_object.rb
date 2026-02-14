@@ -40,6 +40,8 @@ module RuboCop
           end
         end
 
+        alias on_itblock on_block
+
         def on_numblock(node)
           each_with_object_numblock_candidate?(node) do |method, body|
             _, method_name, method_arg = *method

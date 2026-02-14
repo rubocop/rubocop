@@ -23,7 +23,7 @@ module RuboCop
 
         MSG = 'Omit parentheses for the empty lambda parameters.'
 
-        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
           send_node = node.send_node
           return unless send_node.send_type?
 

@@ -7,6 +7,7 @@ require_relative 'internal_affairs/empty_line_between_expect_offense_and_correct
 require_relative 'internal_affairs/example_description'
 require_relative 'internal_affairs/example_heredoc_delimiter'
 require_relative 'internal_affairs/inherit_deprecated_cop_class'
+require_relative 'internal_affairs/itblock_handler'
 require_relative 'internal_affairs/lambda_or_proc'
 require_relative 'internal_affairs/location_exists'
 require_relative 'internal_affairs/location_expression'

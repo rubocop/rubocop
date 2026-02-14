@@ -52,7 +52,7 @@ module RuboCop
             ${nil? basic_literal? const_type?})
         PATTERN
 
-        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
           redundant_fetch_block_candidate?(node) do |send, body|
             return if should_not_check?(send, body)
 

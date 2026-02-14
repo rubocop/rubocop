@@ -230,6 +230,10 @@ InternalAffairs/StyleDetectedApiUse:
   Exclude:
     - 'lib/rubocop/cop/mixin/percent_array.rb'
 
+InternalAffairs/ItblockHandler:
+  Exclude:
+    - 'lib/rubocop/cop/internal_affairs/*.rb'
+
 InternalAffairs/NumblockHandler:
   Exclude:
     - 'lib/rubocop/cop/internal_affairs/*.rb'
