@@ -54,9 +54,13 @@ module RuboCop
         end
 
         def valid_syntax?(node)
-          double_quoted_string = node.source.gsub(/\A'|'\z/, '"')
+          corrected = if node.source.include?('"')
+                        node.source.sub(/\A'/, '%{').sub(/'\z/, '}')
+                      else
+                        node.source.gsub(/\A'|'\z/, '"')
+                      end
 
-          parse(double_quoted_string).valid_syntax?
+          parse(corrected).valid_syntax?
         end
       end
     end

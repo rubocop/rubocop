@@ -86,4 +86,10 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
       '#{%<expression>s}'
     RUBY
   end
+
+  it 'does not register an offense when using interpolation with format specifiers and double quotes' do
+    expect_no_offenses(<<~'RUBY')
+      msg = 'Text `A("#{%<base>s}/%<path>s}")` and `B` with C.'
+    RUBY
+  end
 end
