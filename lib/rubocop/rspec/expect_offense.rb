@@ -219,7 +219,7 @@ module RuboCop
         return processed_source if processed_source.valid_syntax?
 
         raise 'Error parsing example code: ' \
-              "#{processed_source.diagnostics.map(&:render).join("\n")}"
+              "#{processed_source.diagnostics.map(&:render).join(%(\n))}"
       end
 
       def set_formatter_options
