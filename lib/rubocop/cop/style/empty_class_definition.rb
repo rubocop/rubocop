@@ -5,12 +5,12 @@ module RuboCop
     module Style
       # Enforces consistent style for empty class definitions.
       #
-      # This cop can enforce either a two-line class definition or `Class.new`
+      # This cop can enforce either a standard class definition or `Class.new`
       # for classes with no body.
       #
       # The supported styles are:
       #
-      # * class_definition (default) - prefer two-line class definition over `Class.new`
+      # * class_definition (default) - prefer standard class definition over `Class.new`
       # * class_new - prefer `Class.new` over class definition
       #
       # @example EnforcedStyle: class_definition (default)
@@ -41,7 +41,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG_CLASS_DEFINITION =
-          'Prefer a two-line class definition over `Class.new` for classes with no body.'
+          'Prefer standard class definition over `Class.new` for classes with no body.'
         MSG_CLASS_NEW = 'Prefer `Class.new` over class definition for classes with no body.'
 
         # @!method class_new_assignment(node)
