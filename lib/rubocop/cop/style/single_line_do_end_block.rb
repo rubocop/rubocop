@@ -38,7 +38,7 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize
         def on_block(node)
-          return if !node.single_line? || node.braces?
+          return if node.multiline? || node.braces?
           return if single_line_blocks_preferred? && suitable_as_single_line?(node)
 
           add_offense(node) do |corrector|

@@ -114,7 +114,7 @@ module RuboCop
 
         def other_cop_takes_precedence?(node)
           single_line_block_chain_enabled? && any_descendant?(node, :any_block) do |block_node|
-            block_node.parent.send_type? && block_node.parent.loc.dot && !block_node.multiline?
+            block_node.parent.send_type? && block_node.parent.loc.dot && block_node.single_line?
           end
         end
 

@@ -222,7 +222,7 @@ module RuboCop
       def already_on_multiple_lines?(node)
         return node.first_line != node.last_argument.last_line if node.any_def_type?
 
-        !node.single_line?
+        node.multiline?
       end
 
       def chained_to_heredoc?(node)

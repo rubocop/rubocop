@@ -421,7 +421,7 @@ module RuboCop
 
           if node.braces?
             functional_method?(method_name) || functional_block?(node) ||
-              (procedural_oneliners_may_have_braces? && !node.multiline?)
+              (procedural_oneliners_may_have_braces? && node.single_line?)
           else
             procedural_method?(method_name) || !return_value_used?(node)
           end
@@ -489,7 +489,7 @@ module RuboCop
         def begin_required?(block_node)
           # If the block contains `rescue` or `ensure`, it needs to be wrapped in
           # `begin`...`end` when changing `do-end` to `{}`.
-          block_node.each_child_node(:rescue, :ensure).any? && !block_node.single_line?
+          block_node.each_child_node(:rescue, :ensure).any? && block_node.multiline?
         end
 
         def single_argument_operator_method?(node)

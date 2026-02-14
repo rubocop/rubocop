@@ -37,6 +37,11 @@ Style/FormatStringToken:
   Exclude:
     - spec/**/*
 
+Style/InverseMethods:
+  InverseMethods:
+    # RuboCop AST defines common inverse methods. They are listed below:
+    :single_line?: :multiline?
+
 Style/IpAddresses:
   # The test for this cop includes strings that would cause offenses
   Exclude:

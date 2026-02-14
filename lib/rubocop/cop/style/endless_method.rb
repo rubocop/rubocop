@@ -170,7 +170,7 @@ module RuboCop
         end
 
         def handle_require_single_line_style(node)
-          if node.endless? && !node.single_line?
+          if node.endless? && node.multiline?
             add_offense(node, message: MSG_MULTI_LINE) do |corrector|
               correct_to_multiline(corrector, node)
             end
