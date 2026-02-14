@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for Class.new assignment to constant' do
       expect_offense(<<~RUBY)
         FooError = Class.new(StandardError)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer a two-line class definition over `Class.new` for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for Class.new assignment to constant without parent class' do
       expect_offense(<<~RUBY)
         MyClass = Class.new
-        ^^^^^^^^^^^^^^^^^^^ Prefer a two-line class definition over `Class.new` for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       expect_offense(<<~RUBY)
         module Foo
           BarError = Class.new(StandardError)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer a two-line class definition over `Class.new` for classes with no body.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
         end
       RUBY
 
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for Class.new assignment to constant with namespaced parent class' do
       expect_offense(<<~RUBY)
         MyClass = Class.new(Alchemy::Admin::PreviewUrl)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer a two-line class definition over `Class.new` for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for Class.new assignment to constant with absolute parent class path' do
       expect_offense(<<~RUBY)
         MyClass = Class.new(::Safemode::Jail)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer a two-line class definition over `Class.new` for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
       RUBY
 
       expect_correction(<<~RUBY)
