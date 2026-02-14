@@ -71,6 +71,17 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject, :config do
     end
   end
 
+  context 'Ruby 3.4', :ruby34 do
+    it 'does not register an offense when using itblock with inject' do
+      expect_no_offenses(<<~RUBY)
+        [].inject({}) do
+          it[foo] = bar
+          it
+        end
+      RUBY
+    end
+  end
+
   it 'correctly autocorrects' do
     expect_offense(<<~RUBY)
       [1, 2, 3].inject({}) do |h, i|

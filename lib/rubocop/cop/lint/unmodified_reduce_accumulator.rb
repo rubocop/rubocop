@@ -120,6 +120,7 @@ module RuboCop
           check_return_values(node)
         end
         alias on_numblock on_block
+        alias on_itblock on_block
 
         private
 

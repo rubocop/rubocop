@@ -43,7 +43,7 @@ module RuboCop
           { ({return next break} nil) (nil) }
         PATTERN
 
-        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
           return unless node.lambda_or_proc?
           return unless nil_return?(node.body)
 

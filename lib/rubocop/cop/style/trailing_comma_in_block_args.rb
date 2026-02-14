@@ -64,7 +64,7 @@ module RuboCop
 
         MSG = 'Useless trailing comma present in block arguments.'
 
-        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
           # lambda literal (`->`) never has block arguments.
           return if node.send_node.lambda_literal?
           return unless useless_trailing_comma?(node)

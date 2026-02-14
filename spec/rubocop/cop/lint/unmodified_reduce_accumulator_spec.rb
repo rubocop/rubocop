@@ -669,6 +669,16 @@ RSpec.describe RuboCop::Cop::Lint::UnmodifiedReduceAccumulator, :config do
           RUBY
         end
       end
+
+      context 'itblocks', :ruby34 do
+        it 'does not register an offense when using itblock with reduce' do
+          expect_no_offenses(<<~RUBY)
+            (1..4).#{method}(0) do
+              it + 1
+            end
+          RUBY
+        end
+      end
     end
   end
 

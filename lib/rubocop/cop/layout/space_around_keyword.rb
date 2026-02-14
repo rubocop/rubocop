@@ -47,7 +47,7 @@ module RuboCop
           check(node, [:operator].freeze) if node.keyword?
         end
 
-        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler
+        def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
           check(node, %i[begin end].freeze)
         end
 
