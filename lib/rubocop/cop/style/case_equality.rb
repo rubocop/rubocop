@@ -4,6 +4,10 @@ module RuboCop
   module Cop
     module Style
       # Checks for uses of the case equality operator (`===`).
+      # The `===` operator has different behavior depending on the
+      # receiver and its use outside of `case`/`when` is confusing.
+      # Prefer more explicit alternatives like `is_a?`, `include?`,
+      # or `match?`.
       #
       # If `AllowOnConstant` option is enabled, the cop will ignore violations when the receiver of
       # the case equality operator is a constant.

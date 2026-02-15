@@ -3,7 +3,10 @@
 module RuboCop
   module Cop
     module Style
-      # Looks for uses of global variables.
+      # Looks for uses of global variables. Global variables introduce
+      # shared mutable state that makes code harder to test, debug,
+      # and reason about, since any part of the program can read or modify them.
+      #
       # It does not report offenses for built-in global variables.
       # Built-in global variables are allowed by default. Additionally
       # users can allow additional variables via the AllowedVariables option.
