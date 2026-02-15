@@ -3,12 +3,18 @@
 module RuboCop
   module Cop
     module Style
-      # Checks ensures source files have no utf-8 encoding comments.
+      # Checks that source files have no utf-8 encoding comments.
+      # Since Ruby 2.0, UTF-8 is the default source encoding, so
+      # these comments are no longer necessary and just add noise.
+      #
       # @example
       #   # bad
       #   # encoding: UTF-8
       #   # coding: UTF-8
       #   # -*- coding: UTF-8 -*-
+      #
+      #   # good
+      #   # No encoding comment needed
       class Encoding < Base
         include RangeHelp
         extend AutoCorrector
