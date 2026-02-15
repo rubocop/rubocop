@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # Check that the keys, separators, and values of a multi-line hash
+      # Checks that the keys, separators, and values of a multi-line hash
       # literal are aligned according to configuration. The configuration
       # options are:
       #

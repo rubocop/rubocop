@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Check that certain constants are fully qualified.
+      # Checks that certain constants are fully qualified.
       #
       # This is not enabled by default because it would mark a lot of offenses
       # unnecessarily.
