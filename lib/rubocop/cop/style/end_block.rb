@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for END blocks.
+      # Checks for `END` blocks. `END` blocks are Perl-style constructs
+      # and `Kernel#at_exit` is the idiomatic Ruby alternative, as it's
+      # explicit and can be used anywhere.
       #
       # @example
       #   # bad
