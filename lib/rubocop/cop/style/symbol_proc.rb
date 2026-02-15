@@ -179,7 +179,7 @@ module RuboCop
             return if allowed_method_name?(dispatch_node.method_name)
             return if allow_if_method_has_argument?(node.send_node)
             return if node.block_type? && destructuring_block_argument?(arguments_node)
-            return if allow_comments? && contains_comments?(node)
+            return if allow_comments?(node)
 
             register_offense(node, method_name, dispatch_node.method_name)
           end
@@ -273,8 +273,9 @@ module RuboCop
           !!cop_config.fetch('AllowMethodsWithArguments', false) && send_node.arguments.any?
         end
 
-        def allow_comments?
-          cop_config.fetch('AllowComments', false)
+        def allow_comments?(node)
+          cop_config.fetch('AllowComments', false) && contains_comments?(node) &&
+            !comments_contain_disables?(node, name)
         end
       end
     end

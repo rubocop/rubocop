@@ -70,7 +70,7 @@ module RuboCop
 
         def on_if(node)
           return if node.body || same_line?(node.loc.begin, node.loc.end)
-          return if cop_config['AllowComments'] && contains_comments?(node)
+          return if allow_comments?(node)
 
           range = offense_range(node)
 
@@ -82,6 +82,11 @@ module RuboCop
         end
 
         private
+
+        def allow_comments?(node)
+          cop_config['AllowComments'] && contains_comments?(node) &&
+            !comments_contain_disables?(node, name)
+        end
 
         def offense_range(node)
           if node.loc.else
