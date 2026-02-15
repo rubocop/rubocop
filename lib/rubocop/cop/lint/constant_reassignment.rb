@@ -6,8 +6,11 @@ module RuboCop
       # Checks for constant reassignments.
       #
       # Emulates Ruby's runtime warning "already initialized constant X"
-      # when a constant is reassigned in the same file and namespace using the
-      # `NAME = value` syntax.
+      # when a constant is reassigned in the same file and namespace.
+      #
+      # The cop tracks constants defined via `NAME = value` syntax as well as
+      # class/module keyword definitions. It detects reassignment when a constant
+      # is first defined one way and then redefined using the `NAME = value` syntax.
       #
       # The cop cannot catch all offenses, like, for example, when a constant
       # is reassigned in another file, or when using metaprogramming (`Module#const_set`).
@@ -35,6 +38,14 @@ module RuboCop
       #     X = :foo
       #     X = :bar
       #   end
+      #
+      #   # bad
+      #   class FooError < StandardError; end
+      #   FooError = Class.new(RuntimeError)
+      #
+      #   # bad
+      #   module M; end
+      #   M = 1
       #
       #   # good - keep only one assignment
       #   X = :bar
@@ -69,16 +80,30 @@ module RuboCop
 
         # @!method remove_constant(node)
         def_node_matcher :remove_constant, <<~PATTERN
-          (send _ :remove_const
+          (send {nil? self} :remove_const
             ({sym str} $_))
         PATTERN
+
+        def on_class(node)
+          return unless unconditional_definition?(node)
+
+          constant_definitions[definition_name(node)] ||= :class
+        end
+
+        def on_module(node)
+          return unless unconditional_definition?(node)
+
+          constant_definitions[definition_name(node)] ||= :module
+        end
 
         def on_casgn(node)
           return unless fixed_constant_path?(node)
           return unless simple_assignment?(node)
-          return if constant_names.add?(fully_qualified_constant_name(node))
 
-          add_offense(node, message: format(MSG, constant: node.name))
+          name = fully_qualified_constant_name(node)
+          return constant_definitions[name] = :casgn unless constant_definitions.key?(name)
+
+          add_offense(node, message: format(MSG, constant: constant_display_name(node)))
         end
 
         def on_send(node)
@@ -90,7 +115,7 @@ module RuboCop
 
           return if namespaces.none?
 
-          constant_names.delete(fully_qualified_name_for(namespaces, constant))
+          constant_definitions.delete(fully_qualified_name_for(namespaces, constant))
         end
 
         private
@@ -104,7 +129,7 @@ module RuboCop
             return true if ancestor.type?(:module, :class)
 
             ancestor.begin_type? || ancestor.literal? || ancestor.casgn_type? ||
-              freeze_method?(ancestor)
+              ancestor.type?(:masgn, :mlhs) || freeze_method?(ancestor)
           end
         end
 
@@ -128,6 +153,10 @@ module RuboCop
           ['', *namespaces, constant].join('::')
         end
 
+        def constant_display_name(node)
+          [*constant_namespaces(node), node.name].join('::')
+        end
+
         def constant_namespaces(node)
           node.each_path.select(&:const_type?).map(&:short_name)
         end
@@ -139,8 +168,29 @@ module RuboCop
             .reverse
         end
 
-        def constant_names
-          @constant_names ||= Set.new
+        def unconditional_definition?(node)
+          node.each_ancestor.all? do |ancestor|
+            ancestor.type?(:begin, :module, :class)
+          end
+        end
+
+        def definition_name(node)
+          identifier = node.identifier
+
+          if identifier.namespace&.cbase_type?
+            fully_qualified_name_for([], identifier.short_name)
+          else
+            namespaces = ancestor_namespaces(node) + identifier_namespaces(identifier)
+            fully_qualified_name_for(namespaces, identifier.short_name)
+          end
+        end
+
+        def identifier_namespaces(identifier)
+          identifier.each_path.select(&:const_type?).map(&:short_name)
+        end
+
+        def constant_definitions
+          @constant_definitions ||= {}
         end
       end
     end
