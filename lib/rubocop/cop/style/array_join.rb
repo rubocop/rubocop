@@ -3,9 +3,11 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for uses of "*" as a substitute for _join_.
+      # Checks for uses of `*` as a substitute for `Array#join`.
+      # Using `join` is clearer about intent and more readable than
+      # overloading the `*` operator for string conversion.
       #
-      # Not all cases can reliably checked, due to Ruby's dynamic
+      # Not all cases can be reliably checked, due to Ruby's dynamic
       # types, so we consider only cases when the first argument is an
       # array literal or the second is a string literal.
       #

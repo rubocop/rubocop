@@ -5,6 +5,8 @@ module RuboCop
     module Style
       # Checks for multiple expressions placed on the same line.
       # It also checks for lines terminated with a semicolon.
+      # In idiomatic Ruby, each expression should be on its own line
+      # for readability.
       #
       # This cop has `AllowAsExpressionSeparator` configuration option.
       # It allows `;` to separate several expressions on the same line.
