@@ -4,6 +4,8 @@ module RuboCop
   module Cop
     module Style
       # Checks for uses of the keyword `not` instead of `!`.
+      # The `not` keyword has lower precedence than `!`, which can
+      # lead to surprising behavior and often requires parentheses.
       #
       # @example
       #
