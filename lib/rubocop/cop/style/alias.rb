@@ -4,7 +4,10 @@ module RuboCop
   module Cop
     module Style
       # Enforces the use of either `#alias` or `#alias_method`
-      # depending on configuration.
+      # depending on configuration. Consistent use of one or the
+      # other prevents confusion about their different semantics
+      # (e.g., `alias` is resolved at parse time, while `alias_method`
+      # is resolved at runtime).
       # It also flags uses of `alias :symbol` rather than `alias bareword`.
       #
       # However, it will always enforce `method_alias` when used `alias`

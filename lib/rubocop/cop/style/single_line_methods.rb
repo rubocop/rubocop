@@ -4,7 +4,9 @@ module RuboCop
   module Cop
     module Style
       # Checks for single-line method definitions that contain a body.
-      # It will accept single-line methods with no body.
+      # Single-line methods with a body are harder to read and debug
+      # than their multi-line equivalents. It will accept single-line
+      # methods with no body.
       #
       # Endless methods added in Ruby 3.0 are also accepted by this cop.
       #
