@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Layout
-      # Check that the elements of a multi-line array literal are
+      # Checks that the elements of a multi-line array literal are
       # aligned.
       #
       # @example EnforcedStyle: with_first_element (default)

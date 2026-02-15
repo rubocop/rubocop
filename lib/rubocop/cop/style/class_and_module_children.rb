@@ -28,16 +28,24 @@ module RuboCop
       #   manual oversight.
       #
       # @example EnforcedStyle: nested (default)
+      #   # bad
+      #   class Foo::Bar
+      #   end
+      #
       #   # good
-      #   # have each child on its own line
       #   class Foo
       #     class Bar
       #     end
       #   end
       #
       # @example EnforcedStyle: compact
+      #   # bad
+      #   class Foo
+      #     class Bar
+      #     end
+      #   end
+      #
       #   # good
-      #   # combine definitions as much as possible
       #   class Foo::Bar
       #   end
       #
