@@ -7,15 +7,25 @@ module RuboCop
       # the configuration.
       #
       # @example EnforcedStyle: no_empty_lines (default)
-      #   # good
+      #   # bad
+      #   foo do |bar|
       #
+      #     # ...
+      #
+      #   end
+      #
+      #   # good
       #   foo do |bar|
       #     # ...
       #   end
       #
       # @example EnforcedStyle: empty_lines
-      #   # good
+      #   # bad
+      #   foo do |bar|
+      #     # ...
+      #   end
       #
+      #   # good
       #   foo do |bar|
       #
       #     # ...
