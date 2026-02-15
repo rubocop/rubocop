@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # Checks if usage of %() or %Q() matches configuration.
+      # Checks if usage of `%()` or `%Q()` matches configuration.
+      # Consistent use of one style makes the codebase easier
+      # to read.
       #
       # @example EnforcedStyle: bare_percent (default)
       #   # bad

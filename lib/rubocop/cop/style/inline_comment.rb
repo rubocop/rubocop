@@ -3,7 +3,10 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for trailing inline comments.
+      # Checks for trailing inline comments. Inline comments can
+      # make lines harder to read, especially when they are long.
+      # Placing comments on their own line above the code they
+      # describe is often clearer.
       #
       # @example
       #
