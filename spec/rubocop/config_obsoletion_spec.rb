@@ -7,8 +7,14 @@ RSpec.describe RuboCop::ConfigObsoletion do
 
   let(:configuration) { RuboCop::Config.new(hash, loaded_path) }
   let(:loaded_path) { 'example/.rubocop.yml' }
-  let(:plugins) { [] }
+  let(:plugin_names) { [] }
+  let(:plugins) { plugin_names.map { |name| plugin_stub(name) } }
   let(:requires) { [] }
+
+  def plugin_stub(name)
+    about = Struct.new(:name).new(name)
+    Struct.new(:about).new(about)
+  end
 
   before do
     allow(configuration).to receive_messages(loaded_plugins: plugins, loaded_features: requires)
@@ -241,7 +247,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
 
       context 'when the plugin extensions are loaded' do
-        let(:plugins) { %w[rubocop-rails rubocop-performance] }
+        let(:plugin_names) { %w[rubocop-rails rubocop-performance] }
 
         it 'does not print a warning message' do
           expect { config_obsoletion.reject_obsolete! }.not_to raise_error
@@ -249,7 +255,7 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
 
       context 'when only one plugin extension is loaded' do
-        let(:plugins) { %w[rubocop-performance] }
+        let(:plugin_names) { %w[rubocop-performance] }
 
         let(:expected_message) do
           <<~OUTPUT.chomp
