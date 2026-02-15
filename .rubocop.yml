@@ -285,6 +285,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/lint/redundant_dir_glob_sort.rb'
     - 'lib/rubocop/cop/lint/send_with_mixin_argument.rb'
     - 'lib/rubocop/cop/lint/shared_mutable_default.rb'
+    - 'lib/rubocop/cop/lint/data_define_override.rb'
     - 'lib/rubocop/cop/lint/struct_new_override.rb'
     - 'lib/rubocop/cop/lint/symbol_conversion.rb'
     - 'lib/rubocop/cop/lint/to_enum_arguments.rb'
