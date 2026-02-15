@@ -50,10 +50,17 @@ module RuboCop
         def on_case(node)
           node.when_branches.each do |when_node|
             next if when_node.body
-            next if cop_config['AllowComments'] && contains_comments?(when_node)
+            next if allow_comments?(when_node)
 
             add_offense(when_node)
           end
+        end
+
+        private
+
+        def allow_comments?(node)
+          cop_config['AllowComments'] && contains_comments?(node) &&
+            !comments_contain_disables?(node, name)
         end
       end
     end

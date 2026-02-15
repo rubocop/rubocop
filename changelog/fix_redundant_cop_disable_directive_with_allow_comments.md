@@ -1,0 +1,1 @@
+* [#14890](https://github.com/rubocop/rubocop/pull/14890): Fix a false positive for `Lint/RedundantCopDisableDirective` when a `rubocop:disable` comment is used to suppress `Lint/EmptyWhen`, `Lint/EmptyConditionalBody`, `Lint/EmptyInPattern`, or `Style/SymbolProc`. ([@eugeneius][])
