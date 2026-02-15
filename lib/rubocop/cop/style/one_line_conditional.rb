@@ -3,9 +3,10 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for uses of if/then/else/end constructs on a single line.
-      # `AlwaysCorrectToMultiline` config option can be set to true to autocorrect all offenses to
-      # multi-line constructs. When `AlwaysCorrectToMultiline` is false (default case) the
+      # Checks for uses of `if/then/else/end` constructs on a single line.
+      # A ternary operator (`?:`) or multi-line `if` is more readable.
+      # `AlwaysCorrectToMultiline` config option can be set to `true` to autocorrect all offenses to
+      # multi-line constructs. When `AlwaysCorrectToMultiline` is `false` (default case) the
       # autocorrect will first try converting them to ternary operators.
       #
       # @example
