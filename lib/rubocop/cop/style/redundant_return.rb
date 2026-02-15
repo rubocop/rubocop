@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for redundant `return` expressions.
+      # Checks for redundant `return` expressions. Ruby methods
+      # implicitly return the value of the last evaluated expression,
+      # so an explicit `return` at the end of a method body is unnecessary.
       #
       # @example
       #   # These bad cases should be extended to handle methods whose body is

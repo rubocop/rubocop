@@ -3,9 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for redundant `begin` blocks.
-      #
-      # Currently it checks for code like this:
+      # Checks for redundant `begin` blocks. A `begin` block is redundant
+      # when the `rescue`/`ensure` can be handled by the enclosing method
+      # or block definition directly, avoiding unnecessary indentation.
       #
       # @example
       #
