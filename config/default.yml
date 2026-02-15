@@ -2320,6 +2320,11 @@ Lint/RedundantSplatExpansion:
   VersionChanged: '1.7'
   AllowPercentLiteralArrayArgument: true
 
+Lint/RedundantStructKeywordInit:
+  Description: 'Checks for redundant `keyword_init: true` option on `Struct.new`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/RedundantStringCoercion:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   StyleGuide: '#no-to-s'
