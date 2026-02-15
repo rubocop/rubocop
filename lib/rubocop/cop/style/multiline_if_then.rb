@@ -3,7 +3,9 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for uses of the `then` keyword in multi-line if statements.
+      # Checks for uses of the `then` keyword in multi-line `if` statements.
+      # In multi-line `if` statements, `then` is redundant because the newline
+      # already separates the condition from the body.
       #
       # @example
       #   # bad
