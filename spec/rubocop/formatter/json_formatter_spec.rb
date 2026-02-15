@@ -128,6 +128,23 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
       expect(hash[:corrected]).to be(true)
     end
 
+    it 'sets empty style_guide_urls by default' do
+      expect(hash[:style_guide_urls]).to eq([])
+    end
+
+    context 'when offense has urls' do
+      let(:offense) do
+        RuboCop::Cop::Offense.new(
+          :convention, location, 'This is message', 'CopName', :corrected, nil,
+          urls: ['https://rubystyle.guide#max-line-length']
+        )
+      end
+
+      it 'sets style_guide_urls from offense urls' do
+        expect(hash[:style_guide_urls]).to eq(['https://rubystyle.guide#max-line-length'])
+      end
+    end
+
     it 'sets value of #hash_for_location for :location key' do
       location_hash = {
         start_line: 2,

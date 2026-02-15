@@ -1268,6 +1268,28 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
                "(#{style_guide_link}, #{reference_link})"
       expect($stdout.string.lines.to_a[-1]).to eq([output, ''].join("\n"))
     end
+
+    it 'includes style_guide_urls in JSON output without --display-style-guide' do
+      create_file('example1.rb', 'puts 0 ')
+      cli.run(['--format', 'json', '--only', 'Layout/TrailingWhitespace', 'example1.rb'])
+
+      json = JSON.parse($stdout.string)
+      offenses = json['files'][0]['offenses']
+      offense = offenses.find { |o| o['cop_name'] == 'Layout/TrailingWhitespace' }
+
+      expect(offense['style_guide_urls'])
+        .to include('https://rubystyle.guide#no-trailing-whitespace')
+    end
+
+    it 'returns empty style_guide_urls in JSON for cops without references' do
+      create_file('example1.rb', 'binding.irb')
+      cli.run(['--format', 'json', '--only', 'Lint/Debugger', 'example1.rb'])
+
+      json = JSON.parse($stdout.string)
+      offense = json['files'][0]['offenses'].find { |o| o['cop_name'] == 'Lint/Debugger' }
+
+      expect(offense['style_guide_urls']).to eq([])
+    end
   end
 
   describe '--show-cops' do
