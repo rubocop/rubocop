@@ -4,6 +4,10 @@ module RuboCop
   module Cop
     module Style
       # Checks for simple usages of parallel assignment.
+      # Parallel assignment is less readable than individual
+      # assignments and makes it harder to follow what each
+      # variable is being set to.
+      #
       # This will only complain when the number of variables
       # being assigned matched the number of assigning variables.
       #
