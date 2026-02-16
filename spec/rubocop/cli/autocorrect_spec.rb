@@ -4222,4 +4222,25 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(status).to eq(0)
     expect($stderr.string).to eq('')
   end
+
+  it 'does not cause an infinite loop for `Style/IfUnlessModifier` ' \
+     'with `if`/`unless` inside string interpolation in a method' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~'RUBY')
+      "<li class='#{'xn-openable' if item.key?(:items)} item_#{index + 1} #{'active' if is_active_menu(item[:key])}' #{item[:bar]}>
+        #{foo}
+      </li>"
+    RUBY
+
+    status = cli.run(['--autocorrect-all'])
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~'RUBY')
+      # frozen_string_literal: true
+
+      "<li class='#{'xn-openable' if item.key?(:items)} item_#{index + 1} #{'active' if is_active_menu(item[:key])}' #{item[:bar]}>
+        #{foo}
+      </li>"
+    RUBY
+  end
 end
