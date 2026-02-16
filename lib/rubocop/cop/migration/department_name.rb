@@ -1,10 +1,20 @@
 # frozen_string_literal: true
 
+# Lint/RedundantCopDisableDirective needs to be disabled so as
+# to be able to provide examples of rubocop:disable comments.
+# rubocop:disable Lint/RedundantCopDisableDirective
 module RuboCop
   module Cop
     module Migration
-      # Check that cop names in rubocop:disable comments are given with
+      # Checks that cop names in rubocop:disable comments are given with
       # department name.
+      #
+      # @example
+      #   # bad
+      #   # rubocop:disable AbcSize
+      #
+      #   # good
+      #   # rubocop:disable Metrics/AbcSize
       class DepartmentName < Base
         include RangeHelp
         extend AutoCorrector
@@ -79,3 +89,4 @@ module RuboCop
     end
   end
 end
+# rubocop:enable Lint/RedundantCopDisableDirective
