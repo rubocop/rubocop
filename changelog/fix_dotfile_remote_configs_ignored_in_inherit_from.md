@@ -1,0 +1,1 @@
+* [#14908](https://github.com/rubocop/rubocop/pull/14908): Fix dotfile remote configs being ignored in `inherit_from` (regression from [#14870](https://github.com/rubocop/rubocop/pull/14870)). ([@knapo][])

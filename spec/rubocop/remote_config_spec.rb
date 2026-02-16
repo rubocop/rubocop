@@ -283,5 +283,21 @@ RSpec.describe RuboCop::RemoteConfig do
         expect(action.size).to be(254)
       end
     end
+
+    context 'with dotfile on the URL' do
+      let(:remote_config_url) { 'http://example.com/.rubocop-ruby.yml' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('.rubocop-ruby-6a679e7ffcafb12943fa4fe40bae174e.yml')
+      end
+    end
+
+    context 'with nested dotfile on the URL' do
+      let(:remote_config_url) { 'http://example.com/config/.rubocop.yml' }
+
+      it 'returns a sanitized cache name' do
+        expect(action).to eq('.rubocop-23d066df587770e4428d0f4b44350a2e.yml')
+      end
+    end
   end
 end

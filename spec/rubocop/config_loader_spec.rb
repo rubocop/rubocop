@@ -1538,6 +1538,35 @@ RSpec.describe RuboCop::ConfigLoader do
           expect(pwd_cache_files).to be_empty
         end
       end
+
+      context 'when a file inherits from a dotfile URL without explicit cache_root', :isolated_environment do
+        let(:file_path) { '.rubocop.yml' }
+        let(:cache_file) { '.rubocop-ruby-6a679e7ffcafb12943fa4fe40bae174e.yml' }
+
+        before do
+          stub_request(:get, %r{example.com/.rubocop-ruby.yml})
+            .to_return(status: 200, body: <<~YAML)
+              Style/StringLiterals:
+                Enabled: true
+            YAML
+
+          create_file(file_path, <<~YAML)
+            inherit_from: http://example.com/.rubocop-ruby.yml
+          YAML
+        end
+
+        it 'caches dotfile remote config correctly' do
+          expect(File).not_to exist(File.join(Dir.home, '.cache', 'rubocop_cache', cache_file))
+
+          config = configuration_from_file
+
+          pwd_cache_files = Dir.glob('**/*', File::FNM_DOTMATCH).select { |f| File.file?(f) && f.include?('.yml') && f != '.rubocop.yml' }
+
+          expect(File).to exist(File.join(Dir.home, '.cache', 'rubocop_cache', cache_file))
+          expect(pwd_cache_files).to be_empty
+          expect(config['Style/StringLiterals']['Enabled']).to eq(true)
+        end
+      end
     end
 
     context 'when a file inherits a configuration that specifies TargetRubyVersion' do
