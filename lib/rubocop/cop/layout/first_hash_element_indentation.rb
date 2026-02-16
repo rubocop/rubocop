@@ -135,7 +135,13 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
-          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+          line_range = if !node.is_a?(AST::Node) || node.value.first_line <= node.key.first_line
+                         node
+                       else
+                         processed_source.buffer.line_range(node.loc.line)
+                       end
+
+          AlignmentCorrector.correct(corrector, processed_source, line_range, @column_delta)
         end
 
         def brace_alignment_style
