@@ -42,15 +42,30 @@ module RuboCop
       #     puts error.backtrace
       #   end
       class ImplicitExceptionVars < Base
-        MSG = 'Avoid implicit exception variables `%<var>s`. ' \
-              'Use explicit exception variable in rescue instead.'
+        MSG_EXCEPTION_VAR = 'Avoid implicit exception variable `%<var>s`. ' \
+                            'Use explicit exception variable in rescue instead.'
+        MSG_BACKTRACE_VAR = 'Avoid implicit backtrace variable `%<var>s`. ' \
+                            'Use `.backtrace` in rescue instead.'
 
-        IMPLICIT_VARS = %i[$! $@ $ERROR_INFO $ERROR_POSITION].freeze
+        EXCEPTION_VARS = %i[$! $ERROR_INFO].freeze
+        BACKTRACE_VARS = %i[$@ $ERROR_POSITION].freeze
 
         def on_gvar(node)
-          return unless IMPLICIT_VARS.include?(node.name)
+          check_implicit_var(node)
+        end
 
-          add_offense(node, message: format(MSG, var: node.name))
+        def on_gvasgn(node)
+          check_implicit_var(node)
+        end
+
+        private
+
+        def check_implicit_var(node)
+          if BACKTRACE_VARS.include?(node.name)
+            add_offense(node, message: format(MSG_BACKTRACE_VAR, var: node.name))
+          elsif EXCEPTION_VARS.include?(node.name)
+            add_offense(node, message: format(MSG_EXCEPTION_VAR, var: node.name))
+          end
         end
       end
     end

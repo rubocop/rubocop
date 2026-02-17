@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
         do_something
       rescue
         puts $!
-             ^^ Avoid implicit exception variables `$!`. Use explicit exception variable in rescue instead.
+             ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
       end
     RUBY
   end
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
         do_something
       rescue
         puts $@
-             ^^ Avoid implicit exception variables `$@`. Use explicit exception variable in rescue instead.
+             ^^ Avoid implicit backtrace variable `$@`. Use `.backtrace` in rescue instead.
       end
     RUBY
   end
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
         do_something
       rescue
         puts $ERROR_INFO
-             ^^^^^^^^^^^ Avoid implicit exception variables `$ERROR_INFO`. Use explicit exception variable in rescue instead.
+             ^^^^^^^^^^^ Avoid implicit exception variable `$ERROR_INFO`. Use explicit exception variable in rescue instead.
       end
     RUBY
   end
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
         do_something
       rescue
         puts $ERROR_POSITION
-             ^^^^^^^^^^^^^^^ Avoid implicit exception variables `$ERROR_POSITION`. Use explicit exception variable in rescue instead.
+             ^^^^^^^^^^^^^^^ Avoid implicit backtrace variable `$ERROR_POSITION`. Use `.backtrace` in rescue instead.
       end
     RUBY
   end
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
         handle_error
       ensure
         log($!)
-            ^^ Avoid implicit exception variables `$!`. Use explicit exception variable in rescue instead.
+            ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
       end
     RUBY
   end
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
   it 'registers an offense when used outside rescue block' do
     expect_offense(<<~RUBY)
       if $!
-         ^^ Avoid implicit exception variables `$!`. Use explicit exception variable in rescue instead.
+         ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
         puts "error occurred"
       end
     RUBY
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
         do_something
       rescue
         puts "Error: \#{$!}"
-                       ^^ Avoid implicit exception variables `$!`. Use explicit exception variable in rescue instead.
+                       ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
       end
     RUBY
   end
@@ -107,6 +107,59 @@ RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
       puts $stdin
       puts $stdout
       puts $$
+    RUBY
+  end
+
+  it 'registers an offense when assigning to $!' do
+    expect_offense(<<~RUBY)
+      begin
+        do_something
+      rescue
+        $! = nil
+        ^^^^^^^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when assigning to $@' do
+    expect_offense(<<~RUBY)
+      begin
+        do_something
+      rescue
+        $@ = []
+        ^^^^^^^ Avoid implicit backtrace variable `$@`. Use `.backtrace` in rescue instead.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when assigning to $ERROR_INFO' do
+    expect_offense(<<~RUBY)
+      require 'English'
+      $ERROR_INFO = nil
+      ^^^^^^^^^^^^^^^^^ Avoid implicit exception variable `$ERROR_INFO`. Use explicit exception variable in rescue instead.
+    RUBY
+  end
+
+  it 'registers an offense when used inside defined?' do
+    expect_offense(<<~RUBY)
+      if defined?($!)
+                  ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+        puts 'error present'
+      end
+    RUBY
+  end
+
+  it 'registers an offense when aliasing $!' do
+    expect_offense(<<~RUBY)
+      alias $my_error $!
+                      ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+    RUBY
+  end
+
+  it 'registers an offense when aliasing $@' do
+    expect_offense(<<~RUBY)
+      alias $my_backtrace $@
+                          ^^ Avoid implicit backtrace variable `$@`. Use `.backtrace` in rescue instead.
     RUBY
   end
 end
