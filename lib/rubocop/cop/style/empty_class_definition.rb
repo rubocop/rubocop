@@ -8,12 +8,7 @@ module RuboCop
       # This cop can enforce either a standard class definition or `Class.new`
       # for classes with no body.
       #
-      # The supported styles are:
-      #
-      # * class_definition (default) - prefer standard class definition over `Class.new`
-      # * class_new - prefer `Class.new` over class definition
-      #
-      # @example EnforcedStyle: class_definition (default)
+      # @example EnforcedStyle: class_keyword (default)
       #   # bad
       #   FooError = Class.new(StandardError)
       #
@@ -40,9 +35,9 @@ module RuboCop
         include RangeHelp
         extend AutoCorrector
 
-        MSG_CLASS_DEFINITION =
-          'Prefer standard class definition over `Class.new` for classes with no body.'
-        MSG_CLASS_NEW = 'Prefer `Class.new` over class definition for classes with no body.'
+        MSG_CLASS_KEYWORD =
+          'Use the `class` keyword instead of `Class.new` to define an empty class.'
+        MSG_CLASS_NEW = 'Use `Class.new` instead of the `class` keyword to define an empty class.'
 
         # @!method class_new_assignment(node)
         def_node_matcher :class_new_assignment, <<~PATTERN
@@ -50,11 +45,11 @@ module RuboCop
         PATTERN
 
         def on_casgn(node)
-          return unless style == :class_definition
+          return unless %i[class_keyword class_definition].include?(style)
           return unless (class_new_node = class_new_assignment(node))
           return if (arg = class_new_node.first_argument) && !arg.const_type?
 
-          add_offense(node, message: MSG_CLASS_DEFINITION) do |corrector|
+          add_offense(node, message: MSG_CLASS_KEYWORD) do |corrector|
             autocorrect_class_new(corrector, node, class_new_node)
           end
         end
