@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
-  context 'when EnforcedStyle is class_definition' do
-    let(:cop_config) { { 'EnforcedStyle' => 'class_definition' } }
+  context 'when EnforcedStyle is class_keyword' do
+    let(:cop_config) { { 'EnforcedStyle' => 'class_keyword' } }
 
     it 'registers an offense for Class.new assignment to constant' do
       expect_offense(<<~RUBY)
         FooError = Class.new(StandardError)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for Class.new assignment to constant without parent class' do
       expect_offense(<<~RUBY)
         MyClass = Class.new
-        ^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -32,7 +32,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       expect_offense(<<~RUBY)
         module Foo
           BarError = Class.new(StandardError)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
         end
       RUBY
 
@@ -47,7 +47,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for Class.new assignment to constant with namespaced parent class' do
       expect_offense(<<~RUBY)
         MyClass = Class.new(Alchemy::Admin::PreviewUrl)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -59,7 +59,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for Class.new assignment to constant with absolute parent class path' do
       expect_offense(<<~RUBY)
         MyClass = Class.new(::Safemode::Jail)
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -279,7 +279,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for two-line class definition with inheritance' do
       expect_offense(<<~RUBY)
         class FooError < StandardError
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
         end
       RUBY
 
@@ -291,7 +291,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for single-line class definition with inheritance' do
       expect_offense(<<~RUBY)
         class FooError < StandardError; end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -302,7 +302,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for two-line class definition without inheritance' do
       expect_offense(<<~RUBY)
         class MyClass
-        ^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
+        ^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
         end
       RUBY
 
@@ -314,7 +314,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for single-line class definition without inheritance' do
       expect_offense(<<~RUBY)
         class MyClass; end
-        ^^^^^^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
+        ^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
       RUBY
 
       expect_correction(<<~RUBY)
@@ -326,7 +326,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       expect_offense(<<~RUBY)
         module Foo
           class BarError < StandardError
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
           end
         end
       RUBY
@@ -341,7 +341,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for class definition with namespaced parent class' do
       expect_offense(<<~RUBY)
         class MyClass < Alchemy::Admin::PreviewUrl
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
         end
       RUBY
 
@@ -353,7 +353,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'registers an offense for class definition with absolute parent class path' do
       expect_offense(<<~RUBY)
         class MyClass < ::Safemode::Jail
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
         end
       RUBY
 
@@ -378,7 +378,7 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       expect_offense(<<~RUBY)
         module Foo
           class Bar < Baz; end
-          ^^^^^^^^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
+          ^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
         end
       RUBY
 
@@ -402,6 +402,22 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     it 'does not register an offense for single-line class with body' do
       expect_no_offenses(<<~RUBY)
         class FooError < StandardError; def initialize; end; end
+      RUBY
+    end
+  end
+
+  context 'when EnforcedStyle is class_definition (deprecated)' do
+    let(:cop_config) { { 'EnforcedStyle' => 'class_definition' } }
+
+    it 'registers an offense for Class.new assignment to constant' do
+      expect_offense(<<~RUBY)
+        FooError = Class.new(StandardError)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class FooError < StandardError
+        end
       RUBY
     end
   end

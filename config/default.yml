@@ -3987,10 +3987,11 @@ Style/EmptyClassDefinition:
   Description: 'Enforces consistent style for empty class definitions.'
   Enabled: pending
   VersionAdded: '1.84'
-  EnforcedStyle: class_definition
+  EnforcedStyle: class_keyword
   SupportedStyles:
-    - class_definition
+    - class_keyword
     - class_new
+    - class_definition # Deprecated.
 
 Style/EmptyElse:
   Description: 'Avoid empty else-clauses.'

@@ -245,3 +245,8 @@ changed_enforced_styles:
     parameters: EnforcedStyle
     value: rails
     alternative: indented_internal_methods
+  - cops: Style/EmptyClassDefinition
+    parameters: EnforcedStyle
+    value: class_definition
+    alternative: class_keyword
+    severity: warning
