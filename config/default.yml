@@ -2021,6 +2021,11 @@ Lint/IdentityComparison:
   StyleGuide: '#identity-comparison'
   VersionAdded: '0.91'
 
+Lint/ImplicitExceptionVars:
+  Description: 'Checks for uses of implicit exception variables like `$!` and `$@`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/ImplicitStringConcatenation:
   Description: >-
                  Checks for adjacent string literals on the same line, which

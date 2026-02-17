@@ -1,0 +1,1 @@
+* [#10204](https://github.com/rubocop/rubocop/issues/10204): Add new `Lint/ImplicitExceptionVars` cop to warn against usage of implicit exception variables `$!`, `$@`, `$ERROR_INFO`, and `$ERROR_POSITION`. ([@andyw8][])
