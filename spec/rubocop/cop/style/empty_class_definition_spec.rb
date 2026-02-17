@@ -16,15 +16,9 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       RUBY
     end
 
-    it 'registers an offense for Class.new assignment to constant without parent class' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for Class.new assignment to constant without parent class' do
+      expect_no_offenses(<<~RUBY)
         MyClass = Class.new
-        ^^^^^^^^^^^^^^^^^^^ Prefer standard class definition over `Class.new` for classes with no body.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        class MyClass
-        end
       RUBY
     end
 
@@ -299,26 +293,16 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       RUBY
     end
 
-    it 'registers an offense for two-line class definition without inheritance' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for two-line class definition without inheritance' do
+      expect_no_offenses(<<~RUBY)
         class MyClass
-        ^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
         end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        MyClass = Class.new
       RUBY
     end
 
-    it 'registers an offense for single-line class definition without inheritance' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for single-line class definition without inheritance' do
+      expect_no_offenses(<<~RUBY)
         class MyClass; end
-        ^^^^^^^^^^^^^^^^^^ Prefer `Class.new` over class definition for classes with no body.
-      RUBY
-
-      expect_correction(<<~RUBY)
-        MyClass = Class.new
       RUBY
     end
 
