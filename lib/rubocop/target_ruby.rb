@@ -160,21 +160,18 @@ module RuboCop
     # The target ruby version may be found in a .ruby-version file.
     # @api private
     class RubyVersionFile < Source
-      RUBY_VERSION_FILENAME = '.ruby-version'
-      RUBY_VERSION_PATTERN = /\A(?:ruby-)?(?<version>\d+\.\d+)/.freeze
-
       def name
-        "`#{RUBY_VERSION_FILENAME}`"
+        "`#{filename}`"
       end
 
       private
 
       def filename
-        RUBY_VERSION_FILENAME
+        '.ruby-version'
       end
 
       def pattern
-        RUBY_VERSION_PATTERN
+        /\A(?:ruby-)?(?<version>\d+\.\d+)/.freeze
       end
 
       def find_version
@@ -193,21 +190,29 @@ module RuboCop
     # starting with `ruby`.
     # @api private
     class ToolVersionsFile < RubyVersionFile
-      TOOL_VERSIONS_FILENAME = '.tool-versions'
-      TOOL_VERSIONS_PATTERN = /^(?:ruby )(?<version>\d+\.\d+)/.freeze
-
-      def name
-        "`#{TOOL_VERSIONS_FILENAME}`"
-      end
-
       private
 
       def filename
-        TOOL_VERSIONS_FILENAME
+        '.tool-versions'
       end
 
       def pattern
-        TOOL_VERSIONS_PATTERN
+        /^(?:ruby )(?<version>\d+\.\d+)/.freeze
+      end
+    end
+
+    # The target ruby version may be found in a mise.toml file, in a line
+    # starting with `ruby = "`.
+    # @api private
+    class MiseTomlFile < RubyVersionFile
+      private
+
+      def filename
+        'mise.toml'
+      end
+
+      def pattern
+        /^ruby = "(?<version>\d+\.\d+)/.freeze
       end
     end
 
@@ -275,6 +280,7 @@ module RuboCop
       RuboCopConfig,
       GemspecFile,
       RubyVersionFile,
+      MiseTomlFile,
       ToolVersionsFile,
       BundlerLockFile,
       Default

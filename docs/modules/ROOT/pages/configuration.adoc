@@ -710,7 +710,7 @@ AllCops:
 If a `TargetRubyVersion` is not specified in your config, then RuboCop will
 check your project for a series of other files where the Ruby version may be
 specified already. The files that will be checked are (in this order):
-`*.gemspec`, `.ruby-version`, `.tool-versions`, and `Gemfile.lock`.
+`*.gemspec`, `.ruby-version`, `mise.toml`, `.tool-versions`, and `Gemfile.lock`.
 
 The target ruby version may also be specified by setting the
 `RUBOCOP_TARGET_RUBY_VERSION` environment variable to the desired version: for
