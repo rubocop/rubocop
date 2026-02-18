@@ -28,6 +28,32 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'registers an offense for an endless method on self' do
+        expect_offense(<<~RUBY)
+          def self.my_method() = x
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.my_method
+            x
+          end
+        RUBY
+      end
+
+      it 'registers an offense for an endless method on self with ::' do
+        expect_offense(<<~RUBY)
+          def self::my_method() = x
+          ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self::my_method
+            x
+          end
+        RUBY
+      end
+
       it 'registers an offense for an endless method with arguments' do
         expect_offense(<<~RUBY)
           def my_method(a, b) = x
@@ -59,6 +85,12 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for an endless method on self' do
+        expect_no_offenses(<<~RUBY)
+          def self.my_method() = x
+        RUBY
+      end
+
       it 'does not register an offense for an endless method with arguments' do
         expect_no_offenses(<<~RUBY)
           def my_method(a, b) = x
@@ -86,6 +118,40 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
             x.foo
                              .bar
                              .baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a multiline endless method on self' do
+        expect_offense(<<~RUBY)
+          def self.my_method() = x.foo
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+                                 .bar
+                                 .baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.my_method
+            x.foo
+                                 .bar
+                                 .baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a multiline endless method on self with ::' do
+        expect_offense(<<~RUBY)
+          def self::my_method() = x.foo
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+                                   .bar
+                                   .baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self::my_method
+            x.foo
+                                   .bar
+                                   .baz
           end
         RUBY
       end
@@ -131,6 +197,12 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
       it 'does not register an offense for an endless method' do
         expect_no_offenses(<<~RUBY)
           def my_method() = x
+        RUBY
+      end
+
+      it 'does not register an offense for an endless method on self' do
+        expect_no_offenses(<<~RUBY)
+          def self.my_method() = x
         RUBY
       end
 
@@ -182,6 +254,12 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for a single line endless method on self' do
+        expect_no_offenses(<<~RUBY)
+          def self.my_method() = x
+        RUBY
+      end
+
       it 'does not register an offense for a single line endless method with arguments' do
         expect_no_offenses(<<~RUBY)
           def my_method(a, b) = x
@@ -201,6 +279,40 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
             x.foo
                              .bar
                              .baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a multiline endless method on self' do
+        expect_offense(<<~RUBY)
+          def self.my_method() = x.foo
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+                                  .bar
+                                  .baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.my_method
+            x.foo
+                                  .bar
+                                  .baz
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a multiline endless method on self with ::' do
+        expect_offense(<<~RUBY)
+          def self::my_method() = x.foo
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid endless method definitions with multiple lines.
+                                    .bar
+                                    .baz
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self::my_method
+            x.foo
+                                    .bar
+                                    .baz
           end
         RUBY
       end
@@ -392,6 +504,12 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
         RUBY
       end
 
+      it 'does not register an offense for an endless method on self' do
+        expect_no_offenses(<<~RUBY)
+          def self.my_method() = x
+        RUBY
+      end
+
       it 'does not register an offense for an endless method with arguments' do
         expect_no_offenses(<<~RUBY)
           def my_method(a, b) = x
@@ -483,6 +601,32 @@ RSpec.describe RuboCop::Cop::Style::EndlessMethod, :config do
 
         expect_correction(<<~RUBY)
           def my_method = x
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a single line method on self' do
+        expect_offense(<<~RUBY)
+          def self.my_method
+          ^^^^^^^^^^^^^^^^^^ Use endless method definitions.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.my_method = x
+        RUBY
+      end
+
+      it 'registers an offense and corrects for a single line method on self with ::' do
+        expect_offense(<<~RUBY)
+          def self::my_method
+          ^^^^^^^^^^^^^^^^^^^ Use endless method definitions.
+            x
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self::my_method = x
         RUBY
       end
 

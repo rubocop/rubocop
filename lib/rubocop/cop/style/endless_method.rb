@@ -157,6 +157,7 @@ module RuboCop
             handle_require_always_style(node)
           end
         end
+        alias on_defs on_def
 
         private
 
@@ -207,7 +208,7 @@ module RuboCop
 
         def correct_to_multiline(corrector, node)
           replacement = <<~RUBY.strip
-            def #{node.method_name}#{arguments(node)}
+            def #{receiver(node)}#{node.method_name}#{arguments(node)}
               #{node.body.source}
             end
           RUBY
@@ -217,8 +218,12 @@ module RuboCop
 
         def endless_replacement(node)
           <<~RUBY.strip
-            def #{node.method_name}#{arguments(node)} = #{node.body.source}
+            def #{receiver(node)}#{node.method_name}#{arguments(node)} = #{node.body.source}
           RUBY
+        end
+
+        def receiver(node)
+          node.receiver ? "#{node.receiver.source}#{node.loc.operator.source}" : ''
         end
 
         def arguments(node, missing = '')
