@@ -47,6 +47,11 @@ Style/IpAddresses:
   Exclude:
     - spec/rubocop/cop/style/ip_addresses_spec.rb
 
+Style/OneClassPerFile:
+  Exclude:
+    - lib/rubocop/rspec/cop_helper.rb
+    - tasks/spec_runner.rake
+
 Style/ReturnNilInPredicateMethodDefinition:
   AllowedMethods:
     - on_defined? # rubocop-ast node handler

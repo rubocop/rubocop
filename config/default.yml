@@ -5098,6 +5098,12 @@ Style/ObjectThen:
     - then
     - yield_self
 
+Style/OneClassPerFile:
+  Description: 'Checks that each source file defines at most one top-level class or module.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  AllowedClasses: []
+
 Style/OneLineConditional:
   Description: >-
                  Favor the ternary operator (?:) or multi-line constructs over
