@@ -5192,6 +5192,14 @@ Style/ParenthesesAroundCondition:
   AllowSafeAssignment: true
   AllowInMultilineConditions: false
 
+Style/PartitionInsteadOfDoubleSelect:
+  Description: >-
+                Checks for consecutive `select`/`filter`/`find_all` and `reject` calls
+                on the same receiver with the same block body.
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/PercentLiteralDelimiters:
   Description: 'Use `%`-literal delimiters consistently.'
   StyleGuide: '#percent-literal-braces'
