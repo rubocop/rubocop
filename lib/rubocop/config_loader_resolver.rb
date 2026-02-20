@@ -140,7 +140,7 @@ module RuboCop
         next unless key =~ %r{(.*)/.*}
 
         department = Regexp.last_match(1)
-        next unless disabled?(derived_hash, department) || disabled?(base_hash, department)
+        next if !disabled?(derived_hash, department) && !disabled?(base_hash, department)
 
         # The `override_department` setting for the `Enabled` parameter is an
         # internal setting that's not documented in the manual. It will cause a
@@ -206,7 +206,7 @@ module RuboCop
     end
 
     def should_union?(derived_hash, base_hash, root_mode, key)
-      return false unless base_hash[key].is_a?(Array) || derived_hash[key].is_a?(Array)
+      return false if !base_hash[key].is_a?(Array) && !derived_hash[key].is_a?(Array)
 
       derived_mode = derived_hash['inherit_mode']
       return false if should_override?(derived_mode, key)

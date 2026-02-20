@@ -72,13 +72,10 @@ module RuboCop
 
         def on_new_investigation
           processed_source.comments.each_with_index do |comment, index|
-            next unless first_comment_line?(processed_source.comments, index) ||
-                        inline_comment?(comment)
+            next if !first_comment_line?(processed_source.comments, index) &&
+                    !inline_comment?(comment)
 
-            annotation = AnnotationComment.new(comment, keywords)
-            next unless annotation.annotation? && !annotation.correct?(colon: requires_colon?)
-
-            register_offense(annotation)
+            check_annotation(comment)
           end
         end
 
@@ -97,6 +94,13 @@ module RuboCop
 
             correct_offense(corrector, range, annotation.keyword)
           end
+        end
+
+        def check_annotation(comment)
+          annotation = AnnotationComment.new(comment, keywords)
+          return if !annotation.annotation? || annotation.correct?(colon: requires_colon?)
+
+          register_offense(annotation)
         end
 
         def first_comment_line?(comments, index)

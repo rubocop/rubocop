@@ -75,8 +75,8 @@ module RuboCop
 
         def check(send_node)
           return if previous_line_comment?(send_node) || !groupable_accessor?(send_node)
-          return unless (grouped_style? && groupable_sibling_accessors(send_node).size > 1) ||
-                        (separated_style? && send_node.arguments.size > 1)
+          return if (!grouped_style? || groupable_sibling_accessors(send_node).size <= 1) &&
+                    (!separated_style? || send_node.arguments.size <= 1)
 
           message = message(send_node)
           add_offense(send_node, message: message) do |corrector|

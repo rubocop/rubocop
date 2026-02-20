@@ -226,7 +226,7 @@ module RuboCop
         def autocorrect_instance(corrector, node)
           kind = trivial_accessor_kind(node)
 
-          return unless names_match?(node) && !node.predicate_method? && kind
+          return if !names_match?(node) || node.predicate_method? || !kind
 
           corrector.replace(node, accessor(kind, node.method_name))
         end

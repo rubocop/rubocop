@@ -4205,6 +4205,39 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'does not cause an infinite loop between `Style/ComplexUnless` and `Style/NegatedIf`' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      unless (x, y = foo || bar)
+        do_something
+      end
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only Style/ComplexUnless,Style/NegatedIf])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      unless (x, y = foo || bar)
+        do_something
+      end
+    RUBY
+  end
+
+  it 'does not cause an infinite loop between `Style/ComplexUnless` and `Style/NegatedIf` ' \
+     'when `||` is inside a block' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      return :unknown unless vals.all? { |val| val.nil? || val.int_type? }
+    RUBY
+
+    status = cli.run(%w[--autocorrect-all --only Style/ComplexUnless,Style/NegatedIf])
+    expect(status).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      return :unknown unless vals.all? { |val| val.nil? || val.int_type? }
+    RUBY
+  end
+
   it 'does not cause an infinite loop between `Style/IfUnlessModifier` and `Layout/EndAlignment`, `Layout/IndentationWidth`' do
     create_file('.rubocop.yml', <<~YAML)
       Layout/LineLength:
