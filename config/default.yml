@@ -5909,6 +5909,12 @@ Style/SymbolProc:
   AllowedPatterns: []
   AllowComments: false
 
+Style/TallyMethod:
+  Description: 'Prefer `Enumerable#tally` over manual counting patterns.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/TernaryParentheses:
   Description: 'Checks for use of parentheses around ternary conditions.'
   Enabled: true
