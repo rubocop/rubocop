@@ -2225,6 +2225,24 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a useless assignment wraps a block containing another useless assignment' do
+    it 'registers offenses and corrects' do
+      expect_offense(<<~RUBY)
+        foo = do_something {
+        ^^^ Useless assignment to variable - `foo`.
+          bar = do_something_else
+          ^^^ Useless assignment to variable - `bar`.
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        do_something {
+          do_something_else
+        }
+      RUBY
+    end
+  end
+
   context 'using numbered block parameter', :ruby27 do
     it 'does not register an offense when the variable is used' do
       expect_no_offenses(<<~RUBY)

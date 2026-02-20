@@ -2087,7 +2087,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         expect(cli.run(['--autocorrect', '--format', 'simple', target_file])).to eq(0)
 
         expect($stdout.string.lines.to_a.last)
-          .to eq("1 file inspected, 3 offenses detected, 3 offenses corrected\n")
+          .to eq("1 file inspected, 2 offenses detected, 2 offenses corrected\n")
       end
     end
 

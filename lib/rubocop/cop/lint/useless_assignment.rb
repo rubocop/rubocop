@@ -213,7 +213,7 @@ module RuboCop
         end
 
         def remove_local_variable_assignment_part(corrector, node)
-          corrector.replace(node, node.expression.source)
+          corrector.remove(node.loc.name.begin.join(node.expression.source_range.begin))
         end
 
         def variable_in_loop_condition?(assignment_node, variable)
