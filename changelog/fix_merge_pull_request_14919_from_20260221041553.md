@@ -1,0 +1,1 @@
+* [#14874](https://github.com/rubocop/rubocop/issues/14874): Fix a `Parser::ClobberingError` in `Lint/UselessAssignment` when autocorrecting a useless assignment that wraps a block containing another useless assignment. ([@koic][])
