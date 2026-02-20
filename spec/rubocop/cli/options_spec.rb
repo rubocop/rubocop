@@ -2471,12 +2471,22 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
   end
 
   describe 'option is invalid' do
-    it 'suggests to use the --help flag' do
+    it 'suggests to use the --help flag when non existing option' do
       invalid_option = '--invalid-option'
 
       expect(cli.run([invalid_option])).to eq(2)
       expect($stderr.string).to eq(<<~RESULT)
         invalid option: #{invalid_option}
+        For usage information, use --help
+      RESULT
+    end
+
+    it 'suggests to use the --help flag when abbreviated option' do
+      abbreviated_option = '--disable-p' # `--disable-pending-cops`
+
+      expect(cli.run([abbreviated_option])).to eq(2)
+      expect($stderr.string).to eq(<<~RESULT)
+        invalid option: #{abbreviated_option}
         For usage information, use --help
       RESULT
     end
