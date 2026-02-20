@@ -626,18 +626,70 @@ Style/PerlBackrefs:
 == Common configuration parameters
 There are some configuration parameters that are shared by many cops, with the same behavior.
 
-=== IgnoredMethods
+=== AllowedMethods
 
-Cops that evaluate methods can often be configured to ignore certain methods. Both strings and
-regular expressions can be used. For example:
+Many cops can be configured to exclude specific methods from inspection.
+`AllowedMethods` accepts a list of method names as strings. A cop will skip
+any method whose name exactly matches one of the entries:
 
 [source,yaml]
 ----
 Metrics/BlockLength:
-  IgnoredMethods:
+  AllowedMethods:
     - refine
-    - !ruby/regexp /\b(class|instance)_methods\b/
+    - class_methods
+    - instance_methods
 ----
+
+Only bare method names are supported -- you cannot use qualified names like `Foo.bar`
+or `foo.bar`. Class and module names are not supported either. If you need
+more flexibility, use `AllowedPatterns` instead.
+
+NOTE: The `IgnoredMethods` and `ExcludedMethods` parameters are deprecated aliases for
+`AllowedMethods`. They still work, but you should migrate your configuration to use
+`AllowedMethods`.
+
+=== AllowedPatterns
+
+`AllowedPatterns` provides regex-based exclusions for cops that support it.
+Each entry is treated as a regular expression -- strings are automatically
+converted via `Regexp.new`, so the `!ruby/regexp` YAML tag is optional.
+
+[source,yaml]
+----
+Metrics/BlockLength:
+  AllowedPatterns:
+    # These two forms are equivalent:
+    - !ruby/regexp /\b(class|instance)_methods\b/
+    - '\b(class|instance)_methods\b'
+----
+
+What the pattern matches against depends on the cop:
+
+* **Metrics cops** (e.g. `BlockLength`, `MethodLength`) match against the **method name**.
+* **Layout/LineLength** matches against the **entire source line**.
+* **Naming cops** (e.g. `MethodName`, `VariableName`) match against the **identifier name**.
+
+For example, to allow all methods starting with `test_` in `Metrics/MethodLength`:
+
+[source,yaml]
+----
+Metrics/MethodLength:
+  AllowedPatterns:
+    - ^test_
+----
+
+To allow long lines containing URLs in `Layout/LineLength`:
+
+[source,yaml]
+----
+Layout/LineLength:
+  AllowedPatterns:
+    - '^\s*#\s*https?://'
+----
+
+NOTE: The `IgnoredPatterns` parameter is a deprecated alias for `AllowedPatterns`.
+It still works, but you should migrate your configuration to use `AllowedPatterns`.
 
 == Setting the target Ruby version
 
