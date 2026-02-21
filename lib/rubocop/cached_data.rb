@@ -33,7 +33,8 @@ module RuboCop
         },
         message:  message(offense),
         cop_name: offense.cop_name,
-        status:   status || offense.status
+        status:   status || offense.status,
+        urls:     offense.urls
       }
     end
 
@@ -47,7 +48,8 @@ module RuboCop
     def deserialize_offenses(offenses)
       offenses.map! do |o|
         location = location_from_source_buffer(o)
-        Cop::Offense.new(o['severity'], location, o['message'], o['cop_name'], o['status'].to_sym)
+        Cop::Offense.new(o['severity'], location, o['message'], o['cop_name'], o['status'].to_sym,
+                         urls: o.fetch('urls', []))
       end
     end
 
