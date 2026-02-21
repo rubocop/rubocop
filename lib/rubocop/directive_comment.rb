@@ -52,7 +52,8 @@ module RuboCop
     def initialize(comment, cop_registry = Cop::Registry.global)
       @comment = comment
       @cop_registry = cop_registry
-      @match_data = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
+      match_data = comment.text.match(DIRECTIVE_COMMENT_REGEXP)
+      @match_data = match_data&.pre_match&.match?(/\A#\s*\z/) ? nil : match_data
       @mode, @cops = match_captures
     end
 
