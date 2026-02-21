@@ -667,6 +667,90 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
+      context 'when using `rubocop:disable` line comment for `Lint/EmptyWhen`' do
+        it 'does not register an offense for `Lint/RedundantCopDisableDirective`' do
+          create_file('.rubocop.yml', <<~YAML)
+            Lint/EmptyWhen:
+              Enabled: true
+            Lint/RedundantCopDisableDirective:
+              Enabled: true
+          YAML
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            case x
+            when 1 # rubocop:disable Lint/EmptyWhen
+            when 2
+              :ok
+            end
+          RUBY
+          expect(cli.run(['example.rb'])).to eq(0)
+          expect($stdout.string).to include('1 file inspected, no offenses detected')
+        end
+      end
+
+      context 'when using `rubocop:disable` line comment for `Lint/EmptyConditionalBody`' do
+        it 'does not register an offense for `Lint/RedundantCopDisableDirective`' do
+          create_file('.rubocop.yml', <<~YAML)
+            Lint/EmptyConditionalBody:
+              Enabled: true
+            Lint/RedundantCopDisableDirective:
+              Enabled: true
+          YAML
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            if condition # rubocop:disable Lint/EmptyConditionalBody
+            end
+          RUBY
+          expect(cli.run(['example.rb'])).to eq(0)
+          expect($stdout.string).to include('1 file inspected, no offenses detected')
+        end
+      end
+
+      context 'when using `rubocop:disable` line comment for `Lint/EmptyInPattern`' do
+        it 'does not register an offense for `Lint/RedundantCopDisableDirective`' do
+          create_file('.rubocop.yml', <<~YAML)
+            Lint/EmptyInPattern:
+              Enabled: true
+            Lint/RedundantCopDisableDirective:
+              Enabled: true
+          YAML
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            case [1]
+            in [a] # rubocop:disable Lint/EmptyInPattern
+            in [a, b]
+              :ok
+            end
+          RUBY
+          expect(cli.run(['example.rb'])).to eq(0)
+          expect($stdout.string).to include('1 file inspected, no offenses detected')
+        end
+      end
+
+      context 'when using `rubocop:disable` line comment for `Style/SymbolProc`' do
+        it 'does not register an offense for `Lint/RedundantCopDisableDirective`' do
+          create_file('.rubocop.yml', <<~YAML)
+            Style/SymbolProc:
+              Enabled: true
+              AllowComments: true
+            Lint/RedundantCopDisableDirective:
+              Enabled: true
+          YAML
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            something do |e| # rubocop:disable Style/SymbolProc
+              e.upcase
+            end
+          RUBY
+          expect(cli.run(['example.rb'])).to eq(0)
+          expect($stdout.string).to include('1 file inspected, no offenses detected')
+        end
+      end
+
       shared_examples 'RedundantCopDisableDirective not run' do |state, config|
         context "and RedundantCopDisableDirective is #{state}" do
           it 'does not report RedundantCopDisableDirective offenses' do
