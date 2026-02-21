@@ -89,26 +89,28 @@ module RuboCop
           [Style::SoleNestedConditional]
         end
 
-        # rubocop:disable Metrics/AbcSize
         def on_if(node)
-          return if endless_method?(node.body)
-
-          condition = node.condition
-          return if defined_nodes(condition).any? { |n| defined_argument_is_undefined?(node, n) } ||
-                    pattern_matching_nodes(condition).any?
-
+          return if skip_offense?(node)
           return unless (msg = message(node))
 
           add_offense(node.loc.keyword, message: format(msg, keyword: node.keyword)) do |corrector|
             next if part_of_ignored_node?(node)
+            next if another_modifier_if_on_same_line?(node)
 
             autocorrect(corrector, node)
             ignore_node(node)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
+
+        def skip_offense?(node)
+          return true if endless_method?(node.body)
+
+          condition = node.condition
+          defined_nodes(condition).any? { |n| defined_argument_is_undefined?(node, n) } ||
+            pattern_matching_nodes(condition).any?
+        end
 
         def endless_method?(body)
           body&.any_def_type? && body.endless?
@@ -278,6 +280,16 @@ module RuboCop
           return node if node&.type?(:array, :call)
 
           node.parent if node&.type?(:pair)
+        end
+
+        def another_modifier_if_on_same_line?(node)
+          collection = find_containing_collection(node)
+          return false unless collection
+
+          line = node.source_range.line
+          collection.each_descendant(:if).any? do |sibling|
+            sibling != node && sibling.modifier_form? && sibling.source_range.line == line
+          end
         end
 
         def non_simple_if_unless?(node)

@@ -1,0 +1,1 @@
+* [#14930](https://github.com/rubocop/rubocop/pull/14930): Fix incorrect autocorrection for `Style/IfUnlessModifier` when multiple `if`/`unless` modifier forms are on the same line inside a collection. ([@ydakuka][])
