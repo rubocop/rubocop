@@ -210,10 +210,10 @@ module RuboCop
               end
               registered_block_arg_offense = true
               break
-            else
-              first_arg = forward_rest || forward_kwrest || forward_all_first_argument(send_node)
-              register_forward_all_offense(send_node, send_node, first_arg)
             end
+
+            first_arg = forward_rest || forward_kwrest || forward_all_first_argument(send_node)
+            register_forward_all_offense(send_node, send_node, first_arg)
           end
 
           return if registered_block_arg_offense
