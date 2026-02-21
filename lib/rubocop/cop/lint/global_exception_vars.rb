@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for uses of implicit exception variables like `$!` and `$@`.
+      # Checks for uses of global exception variables like `$!` and `$@`.
       # These variables are unsafe because they reference the _last_ exception
       # raised, which can change unexpectedly in complex code.
       #
@@ -41,7 +41,7 @@ module RuboCop
       #     puts error
       #     puts error.backtrace
       #   end
-      class ImplicitExceptionVars < Base
+      class GlobalExceptionVars < Base
         MSG_EXCEPTION_VAR = 'Avoid implicit exception variable `%<var>s`. ' \
                             'Use explicit exception variable in rescue instead.'
         MSG_BACKTRACE_VAR = 'Avoid implicit backtrace variable `%<var>s`. ' \

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ImplicitExceptionVars, :config do
+RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
   it 'registers an offense for $!' do
     expect_offense(<<~RUBY)
       begin

@@ -1995,6 +1995,11 @@ Lint/FormatParameterMismatch:
   Enabled: true
   VersionAdded: '0.33'
 
+Lint/GlobalExceptionVars:
+  Description: 'Checks for uses of global exception variables like `$!` and `$@`.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/HashCompareByIdentity:
   Description: 'Prefer using `Hash#compare_by_identity` than using `object_id` for keys.'
   StyleGuide: '#identity-comparison'
@@ -2020,11 +2025,6 @@ Lint/IdentityComparison:
   Enabled: true
   StyleGuide: '#identity-comparison'
   VersionAdded: '0.91'
-
-Lint/ImplicitExceptionVars:
-  Description: 'Checks for uses of implicit exception variables like `$!` and `$@`.'
-  Enabled: pending
-  VersionAdded: '<<next>>'
 
 Lint/ImplicitStringConcatenation:
   Description: >-
