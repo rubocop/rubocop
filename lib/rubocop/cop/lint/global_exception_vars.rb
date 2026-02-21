@@ -42,10 +42,10 @@ module RuboCop
       #     puts error.backtrace
       #   end
       class GlobalExceptionVars < Base
-        MSG_EXCEPTION_VAR = 'Avoid implicit exception variable `%<var>s`. ' \
-                            'Use explicit exception variable in rescue instead.'
-        MSG_BACKTRACE_VAR = 'Avoid implicit backtrace variable `%<var>s`. ' \
-                            'Use `.backtrace` in rescue instead.'
+        MSG_EXCEPTION_VAR = 'Avoid global exception variable `%<var>s`. ' \
+                            'Use exception variable instead, if within a rescue block.'
+        MSG_BACKTRACE_VAR = 'Avoid global backtrace variable `%<var>s`. ' \
+                            'Use `.backtrace` instead, if within a rescue block.'
 
         EXCEPTION_VARS = %i[$! $ERROR_INFO].freeze
         BACKTRACE_VARS = %i[$@ $ERROR_POSITION].freeze

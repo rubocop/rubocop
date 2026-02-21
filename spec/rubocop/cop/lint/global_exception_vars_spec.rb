@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
         do_something
       rescue
         puts $!
-             ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+             ^^ Avoid global exception variable `$!`. Use exception variable instead, if within a rescue block.
       end
     RUBY
   end
@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
         do_something
       rescue
         puts $@
-             ^^ Avoid implicit backtrace variable `$@`. Use `.backtrace` in rescue instead.
+             ^^ Avoid global backtrace variable `$@`. Use `.backtrace` instead, if within a rescue block.
       end
     RUBY
   end
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
         do_something
       rescue
         puts $ERROR_INFO
-             ^^^^^^^^^^^ Avoid implicit exception variable `$ERROR_INFO`. Use explicit exception variable in rescue instead.
+             ^^^^^^^^^^^ Avoid global exception variable `$ERROR_INFO`. Use exception variable instead, if within a rescue block.
       end
     RUBY
   end
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
         do_something
       rescue
         puts $ERROR_POSITION
-             ^^^^^^^^^^^^^^^ Avoid implicit backtrace variable `$ERROR_POSITION`. Use `.backtrace` in rescue instead.
+             ^^^^^^^^^^^^^^^ Avoid global backtrace variable `$ERROR_POSITION`. Use `.backtrace` instead, if within a rescue block.
       end
     RUBY
   end
@@ -55,7 +55,7 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
         handle_error
       ensure
         log($!)
-            ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+            ^^ Avoid global exception variable `$!`. Use exception variable instead, if within a rescue block.
       end
     RUBY
   end
@@ -63,7 +63,7 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
   it 'registers an offense when used outside rescue block' do
     expect_offense(<<~RUBY)
       if $!
-         ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+         ^^ Avoid global exception variable `$!`. Use exception variable instead, if within a rescue block.
         puts "error occurred"
       end
     RUBY
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
         do_something
       rescue
         puts "Error: \#{$!}"
-                       ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+                       ^^ Avoid global exception variable `$!`. Use exception variable instead, if within a rescue block.
       end
     RUBY
   end
@@ -116,7 +116,7 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
         do_something
       rescue
         $! = nil
-        ^^^^^^^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+        ^^^^^^^^ Avoid global exception variable `$!`. Use exception variable instead, if within a rescue block.
       end
     RUBY
   end
@@ -126,8 +126,8 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
       begin
         do_something
       rescue
-        $@ = []
-        ^^^^^^^ Avoid implicit backtrace variable `$@`. Use `.backtrace` in rescue instead.
+      $@ = []
+      ^^^^^^^ Avoid global backtrace variable `$@`. Use `.backtrace` instead, if within a rescue block.
       end
     RUBY
   end
@@ -136,14 +136,14 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
     expect_offense(<<~RUBY)
       require 'English'
       $ERROR_INFO = nil
-      ^^^^^^^^^^^^^^^^^ Avoid implicit exception variable `$ERROR_INFO`. Use explicit exception variable in rescue instead.
+      ^^^^^^^^^^^^^^^^^ Avoid global exception variable `$ERROR_INFO`. Use exception variable instead, if within a rescue block.
     RUBY
   end
 
   it 'registers an offense when used inside defined?' do
     expect_offense(<<~RUBY)
       if defined?($!)
-                  ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+                  ^^ Avoid global exception variable `$!`. Use exception variable instead, if within a rescue block.
         puts 'error present'
       end
     RUBY
@@ -152,14 +152,14 @@ RSpec.describe RuboCop::Cop::Lint::GlobalExceptionVars, :config do
   it 'registers an offense when aliasing $!' do
     expect_offense(<<~RUBY)
       alias $my_error $!
-                      ^^ Avoid implicit exception variable `$!`. Use explicit exception variable in rescue instead.
+                      ^^ Avoid global exception variable `$!`. Use exception variable instead, if within a rescue block.
     RUBY
   end
 
   it 'registers an offense when aliasing $@' do
     expect_offense(<<~RUBY)
       alias $my_backtrace $@
-                          ^^ Avoid implicit backtrace variable `$@`. Use `.backtrace` in rescue instead.
+                          ^^ Avoid global backtrace variable `$@`. Use `.backtrace` instead, if within a rescue block.
     RUBY
   end
 end
