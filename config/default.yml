@@ -2593,6 +2593,11 @@ Lint/UnreachableLoop:
     # eg. `exactly(2).times`
     - !ruby/regexp /(exactly|at_least|at_most)\(\d+\)\.times/
 
+Lint/UnreachablePatternBranch:
+  Description: 'Checks for unreachable `in` pattern branches after an unconditional catch-all pattern.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: '#underscore-unused-vars'
