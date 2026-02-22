@@ -1323,4 +1323,77 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
     end
   end
+
+  context 'when multiple if/unless modifiers are in an array literal' do
+    context 'when the line is too long' do
+      it 'registers an offense but does not correct' do
+        expect_offense(<<~RUBY)
+          [(fooooooooooo if condition_onnnnnnnnnnne), (baaaaaar if condition_twwwwwwwwwwo)]
+                         ^^ Modifier form of `if` makes the line too long.
+                                                                ^^ Modifier form of `if` makes the line too long.
+        RUBY
+
+        expect_no_corrections
+      end
+    end
+
+    context 'when the normal form fits on single lines' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          [
+            (if condition1
+             ^^ Favor modifier `if` usage [...]
+               foo
+             end),
+            (if condition2
+             ^^ Favor modifier `if` usage [...]
+               bar
+             end)
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            (foo if condition1),
+            (bar if condition2)
+          ]
+        RUBY
+      end
+    end
+  end
+
+  context 'when multiple if/unless modifiers are in a hash literal' do
+    context 'when the line is too long' do
+      it 'registers an offense but does not correct' do
+        expect_offense(<<~RUBY)
+          { a: (fooooooooo if condition_onnnnnnnnnnne), b: (baaaaaaaar if condition_twwwo) }
+                           ^^ Modifier form of `if` makes the line too long.
+                                                                       ^^ Modifier form of `if` makes the line too long.
+        RUBY
+
+        expect_no_corrections
+      end
+    end
+  end
+
+  context 'when single if modifier is in an array literal' do
+    context 'when the line is too long' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          [
+            (foooooooooooooooooooooooooooooooooooooooooooo if condition_onnnnnnnnnnnnnnnnne)
+                                                           ^^ Modifier form of `if` makes the line too long.
+          ]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          [
+            (if condition_onnnnnnnnnnnnnnnnne
+               foooooooooooooooooooooooooooooooooooooooooooo
+             end)
+          ]
+        RUBY
+      end
+    end
+  end
 end
