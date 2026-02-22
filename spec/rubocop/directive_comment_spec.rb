@@ -101,6 +101,18 @@ RSpec.describe RuboCop::DirectiveComment do
 
       it { is_expected.to be_nil }
     end
+
+    context 'when directive comment is used as a comment' do
+      let(:text) { '#   # rubocop:disable AbcSize' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when directive comment follows other comment content' do
+      let(:text) { '# some comment # rubocop:disable Metrics/AbcSize' }
+
+      it { is_expected.to eq(%w[disable Metrics/AbcSize]) }
+    end
   end
 
   describe '#single_line?' do
