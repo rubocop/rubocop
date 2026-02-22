@@ -64,7 +64,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
       end
 
       A::FOO = :baz
-      ^^^^^^^^^^^^^ Constant `FOO` is already assigned in this namespace.
+      ^^^^^^^^^^^^^ Constant `A::FOO` is already assigned in this namespace.
     RUBY
   end
 
@@ -75,7 +75,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
       end
 
       ::A::FOO = :baz
-      ^^^^^^^^^^^^^^^ Constant `FOO` is already assigned in this namespace.
+      ^^^^^^^^^^^^^^^ Constant `A::FOO` is already assigned in this namespace.
     RUBY
   end
 
@@ -88,7 +88,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
       end
 
       A::B::FOO = :baz
-      ^^^^^^^^^^^^^^^^ Constant `FOO` is already assigned in this namespace.
+      ^^^^^^^^^^^^^^^^ Constant `A::B::FOO` is already assigned in this namespace.
     RUBY
   end
 
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
       end
 
       ::A::B::FOO = :baz
-      ^^^^^^^^^^^^^^^^^^ Constant `FOO` is already assigned in this namespace.
+      ^^^^^^^^^^^^^^^^^^ Constant `A::B::FOO` is already assigned in this namespace.
     RUBY
   end
 
@@ -124,7 +124,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
         end
 
         B::FOO = :baz
-        ^^^^^^^^^^^^^ Constant `FOO` is already assigned in this namespace.
+        ^^^^^^^^^^^^^ Constant `B::FOO` is already assigned in this namespace.
       end
     RUBY
   end
@@ -450,6 +450,151 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
     expect_no_offenses(<<~RUBY)
       lvar::FOO::BAR = 1
       lvar::FOO::BAR = 2
+    RUBY
+  end
+
+  it 'registers an offense when reassigning a constant after class keyword definition' do
+    expect_offense(<<~RUBY)
+      class FooError < StandardError; end
+      FooError = Class.new(RuntimeError)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Constant `FooError` is already assigned in this namespace.
+    RUBY
+  end
+
+  it 'registers an offense when reassigning a constant after class keyword definition in a module' do
+    expect_offense(<<~RUBY)
+      module A
+        class FooError < StandardError; end
+        FooError = Class.new(RuntimeError)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Constant `FooError` is already assigned in this namespace.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when reassigning a constant after class keyword definition with compact namespace' do
+    expect_offense(<<~RUBY)
+      class A::FooError < StandardError; end
+      A::FooError = Class.new(RuntimeError)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Constant `A::FooError` is already assigned in this namespace.
+    RUBY
+  end
+
+  it 'does not register an offense when class keyword reopens after constant assignment' do
+    expect_no_offenses(<<~RUBY)
+      FooError = Class.new(StandardError)
+      class FooError < StandardError; end
+    RUBY
+  end
+
+  it 'does not register an offense for class keyword definition inside a conditional' do
+    expect_no_offenses(<<~RUBY)
+      if condition
+        class FooError < StandardError; end
+      end
+      FooError = Class.new(StandardError)
+    RUBY
+  end
+
+  it 'does not register an offense for class keyword and constant in different namespaces' do
+    expect_no_offenses(<<~RUBY)
+      module A
+        class FooError < StandardError; end
+      end
+      module B
+        FooError = Class.new(StandardError)
+      end
+    RUBY
+  end
+
+  it 'registers an offense when reassigning after class with absolute namespace' do
+    expect_offense(<<~RUBY)
+      class ::A::FooError < StandardError; end
+      A::FooError = Class.new(RuntimeError)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Constant `A::FooError` is already assigned in this namespace.
+    RUBY
+  end
+
+  it 'registers an offense when reassigning after class keyword definition inside a class' do
+    expect_offense(<<~RUBY)
+      class Parent
+        class FooError < StandardError; end
+        FooError = Class.new(RuntimeError)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Constant `FooError` is already assigned in this namespace.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when reassigning a constant after module keyword definition' do
+    expect_offense(<<~RUBY)
+      module M; end
+      M = 1
+      ^^^^^ Constant `M` is already assigned in this namespace.
+    RUBY
+  end
+
+  it 'registers an offense when reassigning a constant after module keyword definition in a class' do
+    expect_offense(<<~RUBY)
+      class A
+        module M; end
+        M = 1
+        ^^^^^ Constant `M` is already assigned in this namespace.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when reassigning after remove_const on a different object' do
+    expect_offense(<<~RUBY)
+      class A
+        FOO = :bar
+        Other.remove_const :FOO
+        FOO = :baz
+        ^^^^^^^^^^ Constant `FOO` is already assigned in this namespace.
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when constant is removed via implicit self' do
+    expect_no_offenses(<<~RUBY)
+      class A
+        FOO = :bar
+        remove_const :FOO
+        FOO = :baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for module keyword and constant in different namespaces' do
+    expect_no_offenses(<<~RUBY)
+      module A
+        module M; end
+      end
+      module B
+        M = 1
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when module keyword reopens after constant assignment' do
+    expect_no_offenses(<<~RUBY)
+      M = Module.new
+      module M; end
+    RUBY
+  end
+
+  it 'registers an offense when reassigning a constant via multiple assignment' do
+    expect_offense(<<~RUBY)
+      FOO = 1
+      FOO, BAR = 2, 3
+      ^^^ Constant `FOO` is already assigned in this namespace.
+    RUBY
+  end
+
+  it 'does not register an offense for module definition inside a conditional' do
+    expect_no_offenses(<<~RUBY)
+      if condition
+        module M; end
+      end
+      M = 1
     RUBY
   end
 end
