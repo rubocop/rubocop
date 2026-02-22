@@ -3968,6 +3968,11 @@ Style/EachForSimpleLoop:
   Enabled: true
   VersionAdded: '0.41'
 
+Style/EachWith:
+  Description: 'Checks for `each_with_index` and `each_with_object` that can be replaced with `each.with_index` and `each.with_object`.'
+  Enabled: pending
+  VersionAdded: '1.60'
+
 Style/EachWithObject:
   Description: 'Prefer `each_with_object` over `inject` or `reduce`.'
   Enabled: true
