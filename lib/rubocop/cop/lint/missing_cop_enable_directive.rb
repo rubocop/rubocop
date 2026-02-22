@@ -23,6 +23,11 @@ module RuboCop
       # # rubocop:enable SomeCop
       # ----
       #
+      # When `AllowDisablesAtFileStart` is `true`, a `# rubocop:disable` at the
+      # beginning of the file (on the first line or after only comments/blank lines)
+      # does not require a corresponding `# rubocop:enable`,
+      # as it is expected that it's being disabled for the entire file
+      #
       # @example MaximumRangeSize: .inf (default)
       #
       #   # good
@@ -51,6 +56,20 @@ module RuboCop
       #   x += 1
       #   # Including this, that's 3 lines on which the cop is disabled.
       #   # rubocop:enable Layout/SpaceAroundOperators
+      #
+      # @example AllowDisablesAtFileStart: true
+      #
+      #   # good
+      #   # rubocop:disable Layout/SpaceAroundOperators
+      #   x= 0
+      #   y= 1
+      #   # EOF
+      #
+      #   # bad (disable is not at the start of the file)
+      #   x = 1
+      #   # rubocop:disable Layout/SpaceAroundOperators
+      #   y= 2
+      #   # EOF
       #
       class MissingCopEnableDirective < Base
         include RangeHelp
@@ -90,11 +109,30 @@ module RuboCop
             return true
           end
 
+          # Allow file wide disables when rubocop:disable is on the first line of a file at the start of the file if disable at file start is set to true
+          return true if allow_disables_at_file_start? && disable_at_file_start?(line_range)
+
           false
         end
 
         def max_range
           @max_range ||= cop_config['MaximumRangeSize']
+        end
+
+        def allow_disables_at_file_start?
+          cop_config['AllowDisablesAtFileStart']
+        end
+
+        def disable_at_file_start?(line_range)
+          # Check if the rubocop:disable is at the start of the file
+          # comments or blank lines in front excluded, since files may start with them
+          return false unless line_range.max == Float::INFINITY
+
+          disable_line = line_range.min
+          (1...disable_line).all? do |line_num|
+            line = processed_source.lines[line_num - 1]
+            line.strip.empty? || line.strip.start_with?('#')
+          end
         end
 
         def message(cop, comment, type = 'cop')
