@@ -277,6 +277,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         it 'does not check the other sources' do
           expect(described_class::RubyVersionFile).not_to receive(:new)
           expect(described_class::ToolVersionsFile).not_to receive(:new)
+          expect(described_class::MiseTomlFile).not_to receive(:new)
           expect(described_class::BundlerLockFile).not_to receive(:new)
           expect(described_class::Default).not_to receive(:new)
           expect(target_ruby.version).to eq 2.7
@@ -315,6 +316,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         it 'checks the rest of the sources' do
           expect(described_class::RubyVersionFile).to receive(:new).and_call_original
           expect(described_class::ToolVersionsFile).to receive(:new).and_call_original
+          expect(described_class::MiseTomlFile).to receive(:new).and_call_original
           expect(described_class::BundlerLockFile).to receive(:new).and_call_original
           expect(described_class::Default).to receive(:new).and_call_original
           expect(target_ruby.version).to eq default_version
@@ -428,8 +430,9 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
-      it 'does not read .tool-versions, Gemfile.lock or gems.locked' do
+      it 'does not read .tool-versions, mise.toml, Gemfile.lock or gems.locked' do
         expect(File).not_to receive(:file?).with('.tool-versions')
+        expect(File).not_to receive(:file?).with('mise.toml')
         expect(File).not_to receive(:file?).with('Gemfile')
         expect(File).not_to receive(:file?).with('gems.locked')
         expect(target_ruby.version).to eq default_version
@@ -467,6 +470,51 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
 
       context 'when .tool-versions contains different runtimes' do
         let(:tool_versions) { ['nodejs 14.9.0', 'ruby 3.0.0'] }
+        let(:ruby_version_to_f) { 3.0 }
+
+        it 'reads it to determine the target ruby version' do
+          expect(target_ruby.version).to eq ruby_version_to_f
+        end
+
+        it 'does not read Gemfile.lock, gems.locked' do
+          expect(File).not_to receive(:file?).with(/Gemfile/)
+          expect(File).not_to receive(:file?).with(/gems\.locked/)
+          expect(target_ruby.version).to eq default_version
+        end
+      end
+    end
+
+    context 'when mise.toml is present' do
+      before do
+        dir = configuration.base_dir_for_path_parameters
+        create_file(File.join(dir, 'mise.toml'), mise_toml)
+      end
+
+      context 'when mise.toml does not contain a ruby version' do
+        let(:mise_toml) { ['[tools]', 'nodejs = "14.9.0"'] }
+
+        it 'uses the default ruby version' do
+          expect(target_ruby.version).to eq default_version
+        end
+      end
+
+      context 'when .tool-versions contains only a ruby version' do
+        let(:mise_toml) { ['[tools]', 'ruby = "3.0.0"'] }
+        let(:ruby_version_to_f) { 3.0 }
+
+        it 'reads it to determine the target ruby version' do
+          expect(target_ruby.version).to eq ruby_version_to_f
+        end
+
+        it 'does not read Gemfile.lock, gems.locked' do
+          expect(File).not_to receive(:file?).with(/Gemfile/)
+          expect(File).not_to receive(:file?).with(/gems\.locked/)
+          expect(target_ruby.version).to eq default_version
+        end
+      end
+
+      context 'when .tool-versions contains different runtimes' do
+        let(:mise_toml) { ['[tools]', 'nodejs = "14.9.0"', 'ruby = "3.0.0"'] }
         let(:ruby_version_to_f) { 3.0 }
 
         it 'reads it to determine the target ruby version' do
