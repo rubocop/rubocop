@@ -4723,6 +4723,16 @@ Style/MinMaxComparison:
   Safe: false
   VersionAdded: '1.42'
 
+Style/MinimizeNegations:
+  Description: 'Minimizes the number of negations in an `if` or `unless` using De Morgan’s laws.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  EnforcedStyle: unless
+  SupportedStyles:
+    - unless
+    - if
+    - both
+
 Style/MissingElse:
   Description: >-
                 Require if/case expressions to have an else branches.
