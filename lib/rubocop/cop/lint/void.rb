@@ -142,15 +142,21 @@ module RuboCop
         end
 
         def check_case_expression(case_node)
-          case_node.each_when { |when_node| check_expression(when_node.body) if when_node.body }
-          check_expression(case_node.else_branch) if case_node.else_branch
+          case_node.each_when do |when_node|
+            check_void_branch(when_node.body)
+          end
+          check_void_branch(case_node.else_branch)
         end
 
         def check_case_match_expression(case_node)
           case_node.each_in_pattern do |in_pattern_node|
-            check_expression(in_pattern_node.body) if in_pattern_node.body
+            check_void_branch(in_pattern_node.body)
           end
-          check_expression(case_node.else_branch) if case_node.else_branch
+          check_void_branch(case_node.else_branch)
+        end
+
+        def check_void_branch(body)
+          check_void_expression_nodes(body) if body && !body.nil_type?
         end
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

@@ -1204,6 +1204,16 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
+  it 'does not register an offense for `nil` in `case` branch' do
+    expect_no_offenses(<<~RUBY)
+      case foo
+      when 1 then nil
+      else do_something
+      end
+      puts :ok
+    RUBY
+  end
+
   it 'registers an offense for void literal in `case...in` branch' do
     expect_offense(<<~RUBY)
       case foo
@@ -1239,6 +1249,16 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       in 1 then do_something
       end
       puts 3
+    RUBY
+  end
+
+  it 'does not register an offense for `nil` in `case...in` branch' do
+    expect_no_offenses(<<~RUBY)
+      case foo
+      in 1 then nil
+      else do_something
+      end
+      puts :ok
     RUBY
   end
 
