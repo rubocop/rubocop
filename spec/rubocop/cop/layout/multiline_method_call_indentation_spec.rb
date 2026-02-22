@@ -560,6 +560,73 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         end
       end
 
+      context 'when inside a hash pair in a multiline chain method call' do
+        it 'accepts method chain inside hash pair passed to a chained method' do
+          expect_no_offenses(<<~RUBY)
+            @foo = Foo
+                   .where(id: Bar.select(:id)
+                     .joins(:bar)
+                     .where.not(bar: { id: 123 }))
+          RUBY
+        end
+
+        it 'accepts method chain inside hash pair passed to a chained method with safe navigation' do
+          expect_no_offenses(<<~RUBY)
+            @foo = Foo
+                   &.where(id: Bar.select(:id)
+                     &.joins(:bar))
+          RUBY
+        end
+
+        it 'accepts method chain inside hash pair when outer chain uses trailing dot' do
+          expect_no_offenses(<<~RUBY)
+            @foo = Foo.
+                   where(id: Bar.select(:id)
+                     .joins(:bar))
+          RUBY
+        end
+
+        it 'accepts multiple hash pairs with chains in the same multiline chain call' do
+          expect_no_offenses(<<~RUBY)
+            Foo
+              .where(id: Bar.select(:id)
+                .joins(:bar),
+                     name: Car.find(:name)
+                .strip)
+          RUBY
+        end
+
+        it 'accepts method chain inside hash pair with explicit hash braces in multiline chain' do
+          expect_no_offenses(<<~RUBY)
+            Foo
+              .where({id: Bar.select(:id)
+                .joins(:bar)})
+          RUBY
+        end
+
+        it 'accepts chaining after a multiline chain call with hash pair' do
+          expect_no_offenses(<<~RUBY)
+            Foo
+              .where(id: Bar.select(:id)
+                .joins(:bar))
+              .order(:name)
+          RUBY
+        end
+
+        it 'still registers an offense for same-line chain with hash pair' do
+          expect_offense(<<~RUBY)
+            Foo.where(id: Bar.select(:id)
+                                    .joins(:bar))
+                                    ^^^^^^ Align `.joins` with `Bar.select(:id)` on line 1.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            Foo.where(id: Bar.select(:id)
+                          .joins(:bar))
+          RUBY
+        end
+      end
+
       context 'when inside a hash pair with block receiver' do
         it 'accepts method chain after block inside hash pair' do
           expect_no_offenses(<<~RUBY)
@@ -1776,6 +1843,60 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
                       .baz)
       RUBY
     end
+
+    context 'when inside a hash pair in a multiline chain method call' do
+      it 'accepts method chain inside hash pair passed to a chained method' do
+        expect_no_offenses(<<~RUBY)
+          @foo = Foo
+                   .where(id: Bar.select(:id)
+                     .joins(:bar)
+                     .where.not(bar: { id: 123 }))
+        RUBY
+      end
+
+      it 'accepts method chain inside hash pair when outer chain uses trailing dot' do
+        expect_no_offenses(<<~RUBY)
+          @foo = Foo.
+                   where(id: Bar.select(:id)
+                     .joins(:bar))
+        RUBY
+      end
+
+      it 'accepts multiple hash pairs with chains in the same multiline chain call' do
+        expect_no_offenses(<<~RUBY)
+          Foo
+            .where(id: Bar.select(:id)
+              .joins(:bar),
+                   name: Car.find(:name)
+              .strip)
+        RUBY
+      end
+
+      it 'accepts chaining after a multiline chain call with hash pair' do
+        expect_no_offenses(<<~RUBY)
+          Foo
+            .where(id: Bar.select(:id)
+              .joins(:bar))
+            .order(:name)
+        RUBY
+      end
+
+      it 'accepts method chain inside hash pair passed to a chained method with safe navigation' do
+        expect_no_offenses(<<~RUBY)
+          @foo = Foo
+                   &.where(id: Bar.select(:id)
+                     &.joins(:bar))
+        RUBY
+      end
+
+      it 'accepts method chain inside hash pair with explicit hash braces in multiline chain' do
+        expect_no_offenses(<<~RUBY)
+          Foo
+            .where({id: Bar.select(:id)
+              .joins(:bar)})
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is indented' do
@@ -2177,6 +2298,60 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
         method(key: value.foo.bar
           .baz)
       RUBY
+    end
+
+    context 'when inside a hash pair in a multiline chain method call' do
+      it 'accepts method chain inside hash pair passed to a chained method' do
+        expect_no_offenses(<<~RUBY)
+          @foo = Foo
+            .where(id: Bar.select(:id)
+              .joins(:bar)
+              .where.not(bar: { id: 123 }))
+        RUBY
+      end
+
+      it 'accepts method chain inside hash pair when outer chain uses trailing dot' do
+        expect_no_offenses(<<~RUBY)
+          @foo = Foo.
+            where(id: Bar.select(:id)
+              .joins(:bar))
+        RUBY
+      end
+
+      it 'accepts multiple hash pairs with chains in the same multiline chain call' do
+        expect_no_offenses(<<~RUBY)
+          Foo
+            .where(id: Bar.select(:id)
+              .joins(:bar),
+                   name: Car.find(:name)
+              .strip)
+        RUBY
+      end
+
+      it 'accepts chaining after a multiline chain call with hash pair' do
+        expect_no_offenses(<<~RUBY)
+          Foo
+            .where(id: Bar.select(:id)
+              .joins(:bar))
+            .order(:name)
+        RUBY
+      end
+
+      it 'accepts method chain inside hash pair passed to a chained method with safe navigation' do
+        expect_no_offenses(<<~RUBY)
+          @foo = Foo
+            &.where(id: Bar.select(:id)
+              &.joins(:bar))
+        RUBY
+      end
+
+      it 'accepts method chain inside hash pair with explicit hash braces in multiline chain' do
+        expect_no_offenses(<<~RUBY)
+          Foo
+            .where({id: Bar.select(:id)
+              .joins(:bar)})
+        RUBY
+      end
     end
 
     context 'when indentation width is overridden for this cop' do
