@@ -189,7 +189,9 @@ module RuboCop
         end
 
         def check_literal(node)
-          return if !entirely_literal?(node) || node.xstr_type? || node.range_type?
+          if !entirely_literal?(node) || node.xstr_type? || node.range_type? || node.nil_type?
+            return
+          end
 
           add_offense(node, message: format(LIT_MSG, lit: node.source)) do |corrector|
             autocorrect_void_expression(corrector, node)
