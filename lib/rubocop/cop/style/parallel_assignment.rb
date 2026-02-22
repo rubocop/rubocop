@@ -271,7 +271,7 @@ module RuboCop
           def begin_correction(rescue_result)
             "begin\n" \
               "#{indentation(node)}" \
-              "#{assignment.join("\n#{indentation(node)}")}" \
+              "#{assignment.join(%(\n#{indentation(node)}))}" \
               "\n#{offset(node)}rescue\n" \
               "#{indentation(node)}#{rescue_result.source}" \
               "\n#{offset(node)}end"
@@ -286,7 +286,7 @@ module RuboCop
 
             "#{modifier_range(parent).source}\n" \
               "#{indentation(node)}" \
-              "#{assignment.join("\n#{indentation(node)}")}" \
+              "#{assignment.join(%(\n#{indentation(node)}))}" \
               "\n#{offset(node)}end"
           end
 
