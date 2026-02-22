@@ -18,6 +18,11 @@ module RuboCop
       # of `EnforcedStyle`) are only considered if used in the format string argument to the
       # methods `printf`, `sprintf`, `format` and `%`.
       #
+      # NOTE: In `aggressive` mode, offenses are registered for all strings containing tokens,
+      # but autocorrection is only applied when the string appears in a known formatting context
+      # (`format`, `sprintf`, `printf`, or `%`). This is done in order to prevent false
+      # autocorrections for strings that are not actually format strings.
+      #
       # NOTE: Tokens in the `unannotated` style (eg. `%s`) are always treated as if
       # configured with `Conservative: true`. This is done in order to prevent false positives,
       # because this format is very similar to encoded URLs or Date/Time formatting strings.
@@ -90,9 +95,25 @@ module RuboCop
       #   # good
       #   redirect('foo/%{bar_id}')
       #
+      # @example Mode: aggressive (default), EnforcedStyle: annotated
+      #
+      #   # bad
+      #   "%{greeting}"
+      #   foo("%{greeting}")
+      #
+      #   # bad
+      #   format("%{greeting}", greeting: 'Hello')
+      #   printf("%{greeting}", greeting: 'Hello')
+      #   sprintf("%{greeting}", greeting: 'Hello')
+      #   "%{greeting}" % { greeting: 'Hello' }
+      #
+      #   # good
+      #   format("%<greeting>s", greeting: 'Hello')
+      #   printf("%<greeting>s", greeting: 'Hello')
+      #   sprintf("%<greeting>s", greeting: 'Hello')
+      #   "%<greeting>s" % { greeting: 'Hello' }
+      #
       # @example Mode: conservative, EnforcedStyle: annotated
-      #   # In `conservative` mode, offenses are only registered for strings
-      #   # given to a known formatting method.
       #
       #   # good
       #   "%{greeting}"
@@ -103,6 +124,12 @@ module RuboCop
       #   printf("%{greeting}", greeting: 'Hello')
       #   sprintf("%{greeting}", greeting: 'Hello')
       #   "%{greeting}" % { greeting: 'Hello' }
+      #
+      #   # good
+      #   format("%<greeting>s", greeting: 'Hello')
+      #   printf("%<greeting>s", greeting: 'Hello')
+      #   sprintf("%<greeting>s", greeting: 'Hello')
+      #   "%<greeting>s" % { greeting: 'Hello' }
       #
       class FormatStringToken < Base
         include ConfigurableEnforcedStyle
