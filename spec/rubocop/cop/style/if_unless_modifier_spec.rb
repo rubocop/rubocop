@@ -1323,4 +1323,60 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
     end
   end
+
+  context 'when if/unless is inside string interpolation' do
+    it 'does not register an offense for if modifier form' do
+      expect_no_offenses(<<~'RUBY')
+        "#{('x' if condition)}"
+      RUBY
+    end
+
+    it 'does not register an offense for if normal form' do
+      expect_no_offenses(<<~'RUBY')
+        "#{if condition
+             'x'
+           end}"
+      RUBY
+    end
+
+    it 'does not register an offense for unless modifier form' do
+      expect_no_offenses(<<~'RUBY')
+        "#{('x' unless condition)}"
+      RUBY
+    end
+
+    it 'does not register an offense for unless normal form' do
+      expect_no_offenses(<<~'RUBY')
+        "#{unless condition
+             'x'
+           end}"
+      RUBY
+    end
+
+    it 'does not register an offense inside a heredoc' do
+      expect_no_offenses(<<~'RUBY')
+        <<~HEREDOC
+          #{if condition
+               'x'
+             end}
+        HEREDOC
+      RUBY
+    end
+
+    it 'does not register an offense inside a %Q{} string' do
+      expect_no_offenses(<<~'RUBY')
+        %Q{#{if condition
+               'x'
+             end}}
+      RUBY
+    end
+
+    it 'does not register an offense inside nested string interpolation' do
+      expect_no_offenses(<<~'RUBY')
+        "outer #{func("#{if condition
+                           'x'
+                         end}")}"
+      RUBY
+    end
+  end
 end
