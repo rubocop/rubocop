@@ -2509,6 +2509,12 @@ Lint/Syntax:
   Enabled: true
   VersionAdded: '0.9'
 
+Lint/ThreadUnsafePattern:
+  Description: 'Checks for thread-unsafe patterns such as class variable access and global variable mutation.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+  AllowedGlobalVariables: []
+
 Lint/ToEnumArguments:
   Description: 'Ensures that `to_enum`/`enum_for`, called for the current method, has correct arguments.'
   Enabled: pending
