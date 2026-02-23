@@ -4490,12 +4490,6 @@ Style/InfiniteLoop:
   VersionAdded: '0.26'
   VersionChanged: '0.61'
 
-Style/InjectToHash:
-  Description: 'Use `to_h { ... }` instead of `each_with_object`, `inject`, or `reduce` to build a hash.'
-  Enabled: pending
-  Safe: false
-  VersionAdded: '<<next>>'
-
 Style/InlineComment:
   Description: 'Avoid trailing inline comments.'
   Enabled: false
@@ -5298,6 +5292,12 @@ Style/RandomWithOffset:
   StyleGuide: '#random-numbers'
   Enabled: true
   VersionAdded: '0.52'
+
+Style/ReduceToHash:
+  Description: 'Use `to_h { ... }` instead of `each_with_object`, `inject`, or `reduce` to build a hash.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
 
 Style/RedundantArgument:
   Description: 'Checks for a redundant argument passed to certain methods.'

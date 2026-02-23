@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::InjectToHash, :config do
+RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
   context 'when targeting Ruby 2.6+', :ruby26 do
     context 'with `each_with_object({})` pattern' do
       it 'registers an offense and corrects with inline block' do

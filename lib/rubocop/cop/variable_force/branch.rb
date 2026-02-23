@@ -346,8 +346,8 @@ module RuboCop
           end
         end
 
-        CLASSES_BY_TYPE = Base.classes.each_with_object({}) do |klass, classes|
-          classes[klass.type] = klass
+        CLASSES_BY_TYPE = Base.classes.to_h do |klass|
+          [klass.type, klass]
         end
       end
     end

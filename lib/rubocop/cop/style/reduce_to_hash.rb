@@ -37,7 +37,7 @@ module RuboCop
       #   # good
       #   array.to_h { |elem| [elem, elem.to_s] }
       #
-      class InjectToHash < Base
+      class ReduceToHash < Base
         extend AutoCorrector
         extend TargetRubyVersion
         include RangeHelp
