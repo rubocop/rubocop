@@ -11,9 +11,11 @@ module RuboCop
       # (`transform_keys` was added in Ruby 2.5.)
       #
       # @safety
-      #   This cop is unsafe, as it can produce false positives if we are
-      #   transforming an enumerable of key-value-like pairs that isn't actually
-      #   a hash, e.g.: `[[k1, v1], [k2, v2], ...]`
+      #   This cop identifies the receiver as a hash by checking for literal hash
+      #   syntax and common methods that are known to return hashes (e.g. `to_h`,
+      #   `merge`, `invert`, `group_by`, etc.). However, it is unsafe because it
+      #   is possible for a custom class to define one of these methods and return
+      #   something other than a hash.
       #
       # @example
       #   # bad
@@ -21,10 +23,18 @@ module RuboCop
       #   Hash[{a: 1, b: 2}.collect { |k, v| [foo(k), v] }]
       #   {a: 1, b: 2}.map { |k, v| [k.to_s, v] }.to_h
       #   {a: 1, b: 2}.to_h { |k, v| [k.to_s, v] }
+      #   foo.to_h.each_with_object({}) { |(k, v), h| h[k.to_sym] = v }
+      #   foo.merge(bar).map { |k, v| [k.to_s, v] }.to_h
       #
       #   # good
       #   {a: 1, b: 2}.transform_keys { |k| foo(k) }
       #   {a: 1, b: 2}.transform_keys { |k| k.to_s }
+      #   foo.to_h.transform_keys { |k| k.to_sym }
+      #   foo.merge(bar).transform_keys { |k| k.to_s }
+      #
+      #   # Won't register an offense - receiver is not known to be a hash
+      #   foo.bar.each_with_object({}) { |(k, v), h| h[k.to_s] = v }
+      #   baz.map { |k, v| [k.to_s, v] }.to_h
       class HashTransformKeys < Base
         include HashTransformMethod
         extend AutoCorrector
@@ -35,7 +45,7 @@ module RuboCop
         # @!method on_bad_each_with_object(node)
         def_node_matcher :on_bad_each_with_object, <<~PATTERN
           (block
-            (call !#array_receiver? :each_with_object (hash))
+            (call #hash_receiver? :each_with_object (hash))
             (args
               (mlhs
                 (arg $_)
@@ -50,7 +60,7 @@ module RuboCop
             (const _ :Hash)
             :[]
             (block
-              (call !#array_receiver? {:map :collect})
+              (call #hash_receiver? {:map :collect})
               (args
                 (arg $_)
                 (arg _val))
@@ -61,7 +71,7 @@ module RuboCop
         def_node_matcher :on_bad_map_to_h, <<~PATTERN
           (call
             (block
-              (call !#array_receiver? {:map :collect})
+              (call #hash_receiver? {:map :collect})
               (args
                 (arg $_)
                 (arg _val))
@@ -72,7 +82,7 @@ module RuboCop
         # @!method on_bad_to_h(node)
         def_node_matcher :on_bad_to_h, <<~PATTERN
           (block
-            (call !#array_receiver? :to_h)
+            (call #hash_receiver? :to_h)
             (args
               (arg $_)
               (arg _val))
