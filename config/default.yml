@@ -4490,6 +4490,12 @@ Style/InfiniteLoop:
   VersionAdded: '0.26'
   VersionChanged: '0.61'
 
+Style/InjectToHash:
+  Description: 'Use `to_h { ... }` instead of `each_with_object`, `inject`, or `reduce` to build a hash.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/InlineComment:
   Description: 'Avoid trailing inline comments.'
   Enabled: false
