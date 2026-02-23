@@ -4654,6 +4654,12 @@ Style/MapIntoArray:
   VersionChanged: '1.67'
   Safe: false
 
+Style/MapJoin:
+  Description: 'Checks for redundant `map(&:to_s)` before `join`.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/MapToHash:
   Description: 'Prefer `to_h` with a block over `map.to_h`.'
   Enabled: pending
