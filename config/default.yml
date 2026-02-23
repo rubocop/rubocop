@@ -4157,6 +4157,12 @@ Style/FileNull:
   SafeAutoCorrect: false
   VersionAdded: '1.69'
 
+Style/FileOpen:
+  Description: 'Checks for `File.open` without a block, which can leak file descriptors.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Style/FileRead:
   Description: 'Favor `File.(bin)read` convenience methods.'
   StyleGuide: '#file-read'
