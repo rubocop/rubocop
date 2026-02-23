@@ -4,45 +4,51 @@ RSpec.describe RuboCop::Cop::Style::ModuleMemberExistenceCheck, :config do
   shared_examples 'module member inclusion' do |array_returning_method, predicate_method, has_inherit_param = true|
     it "registers an offense when using `.#{array_returning_method}.include?(method)`" do
       expect_offense(<<~RUBY, array_returning_method: array_returning_method)
-        x.#{array_returning_method}.include?(method)
-          ^{array_returning_method}^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
+        Foo.#{array_returning_method}.include?(method)
+            ^{array_returning_method}^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
       RUBY
 
       expect_correction(<<~RUBY)
-        x.#{predicate_method}(method)
+        Foo.#{predicate_method}(method)
       RUBY
     end
 
     it "registers an offense when using `.#{array_returning_method}.include? method`" do
       expect_offense(<<~RUBY, array_returning_method: array_returning_method)
-        x.#{array_returning_method}.include? method
-          ^{array_returning_method}^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
+        Foo.#{array_returning_method}.include? method
+            ^{array_returning_method}^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
       RUBY
 
       expect_correction(<<~RUBY)
-        x.#{predicate_method}(method)
+        Foo.#{predicate_method}(method)
       RUBY
     end
 
     it "registers an offense when using `.#{array_returning_method}.member?(method)`" do
       expect_offense(<<~RUBY, array_returning_method: array_returning_method)
-        x.#{array_returning_method}.member?(method)
-          ^{array_returning_method}^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
+        Foo.#{array_returning_method}.member?(method)
+            ^{array_returning_method}^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
       RUBY
 
       expect_correction(<<~RUBY)
-        x.#{predicate_method}(method)
+        Foo.#{predicate_method}(method)
       RUBY
     end
 
     it "registers an offense when using `&.#{array_returning_method}&.include?(method)`" do
       expect_offense(<<~RUBY, array_returning_method: array_returning_method)
-        x&.#{array_returning_method}&.include?(method)
-           ^{array_returning_method}^^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
+        Foo&.#{array_returning_method}&.include?(method)
+             ^{array_returning_method}^^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
       RUBY
 
       expect_correction(<<~RUBY)
-        x&.#{predicate_method}(method)
+        Foo&.#{predicate_method}(method)
+      RUBY
+    end
+
+    it 'does not register an offense when the receiver is not a constant' do
+      expect_no_offenses(<<~RUBY)
+        some_method.#{array_returning_method}.include?(method)
       RUBY
     end
 
@@ -60,40 +66,40 @@ RSpec.describe RuboCop::Cop::Style::ModuleMemberExistenceCheck, :config do
     if has_inherit_param
       it "registers an offense when using `.#{array_returning_method}(false).include?(method)`" do
         expect_offense(<<~RUBY, array_returning_method: array_returning_method)
-          x.#{array_returning_method}(false).include?(method)
-            ^{array_returning_method}^^^^^^^^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method, false)` instead.
+          Foo.#{array_returning_method}(false).include?(method)
+              ^{array_returning_method}^^^^^^^^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method, false)` instead.
         RUBY
 
         expect_correction(<<~RUBY)
-          x.#{predicate_method}(method, false)
+          Foo.#{predicate_method}(method, false)
         RUBY
       end
 
       it "registers an offense when using `.#{array_returning_method}(true).include?(method)`" do
         expect_offense(<<~RUBY, array_returning_method: array_returning_method)
-          x.#{array_returning_method}(true).include?(method)
-            ^{array_returning_method}^^^^^^^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
+          Foo.#{array_returning_method}(true).include?(method)
+              ^{array_returning_method}^^^^^^^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method)` instead.
         RUBY
 
         expect_correction(<<~RUBY)
-          x.#{predicate_method}(method)
+          Foo.#{predicate_method}(method)
         RUBY
       end
 
       it "registers an offense when using `.#{array_returning_method}(inherit).include?(method)`" do
         expect_offense(<<~RUBY, array_returning_method: array_returning_method)
-          x.#{array_returning_method}(inherit).include?(method)
-            ^{array_returning_method}^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method, inherit)` instead.
+          Foo.#{array_returning_method}(inherit).include?(method)
+              ^{array_returning_method}^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `#{predicate_method}(method, inherit)` instead.
         RUBY
 
         expect_correction(<<~RUBY)
-          x.#{predicate_method}(method, inherit)
+          Foo.#{predicate_method}(method, inherit)
         RUBY
       end
     else
       it "does not register an offense when using `.#{array_returning_method}(inherit).include?(method)`" do
         expect_no_offenses(<<~RUBY)
-          x.#{array_returning_method}(inherit).include?(method)
+          Foo.#{array_returning_method}(inherit).include?(method)
         RUBY
       end
     end
