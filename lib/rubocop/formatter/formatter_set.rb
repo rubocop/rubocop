@@ -57,7 +57,7 @@ module RuboCop
         if output_path
           dir_path = File.dirname(output_path)
           FileUtils.mkdir_p(dir_path)
-          output = File.open(output_path, 'w')
+          output = File.open(output_path, 'w') # rubocop:disable Style/FileOpen
         else
           output = $stdout
         end
