@@ -48,12 +48,12 @@ module RuboCop
 
         def after_private_modifier?(left_siblings)
           access_modifier_candidates = left_siblings.compact.select do |left_sibling|
-            left_sibling.respond_to?(:send_type?) && left_sibling.send_type?
+            left_sibling.respond_to?(:bare_access_modifier?) && left_sibling.bare_access_modifier?
           end
 
-          access_modifier_candidates.any? do |candidate|
-            candidate.command?(:private) && candidate.arguments.none?
-          end
+          return false if access_modifier_candidates.empty?
+
+          access_modifier_candidates.last.command?(:private)
         end
 
         def private_constantize?(right_siblings, const_value)
