@@ -250,7 +250,7 @@ Please see the documents below for more formatter API details.
 
 * https://www.rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter[RuboCop::Formatter::BaseFormatter]
 * https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense[RuboCop::Cop::Offense]
-* https://gemdocs.org/gems/parser/3.3.8.0/Parser/Source/Range.html[Parser::Source::Range]
+* https://www.rubydoc.info/gems/parser/Parser/Source/Range[Parser::Source::Range]
 
 === Using a Custom Formatter from the Command Line
 
