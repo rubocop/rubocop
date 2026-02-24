@@ -78,6 +78,23 @@ The site is automatically deployed to GitHub Pages via a GitHub Action on push t
 If you want to make changes to the manual's page structure you'll have to edit
 https://github.com/rubocop/rubocop/blob/master/docs/modules/ROOT/nav.adoc[nav.adoc].
 
+=== Working on rubocop.org
+
+The https://rubocop.org[rubocop.org] landing page is a separate project, built with https://www.bridgetownrb.com/[Bridgetown] and https://tailwindcss.com/[Tailwind CSS]. Its source lives at https://github.com/rubocop/rubocop.org[github.com/rubocop/rubocop.org].
+
+To run the site locally you'll need Ruby (>= 3.2) and Node.js (>= 20):
+
+[source]
+----
+$ cd rubocop.org
+$ bundle install && npm install
+$ bin/bridgetown start
+----
+
+Then visit http://localhost:4000[localhost:4000] to preview your changes.
+
+The site is automatically deployed to GitHub Pages on push to `main`.
+
 == Funding
 
 While RuboCop is free software and will always be, the project would benefit immensely from some funding.
