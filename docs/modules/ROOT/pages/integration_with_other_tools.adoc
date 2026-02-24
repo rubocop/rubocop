@@ -66,27 +66,11 @@ https://github.com/pderichs/sublime_rubocop[Sublime RuboCop] plugin useful.
 
 You may also consider using one of the LSP servers mentioned above which utilize RuboCop by using the https://github.com/sublimelsp/LSP[Sublime-LSP] plugin and follow its https://lsp.sublimetext.io/language_servers/#ruby-ruby-on-rails[documentation] for configuration.
 
-=== Brackets
-
-The https://github.com/smockle-archive/brackets-rubocop[brackets-rubocop]
-extension displays RuboCop results in Brackets.
-It can be installed via the extension manager in Brackets.
-
 === TextMate2
 
 The https://github.com/mrdougal/textmate2-rubocop[textmate2-rubocop]
 bundle displays formatted RuboCop results in a new window.
 Installation instructions can be found https://github.com/mrdougal/textmate2-rubocop#installation[here].
-
-=== Atom
-
-The https://github.com/AtomLinter/linter-rubocop[linter-rubocop] plugin for Atom's
-https://github.com/steelbrain/linter[linter] runs RuboCop and highlights the offenses in Atom.
-
-=== LightTable
-
-The https://github.com/seancaffery/lt-rubocop[lt-rubocop] plugin
-provides LightTable integration.
 
 === RubyMine / Intellij IDEA
 
