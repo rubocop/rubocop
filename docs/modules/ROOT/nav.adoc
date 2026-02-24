@@ -8,6 +8,7 @@
 ** xref:usage/lsp.adoc[LSP]
 ** xref:usage/mcp.adoc[MCP]
 ** xref:usage/server.adoc[Server]
+** xref:usage/source_code_directives.adoc[Source Code Directives]
 ** xref:usage/profiling.adoc[Profiling]
 * xref:configuration.adoc[Configuration]
 * xref:cops.adoc[Cops]
