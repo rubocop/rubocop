@@ -1,6 +1,10 @@
 = Getting Started
 
-This guide will get you up and running with RuboCop in a few minutes.
+This guide will get you up and running with RuboCop in a few minutes. RuboCop serves three primary roles:
+
+. *Code style checker* (a.k.a. linter) — enforces style conventions from the https://rubystyle.guide[Ruby Style Guide]
+. *Lint tool* — catches bugs and suspicious code, like a smarter `ruby -w`
+. *Code formatter* — automatically fixes layout and formatting
 
 == First Run
 
@@ -108,7 +112,7 @@ See xref:integration_with_other_tools.adoc[Integration with Other Tools] for mor
 
 == Next Steps
 
-* xref:usage/basic_usage.adoc[Basic Usage] — full CLI reference with all command-line flags
+* xref:usage/basic_usage.adoc[CLI Reference] — full command-line reference with all flags
 * xref:configuration.adoc[Configuration] — everything about `.rubocop.yml`
 * xref:usage/source_code_directives.adoc[Source Code Directives] — disable/enable cops inline with comments
 * xref:cops.adoc[Cops] — browse all available cops by department

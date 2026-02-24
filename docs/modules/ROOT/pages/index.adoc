@@ -55,7 +55,7 @@ So, what to do next? While you can peruse the documentation in whatever way you'
 a few recommendations:
 
 * Start with the xref:usage/getting_started.adoc["Getting Started"] guide to get up and running quickly.
-* See xref:usage/basic_usage.adoc["Basic Usage"] for the full CLI reference.
+* See xref:usage/basic_usage.adoc["CLI Reference"] for the full command-line reference.
 * Adjust RuboCop to your style/preferences. RuboCop is an extremely flexible tool and most aspects of its behavior
 can be tweaked via various https://github.com/rubocop/rubocop/blob/master/config/default.yml[configuration
 options]. See xref:configuration.adoc["Configuration"] for more details.

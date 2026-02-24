@@ -3,7 +3,7 @@
 * xref:compatibility.adoc[Compatibility]
 * Usage
 ** xref:usage/getting_started.adoc[Getting Started]
-** xref:usage/basic_usage.adoc[Basic Usage]
+** xref:usage/basic_usage.adoc[CLI Reference]
 ** xref:usage/auto_gen_config.adoc[Auto-generating Configuration]
 ** xref:usage/autocorrect.adoc[Autocorrect]
 ** xref:usage/caching.adoc[Caching]
