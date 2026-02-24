@@ -1,6 +1,6 @@
 = LSP (Language Server Protocol)
 
-NOTE: The built-in language server was introduced in RuboCop 1.53. This experimental feature has been under consideration for a while.
+NOTE: The built-in language server was introduced in RuboCop 1.53.
 
 https://microsoft.github.io/language-server-protocol/[The Language Server Protocol] is the modern standard for providing cross-editor support for various programming languages.
 
