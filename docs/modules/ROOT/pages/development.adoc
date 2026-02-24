@@ -524,8 +524,8 @@ Each cop can hold a configuration and you can refer to `cop_config` in the
 instance and it will bring a hash with options declared in the `.rubocop.yml`
 file.
 
-For example, lets imagine we want to make configurable to make the replacement
-works with other method than `.any?`:
+For example, let's imagine we want to make the replacement method configurable,
+so it works with a method other than `.any?`:
 
 [source,yml]
 ----
@@ -534,7 +534,7 @@ Style/SimplifyNotEmptyWithAny:
   ReplaceAnyWith: "size > 0"
 ----
 
-And then on the autocorrect method, you just need to use the `cop_config` it:
+And then in the autocorrect method, you just need to use `cop_config`:
 
 [source,ruby]
 ----
