@@ -240,7 +240,7 @@ module RuboCop
       #   array.any?
       #
       class SimplifyNotEmptyWithAny < Base
-        MSG = 'Use `.any?` and remove the negation part.'.freeze
+        MSG = 'Use `.any?` and remove the negation part.'
         RESTRICT_ON_SEND = [:!].freeze # optimization: don't call `on_send` unless
                                        # the method name is in this list
 
