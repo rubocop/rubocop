@@ -48,6 +48,20 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         RUBY
       end
 
+      context 'and the long line is allowed because modifier forms are used inside string interpolations' do
+        it 'accepts when using `if` inside string interpolation' do
+          expect_no_offenses(<<~'RUBY')
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#{'string1' if cond1} #{'string2' if cond2}"
+          RUBY
+        end
+
+        it 'accepts when using `unless` inside string interpolation' do
+          expect_no_offenses(<<~'RUBY')
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#{'string1' unless cond1} #{'string2' unless cond2}"
+          RUBY
+        end
+      end
+
       context 'and the long line is allowed because AllowURI is true' do
         it 'accepts' do
           expect_no_offenses(<<~RUBY)
