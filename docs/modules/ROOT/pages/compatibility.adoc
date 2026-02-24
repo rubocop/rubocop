@@ -2,7 +2,7 @@
 
 RuboCop targets Ruby 2.0+ code analysis.footnote:[As defined by its reference implementation MRI.]
 
-RuboCop officially runtime supports MRI (a.k.a. CRuby) and JRuby.
+RuboCop officially supports MRI (a.k.a. CRuby) and JRuby at runtime.
 
 - MRI 2.7+
 - JRuby 9.4+
