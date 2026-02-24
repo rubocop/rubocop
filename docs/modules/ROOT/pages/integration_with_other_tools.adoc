@@ -78,9 +78,7 @@ RuboCop support is https://www.jetbrains.com/idea/download/other.html[available]
 
 === Visual Studio Code
 
-The https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby[ruby] extension
-provides RuboCop integration for Visual Studio Code. RuboCop is also used for the formatting
-capabilities of this extension.
+The recommended option is https://marketplace.visualstudio.com/items?itemName=Shopify.ruby-lsp[Ruby LSP] which uses RuboCop for linting and formatting via the xref:usage/lsp.adoc[built-in LSP]. There is also the dedicated https://marketplace.visualstudio.com/items?itemName=rubocop.vscode-rubocop[vscode-rubocop] extension.
 
 === Other Editors
 
