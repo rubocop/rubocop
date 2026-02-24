@@ -26,7 +26,6 @@ $ rubocop -V
 
 ## Pull requests
 
-* Read [how to properly contribute to open source projects on GitHub][2].
 * Fork the project.
 * If you're adding or making changes to cops, read the [Development docs](https://docs.rubocop.org/rubocop/development.html)
 * Use a topic/feature branch to easily amend a pull request later, if necessary.
@@ -43,7 +42,7 @@ $ rubocop -V
   around it.
 * Make sure the test suite is passing and the code you wrote doesn't produce
   RuboCop offenses (usually this is as simple as running `bundle exec rake`).
-* [Squash related commits together][5].
+* Squash related commits together.
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
 
@@ -97,8 +96,6 @@ Here are a few examples:
 * At the end of the entry, add an implicit link to your GitHub user page as `([@username][])`.
 
 [1]: https://github.com/rubocop/rubocop/issues
-[2]: https://www.gun.io/blog/how-to-github-fork-branch-and-pull-request
 [3]: https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
 [4]: https://help.github.com/articles/about-pull-requests
-[5]: http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html
 [6]: https://daringfireball.net/projects/markdown/syntax
