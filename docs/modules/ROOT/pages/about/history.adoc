@@ -17,6 +17,8 @@ to make it easy to apply consistently the guidelines from the community Ruby Sty
 * 31 May 2018 - At RubyKaigi 2018 Bozhidar announces the transition of the project to a RuboCop GitHub organization. He also outlines the plans for a 1.0 release that guide the next couple of years of development.
 * 21 Oct 2020 - RuboCop 1.0 is released (exactly 7.5 years after the first commit).
 * 06 Mar 2024 - RuboCop 1.62 adds support for Prism.
+* 14 Feb 2025 - RuboCop 1.72 introduces the plugin system for extensions.
+* 26 Mar 2025 - RuboCop 1.75 makes Prism the default parser for Ruby 3.4+.
 
 == Additional Resources
 
