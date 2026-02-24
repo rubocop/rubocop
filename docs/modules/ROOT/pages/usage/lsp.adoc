@@ -283,7 +283,7 @@ $ ps aux | grep 'rubocop --lsp'
 user             17414   0.0  0.2  5557716 144376   ??  Ss    4:48PM   0:02.13 rubocop --lsp /Users/user/src/github.com/rubocop/rubocop
 ```
 
-NOTE: `rubocop --lsp` is for starting LSP client, so users don't manually execute it.
+NOTE: `rubocop --lsp` starts the LSP server and is intended to be invoked by an LSP client, not run manually by users.
 
 == Language Server Development
 
