@@ -119,9 +119,9 @@ $ rubocop --format fuubar
 lib/foo.rb.rb:1:1: C: Naming/MethodName: Use snake_case for method names.
 def badName
     ^^^^^^^
-lib/bar.rb:13:14: W: Lint/DeprecatedClassMethods: File.exists? is deprecated in favor of File.exist?.
-        File.exists?(path)
-             ^^^^^^^
+lib/bar.rb:13:14: W: Lint/UnreachableCode: Unreachable code detected.
+        x + 1
+        ^^^^^
  22/53 files |======== 43 ========>                           |  ETA: 00:00:02
 ----
 
@@ -205,11 +205,11 @@ The JSON structure is like the following example:
 ----
 {
   "metadata": {
-    "rubocop_version": "1.12.0",
+    "rubocop_version": "1.84.2",
     "ruby_engine": "ruby",
-    "ruby_version": "3.0.0",
-    "ruby_patchlevel": "0",
-    "ruby_platform": "x86_64-darwin19"
+    "ruby_version": "3.4.8",
+    "ruby_patchlevel": "72",
+    "ruby_platform": "arm64-darwin24"
   },
   "files": [{
       "path": "lib/foo.rb",
@@ -219,22 +219,32 @@ The JSON structure is like the following example:
       "offenses": [{
           "severity": "convention",
           "message": "Line is too long. [81/80]",
-          "cop_name": "LineLength",
+          "cop_name": "Layout/LineLength",
           "corrected": true,
+          "correctable": true,
           "location": {
+            "start_line": 546,
+            "start_column": 80,
+            "last_line": 546,
+            "last_column": 84,
+            "length": 4,
             "line": 546,
-            "column": 80,
-            "length": 4
+            "column": 80
           }
         }, {
           "severity": "warning",
           "message": "Unreachable code detected.",
-          "cop_name": "UnreachableCode",
+          "cop_name": "Lint/UnreachableCode",
           "corrected": false,
+          "correctable": false,
           "location": {
+            "start_line": 15,
+            "start_column": 9,
+            "last_line": 15,
+            "last_column": 19,
+            "length": 10,
             "line": 15,
-            "column": 9,
-            "length": 10
+            "column": 9
           }
         }
       ]
@@ -336,7 +346,7 @@ $ rubocop --format worst
 
 == HTML Formatter
 
-Useful for CI environments. It will create an HTML report like http://f.cl.ly/items/0M3029412x3O091a1X1R/expected.html[this].
+Useful for CI environments. It will create an HTML report like https://github.com/rubocop/rubocop/blob/master/spec/fixtures/html_formatter/expected.html[this].
 
 [source,sh]
 ----
