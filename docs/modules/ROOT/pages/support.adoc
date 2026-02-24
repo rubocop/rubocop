@@ -26,13 +26,6 @@ kitchen.
 The https://groups.google.com/forum/#!forum/rubocop[official mailing list] is
 hosted at Google Groups. It's a low-traffic list, so don't be too hesitant to subscribe.
 
-== Freenode
-
-If you're into IRC you can visit the `#rubocop` channel on Freenode.
-It's not actively
-monitored by the RuboCop maintainers themselves, but still you can get support
-from other RuboCop users there.
-
 == StackOverflow
 
 We're also encouraging users to ask RuboCop-related questions on StackOverflow.
