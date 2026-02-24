@@ -74,7 +74,7 @@ Installation instructions can be found https://github.com/mrdougal/textmate2-rub
 
 === RubyMine / Intellij IDEA
 
-RuboCop support is https://www.jetbrains.com/idea/download/other.html[available] as of the 2017.1 releases.
+RuboCop support is https://www.jetbrains.com/help/ruby/rubocop.html[built-in].
 
 === Visual Studio Code
 
