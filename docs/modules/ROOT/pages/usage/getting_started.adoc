@@ -1,0 +1,115 @@
+= Getting Started
+
+This guide will get you up and running with RuboCop in a few minutes.
+
+== First Run
+
+After xref:installation.adoc[installing RuboCop], just run it from your project's root directory:
+
+[source,sh]
+----
+$ rubocop
+----
+
+RuboCop will recursively check all Ruby files and report any offenses it finds:
+
+----
+Inspecting 5 files
+.W.C.
+
+Offenses:
+
+lib/foo.rb:2:3: C: Style/IfUnlessModifier: Favor modifier if usage when having a single-line body.
+  if something
+  ^^
+lib/bar.rb:5:5: W: Lint/UselessAssignment: Useless assignment to variable - x.
+    x = 42
+    ^
+
+5 files inspected, 2 offenses detected
+----
+
+Each offense shows the file, line, column, severity (`C` for convention, `W` for warning, `E` for error), the cop name, and a description. The letter on the progress line (`.` = clean, `C`/`W`/`E` = offense found) gives you a quick overview.
+
+== Setting Up Your Project
+
+For an existing project with many offenses, the easiest way to get started is to generate a TODO file:
+
+[source,sh]
+----
+$ rubocop --auto-gen-config
+----
+
+This creates two files:
+
+* `.rubocop_todo.yml` — temporarily disables all current offenses
+* `.rubocop.yml` — your configuration file (with `inherit_from: .rubocop_todo.yml` added)
+
+Now `rubocop` will pass cleanly, and you can work through the TODO entries at your own pace. See xref:usage/auto_gen_config.adoc[Auto-generating Configuration] for details.
+
+For a new project, you can generate a starter config file instead:
+
+[source,sh]
+----
+$ rubocop --init
+----
+
+== Customizing RuboCop
+
+All configuration lives in `.rubocop.yml`. Here are a few common adjustments:
+
+[source,yaml]
+----
+# Increase the maximum line length
+Layout/LineLength:
+  Max: 120
+
+# Disable a cop entirely
+Style/Documentation:
+  Enabled: false
+
+# Restrict a cop to specific files
+Rails/HasAndBelongsToMany:
+  Include:
+    - app/models/**/*.rb
+----
+
+See xref:configuration.adoc[Configuration] for the full reference.
+
+== Fixing Offenses Automatically
+
+Many cops can autocorrect the problems they find. Use `-a` for safe corrections only, or `-A` to include unsafe ones:
+
+[source,sh]
+----
+# Safe autocorrections only
+$ rubocop -a
+
+# All autocorrections (safe and unsafe)
+$ rubocop -A
+
+# Fix only formatting (layout) offenses
+$ rubocop -x
+----
+
+TIP: Review the diff after running autocorrect, especially with `-A`. See xref:usage/autocorrect.adoc[Autocorrect] for more details on safe vs. unsafe corrections.
+
+== Editor Integration
+
+For the best experience, set up RuboCop in your editor so you get real-time feedback as you type. RuboCop has a xref:usage/lsp.adoc[built-in LSP server] that works with any editor that supports the Language Server Protocol.
+
+The recommended setup for popular editors:
+
+* **VS Code** — Install the https://marketplace.visualstudio.com/items?itemName=Shopify.ruby-lsp[Ruby LSP] extension
+* **Emacs** — Use https://github.com/joaotavora/eglot[Eglot] (built-in since Emacs 29) or https://github.com/emacs-lsp/lsp-mode[lsp-mode]
+* **Vim/Neovim** — Use the built-in LSP client or https://github.com/dense-analysis/ale[ALE]
+
+See xref:integration_with_other_tools.adoc[Integration with Other Tools] for more editors and alternative approaches.
+
+== Next Steps
+
+* xref:usage/basic_usage.adoc[Basic Usage] — full CLI reference with all command-line flags
+* xref:configuration.adoc[Configuration] — everything about `.rubocop.yml`
+* xref:usage/source_code_directives.adoc[Source Code Directives] — disable/enable cops inline with comments
+* xref:cops.adoc[Cops] — browse all available cops by department
+* xref:extensions.adoc[Extensions] — add cops for Rails, RSpec, Performance, and more

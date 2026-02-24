@@ -110,8 +110,6 @@ $ rubocop -x
 $ rubocop --fix-layout
 ----
 
-NOTE: This option was introduced in RuboCop 0.57.0.
-
 == Command-line flags
 
 For more details check the available command-line options:
