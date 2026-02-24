@@ -11,34 +11,47 @@ Through MCP, RuboCop operations are initiated by an MCP client, with decisions m
 The MCP server runs as a long-lived process over stdio, allowing an MCP client to request analysis and autocorrection without spawning a new RuboCop process for each request.
 This is based on the same principles as xref:usage/server.adoc[Server Mode] and xref:usage/lsp.adoc[LSP].
 
-== Examples of MCP Client
+== Available Tools
 
-For tools that support MCP clients, please refer to the following:
-https://modelcontextprotocol.io/clients
+The MCP server exposes two tools:
 
-Below is an example for https://claude.com/product/claude-code[Claude Code]'s MCP config:
+`rubocop_inspection`::
+Inspect Ruby code for offenses. Accepts a `path` to check files on disk or `source_code` to check inline code. Returns detected offenses as JSON.
 
-```console
+`rubocop_autocorrection`::
+Autocorrect RuboCop offenses in Ruby code. Accepts `path` or `source_code` like the inspection tool, plus a `safety` boolean (defaults to `true`). When `safety` is `true`, only safe corrections are applied; set it to `false` to include unsafe corrections.
+
+== Client Configuration
+
+For a list of tools that support MCP, see https://modelcontextprotocol.io/clients[MCP Clients].
+
+=== Claude Code
+
+[source,console]
+----
 $ claude mcp add rubocop -- bundle exec rubocop --mcp
-```
+----
 
-Or edit path/to/.mcp.json or something like that:
+=== JSON Configuration
 
-```json
+Many MCP clients (e.g. VS Code, Cursor, Windsurf) accept a JSON configuration file. The exact file path varies by client -- consult your client's documentation.
+
+[source,json]
+----
 {
   "mcpServers": {
     "rubocop": {
       "type": "stdio",
-      "command": "/Users/user/.rbenv/shims/bundle",
+      "command": "bundle",
       "args": [
         "exec",
         "rubocop",
         "--mcp"
       ],
-      "cwd": "/Users/user/path/to/repo"
+      "cwd": "/path/to/your/project"
     }
   }
 }
-```
+----
 
 NOTE: `rubocop --mcp` starts the MCP server and is intended to be invoked by an MCP client, not run manually by users.
