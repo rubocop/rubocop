@@ -39,23 +39,26 @@ adding or improving Cop descriptions.
 
 The manual is generated from the AsciiDoc files in the https://github.com/rubocop/rubocop/tree/master/docs[docs] folder of RuboCop's GitHub repo and is published to https://docs.rubocop.org.
 https://antora.org[Antora] is used to convert the manual into HTML.
-The filesystem layout is described at https://docs.antora.org/antora/2.0/component-structure/.
+The filesystem layout is described at https://docs.antora.org/antora/3.1/standard-directories/.
 
 To make changes to the manual you simply have to change the files under `docs`.
 The manual will be regenerated manually periodically.
+
+The site configuration and build infrastructure live in a separate repo: https://github.com/rubocop/docs.rubocop.org[docs.rubocop.org].
 
 ==== Installing Antora
 
 NOTE: The instructions here assume you already have (the right version of) node.js installed.
 
-Installing the Antora is super simple:
+Installing Antora is super simple — just clone the docs site repo and run:
 
 [source]
 ----
-$ npm i -g @antora/cli@2.0 @antora/site-generator-default@2.0
+$ cd docs.rubocop.org
+$ make install
 ----
 
-Check out https://docs.antora.org/antora/2.0/install/install-antora/[the detailed installation instructions]
+Check out https://docs.antora.org/antora/3.1/install/install-antora/[the detailed installation instructions]
 if you run into any problems.
 
 ==== Building the Site
@@ -65,19 +68,12 @@ You can build the documentation locally from the https://github.com/rubocop/docs
 [source]
 ----
 $ cd docs.rubocop.org
-$ antora --pull antora-playbook.yml
+$ make build
 ----
 
-After you're done with the initial setup you can use the `deploy` script to push changes to the site:
+TIP: You can preview your changes by opening `build/site/index.html` in your favourite browser.
 
-[source]
-----
-./deploy
-----
-
-NOTE: You'll need commit access to the repository for this to work.
-
-To check the generated site you can simply open `docs/index.html` in your favourite browser.
+The site is automatically deployed to GitHub Pages via a GitHub Action on push to `master`.
 
 If you want to make changes to the manual's page structure you'll have to edit
 https://github.com/rubocop/rubocop/blob/master/docs/modules/ROOT/nav.adoc[nav.adoc].
