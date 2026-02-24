@@ -4,10 +4,6 @@ The section describes SaaS solutions that provide automated code reviews for Rub
 
 NOTE: The services are listed in alphabetical order.
 
-== Awesome Code
-
-https://awesomecode.io[Awesome Code] improves your code readability by git push or sending pull requests, with one click or even fully automated. It's an online `rubocop -a` service.
-
 == Codacy
 
 https://www.codacy.com/[Codacy] checks your code from style to security, duplication, complexity, and also integrates with coverage.
@@ -24,11 +20,6 @@ https://www.codefactor.io[CodeFactor] reports various code metrics like duplicat
 == Codety
 
 https://www.codety.io[Codety] detects code issues for 30+ programming languages and IaC frameworks, Codety Scanner is open source and it embeds 6,000+ code analysis rules(including RuboCop rules).
-
-== Hound
-
-https://houndci.com/[Hound] comments on style violations in GitHub pull requests, allowing you and your team to better review and maintain a clean codebase.
-It is open source software.
 
 == Pronto
 
