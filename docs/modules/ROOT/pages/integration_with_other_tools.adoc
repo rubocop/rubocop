@@ -2,17 +2,13 @@
 
 == Speeding up integrations
 
-RuboCop integrates with quite a number of other tools, including editors which may attempt
-to do autocorrection for you. In these cases, `rubocop` ends up getting called repeatedly,
-which may result in some slowness, as `rubocop` has to require its entire environment on
-each call.
+RuboCop integrates with many other tools, including editors which may call
+`rubocop` repeatedly. Since `rubocop` has to require its entire environment on
+each invocation, this can result in noticeable slowness.
 
-You can alleviate some of that boot time by using xref:usage/server.adoc["Server"] or
-https://github.com/fohte/rubocop-daemon[rubocop-daemon]. `rubocop-daemon` is a
-wrapper around `rubocop` that loads everything into a daemonized process so that
-subsequent runs save on that boot time after the first execution. Please see the
-rubocop-daemon documentation for setup instructions and examples of how to use it
-with some editors and other tools.
+The recommended solution is RuboCop's built-in xref:usage/server.adoc[Server]
+mode, which keeps a daemonized process running so that subsequent runs avoid
+the boot time overhead.
 
 NOTE: RuboCop's built-in xref:usage/caching.adoc[caching] should also be used to ensure
 that source files that have not been changed are not being re-evaluated unnecessarily.
@@ -27,14 +23,17 @@ has been designed to address this problem and provide lightning-fast editor inte
 
 === LSP
 
-https://microsoft.github.io/language-server-protocol/[The Language Server Protocol] is the modern standard for providing cross-editor support for various programming languages. The RuboCop xref:usage/lsp.adoc[LSP] functionality has been designed to provide a built-in language server. The following is an LSP client for interacting with the built-in server:
+RuboCop includes a built-in https://microsoft.github.io/language-server-protocol/[Language Server Protocol] server (since 1.53), which is the recommended way to integrate with editors. See xref:usage/lsp.adoc[LSP] for details.
 
-- https://github.com/rubocop/vscode-rubocop[vscode-rubocop]
+The following LSP clients and servers use RuboCop for linting and formatting:
 
-And the following Ruby LSP servers are using RuboCop internally to provide code linting functionality:
+- https://github.com/Shopify/ruby-lsp[Ruby LSP] (recommended for VS Code) — uses RuboCop internally
+- https://github.com/rubocop/vscode-rubocop[vscode-rubocop] — dedicated VS Code extension using RuboCop's built-in LSP
+- https://solargraph.org/[Solargraph] — uses RuboCop internally
 
-- https://github.com/Shopify/ruby-lsp[ruby-lsp]
-- https://solargraph.org/[Solargraph]
+=== MCP
+
+RuboCop also provides a built-in https://modelcontextprotocol.io/[Model Context Protocol] server (since 1.75) for integration with AI-powered tools. See xref:usage/mcp.adoc[MCP] for details.
 
 === Emacs
 
