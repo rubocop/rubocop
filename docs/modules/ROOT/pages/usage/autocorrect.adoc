@@ -1,52 +1,43 @@
 = Autocorrect
 :page-aliases: auto_correct.adoc
 
-In autocorrect mode, RuboCop will try to automatically fix offenses:
+In autocorrect mode, RuboCop will try to automatically fix offenses.
 
-[source,sh]
-----
-$ rubocop -A
-# or
-$ rubocop --autocorrect-all
-----
+There are three autocorrect modes:
 
-There are a couple of things to keep in mind about autocorrect:
+|===
+| Flag | Description
 
-- For some offenses, it is not possible to implement automatic correction.
-- Some automatic corrections that _are_ possible have not been implemented yet.
-- Some automatic corrections might change (slightly) the semantics of the code,
-meaning they'd produce code that's mostly equivalent to the original code, but
-not 100% equivalent. We call such autocorrect behavior "unsafe".
+| `-a` / `--autocorrect`
+| Safe corrections only — won't change code semantics.
 
-TIP: You should always run your test suite after using the autocorrect functionality.
+| `-A` / `--autocorrect-all`
+| All corrections, including unsafe ones that may change semantics.
 
-== Safe autocorrect
+| `-x` / `--fix-layout`
+| Layout (formatting) corrections only — never changes logic.
+|===
 
-[source,sh]
-----
-$ rubocop -a
-# or
-$ rubocop --autocorrect
-----
+TIP: Always review the diff and run your test suite after autocorrecting,
+especially when using `-A`.
 
-In RuboCop 0.60, we began to annotate cops as `Safe` or not safe. The definition of
-safety is that the cop doesn't generate false positives. On top of that there's `SafeAutoCorrect`
-that might be set to `false` in cases where only the autocorrect performed by a cop
-is unsafe, but that the offense detection logic is safe. To sum it up:
+== Safe vs. unsafe
 
-* Safe (`true/false`) - indicates whether the cop can yield false positives (by
-design) or not.
-* SafeAutoCorrect (`true/false`) - indicates whether the autocorrect a cop
-does is safe (equivalent) by design. If a cop is unsafe its autocorrect automatically
-becomes unsafe as well.
+RuboCop distinguishes between safe and unsafe cops and autocorrections:
 
-If a cop or its autocorrect is annotated as "not safe", it will be omitted when using `--autocorrect`.
+* *Safe* (`true/false`) — indicates whether the cop can yield false positives
+by design.
+* *SafeAutoCorrect* (`true/false`) — indicates whether the autocorrection
+preserves code semantics. If a cop itself is unsafe, its autocorrect is
+automatically considered unsafe as well.
 
-NOTE: Currently there might still be cops that aren't marked as unsafe or
-with unsafe autocorrect.  Eventually, the safety of each cop will be specified
-in the default configuration.
+When you run `rubocop -a`, cops and autocorrections marked as unsafe are
+skipped. When you run `rubocop -A`, everything is applied.
 
-=== Example of Unsafe Cop
+NOTE: Some cops may not yet be annotated for safety. Eventually, the safety
+of each cop will be specified in the default configuration.
+
+=== Example: unsafe cop
 
 [source,ruby]
 ----
@@ -63,6 +54,8 @@ Miner.new.dig(42) # => Style/SingleArgumentDig
 
 This is the wrong diagnostic; this (contrived) use of `dig` is not an issue,
 and there might not be an alternative. This cop is marked as `Safe: false`.
+
+=== Example: safe cop with unsafe autocorrect
 
 [source,ruby]
 ----
@@ -87,31 +80,19 @@ This diagnostic is valid since the magic comment is indeed missing (thus `Safe: 
 but the autocorrection is not; some string literals need to be prefixed with `+` to avoid
 having them frozen.
 
-To run all autocorrections (safe and unsafe):
-
-[source,sh]
-----
-$ rubocop -A
-# or
-$ rubocop --autocorrect-all
-----
-
-It is recommended to be even more vigilant when using this option and review carefully the changes.
-
-== Generating comments
+== Disabling uncorrectable offenses
 
 [source,sh]
 ----
 $ rubocop --autocorrect --disable-uncorrectable
 ----
 
-or
+The `--disable-uncorrectable` flag generates `# rubocop:todo` comments in the
+code to suppress reporting of offenses that could not be corrected
+automatically. This is useful for gradually adopting new cops.
 
-[source,sh]
-----
-$ rubocop --autocorrect-all --disable-uncorrectable
-----
+== Configuring autocorrect per cop
 
-You can add the flag `--disable-uncorrectable`, which will generate
-`# rubocop:todo` comments in the code to stop the reporting of offenses that
-could not be corrected automatically.
+Individual cops can have their autocorrect behavior configured in `.rubocop.yml`.
+See xref:configuration/cop_settings.adoc#autocorrect[AutoCorrect] for the
+available settings: `always`, `contextual`, and `disabled`.
