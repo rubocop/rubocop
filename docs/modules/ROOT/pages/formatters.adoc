@@ -13,6 +13,29 @@ You can enable multiple formatters at the same time by specifying `-f/--format` 
 The `-o/--out` option applies to the previously specified `-f/--format`,
 or the default `progress` format if no `-f/--format` is specified before the `-o/--out` option.
 
+=== Quick reference
+
+|===
+| Formatter | Flag | Use case
+
+| Progress (default) | `progress` | Interactive terminal use
+| Clang | `clang` | Detailed offenses with source context
+| Simple | `simple` | Compact human-readable output
+| Quiet | `quiet` | Only show output when there are offenses
+| Fuubar | `fuubar` | Progress bar with real-time offense reporting
+| Pacman | `pacman` | Fun progress indicator
+| Emacs | `emacs` | Emacs-compatible output (machine-parsable)
+| JSON | `json` | Machine consumption / custom tooling (machine-parsable)
+| JUnit | `junit` | CI systems like Jenkins (machine-parsable)
+| TAP | `tap` | Test Anything Protocol consumers (machine-parsable)
+| GitHub Actions | `github` | GitHub Actions annotations
+| HTML | `html` | HTML report for sharing / CI artifacts
+| Markdown | `markdown` | Markdown report for PR comments
+| File List | `files` | Pipe file names to other tools (machine-parsable)
+| Offense Count | `offenses` | Overview of which cops trigger the most
+| Worst Offenders | `worst` | Find files needing the most attention
+|===
+
 [source,sh]
 ----
 # Simple format to $stdout.
