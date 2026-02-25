@@ -13,15 +13,32 @@ NOTE: Please, don't ask support-like questions on the issue tracker (e.g. "How
 can I configure RuboCop to do X?" - use the xref:support.adoc[support channels]
 instead.
 
-== Patches
+== Code contributions
 
 Patches in any form are always welcome! GitHub pull requests are even better! :-)
 
-Before submitting a patch or a pull request make sure all tests are
+Before submitting a pull request make sure all tests are
 passing and that your patch is in line with the https://github.com/rubocop/rubocop/blob/master/CONTRIBUTING.md[contribution
 guidelines].
 
-Also see the xref:development.adoc[Development section].
+=== Quick start
+
+[source,sh]
+----
+$ git clone https://github.com/rubocop/rubocop.git
+$ cd rubocop
+$ bundle install
+$ bundle exec rake              # run the full CI suite
+----
+
+A typical contribution workflow:
+
+. Pick an issue from the https://github.com/rubocop/rubocop/issues[issue tracker] (look for `good first issue` or `help wanted` labels).
+. Create a feature branch: `git checkout -b fix-1234-short-description`.
+. Make your changes and add tests (see xref:development.adoc[Development]).
+. Run the full test suite: `bundle exec rake`.
+. Add a changelog entry: `bundle exec rake changelog:fix` (or `changelog:new` / `changelog:change`).
+. Open a pull request.
 
 == Documentation
 
