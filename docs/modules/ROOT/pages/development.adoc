@@ -1,10 +1,17 @@
 = Development
 
-This section of the documentation will teach you how to develop new cops.  We'll
-start with generating a cop template and then we'll address the various aspects
-of its implementation (interacting with the AST, autocorrect, configuration)
-and testing.
+This guide covers developing new cops for RuboCop. It walks through:
 
+* <<create-a-new-cop,Scaffolding>> a cop from a template
+* <<understanding-the-ast,Understanding the AST>> that RuboCop operates on
+* <<implementing-the-cop,Implementing>> detection with node patterns and callbacks
+* <<autocorrect,Autocorrect>> to fix offenses automatically
+* <<limit-by-ruby-or-gem-versions,Constraining>> cops by Ruby or gem version
+* <<common-patterns,Common patterns>> and conventions
+* <<running-tests,Testing>> your cop
+* <<documentation,Documenting>> the cop for users
+
+[[create-a-new-cop]]
 == Create a new cop
 
 NOTE: Clone the repository and run `bundle install` if not done yet.
@@ -29,7 +36,8 @@ Do 4 steps:
 
 ----
 
-== Basics
+[[understanding-the-ast]]
+== Understanding the AST
 
 RuboCop uses the https://github.com/whitequark/parser[parser] library to create the
 Abstract Syntax Tree (AST) representation of the code.
@@ -64,7 +72,7 @@ $ ruby-parse -e 'name = "John"'
   (str "John"))
 ----
 
-=== Inspecting the AST representation
+=== Inspecting the AST
 
 Let's imagine we want to simplify statements from `!array.empty?` to
 `array.any?`:
@@ -108,9 +116,10 @@ node.children # => [s(:send, s(:send, nil, :something), :empty?), :!]
 node.source # => "!something.empty?"
 ----
 
-== Implementation
+[[implementing-the-cop]]
+== Implementing the cop
 
-=== Writing Node Pattern Rules
+=== Writing node pattern rules
 
 TIP: You can write cops without using `NodePattern` (and many older cops don't use it), but it
 generally simplifies the code a lot, as manual node matching and destructuring can be
@@ -259,7 +268,10 @@ module RuboCop
 end
 ----
 
-Note that `on_send` will be called on a given `node` before the callbacks `on_<some type>` for its children are called. There's also a callback `after_send` that is called after the children are processed. There's a similar `after_<some type>` callback for all types, except those that never have children.
+Callback ordering: `on_send` is called on a node _before_ the `on_<type>`
+callbacks for its children. There is also an `after_send` callback that runs
+_after_ children are processed. Every node type has a corresponding
+`after_<type>` callback (except types that never have children).
 
 Update the spec to cover the expected syntax:
 
@@ -310,9 +322,10 @@ You can also abbreviate offense messages with `[...]`.
 end
 ----
 
+[[autocorrect]]
 === Autocorrect
 
-The autocorrect can help humans automatically fix offenses that have been detected.
+Autocorrect lets cops automatically fix the offenses they detect.
 It's necessary to `extend AutoCorrector`.
 The method `add_offense` yields a corrector object that is a thin wrapper on
 https://www.rubydoc.info/gems/parser/Parser/Source/TreeRewriter[parser's TreeRewriter]
@@ -357,7 +370,7 @@ The corrector allows you to `insert_after`, `insert_before`, `wrap` or
 Range can be determined on `node.location` where it brings specific
 ranges for expression or other internal information that the node holds.
 
-==== Preventing Clobbering
+==== Preventing clobbering
 
 The corrector detects and prevents correcting overlapping nodes, to prevent one correction from clobbering another.
 Supporting nested corrections is done by taking multiple passes, and skipping corrections for nested nodes.
@@ -385,7 +398,7 @@ This works because file correction is implemented by repeating investigation and
 
 Note that `expect_correction` in `Cop` specs asserts the result after all passes.
 
-=== Limit by Ruby or Gem versions
+=== Limit by Ruby or gem versions
 
 Some cops apply changes that only apply in particular contexts, such as if the user has a minimum Ruby version. There are helpers that let you constrain your cops automatically, to only run where applicable.
 
@@ -529,6 +542,72 @@ def on_send(node)
 end
 ----
 
+[[common-patterns]]
+== Common patterns
+
+This section covers conventions and patterns you should follow when writing cops.
+
+=== Handling safe navigation (`&.`)
+
+If your cop defines `on_send`, you should almost always also handle the
+safe navigation operator by aliasing `on_csend`:
+
+[source,ruby]
+----
+def on_send(node)
+  # ...
+end
+alias on_csend on_send
+----
+
+Without this, your cop will silently ignore code like `foo&.bar`. Only skip
+this if the cop explicitly does not apply to safe navigation.
+
+=== Handling numbered-parameter and `it`-parameter blocks
+
+Similarly, if your cop defines `on_block`, alias the numbered-parameter and
+`it`-parameter variants:
+
+[source,ruby]
+----
+def on_block(node)
+  # ...
+end
+alias on_numblock on_block
+alias on_itblock on_block
+----
+
+=== Using `RESTRICT_ON_SEND`
+
+When your cop uses `on_send`, define a `RESTRICT_ON_SEND` constant listing
+the method names the cop cares about. This is a performance optimization —
+RuboCop will skip calling `on_send` entirely for method names not in the list:
+
+[source,ruby]
+----
+RESTRICT_ON_SEND = %i[bad_method other_bad_method].freeze
+----
+
+=== Documenting node matchers with `@!method`
+
+Every `def_node_matcher` and `def_node_search` should have a `@!method`
+YARD tag above it so that documentation tools can find the generated method:
+
+[source,ruby]
+----
+# @!method not_empty_call?(node)
+def_node_matcher :not_empty_call?, <<~PATTERN
+  (send (send $(...) :empty?) :!)
+PATTERN
+----
+
+=== Declaring autocorrect support
+
+If your cop provides a corrector block inside `add_offense`, you must declare
+`extend AutoCorrector` at the top of the class. Without it, RuboCop won't
+know the cop supports autocorrection.
+
+[[running-tests]]
 == Running tests
 
 RuboCop supports two parser engines: the Parser gem and Prism. By default, tests are executed with the Parser:
@@ -546,73 +625,50 @@ $ PARSER_ENGINE=parser_prism bundle exec rspec spec/rubocop/cop/style/hash_synta
 
 `bundle exec rake` runs the full CI suite: specs for both parser engines, self-linting, and documentation checks. Always run this before submitting a PR.
 
+[[documentation]]
 == Documentation
 
-Every new cop requires explanation and examples to make it easy for the community
-to understand its purpose. This documentation is generated by `yard` and is added
-directly into the `cop.rb` file. For every `SupportedStyle` and unique
-configuration you have included in the cop, there needs to be examples. Examples must
-have valid Ruby syntax. Do not use upticks.
+Every cop needs YARD documentation with examples directly in the source file.
+The CI `documentation_syntax_check` task parses every `@example` block, so all
+examples must contain valid Ruby syntax.
+
+Key rules:
+
+* The first line of the YARD comment must be a complete sentence starting with
+  a verb and ending with a period (e.g., "Checks for ...", "Enforces ...").
+* Every cop must have at least one `# bad` / `# good` example pair.
+* For each `SupportedStyle` or unique configuration key, add a separate
+  `@example` block.
+* Mark the default style with `(default)`.
+* List config keys in alphabetical order.
 
 [source,ruby]
 ----
-module Department
-  # Description of your cop. Include description of ALL config options. Particularly
-  # ones that take booleans and arrays, because we generally do not show examples for
-  # configs with these value types.
-  #
-  # @example EnforcedStyle: bar
-  #   # Description about this particular option
-  #
-  #   # bad
-  #   bad_example1
-  #   bad_example2
-  #
-  #   # good
-  #   good_example1
-  #   good_example2
-  #
-  # @example EnforcedStyle: foo (default)
-  #   # Description about this particular option
-  #
-  #   # bad
-  #   bad_example1
-  #   bad_example2
-  #
-  #   # good
-  #   good_example1
-  #   good_example2
-  #
-  # @example AnyUniqueConfigKeyThatIsAString: qux (default)
-  #   # Description about this particular option
-  #
-  #   # bad
-  #   bad_example1
-  #   bad_example2
-  #
-  #   # good
-  #   good_example1
-  #   good_example2
-  #
-  # @example AnyUniqueConfigKeyThatIsAString: thud
-  #   # Description about this particular option
-  #
-  #   # bad
-  #   bad_example1
-  #   bad_example2
-  #
-  #   # good
-  #   good_example1
-  #   good_example2
-  #
-  class YourCop
-    # ...
+module RuboCop
+  module Cop
+    module Style
+      # Simplifies `!array.empty?` to `array.any?`.
+      #
+      # @example EnforcedStyle: any? (default)
+      #   # bad
+      #   !array.empty?
+      #
+      #   # good
+      #   array.any?
+      #
+      # @example EnforcedStyle: size
+      #   # bad
+      #   !array.empty?
+      #
+      #   # good
+      #   array.size > 0
+      #
+      class SimplifyNotEmptyWithAny < Base
+        # ...
 ----
 
-Take note of the placement and spacing of all the documentation pieces. Such as config
-keys being in alphabetical order, the `(default)` being specified, and one empty line
-before `class YourCop`. While not all examples in the codebase follow this exact format,
-we strive to make this consistent. PRs improving RuboCop documentation are very welcome.
+Add additional `@example` blocks following the same pattern for each style or
+config value.
 
 == Testing your cop in a real codebase
 
@@ -627,8 +683,7 @@ There are several ways to do this. Two common approaches:
 
 With approach #2, you can use local versions of RuboCop extension repos such as `rubocop-rspec` as well.
 
-To make it fast and do not get confused with other cops in action,  you can use
-`--only` parameter in the command line to filter by your cop name:
+TIP: Use `--only` to run just your cop and avoid noise from other cops:
 
 [source,sh]
 ----
@@ -636,11 +691,11 @@ $ rubocop --only Style/SimplifyNotEmptyWithAny
 ----
 
 [[custom-formatters]]
-== Custom Formatters
+== Custom formatters
 
-You can customize RuboCop's output format with custom formatters.
+Beyond cops, RuboCop can also be extended with custom output formatters.
 
-=== Creating a Custom Formatter
+=== Creating a custom formatter
 
 To implement a custom formatter, you need to subclass
 `RuboCop::Formatter::BaseFormatter` and override some methods,
@@ -652,7 +707,7 @@ Please see the documents below for more formatter API details.
 * https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense[RuboCop::Cop::Offense]
 * https://www.rubydoc.info/gems/parser/Parser/Source/Range[Parser::Source::Range]
 
-=== Using a Custom Formatter from the Command Line
+=== Using a custom formatter from the command line
 
 You can tell RuboCop to use your custom formatter with a combination of
 `--format` and `--require` option.
@@ -666,11 +721,16 @@ $ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
 
 == Template support
 
-RuboCop has an API for extensions to support templates such as ERB, Haml, Slim, etc.
+RuboCop can also analyze Ruby embedded in templates (ERB, Haml, Slim, etc.)
+through a Ruby extractor API.
 
-Normally, RuboCop extracts one Ruby code from one Ruby file, however there are multiple embedded Ruby codes in one template file. To solve this problem, RuboCop has a mechanism called `RuboCop::Runner.ruby_extractors`, to which any Ruby extractor can be added on the extension side.
+A template file contains multiple embedded Ruby snippets, unlike a regular
+Ruby file. RuboCop solves this with `RuboCop::Runner.ruby_extractors` — a
+list of callable extractors that plugins can prepend to.
 
-Ruby extractor must be a callable object that takes a `RuboCop::ProcessedSource` and returns an `Array` of `Hash`-es that contains Ruby source codes and their offsets from original source code, or returns `nil` for unrelated file.
+A Ruby extractor takes a `RuboCop::ProcessedSource` and returns either an
+`Array` of `Hash`-es containing extracted Ruby source and offsets, or `nil`
+if the file is not relevant.
 
 [source,ruby]
 ----
