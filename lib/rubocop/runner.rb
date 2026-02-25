@@ -350,21 +350,9 @@ module RuboCop
 
     def inspect_file(processed_source, team = mobilize_team(processed_source))
       extracted_ruby_sources = extract_ruby_sources(processed_source)
-      offenses = []
-
-      extracted_ruby_sources.each do |extracted_ruby_source|
-        report = team.investigate(
-          extracted_ruby_source[:processed_source],
-          offset: extracted_ruby_source[:offset],
-          original: processed_source
-        )
-        @errors.concat(team.errors)
-        @warnings.concat(team.warnings)
-        offenses.concat(report.offenses)
-
-        break if team.updated_source_file?
-      end
-
+      offenses = team.investigate_fragments(extracted_ruby_sources, original: processed_source)
+      @errors.concat(team.errors)
+      @warnings.concat(team.warnings)
       [offenses, team.updated_source_file?]
     end
 
