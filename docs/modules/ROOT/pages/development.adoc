@@ -112,8 +112,8 @@ node.source # => "!something.empty?"
 
 === Writing Node Pattern Rules
 
-NOTE: You can write cops without using `NodePattern` (and many older cops don't use it), but it
-generally simplifies a lot the code, as manual node matching and destructuring can be
+TIP: You can write cops without using `NodePattern` (and many older cops don't use it), but it
+generally simplifies the code a lot, as manual node matching and destructuring can be
 quite verbose.
 
 Now that you're familiar with AST, you can learn a bit about the
@@ -702,4 +702,4 @@ RuboCop::Runner.ruby_extractors.unshift(ruby_extractor)
 
 `RuboCop::Runner.ruby_extractors` is processed from the beginning and ends when one of them returns a non-nil value. By default, there is a Ruby extractor that returns the given Ruby source code with offset 0, so you can unshift any Ruby extractor before it.
 
-NOTE: This is still an experimental feature and may change in the future.
+WARNING: This is still an experimental feature and may change in the future.

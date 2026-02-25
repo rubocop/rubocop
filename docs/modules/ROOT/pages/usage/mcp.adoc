@@ -1,6 +1,8 @@
 = MCP (Model Context Protocol)
 
-NOTE: The built-in MCP server was introduced in RuboCop 1.85. This feature is experimental and should not be considered stable. Changes to its behavior or interface may occur.
+NOTE: The built-in MCP server was introduced in RuboCop 1.85.
+
+WARNING: This feature is experimental and should not be considered stable. Changes to its behavior or interface may occur.
 
 https://modelcontextprotocol.io/[Model Context Protocol] is an open-source standard for connecting AI applications to external systems.
 
