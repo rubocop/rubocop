@@ -12,11 +12,6 @@ We're following https://semver.org/[Semantic Versioning].  API
 compatibility between major releases is a big concern, as there are
 many RuboCop extensions that can be affected by breaking API changes.
 
-NOTE: Dropping **runtime** support for a particular Ruby version is not considered a breaking change,
-as it doesn't affect clients in any way. They are simply restricted to the last version of
-RuboCop supporting their Ruby runtime. In practice this means that dropping runtime support for Ruby versions
-can happen in any minor release.
-
 The development cycle for the next minor (feature) release starts
 immediately after the previous one has been shipped. Bug-fix (point)
 releases (if any) address only serious bugs and never contain new
@@ -28,6 +23,28 @@ Here are a few examples:
 * 1.1.1 - Bug-fix release
 * 1.1.2 - Bug-fix release
 * 1.2.0 - Feature release
+
+=== What goes in each release type
+
+|===
+| Change type | Release
+
+| Bug fixes to existing cops | Patch
+| New cops (added as *pending*) | Minor
+| New configuration options | Minor
+| New CLI flags or formatters | Minor
+| Renaming or moving cops (with backwards-compatible obsoletions) | Minor
+| Dropping runtime Ruby version support | Minor
+| Enabling pending cops by default | *Major*
+| Changing cop defaults (e.g. `EnforcedStyle`) | *Major*
+| Removing cops without a replacement | *Major*
+| Breaking changes to the Ruby API | *Major*
+| Dropping analysis support for a Ruby version | *Major*
+|===
+
+NOTE: Dropping **runtime** support for a particular Ruby version is not considered a breaking change,
+as it doesn't affect clients in any way. They are simply restricted to the last version of
+RuboCop supporting their Ruby runtime.
 
 NOTE: Prior to RuboCop 1.0 bumps of the minor (second) version number
 were considered major releases and always included new features and/or
