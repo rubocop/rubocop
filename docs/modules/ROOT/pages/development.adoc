@@ -634,3 +634,72 @@ To make it fast and do not get confused with other cops in action,  you can use
 ----
 $ rubocop --only Style/SimplifyNotEmptyWithAny
 ----
+
+[[custom-formatters]]
+== Custom Formatters
+
+You can customize RuboCop's output format with custom formatters.
+
+=== Creating a Custom Formatter
+
+To implement a custom formatter, you need to subclass
+`RuboCop::Formatter::BaseFormatter` and override some methods,
+or implement all formatter API methods by duck typing.
+
+Please see the documents below for more formatter API details.
+
+* https://www.rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter[RuboCop::Formatter::BaseFormatter]
+* https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense[RuboCop::Cop::Offense]
+* https://www.rubydoc.info/gems/parser/Parser/Source/Range[Parser::Source::Range]
+
+=== Using a Custom Formatter from the Command Line
+
+You can tell RuboCop to use your custom formatter with a combination of
+`--format` and `--require` option.
+For example, when you have defined `MyCustomFormatter` in
+`./path/to/my_custom_formatter.rb`, you would type this command:
+
+[source,sh]
+----
+$ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
+----
+
+== Template support
+
+RuboCop has an API for extensions to support templates such as ERB, Haml, Slim, etc.
+
+Normally, RuboCop extracts one Ruby code from one Ruby file, however there are multiple embedded Ruby codes in one template file. To solve this problem, RuboCop has a mechanism called `RuboCop::Runner.ruby_extractors`, to which any Ruby extractor can be added on the extension side.
+
+Ruby extractor must be a callable object that takes a `RuboCop::ProcessedSource` and returns an `Array` of `Hash`-es that contains Ruby source codes and their offsets from original source code, or returns `nil` for unrelated file.
+
+[source,ruby]
+----
+ruby_extractor.call(processed_source)
+----
+
+An example returned value from a Ruby extractor would be as follows:
+
+[source,ruby]
+----
+[
+  {
+    offset: 2,
+    processed_source: #<RuboCop::ProcessedSource>
+  },
+  {
+    offset: 10,
+    processed_source: #<RuboCop::ProcessedSource>
+  }
+]
+----
+
+On the extension side, the code would be something like this:
+
+[source,ruby]
+----
+RuboCop::Runner.ruby_extractors.unshift(ruby_extractor)
+----
+
+`RuboCop::Runner.ruby_extractors` is processed from the beginning and ends when one of them returns a non-nil value. By default, there is a Ruby extractor that returns the given Ruby source code with offset 0, so you can unshift any Ruby extractor before it.
+
+NOTE: This is still an experimental feature and may change in the future.

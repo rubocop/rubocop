@@ -1,0 +1,68 @@
+= Plugin Configuration
+
+If you're developing a plugin, you can tie its configuration into RuboCop.
+
+== Config Obsoletions
+
+When a cop that has been released is later renamed or removed, or one of its parameters is, RuboCop can output error messages letting users know to update their configuration to the newest values. If any obsolete configurations are encountered, RuboCop will output an error message and quit.
+
+You can tie your plugin into this system by creating your own `obsoletions.yml` file and letting RuboCop know where to find it:
+
+[source,ruby]
+----
+RuboCop::ConfigObsoletion.files << File.expand_path(filename)
+----
+
+There are currently three types of obsoletions that can be defined for cops:
+
+* `renamed`: A cop was changed to have a new name, or moved to a different department.
+* `removed`: A cop was deleted (usually this is configured with `alternatives` or a `reason` why it was removed).
+* `split`: A cop was removed and replaced with multiple other cops.
+
+Two additional types are available to be defined for parameter changes. These configurations can apply to multiple cops and multiple parameters at the same time (so they are expressed in YAML as an array of hashes):
+
+* `changed_parameters`: A parameter has been renamed.
+* `changed_enforced_styles`: A previously accepted `EnforcedStyle` value has been changed or removed.
+
+NOTE: Parameter obsoletions can be set with `severity: warning` to deprecate an old parameter but still accept it. RuboCop will output a warning but continue to run.
+
+=== Example Obsoletion Configuration
+
+See `config/obsoletion.yml` for more examples.
+
+NOTE: All plural keys (eg. `cops`, `parameters`, `alternatives`, etc.) can either take a single value or an array.
+
+[source, yaml]
+----
+renamed:
+  Layout/AlignArguments: Layout/ArgumentAlignment
+  Lint/BlockAlignment: Layout/BlockAlignment
+
+removed:
+  Layout/SpaceAfterControlKeyword:
+    alternatives: Layout/SpaceAroundKeyword
+  Lint/InvalidCharacterLiteral:
+    reason: it was never actually triggered
+
+split:
+  Style/MethodMissing:
+    alternatives:
+      - Style/MethodMissingSuper
+      - Style/MissingRespondToMissing
+
+changed_parameters: # must be an array of hashes
+  - cops:
+      - Metrics/BlockLength
+      - Metrics/MethodLength
+    parameters: ExcludedMethods
+    alternative: IgnoredMethods
+    severity: warning
+
+changed_enforced_styles: # must be an array of hashes
+  - cops: Layout/IndentationConsistency
+    parameters: EnforcedStyle
+    value: rails
+    reason: >
+      `EnforcedStyle: rails` has been renamed to
+      `EnforcedStyle: indented_internal_methods`
+----

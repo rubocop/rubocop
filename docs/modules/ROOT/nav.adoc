@@ -31,7 +31,8 @@
 ** xref:cops_style.adoc[Style]
 ** xref:v1_upgrade_notes.adoc[Upgrade Notes]
 * Plugins
-** xref:extensions.adoc[Extensions]
+** xref:extensions.adoc[Overview]
+** xref:plugin_configuration.adoc[Plugin Configuration]
 ** xref:plugin_migration_guide.adoc[Plugin Migration Guide]
 * xref:integration_with_other_tools.adoc[Integration with Other Tools]
 * xref:automated_code_review.adoc[Automated Code Review]

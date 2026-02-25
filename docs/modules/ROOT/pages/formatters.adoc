@@ -63,7 +63,7 @@ $ rubocop --out result.txt --format simple
 #              $stdout     default format
 ----
 
-You can also load xref:extensions.adoc#custom-formatters[custom formatters].
+You can also load xref:development.adoc#custom-formatters[custom formatters].
 
 == Progress Formatter (default)
 

@@ -62,4 +62,4 @@ can be tweaked via various https://github.com/rubocop/rubocop/blob/master/config
 options]. See xref:configuration.adoc["Configuration"] for more details.
 * See xref:versioning.adoc["Versioning"] for information about RuboCop versioning,
 updates, and the process of introducing new cops.
-* Explore the xref:extensions.adoc[existing extensions].
+* Explore the xref:extensions.adoc[available plugins].

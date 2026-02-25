@@ -1,11 +1,11 @@
-= Extensions
+= Plugins
 
 :lint_roller: https://github.com/standardrb/lint_roller[lint_roller]
 
 RuboCop can be extended with additional cops and formatters. There are many
-official extensions maintained by RuboCop's team, as well as third-party ones.
+official plugins maintained by RuboCop's team, as well as third-party ones.
 
-== Loading Extensions
+== Loading Plugins
 
 Since RuboCop 1.72, the recommended way to load extensions is through the
 *plugin* system, which is based on {lint_roller}. Older extensions that haven't
@@ -42,7 +42,7 @@ plugins:
 
 There are other ways to specify this. For more details, please refer to the {lint_roller} documentation.
 
-=== Loading Inject and Relative Path Extensions
+=== Loading Legacy Extensions via `require`
 
 Besides the `--require` command line option you can also specify ruby
 files that should be loaded with the optional `require` directive in the
@@ -68,11 +68,11 @@ If a path containing `-` is given, it will be used as is, but if we
 cannot find the file to load, we will replace `-` with `/` and try it
 again as when Bundler loads gems.
 
-== Extension Suggestions
+== Plugin Suggestions
 
-Depending on what gems you have in your bundle, RuboCop might suggest extensions
+Depending on what gems you have in your bundle, RuboCop might suggest plugins
 that can be added to provide further functionality. For instance, if you are using
-`rspec` without the corresponding `rubocop-rspec` extension, RuboCop will suggest
+`rspec` without the corresponding `rubocop-rspec` plugin, RuboCop will suggest
 enabling it.
 
 This message can be disabled by adding the following to your configuration:
@@ -85,8 +85,8 @@ AllCops:
 
 Suggest default extensions if `SuggestExtensions: true`.
 
-You can also opt-out of suggestions for a particular extension library as so (unspecified
-extensions will continue to be notified, as appropriate):
+You can also opt-out of suggestions for a particular plugin as so (unspecified
+plugins will continue to be notified, as appropriate):
 
 [source,yaml]
 ----
@@ -95,27 +95,26 @@ AllCops:
     rubocop-rake: false
 ----
 
+[[custom-cops]]
 == Custom Cops
 
 You can configure the custom cops in your `.rubocop.yml` just like any
 other cop.
 
-=== Writing your own Cops
-
-If you'd like to create an extension gem, you can use https://github.com/rubocop/rubocop-extension-generator[rubocop-extension-generator].
+If you'd like to create a plugin gem, you can use https://github.com/rubocop/rubocop-extension-generator[rubocop-extension-generator].
 
 For plugin specifications, please refer to {lint_roller}.
 
-See xref:development.adoc[development] to learn how to implement a cop.
+See xref:development.adoc[Development] to learn how to implement a cop.
 
-=== Cop Extensions
+== Available Plugins
 
 The main RuboCop gem focuses on the core Ruby language and doesn't
 include functionality related to any external Ruby libraries/frameworks.
-There are, however, many RuboCop extensions dedicated to those and
+There are, however, many RuboCop plugins dedicated to those and
 a few of them are maintained by RuboCop's Core Team.
 
-==== Official Extensions
+=== Official Plugins
 
 * https://github.com/rubocop/rubocop-performance[rubocop-performance] -
 Performance optimization analysis
@@ -140,7 +139,7 @@ RSpec Rails-specific analysis
 * https://github.com/rubocop/rubocop-i18n[rubocop-i18n] -
 i18n wrapper function analysis (`gettext` and `rails-i18n`)
 
-==== Third-party Extensions
+=== Third-party Plugins
 
 * https://github.com/milch/rubocop-require_tools[rubocop-require_tools] -
 Dynamic analysis for missing `require` statements
@@ -157,141 +156,4 @@ Reduced CI time by analyzing only changed files
 * https://github.com/SketchUp/rubocop-sketchup[rubocop-sketchup] -
 SketchUp Ruby API specific analysis
 
-Any extensions missing? Send us a Pull Request!
-
-== Configuring an Extension
-
-If you're writing an extension, you can tie some of its configuration into RuboCop.
-
-=== Config Obsoletions
-
-When a cop that has been released is later renamed or removed, or one of its parameters is, RuboCop can output error messages letting users know to update their configuration to the newest values. If any obsolete configurations are encountered, RuboCop will output an error message and quit.
-
-You can tie your extension into this system by creating your own `obsoletions.yml` file and letting RuboCop know where to find it:
-
-[source,ruby]
-----
-RuboCop::ConfigObsoletion.files << File.expand_path(filename)
-----
-
-There are currently three types of obsoletions that can be defined for cops:
-
-* `renamed`: A cop was changed to have a new name, or moved to a different department.
-* `removed`: A cop was deleted (usually this is configured with `alternatives` or a `reason` why it was removed).
-* `split`: A cop was removed and replaced with multiple other cops.
-
-Two additional types are available to be defined for parameter changes. These configurations can apply to multiple cops and multiple parameters at the same time (so they are expressed in YAML as an array of hashes):
-
-* `changed_parameters`: A parameter has been renamed.
-* `changed_enforced_styles`: A previously accepted `EnforcedStyle` value has been changed or removed.
-
-NOTE: Parameter obsoletions can be set with `severity: warning` to deprecate an old parameter but still accept it. RuboCop will output a warning but continue to run.
-
-==== Example Obsoletion Configuration
-
-See `config/obsoletion.yml` for more examples.
-
-NOTE: All plural keys (eg. `cops`, `parameters`, `alternatives`, etc.) can either take a single value or an array.
-
-[source, yaml]
-----
-renamed:
-  Layout/AlignArguments: Layout/ArgumentAlignment
-  Lint/BlockAlignment: Layout/BlockAlignment
-
-removed:
-  Layout/SpaceAfterControlKeyword:
-    alternatives: Layout/SpaceAroundKeyword
-  Lint/InvalidCharacterLiteral:
-    reason: it was never actually triggered
-
-split:
-  Style/MethodMissing:
-    alternatives:
-      - Style/MethodMissingSuper
-      - Style/MissingRespondToMissing
-
-changed_parameters: # must be an array of hashes
-  - cops:
-      - Metrics/BlockLength
-      - Metrics/MethodLength
-    parameters: ExcludedMethods
-    alternative: IgnoredMethods
-    severity: warning
-
-changed_enforced_styles: # must be an array of hashes
-  - cops: Layout/IndentationConsistency
-    parameters: EnforcedStyle
-    value: rails
-    reason: >
-      `EnforcedStyle: rails` has been renamed to
-      `EnforcedStyle: indented_internal_methods`
-----
-
-== Custom Formatters
-
-You can customize RuboCop's output format with custom formatters.
-
-=== Creating a Custom Formatter
-
-To implement a custom formatter, you need to subclass
-`RuboCop::Formatter::BaseFormatter` and override some methods,
-or implement all formatter API methods by duck typing.
-
-Please see the documents below for more formatter API details.
-
-* https://www.rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter[RuboCop::Formatter::BaseFormatter]
-* https://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense[RuboCop::Cop::Offense]
-* https://www.rubydoc.info/gems/parser/Parser/Source/Range[Parser::Source::Range]
-
-=== Using a Custom Formatter from the Command Line
-
-You can tell RuboCop to use your custom formatter with a combination of
-`--format` and `--require` option.
-For example, when you have defined `MyCustomFormatter` in
-`./path/to/my_custom_formatter.rb`, you would type this command:
-
-[source,sh]
-----
-$ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
-----
-
-== Template support
-
-RuboCop has an API for extensions to support templates such as ERB, Haml, Slim, etc.
-
-Normally, RuboCop extracts one Ruby code from one Ruby file, however there are multiple embedded Ruby codes in one template file. To solve this problem, RuboCop has a mechanism called `RuboCop::Runner.ruby_extractors`, to which any Ruby extractor can be added on the extension side.
-
-Ruby extractor must be a callable object that takes a `RuboCop::ProcessedSource` and returns an `Array` of `Hash`-es that contains Ruby source codes and their offsets from original source code, or returns `nil` for unrelated file.
-
-[source,ruby]
-----
-ruby_extractor.call(processed_source)
-----
-
-An example returned value from a Ruby extractor would be as follows:
-
-[source,ruby]
-----
-[
-  {
-    offset: 2,
-    processed_source: #<RuboCop::ProcessedSource>
-  },
-  {
-    offset: 10,
-    processed_source: #<RuboCop::ProcessedSource>
-  }
-]
-----
-
-On the extension side, the code would be something like this:
-
-[source,ruby]
-----
-RuboCop::Runner.ruby_extractors.unshift(ruby_extractor)
-----
-
-`RuboCop::Runner.ruby_extractors` is processed from the beginning and ends when one of them returns a non-nil value. By default, there is a Ruby extractor that returns the given Ruby source code with offset 0, so you can unshift any Ruby extractor before it.
-
-NOTE: This is still an experimental feature and may change in the future.
+Any plugins missing? Send us a Pull Request!
