@@ -1,26 +1,18 @@
-= Plugin Configuration
+= Extensions
 
 :lint_roller: https://github.com/standardrb/lint_roller[lint_roller]
 
-It's possible to extend RuboCop with additional cops and formatters.
-There are already many official extensions, maintained by RuboCop's team,
-as well as third-party extensions.
-
-NOTE: RuboCop's official extension (plugin) API is based on {lint_roller}.
+RuboCop can be extended with additional cops and formatters. There are many
+official extensions maintained by RuboCop's team, as well as third-party ones.
 
 == Loading Extensions
 
-There are two ways to load RuboCop extensions today - a legacy ad-hoc
-approach, and an official API that's the recommended way. Not all
-extensions have been updated to the new API, so you'll have to load
-the two types of extensions differently.
+Since RuboCop 1.72, the recommended way to load extensions is through the
+*plugin* system, which is based on {lint_roller}. Older extensions that haven't
+been updated yet can still be loaded via `require`.
 
-Starting with RuboCop 1.72, plugins were introduced as the recommended way to
-load extension cop gems. When using gems that have been updated to support the
-plugin API, please update the configuration in `.rubocop.yml` from `require` to
-`plugins`.
-
-Refer to the xref:plugin_migration_guide.adoc[Plugin Migration Guide] when migrating existing configurations.
+Refer to the xref:plugin_migration_guide.adoc[Plugin Migration Guide] when
+migrating existing configurations from `require` to `plugins`.
 
 === Loading Plugin Extensions
 
