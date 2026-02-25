@@ -22,7 +22,7 @@ linter:
 * Ability to disable certain cops only for specific files or parts of files
 * Extremely flexible configuration that allows you to adapt RuboCop to pretty much every style and preference
 * It's easy to extend RuboCop with custom cops and formatters
-* A vast number of ready-made xref:plugins.adoc[extensions] (e.g. `rubocop-rails`, `rubocop-rspec`, `rubocop-performance` and `rubocop-minitest`)
+* A vast number of ready-made xref:plugins.adoc[plugins] (e.g. `rubocop-rails`, `rubocop-rspec`, `rubocop-performance` and `rubocop-minitest`)
 * Built-in xref:usage/lsp.adoc[Language Server Protocol (LSP)] and xref:usage/mcp.adoc[Model Context Protocol (MCP)] support
 * Wide editor/IDE support via LSP
 * Many online services use RuboCop internally (e.g. CodeClimate and Codacy)

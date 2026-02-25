@@ -116,4 +116,4 @@ See xref:integration_with_other_tools.adoc[Integration with Other Tools] for mor
 * xref:configuration.adoc[Configuration] — everything about `.rubocop.yml`
 * xref:usage/source_code_directives.adoc[Source Code Directives] — disable/enable cops inline with comments
 * xref:cops.adoc[Cops] — browse all available cops by department
-* xref:plugins.adoc[Extensions] — add cops for Rails, RSpec, Performance, and more
+* xref:plugins.adoc[Plugins] — add cops for Rails, RSpec, Performance, and more
