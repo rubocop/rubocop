@@ -1,14 +1,96 @@
 = Profiling
 
-NOTE: Profiling was introduced in RuboCop 1.45.
+When RuboCop feels slow, profiling helps you find the bottleneck — whether it's
+a particular cop, a large file, or excessive memory allocation.
 
-RuboCop comes with the ability to profile itself while running. It has 2 CLI options:
+NOTE: Profiling requires MRI (CRuby). It is not available on JRuby or Windows.
 
-* the `--profile` option will use the https://github.com/tmm1/stackprof[stackprof gem] (you need to have it in `Gemfile`) to profile wall time and print a report at the `tmp/rubocop-stackprof.dump` location of the project. See the gem's documentation on how to interpret the results
-* the `--memory` option will additionally profile memory usage using https://github.com/SamSaffron/memory_profiler[memory_profiler gem] (you need to have it in `Gemfile`) and print a report at the `tmp/rubocop-memory_profiler.txt` location of the project
+== CPU profiling with `--profile`
 
-NOTE: Profiling memory can be very costly and time consuming when run on a large codebase. In this case, it is recommended to use it over a limited set of files (`app/` directory, for example) or use a limited set of cops (with `--only`, for example).
+The `--profile` flag uses the https://github.com/tmm1/stackprof[stackprof] gem
+to record wall-time samples while RuboCop runs. Add it to your `Gemfile` first:
 
-== Reporting Back
+[source,ruby]
+----
+gem 'stackprof', require: false
+----
 
-If you found a performance problem in RuboCop, you are encouraged to report back via an issue or a pull request. See xref:contributing.adoc[Contributing Guide] for more details.
+Then run:
+
+[source,sh]
+----
+$ rubocop --profile
+# ...
+Profile report generated at tmp/rubocop-stackprof.dump
+----
+
+The dump file is written to `tmp/rubocop-stackprof.dump` in your project root.
+You can inspect it with the `stackprof` CLI:
+
+[source,sh]
+----
+# Top methods by wall time
+$ stackprof tmp/rubocop-stackprof.dump --limit 20
+
+# Call tree for a specific method
+$ stackprof tmp/rubocop-stackprof.dump --method 'RuboCop::Cop::Style::MethodCallWithArgsParentheses#on_send'
+
+# Flamegraph (open in a browser)
+$ stackprof --flamegraph tmp/rubocop-stackprof.dump > tmp/flamegraph.json
+$ stackprof --flamegraph-viewer tmp/flamegraph.json
+----
+
+TIP: To profile a single cop, combine `--profile` with `--only`:
+`rubocop --profile --only Style/StringLiterals`.
+
+== Memory profiling with `--memory`
+
+The `--memory` flag (used together with `--profile`) additionally tracks memory
+allocations using the
+https://github.com/SamSaffron/memory_profiler[memory_profiler] gem. Add both
+gems to your `Gemfile`:
+
+[source,ruby]
+----
+gem 'stackprof', require: false
+gem 'memory_profiler', require: false
+----
+
+Then run:
+
+[source,sh]
+----
+$ rubocop --profile --memory
+# ...
+Profile report generated at tmp/rubocop-stackprof.dump
+Building memory report...
+Memory report generated at tmp/rubocop-memory_profiler.txt
+----
+
+The memory report is a human-readable text file showing allocations grouped by
+gem, file, location, and class.
+
+WARNING: Memory profiling is expensive. On a large codebase it can take a very
+long time and consume significant memory. Limit the scope to a subset of files
+or cops:
+
+[source,sh]
+----
+$ rubocop --profile --memory app/models/
+$ rubocop --profile --memory --only Layout/LineLength lib/
+----
+
+== Tips
+
+* **Caching is disabled automatically** when profiling, so results reflect
+  actual cop execution rather than cache hits.
+* **Narrow the scope** — profiling the entire codebase produces noisy results.
+  Focus on a single directory or cop to get actionable data.
+* **Compare before and after** — if you're optimizing a cop, profile it in
+  isolation (`--only`) before and after your change to measure the improvement.
+
+== Reporting performance problems
+
+If you discover a performance bottleneck in RuboCop, please open an issue or
+pull request with the profiling data. See xref:contributing.adoc[Contributing]
+for details.
