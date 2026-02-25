@@ -166,7 +166,7 @@ $ rake rubocop                                 # Run RuboCop
 $ rake rubocop:autocorrect                     # Autocorrect RuboCop offenses
 ----
 
-The above will use default values
+The above will use default values.
 
 [source,ruby]
 ----

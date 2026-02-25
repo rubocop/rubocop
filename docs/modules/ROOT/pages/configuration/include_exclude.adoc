@@ -25,7 +25,7 @@ AllCops:
 # ...
 ----
 
-NOTE: When inspecting a certain directory(or file)
+NOTE: When inspecting a certain directory (or file)
 given as RuboCop's command line arguments,
 patterns listed under `AllCops` / `Exclude` are also inspected.
 If you want to apply `AllCops` / `Exclude` rules in this circumstance,
@@ -129,7 +129,7 @@ The pattern `+config/**+` will match any file recursively under
 The `Include` and `Exclude` parameters are special. They are
 valid for the directory tree starting where they are defined. They are not
 shadowed by the setting of `Include` and `Exclude` in other `.rubocop.yml`
-files in subdirectories. This is different from all other parameters, who
+files in subdirectories. This is different from all other parameters, which
 follow RuboCop's general principle that configuration for an inspected file
 is taken from the nearest `.rubocop.yml`, searching upwards.
 

@@ -30,7 +30,7 @@ NOTE: Parameter obsoletions can be set with `severity: warning` to deprecate an 
 
 See `config/obsoletion.yml` for more examples.
 
-NOTE: All plural keys (eg. `cops`, `parameters`, `alternatives`, etc.) can either take a single value or an array.
+NOTE: All plural keys (e.g. `cops`, `parameters`, `alternatives`, etc.) can either take a single value or an array.
 
 [source, yaml]
 ----

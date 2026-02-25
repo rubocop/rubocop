@@ -8,7 +8,7 @@ All big (breaking) changes are reserved for major releases.
 
 == Release Policy
 
-We're following https://semver.org/[Semantic Versioning].  API
+We're following https://semver.org/[Semantic Versioning]. API
 compatibility between major releases is a big concern, as there are
 many RuboCop extensions that can be affected by breaking API changes.
 
@@ -56,7 +56,7 @@ In the early versions of RuboCop a common source of frustration was that
 new cops were added to pretty much every release, and as they were enabled
 by default, every upgrade resulted in broken CI builds and trying to figure
 out what exactly was changed. After considering many options to address
-this eventually we opted for an approach that limits these type of changes
+this eventually we opted for an approach that limits these types of changes
 to major RuboCop releases.
 
 Now new cops introduced between major versions are set to a special pending
@@ -77,8 +77,8 @@ You can see that 3 new cops were added in RuboCop 0.80 and it's up to you
 to decide if you want to enable or disable them.
 
 NOTE: Occasionally, some new cops will be introduced as *disabled* by
-default.  Usually, this means that we believe that the cop is useful,
-but not for everyone.  Typical cases might be the enforcement of
+default. Usually, this means that we believe that the cop is useful,
+but not for everyone. Typical cases might be the enforcement of
 programming styles that are not very common in the wild, or cops that
 yield too many false positives (so you'd run them manually from time
 to time, instead of running them all the time).
@@ -86,7 +86,7 @@ to time, instead of running them all the time).
 === Enabling/Disabling Pending Cops in Bulk
 
 To suppress this message set `NewCops` to either `enable` or `disable` in your `.rubocop.yml` file.
-You can use following configuration or the `--enable-pending-cops` command-line option, to enable all pending cops in bulk:
+You can use the following configuration or the `--enable-pending-cops` command-line option to enable all pending cops in bulk:
 
 [source,yaml]
 ----
@@ -94,7 +94,7 @@ AllCops:
   NewCops: enable
 ----
 
-Alternatively, you can use following configuration or the `--disable-pending-cops` command-line option, to disable all pending cops in bulk:
+Alternatively, you can use the following configuration or the `--disable-pending-cops` command-line option to disable all pending cops in bulk:
 
 [source,yaml]
 ----
@@ -102,7 +102,7 @@ AllCops:
   NewCops: disable
 ----
 
-NOTE: The command-line options takes precedence over `.rubocop.yml` file.
+NOTE: The command-line option takes precedence over the `.rubocop.yml` file.
 
 === Enabling/Disabling Individual Pending Cops
 

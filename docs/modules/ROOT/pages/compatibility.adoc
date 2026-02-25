@@ -13,7 +13,7 @@ NOTE: RuboCop might be working with other Ruby implementations as well, but it's
 
 == Support Matrix
 
-RuboCop generally aims to follow MRI's own support policy - meaning RuboCop would support all officially supported MRI releases.footnote:[Typically the last 3 releases.] To give people extra time for a smooth transition, we've customarily provided support for about one year after EOL of MRI version. footnote:[At the core team's discretion this policy might be waived aside for MRI releases causing significant maintenance overhead.]
+RuboCop generally aims to follow MRI's own support policy - meaning RuboCop would support all officially supported MRI releases.footnote:[Typically the last 3 releases.] To give people extra time for a smooth transition, we've customarily provided support for about one year after EOL of a MRI version.footnote:[At the core team's discretion this policy might be waived aside for MRI releases causing significant maintenance overhead.]
 
 The following table is the runtime support matrix.
 

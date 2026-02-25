@@ -67,8 +67,8 @@ The example above is one potential use-case: allowing components within your rep
 
 == Inheriting configuration from a remote URL
 
-The optional `inherit_from` directive can contain a full url to a remote
-file. This makes it possible to have common project settings stored on a http
+The optional `inherit_from` directive can contain a full URL to a remote
+file. This makes it possible to have common project settings stored on an HTTP
 server and shared between many projects.
 
 The remote config file is cached locally and is only updated if:

@@ -10,7 +10,7 @@ the necessary info listed in our issue reporting template (it's loaded
 automatically when you create a new GitHub issue).
 
 NOTE: Please, don't ask support-like questions on the issue tracker (e.g. "How
-can I configure RuboCop to do X?" - use the xref:support.adoc[support channels]
+can I configure RuboCop to do X?") - use the xref:support.adoc[support channels]
 instead.
 
 == Code contributions

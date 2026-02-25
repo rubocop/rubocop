@@ -146,7 +146,7 @@ representation, then let's start with something very generic:
 NodePattern.new('send').match(node) # => true
 ----
 
-It matches because the root is a `send` type. Now lets match it deeply using
+It matches because the root is a `send` type. Now let's match it deeply using
 parentheses to define details for sub-nodes. If you don't care about what an internal
 node is, you can use `+...+` to skip it and just consider " a node".
 
@@ -192,7 +192,7 @@ NodePattern.new('(send (send (...) :empty?) :!)').match(node) # => true
 
 In other words, it says: "Match code calling ``!<expression>.empty?``".
 
-Great! Now, lets implement our cop to simplify such statements:
+Great! Now, let's implement our cop to simplify such statements:
 
 [source,sh]
 ----
@@ -232,7 +232,7 @@ end
 The `on_send` callback is the most used and can be optimized by restricting the acceptable
 method names with a constant `RESTRICT_ON_SEND`.
 
-And the final cop code will look like something like this:
+The final cop code will look something like this:
 
 [source,ruby]
 ----
@@ -295,7 +295,7 @@ end
 ----
 
 If your code has variables of different lengths, you can use the following
-markers to format your template by passing the variables as a keyword
+markers to format your template by passing the variables as keyword
 arguments:
 
 - `%{foo}`: Interpolates `foo`
@@ -424,7 +424,7 @@ This cop won't register offenses on Ruby 2.6 or older.
 
 Mirroring `minimum_target_ruby_version`, you can also specify a maximum Ruby version your cop should analyze.
 
-For example, the `Lint/CircularArgumentReference` cop only runs when analyzing code for Ruby before 2.7. The code it is looking for can never be written in more recent Rubies, it would be a syntax error:
+For example, the `Lint/CircularArgumentReference` cop only runs when analyzing code for Ruby before 2.7. The code it looks for can never be written in more recent Rubies — it would be a syntax error:
 
 ```ruby
 class RuboCop::Cop::Lint::CircularArgumentReference < Base

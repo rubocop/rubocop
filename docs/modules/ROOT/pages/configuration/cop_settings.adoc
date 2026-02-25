@@ -139,11 +139,11 @@ Style/PerlBackrefs:
   AutoCorrect: contextual
 ----
 
-This setting prevents autocorrection during editing in the editor. e.g, with `textDocument/formatting` LSP method.
-However `workspace/executeCommand` LSP method, which is triggered by intentional user actions, respects the user's intention for autocorrection.
+This setting prevents autocorrection during editing in the editor, e.g., with the `textDocument/formatting` LSP method.
+However, the `workspace/executeCommand` LSP method, which is triggered by intentional user actions, respects the user's intention for autocorrection.
 
-Additionally, for cases like `Metrics` cops where the highlight range extends over the entire body of classes, modules, methods, or blocks
-offending range will be confined to only name. This approach helps to avoid redundant and noisy offenses in editor display.
+Additionally, for cases like `Metrics` cops where the highlight range extends over the entire body of classes, modules, methods, or blocks,
+the offending range will be confined to only the name. This helps avoid redundant and noisy offenses in editor display.
 
 === `disabled`
 

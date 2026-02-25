@@ -48,7 +48,7 @@ part was the lack of common standards for almost 20 years. It's hard to undo any
 The early feedback we got led us to adopt a philosophy of (extreme) configurability and flexibility, and trying to account for every _common_ style
 of programming in Ruby. While we still believe that there's a lot of merit to just sticking to the community
 style guides, we acknowledge that Ruby is all about diversity and doing things the way that makes you happy. Whatever
-style preferences you have RuboCop is there for you. That's our promises and our guarantee. Within the subjective limits of sanity that is.
+style preferences you have RuboCop is there for you. That's our promise and our guarantee. Within the subjective limits of sanity that is.
 
 == Next Steps
 

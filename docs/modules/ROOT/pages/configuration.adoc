@@ -276,7 +276,7 @@ AllCops:
 == Opting into globally frozen string literals
 
 Ruby continues to move into the direction of having all string literals frozen by default.
-Ruby 3.4 for example will show a warning if a non-frozen string literal from a file without
+Ruby 3.4, for example, will show a warning if a non-frozen string literal from a file without
 the frozen string literal magic comment gets modified. By starting ruby with the environment
 variable `RUBYOPT` set to `--enable=frozen-string-literal` you can opt into that behaviour today.
 For RuboCop to provide accurate analysis you must also configure the `StringLiteralsFrozenByDefault`

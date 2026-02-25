@@ -217,7 +217,7 @@ if you only want to enable the feature as a linter like `ruby -w`:
 }
 ```
 
-Furthermore, enabling autocorrect in a LSP client at the time of saving equates to the effect of `rubocop -l` option.
+Furthermore, enabling autocorrect in an LSP client at the time of saving is equivalent to the `rubocop -l` option.
 
 For detailed instructions on setting the parameter, please refer to the configuration methods of your LSP client.
 
@@ -241,7 +241,7 @@ if you only want to enable the feature as a formatter:
 }
 ```
 
-Furthermore, enabling autocorrect in a LSP client at the time of saving equates to the effect of `rubocop -x` option.
+Furthermore, enabling autocorrect in an LSP client at the time of saving is equivalent to the `rubocop -x` option.
 
 For detailed instructions on setting the parameter, please refer to the configuration methods of your LSP client.
 
@@ -287,10 +287,9 @@ NOTE: `rubocop --lsp` starts the LSP server and is intended to be invoked by an 
 
 == Language Server Development
 
-RuboCop provides APIs for developers of original language server or tools analogous to LSP, using RuboCop as the backend, instead of the RuboCop's built-in LSP.
+RuboCop provides APIs for developers of custom language servers or tools analogous to LSP, using RuboCop as the backend instead of RuboCop's built-in LSP.
 
-- `RuboCop::LSP.enable` enables LSP mode, customizing for LSP-specific features such as autocorrection and short offense message.
-- `RuboCop::LSP.disable` disables LSP mode, which can be particularly useful for testing. And intentional autocorrection by the user can be specified.
-e.g, `workspace/executeCommand` and `textDocument/codeAction` LSP methods.
+- `RuboCop::LSP.enable` enables LSP mode, customizing for LSP-specific features such as autocorrection and short offense messages.
+- `RuboCop::LSP.disable` disables LSP mode, which can be particularly useful for testing. Intentional autocorrection by the user can be specified via e.g. `workspace/executeCommand` and `textDocument/codeAction` LSP methods.
 
 When implementing custom cops, `RuboCop::LSP.enabled?` can be used to achieve behavior that considers these states.

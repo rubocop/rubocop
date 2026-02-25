@@ -142,7 +142,7 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Plugin RuboCop extension file (see xref:plugins.adoc#loading-plugin-extensions[Loading Plugin Extensions]).
 
 | `-r/--require`
-| Require Ruby file (see xref:plugins.adoc#loading-inject-and-relative-path-extensions[Loading Inject and Relative Path Extensions]).
+| Require Ruby file (see xref:plugins.adoc#loading-legacy-extensions-via-require[Loading Legacy Extensions]).
 
 | `--regenerate-todo`
 | Regenerate the TODO list using the same options as the last time it was generated with `--auto-gen-config` (generation options can be overridden).
@@ -157,7 +157,7 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Shows available cops and their configuration. You can use `*` as a wildcard.
 
 | `--show-docs-url`
-| Shows urls for documentation pages of supplied cops.
+| Shows URLs for documentation pages of supplied cops.
 
 | `--stderr`
 | Write all output to stderr except for the autocorrected source. This is especially useful when combined with `--autocorrect` and `--stdin`.
