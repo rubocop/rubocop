@@ -8,7 +8,7 @@ Many of the Style and Layout cops have configuration options, allowing them to
 enforce different coding conventions. See xref:configuration/cop_settings.adoc[Configuring Cops]
 for details on `Enabled`, `Severity`, `AutoCorrect`, `AllowedMethods`, and other settings.
 
-You can also load xref:extensions.adoc#custom-cops[custom cops].
+You can also load xref:plugins.adoc#custom-cops[custom cops].
 
 == Departments
 

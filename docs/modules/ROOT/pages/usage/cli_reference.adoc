@@ -139,10 +139,10 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Raise cop-related errors with cause and location. This is used to prevent cops from failing silently. Default is false.
 
 | `--plugin`
-| Plugin RuboCop extension file (see xref:extensions.adoc#loading-plugin-extensions[Loading Plugin Extensions]).
+| Plugin RuboCop extension file (see xref:plugins.adoc#loading-plugin-extensions[Loading Plugin Extensions]).
 
 | `-r/--require`
-| Require Ruby file (see xref:extensions.adoc#loading-inject-and-relative-path-extensions[Loading Inject and Relative Path Extensions]).
+| Require Ruby file (see xref:plugins.adoc#loading-inject-and-relative-path-extensions[Loading Inject and Relative Path Extensions]).
 
 | `--regenerate-todo`
 | Regenerate the TODO list using the same options as the last time it was generated with `--auto-gen-config` (generation options can be overridden).

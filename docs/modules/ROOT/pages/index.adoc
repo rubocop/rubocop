@@ -22,7 +22,7 @@ linter:
 * Ability to disable certain cops only for specific files or parts of files
 * Extremely flexible configuration that allows you to adapt RuboCop to pretty much every style and preference
 * It's easy to extend RuboCop with custom cops and formatters
-* A vast number of ready-made xref:extensions.adoc[extensions] (e.g. `rubocop-rails`, `rubocop-rspec`, `rubocop-performance` and `rubocop-minitest`)
+* A vast number of ready-made xref:plugins.adoc[extensions] (e.g. `rubocop-rails`, `rubocop-rspec`, `rubocop-performance` and `rubocop-minitest`)
 * Built-in xref:usage/lsp.adoc[Language Server Protocol (LSP)] and xref:usage/mcp.adoc[Model Context Protocol (MCP)] support
 * Wide editor/IDE support via LSP
 * Many online services use RuboCop internally (e.g. CodeClimate and Codacy)
@@ -56,10 +56,10 @@ So, what to do next? While you can peruse the documentation in whatever way you'
 a few recommendations:
 
 * Start with the xref:usage/getting_started.adoc["Getting Started"] guide to get up and running quickly.
-* See xref:usage/basic_usage.adoc["CLI Reference"] for the full command-line reference.
+* See xref:usage/cli_reference.adoc["CLI Reference"] for the full command-line reference.
 * Adjust RuboCop to your style/preferences. RuboCop is an extremely flexible tool and most aspects of its behavior
 can be tweaked via various https://github.com/rubocop/rubocop/blob/master/config/default.yml[configuration
 options]. See xref:configuration.adoc["Configuration"] for more details.
 * See xref:versioning.adoc["Versioning"] for information about RuboCop versioning,
 updates, and the process of introducing new cops.
-* Explore the xref:extensions.adoc[available plugins].
+* Explore the xref:plugins.adoc[available plugins].

@@ -3,7 +3,7 @@
 * xref:compatibility.adoc[Compatibility]
 * Usage
 ** xref:usage/getting_started.adoc[Getting Started]
-** xref:usage/basic_usage.adoc[CLI Reference]
+** xref:usage/cli_reference.adoc[CLI Reference]
 ** xref:usage/auto_gen_config.adoc[Auto-generating Configuration]
 ** xref:usage/autocorrect.adoc[Autocorrect]
 ** xref:usage/caching.adoc[Caching]
@@ -31,7 +31,7 @@
 ** xref:cops_style.adoc[Style]
 ** xref:v1_upgrade_notes.adoc[Upgrade Notes]
 * Plugins
-** xref:extensions.adoc[Overview]
+** xref:plugins.adoc[Overview]
 ** xref:plugin_configuration.adoc[Plugin Configuration]
 ** xref:plugin_migration_guide.adoc[Plugin Migration Guide]
 * xref:integration_with_other_tools.adoc[Integration with Other Tools]
