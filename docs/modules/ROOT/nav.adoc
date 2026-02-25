@@ -12,7 +12,11 @@
 ** xref:usage/server.adoc[Server]
 ** xref:usage/source_code_directives.adoc[Source Code Directives]
 ** xref:usage/profiling.adoc[Profiling]
-* xref:configuration.adoc[Configuration]
+* Configuration
+** xref:configuration.adoc[Overview]
+** xref:configuration/inheritance.adoc[Inheritance]
+** xref:configuration/include_exclude.adoc[Including and Excluding Files]
+** xref:configuration/cop_settings.adoc[Configuring Cops]
 * xref:cops.adoc[Cops]
 * xref:formatters.adoc[Formatters]
 * Cop Documentation

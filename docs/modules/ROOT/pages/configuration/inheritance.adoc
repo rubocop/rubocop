@@ -1,0 +1,223 @@
+= Inheritance
+
+All configuration inherits from https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCop's default configuration] (see xref:configuration.adoc#defaults["Defaults"]).
+
+RuboCop also supports inheritance in user's configuration files. The most common
+example would be the `.rubocop_todo.yml` file (see xref:usage/auto_gen_config.adoc[Auto-generating Configuration]).
+
+Settings in the child file (that which inherits) override those in the parent
+(that which is inherited), with the following caveats.
+
+== Inheritance of hashes vs. other types
+
+Configuration parameters that are hashes, for example `PreferredMethods` in
+`Style/CollectionMethods`, are merged with the same parameter in the parent
+configuration. This means that any key-value pairs given in child configuration
+override the same keys in parent configuration. Giving `~`, YAML's
+representation of `nil`, as a value cancels the setting of the corresponding
+key in the parent configuration. For example:
+
+[source,yaml]
+----
+Style/CollectionMethods:
+  Enabled: true
+  PreferredMethods:
+    # No preference for collect, keep all others from default config.
+    collect: ~
+----
+
+Other types, such as `AllCops` / `Include` (an array), are overridden by the
+child setting.
+
+Arrays override because if they were merged, there would be no way to
+remove elements in child files.
+
+However, advanced users can still merge arrays using the `inherit_mode` setting.
+See <<merging-arrays-using-inherit-mode>> below.
+
+== Inheriting from another configuration file in the project
+
+The optional `inherit_from` directive is used to include configuration
+from one or more files. This makes it possible to have the common
+project settings in the `.rubocop.yml` file at the project root, and
+then only the deviations from those rules in the subdirectories. The
+files can be given with absolute paths or paths relative to the file
+where they are referenced. The settings after an `inherit_from`
+directive override any settings in the file(s) inherited from. When
+multiple files are included, the first file in the list has the lowest
+precedence and the last one has the highest. The format for multiple
+inheritance is:
+
+[source,yaml]
+----
+inherit_from:
+  - ../.rubocop.yml
+  - ../conf/.rubocop.yml
+----
+
+`inherit_from` also accepts a glob, for example:
+
+[source,yaml]
+----
+inherit_from:
+  - packages/*/.rubocop_todo.yml
+----
+
+The example above is one potential use-case: allowing components within your repo to organize their own `.rubocop_todo.yml` files.
+
+== Inheriting configuration from a remote URL
+
+The optional `inherit_from` directive can contain a full url to a remote
+file. This makes it possible to have common project settings stored on a http
+server and shared between many projects.
+
+The remote config file is cached locally and is only updated if:
+
+* The file does not exist.
+* The file has not been updated in the last 24 hours.
+* The remote copy has a newer modification time than the local copy.
+
+This local cache is stored in xref:usage/caching.adoc#cache-path[the configured cache path],
+maintaining the remote filename prefix. Please note that the root of relative paths specified
+in `Include` or `Exclude` changes depending on the configuration file name,
+as explained in xref:configuration/include_exclude.adoc#path-relativity["Path relativity"]. This behavior was introduced in RuboCop 1.84.
+
+You can inherit from both remote and local files in the same config and the
+same inheritance rules apply to remote URLs and inheriting from local
+files where the first file in the list has the lowest precedence and the
+last one has the highest. The format for multiple inheritance using URLs is:
+
+[source,yaml]
+----
+inherit_from:
+  - http://www.example.com/rubocop.yml
+  - ../.rubocop.yml
+----
+
+You can inherit from a repo with basic auth that is authorized to access the repo as follows:
+
+[source,yaml]
+----
+inherit_from:
+  - http://<user_name>:<password>@raw.githubusercontent.com/example/rubocop.yml
+----
+
+A link:https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens[GitHub personal access token]
+can also be configured as follows:
+
+[source,yaml]
+----
+inherit_from:
+  - http://<personal_access_token>@raw.githubusercontent.com/example/rubocop.yml
+----
+
+== Inheriting configuration from a dependency gem
+
+The optional `inherit_gem` directive is used to include configuration from
+one or more gems external to the current project. This makes it possible to
+inherit a shared dependency's RuboCop configuration that can be used from
+multiple disparate projects.
+
+Configurations inherited in this way will be essentially _prepended_ to the
+`inherit_from` directive, such that the `inherit_gem` configurations will be
+loaded first, then the `inherit_from` relative file paths will be loaded
+(overriding the configurations from the gems), and finally the remaining
+directives in the configuration file will supersede any of the inherited
+configurations. This means the configurations inherited from one or more gems
+have the lowest precedence of inheritance.
+
+The directive should be formatted as a YAML Hash using the gem name as the
+key and the relative path within the gem as the value:
+
+[source,yaml]
+----
+inherit_gem:
+  my-shared-gem: .rubocop.yml
+  cucumber: conf/rubocop.yml
+----
+
+An array can also be used as the value to include multiple configuration files
+from a single gem:
+
+[source,yaml]
+----
+inherit_gem:
+  my-shared-gem:
+    - default.yml
+    - strict.yml
+----
+
+NOTE: If the shared dependency is declared using a https://bundler.io/[Bundler]
+Gemfile and the gem was installed using `bundle install`, it would be
+necessary to also invoke RuboCop using Bundler in order to find the
+dependency's installation path at runtime:
+
+[source,sh]
+----
+$ bundle exec rubocop <options...>
+----
+
+[[merging-arrays-using-inherit-mode]]
+== Merging arrays using inherit_mode
+
+The optional directive `inherit_mode` specifies which configuration keys that
+have array values should be merged together instead of overriding the inherited
+value.
+
+This applies to explicit inheritance using `inherit_from` as well as implicit
+inheritance from https://github.com/rubocop/rubocop/blob/master/config/default.yml[the default configuration].
+
+Given the following config:
+
+[source,yaml]
+----
+# .rubocop.yml
+inherit_from:
+  - shared.yml
+
+inherit_mode:
+  merge:
+    - Exclude
+
+AllCops:
+  Exclude:
+    - 'generated/**/*.rb'
+
+Style/For:
+  Exclude:
+    - bar.rb
+----
+
+[source,yaml]
+----
+# .shared.yml
+Style/For:
+  Exclude:
+    - foo.rb
+----
+
+The list of ``Exclude``s for the `Style/For` cop in this example will be
+`['foo.rb', 'bar.rb']`. Similarly, the `AllCops:Exclude` list will contain all
+the default patterns plus the `+generated/**/*.rb+` entry that was added locally.
+
+The directive can also be used on individual cop configurations to override
+the global setting.
+
+[source,yaml]
+----
+inherit_from:
+  - shared.yml
+
+inherit_mode:
+  merge:
+    - Exclude
+
+Style/For:
+  inherit_mode:
+    override:
+      - Exclude
+  Exclude:
+    - bar.rb
+----
+
+In this example the `Exclude` would only include `bar.rb`.

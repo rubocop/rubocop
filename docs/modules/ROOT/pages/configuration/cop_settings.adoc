@@ -1,0 +1,221 @@
+= Configuring Cops
+
+Every cop supports a set of common configuration parameters, and many cops have additional parameters specific to their behavior.
+
+NOTE: Qualifying cop name with its type, e.g., `Style`, is recommended,
+but not necessary as long as the cop name is unique across all types.
+
+== Enabled
+
+Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
+
+[source,yaml]
+----
+Layout/LineLength:
+  Enabled: false
+----
+
+Most cops are enabled by default. Cops, introduced or significantly updated
+between major versions, are in a special pending status (read more in
+xref:versioning.adoc["Versioning"]). Some cops, configured the above `Enabled: false`
+in https://github.com/rubocop/rubocop/blob/master/config/default.yml[config/default.yml],
+are disabled by default.
+
+The cop enabling process can be altered by setting `DisabledByDefault` or
+`EnabledByDefault` (but not both) to `true`. These settings override the default for *all*
+cops to disabled or enabled, except `Lint/Syntax` which is always enabled,
+regardless of the cops' default values (whether enabled, disabled or pending).
+
+[source,yaml]
+----
+AllCops:
+  DisabledByDefault: true
+----
+
+All cops except `Lint/Syntax` are then disabled by default. Only cops appearing in user
+configuration files with `Enabled: true` will be enabled; every other cop will
+be disabled without having to explicitly disable them in configuration. It is
+also possible to enable entire departments by adding for example
+
+[source,yaml]
+----
+Style:
+  Enabled: true
+----
+
+All cops in the `Style` department are then enabled. In this case, only the cops
+in the `Style` department that are enabled by default will be enabled.
+The cops in the `Style` department that are disabled by default will remain disabled.
+
+If a department is disabled, cops in that department can still be individually
+enabled, and that setting overrides the setting for its department in the same
+configuration file and in any inherited file.
+
+[source,yaml]
+----
+inherit_from: config_that_disables_the_metrics_department.yml
+
+Metrics/MethodLength:
+  Enabled: true
+
+Style:
+  Enabled: false
+
+Style/Alias:
+  Enabled: true
+----
+
+== Severity
+
+Each cop has a default severity level based on which department it belongs
+to. The level is normally `warning` for `Lint` and `convention` for all the
+others, but this can be changed in user configuration. Cops can customize their
+severity level. Allowed values are `info`, `refactor`, `convention`, `warning`, `error`
+and `fatal`.
+
+Cops with severity `info` will be reported but will not cause `rubocop` to return
+a non-zero value.
+
+There is one exception from the general rule above and that is `Lint/Syntax`, a
+special cop that checks for syntax errors before the other cops are invoked. It
+cannot be disabled and its severity (`fatal`) cannot be changed in
+configuration.
+
+[source,yaml]
+----
+Lint:
+  Severity: error
+
+Metrics/CyclomaticComplexity:
+  Severity: warning
+----
+
+== Details
+
+Individual cops can be embellished with extra details in offense messages:
+
+[source,yaml]
+----
+Layout/LineLength:
+  Details: >-
+    If lines are too short, text becomes hard to read because you must
+    constantly jump from one line to the next while reading. If lines are too
+    long, the line jumping becomes too hard because you "lose the line" while
+    going back to the start of the next line. 80 characters is a good
+    compromise.
+----
+
+These details will only be seen when RuboCop is run with the `--extra-details` flag or if `ExtraDetails` is set to true in your global RuboCop configuration.
+
+== AutoCorrect
+
+Cops that support the `--autocorrect` option offer flexible settings for autocorrection.
+These settings can be specified in the configuration file as follows:
+
+- `always`
+- `contextual`
+- `disabled`
+
+=== `always (Default)`
+
+This setting enables autocorrection always by default. For backward compatibility, `true` is treated the same as `always`.
+
+[source,yaml]
+----
+Style/PerlBackrefs:
+  AutoCorrect: always # or true
+----
+
+=== `contextual`
+
+This setting enables autocorrection when launched from the `rubocop` command, but it is not available through LSP.
+e.g., `rubocop --lsp`, `rubocop --editor-mode`, or a program where `RuboCop::LSP.enable` has been applied.
+
+Inspections via the command line are treated as code that has been finalized.
+
+[source,yaml]
+----
+Style/PerlBackrefs:
+  AutoCorrect: contextual
+----
+
+This setting prevents autocorrection during editing in the editor. e.g, with `textDocument/formatting` LSP method.
+However `workspace/executeCommand` LSP method, which is triggered by intentional user actions, respects the user's intention for autocorrection.
+
+Additionally, for cases like `Metrics` cops where the highlight range extends over the entire body of classes, modules, methods, or blocks
+offending range will be confined to only name. This approach helps to avoid redundant and noisy offenses in editor display.
+
+=== `disabled`
+
+This setting disables autocorrection. For backward compatibility, `false` is treated the same as `disabled`.
+
+[source,yaml]
+----
+Style/PerlBackrefs:
+  AutoCorrect: disabled # or false
+----
+
+== AllowedMethods
+
+Many cops can be configured to exclude specific methods from inspection.
+`AllowedMethods` accepts a list of method names as strings. A cop will skip
+any method whose name exactly matches one of the entries:
+
+[source,yaml]
+----
+Metrics/BlockLength:
+  AllowedMethods:
+    - refine
+    - class_methods
+    - instance_methods
+----
+
+Only bare method names are supported -- you cannot use qualified names like `Foo.bar`
+or `foo.bar`. Class and module names are not supported either. If you need
+more flexibility, use `AllowedPatterns` instead.
+
+NOTE: The `IgnoredMethods` and `ExcludedMethods` parameters are deprecated aliases for
+`AllowedMethods`. They still work, but you should migrate your configuration to use
+`AllowedMethods`.
+
+== AllowedPatterns
+
+`AllowedPatterns` provides regex-based exclusions for cops that support it.
+Each entry is treated as a regular expression -- strings are automatically
+converted via `Regexp.new`, so the `!ruby/regexp` YAML tag is optional.
+
+[source,yaml]
+----
+Metrics/BlockLength:
+  AllowedPatterns:
+    # These two forms are equivalent:
+    - !ruby/regexp /\b(class|instance)_methods\b/
+    - '\b(class|instance)_methods\b'
+----
+
+What the pattern matches against depends on the cop:
+
+* **Metrics cops** (e.g. `BlockLength`, `MethodLength`) match against the **method name**.
+* **Layout/LineLength** matches against the **entire source line**.
+* **Naming cops** (e.g. `MethodName`, `VariableName`) match against the **identifier name**.
+
+For example, to allow all methods starting with `test_` in `Metrics/MethodLength`:
+
+[source,yaml]
+----
+Metrics/MethodLength:
+  AllowedPatterns:
+    - ^test_
+----
+
+To allow long lines containing URLs in `Layout/LineLength`:
+
+[source,yaml]
+----
+Layout/LineLength:
+  AllowedPatterns:
+    - '^\s*#\s*https?://'
+----
+
+NOTE: The `IgnoredPatterns` parameter is a deprecated alias for `AllowedPatterns`.
+It still works, but you should migrate your configuration to use `AllowedPatterns`.

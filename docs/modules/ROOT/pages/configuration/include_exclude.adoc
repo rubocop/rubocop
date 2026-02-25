@@ -1,0 +1,161 @@
+= Including and Excluding Files
+
+RuboCop does a recursive file search starting from the directory it is
+run in, or directories given as command line arguments. Files that
+match any pattern listed under `AllCops`/`Include` and extensionless
+files with a hash-bang (`#!`) declaration containing one of the known
+ruby interpreters listed under `AllCops`/`RubyInterpreters` are
+inspected, unless the file also matches a pattern in
+`AllCops`/`Exclude`. Hidden directories (i.e., directories whose names
+start with a dot) are not searched by default.
+
+Here is an example that might be used for a Rails project:
+
+[source,yaml]
+----
+AllCops:
+  Exclude:
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
+    - 'bin/{rails,rake}'
+    - !ruby/regexp /old_and_unused\.rb$/
+
+# other configuration
+# ...
+----
+
+NOTE: When inspecting a certain directory(or file)
+given as RuboCop's command line arguments,
+patterns listed under `AllCops` / `Exclude` are also inspected.
+If you want to apply `AllCops` / `Exclude` rules in this circumstance,
+add `--force-exclusion` to the command line argument.
+
+Here is an example:
+
+[source,yaml]
+----
+# .rubocop.yml
+AllCops:
+  Exclude:
+    - foo.rb
+----
+
+If `foo.rb` is specified as a RuboCop's command line argument, the result is:
+
+[source,sh]
+----
+# RuboCop inspects foo.rb.
+$ bundle exec rubocop foo.rb
+
+# RuboCop does not inspect foo.rb.
+$ bundle exec rubocop --force-exclusion foo.rb
+----
+
+[[path-relativity]]
+== Path relativity
+
+In `.rubocop.yml` and any other configuration file beginning with `.rubocop`,
+files, and directories are specified relative to the directory where the
+configuration file is. In configuration files that don't begin with `.rubocop`,
+e.g. `our_company_defaults.yml`, paths are relative to the directory where
+`rubocop` is run.
+
+This affects cops that have customisable paths: if the default is `db/migrate/\*.rb`,
+and the cop is enabled in `db/migrate/.rubocop.yml`, the path will need to be
+explicitly set as `*.rb`, as the default will look for `db/migrate/db/migrate/*.rb`.
+This is unlikely to be what you wanted.
+
+== Unusual files, that would not be included by default
+
+RuboCop comes with a comprehensive list of common ruby file names and
+extensions. But, if you'd like RuboCop to check files that are not included by
+default, you'll need to pass them in on the command line, or add entries for
+them under `AllCops`/`Include`. Remember that your configuration files override
+https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCops's defaults]. In the following example, we want to include
+`foo.unusual_extension`, but we also must copy any other patterns we need from
+the overridden `default.yml`.
+
+[source,yaml]
+----
+AllCops:
+  Include:
+    - foo.unusual_extension
+    - '**/*.rb'
+    - '**/*.gemfile'
+    - '**/*.gemspec'
+    - '**/*.rake'
+    - '**/*.ru'
+    - '**/Gemfile'
+    - '**/Rakefile'
+----
+
+This behavior of `Include` (overriding `default.yml`) was introduced in
+https://github.com/rubocop/rubocop/releases/tag/v0.56.0[0.56.0]
+via https://github.com/rubocop/rubocop/pull/5882[#5882]. This change allows
+people to include/exclude precisely what they need to, without the defaults
+getting in the way.
+
+=== Using `inherit_mode` instead
+
+[source,yaml]
+----
+inherit_mode:
+  merge:
+    - Include
+
+AllCops:
+  Include:
+    - foo.unusual_extension
+----
+
+See xref:configuration/inheritance.adoc#merging-arrays-using-inherit-mode["Merging arrays using inherit_mode"].
+
+== Deprecated patterns
+
+Patterns that are just a file name, e.g. `Rakefile`, will match
+that file name in any directory, but this pattern style is deprecated. The
+correct way to match the file in any directory, including the current, is
+`+**/Rakefile+`.
+
+The pattern `+config/**+` will match any file recursively under
+`config`, but this pattern style is deprecated and should be replaced by
+`+config/**/*+`.
+
+=== `Include` and `Exclude` are relative to their directory
+
+The `Include` and `Exclude` parameters are special. They are
+valid for the directory tree starting where they are defined. They are not
+shadowed by the setting of `Include` and `Exclude` in other `.rubocop.yml`
+files in subdirectories. This is different from all other parameters, who
+follow RuboCop's general principle that configuration for an inspected file
+is taken from the nearest `.rubocop.yml`, searching upwards.
+
+NOTE: This behavior
+will be overridden if you specify the `--ignore-parent-exclusion` command line
+argument.
+
+== Cop-specific `Include` and `Exclude`
+
+Cops can be run only on specific sets of files when that's needed (for
+instance you might want to run some Rails model checks only on files whose
+paths match `app/models/*.rb`). All cops support the
+`Include` param.
+
+[source,yaml]
+----
+Rails/HasAndBelongsToMany:
+  Include:
+    - app/models/*.rb
+----
+
+Cops can also exclude only specific sets of files when that's needed (for
+instance you might want to run some cop only on a specific file). All cops support the
+`Exclude` param.
+
+[source,yaml]
+----
+Rails/HasAndBelongsToMany:
+  Exclude:
+    - app/models/problematic.rb
+----
