@@ -15,74 +15,73 @@ that source files that have not been changed are not being re-evaluated unnecess
 
 == Editor integration
 
-All popular editors provide some form of linter integration. Typically this is done
-either via LSP (if supported by the underlying server) or by shelling out to a linter and processing its output so it could be displayed inside the editor.
+RuboCop includes a built-in xref:usage/lsp.adoc[Language Server Protocol (LSP)] server
+(since 1.53), which is the recommended way to integrate with any editor. LSP provides
+real-time linting, formatting, and autocorrection as you type.
 
-As noted above, the `rubocop` binary starts relatively slowly which makes it problematic in the shelling out case. The RuboCop xref:usage/server.adoc["Server"] functionality
-has been designed to address this problem and provide lightning-fast editor integration.
+The following Ruby language servers use RuboCop internally:
 
-=== LSP
+- https://github.com/Shopify/ruby-lsp[Ruby LSP] — the recommended option for most editors
+- https://solargraph.org/[Solargraph] — also provides code completion and documentation
 
-RuboCop includes a built-in https://microsoft.github.io/language-server-protocol/[Language Server Protocol] server (since 1.53), which is the recommended way to integrate with editors. See xref:usage/lsp.adoc[LSP] for details.
+Any editor with an LSP client can use either of these. The per-editor sections below
+cover the recommended setup for each.
 
-The following LSP clients and servers use RuboCop for linting and formatting:
-
-- https://github.com/Shopify/ruby-lsp[Ruby LSP] (recommended for VS Code) — uses RuboCop internally
-- https://github.com/rubocop/vscode-rubocop[vscode-rubocop] — dedicated VS Code extension using RuboCop's built-in LSP
-- https://solargraph.org/[Solargraph] — uses RuboCop internally
-
-=== MCP
-
-RuboCop also provides a built-in https://modelcontextprotocol.io/[Model Context Protocol] server (since 1.75) for integration with AI-powered tools. See xref:usage/mcp.adoc[MCP] for details.
-
-=== Emacs
-
-https://github.com/rubocop/rubocop-emacs[rubocop.el] is a simple
-Emacs interface for RuboCop. It allows you to run RuboCop inside Emacs
-and quickly jump between problems in your code.
-
-https://github.com/flycheck/flycheck[flycheck] > 0.9 also supports
-RuboCop and uses it by default when available.
-
-=== Vim
-
-RuboCop is supported by
-https://github.com/vim-syntastic/syntastic[syntastic],
-https://github.com/neomake/neomake[neomake],
-and https://github.com/dense-analysis/ale[ale].
-
-There is also the https://github.com/ngmy/vim-rubocop[vim-rubocop] plugin.
-
-=== Helix
-
-Helix supports Solargraph natively to provide LSP features. For formatting support, see the https://github.com/helix-editor/helix/wiki/Formatter-configurations#rubocop[Formatter Configurations for RuboCop] to use either your bundled or globally installed version of RuboCop.
-
-=== Sublime Text
-
-For ST you might find the
-https://github.com/SublimeLinter/SublimeLinter-rubocop[SublimeLinter-rubocop] or the
-https://github.com/pderichs/sublime_rubocop[Sublime RuboCop] plugin useful.
-
-You may also consider using one of the LSP servers mentioned above which utilize RuboCop by using the https://github.com/sublimelsp/LSP[Sublime-LSP] plugin and follow its https://lsp.sublimetext.io/language_servers/#ruby-ruby-on-rails[documentation] for configuration.
-
-=== TextMate2
-
-The https://github.com/mrdougal/textmate2-rubocop[textmate2-rubocop]
-bundle displays formatted RuboCop results in a new window.
-Installation instructions can be found https://github.com/mrdougal/textmate2-rubocop#installation[here].
-
-=== RubyMine / Intellij IDEA
-
-RuboCop support is https://www.jetbrains.com/help/ruby/rubocop.html[built-in].
+For editors that don't support LSP, RuboCop can also be invoked by shelling out to the
+`rubocop` binary. In that case, use the xref:usage/server.adoc[Server] mode to avoid
+the startup overhead on each invocation.
 
 === Visual Studio Code
 
-The recommended option is https://marketplace.visualstudio.com/items?itemName=Shopify.ruby-lsp[Ruby LSP] which uses RuboCop for linting and formatting via the xref:usage/lsp.adoc[built-in LSP]. There is also the dedicated https://marketplace.visualstudio.com/items?itemName=rubocop.vscode-rubocop[vscode-rubocop] extension.
+Use the https://marketplace.visualstudio.com/items?itemName=Shopify.ruby-lsp[Ruby LSP]
+extension. There is also the dedicated
+https://marketplace.visualstudio.com/items?itemName=rubocop.vscode-rubocop[vscode-rubocop]
+extension that uses RuboCop's built-in LSP server directly.
+
+=== Emacs
+
+Use https://github.com/joaotavora/eglot[Eglot] (built-in since Emacs 29) or
+https://github.com/emacs-lsp/lsp-mode[lsp-mode] as the LSP client.
+
+Alternative non-LSP options:
+https://github.com/rubocop/rubocop-emacs[rubocop.el] and
+https://github.com/flycheck/flycheck[flycheck].
+
+=== Vim / Neovim
+
+Neovim has a built-in LSP client. For Vim,
+https://github.com/dense-analysis/ale[ALE] supports both LSP and direct RuboCop invocation.
+
+Alternative non-LSP options:
+https://github.com/vim-syntastic/syntastic[syntastic] and
+https://github.com/neomake/neomake[neomake].
+
+=== RubyMine / IntelliJ IDEA
+
+RuboCop support is https://www.jetbrains.com/help/ruby/rubocop.html[built-in].
+
+=== Helix
+
+Helix has built-in LSP support. For formatting, see the
+https://github.com/helix-editor/helix/wiki/Formatter-configurations#rubocop[Formatter Configurations for RuboCop].
+
+=== Sublime Text
+
+Use the https://github.com/sublimelsp/LSP[LSP] package.
+See the https://lsp.sublimetext.io/language_servers/#ruby-ruby-on-rails[LSP documentation] for setup.
+
+Alternative non-LSP options:
+https://github.com/SublimeLinter/SublimeLinter-rubocop[SublimeLinter-rubocop].
 
 === Other Editors
 
-Here's one great opportunity to contribute to RuboCop - implement
-RuboCop integration for your favorite editor.
+Any editor with an LSP client can use RuboCop — see the language servers listed above.
+
+=== MCP
+
+RuboCop also provides a built-in https://modelcontextprotocol.io/[Model Context Protocol]
+server (since 1.75) for integration with AI-powered tools. See xref:usage/mcp.adoc[MCP]
+for details.
 
 == Git pre-commit hook integration with overcommit
 
