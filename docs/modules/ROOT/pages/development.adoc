@@ -498,26 +498,6 @@ class RuboCop::Cop::Rails::Pluck < Base
 end
 ```
 
-=== Run tests
-
-RuboCop supports two parser engines: the Parser gem and Prism. By default, tests are executed with the Parser:
-
-```console
-$ bundle exec rake spec
-```
-
-To run all tests with the experimental support for Prism, use `bundle exec prism_spec`, and to execute tests for individual files,
-specify the environment variable `PARSER_ENGINE=parser_prism`.
-
-e.g., `PARSER_ENGINE=parser_prism spec/rubocop/cop/style/hash_syntax_spec.rb`
-
-`bundle exec rake` runs tests for both Parser gem and Prism parsers.
-
-But `ascii_spec` rake task does not run by default. Because `ascii_spec` task has not been failing for a while.
-However, `ascii_spec` task will continue to be checked in CI.
-
-In CI, all tests required for merging are executed. Please investigate if anything fails.
-
 === Configuration
 
 Each cop can hold a configuration and you can refer to `cop_config` in the
@@ -548,6 +528,23 @@ def on_send(node)
   end
 end
 ----
+
+== Running tests
+
+RuboCop supports two parser engines: the Parser gem and Prism. By default, tests are executed with the Parser:
+
+```console
+$ bundle exec rake spec
+```
+
+To run all tests with Prism, use `bundle exec rake prism_spec`. To run a single spec file with Prism,
+set the `PARSER_ENGINE` environment variable:
+
+```console
+$ PARSER_ENGINE=parser_prism bundle exec rspec spec/rubocop/cop/style/hash_syntax_spec.rb
+```
+
+`bundle exec rake` runs the full CI suite: specs for both parser engines, self-linting, and documentation checks. Always run this before submitting a PR.
 
 == Documentation
 
