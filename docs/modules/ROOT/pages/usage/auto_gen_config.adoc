@@ -20,10 +20,11 @@ number of files, use the `--no-exclude-limit` option, e.g.,
 
 The next step is to cut and paste configuration from `.rubocop_todo.yml`
 into `.rubocop.yml` for everything that you think is in line with your
-(organization's) code style and not a good fit for a todo list. Pay
-attention to the comments above each entry. They can reveal configuration
-parameters such as `EnforcedStyle`, which can be used to modify the
-behavior of a cop instead of disabling it completely.
+(organization's) code style and not a good fit for a todo list.
+
+TIP: Pay attention to the comments above each entry in `.rubocop_todo.yml`.
+They can reveal configuration parameters such as `EnforcedStyle`, which can
+be used to modify the behavior of a cop instead of disabling it completely.
 
 Then you can start removing the entries in the generated
 `.rubocop_todo.yml` file one by one as you work through all the offenses

@@ -167,7 +167,7 @@ AllCops:
   TargetRubyVersion: 3.3
 ----
 
-`parser_prism` tends to perform analysis faster than `parser_whitequark`.
+TIP: `parser_prism` tends to perform analysis faster than `parser_whitequark`.
 
 == Setting the style guide URL
 

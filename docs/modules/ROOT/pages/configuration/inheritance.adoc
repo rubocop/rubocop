@@ -78,9 +78,12 @@ The remote config file is cached locally and is only updated if:
 * The remote copy has a newer modification time than the local copy.
 
 This local cache is stored in xref:usage/caching.adoc#cache-path[the configured cache path],
-maintaining the remote filename prefix. Please note that the root of relative paths specified
-in `Include` or `Exclude` changes depending on the configuration file name,
-as explained in xref:configuration/include_exclude.adoc#path-relativity["Path relativity"]. This behavior was introduced in RuboCop 1.84.
+maintaining the remote filename prefix.
+
+NOTE: The root of relative paths specified in `Include` or `Exclude` changes
+depending on the configuration file name, as explained in
+xref:configuration/include_exclude.adoc#path-relativity["Path relativity"].
+This behavior was introduced in RuboCop 1.84.
 
 You can inherit from both remote and local files in the same config and the
 same inheritance rules apply to remote URLs and inheriting from local

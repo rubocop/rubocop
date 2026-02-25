@@ -71,10 +71,12 @@ This is unlikely to be what you wanted.
 RuboCop comes with a comprehensive list of common ruby file names and
 extensions. But, if you'd like RuboCop to check files that are not included by
 default, you'll need to pass them in on the command line, or add entries for
-them under `AllCops`/`Include`. Remember that your configuration files override
-https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCops's defaults]. In the following example, we want to include
-`foo.unusual_extension`, but we also must copy any other patterns we need from
-the overridden `default.yml`.
+them under `AllCops`/`Include`.
+
+NOTE: Your configuration files override
+https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCop's defaults].
+In the following example, we want to include `foo.unusual_extension`, but we also
+must copy any other patterns we need from the overridden `default.yml`.
 
 [source,yaml]
 ----
