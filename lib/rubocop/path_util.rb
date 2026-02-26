@@ -5,7 +5,7 @@ module RuboCop
   module PathUtil
     module_function
 
-    def relative_path(path, base_dir = PathUtil.pwd)
+    def relative_path(path, base_dir = Dir.pwd)
       # Optimization for the common case where path begins with the base
       # dir. Just cut off the first part.
       if path.start_with?(base_dir)
@@ -24,7 +24,7 @@ module RuboCop
 
     def smart_path(path)
       # Ideally, we calculate this relative to the project root.
-      base_dir = PathUtil.pwd
+      base_dir = Dir.pwd
 
       if path.start_with? base_dir
         relative_path(path, base_dir)
@@ -40,7 +40,7 @@ module RuboCop
           hidden_file_in_not_hidden_dir?(pattern, path)
       when Regexp
         begin
-          path =~ pattern
+          pattern.match?(path)
         rescue ArgumentError => e
           return false if e.message.start_with?('invalid byte sequence')
 
@@ -51,29 +51,29 @@ module RuboCop
 
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)
-      path =~ %r{\A([A-Z]:)?/}i
-    end
-
-    def self.pwd
-      @pwd ||= Dir.pwd
-    end
-
-    def self.reset_pwd
-      @pwd = nil
-    end
-
-    def self.chdir(dir, &block)
-      reset_pwd
-      Dir.chdir(dir, &block)
-    ensure
-      reset_pwd
+      %r{\A([A-Z]:)?/}i.match?(path)
     end
 
     def hidden_file_in_not_hidden_dir?(pattern, path)
-      File.fnmatch?(
-        pattern, path,
-        File::FNM_PATHNAME | File::FNM_EXTGLOB | File::FNM_DOTMATCH
-      ) && File.basename(path).start_with?('.') && !hidden_dir?(path)
+      hidden_file?(path) &&
+        File.fnmatch?(
+          pattern, path,
+          File::FNM_PATHNAME | File::FNM_EXTGLOB | File::FNM_DOTMATCH
+        ) &&
+        !hidden_dir?(path)
+    end
+
+    def hidden_file?(path)
+      maybe_hidden_file?(path) && File.basename(path).start_with?('.')
+    end
+
+    # Loose check to reduce memory allocations
+    def maybe_hidden_file?(path)
+      separator_index = path.rindex(File::SEPARATOR)
+      return false unless separator_index
+
+      dot_index = path.index('.', separator_index + 1)
+      dot_index == separator_index + 1
     end
 
     def hidden_dir?(path)

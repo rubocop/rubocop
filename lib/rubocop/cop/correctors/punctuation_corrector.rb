@@ -5,22 +5,20 @@ module RuboCop
     # This auto-corrects punctuation
     class PunctuationCorrector
       class << self
-        def remove_space(space_before)
-          ->(corrector) { corrector.remove(space_before) }
+        def remove_space(corrector, space_before)
+          corrector.remove(space_before)
         end
 
-        def add_space(token)
-          ->(corrector) { corrector.replace(token.pos, token.pos.source + ' ') }
+        def add_space(corrector, token)
+          corrector.replace(token.pos, "#{token.pos.source} ")
         end
 
-        def swap_comma(range)
+        def swap_comma(corrector, range)
           return unless range
 
-          lambda do |corrector|
-            case range.source
-            when ',' then corrector.remove(range)
-            else          corrector.insert_after(range, ',')
-            end
+          case range.source
+          when ',' then corrector.remove(range)
+          else          corrector.insert_after(range, ',')
           end
         end
       end

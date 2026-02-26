@@ -2,15 +2,16 @@
 
 RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
   let(:cop_config) { { 'AllowForAlignment' => true } }
+  let(:message) { 'Put one space between the method name and the first argument.' }
 
   context 'for method calls without parentheses' do
     it 'registers an offense and corrects method call with two spaces ' \
       'before the first arg' do
       expect_offense(<<~RUBY)
         something  x
-                 ^^ Put one space between the method name and the first argument.
+                 ^^ #{message}
         a.something  y, z
-                   ^^ Put one space between the method name and the first argument.
+                   ^^ #{message}
       RUBY
 
       expect_correction(<<~RUBY)
@@ -24,7 +25,7 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
         'before the first arg' do
         expect_offense(<<~RUBY)
           a&.something  y, z
-                      ^^ Put one space between the method name and the first argument.
+                      ^^ #{message}
         RUBY
 
         expect_correction(<<~RUBY)
@@ -35,23 +36,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
 
     it 'registers an offense for method call with no spaces before the '\
        'first arg' do
-      inspect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         something'hello'
+                 ^{} #{message}
         a.something'hello world'
+                   ^{} #{message}
       RUBY
 
-      expect(cop.messages)
-        .to eq(['Put one space between the method name and the first ' \
-                'argument.'] * 2)
-    end
-
-    it 'auto-corrects missing space' do
-      new_source = autocorrect_source(<<~RUBY)
-        something'hello'
-        a.something'hello world'
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         something 'hello'
         a.something 'hello world'
       RUBY
@@ -59,23 +51,13 @@ RSpec.describe RuboCop::Cop::Layout::SpaceBeforeFirstArg, :config do
 
     context 'when a vertical argument positions are aligned' do
       it 'registers an offense' do
-        inspect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           obj = a_method(arg, arg2)
           obj.no_parenthesized'asdf'
+                              ^{} #{message}
         RUBY
 
-        expect(cop.messages).to eq(
-          ['Put one space between the method name and the first argument.']
-        )
-      end
-
-      it 'auto-corrects missing space' do
-        new_source = autocorrect_source(<<~RUBY)
-          obj = a_method(arg, arg2)
-          obj.no_parenthesized'asdf'
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
+        expect_correction(<<~RUBY)
           obj = a_method(arg, arg2)
           obj.no_parenthesized 'asdf'
         RUBY

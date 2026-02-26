@@ -12,16 +12,14 @@ module RuboCop
       #   # good
       #   at_exit { puts 'Goodbye!' }
       #
-      class EndBlock < Cop
+      class EndBlock < Base
+        extend AutoCorrector
+
         MSG = 'Avoid the use of `END` blocks. ' \
               'Use `Kernel#at_exit` instead.'
 
         def on_postexe(node)
-          add_offense(node, location: :keyword)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node.loc.keyword) do |corrector|
             corrector.replace(node.loc.keyword, 'at_exit')
           end
         end

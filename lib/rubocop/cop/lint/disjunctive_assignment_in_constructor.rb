@@ -22,7 +22,9 @@ module RuboCop
       #   def initialize
       #     @x = 1
       #   end
-      class DisjunctiveAssignmentInConstructor < Cop
+      class DisjunctiveAssignmentInConstructor < Base
+        extend AutoCorrector
+
         MSG = 'Unnecessary disjunctive assignment. Use plain assignment.'
 
         def on_def(node)
@@ -73,7 +75,11 @@ module RuboCop
         # @param [Node] node a disjunctive assignment
         def check_disjunctive_assignment(node)
           lhs = node.child_nodes.first
-          add_offense(node, location: :operator) if lhs.ivasgn_type?
+          return unless lhs.ivasgn_type?
+
+          add_offense(node.loc.operator) do |corrector|
+            corrector.replace(node.loc.operator, '=')
+          end
         end
       end
     end

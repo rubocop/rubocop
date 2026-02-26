@@ -19,25 +19,26 @@ module RuboCop
       #
       #   # good
       #   ->a,b,c { a + b + c}
-      class StabbyLambdaParentheses < Cop
+      class StabbyLambdaParentheses < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG_REQUIRE = 'Wrap stabby lambda arguments with parentheses.'
         MSG_NO_REQUIRE = 'Do not wrap stabby lambda arguments ' \
                          'with parentheses.'
         def on_send(node)
           return unless stabby_lambda_with_args?(node)
-          return unless redundant_parentheses?(node) ||
-                        missing_parentheses?(node)
+          return unless redundant_parentheses?(node) || missing_parentheses?(node)
 
-          add_offense(node.block_node.arguments)
-        end
+          arguments = node.block_node.arguments
 
-        def autocorrect(node)
-          if style == :require_parentheses
-            missing_parentheses_corrector(node)
-          elsif style == :require_no_parentheses
-            unwanted_parentheses_corrector(node)
+          add_offense(arguments) do |corrector|
+            case style
+            when :require_parentheses
+              missing_parentheses_corrector(corrector, arguments)
+            when :require_no_parentheses
+              unwanted_parentheses_corrector(corrector, arguments)
+            end
           end
         end
 
@@ -55,19 +56,15 @@ module RuboCop
           style == :require_parentheses ? MSG_REQUIRE : MSG_NO_REQUIRE
         end
 
-        def missing_parentheses_corrector(node)
-          lambda do |corrector|
-            corrector.wrap(node, '(', ')')
-          end
+        def missing_parentheses_corrector(corrector, node)
+          corrector.wrap(node, '(', ')')
         end
 
-        def unwanted_parentheses_corrector(node)
-          lambda do |corrector|
-            args_loc = node.loc
+        def unwanted_parentheses_corrector(corrector, node)
+          args_loc = node.loc
 
-            corrector.replace(args_loc.begin, '')
-            corrector.remove(args_loc.end)
-          end
+          corrector.replace(args_loc.begin, '')
+          corrector.remove(args_loc.end)
         end
 
         def stabby_lambda_with_args?(node)

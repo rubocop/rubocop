@@ -7,6 +7,10 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
         VALUES = [1001, 2020, 3333, ]
                                   ^ Avoid comma after the last item of an array#{extra_info}.
       RUBY
+
+      expect_correction(<<~RUBY)
+        VALUES = [1001, 2020, 3333 ]
+      RUBY
     end
 
     it 'accepts literal without trailing comma' do
@@ -29,11 +33,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
         rescue RuntimeError
         end
       RUBY
-    end
-
-    it 'auto-corrects unwanted comma in literal' do
-      new_source = autocorrect_source('VALUES = [1001, 2020, 3333, ]')
-      expect(new_source).to eq('VALUES = [1001, 2020, 3333 ]')
     end
   end
 
@@ -72,6 +71,14 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
                          ^ Avoid comma after the last item of an array.
                    ]
         RUBY
+
+        expect_correction(<<~RUBY)
+          VALUES = [
+                     1001,
+                     2020,
+                     3333
+                   ]
+        RUBY
       end
 
       it 'accepts a literal with no trailing comma' do
@@ -79,23 +86,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
           VALUES = [ 1001,
                      2020,
                      3333 ]
-        RUBY
-      end
-
-      it 'auto-corrects unwanted comma' do
-        new_source = autocorrect_source(<<~RUBY)
-          VALUES = [
-                     1001,
-                     2020,
-                     3333,
-                   ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          VALUES = [
-                     1001,
-                     2020,
-                     3333
-                   ]
         RUBY
       end
 
@@ -110,14 +100,16 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
       end
 
       it 'auto-corrects unwanted comma where HEREDOC has commas' do
-        new_source = autocorrect_source(<<~RUBY)
+        expect_offense(<<~RUBY)
           [
             <<-TEXT, 123,
+                        ^ Avoid comma after the last item of an array.
               Something with a , in it
             TEXT
           ]
         RUBY
-        expect(new_source).to eq(<<~RUBY)
+
+        expect_correction(<<~RUBY)
           [
             <<-TEXT, 123
               Something with a , in it
@@ -159,6 +151,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
                          ^ Avoid comma after the last item of an array, unless each item is on its own line.
                    ]
         RUBY
+
+        expect_correction(<<~RUBY)
+          VALUES = [
+                     1001, 2020,
+                     3333
+                   ]
+        RUBY
       end
 
       it 'accepts trailing comma' do
@@ -187,22 +186,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
         RUBY
       end
 
-      it 'auto-corrects literal with two of the values on the same' \
-         ' line and a trailing comma' do
-        new_source = autocorrect_source(<<~RUBY)
-          VALUES = [
-                     1001, 2020,
-                     3333
-                   ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          VALUES = [
-                     1001, 2020,
-                     3333
-                   ]
-        RUBY
-      end
-
       it 'accepts a multiline array with a single item and trailing comma' do
         expect_no_offenses(<<~RUBY)
           foo = [
@@ -223,6 +206,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
                        2020,
                        3333]
                        ^^^^ Put a comma after the last item of a multiline array.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            VALUES = [
+                       1001,
+                       2020,
+                       3333,]
           RUBY
         end
       end
@@ -245,6 +235,13 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
                      ^^^^ Put a comma after the last item of a multiline array.
                    ]
         RUBY
+
+        expect_correction(<<~RUBY)
+          VALUES = [
+                     1001, 2020,
+                     3333,
+                   ]
+        RUBY
       end
 
       it 'accepts trailing comma' do
@@ -263,22 +260,6 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInArrayLiteral, :config do
             anchovies
             olives
           )
-        RUBY
-      end
-
-      it 'auto-corrects a literal with two of the values on the same' \
-         ' line and a trailing comma' do
-        new_source = autocorrect_source(<<~RUBY)
-          VALUES = [
-                     1001, 2020,
-                     3333
-                   ]
-        RUBY
-        expect(new_source).to eq(<<~RUBY)
-          VALUES = [
-                     1001, 2020,
-                     3333,
-                   ]
         RUBY
       end
 

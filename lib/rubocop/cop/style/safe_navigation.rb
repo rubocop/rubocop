@@ -49,6 +49,10 @@ module RuboCop
       #   foo && foo < bar
       #   foo < bar if foo
       #
+      #   # When checking `foo&.empty?` in a conditional, `foo` being `nil` will actually
+      #   # do the opposite of what the author intends.
+      #   foo && foo.empty?
+      #
       #   # This could start returning `nil` as well as the return of the method
       #   foo.nil? || foo.bar
       #   !foo || foo.bar
@@ -58,9 +62,10 @@ module RuboCop
       #   foo.baz = bar if foo
       #   foo.baz + bar if foo
       #   foo.bar > 2 if foo
-      class SafeNavigation < Cop
+      class SafeNavigation < Base
         include NilMethods
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use safe navigation (`&.`) instead of checking if an object ' \
               'exists before calling the method.'
@@ -69,6 +74,7 @@ module RuboCop
 
         # if format: (if checked_variable body nil)
         # unless format: (if checked_variable nil body)
+        # @!method modifier_if_safe_navigation_candidate(node)
         def_node_matcher :modifier_if_safe_navigation_candidate, <<~PATTERN
           {
             (if {
@@ -83,6 +89,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method not_nil_check?(node)
         def_node_matcher :not_nil_check?, '(send (send $_ :nil?) :!)'
 
         def on_if(node)
@@ -103,29 +110,30 @@ module RuboCop
           # chain greater than 2
           return if chain_size(method_chain, method) > 1
           return if unsafe_method_used?(method_chain, method)
+          return if method_chain.method?(:empty?)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def use_var_only_in_unless_modifier?(node, variable)
           node.if_type? && node.unless? && !method_called?(variable)
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           body = node.node_parts[1]
           method_call = method_call(node)
 
-          lambda do |corrector|
-            corrector.remove(begin_range(node, body))
-            corrector.remove(end_range(node, body))
-            corrector.insert_before(method_call.loc.dot, '&')
-            handle_comments(corrector, node, method_call)
+          corrector.remove(begin_range(node, body))
+          corrector.remove(end_range(node, body))
+          corrector.insert_before(method_call.loc.dot, '&')
+          handle_comments(corrector, node, method_call)
 
-            add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
-          end
+          add_safe_nav_to_all_methods_in_chain(corrector, method_call, body)
         end
-
-        private
 
         def handle_comments(corrector, node, method_call)
           comments = comments(node)
@@ -136,10 +144,22 @@ module RuboCop
         end
 
         def comments(node)
-          processed_source.comments.select do |comment|
-            comment.loc.first_line > node.loc.first_line &&
-              comment.loc.last_line < node.loc.last_line
+          relevant_comment_ranges(node).each.with_object([]) do |range, comments|
+            comments.concat(processed_source.each_comment_in_lines(range).to_a)
           end
+        end
+
+        def relevant_comment_ranges(node)
+          # Get source lines ranges inside the if node that aren't inside an inner node
+          # Comments inside an inner node should remain attached to that node, and not
+          # moved.
+          begin_pos = node.loc.first_line
+          end_pos = node.loc.last_line
+
+          node.child_nodes.each.with_object([]) do |child, ranges|
+            ranges << (begin_pos...child.loc.first_line)
+            begin_pos = child.loc.last_line
+          end << (begin_pos...end_pos)
         end
 
         def allowed_if_condition?(node)

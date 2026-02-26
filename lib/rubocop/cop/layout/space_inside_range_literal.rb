@@ -17,7 +17,9 @@ module RuboCop
       #
       #   # good
       #   'a'..'z'
-      class SpaceInsideRangeLiteral < Cop
+      class SpaceInsideRangeLiteral < Base
+        extend AutoCorrector
+
         MSG = 'Space inside range literal.'
 
         def on_irange(node)
@@ -26,21 +28,6 @@ module RuboCop
 
         def on_erange(node)
           check(node)
-        end
-
-        def autocorrect(node)
-          expression = node.source
-          operator = node.loc.operator.source
-          operator_escaped = operator.gsub(/\./, '\.')
-
-          lambda do |corrector|
-            corrector.replace(
-              node,
-              expression
-                .sub(/\s+#{operator_escaped}/, operator)
-                .sub(/#{operator_escaped}\s+/, operator)
-            )
-          end
         end
 
         private
@@ -55,7 +42,11 @@ module RuboCop
 
           return unless /(\s#{escaped_op})|(#{escaped_op}\s)/.match?(expression)
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            corrector.replace(
+              node, expression.sub(/\s+#{escaped_op}/, op).sub(/#{escaped_op}\s+/, op)
+            )
+          end
         end
       end
     end

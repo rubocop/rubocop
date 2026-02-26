@@ -40,9 +40,10 @@ module RuboCop
       #     def baz; end
       #   end
       #
-      class EmptyLinesAroundAccessModifier < Cop
+      class EmptyLinesAroundAccessModifier < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG_AFTER = 'Keep a blank line after `%<modifier>s`.'
         MSG_BEFORE_AND_AFTER = 'Keep a blank line before and after ' \
@@ -83,20 +84,11 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless node.bare_access_modifier?
+          return unless node.bare_access_modifier? && !node.parent&.block_type?
+          return if expected_empty_lines?(node)
 
-          case style
-          when :around
-            return if empty_lines_around?(node)
-          when :only_before
-            return if allowed_only_before_style?(node)
-          end
-
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          message = message(node)
+          add_offense(node, message: message) do |corrector|
             line = range_by_whole_lines(node.source_range)
 
             corrector.insert_before(line, "\n") unless previous_line_empty?(node.first_line)
@@ -107,8 +99,20 @@ module RuboCop
 
         private
 
+        def expected_empty_lines?(node)
+          case style
+          when :around
+            return true if empty_lines_around?(node)
+          when :only_before
+            return true if allowed_only_before_style?(node)
+          end
+
+          false
+        end
+
         def allowed_only_before_style?(node)
           if node.special_modifier?
+            return true if processed_source[node.last_line] == 'end'
             return false if next_line_empty?(node.last_line)
           end
 
@@ -137,6 +141,7 @@ module RuboCop
         def previous_line_empty?(send_line)
           previous_line = previous_line_ignoring_comments(processed_source,
                                                           send_line)
+          return true unless previous_line
 
           block_start?(send_line) ||
             class_def?(send_line) ||

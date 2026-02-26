@@ -40,11 +40,11 @@ module RuboCop
       #     {_id: _id, profit: revenue - cost}
       #   end
       #
-      class UnderscorePrefixedVariableName < Cop
+      class UnderscorePrefixedVariableName < Base
         MSG = 'Do not use prefix `_` for a variable that is used.'
 
-        def join_force?(force_class)
-          force_class == VariableForce
+        def self.joining_forces
+          VariableForce
         end
 
         def after_leaving_scope(scope, _variable_table)
@@ -66,7 +66,7 @@ module RuboCop
                        node.loc.name
                      end
 
-          add_offense(nil, location: location)
+          add_offense(location)
         end
 
         private

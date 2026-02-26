@@ -8,17 +8,41 @@ module RuboCop
       # @example
       #
       #   # bad
-      #
       #   a = *[1, 2, 3]
       #   a = *'a'
       #   a = *1
+      #   ['a', 'b', *%w(c d e), 'f', 'g']
       #
+      #   # good
+      #   c = [1, 2, 3]
+      #   a = *c
+      #   a, b = *c
+      #   a, *b = *c
+      #   a = *1..10
+      #   a = ['a']
+      #   ['a', 'b', 'c', 'd', 'e', 'f', 'g']
+      #
+      #   # bad
+      #   do_something(*['foo', 'bar', 'baz'])
+      #
+      #   # good
+      #   do_something('foo', 'bar', 'baz')
+      #
+      #   # bad
       #   begin
       #     foo
       #   rescue *[StandardError, ApplicationError]
       #     bar
       #   end
       #
+      #   # good
+      #   begin
+      #     foo
+      #   rescue StandardError, ApplicationError
+      #     bar
+      #   end
+      #
+      #   # bad
       #   case foo
       #   when *[1, 2, 3]
       #     bar
@@ -26,30 +50,27 @@ module RuboCop
       #     baz
       #   end
       #
-      # @example
-      #
       #   # good
-      #
-      #   c = [1, 2, 3]
-      #   a = *c
-      #   a, b = *c
-      #   a, *b = *c
-      #   a = *1..10
-      #   a = ['a']
-      #
-      #   begin
-      #     foo
-      #   rescue StandardError, ApplicationError
-      #     bar
-      #   end
-      #
       #   case foo
       #   when 1, 2, 3
       #     bar
       #   else
       #     baz
       #   end
-      class RedundantSplatExpansion < Cop
+      #
+      # @example AllowPercentLiteralArrayArgument: true (default)
+      #
+      #   # good
+      #   do_something(*%w[foo bar baz])
+      #
+      # @example AllowPercentLiteralArrayArgument: false
+      #
+      #   # bad
+      #   do_something(*%w[foo bar baz])
+      #
+      class RedundantSplatExpansion < Base
+        extend AutoCorrector
+
         MSG = 'Replace splat expansion with comma separated values.'
         ARRAY_PARAM_MSG = 'Pass array contents as separate arguments.'
         PERCENT_W = '%w'
@@ -58,13 +79,15 @@ module RuboCop
         PERCENT_CAPITAL_I = '%I'
         ASSIGNMENT_TYPES = %i[lvasgn ivasgn cvasgn gvasgn].freeze
 
+        # @!method array_new?(node)
         def_node_matcher :array_new?, <<~PATTERN
           {
-            $(send (const nil? :Array) :new ...)
-            $(block (send (const nil? :Array) :new ...) ...)
+            $(send (const {nil? cbase} :Array) :new ...)
+            $(block (send (const {nil? cbase} :Array) :new ...) ...)
           }
         PATTERN
 
+        # @!method literal_expansion(node)
         def_node_matcher :literal_expansion, <<~PATTERN
           (splat {$({str dstr int float array} ...) (block $#array_new? ...) $#array_new?} ...)
         PATTERN
@@ -73,22 +96,27 @@ module RuboCop
           redundant_splat_expansion(node) do
             if array_splat?(node) &&
                (method_argument?(node) || part_of_an_array?(node))
-              add_offense(node, message: ARRAY_PARAM_MSG)
+              return if allow_percent_literal_array_argument? &&
+                        use_percent_literal_array_argument?(node)
+
+              add_offense(node, message: ARRAY_PARAM_MSG) do |corrector|
+                autocorrect(corrector, node)
+              end
             else
-              add_offense(node)
+              add_offense(node) do |corrector|
+                autocorrect(corrector, node)
+              end
             end
           end
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           range, content = replacement_range_and_content(node)
 
-          lambda do |corrector|
-            corrector.replace(range, content)
-          end
+          corrector.replace(range, content)
         end
-
-        private
 
         def redundant_splat_expansion(node)
           literal_expansion(node) do |expanded_item|
@@ -114,13 +142,15 @@ module RuboCop
         def replacement_range_and_content(node)
           variable, = *node
           loc = node.loc
+          expression = loc.expression
 
           if array_new?(variable)
-            [node.parent.loc.expression, variable.source]
+            expression = node.parent.loc.expression if node.parent.array_type?
+            [expression, variable.source]
           elsif !variable.array_type?
-            [loc.expression, "[#{variable.source}]"]
+            [expression, "[#{variable.source}]"]
           elsif redundant_brackets?(node)
-            [loc.expression, remove_brackets(variable)]
+            [expression, remove_brackets(variable)]
           else
             [loc.operator, '']
           end
@@ -165,6 +195,17 @@ module RuboCop
           else
             elements.join(', ')
           end
+        end
+
+        def use_percent_literal_array_argument?(node)
+          argument = node.children.first
+
+          node.parent.send_type? &&
+            (argument.percent_literal?(:string) || argument.percent_literal?(:symbol))
+        end
+
+        def allow_percent_literal_array_argument?
+          cop_config.fetch('AllowPercentLiteralArrayArgument', true)
         end
       end
     end

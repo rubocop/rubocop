@@ -13,32 +13,64 @@ module RuboCop
       #   # good
       #   result = some_condition ? something : another_thing
       #
-      class IfWithSemicolon < Cop
+      class IfWithSemicolon < Base
         include OnNormalIfUnless
+        extend AutoCorrector
 
-        MSG = 'Do not use if x; Use the ternary operator instead.'
+        MSG_IF_ELSE = 'Do not use `if %<expr>s;` - use `if/else` instead.'
+        MSG_TERNARY = 'Do not use `if %<expr>s;` - use a ternary operator instead.'
 
         def on_normal_if_unless(node)
           return unless node.else_branch
+          return if node.parent&.if_type?
 
           beginning = node.loc.begin
           return unless beginning&.is?(';')
 
-          add_offense(node)
-        end
+          message = node.else_branch.if_type? ? MSG_IF_ELSE : MSG_TERNARY
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node, correct_to_ternary(node))
+          add_offense(node, message: format(message, expr: node.condition.source)) do |corrector|
+            corrector.replace(node, autocorrect(node))
           end
         end
 
         private
 
-        def correct_to_ternary(node)
+        def autocorrect(node)
+          return correct_elsif(node) if node.else_branch.if_type?
+
           else_code = node.else_branch ? node.else_branch.source : 'nil'
 
           "#{node.condition.source} ? #{node.if_branch.source} : #{else_code}"
+        end
+
+        def correct_elsif(node)
+          <<~RUBY.chop
+            if #{node.condition.source}
+              #{node.if_branch.source}
+            #{build_else_branch(node.else_branch).chop}
+            end
+          RUBY
+        end
+
+        def build_else_branch(second_condition)
+          result = <<~RUBY
+            elsif #{second_condition.condition.source}
+              #{second_condition.if_branch.source}
+          RUBY
+
+          if second_condition.else_branch
+            result += if second_condition.else_branch.if_type?
+                        build_else_branch(second_condition.else_branch)
+                      else
+                        <<~RUBY
+                          else
+                            #{second_condition.else_branch.source}
+                        RUBY
+                      end
+          end
+
+          result
         end
       end
     end

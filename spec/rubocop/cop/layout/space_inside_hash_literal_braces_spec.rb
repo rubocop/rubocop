@@ -216,4 +216,21 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideHashLiteralBraces, :config do
       expect_no_offenses('{ key: "{" }')
     end
   end
+
+  context 'offending hash following empty hash' do
+    # regression test; see GH issue 8642
+    it 'registers an offense on both sides' do
+      expect_offense(<<~RUBY)
+        {}
+        {key: 1}
+        ^ Space inside { missing.
+               ^ Space inside } missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        {}
+        { key: 1 }
+      RUBY
+    end
+  end
 end

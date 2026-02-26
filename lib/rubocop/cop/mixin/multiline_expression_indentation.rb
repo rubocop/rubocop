@@ -31,28 +31,8 @@ module RuboCop
       #   b c { block }.            <-- b is indented relative to a
       #   d                         <-- d is indented relative to a
       def left_hand_side(lhs)
-        lhs = lhs.parent while lhs.parent&.send_type?
+        lhs = lhs.parent while lhs.parent&.send_type? && lhs.parent.loc.dot
         lhs
-      end
-
-      def right_hand_side(send_node)
-        if send_node.operator_method? && send_node.arguments?
-          send_node.first_argument.source_range # not used for method calls
-        else
-          regular_method_right_hand_side(send_node)
-        end
-      end
-
-      def regular_method_right_hand_side(send_node)
-        dot = send_node.loc.dot
-        selector = send_node.loc.selector
-        if send_node.dot? && selector && dot.line == selector.line
-          dot.join(selector)
-        elsif selector
-          selector
-        elsif send_node.implicit_call?
-          dot.join(send_node.loc.begin)
-        end
       end
 
       # The correct indentation of `node` is usually `IndentationWidth`, with
@@ -91,9 +71,10 @@ module RuboCop
       end
 
       def incorrect_style_detected(range, node, lhs, rhs)
-        add_offense(range, location: range, message: message(node, lhs, rhs)) do
-          if supported_styles.size > 2 ||
-             offending_range(node, lhs, rhs, alternative_style)
+        add_offense(range, message: message(node, lhs, rhs)) do |corrector|
+          autocorrect(corrector, range)
+
+          if supported_styles.size > 2 || offending_range(node, lhs, rhs, alternative_style)
             unrecognized_style_detected
           else
             opposite_style_detected
@@ -152,7 +133,7 @@ module RuboCop
         expression
       end
 
-      def argument_in_method_call(node, kind)
+      def argument_in_method_call(node, kind) # rubocop:todo Metrics/CyclomaticComplexity
         node.each_ancestor(:send, :block).find do |a|
           # If the node is inside a block, it makes no difference if that block
           # is an argument in a method call. It doesn't count.

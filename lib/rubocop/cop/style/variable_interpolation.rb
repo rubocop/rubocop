@@ -15,28 +15,25 @@ module RuboCop
       #   "His name is #{$name}"
       #   /check #{$pattern}/
       #   "Let's go to the #{@store}"
-      class VariableInterpolation < Cop
+      class VariableInterpolation < Base
         include Interpolation
+        extend AutoCorrector
 
         MSG = 'Replace interpolated variable `%<variable>s` ' \
               'with expression `#{%<variable>s}`.'
 
         def on_node_with_interpolations(node)
           var_nodes(node.children).each do |var_node|
-            add_offense(var_node)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node, "{#{node.source}}")
+            add_offense(var_node) do |corrector|
+              corrector.replace(var_node, "{#{var_node.source}}")
+            end
           end
         end
 
         private
 
-        def message(node)
-          format(MSG, variable: node.source)
+        def message(range)
+          format(MSG, variable: range.source)
         end
 
         def var_nodes(nodes)

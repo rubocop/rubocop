@@ -46,10 +46,11 @@ module RuboCop
       #                  .a
       #                  .b
       #                  .c
-      class MultilineMethodCallIndentation < Cop
+      class MultilineMethodCallIndentation < Base
         include ConfigurableEnforcedStyle
         include Alignment
         include MultilineExpressionIndentation
+        extend AutoCorrector
 
         def validate_config
           return unless style == :aligned && cop_config['IndentationWidth']
@@ -61,14 +62,26 @@ module RuboCop
                 '`EnforcedStyle` is `indented`.'
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def relevant_node?(send_node)
           send_node.loc.dot # Only check method calls with dot operator
+        end
+
+        def right_hand_side(send_node)
+          dot = send_node.loc.dot
+          selector = send_node.loc.selector
+          if send_node.dot? && selector && dot.line == selector.line
+            dot.join(selector)
+          elsif selector
+            selector
+          elsif send_node.implicit_call?
+            dot.join(send_node.loc.begin)
+          end
         end
 
         def offending_range(node, lhs, rhs, given_style)
@@ -77,7 +90,7 @@ module RuboCop
 
           @base = alignment_base(node, rhs, given_style)
           correct_column = if @base
-                             @base.column + extra_indentation(given_style)
+                             @base.column + extra_indentation(given_style, node.parent)
                            else
                              indentation(lhs) + correct_indentation(node)
                            end
@@ -85,9 +98,13 @@ module RuboCop
           rhs if @column_delta.nonzero?
         end
 
-        def extra_indentation(given_style)
+        def extra_indentation(given_style, parent)
           if given_style == :indented_relative_to_receiver
-            configured_indentation_width
+            if parent && (parent.splat_type? || parent.kwsplat_type?)
+              configured_indentation_width - parent.loc.operator.length
+            else
+              configured_indentation_width
+            end
           else
             0
           end

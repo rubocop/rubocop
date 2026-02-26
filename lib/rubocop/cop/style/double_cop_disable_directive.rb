@@ -24,29 +24,26 @@ module RuboCop
       #   def f # rubocop:disable Style/For, Metrics/AbcSize
       #   end
       #
-      class DoubleCopDisableDirective < Cop
+      class DoubleCopDisableDirective < Base
+        extend AutoCorrector
+
         # rubocop:enable Style/For, Style/DoubleCopDisableDirective
         # rubocop:enable Lint/RedundantCopDisableDirective, Metrics/AbcSize
         MSG = 'More than one disable comment on one line.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.comments.each do |comment|
             next unless comment.text.scan(/# rubocop:(?:disable|todo)/).size > 1
 
-            add_offense(comment)
-          end
-        end
+            add_offense(comment) do |corrector|
+              prefix = if comment.text.start_with?('# rubocop:disable')
+                         '# rubocop:disable'
+                       else
+                         '# rubocop:todo'
+                       end
 
-        def autocorrect(comment)
-          prefix = if comment.text.start_with?('# rubocop:disable')
-                     '# rubocop:disable'
-                   else
-                     '# rubocop:todo'
-                   end
-
-          lambda do |corrector|
-            corrector.replace(comment,
-                              comment.text[/#{prefix} \S+/])
+              corrector.replace(comment, comment.text[/#{prefix} \S+/])
+            end
           end
         end
       end

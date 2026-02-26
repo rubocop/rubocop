@@ -3,8 +3,8 @@
 RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
   let(:cop_config) { { 'Max' => 2, 'CountComments' => false } }
 
-  shared_examples 'ignoring an offense on an excluded method' do |excluded|
-    before { cop_config['ExcludedMethods'] = [excluded] }
+  shared_examples 'ignoring an offense on an ignored method' do |ignored, config_key|
+    before { cop_config[config_key] = [ignored] }
 
     it 'still rejects other methods with long blocks' do
       expect_offense(<<~RUBY)
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
 
     it 'accepts the foo method with a long block' do
       expect_no_offenses(<<~RUBY)
-        #{excluded} do
+        #{ignored} do
           a = 1
           a = 2
           a = 3
@@ -40,15 +40,15 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
   end
 
   it 'reports the correct beginning and end lines' do
-    inspect_source(<<~RUBY)
+    offenses = expect_offense(<<~RUBY)
       something do
+      ^^^^^^^^^^^^ Block has too many lines. [3/2]
         a = 1
         a = 2
         a = 3
       end
     RUBY
-    offense = cop.offenses.first
-    expect(offense.location.first_line).to eq(1)
+    offense = offenses.first
     expect(offense.location.last_line).to eq(5)
   end
 
@@ -159,6 +159,27 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
+  context 'when defining a Struct' do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~'RUBY')
+        Person = Struct.new(:first_name, :last_name) do
+          def full_name
+            "#{first_name} #{last_name}"
+          end
+
+          def foo
+            a = 1
+            a = 2
+            a = 3
+            a = 4
+            a = 5
+            a = 6
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when CountComments is enabled' do
     before { cop_config['CountComments'] = true }
 
@@ -174,29 +195,63 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
     end
   end
 
-  context 'when ExcludedMethods is enabled' do
-    it_behaves_like('ignoring an offense on an excluded method', 'foo')
+  context 'when `CountAsOne` is not empty' do
+    before { cop_config['CountAsOne'] = ['array'] }
 
-    it_behaves_like('ignoring an offense on an excluded method',
-                    'Gem::Specification.new')
+    it 'folds array into one line' do
+      expect_no_offenses(<<~RUBY)
+        something do
+          a = 1
+          a = [
+            2,
+            3
+          ]
+        end
+      RUBY
+    end
+  end
 
-    context 'when receiver contains whitespaces' do
-      before { cop_config['ExcludedMethods'] = ['Foo::Bar.baz'] }
+  context 'when methods to ignore are defined' do
+    %w[IgnoredMethods ExcludedMethods].each do |key|
+      context 'when IgnoredMethods is enabled' do
+        it_behaves_like('ignoring an offense on an ignored method', 'foo', key)
 
-      it 'ignores whitespaces' do
-        expect_no_offenses(<<~RUBY)
-          Foo::
-            Bar.baz do
-            a = 1
-            a = 2
-            a = 3
+        it_behaves_like('ignoring an offense on an ignored method',
+                        'Gem::Specification.new', key)
+
+        context 'when receiver contains whitespaces' do
+          before { cop_config[key] = ['Foo::Bar.baz'] }
+
+          it 'ignores whitespaces' do
+            expect_no_offenses(<<~RUBY)
+              Foo::
+                Bar.baz do
+                a = 1
+                a = 2
+                a = 3
+              end
+            RUBY
           end
-        RUBY
+        end
+
+        context 'when a method is ignored, but receiver is a module' do
+          before { cop_config[key] = ['baz'] }
+
+          it 'does not report an offense' do
+            expect_no_offenses(<<~RUBY)
+              Foo::Bar.baz do
+                a = 1
+                a = 2
+                a = 3
+              end
+            RUBY
+          end
+        end
       end
     end
 
-    context 'when a method is ignored, but receiver is a module' do
-      before { cop_config['ExcludedMethods'] = ['baz'] }
+    context 'when given a regex' do
+      before { cop_config['IgnoredMethods'] = [/baz/] }
 
       it 'does not report an offense' do
         expect_no_offenses(<<~RUBY)
@@ -206,6 +261,19 @@ RSpec.describe RuboCop::Cop::Metrics::BlockLength, :config do
             a = 3
           end
         RUBY
+      end
+
+      context 'that does not match' do
+        it 'reports an offense' do
+          expect_offense(<<~RUBY)
+            Foo::Bar.bar do
+            ^^^^^^^^^^^^^^^ Block has too many lines. [3/2]
+              a = 1
+              a = 2
+              a = 3
+            end
+          RUBY
+        end
       end
     end
   end

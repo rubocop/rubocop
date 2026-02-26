@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceAfterSemicolon, :config do
   let(:config) do
     RuboCop::Config.new('Layout/SpaceInsideBlockBraces' => brace_config)
   end

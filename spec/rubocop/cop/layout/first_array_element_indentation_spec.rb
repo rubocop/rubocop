@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::FirstArrayElementIndentation, :config do
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w[special_inside_parentheses consistent

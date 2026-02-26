@@ -1,67 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
-  context 'require_parentheses' do
-    let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
-
-    it 'reports an offense for def with parameters but no parens' do
-      expect_offense(<<~RUBY)
-        def func a, b
-                 ^^^^ Use def with parentheses when there are parameters.
-        end
-      RUBY
-    end
-
-    it 'reports an offense for correct + opposite' do
-      expect_offense(<<~RUBY)
-        def func(a, b)
-        end
-        def func a, b
-                 ^^^^ Use def with parentheses when there are parameters.
-        end
-      RUBY
-    end
-
-    it 'reports an offense for class def with parameters but no parens' do
-      expect_offense(<<~RUBY)
-        def Test.func a, b
-                      ^^^^ Use def with parentheses when there are parameters.
-        end
-      RUBY
-    end
-
-    it 'accepts def with no args and no parens' do
-      expect_no_offenses(<<~RUBY)
-        def func
-        end
-      RUBY
-    end
-
-    it 'auto-adds required parens for a def' do
-      new_source = autocorrect_source('def test param; end')
-      expect(new_source).to eq('def test(param); end')
-    end
-
-    it 'auto-adds required parens for a defs' do
-      new_source = autocorrect_source('def self.test param; end')
-      expect(new_source).to eq('def self.test(param); end')
-    end
-
-    it 'auto-adds required parens to argument lists on multiple lines' do
-      new_source = autocorrect_source(<<~RUBY)
-        def test one,
-        two
-        end
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        def test(one,
-        two)
-        end
-      RUBY
-    end
-  end
-
   shared_examples 'no parentheses' do
     # common to require_no_parentheses and
     # require_no_parentheses_except_multiline
@@ -69,6 +8,11 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       expect_offense(<<~RUBY)
         def func(a, b)
                 ^^^^^^ Use def without parentheses.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func a, b
         end
       RUBY
     end
@@ -88,12 +32,24 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         def func a, b
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def func a, b
+        end
+        def func a, b
+        end
+      RUBY
     end
 
     it 'reports an offense for class def with parameters with parens' do
       expect_offense(<<~RUBY)
         def Test.func(a, b)
                      ^^^^^^ Use def without parentheses.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def Test.func a, b
         end
       RUBY
     end
@@ -111,6 +67,11 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
                 ^^ Use def without parentheses.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def func#{trailing_whitespace}
+        end
+      RUBY
     end
 
     it 'accepts def with no args and no parens' do
@@ -120,14 +81,139 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       RUBY
     end
 
-    it 'auto-removes the parens' do
-      new_source = autocorrect_source('def test(param); end')
-      expect(new_source).to eq('def test param; end')
+    it 'auto-removes the parens for defs' do
+      expect_offense(<<~RUBY)
+        def self.test(param); end
+                     ^^^^^^^ Use def without parentheses.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.test param; end
+      RUBY
+    end
+  end
+
+  shared_examples 'endless methods' do
+    context 'endless methods', :ruby30 do
+      it 'accepts parens without args' do
+        expect_no_offenses(<<~RUBY)
+          def foo() = x
+        RUBY
+      end
+
+      it 'accepts parens with args' do
+        expect_no_offenses(<<~RUBY)
+          def foo(x) = x
+        RUBY
+      end
+
+      it 'accepts parens for method calls inside an endless method' do
+        expect_no_offenses(<<~RUBY)
+          def foo(x) = bar(x)
+        RUBY
+      end
+    end
+  end
+
+  context 'require_parentheses' do
+    let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
+
+    it_behaves_like 'endless methods'
+
+    it 'reports an offense for def with parameters but no parens' do
+      expect_offense(<<~RUBY)
+        def func a, b
+                 ^^^^ Use def with parentheses when there are parameters.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func(a, b)
+        end
+      RUBY
     end
 
-    it 'auto-removes the parens for defs' do
-      new_source = autocorrect_source('def self.test(param); end')
-      expect(new_source).to eq('def self.test param; end')
+    it 'reports an offense for correct + opposite' do
+      expect_offense(<<~RUBY)
+        def func(a, b)
+        end
+        def func a, b
+                 ^^^^ Use def with parentheses when there are parameters.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func(a, b)
+        end
+        def func(a, b)
+        end
+      RUBY
+    end
+
+    it 'reports an offense for class def with parameters but no parens' do
+      expect_offense(<<~RUBY)
+        def Test.func a, b
+                      ^^^^ Use def with parentheses when there are parameters.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def Test.func(a, b)
+        end
+      RUBY
+    end
+
+    it 'accepts def with no args and no parens' do
+      expect_no_offenses(<<~RUBY)
+        def func
+        end
+      RUBY
+    end
+
+    it 'auto-adds required parens for a defs' do
+      expect_offense(<<~RUBY)
+        def self.test param; end
+                      ^^^^^ Use def with parentheses when there are parameters.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.test(param); end
+      RUBY
+    end
+
+    it 'auto-adds required parens for a defs after a passing method' do
+      expect_offense(<<~RUBY)
+        def self.fine; end
+
+        def self.test param; end
+                      ^^^^^ Use def with parentheses when there are parameters.
+
+        def self.test2 param; end
+                       ^^^^^ Use def with parentheses when there are parameters.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def self.fine; end
+
+        def self.test(param); end
+
+        def self.test2(param); end
+      RUBY
+    end
+
+    it 'auto-adds required parens to argument lists on multiple lines' do
+      expect_offense(<<~RUBY)
+        def test one,
+                 ^^^^ Use def with parentheses when there are parameters.
+        two
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def test(one,
+        two)
+        end
+      RUBY
     end
   end
 
@@ -135,6 +221,7 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'require_no_parentheses' } }
 
     it_behaves_like 'no parentheses'
+    it_behaves_like 'endless methods'
   end
 
   context 'require_no_parentheses_except_multiline' do
@@ -142,11 +229,28 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
       { 'EnforcedStyle' => 'require_no_parentheses_except_multiline' }
     end
 
+    it_behaves_like 'endless methods'
+
     context 'when args are all on a single line' do
       it_behaves_like 'no parentheses'
     end
 
     context 'when args span multiple lines' do
+      it 'auto-adds required parens to argument lists on multiple lines' do
+        expect_offense(<<~RUBY)
+          def test one,
+                   ^^^^ Use def with parentheses when there are parameters.
+          two
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def test(one,
+          two)
+          end
+        RUBY
+      end
+
       it 'reports an offense for correct + opposite' do
         expect_offense(<<~RUBY)
           def func(a,
@@ -157,18 +261,13 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
                    b
           end
         RUBY
-      end
 
-      it 'auto-adds required parens to argument lists on multiple lines' do
-        new_source = autocorrect_source(<<~RUBY)
-          def test one,
-          two
+        expect_correction(<<~RUBY)
+          def func(a,
+                   b)
           end
-        RUBY
-
-        expect(new_source).to eq(<<~RUBY)
-          def test(one,
-          two)
+          def func(a,
+                   b)
           end
         RUBY
       end

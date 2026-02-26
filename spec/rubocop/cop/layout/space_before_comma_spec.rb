@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComma do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceBeforeComma, :config do
   it 'registers an offense and corrects block argument ' \
     'with space before comma' do
     expect_offense(<<~RUBY)

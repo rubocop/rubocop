@@ -53,18 +53,19 @@ shared_examples_for 'multiline literal brace layout' do
     end
 
     it 'detects heredoc structures that are safe to add to' do
-      inspect_source(construct(false, a, make_multi(safe_heredoc), true))
+      expect_offense(<<~RUBY, close: close)
+        #{prefix}#{open}#{a},
+        #{multi_prefix}#{safe_heredoc}
+        %{close}
+        ^{close} #{described_class::ALWAYS_SAME_LINE_MESSAGE}
+        #{suffix}
+      RUBY
 
-      expect(cop.offenses.size).to eq(1)
-    end
-
-    it 'auto-corrects safe heredoc offenses' do
-      new_source = autocorrect_source(
-        construct(false, a, make_multi(safe_heredoc), true)
-      )
-
-      expect(new_source)
-        .to eq(construct(false, a, make_multi(safe_heredoc), false))
+      expect_correction(<<~RUBY)
+        #{prefix}#{open}#{a},
+        #{multi_prefix}#{safe_heredoc}#{close}
+        #{suffix}
+      RUBY
     end
   end
 
@@ -81,56 +82,68 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'detects closing brace on different line from last element' do
-        src = construct(false, true)
-        inspect_source(src)
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq([close])
-        expect(cop.messages).to eq([described_class::SAME_LINE_MESSAGE])
+        expect_offense(<<~RUBY, close: close)
+          #{prefix}#{open}#{a},
+          #{b}#{b_comment}
+          %{close}
+          ^{close} #{described_class::SAME_LINE_MESSAGE}
+          #{suffix}
+        RUBY
       end
 
       it 'autocorrects closing brace on different line from last element' do
-        new_source = autocorrect_source(<<~RUBY.chomp)
+        expect_offense(<<~RUBY, close: close)
           #{prefix}#{open}#{a}, # a
           #{b} # b
-          #{close}
+          %{close}
+          ^{close} #{described_class::SAME_LINE_MESSAGE}
           #{suffix}
         RUBY
 
-        expect(new_source)
-          .to eq("#{prefix}#{open}#{a}, # a\n#{b}#{close} # b\n#{suffix}")
+        expect_correction(<<~RUBY)
+          #{prefix}#{open}#{a}, # a
+          #{b}#{close} # b
+          #{suffix}
+        RUBY
       end
 
       unless described_class ==
              RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout
         context 'with a chained call on the closing brace' do
           let(:suffix) { '.any?' }
-          let(:source) { construct(false, true) }
 
           context 'and a comment after the last element' do
             let(:b_comment) { ' # comment b' }
 
-            it 'detects closing brace on separate line from last element' do
-              inspect_source(source)
+            it 'detects closing brace on separate line from last element' \
+               'but does not autocorrect the closing brace' do
+              expect_offense(<<~RUBY, close: close)
+                #{prefix}#{open}#{a},
+                #{b}#{b_comment}
+                %{close}
+                ^{close} #{described_class::SAME_LINE_MESSAGE}
+                #{suffix}
+              RUBY
 
-              expect(cop.highlights).to eq([close])
-              expect(cop.messages)
-                .to eq([described_class::SAME_LINE_MESSAGE])
-            end
-
-            it 'does not autocorrect the closing brace' do
-              new_source = autocorrect_source(source)
-              expect(new_source).to eq(source)
+              expect_no_corrections
             end
           end
 
           context 'but no comment after the last element' do
             it 'autocorrects the closing brace' do
-              new_source = autocorrect_source(source)
+              expect_offense(<<~RUBY, close: close)
+                #{prefix}#{open}#{a},
+                #{b}
+                %{close}
+                ^{close} #{described_class::SAME_LINE_MESSAGE}
+                #{suffix}
+              RUBY
 
-              expect(new_source).to eq(["#{prefix}#{open}#{a},",
-                                        "#{b}#{close}",
-                                        suffix].join($RS))
+              expect_correction(<<~RUBY)
+                #{prefix}#{open}#{a},
+                #{b}#{close}
+                #{suffix}
+              RUBY
             end
           end
         end
@@ -147,18 +160,15 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'detects closing brace on same line as last element' do
-        src = construct(true, false)
-        inspect_source(src)
+        expect_offense(<<~RUBY.chomp, b: b, close: close)
+          #{prefix}#{open}
+          #{a},
+          %{b}%{close}
+          _{b}^{close} #{described_class::NEW_LINE_MESSAGE}
+          #{suffix}
+        RUBY
 
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq([close])
-        expect(cop.messages).to eq([described_class::NEW_LINE_MESSAGE])
-      end
-
-      it 'autocorrects closing brace on same line from last element' do
-        new_source = autocorrect_source(construct(true, false))
-
-        expect(new_source).to eq(construct(true, true))
+        expect_correction(construct(true, true))
       end
     end
   end
@@ -175,33 +185,29 @@ shared_examples_for 'multiline literal brace layout' do
         expect_no_offenses(construct(false, a, make_multi(multi), true))
       end
 
-      it 'detects closing brace on same line as last element' do
-        src = construct(false, false)
-        inspect_source(src)
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq([close])
-        expect(cop.messages).to eq([described_class::ALWAYS_NEW_LINE_MESSAGE])
-      end
-
       it 'detects closing brace on same line as last multiline element' do
-        src = construct(false, a, make_multi(multi), false)
-        inspect_source(src)
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq([close])
-        expect(cop.messages).to eq([described_class::ALWAYS_NEW_LINE_MESSAGE])
+        expect_offense(<<~RUBY, multi_end: multi.lines.last.chomp, close: close)
+          #{prefix}#{open}#{a},
+          #{multi_prefix}#{multi}#{close}
+          _{multi_end}^{close} #{described_class::ALWAYS_NEW_LINE_MESSAGE}
+          #{suffix}
+        RUBY
       end
 
       it 'autocorrects closing brace on same line as last element' do
-        new_source = autocorrect_source(<<~RUBY.chomp)
+        expect_offense(<<~RUBY, b: b, close: close)
           #{prefix}#{open}#{a}, # a
-          #{b}#{close} # b
+          %{b}%{close} # b
+          _{b}^{close} #{described_class::ALWAYS_NEW_LINE_MESSAGE}
           #{suffix}
         RUBY
 
-        expect(new_source)
-          .to eq("#{prefix}#{open}#{a}, # a\n#{b}\n#{close} # b\n#{suffix}")
+        expect_correction(<<~RUBY)
+          #{prefix}#{open}#{a}, # a
+          #{b}
+          #{close} # b
+          #{suffix}
+        RUBY
       end
     end
 
@@ -215,18 +221,17 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'detects closing brace on same line as last element' do
-        src = construct(true, false)
-        inspect_source(src)
+        expect_offense(<<~RUBY, b: b, close: close)
+          #{prefix}#{open}
+          #{a},
+          %{b}%{close}
+          _{b}^{close} #{described_class::ALWAYS_NEW_LINE_MESSAGE}
+          #{suffix}
+        RUBY
 
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq([close])
-        expect(cop.messages).to eq([described_class::ALWAYS_NEW_LINE_MESSAGE])
-      end
-
-      it 'autocorrects closing brace on same line from last element' do
-        new_source = autocorrect_source(construct(true, false))
-
-        expect(new_source).to eq(construct(true, true))
+        expect_correction(<<~RUBY)
+          #{construct(true, true)}
+        RUBY
       end
     end
   end
@@ -243,66 +248,69 @@ shared_examples_for 'multiline literal brace layout' do
         expect_no_offenses(construct(false, a, make_multi(multi), false))
       end
 
-      it 'detects closing brace on different line from last element' do
-        src = construct(false, true)
-        inspect_source(src)
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq([close])
-        expect(cop.messages).to eq([described_class::ALWAYS_SAME_LINE_MESSAGE])
-      end
-
       it 'detects closing brace on different line from multiline element' do
-        src = construct(false, a, make_multi(multi), true)
-        inspect_source(src)
-
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq([close])
-        expect(cop.messages).to eq([described_class::ALWAYS_SAME_LINE_MESSAGE])
+        expect_offense(<<~RUBY, close: close)
+          #{prefix}#{open}#{a},
+          #{multi_prefix}#{multi}
+          %{close}
+          ^{close} #{described_class::ALWAYS_SAME_LINE_MESSAGE}
+          #{suffix}
+        RUBY
       end
 
       it 'autocorrects closing brace on different line as last element' do
-        new_source = autocorrect_source(<<~RUBY.chomp)
+        expect_offense(<<~RUBY, close: close)
           #{prefix}#{open}#{a}, # a
           #{b} # b
-          #{close}
+          %{close}
+          ^{close} #{described_class::ALWAYS_SAME_LINE_MESSAGE}
           #{suffix}
         RUBY
 
-        expect(new_source)
-          .to eq("#{prefix}#{open}#{a}, # a\n#{b}#{close} # b\n#{suffix}")
+        expect_correction(<<~RUBY)
+          #{prefix}#{open}#{a}, # a
+          #{b}#{close} # b
+          #{suffix}
+        RUBY
       end
 
       unless described_class ==
              RuboCop::Cop::Layout::MultilineMethodDefinitionBraceLayout
         context 'with a chained call on the closing brace' do
           let(:suffix) { '.any?' }
-          let(:source) { construct(false, true) }
 
           context 'and a comment after the last element' do
             let(:b_comment) { ' # comment b' }
 
-            it 'detects closing brace on separate line from last element' do
-              inspect_source(source)
+            it 'detects closing brace on separate line from last element' \
+               'but does not autocorrect the closing brace' do
+              expect_offense(<<~RUBY, close: close)
+                #{prefix}#{open}#{a},
+                #{b}#{b_comment}
+                %{close}
+                ^{close} #{described_class::ALWAYS_SAME_LINE_MESSAGE}
+                #{suffix}
+              RUBY
 
-              expect(cop.highlights).to eq([close])
-              expect(cop.messages)
-                .to eq([described_class::ALWAYS_SAME_LINE_MESSAGE])
-            end
-
-            it 'does not autocorrect the closing brace' do
-              new_source = autocorrect_source(source)
-              expect(new_source).to eq(source)
+              expect_no_corrections
             end
           end
 
           context 'but no comment after the last element' do
             it 'autocorrects the closing brace' do
-              new_source = autocorrect_source(source)
+              expect_offense(<<~RUBY, close: close)
+                #{prefix}#{open}#{a},
+                #{b}
+                %{close}
+                ^{close} #{described_class::ALWAYS_SAME_LINE_MESSAGE}
+                #{suffix}
+              RUBY
 
-              expect(new_source).to eq(["#{prefix}#{open}#{a},",
-                                        "#{b}#{close}",
-                                        suffix].join($RS))
+              expect_correction(<<~RUBY)
+                #{prefix}#{open}#{a},
+                #{b}#{close}
+                #{suffix}
+              RUBY
             end
           end
         end
@@ -319,17 +327,18 @@ shared_examples_for 'multiline literal brace layout' do
       end
 
       it 'detects closing brace on different line from last element' do
-        src = construct(true, true)
-        inspect_source(src)
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.highlights).to eq([close])
-        expect(cop.messages).to eq([described_class::ALWAYS_SAME_LINE_MESSAGE])
-      end
+        expect_offense(<<~RUBY, close: close)
+          #{prefix}#{open}
+          #{a},
+          #{b}#{b_comment}
+          %{close}
+          ^{close} #{described_class::ALWAYS_SAME_LINE_MESSAGE}
+          #{suffix}
+        RUBY
 
-      it 'autocorrects closing brace on different line from last element' do
-        new_source = autocorrect_source(construct(true, true))
-
-        expect(new_source).to eq(construct(true, false))
+        expect_correction(<<~RUBY)
+          #{construct(true, false)}
+        RUBY
       end
     end
   end

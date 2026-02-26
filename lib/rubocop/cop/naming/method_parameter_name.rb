@@ -43,13 +43,13 @@ module RuboCop
       #   def baz(age_a, height_b, gender_c)
       #     do_stuff(age_a, height_b, gender_c)
       #   end
-      class MethodParameterName < Cop
+      class MethodParameterName < Base
         include UncommunicativeName
 
         def on_def(node)
           return unless node.arguments?
 
-          check(node, node.arguments.reject(&:forward_args_type?))
+          check(node, node.arguments)
         end
         alias on_defs on_def
       end

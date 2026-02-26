@@ -17,13 +17,15 @@ module RuboCop
       #   # good
       #
       #   "result is #{something}"
-      class RedundantStringCoercion < Cop
+      class RedundantStringCoercion < Base
         include Interpolation
+        extend AutoCorrector
 
         MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'
         MSG_SELF = 'Use `self` instead of `Object#to_s` in ' \
                    'interpolation.'
 
+        # @!method to_s_without_args?(node)
         def_node_matcher :to_s_without_args?, '(send _ :to_s)'
 
         def on_interpolation(begin_node)
@@ -31,14 +33,12 @@ module RuboCop
 
           return unless to_s_without_args?(final_node)
 
-          add_offense(final_node, location: :selector)
-        end
+          message = final_node.receiver ? MSG_DEFAULT : MSG_SELF
 
-        def autocorrect(node)
-          lambda do |corrector|
-            receiver = node.receiver
+          add_offense(final_node.loc.selector, message: message) do |corrector|
+            receiver = final_node.receiver
             corrector.replace(
-              node,
+              final_node,
               if receiver
                 receiver.source
               else
@@ -46,12 +46,6 @@ module RuboCop
               end
             )
           end
-        end
-
-        private
-
-        def message(node)
-          node.receiver ? MSG_DEFAULT : MSG_SELF
         end
       end
     end

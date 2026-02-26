@@ -16,9 +16,10 @@ module RuboCop
       #
       #   # good
       #   -> (arg) { do_something(arg) }
-      class EmptyLambdaParameter < Cop
+      class EmptyLambdaParameter < Base
         include EmptyParameter
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Omit parentheses for the empty lambda parameters.'
 
@@ -29,15 +30,13 @@ module RuboCop
           check(node) if node.send_node.lambda_literal?
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            send_node = node.parent.send_node
-            range = range_between(
-              send_node.loc.expression.end_pos,
-              node.loc.expression.end_pos
-            )
-            corrector.remove(range)
-          end
+        private
+
+        def autocorrect(corrector, node)
+          send_node = node.parent.send_node
+          range = range_between(send_node.loc.expression.end_pos, node.loc.expression.end_pos)
+
+          corrector.remove(range)
         end
       end
     end

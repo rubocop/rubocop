@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
   let(:config) do
     RuboCop::Config.new('Layout/EndAlignment' => end_alignment_config)
   end
@@ -578,6 +576,20 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment do
     it 'accepts a correctly aligned else' do
       expect_no_offenses(<<~RUBY)
         array_like.each do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        rescue
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
+    it 'accepts a correctly aligned else with assignment' do
+      expect_no_offenses(<<~RUBY)
+        result = array_like.each do |n|
           puts 'do something error prone'
         rescue SomeException
           puts 'error handling'

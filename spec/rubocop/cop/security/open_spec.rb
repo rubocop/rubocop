@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Security::Open do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Security::Open, :config do
   it 'registers an offense for open' do
     expect_offense(<<~RUBY)
       open(something)
@@ -28,6 +26,20 @@ RSpec.describe RuboCop::Cop::Security::Open do
     expect_offense(<<~'RUBY')
       open("| #{foo}")
       ^^^^ The use of `Kernel#open` is a serious security risk.
+    RUBY
+  end
+
+  it 'registers an offense for `URI.open` with string that starts with a pipe' do
+    expect_offense(<<~'RUBY')
+      URI.open("| #{foo}")
+          ^^^^ The use of `URI.open` is a serious security risk.
+    RUBY
+  end
+
+  it 'registers an offense for `::URI.open` with string that starts with a pipe' do
+    expect_offense(<<~'RUBY')
+      ::URI.open("| #{foo}")
+            ^^^^ The use of `::URI.open` is a serious security risk.
     RUBY
   end
 

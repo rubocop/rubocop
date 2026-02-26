@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::BigDecimalNew do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::BigDecimalNew, :config do
   it 'registers an offense and corrects using `BigDecimal.new()`' do
     expect_offense(<<~RUBY)
       BigDecimal.new(123.456, 3)

@@ -35,43 +35,45 @@ module RuboCop
       #   else
       #     puts 'more'
       #   end
-      class EmptyCaseCondition < Cop
+      class EmptyCaseCondition < Base
         include RangeHelp
+        extend AutoCorrector
 
-        MSG = 'Do not use empty `case` condition, instead use an `if` '\
-              'expression.'
+        MSG = 'Do not use empty `case` condition, instead use an `if` expression.'
 
         def on_case(case_node)
           return if case_node.condition
-          return if case_node.when_branches.any? do |when_branch|
-            when_branch.each_descendant.any?(&:return_type?)
+
+          branch_bodies = [
+            *case_node.when_branches.map(&:body),
+            case_node.else_branch
+          ].compact
+
+          return if branch_bodies.any? do |body|
+            body.return_type? ||
+            body.each_descendant.any?(&:return_type?)
           end
 
-          if (else_branch = case_node.else_branch)
-            return if else_branch.return_type? ||
-                      else_branch.each_descendant.any?(&:return_type?)
-          end
-
-          add_offense(case_node, location: :keyword)
-        end
-
-        def autocorrect(case_node)
-          when_branches = case_node.when_branches
-
-          lambda do |corrector|
-            correct_case_when(corrector, case_node, when_branches)
-            correct_when_conditions(corrector, when_branches)
+          add_offense(case_node.loc.keyword) do |corrector|
+            autocorrect(corrector, case_node)
           end
         end
 
         private
+
+        def autocorrect(corrector, case_node)
+          when_branches = case_node.when_branches
+
+          correct_case_when(corrector, case_node, when_branches)
+          correct_when_conditions(corrector, when_branches)
+        end
 
         def correct_case_when(corrector, case_node, when_nodes)
           case_range = case_node.loc.keyword.join(when_nodes.first.loc.keyword)
 
           corrector.replace(case_range, 'if')
 
-          keep_first_when_comment(case_node, when_nodes.first, corrector)
+          keep_first_when_comment(case_range, corrector)
 
           when_nodes[1..-1].each do |when_node|
             corrector.replace(when_node.loc.keyword, 'elsif')
@@ -91,15 +93,14 @@ module RuboCop
           end
         end
 
-        def keep_first_when_comment(case_node, first_when_node, corrector)
-          comment = processed_source.comments_before_line(
-            first_when_node.loc.keyword.line
-          ).map(&:text).join("\n")
+        def keep_first_when_comment(case_range, corrector)
+          indent = ' ' * case_range.column
+          comments = processed_source.each_comment_in_lines(
+            case_range.first_line...case_range.last_line
+          ).map { |comment| "#{indent}#{comment.text}\n" }.join
 
-          line = range_by_whole_lines(case_node.source_range)
-
-          corrector.insert_before(line, "#{comment}\n") if !comment.empty? &&
-                                                           !case_node.parent
+          line_beginning = case_range.adjust(begin_pos: -case_range.column)
+          corrector.insert_before(line_beginning, comments)
         end
       end
     end

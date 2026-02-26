@@ -19,6 +19,15 @@ module RuboCop
       #     @@test = 10
       #   end
       #
+      #   class A
+      #     def self.test(name, value)
+      #       class_variable_set("@@#{name}", value)
+      #     end
+      #   end
+      #
+      #   class A; end
+      #   A.class_variable_set(:@@test, 10)
+      #
       #   # good
       #   class A
       #     @test = 10
@@ -30,17 +39,24 @@ module RuboCop
       #     end
       #   end
       #
-      class ClassVars < Cop
-        MSG = 'Replace class var %<class_var>s with a class ' \
-              'instance var.'
+      #   class A
+      #     def self.test(name)
+      #       class_variable_get("@@#{name}") # you can access without offense
+      #     end
+      #   end
+      #
+      class ClassVars < Base
+        MSG = 'Replace class var %<class_var>s with a class instance var.'
+        RESTRICT_ON_SEND = %i[class_variable_set].freeze
 
         def on_cvasgn(node)
-          add_offense(node, location: :name)
+          add_offense(node.loc.name, message: format(MSG, class_var: node.children.first))
         end
 
-        def message(node)
-          class_var, = *node
-          format(MSG, class_var: class_var)
+        def on_send(node)
+          add_offense(
+            node.first_argument, message: format(MSG, class_var: node.first_argument.source)
+          )
         end
       end
     end

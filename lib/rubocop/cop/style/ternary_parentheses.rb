@@ -54,10 +54,11 @@ module RuboCop
       #   # bad
       #   foo = (bar = baz) ? a : b
       #
-      class TernaryParentheses < Cop
+      class TernaryParentheses < Base
         include SafeAssignment
         include ConfigurableEnforcedStyle
         include SurroundingSpace
+        extend AutoCorrector
 
         VARIABLE_TYPES = AST::Node::VARIABLES
         NON_COMPLEX_TYPES = [*VARIABLE_TYPES, :const, :defined?, :yield].freeze
@@ -70,14 +71,20 @@ module RuboCop
           return if only_closing_parenthesis_is_last_line?(node.condition)
           return unless node.ternary? && !infinite_loop? && offense?(node)
 
-          add_offense(node, location: node.source_range)
+          message = message(node)
+
+          add_offense(node.source_range, message: message) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def only_closing_parenthesis_is_last_line?(condition)
           condition.source.split("\n").last == ')'
         end
 
-        def autocorrect(node)
+        private
+
+        def autocorrect(corrector, node)
           condition = node.condition
 
           return nil if parenthesized?(condition) &&
@@ -85,13 +92,11 @@ module RuboCop
                         unsafe_autocorrect?(condition))
 
           if parenthesized?(condition)
-            correct_parenthesized(condition)
+            correct_parenthesized(corrector, condition)
           else
-            correct_unparenthesized(condition)
+            correct_unparenthesized(corrector, condition)
           end
         end
-
-        private
 
         def offense?(node)
           condition = node.condition
@@ -115,7 +120,7 @@ module RuboCop
           if condition.begin_type?
             condition.to_a.any? { |x| complex_condition?(x) }
           else
-            non_complex_expression?(condition) ? false : true
+            !non_complex_expression?(condition)
           end
         end
 
@@ -174,7 +179,7 @@ module RuboCop
         end
 
         def unparenthesized_method_call?(child)
-          method_name(child) =~ /^[a-z]/i && !child.parenthesized?
+          /^[a-z]/i.match?(method_name(child)) && !child.parenthesized?
         end
 
         def below_ternary_precedence?(child)
@@ -186,32 +191,28 @@ module RuboCop
             (child.send_type? && child.prefix_not?)
         end
 
+        # @!method method_name(node)
         def_node_matcher :method_name, <<~PATTERN
-          {($:defined? (send nil? _) ...)
+          {($:defined? _ ...)
            (send {_ nil?} $_ _ ...)}
         PATTERN
 
-        def correct_parenthesized(condition)
-          lambda do |corrector|
-            corrector.remove(condition.loc.begin)
-            corrector.remove(condition.loc.end)
+        def correct_parenthesized(corrector, condition)
+          corrector.remove(condition.loc.begin)
+          corrector.remove(condition.loc.end)
 
-            # Ruby allows no space between the question mark and parentheses.
-            # If we remove the parentheses, we need to add a space or we'll
-            # generate invalid code.
-            corrector.insert_after(condition.loc.end, ' ') unless whitespace_after?(condition)
-          end
+          # Ruby allows no space between the question mark and parentheses.
+          # If we remove the parentheses, we need to add a space or we'll
+          # generate invalid code.
+          corrector.insert_after(condition.loc.end, ' ') unless whitespace_after?(condition)
         end
 
-        def correct_unparenthesized(condition)
-          lambda do |corrector|
-            corrector.wrap(condition, '(', ')')
-          end
+        def correct_unparenthesized(corrector, condition)
+          corrector.wrap(condition, '(', ')')
         end
 
         def whitespace_after?(node)
-          index = index_of_last_token(node)
-          last_token = processed_source.tokens[index]
+          last_token = processed_source.last_token_of(node)
           last_token.space_after?
         end
       end

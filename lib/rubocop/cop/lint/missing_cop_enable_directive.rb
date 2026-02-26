@@ -42,7 +42,7 @@ module RuboCop
       #   # Including this, that's 3 lines on which the cop is disabled.
       #   # rubocop:enable Layout/SpaceAroundOperators
       #
-      class MissingCopEnableDirective < Cop
+      class MissingCopEnableDirective < Base
         include RangeHelp
 
         MSG = 'Re-enable %<cop>s cop with `# rubocop:enable` after ' \
@@ -50,7 +50,8 @@ module RuboCop
         MSG_BOUND = 'Re-enable %<cop>s cop within %<max_range>s lines after ' \
                     'disabling it.'
 
-        def investigate(processed_source)
+        # rubocop:disable Metrics/AbcSize
+        def on_new_investigation
           max_range = cop_config['MaximumRangeSize']
           processed_source.disabled_line_ranges.each do |cop, line_ranges|
             line_ranges.each do |line_range|
@@ -61,12 +62,12 @@ module RuboCop
               range = source_range(processed_source.buffer,
                                    line_range.min,
                                    (0..0))
-              add_offense(range,
-                          location: range,
-                          message: message(max_range: max_range, cop: cop))
+
+              add_offense(range, message: message(max_range: max_range, cop: cop))
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 

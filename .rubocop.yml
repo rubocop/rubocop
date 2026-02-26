@@ -13,7 +13,9 @@ AllCops:
     - 'spec/fixtures/**/*'
     - 'tmp/**/*'
     - '.git/**/*'
+    - 'bin/*'
   TargetRubyVersion: 2.4
+  SuggestExtensions: false
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
@@ -22,6 +24,11 @@ Naming/PredicateName:
     - define_singleton_method
     - def_node_matcher
     - def_node_search
+
+Style/AccessorGrouping:
+  Exclude:
+    - lib/rubocop/formatter/base_formatter.rb
+    - lib/rubocop/cop/offense.rb
 
 Style/FormatStringToken:
   # Because we parse a lot of source codes from strings. Percent arrays
@@ -39,23 +46,9 @@ Layout/EndOfLine:
 
 Layout/ClassStructure:
   Enabled: true
-  Categories:
-    module_inclusion:
-      - include
-      - prepend
-      - extend
-  ExpectedOrder:
-      - module_inclusion
-      - constants
-      - public_class_methods
-      - initializer
-      - instance_methods
-      - protected_methods
-      - private_methods
 
-# Trailing white space is meaningful in code examples
 Layout/TrailingWhitespace:
-  AllowInHeredoc: true
+  AllowInHeredoc: false
 
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -103,6 +96,7 @@ Metrics/ModuleLength:
 
 RSpec/FilePath:
   Exclude:
+    - spec/rubocop/cop/internal_affairs/redundant_let_rubocop_config_new_spec.rb
     - spec/rubocop/formatter/junit_formatter_spec.rb
 
 RSpec/PredicateMatcher:
@@ -113,3 +107,18 @@ RSpec/MessageSpies:
 
 RSpec/NestedGroups:
   Max: 7
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'Rakefile'
+    - 'spec/**/*.rb'
+
+RSpec/StubbedMock:
+  Enabled: false
+
+InternalAffairs/ExampleDescription:
+  Include:
+    - 'spec/rubocop/cop/**/*.rb'

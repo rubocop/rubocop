@@ -13,6 +13,7 @@ module RuboCop
       include PathUtil
 
       COLOR_FOR_SEVERITY = {
+        info:       :gray,
         refactor:   :yellow,
         convention: :yellow,
         warning:    :magenta,
@@ -23,6 +24,7 @@ module RuboCop
       def started(_target_files)
         @total_offense_count = 0
         @total_correction_count = 0
+        @total_correctable_count = 0
       end
 
       def file_finished(file, offenses)
@@ -35,7 +37,8 @@ module RuboCop
       def finished(inspected_files)
         report_summary(inspected_files.count,
                        @total_offense_count,
-                       @total_correction_count)
+                       @total_correction_count,
+                       @total_correctable_count)
       end
 
       def report_file(file, offenses)
@@ -52,11 +55,13 @@ module RuboCop
         end
       end
 
-      def report_summary(file_count, offense_count, correction_count)
+      def report_summary(file_count, offense_count, correction_count, correctable_count)
         report = Report.new(file_count,
                             offense_count,
                             correction_count,
-                            rainbow)
+                            correctable_count,
+                            rainbow,
+                            safe_auto_correct: @options[:safe_auto_correct])
 
         output.puts
         output.puts report.summary
@@ -66,11 +71,13 @@ module RuboCop
 
       def count_stats(offenses)
         @total_offense_count += offenses.count
-        @total_correction_count += offenses.count(&:corrected?)
+        corrected = offenses.count(&:corrected?)
+        @total_correction_count += corrected
+        @total_correctable_count += offenses.count(&:correctable?) - corrected
       end
 
       def colored_severity_code(offense)
-        color = COLOR_FOR_SEVERITY[offense.severity.name]
+        color = COLOR_FOR_SEVERITY.fetch(offense.severity.name)
         colorize(offense.severity.code, color)
       end
 
@@ -84,6 +91,8 @@ module RuboCop
             green('[Todo] ')
           elsif offense.corrected?
             green('[Corrected] ')
+          elsif offense.correctable?
+            yellow('[Correctable] ')
           else
             ''
           end
@@ -96,16 +105,30 @@ module RuboCop
         include Colorizable
         include TextUtil
 
-        def initialize(file_count, offense_count, correction_count, rainbow)
+        # rubocop:disable Metrics/ParameterLists
+        def initialize(
+          file_count, offense_count, correction_count, correctable_count, rainbow,
+          safe_auto_correct: false
+        )
           @file_count = file_count
           @offense_count = offense_count
           @correction_count = correction_count
+          @correctable_count = correctable_count
           @rainbow = rainbow
+          @safe_auto_correct = safe_auto_correct
         end
+        # rubocop:enable Metrics/ParameterLists
 
         def summary
           if @correction_count.positive?
-            "#{files} inspected, #{offenses} detected, #{corrections} corrected"
+            if @correctable_count.positive?
+              "#{files} inspected, #{offenses} detected, #{corrections} corrected,"\
+                " #{correctable}"
+            else
+              "#{files} inspected, #{offenses} detected, #{corrections} corrected"
+            end
+          elsif @correctable_count.positive?
+            "#{files} inspected, #{offenses} detected, #{correctable}"
           else
             "#{files} inspected, #{offenses} detected"
           end
@@ -131,6 +154,16 @@ module RuboCop
           color = @correction_count == @offense_count ? :green : :cyan
 
           colorize(text, color)
+        end
+
+        def correctable
+          if @safe_auto_correct
+            text = pluralize(@correctable_count, 'more offense')
+            "#{colorize(text, :yellow)} can be corrected with `rubocop -A`"
+          else
+            text = pluralize(@correctable_count, 'offense')
+            "#{colorize(text, :yellow)} auto-correctable"
+          end
         end
       end
     end

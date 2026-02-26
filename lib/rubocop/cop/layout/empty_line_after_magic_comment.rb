@@ -20,29 +20,29 @@ module RuboCop
       #   class Person
       #     # Some code
       #   end
-      class EmptyLineAfterMagicComment < Cop
+      class EmptyLineAfterMagicComment < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Add an empty line after magic comments.'
 
-        def investigate(source)
-          return unless source.ast &&
-                        (last_magic_comment = last_magic_comment(source))
-          return if source[last_magic_comment.loc.line].strip.empty?
+        def on_new_investigation
+          return unless processed_source.ast &&
+                        (last_magic_comment = last_magic_comment(processed_source))
+          return if processed_source[last_magic_comment.loc.line].strip.empty?
 
-          offending_range =
-            source_range(source.buffer, last_magic_comment.loc.line + 1, 0)
+          offending_range = offending_range(last_magic_comment)
 
-          add_offense(offending_range, location: offending_range)
-        end
-
-        def autocorrect(token)
-          lambda do |corrector|
-            corrector.insert_before(token, "\n")
+          add_offense(offending_range) do |corrector|
+            corrector.insert_before(offending_range, "\n")
           end
         end
 
         private
+
+        def offending_range(last_magic_comment)
+          source_range(processed_source.buffer, last_magic_comment.loc.line + 1, 0)
+        end
 
         # Find the last magic comment in the source file.
         #

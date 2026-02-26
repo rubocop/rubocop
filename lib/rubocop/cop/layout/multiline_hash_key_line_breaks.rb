@@ -20,8 +20,9 @@ module RuboCop
       #     b: 2,
       #     c: 3
       #   }
-      class MultilineHashKeyLineBreaks < Cop
+      class MultilineHashKeyLineBreaks < Base
         include MultilineElementLineBreaks
+        extend AutoCorrector
 
         MSG = 'Each key in a multi-line hash must start on a ' \
           'separate line.'
@@ -33,10 +34,6 @@ module RuboCop
           return unless starts_with_curly_brace?(node)
 
           check_line_breaks(node, node.children) if node.loc.begin
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.insert_before(node)
         end
 
         private

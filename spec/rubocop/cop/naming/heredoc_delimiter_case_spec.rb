@@ -14,12 +14,18 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
     end
 
     context 'with an interpolated heredoc' do
-      it 'registers an offense with a lowercase delimiter' do
+      it 'registers an offense and corrects with a lowercase delimiter' do
         expect_offense(<<~RUBY)
           <<-sql
             foo
           sql
           ^^^ Use uppercase heredoc delimiters.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          <<-SQL
+            foo
+          SQL
         RUBY
       end
 
@@ -43,21 +49,33 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
 
     context 'with a non-interpolated heredoc' do
       context 'when using single quoted delimiters' do
-        it 'registers an offense with a lowercase delimiter' do
+        it 'registers an offense and corrects with a lowercase delimiter' do
           expect_offense(<<~RUBY)
             <<-'sql'
               foo
             sql
             ^^^ Use uppercase heredoc delimiters.
           RUBY
+
+          expect_correction(<<~RUBY)
+            <<-'SQL'
+              foo
+            SQL
+          RUBY
         end
 
-        it 'registers an offense with a camel case delimiter' do
+        it 'registers an offense and corrects with a camel case delimiter' do
           expect_offense(<<~RUBY)
             <<-'Sql'
               foo
             Sql
             ^^^ Use uppercase heredoc delimiters.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            <<-'SQL'
+              foo
+            SQL
           RUBY
         end
 
@@ -71,21 +89,33 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       context 'when using double quoted delimiters' do
-        it 'registers an offense with a lowercase delimiter' do
+        it 'registers an offense and corrects with a lowercase delimiter' do
           expect_offense(<<~RUBY)
             <<-"sql"
               foo
             sql
             ^^^ Use uppercase heredoc delimiters.
           RUBY
+
+          expect_correction(<<~RUBY)
+            <<-"SQL"
+              foo
+            SQL
+          RUBY
         end
 
-        it 'registers an offense with a camel case delimiter' do
+        it 'registers an offense and corrects with a camel case delimiter' do
           expect_offense(<<~RUBY)
             <<-"Sql"
               foo
             Sql
             ^^^ Use uppercase heredoc delimiters.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            <<-"SQL"
+              foo
+            SQL
           RUBY
         end
 
@@ -99,21 +129,33 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
       end
 
       context 'when using back tick delimiters' do
-        it 'registers an offense with a lowercase delimiter' do
+        it 'registers an offense and corrects with a lowercase delimiter' do
           expect_offense(<<~RUBY)
             <<-`sql`
               foo
             sql
             ^^^ Use uppercase heredoc delimiters.
           RUBY
+
+          expect_correction(<<~RUBY)
+            <<-`SQL`
+              foo
+            SQL
+          RUBY
         end
 
-        it 'registers an offense with a camel case delimiter' do
+        it 'registers an offense and corrects with a camel case delimiter' do
           expect_offense(<<~RUBY)
             <<-`Sql`
               foo
             Sql
             ^^^ Use uppercase heredoc delimiters.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            <<-`SQL`
+              foo
+            SQL
           RUBY
         end
 
@@ -138,21 +180,33 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
     end
 
     context 'with a squiggly heredoc' do
-      it 'registers an offense with a lowercase delimiter' do
+      it 'registers an offense and corrects with a lowercase delimiter' do
         expect_offense(<<~RUBY)
           <<~sql
             foo
           sql
           ^^^ Use uppercase heredoc delimiters.
         RUBY
+
+        expect_correction(<<~RUBY)
+          <<~SQL
+            foo
+          SQL
+        RUBY
       end
 
-      it 'registers an offense with a camel case delimiter' do
+      it 'registers an offense and corrects with a camel case delimiter' do
         expect_offense(<<~RUBY)
           <<~Sql
             foo
           Sql
           ^^^ Use uppercase heredoc delimiters.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          <<~SQL
+            foo
+          SQL
         RUBY
       end
 
@@ -183,21 +237,33 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         RUBY
       end
 
-      it 'registers an offense with a camel case delimiter' do
+      it 'registers an offense and corrects with a camel case delimiter' do
         expect_offense(<<~RUBY)
           <<-Sql
             foo
           Sql
           ^^^ Use lowercase heredoc delimiters.
         RUBY
+
+        expect_correction(<<~RUBY)
+          <<-sql
+            foo
+          sql
+        RUBY
       end
 
-      it 'registers an offense with an uppercase delimiter' do
+      it 'registers an offense and corrects with an uppercase delimiter' do
         expect_offense(<<~RUBY)
           <<-SQL
             foo
           SQL
           ^^^ Use lowercase heredoc delimiters.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          <<-sql
+            foo
+          sql
         RUBY
       end
     end
@@ -211,21 +277,33 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         RUBY
       end
 
-      it 'registers an offense with a camel case delimiter' do
+      it 'registers an offense and corrects with a camel case delimiter' do
         expect_offense(<<~RUBY)
           <<-'Sql'
             foo
           Sql
           ^^^ Use lowercase heredoc delimiters.
         RUBY
+
+        expect_correction(<<~RUBY)
+          <<-'sql'
+            foo
+          sql
+        RUBY
       end
 
-      it 'registers an offense with an uppercase delimiter' do
+      it 'registers an offense and corrects with an uppercase delimiter' do
         expect_offense(<<~RUBY)
           <<-'SQL'
             foo
           SQL
           ^^^ Use lowercase heredoc delimiters.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          <<-'sql'
+            foo
+          sql
         RUBY
       end
     end
@@ -239,21 +317,33 @@ RSpec.describe RuboCop::Cop::Naming::HeredocDelimiterCase, :config do
         RUBY
       end
 
-      it 'registers an offense with a camel case delimiter' do
+      it 'registers an offense and corrects with a camel case delimiter' do
         expect_offense(<<~RUBY)
           <<~Sql
             foo
           Sql
           ^^^ Use lowercase heredoc delimiters.
         RUBY
+
+        expect_correction(<<~RUBY)
+          <<~sql
+            foo
+          sql
+        RUBY
       end
 
-      it 'registers an offense with an uppercase delimiter' do
+      it 'registers an offense and corrects with an uppercase delimiter' do
         expect_offense(<<~RUBY)
           <<~SQL
             foo
           SQL
           ^^^ Use lowercase heredoc delimiters.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          <<~sql
+            foo
+          sql
         RUBY
       end
     end

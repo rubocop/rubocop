@@ -2,9 +2,9 @@
 
 RSpec.describe RuboCop::Runner, :isolated_environment do
   describe 'how formatter is invoked' do
-    include_context 'cli spec behavior'
-
     subject(:runner) { described_class.new({}, RuboCop::ConfigStore.new) }
+
+    include_context 'cli spec behavior'
 
     let(:formatter) do
       instance_double(RuboCop::Formatter::BaseFormatter).as_null_object

@@ -30,28 +30,30 @@ module RuboCop
       #     bar
       #     baz
       #   )
-      class MultilineMemoization < Cop
+      class MultilineMemoization < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
-        MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'
+        KEYWORD_MSG = 'Wrap multiline memoization blocks in `begin` and `end`.'
+        BRACES_MSG = 'Wrap multiline memoization blocks in `(` and `)`.'
 
         def on_or_asgn(node)
           _lhs, rhs = *node
 
           return unless bad_rhs?(rhs)
 
-          add_offense(rhs, location: node.source_range)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node.source_range) do |corrector|
             if style == :keyword
-              keyword_autocorrect(node, corrector)
+              keyword_autocorrect(rhs, corrector)
             else
-              corrector.replace(node.loc.begin, '(')
-              corrector.replace(node.loc.end, ')')
+              corrector.replace(rhs.loc.begin, '(')
+              corrector.replace(rhs.loc.end, ')')
             end
           end
+        end
+
+        def message(_node)
+          style == :braces ? BRACES_MSG : KEYWORD_MSG
         end
 
         private
@@ -77,13 +79,13 @@ module RuboCop
           if node_buf.source[node.loc.begin.end_pos] == "\n"
             'begin'
           else
-            "begin\n" + (' ' * (node.loc.column + indent))
+            "begin\n#{' ' * (node.loc.column + indent)}"
           end
         end
 
         def keyword_end_str(node, node_buf)
-          if /[^\s\)]/.match?(node_buf.source_line(node.loc.end.line))
-            "\n" + (' ' * node.loc.column) + 'end'
+          if /[^\s)]/.match?(node_buf.source_line(node.loc.end.line))
+            "\n#{' ' * node.loc.column}end"
           else
             'end'
           end

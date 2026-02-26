@@ -19,9 +19,10 @@ module RuboCop
       #
       #     # good
       #     a = -> (x, y) { x + y }
-      class SpaceInLambdaLiteral < Cop
+      class SpaceInLambdaLiteral < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG_REQUIRE_SPACE = 'Use a space between `->` and ' \
                             '`(` in lambda literals.'
@@ -31,24 +32,15 @@ module RuboCop
         def on_send(node)
           return unless arrow_lambda_with_args?(node)
 
-          if style == :require_space && !space_after_arrow?(node)
-            add_offense(node,
-                        location: range_of_offense(node),
-                        message: MSG_REQUIRE_SPACE)
-          elsif style == :require_no_space && space_after_arrow?(node)
-            add_offense(node,
-                        location: range_of_offense(node),
-                        message: MSG_REQUIRE_NO_SPACE)
-          end
-        end
+          lambda_node = range_of_offense(node)
 
-        def autocorrect(lambda_node)
-          children = lambda_node.parent.children
-          lambda do |corrector|
-            if style == :require_space
-              corrector.insert_before(children[1], ' ')
-            else
-              corrector.remove(space_after_arrow(lambda_node))
+          if style == :require_space && !space_after_arrow?(node)
+            add_offense(lambda_node, message: MSG_REQUIRE_SPACE) do |corrector|
+              corrector.insert_before(node.parent.children[1], ' ')
+            end
+          elsif style == :require_no_space && space_after_arrow?(node)
+            add_offense(lambda_node, message: MSG_REQUIRE_NO_SPACE) do |corrector|
+              corrector.remove(space_after_arrow(node))
             end
           end
         end

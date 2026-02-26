@@ -17,12 +17,24 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'double_quotes')
+
+      expect_correction(<<~'RUBY')
+        s = 'abc'
+        x = 'a\\b'
+        y ='\\b'
+        z = 'a\\'
+      RUBY
     end
 
     it 'registers offense for correct + opposite' do
       expect_offense(<<~RUBY)
         s = "abc"
             ^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        x = 'abc'
+      RUBY
+
+      expect_correction(<<~RUBY)
+        s = 'abc'
         x = 'abc'
       RUBY
     end
@@ -116,6 +128,11 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         "y"
         ^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RUBY
+
+      expect_correction(<<~'RUBY')
+        "#{x}" \
+        'y'
+      RUBY
     end
 
     it 'can handle a built-in constant parsed as string' do
@@ -130,15 +147,14 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       expect_no_offenses('a = ?/')
     end
 
-    it 'auto-corrects " with \'' do
-      new_source = autocorrect_source('s = "abc"')
-      expect(new_source).to eq("s = 'abc'")
-    end
-
     it 'registers an offense for "\""' do
       expect_offense(<<~'RUBY')
         "\""
         ^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        '"'
       RUBY
     end
 
@@ -147,22 +163,15 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         "España"
         ^^^^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RUBY
-    end
 
-    it 'autocorrects words with non-ascii chars' do
-      new_source = autocorrect_source('"España"')
-      expect(new_source).to eq("'España'")
+      expect_correction(<<~RUBY)
+        'España'
+      RUBY
     end
 
     it 'does not register an offense for words with non-ascii chars and ' \
        'other control sequences' do
       expect_no_offenses('"España\n"')
-    end
-
-    it 'does not autocorrect words with non-ascii chars and other control ' \
-       'sequences' do
-      new_source = autocorrect_source('"España\n"')
-      expect(new_source).to eq('"España\n"')
     end
   end
 
@@ -177,6 +186,10 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       RUBY
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'single_quotes')
+
+      expect_correction(<<~RUBY)
+        s = "abc"
+      RUBY
     end
 
     it 'registers offense for opposite + correct' do
@@ -186,6 +199,11 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
             ^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
       RUBY
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+      expect_correction(<<~'RUBY')
+        s = "abc"
+        x = "abc"
+      RUBY
     end
 
     it 'registers offense for escaped single quote in single quotes' do
@@ -193,12 +211,20 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         '\''
         ^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
       RUBY
+
+      expect_correction(<<~'RUBY')
+        "'"
+      RUBY
     end
 
     it 'does not accept multiple escaped single quotes in single quotes' do
       expect_offense(<<~'RUBY')
         'This \'string\' has \'multiple\' escaped quotes'
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "This 'string' has 'multiple' escaped quotes"
       RUBY
     end
 
@@ -247,6 +273,10 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         a = 'blah #'
             ^^^^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
       RUBY
+
+      expect_correction(<<~RUBY)
+        a = "blah #"
+      RUBY
     end
 
     it 'accepts single quotes at the start of regexp literals' do
@@ -264,18 +294,13 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
         end
       RUBY
     end
-
-    it "auto-corrects ' with \"" do
-      new_source = autocorrect_source("s = 'abc'")
-      expect(new_source).to eq('s = "abc"')
-    end
   end
 
   context 'when configured with a bad value' do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { inspect_source('a = "b"') }
+      expect { expect_no_offenses('a = "b"') }
         .to raise_error(RuntimeError)
     end
   end
@@ -297,10 +322,12 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
             LEFT JOIN X on Y
             FROM Models"
         RUBY
+
+        expect_no_corrections
       end
 
       it 'accepts continued strings using all single quotes' do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           'abc' \
           'def'
         RUBY
@@ -312,6 +339,8 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
           ^^^^^^^ Inconsistent quote style.
           "def"
         RUBY
+
+        expect_no_corrections
       end
 
       it 'registers an offense for unneeded double quotes in continuation' do
@@ -320,6 +349,8 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
           ^^^^^^^ Prefer single-quoted strings when you don't need string interpolation or special symbols.
           "def"
         RUBY
+
+        expect_no_corrections
       end
 
       it "doesn't register offense for double quotes with interpolation" do
@@ -330,7 +361,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it "doesn't register offense for double quotes with embedded single" do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           "abc'" \
           "def"
         RUBY
@@ -369,7 +400,7 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
       end
 
       it 'accepts continued strings using all double quotes' do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           "abc" \
           "def"
         RUBY
@@ -381,6 +412,8 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
           ^^^^^^^ Inconsistent quote style.
           "def"
         RUBY
+
+        expect_no_corrections
       end
 
       it 'registers an offense for unneeded single quotes in continuation' do
@@ -389,10 +422,12 @@ RSpec.describe RuboCop::Cop::Style::StringLiterals, :config do
           ^^^^^^^ Prefer double-quoted strings unless you need single quotes to avoid extra backslashes for escaping.
           'def'
         RUBY
+
+        expect_no_corrections
       end
 
       it "doesn't register offense for single quotes with embedded double" do
-        expect_no_offenses(<<~RUBY)
+        expect_no_offenses(<<~'RUBY')
           'abc"' \
           'def'
         RUBY

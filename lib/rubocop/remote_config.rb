@@ -5,6 +5,7 @@ require 'time'
 
 module RuboCop
   # Common methods and behaviors for dealing with remote config files.
+  # @api private
   class RemoteConfig
     attr_reader :uri
 

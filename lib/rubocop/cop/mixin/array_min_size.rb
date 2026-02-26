@@ -16,7 +16,7 @@ module RuboCop
         cop_config['MinSize']
       end
 
-      def array_style_detected(style, ary_size)
+      def array_style_detected(style, ary_size) # rubocop:todo Metrics/AbcSize
         cfg = config_to_allow_offenses
         return if cfg['Enabled'] == false
 

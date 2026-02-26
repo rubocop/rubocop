@@ -1,0 +1,103 @@
+= Contributing
+
+== Issues
+
+Report issues and suggest features and improvements on the
+https://github.com/rubocop/rubocop/issues[GitHub issue tracker].
+
+If you want to file an issue (bug report or feature request), please provide all
+the necessary info listed in our issue reporting template (it's loaded
+automatically when you create a new GitHub issue).
+
+NOTE: Please, don't ask support-like questions on the issue tracker (e.g. "How
+can I configure RuboCop to do X?" - use the xref:support.adoc[support channels]
+instead.
+
+== Patches
+
+Patches in any form are always welcome! GitHub pull requests are even better! :-)
+
+Before submitting a patch or a pull request make sure all tests are
+passing and that your patch is in line with the https://github.com/rubocop/rubocop/blob/master/CONTRIBUTING.md[contribution
+guidelines].
+
+A handy way to test only the files that you have modified in the last commit
+(with `rspec` and `rubocop`) is to use `rake check_commit`.
+
+Also see the xref:development.adoc[Development section].
+
+== Documentation
+
+Good documentation is just as important as good code.
+Please, help us improve RuboCop's documentation.
+
+You should also check out the
+xref:development.adoc#documentation[cop documentation section] of the docs and consider
+adding or improving Cop descriptions.
+
+=== Working on the Docs
+
+The manual is generated from the AsciiDoc files in the https://github.com/rubocop/rubocop/tree/master/docs[docs] folder of RuboCop's GitHub repo and is published to https://docs.rubocop.org.
+https://antora.org[Antora] is used to convert the manual into HTML.
+The filesystem layout is described at https://docs.antora.org/antora/2.0/component-structure/.
+
+To make changes to the manual you simply have to change the files under `doc`.
+The manual will be regenerated manually periodically.
+
+==== Installing Antora
+
+NOTE: The instructions here assume you already have (the right version of) node.js installed.
+
+Installing the Antora is super simple:
+
+[source]
+----
+$ npm i -g @antora/cli@2.0 @antora/site-generator-default@2.0
+----
+
+Check out https://docs.antora.org/antora/2.0/install/install-antora/[the detailed installation instructions]
+if you run into any problems.
+
+==== Building the Site
+
+You can build the documentation locally from the https://github.com/rubocop/docs.rubocop.org[docs.rubocop.org] repo.
+
+[source]
+----
+$ cd docs.rubocop.org
+$ antora --pull antora-playbook.yml
+----
+
+After you're done with the initial setup you can use the `deploy` script to push changes to the site:
+
+[source]
+----
+./deploy
+----
+
+NOTE: You'll need commit access to the repository for this to work.
+
+To check the generated site you can simply open `docs/index.html` in your favourite browser.
+
+If you want to make changes to the manual's page structure you'll have to edit
+https://github.com/rubocop/rubocop/blob/master/docs/modules/ROOT/nav.adoc[nav.adoc].
+
+== Funding
+
+While RuboCop is free software and will always be, the project would benefit immensely from some funding.
+Raising a monthly budget of a couple of thousand dollars would make it possible to pay people to work on
+certain complex features, fund other development related stuff (e.g. hardware, conference trips) and so on.
+Raising a monthly budget of over $5000 would open the possibility of someone working full-time on the project
+which would speed up the pace of development significantly.
+
+We welcome both individual and corporate sponsors! We also offer a wide array of funding channels to account
+for your preferences (although currently https://opencollective.com/rubocop[Open Collective] is our preferred funding platform).
+
+If you're working in a company that's making significant use of RuboCop we'd appreciate it if you suggest to your company
+to become a RuboCop sponsor.
+
+You can support the development of RuboCop via
+https://github.com/sponsors/bbatsov[GitHub Sponsors],
+https://www.patreon.com/bbatsov[Patreon],
+https://paypal.me/bbatsov[PayPal],
+and https://opencollective.com/rubocop[Open Collective].

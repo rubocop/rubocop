@@ -19,12 +19,13 @@ module RuboCop
       #
       #   # good
       #   result = "Tests #{success ? "PASS" : "FAIL"}"
-      class StringLiteralsInInterpolation < Cop
+      class StringLiteralsInInterpolation < Base
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
+        extend AutoCorrector
 
-        def autocorrect(node)
-          StringLiteralCorrector.correct(node, style)
+        def autocorrect(corrector, node)
+          StringLiteralCorrector.correct(corrector, node, style)
         end
 
         private

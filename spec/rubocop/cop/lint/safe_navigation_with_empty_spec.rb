@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::SafeNavigationWithEmpty do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::SafeNavigationWithEmpty, :config do
   context 'in a conditional' do
-    it 'registers an offense on `&.empty?`' do
+    it 'registers an offense and corrects on `&.empty?`' do
       expect_offense(<<~RUBY)
         return unless foo&.empty?
-        ^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid calling `empty?` with the safe navigation operator in conditionals.
+                      ^^^^^^^^^^^ Avoid calling `empty?` with the safe navigation operator in conditionals.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        return unless foo && foo.empty?
       RUBY
     end
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ShadowedException do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
   context 'modifier rescue' do
     it 'accepts rescue in its modifier form' do
       expect_no_offenses('foo rescue nil')
@@ -32,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
 
     it 'rescue a exception without causing constant name deprecation warning' do
       expect do
-        inspect_source(<<~RUBY)
+        expect_no_offenses(<<~RUBY)
           def foo
             something
           rescue TimeoutError
@@ -351,7 +349,7 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException do
         RUBY
       end
 
-      it 'registers an offense for splat arguments rescued after ' \
+      it 'does not register an offense for splat arguments rescued after ' \
          'rescuing a known exception' do
         expect_no_offenses(<<~RUBY)
           begin

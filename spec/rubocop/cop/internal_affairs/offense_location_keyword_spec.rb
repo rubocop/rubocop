@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::InternalAffairs::OffenseLocationKeyword do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::InternalAffairs::OffenseLocationKeyword, :config do
   context 'when `node.loc.selector` is passed' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

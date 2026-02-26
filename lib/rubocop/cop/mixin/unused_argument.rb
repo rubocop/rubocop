@@ -7,10 +7,6 @@ module RuboCop
       module UnusedArgument
         extend NodePattern::Macros
 
-        def join_force?(force_class)
-          force_class == VariableForce
-        end
-
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_argument(variable)
@@ -24,8 +20,10 @@ module RuboCop
           return if variable.referenced?
 
           message = message(variable)
-          add_offense(variable.declaration_node, location: :name,
-                                                 message: message)
+
+          add_offense(variable.declaration_node.loc.name, message: message) do |corrector|
+            autocorrect(corrector, variable.declaration_node)
+          end
         end
       end
     end

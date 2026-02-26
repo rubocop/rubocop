@@ -114,15 +114,15 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
         expect(output.string).to include(<<~OUTPUT)
           1..3
           not ok 1 - lib/rubocop.rb
-          # lib/rubocop.rb:2:3: C: foo
+          # lib/rubocop.rb:2:3: C: [Correctable] foo
           # This is line 2.
           #   ^
           ok 2 - spec/spec_helper.rb
           not ok 3 - exe/rubocop
-          # exe/rubocop:5:2: E: bar
+          # exe/rubocop:5:2: E: [Correctable] bar
           # This is line 5.
           #  ^
-          # exe/rubocop:6:1: C: foo
+          # exe/rubocop:6:1: C: [Correctable] foo
           # This is line 6.
           # ^
         OUTPUT
@@ -140,6 +140,35 @@ RSpec.describe RuboCop::Formatter::TapFormatter do
       it 'does not report offenses' do
         formatter.finished(files)
         expect(output.string).not_to include('not ok')
+      end
+    end
+  end
+
+  describe '#report_file', :config do
+    let(:cop_class) { RuboCop::Cop::Cop }
+    let(:output) { StringIO.new }
+
+    before { cop.send(:begin_investigation, processed_source) }
+
+    context 'when the source contains multibyte characters' do
+      let(:source) do
+        <<~RUBY
+          do_something("あああ", ["いいい"])
+        RUBY
+      end
+
+      it 'displays text containing the offending source line' do
+        location = source_range(source.index('[')..source.index(']'))
+
+        cop.add_offense(nil, location: location, message: 'message 1')
+        formatter.report_file('test', cop.offenses)
+
+        expect(output.string)
+          .to eq <<~OUTPUT
+            # test:1:21: C: message 1
+            # do_something("あああ", ["いいい"])
+            #                        ^^^^^^^^^^
+        OUTPUT
       end
     end
   end

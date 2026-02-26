@@ -46,7 +46,7 @@ RSpec.describe RuboCop::Cop::Offense do
   %i[severity location message cop_name].each do |a|
     describe "##{a}" do
       it 'is frozen' do
-        expect(offense.send(a).frozen?).to be(true)
+        expect(offense.public_send(a).frozen?).to be(true)
       end
     end
   end
@@ -66,19 +66,27 @@ RSpec.describe RuboCop::Cop::Offense do
                      .level
     end
 
-    context 'when severity is :refactor' do
-      let(:severity) { :refactor }
+    context 'when severity is :info' do
+      let(:severity) { :info }
 
       it 'is 1' do
         expect(severity_level).to eq(1)
       end
     end
 
+    context 'when severity is :refactor' do
+      let(:severity) { :refactor }
+
+      it 'is 2' do
+        expect(severity_level).to eq(2)
+      end
+    end
+
     context 'when severity is :fatal' do
       let(:severity) { :fatal }
 
-      it 'is 5' do
-        expect(severity_level).to eq(5)
+      it 'is 6' do
+        expect(severity_level).to eq(6)
       end
     end
   end
@@ -178,6 +186,51 @@ RSpec.describe RuboCop::Cop::Offense do
 
     it 'highlights the first line' do
       expect(offense.highlighted_area.source).to eq('Foo')
+    end
+  end
+
+  context 'when the location is pseudo' do
+    let(:location) { described_class::NO_LOCATION }
+
+    it 'returns a location with valid size and length' do
+      expect(offense.location.size).to eq 0
+      expect(offense.location.length).to eq 0
+    end
+
+    it 'returns a line' do
+      expect(offense.line).to eq 1
+    end
+
+    it 'returns a column' do
+      expect(offense.column).to eq 0
+    end
+
+    it 'returns a source line' do
+      expect(offense.source_line).to eq ''
+    end
+
+    it 'returns a column length' do
+      expect(offense.column_length).to eq 0
+    end
+
+    it 'returns the first line' do
+      expect(offense.first_line).to eq 1
+    end
+
+    it 'returns the last line' do
+      expect(offense.last_line).to eq 1
+    end
+
+    it 'returns the last column' do
+      expect(offense.last_column).to eq 0
+    end
+
+    it 'returns a column range' do
+      expect(offense.column_range).to eq 0...0
+    end
+
+    it 'returns a real column' do
+      expect(offense.real_column).to eq 1
     end
   end
 end

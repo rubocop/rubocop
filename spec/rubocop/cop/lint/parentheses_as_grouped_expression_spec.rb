@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
   it 'registers an offense and corrects for method call with space before ' \
      'the parenthesis' do
     expect_offense(<<~RUBY)
@@ -27,6 +25,18 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
     RUBY
   end
 
+  it 'does not register an offense for expression followed by an operator' do
+    expect_no_offenses(<<~RUBY)
+      func (x) || y
+    RUBY
+  end
+
+  it 'does not register an offense for expression followed by chained expression' do
+    expect_no_offenses(<<~RUBY)
+      func (x).func.func.func.func.func
+    RUBY
+  end
+
   it 'does not register an offense for math expression' do
     expect_no_offenses(<<~RUBY)
       puts (2 + 3) * 4
@@ -36,6 +46,13 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   it 'does not register an offense for math expression with `to_i`' do
     expect_no_offenses(<<~RUBY)
       do_something.eq (foo * bar).to_i
+    RUBY
+  end
+
+  it 'does not register an offense when method argument parentheses are omitted and ' \
+    'hash argument key is enclosed in parentheses' do
+    expect_no_offenses(<<~RUBY)
+      transition (foo - bar) => value
     RUBY
   end
 

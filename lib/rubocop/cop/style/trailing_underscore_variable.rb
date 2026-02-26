@@ -28,13 +28,16 @@ module RuboCop
       #   # bad
       #   a, b, _something = foo()
       #
-      class TrailingUnderscoreVariable < Cop
+      class TrailingUnderscoreVariable < Base
         include SurroundingSpace
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Do not use trailing `_`s in parallel assignment. ' \
               'Prefer `%<code>s`.'
         UNDERSCORE = '_'
+        DISALLOW = %i[lvasgn splat].freeze
+        private_constant :DISALLOW
 
         def on_masgn(node)
           ranges = unneeded_ranges(node)
@@ -44,17 +47,9 @@ module RuboCop
             offset = range.begin_pos - node.source_range.begin_pos
             good_code[offset, range.size] = ''
 
-            add_offense(node,
-                        location: range,
-                        message: format(MSG, code: good_code))
-          end
-        end
-
-        def autocorrect(node)
-          ranges = unneeded_ranges(node)
-
-          lambda do |corrector|
-            ranges.each { |range| corrector.remove(range) if range }
+            add_offense(range, message: format(MSG, code: good_code)) do |corrector|
+              corrector.remove(range)
+            end
           end
         end
 
@@ -71,15 +66,13 @@ module RuboCop
 
         def find_first_possible_offense(variables)
           variables.reduce(nil) do |offense, variable|
-            break offense unless %i[lvasgn splat].include?(variable.type)
+            break offense unless DISALLOW.include?(variable.type)
 
             var, = *variable
             var, = *var
-            if allow_named_underscore_variables
-              break offense unless var == :_
-            else
-              break offense unless var.to_s.start_with?(UNDERSCORE)
-            end
+
+            break offense if (allow_named_underscore_variables && var != :_) ||
+                             !var.to_s.start_with?(UNDERSCORE)
 
             variable
           end

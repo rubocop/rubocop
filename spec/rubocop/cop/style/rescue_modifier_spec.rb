@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RescueModifier do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => {
                           'Width' => 2
@@ -13,6 +11,14 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     expect_offense(<<~RUBY)
       method rescue handle
       ^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        method
+      rescue
+        handle
+      end
     RUBY
   end
 
@@ -39,6 +45,18 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
         normal_handle
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        begin
+          test
+        rescue
+          modifier_handle
+        end
+      rescue
+        normal_handle
+      end
+    RUBY
   end
 
   it 'handles modifier rescue in a method' do
@@ -46,6 +64,31 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
       def a_method
         test rescue nil
         ^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def a_method
+        begin
+          test
+        rescue
+          nil
+        end
+      end
+    RUBY
+  end
+
+  it 'handles parentheses around a rescue modifier' do
+    expect_offense(<<~RUBY)
+      (foo rescue nil)
+       ^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      begin
+        foo
+      rescue
+        nil
       end
     RUBY
   end
@@ -133,26 +176,13 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
   end
 
   context 'autocorrect' do
-    it 'corrects basic rescue modifier' do
-      new_source = autocorrect_source(<<~RUBY)
-        foo rescue bar
-      RUBY
-
-      expect(new_source).to eq(<<~RUBY)
-        begin
-          foo
-        rescue
-          bar
-        end
-      RUBY
-    end
-
     it 'corrects complex rescue modifier' do
-      new_source = autocorrect_source(<<~RUBY)
+      expect_offense(<<~RUBY)
         foo || bar rescue bar
+        ^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         begin
           foo || bar
         rescue
@@ -161,60 +191,20 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
       RUBY
     end
 
-    it 'corrects rescue modifier nested inside of def' do
-      source = <<~RUBY
-        def foo
-          test rescue modifier_handle
-        end
-      RUBY
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
-        def foo
-          begin
-            test
-          rescue
-            modifier_handle
-          end
-        end
-      RUBY
-    end
-
-    it 'corrects nested rescue modifier' do
-      source = <<~RUBY
-        begin
-          test rescue modifier_handle
-        rescue
-          normal_handle
-        end
-      RUBY
-      new_source = autocorrect_source(source)
-
-      expect(new_source).to eq(<<~RUBY)
-        begin
-          begin
-            test
-          rescue
-            modifier_handle
-          end
-        rescue
-          normal_handle
-        end
-      RUBY
-    end
-
     it 'corrects doubled rescue modifiers' do
-      new_source = autocorrect_source_with_loop(<<~RUBY)
+      expect_offense(<<~RUBY)
         blah rescue 1 rescue 2
+        ^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
+        ^^^^^^^^^^^^^^^^^^^^^^ Avoid using `rescue` in its modifier form.
       RUBY
 
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         begin
           begin
-            blah
-          rescue
-            1
-          end
+          blah
+        rescue
+          1
+        end
         rescue
           2
         end
@@ -222,9 +212,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
   end
 
-  describe 'excluded file' do
-    subject(:cop) { described_class.new(config) }
-
+  describe 'excluded file', :config do
     let(:config) do
       RuboCop::Config.new('Style/RescueModifier' =>
                           { 'Enabled' => true,

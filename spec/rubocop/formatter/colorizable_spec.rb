@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Formatter::Colorizable do
       it "invokes #colorize(string, #{color}" do
         expect(formatter).to receive(:colorize).with('foo', color)
 
-        formatter.send(color, 'foo')
+        formatter.public_send(color, 'foo')
       end
     end
   end

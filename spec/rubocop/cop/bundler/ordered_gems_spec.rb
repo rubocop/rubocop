@@ -86,20 +86,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When each individual group of line is not sorted' do
-    let(:source) { <<~RUBY }
-      gem "d"
-      gem "b"
-      gem "e"
-      gem "a"
-      gem "c"
-
-      gem "h"
-      gem "g"
-      gem "j"
-      gem "f"
-      gem "i"
-    RUBY
-
     it 'registers some offenses' do
       expect_offense(<<~RUBY)
         gem "d"
@@ -118,11 +104,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         ^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `f` should appear before `j`.
         gem "i"
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         gem "a"
         gem "b"
         gem "c"
@@ -176,12 +159,6 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
   end
 
   context 'When gems have an inline comment, and not sorted' do
-    let(:source) { <<~RUBY }
-      gem 'rubocop' # For code quality
-      gem 'pry'
-      gem 'rspec'   # For test
-    RUBY
-
     it 'registers an offense' do
       expect_offense(<<~RUBY)
         gem 'rubocop' # For code quality
@@ -189,11 +166,8 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         ^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `pry` should appear before `rubocop`.
         gem 'rspec'   # For test
       RUBY
-    end
 
-    it 'autocorrects' do
-      new_source = autocorrect_source_with_loop(source)
-      expect(new_source).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         gem 'pry'
         gem 'rspec'   # For test
         gem 'rubocop' # For code quality
@@ -201,11 +175,11 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
   end
 
-  context 'When gems are asciibetically sorted' do
+  context 'When gems are asciibetically sorted irrespective of _' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)
-        gem 'paper_trail'
         gem 'paperclip'
+        gem 'paper_trail'
       RUBY
     end
   end
@@ -231,6 +205,38 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
         gem 'a'
         gem 'Z'
       RUBY
+    end
+  end
+
+  context 'When a gem is sorted but not so when disregarding _-' do
+    context 'by default' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          gem 'active-admin-some_plugin'
+          gem 'active_admin_other_plugin'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `active_admin_other_plugin` should appear before `active-admin-some_plugin`.
+          gem 'activeadmin'
+          ^^^^^^^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `activeadmin` should appear before `active_admin_other_plugin`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          gem 'activeadmin'
+          gem 'active_admin_other_plugin'
+          gem 'active-admin-some_plugin'
+        RUBY
+      end
+    end
+
+    context 'when ConsiderPunctuation is true' do
+      let(:cop_config) { super().merge({ 'ConsiderPunctuation' => true }) }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          gem 'active-admin-some_plugin'
+          gem 'active_admin_other_plugin'
+          gem 'activeadmin'
+        RUBY
+      end
     end
   end
 

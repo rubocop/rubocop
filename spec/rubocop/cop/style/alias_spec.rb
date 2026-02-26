@@ -9,11 +9,10 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
         alias :ala :bala
         ^^^^^ Use `alias_method` instead of `alias`.
       RUBY
-    end
 
-    it 'autocorrects alias with symbol args' do
-      corrected = autocorrect_source('alias :ala :bala')
-      expect(corrected).to eq 'alias_method :ala, :bala'
+      expect_correction(<<~RUBY)
+        alias_method :ala, :bala
+      RUBY
     end
 
     it 'registers an offense for alias with bareword args' do
@@ -21,11 +20,10 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
         alias ala bala
         ^^^^^ Use `alias_method` instead of `alias`.
       RUBY
-    end
 
-    it 'autocorrects alias with bareword args' do
-      corrected = autocorrect_source('alias ala bala')
-      expect(corrected).to eq 'alias_method :ala, :bala'
+      expect_correction(<<~RUBY)
+        alias_method :ala, :bala
+      RUBY
     end
 
     it 'does not register an offense for alias_method' do
@@ -57,11 +55,10 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
         alias :ala :bala
               ^^^^^^^^^^ Use `alias ala bala` instead of `alias :ala :bala`.
       RUBY
-    end
 
-    it 'autocorrects alias with symbol args' do
-      corrected = autocorrect_source('alias :ala :bala')
-      expect(corrected).to eq 'alias ala bala'
+      expect_correction(<<~RUBY)
+        alias ala bala
+      RUBY
     end
 
     it 'does not register an offense for alias with bareword args' do
@@ -73,11 +70,10 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
         alias_method :ala, :bala
         ^^^^^^^^^^^^ Use `alias` instead of `alias_method` at the top level.
       RUBY
-    end
 
-    it 'autocorrects alias_method at the top level' do
-      corrected = autocorrect_source('alias_method :ala, :bala')
-      expect(corrected).to eq 'alias ala bala'
+      expect_correction(<<~RUBY)
+        alias ala bala
+      RUBY
     end
 
     it 'registers an offense for alias_method in a class block' do
@@ -87,15 +83,8 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
           ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a class body.
         end
       RUBY
-    end
 
-    it 'autocorrects alias_method in a class block' do
-      corrected = autocorrect_source(<<~RUBY)
-        class C
-          alias_method :ala, :bala
-        end
-      RUBY
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         class C
           alias ala bala
         end
@@ -109,15 +98,8 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
           ^^^^^^^^^^^^ Use `alias` instead of `alias_method` in a module body.
         end
       RUBY
-    end
 
-    it 'autocorrects alias_method in a module block' do
-      corrected = autocorrect_source(<<~RUBY)
-        module M
-          alias_method :ala, :bala
-        end
-      RUBY
-      expect(corrected).to eq(<<~RUBY)
+      expect_correction(<<~RUBY)
         module M
           alias ala bala
         end

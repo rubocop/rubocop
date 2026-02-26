@@ -17,19 +17,18 @@ module RuboCop
       #     def foo; end
       #   end
       #
-      class InitialIndentation < Cop
+      class InitialIndentation < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Indentation of first line in file detected.'
 
-        def investigate(_processed_source)
+        def on_new_investigation
           space_before(first_token) do |space|
-            add_offense(space, location: first_token.pos)
+            add_offense(first_token.pos) do |corrector|
+              corrector.remove(space)
+            end
           end
-        end
-
-        def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
         end
 
         private

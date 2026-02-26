@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     it 'registers an offense for an assignment of an element' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 1, 0> 1.41/0]
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 2, 0> 2.24/0]
           x[0] = 1
         end
       RUBY
@@ -49,9 +49,9 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
        'scores' do
       expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<1, 4, 4> 5.74/0]
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<3, 4, 5> 7.07/0]
           my_options = Hash.new if 1 == 1 || 2 == 2 # 1, 1, 4
-          my_options.each do |key, value|           # 0, 1, 0
+          my_options.each do |key, value|           # 2, 1, 1
             p key                                   # 0, 1, 0
             p value                                 # 0, 1, 0
           end
@@ -68,38 +68,98 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
       RUBY
     end
 
-    it 'treats safe navigation method calls like regular method calls' do
-      expect_offense(<<~RUBY) # sqrt(0 + 2*2 + 0) => 2
+    it 'treats safe navigation method calls like regular method calls + a condition' do
+      expect_offense(<<~RUBY)
         def method_name
-        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<0, 2, 0> 2/0]
+        ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [<0, 2, 1> 2.24/0]
           object&.do_something
         end
       RUBY
     end
 
     context 'when method is in list of ignored methods' do
-      let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
+      context 'when given a string' do
+        let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
 
-      it 'does not register an offense when defining an instance method' do
-        expect_no_offenses(<<~RUBY)
+        it 'does not register an offense when defining an instance method' do
+          expect_no_offenses(<<~RUBY)
+            def foo
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when defining a class method' do
+          expect_no_offenses(<<~RUBY)
+            def self.foo
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when using `define_method`' do
+          expect_no_offenses(<<~RUBY)
+            define_method :foo do
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+      end
+
+      context 'when given a regex' do
+        let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => [/foo/] } }
+
+        it 'does not register an offense when defining an instance method' do
+          expect_no_offenses(<<~RUBY)
+            def foo
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when defining a class method' do
+          expect_no_offenses(<<~RUBY)
+            def self.foo
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when using `define_method`' do
+          expect_no_offenses(<<~RUBY)
+            define_method :foo do
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'when CountRepeatedAttributes is `false`' do
+      let(:cop_config) { { 'Max' => 0, 'CountRepeatedAttributes' => false } }
+
+      it 'does not count repeated attributes' do
+        expect_offense(<<~RUBY)
           def foo
-            bar.baz(:qux)
+          ^^^^^^^ Assignment Branch Condition size for foo is too high. [<0, 1, 0> 1/0]
+            bar
+            self.bar
+            bar
           end
         RUBY
       end
+    end
 
-      it 'does not register an offense when defining a class method' do
-        expect_no_offenses(<<~RUBY)
-          def self.foo
-            bar.baz(:qux)
-          end
-        RUBY
-      end
+    context 'when CountRepeatedAttributes is `true`' do
+      let(:cop_config) { { 'Max' => 0, 'CountRepeatedAttributes' => true } }
 
-      it 'does not register an offense when using `define_method`' do
-        expect_no_offenses(<<~RUBY)
-          define_method :foo do
-            bar.baz(:qux)
+      it 'counts repeated attributes' do
+        expect_offense(<<~RUBY)
+          def foo
+          ^^^^^^^ Assignment Branch Condition size for foo is too high. [<0, 3, 0> 3/0]
+            bar
+            self.bar
+            bar
           end
         RUBY
       end
@@ -145,12 +205,14 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
         # Build an amount of code large enough to register an offense.
         code = ['  x = Hash.new if 1 == 1 || 2 == 2'] * max
 
-        inspect_source(['def method_name',
-                        *code,
-                        'end'].join("\n"))
-        expect(cop.messages)
-          .to eq(['Assignment Branch Condition size for method_name is too ' \
-                  "high. [#{presentation}]"])
+        expect_offense(<<~RUBY)
+          def method_name
+          ^^^^^^^^^^^^^^^ Assignment Branch Condition size for method_name is too high. [#{presentation}]
+            #{code.join("\n  ")}
+          end
+        RUBY
+
+        expect_no_corrections
       end
     end
   end

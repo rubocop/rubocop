@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak, :config do
   it 'registers an offense and corrects elements listed on the first line' do
     expect_offense(<<~RUBY)
       a = { a: 1,
@@ -11,7 +9,7 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
     RUBY
 
     expect_correction(<<~RUBY)
-      a = { 
+      a = {#{trailing_whitespace}
       a: 1,
             b: 2 }
     RUBY
@@ -25,9 +23,25 @@ RSpec.describe RuboCop::Cop::Layout::FirstHashElementLineBreak do
     RUBY
 
     expect_correction(<<~RUBY)
-      method({ 
+      method({#{trailing_whitespace}
       foo: 1,
                bar: 2 })
+    RUBY
+  end
+
+  it 'registers an offense and corrects single element multi-line hash' do
+    expect_offense(<<~RUBY)
+      { foo: {
+        ^^^^^^ Add a line break before the first element of a multi-line hash.
+        bar: 2,
+      } }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      {#{trailing_whitespace}
+      foo: {
+        bar: 2,
+      } }
     RUBY
   end
 

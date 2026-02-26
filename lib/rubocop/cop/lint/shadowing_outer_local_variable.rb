@@ -3,10 +3,18 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop looks for use of the same name as outer local variables
-      # for block arguments or block local variables.
-      # This is a mimic of the warning
-      # "shadowing outer local variable - foo" from `ruby -cw`.
+      # This cop checks for the use of local variable names from an outer scope
+      # in block arguments or block-local variables. This mirrors the warning
+      # given by `ruby -cw` prior to Ruby 2.6:
+      # "shadowing outer local variable - foo".
+      #
+      # NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
+      # because `Ractor` should not access outer variables.
+      # eg. following syle is encouraged:
+      #
+      #   worker_id, pipe = env
+      #   Ractor.new(worker_id, pipe) do |worker_id, pipe|
+      #   end
       #
       # @example
       #
@@ -31,15 +39,21 @@ module RuboCop
       #       do_something(bar)
       #     end
       #   end
-      class ShadowingOuterLocalVariable < Cop
+      class ShadowingOuterLocalVariable < Base
         MSG = 'Shadowing outer local variable - `%<variable>s`.'
 
-        def join_force?(force_class)
-          force_class == VariableForce
+        # @!method ractor_block?(node)
+        def_node_matcher :ractor_block?, <<~PATTERN
+          (block (send (const nil? :Ractor) :new ...) ...)
+        PATTERN
+
+        def self.joining_forces
+          VariableForce
         end
 
         def before_declaring_variable(variable, variable_table)
           return if variable.should_be_unused?
+          return if ractor_block?(variable.scope.node)
 
           outer_local_variable = variable_table.find_variable(variable.name)
           return unless outer_local_variable

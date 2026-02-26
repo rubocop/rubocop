@@ -38,25 +38,29 @@ module RuboCop
       #     x: y
       #   )
       #
-      class EmptyLinesAroundArguments < Cop
+      class EmptyLinesAroundArguments < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Empty line detected around arguments.'
 
         def on_send(node)
-          return if node.single_line? || node.arguments.empty?
+          return if node.single_line? || node.arguments.empty? ||
+                    receiver_and_method_call_on_different_lines?(node)
 
-          extra_lines(node) { |range| add_offense(node, location: range) }
+          extra_lines(node) do |range|
+            add_offense(range) do |corrector|
+              corrector.remove(range)
+            end
+          end
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          lambda do |corrector|
-            extra_lines(node) { |range| corrector.remove(range) }
-          end
-        end
-
         private
+
+        def receiver_and_method_call_on_different_lines?(node)
+          node.receiver && node.receiver.loc.last_line != node.loc.selector&.line
+        end
 
         def empty_lines(node)
           lines = processed_lines(node)

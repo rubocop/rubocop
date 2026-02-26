@@ -9,26 +9,35 @@ module RuboCop
       # for an optional argument, your method should too.
       #
       # @example
-      #   # bad
-      #   def to_json
+      #   class Point
+      #     attr_reader :x, :y
+      #
+      #     # bad, incorrect arity
+      #     def to_json
+      #       JSON.generate([x, y])
+      #     end
+      #
+      #     # good, preserving args
+      #     def to_json(*args)
+      #       JSON.generate([x, y], *args)
+      #     end
+      #
+      #     # good, discarding args
+      #     def to_json(*_args)
+      #       JSON.generate([x, y])
+      #     end
       #   end
       #
-      #   # good
-      #   def to_json(*_args)
-      #   end
-      #
-      class ToJSON < Cop
-        MSG = ' `#to_json` requires an optional argument to be parsable ' \
+      class ToJSON < Base
+        extend AutoCorrector
+
+        MSG = '`#to_json` requires an optional argument to be parsable ' \
           'via JSON.generate(obj).'
 
         def on_def(node)
           return unless node.method?(:to_json) && node.arguments.empty?
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             # The following used `*_args` because `to_json(*args)` has
             # an offense of `Lint/UnusedMethodArgument` cop if `*args`
             # is not used.

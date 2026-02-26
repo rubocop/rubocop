@@ -4,8 +4,6 @@ RSpec.describe(
   RuboCop::Cop::Lint::DisjunctiveAssignmentInConstructor,
   :config
 ) do
-  subject(:cop) { described_class.new(config) }
-
   context 'empty constructor' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)
@@ -43,7 +41,7 @@ RSpec.describe(
     end
 
     context 'LHS is ivar' do
-      it 'registers an offense' do
+      it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)
           class Banana
             def initialize
@@ -52,15 +50,32 @@ RSpec.describe(
             end
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          class Banana
+            def initialize
+              @delicious = true
+            end
+          end
+        RUBY
       end
 
       context 'constructor calls super after assignment' do
-        it 'registers an offense' do
+        it 'registers an offense and corrects' do
           expect_offense(<<~RUBY)
             class Banana
               def initialize
                 @delicious ||= true
                            ^^^ Unnecessary disjunctive assignment. Use plain assignment.
+                super
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Banana
+              def initialize
+                @delicious = true
                 super
               end
             end

@@ -64,8 +64,9 @@ module RuboCop
       #       # ...
       #     end
       #   end
-      class EmptyLinesAroundClassBody < Cop
+      class EmptyLinesAroundClassBody < Base
         include EmptyLinesAroundBody
+        extend AutoCorrector
 
         KIND = 'class'
 
@@ -77,10 +78,6 @@ module RuboCop
 
         def on_sclass(node)
           check(node, node.body)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
         end
       end
     end

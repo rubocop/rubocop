@@ -13,16 +13,15 @@ module RuboCop
       #   # good
       #   Foo.__send__(:bar)
       #   quuz.public_send(:fred)
-      class Send < Cop
+      class Send < Base
         MSG = 'Prefer `Object#__send__` or `Object#public_send` to ' \
               '`send`.'
-
-        def_node_matcher :sending?, '({send csend} _ :send ...)'
+        RESTRICT_ON_SEND = %i[send].freeze
 
         def on_send(node)
-          return unless sending?(node) && node.arguments?
+          return unless node.arguments?
 
-          add_offense(node, location: :selector)
+          add_offense(node.loc.selector)
         end
         alias on_csend on_send
       end

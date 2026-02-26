@@ -5,13 +5,11 @@ module RuboCop
     # This class does condition auto-correction
     class ConditionCorrector
       class << self
-        def correct_negative_condition(node)
+        def correct_negative_condition(corrector, node)
           condition = negated_condition(node)
 
-          lambda do |corrector|
-            corrector.replace(node.loc.keyword, node.inverse_keyword)
-            corrector.replace(condition, condition.children.first.source)
-          end
+          corrector.replace(node.loc.keyword, node.inverse_keyword)
+          corrector.replace(condition, condition.children.first.source)
         end
 
         private

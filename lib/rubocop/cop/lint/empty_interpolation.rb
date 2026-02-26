@@ -16,18 +16,17 @@ module RuboCop
       #   # good
       #
       #   "result is #{some_result}"
-      class EmptyInterpolation < Cop
+      class EmptyInterpolation < Base
         include Interpolation
+        extend AutoCorrector
 
         MSG = 'Empty interpolation detected.'
 
         def on_interpolation(begin_node)
-          add_offense(begin_node) if begin_node.children.empty?
-        end
+          return unless begin_node.children.empty?
 
-        def autocorrect(node)
-          lambda do |collector|
-            collector.remove(node.loc.expression)
+          add_offense(begin_node) do |corrector|
+            corrector.remove(begin_node.loc.expression)
           end
         end
       end

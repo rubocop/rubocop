@@ -34,6 +34,5 @@ RSpec.describe RuboCop::StringInterpreter do
     it_behaves_like 'simple escape', '\\\\s'
     it_behaves_like 'simple escape', '\\\\t'
     it_behaves_like 'simple escape', '\\\\v'
-    it_behaves_like 'simple escape', '\\\\n'
   end
 end

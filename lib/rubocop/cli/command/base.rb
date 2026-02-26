@@ -4,6 +4,7 @@ module RuboCop
   class CLI
     module Command
       # A subcommand in the CLI.
+      # @api private
       class Base
         attr_reader :env
 
@@ -13,6 +14,7 @@ module RuboCop
           attr_accessor :command_name
 
           def inherited(subclass)
+            super
             @subclasses << subclass
           end
 

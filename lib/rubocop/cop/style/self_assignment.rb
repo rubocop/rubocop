@@ -12,7 +12,9 @@ module RuboCop
       #
       #   # good
       #   x += 1
-      class SelfAssignment < Cop
+      class SelfAssignment < Base
+        extend AutoCorrector
+
         MSG = 'Use self-assignment shorthand `%<method>s=`.'
         OPS = %i[+ - * ** / | &].freeze
 
@@ -30,16 +32,6 @@ module RuboCop
 
         def on_cvasgn(node)
           check(node, :cvar)
-        end
-
-        def autocorrect(node)
-          _var_name, rhs = *node
-
-          if rhs.send_type?
-            autocorrect_send_node(node, rhs)
-          elsif %i[and or].include?(rhs.type)
-            autocorrect_boolean_node(node, rhs)
-          end
         end
 
         private
@@ -62,7 +54,9 @@ module RuboCop
           target_node = s(var_type, var_name)
           return unless receiver == target_node
 
-          add_offense(node, message: format(MSG, method: method_name))
+          add_offense(node, message: format(MSG, method: method_name)) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def check_boolean_node(node, rhs, var_name, var_type)
@@ -72,24 +66,34 @@ module RuboCop
           return unless first_operand == target_node
 
           operator = rhs.loc.operator.source
-          add_offense(node, message: format(MSG, method: operator))
-        end
-
-        def autocorrect_send_node(node, rhs)
-          _receiver, method_name, args = *rhs
-          apply_autocorrect(node, rhs, method_name.to_s, args)
-        end
-
-        def autocorrect_boolean_node(node, rhs)
-          _first_operand, second_operand = *rhs
-          apply_autocorrect(node, rhs, rhs.loc.operator.source, second_operand)
-        end
-
-        def apply_autocorrect(node, rhs, operator, new_rhs)
-          lambda do |corrector|
-            corrector.insert_before(node.loc.operator, operator)
-            corrector.replace(rhs, new_rhs.source)
+          add_offense(node, message: format(MSG, method: operator)) do |corrector|
+            autocorrect(corrector, node)
           end
+        end
+
+        def autocorrect(corrector, node)
+          _var_name, rhs = *node
+
+          if rhs.send_type?
+            autocorrect_send_node(corrector, node, rhs)
+          elsif %i[and or].include?(rhs.type)
+            autocorrect_boolean_node(corrector, node, rhs)
+          end
+        end
+
+        def autocorrect_send_node(corrector, node, rhs)
+          _receiver, method_name, args = *rhs
+          apply_autocorrect(corrector, node, rhs, method_name.to_s, args)
+        end
+
+        def autocorrect_boolean_node(corrector, node, rhs)
+          _first_operand, second_operand = *rhs
+          apply_autocorrect(corrector, node, rhs, rhs.loc.operator.source, second_operand)
+        end
+
+        def apply_autocorrect(corrector, node, rhs, operator, new_rhs)
+          corrector.insert_before(node.loc.operator, operator)
+          corrector.replace(rhs, new_rhs.source)
         end
       end
     end

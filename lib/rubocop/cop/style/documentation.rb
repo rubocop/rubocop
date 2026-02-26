@@ -55,13 +55,32 @@ module RuboCop
       #       Public = Class.new
       #     end
       #
-      class Documentation < Cop
+      #     # Macro calls
+      #     module Namespace
+      #       extend Foo
+      #     end
+      #
+      # @example AllowedConstants: ['ClassMethods']
+      #
+      #    # good
+      #    module A
+      #      module ClassMethods
+      #        # ...
+      #      end
+      #     end
+      #
+      class Documentation < Base
         include DocumentationComment
 
         MSG = 'Missing top-level %<type>s documentation comment.'
 
+        # @!method constant_definition?(node)
         def_node_matcher :constant_definition?, '{class module casgn}'
+
+        # @!method outer_module(node)
         def_node_search :outer_module, '(const (const nil? _) _)'
+
+        # @!method constant_visibility_declaration?(node)
         def_node_matcher :constant_visibility_declaration?, <<~PATTERN
           (send nil? {:public_constant :private_constant} ({sym str} _))
         PATTERN
@@ -80,20 +99,29 @@ module RuboCop
 
         def check(node, body, type)
           return if namespace?(body)
-          return if documentation_comment?(node) || nodoc_comment?(node)
-          return if compact_namespace?(node) &&
-                    nodoc_comment?(outer_module(node).first)
+          return if documentation_comment?(node)
+          return if constant_allowed?(node)
+          return if nodoc_self_or_outer_module?(node)
+          return if macro_only?(body)
 
-          add_offense(node,
-                      location: :keyword,
-                      message: format(MSG, type: type))
+          add_offense(node.loc.keyword, message: format(MSG, type: type))
+        end
+
+        def nodoc_self_or_outer_module?(node)
+          nodoc_comment?(node) ||
+            compact_namespace?(node) && nodoc_comment?(outer_module(node).first)
+        end
+
+        def macro_only?(body)
+          body.respond_to?(:macro?) && body.macro? ||
+            body.respond_to?(:children) && body.children&.all? { |child| macro_only?(child) }
         end
 
         def namespace?(node)
           return false unless node
 
           if node.begin_type?
-            node.children.all?(&method(:constant_declaration?))
+            node.children.all? { |child| constant_declaration?(child) }
           else
             constant_definition?(node)
           end
@@ -103,8 +131,12 @@ module RuboCop
           constant_definition?(node) || constant_visibility_declaration?(node)
         end
 
+        def constant_allowed?(node)
+          allowed_constants.include?(node.identifier.short_name)
+        end
+
         def compact_namespace?(node)
-          node.loc.name.source =~ /::/
+          /::/.match?(node.loc.name.source)
         end
 
         # First checks if the :nodoc: comment is associated with the
@@ -112,22 +144,26 @@ module RuboCop
         # proceeds to check its ancestors for :nodoc: all.
         # Note: How end-of-line comments are associated with code changed in
         # parser-2.2.0.4.
-        def nodoc_comment?(node, require_all = false)
+        def nodoc_comment?(node, require_all: false)
           return false unless node&.children&.first
 
           nodoc = nodoc(node)
 
-          return true if same_line?(nodoc, node) && nodoc?(nodoc, require_all)
+          return true if same_line?(nodoc, node) && nodoc?(nodoc, require_all: require_all)
 
-          nodoc_comment?(node.parent, true)
+          nodoc_comment?(node.parent, require_all: true)
         end
 
-        def nodoc?(comment, require_all = false)
-          comment.text =~ /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/
+        def nodoc?(comment, require_all: false)
+          /^#\s*:nodoc:#{"\s+all\s*$" if require_all}/.match?(comment.text)
         end
 
         def nodoc(node)
           processed_source.ast_with_comments[node.children.first].first
+        end
+
+        def allowed_constants
+          @allowed_constants ||= cop_config.fetch('AllowedConstants', []).map(&:intern)
         end
       end
     end

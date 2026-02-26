@@ -11,15 +11,15 @@ module RuboCop
       # towards the nesting level. Set to `true` to count blocks as well.
       #
       # The maximum level of nesting allowed is configurable.
-      class BlockNesting < Cop
-        include ConfigurableMax
-
+      class BlockNesting < Base
         NESTING_BLOCKS = %i[
           case if while while_post
           until until_post for resbody
         ].freeze
 
-        def investigate(processed_source)
+        exclude_limit 'Max'
+
+        def on_new_investigation
           return if processed_source.blank?
 
           max = cop_config['Max']

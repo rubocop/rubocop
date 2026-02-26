@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environment do
+RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environment,
+               :restore_registry do
   include FileHelper
 
   subject(:formatter) { described_class.new(output) }
@@ -16,8 +17,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
   end
 
   let(:offenses) do
-    [RuboCop::Cop::Offense.new(:convention, location, 'message', 'Cop1'),
-     RuboCop::Cop::Offense.new(:convention, location, 'message', 'Cop2')]
+    [RuboCop::Cop::Offense.new(:convention, location, 'message', 'Test/Cop1'),
+     RuboCop::Cop::Offense.new(:convention, location, 'message', 'Test/Cop2')]
   end
 
   let(:location) { OpenStruct.new(line: 1, column: 5) }
@@ -52,6 +53,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
   end
 
   before do
+    stub_cop_class('Test::Cop1')
+    stub_cop_class('Test::Cop2')
     # Avoid intermittent failure when another test set ConfigLoader options
     RuboCop::ConfigLoader.clear_options
 
@@ -71,13 +74,13 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     let(:expected_rubocop_todo) do
       [heading,
        '# Offense count: 2',
-       'Cop1:',
+       'Test/Cop1:',
        '  Exclude:',
        "    - 'test_a.rb'",
        "    - 'test_b.rb'",
        '',
        '# Offense count: 1',
-       'Cop2:',
+       'Test/Cop2:',
        '  Exclude:',
        "    - 'test_a.rb'",
        ''].join("\n")
@@ -92,10 +95,10 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
   context "when there's .rubocop.yml" do
     before do
       create_file('.rubocop.yml', <<~YAML)
-        Cop1:
+        Test/Cop1:
           Exclude:
             - Gemfile
-        Cop2:
+        Test/Cop2:
           Exclude:
             - "**/*.blah"
             - !ruby/regexp /.*/bar/*/foo\.rb$/
@@ -107,23 +110,21 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
       formatter.file_started('test_b.rb', {})
       formatter.file_finished('test_b.rb', [offenses.first])
 
-      # Cop1 and Cop2 are unknown cops and would raise an validation error
-      allow(RuboCop::Cop::Cop.registry).to receive(:contains_cop_matching?)
-        .and_return(true)
+      allow(RuboCop::ConfigLoader.default_configuration).to receive(:[]).and_return({})
       formatter.finished(['test_a.rb', 'test_b.rb'])
     end
 
     let(:expected_rubocop_todo) do
       [heading,
        '# Offense count: 2',
-       'Cop1:',
+       'Test/Cop1:',
        '  Exclude:',
        "    - 'Gemfile'",
        "    - 'test_a.rb'",
        "    - 'test_b.rb'",
        '',
        '# Offense count: 1',
-       'Cop2:',
+       'Test/Cop2:',
        '  Exclude:',
        "    - '**/*.blah'",
        "    - !ruby/regexp /.*/bar/*/foo\.rb$/",
@@ -160,11 +161,11 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     let(:expected_rubocop_todo) do
       [heading,
        '# Offense count: 16',
-       'Cop1:',
+       'Test/Cop1:',
        '  Enabled: false',
        '',
        '# Offense count: 15',
-       'Cop2:',
+       'Test/Cop2:',
        '  Exclude:',
        "    - 'test_01.rb'",
        "    - 'test_02.rb'",
@@ -219,11 +220,11 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     let(:expected_rubocop_todo) do
       [heading,
        '# Offense count: 6',
-       'Cop1:',
+       'Test/Cop1:',
        '  Enabled: false',
        '',
        '# Offense count: 5',
-       'Cop2:',
+       'Test/Cop2:',
        '  Exclude:',
        "    - 'test_01.rb'",
        "    - 'test_02.rb'",
@@ -249,17 +250,11 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
-  context 'with auto-correct supported cop' do
+  context 'with auto-correct supported cop', :restore_registry do
     before do
-      # rubocop:disable RSpec/LeakyConstantDeclaration
-      module Test
-        class Cop3 < ::RuboCop::Cop::Cop
-          def autocorrect
-            # Dummy method to respond to #support_autocorrect?
-          end
-        end
+      stub_cop_class('Test::Cop3') do
+        extend RuboCop::Cop::AutoCorrector
       end
-      # rubocop:enable RSpec/LeakyConstantDeclaration
 
       formatter.started(['test_auto_correct.rb'])
       formatter.file_started('test_auto_correct.rb', {})

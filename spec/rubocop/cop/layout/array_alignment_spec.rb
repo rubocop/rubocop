@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::ArrayAlignment, :config do
   let(:config) do
     RuboCop::Config.new('Layout/ArrayAlignment' => cop_config,
                         'Layout/IndentationWidth' => {
@@ -64,7 +62,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
       RUBY
     end
 
-    it 'does not auto-correct array within array with too much indentation' do
+    it 'auto-corrects array within array with too much indentation' do
       expect_offense(<<~RUBY)
         [:l1,
           [:l2,
@@ -74,7 +72,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
              [:l4]]]]
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         [:l1,
          [:l2,
            [:l3,
@@ -82,7 +80,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
       RUBY
     end
 
-    it 'does not auto-correct array within array with too little indentation' do
+    it 'auto-corrects array within array with too little indentation' do
       expect_offense(<<~RUBY)
         [:l1,
         [:l2,
@@ -92,7 +90,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
            [:l4]]]]
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         [:l1,
          [:l2,
            [:l3,
@@ -169,6 +167,13 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
         ]
       RUBY
     end
+
+    it 'does not register an offense or try to correct parallel assignment' do
+      expect_no_offenses(<<~RUBY)
+        thing, foo =
+          1, 2
+      RUBY
+    end
   end
 
   context 'when aligned with fixed indentation' do
@@ -223,7 +228,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
       RUBY
     end
 
-    it 'does not auto-correct array within array with too much indentation' do
+    it 'auto-corrects array within array with too much indentation' do
       expect_offense(<<~RUBY)
         [:l1,
            [:l2,
@@ -233,7 +238,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
                 [:l4]]]]
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         [:l1,
           [:l2,
              [:l3,
@@ -241,7 +246,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
       RUBY
     end
 
-    it 'does not auto-correct array within array with too little indentation' do
+    it 'auto-corrects array within array with too little indentation' do
       expect_offense(<<~RUBY)
         [:l1,
          [:l2,
@@ -251,7 +256,7 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
             [:l4]]]]
       RUBY
 
-      expect_correction(<<~RUBY)
+      expect_correction(<<~RUBY, loop: false)
         [:l1,
           [:l2,
            [:l3,
@@ -326,6 +331,13 @@ RSpec.describe RuboCop::Cop::Layout::ArrayAlignment do
           c,
           d
         ]
+      RUBY
+    end
+
+    it 'does not register an offense or try to correct parallel assignment' do
+      expect_no_offenses(<<~RUBY)
+        thing, foo =
+          1, 2
       RUBY
     end
   end

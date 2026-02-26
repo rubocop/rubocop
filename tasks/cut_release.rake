@@ -3,41 +3,69 @@
 require 'bump'
 
 namespace :cut_release do
+  def update_file(path)
+    content = File.read(path)
+    File.write(path, yield(content))
+  end
+
   %w[major minor patch pre].each do |release_type|
     desc "Cut a new #{release_type} release, create release notes " \
          'and update documents.'
-    task release_type do
+    task release_type => 'changelog:check_clean' do
       run(release_type)
     end
   end
 
-  def update_readme(old_version, new_version)
-    readme = File.read('README.md')
+  def version_sans_patch(version)
+    version.split('.').take(2).join('.')
+  end
 
-    File.open('README.md', 'w') do |f|
-      f << readme.sub(
-        "gem 'rubocop', '~> #{old_version}', require: false",
-        "gem 'rubocop', '~> #{new_version}', require: false"
+  def update_readme(old_version, new_version)
+    update_file('README.md') do |readme|
+      readme.sub(
+        "gem 'rubocop', '~> #{version_sans_patch(old_version)}', require: false",
+        "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
     end
   end
 
-  def update_manual(old_version, new_version)
-    manual = File.read('manual/installation.md')
+  # Replace `<<next>>` (and variations) with version being cut.
+  def update_cop_versions(_old_version, new_version)
+    update_file('config/default.yml') do |default|
+      default.gsub(/['"]?<<\s*next\s*>>['"]?/i,
+                   "'#{version_sans_patch(new_version)}'")
+    end
+    RuboCop::ConfigLoader.default_configuration = nil # invalidate loaded conf
+  end
 
-    File.open('manual/installation.md', 'w') do |f|
-      f << manual.sub(
-        "gem 'rubocop', '~> #{old_version}', require: false",
-        "gem 'rubocop', '~> #{new_version}', require: false"
+  def update_docs(old_version, new_version)
+    update_file('docs/antora.yml') do |antora_metadata|
+      antora_metadata.sub(
+        "version: 'master'",
+        "version: '#{version_sans_patch(new_version)}'"
+      )
+    end
+
+    update_file('docs/modules/ROOT/pages/installation.adoc') do |installation|
+      installation.sub(
+        "gem 'rubocop', '~> #{version_sans_patch(old_version)}', require: false",
+        "gem 'rubocop', '~> #{version_sans_patch(new_version)}', require: false"
       )
     end
   end
 
   def update_issue_template(old_version, new_version)
-    issue_template = File.read('.github/ISSUE_TEMPLATE/bug_report.md')
+    update_file('.github/ISSUE_TEMPLATE/bug_report.md') do |issue_template|
+      issue_template.sub(
+        "#{old_version} (using Parser ",
+        "#{new_version} (using Parser "
+      )
+    end
+  end
 
-    File.open('.github/ISSUE_TEMPLATE/bug_report.md', 'w') do |f|
-      f << issue_template.sub(
+  def update_contributing_doc(old_version, new_version)
+    update_file('CONTRIBUTING.md') do |contributing_doc|
+      contributing_doc.sub(
         "#{old_version} (using Parser ",
         "#{new_version} (using Parser "
       )
@@ -45,14 +73,9 @@ namespace :cut_release do
   end
 
   def add_header_to_changelog(version)
-    changelog = File.read('CHANGELOG.md')
-    head, tail = changelog.split("## master (unreleased)\n\n", 2)
-
-    File.open('CHANGELOG.md', 'w') do |f|
-      f << head
-      f << "## master (unreleased)\n\n"
-      f << "## #{version} (#{Time.now.strftime('%F')})\n\n"
-      f << tail
+    update_file('CHANGELOG.md') do |changelog|
+      changelog.sub("## master (unreleased)\n\n", '\0' \
+        "## #{version} (#{Time.now.strftime('%F')})\n\n")
     end
   end
 
@@ -85,9 +108,12 @@ namespace :cut_release do
     Bump::Bump.run(release_type, commit: false, bundle: false, tag: false)
     new_version = Bump::Bump.current
 
+    update_cop_versions(old_version, new_version)
+    Rake::Task['update_cops_documentation'].invoke
     update_readme(old_version, new_version)
-    update_manual(old_version, new_version)
+    update_docs(old_version, new_version)
     update_issue_template(old_version, new_version)
+    update_contributing_doc(old_version, new_version)
     add_header_to_changelog(new_version)
     create_release_notes(new_version)
 

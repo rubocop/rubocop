@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # This cop checks for uses of `each_key` and `each_value` Hash methods.
       #
-      # Note: If you have an array of two-element arrays, you can put
+      # NOTE: If you have an array of two-element arrays, you can put
       #   parentheses around the block arguments to indicate that you're not
       #   working with a hash, and suppress RuboCop offenses.
       #
@@ -17,23 +17,19 @@ module RuboCop
       #   # good
       #   hash.each_key { |k| p k }
       #   hash.each_value { |v| p v }
-      class HashEachMethods < Cop
+      class HashEachMethods < Base
         include Lint::UnusedArgument
+        extend AutoCorrector
 
         MSG = 'Use `%<prefer>s` instead of `%<current>s`.'
 
+        # @!method kv_each(node)
         def_node_matcher :kv_each, <<~PATTERN
           (block $(send (send _ ${:keys :values}) :each) ...)
         PATTERN
 
         def on_block(node)
           register_kv_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            correct_key_value_each(node, corrector)
-          end
         end
 
         private
@@ -45,7 +41,9 @@ module RuboCop
             msg = format(message, prefer: "each_#{method[0..-2]}",
                                   current: "#{method}.each")
 
-            add_offense(target, location: kv_range(target), message: msg)
+            add_offense(kv_range(target), message: msg) do |corrector|
+              correct_key_value_each(target, corrector)
+            end
           end
         end
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EachWithObject do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::EachWithObject, :config do
   it 'finds inject and reduce with passed in and returned hash' do
     expect_offense(<<~RUBY)
       [].inject({}) { |a, e| a }
@@ -15,17 +13,27 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
         a
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      [].each_with_object({}) { |e, a|  }
+
+      [].each_with_object({}) do |e, a|
+        a[e] = 1
+        a[e] = 1
+      end
+    RUBY
   end
 
   it 'correctly autocorrects' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       [1, 2, 3].inject({}) do |h, i|
+                ^^^^^^ Use `each_with_object` instead of `inject`.
         h[i] = i
         h
       end
     RUBY
 
-    expect(corrected).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       [1, 2, 3].each_with_object({}) do |i, h|
         h[i] = i
       end
@@ -33,13 +41,14 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'correctly autocorrects with return value only' do
-    corrected = autocorrect_source(<<~RUBY)
+    expect_offense(<<~RUBY)
       [1, 2, 3].inject({}) do |h, i|
+                ^^^^^^ Use `each_with_object` instead of `inject`.
         h
       end
     RUBY
 
-    expect(corrected).to eq(<<~RUBY)
+    expect_correction(<<~RUBY)
       [1, 2, 3].each_with_object({}) do |i, h|
       end
     RUBY

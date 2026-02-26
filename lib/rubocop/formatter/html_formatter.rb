@@ -90,9 +90,11 @@ module RuboCop
         end
 
         # Make Kernel#binding public.
+        # rubocop:disable Lint/UselessMethodDefinition
         def binding
           super
         end
+        # rubocop:enable Lint/UselessMethodDefinition
 
         def decorated_message(offense)
           offense.message.gsub(/`(.+?)`/) do
