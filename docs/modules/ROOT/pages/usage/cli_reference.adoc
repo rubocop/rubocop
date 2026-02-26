@@ -208,8 +208,9 @@ If the default number of parallel processes causes excessive consumption of CPU 
 you can adjust the number of parallel processes using the `$PARALLEL_PROCESSOR_COUNT` environment variable.
 Here is how to set the parallel processing to use two CPUs:
 
-```console
+[source,sh]
+----
 $ PARALLEL_PROCESSOR_COUNT=2 bundle exec rubocop
-```
+----
 
 Alternatively, specifying `--no-parallel` will disable parallel processing.

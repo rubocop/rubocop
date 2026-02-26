@@ -25,10 +25,11 @@ start server process and execute inspection with server.
 
 When the server is started, it outputs the host and port.
 
-```console
+[source,sh]
+----
 $ rubocop --start-server
 RuboCop server starting on 127.0.0.1:55772.
-```
+----
 
 NOTE: The `rubocop` command is executed using the server process if a server is started.
 Whenever a server process is not running, it will load the RuboCop runtime files and execute.
@@ -36,35 +37,39 @@ Whenever a server process is not running, it will load the RuboCop runtime files
 
 If a server is already running, the command only displays the server's PID. A new server will not be started.
 
-```console
+[source,sh]
+----
 $ rubocop --start-server
 RuboCop server (16060) is already running.
-```
+----
 
 The server process name is basically `rubocop --server` and the project directory path:
 
-```console
+[source,sh]
+----
 $ ps aux | grep 'rubocop --server'
 user             16060   0.0  0.0  5078568   2264   ??  S     7:54AM   0:00.00 rubocop --server /Users/user/src/github.com/rubocop/rubocop
 user             16337   0.0  0.0  5331560   2396   ??  S    23:51PM   0:00.00 rubocop --server /Users/user/src/github.com/rubocop/rubocop-rails
-```
+----
 
 When you run `bundle update` or update a local config file (e.g., `.rubocop.yml` or `.rubocop_todo.yml`), and then run `rubocop`, the server process will automatically restart.
 
-```console
+[source,sh]
+----
 $ rubocop --server
 RuboCop version incompatibility found, RuboCop server restarting...
 RuboCop server starting on 127.0.0.1:60665.
-```
+----
 
 NOTE: Detection of incompatibility changes in the local configuration also includes changes to local file paths specified by `inherit_from` and `require` in `.rubocop.yml`.
 Changes involving remote files or those considered to be searched on `$LOAD_PATH` are not detected.
 
 If you would like to start the server in the foreground, which can be useful when running within Docker, you can pass the `--no-detach` option.
 
-```console
+[source,sh]
+----
 $ rubocop --start-server --no-detach
-```
+----
 
 == Restart Server
 
@@ -72,10 +77,11 @@ The started server does not reload the configuration file.
 You will need to restart the server when you upgrade RuboCop or change
 the RuboCop configuration.
 
-```console
+[source,sh]
+----
 $ rubocop --restart-server
 RuboCop server starting on 127.0.0.1:55822.
-```
+----
 
 == Command Line Options
 
@@ -121,6 +127,7 @@ environment variables.
 
 The following is an example:
 
-```console
+[source,sh]
+----
 $ RUBOCOP_SERVER_PORT=98989 rubocop --start-server
-```
+----

@@ -408,7 +408,8 @@ If your cop uses new Ruby syntax or standard library APIs, it should only regist
 
 For example, the `Performance/SelectMap` cop requires Ruby 2.7, which introduced `Enumerable#filter_map`:
 
-```ruby
+[source,ruby]
+----
 class RuboCop::Cop::Performance::SelectMap < Base
   extend TargetRubyVersion
 
@@ -416,7 +417,7 @@ class RuboCop::Cop::Performance::SelectMap < Base
 
   # ...
 end
-```
+----
 
 This cop won't register offenses on Ruby 2.6 or older.
 
@@ -426,7 +427,8 @@ Mirroring `minimum_target_ruby_version`, you can also specify a maximum Ruby ver
 
 For example, the `Lint/CircularArgumentReference` cop only runs when analyzing code for Ruby before 2.7. The code it looks for can never be written in more recent Rubies — it would be a syntax error:
 
-```ruby
+[source,ruby]
+----
 class RuboCop::Cop::Lint::CircularArgumentReference < Base
   extend TargetRubyVersion
 
@@ -434,7 +436,7 @@ class RuboCop::Cop::Lint::CircularArgumentReference < Base
 
   # ...
 end
-```
+----
 
 ==== Requiring a gem
 
@@ -442,19 +444,21 @@ If your cop depends on the presence of a gem, you can declare that with https://
 
 For example, to declare that `MyCop` should only apply if the bundle is using `my-gem` with a version between `1.2.3` and `4.5.6`:
 
-```Ruby
+[source,ruby]
+----
 class MyCop < Base
   requires_gem "my-gem", ">= 1.2.3", "< 4.5.6"
 
   # ...
 end
-```
+----
 
 You can specify any gem requirement using https://guides.rubygems.org/patterns/#declaring-dependencies[the same syntax as your `Gemfile`].
 
 You can also handle multiple versions of a gem with `target_gem_version`. It behaves similar to `target_ruby_version`, allowing you to inspect a gem version at runtime:
 
-```Ruby
+[source,ruby]
+----
 class MyCop < Base
   requires_gem "my-gem"
 
@@ -466,11 +470,12 @@ class MyCop < Base
     end
   end
 end
-```
+----
 
 When writing tests, you can specify the gem version to run your example against through the `gem_versions` RSpec helper:
 
-```Ruby
+[source,ruby]
+----
 describe RuboCop::Cop::Style::MyCop, :config do
   context 'when `my-gem` is at version `1.X`' do
     let(:gem_versions) { { 'my-gem' => '1.0.0' } }
@@ -493,7 +498,7 @@ describe RuboCop::Cop::Style::MyCop, :config do
     end
   end
 end
-```
+----
 
 ==== Special case: Rails
 
@@ -501,7 +506,8 @@ Historically, many cops in `rubocop-rails` aren't actually specific to Rails its
 
 For example, the `Rails/Pluck` cop requires Active Support 6.0, which introduces `Enumerable#pluck`:
 
-```ruby
+[source,ruby]
+----
 class RuboCop::Cop::Rails::Pluck < Base
   extend TargetRailsVersion
 
@@ -509,7 +515,7 @@ class RuboCop::Cop::Rails::Pluck < Base
 
   #...
 end
-```
+----
 
 === Configuration
 
@@ -612,16 +618,18 @@ know the cop supports autocorrection.
 
 RuboCop supports two parser engines: the Parser gem and Prism. By default, tests are executed with the Parser:
 
-```console
+[source,sh]
+----
 $ bundle exec rake spec
-```
+----
 
 To run all tests with Prism, use `bundle exec rake prism_spec`. To run a single spec file with Prism,
 set the `PARSER_ENGINE` environment variable:
 
-```console
+[source,sh]
+----
 $ PARSER_ENGINE=parser_prism bundle exec rspec spec/rubocop/cop/style/hash_syntax_spec.rb
-```
+----
 
 `bundle exec rake` runs the full CI suite: specs for both parser engines, self-linting, and documentation checks. Always run this before submitting a PR.
 

@@ -30,18 +30,20 @@ https://github.com/joaotavora/eglot[Eglot] is a client for Language Server Proto
 
 Add the following to your Emacs configuration file (e.g. `~/.emacs.d/init.el`):
 
-```lisp
+[source,lisp]
+----
 (require 'eglot)
 
 (add-to-list 'eglot-server-programs '(ruby-mode . ("bundle" "exec" "rubocop" "--lsp")))
 (add-hook 'ruby-mode-hook 'eglot-ensure)
-```
+----
 
 Below is an example of additional setting for autocorrecting on save:
 
-```lisp
+[source,lisp]
+----
 (add-hook 'ruby-mode-hook (lambda () (add-hook 'before-save-hook 'eglot-format-buffer nil 'local)))
-```
+----
 
 If you run into problems, first use "M-x eglot-reconnect" to reconnect to the language server.
 
@@ -64,7 +66,8 @@ It allows the loading of extensions similar to VSCode and provides hosting for l
 Add the following to your coc.nvim configuration file. For example, in Vim, it would be `~/.vim/coc-settings.json`,
 and in Neovim, it would be `~/.config/nvim/coc-settings.json`:
 
-```json
+[source,json]
+----
 {
   "languageserver": {
     "rubocop": {
@@ -76,15 +79,16 @@ and in Neovim, it would be `~/.config/nvim/coc-settings.json`:
     }
   }
 }
-```
+----
 
 Below is an example of additional setting for autocorrecting on save:
 
-```json
+[source,json]
+----
 {
   "coc.preferences.formatOnSave": true
 }
-```
+----
 
 See coc.nvim's official documentation for more information.
 
@@ -94,7 +98,8 @@ https://github.com/neovim/nvim-lspconfig[nvim-lspconfig] provides quickstart con
 
 Add the following to your nvim-lspconfig configuration file (e.g. `~/.config/nvim/init.lua`):
 
-```lua
+[source,lua]
+----
 vim.opt.signcolumn = "yes"
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "ruby",
@@ -105,18 +110,19 @@ vim.api.nvim_create_autocmd("FileType", {
     }
   end,
 })
-```
+----
 
 Below is an example of additional setting for autocorrecting on save:
 
-```lua
+[source,lua]
+----
 vim.api.nvim_create_autocmd("BufWritePre", {
   pattern = "*.rb",
   callback = function()
     vim.lsp.buf.format()
   end,
 })
-```
+----
 
 See nvim-lspconfig's official documentation for more information.
 
@@ -128,7 +134,8 @@ Add the following to your Helix language configuration file (e.g. `~/.config/hel
 
 Helix 23.10 or later:
 
-```toml
+[source,toml]
+----
 [language-server.rubocop]
 command = "bundle"
 args = ["exec", "rubocop", "--lsp"]
@@ -139,16 +146,17 @@ auto-format = true
 language-servers = [
   { name = "rubocop" }
 ]
-```
+----
 
 Before Helix 23.10 or earlier:
 
-```toml
+[source,toml]
+----
 [[language]]
 name = "ruby"
 language-server = { command = "bundle", args = ["exec", "rubocop", "--lsp"] }
 auto-format = true
-```
+----
 
 See Helix's official documentation for more information:
 https://docs.helix-editor.com/languages.html
@@ -158,7 +166,8 @@ https://docs.helix-editor.com/languages.html
 For https://www.sublimetext.com/[Sublime Text] LSP support is available through the https://github.com/sublimelsp/LSP[Sublime-LSP] plugin.
 Add the following to its settings (accessible via `Preferences → Package Settings → LSP → Settings`) to enable RuboCop:
 
-```json
+[source,json]
+----
 {
     "clients": {
         "rubocop": {
@@ -168,7 +177,7 @@ Add the following to its settings (accessible via `Preferences → Package Setti
         },
     },
 }
-```
+----
 
 == Autocorrection
 
@@ -176,7 +185,8 @@ The language server supports `textDocument/formatting` method and is autocorrect
 
 LSP client can switch to unsafe autocorrection (`rubocop -A`) by passing the following `safeAutocorrect` parameter in the `initialize` request.
 
-```json
+[source,json]
+----
 {
   "jsonrpc": "2.0",
   "id": 42,
@@ -187,7 +197,7 @@ LSP client can switch to unsafe autocorrection (`rubocop -A`) by passing the fol
     }
   }
 }
-```
+----
 
 For detailed instructions on setting the parameter, please refer to the configuration methods of your LSP client.
 
@@ -204,7 +214,8 @@ NOTE: The `rubocop.formatAutocorrectsAll` execute command was introduced in Rubo
 LSP client can run lint cops by passing the following `lintMode` parameter in the `initialize` request
 if you only want to enable the feature as a linter like `ruby -w`:
 
-```json
+[source,json]
+----
 {
   "jsonrpc": "2.0",
   "id": 42,
@@ -215,7 +226,7 @@ if you only want to enable the feature as a linter like `ruby -w`:
     }
   }
 }
-```
+----
 
 Furthermore, enabling autocorrect in an LSP client at the time of saving is equivalent to the `rubocop -l` option.
 
@@ -228,7 +239,8 @@ NOTE: The `lintMode` parameter was introduced in RuboCop 1.55.
 LSP client can run layout cops by passing the following `layoutMode` parameter in the `initialize` request
 if you only want to enable the feature as a formatter:
 
-```json
+[source,json]
+----
 {
   "jsonrpc": "2.0",
   "id": 42,
@@ -239,7 +251,7 @@ if you only want to enable the feature as a formatter:
     }
   }
 }
-```
+----
 
 Furthermore, enabling autocorrect in an LSP client at the time of saving is equivalent to the `rubocop -x` option.
 
@@ -252,21 +264,24 @@ NOTE: The `layoutMode` parameter was introduced in RuboCop 1.55.
 YJIT, a Ruby JIT compiler, has been supported since Ruby 3.1.
 In an LSP client, you can enable YJIT by launching `rubocop --lsp` with the `RUBY_YJIT_ENABLE=1` environment variable using the `env` command:
 
-```sh
+[source,sh]
+----
 env RUBY_YJIT_ENABLE=1 bundle exec rubocop --lsp
-```
+----
 
 Below is an example for Emacs's Eglot:
 
-```lisp
+[source,lisp]
+----
 (add-to-list 'eglot-server-programs '(ruby-mode . ("env" "RUBY_YJIT_ENABLE=1" "bundle" "exec" "rubocop" "--lsp")))
-```
+----
 
 The console of the LSP client will display `+YJIT`:
 
-```console
+[source,sh]
+----
 RuboCop 1.63.4 language server +YJIT initialized, PID 13501
-```
+----
 
 For more details, please refer to the respective LSP configuration documentation.
 In some cases, like with vscode-rubocop, it may be available as a built-in option:
@@ -278,10 +293,11 @@ Run `rubocop --lsp` command from LSP client.
 
 When the language server is started, the command displays the language server's PID:
 
-```console
+[source,sh]
+----
 $ ps aux | grep 'rubocop --lsp'
 user             17414   0.0  0.2  5557716 144376   ??  Ss    4:48PM   0:02.13 rubocop --lsp /Users/user/src/github.com/rubocop/rubocop
-```
+----
 
 NOTE: `rubocop --lsp` starts the LSP server and is intended to be invoked by an LSP client, not run manually by users.
 
