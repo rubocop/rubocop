@@ -80,7 +80,7 @@ Any editor with an LSP client can use RuboCop — see the language servers liste
 === MCP
 
 RuboCop also provides a built-in https://modelcontextprotocol.io/[Model Context Protocol]
-server (since 1.75) for integration with AI-powered tools. See xref:usage/mcp.adoc[MCP]
+server (since 1.85) for integration with AI-powered tools. See xref:usage/mcp.adoc[MCP]
 for details.
 
 == Git pre-commit hook integration with overcommit
