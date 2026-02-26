@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder, :config do
   it 'registers an offense and corrects when `kwoptarg` is before `kwarg`' do
     expect_offense(<<~RUBY)
       def m(arg, optional: 1, required:)
@@ -100,5 +98,27 @@ RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder do
       def m(arg, required:, optional: 1)
       end
     RUBY
+  end
+
+  context 'when using block keyword parameters' do
+    it 'registers an offense and corrects when `kwoptarg` is before `kwarg`' do
+      expect_offense(<<~RUBY)
+        m(arg) do |block_arg, optional: 1, required:|
+                              ^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        m(arg) do |block_arg, required:, optional: 1|
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when there are no `kwoptarg`s before `kwarg`s' do
+      expect_no_offenses(<<~RUBY)
+        m(arg) do |block_arg, required:, optional: 1|
+        end
+      RUBY
+    end
   end
 end

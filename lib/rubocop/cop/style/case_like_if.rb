@@ -105,8 +105,7 @@ module RuboCop
           when :===
             node.arguments.first
           when :include?, :cover?
-            receiver = deparenthesize(node.receiver)
-            node.arguments.first if receiver.range_type?
+            find_target_in_include_or_cover_node(node)
           when :match, :match?, :=~
             find_target_in_match_node(node)
           end
@@ -122,6 +121,12 @@ module RuboCop
           elsif receiver.literal? || const_reference?(receiver)
             argument
           end
+        end
+
+        def find_target_in_include_or_cover_node(node)
+          return unless (receiver = node.receiver)
+
+          node.first_argument if deparenthesize(receiver).range_type?
         end
 
         def find_target_in_match_node(node)
@@ -167,8 +172,7 @@ module RuboCop
             lhs, _method, rhs = *node
             lhs if rhs == target
           when :include?, :cover?
-            receiver = deparenthesize(node.receiver)
-            receiver if receiver.range_type? && node.arguments.first == target
+            condition_from_include_or_cover_node(node, target)
           end
         end
         # rubocop:enable Metrics/CyclomaticComplexity
@@ -182,6 +186,13 @@ module RuboCop
         def condition_from_match_node(node, target)
           lhs, _method, rhs = *node
           condition_from_binary_op(lhs, rhs, target)
+        end
+
+        def condition_from_include_or_cover_node(node, target)
+          return unless (receiver = node.receiver)
+
+          receiver = deparenthesize(receiver)
+          receiver if receiver.range_type? && node.first_argument == target
         end
 
         def condition_from_binary_op(lhs, rhs, target)

@@ -27,7 +27,7 @@ module RuboCop
       def add_offense(node_or_range, location: :expression, message: nil, severity: nil, &block)
         @v0_argument = node_or_range
         range = find_location(node_or_range, location)
-        if block.nil? && !autocorrect?
+        if block.nil? && !support_autocorrect?
           super(range, message: message, severity: severity)
         else
           super(range, message: message, severity: severity) do |corrector|
@@ -136,7 +136,7 @@ module RuboCop
       end
 
       def correction_lambda
-        return unless correction_strategy == :attempt_correction && support_autocorrect?
+        return unless support_autocorrect?
 
         dedup_on_node(@v0_argument) do
           autocorrect(@v0_argument)

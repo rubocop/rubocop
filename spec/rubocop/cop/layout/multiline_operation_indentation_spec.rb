@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
   let(:config) do
     merged = RuboCop::ConfigLoader
              .default_configuration['Layout/MultilineOperationIndentation']
@@ -82,6 +80,11 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation do
         Foo
         .a
           .b(c)
+
+        Foo.&(
+            foo,
+            bar
+        )
 
         expect { Foo.new }.
           to change { Bar.count }.

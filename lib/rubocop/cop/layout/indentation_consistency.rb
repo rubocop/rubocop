@@ -118,9 +118,10 @@ module RuboCop
       #       def bar
       #       end
       #   end
-      class IndentationConsistency < Cop
+      class IndentationConsistency < Base
         include Alignment
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Inconsistent indentation detected.'
 
@@ -132,11 +133,11 @@ module RuboCop
           check(node)
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+        end
 
         # Not all nodes define `bare_access_modifier?` (for example,
         # `RuboCop::AST::DefNode` does not), so we must check `send_type?` first
@@ -161,8 +162,10 @@ module RuboCop
           # to the level of the module (see `AccessModifierIndentation` cop) we
           # return nil so that `check_alignment` will derive the correct
           # indentation from the first child that is not an access modifier.
-          module_indent = display_column(node.parent.source_range)
           access_modifier_indent = display_column(first_child.source_range)
+          return access_modifier_indent unless node.parent
+
+          module_indent = display_column(node.parent.source_range)
           access_modifier_indent if access_modifier_indent > module_indent
         end
 

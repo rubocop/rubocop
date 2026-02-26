@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::MultilineTernaryOperator, :config do
   it 'registers offense and corrects when the if branch and the else branch are ' \
      'on a separate line from the condition' do
     expect_offense(<<~RUBY)

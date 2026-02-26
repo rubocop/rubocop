@@ -78,28 +78,88 @@ RSpec.describe RuboCop::Cop::Metrics::AbcSize, :config do
     end
 
     context 'when method is in list of ignored methods' do
-      let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
+      context 'when given a string' do
+        let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
 
-      it 'does not register an offense when defining an instance method' do
-        expect_no_offenses(<<~RUBY)
+        it 'does not register an offense when defining an instance method' do
+          expect_no_offenses(<<~RUBY)
+            def foo
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when defining a class method' do
+          expect_no_offenses(<<~RUBY)
+            def self.foo
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when using `define_method`' do
+          expect_no_offenses(<<~RUBY)
+            define_method :foo do
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+      end
+
+      context 'when given a regex' do
+        let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => [/foo/] } }
+
+        it 'does not register an offense when defining an instance method' do
+          expect_no_offenses(<<~RUBY)
+            def foo
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when defining a class method' do
+          expect_no_offenses(<<~RUBY)
+            def self.foo
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+
+        it 'does not register an offense when using `define_method`' do
+          expect_no_offenses(<<~RUBY)
+            define_method :foo do
+              bar.baz(:qux)
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'when CountRepeatedAttributes is `false`' do
+      let(:cop_config) { { 'Max' => 0, 'CountRepeatedAttributes' => false } }
+
+      it 'does not count repeated attributes' do
+        expect_offense(<<~RUBY)
           def foo
-            bar.baz(:qux)
+          ^^^^^^^ Assignment Branch Condition size for foo is too high. [<0, 1, 0> 1/0]
+            bar
+            self.bar
+            bar
           end
         RUBY
       end
+    end
 
-      it 'does not register an offense when defining a class method' do
-        expect_no_offenses(<<~RUBY)
-          def self.foo
-            bar.baz(:qux)
-          end
-        RUBY
-      end
+    context 'when CountRepeatedAttributes is `true`' do
+      let(:cop_config) { { 'Max' => 0, 'CountRepeatedAttributes' => true } }
 
-      it 'does not register an offense when using `define_method`' do
-        expect_no_offenses(<<~RUBY)
-          define_method :foo do
-            bar.baz(:qux)
+      it 'counts repeated attributes' do
+        expect_offense(<<~RUBY)
+          def foo
+          ^^^^^^^ Assignment Branch Condition size for foo is too high. [<0, 3, 0> 3/0]
+            bar
+            self.bar
+            bar
           end
         RUBY
       end

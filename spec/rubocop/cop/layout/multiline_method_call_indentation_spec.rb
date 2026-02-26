@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
   let(:config) do
     merged = RuboCop::ConfigLoader
              .default_configuration['Layout/MultilineMethodCallIndentation']
@@ -91,19 +89,19 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it "doesn't fail on unary operators" do
-      expect { inspect_source(<<~RUBY) }.not_to raise_error
-        def foo
-          !0
-          .nil?
-        end
-      RUBY
-    end
-
     it "doesn't crash on unaligned multiline lambdas" do
       expect_no_offenses(<<~RUBY)
         MyClass.(my_args)
           .my_method
+      RUBY
+    end
+
+    it 'accepts alignment of method with assignment and operator-like method' do
+      expect_no_offenses(<<~RUBY)
+        query = x.|(
+          foo,
+          bar
+        )
       RUBY
     end
   end
@@ -229,6 +227,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
 
     include_examples 'common'
     include_examples 'common for aligned and indented'
+
+    it "doesn't fail on unary operators" do
+      expect_offense(<<~RUBY)
+        def foo
+          !0
+          .nil?
+          ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
+    end
 
     # We call it semantic alignment when a dot is aligned with the first dot in
     # a chain of calls, and that first dot does not begin its line.
@@ -636,6 +644,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     include_examples 'common'
     include_examples 'both indented* styles'
 
+    it "doesn't fail on unary operators" do
+      expect_offense(<<~RUBY)
+        def foo
+          !0
+          .nil?
+          ^^^^^ Indent `.nil?` 2 spaces more than `0` on line 2.
+        end
+      RUBY
+    end
+
     it 'accepts correctly indented methods in operation' do
       expect_no_offenses(<<~RUBY)
         1 + a
@@ -690,6 +708,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       expect_correction(<<~RUBY)
         a
           .(args)
+      RUBY
+    end
+
+    it 'does not register an offense when multiline method chain has expected indent width and ' \
+       'the method is preceded by splat' do
+      expect_no_offenses(<<~RUBY)
+        [
+          *foo
+            .bar(
+              arg)
+        ]
+      RUBY
+    end
+
+    it 'does not register an offense when multiline method chain has expected indent width and ' \
+       'the method is preceded by double splat' do
+      expect_no_offenses(<<~RUBY)
+        [
+          **foo
+            .bar(
+              arg)
+        ]
       RUBY
     end
 
@@ -766,6 +806,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
     include_examples 'common for aligned and indented'
     include_examples 'both indented* styles'
 
+    it "doesn't fail on unary operators" do
+      expect_offense(<<~RUBY)
+        def foo
+          !0
+          .nil?
+          ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        end
+      RUBY
+    end
+
     it 'accepts correctly indented methods in operation' do
       expect_no_offenses(<<~RUBY)
         1 + a
@@ -795,6 +845,23 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
             b
           something
         end
+      RUBY
+    end
+
+    it 'registers an offense and corrects 0 space indentation inside square brackets' do
+      expect_offense(<<~RUBY)
+        foo[
+          bar
+          .baz
+          ^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
+        ]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo[
+          bar
+            .baz
+        ]
       RUBY
     end
 
@@ -910,16 +977,30 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation do
       RUBY
     end
 
-    it 'accepts indentation of assignment' do
-      expect_no_offenses(<<~RUBY)
-        formatted_int = int_part
-          .abs
-          .to_s
-          .reverse
-          .gsub(/...(?=.)/, '&_')
-          .reverse
-      RUBY
+    shared_examples 'assignment' do |lhs|
+      it "accepts indentation of assignment to #{lhs} with rhs on same line" do
+        expect_no_offenses(<<~RUBY)
+          #{lhs} = int_part
+            .abs
+            .to_s
+            .reverse
+            .gsub(/...(?=.)/, '&_')
+            .reverse
+        RUBY
+      end
+
+      it "accepts indentation of assignment to #{lhs} with newline after =" do
+        expect_no_offenses(<<~RUBY)
+          #{lhs} =
+            int_part
+              .abs
+              .to_s
+        RUBY
+      end
     end
+
+    include_examples 'assignment', 'a'
+    include_examples 'assignment', 'a[:key]'
 
     it 'registers an offense and corrects correct + unrecognized style' do
       expect_offense(<<~RUBY)

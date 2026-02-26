@@ -19,6 +19,7 @@ module RuboCop
               ' rather than just a message.'
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
+        # @!method implicit_runtime_error_raise_or_fail(node)
         def_node_matcher :implicit_runtime_error_raise_or_fail,
                          '(send nil? ${:raise :fail} {str dstr})'
 

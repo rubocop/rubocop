@@ -13,6 +13,7 @@ module RuboCop
         class AbcSizeCalculator
           include IteratingBlock
           include RepeatedCsendDiscount
+          prepend RepeatedAttributeDiscount
 
           # > Branch -- an explicit forward program branch out of scope -- a
           # > function call, class method call ..
@@ -24,8 +25,8 @@ module RuboCop
           # > http://c2.com/cgi/wiki?AbcMetric
           CONDITION_NODES = CyclomaticComplexity::COUNTED_NODES.freeze
 
-          def self.calculate(node)
-            new(node).calculate
+          def self.calculate(node, discount_repeated_attributes: false)
+            new(node, discount_repeated_attributes: discount_repeated_attributes).calculate
           end
 
           # TODO: move to rubocop-ast
@@ -42,14 +43,8 @@ module RuboCop
           end
 
           def calculate
-            @node.each_node do |child|
-              @assignment += 1 if assignment?(child)
-
-              if branch?(child)
-                evaluate_branch_nodes(child)
-              elsif condition?(child)
-                evaluate_condition_node(child)
-              end
+            visit_depth_last(@node) do |child|
+              calculate_node(child)
             end
 
             [
@@ -79,6 +74,21 @@ module RuboCop
           end
 
           private
+
+          def visit_depth_last(node, &block)
+            node.each_child_node { |child| visit_depth_last(child, &block) }
+            yield node
+          end
+
+          def calculate_node(node)
+            @assignment += 1 if assignment?(node)
+
+            if branch?(node)
+              evaluate_branch_nodes(node)
+            elsif condition?(node)
+              evaluate_condition_node(node)
+            end
+          end
 
           def assignment?(node)
             return compound_assignment(node) if node.masgn_type? || node.shorthand_asgn?

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantFileExtensionInRequire do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantFileExtensionInRequire, :config do
   it 'registers an offense and corrects when requiring filename ending with `.rb`' do
     expect_offense(<<~RUBY)
       require 'foo.rb'

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateRequire do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::DuplicateRequire, :config do
   it 'registers an offense when duplicate `require` is detected' do
     expect_offense(<<~RUBY)
       require 'foo'

@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs, :config do
   context 'curly brace block format' do
     it 'registers an offense when a trailing comma is not needed' do
       expect_offense(<<~RUBY)
         test { |a, b,| a + b }
                     ^ Useless trailing comma present in block arguments.
       RUBY
+
       expect_correction(<<~RUBY)
         test { |a, b| a + b }
       RUBY
@@ -68,6 +65,7 @@ RSpec.describe RuboCop::Cop::Style::TrailingCommaInBlockArgs do
           a + b
         end
       RUBY
+
       expect_correction(<<~RUBY)
         test do |a, b|
           a + b

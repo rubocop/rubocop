@@ -44,6 +44,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
           %(hi)
           ^^ Use `%Q` instead of `%`.
         RUBY
+
         expect_correction(<<~RUBY)
           %Q(hi)
         RUBY
@@ -62,6 +63,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
           %(#{x})
           ^^ Use `%Q` instead of `%`.
         RUBY
+
         expect_correction(<<~'RUBY')
           %Q(#{x})
         RUBY
@@ -84,6 +86,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
           %Q(hi)
           ^^^ Use `%` instead of `%Q`.
         RUBY
+
         expect_correction(<<~RUBY)
           %(hi)
         RUBY
@@ -102,6 +105,7 @@ RSpec.describe RuboCop::Cop::Style::BarePercentLiterals, :config do
           %Q(#{x})
           ^^^ Use `%` instead of `%Q`.
         RUBY
+
         expect_correction(<<~'RUBY')
           %(#{x})
         RUBY

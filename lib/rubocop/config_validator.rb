@@ -42,7 +42,7 @@ module RuboCop
         ConfigLoader.default_configuration.key?(key)
       end
 
-      @config_obsoletion.reject_obsolete_cops_and_parameters
+      check_obsoletions
 
       alert_about_unrecognized_cops(invalid_cop_names)
       check_target_ruby
@@ -67,6 +67,13 @@ module RuboCop
     private
 
     attr_reader :target_ruby
+
+    def check_obsoletions
+      @config_obsoletion.reject_obsolete!
+      return unless @config_obsoletion.warnings.any?
+
+      warn Rainbow("Warning: #{@config_obsoletion.warnings.join("\n")}").yellow
+    end
 
     def check_target_ruby
       return if target_ruby.supported?
@@ -99,10 +106,17 @@ module RuboCop
         # to do so than to pass the value around to various methods.
         next if name == 'inherit_mode'
 
-        unknown_cops << "unrecognized cop #{name} found in " \
-          "#{smart_loaded_path}"
+        suggestions = NameSimilarity.find_similar_names(name, Cop::Registry.global.map(&:cop_name))
+        suggestion = "Did you mean `#{suggestions.join('`, `')}`?" if suggestions.any?
+
+        message = <<~MESSAGE.rstrip
+          unrecognized cop #{name} found in #{smart_loaded_path}
+          #{suggestion}
+        MESSAGE
+
+        unknown_cops << message
       end
-      raise ValidationError, unknown_cops.join(', ') if unknown_cops.any?
+      raise ValidationError, unknown_cops.join("\n") if unknown_cops.any?
     end
 
     def validate_syntax_cop

@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EmptyElse do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::EmptyElse, :config do
   let(:missing_else_config) { {} }
 
   shared_examples 'auto-correct' do |keyword|
     context 'MissingElse is disabled' do
       it 'does auto-correction' do
         expect_offense(source)
+
         expect_correction(corrected_source)
       end
     end
@@ -23,11 +22,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyElse do
         if ['both', keyword].include? missing_else_style
           it 'does not auto-correct' do
             expect_offense(source)
+
             expect_no_corrections
           end
         else
           it 'does auto-correction' do
             expect_offense(source)
+
             expect_correction(corrected_source)
           end
         end

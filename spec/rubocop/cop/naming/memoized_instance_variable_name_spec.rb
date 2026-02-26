@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
+  it 'does not register an offense when or-assignment-based memoization is used outside a method definition' do
+    expect_no_offenses(<<~RUBY)
+      @x ||= y
+    RUBY
+  end
+
   context 'with default EnforcedStyleForLeadingUnderscores => disallowed' do
     let(:cop_config) do
       { 'EnforcedStyleForLeadingUnderscores' => 'disallowed' }
@@ -94,7 +100,7 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
           RUBY
         end
 
-        it 'does not registers an offense when method has leading `_`' do
+        it 'does not register an offense when method has leading `_`' do
           expect_no_offenses(<<~RUBY)
             def _foo
               @foo ||= :foo
@@ -188,6 +194,83 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
               expect_no_offenses(<<~RUBY)
                 def initialize
                   @files_with_offenses ||= {}
+                end
+              RUBY
+            end
+          end
+        end
+      end
+
+      context 'with dynamically defined methods' do
+        context 'when the variable name matches the method name' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              define_method(:values) do
+                @values ||= do_something
+              end
+            RUBY
+          end
+        end
+
+        context 'when the variable name does not match the method name' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              define_method(:values) do
+                @foo ||= do_something
+                ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+              end
+            RUBY
+          end
+        end
+
+        context 'when a method is defined inside a module callback' do
+          context 'when the method matches' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    @values ||= do_something
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the method does not match' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    @foo ||= do_something
+                    ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                  end
+                end
+              RUBY
+            end
+          end
+        end
+
+        context 'when a singleton method is defined inside a module callback' do
+          context 'when the method matches' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    @values ||= do_something
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the method does not match' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    @foo ||= do_something
+                    ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                  end
                 end
               RUBY
             end
@@ -306,6 +389,95 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
           end
         RUBY
       end
+
+      context 'with dynamically defined methods' do
+        context 'when the variable name matches the method name' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              define_method(:values) do
+                return @values if defined?(@values)
+                @values = do_something
+              end
+            RUBY
+          end
+        end
+
+        context 'when the variable name does not match the method name' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              define_method(:values) do
+                return @foo if defined?(@foo)
+                       ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                                        ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                @foo = do_something
+                ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+              end
+            RUBY
+          end
+        end
+
+        context 'when a method is defined inside a module callback' do
+          context 'when the method matches' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    return @values if defined?(@values)
+                    @values = do_something
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the method does not match' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    return @foo if defined?(@foo)
+                           ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                                            ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                    @foo = do_something
+                    ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                  end
+                end
+              RUBY
+            end
+          end
+        end
+
+        context 'when a singleton method is defined inside a module callback' do
+          context 'when the method matches' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    return @values if defined?(@values)
+                    @values = do_something
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the method does not match' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    return @foo if defined?(@foo)
+                           ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                                            ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                    @foo = do_something
+                    ^^^^ Memoized variable `@foo` does not match method name `values`. Use `@values` instead.
+                  end
+                end
+              RUBY
+            end
+          end
+        end
+      end
     end
   end
 
@@ -337,6 +509,83 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
             @_foo ||= :foo
           end
         RUBY
+      end
+
+      context 'with dynamically defined methods' do
+        context 'when the variable name matches the method name' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              define_method(:values) do
+                @_values ||= do_something
+              end
+            RUBY
+          end
+        end
+
+        context 'when the variable name does not match the method name' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              define_method(:values) do
+                @foo ||= do_something
+                ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+              end
+            RUBY
+          end
+        end
+
+        context 'when a method is defined inside a module callback' do
+          context 'when the method matches' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    @_values ||= do_something
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the method does not match' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    @foo ||= do_something
+                    ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                  end
+                end
+              RUBY
+            end
+          end
+        end
+
+        context 'when a singleton method is defined inside a module callback' do
+          context 'when the method matches' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    @_values ||= do_something
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the method does not match' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    @foo ||= do_something
+                    ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                  end
+                end
+              RUBY
+            end
+          end
+        end
       end
     end
 
@@ -372,6 +621,95 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
             @_foo = false
           end
         RUBY
+      end
+
+      context 'with dynamically defined methods' do
+        context 'when the variable name matches the method name' do
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              define_method(:values) do
+                return @_values if defined?(@_values)
+                @_values = do_something
+              end
+            RUBY
+          end
+        end
+
+        context 'when the variable name does not match the method name' do
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              define_method(:values) do
+                return @foo if defined?(@foo)
+                       ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                                        ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                @foo = do_something
+                ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+              end
+            RUBY
+          end
+        end
+
+        context 'when a method is defined inside a module callback' do
+          context 'when the method matches' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    return @_values if defined?(@_values)
+                    @_values = do_something
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the method does not match' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_method(:values) do
+                    return @foo if defined?(@foo)
+                           ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                                            ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                    @foo = do_something
+                    ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                  end
+                end
+              RUBY
+            end
+          end
+        end
+
+        context 'when a singleton method is defined inside a module callback' do
+          context 'when the method matches' do
+            it 'does not register an offense' do
+              expect_no_offenses(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    return @_values if defined?(@_values)
+                    @_values = do_something
+                  end
+                end
+              RUBY
+            end
+          end
+
+          context 'when the method does not match' do
+            it 'registers an offense' do
+              expect_offense(<<~RUBY)
+                def self.inherited(klass)
+                  klass.define_singleton_method(:values) do
+                    return @foo if defined?(@foo)
+                           ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                                            ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                    @foo = do_something
+                    ^^^^ Memoized variable `@foo` does not start with `_`. Use `@_values` instead.
+                  end
+                end
+              RUBY
+            end
+          end
+        end
       end
     end
   end

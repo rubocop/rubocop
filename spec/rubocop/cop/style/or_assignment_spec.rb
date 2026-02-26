@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::OrAssignment do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::OrAssignment, :config do
   context 'when using var = var ? var : something' do
     it 'registers an offense with normal variables' do
       expect_offense(<<~RUBY)

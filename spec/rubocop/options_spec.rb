@@ -100,7 +100,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --display-only-failed        Only output offense messages. Omit passing
                                                cops. Only valid for --format junit.
               -r, --require FILE               Require Ruby file.
-                  --fail-level SEVERITY        Minimum severity (A/R/C/W/E/F) for exit
+                  --fail-level SEVERITY        Minimum severity (A/I/R/C/W/E/F) for exit
                                                with error code.
                   --display-only-fail-level-offenses
                                                Only output offense messages at
@@ -253,14 +253,14 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
     describe '--fail-level' do
       it 'accepts full severity names' do
-        %w[refactor convention warning error fatal].each do |severity|
+        %w[info refactor convention warning error fatal].each do |severity|
           expect { options.parse(['--fail-level', severity]) }
             .not_to raise_error
         end
       end
 
       it 'accepts severity initial letters' do
-        %w[R C W E F].each do |severity|
+        %w[I R C W E F].each do |severity|
           expect { options.parse(['--fail-level', severity]) }
             .not_to raise_error
         end

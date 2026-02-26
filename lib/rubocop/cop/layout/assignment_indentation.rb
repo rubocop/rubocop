@@ -21,12 +21,15 @@ module RuboCop
       #
       # The indentation of the remaining lines can be corrected with
       # other cops such as `IndentationConsistency` and `EndAlignment`.
-      class AssignmentIndentation < Cop
+      class AssignmentIndentation < Base
         include CheckAssignment
         include Alignment
+        extend AutoCorrector
 
         MSG = 'Indent the first line of the right-hand-side of a ' \
               'multi-line assignment.'
+
+        private
 
         def check_assignment(node, rhs)
           return unless rhs
@@ -37,8 +40,8 @@ module RuboCop
           check_alignment([rhs], base + configured_indentation_width)
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
         end
 
         def leftmost_multiple_assignment(node)

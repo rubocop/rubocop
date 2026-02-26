@@ -23,6 +23,7 @@ module RuboCop
         MSG = 'Redundant location argument to `#add_offense`.'
         RESTRICT_ON_SEND = %i[add_offense].freeze
 
+        # @!method redundant_location_argument(node)
         def_node_matcher :redundant_location_argument, <<~PATTERN
           (send nil? :add_offense _
             (hash <$(pair (sym :location) (sym :expression)) ...>)

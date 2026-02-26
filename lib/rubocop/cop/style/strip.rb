@@ -20,6 +20,7 @@ module RuboCop
         MSG = 'Use `strip` instead of `%<methods>s`.'
         RESTRICT_ON_SEND = %i[lstrip rstrip].freeze
 
+        # @!method lstrip_rstrip(node)
         def_node_matcher :lstrip_rstrip, <<~PATTERN
           {(send $(send _ $:rstrip) $:lstrip)
            (send $(send _ $:lstrip) $:rstrip)}

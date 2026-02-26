@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundMethodBody, :config do
   let(:beginning_offense_annotation) { '^{} Extra empty line detected at method body beginning.' }
   let(:end_offense_annotation) { '^{} Extra empty line detected at method body end.' }
 

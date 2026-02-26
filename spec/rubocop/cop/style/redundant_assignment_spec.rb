@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantAssignment do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantAssignment, :config do
   it 'reports an offense for def ending with assignment and returning' do
     expect_offense(<<~RUBY)
       def func

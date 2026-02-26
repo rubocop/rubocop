@@ -1,7 +1,7 @@
 = Configuration
 
 The behavior of RuboCop can be controlled via the
-https://github.com/rubocop-hq/rubocop/blob/master/.rubocop.yml[.rubocop.yml]
+https://github.com/rubocop/rubocop/blob/master/.rubocop.yml[.rubocop.yml]
 configuration file. It makes it possible to enable/disable certain cops
 (checks) and to alter their behavior if they accept any parameters. The file
 can be placed in your home directory, XDG config directory, or in some project
@@ -49,7 +49,7 @@ files:
 * `/.rubocop.yml`
 * `~/.rubocop.yml`
 * `~/.config/rubocop/config.yml`
-* https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[RuboCop's default configuration]
+* https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCop's default configuration]
 
 NOTE: All the previous logic does not apply if a specific configuration file is passed
 on the command line through the `--config` flag. In that case, the resolved
@@ -57,7 +57,7 @@ configuration file will be the one passed to the CLI.
 
 == Inheritance
 
-All configuration inherits from https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[RuboCop's default configuration] (See
+All configuration inherits from https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCop's default configuration] (See
 "Defaults").
 
 RuboCop also supports inheritance in user's configuration files. The most common
@@ -191,7 +191,7 @@ have array values should be merged together instead of overriding the inherited
 value.
 
 This applies to explicit inheritance using `inherit_from` as well as implicit
-inheritance from https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[the default configuration].
+inheritance from https://github.com/rubocop/rubocop/blob/master/config/default.yml[the default configuration].
 
 Given the following config:
 
@@ -266,7 +266,7 @@ AllCops:
 
 == Defaults
 
-The file https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[config/default.yml] under the RuboCop home directory contains the
+The file https://github.com/rubocop/rubocop/blob/master/config/default.yml[config/default.yml] under the RuboCop home directory contains the
 default settings that all configurations inherit from. Project and personal
 `.rubocop.yml` files need only make settings that are different from the
 default ones. If there is no `.rubocop.yml` file in the project, home or XDG
@@ -345,7 +345,7 @@ RuboCop comes with a comprehensive list of common ruby file names and
 extensions. But, if you'd like RuboCop to check files that are not included by
 default, you'll need to pass them in on the command line, or to add entries for
 them under `AllCops`/`Include`. Remember that your configuration files override
-https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[RuboCops's defaults]. In the following example, we want to include
+https://github.com/rubocop/rubocop/blob/master/config/default.yml[RuboCops's defaults]. In the following example, we want to include
 `foo.unusual_extension`, but we also must copy any other patterns we need from
 the overridden `default.yml`.
 
@@ -364,8 +364,8 @@ AllCops:
 ----
 
 This behavior of `Include` (overriding `default.yml`) was introduced in
-https://github.com/rubocop-hq/rubocop/blob/master/CHANGELOG.md#0560-2018-05-14[0.56.0]
-via https://github.com/rubocop-hq/rubocop/pull/5882[#5882]. This change allows
+https://github.com/rubocop/rubocop/blob/master/CHANGELOG.md#0560-2018-05-14[0.56.0]
+via https://github.com/rubocop/rubocop/pull/5882[#5882]. This change allows
 people to include/exclude precisely what they need to, without the defaults
 getting in the way.
 
@@ -451,7 +451,7 @@ Layout/LineLength:
 Most cops are enabled by default. Cops, introduced or significantly updated
 between major versions, are in a special pending status (read more in
 xref:versioning.adoc["Versioning"]). Some cops, configured the above `Enabled: false`
-in https://github.com/rubocop-hq/rubocop/blob/master/config/default.yml[config/default.yml],
+in https://github.com/rubocop/rubocop/blob/master/config/default.yml[config/default.yml],
 are disabled by default. The cop enabling process can be altered by
 setting `DisabledByDefault` or `EnabledByDefault` (but not both) to `true`.
 
@@ -498,8 +498,11 @@ Style/Alias:
 Each cop has a default severity level based on which department it belongs
 to. The level is normally `warning` for `Lint` and `convention` for all the
 others, but this can be changed in user configuration. Cops can customize their
-severity level. Allowed values are `refactor`, `convention`, `warning`, `error`
+severity level. Allowed values are `info`, `refactor`, `convention`, `warning`, `error`
 and `fatal`.
+
+Cops with severity `info` will be reported but will not cause `rubocop` to return
+a non-zero value.
 
 There is one exception from the general rule above and that is `Lint/Syntax`, a
 special cop that checks for syntax errors before the other cops are invoked. It
@@ -541,6 +544,22 @@ disabled. For example:
 ----
 Style/PerlBackrefs:
   AutoCorrect: false
+----
+
+== Common configuration parameters
+There are some configuration parameters that are shared by many cops, with the same behavior.
+
+=== IgnoredMethods
+
+Cops that evaluate methods can often be configured to ignore certain methods. Both strings and
+regular expressions can be used. For example:
+
+[source,yaml]
+----
+Metrics/BlockLength:
+  IgnoredMethods:
+    - refine
+    - !ruby/regexp /\b(class|instance)_methods\b/
 ----
 
 == Setting the target Ruby version

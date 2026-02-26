@@ -20,6 +20,7 @@ module RuboCop
               '`method_name == %<method_name>s`.'
         RESTRICT_ON_SEND = %i[==].freeze
 
+        # @!method method_name?(node)
         def_node_matcher :method_name?, <<~PATTERN
           (send
             $(send

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config, :config, :config do
   let(:config) do
     RuboCop::Config.new('Style/ConditionalAssignment' => {
                           'Enabled' => true,
@@ -139,6 +137,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       foo? ? bar = "a" : bar = "b"
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
     RUBY
+
     expect_correction(<<~RUBY)
       bar = foo? ? "a" : "b"
     RUBY
@@ -169,6 +168,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         default['key-with-dash'] << b
       end
     RUBY
+
     expect_correction(<<~RUBY)
       default['key-with-dash'] << if condition
         a
@@ -195,6 +195,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         %{source}
         ^{source} Use the return of the conditional for variable assignment and comparison.
       RUBY
+
       expect_correction(<<~RUBY)
         bar #{method} (foo? ? 1 : 2)
       RUBY
@@ -489,6 +490,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = #{'b' * 72}
       end
     RUBY
+
     expect_correction(<<~RUBY)
       bar = if foo
         #{'a' * 72}
@@ -736,6 +738,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 3
       end
     RUBY
+
     expect_correction(<<~RUBY)
       bar = if foo
         1
@@ -760,6 +763,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 4
       end
     RUBY
+
     expect_correction(<<~RUBY)
       bar = if foo
         1
@@ -1092,7 +1096,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         RUBY
       end
 
-      it 'registers an offense when multiple assignment is in else' do
+      it 'does not register an offense when multiple assignment is in else' do
         expect_no_offenses(<<~RUBY)
           if foo
             method_call
@@ -1117,6 +1121,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       else bar = 2
       end
     RUBY
+
     expect_correction(<<~RUBY)
       bar = if foo then 1
       elsif cond then 2
@@ -1134,6 +1139,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 2
       end
     RUBY
+
     expect_correction(<<~RUBY)
       bar = unless foo
         1
@@ -1151,6 +1157,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
       else baz = 2
       end
     RUBY
+
     expect_correction(<<~RUBY)
       baz = case foo
       when bar then 1
@@ -1171,6 +1178,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         bar = 3
       end
     RUBY
+
     expect_correction(<<~RUBY)
       bar = case foo
       when foobar
@@ -1211,6 +1219,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
         foo? ? bar =~ /a/ : bar =~ /b/
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the return of the conditional for variable assignment and comparison.
       RUBY
+
       expect_correction(<<~'RUBY')
         bar =~ (foo? ? /a/ : /b/)
       RUBY
@@ -1354,6 +1363,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             array[1] = 2
           end
         RUBY
+
         expect_correction(<<~RUBY)
           array[1] = if something
             1
@@ -1386,6 +1396,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             FOO::BAR = 2
           end
         RUBY
+
         expect_correction(<<~RUBY)
           FOO::BAR = if something
             1
@@ -1404,6 +1415,7 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
             ::BAR = 2
           end
         RUBY
+
         expect_correction(<<~RUBY)
           ::BAR = if something
             1
@@ -1472,8 +1484,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   context 'configured to check conditions with multiple statements' do
-    subject(:cop) { described_class.new(config) }
-
     let(:config) do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
                             'Enabled' => true,
@@ -2129,8 +2139,6 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   context 'EndAlignment configured to start_of_line' do
-    subject(:cop) { described_class.new(config) }
-
     context 'auto-correct' do
       it 'uses proper end alignment in if' do
         expect_offense(<<~RUBY)

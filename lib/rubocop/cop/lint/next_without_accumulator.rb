@@ -25,6 +25,7 @@ module RuboCop
       class NextWithoutAccumulator < Base
         MSG = 'Use `next` with an accumulator argument in a `reduce`.'
 
+        # @!method on_body_of_reduce(node)
         def_node_matcher :on_body_of_reduce, <<~PATTERN
           (block (send _recv {:reduce :inject} !sym) _blockargs $(begin ...))
         PATTERN

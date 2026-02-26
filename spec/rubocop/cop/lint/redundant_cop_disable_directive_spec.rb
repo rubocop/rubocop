@@ -26,6 +26,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics/MethodLength
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
               RUBY
+
               expect_correction('')
             end
           end
@@ -36,6 +37,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable UnknownCop
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `UnknownCop` (unknown cop).
               RUBY
+
               expect_correction('')
             end
           end
@@ -121,6 +123,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics/ClassLength, Metrics/MethodLength
                                   ^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
               RUBY
+
               expect_correction(<<~RUBY)
                 # rubocop:disable Metrics/MethodLength
               RUBY
@@ -460,6 +463,29 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
               module Bar
                 class Baz
                 end
+              end
+            end
+          RUBY
+        end
+      end
+
+      context 'when there is a blank line before inline comment' do
+        it 'removes the comment and preceding whitespace' do
+          expect_offense(<<~RUBY)
+            def foo; end
+
+            def bar # rubocop:disable Metrics/ClassLength
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+              do_something do
+              end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            def foo; end
+
+            def bar
+              do_something do
               end
             end
           RUBY

@@ -6,7 +6,12 @@ module RuboCop
       module Utils
         # @api private
         #
-        # Helps to calculate code length for the provided node.
+        # Identifies repetitions `&.` on the same variable:
+        #
+        #  my_var&.foo
+        #  my_var&.bar # => repeated
+        #  my_var = baz # => reset
+        #  my_var&.qux # => not repeated
         module RepeatedCsendDiscount
           def reset_repeated_csend
             @repeated_csend = {}

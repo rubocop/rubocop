@@ -24,6 +24,7 @@ module RuboCop
           '`%<receiver>s.unpack(%<format>s)%<method>s`.'
         RESTRICT_ON_SEND = %i[first [] slice at].freeze
 
+        # @!method unpack_and_first_element?(node)
         def_node_matcher :unpack_and_first_element?, <<~PATTERN
           {
             (send $(send (...) :unpack $(...)) :first)

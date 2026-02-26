@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UnreachableLoop do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::UnreachableLoop, :config do
   context 'without preceding continue statements' do
     it 'registers an offense when using `break`' do
       expect_offense(<<~RUBY)
@@ -131,6 +129,57 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableLoop do
           end
         end
       RUBY
+    end
+  end
+
+  context 'with an enumerator method' do
+    context 'as the last item in a method chain' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          string.split('-').map { raise StandardError }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This loop will have at most one iteration.
+        RUBY
+      end
+    end
+
+    context 'not chained' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          string.map { raise StandardError }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This loop will have at most one iteration.
+        RUBY
+      end
+    end
+
+    context 'in the middle of a method chain' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          exactly(2).times.with(x) { raise StandardError }
+        RUBY
+      end
+    end
+  end
+
+  context 'with IgnoredPatterns' do
+    let(:cop_config) do
+      { 'IgnoredPatterns' => [/exactly\(\d+\)\.times/] }
+    end
+
+    context 'with a ignored method call' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          exactly(2).times { raise StandardError }
+        RUBY
+      end
+    end
+
+    context 'with a non ignored method call' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          2.times { raise StandardError }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ This loop will have at most one iteration.
+        RUBY
+      end
     end
   end
 

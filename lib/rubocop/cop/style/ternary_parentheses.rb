@@ -120,7 +120,7 @@ module RuboCop
           if condition.begin_type?
             condition.to_a.any? { |x| complex_condition?(x) }
           else
-            non_complex_expression?(condition) ? false : true
+            !non_complex_expression?(condition)
           end
         end
 
@@ -191,6 +191,7 @@ module RuboCop
             (child.send_type? && child.prefix_not?)
         end
 
+        # @!method method_name(node)
         def_node_matcher :method_name, <<~PATTERN
           {($:defined? _ ...)
            (send {_ nil?} $_ _ ...)}

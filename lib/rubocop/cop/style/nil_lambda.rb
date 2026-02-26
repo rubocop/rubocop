@@ -28,6 +28,7 @@ module RuboCop
 
         MSG = 'Use an empty lambda instead of always returning nil.'
 
+        # @!method nil_return?(node)
         def_node_matcher :nil_return?, <<~PATTERN
           { ({return next break} nil) (nil) }
         PATTERN

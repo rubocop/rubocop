@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::EachWithObjectArgument do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::EachWithObjectArgument, :config do
   it 'registers an offense for fixnum argument' do
     expect_offense(<<~RUBY)
       collection.each_with_object(0) { |e, a| a + e }

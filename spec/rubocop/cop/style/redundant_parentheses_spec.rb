@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantParentheses do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
   shared_examples 'redundant' do |expr, correct, type|
     it "registers an offense for parentheses around #{type}" do
       expect_offense(<<~RUBY, expr: expr)

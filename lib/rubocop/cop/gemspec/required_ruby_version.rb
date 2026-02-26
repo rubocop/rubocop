@@ -36,12 +36,13 @@ module RuboCop
       #     spec.required_ruby_version = '>= 2.5'
       #   end
       #
-      #   # good
+      #   # accepted but not recommended
       #   Gem::Specification.new do |spec|
       #     spec.required_ruby_version = ['>= 2.5.0', '< 2.7.0']
       #   end
       #
-      #   # good
+      #   # accepted but not recommended, since
+      #   # Ruby does not really follow semantic versionning
       #   Gem::Specification.new do |spec|
       #     spec.required_ruby_version = '~> 2.5'
       #   end
@@ -54,10 +55,12 @@ module RuboCop
                         '.rubocop.yml) should be equal.'
         MISSING_MSG = '`required_ruby_version` should be specified.'
 
+        # @!method required_ruby_version(node)
         def_node_search :required_ruby_version, <<~PATTERN
           (send _ :required_ruby_version= $_)
         PATTERN
 
+        # @!method defined_ruby_version(node)
         def_node_matcher :defined_ruby_version, <<~PATTERN
           {$(str _) $(array (str _) (str _))
             (send (const (const nil? :Gem) :Requirement) :new $(str _))}

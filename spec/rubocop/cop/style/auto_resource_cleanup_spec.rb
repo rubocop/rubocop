@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::AutoResourceCleanup do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::AutoResourceCleanup, :config do
   it 'registers an offense for File.open without block' do
     expect_offense(<<~RUBY)
       File.open("filename")

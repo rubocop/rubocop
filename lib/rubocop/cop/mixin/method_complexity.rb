@@ -6,10 +6,18 @@ module RuboCop
     #
     # This module handles measurement and reporting of complexity in methods.
     module MethodComplexity
-      include ConfigurableMax
       include IgnoredMethods
       include Metrics::Utils::RepeatedCsendDiscount
       extend NodePattern::Macros
+      extend ExcludeLimit
+
+      exclude_limit 'Max'
+
+      # Ensure cops that include `MethodComplexity` have the config
+      # `attr_accessor`s that `ignored_method?` needs.
+      def self.included(base)
+        base.extend(IgnoredMethods::Config)
+      end
 
       def on_def(node)
         return if ignored_method?(node.method_name)
@@ -28,6 +36,7 @@ module RuboCop
 
       private
 
+      # @!method define_method?(node)
       def_node_matcher :define_method?, <<~PATTERN
         (block
          (send nil? :define_method ({sym str} $_))

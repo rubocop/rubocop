@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UselessAssignment do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
   context 'when a variable is assigned and assigned again in a modifier ' \
           'condition' do
     it 'accepts with parentheses' do

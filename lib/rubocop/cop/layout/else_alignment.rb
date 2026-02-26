@@ -29,10 +29,11 @@ module RuboCop
       #   else
       #     code
       #   end
-      class ElseAlignment < Cop
+      class ElseAlignment < Base
         include EndKeywordAlignment
         include Alignment
         include CheckAssignment
+        extend AutoCorrector
 
         MSG = 'Align `%<else_range>s` with `%<base_range>s`.'
 
@@ -67,11 +68,11 @@ module RuboCop
           )
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+        end
 
         def check_nested(node, base)
           on_if(node, base)
@@ -140,7 +141,9 @@ module RuboCop
             else_range: else_range.source,
             base_range: base_range.source[/^\S*/]
           )
-          add_offense(else_range, location: else_range, message: message)
+          add_offense(else_range, message: message) do |corrector|
+            autocorrect(corrector, else_range)
+          end
         end
 
         def assignment_node(node)

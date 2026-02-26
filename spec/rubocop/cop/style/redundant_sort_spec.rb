@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantSort do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantSort, :config do
   it 'registers an offense when first is called with sort' do
     expect_offense(<<~RUBY)
       [1, 2, 3].sort.first

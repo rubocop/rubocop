@@ -17,11 +17,20 @@ module RuboCop
         include Parentheses
         extend AutoCorrector
 
+        # @!method square_brackets?(node)
         def_node_matcher :square_brackets?,
                          '(send {(send _recv _msg) str array hash} :[] ...)'
+
+        # @!method range_end?(node)
         def_node_matcher :range_end?, '^^{irange erange}'
+
+        # @!method method_node_and_args(node)
         def_node_matcher :method_node_and_args, '$(call _recv _msg $...)'
+
+        # @!method rescue?(node)
         def_node_matcher :rescue?, '{^resbody ^^resbody}'
+
+        # @!method arg_in_call_with_block?(node)
         def_node_matcher :arg_in_call_with_block?,
                          '^^(block (send _ _ equal?(%0) ...) ...)'
 
@@ -109,6 +118,7 @@ module RuboCop
           check_send(begin_node, node) if node.call_type?
         end
 
+        # @!method interpolation?(node)
         def_node_matcher :interpolation?, '[^begin ^^dstr]'
 
         def check_send(begin_node, node)
@@ -220,14 +230,17 @@ module RuboCop
             first_yield_argument?(node)
         end
 
+        # @!method first_send_argument?(node)
         def_node_matcher :first_send_argument?, <<~PATTERN
           ^(send _ _ equal?(%0) ...)
         PATTERN
 
+        # @!method first_super_argument?(node)
         def_node_matcher :first_super_argument?, <<~PATTERN
           ^(super equal?(%0) ...)
         PATTERN
 
+        # @!method first_yield_argument?(node)
         def_node_matcher :first_yield_argument?, <<~PATTERN
           ^(yield equal?(%0) ...)
         PATTERN

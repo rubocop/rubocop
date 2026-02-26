@@ -4,8 +4,6 @@ RSpec.describe(
   RuboCop::Cop::Lint::DisjunctiveAssignmentInConstructor,
   :config
 ) do
-  subject(:cop) { described_class.new(config) }
-
   context 'empty constructor' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)

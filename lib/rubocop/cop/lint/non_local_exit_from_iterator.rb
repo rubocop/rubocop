@@ -73,7 +73,10 @@ module RuboCop
           !return_node.children.empty?
         end
 
+        # @!method chained_send?(node)
         def_node_matcher :chained_send?, '(send !nil? ...)'
+
+        # @!method define_method?(node)
         def_node_matcher :define_method?, <<~PATTERN
           (send _ {:define_method :define_singleton_method} _)
         PATTERN

@@ -37,8 +37,9 @@ module RuboCop
       #
       #   foo :bar,
       #       :baz
-      class ArgumentAlignment < Cop
+      class ArgumentAlignment < Base
         include Alignment
+        extend AutoCorrector
 
         ALIGN_PARAMS_MSG = 'Align the arguments of a method call if ' \
           'they span more than one line.'
@@ -54,11 +55,11 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+        end
 
         def message(_node)
           fixed_indentation? ? FIXED_INDENT_MSG : ALIGN_PARAMS_MSG

@@ -5,8 +5,8 @@ module RuboCop
     module Style
       # This cop checks for uses of double negation (`!!`) to convert something to a boolean value.
       #
-      # When using `EnforcedStyle: allowed_in_returns`, allow double nagation in contexts
-      # that use boolean as a return value. When using `EnforcedStyle: forbidden`, double nagation
+      # When using `EnforcedStyle: allowed_in_returns`, allow double negation in contexts
+      # that use boolean as a return value. When using `EnforcedStyle: forbidden`, double negation
       # should be forbidden always.
       #
       # @example
@@ -39,6 +39,7 @@ module RuboCop
         MSG = 'Avoid the use of double negation (`!!`).'
         RESTRICT_ON_SEND = %i[!].freeze
 
+        # @!method double_negative?(node)
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 
         def on_send(node)

@@ -21,6 +21,7 @@ module RuboCop
               'Use `%<double_colon>sBigDecimal()` instead.'
         RESTRICT_ON_SEND = %i[new].freeze
 
+        # @!method big_decimal_new(node)
         def_node_matcher :big_decimal_new, <<~PATTERN
           (send
             (const ${nil? cbase} :BigDecimal) :new ...)

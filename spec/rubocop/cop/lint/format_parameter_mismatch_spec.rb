@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch, :config do
   shared_examples 'variables' do |variable|
     it 'does not register an offense for % called on a variable' do
       expect_no_offenses(<<~RUBY)
@@ -117,13 +115,13 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
         RUBY
       end
 
-      it 'registers an offense for `#format`' do
+      it 'does not registes an offense for `#format`' do
         expect_no_offenses(<<~RUBY)
           puts format("%s, %s, %s", 1, 2, 3, 4, *arr)
         RUBY
       end
 
-      it 'registers an offense for `#sprintf`' do
+      it 'does not register an offense for `#sprintf`' do
         expect_no_offenses(<<~RUBY)
           puts sprintf("%s, %s, %s", 1, 2, 3, 4, *arr)
         RUBY
@@ -180,14 +178,14 @@ RSpec.describe RuboCop::Cop::Lint::FormatParameterMismatch do
     end
   end
 
-  # Regression: https://github.com/rubocop-hq/rubocop/issues/3869
+  # Regression: https://github.com/rubocop/rubocop/issues/3869
   context 'when passed an empty array' do
     it 'does not register an offense' do
       expect_no_offenses("'%' % []")
     end
   end
 
-  # Regression: https://github.com/rubocop-hq/rubocop/issues/8115
+  # Regression: https://github.com/rubocop/rubocop/issues/8115
   context 'when argument itself contains format characters and ' \
           'formats in format string and argument are not equal' do
     it 'ignores argument formatting' do

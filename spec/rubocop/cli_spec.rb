@@ -79,7 +79,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         .to eq(<<~RESULT)
           == example.rb ==
           C:  1:  1: Layout/EndOfLine: Carriage return character detected.
-          C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+          C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
 
           1 file inspected, 2 offenses detected, 1 offense auto-correctable
       RESULT
@@ -143,7 +143,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect($stdout.string)
       .to eq <<~RESULT
         == example.rb ==
-        C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
+        C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
         1 file inspected, 1 offense detected, 1 offense auto-correctable
     RESULT
@@ -170,11 +170,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     aggregate_failures('CLI output') do
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(["#{abs('example.rb')}:3:6: W: Lint/AmbiguousOperator: " \
+        .to eq(["#{abs('example.rb')}:3:6: W: [Correctable] Lint/AmbiguousOperator: " \
                 'Ambiguous splat operator. Parenthesize the method arguments ' \
                 "if it's surely a splat operator, or add a whitespace to the " \
                 'right of the `*` if it should be a multiplication.',
-                "#{abs('example.rb')}:4:1: C: Style/OneLineConditional: " \
+                "#{abs('example.rb')}:4:1: C: [Correctable] Style/OneLineConditional: " \
                 'Favor the ternary operator (`?:`) or multi-line constructs over ' \
                 'single-line `if/then/else/end` constructs.',
                 ''].join("\n"))
@@ -226,7 +226,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # should get 2 offenses reported.
       expect($stdout.string).to eq(<<~RESULT)
         #{abs('example.rb')}:7:121: C: Layout/LineLength: Line is too long. [132/120]
-        #{abs('example.rb')}:9:5: C: Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        #{abs('example.rb')}:9:5: C: [Correctable] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RESULT
     end
 
@@ -313,9 +313,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       # 2 real cops were disabled, and 1 that was incorrect
       # 2 real cops was enabled, but only 1 had been disabled correctly
       expect($stdout.string).to eq(<<~RESULT)
-        #{abs('example.rb')}:8:21: W: Lint/RedundantCopEnableDirective: Unnecessary enabling of Layout/LineLength.
+        #{abs('example.rb')}:8:21: W: [Correctable] Lint/RedundantCopEnableDirective: Unnecessary enabling of Layout/LineLength.
         #{abs('example.rb')}:9:121: C: Layout/LineLength: Line is too long. [132/120]
-        #{abs('example.rb')}:11:5: C: Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        #{abs('example.rb')}:11:5: C: [Correctable] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
       RESULT
     end
 
@@ -355,9 +355,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         OUTPUT
         expect($stdout.string)
           .to eq(<<~RESULT)
-            #{abs('example.rb')}:3:150: C: Migration/DepartmentName: Department name is missing.
+            #{abs('example.rb')}:3:150: C: [Correctable] Migration/DepartmentName: Department name is missing.
             #{abs('example.rb')}:4:121: C: Layout/LineLength: Line is too long. [130/120]
-            #{abs('example.rb')}:5:28: C: Migration/DepartmentName: Department name is missing.
+            #{abs('example.rb')}:5:28: C: [Correctable] Migration/DepartmentName: Department name is missing.
         RESULT
       end
     end
@@ -377,9 +377,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~RESULT)
           #{abs('example.rb')}:3:121: C: Layout/LineLength: Line is too long. [130/120]
-          #{abs('example.rb')}:4:1: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
-          #{abs('example.rb')}:5:12: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Layout/LineLength`, `Metrics/ClassLength`.
-          #{abs('example.rb')}:6:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
+          #{abs('example.rb')}:4:1: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
+          #{abs('example.rb')}:5:12: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Layout/LineLength`, `Metrics/ClassLength`.
+          #{abs('example.rb')}:6:8: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of all cops.
         RESULT
       end
 
@@ -744,8 +744,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to eq(<<~RESULT)
               == example.rb ==
-              C:  9:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for indented_internal_methods indentation.
-              C: 15:  3: Layout/IndentationWidth: Use 2 (not 0) spaces for indented_internal_methods indentation.
+              C:  9:  3: [Correctable] Layout/IndentationWidth: Use 2 (not 0) spaces for indented_internal_methods indentation.
+              C: 15:  3: [Correctable] Layout/IndentationWidth: Use 2 (not 0) spaces for indented_internal_methods indentation.
 
               1 file inspected, 2 offenses detected, 2 offenses auto-correctable
           RESULT
@@ -762,8 +762,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         YAML
         expect(cli.run([])).to eq(2)
         expect($stderr.string).to include('obsolete parameter ' \
-                                          'MultiSpaceAllowedForOperators ' \
-                                          '(for Layout/SpaceAroundOperators)' \
+                                          '`MultiSpaceAllowedForOperators` ' \
+                                          '(for `Layout/SpaceAroundOperators`)' \
                                           ' found')
       end
     end
@@ -834,7 +834,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to eq(<<~RESULT)
               == example.rb ==
-              C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
+              C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
               1 file inspected, 1 offense detected, 1 offense auto-correctable
             RESULT
@@ -872,9 +872,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w[--format simple])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         == dir/example2.rb ==
-        C:  3:  6: Trailing whitespace detected.
+        C:  3:  6: [Correctable] Trailing whitespace detected.
         == example1.rb ==
-        C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
+        C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
         2 files inspected, 2 offenses detected, 2 offenses auto-correctable
       RESULT
@@ -898,9 +898,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w[--format simple])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         == dir/example2.rb ==
-        C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected. (#{url})
+        C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected. (#{url})
         == example1.rb ==
-        C:  3:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
+        C:  3:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
         2 files inspected, 2 offenses detected, 2 offenses auto-correctable
       RESULT
@@ -1048,7 +1048,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(%w[--format simple .])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
         == special.dsl ==
-        C:  3:  9: Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
+        C:  3:  9: [Correctable] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.
 
         1 file inspected, 1 offense detected, 1 offense auto-correctable
       RESULT
@@ -1088,7 +1088,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(<<~RESULT)
           == example1.rb ==
-          C:  3:  7: Layout/TrailingWhitespace: Trailing whitespace detected.
+          C:  3:  7: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
           1 file inspected, 1 offense detected, 1 offense auto-correctable
         RESULT
@@ -1111,7 +1111,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string)
           .to eq(<<~RESULT)
             == example1.rb ==
-            C:  3:  7: Layout/TrailingWhitespace: Trailing whitespace detected.
+            C:  3:  7: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
             1 file inspected, 1 offense detected, 1 offense auto-correctable
           RESULT
@@ -1169,9 +1169,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string).to eq(<<~RESULT)
         == example1.rb ==
-        C:  3:  6: Style/PercentLiteralDelimiters: %w-literals should be delimited by [ and ].
-        C:  4:  6: Style/PercentLiteralDelimiters: %q-literals should be delimited by ( and ).
-        C:  4:  6: Style/RedundantPercentQ: Use %q only for strings that contain both single quotes and double quotes.
+        C:  3:  6: [Correctable] Style/PercentLiteralDelimiters: %w-literals should be delimited by [ and ].
+        C:  4:  6: [Correctable] Style/PercentLiteralDelimiters: %q-literals should be delimited by ( and ).
+        C:  4:  6: [Correctable] Style/RedundantPercentQ: Use %q only for strings that contain both single quotes and double quotes.
 
         1 file inspected, 3 offenses detected, 3 offenses auto-correctable
       RESULT
@@ -1201,8 +1201,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(<<~RESULT)
           == example1.rb ==
-          C:  1:  5: Style/CollectionMethods: Prefer find_all over select.
-          C:  1: 26: Style/CollectionMethods: Prefer map over collect.
+          C:  1:  5: [Correctable] Style/CollectionMethods: Prefer find_all over select.
+          C:  1: 26: [Correctable] Style/CollectionMethods: Prefer map over collect.
 
           1 file inspected, 2 offenses detected, 2 offenses auto-correctable
         RESULT
@@ -1227,7 +1227,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                         '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string).to eq(<<~RESULT)
         == example1.rb ==
-        C:  3:  1: Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
+        C:  3:  1: [Correctable] Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
 
         1 file inspected, 1 offense detected, 1 offense auto-correctable
       RESULT
@@ -1250,7 +1250,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(<<~RESULT)
           == example_src/example1.rb ==
-          C:  3:  7: Layout/TrailingWhitespace: Trailing whitespace detected.
+          C:  3:  7: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
           1 file inspected, 1 offense detected, 1 offense auto-correctable
         RESULT
@@ -1445,16 +1445,25 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       create_file('example/example1.rb', '#' * 90)
 
       create_file('example/.rubocop.yml', <<~YAML)
-        Style/LyneLenth:
+        Layout/LyneLenth:
           Enabled: true
           Max: 100
+        Lint/LiteralInCondition:
+          Enabled: true
+        Style/AlignHash:
+          Enabled: true
       YAML
 
       expect(cli.run(%w[--format simple example])).to eq(2)
       expect($stderr.string)
-        .to eq(['Error: unrecognized cop Style/LyneLenth found in ' \
-                'example/.rubocop.yml',
-                ''].join("\n"))
+        .to eq(<<~OUTPUT)
+          Error: unrecognized cop Layout/LyneLenth found in example/.rubocop.yml
+          Did you mean `Layout/LineLength`?
+          unrecognized cop Lint/LiteralInCondition found in example/.rubocop.yml
+          Did you mean `Lint/LiteralAsCondition`?
+          unrecognized cop Style/AlignHash found in example/.rubocop.yml
+          Did you mean `Style/Alias`, `Style/OptionHash`?
+        OUTPUT
     end
 
     it 'prints a warning for an unrecognized configuration parameter' do
@@ -1553,10 +1562,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           == example/example1.rb ==
           C:  3: 11: Metrics/ParameterLists: Avoid parameter lists longer than 5 parameters. [6/5]
           C:  3: 39: Naming/MethodParameterName: Method parameter must be at least 3 characters long.
-          C:  3: 46: Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
+          C:  3: 46: [Correctable] Style/CommentedKeyword: Do not place comments on the same line as the def keyword.
           E:  3:121: Layout/LineLength: Line is too long. [130/120]
 
-          1 file inspected, 4 offenses detected
+          1 file inspected, 4 offenses detected, 1 offense auto-correctable
         RESULT
         expect($stderr.string).to eq('')
       end
@@ -1576,7 +1585,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       cli.run(%w[--format simple -c rubocop.yml])
       expect($stderr.string)
         .to eq(["Warning: Invalid severity 'superbad'. " \
-                'Valid severities are refactor, convention, ' \
+                'Valid severities are info, refactor, convention, ' \
                 'warning, error, fatal.',
                 ''].join("\n"))
     end
@@ -1643,6 +1652,28 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(e.status).to eq(1)
         expect(e.message)
           .to eq 'rubocop: No such file or directory -- /tmp/not_a_file'
+      end
+    end
+  end
+
+  describe 'configuration of `AutoCorrect`' do
+    context 'when setting `AutoCorrect: false` for `Style/StringLiterals`' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Style/StringLiterals:
+            AutoCorrect: false
+        YAML
+      end
+
+      it 'does not suggest `1 offense auto-correctable` for `Style/StringLiterals`' do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          a = "Hello"
+        RUBY
+
+        expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+        expect($stdout.string.lines.to_a.last).to eq("1 file inspected, 2 offenses detected\n")
       end
     end
   end
@@ -1719,7 +1750,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string.strip).to eq(
           ['Error: The `Style/TrailingComma` cop has been removed. Please ' \
            'use `Style/TrailingCommaInArguments`, ' \
-           '`Style/TrailingCommaInArrayLiteral`, and/or ' \
+           '`Style/TrailingCommaInArrayLiteral` and/or ' \
            '`Style/TrailingCommaInHashLiteral` instead.',
            '(obsolete configuration found in .rubocop.yml, ' \
            'please update it)'].join("\n")
@@ -1740,6 +1771,407 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string.strip).to eq(
           'Error: unrecognized cop Syntax/Whatever found in .rubocop.yml'
         )
+      end
+    end
+  end
+
+  describe 'extension suggestions' do
+    matcher :suggest_extensions do |*extensions|
+      supports_block_expectations
+      attr_accessor :suggested
+
+      def suggestion_regex
+        Regexp.new(<<~REGEXP, Regexp::MULTILINE).freeze
+          Tip: Based on detected gems, the following RuboCop extension libraries might be helpful:
+          (?<suggestions>.*)
+        REGEXP
+      end
+
+      def find_suggestions
+        actual.call
+        suggestions = (suggestion_regex.match($stdout.string) || {})[:suggestions]
+        self.suggested = suggestions ? suggestions.scan(/(?<=\* )[a-z0-9_-]+\b/.freeze) : []
+      end
+
+      match do
+        find_suggestions
+        suggested == extensions
+      end
+
+      match_when_negated do
+        find_suggestions
+        suggested.none?
+      end
+
+      failure_message do
+        "expected to suggest extensions [#{extensions.join(', ')}], "\
+          "but got [#{suggested.join(', ')}]"
+      end
+
+      failure_message_when_negated do
+        "expected to not suggest extensions, but got [#{suggested.join(', ')}]"
+      end
+    end
+
+    let(:lockfile) do
+      create_file('Gemfile.lock', <<~LOCKFILE)
+        GEM
+          specs:
+            rake (13.0.1)
+            rspec (3.9.0)
+
+        PLATFORMS
+          ruby
+
+        DEPENDENCIES
+          rake (~> 13.0)
+          rspec (~> 3.7)
+      LOCKFILE
+    end
+
+    before do
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        puts 'ok'
+      RUBY
+
+      # Ensure that these specs works in CI, since the feature is generally
+      # disabled in when ENV['CI'] is set.
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with('CI').and_return(false)
+
+      # Mock the lockfile to be parsed by bundler
+      allow(Bundler).to receive(:default_lockfile)
+        .and_return(lockfile ? Pathname.new(lockfile) : nil)
+    end
+
+    context 'when bundler is not loaded' do
+      before { hide_const('Bundler') }
+
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        expect($stderr.string.blank?).to eq(true)
+      end
+    end
+
+    context 'when there are gems to suggest' do
+      context 'that are not loaded' do
+        it 'shows the suggestion' do
+          expect { cli.run(['example.rb']) }
+            .to suggest_extensions('rubocop-rake', 'rubocop-rspec')
+        end
+      end
+
+      context 'that are dependencies' do
+        let(:gemfile) do
+          create_file('Gemfile', <<~RUBY)
+            gem 'rspec'
+            gem 'rake'
+            gem 'rubocop-rspec'
+            gem 'rubocop-rake'
+          RUBY
+        end
+
+        before do
+          create_file('Gemfile.lock', <<~TEXT)
+            GEM
+              remote: https://rubygems.org/
+              specs:
+                rake (13.0.1)
+                rspec (3.9.0)
+                  rspec-core (~> 3.9.0)
+                rspec-core (3.9.3)
+                rubocop-rake (0.5.1)
+                rubocop-rspec (2.0.1)
+
+            DEPENDENCIES
+              rake (~> 13.0)
+              rspec (~> 3.7)
+              rubocop-rake (~> 0.5)
+              rubocop-rspec (~> 2.0.0)
+          TEXT
+        end
+
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        end
+      end
+
+      context 'that some are dependencies' do
+        let(:gemfile) do
+          create_file('Gemfile', <<~RUBY)
+            gem 'rspec'
+            gem 'rake'
+            gem 'rubocop-rake'
+          RUBY
+        end
+
+        before do
+          create_file('Gemfile.lock', <<~TEXT)
+            GEM
+              remote: https://rubygems.org/
+              specs:
+                rake (13.0.1)
+                rspec (3.9.0)
+                  rspec-core (~> 3.9.0)
+                rspec-core (3.9.3)
+                rubocop-rake (0.5.1)
+
+            DEPENDENCIES
+              rake (~> 13.0)
+              rspec (~> 3.7)
+              rubocop-rake (~> 0.5)
+          TEXT
+        end
+
+        it 'only suggests unused gems' do
+          expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rspec')
+        end
+      end
+
+      context 'that are added by dependencies' do
+        let(:lockfile) do
+          create_file('Gemfile.lock', <<~TEXT)
+            GEM
+              specs:
+                rake (13.0.1)
+                rspec (3.9.0)
+                shared-gem (1.0.0)
+                  rubocop-rake (0.5.1)
+                  rubocop-rspec (2.0.1)
+
+            DEPENDENCIES
+              rake (~> 13.0)
+              rspec (~> 3.7)
+              shared-gem (~> 1.0.0)
+          TEXT
+        end
+
+        it 'does not show the suggestion' do
+          expect { cli.run(['example.rb']) }.not_to suggest_extensions
+        end
+      end
+    end
+
+    context 'when gems with suggestions are not primary dependencies' do
+      let(:lockfile) do
+        create_file('Gemfile.lock', <<~LOCKFILE)
+          GEM
+            specs:
+              shared-gem (1.0.0)
+                rake (13.0.1)
+                rspec (3.9.0)
+
+          PLATFORMS
+            ruby
+
+          DEPENDENCIES
+            shared-gem (~> 1.0)
+        LOCKFILE
+      end
+
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when there are multiple gems loaded that have the same suggestion' do
+      let(:lockfile) do
+        create_file('Gemfile.lock', <<~LOCKFILE)
+          GEM
+            specs:
+              rspec (3.9.0)
+              rspec-rails (4.0.1)
+
+          PLATFORMS
+            ruby
+
+          DEPENDENCIES
+            rspec (~> 3.9)
+            rspec-rails (~> 4.0)
+        LOCKFILE
+      end
+
+      it 'shows the suggestion' do
+        expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rspec')
+      end
+    end
+
+    context 'with AllCops/SuggestExtensions: false' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            SuggestExtensions: false
+        YAML
+      end
+
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when an extension is disabled in AllCops/SuggestExtensions' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            SuggestExtensions:
+              rubocop-rake: false
+        YAML
+      end
+
+      it 'show the suggestion for non-disabled extensions' do
+        expect { cli.run(['example.rb']) }.to suggest_extensions('rubocop-rspec')
+      end
+    end
+
+    context 'when in CI mode' do
+      before { allow(ENV).to receive(:[]).with('CI').and_return(true) }
+
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when given --only' do
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb', '--only', 'Style/Alias']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when given --debug' do
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb', '--debug']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when given --list-target-files' do
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb', '--list-target-files']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when given --out' do
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb', '--out', 'output.txt']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when given --stdin' do
+      it 'does not show the suggestion' do
+        begin
+          $stdin = StringIO.new('p $/')
+          expect { cli.run(['--stdin', 'example.rb']) }.not_to suggest_extensions
+        ensure
+          $stdin = STDIN
+        end
+      end
+    end
+
+    context 'when given a non-supported formatter' do
+      it 'does not show the suggestion' do
+        expect { cli.run(['example.rb', '--format', 'simple']) }.not_to suggest_extensions
+      end
+    end
+
+    context 'when given an invalid path' do
+      it 'does not show the suggestion' do
+        expect { cli.run(['example1.rb']) }.not_to suggest_extensions
+      end
+    end
+  end
+
+  describe 'info severity' do
+    let(:code) do
+      <<~RUBY
+        # frozen-string-literal: true
+
+        'this line is longer than the accepted maximum'
+      RUBY
+    end
+
+    before do
+      create_file('.rubocop.yml', <<~YAML)
+        Lint/LineLength:
+          Max: 30
+          Severity: info
+      YAML
+
+      create_file('test.rb', code)
+    end
+
+    context 'when there are only info offenses' do
+      it 'returns a 0 code' do
+        expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(0)
+        expect($stdout.string).to eq <<~RESULT
+          == test.rb ==
+          I:  3: 31: Layout/LineLength: Line is too long. [47/30]
+
+          1 file inspected, 1 offense detected
+        RESULT
+      end
+    end
+
+    context 'when there are not only info offenses' do
+      let(:code) do
+        <<~RUBY
+          'this line is longer than the accepted maximum'
+        RUBY
+      end
+
+      it 'returns a 1 code' do
+        expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(1)
+        expect($stdout.string).to eq <<~RESULT
+          == test.rb ==
+          C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+          I:  1: 31: Layout/LineLength: Line is too long. [47/30]
+
+          1 file inspected, 2 offenses detected, 1 offense auto-correctable
+        RESULT
+      end
+    end
+
+    context 'when given `--fail-level info`' do
+      it 'returns a 1 code' do
+        expect(cli.run(['--format', 'simple', '--fail-level', 'info', 'test.rb'])).to eq(1)
+        expect($stdout.string).to eq <<~RESULT
+          == test.rb ==
+          I:  3: 31: Layout/LineLength: Line is too long. [47/30]
+
+          1 file inspected, 1 offense detected
+        RESULT
+      end
+    end
+
+    context 'when given `--display-only-fail-level-offenses`' do
+      it 'returns a 0 code but does not list offenses' do
+        expect(cli.run(['--format', 'simple', '--display-only-fail-level-offenses', 'test.rb']))
+          .to eq(0)
+        expect($stdout.string).to eq <<~RESULT
+
+          1 file inspected, no offenses detected
+        RESULT
+      end
+    end
+
+    context 'when `Lint/Syntax` is given `Severity: info`' do
+      let(:code) do
+        <<~RUBY
+          1 /// 2
+        RUBY
+      end
+
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Lint/Syntax:
+            Severity: info
+        YAML
+      end
+
+      it 'is an invalid configuration' do
+        expect(cli.run(['--format', 'simple', 'test.rb'])).to eq(2)
+        expect($stderr.string)
+          .to include('Error: configuration for Syntax cop found in .rubocop.yml')
       end
     end
   end

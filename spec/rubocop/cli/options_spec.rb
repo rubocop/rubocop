@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::CLI, :isolated_environment do
-  subject(:cli) { described_class.new }
+RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disable RSpec/DescribeClass
+  subject(:cli) { RuboCop::CLI.new }
 
   include_context 'cli spec behavior'
 
@@ -166,7 +166,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'shows with version of extension cops' do
-        # Run in different process that requiring rubocop-perfmance and rubocop-rspec
+        # Run in different process that requiring rubocop-performance and rubocop-rspec
         # does not affect other testing processes.
         output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
         expect(output).to include(RuboCop::Version::STRING)
@@ -174,6 +174,98 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
         expect(output).to match(/rubocop-performance \d+\.\d+\.\d+/)
         expect(output).to match(/rubocop-rspec \d+\.\d+\.\d+/)
+      end
+    end
+
+    context 'when requiring extension cops in multiple layers' do
+      before do
+        create_file('.rubocop-parent.yml', <<~YAML)
+          require:
+            - rubocop-performance
+        YAML
+
+        create_file('.rubocop.yml', <<~YAML)
+          inherit_from: ./.rubocop-parent.yml
+          require:
+            - rubocop-rspec
+        YAML
+      end
+
+      it 'shows with version of extension cops' do
+        # Run in different process that requiring rubocop-performance and rubocop-rspec
+        # does not affect other testing processes.
+        output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
+        expect(output).to include(RuboCop::Version::STRING)
+        expect(output).to match(/Parser \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-performance \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-rspec \d+\.\d+\.\d+/)
+      end
+    end
+
+    context 'when requiring redundant extension cop' do
+      before do
+        create_file('ext.yml', <<~YAML)
+          require:
+            - rubocop-rspec
+        YAML
+        create_file('.rubocop.yml', <<~YAML)
+          inherit_from: ext.yml
+          require:
+            - rubocop-performance
+            - rubocop-rspec
+        YAML
+      end
+
+      it 'shows with version of each extension cop once' do
+        output = `ruby -I . "#{rubocop}" -V --disable-pending-cops`
+        expect(output).to include(RuboCop::Version::STRING)
+        expect(output).to match(/Parser \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
+        expect(output).to match(
+          /- rubocop-performance \d+\.\d+\.\d+\n  - rubocop-rspec \d+\.\d+\.\d+\n\z/
+        )
+      end
+    end
+
+    context 'when there are pending cops' do
+      let(:pending_cop_warning) { <<~PENDING_COP_WARNING }
+        The following cops were added to RuboCop, but are not configured. Please set Enabled to either `true` or `false` in your `.rubocop.yml` file.
+      PENDING_COP_WARNING
+
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          require: rubocop_ext
+
+          AllCops:
+            NewCops: pending
+
+          Style/SomeCop:
+            Description: Something
+            Enabled: pending
+            VersionAdded: '1.6'
+        YAML
+
+        create_file('rubocop_ext.rb', <<~RUBY)
+          module RuboCop
+            module Cop
+              module Style
+                class SomeCop < Cop
+                end
+              end
+            end
+          end
+        RUBY
+
+        create_file('redirect.rb', '$stderr = STDOUT')
+      end
+
+      it 'does not show warnings for pending cops' do
+        output = `ruby -I . "#{rubocop}" --require redirect.rb -V`
+        expect(output).to include(RuboCop::Version::STRING)
+        expect(output).to match(/Parser \d+\.\d+\.\d+/)
+        expect(output).to match(/rubocop-ast \d+\.\d+\.\d+/)
+        expect(output).not_to include(pending_cop_warning)
       end
     end
   end
@@ -194,7 +286,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                         'example.rb'])).to eq(1)
         expect($stdout.string)
           .to eq(['== example.rb ==',
-                  'C:  2:  1: Style/IfUnlessModifier: Favor modifier if ' \
+                  'C:  2:  1: [Correctable] Style/IfUnlessModifier: Favor modifier if ' \
                   'usage when having a single-line body. Another good ' \
                   'alternative is the usage of control flow &&/||.',
                   '',
@@ -449,6 +541,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                 Enabled: false
               Layout:
                 Enabled: false
+              Gemspec:
+                Enabled: false
 
               Style/SomeCop:
                 Description: Something
@@ -474,7 +568,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                           'example.rb'])).to eq(1)
           expect($stdout.string)
             .to eq(['== example.rb ==',
-                    'C:  1:  1: Style/IfUnlessModifier: Favor modifier if ' \
+                    'C:  1:  1: [Correctable] Style/IfUnlessModifier: Favor modifier if ' \
                     'usage when having a single-line body. Another good ' \
                     'alternative is the usage of control flow &&/||.',
                     '',
@@ -502,7 +596,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string)
           .to eq(<<~RESULT)
             == example.rb ==
-            C:  1:  6: Layout/TrailingWhitespace: Trailing whitespace detected.
+            C:  1:  6: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
 
             1 file inspected, 1 offense detected, 1 offense auto-correctable
           RESULT
@@ -522,9 +616,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string).to eq(<<~RESULT)
           == example.rb ==
-          C:  1:  1: Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
-          C:  1:  5: Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
-          C:  2:  1: Layout/IndentationStyle: Tab detected in indentation.
+          C:  1:  1: [Correctable] Style/IfUnlessModifier: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
+          C:  1:  5: [Correctable] Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
+          C:  2:  1: [Correctable] Layout/IndentationStyle: Tab detected in indentation.
 
           1 file inspected, 3 offenses detected, 3 offenses auto-correctable
         RESULT
@@ -545,8 +639,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to eq(<<~RESULT)
               == example.rb ==
-              C:  1:  5: Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
-              C:  2:  1: Layout/IndentationStyle: Tab detected in indentation.
+              C:  1:  5: [Correctable] Layout/SpaceAroundOperators: Surrounding space missing for operator ==.
+              C:  2:  1: [Correctable] Layout/IndentationStyle: Tab detected in indentation.
               W:  2:  2: Lint/UselessAssignment: Useless assignment to variable - y.
 
               1 file inspected, 3 offenses detected, 2 offenses auto-correctable
@@ -612,6 +706,77 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq(<<~MESSAGE)
           --except argument should be [COP1,COP2,...].
         MESSAGE
+      end
+    end
+
+    context 'when the cop is defined in a require', :restore_registry do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          require:
+            - './custom_cops.rb'
+        YAML
+
+        create_file('example.rb', 'foo(:bar)')
+      end
+
+      context 'when the cop name is not duplicated' do
+        before do
+          create_file('custom_cops.rb', <<~RUBY)
+            module CustomCops
+              class NoMethods < RuboCop::Cop::Base
+                MSG = 'Methods are not allowed.'
+
+                def on_send(node)
+                  add_offense(node)
+                end
+              end
+            end
+          RUBY
+        end
+
+        it 'runs the cop without warnings' do
+          expect(cli.run(['--format', 'simple',
+                          '--only', 'CustomCops/NoMethods',
+                          'example.rb'])).to eq(1)
+
+          expect($stdout.string).to eq(<<~RESULT)
+            == example.rb ==
+            C:  1:  1: CustomCops/NoMethods: Methods are not allowed.
+
+            1 file inspected, 1 offense detected
+          RESULT
+          expect($stderr.string).not_to match(%r{CustomCops/NoMethods has the wrong namespace})
+        end
+      end
+
+      context 'when the cop name duplicates a built-in cop' do
+        before do
+          create_file('custom_cops.rb', <<~RUBY)
+            module CustomCops
+              class MethodLength < RuboCop::Cop::Base
+                MSG = 'Method is too long.'
+
+                def on_send(node)
+                  add_offense(node)
+                end
+              end
+            end
+          RUBY
+        end
+
+        it 'runs the correct cop without warnings' do
+          expect(cli.run(['--format', 'simple',
+                          '--only', 'CustomCops/MethodLength',
+                          'example.rb'])).to eq(1)
+
+          expect($stdout.string).to eq(<<~RESULT)
+            == example.rb ==
+            C:  1:  1: CustomCops/MethodLength: Method is too long.
+
+            1 file inspected, 1 offense detected
+          RESULT
+          expect($stderr.string).not_to match(%r{CustomCops/MethodLength has the wrong namespace})
+        end
       end
     end
   end
@@ -766,6 +931,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   describe '-d/--debug' do
+    before do
+      RuboCop::ConfigLoader.default_configuration = nil
+    end
+
     it 'shows config files' do
       create_file('example1.rb', "\tputs 0")
       expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
@@ -784,7 +953,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                       '--debug',
                       'example1.rb'])).to eq(1)
       expect($stdout.string.lines.to_a[-1])
-        .to eq("#{file}:1:7: C: Layout/TrailingWhitespace: Trailing " \
+        .to eq("#{file}:1:7: C: [Correctable] Layout/TrailingWhitespace: Trailing " \
                "whitespace detected.\n")
     end
   end
@@ -820,10 +989,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', '--display-cop-names',
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
-        #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-        #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
-        #{file}:1:26: C: Migration/DepartmentName: Department name is missing.
-        #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
+        #{file}:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+        #{file}:1:8: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:26: C: [Correctable] Migration/DepartmentName: Department name is missing.
+        #{file}:1:41: C: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
       RESULT
     end
 
@@ -832,10 +1001,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', '--no-display-cop-names',
                         'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
-          #{file}:1:1: C: Missing frozen string literal comment.
-          #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
-          #{file}:1:26: C: Department name is missing.
-          #{file}:1:41: C: Trailing whitespace detected.
+          #{file}:1:1: C: [Correctable] Missing frozen string literal comment.
+          #{file}:1:8: W: [Correctable] Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:26: C: [Correctable] Department name is missing.
+          #{file}:1:41: C: [Correctable] Trailing whitespace detected.
         RESULT
       end
     end
@@ -852,10 +1021,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', '--display-cop-names',
                         'example1.rb'])).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
-          #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-          #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
-          #{file}:1:26: C: Migration/DepartmentName: Department name is missing.
-          #{file}:1:41: C: Layout/TrailingWhitespace: Trailing whitespace detected.
+          #{file}:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+          #{file}:1:8: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+          #{file}:1:26: C: [Correctable] Migration/DepartmentName: Department name is missing.
+          #{file}:1:41: C: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
         RESULT
       end
 
@@ -863,10 +1032,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         it 'does not show cop names' do
           expect(cli.run(['--format', 'emacs', 'example1.rb'])).to eq(1)
           expect($stdout.string).to eq(<<~RESULT)
-            #{file}:1:1: C: Missing frozen string literal comment.
-            #{file}:1:8: W: Unnecessary disabling of `Style/NumericLiterals`.
-            #{file}:1:26: C: Department name is missing.
-            #{file}:1:41: C: Trailing whitespace detected.
+            #{file}:1:1: C: [Correctable] Missing frozen string literal comment.
+            #{file}:1:8: W: [Correctable] Unnecessary disabling of `Style/NumericLiterals`.
+            #{file}:1:26: C: [Correctable] Department name is missing.
+            #{file}:1:41: C: [Correctable] Trailing whitespace detected.
           RESULT
         end
       end
@@ -886,9 +1055,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', '--extra-details',
                       'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(<<~RESULT)
-        #{file}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-        #{file}:1:8: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
-        #{file}:1:47: C: Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
+        #{file}:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+        #{file}:1:8: W: [Correctable] Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/NumericLiterals`.
+        #{file}:1:47: C: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected. Trailing space is just sloppy.
       RESULT
 
       expect($stderr.string).to eq('')
@@ -907,7 +1076,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                       '--display-style-guide',
                       'example1.rb'])).to eq(1)
       expect($stdout.string.lines.to_a[-1])
-        .to eq("#{file}:1:7: C: Layout/TrailingWhitespace: " \
+        .to eq("#{file}:1:7: C: [Correctable] Layout/TrailingWhitespace: " \
                "Trailing whitespace detected. (#{url})\n")
     end
 
@@ -1098,7 +1267,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect($stdout.string)
             .to include(<<~RESULT)
               == #{target_file} ==
-              C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+              C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
               C:  1:121: Layout/LineLength: Line is too long. [130/120]
 
               1 file inspected, 2 offenses detected, 1 offense auto-correctable
@@ -1182,15 +1351,15 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                           'example2.rb', 'example3.rb']))
             .to eq(1)
           expect($stdout.string).to eq([
-            'example1.rb:1:1: C: Style/FrozenStringLiteralComment: ' \
+            'example1.rb:1:1: C: [Correctable] Style/FrozenStringLiteralComment: ' \
             'Missing frozen string literal comment.',
             'x= 0 ',
             '^',
-            'example1.rb:1:2: C: Layout/SpaceAroundOperators: ' \
+            'example1.rb:1:2: C: [Correctable] Layout/SpaceAroundOperators: ' \
             'Surrounding space missing for operator =.',
             'x= 0 ',
             ' ^',
-            'example1.rb:1:5: C: Layout/TrailingWhitespace: ' \
+            'example1.rb:1:5: C: [Correctable] Layout/TrailingWhitespace: ' \
             'Trailing whitespace detected.',
             'x= 0 ',
             '    ^',
@@ -1202,31 +1371,31 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             '                                                   ' \
             '                                                   ' \
             '                  ^^^^^^^^^^',
-            'example1.rb:3:2: C: Layout/TrailingWhitespace: ' \
+            'example1.rb:3:2: C: [Correctable] Layout/TrailingWhitespace: ' \
             'Trailing whitespace detected.',
             'y ',
             ' ^',
-            'example2.rb:1:1: C: Layout/CommentIndentation: ' \
+            'example2.rb:1:1: C: [Correctable] Layout/CommentIndentation: ' \
             'Incorrect indentation detected (column 0 instead of 1).',
             '# frozen_string_literal: true',
             '^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
-            'example2.rb:3:1: C: Layout/IndentationStyle: '\
+            'example2.rb:3:1: C: [Correctable] Layout/IndentationStyle: '\
             'Tab detected in indentation.',
             "\tx",
             '^',
-            'example2.rb:3:2: C: Layout/InitialIndentation: ' \
+            'example2.rb:3:2: C: [Correctable] Layout/InitialIndentation: ' \
             'Indentation of first line in file detected.',
             "\tx",
             ' ^',
-            'example2.rb:4:1: C: Layout/IndentationConsistency: ' \
+            'example2.rb:4:1: C: [Correctable] Layout/IndentationConsistency: ' \
             'Inconsistent indentation detected.',
             'def a ...',
             '^^^^^',
-            'example2.rb:5:1: C: Layout/IndentationWidth: ' \
+            'example2.rb:5:1: C: [Correctable] Layout/IndentationWidth: ' \
             'Use 2 (not 3) spaces for indentation.',
             '   puts',
             '^^^',
-            'example3.rb:1:1: C: Style/FrozenStringLiteralComment: ' \
+            'example3.rb:1:1: C: [Correctable] Style/FrozenStringLiteralComment: ' \
             'Missing frozen string literal comment.',
             'def badName',
             '^',
@@ -1239,12 +1408,12 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
             'wrapping the code inside a conditional expression.',
             '  if something',
             '  ^^',
-            'example3.rb:2:3: C: Style/IfUnlessModifier: ' \
+            'example3.rb:2:3: C: [Correctable] Style/IfUnlessModifier: ' \
             'Favor modifier if usage when having a single-line body. ' \
             'Another good alternative is the usage of control flow &&/||.',
             '  if something',
             '  ^^',
-            'example3.rb:4:5: W: Layout/EndAlignment: ' \
+            'example3.rb:4:5: W: [Correctable] Layout/EndAlignment: ' \
             'end at 4, 4 is not aligned with if at 2, 2.',
             '    end',
             '    ^^^',
@@ -1271,13 +1440,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           expect(cli.run(['--format', 'emacs', 'example1.rb',
                           'example2.rb'])).to eq(1)
           expected_output = <<~RESULT
-            #{abs('example1.rb')}:3:2: C: Layout/SpaceAroundOperators: Surrounding space missing for operator `=`.
-            #{abs('example1.rb')}:3:5: C: Layout/TrailingWhitespace: Trailing whitespace detected.
-            #{abs('example1.rb')}:4:2: C: Layout/TrailingWhitespace: Trailing whitespace detected.
-            #{abs('example2.rb')}:1:1: C: Layout/CommentIndentation: Incorrect indentation detected (column 0 instead of 1).
-            #{abs('example2.rb')}:3:1: C: Layout/IndentationStyle: Tab detected in indentation.
-            #{abs('example2.rb')}:3:2: C: Layout/InitialIndentation: Indentation of first line in file detected.
-            #{abs('example2.rb')}:4:1: C: Layout/IndentationConsistency: Inconsistent indentation detected.
+            #{abs('example1.rb')}:3:2: C: [Correctable] Layout/SpaceAroundOperators: Surrounding space missing for operator `=`.
+            #{abs('example1.rb')}:3:5: C: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
+            #{abs('example1.rb')}:4:2: C: [Correctable] Layout/TrailingWhitespace: Trailing whitespace detected.
+            #{abs('example2.rb')}:1:1: C: [Correctable] Layout/CommentIndentation: Incorrect indentation detected (column 0 instead of 1).
+            #{abs('example2.rb')}:3:1: C: [Correctable] Layout/IndentationStyle: Tab detected in indentation.
+            #{abs('example2.rb')}:3:2: C: [Correctable] Layout/InitialIndentation: Indentation of first line in file detected.
+            #{abs('example2.rb')}:4:1: C: [Correctable] Layout/IndentationConsistency: Inconsistent indentation detected.
           RESULT
           expect($stdout.string).to eq(expected_output)
         end
@@ -1339,9 +1508,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       cli.run(['--format', 'simple', '--format', 'emacs', 'example.rb'])
       expect($stdout.string).to include(<<~RESULT)
         == #{target_file} ==
-        C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+        C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         C:  1:121: Layout/LineLength: Line is too long. [130/120]
-        #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+        #{abs(target_file)}:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         #{abs(target_file)}:1:121: C: Layout/LineLength: Line is too long. [130/120]
       RESULT
     end
@@ -1366,7 +1535,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       expect($stdout.string).to eq(<<~RESULT)
         == #{target_file} ==
-        C:  1:  1: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+        C:  1:  1: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
         C:  1:121: Layout/LineLength: Line is too long. [130/120]
 
         1 file inspected, 2 offenses detected, 1 offense auto-correctable
@@ -1374,7 +1543,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       expect(File.read('emacs_output.txt'))
         .to eq(<<~RESULT)
-          #{abs(target_file)}:1:1: C: Style/FrozenStringLiteralComment: Missing frozen string literal comment.
+          #{abs(target_file)}:1:1: C: [Correctable] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
           #{abs(target_file)}:1:121: C: Layout/LineLength: Line is too long. [130/120]
       RESULT
     end
@@ -1617,6 +1786,26 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         )
       end
     end
+
+    context 'when setting `AutoCorrect: false` for `Style/StringLiterals`' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Style/StringLiterals:
+            AutoCorrect: false
+        YAML
+      end
+
+      it 'does not suggest `1 more offense can be corrected with `rubocop -A` for `Style/StringLiterals`' do
+        create_file(target_file, <<~RUBY)
+          # frozen_string_literal: true
+
+          a = "Hello"
+        RUBY
+
+        expect(cli.run(['--auto-correct', '--format', 'simple', target_file])).to eq(1)
+        expect($stdout.string.lines.to_a.last).to eq("1 file inspected, 2 offenses detected\n")
+      end
+    end
   end
 
   describe '--force-exclusion' do
@@ -1699,7 +1888,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(argv)).to eq(1)
         expect($stdout.string).to eq(<<~RESULT)
           == fake.rb ==
-          C:  1:  3: Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
+          C:  1:  3: [Correctable] Style/SpecialGlobalVars: Prefer $INPUT_RECORD_SEPARATOR or $RS from the stdlib 'English' module (don't forget to require it) over $/.
 
           1 file inspected, 1 offense detected, 1 offense auto-correctable
         RESULT
@@ -1844,6 +2033,45 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       ensure
         $stdin = STDIN
+      end
+    end
+  end
+
+  describe '--require', :restore_registry do
+    context 'when adding an extension' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          Rails/NotNullColumn:
+            Enabled: false
+        YAML
+
+        create_file('rubocop-rails.rb', <<~RUBY)
+          module RuboCop
+            module Cop
+              module Rails
+                class NotNullColumn < Base
+                end
+              end
+            end
+          end
+        RUBY
+
+        # Add the temporary dir to the load path so that the fake extension
+        # can be found.
+        $LOAD_PATH.unshift(File.dirname('rubocop-rails.rb'))
+
+        RuboCop::ConfigLoader.clear_options
+      end
+
+      it 'does not show an obsoletion error' do
+        opts = ['--format', 'simple',
+                '--require', 'rubocop-rails',
+                '--only', 'Rails']
+
+        expect(cli.run(opts)).to eq(0)
+        expect(RuboCop::ConfigLoader.loaded_features).to contain_exactly('rubocop-rails')
+        expect($stdout.string.strip).to eq('1 file inspected, no offenses detected')
+        expect($stderr.string).to eq('')
       end
     end
   end

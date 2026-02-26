@@ -22,6 +22,7 @@ module RuboCop
 
         MSG = 'Use `Integer` instead of `%<klass>s`.'
 
+        # @!method fixnum_or_bignum_const(node)
         def_node_matcher :fixnum_or_bignum_const, <<~PATTERN
           (:const {nil? (:cbase)} ${:Fixnum :Bignum})
         PATTERN

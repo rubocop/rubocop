@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::Send do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::Send, :config do
   context 'with send' do
     context 'and with a receiver' do
       it 'registers an offense for an invocation with args' do

@@ -33,8 +33,9 @@ module RuboCop
       #
       #   array = [1, 2, 3,
       #            4, 5, 6]
-      class ArrayAlignment < Cop
+      class ArrayAlignment < Base
         include Alignment
+        extend AutoCorrector
 
         ALIGN_ELEMENTS_MSG = 'Align the elements of an array literal ' \
           'if they span more than one line.'
@@ -49,13 +50,13 @@ module RuboCop
           check_alignment(node.children, base_column(node, node.children))
         end
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
-        end
-
         private
 
-        def message(_node)
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+        end
+
+        def message(_range)
           fixed_indentation? ? FIXED_INDENT_MSG : ALIGN_ELEMENTS_MSG
         end
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::MultilineWhenThen, :config do
   it 'registers an offense for empty when statement with then' do
     expect_offense(<<~RUBY)
       case foo
@@ -133,6 +131,21 @@ RSpec.describe RuboCop::Cop::Style::MultilineWhenThen do
       case foo
       when bar
        do_something
+      end
+    RUBY
+  end
+
+  it 'registers an offense when one line for multiple condidate values of `when`' do
+    expect_offense(<<~RUBY)
+      case foo
+      when bar, baz then
+                    ^^^^ Do not use `then` for multiline `when` statement.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      case foo
+      when bar, baz
       end
     RUBY
   end

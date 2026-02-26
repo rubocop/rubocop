@@ -16,7 +16,7 @@ module RuboCop
 
         return false unless comment
 
-        comment.text.match?(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
+        !!DirectiveComment.new(comment).match_captures
       end
 
       def allow_uri?
@@ -24,9 +24,7 @@ module RuboCop
       end
 
       def allowed_uri_position?(line, uri_range)
-        uri_range.begin < max_line_length &&
-          (uri_range.end == line_length(line) ||
-           uri_range.end == line_length(line) - 1)
+        uri_range.begin < max_line_length && uri_range.end == line_length(line)
       end
 
       def line_length(line)
@@ -40,6 +38,14 @@ module RuboCop
         begin_position, end_position = last_uri_match.offset(0).map do |pos|
           pos + indentation_difference(line)
         end
+
+        # Extend the end position until the start of the next word, if any.
+        # This allows for URIs that are wrapped in quotes or parens to be handled properly
+        # while not allowing additional words to be added after the URL.
+        if (match = line[end_position..line_length(line)]&.match(/^\S+(?=\s|$)/))
+          end_position += match.offset(0).last
+        end
+
         return nil if begin_position < max_line_length &&
                       end_position < max_line_length
 
@@ -79,8 +85,7 @@ module RuboCop
       end
 
       def line_length_without_directive(line)
-        before_comment, = line.split(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
-        before_comment.rstrip.length
+        DirectiveComment.before_comment(line).rstrip.length
       end
     end
   end
