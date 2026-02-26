@@ -10,14 +10,20 @@ The changelog is automatically generated from the files in https://github.com/ru
 at release time. Direct editing of the changelog file is discouraged as it often creates merge conflicts (pretty much every PR would modify
 this file and this used to be quite the annoyance in the past). One can create new changelog entries like this:
 
-     $ bundle exec rake changelog:new
-     $ bundle exec rake changelog:fix
-     $ bundle exec rake changelog:change
+[source,sh]
+----
+$ bundle exec rake changelog:new
+$ bundle exec rake changelog:fix
+$ bundle exec rake changelog:change
+----
 
 Those commands correspond to "new feature", "bug-fix" and "changed" entries in the changelog. To update the changelog file you can
 run:
 
-     $ bundle exec rake changelog:merge
+[source,sh]
+----
+$ bundle exec rake changelog:merge
+----
 
 NOTE: Typically only the RuboCop maintainers would need to do this.
 
@@ -35,4 +41,4 @@ Eventually we adopted GitLab's solution to this common problem, that they discus
 
 == Release Notes
 
-You can also peruse the release notes for individual release over at https://github.com/rubocop/rubocop/releases[GitHub].
+You can also peruse the release notes for individual releases over at https://github.com/rubocop/rubocop/releases[GitHub].

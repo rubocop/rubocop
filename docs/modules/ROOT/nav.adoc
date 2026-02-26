@@ -29,7 +29,6 @@
 ** xref:cops_naming.adoc[Naming]
 ** xref:cops_security.adoc[Security]
 ** xref:cops_style.adoc[Style]
-** xref:v1_upgrade_notes.adoc[Upgrade Notes]
 * Plugins
 ** xref:plugins.adoc[Overview]
 ** xref:plugin_configuration.adoc[Plugin Configuration]
@@ -40,6 +39,7 @@
 * xref:contributing.adoc[Contributing]
 * xref:support.adoc[Support]
 * xref:versioning.adoc[Versioning]
+* xref:v1_upgrade_notes.adoc[v1 Upgrade Notes]
 * About
 ** xref:about/history.adoc[History]
 ** xref:about/team.adoc[Team]

@@ -1,11 +1,11 @@
 = v1 Upgrade Notes
 :doctype: book
 
-== Cop Upgrade guide
+== Cop upgrade guide
 
 Your custom cops should continue to work in v1.
 
-Nevertheless it is suggested that you tweak them to use the v1 API by following the following steps:
+Nevertheless it is suggested that you tweak them to use the v1 API by following these steps:
 
 1) Your class should inherit from `RuboCop::Cop::Base` instead of `RuboCop::Cop::Cop`.
 
@@ -172,7 +172,7 @@ _Legacy:_ yields after offense added to `#offenses`
 
 _Current:_ yields before offense is added to `#offenses`.
 
-Even the legacy mode yields a corrector, but if a developer uses it an error will be raised asking her to inherit from `Cop::Base` instead.
+Even the legacy mode yields a corrector, but if a developer uses it an error will be raised asking them to inherit from `Cop::Base` instead.
 
 === Autocorrection
 

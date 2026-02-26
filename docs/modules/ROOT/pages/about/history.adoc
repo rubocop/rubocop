@@ -6,7 +6,6 @@ You don't know where you're going until you know where you've been.
 RuboCop was created by Bozhidar Batsov in the spring of 2012, as an attempt
 to make it easy to apply consistently the guidelines from the community Ruby Style Guide.footnote:[This is the https://github.com/rubocop/ruby-style-guide/issues/54[GitHub issue] that started it all.]
 
-
 == Notable Milestones
 
 * 12 Sep 2011 - Creation of the community Ruby Style Guide.
