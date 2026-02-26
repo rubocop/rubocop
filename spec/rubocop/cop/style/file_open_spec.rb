@@ -36,10 +36,23 @@ RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
     RUBY
   end
 
-  it 'registers an offense when passing `File.open` as an argument' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense when passing `File.open` as an argument' do
+    expect_no_offenses(<<~RUBY)
       process(File.open('file'))
-              ^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
+    RUBY
+  end
+
+  it 'does not register an offense when passing `File.open` as a keyword argument' do
+    expect_no_offenses(<<~RUBY)
+      process(io: File.open('file'))
+    RUBY
+  end
+
+  it 'does not register an offense when returning `File.open` from a method' do
+    expect_no_offenses(<<~RUBY)
+      def json_key_io
+        File.open('file')
+      end
     RUBY
   end
 

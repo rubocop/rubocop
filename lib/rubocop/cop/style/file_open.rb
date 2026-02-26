@@ -11,11 +11,17 @@ module RuboCop
       # to resource exhaustion. Using the block form ensures the file is
       # automatically closed when the block exits.
       #
+      # This cop only registers an offense when the result of `File.open` is
+      # assigned to a variable or has a method chained on it, as those are the
+      # clearest indicators that the block form should be used instead. When
+      # `File.open` is used as a return value or passed as an argument, the
+      # caller is likely managing the file descriptor intentionally.
+      #
       # @safety
-      #   This cop is unsafe because it detects all `File.open` calls without
-      #   a block, including intentional uses such as one-shot reads
-      #   (`File.open("f").read`) where the file descriptor is closed by the
-      #   garbage collector.
+      #   This cop is unsafe because it relies on syntax heuristics and cannot
+      #   verify whether the file descriptor is safely managed. For example, it
+      #   still flags intentional one-shot reads (`File.open("f").read`) where
+      #   the file descriptor is closed by the garbage collector.
       #
       # @example
       #   # bad
@@ -32,6 +38,14 @@ module RuboCop
       #   # good
       #   File.open('file', &:read)
       #
+      #   # good - pass an open file object to an API that manages its lifecycle
+      #   process(io: File.open('file'))
+      #
+      #   # good - return an open file object for the caller to manage
+      #   def json_key_io
+      #     File.open('file')
+      #   end
+      #
       #   # good - use File.read for one-shot reads
       #   File.read('file')
       #
@@ -47,6 +61,7 @@ module RuboCop
         def on_send(node)
           return unless file_open?(node)
           return if block_form?(node)
+          return unless offensive_usage?(node)
 
           add_offense(node)
         end
@@ -56,6 +71,16 @@ module RuboCop
 
         def block_form?(node)
           node.block_argument? || node.parent&.block_type?
+        end
+
+        def offensive_usage?(node)
+          return true unless node.value_used?
+
+          node.parent&.assignment? || receiver_of_chained_call?(node)
+        end
+
+        def receiver_of_chained_call?(node)
+          node.parent&.call_type? && node.parent.receiver == node
         end
       end
     end
