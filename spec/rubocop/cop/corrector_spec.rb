@@ -12,13 +12,13 @@ RSpec.describe RuboCop::Cop::Corrector do
     let(:operator) { node.loc.operator }
 
     def do_rewrite(corrections = nil, &block)
-      corrections = Array(corrections || block).map do |c|
-        node = instance_double(RuboCop::AST::Node)
-        cop = instance_double(RuboCop::Cop::Cop)
-        RuboCop::Cop::Cop::Correction.new(c, node, cop)
+      corrector = described_class.new(processed_source.buffer)
+
+      Array(corrections || block).each do |c|
+        c.call(corrector)
       end
 
-      described_class.new(processed_source.buffer, corrections).rewrite
+      corrector.rewrite
     end
 
     matcher :rewrite_to do |expected|
@@ -86,16 +86,10 @@ RSpec.describe RuboCop::Cop::Corrector do
     end
 
     it 'raises a useful error if not given a node or a range' do
-      # rubocop:disable Style/MultilineBlockChain
       expect do
         do_rewrite { |corr| corr.replace(1..3, 'oops') }
-      end.to raise_error(RuboCop::ErrorWithAnalyzedFileLocation) do |e|
-        expect(e.cause.message).to eq(
-          'Expected a Parser::Source::Range, Comment or Rubocop::AST::Node, ' \
-          'got Range'
-        )
-      end
-      # rubocop:enable Style/MultilineBlockChain
+      end.to raise_error(TypeError, 'Expected a Parser::Source::Range, '\
+          'Comment or Rubocop::AST::Node, got Range')
     end
 
     context 'when range is from incorrect source' do
@@ -117,23 +111,15 @@ RSpec.describe RuboCop::Cop::Corrector do
         remove_trailing: [2]
       }.each_pair do |method, params|
         it "raises exception from #{method}" do
-          # rubocop:disable Style/MultilineBlockChain
           expect do
             do_rewrite { |corr| corr.public_send(method, op_string, *params) }
-          end.to raise_error(RuboCop::ErrorWithAnalyzedFileLocation) do |e|
-            expect(e.cause.message).to eq(
-              'Corrector expected range source buffer to be'\
-              ' a Parser::Source::Buffer, but got String'
-            )
-          end
+          end.to raise_error(RuntimeError,
+                             'Corrector expected range source buffer to be'\
+                             ' a Parser::Source::Buffer, but got String')
           expect do
             do_rewrite { |corr| corr.public_send(method, op_other, *params) }
-          end.to raise_error(RuboCop::ErrorWithAnalyzedFileLocation) do |e|
-            expect(e.cause.message).to match(
-              /^Correction target buffer \d+ name:"\(string\)" is not current/
-            )
-          end
-          # rubocop:enable Style/MultilineBlockChain
+          end.to raise_error(RuntimeError,
+                             /^Correction target buffer \d+ name:"\(string\)" is not current/)
         end
       end
     end

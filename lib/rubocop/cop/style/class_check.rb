@@ -23,23 +23,18 @@ module RuboCop
       #   var.kind_of?(Time)
       #   var.kind_of?(String)
       #
-      class ClassCheck < Cop
+      class ClassCheck < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Prefer `Object#%<prefer>s` over `Object#%<current>s`.'
-
-        def_node_matcher :class_check?, '(send _ ${:is_a? :kind_of?} _)'
+        RESTRICT_ON_SEND = %i[is_a? kind_of?].freeze
 
         def on_send(node)
-          class_check?(node) do |method_name|
-            return if style == method_name
+          return if style == node.method_name
 
-            add_offense(node, location: :selector)
-          end
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          message = message(node)
+          add_offense(node.loc.selector, message: message) do |corrector|
             replacement = node.method?(:is_a?) ? 'kind_of?' : 'is_a?'
 
             corrector.replace(node.loc.selector, replacement)

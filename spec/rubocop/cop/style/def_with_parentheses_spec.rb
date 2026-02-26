@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::DefWithParentheses, :config do
   it 'reports an offense for def with empty parens' do
     expect_offense(<<~RUBY)
       def func()
               ^ Omit the parentheses in defs when the method doesn't accept any arguments.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def func
       end
     RUBY
   end
@@ -15,6 +18,13 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
     expect_offense(<<~RUBY)
       def Test.func()
                    ^ Omit the parentheses in defs when the method doesn't accept any arguments.
+        something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def Test.func
+        something
       end
     RUBY
   end
@@ -28,18 +38,5 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses do
 
   it 'accepts empty parentheses in one liners' do
     expect_no_offenses("def to_s() join '/' end")
-  end
-
-  it 'auto-removes unneeded parens' do
-    new_source = autocorrect_source(<<~RUBY)
-      def test();
-      something
-      end
-    RUBY
-    expect(new_source).to eq(<<~RUBY)
-      def test;
-      something
-      end
-    RUBY
   end
 end

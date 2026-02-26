@@ -29,19 +29,20 @@ module RuboCop
 
         each_bad_alignment(items, base_column) do |current|
           expr = current.source_range
-          if offenses.any? { |o| within?(expr, o.location) }
+          if @current_offenses.any? { |o| within?(expr, o.location) }
             # If this offense is within a line range that is already being
             # realigned by autocorrect, we report the offense without
             # autocorrecting it. Two rewrites in the same area by the same
             # cop cannot be handled. The next iteration will find the
             # offense again and correct it.
-            add_offense(nil, location: expr)
+            register_offense(expr, nil)
           else
-            add_offense(current)
+            register_offense(current, current)
           end
         end
       end
 
+      # @api private
       def each_bad_alignment(items, base_column)
         prev_line = -1
         items.each do |current|
@@ -55,17 +56,27 @@ module RuboCop
         end
       end
 
+      # @api public
       def display_column(range)
         line = processed_source.lines[range.line - 1]
         Unicode::DisplayWidth.of(line[0, range.column])
       end
 
+      # @api public
       def within?(inner, outer)
         inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
       end
 
+      # @deprecated Use processed_source.comment_at_line(line)
       def end_of_line_comment(line)
-        processed_source.find_comment { |c| c.loc.line == line }
+        processed_source.line_with_comment?(line)
+      end
+
+      # @api private
+      def register_offense(offense_node, message_node)
+        add_offense(offense_node, message: message(message_node)) do |corrector|
+          autocorrect(corrector, message_node)
+        end
       end
     end
   end

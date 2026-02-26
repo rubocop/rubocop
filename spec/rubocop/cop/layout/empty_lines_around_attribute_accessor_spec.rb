@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'registers an offense and corrects for code ' \
      'that immediately follows accessor' do
     expect_offense(<<~RUBY)
@@ -47,6 +45,10 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     RUBY
   end
 
+  it 'accepts code that where the attr_accessor is the last line' do
+    expect_no_offenses('attr_accessor :foo')
+  end
+
   it 'accepts code that separates attribute accessors from the code ' \
      'with a newline' do
     expect_no_offenses(<<~RUBY)
@@ -71,6 +73,16 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundAttributeAccessor, :config 
     expect_no_offenses(<<~RUBY)
       class Foo
         attr.foo
+      end
+    RUBY
+  end
+
+  it 'does not registers an offense and corrects when using `if` ... `else` branches' do
+    expect_no_offenses(<<~RUBY)
+      if condition
+        attr_reader :foo
+      else
+        do_something
       end
     RUBY
   end

@@ -1,0 +1,38 @@
+= Changelog
+
+An extensive changelog is available https://github.com/rubocop/rubocop/blob/master/CHANGELOG.md[here].
+
+NOTE: Only user-visible changes are documented there.
+
+== Changelog Generation
+
+The changelog is automatically generated from the files in https://github.com/rubocop/rubocop/blob/master/changelog/[the changelog folder]
+at release time. Direct editing of the changelog file is discouraged as it often creates merge conflicts (pretty much every PR would modify
+this file and this used to be quite the annoyance in the past). One can create new changelog entries like this:
+
+     $ bundle exec rake changelog:new
+     $ bundle exec rake changelog:fix
+     $ bundle exec rake changelog:change
+
+Those commands correspond to "new feature", "bug-fix" and "changed" entries in the changelog. To update the changelog file you can
+run:
+
+     $ bundle exec rake changelog:merge
+
+NOTE: Typically only the RuboCop maintainers would need to do this.
+
+=== Background
+
+Our `CHANGELOG.md` file was previously updated manually by each
+contributor that felt their change warranted an entry. When two merge
+requests added their own entries at the same spot in the list, it
+created a merge conflict in one as soon as the other was merged. When
+we had dozens of merge requests fighting for the same changelog entry
+location, this quickly became a major source of merge conflicts and
+delays in development.
+
+Eventually we adopted GitLab's solution to this common problem, that they discussed https://docs.gitlab.com/ee/development/changelog.html#history-and-reasoning[here].
+
+== Release Notes
+
+You can also peruse the release notes for individual release over at https://github.com/rubocop/rubocop/releases[GitHub].

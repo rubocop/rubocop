@@ -79,10 +79,11 @@ module RuboCop
       #   and_now_for_something = [
       #                             :completely_different
       #                           ]
-      class FirstArrayElementIndentation < Cop
+      class FirstArrayElementIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include MultilineElementIndentation
+        extend AutoCorrector
 
         MSG = 'Use %<configured_indentation_width>d spaces for indentation ' \
               'in an array, relative to %<base_description>s.'
@@ -98,11 +99,11 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def brace_alignment_style
           :align_brackets
@@ -132,7 +133,9 @@ module RuboCop
           return if @column_delta.zero?
 
           msg = msg(left_parenthesis)
-          add_offense(right_bracket, location: right_bracket, message: msg)
+          add_offense(right_bracket, message: msg) do |corrector|
+            autocorrect(corrector, right_bracket)
+          end
         end
 
         # Returns the description of what the correct indentation is based on.

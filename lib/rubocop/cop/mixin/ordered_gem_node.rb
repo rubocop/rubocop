@@ -15,8 +15,13 @@ module RuboCop
         node.source_range
       end
 
+      def gem_canonical_name(name)
+        name = name.tr('-_', '') unless cop_config['ConsiderPunctuation']
+        name.downcase
+      end
+
       def case_insensitive_out_of_order?(string_a, string_b)
-        string_a.downcase < string_b.downcase
+        gem_canonical_name(string_a) < gem_canonical_name(string_b)
       end
 
       def consecutive_lines(previous, current)

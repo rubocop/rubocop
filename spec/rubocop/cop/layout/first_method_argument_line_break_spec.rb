@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak, :config do
   context 'args listed on the first line' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)
@@ -78,6 +76,10 @@ RSpec.describe RuboCop::Cop::Layout::FirstMethodArgumentLineBreak do
 
   it 'ignores arguments listed on a single line' do
     expect_no_offenses('foo(bar, baz, bing)')
+  end
+
+  it 'ignores kwargs listed on a single line when the arguments are used in `super`' do
+    expect_no_offenses('super(foo: 1, bar: 2)')
   end
 
   it 'ignores arguments without parens' do

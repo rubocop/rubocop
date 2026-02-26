@@ -27,6 +27,8 @@ module RuboCop
             "[Todo] #{offense.message}"
           elsif offense.corrected?
             "[Corrected] #{offense.message}"
+          elsif offense.correctable?
+            "[Correctable] #{offense.message}"
           else
             offense.message
           end

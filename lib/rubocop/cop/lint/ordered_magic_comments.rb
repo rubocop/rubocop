@@ -27,13 +27,14 @@ module RuboCop
       #   # frozen_string_literal: true
       #   p [''.frozen?, ''.encoding] #=> [true, #<Encoding:US-ASCII>]
       #
-      class OrderedMagicComments < Cop
+      class OrderedMagicComments < Base
         include FrozenStringLiteral
+        extend AutoCorrector
 
         MSG = 'The encoding magic comment should precede all other ' \
               'magic comments.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.buffer.source.empty?
 
           encoding_line, frozen_string_literal_line = magic_comment_lines
@@ -43,23 +44,20 @@ module RuboCop
 
           range = processed_source.buffer.line_range(encoding_line + 1)
 
-          add_offense(range, location: range)
-        end
-
-        def autocorrect(_node)
-          encoding_line, frozen_string_literal_line = magic_comment_lines
-
-          range1 = processed_source.buffer.line_range(encoding_line + 1)
-          range2 =
-            processed_source.buffer.line_range(frozen_string_literal_line + 1)
-
-          lambda do |corrector|
-            corrector.replace(range1, range2.source)
-            corrector.replace(range2, range1.source)
+          add_offense(range) do |corrector|
+            autocorrect(corrector, encoding_line, frozen_string_literal_line)
           end
         end
 
         private
+
+        def autocorrect(corrector, encoding_line, frozen_string_literal_line)
+          range1 = processed_source.buffer.line_range(encoding_line + 1)
+          range2 = processed_source.buffer.line_range(frozen_string_literal_line + 1)
+
+          corrector.replace(range1, range2.source)
+          corrector.replace(range2, range1.source)
+        end
 
         def magic_comment_lines
           lines = [nil, nil]

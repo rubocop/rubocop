@@ -27,11 +27,12 @@ module RuboCop
       #
       #   # bad
       #   %i[foo bar baz]
-      class SymbolArray < Cop
+      class SymbolArray < Base
         include ArrayMinSize
         include ArraySyntax
         include ConfigurableEnforcedStyle
         include PercentArray
+        extend AutoCorrector
 
         PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'
         ARRAY_MSG = 'Use `[]` for an array of symbols.'
@@ -44,19 +45,9 @@ module RuboCop
           if bracketed_array_of?(:sym, node)
             return if symbols_contain_spaces?(node)
 
-            check_bracketed_array(node)
+            check_bracketed_array(node, 'i')
           elsif node.percent_literal?(:symbol)
             check_percent_array(node)
-          end
-        end
-
-        def autocorrect(node)
-          if style == :percent
-            PercentLiteralCorrector
-              .new(@config, @preferred_delimiters)
-              .correct(node, 'i')
-          else
-            correct_bracketed(node)
           end
         end
 
@@ -65,24 +56,22 @@ module RuboCop
         def symbols_contain_spaces?(node)
           node.children.any? do |sym|
             content, = *sym
-            content =~ / /
+            / /.match?(content)
           end
         end
 
-        def correct_bracketed(node)
+        def correct_bracketed(corrector, node)
           syms = node.children.map do |c|
             if c.dsym_type?
               string_literal = to_string_literal(c.source)
 
-              ':' + trim_string_interporation_escape_character(string_literal)
+              ":#{trim_string_interporation_escape_character(string_literal)}"
             else
               to_symbol_literal(c.value.to_s)
             end
           end
 
-          lambda do |corrector|
-            corrector.replace(node, "[#{syms.join(', ')}]")
-          end
+          corrector.replace(node, "[#{syms.join(', ')}]")
         end
 
         def to_symbol_literal(string)
@@ -104,12 +93,12 @@ module RuboCop
           )
 
           # method name
-          string =~ /\A[a-zA-Z_]\w*[!?]?\z/ ||
+          /\A[a-zA-Z_]\w*[!?]?\z/.match?(string) ||
             # instance / class variable
-            string =~ /\A\@\@?[a-zA-Z_]\w*\z/ ||
+            /\A@@?[a-zA-Z_]\w*\z/.match?(string) ||
             # global variable
-            string =~ /\A\$[1-9]\d*\z/ ||
-            string =~ /\A\$[a-zA-Z_]\w*\z/ ||
+            /\A\$[1-9]\d*\z/.match?(string) ||
+            /\A\$[a-zA-Z_]\w*\z/.match?(string) ||
             special_gvars.include?(string) ||
             redefinable_operators.include?(string)
         end

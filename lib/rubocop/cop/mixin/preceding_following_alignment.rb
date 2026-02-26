@@ -87,7 +87,7 @@ module RuboCop
       end
 
       def aligned_words?(range, line)
-        line[range.column - 1, 2] =~ /\s\S/
+        /\s\S/.match?(line[range.column - 1, 2])
       end
 
       def aligned_char?(range, line)

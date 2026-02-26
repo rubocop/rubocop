@@ -88,8 +88,9 @@ module RuboCop
       #     # good
       #     [ :a,
       #       :b ]
-      class MultilineArrayBraceLayout < Cop
+      class MultilineArrayBraceLayout < Base
         include MultilineLiteralBraceLayout
+        extend AutoCorrector
 
         SAME_LINE_MESSAGE = 'The closing array brace must be on the same ' \
           'line as the last array element when the opening brace is on the ' \
@@ -107,10 +108,6 @@ module RuboCop
 
         def on_array(node)
           check_brace_layout(node)
-        end
-
-        def autocorrect(node)
-          MultilineLiteralBraceCorrector.new(node, processed_source)
         end
       end
     end

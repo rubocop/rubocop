@@ -13,30 +13,33 @@ module RuboCop
       #
       #   # good
       #   add_offense(node, location: :selector)
-      class OffenseLocationKeyword < Cop
+      class OffenseLocationKeyword < Base
+        extend AutoCorrector
+
         MSG = 'Use `:%<keyword>s` as the location argument to ' \
               '`#add_offense`.'
+        RESTRICT_ON_SEND = %i[add_offense].freeze
 
         def on_send(node)
           node_type_check(node) do |node_arg, kwargs|
             find_offending_argument(node_arg, kwargs) do |location, keyword|
-              add_offense(location, message: format(MSG, keyword: keyword))
+              add_offense(location, message: format(MSG, keyword: keyword)) do |corrector|
+                (*, keyword) = offending_location_argument(location.parent)
+
+                corrector.replace(location, ":#{keyword}")
+              end
             end
           end
         end
 
-        def autocorrect(node)
-          (*, keyword) = offending_location_argument(node.parent)
-
-          ->(corrector) { corrector.replace(node, ":#{keyword}") }
-        end
-
         private
 
+        # @!method node_type_check(node)
         def_node_matcher :node_type_check, <<~PATTERN
           (send nil? :add_offense $_node $hash)
         PATTERN
 
+        # @!method offending_location_argument(node)
         def_node_matcher :offending_location_argument, <<~PATTERN
           (pair (sym :location) $(send (send $_node :loc) $_keyword))
         PATTERN

@@ -14,9 +14,10 @@ module RuboCop
       #
       #   # good
       #   { result: 'ok' } if cond
-      class MultilineIfModifier < Cop
+      class MultilineIfModifier < Base
         include StatementModifier
         include Alignment
+        extend AutoCorrector
 
         MSG = 'Favor a normal %<keyword>s-statement over a modifier' \
               ' clause in a multiline statement.'
@@ -24,20 +25,12 @@ module RuboCop
         def on_if(node)
           return unless node.modifier_form? && node.body.multiline?
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node, message: format(MSG, keyword: node.keyword)) do |corrector|
             corrector.replace(node, to_normal_if(node))
           end
         end
 
         private
-
-        def message(node)
-          format(MSG, keyword: node.keyword)
-        end
 
         def to_normal_if(node)
           indented_body = indented_body(node.body, node)

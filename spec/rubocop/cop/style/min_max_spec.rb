@@ -8,6 +8,10 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
           [foo.min, foo.max]
           ^^^^^^^^^^^^^^^^^^ Use `foo.minmax` instead of `[foo.min, foo.max]`.
         RUBY
+
+        expect_correction(<<~RUBY)
+          foo.minmax
+        RUBY
       end
 
       it 'does not register an offense if the receivers do not match' do
@@ -27,16 +31,6 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
           [min, max]
         RUBY
       end
-
-      it 'auto-corrects an offense to use `#minmax`' do
-        corrected = autocorrect_source(<<~RUBY)
-          [foo.bar.min, foo.bar.max]
-        RUBY
-
-        expect(corrected).to eq(<<~RUBY)
-          foo.bar.minmax
-        RUBY
-      end
     end
 
     context 'when the expression is used in a parallel assignment' do
@@ -44,6 +38,10 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
         expect_offense(<<~RUBY)
           bar = foo.min, foo.max
                 ^^^^^^^^^^^^^^^^ Use `foo.minmax` instead of `foo.min, foo.max`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          bar = foo.minmax
         RUBY
       end
 
@@ -64,16 +62,6 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
           bar = min, max
         RUBY
       end
-
-      it 'auto-corrects an offense to use `#minmax`' do
-        corrected = autocorrect_source(<<~RUBY)
-          baz = foo.bar.min, foo.bar.max
-        RUBY
-
-        expect(corrected).to eq(<<~RUBY)
-          baz = foo.bar.minmax
-        RUBY
-      end
     end
 
     context 'when the expression is used as a return value' do
@@ -81,6 +69,10 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
         expect_offense(<<~RUBY)
           return foo.min, foo.max
                  ^^^^^^^^^^^^^^^^ Use `foo.minmax` instead of `foo.min, foo.max`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          return foo.minmax
         RUBY
       end
 
@@ -99,16 +91,6 @@ RSpec.describe RuboCop::Cop::Style::MinMax, :config do
       it 'does not register an offense if the receiver is implicit' do
         expect_no_offenses(<<~RUBY)
           return min, max
-        RUBY
-      end
-
-      it 'auto-corrects an offense to use `#minmax`' do
-        corrected = autocorrect_source(<<~RUBY)
-          return foo.bar.min, foo.bar.max
-        RUBY
-
-        expect(corrected).to eq(<<~RUBY)
-          return foo.bar.minmax
         RUBY
       end
     end

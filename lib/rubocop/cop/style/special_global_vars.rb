@@ -26,10 +26,6 @@ module RuboCop
       #   puts $LAST_MATCH_INFO
       #   puts $IGNORECASE
       #   puts $ARGV # or ARGV
-      #   puts $MATCH
-      #   puts $PREMATCH
-      #   puts $POSTMATCH
-      #   puts $LAST_PAREN_MATCH
       #
       # @example EnforcedStyle: use_perl_names
       #   # good
@@ -51,13 +47,10 @@ module RuboCop
       #   puts $~
       #   puts $=
       #   puts $*
-      #   puts $&
-      #   puts $`
-      #   puts $'
-      #   puts $+
       #
-      class SpecialGlobalVars < Cop
+      class SpecialGlobalVars < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG_BOTH = 'Prefer `%<prefer>s` from the stdlib \'English\' ' \
         'module (don\'t forget to require it) or `%<regular>s` over ' \
@@ -84,21 +77,17 @@ module RuboCop
           :$? => [:$CHILD_STATUS],
           :$~ => [:$LAST_MATCH_INFO],
           :$= => [:$IGNORECASE],
-          :$* => %i[$ARGV ARGV],
-          :$& => [:$MATCH],
-          :$` => [:$PREMATCH],
-          :$' => [:$POSTMATCH],
-          :$+ => [:$LAST_PAREN_MATCH]
+          :$* => %i[$ARGV ARGV]
         }
 
         PERL_VARS =
-          Hash[ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k]] } }]
+          ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k]] } }.to_h
 
         ENGLISH_VARS.merge!(
-          Hash[ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }]
+          ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }.to_h
         )
         PERL_VARS.merge!(
-          Hash[PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }]
+          PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }.to_h
         )
         ENGLISH_VARS.each_value(&:freeze).freeze
         PERL_VARS.each_value(&:freeze).freeze
@@ -120,13 +109,14 @@ module RuboCop
             correct_style_detected
           else
             opposite_style_detected
-            add_offense(node)
+
+            add_offense(node, message: message(global_var)) do |corrector|
+              autocorrect(corrector, node, global_var)
+            end
           end
         end
 
-        def message(node)
-          global_var, = *node
-
+        def message(global_var)
           if style == :use_english_names
             format_english_message(global_var)
           else
@@ -136,17 +126,10 @@ module RuboCop
           end
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            global_var, = *node
+        def autocorrect(corrector, node, global_var)
+          node = node.parent while node.parent&.begin_type? && node.parent.children.one?
 
-            while node.parent&.begin_type? &&
-                  node.parent.children.one?
-              node = node.parent
-            end
-
-            corrector.replace(node, replacement(node, global_var))
-          end
+          corrector.replace(node, replacement(node, global_var))
         end
 
         private

@@ -12,20 +12,23 @@ module RuboCop
       #
       #   # good
       #   1 + 1 # this operation does ...
-      class SpaceBeforeComment < Cop
+      class SpaceBeforeComment < Base
+        extend AutoCorrector
+
         MSG = 'Put a space before an end-of-line comment.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.tokens.each_cons(2) do |token1, token2|
             next unless token2.comment?
             next unless token1.line == token2.line
+            next unless token1.pos.end == token2.pos.begin
 
-            add_offense(token2.pos, location: token2.pos) if token1.pos.end == token2.pos.begin
+            range = token2.pos
+
+            add_offense(range) do |corrector|
+              corrector.insert_before(range, ' ')
+            end
           end
-        end
-
-        def autocorrect(range)
-          ->(corrector) { corrector.insert_before(range, ' ') }
         end
       end
     end

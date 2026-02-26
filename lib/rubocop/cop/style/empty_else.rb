@@ -89,10 +89,11 @@ module RuboCop
       #   if condition
       #     statement
       #   end
-      class EmptyElse < Cop
+      class EmptyElse < Base
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Redundant `else`-clause.'
 
@@ -102,16 +103,6 @@ module RuboCop
 
         def on_case(node)
           check(node)
-        end
-
-        def autocorrect(node)
-          return false if autocorrect_forbidden?(node.type.to_s)
-          return false if comment_in_else?(node)
-
-          lambda do |corrector|
-            end_pos = base_node(node).loc.end.begin_pos
-            corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
-          end
         end
 
         private
@@ -132,24 +123,31 @@ module RuboCop
         def empty_check(node)
           return unless node.else? && !node.else_branch
 
-          add_offense(node, location: :else)
+          add_offense(node.loc.else) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def nil_check(node)
           return unless node.else_branch&.nil_type?
 
-          add_offense(node, location: :else)
+          add_offense(node.loc.else) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
-        def comment_in_else?(node)
-          range = else_line_range(node.loc)
-          processed_source.find_comment { |c| range.include?(c.loc.line) }
+        def autocorrect(corrector, node)
+          return false if autocorrect_forbidden?(node.type.to_s)
+          return false if comment_in_else?(node.loc)
+
+          end_pos = base_node(node).loc.end.begin_pos
+          corrector.remove(range_between(node.loc.else.begin_pos, end_pos))
         end
 
-        def else_line_range(loc)
-          return 0..0 if loc.else.nil? || loc.end.nil?
+        def comment_in_else?(loc)
+          return false if loc.else.nil? || loc.end.nil?
 
-          loc.else.first_line..loc.end.first_line
+          processed_source.contains_comment?(loc.else.join(loc.end))
         end
 
         def base_node(node)

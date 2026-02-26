@@ -5,7 +5,7 @@ module RuboCop
   # on.
   module Platform
     def self.windows?
-      RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/
+      /cygwin|mswin|mingw|bccwin|wince|emx/.match?(RbConfig::CONFIG['host_os'])
     end
   end
 end

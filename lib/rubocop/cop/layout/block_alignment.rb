@@ -61,12 +61,14 @@ module RuboCop
       #     .each do
       #        baz
       #   end
-      class BlockAlignment < Cop
+      class BlockAlignment < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = '%<current>s is not aligned with %<prefer>s%<alt_prefer>s.'
 
+        # @!method block_end_align_target?(node, child)
         def_node_matcher :block_end_align_target?, <<~PATTERN
           {assignment?
            splat
@@ -82,19 +84,6 @@ module RuboCop
 
         def style_parameter_name
           'EnforcedStyleAlignWith'
-        end
-
-        def autocorrect(node)
-          ancestor_node = start_for_block_node(node)
-          start_col = compute_start_col(ancestor_node, node)
-          loc_end = node.loc.end
-          delta = start_col - loc_end.column
-
-          if delta.positive?
-            add_space_before(loc_end, delta)
-          elsif delta.negative?
-            remove_space_before(loc_end.begin_pos, -delta)
-          end
         end
 
         private
@@ -163,7 +152,22 @@ module RuboCop
           message = format_message(start_loc, end_loc, do_source_line_column,
                                    error_source_line_column)
 
-          add_offense(block_node, location: end_loc, message: message)
+          add_offense(end_loc, message: message) do |corrector|
+            autocorrect(corrector, block_node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          ancestor_node = start_for_block_node(node)
+          start_col = compute_start_col(ancestor_node, node)
+          loc_end = node.loc.end
+          delta = start_col - loc_end.column
+
+          if delta.positive?
+            add_space_before(corrector, loc_end, delta)
+          elsif delta.negative?
+            remove_space_before(corrector, loc_end.begin_pos, -delta)
+          end
         end
 
         def format_message(start_loc, end_loc, do_source_line_column,
@@ -207,13 +211,12 @@ module RuboCop
         end
 
         def alt_start_msg(start_loc, source_line_column)
-          if style != :either
-            ''
-          elsif start_loc.line == source_line_column[:line] &&
-                start_loc.column == source_line_column[:column]
+          if style != :either ||
+             (start_loc.line == source_line_column[:line] &&
+                 start_loc.column == source_line_column[:column])
             ''
           else
-            ' or ' + format_source_line_column(source_line_column)
+            " or #{format_source_line_column(source_line_column)}"
           end
         end
 
@@ -230,13 +233,14 @@ module RuboCop
           (ancestor_node || node).source_range.column
         end
 
-        def add_space_before(loc, delta)
-          ->(corrector) { corrector.insert_before(loc, ' ' * delta) }
+        def add_space_before(corrector, loc, delta)
+          corrector.insert_before(loc, ' ' * delta)
         end
 
-        def remove_space_before(end_pos, delta)
+        def remove_space_before(corrector, end_pos, delta)
           range = range_between(end_pos - delta, end_pos)
-          ->(corrector) { corrector.remove(range) }
+
+          corrector.remove(range)
         end
       end
     end

@@ -4,7 +4,10 @@ module RuboCop
   module Cop
     module Style
       # This cop checks against comparing a variable with multiple items, where
-      # `Array#include?` could be used instead to avoid code repetition.
+      # `Array#include?`, `Set#include?` or a `case` could be used instead
+      # to avoid code repetition.
+      # It accepts comparisons of multiple method calls to avoid unnecessary method calls
+      # by default. It can be configured by `AllowMethodComparison` option.
       #
       # @example
       #   # bad
@@ -14,25 +17,71 @@ module RuboCop
       #   # good
       #   a = 'a'
       #   foo if ['a', 'b', 'c'].include?(a)
-      class MultipleComparison < Cop
+      #
+      #   VALUES = Set['a', 'b', 'c'].freeze
+      #   # elsewhere...
+      #   foo if VALUES.include?(a)
+      #
+      #   case foo
+      #   when 'a', 'b', 'c' then foo
+      #   # ...
+      #   end
+      #
+      #   # accepted (but consider `case` as above)
+      #   foo if a == b.lightweight || a == b.heavyweight
+      #
+      # @example AllowMethodComparison: true (default)
+      #   # good
+      #   foo if a == b.lightweight || a == b.heavyweight
+      #
+      # @example AllowMethodComparison: false
+      #   # bad
+      #   foo if a == b.lightweight || a == b.heavyweight
+      #
+      #   # good
+      #   foo if [b.lightweight, b.heavyweight].include?(a)
+      class MultipleComparison < Base
+        extend AutoCorrector
+
         MSG = 'Avoid comparing a variable with multiple items ' \
           'in a conditional, use `Array#include?` instead.'
 
+        def on_new_investigation
+          @last_comparison = nil
+        end
+
         def on_or(node)
+          reset_comparison if switch_comparison?(node)
+
           root_of_or_node = root_of_or_node(node)
 
           return unless node == root_of_or_node
           return unless nested_variable_comparison?(root_of_or_node)
+          return if @allowed_method_comparison
 
-          add_offense(node)
+          add_offense(node) do |corrector|
+            elements = @compared_elements.join(', ')
+            prefer_method = "[#{elements}].include?(#{variables_in_node(node).first})"
+
+            corrector.replace(node, prefer_method)
+          end
+
+          @last_comparison = node
         end
 
         private
 
+        # @!method simple_double_comparison?(node)
         def_node_matcher :simple_double_comparison?, '(send $lvar :== $lvar)'
-        def_node_matcher :simple_comparison?, <<~PATTERN
-          {(send $lvar :== _)
-           (send _ :== $lvar)}
+
+        # @!method simple_comparison_lhs?(node)
+        def_node_matcher :simple_comparison_lhs?, <<~PATTERN
+          (send $lvar :== $_)
+        PATTERN
+
+        # @!method simple_comparison_rhs?(node)
+        def_node_matcher :simple_comparison_rhs?, <<~PATTERN
+          (send $_ :== $lvar)
         PATTERN
 
         def nested_variable_comparison?(node)
@@ -55,9 +104,12 @@ module RuboCop
           simple_double_comparison?(node) do |var1, var2|
             return [variable_name(var1), variable_name(var2)]
           end
-          simple_comparison?(node) do |var|
+          if (var, obj = simple_comparison_lhs?(node)) || (obj, var = simple_comparison_rhs?(node))
+            @allowed_method_comparison = true if allow_method_comparison? && obj.send_type?
+            @compared_elements << obj.source
             return [variable_name(var)]
           end
+
           []
         end
 
@@ -74,7 +126,7 @@ module RuboCop
         end
 
         def comparison?(node)
-          simple_comparison?(node) || nested_comparison?(node)
+          simple_comparison_lhs?(node) || simple_comparison_rhs?(node) || nested_comparison?(node)
         end
 
         def root_of_or_node(or_node)
@@ -85,6 +137,21 @@ module RuboCop
           else
             or_node
           end
+        end
+
+        def switch_comparison?(node)
+          return true if @last_comparison.nil?
+
+          @last_comparison.descendants.none? { |descendant| descendant == node }
+        end
+
+        def reset_comparison
+          @compared_elements = []
+          @allowed_method_comparison = false
+        end
+
+        def allow_method_comparison?
+          cop_config.fetch('AllowMethodComparison', true)
         end
       end
     end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::WhenThen do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::WhenThen, :config do
   it 'registers an offense for when x;' do
     expect_offense(<<~RUBY)
       case a
@@ -10,10 +8,8 @@ RSpec.describe RuboCop::Cop::Style::WhenThen do
             ^ Do not use `when x;`. Use `when x then` instead.
       end
     RUBY
-  end
 
-  it 'accepts when x then' do
-    expect_no_offenses(<<~RUBY)
+    expect_correction(<<~RUBY)
       case a
       when b then c
       end
@@ -33,20 +29,7 @@ RSpec.describe RuboCop::Cop::Style::WhenThen do
     RUBY
   end
 
-  it 'auto-corrects "when x;" with "when x then"' do
-    new_source = autocorrect_source(<<~RUBY)
-      case a
-      when b; c
-      end
-    RUBY
-    expect(new_source).to eq(<<~RUBY)
-      case a
-      when b then c
-      end
-    RUBY
-  end
-
-  # Regression: https://github.com/rubocop-hq/rubocop/issues/3868
+  # Regression: https://github.com/rubocop/rubocop/issues/3868
   context 'when inspecting a case statement with an empty branch' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)

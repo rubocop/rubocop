@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::InternalAffairs::RedundantMessageArgument do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::InternalAffairs::RedundantMessageArgument, :config do
   context 'when `MSG` is passed' do
     it 'registers an offense' do
       expect_offense(<<~RUBY, 'example_cop.rb')

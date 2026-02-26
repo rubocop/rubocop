@@ -34,32 +34,38 @@ module RuboCop
       #   foo = "1"
       #   # rubocop:enable all
       #   baz
-      class RedundantCopEnableDirective < Cop
+      class RedundantCopEnableDirective < Base
         include RangeHelp
         include SurroundingSpace
+        extend AutoCorrector
 
         MSG = 'Unnecessary enabling of %<cop>s.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.blank?
 
           offenses = processed_source.comment_config.extra_enabled_comments
-          offenses.each do |comment, name|
-            add_offense(
-              [comment, name],
-              location: range_of_offense(comment, name),
-              message: format(MSG, cop: all_or_name(name))
-            )
-          end
-        end
-
-        def autocorrect(comment_and_name)
-          lambda do |corrector|
-            corrector.remove(range_with_comma(*comment_and_name))
-          end
+          offenses.each { |comment, cop_names| register_offense(comment, cop_names) }
         end
 
         private
+
+        def register_offense(comment, cop_names)
+          directive = DirectiveComment.new(comment)
+
+          cop_names.each do |name|
+            add_offense(
+              range_of_offense(comment, name),
+              message: format(MSG, cop: all_or_name(name))
+            ) do |corrector|
+              if directive.match?(cop_names)
+                corrector.remove(range_with_surrounding_space(range: directive.range, side: :right))
+              else
+                corrector.remove(range_with_comma(comment, name))
+              end
+            end
+          end
+        end
 
         def range_of_offense(comment, name)
           start_pos = comment_start(comment) + cop_name_indention(comment, name)
@@ -82,29 +88,32 @@ module RuboCop
           begin_pos = reposition(source, begin_pos, -1)
           end_pos = reposition(source, end_pos, 1)
 
-          comma_pos =
-            if source[begin_pos - 1] == ','
-              :before
-            elsif source[end_pos] == ','
-              :after
-            else
-              :none
-            end
-
-          range_to_remove(begin_pos, end_pos, comma_pos, comment)
+          range_to_remove(begin_pos, end_pos, comment)
         end
 
-        def range_to_remove(begin_pos, end_pos, comma_pos, comment)
+        def range_to_remove(begin_pos, end_pos, comment)
           start = comment_start(comment)
+          source = comment.loc.expression.source
 
-          case comma_pos
-          when :before
-            range_between(start + begin_pos - 1, start + end_pos)
-          when :after
-            range_between(start + begin_pos, start + end_pos + 1)
+          if source[begin_pos - 1] == ','
+            range_with_comma_before(start, begin_pos, end_pos)
+          elsif source[end_pos] == ','
+            range_with_comma_after(comment, start, begin_pos, end_pos)
           else
             range_between(start, comment.loc.expression.end_pos)
           end
+        end
+
+        def range_with_comma_before(start, begin_pos, end_pos)
+          range_between(start + begin_pos - 1, start + end_pos)
+        end
+
+        # If the list of cops is comma-separated, but without a empty space after the comma,
+        # we should **not** remove the prepending empty space, thus begin_pos += 1
+        def range_with_comma_after(comment, start, begin_pos, end_pos)
+          begin_pos += 1 if comment.loc.expression.source[end_pos + 1] != ' '
+
+          range_between(start + begin_pos, start + end_pos + 1)
         end
 
         def all_or_name(name)

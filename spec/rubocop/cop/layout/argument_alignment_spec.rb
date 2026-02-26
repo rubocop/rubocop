@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
   let(:config) do
     RuboCop::Config.new('Layout/ArgumentAlignment' => cop_config,
                         'Layout/IndentationWidth' => {
@@ -244,19 +242,23 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
 
     it "doesn't crash and burn when there are nested issues" do
       # regression test; see GH issue 2441
-      src = <<~RUBY
-        build(:house,
-          :rooms => [
-            build(:bedroom,
-              :bed => build(:bed,
-                :occupants => [],
-                :size => "king"
+      expect do
+        expect_offense(<<~RUBY)
+          build(:house,
+            :rooms => [
+            ^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+              build(:bedroom,
+                :bed => build(:bed,
+                ^^^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+                  :occupants => [],
+                  ^^^^^^^^^^^^^^^^^ Align the arguments of a method call if they span more than one line.
+                  :size => "king"
+                )
               )
-            )
-          ]
-        )
-      RUBY
-      expect { inspect_source(src) }.not_to raise_error
+            ]
+          )
+        RUBY
+      end.not_to raise_error
     end
 
     context 'assigned methods' do
@@ -357,15 +359,6 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment do
       {
         'EnforcedStyle' => 'with_fixed_indentation'
       }
-    end
-
-    let(:correct_source) do
-      <<~RUBY
-        create :transaction, :closed,
-          account:     account,
-          open_price:  1.29,
-          close_price: 1.30
-      RUBY
     end
 
     it 'autocorrects by outdenting when indented too far' do

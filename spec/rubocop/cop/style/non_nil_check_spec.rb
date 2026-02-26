@@ -11,7 +11,11 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
     it 'registers an offense for != nil' do
       expect_offense(<<~RUBY)
         x != nil
-          ^^ Prefer `!expression.nil?` over `expression != nil`.
+        ^^^^^^^^ Prefer `!x.nil?` over `x != nil`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        !x.nil?
       RUBY
     end
 
@@ -61,33 +65,21 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
       RUBY
     end
 
-    it 'autocorrects by changing `!= nil` to `!x.nil?`' do
-      corrected = autocorrect_source('x != nil')
-      expect(corrected).to eq '!x.nil?'
+    it 'does not register an offense with implicit receiver' do
+      expect_no_offenses('!nil?')
     end
 
-    it 'does not autocorrect by removing non-nil (!x.nil?) check' do
-      corrected = autocorrect_source('!x.nil?')
-      expect(corrected).to eq '!x.nil?'
-    end
+    it 'registers an offense but does not correct when the code was not modified' do
+      expect_offense(<<~RUBY)
+        return nil unless (line =~ //) != nil
+                          ^^^^^^^^^^^^^^^^^^^ Prefer `!(line =~ //).nil?` over `(line =~ //) != nil`.
+      RUBY
 
-    it 'does not blow up when autocorrecting implicit receiver' do
-      corrected = autocorrect_source('!nil?')
-      expect(corrected).to eq '!nil?'
-    end
-
-    it 'does not report corrected when the code was not modified' do
-      source = 'return nil unless (line =~ //) != nil'
-      corrected = autocorrect_source(source)
-
-      expect(corrected).to eq(source)
-      expect(cop.corrections.empty?).to be(true)
+      expect_no_corrections
     end
   end
 
   context 'when allowing semantic changes' do
-    subject(:cop) { described_class.new(config) }
-
     let(:cop_config) do
       {
         'IncludeSemanticChanges' => true
@@ -99,12 +91,20 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
         !x.nil?
         ^^^^^^^ Explicit non-nil checks are usually redundant.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x
+      RUBY
     end
 
     it 'registers an offense for unless x.nil?' do
       expect_offense(<<~RUBY)
         puts b unless x.nil?
                       ^^^^^^ Explicit non-nil checks are usually redundant.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        puts b if x
       RUBY
     end
 
@@ -121,37 +121,87 @@ RSpec.describe RuboCop::Cop::Style::NonNilCheck, :config do
         not x.nil?
         ^^^^^^^^^^ Explicit non-nil checks are usually redundant.
       RUBY
+
+      expect_correction(<<~RUBY)
+        x
+      RUBY
     end
 
     it 'does not blow up with ternary operators' do
       expect_no_offenses('my_var.nil? ? 1 : 0')
     end
 
-    it 'autocorrects by changing unless x.nil? to if x' do
-      corrected = autocorrect_source('puts a unless x.nil?')
-      expect(corrected).to eq 'puts a if x'
-    end
-
     it 'autocorrects by changing `x != nil` to `x`' do
-      corrected = autocorrect_source('x != nil')
-      expect(corrected).to eq 'x'
-    end
+      expect_offense(<<~RUBY)
+        x != nil
+        ^^^^^^^^ Explicit non-nil checks are usually redundant.
+      RUBY
 
-    it 'autocorrects by changing `!x.nil?` to `x`' do
-      corrected = autocorrect_source('!x.nil?')
-      expect(corrected).to eq 'x'
+      expect_correction(<<~RUBY)
+        x
+      RUBY
     end
 
     it 'does not blow up when autocorrecting implicit receiver' do
-      corrected = autocorrect_source('!nil?')
-      expect(corrected).to eq 'self'
+      expect_offense(<<~RUBY)
+        !nil?
+        ^^^^^ Explicit non-nil checks are usually redundant.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        self
+      RUBY
     end
 
     it 'corrects code that would not be modified if ' \
        'IncludeSemanticChanges were false' do
-      corrected = autocorrect_source('return nil unless (line =~ //) != nil')
+      expect_offense(<<~RUBY)
+        return nil unless (line =~ //) != nil
+                          ^^^^^^^^^^^^^^^^^^^ Explicit non-nil checks are usually redundant.
+      RUBY
 
-      expect(corrected).to eq('return nil unless (line =~ //)')
+      expect_correction(<<~RUBY)
+        return nil unless (line =~ //)
+      RUBY
+    end
+  end
+
+  context 'when `EnforcedStyle: comparison` of `Style/NilComparison` cop' do
+    let(:other_cops) do
+      {
+        'Style/NilComparison' => { 'EnforcedStyle' => 'comparison' }
+      }
+    end
+
+    context '`IncludeSemanticChanges: false`' do
+      let(:cop_config) do
+        {
+          'IncludeSemanticChanges' => false
+        }
+      end
+
+      it 'does not register an offense for `foo != nil`' do
+        expect_no_offenses('foo != nil')
+      end
+    end
+
+    context '`IncludeSemanticChanges: true`' do
+      let(:cop_config) do
+        {
+          'IncludeSemanticChanges' => true
+        }
+      end
+
+      it 'registers an offense for `foo != nil`' do
+        expect_offense(<<~RUBY)
+          foo != nil
+          ^^^^^^^^^^ Explicit non-nil checks are usually redundant.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo
+        RUBY
+      end
     end
   end
 end

@@ -16,7 +16,9 @@ module RuboCop
         last_seen_line = -1
         children.each do |child|
           if last_seen_line >= child.first_line
-            add_offense(child)
+            add_offense(child) do |corrector|
+              EmptyLineCorrector.insert_before(corrector, child)
+            end
           else
             last_seen_line = child.last_line
           end

@@ -2,52 +2,43 @@
 
 RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
   let(:enforced_style) { :annotated }
+  let(:ignored_methods) { [] }
 
   let(:cop_config) do
     {
       'EnforcedStyle' => enforced_style,
-      'SupportedStyles' => %i[annotated template unannotated]
+      'SupportedStyles' => %i[annotated template unannotated],
+      'MaxUnannotatedPlaceholdersAllowed' => 0,
+      'IgnoredMethods' => ignored_methods
     }
   end
 
-  shared_examples 'format string token style' do |name, good, bad|
-    bad_style1 = bad
+  shared_examples 'maximum allowed unannotated' do |token|
+    context 'when MaxUnannotatedPlaceholdersAllowed is 1' do
+      before { cop_config['MaxUnannotatedPlaceholdersAllowed'] = 1 }
 
-    context "when enforced style is #{name}" do
-      let(:enforced_style) { name }
+      it 'does not register offenses for single unannotated' do
+        expect_no_offenses("format('%#{token}', foo)")
+      end
 
-      it "registers offenses for #{bad_style1}" do
-        inspect_source(<<~RUBY)
-          <<-HEREDOC
-          foo #{good} + bar #{bad_style1}
-          HEREDOC
+      it 'registers offence for dual unannotated' do
+        expect_offense(<<~RUBY)
+          format('%#{token} %s', foo, bar)
+                  ^^ Prefer [...]
+                     ^^ Prefer [...]
         RUBY
+      end
+    end
 
-        expect(cop.highlights).to eql([bad_style1])
+    context 'when MaxUnannotatedPlaceholdersAllowed is 2' do
+      before { cop_config['MaxUnannotatedPlaceholdersAllowed'] = 2 }
+
+      it 'does not register offenses for single unannotated' do
+        expect_no_offenses("format('%#{token}', foo)")
       end
 
-      it 'supports dynamic string with interpolation' do
-        inspect_source(
-          %("a\#{b}#{good} c\#{d}#{bad_style1} e\#{f}")
-        )
-
-        expect(cop.highlights).to eql([bad_style1])
-      end
-
-      it 'sets the enforced style to annotated after inspecting "%<a>s"' do
-        inspect_source('"%<a>s"')
-
-        expect(cop.config_to_allow_offenses).to eq(
-          'EnforcedStyle' => 'annotated'
-        )
-      end
-
-      it 'configures the enforced style to template after inspecting "%{a}"' do
-        inspect_source('"%{a}"')
-
-        expect(cop.config_to_allow_offenses).to eq(
-          'EnforcedStyle' => 'template'
-        )
+      it 'does not register offenses for dual unannotated' do
+        expect_no_offenses("format('%#{token} %s', foo, bar)")
       end
     end
   end
@@ -56,26 +47,98 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
     template  = '%{template}'
     annotated = "%<named>#{token}"
 
-    include_examples 'format string token style',
-                     :annotated,
-                     annotated,
-                     template
+    context 'when enforced style is annotated' do
+      let(:enforced_style) { :annotated }
 
-    include_examples 'format string token style',
-                     :template,
-                     template,
-                     annotated
-  end
+      it 'registers offenses for template style' do
+        expect_offense(<<~RUBY, annotated: annotated, template: template)
+          <<-HEREDOC
+          foo %{annotated} + bar %{template}
+              _{annotated}       ^{template} Prefer annotated tokens [...]
+          HEREDOC
+        RUBY
 
-  shared_examples 'offense message' do |enforced_style, source, message|
-    context "when enforced style is #{enforced_style}" do
-      let(:enforced_style) { enforced_style }
-
-      it 'gives a helpful error message' do
-        inspect_source(source)
-
-        expect(cop.messages.first).to eql(message)
+        expect_no_corrections
       end
+
+      it 'supports dynamic string with interpolation' do
+        expect_offense(<<~'RUBY', annotated: annotated, template: template)
+          "a#{b}%{annotated} c#{d}%{template} e#{f}"
+                _{annotated}      ^{template} Prefer annotated tokens [...]
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'sets the enforced style to annotated after inspecting "%<a>s"' do
+        expect_no_offenses('"%<a>s"')
+
+        expect(cop.config_to_allow_offenses).to eq(
+          'EnforcedStyle' => 'annotated'
+        )
+      end
+
+      it 'configures the enforced style to template after inspecting "%{a}"' do
+        expect_offense(<<~RUBY)
+          "%{a}"
+           ^^^^ Prefer annotated tokens [...]
+        RUBY
+
+        expect_no_corrections
+
+        expect(cop.config_to_allow_offenses).to eq(
+          'EnforcedStyle' => 'template'
+        )
+      end
+
+      it_behaves_like 'maximum allowed unannotated', token
+    end
+
+    context 'when enforced style is template' do
+      let(:enforced_style) { :template }
+
+      it 'registers offenses for annotated style' do
+        expect_offense(<<~RUBY, annotated: annotated, template: template)
+          <<-HEREDOC
+          foo %{template} + bar %{annotated}
+              _{template}       ^{annotated} Prefer template tokens [...]
+          HEREDOC
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'supports dynamic string with interpolation' do
+        expect_offense(<<~'RUBY', annotated: annotated, template: template)
+          "a#{b}%{template} c#{d}%{annotated} e#{f}"
+                _{template}      ^{annotated} Prefer template tokens [...]
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'sets the enforced style to annotated after inspecting "%<a>s"' do
+        expect_offense(<<~RUBY)
+          "%<a>s"
+           ^^^^^ Prefer template tokens [...]
+        RUBY
+
+        expect_no_corrections
+
+        expect(cop.config_to_allow_offenses).to eq(
+          'EnforcedStyle' => 'annotated'
+        )
+      end
+
+      it 'configures the enforced style to template after inspecting "%{a}"' do
+        expect_no_offenses('"%{a}"')
+
+        expect(cop.config_to_allow_offenses).to eq(
+          'EnforcedStyle' => 'template'
+        )
+      end
+
+      it_behaves_like 'maximum allowed unannotated', token
     end
   end
 
@@ -118,8 +181,12 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
   end
 
   it 'handles dstrs' do
-    inspect_source('"c#{b}%{template}"')
-    expect(cop.highlights).to eql(['%{template}'])
+    expect_offense(<<~'RUBY')
+      "c#{b}%{template}"
+            ^^^^^^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+    RUBY
+
+    expect_no_corrections
   end
 
   it 'ignores http links' do
@@ -145,6 +212,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
       { bar: format('%{foo}', foo: 'foo') }
                      ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
     RUBY
+
+    expect_no_corrections
   end
 
   it 'supports flags and modifiers' do
@@ -153,6 +222,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
               ^^^^^ Prefer annotated tokens (like `%<foo>s`) over unannotated tokens (like `%s`).
                     ^^^^^ Prefer annotated tokens (like `%<foo>s`) over unannotated tokens (like `%s`).
     RUBY
+
+    expect_no_corrections
   end
 
   it 'handles __FILE__' do
@@ -178,27 +249,63 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
   it_behaves_like 'enforced styles for format string tokens', 'u'
   it_behaves_like 'enforced styles for format string tokens', 'x'
 
-  include_examples(
-    'offense message',
-    :annotated,
-    '"%{foo}"',
-    'Prefer annotated tokens (like `%<foo>s`) ' \
-    'over template tokens (like `%{foo}`).'
-  )
+  context 'when enforced style is annotated' do
+    let(:enforced_style) { :annotated }
 
-  include_examples(
-    'offense message',
-    :template,
-    '"%<foo>d"',
-    'Prefer template tokens (like `%{foo}`) ' \
-    'over annotated tokens (like `%<foo>s`).'
-  )
+    it 'gives a helpful error message' do
+      expect_offense(<<~RUBY)
+        "%{foo}"
+         ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+      RUBY
 
-  include_examples(
-    'offense message',
-    :unannotated,
-    '"%{foo}"',
-    'Prefer unannotated tokens (like `%s`) ' \
-    'over template tokens (like `%{foo}`).'
-  )
+      expect_no_corrections
+    end
+
+    context 'when `IgnoredMethods: redirect`' do
+      let(:ignored_methods) { ['redirect'] }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          redirect("%{foo}")
+        RUBY
+      end
+    end
+
+    context 'when `IgnoredMethods: []`' do
+      let(:ignored_methods) { [] }
+
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          redirect("%{foo}")
+                    ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
+        RUBY
+      end
+    end
+  end
+
+  context 'when enforced style is template' do
+    let(:enforced_style) { :template }
+
+    it 'gives a helpful error message' do
+      expect_offense(<<~RUBY)
+        "%<foo>d"
+         ^^^^^^^ Prefer template tokens (like `%{foo}`) over annotated tokens (like `%<foo>s`).
+      RUBY
+
+      expect_no_corrections
+    end
+  end
+
+  context 'when enforced style is unannotated' do
+    let(:enforced_style) { :unannotated }
+
+    it 'gives a helpful error message' do
+      expect_offense(<<~RUBY)
+        "%{foo}"
+         ^^^^^^ Prefer unannotated tokens (like `%s`) over template tokens (like `%{foo}`).
+      RUBY
+
+      expect_no_corrections
+    end
+  end
 end

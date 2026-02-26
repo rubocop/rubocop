@@ -18,8 +18,8 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
       expect_offense(<<~RUBY)
         if a
           if b
-            if cinspect_source
-            ^^^^^^^^^^^^^^^^^^ Avoid more than 2 levels of block nesting.
+            if c
+            ^^^^ Avoid more than 2 levels of block nesting.
               puts c
             end
           end

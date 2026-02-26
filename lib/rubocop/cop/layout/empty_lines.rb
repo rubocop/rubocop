@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'set'
-
 module RuboCop
   module Cop
     module Layout
@@ -20,13 +18,14 @@ module RuboCop
       #   # one empty line
       #   some_method
       #
-      class EmptyLines < Cop
+      class EmptyLines < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Extra blank line detected.'
         LINE_OFFSET = 2
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.tokens.empty?
 
           lines = Set.new
@@ -35,12 +34,10 @@ module RuboCop
           end
 
           each_extra_empty_line(lines.sort) do |range|
-            add_offense(range, location: range)
+            add_offense(range) do |corrector|
+              corrector.remove(range)
+            end
           end
-        end
-
-        def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
         end
 
         private

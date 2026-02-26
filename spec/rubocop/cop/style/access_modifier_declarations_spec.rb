@@ -28,11 +28,11 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
       let(:cop_config) { { 'AllowModifiersOnSymbols' => false } }
 
       it 'accepts when argument to #{access_modifier} is a symbol' do
-        expect_offense(<<~RUBY)
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Foo
             foo
-            #{access_modifier} :bar
-            #{'^' * access_modifier.length} `#{access_modifier}` should not be inlined in method definitions.
+            %{access_modifier} :bar
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
           end
         RUBY
       end
@@ -46,12 +46,12 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
       }
     end
 
-    %w[private protected public].each do |access_modifier|
+    %w[private protected public module_function].each do |access_modifier|
       it "offends when #{access_modifier} is inlined with a method" do
-        expect_offense(<<~RUBY)
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Test
-            #{access_modifier} def foo; end
-            #{'^' * access_modifier.length} `#{access_modifier}` should not be inlined in method definitions.
+            %{access_modifier} def foo; end
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
           end
         RUBY
       end
@@ -64,11 +64,35 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
         RUBY
       end
 
+      it 'accepts when using only #{access_modifier}' do
+        expect_no_offenses(<<~RUBY)
+          #{access_modifier}
+        RUBY
+      end
+
       it "does not offend when #{access_modifier} is not inlined and " \
          'has a comment' do
         expect_no_offenses(<<~RUBY)
           class Test
             #{access_modifier} # hey
+          end
+        RUBY
+      end
+
+      it 'registers an offense for correct + multiple opposite styles of #{access_modifier} usage' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class TestOne
+            #{access_modifier}
+          end
+
+          class TestTwo
+            #{access_modifier} def foo; end
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
+          end
+
+          class TestThree
+            #{access_modifier} def foo; end
+            ^{access_modifier} `#{access_modifier}` should not be inlined in method definitions.
           end
         RUBY
       end
@@ -84,21 +108,21 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
       }
     end
 
-    %w[private protected public].each do |access_modifier|
+    %w[private protected public module_function].each do |access_modifier|
       it "offends when #{access_modifier} is not inlined" do
-        expect_offense(<<~RUBY)
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Test
-            #{access_modifier}
-            #{'^' * access_modifier.length} `#{access_modifier}` should be inlined in method definitions.
+            %{access_modifier}
+            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
           end
         RUBY
       end
 
       it "offends when #{access_modifier} is not inlined and has a comment" do
-        expect_offense(<<~RUBY)
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
           class Test
-            #{access_modifier} # hey
-            #{'^' * access_modifier.length} `#{access_modifier}` should be inlined in method definitions.
+            %{access_modifier} # hey
+            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
           end
         RUBY
       end
@@ -117,6 +141,24 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
             #{access_modifier} :foo
 
             def foo; end
+          end
+        RUBY
+      end
+
+      it 'registers an offense for correct + multiple opposite styles of #{access_modifier} usage' do
+        expect_offense(<<~RUBY, access_modifier: access_modifier)
+          class TestOne
+            #{access_modifier} def foo; end
+          end
+
+          class TestTwo
+            #{access_modifier}
+            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+          end
+
+          class TestThree
+            #{access_modifier}
+            ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
           end
         RUBY
       end

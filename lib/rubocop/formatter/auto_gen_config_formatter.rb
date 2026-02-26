@@ -9,7 +9,8 @@ module RuboCop
 
         report_summary(inspected_files.size,
                        @total_offense_count,
-                       @total_correction_count)
+                       @total_correction_count,
+                       @total_correctable_count)
       end
     end
   end

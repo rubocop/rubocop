@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::InternalAffairs::RedundantLocationArgument do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::InternalAffairs::RedundantLocationArgument, :config do
   context 'when location argument is passed' do
     context 'when location argument is :expression' do
       it 'registers an offense' do

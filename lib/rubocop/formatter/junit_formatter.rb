@@ -34,17 +34,27 @@ module RuboCop
         # https://github.com/mikian/rubocop-junit-formatter/blob/v0.1.4/lib/rubocop/formatter/junit_formatter.rb#L9
         #
         # In the future, it would be preferable to return only enabled cops.
-        Cop::Cop.all.each do |cop|
+        Cop::Registry.all.each do |cop|
+          target_offenses = offenses_for_cop(offenses, cop)
+
+          next unless relevant_for_output?(options, target_offenses)
+
           REXML::Element.new('testcase', @testsuite).tap do |testcase|
             testcase.attributes['classname'] = classname_attribute_value(file)
             testcase.attributes['name'] = cop.cop_name
 
-            target_offenses = offenses.select do |offense|
-              offense.cop_name == cop.cop_name
-            end
-
             add_failure_to(testcase, target_offenses, cop.cop_name)
           end
+        end
+      end
+
+      def relevant_for_output?(options, target_offenses)
+        !options[:display_only_failed] || target_offenses.any?
+      end
+
+      def offenses_for_cop(all_offenses, cop)
+        all_offenses.select do |offense|
+          offense.cop_name == cop.cop_name
         end
       end
 

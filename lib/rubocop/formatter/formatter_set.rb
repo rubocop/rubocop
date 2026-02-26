@@ -14,6 +14,7 @@ module RuboCop
         '[e]macs'       => EmacsStyleFormatter,
         '[fi]les'       => FileListFormatter,
         '[fu]ubar'      => FuubarStyleFormatter,
+        '[g]ithub'      => GitHubActionsFormatter,
         '[h]tml'        => HTMLFormatter,
         '[j]son'        => JSONFormatter,
         '[ju]nit'       => JUnitFormatter,
@@ -30,11 +31,12 @@ module RuboCop
 
       FORMATTER_APIS.each do |method_name|
         define_method(method_name) do |*args|
-          each { |f| f.send(method_name, *args) }
+          each { |f| f.public_send(method_name, *args) }
         end
       end
 
       def initialize(options = {})
+        super()
         @options = options # CLI options
       end
 
@@ -82,7 +84,7 @@ module RuboCop
 
       def builtin_formatter_class(specified_key)
         matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
-          key =~ /^\[#{specified_key}\]/ || specified_key == key.delete('[]')
+          /^\[#{specified_key}\]/.match?(key) || specified_key == key.delete('[]')
         end
 
         raise %(No formatter for "#{specified_key}") if matching_keys.empty?

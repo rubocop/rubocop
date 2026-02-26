@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters, :config do
   let(:message) do
     'Do not use spaces inside percent literal delimiters.'
   end
@@ -14,38 +12,42 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsidePercentLiteralDelimiters do
           ['%', type, ldelim, content, rdelim].join
         end
 
-        def expect_corrected(source, expected)
-          expect(autocorrect_source(source)).to eq expected
-        end
-
         it 'registers an offense for unnecessary spaces' do
-          source = code_example(' 1 2  ')
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(2)
-          expect(cop.messages.uniq).to eq([message])
-          expect(cop.highlights).to eq([' ', '  '])
-          expect_corrected(source, code_example('1 2'))
+          expect_offense(<<~RUBY)
+            #{code_example(' 1 2  ')}
+                   ^^ #{message}
+               ^ #{message}
+          RUBY
+
+          expect_correction("#{code_example('1 2')}\n")
         end
 
         it 'registers an offense for spaces after first delimiter' do
-          source = code_example(' 1 2')
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(1)
-          expect_corrected(source, code_example('1 2'))
+          expect_offense(<<~RUBY)
+            #{code_example(' 1 2')}
+               ^ #{message}
+          RUBY
+
+          expect_correction("#{code_example('1 2')}\n")
         end
 
         it 'registers an offense for spaces before final delimiter' do
-          source = code_example('1 2 ')
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(1)
-          expect_corrected(source, code_example('1 2'))
+          expect_offense(<<~RUBY)
+            #{code_example('1 2 ')}
+                  ^ #{message}
+          RUBY
+
+          expect_correction("#{code_example('1 2')}\n")
         end
 
         it 'registers an offense for literals with escaped and other spaces' do
-          source = code_example(' \ a b c\  ')
-          inspect_source(source)
-          expect(cop.offenses.size).to eq(2)
-          expect_corrected(source, code_example('\ a b c\ '))
+          expect_offense(<<~RUBY)
+            #{code_example(' \ a b c\  ')}
+                         ^ #{message}
+               ^ #{message}
+          RUBY
+
+          expect_correction("#{code_example('\ a b c\ ')}\n")
         end
 
         it 'accepts literals without additional spaces' do

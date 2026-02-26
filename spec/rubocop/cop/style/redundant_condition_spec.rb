@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantCondition do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantCondition, :config do
   context 'when regular condition (if)' do
     it 'accepts different when the condition does not match the branch' do
       expect_no_offenses(<<~RUBY)
@@ -39,6 +37,61 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
 
         expect_correction(<<~RUBY)
           b || c
+        RUBY
+      end
+
+      it 'does not register an offense when using assignment by hash key access' do
+        expect_no_offenses(<<~RUBY)
+          if @cache[key]
+            @cache[key]
+          else
+            @cache[key] = heavy_load[key]
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when `raise` without argument parentheses in `else`' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            raise 'foo'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b || raise('foo')
+        RUBY
+      end
+
+      it 'registers an offense and corrects when a method without argument parentheses in `else`' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            do_something foo, bar, key: :value
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b || do_something(foo, bar, key: :value)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when using operator method in `else`' do
+        expect_offense(<<~RUBY)
+          if b
+          ^^^^ Use double pipes `||` instead.
+            b
+          else
+            c + d
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          b || c + d
         RUBY
       end
 
@@ -250,6 +303,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantCondition do
 
         expect_correction(<<~RUBY)
           time_period = updated_during || (2.days.ago...Time.now)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the else branch contains `rescue`' do
+        expect_offense(<<~RUBY)
+          if a
+          ^^^^ Use double pipes `||` instead.
+            a
+          else
+            b rescue c
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a || (b rescue c)
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the else branch contains `and`' do
+        expect_offense(<<~RUBY)
+          if a
+          ^^^^ Use double pipes `||` instead.
+            a
+          else
+            b and c
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a || (b and c)
         RUBY
       end
     end

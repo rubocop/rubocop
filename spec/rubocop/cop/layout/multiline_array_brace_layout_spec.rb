@@ -34,4 +34,26 @@ RSpec.describe RuboCop::Cop::Layout::MultilineArrayBraceLayout, :config do
     let(:open) { '[' }
     let(:close) { ']' }
   end
+
+  context 'when comment present before closing brace' do
+    it 'corrects closing brace without crashing' do
+      expect_offense(<<~RUBY)
+        {
+          key1: [a, # comment 1
+                b # comment 2
+          ],
+          ^ The closing array brace must be on the same line as the last array element when the opening brace is on the same line as the first array element.
+          key2: 'foo'
+        }
+      RUBY
+
+      expect_correction(<<~RUBY)
+        {
+          key1: [a, # comment 1
+                b], # comment 2
+          key2: 'foo'
+        }
+      RUBY
+    end
+  end
 end

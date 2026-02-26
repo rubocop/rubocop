@@ -13,5 +13,5 @@ time = Benchmark.realtime do
   result = cli.run
 end
 
-puts "Finished in #{time} seconds" if cli.options[:debug]
+puts "Finished in #{time} seconds" if cli.options[:debug] || cli.options[:display_time]
 exit result

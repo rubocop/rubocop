@@ -1,56 +1,86 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::CommentedKeyword do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
-  it 'registers an offense when commenting on the same line as `end`' do
+RSpec.describe RuboCop::Cop::Style::CommentedKeyword, :config do
+  it 'registers an offense and corrects when commenting on the same line as `end`' do
     expect_offense(<<~RUBY)
       if x
         y
       end # comment
           ^^^^^^^^^ Do not place comments on the same line as the `end` keyword.
     RUBY
+
+    expect_correction(<<~RUBY)
+      if x
+        y
+      end
+    RUBY
   end
 
-  it 'registers an offense when commenting on the same line as `begin`' do
+  it 'registers an offense and corrects when commenting on the same line as `begin`' do
     expect_offense(<<~RUBY)
       begin # comment
             ^^^^^^^^^ Do not place comments on the same line as the `begin` keyword.
         y
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
+      begin
+        y
+      end
+    RUBY
   end
 
-  it 'registers an offense when commenting on the same line as `class`' do
+  it 'registers an offense and corrects when commenting on the same line as `class`' do
     expect_offense(<<~RUBY)
       class X # comment
               ^^^^^^^^^ Do not place comments on the same line as the `class` keyword.
         y
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
+      class X
+        y
+      end
+    RUBY
   end
 
-  it 'registers an offense when commenting on the same line as `module`' do
+  it 'registers an offense and corrects when commenting on the same line as `module`' do
     expect_offense(<<~RUBY)
       module X # comment
                ^^^^^^^^^ Do not place comments on the same line as the `module` keyword.
         y
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
+      module X
+        y
+      end
+    RUBY
   end
 
-  it 'registers an offense when commenting on the same line as `def`' do
+  it 'registers an offense and corrects when commenting on the same line as `def`' do
     expect_offense(<<~RUBY)
       def x # comment
             ^^^^^^^^^ Do not place comments on the same line as the `def` keyword.
         y
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
+      def x
+        y
+      end
+    RUBY
   end
 
-  it 'registers an offense when commenting on indented keywords' do
+  it 'registers an offense and corrects when commenting on indented keywords' do
     expect_offense(<<~RUBY)
       module X
         class Y # comment
@@ -59,21 +89,42 @@ RSpec.describe RuboCop::Cop::Style::CommentedKeyword do
         end
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      module X
+      # comment
+        class Y
+          z
+        end
+      end
+    RUBY
   end
 
-  it 'registers an offense when commenting after keyword with spaces' do
+  it 'registers an offense and corrects when commenting after keyword with spaces' do
     expect_offense(<<~RUBY)
       def x(a, b) # comment
                   ^^^^^^^^^ Do not place comments on the same line as the `def` keyword.
         y
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
+      def x(a, b)
+        y
+      end
+    RUBY
   end
 
-  it 'registers an offense for one-line cases' do
+  it 'registers an offense and corrects for one-line cases' do
     expect_offense(<<~RUBY)
-      def x; end # comment'
-                 ^^^^^^^^^^ Do not place comments on the same line as the `def` keyword.
+      def x; end # comment
+                 ^^^^^^^^^ Do not place comments on the same line as the `def` keyword.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # comment
+      def x; end
     RUBY
   end
 

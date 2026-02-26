@@ -47,7 +47,7 @@ module RuboCop
       #
       #   end
       #
-      # @example AllowModifiersOnSymbols: true
+      # @example AllowModifiersOnSymbols: true (default)
       #   # good
       #   class Foo
       #
@@ -62,7 +62,7 @@ module RuboCop
       #     private :bar, :baz
       #
       #   end
-      class AccessModifierDeclarations < Cop
+      class AccessModifierDeclarations < Base
         include ConfigurableEnforcedStyle
 
         GROUP_STYLE_MESSAGE = [
@@ -75,18 +75,20 @@ module RuboCop
           'inlined in method definitions.'
         ].join(' ')
 
+        RESTRICT_ON_SEND = %i[private protected public module_function].freeze
+
+        # @!method access_modifier_with_symbol?(node)
         def_node_matcher :access_modifier_with_symbol?, <<~PATTERN
-          (send nil? {:private :protected :public} (sym _))
+          (send nil? {:private :protected :public :module_function} (sym _))
         PATTERN
 
         def on_send(node)
           return unless node.access_modifier?
-          return if node.parent.pair_type?
-          return if cop_config['AllowModifiersOnSymbols'] &&
-                    access_modifier_with_symbol?(node)
+          return if node.parent&.pair_type?
+          return if allow_modifiers_on_symbols?(node)
 
           if offense?(node)
-            add_offense(node, location: :selector) do
+            add_offense(node.loc.selector) do
               opposite_style_detected
             end
           else
@@ -95,6 +97,10 @@ module RuboCop
         end
 
         private
+
+        def allow_modifiers_on_symbols?(node)
+          cop_config['AllowModifiersOnSymbols'] && access_modifier_with_symbol?(node)
+        end
 
         def offense?(node)
           (group_style? && access_modifier_is_inlined?(node)) ||
@@ -117,8 +123,8 @@ module RuboCop
           !access_modifier_is_inlined?(node)
         end
 
-        def message(node)
-          access_modifier = node.loc.selector.source
+        def message(range)
+          access_modifier = range.source
 
           if group_style?
             format(GROUP_STYLE_MESSAGE, access_modifier: access_modifier)

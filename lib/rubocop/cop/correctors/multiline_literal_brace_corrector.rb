@@ -8,12 +8,17 @@ module RuboCop
       include MultilineLiteralBraceLayout
       include RangeHelp
 
-      def initialize(node, processed_source)
+      def self.correct(corrector, node, processed_source)
+        new(corrector, node, processed_source).call
+      end
+
+      def initialize(corrector, node, processed_source)
+        @corrector = corrector
         @node = node
         @processed_source = processed_source
       end
 
-      def call(corrector)
+      def call
         if closing_brace_on_same_line?(node)
           correct_same_line_brace(corrector)
         else
@@ -29,7 +34,7 @@ module RuboCop
 
       private
 
-      attr_reader :node, :processed_source
+      attr_reader :corrector, :node, :processed_source
 
       def correct_same_line_brace(corrector)
         corrector.insert_before(node.loc.end, "\n")
@@ -42,8 +47,34 @@ module RuboCop
 
         corrector.insert_before(
           last_element_range_with_trailing_comma(node).end,
-          node.loc.end.source
+          content_if_comment_present(corrector, node)
         )
+      end
+
+      def content_if_comment_present(corrector, node)
+        range = range_with_surrounding_space(
+          range: children(node).last.source_range,
+          side: :right
+        ).end.resize(1)
+        if range.source == '#'
+          select_content_to_be_inserted_after_last_element(corrector, node)
+        else
+          node.loc.end.source
+        end
+      end
+
+      def select_content_to_be_inserted_after_last_element(corrector, node)
+        range = range_between(
+          node.loc.end.begin_pos,
+          range_by_whole_lines(node.loc.expression).end.end_pos
+        )
+
+        remove_trailing_content_of_comment(corrector, range)
+        range.source
+      end
+
+      def remove_trailing_content_of_comment(corrector, range)
+        corrector.remove(range)
       end
 
       def last_element_range_with_trailing_comma(node)

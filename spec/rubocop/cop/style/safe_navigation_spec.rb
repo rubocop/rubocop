@@ -3,11 +3,6 @@
 RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
   let(:cop_config) { { 'ConvertCodeThatCanStartToReturnNil' => false } }
 
-  let(:message) do
-    'Use safe navigation (`&.`) instead of checking if an object ' \
-    'exists before calling the method.'
-  end
-
   it 'allows calls to methods not safeguarded by respond_to' do
     expect_no_offenses('foo.bar')
   end
@@ -90,6 +85,10 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     expect_no_offenses('foo && foo.bar !~ /baz/')
   end
 
+  it 'allows an object check before a method call that is used with `empty?`' do
+    expect_no_offenses('foo && foo.empty?')
+  end
+
   it 'allows an object check before a method call that is used in ' \
      'a spaceship comparison' do
     expect_no_offenses('foo && foo.bar <=> baz')
@@ -161,6 +160,32 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
     RUBY
   end
 
+  # See https://github.com/rubocop/rubocop/issues/8781
+  it 'does not move comments that are inside an inner block' do
+    expect_offense(<<~RUBY)
+      # Comment 1
+      if x
+      ^^^^ Use safe navigation (`&.`) instead of checking if an object exists before calling the method.
+        # Comment 2
+        x.each do
+          # Comment 3
+          # Comment 4
+        end
+        # Comment 5
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # Comment 1
+      # Comment 2
+      # Comment 5
+      x&.each do
+          # Comment 3
+          # Comment 4
+        end
+    RUBY
+  end
+
   shared_examples 'all variable types' do |variable|
     context 'modifier if' do
       shared_examples 'safe guarding logical break keywords' do |keyword|
@@ -184,193 +209,531 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
       it 'registers an offense for a method call that nil responds to ' \
          'safe guarded by an object check' do
-        inspect_source("#{variable}.to_i if #{variable}")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.to_i if %{variable}
+          ^{variable}^^^^^^^^^^{variable} Use safe navigation (`&.`) instead of checking if an object exists before calling the method.
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.to_i
+        RUBY
       end
 
       it 'registers an offense for a method call on an accessor ' \
          'safeguarded by a check for the accessed variable' do
-        inspect_source("#{variable}[1].bar if #{variable}[1]")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}[1].bar if %{variable}[1]
+          ^{variable}^^^^^^^^^^^^{variable}^^^ Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}[1]&.bar
+        RUBY
       end
 
       it 'registers an offense for a method call safeguarded with a check ' \
          'for the object' do
-        inspect_source("#{variable}.bar if #{variable}")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar if %{variable}
+          ^{variable}^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar
+        RUBY
       end
 
       it 'registers an offense for a method call with params safeguarded ' \
          'with a check for the object' do
-        inspect_source("#{variable}.bar(baz) if #{variable}")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar(baz) if %{variable}
+          ^{variable}^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz)
+        RUBY
       end
 
       it 'registers an offense for a method call with a block safeguarded ' \
          'with a check for the object' do
-        inspect_source("#{variable}.bar { |e| e.qux } if #{variable}")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar { |e| e.qux } if %{variable}
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a method call with params and a block ' \
          'safeguarded with a check for the object' do
-        inspect_source("#{variable}.bar(baz) { |e| e.qux } if #{variable}")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar(baz) { |e| e.qux } if %{variable}
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz) { |e| e.qux }
+        RUBY
+      end
+
+      it 'registers an offense for a chained method call safeguarded ' \
+          'with a check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.one.two(baz) { |e| e.qux } if %{variable}
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.one&.two(baz) { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a method call safeguarded with a ' \
          'negative check for the object' do
-        inspect_source("#{variable}.bar unless !#{variable}")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar unless !%{variable}
+          ^{variable}^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar
+        RUBY
       end
 
       it 'registers an offense for a method call with params safeguarded ' \
          'with a negative check for the object' do
-        inspect_source("#{variable}.bar(baz) unless !#{variable}")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar(baz) unless !%{variable}
+          ^{variable}^^^^^^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz)
+        RUBY
       end
 
       it 'registers an offense for a method call with a block safeguarded ' \
          'with a negative check for the object' do
-        inspect_source("#{variable}.bar { |e| e.qux } unless !#{variable}")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar { |e| e.qux } unless !%{variable}
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a method call with params and a block ' \
          'safeguarded with a negative check for the object' do
-        inspect_source(<<~RUBY)
-          #{variable}.bar(baz) { |e| e.qux } unless !#{variable}
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar(baz) { |e| e.qux } unless !%{variable}
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz) { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a method call safeguarded with a nil ' \
          'check for the object' do
-        inspect_source("#{variable}.bar unless #{variable}.nil?")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar unless %{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar
+        RUBY
       end
 
       it 'registers an offense for a method call with params safeguarded ' \
          'with a nil check for the object' do
-        inspect_source("#{variable}.bar(baz) unless #{variable}.nil?")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar(baz) unless %{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz)
+        RUBY
       end
 
       it 'registers an offense for a method call with a block safeguarded ' \
          'with a nil check for the object' do
-        inspect_source(<<~RUBY)
-          #{variable}.bar { |e| e.qux } unless #{variable}.nil?
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar { |e| e.qux } unless %{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a method call with params and a block ' \
          'safeguarded with a nil check for the object' do
-        inspect_source(<<~RUBY)
-          #{variable}.bar(baz) { |e| e.qux } unless #{variable}.nil?
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar(baz) { |e| e.qux } unless %{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz) { |e| e.qux }
+        RUBY
+      end
+
+      it 'registers an offense for a chained method call safeguarded ' \
+          'with an unless nil check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.one.two(baz) { |e| e.qux } unless %{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.one&.two(baz) { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a method call safeguarded with a ' \
          'negative nil check for the object' do
-        inspect_source("#{variable}.bar if !#{variable}.nil?")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar if !%{variable}.nil?
+          ^{variable}^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar
+        RUBY
       end
 
       it 'registers an offense for a method call with params safeguarded ' \
          'with a negative nil check for the object' do
-        inspect_source("#{variable}.bar(baz) if !#{variable}.nil?")
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar(baz) if !%{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+        RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz)
+        RUBY
       end
 
       it 'registers an offense for a method call with a block safeguarded ' \
          'with a negative nil check for the object' do
-        inspect_source(<<~RUBY)
-          #{variable}.bar { |e| e.qux } if !#{variable}.nil?
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar { |e| e.qux } if !%{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a method call with params and a block ' \
          'safeguarded with a negative nil check for the object' do
-        inspect_source(<<~RUBY)
-          #{variable}.bar(baz) { |e| e.qux } if !#{variable}.nil?
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.bar(baz) { |e| e.qux } if !%{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz) { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a chained method call safeguarded ' \
          'with a negative nil check for the object' do
-        inspect_source(<<~RUBY)
-          #{variable}.one.two(baz) { |e| e.qux } if !#{variable}.nil?
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.one.two(baz) { |e| e.qux } if !%{variable}.nil?
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.one&.two(baz) { |e| e.qux }
+        RUBY
+      end
+
+      it 'registers an offense for an object check followed by a method call ' \
+         'with a comment at EOL' do
+        expect_offense(<<~RUBY, variable: variable)
+          foo if %{variable} && %{variable}.bar # comment
+                 ^{variable}^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo if #{variable}&.bar # comment
+        RUBY
       end
     end
 
     context 'if expression' do
       it 'registers an offense for a single method call inside of a check ' \
          'for the object' do
-        inspect_source(<<~RUBY)
-          if #{variable}
-            #{variable}.bar
+        expect_offense(<<~RUBY, variable: variable)
+          if %{variable}
+          ^^^^{variable} Use safe navigation (`&.`) instead [...]
+            %{variable}.bar
           end
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with params ' \
+         'inside of a check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          if %{variable}
+          ^^^^{variable} Use safe navigation (`&.`) instead [...]
+            %{variable}.bar(baz)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz)
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with a block ' \
+         'inside of a check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          if %{variable}
+          ^^^^{variable} Use safe navigation (`&.`) instead [...]
+            %{variable}.bar { |e| e.qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar { |e| e.qux }
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with params ' \
+         'and a block inside of a check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          if %{variable}
+          ^^^^{variable} Use safe navigation (`&.`) instead [...]
+            %{variable}.bar(baz) { |e| e.qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz) { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a single method call inside of a ' \
          'non-nil check for the object' do
-        inspect_source(<<~RUBY)
-          if !#{variable}.nil?
-            #{variable}.bar
+        expect_offense(<<~RUBY, variable: variable)
+          if !%{variable}.nil?
+          ^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+            %{variable}.bar
           end
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with params ' \
+         'inside of a non-nil check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          if !%{variable}.nil?
+          ^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+            %{variable}.bar(baz)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz)
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with a block ' \
+         'inside of a non-nil check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          if !%{variable}.nil?
+          ^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+            %{variable}.bar { |e| e.qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar { |e| e.qux }
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with params ' \
+         'and a block inside of a non-nil check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          if !%{variable}.nil?
+          ^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+            %{variable}.bar(baz) { |e| e.qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz) { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a single method call inside of an ' \
          'unless nil check for the object' do
-        inspect_source(<<~RUBY)
-          unless #{variable}.nil?
-            #{variable}.bar
+        expect_offense(<<~RUBY, variable: variable)
+          unless %{variable}.nil?
+          ^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+            %{variable}.bar
           end
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with params ' \
+         'inside of an unless nil check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          unless %{variable}.nil?
+          ^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+            %{variable}.bar(baz)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz)
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with a block ' \
+         'inside of an unless nil check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          unless %{variable}.nil?
+          ^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+            %{variable}.bar { |e| e.qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar { |e| e.qux }
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with params ' \
+         'and a block inside of an unless nil check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          unless %{variable}.nil?
+          ^^^^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+            %{variable}.bar(baz) { |e| e.qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz) { |e| e.qux }
+        RUBY
       end
 
       it 'registers an offense for a single method call inside of an ' \
          'unless negative check for the object' do
-        inspect_source(<<~RUBY)
-          unless !#{variable}
-            #{variable}.bar
+        expect_offense(<<~RUBY, variable: variable)
+          unless !%{variable}
+          ^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+            %{variable}.bar
           end
         RUBY
 
-        expect(cop.messages).to eq([message])
+        expect_correction(<<~RUBY)
+          #{variable}&.bar
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with params ' \
+         'inside of an unless negative check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          unless !%{variable}
+          ^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+            %{variable}.bar(baz)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz)
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with a block ' \
+         'inside of an unless negative check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          unless !%{variable}
+          ^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+            %{variable}.bar { |e| e.qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar { |e| e.qux }
+        RUBY
+      end
+
+      it 'registers an offense for a single method call with params ' \
+         'and a block inside of an unless negative check for the object' do
+        expect_offense(<<~RUBY, variable: variable)
+          unless !%{variable}
+          ^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+            %{variable}.bar(baz) { |e| e.qux }
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.bar(baz) { |e| e.qux }
+        RUBY
+      end
+
+      it 'does not lose comments within if expression' do
+        expect_offense(<<~RUBY, variable: variable)
+          if %{variable} # hello
+          ^^^^{variable}^^^^^^^^ Use safe navigation (`&.`) instead [...]
+            # this is a comment
+            # another comment
+            %{variable}.bar
+          end # bye!
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # hello
+          # this is a comment
+          # another comment
+          #{variable}&.bar # bye!
+        RUBY
+      end
+
+      it 'only moves comments that fall within the expression' do
+        expect_offense(<<~RUBY, variable: variable)
+          # comment one
+          def foobar
+            if %{variable}
+            ^^^^{variable} Use safe navigation (`&.`) instead [...]
+              # comment 2
+              %{variable}.bar
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # comment one
+          def foobar
+            # comment 2
+          #{variable}&.bar
+          end
+        RUBY
       end
 
       it 'allows a single method call inside of a check for the object ' \
@@ -399,85 +762,139 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         it 'registers an offense for a non-nil object check followed by a ' \
            'method call' do
-          inspect_source("!#{variable}.nil? && #{variable}.bar")
+          expect_offense(<<~RUBY, variable: variable)
+            !%{variable}.nil? && %{variable}.bar
+            ^^{variable}^^^^^^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar
+          RUBY
         end
 
         it 'registers an offense for a non-nil object check followed by a ' \
            'method call with params' do
-          inspect_source("!#{variable}.nil? && #{variable}.bar(baz)")
+          expect_offense(<<~RUBY, variable: variable)
+            !%{variable}.nil? && %{variable}.bar(baz)
+            ^^{variable}^^^^^^^^^^{variable}^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar(baz)
+          RUBY
         end
 
         it 'registers an offense for a non-nil object check followed by a ' \
            'method call with a block' do
-          inspect_source(<<~RUBY)
-            !#{variable}.nil? && #{variable}.bar { |e| e.qux }
+          expect_offense(<<~RUBY, variable: variable)
+            !%{variable}.nil? && %{variable}.bar { |e| e.qux }
+            ^^{variable}^^^^^^^^^^{variable}^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
           RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar { |e| e.qux }
+          RUBY
         end
 
         it 'registers an offense for a non-nil object check followed by a ' \
            'method call with params and a block' do
-          inspect_source(<<~RUBY)
-            !#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }
+          expect_offense(<<~RUBY, variable: variable)
+            !%{variable}.nil? && %{variable}.bar(baz) { |e| e.qux }
+            ^^{variable}^^^^^^^^^^{variable}^^^^^^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
           RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar(baz) { |e| e.qux }
+          RUBY
         end
 
         it 'registers an offense for an object check followed by a ' \
            'method call' do
-          inspect_source("#{variable} && #{variable}.bar")
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar
+            ^{variable}^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar
+          RUBY
         end
 
         it 'registers an offense for an object check followed by a ' \
            'method call with params' do
-          inspect_source("#{variable} && #{variable}.bar(baz)")
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar(baz)
+            ^{variable}^^^^^{variable}^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar(baz)
+          RUBY
         end
 
         it 'registers an offense for an object check followed by a ' \
            'method call with a block' do
-          inspect_source("#{variable} && #{variable}.bar { |e| e.qux }")
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar { |e| e.qux }
+            ^{variable}^^^^^{variable}^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar { |e| e.qux }
+          RUBY
         end
 
         it 'registers an offense for an object check followed by a ' \
            'method call with params and a block' do
-          inspect_source(<<~RUBY)
-            #{variable} && #{variable}.bar(baz) { |e| e.qux }
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar(baz) { |e| e.qux }
+            ^{variable}^^^^^{variable}^^^^^^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
           RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar(baz) { |e| e.qux }
+          RUBY
         end
 
         it 'registers an offense for a check for the object followed by a ' \
            'method call in the condition for an if expression' do
-          inspect_source(<<~RUBY)
-            if #{variable} && #{variable}.bar
+          expect_offense(<<~RUBY, variable: variable)
+            if %{variable} && %{variable}.bar
+               ^{variable}^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
               something
             end
           RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            if #{variable}&.bar
+              something
+            end
+          RUBY
+        end
+
+        it 'corrects an object check followed by a method call and ' \
+            'another check' do
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar && something
+            ^{variable}^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{variable}&.bar && something
+          RUBY
         end
 
         context 'method chaining' do
           it 'registers an offense for an object check followed by ' \
              'chained method calls with blocks' do
-            inspect_source(<<~RUBY)
-              #{variable} && #{variable}.one { |a| b}.two(baz) { |e| e.qux }
+            expect_offense(<<~RUBY, variable: variable)
+              %{variable} && %{variable}.one { |a| b}.two(baz) { |e| e.qux }
+              ^{variable}^^^^^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
             RUBY
 
-            expect(cop.messages).to eq([message])
+            expect_correction(<<~RUBY)
+              #{variable}&.one { |a| b}&.two(baz) { |e| e.qux }
+            RUBY
           end
 
           context 'with Lint/SafeNavigationChain disabled' do
@@ -532,50 +949,128 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
 
         it 'registers an offense for an object check followed by ' \
            'a method calls that nil responds to ' do
-          inspect_source("#{variable} && #{variable}.to_i")
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.to_i
+            ^{variable}^^^^^{variable}^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.to_i
+          RUBY
         end
 
         it 'registers an offense for an object check followed by ' \
            'a method call' do
-          inspect_source("#{variable} && #{variable}.bar")
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar
+            ^{variable}^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar
+          RUBY
         end
 
         it 'registers an offense for an object check followed by ' \
            'a method call with params' do
-          inspect_source("#{variable} && #{variable}.bar(baz)")
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar(baz)
+            ^{variable}^^^^^{variable}^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar(baz)
+          RUBY
         end
 
         it 'registers an offense for an object check followed by ' \
            'a method call with a block' do
-          inspect_source("#{variable} && #{variable}.bar { |e| e.qux }")
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar { |e| e.qux }
+            ^{variable}^^^^^{variable}^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+          RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar { |e| e.qux }
+          RUBY
         end
 
         it 'registers an offense for an object check followed by ' \
            'a method call with params and a block' do
-          inspect_source(<<~RUBY)
-            #{variable} && #{variable}.bar(baz) { |e| e.qux }
+          expect_offense(<<~RUBY, variable: variable)
+            %{variable} && %{variable}.bar(baz) { |e| e.qux }
+            ^{variable}^^^^^{variable}^^^^^^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
           RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            #{variable}&.bar(baz) { |e| e.qux }
+          RUBY
         end
 
         it 'registers an offense for a check for the object followed by ' \
            'a method call in the condition for an if expression' do
-          inspect_source(<<~RUBY)
-            if #{variable} && #{variable}.bar
+          expect_offense(<<~RUBY, variable: variable)
+            if %{variable} && %{variable}.bar
+               ^{variable}^^^^^{variable}^^^^ Use safe navigation (`&.`) instead [...]
               something
             end
           RUBY
 
-          expect(cop.messages).to eq([message])
+          expect_correction(<<~RUBY)
+            if #{variable}&.bar
+              something
+            end
+          RUBY
+        end
+
+        context 'method chaining' do
+          it 'corrects an object check followed by ' \
+             'a chained method call' do
+            expect_offense(<<~RUBY, variable: variable)
+              %{variable} && %{variable}.one.two
+              ^{variable}^^^^^{variable}^^^^^^^^ Use safe navigation (`&.`) instead [...]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              #{variable}&.one&.two
+            RUBY
+          end
+
+          it 'corrects an object check followed by ' \
+             'a chained method call with params' do
+            expect_offense(<<~RUBY, variable: variable)
+              %{variable} && %{variable}.one.two(baz)
+              ^{variable}^^^^^{variable}^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              #{variable}&.one&.two(baz)
+            RUBY
+          end
+
+          it 'corrects an object check followed by ' \
+             'a chained method call with a symbol proc' do
+            expect_offense(<<~RUBY, variable: variable)
+              %{variable} && %{variable}.one.two(&:baz)
+              ^{variable}^^^^^{variable}^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              #{variable}&.one&.two(&:baz)
+            RUBY
+          end
+
+          it 'corrects an object check followed by ' \
+             'a chained method call with a block' do
+            expect_offense(<<~RUBY, variable: variable)
+              %{variable} && %{variable}.one.two(baz) { |e| e.qux }
+              ^{variable}^^^^^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use safe navigation (`&.`) instead [...]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              #{variable}&.one&.two(baz) { |e| e.qux }
+            RUBY
+          end
         end
       end
 
@@ -652,570 +1147,5 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
        'a respond_to check' do
       expect_no_offenses('foo[0] if foo.respond_to?(:[])')
     end
-  end
-
-  context 'auto-correct' do
-    shared_examples 'all variable types' do |variable|
-      context 'modifier if' do
-        it 'corrects a method call safeguarded with a check for the object' do
-          new_source = autocorrect_source("#{variable}.bar if #{variable}")
-
-          expect(new_source).to eq("#{variable}&.bar")
-        end
-
-        it 'corrects a method call with params safeguarded with a check ' \
-           'for the object' do
-          source = "#{variable}.bar(baz) if #{variable}"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar(baz)")
-        end
-
-        it 'corrects an object check followed by a method call ' \
-           'with a comment at EOL' do
-          source = "foo if #{variable} && #{variable}.bar # comment"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("foo if #{variable}&.bar # comment")
-        end
-
-        it 'corrects a method call with a block safeguarded with a check ' \
-           'for the object' do
-          source = "#{variable}.bar { |e| e.qux } if #{variable}"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-        end
-
-        it 'corrects a method call with params and a block safeguarded ' \
-           'with a check for the object' do
-          source = "#{variable}.bar(baz) { |e| e.qux } if #{variable}"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-        end
-
-        it 'corrects a method call safeguarded with a negative check for ' \
-           'the object' do
-          source = "#{variable}.bar unless !#{variable}"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar")
-        end
-
-        it 'corrects a method call with params safeguarded with a ' \
-           'negative check for the object' do
-          source = "#{variable}.bar(baz) unless !#{variable}"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar(baz)")
-        end
-
-        it 'corrects a method call with a block safeguarded with a ' \
-           'negative check for the object' do
-          source = "#{variable}.bar { |e| e.qux } unless !#{variable}"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-        end
-
-        it 'corrects a method call with params and a block safeguarded ' \
-           'with a negative check for the object' do
-          source = "#{variable}.bar(baz) { |e| e.qux } unless !#{variable}"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-        end
-
-        it 'corrects a method call safeguarded with a nil check for the ' \
-           'object' do
-          source = "#{variable}.bar unless #{variable}.nil?"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar")
-        end
-
-        it 'corrects a method call with params safeguarded with a nil ' \
-           'check for the object' do
-          source = "#{variable}.bar(baz) unless #{variable}.nil?"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar(baz)")
-        end
-
-        it 'corrects a method call with a block safeguarded with a nil ' \
-           'check for the object' do
-          source = "#{variable}.bar { |e| e.qux } unless #{variable}.nil?"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-        end
-
-        it 'corrects a method call with params and a block safeguarded ' \
-           'with a nil check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            #{variable}.bar(baz) { |e| e.qux } unless #{variable}.nil?
-          RUBY
-
-          expect(new_source).to eq(<<~RUBY)
-            #{variable}&.bar(baz) { |e| e.qux }
-          RUBY
-        end
-
-        it 'corrects a method call safeguarded with a negative nil check ' \
-           'for the object' do
-          source = "#{variable}.bar if !#{variable}.nil?"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar")
-        end
-
-        it 'corrects a method call with params safeguarded with a ' \
-           'negative nil check for the object' do
-          source = "#{variable}.bar(baz) if !#{variable}.nil?"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar(baz)")
-        end
-
-        it 'corrects a method call with a block safeguarded with a ' \
-           'negative nil check for the object' do
-          source = "#{variable}.bar { |e| e.qux } if !#{variable}.nil?"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-        end
-
-        it 'corrects a method call with params and a block safeguarded ' \
-           'with a negative nil check for the object' do
-          source = "#{variable}.bar(baz) { |e| e.qux } if !#{variable}.nil?"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-        end
-
-        it 'corrects a method call on an accessor safeguarded by a check ' \
-           'for the accessed variable' do
-          source = "#{variable}[1].bar if #{variable}[1]"
-
-          new_source = autocorrect_source(source)
-
-          expect(new_source).to eq("#{variable}[1]&.bar")
-        end
-
-        it 'corrects a chained method call safeguarded ' \
-           'with a negative nil check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            #{variable}.one.two(baz) { |e| e.qux } if !#{variable}.nil?
-          RUBY
-
-          expect(new_source).to eq(<<~RUBY)
-            #{variable}&.one&.two(baz) { |e| e.qux }
-          RUBY
-        end
-
-        it 'corrects a chained method call safeguarded ' \
-           'with a check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            #{variable}.one.two(baz) { |e| e.qux } if #{variable}
-          RUBY
-
-          expect(new_source).to eq(<<~RUBY)
-            #{variable}&.one&.two(baz) { |e| e.qux }
-          RUBY
-        end
-
-        it 'corrects a chained method call safeguarded ' \
-           'with an unless nil check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            #{variable}.one.two(baz) { |e| e.qux } unless #{variable}.nil?
-          RUBY
-
-          expect(new_source).to eq(<<~RUBY)
-            #{variable}&.one&.two(baz) { |e| e.qux }
-          RUBY
-        end
-      end
-
-      context 'if expression' do
-        it 'corrects a single method call inside of a check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            if #{variable}
-              #{variable}.bar
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar\n")
-        end
-
-        it 'corrects a single method call with params inside of a check ' \
-           'for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            if #{variable}
-              #{variable}.bar(baz)
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar(baz)\n")
-        end
-
-        it 'corrects a single method call with a block inside of a check ' \
-           'for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            if #{variable}
-              #{variable}.bar { |e| e.qux }
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
-        end
-
-        it 'corrects a single method call with params and a block inside ' \
-           'of a check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            if #{variable}
-              #{variable}.bar(baz) { |e| e.qux }
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
-        end
-
-        it 'corrects a single method call inside of a non-nil check for ' \
-           'the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            if !#{variable}.nil?
-              #{variable}.bar
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar\n")
-        end
-
-        it 'corrects a single method call with params inside of a non-nil ' \
-           'check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            if !#{variable}.nil?
-              #{variable}.bar(baz)
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar(baz)\n")
-        end
-
-        it 'corrects a single method call with a block inside of a non-nil ' \
-           'check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            if !#{variable}.nil?
-              #{variable}.bar { |e| e.qux }
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
-        end
-
-        it 'corrects a single method call with params and a block inside ' \
-           'of a non-nil check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            if !#{variable}.nil?
-              #{variable}.bar(baz) { |e| e.qux }
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
-        end
-
-        it 'does not lose comments within if expression' do
-          new_source = autocorrect_source(<<~RUBY)
-            if #{variable}
-              # this is a comment
-              # another comment
-              #{variable}.bar
-            end
-          RUBY
-
-          expected_source = <<~RUBY
-            # this is a comment
-            # another comment
-            #{variable}&.bar
-          RUBY
-          expect(new_source).to eq(expected_source)
-        end
-
-        it 'only moves comments that fall within the expression' do
-          new_source = autocorrect_source(<<~RUBY)
-            # comment one
-            def foobar
-              if #{variable}
-                # comment 2
-                #{variable}.bar
-              end
-            end
-          RUBY
-
-          expect(new_source).to eq(<<~RUBY)
-            # comment one
-            def foobar
-              # comment 2
-            #{variable}&.bar
-            end
-          RUBY
-        end
-
-        it 'corrects a single method call inside of an unless nil check ' \
-           'for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            unless #{variable}.nil?
-              #{variable}.bar
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar\n")
-        end
-
-        it 'corrects a single method call with params inside of an unless ' \
-           'nil check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            unless #{variable}.nil?
-              #{variable}.bar(baz)
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar(baz)\n")
-        end
-
-        it 'corrects a single method call with a block inside of an unless ' \
-           'nil check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            unless #{variable}.nil?
-              #{variable}.bar { |e| e.qux }
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
-        end
-
-        it 'corrects a single method call with params and a block inside ' \
-           'of an unless nil check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            unless #{variable}.nil?
-              #{variable}.bar(baz) { |e| e.qux }
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
-        end
-
-        it 'corrects a single method call inside of an unless negative ' \
-           'check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            unless !#{variable}
-              #{variable}.bar
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar\n")
-        end
-
-        it 'corrects a single method call with params inside of an unless ' \
-           'negative check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            unless !#{variable}
-              #{variable}.bar(baz)
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar(baz)\n")
-        end
-
-        it 'corrects a single method call with a block inside of an unless ' \
-           'negative check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            unless !#{variable}
-              #{variable}.bar { |e| e.qux }
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar { |e| e.qux }\n")
-        end
-
-        it 'corrects a single method call with params and a block inside ' \
-           'of an unless negative check for the object' do
-          new_source = autocorrect_source(<<~RUBY)
-            unless !#{variable}
-              #{variable}.bar(baz) { |e| e.qux }
-            end
-          RUBY
-
-          expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }\n")
-        end
-      end
-
-      context 'object check before method call' do
-        context 'ConvertCodeThatCanStartToReturnNil true' do
-          let(:cop_config) do
-            { 'ConvertCodeThatCanStartToReturnNil' => true }
-          end
-
-          it 'corrects an object check followed by a method call' do
-            source = "#{variable} && #{variable}.bar"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar")
-          end
-
-          it 'corrects an object check followed by a method call ' \
-             'with params' do
-            source = "#{variable} && #{variable}.bar(baz)"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar(baz)")
-          end
-
-          it 'corrects an object check followed by a method call with ' \
-             'a block' do
-            source = "#{variable} && #{variable}.bar { |e| e.qux }"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-          end
-
-          it 'corrects an object check followed by a method call with ' \
-             'params and a block' do
-            source = "#{variable} && #{variable}.bar(baz) { |e| e.qux }"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-          end
-
-          it 'corrects a non-nil object check followed by a method call' do
-            source = "!#{variable}.nil? && #{variable}.bar"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar")
-          end
-
-          it 'corrects a non-nil object check followed by a method call ' \
-             'with params' do
-            source = "!#{variable}.nil? && #{variable}.bar(baz)"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar(baz)")
-          end
-
-          it 'corrects a non-nil object check followed by a method call ' \
-             'with a block' do
-            source = "!#{variable}.nil? && #{variable}.bar { |e| e.qux }"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar { |e| e.qux }")
-          end
-
-          it 'corrects a non-nil object check followed by a method call ' \
-             'with params and a block' do
-            source = "!#{variable}.nil? && #{variable}.bar(baz) { |e| e.qux }"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar(baz) { |e| e.qux }")
-          end
-
-          it 'corrects an object check followed by a method call and ' \
-             'another check' do
-            source = "#{variable} && #{variable}.bar && something"
-
-            new_source = autocorrect_source(source)
-
-            expect(new_source).to eq("#{variable}&.bar && something")
-          end
-        end
-
-        context 'method chaining' do
-          it 'corrects an object check followed by ' \
-             'a chained method call' do
-            new_source = autocorrect_source(<<~RUBY)
-              #{variable} && #{variable}.one.two
-            RUBY
-
-            expect(new_source).to eq(<<~RUBY)
-              #{variable}&.one&.two
-            RUBY
-          end
-
-          it 'corrects an object check followed by ' \
-             'a chained method call with params' do
-            new_source = autocorrect_source(<<~RUBY)
-              #{variable} && #{variable}.one.two(baz)
-            RUBY
-
-            expect(new_source).to eq(<<~RUBY)
-              #{variable}&.one&.two(baz)
-            RUBY
-          end
-
-          it 'corrects an object check followed by ' \
-             'a chained method call with a symbol proc' do
-            new_source = autocorrect_source(<<~RUBY)
-              #{variable} && #{variable}.one.two(&:baz)
-            RUBY
-
-            expect(new_source).to eq(<<~RUBY)
-              #{variable}&.one&.two(&:baz)
-            RUBY
-          end
-
-          it 'corrects an object check followed by ' \
-             'a chained method call with a block' do
-            new_source = autocorrect_source(<<~RUBY)
-              #{variable} && #{variable}.one.two(baz) { |e| e.qux }
-            RUBY
-
-            expect(new_source).to eq(<<~RUBY)
-              #{variable}&.one&.two(baz) { |e| e.qux }
-            RUBY
-          end
-
-          it 'corrects an object check followed by ' \
-             'multiple chained method calls with blocks' do
-            new_source = autocorrect_source(<<~RUBY)
-              #{variable} && #{variable}.one { |a| b}.two(baz) { |e| e.qux }
-            RUBY
-
-            expect(new_source).to eq(<<~RUBY)
-              #{variable}&.one { |a| b}&.two(baz) { |e| e.qux }
-            RUBY
-          end
-        end
-      end
-    end
-
-    it_behaves_like('all variable types', 'foo')
-    it_behaves_like('all variable types', 'FOO')
-    it_behaves_like('all variable types', 'FOO::BAR')
-    it_behaves_like('all variable types', '@foo')
-    it_behaves_like('all variable types', '@@foo')
-    it_behaves_like('all variable types', '$FOO')
   end
 end

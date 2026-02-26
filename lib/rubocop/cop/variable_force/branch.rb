@@ -20,8 +20,6 @@ module RuboCop
           nil
         end
 
-        # rubocop:disable Metrics/BlockLength
-
         # Abstract base class for branch classes.
         # A branch represents a conditional branch in a scope.
         #
@@ -42,13 +40,12 @@ module RuboCop
         #     do_something     # no branch
         #   end
         Base = Struct.new(:child_node, :scope) do
-          # rubocop:enable Metrics/BlockLength
-
           def self.classes
             @classes ||= []
           end
 
           def self.inherited(subclass)
+            super
             classes << subclass
           end
 
@@ -81,7 +78,7 @@ module RuboCop
           end
 
           def each_ancestor(include_self: false, &block)
-            return to_enum(__method__, include_self: include_self) unless block_given?
+            return to_enum(__method__, include_self: include_self) unless block
 
             yield self if include_self
             scan_ancestors(&block)

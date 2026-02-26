@@ -54,14 +54,42 @@ module RuboCop
       # @api private
       attr_reader :status
 
+      # @api public
+      #
+      # @!attribute [r] corrector
+      #
+      # @return [Corrector | nil]
+      #   the autocorrection for this offense, or `nil` when not available
+      attr_reader :corrector
+
+      PseudoSourceRange = Struct.new(:line, :column, :source_line, :begin_pos,
+                                     :end_pos) do
+        alias_method :first_line, :line
+        alias_method :last_line, :line
+        alias_method :last_column, :column
+
+        def column_range
+          column...last_column
+        end
+
+        def size
+          end_pos - begin_pos
+        end
+        alias_method :length, :size
+      end
+      private_constant :PseudoSourceRange
+
+      NO_LOCATION = PseudoSourceRange.new(1, 0, '', 0, 0).freeze
+
       # @api private
-      def initialize(severity, location, message, cop_name,
-                     status = :uncorrected)
+      def initialize(severity, location, message, cop_name, # rubocop:disable Metrics/ParameterLists
+                     status = :uncorrected, corrector = nil)
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location
         @message = message.freeze
         @cop_name = cop_name.freeze
         @status = status
+        @corrector = corrector
         freeze
       end
 
@@ -185,7 +213,7 @@ module RuboCop
       #   returns `true` if two offenses contain same attributes
       def ==(other)
         COMPARISON_ATTRIBUTES.all? do |attribute|
-          send(attribute) == other.send(attribute)
+          public_send(attribute) == other.public_send(attribute)
         end
       end
 
@@ -193,7 +221,7 @@ module RuboCop
 
       def hash
         COMPARISON_ATTRIBUTES.reduce(0) do |hash, attribute|
-          hash ^ send(attribute).hash
+          hash ^ public_send(attribute).hash
         end
       end
 
@@ -206,7 +234,7 @@ module RuboCop
       #   comparison result
       def <=>(other)
         COMPARISON_ATTRIBUTES.each do |attribute|
-          result = send(attribute) <=> other.send(attribute)
+          result = public_send(attribute) <=> other.public_send(attribute)
           return result unless result.zero?
         end
         0

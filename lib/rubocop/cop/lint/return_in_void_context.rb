@@ -31,7 +31,7 @@ module RuboCop
       #   def foo=(bar)
       #     return
       #   end
-      class ReturnInVoidContext < Cop
+      class ReturnInVoidContext < Base
         MSG = 'Do not return a value in `%<method>s`.'
 
         def on_return(return_node)
@@ -45,9 +45,7 @@ module RuboCop
 
           return unless method_name && void_context_method?(method_name)
 
-          add_offense(return_node,
-                      location: :keyword,
-                      message: format(message, method: method_name))
+          add_offense(return_node.loc.keyword, message: format(message, method: method_name))
         end
 
         private

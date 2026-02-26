@@ -21,9 +21,10 @@ module RuboCop
       #   end
       #
       # The compact style is only forced for classes/modules with one child.
-      class ClassAndModuleChildren < Cop
+      class ClassAndModuleChildren < Base
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         NESTED_MSG = 'Use nested module/class definitions instead of ' \
                      'compact style.'
@@ -40,14 +41,6 @@ module RuboCop
           check_style(node, node.body)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            return if node.class_type? && node.parent_class && style != :nested
-
-            nest_or_compact(corrector, node)
-          end
-        end
-
         private
 
         def nest_or_compact(corrector, node)
@@ -62,13 +55,18 @@ module RuboCop
           padding = ((' ' * indent_width) + leading_spaces(node)).to_s
           padding_for_trailing_end = padding.sub(' ' * node.loc.end.column, '')
 
-          replace_keyword_with_module(corrector, node)
+          replace_namespace_keyword(corrector, node)
           split_on_double_colon(corrector, node, padding)
           add_trailing_end(corrector, node, padding_for_trailing_end)
         end
 
-        def replace_keyword_with_module(corrector, node)
-          corrector.replace(node.loc.keyword, 'module')
+        def replace_namespace_keyword(corrector, node)
+          class_definition = node.left_sibling&.each_node(:class)&.find do |class_node|
+            class_node.identifier == node.identifier.namespace
+          end
+          namespace_keyword = class_definition ? 'class' : 'module'
+
+          corrector.replace(node.loc.keyword, namespace_keyword)
         end
 
         def split_on_double_colon(corrector, node, padding)
@@ -119,6 +117,8 @@ module RuboCop
         end
 
         def check_style(node, body)
+          return if node.identifier.children[0]&.cbase_type?
+
           if style == :nested
             check_nested_style(node)
           else
@@ -129,13 +129,23 @@ module RuboCop
         def check_nested_style(node)
           return unless compact_node_name?(node)
 
-          add_offense(node, location: :name, message: NESTED_MSG)
+          add_offense(node.loc.name, message: NESTED_MSG) do |corrector|
+            autocorrect(corrector, node)
+          end
         end
 
         def check_compact_style(node, body)
           return unless one_child?(body) && !compact_node_name?(node)
 
-          add_offense(node, location: :name, message: COMPACT_MSG)
+          add_offense(node.loc.name, message: COMPACT_MSG) do |corrector|
+            autocorrect(corrector, node)
+          end
+        end
+
+        def autocorrect(corrector, node)
+          return if node.class_type? && node.parent_class && style != :nested
+
+          nest_or_compact(corrector, node)
         end
 
         def one_child?(body)
@@ -143,7 +153,7 @@ module RuboCop
         end
 
         def compact_node_name?(node)
-          node.loc.name.source =~ /::/
+          /::/.match?(node.loc.name.source)
         end
       end
     end

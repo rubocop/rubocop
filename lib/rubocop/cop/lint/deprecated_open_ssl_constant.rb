@@ -15,7 +15,7 @@ module RuboCop
       #   OpenSSL::Cipher::AES.new(128, :GCM)
       #
       #   # good
-      #   OpenSSL::Cipher.new('AES-128-GCM')
+      #   OpenSSL::Cipher.new('aes-128-gcm')
       #
       # @example
       #
@@ -37,12 +37,16 @@ module RuboCop
       #   # good
       #   OpenSSL::Digest.digest('SHA256', 'foo')
       #
-      class DeprecatedOpenSSLConstant < Cop
+      class DeprecatedOpenSSLConstant < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `%<constant>s.%<method>s(%<replacement_args>s)`' \
           ' instead of `%<original>s`.'
 
+        NO_ARG_ALGORITHM = %w[BF DES IDEA RC4].freeze
+
+        # @!method algorithm_const(node)
         def_node_matcher :algorithm_const, <<~PATTERN
           (send
             $(const
@@ -53,24 +57,29 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          add_offense(node) if algorithm_const(node)
-        end
+          return if node.arguments.any? { |arg| arg.variable? || arg.send_type? || arg.const_type? }
+          return unless algorithm_const(node)
 
-        def autocorrect(node)
-          algorithm_constant, = algorithm_const(node)
+          message = message(node)
 
-          lambda do |corrector|
-            corrector.remove(algorithm_constant.loc.double_colon)
-            corrector.remove(algorithm_constant.loc.name)
-
-            corrector.replace(
-              correction_range(node),
-              "#{node.loc.selector.source}(#{replacement_args(node)})"
-            )
+          add_offense(node, message: message) do |corrector|
+            autocorrect(corrector, node)
           end
         end
 
         private
+
+        def autocorrect(corrector, node)
+          algorithm_constant, = algorithm_const(node)
+
+          corrector.remove(algorithm_constant.loc.double_colon)
+          corrector.remove(algorithm_constant.loc.name)
+
+          corrector.replace(
+            correction_range(node),
+            "#{node.loc.selector.source}(#{replacement_args(node)})"
+          )
+        end
 
         def message(node)
           algorithm_constant, = algorithm_const(node)
@@ -98,7 +107,7 @@ module RuboCop
         def algorithm_name(node)
           name = node.loc.name.source
 
-          if openssl_class(node) == 'OpenSSL::Cipher'
+          if openssl_class(node) == 'OpenSSL::Cipher' && !NO_ARG_ALGORITHM.include?(name)
             name.scan(/.{3}/).join('-')
           else
             name
@@ -118,16 +127,23 @@ module RuboCop
           algorithm_name = algorithm_name(algorithm_constant)
 
           if openssl_class(algorithm_constant) == 'OpenSSL::Cipher'
-            build_cipher_arguments(node, algorithm_name)
+            build_cipher_arguments(node, algorithm_name, node.arguments.empty?)
           else
             (["'#{algorithm_name}'"] + node.arguments.map(&:source)).join(', ')
           end
         end
 
-        def build_cipher_arguments(node, algorithm_name)
-          algorithm_parts = algorithm_name.split('-')
-          size_and_mode = sanitize_arguments(node.arguments)
-          "'#{(algorithm_parts + size_and_mode + ['CBC']).take(3).join('-')}'"
+        def build_cipher_arguments(node, algorithm_name, no_arguments)
+          algorithm_parts = algorithm_name.downcase.split('-')
+          size_and_mode = sanitize_arguments(node.arguments).map(&:downcase)
+
+          if NO_ARG_ALGORITHM.include?(algorithm_parts.first.upcase) && no_arguments
+            "'#{algorithm_parts.first}'"
+          else
+            mode = 'cbc' unless size_and_mode == ['cbc']
+
+            "'#{(algorithm_parts + size_and_mode + [mode]).compact.take(3).join('-')}'"
+          end
         end
       end
     end

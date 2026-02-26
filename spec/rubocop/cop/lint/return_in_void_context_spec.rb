@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext, :config do
   context 'with an initialize method containing a return with a value' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

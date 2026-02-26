@@ -14,8 +14,9 @@ module RuboCop
       #   # good
       #   def func(x) end
       #   def method=(y) end
-      class SpaceAfterMethodName < Cop
+      class SpaceAfterMethodName < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Do not put a space between a method name and the opening ' \
               'parenthesis.'
@@ -29,13 +30,11 @@ module RuboCop
                                                 expr.begin_pos)
           return unless pos_before_left_paren.source.start_with?(' ')
 
-          add_offense(pos_before_left_paren, location: pos_before_left_paren)
+          add_offense(pos_before_left_paren) do |corrector|
+            corrector.remove(pos_before_left_paren)
+          end
         end
         alias on_defs on_def
-
-        def autocorrect(pos_before_left_paren)
-          ->(corrector) { corrector.remove(pos_before_left_paren) }
-        end
       end
     end
   end

@@ -45,7 +45,8 @@ module RuboCop
 
         report_summary(inspected_files.size,
                        @total_offense_count,
-                       @total_correction_count)
+                       @total_correction_count,
+                       @total_correctable_count)
       end
 
       def report_file_as_mark(offenses)

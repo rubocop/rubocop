@@ -30,11 +30,13 @@ module RuboCop
       #
       #   puts 'hello, world'
       #
-      class ScriptPermission < Cop
+      class ScriptPermission < Base
+        extend AutoCorrector
+
         MSG = "Script file %<file>s doesn't have execute permission."
         SHEBANG = '#!'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if @options.key?(:stdin)
           return if Platform.windows?
           return unless processed_source.start_with?(SHEBANG)
@@ -42,16 +44,17 @@ module RuboCop
 
           comment = processed_source.comments[0]
           message = format_message_from(processed_source)
-          add_offense(comment, message: message)
-        end
 
-        def autocorrect(node)
-          lambda do |_corrector|
-            FileUtils.chmod('+x', node.loc.expression.source_buffer.name)
+          add_offense(comment, message: message) do
+            autocorrect(comment) if autocorrect_requested?
           end
         end
 
         private
+
+        def autocorrect(comment)
+          FileUtils.chmod('+x', comment.loc.expression.source_buffer.name)
+        end
 
         def executable?(processed_source)
           # Returns true if stat is executable or if the operating system

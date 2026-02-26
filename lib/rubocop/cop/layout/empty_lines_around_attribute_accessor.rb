@@ -60,8 +60,10 @@ module RuboCop
       #   def do_something
       #   end
       #
-      class EmptyLinesAroundAttributeAccessor < Cop
+      class EmptyLinesAroundAttributeAccessor < Base
         include RangeHelp
+        include AllowedMethods
+        extend AutoCorrector
 
         MSG = 'Add an empty line after attribute accessor.'
 
@@ -72,11 +74,7 @@ module RuboCop
           next_line_node = next_line_node(node)
           return unless require_empty_line?(next_line_node)
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             range = range_by_whole_lines(node.source_range)
 
             corrector.insert_after(range, "\n")
@@ -86,17 +84,19 @@ module RuboCop
         private
 
         def next_line_empty?(line)
-          processed_source[line].blank?
+          processed_source[line].nil? || processed_source[line].blank?
         end
 
         def require_empty_line?(node)
-          return false unless node&.respond_to?(:type)
+          return false unless node.respond_to?(:type)
 
           !allow_alias?(node) && !attribute_or_allowed_method?(node)
         end
 
         def next_line_node(node)
-          node.parent.children[node.sibling_index + 1]
+          return if node.parent.if_type?
+
+          node.right_sibling
         end
 
         def allow_alias?(node)
@@ -111,14 +111,6 @@ module RuboCop
 
         def allow_alias_syntax?
           cop_config.fetch('AllowAliasSyntax', true)
-        end
-
-        def allowed_method?(name)
-          allowed_methods.include?(name.to_s)
-        end
-
-        def allowed_methods
-          cop_config.fetch('AllowedMethods', [])
         end
       end
     end

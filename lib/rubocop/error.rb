@@ -12,6 +12,7 @@ module RuboCop
   # A wrapper to display errored location of analyzed file.
   class ErrorWithAnalyzedFileLocation < Error
     def initialize(cause:, node:, cop:)
+      super()
       @cause = cause
       @cop = cop
       @location = node.is_a?(RuboCop::AST::Node) ? node.loc : node

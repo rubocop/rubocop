@@ -14,7 +14,7 @@ module RuboCop
       private
 
       def side_space_range(range:, side:)
-        buffer = @processed_source.buffer
+        buffer = processed_source.buffer
         src = buffer.source
 
         begin_pos = range.begin_pos
@@ -30,29 +30,9 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def index_of_first_token(node)
-        range = node.source_range
-        token_table[range.line][range.column]
-      end
-
-      def index_of_last_token(node)
-        range = node.source_range
-        table_row = token_table[range.last_line]
-        (0...range.last_column).reverse_each do |c|
-          ix = table_row[c]
-          return ix if ix
-        end
-      end
-
-      def token_table
-        @token_table ||= begin
-          table = {}
-          @processed_source.tokens.each_with_index do |t, ix|
-            table[t.line] ||= {}
-            table[t.line][t.column] = ix
-          end
-          table
-        end
+      def on_new_investigation
+        @token_table = nil
+        super
       end
 
       def no_space_offenses(node, # rubocop:disable Metrics/ParameterLists
@@ -87,22 +67,25 @@ module RuboCop
         return false unless token
 
         if side == :left
-          String(token.space_after?) =~ SINGLE_SPACE_REGEXP
+          SINGLE_SPACE_REGEXP.match?(String(token.space_after?))
         else
-          String(token.space_before?) =~ SINGLE_SPACE_REGEXP
+          SINGLE_SPACE_REGEXP.match?(String(token.space_before?))
         end
       end
 
       def reposition(src, pos, step)
         offset = step == -1 ? -1 : 0
-        pos += step while src[pos + offset] =~ SINGLE_SPACE_REGEXP
+        pos += step while SINGLE_SPACE_REGEXP.match?(src[pos + offset])
         pos.negative? ? 0 : pos
       end
 
       def space_offense(node, token, side, message, command)
         range = side_space_range(range: token.pos, side: side)
-        add_offense(node, location: range,
-                          message: format(message, command: command))
+        add_offense(range, message: format(message, command: command)) do |corrector|
+          autocorrect(corrector, node) unless ignored_node?(node)
+
+          ignore_node(node)
+        end
       end
 
       def empty_offenses(node, left, right, message)
@@ -116,8 +99,9 @@ module RuboCop
       end
 
       def empty_offense(node, range, message, command)
-        add_offense(node, location: range,
-                          message: format(message, command: command))
+        add_offense(range, message: format(message, command: command)) do |corrector|
+          autocorrect(corrector, node)
+        end
       end
 
       def empty_brackets?(left_bracket_token, right_bracket_token)

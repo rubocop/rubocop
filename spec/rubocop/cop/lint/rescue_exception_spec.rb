@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RescueException do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::RescueException, :config do
   it 'registers an offense for rescue from Exception' do
     expect_offense(<<~RUBY)
       begin

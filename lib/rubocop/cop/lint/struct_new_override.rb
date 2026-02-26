@@ -21,13 +21,15 @@ module RuboCop
       #   g.clone #=> #<struct Good id=1, name="foo">
       #   g.count #=> 2
       #
-      class StructNewOverride < Cop
+      class StructNewOverride < Base
         MSG = '`%<member_name>s` member overrides `Struct#%<method_name>s`' \
               ' and it may be unexpected.'
+        RESTRICT_ON_SEND = %i[new].freeze
 
         STRUCT_METHOD_NAMES = Struct.instance_methods
         STRUCT_MEMBER_NAME_TYPES = %i[sym str].freeze
 
+        # @!method struct_new(node)
         def_node_matcher :struct_new, <<~PATTERN
           (send
             (const ${nil? cbase} :Struct) :new ...)

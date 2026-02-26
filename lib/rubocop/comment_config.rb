@@ -4,17 +4,6 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
-    REDUNDANT_DISABLE = 'Lint/RedundantCopDisableDirective'
-
-    COP_NAME_PATTERN = '([A-Z]\w+/)?(?:[A-Z]\w+)'
-    COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}"
-    COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})"
-
-    COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      ('# rubocop : ((?:disable|enable|todo))\b ' + COPS_PATTERN)
-        .gsub(' ', '\s*')
-    )
-
     CopAnalysis = Struct.new(:line_ranges, :start_line_number)
 
     attr_reader :processed_source
@@ -36,31 +25,42 @@ module RuboCop
     end
 
     def extra_enabled_comments
-      extra_enabled_comments_with_names([], {})
+      extra_enabled_comments_with_names(
+        extras: Hash.new { |h, k| h[k] = [] },
+        names: Hash.new(0)
+      )
+    end
+
+    def comment_only_line?(line_number)
+      non_comment_token_line_numbers.none? do |non_comment_line_number|
+        non_comment_line_number == line_number
+      end
     end
 
     private
 
-    def extra_enabled_comments_with_names(extras, names)
-      each_directive do |comment, cop_names, disabled|
-        next unless comment_only_line?(comment.loc.expression.line)
+    def extra_enabled_comments_with_names(extras:, names:)
+      each_directive do |directive|
+        next unless comment_only_line?(directive.line_number)
 
-        if !disabled && enable_all?(comment)
-          handle_enable_all(names, extras, comment)
+        if directive.enabled_all?
+          handle_enable_all(directive, names, extras)
         else
-          handle_switch(cop_names, names, disabled, extras, comment)
+          handle_switch(directive, names, extras)
         end
       end
 
       extras
     end
 
-    def analyze
+    def analyze # rubocop:todo Metrics/AbcSize
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
 
-      each_mentioned_cop do |cop_name, disabled, line, single_line|
-        analyses[cop_name] =
-          analyze_cop(analyses[cop_name], disabled, line, single_line)
+      each_directive do |directive|
+        directive.cop_names.each do |cop_name|
+          cop_name = qualified_cop_name(cop_name)
+          analyses[cop_name] = analyze_cop(analyses[cop_name], directive)
+        end
       end
 
       analyses.each_with_object({}) do |element, hash|
@@ -69,37 +69,42 @@ module RuboCop
       end
     end
 
-    def analyze_cop(analysis, disabled, line, single_line)
-      if single_line
-        analyze_single_line(analysis, line, disabled)
-      elsif disabled
-        analyze_disabled(analysis, line)
+    def analyze_cop(analysis, directive)
+      # Disabling cops after comments like `#=SomeDslDirective` does not related to single line
+      if !comment_only_line?(directive.line_number) || directive.single_line?
+        analyze_single_line(analysis, directive)
+      elsif directive.disabled?
+        analyze_disabled(analysis, directive)
       else
-        analyze_rest(analysis, line)
+        analyze_rest(analysis, directive)
       end
     end
 
-    def analyze_single_line(analysis, line, disabled)
-      return analysis unless disabled
+    def analyze_single_line(analysis, directive)
+      return analysis unless directive.disabled?
 
-      CopAnalysis.new(analysis.line_ranges + [(line..line)],
-                      analysis.start_line_number)
+      line = directive.line_number
+      start_line = analysis.start_line_number
+
+      CopAnalysis.new(analysis.line_ranges + [(line..line)], start_line)
     end
 
-    def analyze_disabled(analysis, line)
-      if (start_line = analysis.start_line_number)
-        # Cop already disabled on this line, so we end the current disabled
-        # range before we start a new range.
-        return CopAnalysis.new(analysis.line_ranges + [start_line..line], line)
-      end
+    def analyze_disabled(analysis, directive)
+      line = directive.line_number
+      start_line = analysis.start_line_number
+
+      # Cop already disabled on this line, so we end the current disabled
+      # range before we start a new range.
+      return CopAnalysis.new(analysis.line_ranges + [start_line..line], line) if start_line
 
       CopAnalysis.new(analysis.line_ranges, line)
     end
 
-    def analyze_rest(analysis, line)
-      if (start_line = analysis.start_line_number)
-        return CopAnalysis.new(analysis.line_ranges + [start_line..line], nil)
-      end
+    def analyze_rest(analysis, directive)
+      line = directive.line_number
+      start_line = analysis.start_line_number
+
+      return CopAnalysis.new(analysis.line_ranges + [start_line..line], nil) if start_line
 
       CopAnalysis.new(analysis.line_ranges, nil)
     end
@@ -110,60 +115,15 @@ module RuboCop
       analysis.line_ranges + [(analysis.start_line_number..Float::INFINITY)]
     end
 
-    def each_mentioned_cop
-      each_directive do |comment, cop_names, disabled|
-        comment_line_number = comment.loc.expression.line
-        single_line = !comment_only_line?(comment_line_number) ||
-                      directive_on_comment_line?(comment)
-
-        cop_names.each do |cop_name|
-          yield qualified_cop_name(cop_name), disabled, comment_line_number,
-                single_line
-        end
-      end
-    end
-
-    def directive_on_comment_line?(comment)
-      comment.text[1..-1].match?(COMMENT_DIRECTIVE_REGEXP)
-    end
-
     def each_directive
-      return if processed_source.comments.nil?
-
-      processed_source.each_comment do |comment|
-        directive = directive_parts(comment)
-        next unless directive
-
-        yield comment, *directive
+      processed_source.comments.each do |comment|
+        directive = DirectiveComment.new(comment)
+        yield directive if directive.cop_names
       end
-    end
-
-    def directive_parts(comment)
-      match = comment.text.match(COMMENT_DIRECTIVE_REGEXP)
-      return unless match
-
-      switch, cops_string = match.captures
-
-      cop_names =
-        cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
-
-      disabled = %w[disable todo].include?(switch)
-
-      [cop_names, disabled]
     end
 
     def qualified_cop_name(cop_name)
-      Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.file_path)
-    end
-
-    def all_cop_names
-      @all_cop_names ||= Cop::Cop.registry.names - [REDUNDANT_DISABLE]
-    end
-
-    def comment_only_line?(line_number)
-      non_comment_token_line_numbers.none? do |non_comment_line_number|
-        non_comment_line_number == line_number
-      end
+      Cop::Registry.qualified_cop_name(cop_name.strip, processed_source.file_path)
     end
 
     def non_comment_token_line_numbers
@@ -173,12 +133,7 @@ module RuboCop
       end
     end
 
-    def enable_all?(comment)
-      _, cops = comment.text.match(COMMENT_DIRECTIVE_REGEXP).captures
-      cops == 'all'
-    end
-
-    def handle_enable_all(names, extras, comment)
+    def handle_enable_all(directive, names, extras)
       enabled_cops = 0
       names.each do |name, counter|
         next unless counter.positive?
@@ -187,18 +142,19 @@ module RuboCop
         enabled_cops += 1
       end
 
-      extras << [comment, 'all'] if enabled_cops.zero?
+      extras[directive.comment] << 'all' if enabled_cops.zero?
     end
 
-    def handle_switch(cop_names, names, disabled, extras, comment)
-      cop_names.each do |name|
-        names[name] ||= 0
-        if disabled
+    # Collect cops that have been disabled or enabled by name in a directive comment
+    # so that `Lint/RedundantCopEnableDirective` can register offenses correctly.
+    def handle_switch(directive, names, extras)
+      directive.cop_names.each do |name|
+        if directive.disabled?
           names[name] += 1
         elsif (names[name]).positive?
           names[name] -= 1
         else
-          extras << [comment, name]
+          extras[directive.comment] << name
         end
       end
     end

@@ -19,8 +19,9 @@ module RuboCop
       #   some_str = 'ala' \
       #              'bala'
       #
-      class LineEndConcatenation < Cop
+      class LineEndConcatenation < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Use `\\` instead of `+` or `<<` to concatenate ' \
               'those strings.'
@@ -36,23 +37,10 @@ module RuboCop
           [Style::RedundantInterpolation]
         end
 
-        def investigate(processed_source)
+        def on_new_investigation
           processed_source.tokens.each_index do |index|
             check_token_set(index)
           end
-        end
-
-        def autocorrect(operator_range)
-          # Include any trailing whitespace so we don't create a syntax error.
-          operator_range = range_with_surrounding_space(range: operator_range,
-                                                        side: :right,
-                                                        newlines: false)
-          one_more_char = operator_range.resize(operator_range.size + 1)
-          # Don't create a double backslash at the end of the line, in case
-          # there already was a backslash after the concatenation operator.
-          operator_range = one_more_char if one_more_char.source.end_with?('\\')
-
-          ->(corrector) { corrector.replace(operator_range, '\\') }
         end
 
         private
@@ -68,7 +56,22 @@ module RuboCop
 
           return unless eligible_next_successor?(next_successor)
 
-          add_offense(operator.pos, location: operator.pos)
+          add_offense(operator.pos) do |corrector|
+            autocorrect(corrector, operator.pos)
+          end
+        end
+
+        def autocorrect(corrector, operator_range)
+          # Include any trailing whitespace so we don't create a syntax error.
+          operator_range = range_with_surrounding_space(range: operator_range,
+                                                        side: :right,
+                                                        newlines: false)
+          one_more_char = operator_range.resize(operator_range.size + 1)
+          # Don't create a double backslash at the end of the line, in case
+          # there already was a backslash after the concatenation operator.
+          operator_range = one_more_char if one_more_char.source.end_with?('\\')
+
+          corrector.replace(operator_range, '\\')
         end
 
         def eligible_token_set?(predecessor, operator, successor)

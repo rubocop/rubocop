@@ -17,9 +17,12 @@ module RuboCop
       #   # good
       #
       #   1.is_a?(Integer)
-      class UnifiedInteger < Cop
+      class UnifiedInteger < Base
+        extend AutoCorrector
+
         MSG = 'Use `Integer` instead of `%<klass>s`.'
 
+        # @!method fixnum_or_bignum_const(node)
         def_node_matcher :fixnum_or_bignum_const, <<~PATTERN
           (:const {nil? (:cbase)} ${:Fixnum :Bignum})
         PATTERN
@@ -29,11 +32,7 @@ module RuboCop
 
           return unless klass
 
-          add_offense(node, message: format(MSG, klass: klass))
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node, message: format(MSG, klass: klass)) do |corrector|
             corrector.replace(node.loc.name, 'Integer')
           end
         end

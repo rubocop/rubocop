@@ -8,12 +8,20 @@ module RuboCop
   class ConfigValidator
     extend Forwardable
 
+    # @api private
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode
                        AutoCorrect StyleGuide Details].freeze
+    # @api private
     INTERNAL_PARAMS = %w[Description StyleGuide
                          VersionAdded VersionChanged VersionRemoved
                          Reference Safe SafeAutoCorrect].freeze
+    # @api private
     NEW_COPS_VALUES = %w[pending disable enable].freeze
+
+    # @api private
+    CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect].to_set.freeze
+    CONFIG_CHECK_DEPARTMENTS = %w[pending override_department].freeze
+    private_constant :CONFIG_CHECK_KEYS, :CONFIG_CHECK_DEPARTMENTS
 
     def_delegators :@config, :smart_loaded_path, :for_all_cops
 
@@ -23,7 +31,6 @@ module RuboCop
       @target_ruby = TargetRuby.new(config)
     end
 
-    # rubocop:disable Metrics/AbcSize
     def validate
       check_cop_config_value(@config)
       reject_conflicting_safe_settings
@@ -35,7 +42,7 @@ module RuboCop
         ConfigLoader.default_configuration.key?(key)
       end
 
-      @config_obsoletion.reject_obsolete_cops_and_parameters
+      check_obsoletions
 
       alert_about_unrecognized_cops(invalid_cop_names)
       check_target_ruby
@@ -45,7 +52,6 @@ module RuboCop
       validate_syntax_cop
       reject_mutually_exclusive_defaults
     end
-    # rubocop:enable Metrics/AbcSize
 
     def target_ruby_version
       target_ruby.version
@@ -61,6 +67,13 @@ module RuboCop
     private
 
     attr_reader :target_ruby
+
+    def check_obsoletions
+      @config_obsoletion.reject_obsolete!
+      return unless @config_obsoletion.warnings.any?
+
+      warn Rainbow("Warning: #{@config_obsoletion.warnings.join("\n")}").yellow
+    end
 
     def check_target_ruby
       return if target_ruby.supported?
@@ -86,17 +99,24 @@ module RuboCop
       unknown_cops = []
       invalid_cop_names.each do |name|
         # There could be a custom cop with this name. If so, don't warn
-        next if Cop::Cop.registry.contains_cop_matching?([name])
+        next if Cop::Registry.global.contains_cop_matching?([name])
 
         # Special case for inherit_mode, which is a directive that we keep in
         # the configuration (even though it's not a cop), because it's easier
         # to do so than to pass the value around to various methods.
         next if name == 'inherit_mode'
 
-        unknown_cops << "unrecognized cop #{name} found in " \
-          "#{smart_loaded_path}"
+        suggestions = NameSimilarity.find_similar_names(name, Cop::Registry.global.map(&:cop_name))
+        suggestion = "Did you mean `#{suggestions.join('`, `')}`?" if suggestions.any?
+
+        message = <<~MESSAGE.rstrip
+          unrecognized cop #{name} found in #{smart_loaded_path}
+          #{suggestion}
+        MESSAGE
+
+        unknown_cops << message
       end
-      raise ValidationError, unknown_cops.join(', ') if unknown_cops.any?
+      raise ValidationError, unknown_cops.join("\n") if unknown_cops.any?
     end
 
     def validate_syntax_cop
@@ -150,7 +170,7 @@ module RuboCop
       end
     end
 
-    def validate_enforced_styles(valid_cop_names)
+    def validate_enforced_styles(valid_cop_names) # rubocop:todo Metrics/AbcSize
       valid_cop_names.each do |name|
         styles = @config[name].select { |key, _| key.start_with?('Enforced') }
 
@@ -201,13 +221,9 @@ module RuboCop
       hash.each do |key, value|
         check_cop_config_value(value, key) if value.is_a?(Hash)
 
-        next unless %w[Enabled
-                       Safe
-                       SafeAutoCorrect
-                       AutoCorrect].include?(key) && value.is_a?(String)
+        next unless CONFIG_CHECK_KEYS.include?(key) && value.is_a?(String)
 
-        next if key == 'Enabled' &&
-                %w[pending override_department].include?(value)
+        next if key == 'Enabled' && CONFIG_CHECK_DEPARTMENTS.include?(value)
 
         raise ValidationError, msg_not_boolean(parent, key, value)
       end

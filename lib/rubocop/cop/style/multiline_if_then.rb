@@ -16,9 +16,10 @@ module RuboCop
       #   if cond then a
       #   elsif cond then b
       #   end
-      class MultilineIfThen < Cop
+      class MultilineIfThen < Base
         include OnNormalIfUnless
         include RangeHelp
+        extend AutoCorrector
 
         NON_MODIFIER_THEN = /then\s*(#.*)?$/.freeze
 
@@ -27,22 +28,15 @@ module RuboCop
         def on_normal_if_unless(node)
           return unless non_modifier_then?(node)
 
-          add_offense(node, location: :begin,
-                            message: format(MSG, keyword: node.keyword))
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(
-              range_with_surrounding_space(range: node.loc.begin, side: :left)
-            )
+          add_offense(node.loc.begin, message: format(MSG, keyword: node.keyword)) do |corrector|
+            corrector.remove(range_with_surrounding_space(range: node.loc.begin, side: :left))
           end
         end
 
         private
 
         def non_modifier_then?(node)
-          node.loc.begin && node.loc.begin.source_line =~ NON_MODIFIER_THEN
+          NON_MODIFIER_THEN.match?(node.loc.begin&.source_line)
         end
       end
     end

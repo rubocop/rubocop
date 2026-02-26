@@ -25,8 +25,9 @@ module RuboCop
       #  # good
       #  Hash#has_key?
       #  Hash#has_value?
-      class PreferredHashMethods < Cop
+      class PreferredHashMethods < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         MSG = 'Use `Hash#%<prefer>s` instead of `Hash#%<current>s`.'
 
@@ -35,27 +36,23 @@ module RuboCop
           verbose: %i[key? value?]
         }.freeze
 
-        def on_send(node)
-          return unless node.arguments.one? &&
-                        offending_selector?(node.method_name)
+        RESTRICT_ON_SEND = OFFENDING_SELECTORS.values.flatten.freeze
 
-          add_offense(node, location: :selector)
+        def on_send(node)
+          return unless node.arguments.one? && offending_selector?(node.method_name)
+
+          message = message(node.method_name)
+
+          add_offense(node.loc.selector, message: message) do |corrector|
+            corrector.replace(node.loc.selector, proper_method_name(node.loc.selector.source))
+          end
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(node.loc.selector,
-                              proper_method_name(node.loc.selector.source))
-          end
-        end
-
         private
 
-        def message(node)
-          format(MSG,
-                 prefer: proper_method_name(node.method_name),
-                 current: node.method_name)
+        def message(method_name)
+          format(MSG, prefer: proper_method_name(method_name), current: method_name)
         end
 
         def proper_method_name(method_name)

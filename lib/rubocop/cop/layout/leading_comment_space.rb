@@ -49,30 +49,32 @@ module RuboCop
       #   #ruby=2.7.0
       #   #ruby-gemset=myproject
       #
-      class LeadingCommentSpace < Cop
+      class LeadingCommentSpace < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Missing space after `#`.'
 
-        def investigate(processed_source)
-          processed_source.each_comment do |comment|
+        def on_new_investigation
+          processed_source.comments.each do |comment|
             next unless /\A#+[^#\s=:+-]/.match?(comment.text)
             next if comment.loc.line == 1 && allowed_on_first_line?(comment)
             next if doxygen_comment_style?(comment)
             next if gemfile_ruby_comment?(comment)
 
-            add_offense(comment)
+            add_offense(comment) do |corrector|
+              expr = comment.loc.expression
+
+              corrector.insert_after(hash_mark(expr), ' ')
+            end
           end
         end
 
-        def autocorrect(comment)
-          expr = comment.loc.expression
-          hash_mark = range_between(expr.begin_pos, expr.begin_pos + 1)
-
-          ->(corrector) { corrector.insert_after(hash_mark, ' ') }
-        end
-
         private
+
+        def hash_mark(expr)
+          range_between(expr.begin_pos, expr.begin_pos + 1)
+        end
 
         def allowed_on_first_line?(comment)
           shebang?(comment) || rackup_config_file? && rackup_options?(comment)

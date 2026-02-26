@@ -12,17 +12,15 @@ module RuboCop
       #
       #   # good
       #   :symbol
-      class SymbolLiteral < Cop
+      class SymbolLiteral < Base
+        extend AutoCorrector
+
         MSG = 'Do not use strings for word-like symbol literals.'
 
         def on_sym(node)
           return unless /\A:["'][A-Za-z_]\w*["']\z/.match?(node.source)
 
-          add_offense(node)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
+          add_offense(node) do |corrector|
             corrector.replace(node, node.source.delete(%q('")))
           end
         end

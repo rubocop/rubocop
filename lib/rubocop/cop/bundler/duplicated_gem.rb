@@ -25,13 +25,23 @@ module RuboCop
       #
       #   # good
       #   gem 'rubocop', groups: [:development, :test]
-      class DuplicatedGem < Cop
+      #
+      #   # good - conditional declaration
+      #   if Dir.exist?(local)
+      #     gem 'rubocop', path: local
+      #   elsif ENV['RUBOCOP_VERSION'] == 'master'
+      #     gem 'rubocop', git: 'https://github.com/rubocop/rubocop.git'
+      #   else
+      #     gem 'rubocop', '~> 0.90.0'
+      #   end
+      #
+      class DuplicatedGem < Base
         include RangeHelp
 
         MSG = 'Gem `%<gem_name>s` requirements already given on line '\
           '%<line_of_first_occurrence>d of the Gemfile.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           return if processed_source.blank?
 
           duplicated_gem_nodes.each do |nodes|
@@ -47,13 +57,28 @@ module RuboCop
 
         private
 
+        # @!method gem_declarations(node)
         def_node_search :gem_declarations, '(send nil? :gem str ...)'
 
         def duplicated_gem_nodes
           gem_declarations(processed_source.ast)
             .group_by(&:first_argument)
             .values
-            .select { |nodes| nodes.size > 1 }
+            .select { |nodes| nodes.size > 1 && !conditional_declaration?(nodes) }
+        end
+
+        def conditional_declaration?(nodes)
+          parent = nodes[0].parent
+          return false unless parent&.if_type? || parent&.when_type?
+
+          root_conditional_node = parent.if_type? ? parent : parent.parent
+          nodes.all? { |node| within_conditional?(node, root_conditional_node) }
+        end
+
+        def within_conditional?(node, conditional_node)
+          conditional_node.branches.any? do |branch|
+            branch == node || branch.child_nodes.include?(node)
+          end
         end
 
         def register_offense(node, gem_name, line_of_first_occurrence)
@@ -65,7 +90,7 @@ module RuboCop
             gem_name: gem_name,
             line_of_first_occurrence: line_of_first_occurrence
           )
-          add_offense(node, location: offense_location, message: message)
+          add_offense(offense_location, message: message)
         end
       end
     end

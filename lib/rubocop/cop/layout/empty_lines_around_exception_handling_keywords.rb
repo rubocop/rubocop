@@ -58,8 +58,9 @@ module RuboCop
       #
       #     do_something2
       #   end
-      class EmptyLinesAroundExceptionHandlingKeywords < Cop
+      class EmptyLinesAroundExceptionHandlingKeywords < Base
         include EmptyLinesAroundBody
+        extend AutoCorrector
 
         MSG = 'Extra empty line detected %<location>s the `%<keyword>s`.'
 
@@ -71,10 +72,6 @@ module RuboCop
         def on_kwbegin(node)
           body, = *node
           check_body(body)
-        end
-
-        def autocorrect(node)
-          EmptyLineCorrector.correct(node)
         end
 
         private
@@ -116,10 +113,9 @@ module RuboCop
         end
 
         def keyword_locations_in_rescue(node)
-          _begin_body, *resbodies, _else_body = *node
           [
             node.loc.else,
-            *resbodies.map { |body| body.loc.keyword }
+            *node.resbody_branches.map { |body| body.loc.keyword }
           ].compact
         end
 

@@ -6,11 +6,11 @@ module RuboCop
       # This cop checks for trailing comma in argument lists.
       # The supported styles are:
       #
-      # - `consistent_comma`: Requires a comma after the last argument,
+      # * `consistent_comma`: Requires a comma after the last argument,
       # for all parenthesized method calls with arguments.
-      # - `comma`: Requires a comma after the last argument, but only for
+      # * `comma`: Requires a comma after the last argument, but only for
       # parenthesized method calls where each argument is on its own line.
-      # - `no_comma`: Requires that there is no comma after the last
+      # * `no_comma`: Requires that there is no comma after the last
       # argument.
       #
       # @example EnforcedStyleForMultiline: consistent_comma
@@ -84,8 +84,9 @@ module RuboCop
       #     1,
       #     2
       #   )
-      class TrailingCommaInArguments < Cop
+      class TrailingCommaInArguments < Base
         include TrailingComma
+        extend AutoCorrector
 
         def on_send(node)
           return unless node.arguments? && node.parenthesized?
@@ -95,10 +96,6 @@ module RuboCop
                 node.source_range.end_pos)
         end
         alias on_csend on_send
-
-        def autocorrect(range)
-          PunctuationCorrector.swap_comma(range)
-        end
 
         def self.autocorrect_incompatible_with
           [Layout::HeredocArgumentClosingParenthesis]

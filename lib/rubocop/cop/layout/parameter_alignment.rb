@@ -68,8 +68,9 @@ module RuboCop
       #        baz)
       #     123
       #   end
-      class ParameterAlignment < Cop
+      class ParameterAlignment < Base
         include Alignment
+        extend AutoCorrector
 
         ALIGN_PARAMS_MSG = 'Align the parameters of a method definition if ' \
           'they span more than one line.'
@@ -84,11 +85,11 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+        end
 
         def message(_node)
           fixed_indentation? ? FIXED_INDENT_MSG : ALIGN_PARAMS_MSG

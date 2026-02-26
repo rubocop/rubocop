@@ -5,13 +5,12 @@ module RuboCop
     module Style
       # This cop enforces consistency when using exponential notation
       # for numbers in the code (eg 1.2e4). Different styles are supported:
-      # - `scientific` which enforces a mantissa between 1 (inclusive)
-      #                and 10 (exclusive).
-      # - `engineering` which enforces the exponent to be a multiple of 3
-      #                 and the mantissa to be between 0.1 (inclusive)
-      #                 and 10 (exclusive).
-      # - `integral` which enforces the mantissa to always be a whole number
-      #              without trailing zeroes.
+      #
+      # * `scientific` which enforces a mantissa between 1 (inclusive) and 10 (exclusive).
+      # * `engineering` which enforces the exponent to be a multiple of 3 and the mantissa
+      #   to be between 0.1 (inclusive) and 10 (exclusive).
+      # * `integral` which enforces the mantissa to always be a whole number without
+      #   trailing zeroes.
       #
       # @example EnforcedStyle: scientific (default)
       #   # Enforces a mantissa between 1 (inclusive) and 10 (exclusive).
@@ -58,8 +57,13 @@ module RuboCop
       #   1e4
       #   12e5
       #
-      class ExponentialNotation < Cop
+      class ExponentialNotation < Base
         include ConfigurableEnforcedStyle
+        MESSAGES = {
+          scientific: 'Use a mantissa in [1, 10[.',
+          engineering: 'Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.',
+          integral: 'Use an integer as mantissa, without trailing zero.'
+        }.freeze
 
         def on_float(node)
           add_offense(node) if offense?(node)
@@ -69,7 +73,7 @@ module RuboCop
 
         def scientific?(node)
           mantissa, = node.source.split('e')
-          mantissa =~ /^-?[1-9](\.\d*[0-9])?$/
+          /^-?[1-9](\.\d*[0-9])?$/.match?(mantissa)
         end
 
         def engineering?(node)
@@ -85,7 +89,7 @@ module RuboCop
 
         def integral(node)
           mantissa, = node.source.split('e')
-          mantissa =~ /^-?[1-9](\d*[1-9])?$/
+          /^-?[1-9](\d*[1-9])?$/.match?(mantissa)
         end
 
         def offense?(node)
@@ -104,14 +108,7 @@ module RuboCop
         end
 
         def message(_node)
-          case style
-          when :scientific
-            'Use a mantissa in [1, 10[.'
-          when :engineering
-            'Use an exponent divisible by 3 and a mantissa in [0.1, 1000[.'
-          when :integral
-            'Use an integer as mantissa, without trailing zero.'
-          end
+          MESSAGES[style]
         end
       end
     end

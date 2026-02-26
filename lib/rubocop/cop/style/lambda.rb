@@ -46,8 +46,9 @@ module RuboCop
       #   f = ->(x) do
       #         x
       #       end
-      class Lambda < Cop
+      class Lambda < Base
         include ConfigurableEnforcedStyle
+        extend AutoCorrector
 
         LITERAL_MESSAGE = 'Use the `-> { ... }` lambda literal syntax for ' \
                           '%<modifier>s lambdas.'
@@ -69,21 +70,15 @@ module RuboCop
 
           return unless offending_selector?(node, selector)
 
-          add_offense(node,
-                      location: node.send_node.source_range,
-                      message: message(node, selector))
-        end
-        alias on_numblock on_block
-
-        def autocorrect(node)
-          if node.send_node.source == 'lambda'
-            lambda do |corrector|
+          add_offense(node.send_node.source_range, message: message(node, selector)) do |corrector|
+            if node.send_node.source == 'lambda'
               autocorrect_method_to_literal(corrector, node)
+            else
+              LambdaLiteralToMethodCorrector.new(node).call(corrector)
             end
-          else
-            LambdaLiteralToMethodCorrector.new(node)
           end
         end
+        alias on_numblock on_block
 
         private
 

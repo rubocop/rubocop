@@ -15,8 +15,9 @@ module RuboCop
       #   do_something(foo)
       #   do_something (2 + 3) * 4
       #   do_something (foo * bar).baz
-      class ParenthesesAsGroupedExpression < Cop
+      class ParenthesesAsGroupedExpression < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = '`(...)` interpreted as grouped expression.'
 
@@ -28,18 +29,11 @@ module RuboCop
 
           range = space_range(node.first_argument.source_range, space_length)
 
-          add_offense(node, location: range)
-        end
-        alias on_csend on_send
-
-        def autocorrect(node)
-          space_length = spaces_before_left_parenthesis(node)
-          range = space_range(node.first_argument.source_range, space_length)
-
-          lambda do |corrector|
+          add_offense(range) do |corrector|
             corrector.remove(range)
           end
         end
+        alias on_csend on_send
 
         private
 
@@ -48,17 +42,22 @@ module RuboCop
             return true
           end
 
-          node.operator_method? || node.setter_method? || grouped_parentheses?(node)
+          node.operator_method? || node.setter_method? || chained_calls?(node) ||
+            operator_keyword?(node) || node.first_argument.hash_type?
         end
 
         def first_argument_starts_with_left_parenthesis?(node)
           node.first_argument.source.start_with?('(')
         end
 
-        def grouped_parentheses?(node)
+        def chained_calls?(node)
           first_argument = node.first_argument
+          first_argument.send_type? && (node.children.last&.children&.count || 0) > 1
+        end
 
-          first_argument.send_type? && first_argument.receiver&.begin_type?
+        def operator_keyword?(node)
+          first_argument = node.first_argument
+          first_argument.operator_keyword?
         end
 
         def spaces_before_left_parenthesis(node)

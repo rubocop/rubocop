@@ -28,31 +28,21 @@ module RuboCop
       #   until x.empty?
       #     do_something(x.pop)
       #   end
-      class WhileUntilDo < Cop
+      class WhileUntilDo < Base
+        extend AutoCorrector
+
         MSG = 'Do not use `do` with multi-line `%<keyword>s`.'
 
         def on_while(node)
-          handle(node)
-        end
-
-        def on_until(node)
-          handle(node)
-        end
-
-        def handle(node)
           return unless node.multiline? && node.do?
 
-          add_offense(node, location: :begin,
-                            message: format(MSG, keyword: node.keyword))
-        end
+          add_offense(node.loc.begin, message: format(MSG, keyword: node.keyword)) do |corrector|
+            do_range = node.condition.source_range.end.join(node.loc.begin)
 
-        def autocorrect(node)
-          do_range = node.condition.source_range.end.join(node.loc.begin)
-
-          lambda do |corrector|
             corrector.remove(do_range)
           end
         end
+        alias on_until on_while
       end
     end
   end

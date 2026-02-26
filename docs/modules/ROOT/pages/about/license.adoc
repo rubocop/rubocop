@@ -1,0 +1,16 @@
+= License & Copyright
+
+== Code License
+
+Use of RuboCop is granted under the terms of the MIT license. Check
+out the `LICENSE.txt` file in RuboCop's code repository for more details.
+
+== Documentation License
+
+All the original text is available under the Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0).
+
+All the original Ruby code is available under the terms of the MIT license.
+
+== Copyright
+
+Copyright (c) 2012-2021 Bozhidar Batsov and RuboCop contributors.

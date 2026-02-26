@@ -10,11 +10,14 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
           ^ Space inside parentheses detected.
         g = (a + 3 )
                   ^ Space inside parentheses detected.
+        f( )
+          ^ Space inside parentheses detected.
       RUBY
 
       expect_correction(<<~RUBY)
         f(3)
         g = (a + 3)
+        f()
       RUBY
     end
 
@@ -65,6 +68,17 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
       RUBY
     end
 
+    it 'registers an offense for space inside empty parens' do
+      expect_offense(<<~RUBY)
+        f( )
+          ^ Space inside parentheses detected.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        f()
+      RUBY
+    end
+
     it 'registers an offense in block parameter list with no spaces' do
       expect_offense(<<~RUBY)
         list.inject( Tms.new ) { |sum, (label, item)|
@@ -77,6 +91,10 @@ RSpec.describe RuboCop::Cop::Layout::SpaceInsideParens, :config do
         list.inject( Tms.new ) { |sum, ( label, item )|
         }
       RUBY
+    end
+
+    it 'accepts empty parentheses without spaces' do
+      expect_no_offenses('f()')
     end
 
     it 'accepts parentheses with spaces' do

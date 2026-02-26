@@ -17,6 +17,9 @@ module RuboCop
                             u\{[^}]*\}        |   # extended unicode escape
                             .                     # any other escaped char
                           )/x.freeze
+
+    private_constant :STRING_ESCAPES, :STRING_ESCAPE_REGEX
+
     class << self
       def interpret(string)
         # We currently don't handle \cx, \C-x, and \M-x

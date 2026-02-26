@@ -135,7 +135,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
   end
 
   context 'when the method part is a call chain that spans several lines' do
-    # Example from issue 346 of rubocop-hq/rubocop on github:
+    # Example from issue 346 of rubocop/rubocop on github:
     it 'accepts pretty alignment style' do
       expect_no_offenses(<<~RUBY)
         def foo(bar)
@@ -185,7 +185,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
-    # Example from issue 393 of rubocop-hq/rubocop on github:
+    # Example from issue 393 of rubocop/rubocop on github:
     it 'accepts end indented as the start of the block' do
       expect_no_offenses(<<~RUBY)
                my_object.chaining_this_very_long_method(with_a_parameter)
@@ -200,7 +200,7 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
-    # Example from issue 447 of rubocop-hq/rubocop on github:
+    # Example from issue 447 of rubocop/rubocop on github:
     it 'accepts two kinds of end alignment' do
       expect_no_offenses(<<~RUBY)
         # Aligned with start of line where do is:

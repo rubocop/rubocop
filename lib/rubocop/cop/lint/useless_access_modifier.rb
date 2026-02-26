@@ -124,18 +124,17 @@ module RuboCop
       #
       #     delegate :method_a, to: :method_b
       #   end
-      class UselessAccessModifier < Cop
+      class UselessAccessModifier < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Useless `%<current>s` access modifier.'
 
         def on_class(node)
-          check_node(node.children[2]) # class body
+          check_node(node.body)
         end
-
-        def on_module(node)
-          check_node(node.children[1]) # module body
-        end
+        alias on_module on_class
+        alias on_sclass on_class
 
         def on_block(node)
           return unless eval_call?(node)
@@ -143,36 +142,32 @@ module RuboCop
           check_node(node.body)
         end
 
-        def on_sclass(node)
-          check_node(node.children[1]) # singleton class body
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            range = range_by_whole_lines(
-              node.source_range, include_final_newline: true
-            )
-
-            corrector.remove(range)
-          end
-        end
-
         private
 
+        def autocorrect(corrector, node)
+          range = range_by_whole_lines(node.source_range, include_final_newline: true)
+
+          corrector.remove(range)
+        end
+
+        # @!method static_method_definition?(node)
         def_node_matcher :static_method_definition?, <<~PATTERN
           {def (send nil? {:attr :attr_reader :attr_writer :attr_accessor} ...)}
         PATTERN
 
+        # @!method dynamic_method_definition?(node)
         def_node_matcher :dynamic_method_definition?, <<~PATTERN
           {(send nil? :define_method ...) (block (send nil? :define_method ...) ...)}
         PATTERN
 
+        # @!method class_or_instance_eval?(node)
         def_node_matcher :class_or_instance_eval?, <<~PATTERN
           (block (send _ {:class_eval :instance_eval}) ...)
         PATTERN
 
+        # @!method class_or_module_or_struct_new_call?(node)
         def_node_matcher :class_or_module_or_struct_new_call?, <<~PATTERN
-          (block (send (const nil? {:Class :Module :Struct}) :new ...) ...)
+          (block (send (const {nil? cbase} {:Class :Module :Struct}) :new ...) ...)
         PATTERN
 
         def check_node(node)
@@ -181,7 +176,9 @@ module RuboCop
           if node.begin_type?
             check_scope(node)
           elsif node.send_type? && node.bare_access_modifier?
-            add_offense(node, message: format(MSG, current: node.method_name))
+            add_offense(node, message: format(MSG, current: node.method_name)) do |corrector|
+              autocorrect(corrector, node)
+            end
           end
         end
 
@@ -192,8 +189,11 @@ module RuboCop
 
         def check_scope(node)
           cur_vis, unused = check_child_nodes(node, nil, :public)
+          return unless unused
 
-          add_offense(unused, message: format(MSG, current: cur_vis)) if unused
+          add_offense(unused, message: format(MSG, current: cur_vis)) do |corrector|
+            autocorrect(corrector, unused)
+          end
         end
 
         def check_child_nodes(node, unused, cur_vis)
@@ -216,7 +216,9 @@ module RuboCop
           if node.bare_access_modifier?
             check_new_visibility(node, unused, node.method_name, cur_vis)
           elsif node.method?(:private_class_method) && !node.arguments?
-            add_offense(node, message: format(MSG, current: node.method_name))
+            add_offense(node, message: format(MSG, current: node.method_name)) do |corrector|
+              autocorrect(corrector, node)
+            end
             [cur_vis, unused]
           end
         end
@@ -224,10 +226,16 @@ module RuboCop
         def check_new_visibility(node, unused, new_vis, cur_vis)
           # does this modifier just repeat the existing visibility?
           if new_vis == cur_vis
-            add_offense(node, message: format(MSG, current: cur_vis))
+            add_offense(node, message: format(MSG, current: cur_vis)) do |corrector|
+              autocorrect(corrector, node)
+            end
           else
             # was the previous modifier never applied to any defs?
-            add_offense(unused, message: format(MSG, current: cur_vis)) if unused
+            if unused
+              add_offense(unused, message: format(MSG, current: cur_vis)) do |corrector|
+                autocorrect(corrector, unused)
+              end
+            end
             # once we have already warned about a certain modifier, don't
             # warn again even if it is never applied to any method defs
             unused = node
@@ -251,7 +259,7 @@ module RuboCop
               PATTERN
             end
 
-            send(matcher_name, child)
+            public_send(matcher_name, child)
           end
         end
 
@@ -275,7 +283,7 @@ module RuboCop
               PATTERN
             end
 
-            send(matcher_name, child)
+            public_send(matcher_name, child)
           end
         end
       end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'tmpdir'
-require 'fileutils'
 
 RSpec.shared_context 'isolated environment', :isolated_environment do
   around do |example|
@@ -13,19 +12,22 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
       # get mismatched pathnames when loading config files later on.
       tmpdir = File.realpath(tmpdir)
 
+      virtual_home = File.expand_path(File.join(tmpdir, 'home'))
+      Dir.mkdir(virtual_home)
+      ENV['HOME'] = virtual_home
+      ENV.delete('XDG_CONFIG_HOME')
+
+      base_dir = example.metadata[:project_inside_home] ? virtual_home : tmpdir
+      root = example.metadata[:root]
+      working_dir = root ? File.join(base_dir, 'work', root) : File.join(base_dir, 'work')
+
       # Make upwards search for .rubocop.yml files stop at this directory.
-      RuboCop::FileFinder.root_level = tmpdir
+      RuboCop::FileFinder.root_level = working_dir
 
       begin
-        virtual_home = File.expand_path(File.join(tmpdir, 'home'))
-        Dir.mkdir(virtual_home)
-        ENV['HOME'] = virtual_home
-        ENV.delete('XDG_CONFIG_HOME')
+        FileUtils.mkdir_p(working_dir)
 
-        working_dir = File.join(tmpdir, 'work')
-        Dir.mkdir(working_dir)
-
-        RuboCop::PathUtil.chdir(working_dir) do
+        Dir.chdir(working_dir) do
           example.run
         end
       ensure
@@ -38,18 +40,28 @@ RSpec.shared_context 'isolated environment', :isolated_environment do
   end
 end
 
+RSpec.shared_context 'maintain registry', :restore_registry do
+  around(:each) do |example|
+    RuboCop::Cop::Registry.with_temporary_global { example.run }
+  end
+
+  def stub_cop_class(name, inherit: RuboCop::Cop::Base, &block)
+    klass = Class.new(inherit, &block)
+    stub_const(name, klass)
+    klass
+  end
+end
+
 # This context assumes nothing and defines `cop`, among others.
 RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
   ### Meant to be overridden at will
 
-  let(:source) { 'code = {some: :ruby}' }
-
   let(:cop_class) do
-    if described_class.is_a?(Class) && described_class < RuboCop::Cop::Cop
-      described_class
-    else
-      RuboCop::Cop::Cop
+    unless described_class.is_a?(Class) && described_class < RuboCop::Cop::Base
+      raise 'Specify which cop class to use (e.g `let(:cop_class) { RuboCop::Cop::Base }`, ' \
+            'or RuboCop::Cop::Cop for legacy)'
     end
+    described_class
   end
 
   let(:cop_config) { {} }
@@ -96,7 +108,6 @@ RSpec.shared_context 'config', :config do # rubocop:disable Metrics/BlockLength
 
   let(:cop) do
     cop_class.new(config, cop_options)
-             .tap { |cop| cop.processed_source = processed_source }
   end
 end
 
@@ -126,4 +137,8 @@ end
 
 RSpec.shared_context 'ruby 2.7', :ruby27 do
   let(:ruby_version) { 2.7 }
+end
+
+RSpec.shared_context 'ruby 3.0', :ruby30 do
+  let(:ruby_version) { 3.0 }
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantInterpolation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantInterpolation, :config do
   it 'registers an offense for "#{1 + 1}"' do
     expect_offense(<<~'RUBY')
       "#{1 + 1}"
@@ -154,6 +152,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantInterpolation do
 
     expect_correction(<<~'RUBY')
       $+.to_s
+    RUBY
+  end
+
+  it 'registers an offense for "#{number}"' do
+    expect_offense(<<~'RUBY')
+      "#{number}"
+      ^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      number.to_s
+    RUBY
+  end
+
+  it 'registers an offense for "#{do_something(42)}"' do
+    expect_offense(<<~'RUBY')
+      "#{do_something(42)}"
+      ^^^^^^^^^^^^^^^^^^^^^ Prefer `to_s` over string interpolation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      do_something(42).to_s
     RUBY
   end
 

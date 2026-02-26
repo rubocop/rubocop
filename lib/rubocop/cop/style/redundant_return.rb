@@ -47,8 +47,9 @@ module RuboCop
       #     return x, y
       #   end
       #
-      class RedundantReturn < Cop
+      class RedundantReturn < Base
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Redundant `return` detected.'
         MULTI_RETURN_MSG = 'To return multiple values, use an array.'
@@ -58,16 +59,6 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          lambda do |corrector|
-            if node.arguments?
-              correct_with_arguments(node, corrector)
-            else
-              correct_without_arguments(node, corrector)
-            end
-          end
-        end
-
         private
 
         def correct_without_arguments(return_node, corrector)
@@ -75,10 +66,14 @@ module RuboCop
         end
 
         def correct_with_arguments(return_node, corrector)
-          if return_node.arguments.size > 1
+          if return_node.children.size > 1
             add_brackets(corrector, return_node)
           elsif hash_without_braces?(return_node.first_argument)
             add_braces(corrector, return_node.first_argument)
+          end
+          if return_node.splat_argument?
+            first_argument = return_node.first_argument
+            corrector.replace(first_argument, first_argument.source.gsub(/\A\*/, ''))
           end
 
           keyword = range_with_surrounding_space(range: return_node.loc.keyword,
@@ -108,8 +103,8 @@ module RuboCop
           when :return then check_return_node(node)
           when :case   then check_case_node(node)
           when :if     then check_if_node(node)
-          when :rescue, :resbody
-            check_rescue_node(node)
+          when :rescue then check_rescue_node(node)
+          when :resbody then check_resbody_node(node)
           when :ensure then check_ensure_node(node)
           when :begin, :kwbegin
             check_begin_node(node)
@@ -121,7 +116,13 @@ module RuboCop
           return if cop_config['AllowMultipleReturnValues'] &&
                     node.children.size > 1
 
-          add_offense(node, location: :keyword)
+          add_offense(node.loc.keyword, message: message(node)) do |corrector|
+            if node.arguments?
+              correct_with_arguments(node, corrector)
+            else
+              correct_without_arguments(node, corrector)
+            end
+          end
         end
 
         def check_case_node(node)
@@ -137,9 +138,12 @@ module RuboCop
         end
 
         def check_rescue_node(node)
-          node.child_nodes.each do |child_node|
-            check_branch(child_node)
-          end
+          node.branches.each { |branch| check_branch(branch) }
+          check_branch(node.body) unless node.else?
+        end
+
+        def check_resbody_node(node)
+          check_branch(node.body)
         end
 
         def check_ensure_node(node)
