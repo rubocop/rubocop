@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::ToJSON do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::ToJSON, :config do
   it 'registers an offense and corrects using `#to_json` without arguments' do
     expect_offense(<<~RUBY)
       def to_json

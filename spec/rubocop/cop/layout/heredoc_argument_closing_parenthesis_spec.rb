@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis, :config do
   context 'correct cases' do
     it 'accepts simple correct case' do
       expect_no_offenses(<<~RUBY)
@@ -19,6 +17,29 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
         SQL
           bar
         NOSQL
+      RUBY
+    end
+
+    it 'accepts method chain with heredoc argument correct case' do
+      expect_no_offenses(<<~RUBY)
+        do_something(
+          Model
+            .foo(<<~CODE)
+              code
+            CODE
+            .bar(<<~CODE))
+              code
+            CODE
+      RUBY
+    end
+
+    it 'accepts method with heredoc argument of proc correct case' do
+      expect_no_offenses(<<~RUBY)
+        outer_method(-> {
+          inner_method(<<~CODE)
+            code
+          CODE
+        })
       RUBY
     end
 
@@ -40,6 +61,18 @@ RSpec.describe RuboCop::Cop::Layout::HeredocArgumentClosingParenthesis do
         SQL
           bar
         NOSQL
+      RUBY
+    end
+
+    it 'accepts when there is an argument between a heredoc argument and the closing paretheses' do
+      expect_no_offenses(<<~RUBY)
+        foo(<<~TEXT,
+            Lots of
+            Lovely
+            Text
+          TEXT
+          some_arg: { foo: "bar" }
+        )
       RUBY
     end
 

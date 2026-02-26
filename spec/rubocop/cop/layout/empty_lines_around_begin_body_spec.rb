@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundBeginBody, :config do
   shared_examples 'accepts' do |name, code|
     it "accepts #{name}" do
       expect_no_offenses(code)

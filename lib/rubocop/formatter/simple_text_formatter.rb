@@ -13,6 +13,7 @@ module RuboCop
       include PathUtil
 
       COLOR_FOR_SEVERITY = {
+        info:       :gray,
         refactor:   :yellow,
         convention: :yellow,
         warning:    :magenta,
@@ -76,7 +77,7 @@ module RuboCop
       end
 
       def colored_severity_code(offense)
-        color = COLOR_FOR_SEVERITY[offense.severity.name]
+        color = COLOR_FOR_SEVERITY.fetch(offense.severity.name)
         colorize(offense.severity.code, color)
       end
 
@@ -90,6 +91,8 @@ module RuboCop
             green('[Todo] ')
           elsif offense.corrected?
             green('[Corrected] ')
+          elsif offense.correctable?
+            yellow('[Correctable] ')
           else
             ''
           end

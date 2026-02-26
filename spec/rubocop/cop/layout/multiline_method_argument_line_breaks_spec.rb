@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::MultilineMethodArgumentLineBreaks, :config do
   context 'when one argument on same line' do
     it 'does not add any offenses' do
       expect_no_offenses(<<~RUBY)

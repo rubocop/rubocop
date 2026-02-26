@@ -44,6 +44,18 @@ RSpec.describe RuboCop::Cop::Naming::BlockParameterName, :config do
     RUBY
   end
 
+  it 'registers offense when param with prefix is less than minimum length' do
+    expect_offense(<<~RUBY)
+      something do |_a, __b, *c, **__d|
+                    ^^ Block parameter must be at least 2 characters long.
+                        ^^^ Block parameter must be at least 2 characters long.
+                             ^^ Block parameter must be at least 2 characters long.
+                                 ^^^^^ Block parameter must be at least 2 characters long.
+        do_stuff
+      end
+    RUBY
+  end
+
   it 'registers offense when param contains uppercase characters' do
     expect_offense(<<~RUBY)
       something { |number_One| do_stuff }

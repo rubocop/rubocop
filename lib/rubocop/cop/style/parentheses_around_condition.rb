@@ -71,6 +71,7 @@ module RuboCop
 
         private
 
+        # @!method control_op_condition(node)
         def_node_matcher :control_op_condition, <<~PATTERN
           (begin $_ ...)
         PATTERN

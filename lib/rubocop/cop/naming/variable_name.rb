@@ -20,6 +20,7 @@ module RuboCop
       #   # good
       #   fooBar = 1
       class VariableName < Base
+        include AllowedIdentifiers
         include ConfigurableNaming
 
         MSG = 'Use %<style>s for variable names.'
@@ -27,6 +28,7 @@ module RuboCop
         def on_lvasgn(node)
           name, = *node
           return unless name
+          return if allowed_identifier?(name)
 
           check_name(node, name, node.loc.name)
         end

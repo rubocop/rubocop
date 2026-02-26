@@ -31,60 +31,57 @@ module RuboCop
       #   def foo
       #     bar
       #   end
-      class IndentationStyle < Cop
+      class IndentationStyle < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = '%<type>s detected in indentation.'
 
-        def investigate(processed_source)
+        def on_new_investigation
           str_ranges = string_literal_ranges(processed_source.ast)
 
           processed_source.lines.each.with_index(1) do |line, lineno|
-            match = find_offence(line)
-            next unless match
-
-            range = source_range(processed_source.buffer,
-                                 lineno,
-                                 match.begin(0)...match.end(0))
+            next unless (range = find_offence(line, lineno))
             next if in_string_literal?(str_ranges, range)
 
-            add_offense(range, location: range)
-          end
-        end
-
-        def autocorrect(range)
-          if range.source.include?("\t")
-            autocorrect_lambda_for_tabs(range)
-          else
-            autocorrect_lambda_for_spaces(range)
+            add_offense(range) do |corrector|
+              autocorrect(corrector, range)
+            end
           end
         end
 
         private
 
-        def find_offence(line)
-          if style == :spaces
-            line.match(/\A\s*\t+/)
+        def autocorrect(corrector, range)
+          if range.source.include?("\t")
+            autocorrect_lambda_for_tabs(corrector, range)
           else
-            line.match(/\A\s* +/)
+            autocorrect_lambda_for_spaces(corrector, range)
           end
         end
 
-        def autocorrect_lambda_for_tabs(range)
-          lambda do |corrector|
-            spaces = ' ' * configured_indentation_width
-            corrector.replace(range, range.source.gsub(/\t/, spaces))
-          end
+        def find_offence(line, lineno)
+          match = if style == :spaces
+                    line.match(/\A\s*\t+/)
+                  else
+                    line.match(/\A\s* +/)
+                  end
+          return unless match
+
+          source_range(processed_source.buffer, lineno, match.begin(0)...match.end(0))
         end
 
-        def autocorrect_lambda_for_spaces(range)
-          lambda do |corrector|
-            corrector.replace(range, range.source.gsub(/\A\s+/) do |match|
-              "\t" * (match.size / configured_indentation_width)
-            end)
-          end
+        def autocorrect_lambda_for_tabs(corrector, range)
+          spaces = ' ' * configured_indentation_width
+          corrector.replace(range, range.source.gsub(/\t/, spaces))
+        end
+
+        def autocorrect_lambda_for_spaces(corrector, range)
+          corrector.replace(range, range.source.gsub(/\A\s+/) do |match|
+            "\t" * (match.size / configured_indentation_width)
+          end)
         end
 
         def in_string_literal?(ranges, tabs_range)

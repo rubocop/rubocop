@@ -26,6 +26,18 @@ RSpec.describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
                    ^^^^^^ Name `test` block params `|x, y|`.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def m
+        [0, 1].reduce { |a, e| a + e }
+        [0, 1].reduce{ |a, e| a + e }
+        [0, 1].reduce(5) { |a, e| a + e }
+        [0, 1].reduce(5){ |a, e| a + e }
+        [0, 1].reduce (5) { |a, e| a + e }
+        [0, 1].reduce(5) { |a, e| a + e }
+        ala.test { |x, y| bala }
+      end
+    RUBY
   end
 
   it 'allows calls with proper argument names' do
@@ -49,7 +61,11 @@ RSpec.describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   it 'finds incorrectly named parameters with leading underscores' do
     expect_offense(<<~RUBY)
       File.foreach(filename).reduce(0) { |_x, _y| }
-                                         ^^^^^^^^ Name `reduce` block params `|a, e|`.
+                                         ^^^^^^^^ Name `reduce` block params `|_a, _e|`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.foreach(filename).reduce(0) { |_a, _e| }
     RUBY
   end
 

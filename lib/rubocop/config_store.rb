@@ -4,6 +4,9 @@ module RuboCop
   # Handles caching of configurations and association of inspected
   # ruby files to configurations.
   class ConfigStore
+    attr_reader :validated
+    alias validated? validated
+
     def initialize
       # @options_config stores a config that is specified in the command line.
       # This takes precedence over configs located in any directories
@@ -17,6 +20,9 @@ module RuboCop
       # @object_cache maps configuration file paths to
       # configuration objects so we only need to load them once.
       @object_cache = {}
+
+      # By default the config is validated before it can be used.
+      @validated = true
     end
 
     def options_config=(options_config)
@@ -27,6 +33,11 @@ module RuboCop
 
     def force_default_config!
       @options_config = ConfigLoader.default_configuration
+    end
+
+    def unvalidated
+      @validated = false
+      self
     end
 
     def for_file(file)
@@ -55,7 +66,7 @@ module RuboCop
       path = @path_cache[dir]
       @object_cache[path] ||= begin
         print "For #{dir}: " if ConfigLoader.debug?
-        ConfigLoader.configuration_from_file(path)
+        ConfigLoader.configuration_from_file(path, check: validated?)
       end
     end
   end

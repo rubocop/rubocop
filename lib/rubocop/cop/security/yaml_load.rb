@@ -21,6 +21,7 @@ module RuboCop
         MSG = 'Prefer using `YAML.safe_load` over `YAML.load`.'
         RESTRICT_ON_SEND = %i[load].freeze
 
+        # @!method yaml_load(node)
         def_node_matcher :yaml_load, <<~PATTERN
           (send (const {nil? cbase} :YAML) :load ...)
         PATTERN

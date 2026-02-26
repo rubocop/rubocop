@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
   context 'on if..else with identical bodies' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)
@@ -91,7 +89,7 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches do
     end
   end
 
-  # Regression: https://github.com/rubocop-hq/rubocop/issues/3868
+  # Regression: https://github.com/rubocop/rubocop/issues/3868
   context 'when one of the case branches is empty' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)

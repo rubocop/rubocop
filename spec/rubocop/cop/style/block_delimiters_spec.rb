@@ -34,7 +34,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       'EnforcedStyle' => 'semantic',
       'ProceduralMethods' => %w[tap],
       'FunctionalMethods' => %w[let],
-      'IgnoredMethods' => %w[lambda]
+      'IgnoredMethods' => ['lambda', /test/]
     }
 
     let(:cop_config) { cop_config }
@@ -168,10 +168,17 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
-    it 'accepts a multi-line functional block with do-end if it is ' \
-       'an ignored method' do
+    it 'accepts a multi-line functional block with do-end if it is an ignored method' do
       expect_no_offenses(<<~RUBY)
         foo = lambda do
+          puts 42
+        end
+      RUBY
+    end
+
+    it 'accepts a multi-line functional block with do-end if it is an ignored method by regex' do
+      expect_no_offenses(<<~RUBY)
+        foo = test_method do
           puts 42
         end
       RUBY
@@ -218,6 +225,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             x
           }
         RUBY
+
         expect_correction(<<~RUBY)
           each do |x|
             x
@@ -232,6 +240,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             x
           }
         RUBY
+
         expect_correction(<<~RUBY)
           each do |x|
             x
@@ -263,6 +272,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         end
       RUBY
+
       expect_correction(<<~RUBY)
         foo = map { |x|
           x
@@ -277,6 +287,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         end
       RUBY
+
       expect_correction(<<~RUBY)
         foo = map { |x|
           x
@@ -292,6 +303,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
           x
         end)
       RUBY
+
       expect_correction(<<~RUBY)
         puts (map { |x|
           x
@@ -303,7 +315,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'line count-based style' do
     cop_config = {
       'EnforcedStyle' => 'line_count_based',
-      'IgnoredMethods' => %w[proc]
+      'IgnoredMethods' => ['proc', /test/]
     }
 
     let(:cop_config) { cop_config }
@@ -315,6 +327,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         block do |x| end
               ^^ Prefer `{...}` over `do...end` for single-line blocks.
       RUBY
+
       expect_correction(<<~RUBY)
         block { |x| }
       RUBY
@@ -325,6 +338,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         s.subspec 'Subspec' do |sp| end
                             ^^ Prefer `{...}` over `do...end` for single-line blocks.
       RUBY
+
       expect_no_corrections
     end
 
@@ -383,6 +397,14 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         RUBY
       end
 
+      it 'accepts a multi-line functional block with {} if it is an ignored method by regex' do
+        expect_no_offenses(<<~RUBY)
+          foo = test_method {
+            puts 42
+          }
+        RUBY
+      end
+
       it 'registers an offense for braces if do-end would not change ' \
          'the meaning' do
         expect_offense(<<~RUBY)
@@ -419,6 +441,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             other_method
           }
         RUBY
+
         expect_correction(<<~RUBY)
           each do |x|
             some_method
@@ -435,6 +458,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
             puts a
           }}
         RUBY
+
         expect_correction(<<~RUBY)
           (0..3).each do |a| a.times do
             puts a
@@ -455,7 +479,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'braces for chaining style' do
     cop_config = {
       'EnforcedStyle' => 'braces_for_chaining',
-      'IgnoredMethods' => %w[proc]
+      'IgnoredMethods' => ['proc', /test/]
     }
 
     let(:cop_config) { cop_config }
@@ -479,6 +503,14 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
        'an ignored method' do
       expect_no_offenses(<<~RUBY)
         foo = proc {
+          puts 42
+        }
+      RUBY
+    end
+
+    it 'accepts a multi-line functional block with {} if it is an ignored method by regex' do
+      expect_no_offenses(<<~RUBY)
+        foo = test_method {
           puts 42
         }
       RUBY
@@ -574,7 +606,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'always braces' do
     cop_config = {
       'EnforcedStyle' => 'always_braces',
-      'IgnoredMethods' => %w[proc]
+      'IgnoredMethods' => ['proc', /test/]
     }
 
     let(:cop_config) { cop_config }
@@ -607,6 +639,7 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
         s.subspec 'Subspec' do |sp| end
                             ^^ Prefer `{...}` over `do...end` for blocks.
       RUBY
+
       expect_no_corrections
     end
 
@@ -644,6 +677,15 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
        'an ignored method' do
       expect_no_offenses(<<~RUBY)
         foo = proc do
+          puts 42
+        end
+      RUBY
+    end
+
+    it 'accepts a multi-line functional block with do-end if it is ' \
+       'an ignored method by regex' do
+      expect_no_offenses(<<~RUBY)
+        foo = test_method do
           puts 42
         end
       RUBY

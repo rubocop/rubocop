@@ -2,20 +2,20 @@
 
 RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
   context 'Code segment with only top-level return statement' do
-    it 'Expects no offense from the return without arguments' do
+    it 'expects no offense from the return without arguments' do
       expect_no_offenses(<<~RUBY)
         return
       RUBY
     end
 
-    it 'Expects offense from the return with arguments' do
+    it 'expects offense from the return with arguments' do
       expect_offense(<<~RUBY)
         return 1, 2, 3
         ^^^^^^^^^^^^^^ Top level return with argument detected.
       RUBY
     end
 
-    it 'Expects multiple offenses from the return with arguments statements' do
+    it 'expects multiple offenses from the return with arguments statements' do
       expect_offense(<<~RUBY)
         return 1, 2, 3
         ^^^^^^^^^^^^^^ Top level return with argument detected.
@@ -30,7 +30,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
   end
 
   context 'Code segment with block level returns other than the top-level return' do
-    it 'Expects no offense from the return without arguments' do
+    it 'expects no offense from the return without arguments' do
       expect_no_offenses(<<~RUBY)
         foo
 
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
       RUBY
     end
 
-    it 'Expects offense from the return with arguments' do
+    it 'expects offense from the return with arguments' do
       expect_offense(<<~RUBY)
         foo
 
@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
   end
 
   context 'Code segment with method-level return statements' do
-    it 'Expects offense when method-level & top-level return co-exist' do
+    it 'expects offense when method-level & top-level return co-exist' do
       expect_offense(<<~RUBY)
         def method
           return 'Hello World'
@@ -70,7 +70,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
   end
 
   context 'Code segment with inline if along with top-level return' do
-    it 'Expects no offense from the return without arguments' do
+    it 'expects no offense from the return without arguments' do
       expect_no_offenses(<<~RUBY)
         foo
 
@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
       RUBY
     end
 
-    it 'Expects multiple offense from the return with arguments' do
+    it 'expects multiple offense from the return with arguments' do
       expect_offense(<<~RUBY)
         foo
         return 1, 2, 3 if 1 == 1
@@ -103,7 +103,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
   end
 
   context 'Code segment containing semi-colon separated statements' do
-    it 'Expects an offense from the return with arguments and multi-line code' do
+    it 'expects an offense from the return with arguments and multi-line code' do
       expect_offense(<<~RUBY)
         foo
 
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
       RUBY
     end
 
-    it 'Expects no offense from the return with arguments and multi-line code' do
+    it 'expects no offense from the return with arguments and multi-line code' do
       expect_no_offenses(<<~RUBY)
         foo
 

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::IfUnlessModifierOfIfUnless, :config do
   it 'provides a good error message' do
     expect_offense(<<~RUBY)
       condition ? then_part : else_part unless external_condition

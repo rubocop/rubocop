@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Generator do
                 # TODO: Implement the cop in here.
                 #
                 # In many cases, you can use a node matcher for matching node pattern.
-                # See https://github.com/rubocop-hq/rubocop-ast/blob/master/lib/rubocop/ast/node_pattern.rb
+                # See https://github.com/rubocop/rubocop-ast/blob/master/lib/rubocop/ast/node_pattern.rb
                 #
                 # For example
                 MSG = 'Use `#good_method` instead of `#bad_method`.'
@@ -110,9 +110,7 @@ RSpec.describe RuboCop::Cop::Generator do
       generated_source = <<~SPEC
         # frozen_string_literal: true
 
-        RSpec.describe RuboCop::Cop::Style::FakeCop do
-          subject(:cop) { described_class.new(config) }
-
+        RSpec.describe RuboCop::Cop::Style::FakeCop, :config do
           let(:config) { RuboCop::Config.new }
 
           # TODO: Write test code
@@ -333,6 +331,11 @@ RSpec.describe RuboCop::Cop::Generator do
     end
     let(:options) { { formatters: [] } }
     let(:runner) { RuboCop::Runner.new(options, config) }
+
+    before do
+      # Ignore any config validation errors
+      allow_any_instance_of(RuboCop::ConfigValidator).to receive(:validate) # rubocop:disable RSpec/AnyInstance
+    end
 
     it 'generates a cop file that has no offense' do
       generator.write_source

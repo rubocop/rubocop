@@ -48,7 +48,7 @@ module RuboCop
       def autocorrect_multiline_words(node, escape, delimiters)
         contents = process_multiline_words(node, escape, delimiters)
         contents << end_content(node.source)
-        contents.join('')
+        contents.join
       end
 
       def autocorrect_words(node, escape, delimiters)

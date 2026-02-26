@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceInsideRangeLiteral, :config do
   it 'registers an offense for space inside .. literal' do
     expect_offense(<<~RUBY)
       1 .. 2

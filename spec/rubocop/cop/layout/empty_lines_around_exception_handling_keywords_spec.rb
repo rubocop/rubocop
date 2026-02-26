@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
+RSpec.describe RuboCop::Cop::Layout::EmptyLinesAroundExceptionHandlingKeywords, :config do
   let(:message) { '^{} Extra empty line detected' }
 
   shared_examples 'accepts' do |name, code|

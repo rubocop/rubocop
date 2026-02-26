@@ -64,6 +64,11 @@ module RuboCop
         with(without_department.values.flatten)
       end
 
+      # @return [Boolean] Checks if given name is department
+      def department?(name)
+        departments.include? name.to_sym
+      end
+
       def contains_cop_matching?(names)
         cops.any? { |cop| cop.match?(names) }
       end
@@ -179,13 +184,17 @@ module RuboCop
         cops.map(&:cop_name)
       end
 
+      def names_for_department(department)
+        cops.select { |cop| cop.department == department.to_sym }.map(&:cop_name)
+      end
+
       def ==(other)
         cops == other.cops
       end
 
       def sort!
         clear_enrollment_queue
-        @registry = Hash[@registry.sort_by { |badge, _| badge.cop_name }]
+        @registry = @registry.sort_by { |badge, _| badge.cop_name }.to_h
 
         self
       end
@@ -202,6 +211,12 @@ module RuboCop
       # @return [Class, nil]
       def find_by_cop_name(cop_name)
         to_h[cop_name].first
+      end
+
+      def freeze
+        clear_enrollment_queue
+        unqualified_cop_names # build cache
+        super
       end
 
       @global = new
@@ -226,6 +241,10 @@ module RuboCop
         yield
       ensure
         @global = previous
+      end
+
+      def self.reset!
+        @global = new
       end
 
       private

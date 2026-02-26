@@ -18,7 +18,10 @@ module RuboCop
 
         private
 
+        # @!method constant_definition?(node)
         def_node_matcher :constant_definition?, '{class module}'
+
+        # @!method empty_line_required?(node)
         def_node_matcher :empty_line_required?,
                          '{def defs class module (send nil? {:private :protected :public})}'
 

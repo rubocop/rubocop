@@ -33,6 +33,7 @@ module RuboCop
         MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'
         RESTRICT_ON_SEND = %i[first last [] at slice].freeze
 
+        # @!method sample_candidate?(node)
         def_node_matcher :sample_candidate?, <<~PATTERN
           (send $(send _ :shuffle $...) ${:#{RESTRICT_ON_SEND.join(' :')}} $...)
         PATTERN

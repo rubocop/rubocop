@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::NestedTernaryOperator, :config do
   it 'registers an offense and corrects for a nested ternary operator expression' do
     expect_offense(<<~RUBY)
       a ? (b ? b1 : b2) : a2

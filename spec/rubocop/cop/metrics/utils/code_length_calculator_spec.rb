@@ -82,6 +82,36 @@ RSpec.describe RuboCop::Cop::Metrics::Utils::CodeLengthCalculator do
         expect(length).to eq(2)
       end
 
+      it 'folds hashes as method args if asked' do
+        source = parse_source(<<~RUBY)
+          def test
+            a = 1
+            foo({
+              foo: :bar,
+              baz: :quux
+            })
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(2)
+      end
+
+      it 'folds hashes as method kwargs if asked' do
+        source = parse_source(<<~RUBY)
+          def test
+            a = 1
+            foo(
+              foo: :bar,
+              baz: :quux
+            )
+          end
+        RUBY
+
+        length = described_class.new(source.ast, source, foldable_types: %i[hash]).calculate
+        expect(length).to eq(2)
+      end
+
       it 'folds heredocs if asked' do
         source = parse_source(<<~RUBY)
           def test

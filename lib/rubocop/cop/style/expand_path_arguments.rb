@@ -54,6 +54,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[expand_path].freeze
 
+        # @!method file_expand_path(node)
         def_node_matcher :file_expand_path, <<~PATTERN
           (send
             (const {nil? cbase} :File) :expand_path
@@ -61,6 +62,7 @@ module RuboCop
             $_)
         PATTERN
 
+        # @!method pathname_parent_expand_path(node)
         def_node_matcher :pathname_parent_expand_path, <<~PATTERN
           (send
             (send
@@ -68,6 +70,7 @@ module RuboCop
                 $_) :parent) :expand_path)
         PATTERN
 
+        # @!method pathname_new_parent_expand_path(node)
         def_node_matcher :pathname_new_parent_expand_path, <<~PATTERN
           (send
             (send

@@ -45,7 +45,8 @@ module RuboCop
         MSG = 'Empty line detected around arguments.'
 
         def on_send(node)
-          return if node.single_line? || node.arguments.empty?
+          return if node.single_line? || node.arguments.empty? ||
+                    receiver_and_method_call_on_different_lines?(node)
 
           extra_lines(node) do |range|
             add_offense(range) do |corrector|
@@ -56,6 +57,10 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        def receiver_and_method_call_on_different_lines?(node)
+          node.receiver && node.receiver.loc.last_line != node.loc.selector&.line
+        end
 
         def empty_lines(node)
           lines = processed_lines(node)

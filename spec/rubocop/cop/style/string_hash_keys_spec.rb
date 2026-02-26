@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::StringHashKeys do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::StringHashKeys, :config do
   it 'registers an offense when using strings as keys' do
     expect_offense(<<~RUBY)
       { 'one' => 1 }

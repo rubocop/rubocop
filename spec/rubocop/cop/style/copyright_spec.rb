@@ -45,6 +45,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'
 
       expect_offense(source)
+
       expect_correction(<<~RUBY)
         # Copyright (c) 2015 Acme Inc.
         # test
@@ -81,6 +82,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
         # Copyright (c) 2015 Acme Inc.
         names << 'James'
       RUBY
+
       expect_correction(<<~RUBY)
         # Copyright (c) 2015 Acme Inc.
         # test2
@@ -98,6 +100,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
       expect_offense(<<~'RUBY')
         ^ Include a copyright notice matching [...]
       RUBY
+
       expect_correction(<<~RUBY)
         # Copyright (c) 2015 Acme Inc.
       RUBY
@@ -115,6 +118,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
         names = Array.new
         names << 'James'
       RUBY
+
       expect_correction(<<~RUBY)
         #!/usr/bin/env ruby
         # Copyright (c) 2015 Acme Inc.
@@ -135,6 +139,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
         names = Array.new
         names << 'James'
       RUBY
+
       expect_correction(<<~RUBY)
         # encoding: utf-8
         # Copyright (c) 2015 Acme Inc.
@@ -157,6 +162,7 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
         names = Array.new
         names << 'James'
       RUBY
+
       expect_correction(<<~RUBY)
         #!/usr/bin/env ruby
         # encoding: utf-8

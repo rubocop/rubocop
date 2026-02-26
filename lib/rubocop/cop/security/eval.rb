@@ -15,6 +15,7 @@ module RuboCop
         MSG = 'The use of `eval` is a serious security risk.'
         RESTRICT_ON_SEND = %i[eval].freeze
 
+        # @!method eval?(node)
         def_node_matcher :eval?, <<~PATTERN
           (send {nil? (send nil? :binding)} :eval $!str ...)
         PATTERN

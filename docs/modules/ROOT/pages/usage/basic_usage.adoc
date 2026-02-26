@@ -235,7 +235,7 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | Run only safe cops.
 
 | `--safe-auto-correct`
-| Omit cops annotated as "not safe". See xref:auto_correct.adoc[Auto-correct].
+| Omit cops annotated as "not safe". See xref:usage/auto_correct.adoc[Auto-correct].
 
 | `--show-cops`
 | Shows available cops and their configuration.

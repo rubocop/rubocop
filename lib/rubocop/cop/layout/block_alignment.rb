@@ -68,6 +68,7 @@ module RuboCop
 
         MSG = '%<current>s is not aligned with %<prefer>s%<alt_prefer>s.'
 
+        # @!method block_end_align_target?(node, child)
         def_node_matcher :block_end_align_target?, <<~PATTERN
           {assignment?
            splat

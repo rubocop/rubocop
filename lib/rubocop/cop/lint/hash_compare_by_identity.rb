@@ -24,6 +24,7 @@ module RuboCop
 
         MSG = 'Use `Hash#compare_by_identity` instead of using `object_id` for keys.'
 
+        # @!method id_as_hash_key?(node)
         def_node_matcher :id_as_hash_key?, <<~PATTERN
           (send _ {:key? :has_key? :fetch :[] :[]=} (send _ :object_id) ...)
         PATTERN

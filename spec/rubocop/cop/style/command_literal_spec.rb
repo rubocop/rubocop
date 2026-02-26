@@ -36,6 +36,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
         `ls`
         ^^^^ Use `%x` around command string.
       RUBY
+
       expect_correction(<<~RUBY)
         %x[ls]
       RUBY
@@ -53,6 +54,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
         `ls`
         ^^^^ Use `%x` around command string.
       RUBY
+
       expect_correction(<<~'RUBY')
         %x(ls)
       RUBY
@@ -70,6 +72,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
         `ls`
         ^^^^ Use `%x` around command string.
       RUBY
+
       expect_correction(<<~'RUBY')
         %x[ls]
       RUBY
@@ -103,6 +106,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
         RUBY
+
         expect_no_corrections
       end
 
@@ -135,6 +139,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
             echo \`ls -l\`
           `
         RUBY
+
         expect_no_corrections
       end
 
@@ -158,6 +163,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
           foo = %x(ls)
                 ^^^^^^ Use backticks around command string.
         RUBY
+
         expect_correction(<<~RUBY)
           foo = `ls`
         RUBY
@@ -177,6 +183,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
             foo = %x(echo `ls`)
                   ^^^^^^^^^^^^^ Use backticks around command string.
           RUBY
+
           expect_no_corrections
         end
       end
@@ -222,6 +229,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
               echo `ls -l`
             )
           RUBY
+
           expect_no_corrections
         end
       end
@@ -250,6 +258,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
         RUBY
+
         expect_no_corrections
       end
     end
@@ -282,6 +291,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
             echo \`ls -l\`
           `
         RUBY
+
         expect_no_corrections
       end
     end
@@ -336,6 +346,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
           foo = `echo \`ls\``
                 ^^^^^^^^^^^^^ Use `%x` around command string.
         RUBY
+
         expect_no_corrections
       end
 
@@ -376,6 +387,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
             echo \`ls -l\`
           `
         RUBY
+
         expect_no_corrections
       end
     end
@@ -406,6 +418,7 @@ RSpec.describe RuboCop::Cop::Style::CommandLiteral, :config do
             foo = %x(echo `ls`)
                   ^^^^^^^^^^^^^ Use backticks around command string.
           RUBY
+
           expect_no_corrections
         end
       end

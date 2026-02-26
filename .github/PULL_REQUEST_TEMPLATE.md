@@ -12,6 +12,6 @@ Before submitting the PR make sure the following are checked:
 * [ ] Squashed related commits together.
 * [ ] Added tests.
 * [ ] Ran `bundle exec rake default`. It executes all tests and runs RuboCop on its own code.
-* [ ] Added an entry (file) to the [changelog folder](https://github.com/rubocop-hq/rubocop/blob/master/changelog/) named `{change_type}_{change_description}.md` if the new code introduces user-observable changes. See [changelog entry format](https://github.com/rubocop-hq/rubocop/blob/master/CONTRIBUTING.md#changelog-entry-format) for details.
+* [ ] Added an entry (file) to the [changelog folder](https://github.com/rubocop/rubocop/blob/master/changelog/) named `{change_type}_{change_description}.md` if the new code introduces user-observable changes. See [changelog entry format](https://github.com/rubocop/rubocop/blob/master/CONTRIBUTING.md#changelog-entry-format) for details.
 
 [1]: https://chris.beams.io/posts/git-commit/

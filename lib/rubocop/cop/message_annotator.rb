@@ -85,8 +85,11 @@ module RuboCop
         end
       end
 
+      # Returns the base style guide URL from AllCops or the specific department
+      #
+      # @return [String] style guide URL
       def style_guide_base_url
-        department_name = cop_name.split('/').first
+        department_name = cop_name.split('/')[0..-2].join('/')
 
         config.for_department(department_name)['StyleGuideBaseURL'] ||
           config.for_all_cops['StyleGuideBaseURL']

@@ -44,6 +44,7 @@ module RuboCop
 
         private
 
+        # @!method module_definition?(node)
         def_node_matcher :module_definition?, <<~PATTERN
           (casgn nil? _ (block (send (const {nil? cbase} :Module) :new) ...))
         PATTERN

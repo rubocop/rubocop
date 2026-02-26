@@ -254,3 +254,4 @@ Refactored for better separation of concern, being reusable, better result repor
  ** `Cop.registry` \=> `Registry.global`
  ** `Cop.all` \=> `Registry.all`
  ** `Cop.qualified_cop_name` \=> `Registry.qualified_cop_name`
+* The `ConfigurableMax` mixin for tracking exclude limits of configuration options is deprecated. Use `exclude_limit ParameterName` instead.

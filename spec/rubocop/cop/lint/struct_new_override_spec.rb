@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::StructNewOverride do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::StructNewOverride, :config do
   it 'registers an offense using `Struct.new(symbol)`' do
     expect_offense(<<~RUBY)
       Bad = Struct.new(:members)

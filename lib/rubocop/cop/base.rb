@@ -34,6 +34,7 @@ module RuboCop
     class Base # rubocop:disable Metrics/ClassLength
       extend RuboCop::AST::Sexp
       extend NodePattern::Macros
+      extend ExcludeLimit
       include RuboCop::AST::Sexp
       include Util
       include IgnoredNode
@@ -288,13 +289,6 @@ module RuboCop
         @current_corrector&.merge!(corrector) if corrector
       end
 
-      def correction_strategy
-        return :unsupported unless correctable?
-        return :uncorrected unless autocorrect?
-
-        :attempt_correction
-      end
-
       ### Reserved for Commissioner:
 
       def current_offense_locations
@@ -341,33 +335,42 @@ module RuboCop
 
       # @return [Symbol, Corrector] offense status
       def correct(range)
-        status = correction_strategy
-
         if block_given?
           corrector = Corrector.new(self)
           yield corrector
-          if !corrector.empty? && !self.class.support_autocorrect?
+          if corrector.empty?
+            corrector = nil
+          elsif !self.class.support_autocorrect?
             raise "The Cop #{name} must `extend AutoCorrector` to be able to autocorrect"
           end
         end
 
-        status = attempt_correction(range, corrector) if status == :attempt_correction
+        [use_corrector(range, corrector), corrector]
+      end
 
-        [status, corrector]
+      # @return [Symbol] offense status
+      def use_corrector(range, corrector)
+        if autocorrect?
+          attempt_correction(range, corrector)
+        elsif corrector && cop_config.fetch('AutoCorrect', true)
+          :uncorrected
+        else
+          :unsupported
+        end
       end
 
       # @return [Symbol] offense status
       def attempt_correction(range, corrector)
-        if corrector && !corrector.empty?
+        if corrector
           status = :corrected
         elsif disable_uncorrectable?
           corrector = disable_uncorrectable(range)
           status = :corrected_with_todo
         else
-          return :uncorrected
+          return :unsupported
         end
 
-        apply_correction(corrector) if corrector
+        apply_correction(corrector)
         status
       end
 

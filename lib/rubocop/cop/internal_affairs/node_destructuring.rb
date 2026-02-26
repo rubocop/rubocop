@@ -19,10 +19,12 @@ module RuboCop
         MSG = 'Use the methods provided with the node extensions instead ' \
               'of manually destructuring nodes.'
 
+        # @!method node_variable?(node)
         def_node_matcher :node_variable?, <<~PATTERN
           {(lvar [#node_suffix? _]) (send nil? [#node_suffix? _])}
         PATTERN
 
+        # @!method node_destructuring?(node)
         def_node_matcher :node_destructuring?, <<~PATTERN
           {(masgn (mlhs ...) {(send #node_variable? :children) (array (splat #node_variable?))})}
         PATTERN

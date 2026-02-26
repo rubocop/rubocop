@@ -4,11 +4,14 @@ module RuboCop
   module Cop
     module Layout
       # This cop checks the indentation of the first argument in a method call.
-      # Arguments after the first one are checked by Layout/ArgumentAlignment,
+      # Arguments after the first one are checked by `Layout/ArgumentAlignment`,
       # not by this cop.
       #
       # For indenting the first parameter of method _definitions_, check out
-      # Layout/FirstParameterIndentation.
+      # `Layout/FirstParameterIndentation`.
+      #
+      # This cop will respect `Layout/ArgumentAlignment` and will not work when
+      # `EnforcedStyle: with_fixed_indentation` is specified for `Layout/ArgumentAlignment`.
       #
       # @example
       #
@@ -141,15 +144,17 @@ module RuboCop
       #     nested_first_param),
       #   second_param
       #
-      class FirstArgumentIndentation < Cop
+      class FirstArgumentIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = 'Indent the first argument one step more than %<base>s.'
 
         def on_send(node)
-          return if !node.arguments? || node.operator_method?
+          return if style != :consistent && enforce_first_argument_with_fixed_indentation?
+          return if !node.arguments? || bare_operator?(node)
 
           indent = base_indentation(node) + configured_indentation_width
 
@@ -157,11 +162,15 @@ module RuboCop
         end
         alias on_csend on_send
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, column_delta)
+        private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
         end
 
-        private
+        def bare_operator?(node)
+          node.operator_method? && !node.dot?
+        end
 
         def message(arg_node)
           return 'Bad indentation of the first argument.' unless arg_node
@@ -202,13 +211,19 @@ module RuboCop
           node.source_range.begin_pos > parent.source_range.begin_pos
         end
 
+        # @!method eligible_method_call?(node)
         def_node_matcher :eligible_method_call?, <<~PATTERN
           (send _ !:[]= ...)
         PATTERN
 
         def base_range(send_node, arg_node)
-          range_between(send_node.source_range.begin_pos,
-                        arg_node.source_range.begin_pos)
+          parent = send_node.parent
+          start_node = if parent && (parent.splat_type? || parent.kwsplat_type?)
+                         send_node.parent
+                       else
+                         send_node
+                       end
+          range_between(start_node.source_range.begin_pos, arg_node.source_range.begin_pos)
         end
 
         # Returns the column of the given range. For single line ranges, this
@@ -244,6 +259,16 @@ module RuboCop
 
         def on_new_investigation
           @comment_lines = nil
+        end
+
+        def enforce_first_argument_with_fixed_indentation?
+          return false unless argument_alignment_config['Enabled']
+
+          argument_alignment_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def argument_alignment_config
+          config.for_cop('Layout/ArgumentAlignment')
         end
       end
     end

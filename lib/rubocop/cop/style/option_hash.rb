@@ -22,6 +22,7 @@ module RuboCop
       class OptionHash < Base
         MSG = 'Prefer keyword arguments to options hashes.'
 
+        # @!method option_hash(node)
         def_node_matcher :option_hash, <<~PATTERN
           (args ... $(optarg [#suspicious_name? _] (hash)))
         PATTERN

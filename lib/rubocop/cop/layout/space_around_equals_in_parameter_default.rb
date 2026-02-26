@@ -60,6 +60,7 @@ module RuboCop
 
           add_offense(range) do |corrector|
             autocorrect(corrector, range)
+            opposite_style_detected
           end
         end
 

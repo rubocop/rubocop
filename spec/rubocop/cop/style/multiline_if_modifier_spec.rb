@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::MultilineIfModifier do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::MultilineIfModifier, :config do
   context 'if guard clause' do
     it 'registers an offense' do
       expect_offense(<<~RUBY)

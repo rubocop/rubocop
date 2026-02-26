@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RedundantWithObject do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
   it 'registers an offense and corrects when using ' \
     '`ary.each_with_object { |v| v }`' do
     expect_offense(<<~RUBY)

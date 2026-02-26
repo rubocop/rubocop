@@ -732,13 +732,14 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
     end
 
     it 'fails' do
-      src = <<~RUBY
-        hash = {
-          a: 0,
-          bb: 1
-        }
-      RUBY
-      expect { inspect_source(src) }.to raise_error(RuntimeError)
+      expect do
+        expect_offense(<<~RUBY)
+          hash = {
+            a: 0,
+            bb: 1
+          }
+        RUBY
+      end.to raise_error(RuntimeError)
     end
   end
 

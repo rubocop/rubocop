@@ -80,6 +80,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[new].freeze
 
+        # @!method erb_new_with_non_keyword_arguments(node)
         def_node_matcher :erb_new_with_non_keyword_arguments, <<~PATTERN
           (send
             (const {nil? cbase} :ERB) :new $...)

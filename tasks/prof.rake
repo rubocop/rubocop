@@ -23,7 +23,7 @@ namespace :prof do
     _header, list, _code = *output
       .lines
       .grep_v(/RuboCop::Cop::Commissioner/) # ignore internal calls
-      .slice_when { |line| line.match?(/callees.*:|code:/) }
+      .slice_after { |line| line.match?(/callees.*:|code:/) }
     puts list.first(40)
   end
 

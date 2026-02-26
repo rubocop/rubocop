@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout, :config do
   it 'registers an offense for missing newline in do/end block w/o params' do
     expect_offense(<<~RUBY)
       test do foo
@@ -318,8 +316,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineBlockLayout do
     RUBY
   end
 
-  it 'does not auto-correct a trailing comma when only one argument ' \
-     'is present' do
+  it 'does not remove a trailing comma when only one argument is present' do
     expect_offense(<<~RUBY)
       def f
         X.map do |

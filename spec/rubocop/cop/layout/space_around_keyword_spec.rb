@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
   shared_examples 'missing before' do |highlight, expr, correct|
     it 'registers an offense for missing space before keyword in ' \
        "`#{expr}`" do

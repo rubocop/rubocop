@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::RandOne do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::RandOne, :config do
   shared_examples 'offenses' do |source|
     describe source do
       it 'registers an offense' do

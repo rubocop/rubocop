@@ -12,12 +12,12 @@ module RuboCop
       #
       # The maximum level of nesting allowed is configurable.
       class BlockNesting < Base
-        include ConfigurableMax
-
         NESTING_BLOCKS = %i[
           case if while while_post
           until until_post for resbody
         ].freeze
+
+        exclude_limit 'Max'
 
         def on_new_investigation
           return if processed_source.blank?

@@ -151,4 +151,44 @@ RSpec.describe RuboCop::MagicComment do
   include_examples 'magic comment',
                    '# vim:fileencoding=utf-8',
                    encoding: nil
+
+  describe '#valid_shareable_constant_value?' do
+    subject { described_class.parse(comment).valid_shareable_constant_value? }
+
+    context 'when given comment specified as `none`' do
+      let(:comment) { '# shareable_constant_value: none' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given comment specified as `literal`' do
+      let(:comment) { '# shareable_constant_value: literal' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given comment specified as `experimental_everything`' do
+      let(:comment) { '# shareable_constant_value: experimental_everything' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given comment specified as `experimental_copy`' do
+      let(:comment) { '# shareable_constant_value: experimental_copy' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given comment specified as unknown value' do
+      let(:comment) { '# shareable_constant_value: unknown' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when given comment is not specified' do
+      let(:comment) { '' }
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

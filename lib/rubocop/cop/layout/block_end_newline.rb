@@ -24,8 +24,9 @@ module RuboCop
       #   blah { |i|
       #     foo(i)
       #   }
-      class BlockEndNewline < Cop
+      class BlockEndNewline < Base
         include Alignment
+        extend AutoCorrector
 
         MSG = 'Expression at %<line>d, %<column>d should be on its own line.'
 
@@ -35,13 +36,8 @@ module RuboCop
           # If the end is on its own line, there is no offense
           return if begins_its_line?(node.loc.end)
 
-          add_offense(node, location: :end)
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.replace(delimiter_range(node),
-                              "\n#{node.loc.end.source}#{offset(node)}")
+          add_offense(node.loc.end, message: message(node)) do |corrector|
+            corrector.replace(delimiter_range(node), "\n#{node.loc.end.source}#{offset(node)}")
           end
         end
 

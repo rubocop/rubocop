@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
-  let(:cop_config) { { 'IgnoredMethods' => %w[respond_to] } }
-
   it 'registers an offense for a block with parameterless method call on ' \
      'param' do
     expect_offense(<<~RUBY)
@@ -46,8 +44,22 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('::Proc.new { |x| x.method }')
   end
 
-  it 'accepts ignored method' do
-    expect_no_offenses('respond_to { |format| format.xml }')
+  context 'with IgnoredMethods' do
+    context 'when given a string' do
+      let(:cop_config) { { 'IgnoredMethods' => %w[respond_to] } }
+
+      it 'accepts ignored method' do
+        expect_no_offenses('respond_to { |format| format.xml }')
+      end
+    end
+
+    context 'when given a regex' do
+      let(:cop_config) { { 'IgnoredMethods' => [/respond_/] } }
+
+      it 'accepts ignored method' do
+        expect_no_offenses('respond_to { |format| format.xml }')
+      end
+    end
   end
 
   it 'accepts block with no arguments' do
@@ -66,7 +78,7 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect_no_offenses('something { |x| y.method }')
   end
 
-  it 'accepts block with a block argument ' do
+  it 'accepts block with a block argument' do
     expect_no_offenses('something { |&x| x.call }')
   end
 
@@ -76,6 +88,17 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
 
   it 'accepts block with adding a comma after the sole argument' do
     expect_no_offenses('something { |x,| x.first }')
+  end
+
+  it 'accepts a block with an unused argument with an method call' do
+    expect_no_offenses('something { |_x| y.call }')
+  end
+
+  it 'accepts a block with an unused argument with an lvar' do
+    expect_no_offenses(<<~RUBY)
+      y = Y.new
+      something { |_x| y.call }
+    RUBY
   end
 
   context 'when the method has arguments' do
@@ -119,16 +142,53 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(&run).not_to raise_error
   end
 
-  context 'when `super` has arguments' do
-    it 'registers an offense' do
-      expect_offense(<<~RUBY)
-        super(one, two) { |x| x.test }
-                        ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `super` instead of a block.
-      RUBY
+  context 'when `AllowMethodsWithArguments: true`' do
+    let(:cop_config) { { 'AllowMethodsWithArguments' => true } }
 
-      expect_correction(<<~RUBY)
-        super(one, two, &:test)
-      RUBY
+    context 'when method has arguments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          do_something(one, two) { |x| x.test }
+        RUBY
+      end
+    end
+
+    context 'when `super` has arguments' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          super(one, two) { |x| x.test }
+        RUBY
+      end
+    end
+  end
+
+  context 'when `AllowMethodsWithArguments: false`' do
+    let(:cop_config) { { 'AllowMethodsWithArguments' => false } }
+
+    context 'when method has arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          do_something(one, two) { |x| x.test }
+                                 ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `do_something` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something(one, two, &:test)
+        RUBY
+      end
+    end
+
+    context 'when `super` has arguments' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          super(one, two) { |x| x.test }
+                          ^^^^^^^^^^^^^^ Pass `&:test` as an argument to `super` instead of a block.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          super(one, two, &:test)
+        RUBY
+      end
     end
   end
 
@@ -160,5 +220,42 @@ RSpec.describe RuboCop::Cop::Style::SymbolProc, :config do
         subject: 'bar', &:text
       )
     RUBY
+  end
+
+  context 'numblocks', :ruby27 do
+    it 'registers an offense for a block with a single numeric argument' do
+      expect_offense(<<~RUBY)
+        something { _1.foo }
+                  ^^^^^^^^^^ Pass `&:foo` as an argument to `something` instead of a block.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        something(&:foo)
+      RUBY
+    end
+
+    it 'accepts block with multiple numeric argumnets' do
+      expect_no_offenses('something { _1 + _2 }')
+    end
+
+    it 'accepts lambda with 1 argument' do
+      expect_no_offenses('-> { _1.method }')
+    end
+
+    it 'accepts proc with 1 argument' do
+      expect_no_offenses('proc { _1.method }')
+    end
+
+    it 'accepts block with only second numeric argument' do
+      expect_no_offenses('something { _2.first }')
+    end
+
+    it 'accepts Proc.new with 1 argument' do
+      expect_no_offenses('Proc.new { _1.method }')
+    end
+
+    it 'accepts ::Proc.new with 1 argument' do
+      expect_no_offenses('::Proc.new { _1.method }')
+    end
   end
 end

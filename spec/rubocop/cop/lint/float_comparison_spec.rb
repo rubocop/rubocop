@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::FloatComparison do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
   it 'registers an offense when comparing with float' do
     expect_offense(<<~RUBY)
       x == 0.1

@@ -1,14 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::DoubleNegation, :config do
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) do
     { 'EnforcedStyle' => enforced_style }
   end
 
   shared_examples 'common' do
-    it 'does not register an offense and corrects for `!!` when not a return location' do
+    it 'registers an offense and corrects for `!!` when not a return location' do
       expect_offense(<<~RUBY)
         def foo?
           foo

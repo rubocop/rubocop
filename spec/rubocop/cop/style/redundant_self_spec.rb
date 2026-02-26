@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantSelf do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
   it 'reports an offense a self receiver on an rvalue' do
     expect_offense(<<~RUBY)
       a = self.b
@@ -235,5 +233,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf do
 
   it 'accepts a self receiver of methods also defined on `Kernel`' do
     expect_no_offenses('self.open')
+  end
+
+  it 'accepts a self receiver on an lvalue of mlhs arguments' do
+    expect_no_offenses(<<~RUBY)
+      def do_something((a, b)) # This method expects Array that has 2 elements as argument.
+        self.a = a
+        self.b.some_method_call b
+      end
+    RUBY
   end
 end

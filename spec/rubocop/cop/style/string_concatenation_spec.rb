@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::StringConcatenation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
   it 'registers an offense and corrects for string concatenation' do
     expect_offense(<<~RUBY)
       email_with_name = user.name + ' <' + user.email + '>'
@@ -55,6 +53,16 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
   end
 
   context 'multiline' do
+    context 'string continuation' do
+      it 'does not register an offense' do
+        # handled by `Style/LineEndConcatenation` instead.
+        expect_no_offenses(<<~RUBY)
+          "this is a long string " +
+            "this is a continuation"
+        RUBY
+      end
+    end
+
     context 'simple expressions' do
       it 'registers an offense and corrects' do
         expect_offense(<<-RUBY)
@@ -155,6 +163,41 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation do
 
       expect_correction(<<-RUBY)
         email_with_name = "He said \\\"Arrest that man!\\\"."
+      RUBY
+    end
+  end
+
+  context 'empty quotes' do
+    it 'registers offense and corrects' do
+      expect_offense(<<-RUBY)
+        '"' + "foo" + '"'
+        ^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+        '"' + "foo" + "'"
+        ^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+        "'" + "foo" + '"'
+        ^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+        "'" + "foo" + '"' + "bar"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<-RUBY)
+        "\\\"foo\\\""
+        "\\\"foo'"
+        "'foo\\\""
+        "'foo\\\"bar"
+      RUBY
+    end
+  end
+
+  context 'double quotes inside string surrounded single quotes' do
+    it 'registers an offense and corrects with double quotes' do
+      expect_offense(<<-RUBY)
+        '"bar"' + foo
+        ^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+      RUBY
+
+      expect_correction(<<-RUBY)
+        "\\\"bar\\\"\#{foo}"
       RUBY
     end
   end

@@ -21,6 +21,7 @@ module RuboCop
         MSG = 'Replace with `Integer#%<method>s?`.'
         RESTRICT_ON_SEND = %i[== !=].freeze
 
+        # @!method even_odd_candidate?(node)
         def_node_matcher :even_odd_candidate?, <<~PATTERN
           (send
             {(send $_ :% (int 2))

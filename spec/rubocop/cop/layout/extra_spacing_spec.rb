@@ -330,16 +330,18 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         context 'being false' do
           sources.each do |reason, src|
             context "such as #{reason}" do
-              it 'registers offense(s)' do
-                # In these specific test cases, the extra space in question
-                # is to align comments, so it would be allowed by EITHER ONE
-                # being true.  Yes, that means technically it interferes a bit,
-                # but specifically in the way it was intended to.
-                if ['aligning tokens with empty line between',
-                    'aligning trailing comments'].include?(reason)
+              # In these specific test cases, the extra space in question
+              # is to align comments, so it would be allowed by EITHER ONE
+              # being true.  Yes, that means technically it interferes a bit,
+              # but specifically in the way it was intended to.
+              if ['aligning tokens with empty line between',
+                  'aligning trailing comments'].include?(reason)
+                it 'does not register an offense' do
                   src_without_annotations = src.gsub(/^ +\^.+\n/, '')
                   expect_no_offenses(src_without_annotations)
-                else
+                end
+              else
+                it 'registers offense(s)' do
                   expect_offense(src)
                 end
               end

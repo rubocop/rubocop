@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::SingleArgumentDig do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Style::SingleArgumentDig, :config do
   describe 'dig over literal' do
     context 'with single argument' do
       it 'registers an offense and corrects unsuitable use of dig' do

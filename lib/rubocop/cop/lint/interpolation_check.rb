@@ -23,10 +23,11 @@ module RuboCop
               'Use double quoted strings if you need interpolation.'
 
         def on_str(node)
-          parent = node.parent
-          return if parent && (parent.dstr_type? || parent.regexp_type?)
+          return unless node
+          return if string_or_regex?(node.parent)
           return unless /(?<!\\)#\{.*\}/.match?(node.source)
           return if heredoc?(node)
+          return unless node.loc.begin && node.loc.end
 
           add_offense(node) do |corrector|
             autocorrect(corrector, node)
@@ -34,6 +35,10 @@ module RuboCop
         end
 
         private
+
+        def string_or_regex?(node)
+          node&.dstr_type? || node&.regexp_type?
+        end
 
         def autocorrect(corrector, node)
           starting_token, ending_token = if node.source.include?('"')

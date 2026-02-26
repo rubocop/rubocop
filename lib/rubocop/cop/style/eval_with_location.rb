@@ -3,9 +3,19 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks `eval` method usage. `eval` can receive source location
-      # metadata, that are filename and line number. The metadata is used by
-      # backtraces. This cop recommends to pass the metadata to `eval` method.
+      # This cop ensures that eval methods (`eval`, `instance_eval`, `class_eval`
+      # and `module_eval`) are given filename and line number values (`__FILE__`
+      # and `__LINE__`). This data is used to ensure that any errors raised
+      # within the evaluated code will be given the correct identification
+      # in a backtrace.
+      #
+      # The cop also checks that the line number given relative to `__LINE__` is
+      # correct.
+      #
+      # This cop will autocorrect incorrect or missing filename and line number
+      # values. However, if `eval` is called without a binding argument, the cop
+      # will not attempt to automatically add a binding, or add filename and
+      # line values.
       #
       # @example
       #   # bad
@@ -31,30 +41,36 @@ module RuboCop
       #     def do_something
       #     end
       #   RUBY
+      #
+      # This cop works only when a string literal is given as a code string.
+      # No offence is reported if a string variable is given as below:
+      #
+      # @example
+      #   # not checked
+      #   code = <<-RUBY
+      #     def do_something
+      #     end
+      #   RUBY
+      #   eval code
+      #
       class EvalWithLocation < Base
-        MSG = 'Pass `__FILE__` and `__LINE__` to `eval` method, ' \
-              'as they are used by backtraces.'
-        MSG_INCORRECT_LINE = 'Use `%<expected>s` instead of `%<actual>s`, ' \
-                             'as they are used by backtraces.'
+        extend AutoCorrector
+
+        MSG = 'Pass `__FILE__` and `__LINE__` to `%<method_name>s`.'
+        MSG_EVAL = 'Pass a binding, `__FILE__` and `__LINE__` to `eval`.'
+        MSG_INCORRECT_FILE = 'Incorrect file for `%<method_name>s`; ' \
+                             'use `%<expected>s` instead of `%<actual>s`.'
+        MSG_INCORRECT_LINE = 'Incorrect line number for `%<method_name>s`; ' \
+                             'use `%<expected>s` instead of `%<actual>s`.'
 
         RESTRICT_ON_SEND = %i[eval class_eval module_eval instance_eval].freeze
 
-        def_node_matcher :eval_without_location?, <<~PATTERN
-          {
-            (send nil? :eval ${str dstr})
-            (send nil? :eval ${str dstr} _)
-            (send nil? :eval ${str dstr} _ #special_file_keyword?)
-            (send nil? :eval ${str dstr} _ #special_file_keyword? _)
-
-            (send _ {:class_eval :module_eval :instance_eval}
-              ${str dstr})
-            (send _ {:class_eval :module_eval :instance_eval}
-              ${str dstr} #special_file_keyword?)
-            (send _ {:class_eval :module_eval :instance_eval}
-              ${str dstr} #special_file_keyword? _)
-          }
+        # @!method valid_eval_receiver?(node)
+        def_node_matcher :valid_eval_receiver?, <<~PATTERN
+          { nil? (const {nil? cbase} :Kernel) }
         PATTERN
 
+        # @!method line_with_offset?(node, sign, num)
         def_node_matcher :line_with_offset?, <<~PATTERN
           {
             (send #special_line_keyword? %1 (int %2))
@@ -63,16 +79,37 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          eval_without_location?(node) do |code|
-            if with_lineno?(node)
-              on_with_lineno(node, code)
-            else
-              add_offense(node)
-            end
-          end
+          # Classes should not redefine eval, but in case one does, it shouldn't
+          # register an offense. Only `eval` without a receiver and `Kernel.eval`
+          # are considered.
+          return if node.method?(:eval) && !valid_eval_receiver?(node.receiver)
+
+          code = node.arguments.first
+          return unless code && (code.str_type? || code.dstr_type?)
+
+          check_location(node, code)
         end
 
         private
+
+        def check_location(node, code)
+          file, line = file_and_line(node)
+
+          if line
+            check_file(node, file)
+            check_line(node, code)
+          elsif file
+            check_file(node, file)
+            add_offense_for_missing_line(node, code)
+          else
+            add_offense_for_missing_location(node, code)
+          end
+        end
+
+        def register_offense(node, &block)
+          msg = node.method?(:eval) ? MSG_EVAL : format(MSG, method_name: node.method_name)
+          add_offense(node, message: msg, &block)
+        end
 
         def special_file_keyword?(node)
           node.str_type? &&
@@ -82,6 +119,15 @@ module RuboCop
         def special_line_keyword?(node)
           node.int_type? &&
             node.source == '__LINE__'
+        end
+
+        def file_and_line(node)
+          base = node.method?(:eval) ? 2 : 1
+          [node.arguments[base], node.arguments[base + 1]]
+        end
+
+        def with_binding?(node)
+          node.method?(:eval) ? node.arguments.size >= 2 : true
         end
 
         # FIXME: It's a Style/ConditionalAssignment's false positive.
@@ -95,25 +141,43 @@ module RuboCop
         end
         # rubocop:enable Style/ConditionalAssignment
 
-        def message_incorrect_line(actual, sign, line_diff)
-          expected =
-            if line_diff.zero?
-              '__LINE__'
-            else
-              "__LINE__ #{sign} #{line_diff}"
-            end
-          format(MSG_INCORRECT_LINE, actual: actual.source, expected: expected)
+        def add_offense_for_incorrect_line(method_name, line_node, sign, line_diff)
+          expected = expected_line(sign, line_diff)
+          message = format(MSG_INCORRECT_LINE,
+                           method_name: method_name,
+                           actual: line_node.source,
+                           expected: expected)
+
+          add_offense(line_node.loc.expression, message: message) do |corrector|
+            corrector.replace(line_node, expected)
+          end
         end
 
-        def on_with_lineno(node, code)
+        def check_file(node, file_node)
+          return true if special_file_keyword?(file_node)
+
+          message = format(MSG_INCORRECT_FILE,
+                           method_name: node.method_name,
+                           expected: '__FILE__',
+                           actual: file_node.source)
+
+          add_offense(file_node, message: message) do |corrector|
+            corrector.replace(file_node, '__FILE__')
+          end
+        end
+
+        def check_line(node, code)
           line_node = node.arguments.last
-          lineno_range = line_node.loc.expression
-          line_diff = string_first_line(code) - lineno_range.first_line
+          line_diff = line_difference(line_node, code)
           if line_diff.zero?
             add_offense_for_same_line(node, line_node)
           else
             add_offense_for_different_line(node, line_node, line_diff)
           end
+        end
+
+        def line_difference(line_node, code)
+          string_first_line(code) - line_node.loc.expression.first_line
         end
 
         def string_first_line(str_node)
@@ -124,23 +188,50 @@ module RuboCop
           end
         end
 
-        def add_offense_for_same_line(_node, line_node)
+        def add_offense_for_same_line(node, line_node)
           return if special_line_keyword?(line_node)
 
-          add_offense(
-            line_node.loc.expression,
-            message: message_incorrect_line(line_node, nil, 0)
-          )
+          add_offense_for_incorrect_line(node.method_name, line_node, nil, 0)
         end
 
-        def add_offense_for_different_line(_node, line_node, line_diff)
+        def add_offense_for_different_line(node, line_node, line_diff)
           sign = line_diff.positive? ? :+ : :-
           return if line_with_offset?(line_node, sign, line_diff.abs)
 
-          add_offense(
-            line_node.loc.expression,
-            message: message_incorrect_line(line_node, sign, line_diff.abs)
-          )
+          add_offense_for_incorrect_line(node.method_name, line_node, sign, line_diff.abs)
+        end
+
+        def expected_line(sign, line_diff)
+          if line_diff.zero?
+            '__LINE__'
+          else
+            "__LINE__ #{sign} #{line_diff.abs}"
+          end
+        end
+
+        def add_offense_for_missing_line(node, code)
+          register_offense(node) do |corrector|
+            line_str = missing_line(node, code)
+            corrector.insert_after(node.loc.expression.end, ", #{line_str}")
+          end
+        end
+
+        def add_offense_for_missing_location(node, code)
+          if node.method?(:eval) && !with_binding?(node)
+            register_offense(node)
+            return
+          end
+
+          register_offense(node) do |corrector|
+            line_str = missing_line(node, code)
+            corrector.insert_after(node.last_argument.source_range.end, ", __FILE__, #{line_str}")
+          end
+        end
+
+        def missing_line(node, code)
+          line_diff = line_difference(node.arguments.last, code)
+          sign = line_diff.positive? ? :+ : :-
+          expected_line(sign, line_diff)
         end
       end
     end

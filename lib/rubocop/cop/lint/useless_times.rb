@@ -27,14 +27,17 @@ module RuboCop
         MSG = 'Useless call to `%<count>i.times` detected.'
         RESTRICT_ON_SEND = %i[times].freeze
 
+        # @!method times_call?(node)
         def_node_matcher :times_call?, <<~PATTERN
           (send (int $_) :times (block-pass (sym $_))?)
         PATTERN
 
+        # @!method block_arg(node)
         def_node_matcher :block_arg, <<~PATTERN
           (block _ (args (arg $_)) ...)
         PATTERN
 
+        # @!method block_reassigns_arg?(node)
         def_node_search :block_reassigns_arg?, <<~PATTERN
           (lvasgn %)
         PATTERN

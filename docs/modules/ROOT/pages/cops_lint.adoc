@@ -1,5 +1,36 @@
 = Lint
 
+== Lint/AmbiguousAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 1.7
+| -
+|===
+
+This cop checks for mistyped shorthand assignments.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+x =- y
+x =+ y
+x =* y
+x =! y
+
+# good
+x -= y # or x = -y
+x += y # or x = +y
+x *= y # or x = *y
+x != y # or x = !y
+----
+
 == Lint/AmbiguousBlockAssociation
 
 |===
@@ -222,7 +253,7 @@ BigDecimal(123.456, 3)
 | No
 | No
 | 0.89
-| -
+| 1.7
 |===
 
 This cop checks for places where binary operator has identical operands.
@@ -242,6 +273,7 @@ and thus can generate false positives:
 [source,ruby]
 ----
 # bad
+x / x
 x.top >= x.top
 
 if a.x != 0 && a.x != 0
@@ -251,6 +283,10 @@ end
 def childs?
   left_child || left_child
 end
+
+# good
+x + x
+1 << 1
 ----
 
 == Lint/BooleanSymbol
@@ -543,11 +579,23 @@ Login
 | Yes
 | No
 | 0.14
-| 0.49
+| 1.10
 |===
 
-This cop checks for calls to debugger or pry.
-The cop can be configured to define which methods and receivers must be fixed.
+This cop checks for debug calls (such as `debugger` or `binding.pry`) that should
+not be kept for production code.
+
+The cop can be configured using `DebuggerMethods`. By default, a number of gems
+debug entrypoints are configured (`Kernel`, `Byebug`, `Capybara`, `Pry`, `Rails`,
+and `WebConsole`). Additional methods can be added.
+
+Specific default groups can be disabled if necessary:
+
+[source,yaml]
+----
+Lint/Debugger:
+  WebConsole: ~
+----
 
 === Examples
 
@@ -582,18 +630,29 @@ def some_method
 end
 ----
 
+==== DebuggerMethods: [my_debugger]
+
+[source,ruby]
+----
+# bad (ok during development)
+
+def some_method
+  my_debugger
+end
+----
+
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
 
 | DebuggerReceivers
-| `binding`, `Kernel`, `Pry`
+| `[]`
 | Array
 
 | DebuggerMethods
-| `debugger`, `byebug`, `remote_byebug`, `pry`, `remote_pry`, `pry_remote`, `console`, `rescue`, `save_and_open_page`, `save_and_open_screenshot`, `irb`
-| Array
+| `{"Kernel"=>["binding.irb"], "Byebug"=>["byebug", "remote_byebug", "Kernel.byebug", "Kernel.remote_byebug"], "Capybara"=>["save_and_open_page", "save_and_open_screenshot"], "Pry"=>["binding.pry", "binding.remote_pry", "binding.pry_remote", "Pry.rescue"], "Rails"=>["debugger", "Kernel.debugger"], "WebConsole"=>["binding.console"]}`
+| 
 |===
 
 == Lint/DeprecatedClassMethods
@@ -629,6 +688,58 @@ File.exist?(some_path)
 Dir.exist?(some_path)
 block_given?
 ----
+
+== Lint/DeprecatedConstants
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
+|===
+
+This cop checks for deprecated constants.
+
+It has `DeprecatedConstants` config. If there is an alternative method, you can set
+alternative value as `Alternative`. And you can set the deprecated version as
+`DeprecatedVersion`. These options can be omitted if they are not needed.
+
+  DeprecatedConstants:
+    'DEPRECATED_CONSTANT':
+      Alternative: 'alternative_value'
+      DeprecatedVersion: 'deprecated_version'
+
+By default, `NIL`, `TRUE`, `FALSE` and `Random::DEFAULT` are configured.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+NIL
+TRUE
+FALSE
+Random::DEFAULT # Return value of Ruby 2 is `Random` instance, Ruby 3.0 is `Random` class.
+
+# good
+nil
+true
+false
+Random.new # `::DEFAULT` has been deprecated in Ruby 3, `.new` is compatible with Ruby 2.
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| DeprecatedConstants
+| `{"NIL"=>{"Alternative"=>"nil", "DeprecatedVersion"=>"2.4"}, "TRUE"=>{"Alternative"=>"true", "DeprecatedVersion"=>"2.4"}, "FALSE"=>{"Alternative"=>"false", "DeprecatedVersion"=>"2.4"}, "Random::DEFAULT"=>{"Alternative"=>"Random.new", "DeprecatedVersion"=>"3.0"}}`
+| 
+|===
 
 == Lint/DeprecatedOpenSSLConstant
 
@@ -726,11 +837,20 @@ end
 | Yes
 | No
 | 1.3
-| -
+| 1.7
 |===
 
 This cop checks that there are no repeated bodies
 within `if/unless`, `case-when` and `rescue` constructs.
+
+With `IgnoreLiteralBranches: true`, branches are not registered
+as offenses if they return a basic literal value (string, symbol,
+integer, float, rational, complex, `true`, `false`, or `nil`), or
+return an array, hash, regexp or range that only contains one of
+the above basic literal values.
+
+With `IgnoreConstantBranches: true`, branches are not registered
+as offenses if they return a constant value.
 
 === Examples
 
@@ -785,6 +905,46 @@ rescue FooError, BarError
   handle_error
 end
 ----
+
+==== IgnoreLiteralBranches: true
+
+[source,ruby]
+----
+# good
+case size
+when "small" then 100
+when "medium" then 250
+when "large" then 1000
+else 250
+end
+----
+
+==== IgnoreConstantBranches: true
+
+[source,ruby]
+----
+# good
+case size
+when "small" then SMALL_SIZE
+when "medium" then MEDIUM_SIZE
+when "large" then LARGE_SIZE
+else MEDIUM_SIZE
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoreLiteralBranches
+| `false`
+| Boolean
+
+| IgnoreConstantBranches
+| `false`
+| Boolean
+|===
 
 == Lint/DuplicateCaseCondition
 
@@ -2276,6 +2436,43 @@ foo = 'something with #{interpolation} inside'
 foo = "something with #{interpolation} inside"
 ----
 
+== Lint/LambdaWithoutLiteralBlock
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
+|===
+
+This cop checks uses of lambda without a literal block.
+It emulates the following warning in Ruby 3.0:
+
+  % ruby -vwe 'lambda(&proc {})'
+  ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
+  -e:1: warning: lambda without a literal block is deprecated; use the proc without
+  lambda instead
+
+This way, proc object is never converted to lambda.
+Auto-correction replaces with compatible proc argument.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+lambda(&proc { do_something })
+lambda(&Proc.new { do_something })
+
+# good
+proc { do_something }
+Proc.new { do_something }
+lambda { do_something } # If you use lambda.
+----
+
 == Lint/LiteralAsCondition
 
 |===
@@ -2489,11 +2686,16 @@ x += 1
 | Yes
 | No
 | 0.89
-| -
+| 1.4
 |===
 
 This cop checks for the presence of constructors and lifecycle callbacks
 without calls to `super`.
+
+This cop does not consider `method_missing` (and `respond_to_missing?`)
+because in some cases it makes sense to overtake what is considered a
+missing method. In other cases, the theoretical ideal handling could be
+challenging or verbose for no actual gain.
 
 === Examples
 
@@ -2581,15 +2783,10 @@ comparison operators.
 [source,ruby]
 ----
 # bad
-
 x < y < z
 10 <= x <= 20
-----
 
-[source,ruby]
-----
 # good
-
 x < y && y < z
 10 <= x && x <= 20
 ----
@@ -2828,6 +3025,11 @@ such as requiring files, can lead to intermittent failures
 that are hard to debug. To ensure this doesn't happen,
 always sort the list.
 
+`Dir.glob` and `Dir[]` sort globbed results by default in Ruby 3.0.
+So all bad cases are acceptable when Ruby 3.0 or higher are used.
+
+This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
+
 === Examples
 
 [source,ruby]
@@ -2841,10 +3043,7 @@ end
 Dir["./lib/**/*.rb"].sort.each do |file|
   require file
 end
-----
 
-[source,ruby]
-----
 # bad
 Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')) do |file|
   require file
@@ -2854,24 +3053,21 @@ end
 Dir.glob(Rails.root.join(__dir__, 'test', '*.rb')).sort.each do |file|
   require file
 end
-----
 
-[source,ruby]
-----
 # bad
 Dir['./lib/**/*.rb'].each(&method(:require))
 
 # good
 Dir['./lib/**/*.rb'].sort.each(&method(:require))
-----
 
-[source,ruby]
-----
 # bad
 Dir.glob(Rails.root.join('test', '*.rb'), &method(:require))
 
 # good
 Dir.glob(Rails.root.join('test', '*.rb')).sort.each(&method(:require))
+
+# good - Respect intent if `sort` keyword option is specified in Ruby 3.0 or higher.
+Dir.glob(Rails.root.join(__dir__, 'test', '*.rb'), sort: false).each(&method(:require))
 ----
 
 == Lint/NonLocalExitFromIterator
@@ -2960,12 +3156,18 @@ with `Integer()` and can be ignored with `IgnoredMethods`.
 '10'.to_i
 '10.2'.to_f
 '10'.to_c
+['1', '2', '3'].map(&:to_i)
+foo.try(:to_f)
+bar.send(:to_c)
 
 # good
 
 Integer('10', 10)
 Float('10.2')
 Complex('10')
+['1', '2', '3'].map { |i| Integer(i, 10) }
+foo.try { |i| Float(i) }
+bar.send { |i| Complex(i) }
 ----
 
 ==== IgnoredMethods: [minutes]
@@ -2997,6 +3199,77 @@ Time.now.to_datetime.to_i
 | `Time`, `DateTime`
 | Array
 |===
+
+== Lint/NumberedParameterAssignment
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| No
+| 1.9
+| -
+|===
+
+This cop checks for uses of numbered parameter assignment.
+It emulates the following warning in Ruby 2.7:
+
+  % ruby -ve '_1 = :value'
+  ruby 2.7.2p137 (2020-10-01 revision 5445e04352) [x86_64-darwin19]
+  -e:1: warning: `_1' is reserved for numbered parameter; consider another name
+
+Assiging to numbered parameter (from `_1` to `_9`) cause an error in Ruby 3.0.
+
+  % ruby -ve '_1 = :value'
+  ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
+  -e:1: _1 is reserved for numbered parameter
+
+NOTE: The parametered parameters are from `_1` to `_9`. This cop checks `_0`, and over `_10`
+as well to prevent confusion.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+_1 = :value
+
+# good
+non_numbered_parameter_name = :value
+----
+
+== Lint/OrAssignmentToConstant
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.9
+| -
+|===
+
+This cop checks for unintended or-assignment to a constant.
+
+Constants should always be assigned in the same location. And its value
+should always be the same. If constants are assigned in multiple
+locations, the result may vary depending on the order of `require`.
+
+Also, if you already have such an implementation, auto-correction may
+change the result.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+CONST ||= 1
+
+# good
+CONST = 1
+----
 
 == Lint/OrderedMagicComments
 
@@ -3341,6 +3614,42 @@ foo = "1"
 baz
 ----
 
+== Lint/RedundantDirGlobSort
+
+NOTE: Required Ruby version: 3.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
+|===
+
+Sort globbed results by default in Ruby 3.0.
+This cop checks for redundant `sort` method to `Dir.glob` and `Dir[]`.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Dir.glob('./lib/**/*.rb').sort.each do |file|
+end
+
+Dir['./lib/**/*.rb'].sort.each do |file|
+end
+
+# good
+Dir.glob('./lib/**/*.rb').each do |file|
+end
+
+Dir['./lib/**/*.rb'].each do |file|
+end
+----
+
 == Lint/RedundantRequireStatement
 
 |===
@@ -3442,7 +3751,7 @@ foo&.respond_to?(:to_a)
 | Yes
 | Yes
 | 0.76
-| -
+| 1.7
 |===
 
 This cop checks for unneeded usages of splat expansion
@@ -3452,42 +3761,49 @@ This cop checks for unneeded usages of splat expansion
 [source,ruby]
 ----
 # bad
-
 a = *[1, 2, 3]
 a = *'a'
 a = *1
+['a', 'b', *%w(c d e), 'f', 'g']
 
-begin
-  foo
-rescue *[StandardError, ApplicationError]
-  bar
-end
-
-case foo
-when *[1, 2, 3]
-  bar
-else
-  baz
-end
-----
-
-[source,ruby]
-----
 # good
-
 c = [1, 2, 3]
 a = *c
 a, b = *c
 a, *b = *c
 a = *1..10
 a = ['a']
+['a', 'b', 'c', 'd', 'e', 'f', 'g']
 
+# bad
+do_something(*['foo', 'bar', 'baz'])
+
+# good
+do_something('foo', 'bar', 'baz')
+
+# bad
+begin
+  foo
+rescue *[StandardError, ApplicationError]
+  bar
+end
+
+# good
 begin
   foo
 rescue StandardError, ApplicationError
   bar
 end
 
+# bad
+case foo
+when *[1, 2, 3]
+  bar
+else
+  baz
+end
+
+# good
 case foo
 when 1, 2, 3
   bar
@@ -3495,6 +3811,32 @@ else
   baz
 end
 ----
+
+==== AllowPercentLiteralArrayArgument: true (default)
+
+[source,ruby]
+----
+# good
+do_something(*%w[foo bar baz])
+----
+
+==== AllowPercentLiteralArrayArgument: false
+
+[source,ruby]
+----
+# bad
+do_something(*%w[foo bar baz])
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowPercentLiteralArrayArgument
+| `true`
+| Boolean
+|===
 
 == Lint/RedundantStringCoercion
 
@@ -4224,6 +4566,14 @@ in block arguments or block-local variables. This mirrors the warning
 given by `ruby -cw` prior to Ruby 2.6:
 "shadowing outer local variable - foo".
 
+NOTE: Shadowing of variables in block passed to `Ractor.new` is allowed
+because `Ractor` should not access outer variables.
+eg. following syle is encouraged:
+
+  worker_id, pipe = env
+  Ractor.new(worker_id, pipe) do |worker_id, pipe|
+  end
+
 === Examples
 
 [source,ruby]
@@ -4295,7 +4645,7 @@ g.count #=> 2
 | Yes
 | No
 | 0.9
-| 0.81
+| 1.12
 |===
 
 This cop checks for `rescue` blocks with no body.
@@ -4369,6 +4719,50 @@ rescue
 end
 ----
 
+==== AllowNil: true (default)
+
+[source,ruby]
+----
+# good
+def some_method
+  do_something
+rescue
+  nil
+end
+
+# good
+begin
+  do_something
+rescue
+  # do nothing
+end
+
+# good
+do_something rescue nil
+----
+
+==== AllowNil: false
+
+[source,ruby]
+----
+# bad
+def some_method
+  do_something
+rescue
+  nil
+end
+
+# bad
+begin
+  do_something
+rescue
+  nil
+end
+
+# bad
+do_something rescue nil
+----
+
 === Configurable attributes
 
 |===
@@ -4377,11 +4771,107 @@ end
 | AllowComments
 | `true`
 | Boolean
+
+| AllowNil
+| `true`
+| Boolean
 |===
 
 === References
 
 * https://rubystyle.guide#dont-hide-exceptions
+
+== Lint/SymbolConversion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.9
+| -
+|===
+
+This cop checks for uses of literal strings converted to
+a symbol where a literal symbol could be used instead.
+
+There are two possible styles for this cop.
+`strict` (default) will register an offense for any incorrect usage.
+`consistent` additionally requires hashes to use the same style for
+every symbol key (ie. if any symbol key needs to be quoted it requires
+all keys to be quoted).
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+'string'.to_sym
+:symbol.to_sym
+'underscored_string'.to_sym
+:'underscored_symbol'
+'hyphenated-string'.to_sym
+
+# good
+:string
+:symbol
+:underscored_string
+:underscored_symbol
+:'hyphenated-string'
+----
+
+==== EnforcedStyle: strict (default)
+
+[source,ruby]
+----
+# bad
+{
+  'a': 1,
+  "b": 2,
+  'c-d': 3
+}
+
+# good (don't quote keys that don't require quoting)
+{
+  a: 1,
+  b: 2,
+  'c-d': 3
+}
+----
+
+==== EnforcedStyle: consistent
+
+[source,ruby]
+----
+# bad
+{
+  a: 1,
+  'b-c': 2
+}
+
+# good (quote all keys if any need quoting)
+{
+  'a': 1,
+  'b-c': 2
+}
+
+# good (no quoting required)
+{
+  a: 1,
+  b: 2
+}
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `strict`
+| `strict`, `consistent`
+|===
 
 == Lint/Syntax
 
@@ -4533,6 +5023,59 @@ class Foo
 end
 ----
 
+== Lint/TripleQuotes
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.9
+| -
+|===
+
+This cop checks for "triple quotes" (strings delimted by any odd number
+of quotes greater than 1).
+
+Ruby allows multiple strings to be implicitly concatenated by just
+being adjacent in a statement (ie. `"foo""bar" == "foobar"`). This sometimes
+gives the impression that there is something special about triple quotes, but
+in fact it is just extra unnecessary quotes and produces the same string. Each
+pair of quotes produces an additional concatenated empty string, so the result
+is still only the "actual" string within the delimiters.
+
+NOTE: Although this cop is called triple quotes, the same behavior is present
+for strings delimited by 5, 7, etc. quotation marks.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+"""
+  A string
+"""
+
+# bad
+'''
+  A string
+'''
+
+# good
+"
+  A string
+"
+
+# good
+<<STRING
+  A string
+STRING
+
+# good (but not the same spacing as the bad case)
+'A string'
+----
+
 == Lint/UnderscorePrefixedVariableName
 
 |===
@@ -4600,6 +5143,62 @@ end
 | Boolean
 |===
 
+== Lint/UnexpectedBlockArity
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| No
+| 1.5
+| -
+|===
+
+This cop checks for a block that is known to need more positional
+block arguments than are given (by default this is configured for
+`Enumerable` methods needing 2 arguments). Optional arguments are allowed,
+although they don't generally make sense as the default value will
+be used. Blocks that have no receiver, or take splatted arguments
+(ie. `*args`) are always accepted.
+
+Keyword arguments (including `**kwargs`) do not get counted towards
+this, as they are not used by the methods in question.
+
+NOTE: This cop matches for method names only and hence cannot tell apart
+methods with same name in different classes.
+
+Method names and their expected arity can be configured like this:
+
+Methods:
+  inject: 2
+  reduce: 2
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+values.reduce {}
+values.min { |a| a }
+values.sort { |a; b| a + b }
+
+# good
+values.reduce { |memo, obj| memo << obj }
+values.min { |a, b| a <=> b }
+values.sort { |*x| x[0] <=> x[1] }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Methods
+| `{"chunk_while"=>2, "each_with_index"=>2, "each_with_object"=>2, "inject"=>2, "max"=>2, "min"=>2, "minmax"=>2, "reduce"=>2, "slice_when"=>2, "sort"=>2}`
+| 
+|===
+
 == Lint/UnifiedInteger
 
 |===
@@ -4640,7 +5239,7 @@ This cop checks for using Fixnum or Bignum constant.
 | Yes
 | No
 | 1.1
-| -
+| 1.5
 |===
 
 Looks for `reduce` or `inject` blocks where the value returned (implicitly or
@@ -4695,6 +5294,9 @@ values.reduce(nil) do |result, value|
   break result if something?
   value
 end
+
+# good, recursive
+keys.reduce(self) { |result, key| result[key] }
 
 # ignored as the return value cannot be determined
 enum.reduce do |acc, el|
@@ -4760,7 +5362,7 @@ end
 | Yes
 | No
 | 0.89
-| -
+| 1.7
 |===
 
 This cop checks for loops that will have at most one iteration.
@@ -4768,6 +5370,12 @@ This cop checks for loops that will have at most one iteration.
 A loop that can never reach the second iteration is a possible error in the code.
 In rare cases where only one iteration (or at most one iteration) is intended behavior,
 the code should be refactored to use `if` conditionals.
+
+NOTE: Block methods that are used with `Enumerable`s are considered to be loops.
+
+`IgnoredPatterns` can be used to match against the block receiver in order to allow
+code that would otherwise be registered as an offense (eg. `times` used not in an
+`Enumerable` context).
 
 === Examples
 
@@ -4832,7 +5440,28 @@ def find_something(items)
   end
   raise NotFoundError
 end
+
+# bad
+2.times { raise ArgumentError }
 ----
+
+==== IgnoredPatterns: [/(exactly|at_least|at_most)\(\d+\)\.times/] (default)
+
+[source,ruby]
+----
+# good
+exactly(2).times { raise StandardError }
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoredPatterns
+| `(?-mix:(exactly|at_least|at_most)\(\d+\)\.times)`
+| Array
+|===
 
 == Lint/UnusedBlockArgument
 

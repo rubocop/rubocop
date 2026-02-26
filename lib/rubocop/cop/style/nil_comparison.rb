@@ -37,7 +37,10 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[== === nil?].freeze
 
+        # @!method nil_comparison?(node)
         def_node_matcher :nil_comparison?, '(send _ {:== :===} nil)'
+
+        # @!method nil_check?(node)
         def_node_matcher :nil_check?, '(send _ :nil?)'
 
         def on_send(node)
@@ -50,6 +53,9 @@ module RuboCop
                          end
 
               corrector.replace(node, new_code)
+
+              parent = node.parent
+              corrector.wrap(node, '(', ')') if parent.respond_to?(:method?) && parent.method?(:!)
             end
           end
         end

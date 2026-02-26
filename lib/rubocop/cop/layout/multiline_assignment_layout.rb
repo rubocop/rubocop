@@ -31,6 +31,32 @@ module RuboCop
       #   foo = if expression
       #     'bar'
       #   end
+      #
+      # @example SupportedTypes: ['block', 'case', 'class', 'if', 'kwbegin', 'module'] (default)
+      #   # good
+      #   foo =
+      #     if expression
+      #       'bar'
+      #     end
+      #
+      #   # good
+      #   foo =
+      #     [1].map do |i|
+      #       i + 1
+      #     end
+      #
+      # @example SupportedTypes: ['block']
+      #   # good
+      #   foo = if expression
+      #     'bar'
+      #   end
+      #
+      #   # good
+      #   foo =
+      #     [1].map do |i|
+      #       'bar' * i
+      #     end
+      #
       class MultilineAssignmentLayout < Base
         include CheckAssignment
         include ConfigurableEnforcedStyle

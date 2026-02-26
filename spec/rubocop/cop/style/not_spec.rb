@@ -6,6 +6,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       not test
       ^^^ Use `!` instead of `not`.
     RUBY
+
     expect_correction(<<~RUBY)
       !test
     RUBY
@@ -20,6 +21,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       x = 10 if not y
                 ^^^ Use `!` instead of `not`.
     RUBY
+
     expect_correction(<<~RUBY)
       x = 10 if !y
     RUBY
@@ -30,6 +32,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       not(test)
       ^^^ Use `!` instead of `not`.
     RUBY
+
     expect_correction(<<~RUBY)
       !(test)
     RUBY
@@ -40,6 +43,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       not x < y
       ^^^ Use `!` instead of `not`.
     RUBY
+
     expect_correction(<<~RUBY)
       x >= y
     RUBY
@@ -50,6 +54,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       not a >> b
       ^^^ Use `!` instead of `not`.
     RUBY
+
     expect_correction(<<~RUBY)
       !(a >> b)
     RUBY
@@ -60,6 +65,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       not a ? b : c
       ^^^ Use `!` instead of `not`.
     RUBY
+
     expect_correction(<<~RUBY)
       !(a ? b : c)
     RUBY
@@ -70,6 +76,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       not a && b
       ^^^ Use `!` instead of `not`.
     RUBY
+
     expect_correction(<<~RUBY)
       !(a && b)
     RUBY
@@ -80,6 +87,7 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
       not a || b
       ^^^ Use `!` instead of `not`.
     RUBY
+
     expect_correction(<<~RUBY)
       !(a || b)
     RUBY

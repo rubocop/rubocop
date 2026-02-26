@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::SelfAssignment do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
   it 'registers an offense when using local var self-assignment' do
     expect_offense(<<~RUBY)
       foo = foo

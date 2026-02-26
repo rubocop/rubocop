@@ -66,10 +66,12 @@ module RuboCop
 
         MSG = 'Do not define constants this way within a block.'
 
+        # @!method constant_assigned_in_block?(node)
         def_node_matcher :constant_assigned_in_block?, <<~PATTERN
           ({^block_type? [^begin_type? ^^block_type?]} nil? ...)
         PATTERN
 
+        # @!method module_defined_in_block?(node)
         def_node_matcher :module_defined_in_block?, <<~PATTERN
           ({^block_type? [^begin_type? ^^block_type?]} ...)
         PATTERN

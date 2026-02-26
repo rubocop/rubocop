@@ -5,6 +5,8 @@ module RuboCop
     module Style
       # This cop checks for trailing code after the method definition.
       #
+      # NOTE: It always accepts endless method definitions that are basically on the same line.
+      #
       # @example
       #   # bad
       #   def some_method; do_stuff
@@ -24,6 +26,8 @@ module RuboCop
       #     b[c: x]
       #   end
       #
+      #   def endless_method = do_stuff
+      #
       class TrailingBodyOnMethodDefinition < Base
         include Alignment
         include TrailingBody
@@ -34,6 +38,7 @@ module RuboCop
 
         def on_def(node)
           return unless trailing_body?(node)
+          return if node.endless?
 
           add_offense(first_part_of(node.body)) do |corrector|
             LineBreakCorrector.correct_trailing_body(
