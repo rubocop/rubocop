@@ -14,8 +14,9 @@ module RuboCop
       #
       #   # good
       #   ?\C-\M-d
-      class CharacterLiteral < Cop
+      class CharacterLiteral < Base
         include StringHelp
+        extend AutoCorrector
 
         MSG = 'Do not use the character literal - ' \
               'use string literal instead.'
@@ -26,17 +27,15 @@ module RuboCop
             node.source.size.between?(2, 3)
         end
 
-        def autocorrect(node)
-          lambda do |corrector|
-            string = node.source[1..-1]
+        def autocorrect(corrector, node)
+          string = node.source[1..-1]
 
-            # special character like \n
-            # or ' which needs to use "" or be escaped.
-            if string.length == 2 || string == "'"
-              corrector.replace(node, %("#{string}"))
-            elsif string.length == 1 # normal character
-              corrector.replace(node, "'#{string}'")
-            end
+          # special character like \n
+          # or ' which needs to use "" or be escaped.
+          if string.length == 2 || string == "'"
+            corrector.replace(node, %("#{string}"))
+          elsif string.length == 1 # normal character
+            corrector.replace(node, "'#{string}'")
           end
         end
 

@@ -9,10 +9,6 @@ module CopHelper
   let(:ruby_version) { 2.4 }
   let(:rails_version) { false }
 
-  def inspect_source_file(source)
-    Tempfile.open('tmp') { |f| inspect_source(source, f) }
-  end
-
   def inspect_source(source, file = nil)
     RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
     RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}

@@ -26,10 +26,6 @@ module RuboCop
       #   puts $LAST_MATCH_INFO
       #   puts $IGNORECASE
       #   puts $ARGV # or ARGV
-      #   puts $MATCH
-      #   puts $PREMATCH
-      #   puts $POSTMATCH
-      #   puts $LAST_PAREN_MATCH
       #
       # @example EnforcedStyle: use_perl_names
       #   # good
@@ -51,10 +47,6 @@ module RuboCop
       #   puts $~
       #   puts $=
       #   puts $*
-      #   puts $&
-      #   puts $`
-      #   puts $'
-      #   puts $+
       #
       class SpecialGlobalVars < Base
         include ConfigurableEnforcedStyle
@@ -85,21 +77,17 @@ module RuboCop
           :$? => [:$CHILD_STATUS],
           :$~ => [:$LAST_MATCH_INFO],
           :$= => [:$IGNORECASE],
-          :$* => %i[$ARGV ARGV],
-          :$& => [:$MATCH],
-          :$` => [:$PREMATCH],
-          :$' => [:$POSTMATCH],
-          :$+ => [:$LAST_PAREN_MATCH]
+          :$* => %i[$ARGV ARGV]
         }
 
         PERL_VARS =
-          Hash[ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k]] } }]
+          ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k]] } }.to_h
 
         ENGLISH_VARS.merge!(
-          Hash[ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }]
+          ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }.to_h
         )
         PERL_VARS.merge!(
-          Hash[PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }]
+          PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }.to_h
         )
         ENGLISH_VARS.each_value(&:freeze).freeze
         PERL_VARS.each_value(&:freeze).freeze

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::EachWithObject do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::EachWithObject, :config do
   it 'finds inject and reduce with passed in and returned hash' do
     expect_offense(<<~RUBY)
       [].inject({}) { |a, e| a }
@@ -15,6 +13,7 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
         a
       end
     RUBY
+
     expect_correction(<<~RUBY)
       [].each_with_object({}) { |e, a|  }
 
@@ -33,6 +32,7 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
         h
       end
     RUBY
+
     expect_correction(<<~RUBY)
       [1, 2, 3].each_with_object({}) do |i, h|
         h[i] = i
@@ -47,6 +47,7 @@ RSpec.describe RuboCop::Cop::Style::EachWithObject do
         h
       end
     RUBY
+
     expect_correction(<<~RUBY)
       [1, 2, 3].each_with_object({}) do |i, h|
       end

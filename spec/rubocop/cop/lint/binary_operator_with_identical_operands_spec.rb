@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands do
-  subject(:cop) { described_class.new }
+RSpec.describe RuboCop::Cop::Lint::BinaryOperatorWithIdenticalOperands, :config do
+  %i[== != === <=> =~ && || - > >= < <= / % | ^].each do |operator|
+    it "registers an offense for `#{operator}` with duplicate operands" do
+      expect_offense(<<~RUBY, operator: operator)
+        y = a.x(arg) %{operator} a.x(arg)
+            ^^^^^^^^^^{operator}^^^^^^^^^ Binary operator `%{operator}` has identical operands.
+      RUBY
+    end
+  end
 
-  it 'registers an offense when binary operator has identical nodes' do
-    expect_offense(<<~RUBY)
-      x == x
-      ^^^^^^ Binary operator `==` has identical operands.
-      y = x && x
-          ^^^^^^ Binary operator `&&` has identical operands.
-      y = a.x + a.x
-          ^^^^^^^^^ Binary operator `+` has identical operands.
-      a.x(arg) > a.x(arg)
-      ^^^^^^^^^^^^^^^^^^^ Binary operator `>` has identical operands.
-      a.(x) > a.(x)
-      ^^^^^^^^^^^^^ Binary operator `>` has identical operands.
-    RUBY
+  %i[+ * ** << >>].each do |operator|
+    it "does not register an offense for `#{operator}` with duplicate operands" do
+      expect_no_offenses(<<~RUBY)
+        y = a.x(arg) #{operator} a.x(arg)
+      RUBY
+    end
   end
 
   it 'does not register an offense when using binary operator with different operands' do

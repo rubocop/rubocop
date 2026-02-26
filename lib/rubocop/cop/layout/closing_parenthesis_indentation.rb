@@ -68,8 +68,9 @@ module RuboCop
       #   )
       #
       #
-      class ClosingParenthesisIndentation < Cop
+      class ClosingParenthesisIndentation < Base
         include Alignment
+        extend AutoCorrector
 
         MSG_INDENT = 'Indent `)` to column %<expected>d (not %<actual>d)'
 
@@ -89,11 +90,11 @@ module RuboCop
         end
         alias on_defs on_def
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def check(node, elements)
           if elements.empty?
@@ -115,11 +116,10 @@ module RuboCop
 
           return if @column_delta.zero?
 
-          add_offense(right_paren,
-                      location: right_paren,
-                      message:  message(correct_column,
-                                        left_paren,
-                                        right_paren))
+          message = message(correct_column, left_paren, right_paren)
+          add_offense(right_paren, message: message) do |corrector|
+            autocorrect(corrector, right_paren)
+          end
         end
 
         def check_for_no_elements(node)
@@ -135,11 +135,10 @@ module RuboCop
           # select the first one of candidates to determine a specification.
           correct_column = candidates.first
           @column_delta = correct_column - right_paren.column
-          add_offense(right_paren,
-                      location: right_paren,
-                      message:  message(correct_column,
-                                        left_paren,
-                                        right_paren))
+          message = message(correct_column, left_paren, right_paren)
+          add_offense(right_paren, message: message) do |corrector|
+            autocorrect(corrector, right_paren)
+          end
         end
 
         def expected_column(left_paren, elements)

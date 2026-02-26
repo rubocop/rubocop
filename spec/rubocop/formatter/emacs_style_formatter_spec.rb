@@ -94,7 +94,7 @@ RSpec.describe RuboCop::Formatter::EmacsStyleFormatter, :config do
       it 'strips newlines out of the error message' do
         formatter.file_finished(file, [offense])
         expect(output.string).to eq(
-          '/path/to/file:1:1: E: unmatched close parenthesis: /    ' \
+          '/path/to/file:1:1: E: [Correctable] unmatched close parenthesis: /    ' \
           "world # Some comment containing a ) /\n"
         )
       end

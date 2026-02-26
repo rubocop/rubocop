@@ -41,12 +41,10 @@ module RuboCop
               'having a single-line body.'
 
         def on_while(node)
-          return unless node.multiline? && single_line_as_modifier?(node)
+          return unless single_line_as_modifier?(node)
 
           add_offense(node.loc.keyword, message: format(MSG, keyword: node.keyword)) do |corrector|
-            oneline = "#{node.body.source} #{node.keyword} #{node.condition.source}"
-
-            corrector.replace(node, oneline)
+            corrector.replace(node, to_modifier_form(node))
           end
         end
         alias on_until on_while

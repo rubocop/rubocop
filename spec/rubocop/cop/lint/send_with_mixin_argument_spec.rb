@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::SendWithMixinArgument do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::SendWithMixinArgument, :config do
   it 'registers an offense when using `send` with `include`' do
     expect_offense(<<~RUBY)
       Foo.send(:include, Bar)

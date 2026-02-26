@@ -27,6 +27,7 @@ module RuboCop
         MSG = 'Symbol with a boolean name - ' \
               'you probably meant to use `%<boolean>s`.'
 
+        # @!method boolean_symbol?(node)
         def_node_matcher :boolean_symbol?, '(sym {:true :false})'
 
         def on_sym(node)

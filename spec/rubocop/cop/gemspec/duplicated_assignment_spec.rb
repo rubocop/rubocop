@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
     RUBY
   end
 
-  it 'registers an offense when using `<<` twice' do
+  it 'does not register an offense when using `<<` twice' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
         spec.requirements << 'libmagick, v6.0'
@@ -42,7 +42,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
     RUBY
   end
 
-  it 'registers an offense when using `spec.add_dependency` twice' do
+  it 'does not register an offense when using `spec.add_dependency` twice' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
         spec.add_runtime_dependency('parallel', '~> 1.10')
@@ -51,7 +51,7 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
     RUBY
   end
 
-  it 'registers an offense when `name=` method call is not block value' do
+  it 'does not register an offense when `name=` method call is not block value' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
         foo = Foo.new

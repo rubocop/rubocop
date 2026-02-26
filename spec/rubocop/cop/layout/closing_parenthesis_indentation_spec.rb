@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation, :config do
   context 'for method calls' do
     context 'with line break before 1st parameter' do
       it 'registers an offense for misaligned )' do

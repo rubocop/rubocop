@@ -33,6 +33,7 @@ module RuboCop
         MSG_EACH_WITH_INDEX = 'Use `each` instead of `each_with_index`.'
         MSG_WITH_INDEX = 'Remove redundant `with_index`.'
 
+        # @!method redundant_with_index?(node)
         def_node_matcher :redundant_with_index?, <<~PATTERN
           (block
             $(send

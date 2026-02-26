@@ -3,7 +3,7 @@
 module RuboCop
   # This module holds the RuboCop version information.
   module Version
-    STRING = '1.3.1'
+    STRING = '1.12.0'
 
     MSG = '%<version>s (using Parser %<parser_version>s, '\
           'rubocop-ast %<rubocop_ast_version>s, ' \
@@ -34,7 +34,13 @@ module RuboCop
 
     # @api private
     def self.extension_versions(env)
-      env.config_store.for_pwd.loaded_features.sort.map do |loaded_feature|
+      features = Util.silence_warnings do
+        # Suppress any config issues when loading the config (ie. deprecations,
+        # pending cops, etc.).
+        env.config_store.unvalidated.for_pwd.loaded_features.sort
+      end
+
+      features.map do |loaded_feature|
         next unless (match = loaded_feature.match(/rubocop-(?<feature>.*)/))
 
         feature = match[:feature]

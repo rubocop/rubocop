@@ -33,10 +33,12 @@ module RuboCop
         MSG = 'Use `StandardError` over `Exception`.'
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
+        # @!method exception?(node)
         def_node_matcher :exception?, <<~PATTERN
           (send nil? {:raise :fail} $(const ${cbase nil?} :Exception) ... )
         PATTERN
 
+        # @!method exception_new_with_message?(node)
         def_node_matcher :exception_new_with_message?, <<~PATTERN
           (send nil? {:raise :fail}
             (send $(const ${cbase nil?} :Exception) :new ... ))

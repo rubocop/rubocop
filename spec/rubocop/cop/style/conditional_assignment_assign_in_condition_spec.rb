@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::ConditionalAssignment do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
   shared_examples 'all variable types' do |variable|
     it 'registers an offense assigning any variable type to ternary' do
       expect_offense(<<~RUBY, variable: variable)

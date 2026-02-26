@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::ArgumentsForwarding, :config do
-  subject(:cop) { described_class.new(config) }
-
   context 'TargetRubyVersion <= 2.6', :ruby26 do
     it 'does not registers an offense when using restarg with block arg' do
       expect_no_offenses(<<~RUBY)

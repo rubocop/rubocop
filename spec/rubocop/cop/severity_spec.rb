@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Severity do
+  let(:info) { described_class.new(:info) }
   let(:refactor) { described_class.new(:refactor) }
   let(:convention) { described_class.new(:convention) }
   let(:warning) { described_class.new(:warning) }
@@ -26,6 +27,10 @@ RSpec.describe RuboCop::Cop::Severity do
   end
 
   describe '#code' do
+    describe 'info' do
+      it { expect(info.code).to eq('I') }
+    end
+
     describe 'refactor' do
       it { expect(refactor.code).to eq('R') }
     end
@@ -48,28 +53,36 @@ RSpec.describe RuboCop::Cop::Severity do
   end
 
   describe '#level' do
+    describe 'info' do
+      it { expect(info.level).to eq(1) }
+    end
+
     describe 'refactor' do
-      it { expect(refactor.level).to eq(1) }
+      it { expect(refactor.level).to eq(2) }
     end
 
     describe 'convention' do
-      it { expect(convention.level).to eq(2) }
+      it { expect(convention.level).to eq(3) }
     end
 
     describe 'warning' do
-      it { expect(warning.level).to eq(3) }
+      it { expect(warning.level).to eq(4) }
     end
 
     describe 'error' do
-      it { expect(error.level).to eq(4) }
+      it { expect(error.level).to eq(5) }
     end
 
     describe 'fatal' do
-      it { expect(fatal.level).to eq(5) }
+      it { expect(fatal.level).to eq(6) }
     end
   end
 
   describe 'constructs from code' do
+    describe 'I' do
+      it { expect(described_class.new('I')).to eq(info) }
+    end
+
     describe 'R' do
       it { expect(described_class.new('R')).to eq(refactor) }
     end
@@ -92,6 +105,10 @@ RSpec.describe RuboCop::Cop::Severity do
   end
 
   describe 'Comparable' do
+    describe 'info' do
+      it { expect(info).to be < refactor }
+    end
+
     describe 'refactor' do
       it { expect(refactor).to be < convention }
     end

@@ -40,7 +40,7 @@ module RuboCop
               'its own line.'
 
         def on_def(node)
-          return unless trailing_end?(node)
+          return if node.endless? || !trailing_end?(node)
 
           add_offense(node.loc.end) do |corrector|
             corrector.insert_before(

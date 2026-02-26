@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::UnreachableCode do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
   def wrap(str)
     head = <<~RUBY
       def something

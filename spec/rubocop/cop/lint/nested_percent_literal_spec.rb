@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::NestedPercentLiteral, :config do
   it 'registers no offense for empty array' do
     expect_no_offenses('%i[]')
   end

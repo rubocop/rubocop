@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::MultipleComparison do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::MultipleComparison, :config do
   shared_examples 'Check to use two comparison operator' do |operator1, operator2|
     it "registers an offense for x #{operator1} y #{operator2} z" do
       expect_offense(<<~RUBY, operator1: operator1, operator2: operator2)
@@ -25,5 +21,17 @@ RSpec.describe RuboCop::Cop::Lint::MultipleComparison do
 
   it 'accepts to use one compare operator' do
     expect_no_offenses('x < 1')
+  end
+
+  it 'accepts to use `&` operator' do
+    expect_no_offenses('x >= y & x < z')
+  end
+
+  it 'accepts to use `|` operator' do
+    expect_no_offenses('x >= y | x < z')
+  end
+
+  it 'accepts to use `^` operator' do
+    expect_no_offenses('x >= y ^ x < z')
   end
 end

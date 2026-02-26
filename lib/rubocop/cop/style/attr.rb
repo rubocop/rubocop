@@ -62,6 +62,7 @@ module RuboCop
           end
         end
 
+        # @!method class_eval?(node)
         def_node_matcher :class_eval?, <<~PATTERN
           (block (send _ {:class_eval :module_eval}) ...)
         PATTERN

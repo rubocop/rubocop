@@ -33,7 +33,9 @@ module RuboCop
       end
 
       def add_parentheses(node, corrector)
-        if node.arguments.empty?
+        if !node.respond_to?(:arguments)
+          corrector.wrap(node, '(', ')')
+        elsif node.arguments.empty?
           corrector.insert_after(node, '()')
         else
           corrector.replace(args_begin(node), '(')

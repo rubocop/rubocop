@@ -36,6 +36,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[source].freeze
 
+        # @!method insecure_protocol_source?(node)
         def_node_matcher :insecure_protocol_source?, <<~PATTERN
           (send nil? :source
             $(sym ${:gemcutter :rubygems :rubyforge}))

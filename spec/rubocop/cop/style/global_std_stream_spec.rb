@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::GlobalStdStream do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::GlobalStdStream, :config do
   it 'registers an offense and corrects when using std stream as const' do
     expect_offense(<<~RUBY)
       STDOUT.puts('hello')

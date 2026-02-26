@@ -39,23 +39,23 @@ module RuboCop
       #   rescue SomeException
       #     handle_error
       #   end
-      class RescueModifier < Cop
+      class RescueModifier < Base
         include Alignment
+        include RangeHelp
         include RescueNode
+        extend AutoCorrector
 
         MSG = 'Avoid using `rescue` in its modifier form.'
 
         def on_resbody(node)
           return unless rescue_modifier?(node)
 
-          add_offense(node.parent)
-        end
+          rescue_node = node.parent
+          add_offense(rescue_node) do |corrector|
+            parenthesized = parenthesized?(rescue_node)
 
-        def autocorrect(node)
-          parenthesized = parenthesized?(node)
-          lambda do |corrector|
-            corrector.replace(node, corrected_block(node, parenthesized))
-            ParenthesesCorrector.correct(corrector, node.parent) if parenthesized
+            correct_rescue_block(corrector, rescue_node, parenthesized)
+            ParenthesesCorrector.correct(corrector, rescue_node.parent) if parenthesized
           end
         end
 
@@ -65,17 +65,20 @@ module RuboCop
           node.parent && parentheses?(node.parent)
         end
 
-        def corrected_block(node, parenthesized)
+        def correct_rescue_block(corrector, node, parenthesized)
           operation, rescue_modifier, = *node
           *_, rescue_args = *rescue_modifier
 
           node_indentation, node_offset = indentation_and_offset(node, parenthesized)
 
-          "begin\n" \
-            "#{operation.source.gsub(/^/, node_indentation)}" \
-            "\n#{node_offset}rescue\n" \
-            "#{rescue_args.source.gsub(/^/, node_indentation)}" \
-            "\n#{node_offset}end"
+          corrector.remove(range_between(operation.source_range.end_pos, node.source_range.end_pos))
+          corrector.insert_before(operation, "begin\n#{node_indentation}")
+          corrector.insert_after(operation, <<~RESCUE_CLAUSE.chop)
+
+            #{node_offset}rescue
+            #{node_indentation}#{rescue_args.source}
+            #{node_offset}end
+          RESCUE_CLAUSE
         end
 
         def indentation_and_offset(node, parenthesized)

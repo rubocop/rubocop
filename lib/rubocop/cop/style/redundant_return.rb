@@ -66,10 +66,14 @@ module RuboCop
         end
 
         def correct_with_arguments(return_node, corrector)
-          if return_node.arguments.size > 1
+          if return_node.children.size > 1
             add_brackets(corrector, return_node)
           elsif hash_without_braces?(return_node.first_argument)
             add_braces(corrector, return_node.first_argument)
+          end
+          if return_node.splat_argument?
+            first_argument = return_node.first_argument
+            corrector.replace(first_argument, first_argument.source.gsub(/\A\*/, ''))
           end
 
           keyword = range_with_surrounding_space(range: return_node.loc.keyword,

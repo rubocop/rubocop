@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::InterpolationCheck do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
   it 'registers an offense and corrects for interpolation in single quoted string' do
     expect_offense(<<~'RUBY')
       'foo #{bar}'
@@ -58,6 +56,12 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck do
   it 'does not register an offense for escaped crab claws in dstr' do
     expect_no_offenses(<<~'RUBY')
       foo = "alpha #{variable} beta \#{gamma}\" delta"
+    RUBY
+  end
+
+  it 'does not register offense for strings in %w()' do
+    expect_no_offenses(<<~'RUBY')
+      %w("#{a}-foo")
     RUBY
   end
 end

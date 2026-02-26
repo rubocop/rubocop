@@ -8,6 +8,7 @@ module RuboCop
 
       private
 
+      # @!method rational_literal?(node)
       def_node_matcher :rational_literal?, <<~PATTERN
         (send
           (int _) :/

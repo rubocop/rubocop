@@ -56,6 +56,7 @@ module RuboCop
 
         private
 
+        # @!method setter_call_to_local_variable?(node)
         def_node_matcher :setter_call_to_local_variable?, <<~PATTERN
           [(send (lvar _) ...) setter_method?]
         PATTERN

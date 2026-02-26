@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
   shared_examples 'common functionality' do
     it 'registers an offense when the last variable of parallel assignment ' \
        'is an underscore' do

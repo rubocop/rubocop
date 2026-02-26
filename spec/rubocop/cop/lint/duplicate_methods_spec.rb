@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
   shared_examples 'in scope' do |type, opening_line|
     it "registers an offense for duplicate method in #{type}" do
       expect_offense(<<~RUBY)
@@ -183,7 +179,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
       RUBY
     end
 
-    it 'registers offense for a duplicate instance method in separate files' do
+    it 'only registers an offense for the second instance of a duplicate instance method in separate files' do
       expect_no_offenses(<<~RUBY, 'first.rb')
         #{opening_line}
           def some_method
@@ -191,6 +187,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods do
           end
         end
       RUBY
+
       expect_offense(<<~RUBY, 'second.rb')
         #{opening_line}
           def some_method

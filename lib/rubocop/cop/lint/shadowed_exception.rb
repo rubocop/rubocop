@@ -106,23 +106,13 @@ module RuboCop
           error && error.ancestors[1] == SystemCallError
         end
 
-        def silence_warnings
-          # Replaces Kernel::silence_warnings since it hides any warnings,
-          # including the RuboCop ones
-          old_verbose = $VERBOSE
-          $VERBOSE = nil
-          yield
-        ensure
-          $VERBOSE = old_verbose
-        end
-
         def evaluate_exceptions(group)
           rescued_exceptions = group.exceptions
 
           if rescued_exceptions.any?
             rescued_exceptions.each_with_object([]) do |exception, converted|
               begin
-                silence_warnings do
+                RuboCop::Util.silence_warnings do
                   # Avoid printing deprecation warnings about constants
                   converted << Kernel.const_get(exception.source)
                 end

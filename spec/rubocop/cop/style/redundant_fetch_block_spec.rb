@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::RedundantFetchBlock, :config do
   context 'with SafeForConstants: true' do
     let(:config) do
       RuboCop::Config.new(

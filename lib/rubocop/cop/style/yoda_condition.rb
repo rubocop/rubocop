@@ -72,6 +72,7 @@ module RuboCop
 
         PROGRAM_NAMES = %i[$0 $PROGRAM_NAME].freeze
 
+        # @!method file_constant_equal_program_name?(node)
         def_node_matcher :file_constant_equal_program_name?, <<~PATTERN
           (send #source_file_path_constant? {:== :!=} (gvar #program_name?))
         PATTERN

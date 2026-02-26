@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::ConstantDefinitionInBlock, :config do
-  subject(:cop) { described_class.new(config) }
-
   it 'does not register an offense for a top-level constant' do
     expect_no_offenses(<<~RUBY)
       FOO = 1

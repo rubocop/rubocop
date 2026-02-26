@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::InternalAffairs::NodeDestructuring do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::InternalAffairs::NodeDestructuring, :config do
   context 'when destructuring using `node.children`' do
     it 'registers an offense when receiver is named `node`' do
       expect_offense(<<~RUBY, 'example_cop.rb')

@@ -23,6 +23,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
               puts bar
             end
           RUBY
+
           expect_correction(<<~RUBY)
             def some_method(_foo, bar)
               puts bar
@@ -43,6 +44,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                 puts foo
               end
             RUBY
+
             expect_correction(<<~RUBY)
               def some_method(foo,
                   _bar)
@@ -75,6 +77,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                 a, b = b, 42
               end
             RUBY
+
             expect_correction(<<~RUBY)
               def foo(_a, b)
                 a, b = b, 42
@@ -122,6 +125,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             puts foo
           end
         RUBY
+
         expect_correction(<<~RUBY)
           def some_method(foo, *_bar)
             puts foo
@@ -142,6 +146,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             puts foo
           end
         RUBY
+
         expect_correction(<<~RUBY)
           def some_method(foo, _bar = 1)
             puts foo
@@ -158,6 +163,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             puts foo
           end
         RUBY
+
         expect_no_corrections
       end
     end
@@ -170,6 +176,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             puts foo
           end
         RUBY
+
         expect_no_corrections
       end
 
@@ -198,6 +205,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             foo + bar
           end
         RUBY
+
         expect_correction(<<~RUBY)
           def some_method(foo, bar)
             foo + bar
@@ -219,6 +227,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
                                ^^^ #{message}
           end
         RUBY
+
         expect_correction(<<~RUBY)
           def self.some_method(_foo)
           end
@@ -300,6 +309,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
               super(:something)
             end
           RUBY
+
           expect_correction(<<~RUBY)
             def some_method(_foo)
               super(:something)
@@ -338,6 +348,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
               end
             end
           RUBY
+
           expect_correction(<<~RUBY)
             def some_method(_foo, _bar)
               def other(a)
@@ -364,6 +375,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
               binding(:something)
             end
           RUBY
+
           expect_correction(<<~RUBY)
             def some_method(_foo)
               binding(:something)
@@ -405,6 +417,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           1
         end
       RUBY
+
       expect_correction(<<~RUBY)
         def method(_arg)
           1
@@ -436,6 +449,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           1
         end
       RUBY
+
       expect_correction(<<~RUBY)
         def method(_a, _b, *_others)
           1
@@ -506,6 +520,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           1
         end
       RUBY
+
       expect_correction(<<~RUBY)
         def method(_arg)
           1
@@ -538,6 +553,7 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
           1
         end
       RUBY
+
       expect_correction(<<~RUBY)
         def method(_a, _b, *_others)
           1

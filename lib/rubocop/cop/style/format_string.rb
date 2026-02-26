@@ -42,6 +42,7 @@ module RuboCop
         MSG = 'Favor `%<prefer>s` over `%<current>s`.'
         RESTRICT_ON_SEND = %i[format sprintf %].freeze
 
+        # @!method formatter(node)
         def_node_matcher :formatter, <<~PATTERN
           {
             (send nil? ${:sprintf :format} _ _ ...)
@@ -50,6 +51,7 @@ module RuboCop
           }
         PATTERN
 
+        # @!method variable_argument?(node)
         def_node_matcher :variable_argument?, <<~PATTERN
           (send {str dstr} :% {send_type? lvar_type?})
         PATTERN
@@ -111,14 +113,19 @@ module RuboCop
           format = format_arg.source
 
           args = if param_args.one?
-                   arg = param_args.last
-
-                   arg.hash_type? ? "{ #{arg.source} }" : arg.source
+                   format_single_parameter(param_args.last)
                  else
                    "[#{param_args.map(&:source).join(', ')}]"
                  end
 
           corrector.replace(node, "#{format} % #{args}")
+        end
+
+        def format_single_parameter(arg)
+          source = arg.source
+          return "{ #{source} }" if arg.hash_type?
+
+          arg.send_type? && arg.operator_method? && !arg.parenthesized? ? "(#{source})" : source
         end
       end
     end

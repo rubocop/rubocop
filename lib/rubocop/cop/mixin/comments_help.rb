@@ -9,7 +9,6 @@ module RuboCop
       def source_range_with_comment(node)
         begin_pos = begin_pos_with_comment(node)
         end_pos = end_position_for(node)
-        end_pos += 1 if node.def_type?
 
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
@@ -22,18 +21,13 @@ module RuboCop
       end
 
       def begin_pos_with_comment(node)
-        annotation_line = node.first_line - 1
-        first_comment = nil
+        first_comment = processed_source.ast_with_comments[node].first
 
-        processed_source.comments_before_line(annotation_line)
-                        .reverse_each do |comment|
-          if comment.location.line == annotation_line
-            first_comment = comment
-            annotation_line -= 1
-          end
+        if first_comment && (first_comment.loc.line < node.loc.line)
+          start_line_position(first_comment)
+        else
+          start_line_position(node)
         end
-
-        start_line_position(first_comment || node)
       end
 
       def start_line_position(node)

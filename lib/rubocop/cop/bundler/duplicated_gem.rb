@@ -30,7 +30,7 @@ module RuboCop
       #   if Dir.exist?(local)
       #     gem 'rubocop', path: local
       #   elsif ENV['RUBOCOP_VERSION'] == 'master'
-      #     gem 'rubocop', git: 'https://github.com/rubocop-hq/rubocop.git'
+      #     gem 'rubocop', git: 'https://github.com/rubocop/rubocop.git'
       #   else
       #     gem 'rubocop', '~> 0.90.0'
       #   end
@@ -57,6 +57,7 @@ module RuboCop
 
         private
 
+        # @!method gem_declarations(node)
         def_node_search :gem_declarations, '(send nil? :gem str ...)'
 
         def duplicated_gem_nodes

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::Strip do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::Strip, :config do
   it 'registers an offense for str.lstrip.rstrip' do
     expect_offense(<<~RUBY)
       str.lstrip.rstrip

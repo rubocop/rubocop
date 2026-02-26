@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes do
-  subject(:cop) { described_class.new(config) }
-
-  let(:config) { RuboCop::Config.new }
-
+RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes, :config do
   it 'registers an offense when both of named and numbered captures are used' do
     expect_offense(<<~RUBY)
       /(?<foo>bar)(baz)/
@@ -31,7 +27,7 @@ RSpec.describe RuboCop::Cop::Lint::MixedRegexpCaptureTypes do
     RUBY
   end
 
-  # See https://github.com/rubocop-hq/rubocop/issues/8083
+  # See https://github.com/rubocop/rubocop/issues/8083
   it 'does not register offense when using a Regexp cannot be processed by regexp_parser gem' do
     expect_no_offenses(<<~'RUBY')
       /data = ({"words":.+}}}[^}]*})/m

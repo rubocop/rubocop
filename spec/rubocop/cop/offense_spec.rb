@@ -66,19 +66,27 @@ RSpec.describe RuboCop::Cop::Offense do
                      .level
     end
 
-    context 'when severity is :refactor' do
-      let(:severity) { :refactor }
+    context 'when severity is :info' do
+      let(:severity) { :info }
 
       it 'is 1' do
         expect(severity_level).to eq(1)
       end
     end
 
+    context 'when severity is :refactor' do
+      let(:severity) { :refactor }
+
+      it 'is 2' do
+        expect(severity_level).to eq(2)
+      end
+    end
+
     context 'when severity is :fatal' do
       let(:severity) { :fatal }
 
-      it 'is 5' do
-        expect(severity_level).to eq(5)
+      it 'is 6' do
+        expect(severity_level).to eq(6)
       end
     end
   end

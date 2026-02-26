@@ -34,10 +34,12 @@ module RuboCop
 
         private
 
+        # @!method node_type_check(node)
         def_node_matcher :node_type_check, <<~PATTERN
           (send nil? :add_offense $_node $hash)
         PATTERN
 
+        # @!method offending_location_argument(node)
         def_node_matcher :offending_location_argument, <<~PATTERN
           (pair (sym :location) $(send (send $_node :loc) $_keyword))
         PATTERN

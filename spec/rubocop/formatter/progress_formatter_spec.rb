@@ -153,13 +153,13 @@ RSpec.describe RuboCop::Formatter::ProgressFormatter do
         expect(output.string).to include(<<~OUTPUT)
           Offenses:
 
-          lib/rubocop.rb:2:3: C: foo
+          lib/rubocop.rb:2:3: C: [Correctable] foo
           This is line 2.
             ^
-          exe/rubocop:5:2: E: bar
+          exe/rubocop:5:2: E: [Correctable] bar
           This is line 5.
            ^
-          exe/rubocop:6:1: C: foo
+          exe/rubocop:6:1: C: [Correctable] foo
           This is line 6.
           ^
         OUTPUT

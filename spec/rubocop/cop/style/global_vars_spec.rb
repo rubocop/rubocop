@@ -5,8 +5,6 @@ RSpec.describe RuboCop::Cop::Style::GlobalVars, :config do
     'AllowedVariables' => ['$allowed']
   }
 
-  subject(:cop) { described_class.new(config) }
-
   let(:cop_config) { cop_config }
 
   it 'registers an offense for $custom' do

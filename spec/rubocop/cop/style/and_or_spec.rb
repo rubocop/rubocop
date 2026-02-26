@@ -6,8 +6,6 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       'EnforcedStyle' => 'conditionals'
     }
 
-    subject(:cop) { described_class.new(config) }
-
     let(:cop_config) { cop_config }
 
     { 'and' => '&&', 'or' => '||' }.each do |operator, prefer|
@@ -24,6 +22,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
             do_something
           end
         RUBY
+
         expect_correction(<<~RUBY)
           if a #{prefer} b
             do_something
@@ -46,6 +45,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
             do_something
           end
         RUBY
+
         expect_correction(<<~RUBY)
           while a #{prefer} b
             do_something
@@ -68,6 +68,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
             do_something
           end
         RUBY
+
         expect_correction(<<~RUBY)
           until a #{prefer} b
             do_something
@@ -90,6 +91,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           end while a %{operator} b
                       ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           begin
             do_something
@@ -112,6 +114,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           end until a %{operator} b
                       ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           begin
             do_something
@@ -148,8 +151,6 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       'EnforcedStyle' => 'always'
     }
 
-    subject(:cop) { described_class.new(config) }
-
     let(:cop_config) { cop_config }
 
     { 'and' => '&&', 'or' => '||' }.each do |operator, prefer|
@@ -158,6 +159,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           test if a %{operator} b
                     ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           test if a #{prefer} b
         RUBY
@@ -170,6 +172,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
                              ^{operator} Use `#{prefer}` instead of `#{operator}`.
           end
         RUBY
+
         expect_correction(<<~RUBY)
           def z(a, b)
             return true if a #{prefer} b
@@ -183,6 +186,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         x = y or teststring.include? 'b'
               ^^ Use `||` instead of `or`.
       RUBY
+
       expect_correction(<<~RUBY)
         (x = y) || teststring.include?('b')
       RUBY
@@ -193,6 +197,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         teststring.include? 'b' or x = y
                                 ^^ Use `||` instead of `or`.
       RUBY
+
       expect_correction(<<~RUBY)
         teststring.include?('b') || (x = y)
       RUBY
@@ -203,6 +208,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
         foo[:bar] and foo[:baz]
                   ^^^ Use `&&` instead of `and`.
       RUBY
+
       expect_correction(<<~RUBY)
         foo[:bar] && foo[:baz]
       RUBY
@@ -214,6 +220,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           x = a + b %{operator} return x
                     ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           (x = a + b) #{prefer} (return x)
         RUBY
@@ -224,6 +231,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           x = a + b if a %{operator} b
                          ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           x = a + b if a #{prefer} b
         RUBY
@@ -234,6 +242,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           x = a + b unless a %{operator} b
                              ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           x = a + b unless a #{prefer} b
         RUBY
@@ -244,6 +253,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           x = a + b while a %{operator} b
                             ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           x = a + b while a #{prefer} b
         RUBY
@@ -254,6 +264,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           x = a + b until a %{operator} b
                             ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           x = a + b until a #{prefer} b
         RUBY
@@ -264,6 +275,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           method a %{operator} b
                    ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           method(a) #{prefer} b
         RUBY
@@ -274,6 +286,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           method a,b %{operator} b
                      ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           method(a,b) #{prefer} b
         RUBY
@@ -284,6 +297,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           obj.method a %{operator} b
                        ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           obj.method(a) #{prefer} b
         RUBY
@@ -294,6 +308,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           obj.method a,b %{operator} b
                          ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           obj.method(a,b) #{prefer} b
         RUBY
@@ -304,6 +319,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           method(a, b) %{operator} b
                        ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           method(a, b) #{prefer} b
         RUBY
@@ -314,6 +330,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           b %{operator} method a,b
             ^{operator} Use `#{prefer}` instead of `#{operator}`.
         RUBY
+
         expect_correction(<<~RUBY)
           b #{prefer} method(a,b)
         RUBY
@@ -326,6 +343,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           x and !obj.method arg
             ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           x && !obj.method(arg)
         RUBY
@@ -338,6 +356,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           !obj.method arg and x
                           ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           !obj.method(arg) && x
         RUBY
@@ -350,6 +369,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           obj.method = arg and x
                            ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           (obj.method = arg) && x
         RUBY
@@ -362,6 +382,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           obj.method= arg and x
                           ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           (obj.method= arg) && x
         RUBY
@@ -374,6 +395,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           false or 3.is_a?Integer
                 ^^ Use `||` instead of `or`.
         RUBY
+
         expect_correction(<<~RUBY)
           false || 3.is_a?(Integer)
         RUBY
@@ -384,6 +406,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           false and 3.is_a?Integer
                 ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           false && 3.is_a?(Integer)
         RUBY
@@ -396,6 +419,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           '1'.is_a?Integer or 1.is_a?Integer
                            ^^ Use `||` instead of `or`.
         RUBY
+
         expect_correction(<<~RUBY)
           '1'.is_a?(Integer) || 1.is_a?(Integer)
         RUBY
@@ -406,6 +430,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           '1'.is_a?Integer and 1.is_a?Integer
                            ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           '1'.is_a?(Integer) && 1.is_a?(Integer)
         RUBY
@@ -419,6 +444,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           '1'.is_a?Integer or 1.is_a? Integer
                            ^^ Use `||` instead of `or`.
         RUBY
+
         expect_correction(<<~RUBY)
           '1'.is_a?(Integer) || 1.is_a?(Integer)
         RUBY
@@ -429,6 +455,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           '1'.is_a?Integer and 1.is_a? Integer
                            ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           '1'.is_a?(Integer) && 1.is_a?(Integer)
         RUBY
@@ -441,6 +468,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           x and not arg
             ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           x && (not arg)
         RUBY
@@ -453,6 +481,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           not arg and x
                   ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           (not arg) && x
         RUBY
@@ -466,6 +495,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
           !var or var.empty?
                ^^ Use `||` instead of `or`.
         RUBY
+
         expect_correction(<<~RUBY)
           !var || var.empty?
         RUBY
@@ -484,6 +514,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
                   ^^^ Use `&&` instead of `and`.
           end
         RUBY
+
         expect_correction(<<~RUBY)
           def x
           end
@@ -496,14 +527,69 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     context 'when left hand side is a comparison method' do
-      # Regression: https://github.com/rubocop-hq/rubocop/issues/4451
+      # Regression: https://github.com/rubocop/rubocop/issues/4451
       it 'autocorrects "and" with && and adds parens' do
         expect_offense(<<~RUBY)
           foo == bar and baz
                      ^^^ Use `&&` instead of `and`.
         RUBY
+
         expect_correction(<<~RUBY)
           (foo == bar) && baz
+        RUBY
+      end
+    end
+
+    context 'when `or` precedes `and`' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo or bar and baz
+              ^^ Use `||` instead of `or`.
+                     ^^^ Use `&&` instead of `and`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          (foo || bar) && baz
+        RUBY
+      end
+    end
+
+    context 'when `or` precedes `&&`' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo or bar && baz
+              ^^ Use `||` instead of `or`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo || bar && baz
+        RUBY
+      end
+    end
+
+    context 'when `and` precedes `or`' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo and bar or baz
+              ^^^ Use `&&` instead of `and`.
+                      ^^ Use `||` instead of `or`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && bar || baz
+        RUBY
+      end
+    end
+
+    context 'when `and` precedes `||`' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          foo and bar || baz
+              ^^^ Use `&&` instead of `and`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && (bar || baz)
         RUBY
       end
     end
@@ -517,6 +603,7 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
                   ^^^ Use `&&` instead of `and`.
           end)
         RUBY
+
         expect_correction(<<~RUBY)
           (def y
             (a = b) && a.c

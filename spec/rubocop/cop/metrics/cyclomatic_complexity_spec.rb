@@ -292,31 +292,61 @@ RSpec.describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
     end
   end
 
-  context 'when method is in list of ignored methods' do
-    let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
+  context 'when IgnoredMethods is set' do
+    context 'with a string' do
+      let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => ['foo'] } }
 
-    it 'does not register an offense when defining an instance method' do
-      expect_no_offenses(<<~RUBY)
-        def foo
-          bar.baz(:qux)
-        end
-      RUBY
+      it 'does not register an offense when defining an instance method' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            bar.baz(:qux)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when defining a class method' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            bar.baz(:qux)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when using `define_method`' do
+        expect_no_offenses(<<~RUBY)
+          define_method :foo do
+            bar.baz(:qux)
+          end
+        RUBY
+      end
     end
 
-    it 'does not register an offense when defining a class method' do
-      expect_no_offenses(<<~RUBY)
-        def self.foo
-          bar.baz(:qux)
-        end
-      RUBY
-    end
+    context 'with a regex' do
+      let(:cop_config) { { 'Max' => 0, 'IgnoredMethods' => [/foo/] } }
 
-    it 'does not register an offense when using `define_method`' do
-      expect_no_offenses(<<~RUBY)
-        define_method :foo do
-          bar.baz(:qux)
-        end
-      RUBY
+      it 'does not register an offense when defining an instance method' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            bar.baz(:qux)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when defining a class method' do
+        expect_no_offenses(<<~RUBY)
+          def self.foo
+            bar.baz(:qux)
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when using `define_method`' do
+        expect_no_offenses(<<~RUBY)
+          define_method :foo do
+            bar.baz(:qux)
+          end
+        RUBY
+      end
     end
   end
 

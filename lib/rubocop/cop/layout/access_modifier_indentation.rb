@@ -32,10 +32,11 @@ module RuboCop
       #   private
       #     def smooth; end
       #   end
-      class AccessModifierIndentation < Cop
+      class AccessModifierIndentation < Base
         include Alignment
         include ConfigurableEnforcedStyle
         include RangeHelp
+        extend AutoCorrector
 
         MSG = '%<style>s access modifiers like `%<node>s`.'
 
@@ -48,11 +49,11 @@ module RuboCop
         alias on_module on_class
         alias on_block  on_class
 
-        def autocorrect(node)
-          AlignmentCorrector.correct(processed_source, node, @column_delta)
-        end
-
         private
+
+        def autocorrect(corrector, node)
+          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
 
         def check_body(body, node)
           modifiers = body.each_child_node(:send)
@@ -69,18 +70,20 @@ module RuboCop
           if @column_delta.zero?
             correct_style_detected
           else
-            add_offense(send_node) do
+            add_offense(send_node) do |corrector|
               if offset == unexpected_indent_offset
                 opposite_style_detected
               else
                 unrecognized_style_detected
               end
+
+              autocorrect(corrector, send_node)
             end
           end
         end
 
-        def message(node)
-          format(MSG, style: style.capitalize, node: node.loc.selector.source)
+        def message(range)
+          format(MSG, style: style.capitalize, node: range.source)
         end
 
         def expected_indent_offset

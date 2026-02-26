@@ -72,6 +72,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             FOO = *1..10
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             FOO = (1..10).to_a.freeze
           RUBY
@@ -83,6 +84,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
               FOO = *(1..10)
                     ^^^^^^^^ Freeze mutable objects assigned to constants.
             RUBY
+
             expect_correction(<<~RUBY)
               FOO = (1..10).to_a.freeze
             RUBY
@@ -97,63 +99,126 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           XXX = YYY, ZZZ
                 ^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           XXX = [YYY, ZZZ].freeze
         RUBY
       end
 
-      it 'does not add brackets to %w() arrays' do
+      it 'does not insert brackets for %w() arrays' do
         expect_offense(<<~RUBY)
           XXX = %w(YYY ZZZ)
                 ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           XXX = %w(YYY ZZZ).freeze
         RUBY
       end
     end
 
-    context 'when assigning a range (irange) without parenthesis' do
-      it 'adds parenthesis when auto-correcting' do
-        expect_offense(<<~RUBY)
-          XXX = 1..99
-                ^^^^^ Freeze mutable objects assigned to constants.
-        RUBY
-        expect_correction(<<~RUBY)
-          XXX = (1..99).freeze
-        RUBY
+    # Ruby 3.0's Regexp and Range literals are frozen.
+    #
+    # https://bugs.ruby-lang.org/issues/15504
+    # https://bugs.ruby-lang.org/issues/16377
+    context 'Ruby 3.0 or higher', :ruby30 do
+      context 'when assigning a regexp' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            XXX = /regexp/
+          RUBY
+        end
       end
 
-      it 'does not add parenthesis to range enclosed in parentheses' do
-        expect_offense(<<~RUBY)
-          XXX = (1..99)
-                ^^^^^^^ Freeze mutable objects assigned to constants.
-        RUBY
-        expect_correction(<<~RUBY)
-          XXX = (1..99).freeze
-        RUBY
+      context 'when assigning a range (irange)' do
+        it 'does not register an offense when without parenthesis' do
+          expect_no_offenses(<<~RUBY)
+            XXX = 1..99
+          RUBY
+        end
+
+        it 'does not register an offense when with parenthesis' do
+          expect_no_offenses(<<~RUBY)
+            XXX = (1..99)
+          RUBY
+        end
+      end
+
+      context 'when assigning a range (erange)' do
+        it 'does not register an offense when without parenthesis' do
+          expect_no_offenses(<<~RUBY)
+            XXX = 1...99
+          RUBY
+        end
+
+        it 'does not register an offense when with parenthesis' do
+          expect_no_offenses(<<~RUBY)
+            XXX = (1...99)
+          RUBY
+        end
       end
     end
 
-    context 'when assigning a range (erange) without parenthesis' do
-      it 'adds parenthesis when auto-correcting' do
-        expect_offense(<<~RUBY)
-          XXX = 1...99
-                ^^^^^^ Freeze mutable objects assigned to constants.
-        RUBY
-        expect_correction(<<~RUBY)
-          XXX = (1...99).freeze
-        RUBY
+    context 'Ruby 2.7 or lower', :ruby27 do
+      context 'when assigning a regexp' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            XXX = /regexp/
+                  ^^^^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            XXX = /regexp/.freeze
+          RUBY
+        end
       end
 
-      it 'does not add parenthesis to range enclosed in parentheses' do
-        expect_offense(<<~RUBY)
-          XXX = (1...99)
-                ^^^^^^^^ Freeze mutable objects assigned to constants.
-        RUBY
-        expect_correction(<<~RUBY)
-          XXX = (1...99).freeze
-        RUBY
+      context 'when assigning a range (irange) without parenthesis' do
+        it 'adds parenthesis when auto-correcting' do
+          expect_offense(<<~RUBY)
+            XXX = 1..99
+                  ^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            XXX = (1..99).freeze
+          RUBY
+        end
+
+        it 'does not insert parenthesis to range enclosed in parentheses' do
+          expect_offense(<<~RUBY)
+            XXX = (1..99)
+                  ^^^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            XXX = (1..99).freeze
+          RUBY
+        end
+      end
+
+      context 'when assigning a range (erange) without parenthesis' do
+        it 'adds parenthesis when auto-correcting' do
+          expect_offense(<<~RUBY)
+            XXX = 1...99
+                  ^^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            XXX = (1...99).freeze
+          RUBY
+        end
+
+        it 'does not insert parenthesis to range enclosed in parentheses' do
+          expect_offense(<<~RUBY)
+            XXX = (1...99)
+                  ^^^^^^^^ Freeze mutable objects assigned to constants.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            XXX = (1...99).freeze
+          RUBY
+        end
       end
     end
 
@@ -244,6 +309,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             FOO = *1..10
                   ^^^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             FOO = (1..10).to_a.freeze
           RUBY
@@ -255,6 +321,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
               FOO = *(1..10)
                     ^^^^^^^^ Freeze mutable objects assigned to constants.
             RUBY
+
             expect_correction(<<~RUBY)
               FOO = (1..10).to_a.freeze
             RUBY
@@ -270,6 +337,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
             CONST = FOO %{o} BAR
                     ^^^^^{o}^^^^ Freeze mutable objects assigned to constants.
           RUBY
+
           expect_correction(<<~RUBY)
             CONST = (FOO #{o} BAR).freeze
           RUBY
@@ -293,6 +361,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = FOO + BAR + BAZ
                   ^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           FOO = [1].freeze
           BAR = [2].freeze
@@ -360,6 +429,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = FOO + 'bar'
                   ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           CONST = (FOO + 'bar').freeze
         RUBY
@@ -370,6 +440,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           CONST = 'foo' + 'bar' + 'baz'
                   ^^^^^^^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           CONST = ('foo' + 'bar' + 'baz').freeze
         RUBY
@@ -382,16 +453,18 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           XXX = YYY, ZZZ
                 ^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           XXX = [YYY, ZZZ].freeze
         RUBY
       end
 
-      it 'does not add brackets to %w() arrays' do
+      it 'does not insert brackets for %w() arrays' do
         expect_offense(<<~RUBY)
           XXX = %w(YYY ZZZ)
                 ^^^^^^^^^^^ Freeze mutable objects assigned to constants.
         RUBY
+
         expect_correction(<<~RUBY)
           XXX = %w(YYY ZZZ).freeze
         RUBY
@@ -405,6 +478,7 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
           SOMETHING
         HERE
       RUBY
+
       expect_correction(<<~RUBY)
         FOO = <<-HERE.freeze
           SOMETHING

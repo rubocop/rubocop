@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::CLI, :isolated_environment do
-  subject(:cli) { described_class.new }
+RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:disable RSpec/DescribeClass
+  subject(:cli) { RuboCop::CLI.new }
 
   include_context 'cli spec behavior'
 
   before do
     RuboCop::ConfigLoader.default_configuration = nil
+    RuboCop::ConfigLoader.default_configuration.for_all_cops['SuggestExtensions'] = false
   end
 
   it 'does not correct ExtraSpacing in a hash that would be changed back' do
@@ -193,6 +194,69 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       some_method(:a => 'abc', :b => 'abc',
                   :c => 'abc', :d => 'abc'
               )
+    RUBY
+  end
+
+  it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with `Style/NestedParenthesizedCalls`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+    YAML
+    source = <<~RUBY
+      a(b 1)
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only', 'Style/MethodCallWithArgsParentheses,Style/NestedParenthesizedCalls'
+                   ])).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      a(b(1))
+    RUBY
+  end
+
+  it 'corrects `EnforcedStyle: require_parentheses` of `Style/MethodCallWithArgsParentheses` with ' \
+     '`EnforcedStyle: conditionals` of `Style/AndOr`' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/MethodCallWithArgsParentheses:
+        EnforcedStyle: require_parentheses
+      Style/AndOr:
+        EnforcedStyle: conditionals
+    YAML
+    create_file('example.rb', <<~RUBY)
+      if foo and bar :arg
+      end
+    RUBY
+    expect(
+      cli.run(['--auto-correct', '--only', 'Style/MethodCallWithArgsParentheses,Style/AndOr'])
+    ).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      if foo && bar(:arg)
+      end
+    RUBY
+  end
+
+  it 'corrects `Style/IfUnlessModifier` with `Style/SoleNestedConditional`' do
+    source = <<~RUBY
+      def foo
+        # NOTE: comment
+        if a? && b?
+          puts "looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message" unless c?
+        end
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only', 'Style/IfUnlessModifier,Style/SoleNestedConditional'
+                   ])).to eq(0)
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      def foo
+        # NOTE: comment
+        if a? && b? && !c?
+            puts "looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message"
+          end
+      end
     RUBY
   end
 
@@ -764,9 +828,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
 
       def method
         # comment 1
+
         do_some_stuff
       rescue StandardError # comment 2
-        # comment 3
       end
     RUBY
     expect(IO.read('example.rb')).to eq(corrected)
@@ -1119,6 +1183,10 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
   end
 
   it 'can correct single line methods' do
+    create_file('.rubocop.yml', <<~YAML)
+      Style/EndlessMethod:
+        EnforcedStyle: disallow
+    YAML
     create_file('example.rb', <<~RUBY)
       def func1; do_something end # comment
       def func2() do_1; do_2; end
@@ -1376,7 +1444,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RUBY
   end
 
-  it 'does not say [Corrected] if correction was avoided' do
+  it 'does not say [Corrected] if correction is not possible' do
     src = <<~RUBY
       func a do b end
       Signal.trap('TERM') { system(cmd); exit }
@@ -1409,7 +1477,37 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       C:  2: 34: Style/Semicolon: Do not use semicolons to terminate expressions.
       W:  3: 27: Lint/UnusedMethodArgument: Unused method argument - bar.
 
-      1 file inspected, 3 offenses detected, 3 more offenses can be corrected with `rubocop -A`
+      1 file inspected, 3 offenses detected
+    RESULT
+  end
+
+  it 'says [Correctable] if correction is unsafe' do
+    src = <<~RUBY
+      var = :false
+      %w('foo', "bar")
+    RUBY
+    corrected = <<~RUBY
+      var = :false
+      %w('foo', "bar")
+    RUBY
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 2.4
+    YAML
+    create_file('example.rb', src)
+    exit_status = cli.run(
+      %w[-a -f simple
+         --only Lint/BooleanSymbol,Lint/PercentStringArray]
+    )
+    expect(exit_status).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(corrected)
+    expect($stdout.string).to eq(<<~RESULT)
+      == example.rb ==
+      W:  1:  7: [Correctable] Lint/BooleanSymbol: Symbol with a boolean name - you probably meant to use false.
+      W:  2:  1: [Correctable] Lint/PercentStringArray: Within %w/%W, quotes and ',' are unnecessary and may be unwanted in the resulting strings.
+
+      1 file inspected, 2 offenses detected, 2 more offenses can be corrected with `rubocop -A`
     RESULT
   end
 
@@ -1562,6 +1660,37 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     RUBY
   end
 
+  it 'corrects `Style/InverseMethods` offenses when specifying `IncludeSemanticChanges: false` of ' \
+     '`Style/NonNilCheck` and `EnforcedStyle: comparison` of `Style/NilComparison`' do
+    create_file('example.rb', <<~RUBY)
+      # frozen_string_literal: true
+
+      !(foo == nil)
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Style/NilComparison:
+        Enabled: true
+        EnforcedStyle: comparison # alternative config
+
+      Style/NonNilCheck:
+        Enabled: true
+        IncludeSemanticChanges: false # default config
+    YAML
+
+    expect(cli.run([
+                     '--auto-correct-all',
+                     '--only',
+                     'Style/InverseMethods,Style/NonNilCheck,Style/NilComparison'
+                   ])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      foo != nil
+    RUBY
+  end
+
   it 'corrects Lint/ParenthesesAsGroupedExpression and offenses and ' \
      'accepts Style/RedundantParentheses' do
     create_file('example.rb', <<~RUBY)
@@ -1577,6 +1706,90 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     ).to eq(0)
     expect(IO.read('example.rb')).to eq(<<~RUBY)
       do_something(argument)
+    RUBY
+  end
+
+  %i[
+    consistent_relative_to_receiver
+    special_for_inner_method_call
+    special_for_inner_method_call_in_parentheses
+  ].each do |style|
+    it 'does not crash `Layout/ArgumentAlignment` and offenses and accepts `Layout/FirstArgumentIndentation` ' \
+       'when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` ' \
+       "and `EnforcedStyle: #{style}` of `Layout/FirstArgumentIndentation`" do
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        expect(response).to redirect_to(path(
+          obj1,
+          id: obj2.id
+        ))
+      RUBY
+
+      create_file('.rubocop.yml', <<~YAML)
+        Layout/ArgumentAlignment:
+          EnforcedStyle: with_fixed_indentation
+        Layout/FirstArgumentIndentation:
+          EnforcedStyle: #{style} # Not `EnforcedStyle: consistent`.
+      YAML
+
+      expect(cli.run([
+                       '--auto-correct',
+                       '--only',
+                       'Layout/ArgumentAlignment,Layout/FirstArgumentIndentation'
+                     ])).to eq(0)
+      expect($stderr.string).to eq('')
+      expect(IO.read('example.rb')).to eq(<<~RUBY)
+        # frozen_string_literal: true
+
+        expect(response).to redirect_to(path(
+          obj1,
+          id: obj2.id
+        ))
+      RUBY
+    end
+  end
+
+  it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
+     '`EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation`' do
+    create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            def do_even_more_stuff
+            foo = begin
+      do_stuff(
+                      a: 1,
+                               b: 2,
+                               c: 3
+                              )
+                                    rescue StandardError
+                             nil
+      end
+        foo
+      end
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ArgumentAlignment:
+        EnforcedStyle: with_fixed_indentation
+      Layout/FirstArgumentIndentation:
+        EnforcedStyle: consistent
+    YAML
+
+    expect(cli.run(['--auto-correct'])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      def do_even_more_stuff
+        do_stuff(
+          a: 1,
+          b: 2,
+          c: 3
+        )
+      rescue StandardError
+        nil
+      end
     RUBY
   end
 
@@ -1692,5 +1905,50 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     status = cli.run(['--auto-correct-all'])
     expect(status).to eq(0)
     expect(source_file.read).to eq(source)
+  end
+
+  it 'corrects indentation for a begin/rescue/else/ensure/end block properly' do
+    source_file = Pathname('example.rb')
+    create_file(source_file, <<~RUBY)
+      def my_func
+        puts 'do something outside block'
+        begin
+        puts 'do something error prone'
+        rescue SomeException, SomeOther
+         puts 'wrongly indented error handling'
+        rescue StandardError
+         puts 'another wrongly indented error handling'
+        else
+           puts 'wrongly indented normal case handling'
+        ensure
+            puts 'wrongly indented common handling'
+        end
+      end
+    RUBY
+
+    status = cli.run(
+      [
+        '--auto-correct',
+        '--only',
+        'Layout/IndentationWidth,Layout/RescueEnsureAlignment,Layout/ElseAlignment'
+      ]
+    )
+    expect(status).to eq(0)
+    expect(source_file.read).to eq(<<~RUBY)
+      def my_func
+        puts 'do something outside block'
+        begin
+          puts 'do something error prone'
+        rescue SomeException, SomeOther
+          puts 'wrongly indented error handling'
+        rescue StandardError
+          puts 'another wrongly indented error handling'
+        else
+          puts 'wrongly indented normal case handling'
+        ensure
+          puts 'wrongly indented common handling'
+        end
+      end
+    RUBY
   end
 end

@@ -35,6 +35,7 @@ module RuboCop
         MSG = 'Avoid the use of the case equality operator `===`.'
         RESTRICT_ON_SEND = %i[===].freeze
 
+        # @!method case_equality?(node)
         def_node_matcher :case_equality?, '(send $#const? :=== $_)'
 
         def on_send(node)
@@ -64,7 +65,7 @@ module RuboCop
             # The automatic correction from `a === b` to `a.match?(b)` needs to
             # consider `Regexp.last_match?`, `$~`, `$1`, and etc.
             # This correction is expected to be supported by `Performance/Regexp` cop.
-            # See: https://github.com/rubocop-hq/rubocop-performance/issues/152
+            # See: https://github.com/rubocop/rubocop-performance/issues/152
             #
             # So here is noop.
           when :begin

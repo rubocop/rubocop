@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::RescueModifier do
-  subject(:cop) { described_class.new(config) }
-
+RSpec.describe RuboCop::Cop::Style::RescueModifier, :config do
   let(:config) do
     RuboCop::Config.new('Layout/IndentationWidth' => {
                           'Width' => 2
@@ -203,10 +201,10 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
       expect_correction(<<~RUBY)
         begin
           begin
-            blah
-          rescue
-            1
-          end
+          blah
+        rescue
+          1
+        end
         rescue
           2
         end
@@ -214,9 +212,7 @@ RSpec.describe RuboCop::Cop::Style::RescueModifier do
     end
   end
 
-  describe 'excluded file' do
-    subject(:cop) { described_class.new(config) }
-
+  describe 'excluded file', :config do
     let(:config) do
       RuboCop::Config.new('Style/RescueModifier' =>
                           { 'Enabled' => true,

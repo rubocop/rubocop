@@ -21,19 +21,28 @@ module RuboCop
         def on_send(node)
           return unless !node.arguments? && node.parenthesized?
           return if ineligible_node?(node)
+          return if default_argument?(node)
           return if ignored_method?(node.method_name)
           return if same_name_assignment?(node)
 
+          register_offense(node)
+        end
+
+        private
+
+        def register_offense(node)
           add_offense(offense_range(node)) do |corrector|
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
           end
         end
 
-        private
-
         def ineligible_node?(node)
           node.camel_case_method? || node.implicit_call? || node.prefix_not?
+        end
+
+        def default_argument?(node)
+          node.parent&.optarg_type?
         end
 
         def same_name_assignment?(node)

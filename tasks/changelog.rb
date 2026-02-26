@@ -14,10 +14,11 @@ class Changelog
   TYPE_TO_HEADER = { new: 'New features', fix: 'Bug fixes', change: 'Changes' }.freeze
   HEADER = /### (.*)/.freeze
   PATH = 'CHANGELOG.md'
-  REF_URL = 'https://github.com/rubocop-hq/rubocop'
+  REF_URL = 'https://github.com/rubocop/rubocop'
   MAX_LENGTH = 40
   CONTRIBUTOR = '[@%<user>s]: https://github.com/%<user>s'
-  SIGNATURE = Regexp.new(format(Regexp.escape("([@%<user>s][])\n"), user: '(\w+)'))
+  SIGNATURE = Regexp.new(format(Regexp.escape('[@%<user>s][]'), user: '([\w-]+)'))
+  EOF = "\n"
 
   # New entry
   Entry = Struct.new(:type, :body, :ref_type, :ref_id, :user, keyword_init: true) do
@@ -111,12 +112,14 @@ class Changelog
   end
 
   def merge_content
-    [
+    merged_content = [
       @header,
       unreleased_content,
-      @rest,
+      @rest.chomp,
       *new_contributor_lines
     ].join("\n")
+
+    merged_content << EOF
   end
 
   def self.pending?
@@ -140,8 +143,11 @@ class Changelog
   end
 
   def contributors
-    @entries.values.join("\n")
-            .scan(SIGNATURE).flatten
+    contributors = @entries.values.flat_map do |entry|
+      entry.match(/\. \((?<contributors>.+)\)\n/)[:contributors].split(',')
+    end
+
+    contributors.join.scan(SIGNATURE).flatten
   end
 
   private

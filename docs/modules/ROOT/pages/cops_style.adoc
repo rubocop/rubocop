@@ -452,7 +452,7 @@ array literal or the second is a string literal.
 
 This cop checks for non-ascii (non-English) characters
 in comments. You could set an array of allowed non-ascii chars in
-AllowedChars attribute (empty by default).
+`AllowedChars` attribute (copyright notice "©" by default).
 
 === Examples
 
@@ -471,7 +471,7 @@ AllowedChars attribute (empty by default).
 | Name | Default value | Configurable values
 
 | AllowedChars
-| `[]`
+| `©`
 | Array
 |===
 
@@ -1410,7 +1410,7 @@ hash.compact!
 | No
 | Yes (Unsafe)
 | 0.9
-| 0.27
+| 1.7
 |===
 
 This cop enforces the use of consistent method names
@@ -1459,6 +1459,10 @@ items.include?
 | PreferredMethods
 | `{"collect"=>"map", "collect!"=>"map!", "inject"=>"reduce", "detect"=>"find", "find_all"=>"select", "member?"=>"include?"}`
 | 
+
+| MethodsAcceptingSymbol
+| `inject`, `reduce`
+| Array
 |===
 
 === References
@@ -1799,17 +1803,20 @@ annotation.
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.51
-| -
+| 1.7
 |===
 
 This cop checks for comments put on the same line as some keywords.
-These keywords are: `begin`, `class`, `def`, `end`, `module`.
+These keywords are: `class`, `module`, `def`, `begin`, `end`.
 
 Note that some comments
 (`:nodoc:`, `:yields:`, `rubocop:disable` and `rubocop:todo`)
 are allowed.
+
+Auto-correction removes comments from `end` keyword and keeps comments
+for `class`, `module`, `def` and `begin` above the keyword.
 
 === Examples
 
@@ -1982,7 +1989,7 @@ end
 | Yes
 | No
 | 0.66
-| -
+| 1.10
 |===
 
 This cop checks that constants defined in classes and modules have
@@ -2010,6 +2017,42 @@ class Foo
   public_constant :BAZ
 end
 ----
+
+==== IgnoreModules: false (default)
+
+[source,ruby]
+----
+# bad
+class Foo
+  MyClass = Struct.new()
+end
+
+# good
+class Foo
+  MyClass = Struct.new()
+  public_constant :MyClass
+end
+----
+
+==== IgnoreModules: true
+
+[source,ruby]
+----
+# good
+class Foo
+  MyClass = Struct.new()
+end
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IgnoreModules
+| `false`
+| Boolean
+|===
 
 == Style/Copyright
 
@@ -2213,12 +2256,15 @@ path = __dir__
 | Yes
 | Yes
 | 0.82
-| -
+| 1.9
 |===
 
 Detects comments to enable/disable RuboCop.
 This is useful if want to make sure that every RuboCop error gets fixed
 and not quickly disabled with a comment.
+
+Specific cops can be allowed with the `AllowedCops` configuration. Note that
+if this configuration is set, `rubocop:disable all` is still disallowed.
 
 === Examples
 
@@ -2226,14 +2272,35 @@ and not quickly disabled with a comment.
 ----
 # bad
 # rubocop:disable Metrics/AbcSize
-def f
+def foo
 end
 # rubocop:enable Metrics/AbcSize
 
 # good
-def fixed_method_name_and_no_rubocop_comments
+def foo
 end
 ----
+
+==== AllowedCops: [Metrics/AbcSize]
+
+[source,ruby]
+----
+# good
+# rubocop:disable Metrics/AbcSize
+def foo
+end
+# rubocop:enable Metrics/AbcSize
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedCops
+| `[]`
+| Array
+|===
 
 == Style/DocumentDynamicEvalDefinition
 
@@ -2393,12 +2460,33 @@ end
   module Namespace
     Public = Class.new
   end
+
+  # Macro calls
+  module Namespace
+    extend Foo
+  end
+----
+
+==== AllowedConstants: ['ClassMethods']
+
+[source,ruby]
+----
+# good
+module A
+  module ClassMethods
+    # ...
+  end
+ end
 ----
 
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
+
+| AllowedConstants
+| `[]`
+| Array
 
 | Exclude
 | `spec/**/*`, `test/**/*`
@@ -2578,8 +2666,8 @@ end
 
 This cop checks for uses of double negation (`!!`) to convert something to a boolean value.
 
-When using `EnforcedStyle: allowed_in_returns`, allow double nagation in contexts
-that use boolean as a return value. When using `EnforcedStyle: forbidden`, double nagation
+When using `EnforcedStyle: allowed_in_returns`, allow double negation in contexts
+that use boolean as a return value. When using `EnforcedStyle: forbidden`, double negation
 should be forbidden always.
 
 Please, note that when something is a boolean value
@@ -3101,6 +3189,91 @@ at_exit { puts 'Goodbye!' }
 
 * https://rubystyle.guide#no-END-blocks
 
+== Style/EndlessMethod
+
+NOTE: Required Ruby version: 3.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.8
+| -
+|===
+
+This cop checks for endless methods.
+
+It can enforce either the use of endless methods definitions
+for single-lined method bodies, or disallow endless methods.
+
+Other method definition types are not considered by this cop.
+
+The supported styles are:
+
+* allow_single_line (default) - only single line endless method definitions are allowed.
+* allow_always - all endless method definitions are allowed.
+* disallow - all endless method definitions are disallowed.
+
+NOTE: Incorrect endless method definitions will always be
+corrected to a multi-line definition.
+
+=== Examples
+
+==== EnforcedStyle: allow_single_line (default)
+
+[source,ruby]
+----
+# good
+def my_method() = x
+
+# bad, multi-line endless method
+def my_method() = x.foo
+                   .bar
+                   .baz
+----
+
+==== EnforcedStyle: allow_always
+
+[source,ruby]
+----
+# good
+def my_method() = x
+
+# good
+def my_method() = x.foo
+                   .bar
+                   .baz
+----
+
+==== EnforcedStyle: disallow
+
+[source,ruby]
+----
+# bad
+def my_method; x end
+
+# bad
+def my_method() = x.foo
+                   .bar
+                   .baz
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `allow_single_line`
+| `allow_single_line`, `allow_always`, `disallow`
+|===
+
+=== References
+
+* https://rubystyle.guide#endless-methods
+
 == Style/EvalWithLocation
 
 |===
@@ -3108,14 +3281,27 @@ at_exit { puts 'Goodbye!' }
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.52
 | -
 |===
 
-This cop checks `eval` method usage. `eval` can receive source location
-metadata, that are filename and line number. The metadata is used by
-backtraces. This cop recommends to pass the metadata to `eval` method.
+This cop ensures that eval methods (`eval`, `instance_eval`, `class_eval`
+and `module_eval`) are given filename and line number values (`__FILE__`
+and `__LINE__`). This data is used to ensure that any errors raised
+within the evaluated code will be given the correct identification
+in a backtrace.
+
+The cop also checks that the line number given relative to `__LINE__` is
+correct.
+
+This cop will autocorrect incorrect or missing filename and line number
+values. However, if `eval` is called without a binding argument, the cop
+will not attempt to automatically add a binding, or add filename and
+line values.
+
+This cop works only when a string literal is given as a code string.
+No offence is reported if a string variable is given as below:
 
 === Examples
 
@@ -3144,6 +3330,16 @@ C.class_eval <<-RUBY, __FILE__, __LINE__ + 1
   def do_something
   end
 RUBY
+----
+
+[source,ruby]
+----
+# not checked
+code = <<-RUBY
+  def do_something
+  end
+RUBY
+eval code
 ----
 
 == Style/EvenOdd
@@ -3237,14 +3433,17 @@ Pathname.new(__dir__).expand_path
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| No
-| Yes (Unsafe)
+| Yes
+| Yes
 | 0.89
-| -
+| 1.8
 |===
 
 This cop enforces the use of explicit block argument to avoid writing
 block literal that just passes its arguments to another block.
+
+NOTE: This cop only registers an offense if the block args match the
+yield args exactly.
 
 === Examples
 
@@ -3297,13 +3496,12 @@ end
 
 This cop enforces consistency when using exponential notation
 for numbers in the code (eg 1.2e4). Different styles are supported:
-* `scientific` which enforces a mantissa between 1 (inclusive)
-               and 10 (exclusive).
-* `engineering` which enforces the exponent to be a multiple of 3
-                and the mantissa to be between 0.1 (inclusive)
-                and 10 (exclusive).
-* `integral` which enforces the mantissa to always be a whole number
-             without trailing zeroes.
+
+* `scientific` which enforces a mantissa between 1 (inclusive) and 10 (exclusive).
+* `engineering` which enforces the exponent to be a multiple of 3 and the mantissa
+  to be between 0.1 (inclusive) and 10 (exclusive).
+* `integral` which enforces the mantissa to always be a whole number without
+  trailing zeroes.
 
 === Examples
 
@@ -3384,15 +3582,18 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 | Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
 
 | Enabled
-| Yes
 | No
+| Yes (Unsafe)
 | 0.72
-| -
+| 1.9
 |===
 
 This cop checks for division with integers coerced to floats.
 It is recommended to either always use `fdiv` or coerce one side only.
 This cop also provides other options for code consistency.
+
+This cop is marked as unsafe, because if operand variable is a string object
+then `.to_f` will be removed and an error will occur.
 
 === Examples
 
@@ -3458,7 +3659,7 @@ a.fdiv(b)
 === References
 
 * https://rubystyle.guide#float-division
-* https://github.com/rubocop-hq/ruby-style-guide/issues/628
+* https://blog.rubystyle.guide/ruby/2019/06/21/float-division.html
 
 == Style/For
 
@@ -3623,6 +3824,8 @@ which are passed as arguments to those methods:
 The reason is that _unannotated_ format is very similar
 to encoded URLs or Date/Time formatting strings.
 
+This cop can be customized ignored methods with `IgnoredMethods`.
+
 It is allowed to contain unannotated token
 if the number of them is less than or equals to
 `MaxUnannotatedPlaceholdersAllowed`.
@@ -3688,6 +3891,14 @@ format('%s %s.', 'Hello', 'world')
 format('%06d', 10)
 ----
 
+==== IgnoredMethods: [redirect]
+
+[source,ruby]
+----
+# good
+redirect('foo/%{bar_id}')
+----
+
 === Configurable attributes
 
 |===
@@ -3700,6 +3911,10 @@ format('%06d', 10)
 | MaxUnannotatedPlaceholdersAllowed
 | `1`
 | Integer
+
+| IgnoredMethods
+| `[]`
+| Array
 |===
 
 == Style/FrozenStringLiteralComment
@@ -4038,6 +4253,68 @@ EnforcedStyle.
 
 * https://rubystyle.guide#hash-literal-as-last-array-item
 
+== Style/HashConversion
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.10
+| 1.11
+|===
+
+This cop checks the usage of pre-2.1 `Hash[args]` method of converting enumerables and
+sequences of values to hashes.
+
+Correction code from splat argument (`Hash[*ary]`) is not simply determined. For example,
+`Hash[*ary]` can be replaced with `ary.each_slice(2).to_h` but it will be complicated.
+So, `AllowSplatArgument` option is true by default to allow splat argument for simple code.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+Hash[ary]
+
+# good
+ary.to_h
+
+# bad
+Hash[key1, value1, key2, value2]
+
+# good
+{key1 => value1, key2 => value2}
+----
+
+==== AllowSplatArgument: true (default)
+
+[source,ruby]
+----
+# good
+Hash[*ary]
+----
+
+==== AllowSplatArgument: false
+
+[source,ruby]
+----
+# bad
+Hash[*ary]
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowSplatArgument
+| `true`
+| Boolean
+|===
+
 == Style/HashEachMethods
 
 |===
@@ -4072,6 +4349,43 @@ hash.each_value { |v| p v }
 === References
 
 * https://rubystyle.guide#hash-each
+
+== Style/HashExcept
+
+NOTE: Required Ruby version: 3.0
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes
+| 1.7
+| -
+|===
+
+This cop checks for usages of `Hash#reject`, `Hash#select`, and `Hash#filter` methods
+that can be replaced with `Hash#except` method.
+
+This cop should only be enabled on Ruby version 3.0 or higher.
+(`Hash#except` was added in Ruby 3.0.)
+
+For safe detection, it is limited to commonly used string and symbol comparisons
+when used `==`.
+And do not check `Hash#delete_if` and `Hash#keep_if` to change receiver object.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+{foo: 1, bar: 2, baz: 3}.reject {|k, v| k == :bar }
+{foo: 1, bar: 2, baz: 3}.select {|k, v| k != :bar }
+{foo: 1, bar: 2, baz: 3}.filter {|k, v| k != :bar }
+
+# good
+{foo: 1, bar: 2, baz: 3}.except(:bar)
+----
 
 == Style/HashLikeCase
 
@@ -4579,6 +4893,60 @@ if running?
 end
 ----
 
+== Style/IfWithBooleanLiteralBranches
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| Yes
+| Yes (Unsafe)
+| 1.9
+| -
+|===
+
+This cop checks for redundant `if` with boolean literal branches.
+It checks only conditions to return boolean value (`true` or `false`) for safe detection.
+The conditions to be checked are comparison methods, predicate methods, and double negative.
+However, auto-correction is unsafe because there is no guarantee that all predicate methods
+will return boolean value. Those methods can be allowed with `AllowedMethods` config.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+if foo == bar
+  true
+else
+  false
+end
+
+# bad
+foo == bar ? true : false
+
+# good
+foo == bar
+----
+
+==== AllowedMethods: ['nonzero?']
+
+[source,ruby]
+----
+# good
+num.nonzero? ? true : false
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| AllowedMethods
+| `nonzero?`
+| Array
+|===
+
 == Style/IfWithSemicolon
 
 |===
@@ -4816,7 +5184,7 @@ ip_address = ENV['DEPLOYMENT_IP_ADDRESS']
 | Yes
 | Yes
 | 0.90
-| -
+| 1.7
 |===
 
 This cop enforces that optional keyword parameters are placed at the
@@ -4837,6 +5205,16 @@ end
 
 # good
 def some_method(second:, first: false, third: 10)
+  # body omitted
+end
+
+# bad
+do_something do |first: false, second:, third: 10|
+  # body omitted
+end
+
+# good
+do_something do |second:, first: false, third: 10|
   # body omitted
 end
 ----
@@ -5021,7 +5399,7 @@ some_str = 'ala' \
 | Yes
 | Yes
 | 0.47
-| 0.61
+| 1.7
 |===
 
 This cop enforces the presence (default) or absence of parentheses in
@@ -5060,6 +5438,9 @@ options.
     begins with a capital letter and which has no arguments. Setting it
     to `true` allows the presence of parentheses in such a method call
     even with arguments.
+
+NOTE: Parens are required around a method with arguments when inside an
+endless method definition (>= Ruby 3.0).
 
 === Examples
 
@@ -5103,6 +5484,30 @@ foo.enforce(strict: true)
 
 # good
 foo.enforce strict: true
+
+# good
+# Allows parens for calls that won't produce valid Ruby or be ambiguous.
+model.validate strict(true)
+
+# good
+# Allows parens for calls that won't produce valid Ruby or be ambiguous.
+yield path, File.basename(path)
+
+# good
+# Operators methods calls with parens
+array&.[](index)
+
+# good
+# Operators methods without parens, if you prefer
+array.[] index
+
+# good
+# Operators methods calls with parens
+array&.[](index)
+
+# good
+# Operators methods without parens, if you prefer
+array.[] index
 ----
 
 ==== IgnoreMacros: true (default)
@@ -5197,6 +5602,28 @@ Array(1)
 Array 1
 ----
 
+==== AllowParenthesesInStringInterpolation: false (default)
+
+[source,ruby]
+----
+# bad
+"#{t('this.is.bad')}"
+
+# good
+"#{t 'this.is.better'}"
+----
+
+==== AllowParenthesesInStringInterpolation: true
+
+[source,ruby]
+----
+# good
+"#{t('this.is.good')}"
+
+# good
+"#{t 'this.is.also.good'}"
+----
+
 === Configurable attributes
 
 |===
@@ -5227,6 +5654,10 @@ Array 1
 | Boolean
 
 | AllowParenthesesInCamelCaseMethod
+| `false`
+| Boolean
+
+| AllowParenthesesInStringInterpolation
 | `false`
 | Boolean
 
@@ -5326,11 +5757,14 @@ foo.c
 | Yes
 | Yes
 | 0.16
-| 0.35
+| 1.7
 |===
 
 This cop checks for parentheses around the arguments in method
 definitions. Both instance and class/singleton methods are checked.
+
+This cop does not consider endless methods, since parentheses are
+always required for them.
 
 === Examples
 
@@ -6037,9 +6471,9 @@ foo ||= (
 
 | Disabled
 | Yes
-| No
+| Yes
 | 0.59
-| -
+| 1.7
 |===
 
 This cop checks for method signatures that span multiple lines.
@@ -6217,9 +6651,9 @@ foo if [b.lightweight, b.heavyweight].include?(a)
 
 | Enabled
 | Yes
-| Yes
+| Yes (Unsafe)
 | 0.34
-| 0.65
+| 1.8
 |===
 
 This cop checks whether some constant value isn't a
@@ -6232,6 +6666,8 @@ updated with an exhaustive list of all methods that will produce
 frozen objects so there is a decent chance of getting some false
 positives. Luckily, there is no harm in freezing an already
 frozen object.
+
+NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
 
 === Examples
 
@@ -6865,6 +7301,9 @@ This cop checks for non-nil checks, which are usually redundant.
 With `IncludeSemanticChanges` set to `false` by default, this cop
 does not report offenses for `!x.nil?` and does no changes that might
 change behavior.
+Also `IncludeSemanticChanges` set to `false` with `EnforcedStyle: comparison` of
+`Style/NilComparison` cop, this cop does not report offenses for `x != nil` and
+does no changes to `!x.nil?` style.
 
 With `IncludeSemanticChanges` set to `true`, this cop reports offenses
 for `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which
@@ -7097,7 +7536,7 @@ This cop checks for usage of comparison operators (`==`,
 These can be replaced by their respective predicate methods.
 The cop can also be configured to do the reverse.
 
-The cop disregards `#nonzero?` as it its value is truthy or falsey,
+The cop disregards `#nonzero?` as its value is truthy or falsey,
 but not `true` and `false`, and thus not always interchangeable with
 `!= 0`.
 
@@ -7659,7 +8098,8 @@ This cop checks for usage of the %Q() syntax when %q() would do.
 |===
 
 This cop looks for uses of Perl-style regexp match
-backreferences like $1, $2, etc.
+backreferences and their English versions like
+$1, $2, $&, &+, $MATCH, $PREMATCH, etc.
 
 === Examples
 
@@ -7882,6 +8322,70 @@ rand(1...7)
 === References
 
 * https://rubystyle.guide#random-numbers
+
+== Style/RedundantArgument
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.4
+| 1.7
+|===
+
+This cop checks for a redundant argument passed to certain methods.
+
+Limitations:
+
+1. This cop matches for method names only and hence cannot tell apart
+   methods with same name in different classes.
+2. This cop is limited to methods with single parameter.
+3. This cop is unsafe if certain special global variables (e.g. `$;`, `$/`) are set.
+   That depends on the nature of the target methods, of course.
+
+Method names and their redundant arguments can be configured like this:
+
+Methods:
+  join: ''
+  split: ' '
+  chomp: "\n"
+  chomp!: "\n"
+  foo: 2
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+array.join('')
+[1, 2, 3].join("")
+string.split(" ")
+"first\nsecond".split(" ")
+string.chomp("\n")
+string.chomp!("\n")
+A.foo(2)
+
+# good
+array.join
+[1, 2, 3].join
+string.split
+"first second".split
+string.chomp
+string.chomp!
+A.foo
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| Methods
+| `{"join"=>"", "split"=>" ", "chomp"=>"\n", "chomp!"=>"\n"}`
+| 
+|===
 
 == Style/RedundantAssignment
 
@@ -8274,7 +8778,9 @@ require_relative '../foo.so'
 | 0.66
 |===
 
-This cop check for uses of Object#freeze on immutable objects.
+This cop check for uses of `Object#freeze` on immutable objects.
+
+NOTE: Regexp and Range literals are frozen objects since Ruby 3.0.
 
 === Examples
 
@@ -8561,7 +9067,7 @@ The usage of `self` is only needed when:
   presence of a method name clash with an argument or a local
   variable.
 
-* Calling an attribute writer to prevent an local variable assignment.
+* Calling an attribute writer to prevent a local variable assignment.
 
 Note, with using explicit self you can only send messages with public or
 protected scope, you cannot send private messages this way.
@@ -9518,9 +10024,9 @@ keys = %i[key1 key2]
 
 | Disabled
 | Yes
-| No
+| Yes
 | 0.16
-| 0.47
+| 1.6
 |===
 
 This cop checks whether the block parameters of a single-line
@@ -9574,11 +10080,17 @@ end
 | Yes
 | Yes
 | 0.9
-| 0.19
+| 1.8
 |===
 
 This cop checks for single-line method definitions that contain a body.
 It will accept single-line methods with no body.
+
+Endless methods added in Ruby 3.0 are also accepted by this cop.
+
+If `Style/EndlessMethod` is enabled with `EnforcedStyle: allow_single_line` or
+`allow_always`, single-line methods will be auto-corrected to endless
+methods if there is only one statement in the body.
 
 === Examples
 
@@ -9592,6 +10104,7 @@ def @table.columns; super; end
 # good
 def self.resource_class=(klass); end
 def @table.columns; end
+def some_method() = body
 ----
 
 ==== AllowIfMethodIsEmpty: true (default)
@@ -9659,9 +10172,9 @@ items[1..]
 
 | Enabled
 | Yes
-| No
+| Yes
 | 0.89
-| -
+| 1.5
 |===
 
 If the branch of a conditional consists solely of a conditional node,
@@ -9754,10 +10267,6 @@ puts $CHILD_STATUS
 puts $LAST_MATCH_INFO
 puts $IGNORECASE
 puts $ARGV # or ARGV
-puts $MATCH
-puts $PREMATCH
-puts $POSTMATCH
-puts $LAST_PAREN_MATCH
 ----
 
 ==== EnforcedStyle: use_perl_names
@@ -9783,10 +10292,6 @@ puts $?
 puts $~
 puts $=
 puts $*
-puts $&
-puts $`
-puts $'
-puts $+
 ----
 
 === Configurable attributes
@@ -9946,6 +10451,39 @@ warn('hello')
 
 * https://rubystyle.guide#warn
 
+== Style/StringChars
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Pending
+| No
+| Yes (Unsafe)
+| 1.12
+| -
+|===
+
+Checks for uses of `String#split` with empty string or regexp literal argument.
+
+This cop is marked as unsafe. But probably it's quite unlikely that some other class would
+define a `split` method that takes exactly the same arguments.
+
+=== Examples
+
+[source,ruby]
+----
+# bad
+string.split(//)
+string.split('')
+
+# good
+string.chars
+----
+
+=== References
+
+* https://rubystyle.guide#string-chars
+
 == Style/StringConcatenation
 
 |===
@@ -9955,7 +10493,7 @@ warn('hello')
 | No
 | Yes (Unsafe)
 | 0.89
-| -
+| 1.6
 |===
 
 This cop checks for places where string concatenation
@@ -9965,6 +10503,10 @@ The cop can autocorrect simple cases but will skip autocorrecting
 more complex cases where the resulting code would be harder to read.
 In those cases, it might be useful to extract statements to local
 variables or methods which you can then interpolate in a string.
+
+NOTE: When concatenation between two strings is broken over multiple
+lines, this cop does not register an offense; instead,
+`Style/LineEndConcatenation` will pick up the offense if enabled.
 
 === Examples
 
@@ -9976,6 +10518,10 @@ email_with_name = user.name + ' <' + user.email + '>'
 # good
 email_with_name = "#{user.name} <#{user.email}>"
 email_with_name = format('%s <%s>', user.name, user.email)
+
+# accepted, line-end concatenation
+name = 'First' +
+  'Last'
 ----
 
 === References
@@ -10359,10 +10905,13 @@ This cop checks symbol literal syntax.
 | No
 | Yes (Unsafe)
 | 0.26
-| 0.64
+| 1.5
 |===
 
 Use symbols as procs when possible.
+
+If you prefer a style that allows block for method with arguments,
+please set `true` to `AllowMethodsWithArguments`.
 
 === Examples
 
@@ -10370,15 +10919,39 @@ Use symbols as procs when possible.
 ----
 # bad
 something.map { |s| s.upcase }
+something.map { _1.upcase }
 
 # good
 something.map(&:upcase)
+----
+
+==== AllowMethodsWithArguments: false (default)
+
+[source,ruby]
+----
+# bad
+something.do_something(foo) { |o| o.bar }
+
+# good
+something.do_something(foo, &:bar)
+----
+
+==== AllowMethodsWithArguments: true
+
+[source,ruby]
+----
+# good
+something.do_something(foo) { |o| o.bar }
 ----
 
 === Configurable attributes
 
 |===
 | Name | Default value | Configurable values
+
+| AllowMethodsWithArguments
+| `false`
+| Boolean
 
 | IgnoredMethods
 | `respond_to`, `define_method`
@@ -10526,6 +11099,8 @@ end
 
 This cop checks for trailing code after the method definition.
 
+NOTE: It always accepts endless method definitions that are basically on the same line.
+
 === Examples
 
 [source,ruby]
@@ -10547,6 +11122,8 @@ def f(x)
   b = foo
   b[c: x]
 end
+
+def endless_method = do_stuff
 ----
 
 == Style/TrailingBodyOnModule
@@ -11199,6 +11776,82 @@ end
 === References
 
 * https://rubystyle.guide#no-else-with-unless
+
+== Style/UnlessLogicalOperators
+
+|===
+| Enabled by default | Safe | Supports autocorrection | VersionAdded | VersionChanged
+
+| Disabled
+| Yes
+| No
+| 1.11
+| -
+|===
+
+This cop checks for the use of logical operators in an `unless` condition.
+It discourages such code, as the condition becomes more difficult
+to read and understand.
+
+This cop supports two styles:
+- `forbid_mixed_logical_operators` (default)
+- `forbid_logical_operators`
+
+`forbid_mixed_logical_operators` style forbids the use of more than one type
+of logical operators. This makes the `unless` condition easier to read
+because either all conditions need to be met or any condition need to be met
+in order for the expression to be truthy or falsey.
+
+`forbid_logical_operators` style forbids any use of logical operator.
+This makes it even more easy to read the `unless` condition as
+there is only one condition in the expression.
+
+=== Examples
+
+==== EnforcedStyle: forbid_mixed_logical_operators (default)
+
+[source,ruby]
+----
+# bad
+return unless a || b && c
+return unless a && b || c
+return unless a && b and c
+return unless a || b or c
+return unless a && b or c
+return unless a || b and c
+
+# good
+return unless a && b && c
+return unless a || b || c
+return unless a and b and c
+return unless a or b or c
+return unless a?
+----
+
+==== EnforcedStyle: forbid_logical_operators
+
+[source,ruby]
+----
+# bad
+return unless a || b
+return unless a && b
+return unless a or b
+return unless a and b
+
+# good
+return unless a
+return unless a?
+----
+
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| EnforcedStyle
+| `forbid_mixed_logical_operators`
+| `forbid_mixed_logical_operators`, `forbid_logical_operators`
+|===
 
 == Style/UnpackFirst
 

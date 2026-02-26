@@ -23,6 +23,7 @@ module RuboCop
         MSG = 'Favor `Array#join` over `Array#*`.'
         RESTRICT_ON_SEND = %i[*].freeze
 
+        # @!method join_candidate?(node)
         def_node_matcher :join_candidate?, '(send $array :* $str)'
 
         def on_send(node)

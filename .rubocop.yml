@@ -15,6 +15,7 @@ AllCops:
     - '.git/**/*'
     - 'bin/*'
   TargetRubyVersion: 2.4
+  SuggestExtensions: false
 
 Naming/PredicateName:
   # Method define macros for dynamically generated method.
@@ -45,19 +46,6 @@ Layout/EndOfLine:
 
 Layout/ClassStructure:
   Enabled: true
-  Categories:
-    module_inclusion:
-      - include
-      - prepend
-      - extend
-  ExpectedOrder:
-      - module_inclusion
-      - constants
-      - public_class_methods
-      - initializer
-      - instance_methods
-      - protected_methods
-      - private_methods
 
 Layout/TrailingWhitespace:
   AllowInHeredoc: false
@@ -108,6 +96,7 @@ Metrics/ModuleLength:
 
 RSpec/FilePath:
   Exclude:
+    - spec/rubocop/cop/internal_affairs/redundant_let_rubocop_config_new_spec.rb
     - spec/rubocop/formatter/junit_formatter_spec.rb
 
 RSpec/PredicateMatcher:
@@ -129,3 +118,7 @@ Performance/CollectionLiteralInLoop:
 
 RSpec/StubbedMock:
   Enabled: false
+
+InternalAffairs/ExampleDescription:
+  Include:
+    - 'spec/rubocop/cop/**/*.rb'

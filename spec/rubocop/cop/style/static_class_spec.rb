@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::StaticClass do
-  subject(:cop) { described_class.new }
-
+RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
   it 'registers an offense when class has only class method' do
     expect_offense(<<~RUBY)
       class C

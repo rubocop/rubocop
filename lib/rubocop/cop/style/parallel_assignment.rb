@@ -115,6 +115,7 @@ module RuboCop
           end
         end
 
+        # @!method implicit_self_getter?(node)
         def_node_matcher :implicit_self_getter?, '(send nil? $_)'
 
         # Helper class necessitated by silly design of TSort prior to Ruby 2.1
@@ -123,8 +124,13 @@ module RuboCop
           include TSort
           extend RuboCop::NodePattern::Macros
 
+          # @!method var_name(node)
           def_node_matcher :var_name, '{(casgn _ $_) (_ $_)}'
+
+          # @!method uses_var?(node)
           def_node_search :uses_var?, '{({lvar ivar cvar gvar} %) (const _ %)}'
+
+          # @!method matching_calls(node, receiver, method_name)
           def_node_search :matching_calls, '(send %1 %2 $...)'
 
           def initialize(assignments)

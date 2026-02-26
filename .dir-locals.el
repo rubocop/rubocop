@@ -2,7 +2,7 @@
 ;;; For more information see (info "(emacs) Directory Variables")
 
 ((ruby-mode
-  (bug-reference-url-format . "https://github.com/rubocop-hq/rubocop/issues/%s")
+  (bug-reference-url-format . "https://github.com/rubocop/rubocop/issues/%s")
   (bug-reference-bug-regexp . "#\\(?2:[[:digit:]]+\\)")
   (indent-tabs-mode . nil)
   (fill-column . 100)))

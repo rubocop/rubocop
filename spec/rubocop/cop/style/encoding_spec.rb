@@ -20,6 +20,7 @@ RSpec.describe RuboCop::Cop::Style::Encoding, :config do
       ^^^^^^^^^^^^^^^^^ Unnecessary utf-8 encoding comment.
       def foo() end
     RUBY
+
     expect_correction(<<~RUBY)
       def foo() end
     RUBY
@@ -32,6 +33,7 @@ RSpec.describe RuboCop::Cop::Style::Encoding, :config do
       ^^^^^^^^^^^^^^^^^ Unnecessary utf-8 encoding comment.
       def foo() end
     RUBY
+
     expect_correction(<<~RUBY)
       #!/usr/bin/env ruby
       def foo() end
@@ -44,6 +46,7 @@ RSpec.describe RuboCop::Cop::Style::Encoding, :config do
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary utf-8 encoding comment.
       def foo() end
     RUBY
+
     expect_correction(<<~RUBY)
       def foo() end
     RUBY
@@ -62,6 +65,7 @@ RSpec.describe RuboCop::Cop::Style::Encoding, :config do
       ^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary utf-8 encoding comment.
       def foo() 'ä' end
     RUBY
+
     expect_correction(<<~RUBY)
       def foo() 'ä' end
     RUBY

@@ -58,6 +58,7 @@ module RuboCop
       class ConstantResolution < Base
         MSG = 'Fully qualify this constant to avoid possibly ambiguous resolution.'
 
+        # @!method unqualified_const?(node)
         def_node_matcher :unqualified_const?, <<~PATTERN
           (const nil? #const_name?)
         PATTERN
