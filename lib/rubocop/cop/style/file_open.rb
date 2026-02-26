@@ -46,17 +46,13 @@ module RuboCop
 
         def on_send(node)
           return unless file_open?(node)
-          return if block_form?(node)
+          return if node.block_argument?
+          return unless (parent = node.parent)
+          return if parent.type?(:begin, :block)
 
           add_offense(node)
         end
         alias on_csend on_send
-
-        private
-
-        def block_form?(node)
-          node.block_argument? || node.parent&.block_type?
-        end
       end
     end
   end

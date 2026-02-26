@@ -1,13 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
-  it 'registers an offense when using `File.open` without a block' do
-    expect_offense(<<~RUBY)
-      File.open('file')
-      ^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
-    RUBY
-  end
-
   it 'registers an offense when assigning `File.open` to a variable' do
     expect_offense(<<~RUBY)
       f = File.open('file')
@@ -15,24 +8,10 @@ RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
     RUBY
   end
 
-  it 'registers an offense when using `::File.open` without a block' do
-    expect_offense(<<~RUBY)
-      ::File.open('file')
-      ^^^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
-    RUBY
-  end
-
-  it 'registers an offense when chaining methods on `File.open`' do
+  it 'registers an offense when chaining methods on `File.open.read`' do
     expect_offense(<<~RUBY)
       File.open('file').read
       ^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
-    RUBY
-  end
-
-  it 'registers an offense when using `File.open` with mode argument' do
-    expect_offense(<<~RUBY)
-      File.open('file', 'w')
-      ^^^^^^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
     RUBY
   end
 
@@ -40,6 +19,24 @@ RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
     expect_offense(<<~RUBY)
       process(File.open('file'))
               ^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
+    RUBY
+  end
+
+  it 'does not register an offense when using `File.open` without a block' do
+    expect_no_offenses(<<~RUBY)
+      File.open('file')
+    RUBY
+  end
+
+  it 'does not register an offense when using `::File.open` without a block' do
+    expect_no_offenses(<<~RUBY)
+      ::File.open('file')
+    RUBY
+  end
+
+  it 'does not register an offense when using `File.open` with mode argument without a block' do
+    expect_no_offenses(<<~RUBY)
+      File.open('file', 'w')
     RUBY
   end
 
@@ -60,6 +57,12 @@ RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
   it 'does not register an offense when using `File.open` with a block-pass' do
     expect_no_offenses(<<~RUBY)
       File.open('file', &:read)
+    RUBY
+  end
+
+  it 'does not register an offense when assigning `File.open` with a block-pass' do
+    expect_no_offenses(<<~RUBY)
+      content = File.open('file', &:read)
     RUBY
   end
 
