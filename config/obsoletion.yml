@@ -79,6 +79,8 @@ removed:
       it has been superseded by
       `Lint/BinaryOperatorWithIdenticalOperands`. Please use
       `Lint/BinaryOperatorWithIdenticalOperands` instead
+  Lint/UselessElseWithoutRescue:
+    reason: it only applied to Ruby 2.5 and earlier, which are no longer supported
   Style/BracesAroundHashParameters: true
   Style/MethodMissingSuper:
     reason: >

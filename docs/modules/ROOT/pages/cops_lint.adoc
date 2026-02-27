@@ -8711,47 +8711,6 @@ bar = 'Bar'
 defined?(Foo) && Foo.const_defined?(bar) && Foo.const_get(bar).const_defined?(:Baz)
 ----
 
-[#lintuselesselsewithoutrescue]
-== Lint/UselessElseWithoutRescue
-
-NOTE: Requires Ruby version <= 2.5
-
-|===
-| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
-
-| Enabled
-| Yes
-| No
-| 0.17
-| 1.31
-|===
-
-Checks for useless `else` in `begin..end` without `rescue`.
-
-NOTE: This syntax is no longer valid on Ruby 2.6 or higher.
-
-[#examples-lintuselesselsewithoutrescue]
-=== Examples
-
-[source,ruby]
-----
-# bad
-begin
-  do_something
-else
-  do_something_else # This will never be run.
-end
-
-# good
-begin
-  do_something
-rescue
-  handle_errors
-else
-  do_something_else
-end
-----
-
 [#lintuselessmethoddefinition]
 == Lint/UselessMethodDefinition
 
