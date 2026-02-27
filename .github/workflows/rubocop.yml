@@ -124,25 +124,3 @@ jobs:
         env:
           PARSER_ENGINE: parser_prism
         run: bundle exec rake prism_spec
-
-  rspec4:
-    runs-on: ubuntu-latest
-    name: RSpec 4
-    steps:
-      - uses: actions/checkout@v6
-      - name: Use latest RSpec 4 from `4-0-dev` branch
-        run: |
-          sed -e "/'rspec', '~> 3/d" -i Gemfile
-          cat << EOF > Gemfile.local
-            gem 'rspec', github: 'rspec/rspec', branch: '4-0-dev'
-            gem 'rspec-core', github: 'rspec/rspec', branch: '4-0-dev'
-            gem 'rspec-expectations', github: 'rspec/rspec', branch: '4-0-dev'
-            gem 'rspec-mocks', github: 'rspec/rspec', branch: '4-0-dev'
-            gem 'rspec-support', github: 'rspec/rspec', branch: '4-0-dev'
-          EOF
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-          bundler-cache: true
-      - name: spec
-        run: bundle exec rake spec
