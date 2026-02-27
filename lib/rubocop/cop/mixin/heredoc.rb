@@ -36,6 +36,14 @@ module RuboCop
 
         match.captures[0]
       end
+
+      def heredoc_body(node)
+        node.loc.heredoc_body.source
+      end
+
+      def squiggly_heredoc?(node)
+        heredoc_type(node).start_with?('<<~')
+      end
     end
   end
 end

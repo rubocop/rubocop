@@ -991,7 +991,6 @@ Layout/HeredocArgumentClosingParenthesis:
 
 Layout/HeredocIndentation:
   Description: 'Checks the indentation of the here document bodies.'
-  StyleGuide: '#squiggly-heredocs'
   Enabled: true
   VersionAdded: '0.49'
   VersionChanged: '0.85'
@@ -5797,6 +5796,12 @@ Style/SpecialGlobalVars:
     - use_perl_names
     - use_english_names
     - use_builtin_english_names
+
+Style/SquigglyHeredoc:
+  Description: 'Prefer squiggly heredocs.'
+  StyleGuide: '#squiggly-heredocs'
+  Enabled: pending
+  VersionAdded: '<<next>>'
 
 Style/StabbyLambdaParentheses:
   Description: 'Checks for the usage of parentheses around stabby lambda arguments.'
