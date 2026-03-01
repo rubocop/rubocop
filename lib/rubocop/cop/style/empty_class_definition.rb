@@ -10,15 +10,19 @@ module RuboCop
       #
       # The supported styles are:
       #
-      # * class_definition (default) - prefer standard class definition over `Class.new`
+      # * class_keyword (default) - prefer standard class definition over `Class.new`
       # * class_new - prefer `Class.new` over class definition
       #
       # One difference between the two styles is that the `Class.new` form does not make
       # the subclass name available to the base class's `inherited` callback.
-      # For this reason, `EnforcedStyle: class_definition` is set as the default style.
+      # For this reason, `EnforcedStyle: class_keyword` is set as the default style.
       # Class definitions without a superclass, which are not involved in inheritance,
       # are not detected. This ensures safe detection regardless of the applied style.
       # This avoids overlapping responsibilities with the `Lint/EmptyClass` cop.
+      #
+      # Use `AllowedParentClasses` to permit both styles for specific parent classes.
+      # For example, adding `StandardError` allows both `Error = Class.new(StandardError)`
+      # and `class Error < StandardError; end` regardless of the enforced style.
       #
       # @example EnforcedStyle: class_keyword (default)
       #   # bad
@@ -42,6 +46,14 @@ module RuboCop
       #   # good
       #   FooError = Class.new(StandardError)
       #
+      # @example AllowedParentClasses: ['StandardError']
+      #   # good - allowed regardless of EnforcedStyle
+      #   FooError = Class.new(StandardError)
+      #
+      #   # good - allowed regardless of EnforcedStyle
+      #   class FooError < StandardError
+      #   end
+      #
       class EmptyClassDefinition < Base
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -59,6 +71,7 @@ module RuboCop
           return unless %i[class_keyword class_definition].include?(style)
           return unless (class_new_node = class_new_assignment(node))
           return if (arg = class_new_node.first_argument) && !arg.const_type?
+          return if allowed_parent_class?(class_new_node.first_argument.source)
 
           add_offense(node, message: MSG_CLASS_KEYWORD) do |corrector|
             autocorrect_class_new(corrector, node, class_new_node)
@@ -69,6 +82,7 @@ module RuboCop
           return unless style == :class_new
           return unless node.parent_class
           return if (body = node.body) && !body.children.empty?
+          return if allowed_parent_class?(node.parent_class.source)
 
           add_offense(node, message: MSG_CLASS_NEW) do |corrector|
             autocorrect_class_definition(corrector, node)
@@ -76,6 +90,14 @@ module RuboCop
         end
 
         private
+
+        def allowed_parent_class?(parent_class_name)
+          allowed_parent_classes.include?(parent_class_name)
+        end
+
+        def allowed_parent_classes
+          cop_config.fetch('AllowedParentClasses', [])
+        end
 
         def autocorrect_class_new(corrector, node, class_new_node)
           indent = ' ' * node.loc.column
