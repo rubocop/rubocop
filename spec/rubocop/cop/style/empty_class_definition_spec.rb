@@ -267,6 +267,90 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
     end
   end
 
+  context 'when EnforcedStyle is class_keyword with AllowedParentClasses' do
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'class_keyword', 'AllowedParentClasses' => ['StandardError'] }
+    end
+
+    it 'does not register an offense for Class.new with an allowed parent class' do
+      expect_no_offenses(<<~RUBY)
+        FooError = Class.new(StandardError)
+      RUBY
+    end
+
+    it 'registers an offense for Class.new with a non-allowed parent class' do
+      expect_offense(<<~RUBY)
+        FooError = Class.new(ActiveRecord::Base)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class FooError < ActiveRecord::Base
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for class keyword with allowed parent class' do
+      expect_no_offenses(<<~RUBY)
+        class FooError < StandardError
+        end
+      RUBY
+    end
+  end
+
+  context 'when EnforcedStyle is class_new with AllowedParentClasses' do
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'class_new', 'AllowedParentClasses' => ['ApplicationRecord'] }
+    end
+
+    it 'does not register an offense for class keyword with an allowed parent class' do
+      expect_no_offenses(<<~RUBY)
+        class MyModel < ApplicationRecord
+        end
+      RUBY
+    end
+
+    it 'registers an offense for class keyword with a non-allowed parent class' do
+      expect_offense(<<~RUBY)
+        class FooError < StandardError
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `Class.new` instead of the `class` keyword to define an empty class.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        FooError = Class.new(StandardError)
+      RUBY
+    end
+
+    it 'does not register an offense for Class.new with allowed parent class' do
+      expect_no_offenses(<<~RUBY)
+        MyModel = Class.new(ApplicationRecord)
+      RUBY
+    end
+  end
+
+  context 'when EnforcedStyle is class_keyword with AllowedParentClasses containing namespaced class' do
+    let(:cop_config) { { 'EnforcedStyle' => 'class_keyword', 'AllowedParentClasses' => ['Alchemy::Admin::PreviewUrl'] } }
+
+    it 'does not register an offense for Class.new with an allowed namespaced parent class' do
+      expect_no_offenses(<<~RUBY)
+        MyClass = Class.new(Alchemy::Admin::PreviewUrl)
+      RUBY
+    end
+
+    it 'registers an offense for Class.new with a non-allowed parent class' do
+      expect_offense(<<~RUBY)
+        MyClass = Class.new(StandardError)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class MyClass < StandardError
+        end
+      RUBY
+    end
+  end
+
   context 'when EnforcedStyle is class_new' do
     let(:cop_config) { { 'EnforcedStyle' => 'class_new' } }
 
