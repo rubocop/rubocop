@@ -94,6 +94,22 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
           array.each_with_object({}) { |elem, hash| other[elem] = true }
         RUBY
       end
+
+      it 'does not register an offense when the accumulator is read in the value' do
+        expect_no_offenses(<<~RUBY)
+          array.each_with_object({}) do |elem, hash|
+            hash[elem.id] = hash[elem.id].to_i + 1
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the accumulator is read in the key' do
+        expect_no_offenses(<<~RUBY)
+          array.each_with_object({}) do |elem, hash|
+            hash[hash.size] = elem
+          end
+        RUBY
+      end
     end
 
     context 'with `inject({})` pattern' do
@@ -150,6 +166,15 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
           end
         RUBY
       end
+
+      it 'does not register an offense when the accumulator is read in the value' do
+        expect_no_offenses(<<~RUBY)
+          array.inject({}) do |hash, elem|
+            hash[elem.id] = hash[elem.id].to_i + 1
+            hash
+          end
+        RUBY
+      end
     end
 
     context 'with `reduce({})` pattern' do
@@ -174,6 +199,12 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
 
         expect_correction(<<~RUBY)
           array.to_h { [_1.id, _1.name] }
+        RUBY
+      end
+
+      it 'does not register an offense when the accumulator is read in the value with numbered params' do
+        expect_no_offenses(<<~RUBY)
+          array.each_with_object({}) { _2[_1.id] = _2[_1.id].to_i + 1 }
         RUBY
       end
 
