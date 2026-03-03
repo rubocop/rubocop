@@ -333,6 +333,32 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'with `return` without arguments on the right' do
+      it 'autocorrects "and" with && without adding parentheses' do
+        expect_offense(<<~RUBY)
+          foo and return
+              ^^^ Use `&&` instead of `and`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && return
+        RUBY
+      end
+    end
+
+    context 'with `return` with arguments on the right' do
+      it 'autocorrects "and" with && and adds parentheses' do
+        expect_offense(<<~RUBY)
+          foo and return x
+              ^^^ Use `&&` instead of `and`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo && (return x)
+        RUBY
+      end
+    end
+
     context 'with !obj.method arg on right' do
       it 'autocorrects "and" with && and adds parens' do
         expect_offense(<<~RUBY)
