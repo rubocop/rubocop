@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.85.1 (2026-03-03)
+
 ### Bug fixes
 
 * [#14958](https://github.com/rubocop/rubocop/issues/14958): Fix false positives in `Style/FileOpen` when `File.open` is passed as an argument or returned from a method. ([@sferik][])
