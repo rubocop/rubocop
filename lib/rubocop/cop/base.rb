@@ -188,10 +188,10 @@ module RuboCop
       # No correction can be applied to global offenses
       def add_global_offense(message = nil, severity: nil)
         severity = find_severity(nil, severity)
-        message = find_message(nil, message)
+        message, urls = find_message(nil, message)
         range = Offense::NO_LOCATION
         status = enabled_line?(range.line) ? :unsupported : :disabled
-        current_offenses << Offense.new(severity, range, message, name, status)
+        current_offenses << Offense.new(severity, range, message, name, status, urls: urls)
       end
 
       # Adds an offense on the specified range (or node with an expression)
@@ -205,7 +205,7 @@ module RuboCop
         range_to_pass = callback_argument(range)
 
         severity = find_severity(range_to_pass, severity)
-        message = find_message(range_to_pass, message)
+        message, urls = find_message(range_to_pass, message)
 
         status, corrector = enabled_line?(range.line) ? correct(range, &block) : :disabled
 
@@ -213,7 +213,8 @@ module RuboCop
         # template file, we convert it to location info in the original file.
         range = range_for_original(range)
 
-        current_offenses << Offense.new(severity, range, message, name, status, corrector)
+        current_offenses << Offense.new(severity, range, message, name, status, corrector,
+                                        urls: urls)
       end
 
       # This method should be overridden when a cop's behavior depends
@@ -483,9 +484,12 @@ module RuboCop
       end
 
       def annotate(message)
-        RuboCop::Cop::MessageAnnotator.new(
-          config, cop_name, cop_config, @options
-        ).annotate(message)
+        annotator = message_annotator
+        [annotator.annotate(message), annotator.urls]
+      end
+
+      def message_annotator
+        RuboCop::Cop::MessageAnnotator.new(config, cop_name, cop_config, @options)
       end
 
       def file_name_matches_any?(file, parameter, default_result)
