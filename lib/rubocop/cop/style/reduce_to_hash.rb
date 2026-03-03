@@ -98,8 +98,23 @@ module RuboCop
                          inject_to_hash?(block_node)
                        end
           return unless key
+          return if accumulator_used_in_expressions?(block_node, key, value)
 
           register_offense(node, block_node, key, value)
+        end
+
+        def accumulator_used_in_expressions?(block_node, key, value)
+          acc_name = accumulator_name(block_node)
+          references_variable?(key, acc_name) || references_variable?(value, acc_name)
+        end
+
+        def accumulator_name(block_node)
+          index = block_node.method?(:each_with_object) ? 1 : 0
+          block_node.argument_list[index].name
+        end
+
+        def references_variable?(node, name)
+          node.each_node(:lvar).any? { |lvar| lvar.children.first == name }
         end
 
         def register_offense(send_node, block_node, key_expr, value_expr)
