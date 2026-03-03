@@ -250,4 +250,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantAssignment, :config do
       end
     RUBY
   end
+
+  it 'reports an offense for def ending with assignment and returning with comment in between, but does not autocorrect' do
+    expect_offense(<<~RUBY)
+      def func
+        some_preceding_statements
+        x = something
+        ^^^^^^^^^^^^^ Redundant assignment before returning detected.
+        # something important about x
+        x
+      end
+    RUBY
+
+    expect_no_corrections
+  end
 end
