@@ -31,7 +31,7 @@ module CopHelper
     processed_source = parse_source(source, file)
     unless processed_source.valid_syntax?
       raise 'Error parsing example code: ' \
-            "#{processed_source.diagnostics.map(&:render).join("\n")}"
+            "#{processed_source.diagnostics.map(&:render).join(%(\n))}"
     end
 
     _investigate(cop, processed_source)

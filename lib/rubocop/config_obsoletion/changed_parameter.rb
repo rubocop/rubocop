@@ -14,7 +14,7 @@ module RuboCop
           "#{base}\n`#{parameter}` has been renamed to `#{alternative.chomp}`."
         elsif alternatives
           "#{base}\n`#{parameter}` has been renamed to #{to_sentence(alternatives.map do |item|
-                                                                       "`#{item}`"
+                                                                       %(`#{item}`)
                                                                      end,
                                                                      connector: 'and/or')}."
         else

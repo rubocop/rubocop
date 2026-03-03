@@ -123,7 +123,7 @@ module RuboCop
             return if files.include?(relative_path_to_todo_from_options_config)
 
             files.unshift(relative_path_to_todo_from_options_config)
-            file_string = "\n  - #{files.join("\n  - ")}" if files.size > 1
+            file_string = "\n  - #{files.join(%(\n  - ))}" if files.size > 1
             rubocop_yml_contents = existing_configuration(config_file)
           end
 
