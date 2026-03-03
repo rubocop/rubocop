@@ -101,6 +101,7 @@ module RuboCop
 
           add_offense(node.loc.keyword, message: format(msg, keyword: node.keyword)) do |corrector|
             next if part_of_ignored_node?(node)
+            next if another_modifier_if_on_same_line?(node)
 
             autocorrect(corrector, node)
             ignore_node(node)
@@ -278,6 +279,16 @@ module RuboCop
           return node if node&.type?(:array, :call)
 
           node.parent if node&.type?(:pair)
+        end
+
+        def another_modifier_if_on_same_line?(node)
+          collection = find_containing_collection(node)
+          return false unless collection
+
+          line = node.source_range.line
+          collection.each_descendant(:if).any? do |sibling|
+            sibling != node && sibling.modifier_form? && sibling.source_range.line == line
+          end
         end
 
         def non_simple_if_unless?(node)

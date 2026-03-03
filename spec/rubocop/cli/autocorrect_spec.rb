@@ -4219,7 +4219,15 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
 
     status = cli.run(['--autocorrect-all'])
-    expect(status).to eq(0)
+    expect(status).to eq(1)
     expect($stderr.string).to eq('')
+    expect(source_file.read).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      def previous_or_next_page(page, text, classname)
+        tag :li, link(text, page || '#'),
+            class: [(classname[0..3] if @options[:page_links]), (classname if @options[:page_links]), ('disabled' unless page)].join(' ')
+      end
+    RUBY
   end
 end
