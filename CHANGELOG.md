@@ -11,6 +11,16 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#14958](https://github.com/rubocop/rubocop/issues/14958): Fix false positives in `Style/FileOpen` when `File.open` is passed as an argument or returned from a method. ([@sferik][])
+* [#14973](https://github.com/rubocop/rubocop/pull/14973): Fix `Style/ReduceToHash` false positive when accumulator is read in key/value. ([@sferik][])
+* [#14964](https://github.com/rubocop/rubocop/issues/14964): Fix false positives in `Style/RedundantParentheses` when parenthesizing a range in a block body. ([@koic][])
+
+### Changes
+
+* [#14969](https://github.com/rubocop/rubocop/pull/14969): Autoload formatters; they're required only when actually used. ([@lovro-bikic][])
+
 ## 1.85.0 (2026-02-26)
 
 ### New features

@@ -1,1 +1,0 @@
-* [#14964](https://github.com/rubocop/rubocop/issues/14964): Fix false positives in `Style/RedundantParentheses` when parenthesizing a range in a block body. ([@koic][])
