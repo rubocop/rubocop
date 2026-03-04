@@ -176,7 +176,7 @@ module RuboCop
           if first_non_comment_token
             0...first_non_comment_token.line
           else
-            (0..)
+            0..
           end
         end
 

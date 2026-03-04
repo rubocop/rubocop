@@ -886,40 +886,125 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
-  it 'accepts parentheses around an irange inside a block' do
-    expect_no_offenses(<<~RUBY)
+  it 'registers parentheses around an irange inside a block' do
+    expect_offense(<<~RUBY)
       something do
         (a..b)
+        ^^^^^^ Don't use parentheses around block body.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something do
+        a..b
       end
     RUBY
   end
 
-  it 'accepts parentheses around an erange inside a block' do
-    expect_no_offenses(<<~RUBY)
+  it 'registers parentheses around an erange inside a block' do
+    expect_offense(<<~RUBY)
       something do
         (a...b)
+        ^^^^^^^ Don't use parentheses around block body.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something do
+        a...b
       end
     RUBY
   end
 
-  it 'accepts parentheses around an irange inside a braces block' do
-    expect_no_offenses(<<~RUBY)
+  it 'registers parentheses around an irange inside a braces block' do
+    expect_offense(<<~RUBY)
       something { (a..b) }
+                  ^^^^^^ Don't use parentheses around block body.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something { a..b }
     RUBY
   end
 
-  it 'accepts parentheses around a beginless range inside a block' do
+  it 'registers parentheses around a beginless range inside a block' do
+    expect_offense(<<~RUBY)
+      something do
+        (..b)
+        ^^^^^ Don't use parentheses around block body.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something do
+        ..b
+      end
+    RUBY
+  end
+
+  it 'registers parentheses around a beginless range followed by an expression inside a block' do
+    expect_offense(<<~RUBY)
+      something do
+        (..b)
+        ^^^^^ Don't use parentheses around block body.
+        x
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something do
+        ..b
+        x
+      end
+    RUBY
+  end
+
+  it 'accepts parentheses around a beginless range preceded by an expression inside a block' do
     expect_no_offenses(<<~RUBY)
       something do
+        x
         (..b)
       end
     RUBY
   end
 
-  it 'accepts parentheses around an endless range inside a block' do
+  it 'registers parentheses around an endless range inside a block' do
+    expect_offense(<<~RUBY)
+      something do
+        (a..)
+        ^^^^^ Don't use parentheses around block body.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something do
+        a..
+      end
+    RUBY
+  end
+
+  it 'registers parentheses around an endless range preceded by an expression inside a block' do
+    expect_offense(<<~RUBY)
+      something do
+        x
+        (a..)
+        ^^^^^ Don't use parentheses around block body.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something do
+        x
+        a..
+      end
+    RUBY
+  end
+
+  it 'accepts parentheses around an endless range followed by an expression inside a block' do
     expect_no_offenses(<<~RUBY)
       something do
         (a..)
+        x
       end
     RUBY
   end

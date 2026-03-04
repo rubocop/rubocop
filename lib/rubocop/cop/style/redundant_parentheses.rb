@@ -139,6 +139,8 @@ module RuboCop
           node = begin_node.children.first
 
           if (message = find_offense_message(begin_node, node))
+            return offense(begin_node, message) if message == 'block body'
+
             if node.range_type? && !argument_of_parenthesized_method_call?(begin_node, node)
               begin_node = begin_node.parent
             end
@@ -155,7 +157,8 @@ module RuboCop
           return 'a literal' if node.literal? && disallowed_literal?(begin_node, node)
           return 'a variable' if node.variable?
           return 'a constant' if node.const_type?
-          return 'block body' if begin_node.parent&.any_block_type? && !node.range_type?
+          return 'block body' if begin_node.parent&.any_block_type? || body_range?(begin_node, node)
+
           if node.assignment? && (begin_node.parent.nil? || begin_node.parent.begin_type?)
             return 'an assignment'
           end
@@ -265,6 +268,14 @@ module RuboCop
           else
             !raised_to_power_negative_numeric?(begin_node, node)
           end
+        end
+
+        def body_range?(begin_node, node)
+          return false unless node.range_type?
+          return false unless (parent = begin_node.parent)
+
+          (node.begin.nil? && begin_node == parent.children.first) ||
+            (node.end.nil? && begin_node == parent.children.last)
         end
 
         def disallowed_one_line_pattern_matching?(begin_node, node)
