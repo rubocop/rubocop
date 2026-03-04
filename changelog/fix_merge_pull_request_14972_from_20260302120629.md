@@ -1,0 +1,1 @@
+* [#14981](https://github.com/rubocop/rubocop/issues/14981): Fix spurious warning "does not support `Safe`/`SafeAutoCorrect` parameter" when those parameters are set for cops that don't have them in their default configuration. ([@dduugg][])

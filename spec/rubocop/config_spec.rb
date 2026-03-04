@@ -179,6 +179,42 @@ RSpec.describe RuboCop::Config do
       end
     end
 
+    # Regression test for https://github.com/rubocop/rubocop/issues/14981
+    # Safe and SafeAutoCorrect are COMMON_PARAMS (valid for any cop), but many
+    # cops do not list them in config/default.yml. Without them in COMMON_PARAMS,
+    # setting these params triggers a spurious "does not support X parameter" warning.
+    context 'when the configuration sets Safe on a cop whose default config omits Safe' do
+      include_context 'mock console output'
+
+      before do
+        create_file(configuration_path, <<~YAML)
+          Lint/UselessAssignment:
+            Safe: false
+        YAML
+      end
+
+      it 'does not print a warning' do
+        configuration
+        expect($stderr.string).not_to match(/does not support Safe parameter/)
+      end
+    end
+
+    context 'when the configuration sets SafeAutoCorrect on a cop whose default config omits SafeAutoCorrect' do
+      include_context 'mock console output'
+
+      before do
+        create_file(configuration_path, <<~YAML)
+          Lint/UselessAssignment:
+            SafeAutoCorrect: false
+        YAML
+      end
+
+      it 'does not print a warning' do
+        configuration
+        expect($stderr.string).not_to match(/does not support SafeAutoCorrect parameter/)
+      end
+    end
+
     context 'when the configuration includes a valid EnforcedStyle' do
       before do
         create_file(configuration_path, <<~YAML)
