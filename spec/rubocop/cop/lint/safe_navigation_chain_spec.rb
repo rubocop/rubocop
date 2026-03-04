@@ -398,6 +398,35 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    # NOTE: `foo&.bar` in the true branch is handled by `Lint/RedundantSafeNavigation`.
+    it 'does not register an offense when chaining a method call after safe navigation in the if branch of a ternary' do
+      expect_no_offenses(<<~RUBY)
+        foo&.bar ? foo&.bar - 1 : baz
+      RUBY
+    end
+
+    it 'registers an offense when chaining a method call after safe navigation in the else branch of a ternary' do
+      expect_offense(<<~RUBY)
+        foo&.bar ? baz : foo&.bar - 1
+                                 ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      # NOTE: The receiver in the else branch may be nil, so chaining could raise `NoMethodError`.
+      # Autocorrection is not possible as the intent is ambiguous.
+      expect_no_corrections
+    end
+
+    it 'registers an offense and corrects when chaining a method call after safe navigation in the else branch of an unrelated ternary' do
+      expect_offense(<<~RUBY)
+        cond ? baz : user&.team.name
+                               ^^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? baz : user&.team&.name
+      RUBY
+    end
+
     it 'registers an offense for safe navigation on the left-hand side of a `-` operator when inside an array' do
       expect_offense(<<~RUBY)
         [foo, a&.baz - 1]

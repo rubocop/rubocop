@@ -1,0 +1,1 @@
+* [#14985](https://github.com/rubocop/rubocop/issues/14985): Fix incorrect autocorrection in `Lint/SafeNavigationChain` when chaining a method call after safe navigation in the if branch of a ternary. ([@koic][])

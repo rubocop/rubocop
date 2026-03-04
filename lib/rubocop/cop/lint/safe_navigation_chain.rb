@@ -37,20 +37,25 @@ module RuboCop
           }
         PATTERN
 
+        # rubocop:disable Metrics/AbcSize
         def on_send(node)
           return unless require_safe_navigation?(node)
 
           bad_method?(node) do |safe_nav, method|
             return if nil_methods.include?(method) || PLUS_MINUS_METHODS.include?(node.method_name)
+            return if ternary_safe_navigation?(node, safe_nav)
 
             begin_range = node.loc.dot || safe_nav.source_range.end
             location = begin_range.join(node.source_range.end)
 
             add_offense(location) do |corrector|
+              next if ternary_else_branch?(node, safe_nav)
+
               autocorrect(corrector, offense_range: location, send_node: node)
             end
           end
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 
@@ -59,6 +64,18 @@ module RuboCop
           return true unless parent&.and_type?
 
           parent.rhs != node || parent.lhs.receiver != parent.rhs.receiver
+        end
+
+        def ternary_safe_navigation?(node, safe_nav)
+          return false unless (parent = node.parent)
+
+          parent.if_type? && node.equal?(parent.if_branch) && parent.condition == safe_nav
+        end
+
+        def ternary_else_branch?(node, safe_nav)
+          return false unless (parent = node.parent)
+
+          parent.if_type? && node.equal?(parent.else_branch) && parent.condition == safe_nav
         end
 
         # @param [Parser::Source::Range] offense_range
