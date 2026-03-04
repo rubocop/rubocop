@@ -170,10 +170,23 @@ module RuboCop
           return false unless rhs.source.start_with?('.', '&.')
 
           first_call = first_call_has_a_dot(node)
-          return false if first_call == node.receiver
+          if first_call == node.receiver
+            # For 2-level chains (e.g. Foo.bar.baz), skip dot alignment check
+            # unless the hash pair is inside a parenthesized method argument
+            # (where the chain is an independent expression in the argument).
+            return false unless hash_pair_in_method_argument?(node)
+          end
 
           dot = first_call.loc.dot
           dot.line == node.first_line && dot.column == rhs.column
+        end
+
+        def hash_pair_in_method_argument?(node)
+          pair_ancestor = find_pair_ancestor(node)
+          return false unless pair_ancestor
+
+          hash_node = pair_ancestor.parent
+          hash_node&.parent&.send_type? && hash_node.parent.parenthesized?
         end
 
         def check_regular_indentation(node, lhs, rhs, given_style)
