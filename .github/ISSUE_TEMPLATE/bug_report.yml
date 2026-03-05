@@ -1,0 +1,90 @@
+name: Bug Report
+description: Report an issue with RuboCop you've discovered.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing a bug, please make sure you're running the latest stable RuboCop
+        and that the problem hasn't been reported (or fixed) already.
+  - type: checkboxes
+    id: duplicates
+    attributes:
+      label: Before submitting
+      options:
+        - label: I have searched the existing issues and this hasn't been reported yet.
+          required: true
+        - label: I am running the latest stable version of RuboCop.
+          required: true
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue type
+      options:
+        - False positive
+        - False negative
+        - Incorrect autocorrect
+        - Crash/error
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: cop-name
+    attributes:
+      label: Cop name
+      description: The fully qualified cop name, if applicable.
+      placeholder: "Style/StringLiterals"
+    validations:
+      required: false
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce the problem
+      description: >
+        This is extremely important! Providing us with a reliable way to reproduce
+        the problem will expedite its solution.
+      placeholder: |
+        1. Create a file `example.rb` with the following content: ...
+        2. Run `rubocop example.rb`
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: Describe how you expected RuboCop to behave in this situation.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: >
+        Describe what actually happened.
+        Please use `rubocop --debug` when pasting RuboCop output as it contains additional information.
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: RuboCop configuration
+      description: Paste any relevant `.rubocop.yml` configuration (optional).
+      render: yaml
+    validations:
+      required: false
+  - type: textarea
+    id: version
+    attributes:
+      label: RuboCop version
+      description: >
+        Paste the output of `rubocop -V` (or `bundle exec rubocop -V` if using Bundler).
+        Include any extension cop versions shown in the output.
+      render: shell
+      placeholder: |
+        $ rubocop -V
+        1.85.1 (using Parser 3.3.5.0, rubocop-ast 1.32.3, analyzing as Ruby 3.3, running on ruby 3.3.5) [x86_64-linux]
+          - rubocop-performance 1.22.1
+          - rubocop-rspec 3.1.0
+    validations:
+      required: true

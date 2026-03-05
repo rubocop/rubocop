@@ -1,5 +1,5 @@
-blank_issues_enabled: false
+blank_issues_enabled: true
 contact_links:
   - name: GitHub Discussions
     url: https://github.com/rubocop/rubocop/discussions
-    about: For anything else.
+    about: For questions, ideas, and general discussion.
