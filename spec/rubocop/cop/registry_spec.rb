@@ -223,6 +223,28 @@ RSpec.describe RuboCop::Cop::Registry do
       expect(enabled_cops).not_to include(RuboCop::Cop::RSpec::Foo)
     end
 
+    context 'when specifying `--enforcement` command-line option' do
+      let(:options) { { enforcement: 'essential' } }
+      let(:config) do
+        RuboCop::Config.new(
+          'Lint/DuplicateMethods' => { 'Enabled' => true, 'Enforcement' => 'essential' },
+          'Metrics/MethodLength' => { 'Enabled' => true, 'Enforcement' => 'strict' }
+        )
+      end
+
+      it 'includes cops at or below the enforcement level' do
+        expect(enabled_cops).to include(RuboCop::Cop::Lint::DuplicateMethods)
+      end
+
+      it 'excludes cops above the enforcement level' do
+        expect(enabled_cops).not_to include(RuboCop::Cop::Metrics::MethodLength)
+      end
+
+      it 'includes cops without an enforcement tag' do
+        expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+      end
+    end
+
     context 'when new cops are introduced' do
       let(:config) { RuboCop::Config.new('Lint/BooleanSymbol' => { 'Enabled' => 'pending' }) }
 
