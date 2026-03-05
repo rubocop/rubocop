@@ -84,10 +84,10 @@ module RuboCop
 
         def group_comments(comments)
           result = []
-          comments.each.with_index do |comment, index|
+          comments.each.with_index(1) do |comment, index|
             # Grab the scope directive if it is preceded by a method directive
             if comment.text.include?('@!method')
-              result << if (next_comment = comments[index + 1])&.text&.include?('@!scope')
+              result << if (next_comment = comments[index])&.text&.include?('@!scope')
                           [comment, next_comment]
                         else
                           [comment, nil]
