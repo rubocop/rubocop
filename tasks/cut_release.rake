@@ -54,7 +54,7 @@ namespace :cut_release do
   end
 
   def update_issue_template(old_version, new_version)
-    update_file('.github/ISSUE_TEMPLATE/bug_report.md') do |issue_template|
+    update_file('.github/ISSUE_TEMPLATE/bug_report.yml') do |issue_template|
       issue_template.sub("#{old_version} (using Parser ", "#{new_version} (using Parser ")
     end
   end
