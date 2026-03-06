@@ -92,7 +92,7 @@ module RuboCop
         def used_in_condition?(node, condition)
           if condition.send_type?
             return true if condition.assignment_method? && partial_matched?(node, condition)
-            return false if !condition.comparison_method? && !condition.predicate_method?
+            return false unless condition.comparison_method? || condition.predicate_method?
           end
 
           condition.child_nodes.any?(node)

@@ -424,8 +424,8 @@ module RuboCop
 
     def validate_display_only_correctable_and_autocorrect
       return unless @options.key?(:autocorrect)
-      return if !@options.key?(:display_only_correctable) &&
-                !@options.key?(:display_only_safe_correctable)
+      return unless @options.key?(:display_only_correctable) ||
+                    @options.key?(:display_only_safe_correctable)
 
       raise OptionArgumentError,
             '--autocorrect cannot be used with --display-only-[safe-]correctable.'
@@ -433,15 +433,15 @@ module RuboCop
 
     def validate_display_only_failed_and_display_only_correctable
       return unless @options.key?(:display_only_failed)
-      return if !@options.key?(:display_only_correctable) &&
-                !@options.key?(:display_only_safe_correctable)
+      return unless @options.key?(:display_only_correctable) ||
+                    @options.key?(:display_only_safe_correctable)
 
       raise OptionArgumentError,
             '--display-only-failed cannot be used together with other display options.'
     end
 
     def validate_lsp_and_editor_mode
-      return if !@options.key?(:lsp) || !@options.key?(:editor_mode)
+      return unless @options.key?(:lsp) && @options.key?(:editor_mode)
 
       raise OptionArgumentError, 'Do not specify `--editor-mode` as it is redundant in `--lsp`.'
     end

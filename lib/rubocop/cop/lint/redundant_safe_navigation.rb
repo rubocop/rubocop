@@ -189,7 +189,7 @@ module RuboCop
           end
 
           unless assume_receiver_instance_exists?(node.receiver)
-            return if !guaranteed_instance?(node.receiver) && !check?(node)
+            return unless guaranteed_instance?(node.receiver) || check?(node)
             return if respond_to_nil_method?(node)
           end
 

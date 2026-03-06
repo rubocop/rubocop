@@ -68,7 +68,7 @@ module RuboCop
         MSG = 'Add a line break before the first element of a multi-line array.'
 
         def on_array(node)
-          return if !node.loc.begin && !assignment_on_same_line?(node)
+          return unless node.loc.begin || assignment_on_same_line?(node)
           return if allow_implicit_array_brackets? && !node.bracketed?
 
           check_children_line_break(node, node.children, ignore_last: ignore_last_element?)

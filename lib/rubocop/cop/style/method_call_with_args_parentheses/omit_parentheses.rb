@@ -54,7 +54,9 @@ module RuboCop
 
           def require_parentheses_for_hash_value_omission?(node) # rubocop:disable Metrics/PerceivedComplexity
             return false unless (last_argument = node.last_argument)
-            return false if !last_argument.hash_type? || !last_argument.pairs.last&.value_omission?
+            unless last_argument.hash_type? && last_argument.pairs.last&.value_omission?
+              return false
+            end
 
             node.parent&.conditional? || node.parent&.single_line? || !last_expression?(node)
           end

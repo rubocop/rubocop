@@ -59,7 +59,7 @@ module RuboCop
           set_elements.each_with_index do |set_element, index|
             # NOTE: Skip due to the possibility of corner cases where Set elements
             # may have changing return values if they are not literals, constants, or variables.
-            next if !set_element.literal? && !set_element.const_type? && !set_element.variable?
+            next unless set_element.literal? || set_element.const_type? || set_element.variable?
 
             if seen_elements.include?(set_element)
               register_offense(set_element, set_elements[index - 1], node)

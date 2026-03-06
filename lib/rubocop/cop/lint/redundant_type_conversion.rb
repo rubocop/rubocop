@@ -207,7 +207,7 @@ module RuboCop
         private
 
         def hash_or_set_with_block?(node)
-          return false if !node.method?(:to_h) && !node.method?(:to_set)
+          return false unless node.method?(:to_h) || node.method?(:to_set)
 
           node.parent&.any_block_type? || node.last_argument&.block_pass_type?
         end

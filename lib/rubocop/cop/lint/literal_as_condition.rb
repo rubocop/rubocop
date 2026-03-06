@@ -136,7 +136,7 @@ module RuboCop
 
         def on_case(case_node)
           if (cond = case_node.condition)
-            return if !cond.falsey_literal? && !cond.truthy_literal?
+            return unless cond.falsey_literal? || cond.truthy_literal?
 
             check_case(case_node)
           else

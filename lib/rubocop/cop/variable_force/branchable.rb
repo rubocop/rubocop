@@ -13,7 +13,7 @@ module RuboCop
         end
 
         def run_exclusively_with?(other)
-          return false if !branch || !other.branch
+          return false unless branch && other.branch
 
           branch.exclusive_with?(other.branch)
         end

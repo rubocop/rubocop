@@ -276,7 +276,7 @@ module RuboCop
         end
 
         def argument_without_space?(node)
-          return false if !node.argument? || !node.parent.loc.selector
+          return false unless node.argument? && node.parent.loc.selector
 
           node.source_range.begin_pos == node.parent.loc.selector.end_pos
         end
