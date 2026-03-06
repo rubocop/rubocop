@@ -2274,6 +2274,7 @@ Lint/RedundantCopDisableDirective:
                  It must be explicitly disabled.
   Enabled: true
   VersionAdded: '0.76'
+  CopsToIgnore: []
 
 Lint/RedundantCopEnableDirective:
   Description: Checks for rubocop:enable comments that can be removed.
