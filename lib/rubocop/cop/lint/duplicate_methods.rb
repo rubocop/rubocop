@@ -197,6 +197,13 @@ module RuboCop
         # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'
 
+        # @!method class_or_module_new_block?(node)
+        def_node_matcher :class_or_module_new_block?, <<~PATTERN
+          (block
+            (send (const _ {:Class :Module}) :new ...)
+            ...)
+        PATTERN
+
         def on_send(node) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
           name, original_name = alias_method?(node)
 
@@ -233,9 +240,12 @@ module RuboCop
 
         def check_self_receiver(node, name)
           enclosing = node.parent_module_name
-          return unless enclosing
-
-          found_method(node, "#{enclosing}.#{name}")
+          if enclosing
+            found_method(node, "#{enclosing}.#{name}")
+          elsif (anon_block = anonymous_class_block(node))
+            scope = qualified_name(anon_block.parent_module_name, nil, 'Object')
+            found_method(node, "#{scope}.#{name}")
+          end
         end
 
         def inside_condition?(node)
@@ -274,16 +284,32 @@ module RuboCop
         end
 
         def found_instance_method(node, name)
-          return found_sclass_method(node, name) unless (scope = node.parent_module_name)
+          if (scope = node.parent_module_name)
+            found_method(node, "#{humanize_scope(scope)}#{name}")
+          elsif (anon_block = anonymous_class_block(node))
+            base = qualified_name(anon_block.parent_module_name, nil, 'Object')
+            scope = node.each_ancestor(:sclass).any? ? "#<Class:#{base}>" : base
+            found_method(node, "#{humanize_scope(scope)}#{name}")
+          else
+            found_sclass_method(node, name)
+          end
+        end
 
-          # Humanize the scope
+        def humanize_scope(scope)
           scope = scope.sub(
             /(?:(?<name>.*)::)#<Class:\k<name>>|#<Class:(?<name>.*)>(?:::)?/,
             '\k<name>.'
           )
-          scope << '#' unless scope.end_with?('.')
+          scope.end_with?('.') ? scope : "#{scope}#"
+        end
 
-          found_method(node, "#{scope}#{name}")
+        def anonymous_class_block(node)
+          first_block = node.each_ancestor(:block).first
+          return unless class_or_module_new_block?(first_block)
+          return if first_block.parent&.type?(:lvasgn, :block)
+          return if node.each_ancestor(:sclass).any? { |s| !s.children.first.self_type? }
+
+          first_block
         end
 
         def found_sclass_method(node, name)

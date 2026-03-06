@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
-  shared_examples 'in scope' do |type, opening_line|
+  shared_examples 'in scope' do |type, opening_line, receiver = 'A'|
     it "registers an offense for duplicate method in #{type}" do
       expect_offense(<<~RUBY)
         #{opening_line}
@@ -9,7 +9,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
             implement 1
           end
           def some_method
-          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+          ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both (string):2 and (string):5.
             implement 2
           end
         end
@@ -36,7 +36,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
             implement 1
           end
           def self.some_method
-          ^^^^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both dups.rb:2 and dups.rb:5.
+          ^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}.some_method` is defined at both dups.rb:2 and dups.rb:5.
             implement 2
           end
         end
@@ -76,7 +76,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
             implement 1
           end
           private def some_method
-                  ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+                  ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both (string):2 and (string):5.
             implement 2
           end
         end
@@ -90,7 +90,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
             implement 1
           end
           private def self.some_method
-                  ^^^^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both (string):2 and (string):5.
+                  ^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}.some_method` is defined at both (string):2 and (string):5.
             implement 2
           end
         end
@@ -117,7 +117,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
             implement 1
           end
           protected def some_method
-                    ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both (string):2 and (string):5.
+                    ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both (string):2 and (string):5.
             implement 2
           end
         end
@@ -131,14 +131,14 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
             implement 1
           end
           def some_method
-          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.
+          ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both dups.rb:2 and dups.rb:5.
             implement 2
           end
           def any_method
             implement 1
           end
           def any_method
-          ^^^^^^^^^^^^^^ Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.
+          ^^^^^^^^^^^^^^ Method `#{receiver}#any_method` is defined at both dups.rb:8 and dups.rb:11.
             implement 2
           end
         end
@@ -154,7 +154,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
         end
         #{opening_line}
           def some_method
-          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both dups.rb:2 and dups.rb:7.
+          ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both dups.rb:2 and dups.rb:7.
             implement 2
           end
         end
@@ -170,7 +170,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
         end
         #{opening_line}
           def self.some_method
-          ^^^^^^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both test.rb:2 and test.rb:7.
+          ^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}.some_method` is defined at both test.rb:2 and test.rb:7.
             implement 2
           end
         end
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
       expect_offense(<<~RUBY, 'second.rb')
         #{opening_line}
           def some_method
-          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both first.rb:2 and second.rb:2.
+          ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both first.rb:2 and second.rb:2.
             implement 2
           end
         end
@@ -204,7 +204,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             def some_method
-            ^^^^^^^^^^^^^^^ Method `A.some_method` is defined at both test.rb:3 and test.rb:6.
+            ^^^^^^^^^^^^^^^ Method `#{receiver}.some_method` is defined at both test.rb:3 and test.rb:6.
               implement 2
             end
           end
@@ -220,13 +220,13 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             def some_method
-            ^^^^^^^^^^^^^^^ Method `B::A#some_method` is defined at both test.rb:3 and test.rb:6.
+            ^^^^^^^^^^^^^^^ Method `B::#{receiver}#some_method` is defined at both test.rb:3 and test.rb:6.
               implement 2
             end
             def self.another
             end
             def self.another
-            ^^^^^^^^^^^^^^^^ Method `B::A.another` is defined at both test.rb:9 and test.rb:11.
+            ^^^^^^^^^^^^^^^^ Method `B::#{receiver}.another` is defined at both test.rb:9 and test.rb:11.
             end
           end
         end
@@ -256,7 +256,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
             implement 1
           end
           alias some_method any_method
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
         end
       RUBY
     end
@@ -290,7 +290,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
             implement 1
           end
           alias_method :some_method, :any_method
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
         end
       RUBY
     end
@@ -342,7 +342,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def something
           end
           attr_reader :something
-          ^^^^^^^^^^^^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#something` is defined at both example.rb:2 and example.rb:4.
         end
       RUBY
     end
@@ -353,7 +353,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def something=(right)
           end
           attr_writer :something
-          ^^^^^^^^^^^^^^^^^^^^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#something=` is defined at both example.rb:2 and example.rb:4.
         end
       RUBY
     end
@@ -364,10 +364,10 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           attr_accessor :something
 
           def something
-          ^^^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^ Method `#{receiver}#something` is defined at both example.rb:2 and example.rb:4.
           end
           def something=(right)
-          ^^^^^^^^^^^^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:6.
+          ^^^^^^^^^^^^^^ Method `#{receiver}#something=` is defined at both example.rb:2 and example.rb:6.
           end
         end
       RUBY
@@ -379,7 +379,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def something
           end
           attr :something
-          ^^^^^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^^^ Method `#{receiver}#something` is defined at both example.rb:2 and example.rb:4.
         end
       RUBY
     end
@@ -390,10 +390,10 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           attr :something, true
 
           def something
-          ^^^^^^^^^^^^^ Method `A#something` is defined at both example.rb:2 and example.rb:4.
+          ^^^^^^^^^^^^^ Method `#{receiver}#something` is defined at both example.rb:2 and example.rb:4.
           end
           def something=(right)
-          ^^^^^^^^^^^^^^ Method `A#something=` is defined at both example.rb:2 and example.rb:6.
+          ^^^^^^^^^^^^^^ Method `#{receiver}#something=` is defined at both example.rb:2 and example.rb:6.
           end
         end
       RUBY
@@ -429,9 +429,9 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           end
 
           def foo
-          ^^^^^^^ Method `A#foo` is defined at both example.rb:2 and example.rb:8.
+          ^^^^^^^ Method `#{receiver}#foo` is defined at both example.rb:2 and example.rb:8.
             def some_method
-            ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:3 and example.rb:9.
+            ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:3 and example.rb:9.
               implement 2
             end
           end
@@ -449,9 +449,9 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           end
 
           def self.foo
-          ^^^^^^^^^^^^ Method `A.foo` is defined at both example.rb:2 and example.rb:8.
+          ^^^^^^^^^^^^ Method `#{receiver}.foo` is defined at both example.rb:2 and example.rb:8.
             def some_method
-            ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:3 and example.rb:9.
+            ^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:3 and example.rb:9.
               implement 2
             end
           end
@@ -525,7 +525,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             delegate :some_method, to: :foo
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
           end
         RUBY
       end
@@ -537,7 +537,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             delegate 'some_method', to: :foo
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
           end
         RUBY
       end
@@ -549,7 +549,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             delegate :some_method, to: 'foo'
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
           end
         RUBY
       end
@@ -561,7 +561,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             delegate :method, to: :foo, prefix: :some
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
           end
         RUBY
       end
@@ -573,7 +573,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             delegate :method, to: :foo, prefix: 'some'
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
           end
         RUBY
       end
@@ -585,7 +585,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             delegate :method, to: :some, prefix: true
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
           end
         RUBY
       end
@@ -597,7 +597,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
               implement 1
             end
             delegate :other_method, :some_method, to: :foo
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both example.rb:2 and example.rb:5.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
           end
         RUBY
       end
@@ -724,7 +724,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def_delegator :foo, :bar
 
           def bar; end
-          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+          ^^^^^^^ Method `#{receiver}#bar` is defined at both (string):2 and (string):4.
         end
       RUBY
     end
@@ -735,7 +735,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def_delegator 'foo', 'bar'
 
           def bar; end
-          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+          ^^^^^^^ Method `#{receiver}#bar` is defined at both (string):2 and (string):4.
         end
       RUBY
     end
@@ -746,7 +746,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def_instance_delegator :foo, :bar
 
           def bar; end
-          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+          ^^^^^^^ Method `#{receiver}#bar` is defined at both (string):2 and (string):4.
         end
       RUBY
     end
@@ -759,7 +759,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def bar; end
 
           def baz; end
-          ^^^^^^^ Method `A#baz` is defined at both (string):2 and (string):6.
+          ^^^^^^^ Method `#{receiver}#baz` is defined at both (string):2 and (string):6.
         end
       RUBY
     end
@@ -780,7 +780,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def_delegators :foo, :bar, :baz
 
           def bar; end
-          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+          ^^^^^^^ Method `#{receiver}#bar` is defined at both (string):2 and (string):4.
         end
       RUBY
     end
@@ -791,7 +791,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def_delegators 'foo', 'bar', 'baz'
 
           def bar; end
-          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+          ^^^^^^^ Method `#{receiver}#bar` is defined at both (string):2 and (string):4.
         end
       RUBY
     end
@@ -802,7 +802,7 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           def_instance_delegators :foo, :bar, :baz
 
           def bar; end
-          ^^^^^^^ Method `A#bar` is defined at both (string):2 and (string):4.
+          ^^^^^^^ Method `#{receiver}#bar` is defined at both (string):2 and (string):4.
         end
       RUBY
     end
@@ -823,6 +823,8 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
   it_behaves_like('in scope', 'dynamic class', 'A = Class.new do')
   it_behaves_like('in scope', 'dynamic module', 'A = Module.new do')
   it_behaves_like('in scope', 'class_eval block', 'A.class_eval do')
+  it_behaves_like('in scope', 'anonymous class', 'Class.new do', 'Object')
+  it_behaves_like('in scope', 'anonymous module', 'Module.new do', 'Object')
 
   %w[class module].each do |type|
     it "registers an offense for duplicate class methods with named receiver in #{type}" do
