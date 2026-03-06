@@ -95,7 +95,7 @@ module RuboCop
           return unless current_node.lvar_type?
 
           variable_node = current_node.children.first
-          return unless seen_variables.include?(variable_node) || variable_node == arg_name
+          return if !seen_variables.include?(variable_node) && variable_node != arg_name
 
           add_offense(current_node, message: format(MSG, arg_name: arg_name))
         end

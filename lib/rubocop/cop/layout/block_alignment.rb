@@ -117,7 +117,7 @@ module RuboCop
           return unless begins_its_line?(end_loc)
 
           start_loc = start_node.source_range
-          return unless start_loc.column != end_loc.column || style == :start_of_block
+          return if start_loc.column == end_loc.column && style != :start_of_block
 
           do_source_line_column = compute_do_source_line_column(block_node, end_loc)
           return unless do_source_line_column
@@ -204,7 +204,7 @@ module RuboCop
           # blocks.
           match = /\S.*/.match(do_loc.source_line)
           indentation_of_do_line = match.begin(0)
-          return unless end_loc.column != indentation_of_do_line || style == :start_of_line
+          return if end_loc.column == indentation_of_do_line && style != :start_of_line
 
           {
             source: match[0],
