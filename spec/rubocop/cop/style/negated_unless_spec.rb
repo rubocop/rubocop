@@ -1,17 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe RuboCop::Cop::Style::NegatedUnless do
-  subject(:cop) do
-    config = RuboCop::Config.new(
-      'Style/NegatedUnless' => {
-        'SupportedStyles' => %w[both prefix postfix],
-        'EnforcedStyle' => 'both'
-      }
-    )
-    described_class.new(config)
-  end
-
-  describe 'with “both” style' do
+RSpec.describe RuboCop::Cop::Style::NegatedUnless, :config do
+  describe 'with “both” style (default)' do
     it 'registers an offense for unless with exclamation point condition' do
       expect_offense(<<~RUBY)
         unless !a_condition
@@ -89,19 +79,12 @@ RSpec.describe RuboCop::Cop::Style::NegatedUnless do
         something if (x.even?)
       RUBY
     end
+
+    it_behaves_like 'chained negative conditions', :unless, :if
   end
 
   describe 'with “prefix” style' do
-    subject(:cop) do
-      config = RuboCop::Config.new(
-        'Style/NegatedUnless' => {
-          'SupportedStyles' => %w[both prefix postfix],
-          'EnforcedStyle' => 'prefix'
-        }
-      )
-
-      described_class.new(config)
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'prefix' } }
 
     it 'registers an offense for prefix' do
       expect_offense(<<~RUBY)
@@ -122,16 +105,7 @@ RSpec.describe RuboCop::Cop::Style::NegatedUnless do
   end
 
   describe 'with “postfix” style' do
-    subject(:cop) do
-      config = RuboCop::Config.new(
-        'Style/NegatedUnless' => {
-          'SupportedStyles' => %w[both prefix postfix],
-          'EnforcedStyle' => 'postfix'
-        }
-      )
-
-      described_class.new(config)
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'postfix' } }
 
     it 'registers an offense for postfix' do
       expect_offense(<<~RUBY)

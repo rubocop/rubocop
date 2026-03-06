@@ -22,6 +22,24 @@ module RuboCop
       #   # good
       #   bar while foo
       #   bar while !foo && baz
+      #
+      # @example AllowChainedConditions: false (default)
+      #   # bad
+      #   while !foo && !bar
+      #     baz
+      #   end
+      #
+      #   # good
+      #   until foo || bar
+      #     baz
+      #   end
+      #
+      # @example AllowChainedConditions: true
+      #   # good
+      #   while !foo && !bar
+      #     baz
+      #   end
+      #
       class NegatedWhile < Base
         include NegativeConditional
         extend AutoCorrector

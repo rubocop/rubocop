@@ -127,4 +127,6 @@ RSpec.describe RuboCop::Cop::Style::NegatedWhile, :config do
       end
     RUBY
   end
+
+  it_behaves_like 'chained negative conditions', :while, :until
 end

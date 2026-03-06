@@ -68,6 +68,24 @@ module RuboCop
       #   if !foo
       #     bar
       #   end
+      #
+      # @example AllowChainedConditions: false (default)
+      #   # bad
+      #   if !foo && !bar
+      #     baz
+      #   end
+      #
+      #   # good
+      #   unless foo || bar
+      #     baz
+      #   end
+      #
+      # @example AllowChainedConditions: true
+      #   # good
+      #   if !foo && !bar
+      #     baz
+      #   end
+      #
       class NegatedIf < Base
         include ConfigurableEnforcedStyle
         include NegativeConditional

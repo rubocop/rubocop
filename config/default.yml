@@ -4904,6 +4904,7 @@ Style/NegatedIf:
     - both
     - prefix
     - postfix
+  AllowChainedConditions: false
 
 Style/NegatedIfElseCondition:
   Description: >-
@@ -4925,12 +4926,14 @@ Style/NegatedUnless:
     - both
     - prefix
     - postfix
+  AllowChainedConditions: false
 
 Style/NegatedWhile:
   Description: 'Favor until over while for negative conditions.'
   StyleGuide: '#until-for-negatives'
   Enabled: true
   VersionAdded: '0.20'
+  AllowChainedConditions: false
 
 Style/NegativeArrayIndex:
   Description: >-
