@@ -423,6 +423,48 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
       RUBY
     end
 
+    it 'registers an offense when safe navigation receiver is a csend condition of a ternary if branch' do
+      expect_offense(<<~RUBY)
+        foo&.bar ? foo&.bar.baz : qux
+                      ^^ Redundant safe navigation on non-nil receiver (detected by analyzing previous code/method invocations).
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo&.bar ? foo.bar.baz : qux
+      RUBY
+    end
+
+    it 'does not register an offense for safe navigation in the else branch of a ternary with a csend condition' do
+      expect_no_offenses(<<~RUBY)
+        foo&.bar ? qux : foo&.bar.baz
+      RUBY
+    end
+
+    it 'registers an offense when safe navigation receiver is a csend condition of an if true branch' do
+      expect_offense(<<~RUBY)
+        if foo&.bar
+          foo&.bar.baz
+             ^^ Redundant safe navigation on non-nil receiver (detected by analyzing previous code/method invocations).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo&.bar
+          foo.bar.baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for safe navigation in the else branch of an if with a csend condition' do
+      expect_no_offenses(<<~RUBY)
+        if foo&.bar
+          qux
+        else
+          foo&.bar.baz
+        end
+      RUBY
+    end
+
     it 'registers an offense and corrects when method is called on receiver in lhs of condition' do
       expect_offense(<<~RUBY)
         if foo.condition? && other_condition

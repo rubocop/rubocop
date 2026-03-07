@@ -62,6 +62,22 @@ module RuboCop
       #   do_something if attrs.respond_to?(:[])
       #
       #   # bad
+      #   foo&.bar ? foo&.bar.baz : qux
+      #
+      #   # good
+      #   foo&.bar ? foo.bar.baz : qux
+      #
+      #   # bad
+      #   if foo&.bar
+      #     foo&.bar.baz
+      #   end
+      #
+      #   # good
+      #   if foo&.bar
+      #     foo.bar.baz
+      #   end
+      #
+      #   # bad
       #   while node&.is_a?(BeginNode)
       #     node = node.parent
       #   end
