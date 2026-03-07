@@ -21,6 +21,12 @@ module RuboCop
       # mode, methods with a question mark will register an offense if any known non-boolean
       # return values are detected.
       #
+      # By default, the cop only checks that methods ending with `?` return boolean values
+      # (and not non-boolean literals). Set `InferPredicateMethods: true` to also infer
+      # predicate methods from their return values and suggest adding `?` to methods that
+      # return booleans. When inference is enabled, `AllowedMethods` and `AllowedPatterns`
+      # can be used for granular control over which methods are allowed.
+      #
       # The cop also has `AllowedMethods` configuration in order to prevent the cop from
       # registering an offense from a method name that does not confirm to the naming
       # guidelines. By default, `call` is allowed. The cop also has `AllowedPatterns`
@@ -125,6 +131,23 @@ module RuboCop
       #     'foo'
       #   end
       #
+      # @example InferPredicateMethods: false (default)
+      #   # good - does not suggest adding `?` to boolean-returning methods
+      #   def foo
+      #     bar == baz
+      #   end
+      #
+      # @example InferPredicateMethods: true
+      #   # bad - suggests adding `?` to methods that return booleans
+      #   def foo
+      #     bar == baz
+      #   end
+      #
+      #   # good
+      #   def foo?
+      #     bar == baz
+      #   end
+      #
       # @example AllowBangMethods: false (default)
       #   # bad
       #   def save!
@@ -163,7 +186,7 @@ module RuboCop
 
           if node.predicate_method? && potential_non_predicate?(return_values)
             add_offense(node.loc.name, message: MSG_NON_PREDICATE)
-          elsif !node.predicate_method? && all_return_values_boolean?(return_values)
+          elsif !node.predicate_method? && infer_predicate?(return_values)
             add_offense(node.loc.name, message: MSG_PREDICATE)
           end
         end
@@ -312,6 +335,14 @@ module RuboCop
 
         def allow_bang_methods?
           cop_config.fetch('AllowBangMethods', false)
+        end
+
+        def infer_predicate?(return_values)
+          infer_predicate_methods? && all_return_values_boolean?(return_values)
+        end
+
+        def infer_predicate_methods?
+          cop_config.fetch('InferPredicateMethods', false)
         end
 
         # If a method ending in `?` is known to not return a boolean value,
