@@ -115,21 +115,6 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
         RUBY
       end
 
-      it 'registers an offense for not indented, without `~`' do
-        expect_offense(<<~RUBY)
-          <<#{quote}RUBY2#{quote}
-          foo
-          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
-          RUBY2
-        RUBY
-
-        expect_correction(<<~RUBY)
-          <<~#{quote}RUBY2#{quote}
-            foo
-          RUBY2
-        RUBY
-      end
-
       it 'registers an offense for not indented, with `~`' do
         expect_offense(<<~RUBY)
           <<~#{quote}RUBY2#{quote}
@@ -142,25 +127,6 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           <<~#{quote}RUBY2#{quote}
             foo
           RUBY2
-        RUBY
-      end
-
-      it 'registers an offense for first line minus-level indented, with `-`' do
-        expect_offense(<<~RUBY)
-                  puts <<-#{quote}RUBY2#{quote}
-          def foo
-          ^^^^^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
-            bar
-          end
-          RUBY2
-        RUBY
-
-        expect_correction(<<-RUBY)
-        puts <<~#{quote}RUBY2#{quote}
-          def foo
-            bar
-          end
-        RUBY2
         RUBY
       end
 
@@ -187,7 +153,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
       { empty: '', whitespace: '    ' }.each do |description, line|
         it "registers an offense for not indented enough with #{description} line" do
           # Using <<- in this section makes the code more readable.
-          # rubocop:disable Layout/HeredocIndentation
+          # rubocop:disable Style/SquigglyHeredoc
           expect_offense(<<-RUBY)
             def baz
               <<~#{quote}MSG#{quote}
@@ -228,25 +194,7 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
             RUBY2
           RUBY
         end
-        # rubocop:enable Layout/HeredocIndentation
-      end
-
-      it 'displays message to use `<<~` instead of `<<`' do
-        expect_offense(<<~RUBY)
-          <<RUBY2
-          foo
-          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<`.
-          RUBY2
-        RUBY
-      end
-
-      it 'displays message to use `<<~` instead of `<<-`' do
-        expect_offense(<<~RUBY)
-          <<-RUBY2
-          foo
-          ^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
-          RUBY2
-        RUBY
+        # rubocop:enable Style/SquigglyHeredoc
       end
     end
 
@@ -265,104 +213,6 @@ RSpec.describe RuboCop::Cop::Layout::HeredocIndentation, :config do
           <<~#{quote}RUBY2#{quote}
             something
           RUBY2
-        RUBY
-      end
-    end
-
-    context 'when `AllCops/ActiveSupportExtensionsEnabled: true`' do
-      let(:config) do
-        RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => true })
-      end
-
-      it 'registers an offense for `squish` applied to heredoc' do
-        expect_offense(<<~RUBY)
-                    def foo
-                      <<-#{quote}RUBY2#{quote}.squish
-                      something
-          ^^^^^^^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
-                      RUBY2
-                    end
-        RUBY
-
-        expect_correction(<<-RUBY)
-          def foo
-            <<~#{quote}RUBY2#{quote}.squish
-              something
-            RUBY2
-          end
-        RUBY
-      end
-
-      it 'registers an offense for `squish` applied to heredoc when indentation is already good' do
-        expect_offense(<<~RUBY)
-                    def foo
-                      <<-#{quote}RUBY2#{quote}.squish
-                        something
-          ^^^^^^^^^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
-                      RUBY2
-                    end
-        RUBY
-
-        expect_correction(<<-RUBY)
-          def foo
-            <<~#{quote}RUBY2#{quote}.squish
-              something
-            RUBY2
-          end
-        RUBY
-      end
-
-      it "registers an offense for `squish` applied to heredoc when there's too much indentation" do
-        expect_offense(<<~RUBY)
-                    def foo
-                      <<-#{quote}RUBY2#{quote}.squish
-                          something
-          ^^^^^^^^^^^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
-                      RUBY2
-                    end
-        RUBY
-
-        expect_correction(<<-RUBY)
-          def foo
-            <<~#{quote}RUBY2#{quote}.squish
-              something
-            RUBY2
-          end
-        RUBY
-      end
-
-      it 'registers an offense for `squish!` applied to heredoc' do
-        expect_offense(<<~RUBY)
-                    def foo
-                      <<-#{quote}RUBY2#{quote}.squish!
-                      something
-          ^^^^^^^^^^^^^^^^^^^^^ Use 2 spaces for indentation in a heredoc by using `<<~` instead of `<<-`.
-                      RUBY2
-                    end
-        RUBY
-
-        expect_correction(<<-RUBY)
-          def foo
-            <<~#{quote}RUBY2#{quote}.squish!
-              something
-            RUBY2
-          end
-        RUBY
-      end
-    end
-
-    context 'when `AllCops/ActiveSupportExtensionsEnabled: false`' do
-      let(:config) do
-        RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => false })
-      end
-
-      it 'does not register an offense for `squish` applied to heredoc' do
-        expect_no_offenses(<<~RUBY)
-          def foo
-            <<-#{quote}RUBY2#{quote}.squish
-            something
-            RUBY2
-          end
         RUBY
       end
     end
