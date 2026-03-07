@@ -128,10 +128,13 @@ module RuboCop
           if hash_pair_indented?(node, pair_ancestor, given_style)
             return check_hash_pair_indented_style(rhs, pair_ancestor)
           end
-
-          return false if !pair_ancestor && not_for_this_cop?(node)
+          return false if skip_for_context?(node, pair_ancestor)
 
           check_regular_indentation(node, lhs, rhs, given_style)
+        end
+
+        def skip_for_context?(node, pair_ancestor)
+          pair_ancestor ? inside_multiline_chain_arg?(node) : not_for_this_cop?(node)
         end
 
         def hash_pair_aligned?(pair_ancestor, given_style)
@@ -152,7 +155,10 @@ module RuboCop
         end
 
         def check_hash_pair_indentation(node, lhs, rhs)
-          @base = find_hash_pair_alignment_base(node) || lhs.source_range
+          @base = find_hash_pair_alignment_base(node)
+          return false if !@base && inside_multiline_chain_arg?(node)
+
+          @base ||= lhs.source_range
           return if aligned_with_first_line_dot?(node, rhs)
 
           calculate_column_delta_offense(rhs, @base.column)
@@ -164,6 +170,25 @@ module RuboCop
 
           first_call = first_call_has_a_dot(node)
           first_call.loc.dot.join(first_call.loc.selector)
+        end
+
+        def inside_multiline_chain_arg?(node)
+          enclosing_call = find_enclosing_chain_call(node)
+          return false unless enclosing_call
+
+          !same_line?(enclosing_call.loc.selector, enclosing_call.receiver.source_range)
+        end
+
+        def find_enclosing_chain_call(node)
+          hash_ancestor = find_pair_ancestor(node).parent
+          enclosing_call = hash_ancestor.parent
+          return unless hash_arg_in_chain?(enclosing_call, hash_ancestor)
+
+          enclosing_call
+        end
+
+        def hash_arg_in_chain?(call, hash_node)
+          call&.call_type? && call.receiver != hash_node && call.loc?(:dot)
         end
 
         def aligned_with_first_line_dot?(node, rhs)
