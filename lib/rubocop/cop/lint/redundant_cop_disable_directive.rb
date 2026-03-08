@@ -111,13 +111,13 @@ module RuboCop
         end
 
         def each_line_range(cop, line_ranges)
-          line_ranges.each_with_index do |line_range, line_range_index|
+          line_ranges.each.with_index(1) do |line_range, line_range_index|
             next if should_skip_line_range?(cop, line_range)
 
             comment = processed_source.comment_at_line(line_range.begin)
             next if skip_directive?(comment)
 
-            next_range = line_ranges[line_range_index + 1]
+            next_range = line_ranges[line_range_index]
             redundant = find_redundant_directive(cop, comment, line_range, next_range)
             yield comment, redundant if redundant
           end

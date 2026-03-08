@@ -6161,6 +6161,11 @@ Style/WhileUntilModifier:
   VersionAdded: '0.9'
   VersionChanged: '0.30'
 
+Style/WithIndexOffset:
+  Description: 'Checks for offset arithmetic on the index variable inside `each_with_index` or `with_index` blocks.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/WordArray:
   Description: 'Use %w or %W for arrays of words.'
   StyleGuide: '#percent-w'
