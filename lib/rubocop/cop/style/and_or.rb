@@ -128,6 +128,7 @@ module RuboCop
 
         def correct_other(node, corrector)
           return if node.parenthesized_call?
+          return if node.children.empty? && node.equal?(node.parent.children.last)
 
           corrector.wrap(node, '(', ')')
         end
