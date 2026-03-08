@@ -1,0 +1,1 @@
+* [#14821](https://github.com/rubocop/rubocop/issues/14821): Fix `Style/IfInsideElse` autocorrect moving comments into the wrong branch when a comment precedes the nested `if` in an `else`. ([@hammadxcm][])
