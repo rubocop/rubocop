@@ -11,6 +11,9 @@ module RuboCop
     # (unless autocorrections happened).
     # rubocop:disable Metrics/ClassLength
     class Team
+      InvestigationResult = Struct.new(:report, :corrector)
+      private_constant :InvestigationResult
+
       # @return [Team]
       def self.new(cop_or_classes, config, options = {})
         # Support v0 api:
@@ -89,31 +92,25 @@ module RuboCop
 
       # @return [Commissioner::InvestigationReport]
       def investigate(processed_source, offset: 0, original: processed_source)
-        be_ready
+        result = investigate_with_corrector(processed_source, offset: offset, original: original)
+        autocorrect(processed_source, result.corrector)
+        result.report
+      end
 
-        # The autocorrection process may have to be repeated multiple times
-        # until there are no corrections left to perform
-        # To speed things up, run autocorrecting cops by themselves, and only
-        # run the other cops when no corrections are left
-        on_duty = roundup_relevant_cops(processed_source)
+      # @return [Array<Offense>]
+      def investigate_fragments(fragments, original:)
+        @updated_source_file = false
 
-        autocorrect_cops, other_cops = on_duty.partition(&:autocorrect?)
-        report = investigate_partial(autocorrect_cops, processed_source,
-                                     offset: offset, original: original)
+        offenses, errors, warnings, corrector =
+          fragments.each_with_object([[], [], [], nil]) do |fragment, data|
+            investigate_fragment(fragment, original, data)
+          end
 
-        unless autocorrect(processed_source, report, offset: offset, original: original)
-          # If we corrected some errors, another round of inspection will be
-          # done, and any other offenses will be caught then, so only need
-          # to check other_cops if no correction was done
-          report = report.merge(investigate_partial(other_cops, processed_source,
-                                                    offset: offset, original: original))
-        end
+        autocorrect(original, corrector)
+        @errors = errors
+        @warnings = warnings
 
-        process_errors(processed_source.path, report.errors)
-
-        report
-      ensure
-        @ready = false
+        offenses
       end
 
       # @deprecated
@@ -136,14 +133,13 @@ module RuboCop
 
       private
 
-      def autocorrect(processed_source, report, original:, offset:)
+      def autocorrect(processed_source, corrector)
         @updated_source_file = false
         return unless autocorrect?
-        return if report.processed_source.parser_error
+        return unless corrector
+        return if corrector.empty?
 
-        new_source = autocorrect_report(report, original: original, offset: offset)
-
-        return unless new_source
+        new_source = corrector.rewrite
 
         if @options[:stdin]
           # holds source read in from stdin, when --stdin option is used
@@ -174,6 +170,54 @@ module RuboCop
         commissioner.investigate(processed_source, offset: offset, original: original)
       end
 
+      def investigate_with_corrector(processed_source, offset:, original:)
+        be_ready
+
+        # The autocorrection process may have to be repeated multiple times
+        # until there are no corrections left to perform
+        # To speed things up, run autocorrecting cops by themselves, and only
+        # run the other cops when no corrections are left
+        on_duty = roundup_relevant_cops(processed_source)
+
+        autocorrect_cops, other_cops = on_duty.partition(&:autocorrect?)
+        report = investigate_partial(autocorrect_cops, processed_source,
+                                     offset: offset, original: original)
+
+        corrector = collated_corrector(report, offset: offset, original: original)
+
+        unless corrector
+          # If we corrected some errors, another round of inspection will be
+          # done, and any other offenses will be caught then, so only need
+          # to check other_cops if no correction was done
+          report = report.merge(investigate_partial(other_cops, processed_source,
+                                                    offset: offset, original: original))
+        end
+
+        process_errors(processed_source.path, report.errors)
+
+        InvestigationResult.new(report, corrector)
+      ensure
+        @ready = false
+      end
+
+      def investigate_fragment(fragment, original, data)
+        offenses, errors, warnings, corrector = data
+        result = investigate_with_corrector(
+          fragment[:processed_source],
+          offset: fragment[:offset],
+          original: original
+        )
+
+        offenses.concat(result.report.offenses)
+        if result.corrector
+          corrector ||= Corrector.new(original)
+          merge_corrector!(corrector, result.corrector, offset: 0)
+          data[3] = corrector
+        end
+        errors.concat(@errors)
+        warnings.concat(@warnings)
+      end
+
       # @return [Array<cop>]
       def roundup_relevant_cops(processed_source)
         cops.select do |cop|
@@ -200,26 +244,33 @@ module RuboCop
         cop.class.support_target_rails_version?(cop.target_rails_version)
       end
 
-      def autocorrect_report(report, offset:, original:)
+      def collated_corrector(report, offset:, original:)
+        return unless autocorrect?
+        return if report.processed_source.parser_error
+
         corrector = collate_corrections(report, offset: offset, original: original)
 
-        corrector.rewrite unless corrector.empty?
+        corrector unless corrector.empty?
       end
 
       def collate_corrections(report, offset:, original:)
         corrector = Corrector.new(original)
 
         each_corrector(report) do |to_merge|
-          suppress_clobbering do
-            if corrector.source_buffer == to_merge.source_buffer
-              corrector.merge!(to_merge)
-            else
-              corrector.import!(to_merge, offset: offset)
-            end
-          end
+          merge_corrector!(corrector, to_merge, offset: offset)
         end
 
         corrector
+      end
+
+      def merge_corrector!(corrector, to_merge, offset:)
+        suppress_clobbering do
+          if corrector.source_buffer == to_merge.source_buffer
+            corrector.merge!(to_merge)
+          else
+            corrector.import!(to_merge, offset: offset)
+          end
+        end
       end
 
       def each_corrector(report)

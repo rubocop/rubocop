@@ -212,6 +212,114 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
         end
       end
 
+      context 'when autocorrecting multiple extracted fragments' do
+        let(:options) do
+          {
+            formatters: [['progress', formatter_output_path]],
+            autocorrect: true,
+            only: ['Style/StringLiterals']
+          }
+        end
+
+        let(:template_source) do
+          <<~ERB
+            <%= "first" %>
+            <%= "second" %>
+            <%= #{third_fragment} %>
+          ERB
+        end
+        let(:source) { template_source }
+
+        let(:custom_ruby_extractor) do
+          lambda do |processed_source|
+            source = processed_source.buffer.source
+            fragments = []
+
+            source.scan(/<%= (?<ruby>.*?) %>/) do
+              match = Regexp.last_match
+              fragments << {
+                offset: match.begin(:ruby),
+                processed_source: RuboCop::ProcessedSource.new(
+                  match[:ruby],
+                  3.3,
+                  'dummy.rb',
+                  parser_engine: parser_engine
+                )
+              }
+            end
+
+            fragments
+          end
+        end
+
+        context 'when all fragments have offenses' do
+          let(:third_fragment) { '"third"' }
+
+          it 'applies all corrections with a single write' do
+            allow(File).to receive(:write).and_call_original
+            expect(File).to receive(:write)
+              .with(a_string_matching(/example\.rb\z/), anything)
+              .once
+              .and_call_original
+
+            expect(runner.run([])).to be true
+            expect(File.read('example.rb')).to eq(<<~ERB)
+              <%= 'first' %>
+              <%= 'second' %>
+              <%= 'third' %>
+            ERB
+          end
+        end
+
+        context 'when the last fragment has no offense' do
+          let(:third_fragment) { "'third'" }
+
+          it 'still applies earlier fragment corrections in one run' do
+            expect(runner.run([])).to be true
+            expect(File.read('example.rb')).to eq(<<~ERB)
+              <%= 'first' %>
+              <%= 'second' %>
+              <%= 'third' %>
+            ERB
+          end
+        end
+      end
+
+      context 'when using stdin with offset 0 extractor fragments' do
+        let(:options) do
+          {
+            formatters: [['progress', formatter_output_path]],
+            autocorrect: true,
+            stdin: "\"hello\"\n",
+            only: ['Style/StringLiterals']
+          }
+        end
+        let(:source) { '' }
+
+        let(:custom_ruby_extractor) do
+          lambda do |processed_source|
+            ruby_source = processed_source.buffer.source
+
+            [
+              {
+                offset: 0,
+                processed_source: RuboCop::ProcessedSource.new(
+                  ruby_source,
+                  3.3,
+                  'dummy.rb',
+                  parser_engine: parser_engine
+                )
+              }
+            ]
+          end
+        end
+
+        it 'autocorrects without crashing' do
+          expect { runner.run([]) }.not_to raise_error
+          expect(runner.instance_variable_get(:@options)[:stdin]).to eq("'hello'\n")
+        end
+      end
+
       context 'when the extractor crashes' do
         let(:source) { <<~RUBY }
           # frozen_string_literal: true
