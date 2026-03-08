@@ -8,13 +8,6 @@ RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
     RUBY
   end
 
-  it 'registers an offense when assigning `File.open` to a variable' do
-    expect_offense(<<~RUBY)
-      f = File.open('file')
-          ^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
-    RUBY
-  end
-
   it 'registers an offense when using `::File.open` without a block' do
     expect_offense(<<~RUBY)
       ::File.open('file')
@@ -33,6 +26,37 @@ RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
     expect_offense(<<~RUBY)
       File.open('file', 'w')
       ^^^^^^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
+    RUBY
+  end
+
+  it 'registers an offense when assigning `File.open` to a local variable' do
+    expect_offense(<<~RUBY)
+      f = File.open('file')
+          ^^^^^^^^^^^^^^^^^ `File.open` without a block may leak a file descriptor; use the block form.
+    RUBY
+  end
+
+  it 'does not register an offense when assigning `File.open` to an instance variable' do
+    expect_no_offenses(<<~RUBY)
+      @ivar = File.open('file')
+    RUBY
+  end
+
+  it 'does not register an offense when assigning `File.open` to a class variable' do
+    expect_no_offenses(<<~RUBY)
+      @@cvar = File.open('file')
+    RUBY
+  end
+
+  it 'does not register an offense when assigning `File.open` to a global variable' do
+    expect_no_offenses(<<~RUBY)
+      $gvar = File.open('file')
+    RUBY
+  end
+
+  it 'does not register an offense when assigning `File.open` to a constant' do
+    expect_no_offenses(<<~RUBY)
+      CONST = File.open('file')
     RUBY
   end
 
