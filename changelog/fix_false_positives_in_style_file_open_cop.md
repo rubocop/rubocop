@@ -1,0 +1,1 @@
+* [#14997](https://github.com/rubocop/rubocop/issues/14997): Fix false positives in `Style/FileOpen` when assigning `File.open` to an instance variable, class variable, global variable, or constant. ([@koic][])
