@@ -72,7 +72,7 @@ module RuboCop
         def offensive_usage?(node)
           return true unless node.value_used?
 
-          node.parent.assignment? || receiver_of_chained_call?(node)
+          node.parent.lvasgn_type? || receiver_of_chained_call?(node)
         end
 
         def receiver_of_chained_call?(node)

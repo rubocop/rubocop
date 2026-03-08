@@ -36,6 +36,30 @@ RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
     RUBY
   end
 
+  it 'does not register an offense when assigning `File.open` to an instance variable' do
+    expect_no_offenses(<<~RUBY)
+      @ivar = File.open('file')
+    RUBY
+  end
+
+  it 'does not register an offense when assigning `File.open` to a class variable' do
+    expect_no_offenses(<<~RUBY)
+      @@cvar = File.open('file')
+    RUBY
+  end
+
+  it 'does not register an offense when assigning `File.open` to a global variable' do
+    expect_no_offenses(<<~RUBY)
+      $gvar = File.open('file')
+    RUBY
+  end
+
+  it 'does not register an offense when assigning `File.open` to a constant' do
+    expect_no_offenses(<<~RUBY)
+      CONST = File.open('file')
+    RUBY
+  end
+
   it 'does not register an offense when passing `File.open` as an argument' do
     expect_no_offenses(<<~RUBY)
       process(File.open('file'))
