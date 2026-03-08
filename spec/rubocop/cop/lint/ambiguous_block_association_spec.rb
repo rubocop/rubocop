@@ -137,6 +137,123 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
     end
   end
 
+  context 'when a do...end block binds to outer method instead of enumerable in arguments' do
+    it 'registers an offense for `map` with keyword argument' do
+      expect_offense(<<~RUBY)
+        render json: queries.map do |q|
+                     ^^^^^^^^^^^ `map` is called without a block because the `do` block binds to `render`. Use braces or extract to a variable.
+          q.to_h
+        end
+      RUBY
+    end
+
+    it 'registers an offense for `select` with positional argument' do
+      expect_offense(<<~RUBY)
+        foo bar.select do |x|
+            ^^^^^^^^^^ `select` is called without a block because the `do` block binds to `foo`. Use braces or extract to a variable.
+          x
+        end
+      RUBY
+    end
+
+    it 'registers an offense for `each`' do
+      expect_offense(<<~RUBY)
+        foo bar.each do |x|
+            ^^^^^^^^ `each` is called without a block because the `do` block binds to `foo`. Use braces or extract to a variable.
+          x
+        end
+      RUBY
+    end
+
+    it 'registers an offense for `filter_map`' do
+      expect_offense(<<~RUBY)
+        foo bar.filter_map do |x|
+            ^^^^^^^^^^^^^^ `filter_map` is called without a block because the `do` block binds to `foo`. Use braces or extract to a variable.
+          x
+        end
+      RUBY
+    end
+
+    it 'registers an offense for safe navigation on inner method' do
+      expect_offense(<<~RUBY)
+        foo bar&.map do |x|
+            ^^^^^^^^ `map` is called without a block because the `do` block binds to `foo`. Use braces or extract to a variable.
+          x
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the method itself receives the block' do
+      expect_no_offenses(<<~RUBY)
+        bar.map do |x|
+          x
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when outer method is parenthesized' do
+      expect_no_offenses(<<~RUBY)
+        render(json: queries.map) do |q|
+          q
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when inner method has arguments' do
+      expect_no_offenses(<<~RUBY)
+        render json: queries.map(&:to_s) do |q|
+          q
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when inner method already has a block' do
+      expect_no_offenses(<<~RUBY)
+        render json: queries.map { |q| q } do |q|
+          q
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for methods not in the block methods list' do
+      expect_no_offenses(<<~RUBY)
+        foo bar.something do |x|
+          x
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for braces blocks with parentheses' do
+      expect_no_offenses(<<~RUBY)
+        foo(bar.map { |x| x })
+      RUBY
+    end
+
+    context 'when AllowedMethods includes the inner method' do
+      let(:cop_config) { { 'AllowedMethods' => %w[map] } }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          render json: queries.map do |q|
+            q.to_h
+          end
+        RUBY
+      end
+    end
+
+    context 'when AllowedPatterns matches the inner method' do
+      let(:cop_config) { { 'AllowedPatterns' => [/^queries\.map/] } }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          render json: queries.map do |q|
+            q.to_h
+          end
+        RUBY
+      end
+    end
+  end
+
   context 'when AllowedMethods is enabled' do
     let(:cop_config) { { 'AllowedMethods' => %w[change] } }
 
