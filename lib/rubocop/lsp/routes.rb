@@ -61,9 +61,16 @@ module RuboCop
 
       handle 'initialized' do |_request|
         version = RuboCop::Version::STRING
-        yjit = Object.const_defined?('RubyVM::YJIT') && RubyVM::YJIT.enabled? ? ' +YJIT' : ''
+        # Only one JIT can be enabled at the same time, since YJIT and ZJIT are mutually exclusive.
+        jit = if Object.const_defined?('RubyVM::YJIT') && RubyVM::YJIT.enabled?
+                '+YJIT'
+              elsif Object.const_defined?('RubyVM::ZJIT') && RubyVM::ZJIT.enabled?
+                '+ZJIT'
+              else
+                ''
+              end
 
-        Logger.log("RuboCop #{version} language server#{yjit} initialized, PID #{Process.pid}")
+        Logger.log("RuboCop #{version} language server#{jit} initialized, PID #{Process.pid}")
       end
 
       handle 'shutdown' do |request|

@@ -45,6 +45,8 @@ module RuboCop
         write_port_and_token_files
 
         pid = fork do
+          # NOTE: As of Ruby 4.0.0, ZJIT is still under development, while YJIT is production-ready,
+          # so support for ZJIT is deferred.
           if defined?(RubyVM::YJIT.enable)
             RubyVM::YJIT.enable
           end
