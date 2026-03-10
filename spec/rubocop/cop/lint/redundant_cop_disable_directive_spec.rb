@@ -35,6 +35,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics/MethodLength
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
               RUBY
+
+              expect_correction('')
             end
 
             describe 'when that cop was previously enabled' do
@@ -53,6 +55,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                   # rubocop:disable Metrics/MethodLength
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
                 RUBY
+
+                expect_correction('')
               end
             end
           end
@@ -67,6 +71,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics
                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics` department.
               RUBY
+
+              expect_correction('')
             end
 
             it 'returns an offense when cop from this department is disabled' do
@@ -74,6 +80,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics/MethodLength
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
               RUBY
+
+              expect_correction('')
             end
           end
 
@@ -150,6 +158,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ <
                 Unnecessary disabling of `Metrics/ClassLength`, `Metrics/MethodLength`.
               RUBY
+
+              expect_correction('')
             end
           end
 
@@ -223,10 +233,18 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                   # offense here
                 RUBY
 
+                expect_correction(<<~RUBY)
+                  puts 1
+                  # rubocop:disable MethodLength
+                  #
+                  # offense here
+                RUBY
+
                 expect($stderr.string).to eq(<<~OUTPUT)
                   (string): Warning: no department given for MethodLength.
                   (string): Warning: no department given for ClassLength.
                   (string): Warning: no department given for Debugger.
+                  (string): Warning: no department given for MethodLength.
                 OUTPUT
               end
             end
@@ -251,6 +269,13 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                   #
                   # offense here
                 RUBY
+
+                expect_correction(<<~RUBY)
+                  puts 1
+                  # rubocop:disable Metrics/MethodLength
+                  #
+                  # offense here
+                RUBY
               end
             end
           end
@@ -265,6 +290,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop:disable Metrics/MethodLenght, KlassLength
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
               RUBY
+
+              expect_correction('')
             end
 
             context 'when the department starts with a lowercase letter' do
@@ -296,6 +323,8 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # rubocop : disable all
                 ^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of all cops.
               RUBY
+
+              expect_correction('')
             end
           end
 
@@ -344,6 +373,18 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                   # rubocop:enable Style/ClassVars
                 end
               RUBY
+
+              expect_correction(<<~RUBY)
+                class One
+                  # rubocop:disable Style/ClassVars
+                  @@class_var = 1  # offense here
+                end
+
+                class Two
+                  @@class_var = 2  # offense and here
+                  # rubocop:enable Style/ClassVars
+                end
+              RUBY
             end
           end
 
@@ -355,6 +396,14 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 class One
                   # rubocop:disable Style/ClassVars
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Style/ClassVars`.
+                  # rubocop:disable all
+                  @@class_var = 1
+                  # offense here
+                end
+              RUBY
+
+              expect_correction(<<~RUBY)
+                class One
                   # rubocop:disable all
                   @@class_var = 1
                   # offense here
@@ -393,6 +442,15 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 # 4
                 # rubocop:disable Layout/IndentationStyle
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Layout/IndentationStyle`.
+                #
+                # rubocop:enable Layout/IndentationStyle
+              RUBY
+
+              expect_correction(<<~RUBY)
+                # 1
+                # 2
+                # 3, offense here
+                # 4
                 #
                 # rubocop:enable Layout/IndentationStyle
               RUBY
@@ -689,6 +747,14 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           end
           # rubocop:enable Metrics
         RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics
+          class One
+            @@class_var = 1  # offense here
+          end
+          # rubocop:enable Metrics
+        RUBY
       end
 
       it 'removes department duplicated by department on previous line' do
@@ -697,6 +763,13 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           class One
           @@class_var = 1  # rubocop:disable Metrics
                            ^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics` department.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics
+          class One
+          @@class_var = 1
           end
         RUBY
       end

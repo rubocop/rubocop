@@ -42,6 +42,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
       0.times { foo.it() }
                       ^^ Do not use parentheses for method calls with no arguments.
     RUBY
+
+    expect_correction(<<~RUBY)
+      0.times { foo.it }
+    RUBY
   end
 
   it 'registers an offense when using `foo&.it()` in a single line block' do
@@ -49,6 +53,10 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     expect_offense(<<~RUBY)
       0.times { foo&.it() }
                        ^^ Do not use parentheses for method calls with no arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      0.times { foo&.it }
     RUBY
   end
 
@@ -70,6 +78,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
           ^^ Do not use parentheses for method calls with no arguments.
       end
     RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        it
+      end
+    RUBY
   end
 
   it 'registers an offense when using `it` without arguments in the block with empty block parameter' do
@@ -79,6 +93,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
           ^^ Do not use parentheses for method calls with no arguments.
       }
     RUBY
+
+    expect_correction(<<~RUBY)
+      0.times { ||
+        it
+      }
+    RUBY
   end
 
   it 'registers an offense when using `it` without arguments in the block with useless block parameter' do
@@ -86,6 +106,12 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
       0.times { |_n|
         it()
           ^^ Do not use parentheses for method calls with no arguments.
+      }
+    RUBY
+
+    expect_correction(<<~RUBY)
+      0.times { |_n|
+        it
       }
     RUBY
   end

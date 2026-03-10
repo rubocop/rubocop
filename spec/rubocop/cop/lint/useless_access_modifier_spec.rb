@@ -553,6 +553,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           end
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} A
+          #{modifier == 'private' ? 'protected' : 'private'}
+          def method1
+          end
+          #{modifier}
+          def method2
+          end
+        end
+      RUBY
     end
   end
 
@@ -616,6 +627,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           ^{modifier} Useless `#{modifier}` access modifier.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} A
+          def method1
+          end
+          def method2
+          end
+        end
+      RUBY
     end
   end
 
@@ -632,6 +652,21 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             %{modifier}
             %{modifier}
             ^{modifier} Useless `#{modifier}` access modifier.
+            def method2
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} A
+          #{modifier == 'private' ? 'protected' : 'private'}
+          def blah
+          end
+          begin
+            def method1
+            end
+            #{modifier}
             def method2
             end
           end
@@ -792,6 +827,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             end
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} A
+            class << self
+            end
+          end
+        RUBY
       end
 
       it 'registers an offense if no method is defined after the modifier' do
@@ -805,6 +847,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             end
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} A
+            class << self
+              def method1
+              end
+            end
+          end
+        RUBY
       end
 
       it 'registers an offense even if a non-singleton-class method is defined' do
@@ -815,6 +866,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             class << self
               %{modifier}
               ^{modifier} Useless `#{modifier}` access modifier.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} A
+            def method1
+            end
+            class << self
             end
           end
         RUBY
@@ -839,6 +899,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             ^{modifier} Useless `#{modifier}` access modifier.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          class << A
+          end
+        RUBY
       end
 
       it 'registers an offense if no method is defined after the modifier' do
@@ -848,6 +913,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             end
             %{modifier}
             ^{modifier} Useless `#{modifier}` access modifier.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class << A
+            def method1
+            end
           end
         RUBY
       end
@@ -872,6 +944,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           ^{modifier} Useless `#{modifier}` access modifier.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        A.class_eval do
+        end
+      RUBY
     end
 
     context 'inside a class' do
@@ -880,6 +957,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           class A
             %{modifier}
             ^{modifier} Useless `#{modifier}` access modifier.
+            A.class_eval do
+              def method1
+              end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A
             A.class_eval do
               def method1
               end
@@ -896,6 +982,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             A.class_eval do
               %{modifier}
               ^{modifier} Useless `#{modifier}` access modifier.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A
+            A.class_eval do
             end
           end
         RUBY
@@ -921,6 +1014,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           ^{modifier} Useless `#{modifier}` access modifier.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        #{klass}.new do
+        end
+      RUBY
     end
   end
 
@@ -942,6 +1040,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           ^{modifier} Useless `#{modifier}` access modifier.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        A.instance_eval do
+        end
+      RUBY
     end
 
     context 'inside a class' do
@@ -951,6 +1054,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           class A
             %{modifier}
             ^{modifier} Useless `#{modifier}` access modifier.
+            self.instance_eval do
+              def method1
+              end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A
             self.instance_eval do
               def method1
               end
@@ -967,6 +1079,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             self.instance_eval do
               %{modifier}
               ^{modifier} Useless `#{modifier}` access modifier.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class A
+            self.instance_eval do
             end
           end
         RUBY
@@ -1004,6 +1123,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             end
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} A
+            #{keyword} B
+            end
+          end
+        RUBY
       end
 
       it "registers an offense when outside a nested #{keyword}" do
@@ -1011,6 +1137,15 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           #{keyword} A
             %{modifier}
             ^{modifier} Useless `#{modifier}` access modifier.
+            #{keyword} B
+              def method1
+              end
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} A
             #{keyword} B
               def method1
               end
@@ -1025,6 +1160,13 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             #{keyword} B
               %{modifier}
               ^{modifier} Useless `#{modifier}` access modifier.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} A
+            #{keyword} B
             end
           end
         RUBY
@@ -1062,6 +1204,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             ^{modifier} Useless `#{modifier}` access modifier.
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          Data.define do
+          end
+        RUBY
       end
 
       it 'registers an offense if no method is defined in `::Data.define` with block' do
@@ -1069,6 +1216,11 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           ::Data.define do
             %{modifier}
             ^{modifier} Useless `#{modifier}` access modifier.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          ::Data.define do
           end
         RUBY
       end
@@ -1081,6 +1233,12 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
             do_something(_1)
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          Data.define do
+            do_something(_1)
+          end
+        RUBY
       end
 
       it 'registers an offense if no method is defined in `Data.define` with itblock', :ruby34 do
@@ -1088,6 +1246,12 @@ RSpec.describe RuboCop::Cop::Lint::UselessAccessModifier, :config do
           Data.define do
             %{modifier}
             ^{modifier} Useless `#{modifier}` access modifier.
+            do_something(it)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          Data.define do
             do_something(it)
           end
         RUBY

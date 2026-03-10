@@ -32,6 +32,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
                     ^^ Prefer [...]
                        ^^ Prefer [...]
           RUBY
+
+          expect_no_corrections
         end
       else
         it 'does not register offenses for dual unannotated' do
@@ -454,6 +456,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           redirect("%{foo}", bye: foo("%{foo}"))
                                        ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -465,6 +469,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           redirect("%{foo}")
                     ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -488,6 +494,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           redirect("%{foo}", bye: foo("%{foo}"))
                                        ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -499,6 +507,8 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
           redirect("%{foo}")
                     ^^^^^^ Prefer annotated tokens (like `%<foo>s`) over template tokens (like `%{foo}`).
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -547,6 +557,11 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
             end
 
             if style != given_style
+              corrected_string = case style
+                                 when :annotated then '%<greetings>s'
+                                 when :template then '%{greetings}'
+                                 end
+
               %i[printf sprintf format].each do |method|
                 context "as an argument to `#{method}`" do
                   it 'registers an offense' do
@@ -554,6 +569,14 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
                       %{method}('%{string}', *vars)
                       _{method}  ^{string} Prefer [...]
                     RUBY
+
+                    if corrected_string && given_style != :unannotated
+                      expect_correction(<<~RUBY)
+                        #{method}('#{corrected_string}', *vars)
+                      RUBY
+                    else
+                      expect_no_corrections
+                    end
                   end
                 end
               end
@@ -564,6 +587,14 @@ RSpec.describe RuboCop::Cop::Style::FormatStringToken, :config do
                     '#{string}' % vars
                      ^{string} Prefer [...]
                   RUBY
+
+                  if corrected_string && given_style != :unannotated
+                    expect_correction(<<~RUBY)
+                      '#{corrected_string}' % vars
+                    RUBY
+                  else
+                    expect_no_corrections
+                  end
                 end
               end
             end
