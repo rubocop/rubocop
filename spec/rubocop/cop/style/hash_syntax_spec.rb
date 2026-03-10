@@ -590,6 +590,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                                ^^ Don't mix styles in the same hash.
           RUBY
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+          expect_correction(<<~RUBY)
+            x = { :"t o" => 0, :b => 1 }
+          RUBY
         end
 
         it 'accepts hash rockets when keys have special symbols in them' do
@@ -602,6 +606,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                                ^^ Don't mix styles in the same hash.
           RUBY
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+          expect_correction(<<~RUBY)
+            x = { :"\tab" => 1, :b => 1 }
+          RUBY
         end
 
         it 'accepts hash rockets when keys start with a digit' do
@@ -614,6 +622,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                              ^^ Don't mix styles in the same hash.
           RUBY
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+          expect_correction(<<~RUBY)
+            x = { :"1" => 1, :b => 1 }
+          RUBY
         end
       end
 
@@ -770,6 +782,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                                ^^ Don't mix styles in the same hash.
           RUBY
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+          expect_correction(<<~RUBY)
+            x = { :"t o" => 0, :b => 1 }
+          RUBY
         end
 
         it 'accepts hash rockets when keys have special symbols in them' do
@@ -782,6 +798,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                                ^^ Don't mix styles in the same hash.
           RUBY
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+          expect_correction(<<~RUBY)
+            x = { :"\tab" => 1, :b => 1 }
+          RUBY
         end
 
         it 'accepts hash rockets when keys start with a digit' do
@@ -794,6 +814,10 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
                              ^^ Don't mix styles in the same hash.
           RUBY
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+
+          expect_correction(<<~RUBY)
+            x = { :"1" => 1, :b => 1 }
+          RUBY
         end
       end
 
