@@ -24,12 +24,38 @@ module RuboCop
 
         def run
           add_formatter
+          use_temporary_cache
+          reset_auto_gen_tmp_dir
           reset_config_and_auto_gen_file
           line_length_contents = maybe_run_line_length_cop
-          run_all_cops(line_length_contents)
+          result = run_all_cops(line_length_contents)
+          reset_auto_gen_tmp_dir
+          result
         end
 
         private
+
+        def use_temporary_cache
+          # Use a separate cache directory to ensure MinDigits and Max values are calculated.
+          # This allows parallel execution (which requires cache) while ensuring MinDigits
+          # and Max values are computed, since the cache starts empty.
+          @options[:cache_root] = auto_gen_tmp_dir.join('cache').to_s
+        end
+
+        def reset_auto_gen_tmp_dir
+          auto_gen_tmp_dir.rmtree if auto_gen_tmp_dir.exist?
+          auto_gen_tmp_dir.mkpath
+        end
+
+        def auto_gen_tmp_dir
+          @auto_gen_tmp_dir ||= Pathname.new(
+            RuboCop::CacheConfig.root_dir_from_toplevel_config
+          ).join('auto-gen-tmp').tap do |path|
+            path.mkpath
+            # Set the temp directory path for ExcludeLimit to use
+            RuboCop::ExcludeLimit.tmp_dir = path
+          end
+        end
 
         def maybe_run_line_length_cop
           if only_exclude?
