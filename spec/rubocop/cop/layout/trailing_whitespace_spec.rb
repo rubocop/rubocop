@@ -8,6 +8,10 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       x = 0#{trailing_whitespace}
            ^ Trailing whitespace detected.
     RUBY
+
+    expect_correction(<<~RUBY)
+      x = 0
+    RUBY
   end
 
   it 'registers an offense for a blank line with space' do
@@ -15,12 +19,18 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       #{trailing_whitespace * 2}
       ^^ Trailing whitespace detected.
     RUBY
+
+    expect_correction("\n")
   end
 
   it 'registers an offense for a line ending with tab' do
     expect_offense(<<~RUBY)
       x = 0\t
            ^ Trailing whitespace detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = 0
     RUBY
   end
 
@@ -29,6 +39,10 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       x = :a\u3000
             ^ Trailing whitespace detected.
     RUBY
+
+    expect_correction(<<~RUBY)
+      x = :a
+    RUBY
   end
 
   it 'registers an offense for trailing whitespace in a heredoc string' do
@@ -36,6 +50,12 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       x = <<HEREDOC
         Hi#{trailing_whitespace * 3}
           ^^^ Trailing whitespace detected.
+      HEREDOC
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<HEREDOC
+        Hi\#{'   '}
       HEREDOC
     RUBY
   end
@@ -47,6 +67,12 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       ^ Trailing whitespace detected.
       X
     RUBY
+
+    expect_correction(<<~RUBY)
+      <<~X
+      \#{'	'}
+      X
+    RUBY
   end
 
   it 'registers an offense for a full-width space in a heredoc' do
@@ -54,6 +80,12 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       <<~X
       \u3000
       ^ Trailing whitespace detected.
+      X
+    RUBY
+
+    expect_correction(<<~RUBY)
+      <<~X
+      \#{'\u3000'}
       X
     RUBY
   end
@@ -64,6 +96,13 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
            ^ Trailing whitespace detected.
       #{trailing_whitespace}
       ^ Trailing whitespace detected.
+      __END__
+      x = 0\t
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = 0
+
       __END__
       x = 0\t
     RUBY
@@ -79,6 +118,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       x = 0\t
            ^ Trailing whitespace detected.
     RUBY
+
+    expect_correction(<<~RUBY)
+      x = 0
+      =begin
+      __END__
+      =end
+      x = 0
+    RUBY
   end
 
   it 'is not fooled by heredoc containing __END__' do
@@ -91,6 +138,14 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       HEREDOC
       x3 = 0\t
             ^ Trailing whitespace detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x1 = <<HEREDOC
+      __END__
+      x2 = 0\#{'	'}
+      HEREDOC
+      x3 = 0
     RUBY
   end
 
@@ -107,6 +162,16 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       HEREDOC
       x3 = 0\t
             ^ Trailing whitespace detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x1 = <<HEREDOC
+      =begin\#{'  '}
+      __END__
+      =end
+      x2 = 0\#{'	'}
+      HEREDOC
+      x3 = 0
     RUBY
   end
 
@@ -146,6 +211,12 @@ RSpec.describe RuboCop::Cop::Layout::TrailingWhitespace, :config do
       expect_offense(<<~RUBY)
         x = <<HEREDOC#{trailing_whitespace}
                      ^ Trailing whitespace detected.
+          Hi#{trailing_whitespace * 3}
+        HEREDOC
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = <<HEREDOC
           Hi#{trailing_whitespace * 3}
         HEREDOC
       RUBY

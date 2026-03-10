@@ -25,6 +25,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       #{maximum_string}abc
       _{maximum_string}^^^ Line is too long. [83/80]
     RUBY
+
+    expect_no_corrections
   end
 
   it "accepts a line that's 80 characters wide" do
@@ -47,6 +49,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       __END__
       #{'#' * 200}
     RUBY
+
+    expect_no_corrections
   end
 
   context 'when line is indented with tabs' do
@@ -61,6 +65,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         \t\t\t\t\t\t\t\t\t\t\t\t1
         ^^^^^^^^^^^^^ Line is too long. [25/10]
       RUBY
+
+      expect_no_corrections
     end
   end
 
@@ -74,6 +80,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           # See: https://github.com/rubocop/rubocop and then words that are not part of a URL
                                                                                 ^^^^^^^^^^^^^ Line is too long. [93/80]
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -124,6 +132,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           # See: http://google.com/, http://gmail.com/, https://maps.google.com/, http://plus.google.com/
                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [105/80]
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -134,6 +144,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                                                                    ^^^^ Line is too long. [103/80]
           #   http://google.com/
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -144,6 +156,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                                                                      ^^^^ Line is too long. [105/80]
           #   "http://google.com/"
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -154,6 +168,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                                                                      ^^^^ Line is too long. [105/80]
           #   http://google.com/
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -164,6 +180,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                                                                    ^ Line is too long. [100/80]
           #   http://google.com/
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -175,6 +193,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           \t\t\t\t# There is some content http://test.com
                                     ^^^^^^^^^^^^^^^^^ Line is too long. [47/30]
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -198,6 +218,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           #{'x' * 40} = 'otherprotocol://a.very.long.line.which.violates.LineLength/sadf'
           #{' ' * 40}                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [108/80]
         RUBY
+
+        expect_no_corrections
       end
 
       context 'and the scheme has been configured' do
@@ -244,6 +266,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           # Should call ActiveRecord::Oracle::SchemaStatements::create_table in the end
                                                                                 ^^^^^^^ Line is too long. [87/80]
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -286,6 +310,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           # Invoke the normal migration method, in oracle envs should end up calling ActiveRecord::Oracle::create_table
                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [119/80]
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -295,6 +321,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           # Refer ActiveRecord::Migrations, in oracle envs should end up calling ActiveRecord::Oracle::create_table
                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [115/80]
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -305,6 +333,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                                                                         ^^^^ Line is too long. [108/80]
           #   ActiveRecord::Example
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -315,6 +345,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                                                                           ^^^^ Line is too long. [110/80]
           #   "ActiveRecord::Example"
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -325,6 +357,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                                                                           ^^^^ Line is too long. [110/80]
           #   {ActiveRecord::Example}
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -335,6 +369,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                                                                                                         ^ Line is too long. [105/80]
           #   http://google.com/
         RUBY
+
+        expect_no_corrections
       end
     end
 
@@ -360,6 +396,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           # should end up calling ActiveRecord::ConnectionAdapters::OracleEnhanced::SchemaStatements::create_table
                                                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [114/80]
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -377,6 +415,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           end
         end
       RUBY
+
+      expect_no_corrections
     end
   end
 
@@ -440,6 +480,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             #{' ' * 68}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [149/80]
           FOO
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -454,6 +496,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           # See: https://github.com/rubocop/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
                                                                                 ^^^^^^^^^^^^^^^^^^^ Line is too long. [99/80]
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -468,6 +512,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         def hash
         end
       RUBY
+
+      expect_no_corrections
     end
 
     it 'registers an offense for a long line with an RBS::Inline annotation on the same line as the code' do
@@ -476,6 +522,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
                   ^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [32/10]
         end
       RUBY
+
+      expect_no_corrections
     end
   end
 
@@ -508,6 +556,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             #{'a' * 80} # rubocop:disable Layout/SomeCop
             #{' ' * 80}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [113/80]
           RUBY
+
+          expect_no_corrections
         end
       end
 
@@ -517,6 +567,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             #{'a' * 80} ###
             #{' ' * 80}^^^^ Line is too long. [84/80]
           RUBY
+
+          expect_no_corrections
         end
       end
     end
@@ -527,6 +579,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           #{'a' * 80} b # rubocop:disable Metrics/AbcSize
           #{' ' * 80}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [116/80]
         RUBY
+
+        expect_no_corrections
       end
     end
   end
@@ -568,6 +622,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           #{'a' * 80}bcd # rubocop:enable Style/ClassVars
           #{' ' * 80}^^^ Line is too long. [83/80]
         RUBY
+
+        expect_no_corrections
       end
 
       context 'and the source contains non-directive # as comment' do
@@ -576,6 +632,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             #{'a' * 70} # bbbbbbbbbbbbbb # rubocop:enable Style/ClassVars'
             #{' ' * 70}          ^^^^^^^ Line is too long. [87/80]
           RUBY
+
+          expect_no_corrections
         end
       end
 
@@ -585,6 +643,8 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             LARGE_DATA_STRING_PATTERN = %r{\\A([A-Za-z0-9+/#]*={0,2})#([A-Za-z0-9+/#]*={0,2})#([A-Za-z0-9+/#]*={0,2})\\z} # rubocop:disable Style/ClassVars
             #{' ' * 68}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [119/80]
           RUBY
+
+          expect_no_corrections
         end
       end
     end
