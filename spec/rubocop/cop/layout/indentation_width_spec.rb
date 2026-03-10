@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
-      it 'detects excessive tab indentation in if statement' do
+      it 'detects and corrects excessive tab indentation in if statement' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         if cond
         \t\tfunc
@@ -109,10 +109,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        if cond
+        \tfunc
+        end
+        RUBY
       end
 
-      it 'detects insufficient tab indentation in class' do
+      it 'detects and corrects insufficient tab indentation in class' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         class A
         def test
@@ -121,10 +125,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        class A
+        \tdef test
+        \tend
+        end
+        RUBY
       end
 
-      it 'detects excessive tab indentation' do
+      it 'detects and corrects excessive tab indentation' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         def test
         \t\t\tputs 'hello'
@@ -132,7 +141,34 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        def test
+        \tputs 'hello'
+        end
+        RUBY
+      end
+
+      context 'with Width 1 (one tab per level)' do
+        let(:width) { 1 }
+
+        it 'corrects excessive tab indentation in nested modules' do
+          expect_offense(<<-RUBY.gsub(/^          /, ''))
+          module Foo
+          \t\tmodule Bar
+          ^^ Use 1 (not 2) tabs for indentation.
+          \t\t\tbaz = 1
+          \t\tend
+          \tend
+          RUBY
+
+          expect_correction(<<-RUBY.gsub(/^          /, ''))
+          module Foo
+          \tmodule Bar
+          \t\tbaz = 1
+          \t\tend
+          \tend
+          RUBY
+        end
       end
     end
 
@@ -1872,7 +1908,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
-      it 'detects excessive tab indentation in if statement' do
+      it 'detects and corrects excessive tab indentation in if statement' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         if cond
         \t\tfunc
@@ -1880,10 +1916,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        if cond
+        \tfunc
+        end
+        RUBY
       end
 
-      it 'detects insufficient tab indentation in class' do
+      it 'detects and corrects insufficient tab indentation in class' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         class A
         def test
@@ -1892,10 +1932,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        class A
+        \tdef test
+        \tend
+        end
+        RUBY
       end
 
-      it 'detects excessive tab indentation' do
+      it 'detects and corrects excessive tab indentation' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         def test
         \t\t\tputs 'hello'
@@ -1903,7 +1948,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        def test
+        \tputs 'hello'
+        end
+        RUBY
       end
     end
 
