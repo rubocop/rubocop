@@ -587,6 +587,22 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
               end
             RUBY
           end
+
+          it 'does not register an offense when using `rescue` in the block' do
+            expect_no_offenses(<<~RUBY)
+              do_something do
+              rescue CustomError
+              end
+            RUBY
+          end
+
+          it 'does not register an offense when using `ensure` in the block' do
+            expect_no_offenses(<<~RUBY)
+              do_something do
+              ensure
+              end
+            RUBY
+          end
         end
       end
     end

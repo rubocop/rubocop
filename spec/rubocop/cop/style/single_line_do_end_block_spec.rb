@@ -170,5 +170,25 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
         RUBY
       end
     end
+
+    context 'when using `rescue` in the block' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          do_something do
+          rescue CustomError
+          end
+        RUBY
+      end
+    end
+
+    context 'when using `ensure` in the block' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          do_something do
+          ensure
+          end
+        RUBY
+      end
+    end
   end
 end
