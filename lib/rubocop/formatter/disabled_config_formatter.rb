@@ -131,6 +131,9 @@ module RuboCop
       end
 
       def set_max(cfg, cop_name)
+        exclude_limits = RuboCop::ExcludeLimit.read_limits(cop_name)
+        cfg[:exclude_limit] = exclude_limits unless exclude_limits.empty?
+
         return unless cfg[:exclude_limit]
 
         cfg.merge!(cfg[:exclude_limit]) if should_set_max?(cop_name)

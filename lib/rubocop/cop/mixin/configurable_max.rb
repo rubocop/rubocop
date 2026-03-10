@@ -13,11 +13,12 @@ module RuboCop
           `max=` is deprecated. Use `exclude_limit <ParameterName>` instead.
         WARNING
 
-        cfg = config_to_allow_offenses
-        cfg[:exclude_limit] ||= {}
-        current_max = cfg[:exclude_limit][max_parameter_name]
-        value = [current_max, value].max if current_max
-        cfg[:exclude_limit][max_parameter_name] = value
+        cop_dir = RuboCop::ExcludeLimit.cop_dir_for(self.class.badge.to_s)
+        return unless cop_dir
+
+        cop_dir.mkpath
+        filepath = cop_dir.join(max_parameter_name)
+        filepath.write("#{value}\n", mode: 'a')
       end
 
       def max_parameter_name
