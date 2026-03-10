@@ -217,6 +217,9 @@ module RuboCop
       for_all_cops['StringLiteralsFrozenByDefault']
     end
 
+    # Returns true if the file matches any include pattern. If a block is given, the block is called
+    # to determine if the pattern is relevant (true returned by the block) or should be skipped
+    # (false returned).
     def file_to_include?(file)
       relative_file_path = path_relative_to_config(file)
 
@@ -228,11 +231,9 @@ module RuboCop
       absolute_file_path = File.expand_path(file)
 
       patterns_to_include.any? do |pattern|
-        if block_given?
-          yield pattern, relative_file_path, absolute_file_path
-        else
-          match_path?(pattern, relative_file_path) || match_path?(pattern, absolute_file_path)
-        end
+        next if block_given? && !yield(pattern)
+
+        match_relative_or_absolute_path?(pattern, relative_file_path, absolute_file_path)
       end
     end
 
@@ -242,10 +243,7 @@ module RuboCop
       # `bundler-console` conveys `Bundler::Console`).
       return true if File.extname(file) == '.gemspec'
 
-      file_to_include?(file) do |pattern, relative_path, absolute_path|
-        /[A-Z]/.match?(pattern.to_s) &&
-          (match_path?(pattern, relative_path) || match_path?(pattern, absolute_path))
-      end
+      file_to_include?(file) { |pattern| /[A-Z]/.match?(pattern.to_s) }
     end
 
     # Returns true if there's a chance that an Include pattern matches hidden
@@ -344,6 +342,12 @@ module RuboCop
     end
 
     private
+
+    def match_relative_or_absolute_path?(pattern, relative_file_path, absolute_file_path)
+      should_use_absolute_path = absolute?(pattern.to_s) || pattern.to_s.start_with?('..') ||
+                                 relative_file_path.start_with?('..')
+      match_path?(pattern, should_use_absolute_path ? absolute_file_path : relative_file_path)
+    end
 
     # @return [Float, nil] The Rails version as a `major.minor` Float.
     def target_rails_version_from_bundler_lock_file

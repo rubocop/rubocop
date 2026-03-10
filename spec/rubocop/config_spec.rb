@@ -588,6 +588,24 @@ RSpec.describe RuboCop::Config do
         expect(configuration).not_to be_file_to_include(file_path)
       end
     end
+
+    context 'when a relative pattern matches a parent directory in the absolute path' do
+      let(:hash) { { 'AllCops' => { 'Include' => ['**/app/**/*.rb'] } } }
+      let(:loaded_path) { '/app/myproject/.rubocop.yml' }
+
+      before do
+        allow(configuration).to receive(:base_dir_for_path_parameters).and_return('/app/myproject')
+      end
+
+      it 'only matches files inside the project' do
+        # This file is in an 'app' subdirectory of the project, so it should match.
+        expect(configuration).to be_file_to_include('/app/myproject/lib/app/file.rb')
+
+        # The file is under '/app' but not in an 'app' subdirectory of the project, so it should not
+        # match.
+        expect(configuration).not_to be_file_to_include('/app/myproject/config/application.rb')
+      end
+    end
   end
 
   describe '#file_to_exclude?' do
