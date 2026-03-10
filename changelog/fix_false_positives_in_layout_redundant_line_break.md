@@ -1,0 +1,1 @@
+* [#15001](https://github.com/rubocop/rubocop/issues/15001): Fix false positives in `Layout/RedundantLineBreak` when setting `InspectBlocks: true` and using `rescue` or `ensure` in the block. ([@koic][])

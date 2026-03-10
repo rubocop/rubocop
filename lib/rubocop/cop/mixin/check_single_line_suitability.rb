@@ -38,7 +38,7 @@ module RuboCop
       end
 
       def safe_to_split?(node)
-        node.each_descendant(:if, :case, :kwbegin, :any_def).none? &&
+        node.each_descendant(:if, :case, :kwbegin, :any_def, :rescue, :ensure).none? &&
           node.each_descendant(:dstr, :str).none? { |n| n.heredoc? || n.value.include?("\n") } &&
           node.each_descendant(:begin, :sym).none?(&:multiline?)
       end
