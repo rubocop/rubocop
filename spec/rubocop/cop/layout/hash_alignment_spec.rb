@@ -932,6 +932,17 @@ RSpec.describe RuboCop::Cop::Layout::HashAlignment, :config do
           ^^^^^ Align the keys and values of a hash literal if they span more than one line.
         }
       RUBY
+
+      expect_correction(<<~RUBY)
+        hash1 = {
+          'a'   => 0,
+          'bbb' => 1
+        }
+        hash2 = {
+          a:   0,
+          bbb: 1
+        }
+      RUBY
     end
 
     it 'registers an offense and corrects for misaligned hash keys' do

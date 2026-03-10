@@ -623,6 +623,10 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             let(:ruby_version) { 2.4 }
           end
         RUBY
+
+        expect_correction(<<~RUBY)
+          RSpec.shared_context('ruby 2.4', :ruby24) do let(:ruby_version) { 2.4 } end
+        RUBY
       end
 
       it 'registers an offense when the method call has no arguments' do
@@ -631,6 +635,10 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
           ^^^^^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
             let(:ruby_version) { 2.4 }
           end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          RSpec.shared_context do let(:ruby_version) { 2.4 } end
         RUBY
       end
 
@@ -642,6 +650,10 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             f do
             ^^^^ Redundant line break detected.
             end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f do end
           RUBY
         end
       end
@@ -655,6 +667,10 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
             ^^^^ Redundant line break detected.
             end
           RUBY
+
+          expect_correction(<<~RUBY)
+            f do end
+          RUBY
         end
 
         it 'reports an offense for a method call chained onto a multiline block' do
@@ -664,17 +680,31 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
               i.cond?
             end.join
           RUBY
+
+          expect_correction(<<~RUBY)
+            e.select do |i| i.cond? end.join
+          RUBY
+
           expect_offense(<<~RUBY)
             a = e.select do |i|
             ^^^^^^^^^^^^^^^^^^^ Redundant line break detected.
               i.cond?
             end.join
           RUBY
+
+          expect_correction(<<~RUBY)
+            a = e.select do |i| i.cond? end.join
+          RUBY
+
           expect_offense(<<~RUBY)
             e.select do |i|
             ^^^^^^^^^^^^^^^ Redundant line break detected.
               i.cond?
             end.join + []
+          RUBY
+
+          expect_correction(<<~RUBY)
+            e.select do |i| i.cond? end.join + []
           RUBY
         end
       end

@@ -424,11 +424,18 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
       %w[a while],
       %w[an until]
     ].each do |article, keyword|
-      it "registers an offense for misaligned operands in #{keyword} condition" do
+      it "registers an offense and corrects misaligned operands in #{keyword} condition" do
         expect_offense(<<~RUBY)
           #{keyword} a or
               b
               ^ Align the operands of a condition in #{article} `#{keyword}` statement spanning multiple lines.
+            something
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} a or
+          #{' ' * keyword.length} b
             something
           end
         RUBY
@@ -564,13 +571,20 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
         RUBY
       end
 
-      it "registers an offense for a 2 space indentation of #{keyword} condition" do
+      it "registers an offense and corrects a 2 space indentation of #{keyword} condition" do
         expect_offense(<<~RUBY)
           #{keyword} receiver.nil? &&
             !args.empty? &&
             ^^^^^^^^^^^^ Use 4 (not 2) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
             FORBIDDEN_METHODS.include?(method_name)
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 4 (not 2) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} receiver.nil? &&
+              !args.empty? &&
+              FORBIDDEN_METHODS.include?(method_name)
           end
         RUBY
       end
@@ -700,13 +714,20 @@ RSpec.describe RuboCop::Cop::Layout::MultilineOperationIndentation, :config do
           RUBY
         end
 
-        it "registers an offense for a 4 space indentation of #{keyword} condition" do
+        it "registers an offense and corrects a 4 space indentation of #{keyword} condition" do
           expect_offense(<<~RUBY)
             #{keyword} receiver.nil? &&
                 !args.empty? &&
                 ^^^^^^^^^^^^ Use 8 (not 4) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
                 FORBIDDEN_METHODS.include?(method_name)
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use 8 (not 4) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{keyword} receiver.nil? &&
+                    !args.empty? &&
+                    FORBIDDEN_METHODS.include?(method_name)
             end
           RUBY
         end

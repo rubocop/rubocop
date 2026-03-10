@@ -441,6 +441,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          !0
+            .nil?
+        end
+      RUBY
     end
 
     # We call it semantic alignment when a dot is aligned with the first dot in
@@ -1353,6 +1360,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           ^^^^^ Indent `.nil?` 2 spaces more than `0` on line 2.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          !0
+             .nil?
+        end
+      RUBY
     end
 
     it 'accepts correctly indented methods in operation' do
@@ -1793,6 +1807,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           ^^^^^ Use 2 (not 0) spaces for indenting an expression spanning multiple lines.
         end
       RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          !0
+            .nil?
+        end
+      RUBY
     end
 
     it 'accepts indented method chained after single-line block on both calls' do
@@ -1927,6 +1948,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           #{keyword} receiver
             .nil? &&
             ^^^^^ Use 4 (not 2) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
+            !args.empty?
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{keyword} receiver
+              .nil? &&
             !args.empty?
           end
         RUBY
@@ -2240,6 +2268,13 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
             #{keyword} receiver
                 .nil? &&
                 ^^^^^ Use 9 (not 4) spaces for indenting a condition in #{article} `#{keyword}` statement spanning multiple lines.
+                !args.empty?
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            #{keyword} receiver
+                     .nil? &&
                 !args.empty?
             end
           RUBY
