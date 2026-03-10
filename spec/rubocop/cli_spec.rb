@@ -243,6 +243,18 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         end
       end
 
+      context 'when specifying `--auto-gen-config`' do
+        it 'uses parallel inspection' do
+          create_file('example1.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts 'hello'
+          RUBY
+          expect(cli.run(['--debug', '--auto-gen-config'])).to eq(0)
+          expect($stdout.string).to include('Use parallel by default.')
+        end
+      end
+
       context 'when specifying `--debug` and `-a` options`' do
         it 'uses parallel inspection when correcting the file' do
           create_file('example1.rb', <<~RUBY)

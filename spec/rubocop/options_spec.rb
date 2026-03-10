@@ -337,15 +337,6 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         end
       end
 
-      context 'combined with --auto-gen-config' do
-        it 'ignores --parallel' do
-          msg = '-P/--parallel is being ignored because it is not compatible with --auto-gen-config'
-          options.parse %w[--parallel --auto-gen-config]
-          expect($stdout.string).to include(msg)
-          expect(options.instance_variable_get(:@options)).not_to be_key(:parallel)
-        end
-      end
-
       context 'combined with --fail-fast' do
         it 'ignores --parallel' do
           msg = '-P/--parallel is being ignored because it is not compatible with -F/--fail-fast'

@@ -15,6 +15,7 @@ module RuboCop
       display_only_failed editor_mode except extra_details fail_level fix_layout format formatters
       ignore_disable_comments lint only only_guide_cops require safe
       autocorrect safe_autocorrect autocorrect_all
+      auto_gen_config regenerate_todo
     ].freeze
 
     class Finished < StandardError; end
