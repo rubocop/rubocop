@@ -105,4 +105,10 @@ RSpec.describe RuboCop::Cop::Style::FileOpen, :config do
       Foo::File.open('file')
     RUBY
   end
+
+  it 'does not register an offense when using `File&.open` with safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      File&.open('file')
+    RUBY
+  end
 end

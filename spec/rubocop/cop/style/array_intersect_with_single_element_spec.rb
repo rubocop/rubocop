@@ -34,4 +34,12 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersectWithSingleElement, :config do
       RUBY
     end
   end
+
+  context 'with safe navigation' do
+    it 'does not register an offense for `&.intersect?([element])`' do
+      expect_no_offenses(<<~RUBY)
+        array&.intersect?([element])
+      RUBY
+    end
+  end
 end
