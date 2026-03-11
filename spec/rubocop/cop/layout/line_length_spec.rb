@@ -2014,6 +2014,18 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
              4444000039123123129993912312312999199291203123 end
           RUBY
         end
+
+        it 'adds an offense for numblock and does correct it' do
+          expect_offense(<<~RUBY)
+            foo.select do _1 + 44440000391231231299939123123129991992912031234 end
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Line is too long. [70/40]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            foo.select do
+             _1 + 44440000391231231299939123123129991992912031234 end
+          RUBY
+        end
       end
 
       context 'let block' do

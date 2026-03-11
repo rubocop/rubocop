@@ -149,5 +149,23 @@ RSpec.describe RuboCop::Cop::Lint::HeredocMethodCallPosition, :config do
         expect_no_corrections
       end
     end
+
+    context 'with safe navigation' do
+      it 'detects' do
+        expect_offense(<<~RUBY)
+          <<-SQL
+            foo
+          SQL
+          &.strip_indent
+          ^ Put a method call with a HEREDOC receiver on the same line as the HEREDOC opening.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          <<-SQL&.strip_indent
+            foo
+          SQL
+        RUBY
+      end
+    end
   end
 end
