@@ -60,6 +60,14 @@ module RuboCop
       #   the autocorrection for this offense, or `nil` when not available
       attr_reader :corrector
 
+      # @api public
+      #
+      # @!attribute [r] urls
+      #
+      # @return [Array<String>]
+      #   style guide and reference URLs for the offense
+      attr_reader :urls
+
       PseudoSourceRange = Struct.new(:line, :column, :source_line, :begin_pos,
                                      :end_pos) do
         alias_method :first_line, :line
@@ -88,13 +96,14 @@ module RuboCop
 
       # @api private
       def initialize(severity, location, message, cop_name, # rubocop:disable Metrics/ParameterLists
-                     status = :uncorrected, corrector = nil)
+                     status = :uncorrected, corrector = nil, urls: [])
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location
         @message = message.freeze
         @cop_name = cop_name.freeze
         @status = status
         @corrector = corrector
+        @urls = urls.freeze
         freeze
       end
 

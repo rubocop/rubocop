@@ -42,6 +42,31 @@ RSpec.describe RuboCop::Cop::Offense do
     expect(offense).to be_frozen
   end
 
+  describe '#urls' do
+    it 'defaults to an empty array' do
+      expect(offense.urls).to eq([])
+    end
+
+    it 'is frozen' do
+      expect(offense.urls).to be_frozen
+    end
+
+    context 'when urls are provided' do
+      subject(:offense) do
+        described_class.new(:convention, location, 'message', 'CopName', :corrected, nil,
+                            urls: ['https://example.com/style'])
+      end
+
+      it 'stores the provided urls' do
+        expect(offense.urls).to eq(['https://example.com/style'])
+      end
+
+      it 'is frozen' do
+        expect(offense.urls).to be_frozen
+      end
+    end
+  end
+
   %i[severity location message cop_name].each do |a|
     describe "##{a}" do
       it 'is frozen' do

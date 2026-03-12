@@ -129,6 +129,27 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
+      context 'an offense with urls' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :uncorrected, nil,
+            urls: ['https://rubystyle.guide#underscore-unused-vars']
+          )
+        end
+
+        it 'preserves urls through save/load' do
+          cache.save([offense])
+          expect(cache.load[0].urls).to eq(['https://rubystyle.guide#underscore-unused-vars'])
+        end
+      end
+
+      context 'an offense without urls (old cache format)' do
+        it 'defaults to empty urls' do
+          cache.save(offenses)
+          expect(cache.load[0].urls).to eq([])
+        end
+      end
+
       context 'a global Lint/Syntax offense, caused by a parser error' do
         before do
           create_file('example.rb', ['# encoding: unknown'])
