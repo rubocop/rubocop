@@ -696,6 +696,52 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
         it_behaves_like 'aligned', 'var = case', 'a; in b', '      end'
         it_behaves_like 'aligned', 'var[0] = case', 'a; in b', '         end'
       end
+
+      it 'registers an offense and corrects `if...end || ""` with `end` not aligned to keyword' do
+        expect_offense(<<~RUBY)
+          var = if test
+                  foo
+          end || ""
+          ^^^ `end` at 3, 0 is not aligned with `if` at 1, 6.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = if test
+                  foo
+                end || ""
+        RUBY
+      end
+
+      it 'does not register an offense for `if...end || ""` with `end` aligned to keyword' do
+        expect_no_offenses(<<~RUBY)
+          var = if test
+                  foo
+                end || ""
+        RUBY
+      end
+
+      it 'registers an offense and corrects `if...end && ""` with `end` not aligned to keyword' do
+        expect_offense(<<~RUBY)
+          var = if test
+                  foo
+          end && ""
+          ^^^ `end` at 3, 0 is not aligned with `if` at 1, 6.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = if test
+                  foo
+                end && ""
+        RUBY
+      end
+
+      it 'does not register an offense for `if...end && ""` with `end` aligned to keyword' do
+        expect_no_offenses(<<~RUBY)
+          var = if test
+                  foo
+                end && ""
+        RUBY
+      end
     end
 
     context 'when EnforcedStyleAlignWith is variable' do
@@ -717,6 +763,52 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
       it_behaves_like 'aligned', "var =\n  if",  'test', '  end'
       context 'Ruby >= 2.7', :ruby27 do
         it_behaves_like 'aligned', 'var = case', 'a; in b', 'end'
+      end
+
+      it 'does not register an offense for `if...end || ""` with `end` aligned to variable' do
+        expect_no_offenses(<<~RUBY)
+          var = if test
+                  foo
+          end || ""
+        RUBY
+      end
+
+      it 'registers an offense and corrects `if...end || ""` with `end` not aligned to variable' do
+        expect_offense(<<~RUBY)
+          var = if test
+                  foo
+                end || ""
+                ^^^ `end` at 3, 6 is not aligned with `var = if` at 1, 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = if test
+                  foo
+          end || ""
+        RUBY
+      end
+
+      it 'does not register an offense for `if...end && ""` with `end` aligned to variable' do
+        expect_no_offenses(<<~RUBY)
+          var = if test
+                  foo
+          end && ""
+        RUBY
+      end
+
+      it 'registers an offense and corrects `if...end && ""` with `end` not aligned to variable' do
+        expect_offense(<<~RUBY)
+          var = if test
+                  foo
+                end && ""
+                ^^^ `end` at 3, 6 is not aligned with `var = if` at 1, 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          var = if test
+                  foo
+          end && ""
+        RUBY
       end
 
       it_behaves_like 'misaligned', <<~RUBY, :keyword

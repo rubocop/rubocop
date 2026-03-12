@@ -129,8 +129,9 @@ module RuboCop
           # we check if it's an if/unless/while/until.
           return unless (rhs = first_part_of_call_chain(rhs))
 
-          # If `rhs` is a `begin` node, find the first non-`begin` child.
-          rhs = rhs.child_nodes.first while rhs.begin_type?
+          # If `rhs` is a `begin` node or a logical operator,
+          # unwrap to find the leading conditional.
+          rhs = rhs.child_nodes.first while rhs.type?(:begin, :or, :and)
 
           return unless rhs.conditional?
           return if rhs.if_type? && rhs.ternary?
