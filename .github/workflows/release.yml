@@ -1,0 +1,127 @@
+name: release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions: {}
+
+jobs:
+  build:
+    if: (github.repository == 'rubocop/rubocop')
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-id: ${{ steps.upload-artifact.outputs.artifact-id }}
+      gem_name: ${{ steps.build.outputs.gem_name }}
+      gem_version: ${{ steps.build.outputs.gem_version }}
+      gem_path: ${{ steps.build.outputs.gem_path }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6.0.2
+        with:
+          persist-credentials: false
+
+      - uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b # pin@v1.275.0
+        with:
+          ruby-version: ruby # Latest stable CRuby version
+          bundler-cache: false # do not using caching in the SLSA build process
+
+      # IMPORTANT: this step MUST export for the following outputs:
+      # gem_name: the name of the gem - ex: "rubocop"
+      # gem_version: the version of the gem - ex: "1.0.0"
+      # gem_path: the path/filename of the gem - ex: "rubocop-1.0.0.gem"
+      - name: build
+        id: build
+        run: script/build
+
+      - name: upload artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # pin@v6.0.0
+        id: upload-artifact
+        with:
+          path: "${{ steps.build.outputs.gem_path }}"
+
+  release:
+    needs: build
+    environment: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # pin@v6.0.2
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # pin@7.0.0
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+
+      - uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b # pin@v1.275.0
+        with:
+          ruby-version: ruby # Latest stable CRuby version
+          bundler-cache: false # dot not using caching in the SLSA build process
+
+      - name: Configure RubyGems Credentials
+        uses: rubygems/configure-rubygems-credentials@079b868399574998fd0fe9df2e03528f38cc6fa0 # pin@main
+
+      - name: sign ruby gem
+        env:
+          GEM_NAME: ${{ needs.build.outputs.gem_name }}
+          GEM_VERSION: ${{ needs.build.outputs.gem_version }}
+          ARTIFACT_PATH: "artifact"
+        run: gem exec sigstore-cli:0.2.1 sign ${ARTIFACT_PATH}/${GEM_NAME}-${GEM_VERSION}.gem --bundle ${GEM_NAME}-${GEM_VERSION}.sigstore.json
+
+      - name: Publish to RubyGems
+        env:
+          GEM_NAME: ${{ needs.build.outputs.gem_name }}
+          GEM_VERSION: ${{ needs.build.outputs.gem_version }}
+          ARTIFACT_PATH: "artifact"
+        run: gem push ${ARTIFACT_PATH}/${GEM_NAME}-${GEM_VERSION}.gem --attestation ${GEM_NAME}-${GEM_VERSION}.sigstore.json
+
+      - name: await gem
+        env:
+          GEM_NAME: ${{ needs.build.outputs.gem_name }}
+          GEM_VERSION: ${{ needs.build.outputs.gem_version }}
+        run: gem exec rubygems-await:0.5.4 "${GEM_NAME}:${GEM_VERSION}" --timeout 300
+
+  sign:
+    needs: [build, release]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
+      contents: read
+
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # pin@7.0.0
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+
+      - name: attest build provenance
+        uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # pin@v3.2.0
+        with:
+          subject-path: "artifact/${{ needs.build.outputs.gem_path }}"
+
+  verify:
+    permissions: {}
+    needs: [build, release, sign]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # pin@7.0.0
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+
+      - name: verify
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          ARTIFACT_PATH: "artifact/${{ needs.build.outputs.gem_path }}"
+        run: gh attestation verify "$ARTIFACT_PATH" --repo ${OWNER}/${REPO} --signer-workflow ${OWNER}/${REPO}/.github/workflows/release.yml
