@@ -549,6 +549,50 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           RUBY
         end
 
+        it 'accepts nested method chain inside hash pair argument of outer method chain' do
+          expect_no_offenses(<<~RUBY)
+            @abc = Abc.published
+                      .where(id: Xyz.select(:id)
+                                    .joins(:abc_xyz)
+                                    .where.not(abc_xyz: { id: 123 }))
+          RUBY
+        end
+
+        it 'accepts nested method chain with safe navigation inside hash pair argument' do
+          expect_no_offenses(<<~RUBY)
+            result = Foo.bar
+                        .baz(key: Value&.something(:id)
+                                       &.other_thing)
+          RUBY
+        end
+
+        it 'accepts nested method chain inside hash pair argument without assignment' do
+          expect_no_offenses(<<~RUBY)
+            Foo.bar
+               .where(name: Other.select(:name)
+                                 .distinct)
+          RUBY
+        end
+
+        it 'accepts nested method chain with multiple hash pairs' do
+          expect_no_offenses(<<~RUBY)
+            Abc.published
+               .where(id: Xyz.select(:id)
+                             .joins(:abc),
+                      name: Qux.pluck(:name)
+                               .uniq)
+          RUBY
+        end
+
+        it 'accepts deeply nested method chain inside hash pair argument' do
+          expect_no_offenses(<<~RUBY)
+            Abc.scope
+               .where(id: Xyz.active
+                             .where(status: Qux.find(:status)
+                                               .compact))
+          RUBY
+        end
+
         it 'registers an offense for misaligned method chain in hash pair' do
           expect_offense(<<~RUBY)
             {
