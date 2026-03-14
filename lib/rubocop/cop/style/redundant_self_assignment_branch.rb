@@ -27,11 +27,6 @@ module RuboCop
 
         MSG = 'Remove the self-assignment branch.'
 
-        # @!method bad_method?(node)
-        def_node_matcher :bad_method?, <<~PATTERN
-          (send nil? :bad_method ...)
-        PATTERN
-
         def on_lvasgn(node)
           expression = node.expression
 
