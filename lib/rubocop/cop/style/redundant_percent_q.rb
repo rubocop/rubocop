@@ -90,7 +90,10 @@ module RuboCop
         def acceptable_q?(node)
           src = node.source
 
-          return true if STRING_INTERPOLATION_REGEXP.match?(src)
+          # If the string contains interpolation-like syntax and would be
+          # converted to a double-quoted string (because it contains single
+          # quotes), the replacement would activate interpolation.
+          return true if STRING_INTERPOLATION_REGEXP.match?(src) && src.include?(SINGLE_QUOTE)
 
           src.scan(/\\./).any?(ESCAPED_NON_BACKSLASH)
         end

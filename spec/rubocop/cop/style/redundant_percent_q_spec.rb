@@ -74,6 +74,23 @@ RSpec.describe RuboCop::Cop::Style::RedundantPercentQ, :config do
           'boogers'
       RUBY
     end
+
+    it 'registers an offense for `%q` with interpolation-like syntax but no single quotes' do
+      expect_offense(<<~'RUBY')
+        %q(#{foo})
+        ^^^^^^^^^^ Use `%q` only for strings that contain both single quotes and double quotes.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        '#{foo}'
+      RUBY
+    end
+
+    it 'accepts `%q` with interpolation-like syntax and single quotes' do
+      expect_no_offenses(<<~'RUBY')
+        %q(it's #{foo})
+      RUBY
+    end
   end
 
   context 'with %Q strings' do
