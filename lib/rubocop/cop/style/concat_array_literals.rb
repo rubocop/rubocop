@@ -52,6 +52,8 @@ module RuboCop
 
           add_offense(offense, message: message) do |corrector|
             if use_percent_literal
+              next unless prefer
+
               corrector.replace(offense, prefer)
             else
               corrector.replace(node.loc.selector, 'push')
