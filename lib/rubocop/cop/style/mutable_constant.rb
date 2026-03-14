@@ -125,7 +125,7 @@ module RuboCop
         MSG = 'Freeze mutable objects assigned to constants.'
 
         def on_casgn(node)
-          if node.expression.nil? # This is only the case for `CONST += ...` or similarg66
+          if node.expression.nil? # This is only the case for `CONST += ...` or similar
             parent = node.parent
             return unless parent.or_asgn_type? # We only care about `CONST ||= ...`
 
