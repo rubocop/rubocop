@@ -121,17 +121,11 @@ module RuboCop
         end
 
         def autocorrect_comparison(corrector, node)
-          expr = node.source
-
-          new_code = if include_semantic_changes?
-                       expr.sub(/\s*!=\s*nil/, '')
-                     else
-                       expr.sub(/^(\S*)\s*!=\s*nil/, '!\1.nil?')
-                     end
-
-          return if expr == new_code
-
-          corrector.replace(node, new_code)
+          if include_semantic_changes?
+            corrector.replace(node, node.receiver.source)
+          else
+            corrector.replace(node, "!#{node.receiver.source}.nil?")
+          end
         end
 
         def autocorrect_non_nil(corrector, node, inner_node)
