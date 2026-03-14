@@ -9,13 +9,15 @@ module RuboCop
 
     # @api private
     COMMON_PARAMS = %w[Exclude Include Severity inherit_mode AutoCorrect StyleGuide Details
-                       Enabled Reference References Safe SafeAutoCorrect].freeze
+                       Enabled Reference References Safe SafeAutoCorrect Enforcement].freeze
     # @api private
     INTERNAL_PARAMS = %w[Description StyleGuide
                          VersionAdded VersionChanged VersionRemoved
-                         Reference References Safe SafeAutoCorrect].freeze
+                         Reference References Safe SafeAutoCorrect Enforcement].freeze
     # @api private
     NEW_COPS_VALUES = %w[pending disable enable].freeze
+    # @api private
+    ENFORCEMENT_LEVELS = %w[essential standard strict].freeze
 
     # @api private
     CONFIG_CHECK_KEYS = %w[Enabled Safe SafeAutoCorrect AutoCorrect References].to_set.freeze
@@ -31,7 +33,7 @@ module RuboCop
       @target_ruby = TargetRuby.new(config)
     end
 
-    def validate
+    def validate # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       check_cop_config_value(@config)
       reject_conflicting_safe_settings
 
@@ -47,6 +49,8 @@ module RuboCop
       check_obsoletions
       alert_about_unrecognized_cops(invalid_cop_names)
       validate_new_cops_parameter
+      validate_enforcement_parameter
+      validate_cop_enforcement_levels(valid_cop_names)
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
       validate_syntax_cop
@@ -172,6 +176,33 @@ module RuboCop
                 "Valid choices are: #{NEW_COPS_VALUES.join(', ')}"
 
       raise ValidationError, message
+    end
+
+    def validate_enforcement_parameter
+      enforcement = @config.for_all_cops['Enforcement']
+      return if enforcement.nil?
+      return if ENFORCEMENT_LEVELS.include?(enforcement)
+
+      message = "invalid #{enforcement} for `Enforcement` found in " \
+                "#{smart_loaded_path}\n" \
+                "Valid choices are: #{ENFORCEMENT_LEVELS.join(', ')}"
+
+      raise ValidationError, message
+    end
+
+    def validate_cop_enforcement_levels(valid_cop_names)
+      valid_cop_names.each do |name|
+        next if name == 'AllCops'
+
+        level = @config[name]&.[]('Enforcement')
+        next unless level
+        next if ENFORCEMENT_LEVELS.include?(level)
+
+        warn Rainbow(<<~MESSAGE).yellow
+          Warning: #{name} has invalid Enforcement level '#{level}'.
+          Valid choices are: #{ENFORCEMENT_LEVELS.join(', ')}
+        MESSAGE
+      end
     end
 
     def validate_parameter_shape(valid_cop_names)
