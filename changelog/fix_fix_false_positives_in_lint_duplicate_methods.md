@@ -1,0 +1,1 @@
+* [#15019](https://github.com/rubocop/rubocop/pull/15019): Fix false positives in `Lint/DuplicateMethods` when the same method is defined in anonymous module blocks passed to different receivers. ([@koic][])

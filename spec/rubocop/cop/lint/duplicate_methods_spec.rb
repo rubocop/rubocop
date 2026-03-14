@@ -964,6 +964,88 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'registers an offense for the same method in anonymous module blocks prepended to the same receiver' do
+    expect_offense(<<~RUBY)
+      A.prepend(
+        Module.new do
+          def foo
+            x
+          end
+        end
+      )
+
+      A.prepend(
+        Module.new do
+          def foo
+          ^^^^^^^ Method `Object#foo` is defined at both (string):3 and (string):11.
+            y
+          end
+        end
+      )
+    RUBY
+  end
+
+  it 'does not register an offense for the same method in anonymous module blocks prepended to different receivers' do
+    expect_no_offenses(<<~RUBY)
+      A.prepend(
+        Module.new do
+          def foo
+            x
+          end
+        end
+      )
+
+      B.prepend(
+        Module.new do
+          def foo
+            y
+          end
+        end
+      )
+    RUBY
+  end
+
+  it 'registers an offense for the same method in anonymous module blocks prepended to the same receiver using safe navigation' do
+    expect_offense(<<~RUBY)
+      A&.prepend(
+        Module.new do
+          def foo
+            x
+          end
+        end
+      )
+
+      A&.prepend(
+        Module.new do
+          def foo
+          ^^^^^^^ Method `Object#foo` is defined at both (string):3 and (string):11.
+            y
+          end
+        end
+      )
+    RUBY
+  end
+
+  it 'does not register an offense for the same method in anonymous module blocks prepended to different receivers using safe navigation' do
+    expect_no_offenses(<<~RUBY)
+      A&.prepend(
+        Module.new do
+          def foo
+            x
+          end
+        end
+      )
+
+      B&.prepend(
+        Module.new do
+          def foo
+            y
+          end
+        end
+      )
+    RUBY
+  end
+
   it 'does not register an offense when there are same `alias_method` name outside `ensure` scope' do
     expect_no_offenses(<<~RUBY)
       module FooTest
