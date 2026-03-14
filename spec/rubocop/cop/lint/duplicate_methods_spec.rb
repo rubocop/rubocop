@@ -942,6 +942,28 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'ignores Module.new blocks which are passed as method arguments' do
+    expect_no_offenses(<<~RUBY)
+      A.prepend(
+        Module.new { def foo; end }
+      )
+      B.prepend(
+        Module.new { def foo; end }
+      )
+    RUBY
+  end
+
+  it 'ignores Module.new blocks which are passed as safe navigation method arguments' do
+    expect_no_offenses(<<~RUBY)
+      A&.prepend(
+        Module.new { def foo; end }
+      )
+      B&.prepend(
+        Module.new { def foo; end }
+      )
+    RUBY
+  end
+
   it 'does not register an offense when there are same `alias_method` name outside `ensure` scope' do
     expect_no_offenses(<<~RUBY)
       module FooTest
