@@ -897,6 +897,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'does not register an offense for parens around an endless irange in a keyword argument' do
+    expect_no_offenses(<<~RUBY)
+      foo bar: (baz..)
+      qux
+    RUBY
+  end
+
+  it 'does not register an offense for parens around an endless erange in a keyword argument' do
+    expect_no_offenses(<<~RUBY)
+      foo bar: (baz...)
+      qux
+    RUBY
+  end
+
   it 'registers parentheses around an irange inside a block' do
     expect_offense(<<~RUBY)
       something do
