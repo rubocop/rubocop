@@ -6,7 +6,6 @@ AllCops:
     - macruby
     - rake
     - jruby
-    - rbx
   # Include common Ruby source files.
   Include:
     - '**/*.rb'
@@ -27,7 +26,6 @@ AllCops:
     - '**/*.rake'
     - '**/*.rbuild'
     - '**/*.rbw'
-    - '**/*.rbx'
     - '**/*.ru'
     - '**/*.ruby'
     - '**/*.schema'
