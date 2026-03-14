@@ -51,7 +51,7 @@ module RuboCop
         EXPLODED_MSG = 'Provide an exception class and message as arguments to `%<method>s`.'
         COMPACT_MSG = 'Provide an exception object as an argument to `%<method>s`.'
         ACCEPTABLE_ARG_TYPES = %i[
-          hash forwarded_restarg splat forwarded_restarg forwarded_args
+          hash forwarded_restarg splat forwarded_kwrestarg forwarded_args
         ].freeze
 
         RESTRICT_ON_SEND = %i[raise fail].freeze
