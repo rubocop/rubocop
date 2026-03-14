@@ -102,6 +102,15 @@ RSpec.describe RuboCop::Cop::Style::ConcatArrayLiterals, :config do
     RUBY
   end
 
+  it 'registers an offense but does not autocorrect when using `concat` with `%W` containing interpolation' do
+    expect_offense(<<~'RUBY')
+      arr.concat(%W[#{foo}])
+          ^^^^^^^^^^^^^^^^^^ Use `push` with elements as arguments without array brackets instead of `concat(%W[#{foo}])`.
+    RUBY
+
+    expect_no_corrections
+  end
+
   it 'does not register an offense when using `concat` with variable argument' do
     expect_no_offenses(<<~RUBY)
       arr.concat(items)
