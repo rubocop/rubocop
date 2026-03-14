@@ -414,14 +414,6 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
-      context 'when .ruby-version contains a Rbx version' do
-        let(:ruby_version) { 'rbx-3.42' }
-
-        it 'uses the default target ruby version' do
-          expect(target_ruby.version).to eq default_version
-        end
-      end
-
       context 'when .ruby-version contains "system" version' do
         let(:ruby_version) { 'system' }
 
@@ -610,34 +602,6 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
                 bump
                 bundler (~> 1.3)
                 ruby-extensions (~> 1.9.0)
-
-              BUNDLED WITH
-                1.16.1
-            HEREDOC
-            create_file(lock_file_path, content)
-            expect(target_ruby.version).to eq default_version
-          end
-
-          it "uses the default Ruby when rbx is in #{file_name}" do
-            content = <<~HEREDOC
-              GEM
-                remote: https://rubygems.org/
-                specs:
-                  addressable (2.5.2)
-                    public_suffix (>= 2.0.2, < 4.0)
-                  ast (2.4.0)
-                  bump (0.5.4)
-
-              PLATFORMS
-                ruby
-
-              DEPENDENCIES
-                bump
-                bundler (~> 1.3)
-                ruby-extensions (~> 1.9.0)
-
-              RUBY VERSION
-                  ruby 2.0.0p0 (rbx 3.42)
 
               BUNDLED WITH
                 1.16.1

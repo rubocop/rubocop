@@ -21,7 +21,6 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                        .rake
                        .rbuild
                        .rbw
-                       .rbx
                        .ru
                        .ruby
                        .schema
@@ -29,7 +28,7 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                        .thor
                        .watchr]
 
-  ruby_interpreters = %w[ruby macruby rake jruby rbx]
+  ruby_interpreters = %w[ruby macruby rake jruby]
 
   ruby_filenames = %w[.irbrc
                       .pryrc
