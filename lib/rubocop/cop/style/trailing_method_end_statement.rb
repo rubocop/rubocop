@@ -45,6 +45,7 @@ module RuboCop
             corrector.insert_before(node.loc.end, "\n#{' ' * node.loc.keyword.column}")
           end
         end
+        alias on_defs on_def
 
         private
 

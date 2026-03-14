@@ -121,6 +121,20 @@ RSpec.describe RuboCop::Cop::Style::TrailingMethodEndStatement, :config do
     RUBY
   end
 
+  it 'registers an offense with trailing end on singleton method' do
+    expect_offense(<<~RUBY)
+      def self.some_method
+      foo; end
+           ^^^ Place the end statement of a multi-line method on its own line.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def self.some_method
+      foo;#{trailing_whitespace}
+      end
+    RUBY
+  end
+
   context 'when Ruby 3.0 or higher', :ruby30 do
     it 'does not register an offense when using endless method definition' do
       expect_no_offenses(<<~RUBY)
