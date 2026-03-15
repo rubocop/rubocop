@@ -117,7 +117,7 @@ module RuboCop
         end
 
         def allowed_numbers
-          cop_config.fetch('AllowedNumbers', []).map(&:to_s)
+          @allowed_numbers ||= cop_config.fetch('AllowedNumbers', []).map(&:to_s).freeze
         end
 
         def allowed_patterns

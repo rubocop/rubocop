@@ -185,7 +185,7 @@ module RuboCop
         end
 
         def empty_line_between_macros
-          cop_config.fetch('DefLikeMacros', []).map(&:to_sym)
+          @empty_line_between_macros ||= cop_config.fetch('DefLikeMacros', []).map(&:to_sym).freeze
         end
 
         def macro_candidate?(node)

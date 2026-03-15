@@ -33,16 +33,18 @@ module RuboCop
           end
 
           def included_macros_list
-            cop_config.fetch('IncludedMacros', []).map(&:to_sym)
+            @included_macros_list ||= cop_config.fetch('IncludedMacros', []).map(&:to_sym).freeze
           end
 
           def included_macro_patterns
-            cop_config.fetch('IncludedMacroPatterns', [])
+            @included_macro_patterns ||=
+              cop_config.fetch('IncludedMacroPatterns', [])
+                        .map { |pattern| Regexp.new(pattern) }.freeze
           end
 
           def matches_included_macro_pattern?(method_name)
             included_macro_patterns.any? do |pattern|
-              Regexp.new(pattern).match?(method_name.to_s)
+              pattern.match?(method_name.to_s)
             end
           end
 

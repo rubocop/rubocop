@@ -76,7 +76,7 @@ module RuboCop
         end
 
         def supported_operators
-          Array(cop_config['SupportedOperators'])
+          @supported_operators ||= Array(cop_config['SupportedOperators']).freeze
         end
 
         def offended_ancestor?(node)
