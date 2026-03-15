@@ -2,6 +2,10 @@
 
 RSpec.describe RuboCop::Cop::AlignmentCorrector, :config do
   let(:cop_class) { RuboCop::Cop::Test::AlignmentDirective }
+  # AlignmentDirective uses raw column deltas; Width: 1 makes 1 column = 1 character
+  let(:config) do
+    RuboCop::Config.new('Layout/IndentationWidth' => { 'Width' => 1 })
+  end
 
   describe '#correct' do
     context 'simple indentation' do
