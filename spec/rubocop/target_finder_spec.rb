@@ -7,10 +7,8 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                        .arb
                        .axlsx
                        .builder
-                       .fcgi
                        .gemfile
                        .gemspec
-                       .god
                        .jb
                        .jbuilder
                        .mspec
@@ -19,16 +17,14 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                        .podspec
                        .rabl
                        .rake
-                       .rbuild
                        .rbw
                        .ru
                        .ruby
                        .schema
                        .spec
-                       .thor
-                       .watchr]
+                       .thor]
 
-  ruby_interpreters = %w[ruby macruby rake jruby]
+  ruby_interpreters = %w[ruby rake jruby]
 
   ruby_filenames = %w[.irbrc
                       .pryrc
@@ -38,7 +34,6 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                       Brewfile
                       Buildfile
                       Capfile
-                      Cheffile
                       Dangerfile
                       Deliverfile
                       Fastfile
@@ -54,7 +49,6 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
                       Snapfile
                       Steepfile
                       Thorfile
-                      Vagabondfile
                       Vagrantfile
                       buildfile]
 

@@ -3,7 +3,6 @@
 AllCops:
   RubyInterpreters:
     - ruby
-    - macruby
     - rake
     - jruby
   # Include common Ruby source files.
@@ -12,10 +11,8 @@ AllCops:
     - '**/*.arb'
     - '**/*.axlsx'
     - '**/*.builder'
-    - '**/*.fcgi'
     - '**/*.gemfile'
     - '**/*.gemspec'
-    - '**/*.god'
     - '**/*.jb'
     - '**/*.jbuilder'
     - '**/*.mspec'
@@ -24,14 +21,12 @@ AllCops:
     - '**/*.podspec'
     - '**/*.rabl'
     - '**/*.rake'
-    - '**/*.rbuild'
     - '**/*.rbw'
     - '**/*.ru'
     - '**/*.ruby'
     - '**/*.schema'
     - '**/*.spec'
     - '**/*.thor'
-    - '**/*.watchr'
     - '**/.irbrc'
     - '**/.pryrc'
     - '**/.simplecov'
@@ -41,7 +36,6 @@ AllCops:
     - '**/Brewfile'
     - '**/Buildfile'
     - '**/Capfile'
-    - '**/Cheffile'
     - '**/Dangerfile'
     - '**/Deliverfile'
     - '**/Fastfile'
@@ -58,7 +52,6 @@ AllCops:
     - '**/Snapfile'
     - '**/Steepfile'
     - '**/Thorfile'
-    - '**/Vagabondfile'
     - '**/Vagrantfile'
   Exclude:
     - 'node_modules/**/*'
