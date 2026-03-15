@@ -89,7 +89,7 @@ module RuboCop
         end
 
         def method_names
-          methods.map { |method| method_name(method).to_sym }
+          @method_names ||= methods.map { |method| method_name(method).to_sym }.freeze
         end
 
         def method_name(method)

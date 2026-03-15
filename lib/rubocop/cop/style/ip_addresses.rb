@@ -48,8 +48,7 @@ module RuboCop
         private
 
         def allowed_addresses
-          allowed_addresses = cop_config['AllowedAddresses']
-          Array(allowed_addresses).map(&:downcase)
+          @allowed_addresses ||= Array(cop_config['AllowedAddresses']).map(&:downcase).freeze
         end
 
         def potential_ip?(str)

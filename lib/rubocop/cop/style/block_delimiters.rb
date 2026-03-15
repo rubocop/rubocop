@@ -448,7 +448,11 @@ module RuboCop
         end
 
         def functional_method?(method_name)
-          cop_config['FunctionalMethods'].map(&:to_sym).include?(method_name)
+          functional_methods.include?(method_name)
+        end
+
+        def functional_methods
+          @functional_methods ||= cop_config['FunctionalMethods'].to_set(&:to_sym).freeze
         end
 
         def functional_block?(node)
@@ -460,7 +464,11 @@ module RuboCop
         end
 
         def procedural_method?(method_name)
-          cop_config['ProceduralMethods'].map(&:to_sym).include?(method_name)
+          procedural_methods.include?(method_name)
+        end
+
+        def procedural_methods
+          @procedural_methods ||= cop_config['ProceduralMethods'].to_set(&:to_sym).freeze
         end
 
         def return_value_used?(node)

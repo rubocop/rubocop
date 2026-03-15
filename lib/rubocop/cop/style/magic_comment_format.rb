@@ -299,7 +299,7 @@ module RuboCop
         end
 
         def supported_capitalizations
-          cop_config['SupportedCapitalizations'].map(&:to_sym)
+          @supported_capitalizations ||= cop_config['SupportedCapitalizations'].map(&:to_sym).freeze
         end
       end
     end
