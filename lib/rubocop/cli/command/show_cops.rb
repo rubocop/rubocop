@@ -25,7 +25,7 @@ module RuboCop
           super
 
           # Load the configs so the require()s are done for custom cops
-          @config = @config_store.for(Dir.pwd)
+          @config = @config_store.for(PathUtil.pwd)
 
           @cop_matchers = @options[:show_cops].map do |pattern|
             if pattern.include?('*')
@@ -46,7 +46,7 @@ module RuboCop
           registry = Cop::Registry.global
           show_all = @cop_matchers.empty?
 
-          puts "# Available cops (#{registry.length}) + config for #{Dir.pwd}: " if show_all
+          puts "# Available cops (#{registry.length}) + config for #{PathUtil.pwd}: " if show_all
 
           registry.departments.sort!.each do |department|
             print_cops_of_department(registry, department, show_all)

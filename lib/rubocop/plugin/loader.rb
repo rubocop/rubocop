@@ -84,7 +84,7 @@ module RuboCop
         end
 
         def require_plugin(require_path)
-          FeatureLoader.load(config_directory_path: Dir.pwd, feature: require_path)
+          FeatureLoader.load(config_directory_path: PathUtil.pwd, feature: require_path)
         end
 
         def constantize_plugin_from_gemspec_metadata(plugin_name)
