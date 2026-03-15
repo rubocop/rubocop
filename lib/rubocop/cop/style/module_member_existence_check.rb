@@ -82,13 +82,9 @@ module RuboCop
           return unless module_member_inclusion?(parent)
           return unless simple_method_argument?(node) && simple_method_argument?(parent)
           return if allowed_method?(node.method_name)
+          return unless module_receiver?(node)
 
-          offense_range = node.location.selector.join(parent.source_range.end)
-          replacement = replacement_for(node, parent)
-
-          add_offense(offense_range, message: format(MSG, replacement: replacement)) do |corrector|
-            corrector.replace(offense_range, replacement)
-          end
+          register_offense(node, parent)
         end
         alias on_csend on_send
 
@@ -103,6 +99,19 @@ module RuboCop
           else
             "#{replacement_method}(#{parent.first_argument.source}, #{node.first_argument.source})"
           end
+        end
+
+        def register_offense(node, parent)
+          offense_range = node.location.selector.join(parent.source_range.end)
+          replacement = replacement_for(node, parent)
+
+          add_offense(offense_range, message: format(MSG, replacement: replacement)) do |corrector|
+            corrector.replace(offense_range, replacement)
+          end
+        end
+
+        def module_receiver?(node)
+          node.receiver.nil? || node.receiver.const_type?
         end
 
         def simple_method_argument?(node)
