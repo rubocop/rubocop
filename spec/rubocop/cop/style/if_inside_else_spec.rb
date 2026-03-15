@@ -372,6 +372,35 @@ RSpec.describe RuboCop::Cop::Style::IfInsideElse, :config do
     RUBY
   end
 
+  it "isn't offended if there is a comment before the nested if" do
+    expect_no_offenses(<<~RUBY)
+      if a
+        blah
+      else
+        # Not A!
+
+        if b
+          foo
+        else
+          bar
+        end
+      end
+    RUBY
+  end
+
+  it "isn't offended if there is a comment directly before the nested if" do
+    expect_no_offenses(<<~RUBY)
+      if a
+        blah
+      else
+        # comment
+        if b
+          foo
+        end
+      end
+    RUBY
+  end
+
   it "isn't offended by if..elsif..else" do
     expect_no_offenses(<<~RUBY)
       if a
