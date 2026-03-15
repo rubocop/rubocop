@@ -85,13 +85,21 @@ module RuboCop
     end
 
     def self.cache_root(config_store, cache_root_override = nil)
-      CacheConfig.root_dir do
+      return @cache_root if @cache_root && !cache_root_override
+
+      result = CacheConfig.root_dir do
         cache_root_override || config_store.for_pwd.for_all_cops['CacheRootDirectory']
       end
+      @cache_root = result unless cache_root_override
+      result
     end
 
     def self.allow_symlinks_in_cache_location?(config_store)
       config_store.for_pwd.for_all_cops['AllowSymlinksInCacheRootDirectory']
+    end
+
+    def self.reset_config_cache
+      @cache_root = nil
     end
 
     attr_reader :path
