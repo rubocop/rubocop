@@ -38,7 +38,7 @@ module RuboCop
     # @param base_dir Root directory under which to search for
     #   ruby source files
     # @return [Array] Array of filenames
-    def target_files_in_dir(base_dir = Dir.pwd)
+    def target_files_in_dir(base_dir = PathUtil.pwd)
       # Support Windows: Backslashes from command-line -> forward slashes
       base_dir = base_dir.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
       all_files = find_files(base_dir, File::FNM_DOTMATCH)

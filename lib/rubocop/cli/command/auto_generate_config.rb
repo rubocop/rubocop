@@ -153,7 +153,7 @@ module RuboCop
         def relative_path_to_todo_from_options_config
           return AUTO_GENERATED_FILE unless @options[:config]
 
-          base = Pathname.new(Dir.pwd)
+          base = Pathname.new(PathUtil.pwd)
           config_dir = Pathname.new(@options[:config]).realpath.dirname
 
           # Don't have the path start with `/`

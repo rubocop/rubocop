@@ -286,7 +286,7 @@ module RuboCop
            loaded_path != File.join(Dir.home, ConfigLoader::DOTFILE)
           File.expand_path(File.dirname(loaded_path))
         else
-          Dir.pwd
+          PathUtil.pwd
         end
     end
 
