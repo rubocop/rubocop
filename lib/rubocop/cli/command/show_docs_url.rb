@@ -12,7 +12,7 @@ module RuboCop
         def initialize(env)
           super
 
-          @config = @config_store.for(Dir.pwd)
+          @config = @config_store.for(PathUtil.pwd)
         end
 
         def run

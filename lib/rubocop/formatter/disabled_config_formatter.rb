@@ -233,7 +233,7 @@ module RuboCop
 
       def output_exclude_list(output_buffer, offending_files, cop_name)
         require 'pathname'
-        parent = Pathname.new(Dir.pwd)
+        parent = Pathname.new(PathUtil.pwd)
 
         output_buffer.puts '  Exclude:'
         excludes(offending_files, cop_name, parent).each do |exclude_path|

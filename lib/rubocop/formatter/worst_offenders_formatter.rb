@@ -24,7 +24,7 @@ module RuboCop
       def file_finished(file, offenses)
         return if offenses.empty?
 
-        path = Pathname.new(file).relative_path_from(Pathname.new(Dir.pwd))
+        path = Pathname.new(file).relative_path_from(Pathname.new(PathUtil.pwd))
         @offense_counts[path] = offenses.size
       end
 

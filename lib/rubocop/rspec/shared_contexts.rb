@@ -2,6 +2,10 @@
 
 require 'tmpdir'
 
+# Reset cached PathUtil.pwd before each example so that tests using Dir.chdir
+# or stubbing Dir.pwd get a fresh value.
+RSpec.configure { |c| c.before { RuboCop::PathUtil.reset_pwd } }
+
 RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLength
   around do |example|
     Dir.mktmpdir do |tmpdir|
@@ -27,6 +31,7 @@ RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLe
         FileUtils.mkdir_p(working_dir)
 
         Dir.chdir(working_dir) do
+          RuboCop::PathUtil.reset_pwd
           RuboCop::ResultCache.reset_config_cache
           example.run
         end
