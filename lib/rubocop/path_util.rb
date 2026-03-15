@@ -10,7 +10,19 @@ module RuboCop
 
     module_function
 
-    def relative_path(path, base_dir = Dir.pwd)
+    # Returns the current working directory, cached for the duration of a run.
+    # Dir.pwd is a syscall; caching it avoids repeated overhead since RuboCop
+    # never changes the working directory during a run.
+    def pwd
+      @pwd ||= Dir.pwd
+    end
+
+    # Reset the cached pwd. Only needed in tests that use Dir.chdir.
+    def reset_pwd
+      @pwd = nil
+    end
+
+    def relative_path(path, base_dir = PathUtil.pwd)
       PathUtil.relative_paths_cache[base_dir][path] ||=
         # Optimization for the common case where path begins with the base
         # dir. Just cut off the first part.
@@ -41,7 +53,7 @@ module RuboCop
           path.uri.to_s
         else
           # Ideally, we calculate this relative to the project root.
-          base_dir = Dir.pwd
+          base_dir = PathUtil.pwd
 
           if path.start_with? base_dir
             relative_path(path, base_dir)

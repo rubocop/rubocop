@@ -49,7 +49,7 @@ module RuboCop
     end
 
     def for_pwd
-      for_dir(Dir.pwd)
+      for_dir(PathUtil.pwd)
     end
 
     # If type (file/dir) is known beforehand,

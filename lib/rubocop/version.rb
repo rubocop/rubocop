@@ -55,7 +55,7 @@ module RuboCop
 
     # @api private
     def self.parser_version(target_ruby_version)
-      config_path = ConfigFinder.find_config_path(Dir.pwd)
+      config_path = ConfigFinder.find_config_path(PathUtil.pwd)
       yaml = Util.silence_warnings do
         ConfigLoader.load_yaml_configuration(config_path)
       end

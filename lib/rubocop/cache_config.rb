@@ -35,7 +35,7 @@ module RuboCop
       root_dir do
         next cache_root_override if cache_root_override
 
-        config_path = ConfigFinder.find_config_path(Dir.pwd)
+        config_path = ConfigFinder.find_config_path(PathUtil.pwd)
         file_contents = File.read(config_path)
 
         # Returns early if `CacheRootDirectory` is not used before requiring `erb` or `yaml`.
