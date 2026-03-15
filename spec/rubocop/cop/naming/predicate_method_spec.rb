@@ -4,6 +4,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
   let(:allowed_methods) { [] }
   let(:allowed_patterns) { [] }
   let(:allow_bang_methods) { false }
+  let(:infer_predicate_methods) { true }
   let(:wayward_predicates) { [] }
   let(:cop_config) do
     {
@@ -11,6 +12,7 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       'AllowedMethods' => allowed_methods,
       'AllowedPatterns' => allowed_patterns,
       'AllowBangMethods' => allow_bang_methods,
+      'InferPredicateMethods' => infer_predicate_methods,
       'WaywardPredicates' => wayward_predicates
     }
   end
@@ -610,6 +612,60 @@ RSpec.describe RuboCop::Cop::Naming::PredicateMethod, :config do
       let(:wayward_predicates) { %w[nonzero?] }
 
       it_behaves_like 'acceptable', 'nonzero?'
+    end
+
+    context 'with InferPredicateMethods: false' do
+      let(:infer_predicate_methods) { false }
+
+      it 'does not register an offense for a method returning a boolean without `?`' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            bar == baz
+          end
+        RUBY
+      end
+
+      it 'does not register an offense for a method returning `true` without `?`' do
+        expect_no_offenses(<<~RUBY)
+          def save
+            true
+          end
+        RUBY
+      end
+
+      it 'still registers an offense for a `?` method returning a non-boolean' do
+        expect_offense(<<~RUBY)
+          def foo?
+              ^^^^ Non-predicate method names should not end with `?`.
+            5
+          end
+        RUBY
+      end
+    end
+
+    context 'with InferPredicateMethods: true' do
+      let(:infer_predicate_methods) { true }
+
+      it 'registers an offense for a method returning a boolean without `?`' do
+        expect_offense(<<~RUBY)
+          def foo
+              ^^^ Predicate method names should end with `?`.
+            bar == baz
+          end
+        RUBY
+      end
+
+      context 'with AllowedMethods' do
+        let(:allowed_methods) { %w[save] }
+
+        it 'does not register an offense for an allowed method' do
+          expect_no_offenses(<<~RUBY)
+            def save
+              true
+            end
+          RUBY
+        end
+      end
     end
   end
 
