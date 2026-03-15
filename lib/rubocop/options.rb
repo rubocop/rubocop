@@ -474,8 +474,7 @@ module RuboCop
     end
 
     def invalid_arguments_for_parallel
-      [('--auto-gen-config' if @options.key?(:auto_gen_config)),
-       ('-F/--fail-fast'    if @options.key?(:fail_fast)),
+      [('-F/--fail-fast'    if @options.key?(:fail_fast)),
        ('--profile'         if @options[:profile]),
        ('--memory'          if @options[:memory]),
        ('--cache false'     if @options > { cache: 'false' })].compact

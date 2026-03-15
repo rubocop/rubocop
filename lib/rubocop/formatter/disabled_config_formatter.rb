@@ -131,12 +131,44 @@ module RuboCop
       end
 
       def set_max(cfg, cop_name)
+        # Aggregate exclude_limit data from tmp files
+        tmp_dir = RuboCop::ExcludeLimit.tmp_dir
+        if tmp_dir&.directory?
+          exclude_limits = read_exclude_limits_from_files(tmp_dir, cop_name)
+          cfg[:exclude_limit] = exclude_limits unless exclude_limits.empty?
+        end
+
         return unless cfg[:exclude_limit]
 
         cfg.merge!(cfg[:exclude_limit]) if should_set_max?(cop_name)
 
         # Remove already used exclude_limit.
         cfg.reject! { |key| key == :exclude_limit }
+      end
+
+      def read_exclude_limits_from_files(tmp_dir, cop_name)
+        # Convert cop name to directory format (e.g., "Layout/LineLength" -> "Layout-LineLength")
+        cop_dirname = cop_name.tr('/', '-')
+        cop_dir = tmp_dir.join(cop_dirname)
+
+        # Find all files within the cop directory (e.g., "Layout-LineLength/Max",
+        # "Style-NumericLiterals/MinDigits")
+        exclude_limits = {}
+
+        return exclude_limits unless cop_dir.directory?
+
+        cop_dir.children.each do |filepath|
+          next unless filepath.file?
+
+          # Extract parameter name from filename (e.g., "Max", "MinDigits")
+          parameter_name = filepath.basename.to_s
+
+          # Read all values from the file and find the maximum
+          values = filepath.readlines.map(&:to_i)
+          exclude_limits[parameter_name] = values.max unless values.empty?
+        end
+
+        exclude_limits
       end
 
       def should_set_max?(cop_name)
