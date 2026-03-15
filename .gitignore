@@ -72,3 +72,6 @@ tmp/*
 
 # For vscode:
 .vscode
+
+# For Claude Code:
+.claude/
