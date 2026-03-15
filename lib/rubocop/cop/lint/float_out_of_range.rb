@@ -18,7 +18,7 @@ module RuboCop
         MSG = 'Float out of range.'
 
         def on_float(node)
-          return unless node.value.infinite? || (node.value.zero? && /[1-9]/.match?(node.source))
+          return if !node.value.infinite? && (!node.value.zero? || !/[1-9]/.match?(node.source))
 
           add_offense(node)
         end

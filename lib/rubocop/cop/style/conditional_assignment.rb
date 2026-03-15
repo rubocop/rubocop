@@ -441,7 +441,7 @@ module RuboCop
             corrector.remove_preceding(condition.loc.else, condition.loc.else.column - column)
           end
 
-          return unless condition.loc.end && !same_line?(
+          return if !condition.loc.end || same_line?(
             condition.branches.last.parent.else_branch, condition.loc.end
           )
 

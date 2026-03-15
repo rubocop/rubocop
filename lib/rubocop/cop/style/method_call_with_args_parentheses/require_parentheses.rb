@@ -15,7 +15,7 @@ module RuboCop
             return if allowed_method_name?(node.method_name)
             return if matches_allowed_pattern?(node.method_name)
             return if eligible_for_parentheses_omission?(node)
-            return unless node.arguments? && !node.parenthesized?
+            return if !node.arguments? || node.parenthesized?
 
             add_offense(node, message: REQUIRE_MSG) do |corrector|
               corrector.replace(args_begin(node), '(')
