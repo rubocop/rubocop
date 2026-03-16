@@ -64,7 +64,7 @@ module RuboCop
         def redundant_each_method(node)
           return if node.last_argument&.block_pass_type?
 
-          if node.method?(:each) && !node.parent&.block_type?
+          if node.method?(:each) && !node.parent&.any_block_type?
             ancestor_node = node.each_ancestor(:call).detect do |ancestor|
               ancestor.receiver == node &&
                 (RESTRICT_ON_SEND.include?(ancestor.method_name) || ancestor.method?(:reverse_each))
@@ -74,8 +74,8 @@ module RuboCop
           end
 
           return unless (prev_method = node.children.first)
-          return if !prev_method.send_type? ||
-                    prev_method.parent.block_type? || prev_method.last_argument&.block_pass_type?
+          return if !prev_method.call_type? || prev_method.parent.any_block_type? ||
+                    prev_method.last_argument&.block_pass_type?
 
           detected = prev_method.method_name.to_s.start_with?('each_') unless node.method?(:each)
 

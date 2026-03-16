@@ -137,6 +137,17 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
     RUBY
   end
 
+  it 'registers an offense when using `&.reverse_each.each`' do
+    expect_offense(<<~RUBY)
+      context&.reverse_each.each { |i| do_something(i) }
+                           ^^^^^ Remove redundant `each`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      context&.reverse_each { |i| do_something(i) }
+    RUBY
+  end
+
   it 'registers an offense when using `each.reverse_each`' do
     expect_offense(<<~RUBY)
       context.each.reverse_each { |i| do_something(i) }
@@ -177,6 +188,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantEach, :config do
   it 'does not register an offense when using only single `each`' do
     expect_no_offenses(<<~RUBY)
       array.each { |v| do_something(v) }
+    RUBY
+  end
+
+  it 'does not register an offense when using only single `each` with numblock', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      array.each { do_something(_1) }
+    RUBY
+  end
+
+  it 'does not register an offense when `each_with_index` has its own numblock', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      array.each_with_index { do_something(_1, _2) }.each { |v| v }
     RUBY
   end
 
