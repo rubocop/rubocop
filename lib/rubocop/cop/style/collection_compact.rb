@@ -64,22 +64,34 @@ module RuboCop
         # @!method reject_method?(node)
         def_node_matcher :reject_method?, <<~PATTERN
           (block
-            (call
-              !nil? {:reject :reject!})
+            (call !nil? {:reject :reject!})
             $(args ...)
-            (call
-              $(lvar _) :nil?))
+            (call $(lvar _) :nil?))
+        PATTERN
+
+        # @!method reject_method_for_numblock_or_itblock?(node)
+        def_node_matcher :reject_method_for_numblock_or_itblock?, <<~PATTERN
+          {
+            (numblock (call !nil? {:reject :reject!}) _ (call (lvar :_1) :nil?))
+            (itblock (call !nil? {:reject :reject!}) _ (call (lvar :it) :nil?))
+          }
         PATTERN
 
         # @!method select_method?(node)
         def_node_matcher :select_method?, <<~PATTERN
           (block
-            (call
-              !nil? {:select :select! :filter :filter!})
+            (call !nil? {:select :select! :filter :filter!})
             $(args ...)
             (call
-              (call
-                $(lvar _) :nil?) :!))
+              (call $(lvar _) :nil?) :!))
+        PATTERN
+
+        # @!method select_method_for_numblock_or_itblock?(node)
+        def_node_matcher :select_method_for_numblock_or_itblock?, <<~PATTERN
+          {
+            (numblock (call !nil? {:select :select! :filter :filter!}) _ (call (call (lvar :_1) :nil?) :!))
+            (itblock (call !nil? {:select :select! :filter :filter!}) _ (call (call (lvar :it) :nil?) :!))
+          }
         PATTERN
 
         # @!method grep_v_with_nil?(node)
@@ -102,23 +114,31 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def offense_range(node)
           if reject_method_with_block_pass?(node) || grep_v_with_nil?(node)
             range(node, node)
           else
             block_node = node.parent
 
-            return unless block_node&.block_type?
-            unless (args, receiver = reject_method?(block_node) || select_method?(block_node))
-              return
-            end
-            return unless args.last.source == receiver.source
+            return unless block_node&.any_block_type?
+            return unless match_block_method?(block_node)
 
             range(node, block_node)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def match_block_method?(block_node)
+          if block_node.block_type?
+            result = reject_method?(block_node) || select_method?(block_node)
+            return false unless result
+
+            args, receiver = result
+            args.last.source == receiver.source
+          else
+            reject_method_for_numblock_or_itblock?(block_node) ||
+              select_method_for_numblock_or_itblock?(block_node)
+          end
+        end
 
         def to_enum_method?(node)
           return false unless node.receiver.send_type?
