@@ -289,6 +289,12 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
       RUBY
     end
 
+    it 'does not register an offense when using safe navigation `to_enum.reject` on array to reject nils' do
+      expect_no_offenses(<<~RUBY)
+        array&.to_enum.reject { |e| e.nil? }
+      RUBY
+    end
+
     it 'does not register an offense when using `lazy.reject` on array to reject nils' do
       expect_no_offenses(<<~RUBY)
         array.lazy.reject { |e| e.nil? }

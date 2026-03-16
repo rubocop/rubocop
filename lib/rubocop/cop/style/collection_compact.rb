@@ -141,7 +141,7 @@ module RuboCop
         end
 
         def to_enum_method?(node)
-          return false unless node.receiver.send_type?
+          return false unless node.receiver.call_type?
 
           TO_ENUM_METHODS.include?(node.receiver.method_name)
         end
