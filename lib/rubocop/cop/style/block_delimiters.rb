@@ -232,9 +232,7 @@ module RuboCop
         end
 
         def semantic_message(node)
-          block_begin = node.loc.begin.source
-
-          if block_begin == '{'
+          if node.braces?
             'Prefer `do...end` over `{...}` for procedural blocks.'
           else
             'Prefer `{...}` over `do...end` for functional blocks.'
@@ -372,36 +370,28 @@ module RuboCop
         end
         # rubocop:enable Metrics/CyclomaticComplexity
 
+        # rubocop:disable Metrics/CyclomaticComplexity -- inlined special_method checks to avoid double evaluation
         def proper_block_style?(node)
           return true if require_do_end?(node)
-          return special_method_proper_block_style?(node) if special_method?(node.method_name)
+
+          method_name = node.method_name
+          return true if allowed_method?(method_name) || matches_allowed_pattern?(method_name)
+          return node.braces? if braces_required_method?(method_name)
 
           case style
           when :line_count_based    then line_count_based_block_style?(node)
           when :semantic            then semantic_block_style?(node)
           when :braces_for_chaining then braces_for_chaining_style?(node)
-          when :always_braces       then braces_style?(node)
+          when :always_braces       then node.braces?
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def require_do_end?(node)
           return false if node.braces? || node.multiline?
           return false unless (resbody = node.each_descendant(:resbody).first)
 
           resbody.children.first&.array_type?
-        end
-
-        def special_method?(method_name)
-          allowed_method?(method_name) ||
-            matches_allowed_pattern?(method_name) ||
-            braces_required_method?(method_name)
-        end
-
-        def special_method_proper_block_style?(node)
-          method_name = node.method_name
-          return true if allowed_method?(method_name) || matches_allowed_pattern?(method_name)
-
-          node.braces? if braces_required_method?(method_name)
         end
 
         def braces_required_method?(method_name)
@@ -428,17 +418,11 @@ module RuboCop
         end
 
         def braces_for_chaining_style?(node)
-          block_begin = node.loc.begin.source
-
-          block_begin == if node.multiline?
-                           (node.chained? ? '{' : 'do')
-                         else
-                           '{'
-                         end
-        end
-
-        def braces_style?(node)
-          node.loc.begin.source == '{'
+          if node.multiline?
+            node.chained? ? node.braces? : !node.braces?
+          else
+            node.braces?
+          end
         end
 
         def correction_would_break_code?(node)
