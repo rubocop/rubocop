@@ -399,6 +399,97 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'accepts a guard clause followed by a multi-line guard clause with `raise`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        return if something?
+        if something_else?
+          raise bar(
+            baz
+          )
+        end
+      end
+    RUBY
+  end
+
+  it 'accepts a guard clause followed by a multi-line guard clause with `fail`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        return if something?
+        if something_else?
+          fail bar(
+            baz
+          )
+        end
+      end
+    RUBY
+  end
+
+  it 'accepts a guard clause followed by a multi-line guard clause with `return`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        return if something?
+        if something_else?
+          return bar(
+            baz
+          )
+        end
+      end
+    RUBY
+  end
+
+  it 'accepts a guard clause followed by a multi-line guard clause with `break`' do
+    expect_no_offenses(<<~RUBY)
+      collection.each do |item|
+        break if something?
+        if something_else?
+          break bar(
+            baz
+          )
+        end
+      end
+    RUBY
+  end
+
+  it 'accepts a guard clause followed by a multi-line guard clause with `next`' do
+    expect_no_offenses(<<~RUBY)
+      collection.each do |item|
+        next if something?
+        if something_else?
+          next bar(
+            baz
+          )
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for a guard clause followed by a multi-line if with non-guard body' do
+    expect_offense(<<~RUBY)
+      def foo
+        return if something?
+        ^^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        if something_else?
+          bar(
+            baz
+          )
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        return if something?
+
+        if something_else?
+          bar(
+            baz
+          )
+        end
+      end
+    RUBY
+  end
+
   it 'accepts a modifier if when the next line is `end`' do
     expect_no_offenses(<<~RUBY)
       def foo

@@ -1,0 +1,1 @@
+* [#15021](https://github.com/rubocop/rubocop/issues/15021): Fix false positives in `Layout/EmptyLineAfterGuardClause` when using a guard clause followed by a multi-line guard clause with `raise`, `fail`, `return`, `break`, or `next`. ([@koic][])
