@@ -330,6 +330,12 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
       RUBY
     end
 
+    it 'does not register an offense for an allowed method with safe navigation' do
+      expect_no_offenses(<<~RUBY)
+        10&.minutes.to_i
+      RUBY
+    end
+
     it 'registers an offense for other methods' do
       expect_offense(<<~RUBY)
         10.hours.to_i

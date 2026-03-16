@@ -162,7 +162,7 @@ module RuboCop
         end
 
         def allow_receiver?(receiver)
-          if receiver.numeric_type? || (receiver.send_type? &&
+          if receiver.numeric_type? || (receiver.call_type? &&
             (conversion_method?(receiver.method_name) ||
             allowed_method_name?(receiver.method_name)))
             true
