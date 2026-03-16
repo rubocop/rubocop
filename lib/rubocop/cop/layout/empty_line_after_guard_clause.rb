@@ -60,6 +60,11 @@ module RuboCop
         END_OF_HEREDOC_LINE = 1
         SIMPLE_DIRECTIVE_COMMENT_PATTERN = /\A# *:nocov:\z/.freeze
 
+        # @!method guard_clause_branch?(node)
+        def_node_matcher :guard_clause_branch?, <<~PATTERN
+          {(send nil? {:raise :fail} ...) return break next}
+        PATTERN
+
         def on_if(node)
           return if correct_style?(node)
           return if multiple_statements_on_line?(node)
@@ -97,14 +102,16 @@ module RuboCop
         end
 
         def correct_style?(node)
-          !contains_guard_clause?(node) ||
+          !node.if_branch&.guard_clause? ||
             next_line_rescue_or_ensure?(node) ||
             next_sibling_parent_empty_or_else?(node) ||
             next_sibling_empty_or_guard_clause?(node)
         end
 
         def contains_guard_clause?(node)
-          node.if_branch&.guard_clause?
+          return false unless (branch = node.if_branch)
+
+          guard_clause_branch?(branch)
         end
 
         def next_line_empty_or_allowed_directive_comment?(line)
