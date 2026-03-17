@@ -315,10 +315,14 @@ module RuboCop
         end
 
         def anon_block_scope_id(anon_block)
-          return unless (parent = anon_block.parent)
-          return unless parent.call_type? && parent.receiver
+          parent = anon_block.parent
+          return unless parent&.call_type?
 
-          "#{parent.receiver.source}.#{parent.method_name}"
+          if parent.receiver
+            "#{parent.receiver.source}.#{parent.method_name}"
+          else
+            source_location(anon_block)
+          end
         end
 
         def found_sclass_method(node, name)
