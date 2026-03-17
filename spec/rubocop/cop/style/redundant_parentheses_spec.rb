@@ -1599,6 +1599,10 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
       expect_no_offenses('x ({ y: 1 }.merge({ y: 2 }).merge({ y: 3 })), z')
     end
 
+    it 'accepts parentheses if the argument list is not parenthesized with safe navigation' do
+      expect_no_offenses('x&.y ({ z: 1 }), w')
+    end
+
     it 'registers an offense if the argument list is parenthesized' do
       expect_offense(<<~RUBY)
         x(({ y: 1 }), z)
