@@ -61,6 +61,13 @@ RSpec.describe RuboCop::Cop::Layout::ArgumentAlignment, :config do
       RUBY
     end
 
+    it 'accepts multiline []= method call with safe navigation' do
+      expect_no_offenses(<<~RUBY)
+        Test&.config["something"] =
+         true
+      RUBY
+    end
+
     it 'accepts correctly aligned arguments' do
       expect_no_offenses(<<~RUBY)
         function(a,
