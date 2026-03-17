@@ -52,7 +52,7 @@ module RuboCop
                            'following the first line of a multi-line method call.'
 
         def on_send(node)
-          return if !multiple_arguments?(node) || (node.send_type? && node.method?(:[]=)) ||
+          return if !multiple_arguments?(node) || (node.call_type? && node.method?(:[]=)) ||
                     autocorrect_incompatible_with_other_cops?
 
           items = flattened_arguments(node)

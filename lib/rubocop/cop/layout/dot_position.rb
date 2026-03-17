@@ -112,7 +112,7 @@ module RuboCop
         end
 
         def last_heredoc_line(node)
-          if node.send_type?
+          if node.call_type?
             node.arguments.select { |arg| heredoc?(arg) }.map { |arg| arg.loc.heredoc_end.line }.max
           elsif heredoc?(node)
             node.loc.heredoc_end.line

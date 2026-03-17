@@ -289,6 +289,28 @@ RSpec.describe RuboCop::Cop::Layout::DotPosition, :config do
           RUBY
         end
       end
+
+      context 'when using safe navigation operator' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            my_method&.
+                     ^^ Place the &. on the next line, together with the method name.
+              something(<<~HERE)&.
+                                ^^ Place the &. on the next line, together with the method name.
+                something
+              HERE
+              somethingelse
+          RUBY
+
+          expect_correction(<<~RUBY)
+            my_method
+              &.something(<<~HERE)
+                something
+              HERE
+              &.somethingelse
+          RUBY
+        end
+      end
     end
 
     context 'when the receiver is a heredoc' do
