@@ -99,10 +99,6 @@ module RuboCop
           end
         end
 
-        def setter_method?(method_name)
-          method_name.to_s.end_with?(EQUAL) && !%i[!= == === >= <=].include?(method_name)
-        end
-
         def assignment_rhs_exist?(node)
           parent = node.parent
           return true unless parent
