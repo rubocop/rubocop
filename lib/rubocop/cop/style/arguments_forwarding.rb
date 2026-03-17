@@ -424,21 +424,39 @@ module RuboCop
           end
 
           def forwarded_rest_arg
-            return nil if referenced_rest_arg?
+            return @forwarded_rest_arg if defined?(@forwarded_rest_arg)
 
-            arguments.find { |arg| forwarded_rest_arg?(arg, @rest_arg_name) }
+            @forwarded_rest_arg = if referenced_rest_arg?
+                                    nil
+                                  else
+                                    arguments.find do |arg|
+                                      forwarded_rest_arg?(arg, @rest_arg_name)
+                                    end
+                                  end
           end
 
           def forwarded_kwrest_arg
-            return nil if referenced_kwrest_arg?
+            return @forwarded_kwrest_arg if defined?(@forwarded_kwrest_arg)
 
-            arguments.filter_map { |arg| extract_forwarded_kwrest_arg(arg, @kwrest_arg_name) }.first
+            @forwarded_kwrest_arg = if referenced_kwrest_arg?
+                                      nil
+                                    else
+                                      arguments.filter_map do |arg|
+                                        extract_forwarded_kwrest_arg(arg, @kwrest_arg_name)
+                                      end.first
+                                    end
           end
 
           def forwarded_block_arg
-            return nil if referenced_block_arg?
+            return @forwarded_block_arg if defined?(@forwarded_block_arg)
 
-            arguments.find { |arg| forwarded_block_arg?(arg, @block_arg_name) }
+            @forwarded_block_arg = if referenced_block_arg?
+                                     nil
+                                   else
+                                     arguments.find do |arg|
+                                       forwarded_block_arg?(arg, @block_arg_name)
+                                     end
+                                   end
           end
 
           def classification
