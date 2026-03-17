@@ -1046,6 +1046,24 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'does not register an offense for the same method in different Module.new blocks passed to a no-receiver call' do
+    expect_no_offenses(<<~RUBY)
+      stub_const('Foo',
+                 Module.new { def self.underscore(_); end })
+      stub_const('Bar',
+                 Module.new { def self.underscore(_); end })
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Module.new blocks passed to a no-receiver call' do
+    expect_no_offenses(<<~RUBY)
+      stub_const('Foo',
+                 Module.new { def underscore(_); end })
+      stub_const('Bar',
+                 Module.new { def underscore(_); end })
+    RUBY
+  end
+
   it 'does not register an offense when there are same `alias_method` name outside `ensure` scope' do
     expect_no_offenses(<<~RUBY)
       module FooTest
