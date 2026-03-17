@@ -26,6 +26,7 @@ module RuboCop
 
         MSG_REQUIRE_SPACE = 'Use a space between `->` and `(` in lambda literals.'
         MSG_REQUIRE_NO_SPACE = 'Do not use spaces between `->` and `(` in lambda literals.'
+        RESTRICT_ON_SEND = %i[lambda].freeze
 
         def on_send(node)
           return unless arrow_lambda_with_args?(node)
