@@ -60,6 +60,55 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundKeyword, :config do
 
   it_behaves_like 'missing before', 'do', 'a "b"do end', 'a "b" do end'
   it_behaves_like 'missing after', 'do', 'a do|x| end', 'a do |x| end'
+
+  context '>= Ruby 2.7', :ruby27 do # rubocop:disable RSpec/RepeatedExampleGroupDescription
+    it 'registers an offense for missing space before `do` in numblock' do
+      expect_offense(<<~RUBY)
+        a "b"do _1 end
+             ^^ Space before keyword `do` is missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a "b" do _1 end
+      RUBY
+    end
+
+    it 'registers an offense for missing space before `end` in numblock' do
+      expect_offense(<<~RUBY)
+        a do _1"a"end
+                  ^^^ Space before keyword `end` is missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a do _1"a" end
+      RUBY
+    end
+  end
+
+  context '>= Ruby 3.4', :ruby34 do
+    it 'registers an offense for missing space before `do` in itblock' do
+      expect_offense(<<~RUBY)
+        a "b"do it end
+             ^^ Space before keyword `do` is missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a "b" do it end
+      RUBY
+    end
+
+    it 'registers an offense for missing space before `end` in itblock' do
+      expect_offense(<<~RUBY)
+        a do it.to_s"a"end
+                       ^^^ Space before keyword `end` is missing.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        a do it.to_s"a" end
+      RUBY
+    end
+  end
+
   it_behaves_like 'missing before', 'do', 'while 1do end', 'while 1 do end'
   it_behaves_like 'missing after', 'do', 'while 1 do"x" end', 'while 1 do "x" end'
   it_behaves_like 'missing before', 'do', 'until 1do end', 'until 1 do end'
