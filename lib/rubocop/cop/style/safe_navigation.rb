@@ -367,13 +367,13 @@ module RuboCop
         def unsafe_method_used?(node, method_chain, method)
           return true if unsafe_method?(node, method)
 
-          method.each_ancestor(:send).any? do |ancestor|
-            break true unless config.cop_enabled?('Lint/SafeNavigationChain')
-
-            break true if unsafe_method?(node, ancestor)
-            break true if nil_methods.include?(ancestor.method_name)
-            break false if ancestor == method_chain
+          method.each_ancestor(:send) do |ancestor|
+            return true unless config.cop_enabled?('Lint/SafeNavigationChain')
+            return true if unsafe_method?(node, ancestor)
+            return true if nil_methods.include?(ancestor.method_name)
+            return false if ancestor == method_chain
           end
+          false
         end
 
         def unsafe_method?(node, send_node)
@@ -409,7 +409,7 @@ module RuboCop
                                                  start_method,
                                                  method_chain)
           start_method.each_ancestor do |ancestor|
-            break unless %i[send block].include?(ancestor.type)
+            break unless ancestor.type?(:call, :any_block)
             next if !ancestor.send_type? || ancestor.operator_method?
 
             corrector.insert_before(ancestor.loc.dot, '&')

@@ -328,6 +328,28 @@ RSpec.describe RuboCop::Cop::Style::SafeNavigation, :config do
         RUBY
       end
 
+      it 'registers an offense for a chained method call with numblock safeguarded with a check for the object', :ruby27 do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.one.two(baz) { _1.qux } if %{variable}
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.one&.two(baz) { _1.qux }
+        RUBY
+      end
+
+      it 'registers an offense for a chained method call with itblock safeguarded with a check for the object', :ruby34 do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable}.one.two(baz) { it.qux } if %{variable}
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^{variable} Use safe navigation (`&.`) instead [...]
+        RUBY
+
+        expect_correction(<<~RUBY)
+          #{variable}&.one&.two(baz) { it.qux }
+        RUBY
+      end
+
       it 'registers an offense for a method call safeguarded with a ' \
          'negative check for the object' do
         expect_offense(<<~RUBY, variable: variable)
