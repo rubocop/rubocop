@@ -348,4 +348,62 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
       RUBY
     end
   end
+
+  context 'when using `unless`' do
+    it 'registers an offense and corrects for single-line `unless/;/end`' do
+      expect_offense(<<~RUBY)
+        unless cond; run end
+        ^^^^^^^^^^^^^^^^^^^^ Do not use `unless cond;` - use a ternary operator instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? nil : run
+      RUBY
+    end
+
+    it 'registers an offense and corrects for single-line `unless/;/else/end`' do
+      expect_offense(<<~RUBY)
+        unless cond; run else dont end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `unless cond;` - use a ternary operator instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? dont : run
+      RUBY
+    end
+
+    it 'registers an offense and corrects for single-line `unless/;/end` without then body' do
+      expect_offense(<<~RUBY)
+        unless cond; else dont end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `unless cond;` - use a ternary operator instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? dont : nil
+      RUBY
+    end
+
+    it 'registers an offense and corrects a single-line `unless/;/end` when the then body contains a method call with an argument' do
+      expect_offense(<<~RUBY)
+        unless cond; do_something arg end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `unless cond;` - use a ternary operator instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        cond ? nil : do_something(arg)
+      RUBY
+    end
+
+    it 'registers an offense when using multiple expressions in the `else` branch of `unless`' do
+      expect_offense(<<~RUBY)
+        unless cond; foo else bar'arg'; baz end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `unless cond;` - use a newline instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        unless cond
+         foo else bar'arg'; baz end
+      RUBY
+    end
+  end
 end

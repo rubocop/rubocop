@@ -17,9 +17,9 @@ module RuboCop
         include OnNormalIfUnless
         extend AutoCorrector
 
-        MSG_IF_ELSE = 'Do not use `if %<expr>s;` - use `if/else` instead.'
-        MSG_NEWLINE = 'Do not use `if %<expr>s;` - use a newline instead.'
-        MSG_TERNARY = 'Do not use `if %<expr>s;` - use a ternary operator instead.'
+        MSG_IF_ELSE = 'Do not use `%<keyword>s %<expr>s;` - use `if/else` instead.'
+        MSG_NEWLINE = 'Do not use `%<keyword>s %<expr>s;` - use a newline instead.'
+        MSG_TERNARY = 'Do not use `%<keyword>s %<expr>s;` - use a ternary operator instead.'
 
         def on_normal_if_unless(node)
           return if node.parent&.if_type?
@@ -49,7 +49,7 @@ module RuboCop
                        MSG_TERNARY
                      end
 
-          format(template, expr: node.condition.source)
+          format(template, keyword: node.keyword, expr: node.condition.source)
         end
 
         def autocorrect(corrector, node)
@@ -79,6 +79,8 @@ module RuboCop
 
           then_code = node.if_branch ? build_expression(node.if_branch) : 'nil'
           else_code = node.else_branch ? build_expression(node.else_branch) : 'nil'
+
+          then_code, else_code = else_code, then_code if node.unless?
 
           "#{node.condition.source} ? #{then_code} : #{else_code}"
         end
