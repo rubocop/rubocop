@@ -336,7 +336,7 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     it 'registers an offense when using `return` with value in `else` branch of `unless` with a semicolon' do
       expect_offense(<<~RUBY)
         unless cond; run else return value end
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a newline instead.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `unless cond;` - use a newline instead.
       RUBY
 
       expect_correction(<<~RUBY)
