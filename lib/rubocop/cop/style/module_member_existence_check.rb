@@ -32,7 +32,6 @@ module RuboCop
       #   Array.private_instance_methods.include?(:foo)
       #   Array.protected_instance_methods.include?(:foo)
       #   Array.public_instance_methods.include?(:foo)
-      #   Array.included_modules.include?(:foo)
       #
       #   # good
       #   Array.class_variable_defined?(:foo)
@@ -40,15 +39,8 @@ module RuboCop
       #   Array.private_method_defined?(:foo)
       #   Array.protected_method_defined?(:foo)
       #   Array.public_method_defined?(:foo)
-      #   Array.include?(:foo)
-      #
-      # @example AllowedMethods: [included_modules]
-      #
-      #   # good
-      #   Array.included_modules.include?(:foo)
       #
       class ModuleMemberExistenceCheck < Base
-        include AllowedMethods
         extend AutoCorrector
 
         MSG = 'Use `%<replacement>s` instead.'
@@ -64,14 +56,13 @@ module RuboCop
         METHOD_REPLACEMENTS = {
           class_variables: :class_variable_defined?,
           constants: :const_defined?,
-          included_modules: :include?,
           instance_methods: :method_defined?,
           private_instance_methods: :private_method_defined?,
           protected_instance_methods: :protected_method_defined?,
           public_instance_methods: :public_method_defined?
         }.freeze
 
-        METHODS_WITHOUT_INHERIT_PARAM = Set[:class_variables, :included_modules].freeze
+        METHODS_WITHOUT_INHERIT_PARAM = Set[:class_variables].freeze
         METHODS_WITH_INHERIT_PARAM =
           (METHOD_REPLACEMENTS.keys.to_set - METHODS_WITHOUT_INHERIT_PARAM).freeze
 
@@ -81,7 +72,6 @@ module RuboCop
           return unless (parent = node.parent)
           return unless module_member_inclusion?(parent)
           return unless simple_method_argument?(node) && simple_method_argument?(parent)
-          return if allowed_method?(node.method_name)
 
           offense_range = node.location.selector.join(parent.source_range.end)
           replacement = replacement_for(node, parent)
