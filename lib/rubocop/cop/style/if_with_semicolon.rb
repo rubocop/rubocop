@@ -71,7 +71,7 @@ module RuboCop
         end
 
         def use_return_with_argument?(node)
-          node.if_branch&.return_type? && node.if_branch&.arguments&.any?
+          node.branches.compact.any? { |branch| branch.return_type? && branch.arguments.any? }
         end
 
         def replacement(node)

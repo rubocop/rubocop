@@ -321,6 +321,30 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
       RUBY
     end
 
+    it 'registers an offense when using `return` with value in `else` branch of `if` with a semicolon' do
+      expect_offense(<<~RUBY)
+        if cond; run else return value end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a newline instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if cond
+         run else return value end
+      RUBY
+    end
+
+    it 'registers an offense when using `return` with value in `else` branch of `unless` with a semicolon' do
+      expect_offense(<<~RUBY)
+        unless cond; run else return value end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if cond;` - use a newline instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        unless cond
+         run else return value end
+      RUBY
+    end
+
     it 'registers an offense when using `return` without value in `if` with a semicolon is used' do
       expect_offense(<<~RUBY)
         if cond; return end
