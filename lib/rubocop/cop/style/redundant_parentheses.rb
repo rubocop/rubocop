@@ -114,7 +114,7 @@ module RuboCop
         def first_arg_begins_with_hash_literal?(node)
           # Don't flag `method ({key: value})` or `method ({key: value}.method)`
           hash_literal = method_chain_begins_with_hash_literal(node.children.first)
-          if (root_method = node.each_ancestor(:send).to_a.last)
+          if (root_method = node.each_ancestor(:call).to_a.last)
             parenthesized = root_method.parenthesized_call?
           end
           hash_literal && first_argument?(node) && !parentheses?(hash_literal) && !parenthesized
@@ -332,28 +332,15 @@ module RuboCop
         end
 
         def first_argument?(node)
-          if first_send_argument?(node) ||
-             first_super_argument?(node) ||
-             first_yield_argument?(node)
-            return true
-          end
+          return true if first_call_argument?(node)
 
           node.each_ancestor.any? { |ancestor| first_argument?(ancestor) }
         end
 
-        # @!method first_send_argument?(node)
-        def_node_matcher :first_send_argument?, <<~PATTERN
-          ^(send _ _ equal?(%0) ...)
-        PATTERN
-
-        # @!method first_super_argument?(node)
-        def_node_matcher :first_super_argument?, <<~PATTERN
-          ^(super equal?(%0) ...)
-        PATTERN
-
-        # @!method first_yield_argument?(node)
-        def_node_matcher :first_yield_argument?, <<~PATTERN
-          ^(yield equal?(%0) ...)
+        # @!method first_call_argument?(node)
+        def_node_matcher :first_call_argument?, <<~PATTERN
+          {^(call _ _ equal?(%0) ...)
+           ^({super yield} equal?(%0) ...)}
         PATTERN
 
         def call_chain_starts_with_int?(begin_node, send_node)
