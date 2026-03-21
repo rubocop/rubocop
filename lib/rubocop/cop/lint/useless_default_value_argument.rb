@@ -67,6 +67,8 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          return unless node.receiver
+
           unless (prev_arg_node, default_value_node = default_value_argument_and_block(node.parent))
             return
           end

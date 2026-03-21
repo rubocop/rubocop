@@ -57,6 +57,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessDefaultValueArgument, :config do
       RUBY
     end
 
+    it 'registers an offense for `x.fetch(key, default_value) { fetch(arg) }`' do
+      expect_offense(<<~RUBY)
+        x.fetch(key, default_value) { fetch(arg) }
+                     ^^^^^^^^^^^^^ Block supersedes default value argument.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x.fetch(key) { fetch(arg) }
+      RUBY
+    end
+
     it 'registers an offense for `x.fetch(key, default_value) { _1 }`' do
       expect_offense(<<~RUBY)
         x.fetch(key, default_value) { _1 }
