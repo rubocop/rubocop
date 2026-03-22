@@ -114,4 +114,14 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
       end
     end
   end
+
+  context "when `AllowedReceivers: ['Rails.cache']`" do
+    let(:cop_config) { { 'AllowedReceivers' => ['Rails.cache'] } }
+
+    it 'does not register an offense for `Rails.cache.fetch(name, options) { block }`' do
+      expect_no_offenses(<<~RUBY)
+        Rails.cache.fetch(name, options) { block }
+      RUBY
+    end
+  end
 end

@@ -41,8 +41,13 @@ module RuboCop
       #   # good
       #   hash.fetch(key)
       #
+      # @example AllowedReceivers: ['Rails.cache']
+      #   # good
+      #   Rails.cache.fetch(name, options) { block }
+      #
       class HashLookupMethod < Base
         include ConfigurableEnforcedStyle
+        include AllowedReceivers
         extend AutoCorrector
 
         BRACKET_MSG = 'Use `Hash#[]` instead of `Hash#fetch`.'
@@ -51,6 +56,8 @@ module RuboCop
         RESTRICT_ON_SEND = %i[[] fetch].freeze
 
         def on_send(node)
+          return if (receiver = node.receiver) && allowed_receiver?(receiver)
+
           if offense_for_brackets?(node)
             add_offense(node.loc.selector, message: BRACKET_MSG) do |corrector|
               correct_fetch_to_brackets(corrector, node)
