@@ -13,6 +13,31 @@ Through MCP, RuboCop operations are initiated by an MCP client, with decisions m
 The MCP server runs as a long-lived process over stdio, allowing an MCP client to request analysis and autocorrection without spawning a new RuboCop process for each request.
 This is based on the same principles as xref:usage/server.adoc[Server Mode] and xref:usage/lsp.adoc[LSP].
 
+== Setup
+
+The `mcp` gem is required but is not included as a dependency of RuboCop. You must install it separately.
+
+If you use Bundler, add the following to your `Gemfile`:
+
+[source,ruby]
+----
+gem 'mcp', '~> 0.6'
+----
+
+Then run:
+
+[source,console]
+----
+$ bundle install
+----
+
+If you do not use Bundler:
+
+[source,console]
+----
+$ gem install mcp
+----
+
 == Available Tools
 
 The MCP server exposes two tools:

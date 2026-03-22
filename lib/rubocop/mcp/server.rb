@@ -1,6 +1,30 @@
 # frozen_string_literal: true
 
-require 'mcp'
+begin
+  require 'mcp'
+
+  required_mcp_version = '0.6.0'
+
+  if Gem::Version.new(required_mcp_version) > Gem::Version.new(MCP::VERSION)
+    # While `mcp` is not a runtime dependency, users may have an outdated version installed.
+    warn <<~MESSAGE
+      Error: `mcp` gem version #{MCP::VERSION} was loaded, but `rubocop --mcp` requires #{required_mcp_version}.
+      - If you're using Bundler and don't yet have `gem 'mcp'` as a dependency, add it now.
+      - If you're using Bundler and already have `gem 'mcp'` as a dependency, update it to the most recent version.
+      - If you don't use Bundler, run `gem update mcp`.
+    MESSAGE
+    exit!
+  end
+rescue LoadError => e
+  raise unless e.path == 'mcp'
+
+  warn <<~MESSAGE
+    Error: Unable to load `mcp` gem. Add `gem 'mcp', '~> 0.6'` to your Gemfile, or run `gem install mcp`.
+  MESSAGE
+
+  exit!
+end
+
 require_relative '../lsp'
 require_relative '../lsp/runtime'
 
