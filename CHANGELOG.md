@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.86.0 (2026-03-23)
+
 ### New features
 
 * [#15000](https://github.com/rubocop/rubocop/pull/15000): Display ZJIT usage when running under LSP. ([@koic][])

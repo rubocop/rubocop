@@ -832,8 +832,11 @@ end
 Checks for constant reassignments.
 
 Emulates Ruby's runtime warning "already initialized constant X"
-when a constant is reassigned in the same file and namespace using the
-`NAME = value` syntax.
+when a constant is reassigned in the same file and namespace.
+
+The cop tracks constants defined via `NAME = value` syntax as well as
+class/module keyword definitions. It detects reassignment when a constant
+is first defined one way and then redefined using the `NAME = value` syntax.
 
 The cop cannot catch all offenses, like, for example, when a constant
 is reassigned in another file, or when using metaprogramming (`Module#const_set`).
@@ -865,6 +868,14 @@ module A
   X = :foo
   X = :bar
 end
+
+# bad
+class FooError < StandardError; end
+FooError = Class.new(RuntimeError)
+
+# bad
+module M; end
+M = 1
 
 # good - keep only one assignment
 X = :bar
@@ -5482,6 +5493,22 @@ do_something if attrs&.respond_to?(:[])
 
 # good
 do_something if attrs.respond_to?(:[])
+
+# bad
+foo&.bar ? foo&.bar.baz : qux
+
+# good
+foo&.bar ? foo.bar.baz : qux
+
+# bad
+if foo&.bar
+  foo&.bar.baz
+end
+
+# good
+if foo&.bar
+  foo.bar.baz
+end
 
 # bad
 while node&.is_a?(BeginNode)
