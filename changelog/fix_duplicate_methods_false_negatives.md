@@ -1,1 +1,0 @@
-* [#11829](https://github.com/rubocop/rubocop/issues/11829): Fix false negatives for `Lint/DuplicateMethods` when duplicate methods are defined in anonymous classes and modules not assigned to a constant. ([@Darhazer][])

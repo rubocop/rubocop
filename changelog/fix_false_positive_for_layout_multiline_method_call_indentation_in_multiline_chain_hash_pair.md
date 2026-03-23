@@ -1,1 +1,0 @@
-* [#14916](https://github.com/rubocop/rubocop/issues/14916): Fix false positive for `Layout/MultilineMethodCallIndentation` when method chain is inside a hash pair value passed to a multiline chained method call. ([@ydakuka][])

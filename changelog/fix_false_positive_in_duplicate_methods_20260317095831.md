@@ -1,1 +1,0 @@
-* [#15028](https://github.com/rubocop/rubocop/issues/15028): Fix a false positive for `Lint/DuplicateMethods` when the same method is defined in different anonymous module blocks passed to a no-receiver call (e.g. `stub_const`). ([@Darhazer][])
