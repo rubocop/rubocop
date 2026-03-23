@@ -108,7 +108,7 @@ AllCops:
   # line option.
   UseCache: true
   # Threshold for how many files can be stored in the result cache before some
-  # of the files are automatically removed.
+  # of the files are automatically removed. Set to false to disable cache pruning.
   MaxFilesInCache: 20000
   # The cache will be stored in "rubocop_cache" under this directory. If
   # CacheRootDirectory is ~ (nil), which it is by default, the root will be
