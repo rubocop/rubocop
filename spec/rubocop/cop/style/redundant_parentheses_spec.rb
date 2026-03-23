@@ -1034,6 +1034,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'accepts parentheses around a beginless range with chained method call' do
+    expect_no_offenses(<<~RUBY)
+      (..1).cover?(0)
+    RUBY
+  end
+
+  it 'accepts parentheses around an endless range with chained method call' do
+    expect_no_offenses(<<~RUBY)
+      (1..).cover?(42)
+    RUBY
+  end
+
   it 'registers an offense when the use of parentheses around `&&` expressions in assignment' do
     expect_offense(<<~RUBY)
       var = (foo && bar)
