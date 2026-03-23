@@ -55,10 +55,9 @@ module RuboCop
 
       # @api private
       def builtin?(cop_class)
-        # any custom method will do
-        return false unless (m = cop_class.instance_methods(false).first)
+        return false unless (name = cop_class.name)
 
-        path, _line = cop_class.instance_method(m).source_location
+        path, _line = Module.const_source_location(name)
         path.start_with?(__dir__)
       end
     end
