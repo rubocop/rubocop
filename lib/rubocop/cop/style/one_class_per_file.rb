@@ -13,27 +13,47 @@ module RuboCop
       # classes that logically belong with the main class.
       #
       # @example
-      #   # bad
+      #   # bad - Multiple top-level classes
       #   class Foo
       #   end
       #
       #   class Bar
       #   end
       #
-      #   # bad
+      #   # bad - Multiple top-level modules
+      #   module Foo
+      #   end
+      #
+      #   module Bar
+      #   end
+      #
+      #   # bad - A top-level class and a top-level module
       #   class Foo
       #   end
       #
       #   module Bar
       #   end
       #
-      #   # good
+      #   # good - A single top-level class
       #   class Foo
       #   end
       #
-      #   # good
+      #   # good - A single top-level module
+      #   module Foo
+      #   end
+      #
+      #   # good - Nested classes within a single top-level class
       #   class Foo
       #     class Bar
+      #     end
+      #   end
+      #
+      #   # good - Multiple classes within a single top-level module
+      #   module Foo
+      #     class Bar
+      #     end
+      #
+      #     class Baz
       #     end
       #   end
       #
