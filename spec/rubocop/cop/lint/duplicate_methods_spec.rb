@@ -1064,6 +1064,48 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'does not register an offense for the same singleton method in different Class.new blocks inside separate method blocks' do
+    expect_no_offenses(<<~RUBY)
+      foo do
+        a = bar
+        Class.new do
+          def self.name
+            'Foo'
+          end
+        end
+      end
+
+      foo do
+        b = baz
+        Class.new do
+          def self.name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks inside separate method blocks' do
+    expect_no_offenses(<<~RUBY)
+      foo do
+        a = bar
+        Class.new do
+          def custom_validation
+          end
+        end
+      end
+
+      foo do
+        b = baz
+        Class.new do
+          def custom_validation
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'does not register an offense when there are same `alias_method` name outside `ensure` scope' do
     expect_no_offenses(<<~RUBY)
       module FooTest

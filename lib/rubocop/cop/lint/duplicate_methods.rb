@@ -308,10 +308,17 @@ module RuboCop
         def anonymous_class_block(node)
           first_block = node.each_ancestor(:block).first
           return unless class_or_module_new_block?(first_block)
-          return if first_block.parent&.type?(:lvasgn, :block)
+          return if anonymous_block_inside_block_scope?(first_block)
           return if node.each_ancestor(:sclass).any? { |s| !s.children.first.self_type? }
 
           first_block
+        end
+
+        def anonymous_block_inside_block_scope?(first_block)
+          parent = first_block.parent
+          return true if parent&.type?(:lvasgn, :block)
+
+          parent&.begin_type? && parent.parent&.any_block_type?
         end
 
         def anon_block_scope_id(anon_block)
