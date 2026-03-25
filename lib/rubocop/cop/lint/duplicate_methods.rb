@@ -308,7 +308,7 @@ module RuboCop
         def anonymous_class_block(node)
           first_block = node.each_ancestor(:block).first
           return unless class_or_module_new_block?(first_block)
-          return if first_block.parent&.type?(:lvasgn, :block)
+          return if first_block.parent&.type?(:lvasgn)
           return if node.each_ancestor(:sclass).any? { |s| !s.children.first.self_type? }
 
           first_block
@@ -316,13 +316,18 @@ module RuboCop
 
         def anon_block_scope_id(anon_block)
           parent = anon_block.parent
-          return unless parent&.call_type?
+          return unless parent&.type?(:any_block, :begin, :call)
 
-          if parent.receiver
-            "#{parent.receiver.source}.#{parent.method_name}"
-          else
+          if (receiver = named_receiver(parent))
+            "#{receiver.source}.#{parent.method_name}"
+          elsif !parent.begin_type? || parent.parent&.any_block_type?
             source_location(anon_block)
           end
+        end
+
+        def named_receiver(node)
+          receiver = node.receiver
+          receiver unless class_or_module_new_block?(receiver)
         end
 
         def found_sclass_method(node, name)

@@ -1064,6 +1064,361 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'does not register an offense for the same instance method in different Class.new blocks ' \
+     'inside blocks with multiple statements' do
+    expect_no_offenses(<<~RUBY)
+      foo do
+        a = bar
+        Class.new do
+          def custom_validation
+          end
+        end
+      end
+
+      foo do
+        b = baz
+        Class.new do
+          def custom_validation
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks ' \
+     'inside blocks with multiple statements' do
+    expect_no_offenses(<<~RUBY)
+      foo do
+        a = bar
+        Class.new do
+          def self.name
+            'Foo'
+          end
+        end
+      end
+
+      foo do
+        b = baz
+        Class.new do
+          def self.name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks ' \
+     'inside numblocks with multiple statements', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      foo do
+        _1
+        Class.new do
+          def custom_validation
+          end
+        end
+      end
+
+      bar do
+        _1
+        Class.new do
+          def custom_validation
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks ' \
+     'inside numblocks with multiple statements', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      foo do
+        _1
+        Class.new do
+          def self.name
+            'Foo'
+          end
+        end
+      end
+
+      bar do
+        _1
+        Class.new do
+          def self.name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks ' \
+     'inside itblocks with multiple statements', :ruby34 do
+    expect_no_offenses(<<~RUBY)
+      foo do
+        it
+        Class.new do
+          def custom_validation
+          end
+        end
+      end
+
+      bar do
+        it
+        Class.new do
+          def custom_validation
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks ' \
+     'inside itblocks with multiple statements', :ruby34 do
+    expect_no_offenses(<<~RUBY)
+      foo do
+        it
+        Class.new do
+          def self.name
+            'Foo'
+          end
+        end
+      end
+
+      bar do
+        it
+        Class.new do
+          def self.name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks inside blocks' do
+    expect_no_offenses(<<~RUBY)
+      let(:foo_class) do
+        Class.new do
+          def name
+            'Foo'
+          end
+        end
+      end
+
+      let(:bar_class) do
+        Class.new do
+          def name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks inside blocks' do
+    expect_no_offenses(<<~RUBY)
+      let(:foo_class) do
+        Class.new do
+          def self.name
+            'Foo'
+          end
+        end
+      end
+
+      let(:bar_class) do
+        Class.new do
+          def self.name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks inside describe blocks' do
+    expect_no_offenses(<<~RUBY)
+      describe 'something' do
+        Class.new do
+          def foo
+            1
+          end
+        end
+      end
+
+      describe 'other' do
+        Class.new do
+          def foo
+            2
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for duplicate methods inside the same Class.new block inside a block' do
+    expect_offense(<<~RUBY)
+      let(:klass) do
+        Class.new do
+          def foo
+            1
+          end
+          def foo
+          ^^^^^^^ Method `::Object#foo` is defined at both (string):3 and (string):6.
+            2
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for duplicate class methods inside the same Class.new block inside a block' do
+    expect_offense(<<~RUBY)
+      let(:klass) do
+        Class.new do
+          def self.foo
+            1
+          end
+          def self.foo
+          ^^^^^^^^^^^^ Method `::Object.foo` is defined at both (string):3 and (string):6.
+            2
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Module.new blocks inside blocks' do
+    expect_no_offenses(<<~RUBY)
+      let(:foo_mod) do
+        Module.new do
+          def name
+            'Foo'
+          end
+        end
+      end
+
+      let(:bar_mod) do
+        Module.new do
+          def name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Module.new blocks with chained method calls' do
+    expect_no_offenses(<<~RUBY)
+      Module.new { def test; end }
+            .instance_method(:test)
+
+      Module.new { def test; end }
+            .instance_method(:test)
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Module.new blocks ' \
+     'with endless methods and chained calls', :ruby30 do
+    expect_no_offenses(<<~RUBY)
+      Module.new { def test(*one, **two, &block) = super(one, two, yield(block)) }
+            .instance_method(:test)
+            .parameters
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks inside numblocks', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      foo { Class.new(_1) { def name; end } }
+
+      bar { Class.new(_1) { def name; end } }
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks inside numblocks', :ruby27 do
+    expect_no_offenses(<<~RUBY)
+      foo { Class.new(_1) { def self.name; 'Foo'; end } }
+
+      bar { Class.new(_1) { def self.name; 'Bar'; end } }
+    RUBY
+  end
+
+  it 'registers an offense for duplicate methods inside the same Class.new block inside a numblock', :ruby27 do
+    expect_offense(<<~RUBY)
+      foo { Class.new(_1) do
+          def foo
+            1
+          end
+          def foo
+          ^^^^^^^ Method `Object#foo` is defined at both (string):2 and (string):5.
+            2
+          end
+        end
+      }
+    RUBY
+  end
+
+  it 'registers an offense for duplicate class methods inside the same Class.new block inside a numblock', :ruby27 do
+    expect_offense(<<~RUBY)
+      foo { Class.new(_1) do
+          def self.foo
+            1
+          end
+          def self.foo
+          ^^^^^^^^^^^^ Method `Object.foo` is defined at both (string):2 and (string):5.
+            2
+          end
+        end
+      }
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks inside itblocks', :ruby34 do
+    expect_no_offenses(<<~RUBY)
+      foo { Class.new(it) { def name; end } }
+
+      bar { Class.new(it) { def name; end } }
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks inside itblocks', :ruby34 do
+    expect_no_offenses(<<~RUBY)
+      foo { Class.new(it) { def self.name; 'Foo'; end } }
+
+      bar { Class.new(it) { def self.name; 'Bar'; end } }
+    RUBY
+  end
+
+  it 'registers an offense for duplicate methods inside the same Class.new block inside an itblock', :ruby34 do
+    expect_offense(<<~RUBY)
+      foo { Class.new(it) do
+          def foo
+            1
+          end
+          def foo
+          ^^^^^^^ Method `Object#foo` is defined at both (string):2 and (string):5.
+            2
+          end
+        end
+      }
+    RUBY
+  end
+
+  it 'registers an offense for duplicate class methods inside the same Class.new block inside an itblock', :ruby34 do
+    expect_offense(<<~RUBY)
+      foo { Class.new(it) do
+          def self.foo
+            1
+          end
+          def self.foo
+          ^^^^^^^^^^^^ Method `Object.foo` is defined at both (string):2 and (string):5.
+            2
+          end
+        end
+      }
+    RUBY
+  end
+
   it 'does not register an offense when there are same `alias_method` name outside `ensure` scope' do
     expect_no_offenses(<<~RUBY)
       module FooTest
