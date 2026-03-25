@@ -95,8 +95,18 @@ module RuboCop
           return unless variable.method_argument?
           return if variable.keyword_argument? && cop_config['AllowUnusedKeywordArguments']
           return if ignored_method?(variable.scope.node.body)
+          return if block_argument_with_yield?(variable)
 
           super
+        end
+
+        def block_argument_with_yield?(variable)
+          return false unless variable.declaration_node.blockarg_type?
+
+          method_body = variable.scope.node.body
+          return false unless method_body
+
+          method_body.yield_type? || method_body.each_descendant(:yield).any?
         end
 
         def ignored_method?(body)
