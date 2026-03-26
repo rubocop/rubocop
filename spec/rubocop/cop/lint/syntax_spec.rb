@@ -52,6 +52,7 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
           offense = offenses.first
           expect(offense.message).to eq(message)
           expect(offense.severity).to eq(:fatal)
+          expect(offense.status).to eq(:corrected_with_todo)
         end
       end
 
@@ -80,6 +81,19 @@ RSpec.describe RuboCop::Cop::Lint::Syntax, :config do
         offense = offenses.first
         expect(offense.message).to eq(message)
         expect(offense.severity).to eq(:fatal)
+      end
+    end
+
+    context 'with a syntax error at EOF that would produce a zero-length range' do
+      let(:source) { "if true\n  puts 'x'\n" }
+
+      it 'expands the zero-length range to cover the preceding character' do
+        expect(offenses).not_to be_empty
+        offense = offenses.first
+        expect(offense.location.size).to eq(1)
+        # EOF at end of source, so the range expands backward by 1 character.
+        expect(offense.location.end_pos).to eq(source.size)
+        expect(offense.location.begin_pos).to eq(source.size - 1)
       end
     end
 

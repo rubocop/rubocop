@@ -26,7 +26,31 @@ module RuboCop
                       "#{diagnostic.message}\n(Using Ruby #{ruby_version} parser; " \
                         'configure using `TargetRubyVersion` parameter, under `AllCops`)'
                     end
-          add_offense(diagnostic.location, message: message, severity: diagnostic.level)
+          location = diagnostic_location(diagnostic.location)
+          add_offense(location, message: message, severity: diagnostic.level)
+        end
+
+        # Expand zero-length diagnostic ranges so that editors and formatters
+        # can display them. This typically occurs when the parser reports
+        # `unexpected token $end` at EOF.
+        def diagnostic_location(location)
+          return location if location.size.positive?
+
+          source_buffer = location.source_buffer
+          if location.end_pos < source_buffer.source.size
+            location.resize(1)
+          elsif location.begin_pos.positive?
+            location.adjust(begin_pos: -1)
+          else
+            location
+          end
+        end
+
+        # Override to skip multiline_ranges check which requires AST.
+        # Syntax errors mean the AST is nil, so we go directly to
+        # the EOL comment insertion path.
+        def disable_offense(offense_range)
+          disable_offense_with_eol_or_surround_comment(offense_range)
         end
 
         def add_offense_from_error(error)
