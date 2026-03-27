@@ -5112,7 +5112,10 @@ Style/OneClassPerFile:
   Description: 'Checks that each source file defines at most one top-level class or module.'
   Enabled: pending
   VersionAdded: '1.85'
+  VersionChanged: '<<next>>'
   AllowedClasses: []
+  Exclude:
+    - 'spec/**/*'
 
 Style/OneLineConditional:
   Description: >-
