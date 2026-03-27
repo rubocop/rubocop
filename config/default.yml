@@ -5557,9 +5557,10 @@ Style/RedundantStringEscape:
 
 Style/RedundantStructKeywordInit:
   Description: 'Checks for redundant `keyword_init` option for `Struct.new`.'
-  Enabled: pending
+  Enabled: false
   SafeAutoCorrect: false
   VersionAdded: '1.85'
+  VersionChanged: '<<next>>'
 
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
