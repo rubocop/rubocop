@@ -905,6 +905,85 @@ RSpec.describe RuboCop::Cop::Style::AccessModifierDeclarations, :config do
             #{access_modifier} def foo; end; some_method; #{access_modifier} def bar; end
           RUBY
         end
+
+        it 'preserves a comment between the modifier and the method definition' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Test
+              %{access_modifier}
+              ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+
+              # Computes the foo.
+              def foo; end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+              # Computes the foo.
+              #{access_modifier} def foo; end
+            end
+          RUBY
+        end
+
+        it 'preserves multiple comments between the modifier and the method definition' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Test
+              %{access_modifier}
+              ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+
+              # First comment line.
+              # Second comment line.
+              def foo; end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+              # First comment line.
+              # Second comment line.
+              #{access_modifier} def foo; end
+            end
+          RUBY
+        end
+
+        it 'preserves the comment on the first method when autocorrecting multiple grouped methods' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Test
+              %{access_modifier}
+              ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+
+              # Docs for foo.
+              def foo; end
+
+              def bar; end
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+              # Docs for foo.
+              #{access_modifier} def foo; end
+
+              #{access_modifier} def bar; end
+            end
+          RUBY
+        end
+
+        it 'preserves correct output when `def` has a trailing comment' do
+          expect_offense(<<~RUBY, access_modifier: access_modifier)
+            class Test
+              %{access_modifier}
+              ^{access_modifier} `#{access_modifier}` should be inlined in method definitions.
+              def foo; end # trailing
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Test
+              #{access_modifier} def foo; end # trailing
+            end
+          RUBY
+        end
       end
 
       it_behaves_like 'always accepted', access_modifier
