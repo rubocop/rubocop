@@ -1,0 +1,1 @@
+* [#15070](https://github.com/rubocop/rubocop/issues/15070): Fix false positive for `Lint/RedundantSafeNavigation` when chained safe navigation is used in a conditional expression with `InferNonNilReceiver` enabled. ([@koic][])

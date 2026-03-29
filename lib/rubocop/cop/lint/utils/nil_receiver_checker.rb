@@ -84,14 +84,13 @@ module RuboCop
 
           # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           def sole_condition_of_parent_if?(node)
+            child = node
             parent = node.parent
 
             while parent
               if parent.if_type?
                 condition = parent.condition
-                if condition == node || (condition.csend_type? && !condition.receiver.equal?(node))
-                  return true
-                end
+                return true if !child.equal?(condition) && non_nil_condition?(condition, node)
 
                 parent = find_top_if(parent) if parent.elsif?
               elsif else_branch?(parent)
@@ -99,12 +98,19 @@ module RuboCop
                 parent = parent.parent
               end
 
+              child = parent
               parent = parent&.parent
             end
 
             false
           end
           # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+          def non_nil_condition?(condition, node)
+            return true if condition == node
+
+            condition.csend_type? && csend_root_receiver(condition) == node
+          end
 
           def else_branch?(node)
             node.parent&.if_type? && node.parent.else_branch == node
@@ -114,6 +120,14 @@ module RuboCop
             node = node.parent while node.elsif?
 
             node
+          end
+
+          def csend_root_receiver(node)
+            return unless (receiver = node.receiver)
+
+            receiver = receiver.receiver while receiver.call_type? && receiver.receiver
+
+            receiver
           end
         end
       end
