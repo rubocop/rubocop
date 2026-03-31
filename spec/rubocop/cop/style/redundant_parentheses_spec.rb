@@ -1034,6 +1034,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'accepts parentheses around an endless range in an assignment' do
+    expect_no_offenses(<<~RUBY)
+      var = (a..)
+      x
+    RUBY
+  end
+
   it 'accepts parentheses around a beginless range with chained method call' do
     expect_no_offenses(<<~RUBY)
       (..1).cover?(0)
