@@ -215,6 +215,37 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
       RUBY
     end
+
+    # Example from issue 14979 of rubocop/rubocop on github:
+    it 'accepts end aligned with the method call when block follows multi-line arguments' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }
+      RUBY
+    end
+
+    it 'accepts end aligned with the method call when do...end follows multi-line arguments' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) do
+            process(scheme.constraint)
+          end
+      RUBY
+    end
+
+    it 'accepts end aligned with the method call when block with multi-line arguments is chained' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }.to_s
+      RUBY
+    end
   end
 
   context 'when variables of a mass assignment spans several lines' do
@@ -807,6 +838,25 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         RUBY
       end
     end
+
+    it 'registers an offense for end not aligned with start of line when block follows multi-line arguments' do
+      expect_offense(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }
+          ^ `}` at 5, 2 is not aligned with `out` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+        }
+      RUBY
+    end
   end
 
   context 'with `EnforcedStyle: start_of_block`' do
@@ -980,6 +1030,25 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
           end
         RUBY
       end
+    end
+
+    it 'registers an offense for end not aligned with block start line when block follows multi-line arguments' do
+      expect_offense(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }
+          ^ `}` at 5, 2 is not aligned with `rgt: foo) {` at 3, 12.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+                    }
+      RUBY
     end
   end
 
