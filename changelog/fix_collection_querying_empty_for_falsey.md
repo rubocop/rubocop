@@ -1,0 +1,1 @@
+* [#15067](https://github.com/rubocop/rubocop/issues/15067): Fix `Style/CollectionQuerying` to suggest `empty?`/`!empty?` for `count` without block to preserve behavior with falsey elements. ([@wwenrr][]) 
