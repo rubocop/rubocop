@@ -38,7 +38,7 @@ module RuboCop
     def resolve_inheritance(path, hash, file, debug) # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       inherited_files = Array(hash['inherit_from'])
       base_configs(path, inherited_files, file)
-        .each_with_index.reverse_each do |base_config, index|
+        .each.with_index.reverse_each do |base_config, index|
         override_department_setting_for_cops(base_config, hash)
         override_enabled_for_disabled_departments(base_config, hash)
 

@@ -94,7 +94,7 @@ module RuboCop
           end
 
           def get_relevant_nodes(node_types, group_name)
-            node_types.each_with_object([]) do |node_type, arr|
+            node_types.each.with_object([]) do |node_type, arr|
               next unless NODE_GROUPS[group_name].include?(node_type.child)
 
               arr << node_type

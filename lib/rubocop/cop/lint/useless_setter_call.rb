@@ -107,7 +107,7 @@ module RuboCop
           end
 
           def process_multiple_assignment(masgn_node)
-            masgn_node.assignments.each_with_index do |lhs_node, index|
+            masgn_node.assignments.each.with_index do |lhs_node, index|
               next unless ASSIGNMENT_TYPES.include?(lhs_node.type)
 
               if masgn_node.rhs.array_type? && (rhs_node = masgn_node.rhs.children[index])
