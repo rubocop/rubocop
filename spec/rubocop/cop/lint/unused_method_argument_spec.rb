@@ -221,6 +221,52 @@ RSpec.describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
     end
 
+    context 'when a trailing block argument is used with yield' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def some_method(&block)
+            yield
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when yield is in a nested block' do
+        expect_no_offenses(<<~RUBY)
+          def some_method(&block)
+            items.each do |item|
+              yield item
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when yield is in a conditional' do
+        expect_no_offenses(<<~RUBY)
+          def some_method(&block)
+            yield if condition
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when yield has arguments' do
+        expect_no_offenses(<<~RUBY)
+          def some_method(&block)
+            yield 1, 2, 3
+          end
+        RUBY
+      end
+    end
+
+    context 'when a trailing block argument is used with block.call' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def some_method(&block)
+            block.call
+          end
+        RUBY
+      end
+    end
+
     context 'when a singleton method argument is unused' do
       it 'registers an offense' do
         message = "Unused method argument - `foo`. If it's necessary, use " \

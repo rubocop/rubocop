@@ -334,7 +334,12 @@ RSpec.describe RuboCop::ConfigLoader do
               - dir/**/*.rb
         YAML
 
-        create_file(file_path, ['inherit_from: ../.rubocop.yml'])
+        create_file(file_path, <<~YAML)
+          inherit_from: ../.rubocop.yml
+          Style/FrozenStringLiteralComment:
+            Include:
+              - '*.rb'
+        YAML
       end
 
       it 'gets an absolute AllCops/Exclude' do
@@ -344,6 +349,8 @@ RSpec.describe RuboCop::ConfigLoader do
 
       it 'gets an Include that is relative to the subdirectory' do
         expect(configuration_from_file['Style/StringLiterals']['Include']).to eq(['**/*.rb'])
+        expect(configuration_from_file['Style/FrozenStringLiteralComment']['Include'])
+          .to eq(['*.rb'])
       end
 
       it 'ignores parent AllCops/Exclude if ignore_parent_exclusion is true' do
@@ -362,6 +369,18 @@ RSpec.describe RuboCop::ConfigLoader do
         excludes = configuration['AllCops']['Exclude']
         expect(excludes).not_to include(File.expand_path('vendor/**'))
         expect(excludes).to include(File.expand_path('vendor/foo'))
+      end
+
+      context 'when rubocop is run in a subdirectory' do
+        subject(:configuration_from_subdirectory) do
+          Dir.chdir('dir') { described_class.configuration_from_file('.rubocop.yml') }
+        end
+
+        it 'handles paths' do
+          expect(
+            configuration_from_subdirectory['Style/FrozenStringLiteralComment']['Include']
+          ).to eq(['*.rb'])
+        end
       end
     end
 

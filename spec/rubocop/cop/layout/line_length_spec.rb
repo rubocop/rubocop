@@ -650,6 +650,18 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
     end
   end
 
+  context 'when SplitStrings is enabled' do
+    let(:cop_config) { { 'Max' => 80, 'SplitStrings' => true } }
+
+    it 'accepts a line that contains __FILE__' do
+      expect { expect_no_offenses(<<~RUBY) }.not_to raise_error
+        if __FILE__ == $PROGRAM_NAME
+          do_something
+        end
+      RUBY
+    end
+  end
+
   context 'affecting by IndentationWidth from Layout\Tab' do
     shared_examples 'with tabs indentation' do
       it "registers an offense for a line that's including 2 tab with size 2 " \

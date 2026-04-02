@@ -348,8 +348,20 @@ module RuboCop
 
         def remove_modifier_node_within_begin(corrector, modifier_node, begin_node)
           def_node = begin_node.children[begin_node.children.index(modifier_node) + 1]
-          range = modifier_node.source_range.begin.join(def_node.source_range.begin)
-          corrector.remove(range)
+          # Stop the removal range at the first comment that precedes the def, if
+          # any exist. Without this, comments between the modifier and the def are
+          # dropped because they fall inside the removed range.
+          end_pos = first_comment_or_node_start(def_node)
+          corrector.remove(modifier_node.source_range.begin.join(end_pos))
+        end
+
+        def first_comment_or_node_start(node)
+          preceding = processed_source.ast_with_comments[node].select do |comment|
+            comment.loc.line < node.loc.line
+          end
+          return node.source_range.begin if preceding.empty?
+
+          preceding.first.source_range.begin
         end
 
         def def_source(node, def_nodes)

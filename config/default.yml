@@ -4796,7 +4796,6 @@ Style/ModuleMemberExistenceCheck:
   Description: 'Checks for usage of `Module` methods returning arrays that can be replaced with equivalent predicates.'
   Enabled: pending
   VersionAdded: '1.82'
-  AllowedMethods: []
 
 Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'
@@ -5112,7 +5111,10 @@ Style/OneClassPerFile:
   Description: 'Checks that each source file defines at most one top-level class or module.'
   Enabled: pending
   VersionAdded: '1.85'
+  VersionChanged: '<<next>>'
   AllowedClasses: []
+  Exclude:
+    - 'spec/**/*'
 
 Style/OneLineConditional:
   Description: >-
@@ -5557,9 +5559,10 @@ Style/RedundantStringEscape:
 
 Style/RedundantStructKeywordInit:
   Description: 'Checks for redundant `keyword_init` option for `Struct.new`.'
-  Enabled: pending
+  Enabled: false
   SafeAutoCorrect: false
   VersionAdded: '1.85'
+  VersionChanged: '<<next>>'
 
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'

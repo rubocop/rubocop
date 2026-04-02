@@ -270,14 +270,17 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def body_range?(begin_node, node)
+          return false if begin_node.chained?
           return false unless node.range_type?
           return false unless (parent = begin_node.parent)
-          return false if parent.pair_type?
+          return false unless parent.begin_type?
 
           (node.begin.nil? && begin_node == parent.children.first) ||
             (node.end.nil? && begin_node == parent.children.last)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def disallowed_one_line_pattern_matching?(begin_node, node)
           if (parent = begin_node.parent)

@@ -32,6 +32,21 @@ RSpec.describe RuboCop::Cop::Cop, :config do
 
         it { is_expected.to be_nil }
       end
+
+      describe 'for a builtin cop class with only private methods' do
+        let(:cop_class) { RuboCop::Cop::Layout::AssignmentIndentation }
+
+        it 'returns the documentation URL' do
+          expect(cop_class.instance_methods(false)).to be_empty
+          expect(url).to eq 'https://docs.rubocop.org/rubocop/cops_layout.html#layoutassignmentindentation'
+        end
+      end
+
+      describe 'for an anonymous class' do
+        it 'is not considered builtin' do
+          expect(RuboCop::Cop::Documentation).not_to be_builtin(Class.new)
+        end
+      end
     end
 
     context 'when passing a config' do

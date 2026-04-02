@@ -45,6 +45,7 @@ module RuboCop
         base_config.each do |k, v|
           next unless v.is_a?(Hash)
 
+          only_base_has_include = v.key?('Include') && !hash.dig(k, 'Include')
           if hash.key?(k)
             v = merge(v, hash[k],
                       cop_name: k, file: file, debug: debug,
@@ -52,7 +53,7 @@ module RuboCop
                       inherit_mode: determine_inherit_mode(hash, k))
           end
           hash[k] = v
-          fix_include_paths(base_config.loaded_path, hash, path, k, v) if v.key?('Include')
+          fix_include_paths(base_config.loaded_path, hash, path, k, v) if only_base_has_include
         end
       end
     end

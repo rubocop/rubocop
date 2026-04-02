@@ -167,7 +167,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stderr.string).to eq ''
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:3:1: F: Lint/Syntax: unexpected " \
+      .to eq(["#{abs('example.rb')}:2:3: F: Lint/Syntax: unexpected " \
               'token $end (Using Ruby 2.7 parser; configure using ' \
               '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
@@ -1312,6 +1312,9 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         create_file('child/grandkid/.rubocop.yml', <<~YAML)
           inherit_from:
             - ../../.rubocop.yml
+          Style/FrozenStringLiteralComment:
+            Include:
+              - '*.rb'
         YAML
       end
 
@@ -1329,6 +1332,34 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           Dir.chdir('child/grandkid') { expect(cli.run(['-L'])).to eq(0) }
           expect($stdout.string).to eq("file.rbi\n")
         end
+      end
+    end
+
+    context 'when a .rubocop.yml is inherited from a parent directory' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            DisabledByDefault: true
+          Style/FrozenStringLiteralComment:
+            Enabled: true
+        YAML
+        create_file('child/.rubocop.yml', <<~YAML)
+          inherit_from: ../.rubocop.yml
+          Style/FrozenStringLiteralComment:
+            Include:
+              - '*.rb'
+        YAML
+      end
+
+      it 'keeps the include pattern from the local configuration' do
+        Dir.chdir('child') do
+          expect(cli.run(['--show-cops', 'Style/FrozenStringLiteralComment'])).to eq(0)
+        end
+        expect($stderr.string).to eq('')
+        expect($stdout.string.lines.last(3).map(&:strip).join("\n")).to eq(<<~TEXT)
+          Include:
+          - "*.rb"
+        TEXT
       end
     end
 
