@@ -83,7 +83,7 @@ module RuboCop
               class_def.each_child_node(:send)
             end
 
-          send_nodes.each_with_object([]) do |node, macros|
+          send_nodes.each.with_object([]) do |node, macros|
             macros << Macro.new(node) if Macro.macro?(node)
           end.group_by(&:visibility)
         end

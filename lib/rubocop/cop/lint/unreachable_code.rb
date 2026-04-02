@@ -55,7 +55,7 @@ module RuboCop
           # Once a flow-of-control statement is reached, every following statement
           # in the block is unreachable, not just the one immediately after it.
           flow_reached = false
-          expressions.each_with_index do |expression, index|
+          expressions.each.with_index do |expression, index|
             if flow_reached
               add_offense(expression)
             elsif index < expressions.size - 1 && flow_expression?(expression)

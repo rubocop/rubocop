@@ -101,7 +101,7 @@ module RuboCop
 
         def on_branching_statement(node)
           branches = branches(node)
-          branches.each_with_object(Set.new) do |branch, previous|
+          branches.each.with_object(Set.new) do |branch, previous|
             next unless consider_branch?(branches, branch)
 
             add_offense(offense_range(branch)) unless previous.add?(branch)

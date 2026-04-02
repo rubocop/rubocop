@@ -189,7 +189,7 @@ module RuboCop
 
       def interrupting_operator_lines
         @interrupting_operator_lines ||=
-          processed_source.tokens.each_with_object(Set.new) do |token, lines|
+          processed_source.tokens.each.with_object(Set.new) do |token, lines|
             next unless ASSIGNMENT_OR_COMPARISON_TOKENS.include?(token.type)
 
             lines << token.line unless assignment_lines.include?(token.line)
@@ -222,7 +222,7 @@ module RuboCop
         @definition_boundary_lines ||= begin
           nodes = processed_source.ast&.each_node(:any_def) || []
 
-          nodes.each_with_object(Set.new) do |node, lines|
+          nodes.each.with_object(Set.new) do |node, lines|
             lines << node.first_line << node.last_line
           end
         end
