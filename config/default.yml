@@ -5115,6 +5115,7 @@ Style/OneClassPerFile:
   AllowedClasses: []
   Exclude:
     - 'spec/**/*'
+    - 'test/**/*'
 
 Style/OneLineConditional:
   Description: >-
