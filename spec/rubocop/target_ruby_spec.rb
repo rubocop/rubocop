@@ -490,7 +490,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
-      context 'when .tool-versions contains only a ruby version' do
+      context 'when mise.toml contains only a ruby version' do
         let(:mise_toml) { ['[tools]', 'ruby = "3.0.0"'] }
         let(:ruby_version_to_f) { 3.0 }
 
@@ -505,7 +505,7 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
         end
       end
 
-      context 'when .tool-versions contains different runtimes' do
+      context 'when mise.toml contains different runtimes' do
         let(:mise_toml) { ['[tools]', 'nodejs = "14.9.0"', 'ruby = "3.0.0"'] }
         let(:ruby_version_to_f) { 3.0 }
 
