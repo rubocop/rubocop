@@ -488,6 +488,32 @@ RSpec.describe RuboCop::Cop::Style::GuardClause, :config do
     RUBY
   end
 
+  it 'registers an offense when using heredoc with a method call as an argument of raise in `then` branch' do
+    expect_offense(<<~RUBY)
+      def func
+        if condition
+        ^^ Use a guard clause (`raise <<~MESSAGE.strip unless condition`) instead of wrapping the code inside a conditional expression.
+          foo
+        else
+          raise <<~MESSAGE.strip
+            oops
+          MESSAGE
+        end
+      end
+    RUBY
+
+    # NOTE: Let `Layout/HeredocIndentation`, `Layout/ClosingHeredocIndentation`, and
+    #       `Layout/IndentationConsistency` cops autocorrect inconsistent indentations.
+    expect_correction(<<~RUBY)
+      def func
+        raise <<~MESSAGE.strip unless condition
+            oops
+          MESSAGE
+      foo
+      end
+    RUBY
+  end
+
   it 'registers an offense when using heredoc as an argument of method call of raise in `else` branch' do
     expect_offense(<<~RUBY)
       def func
