@@ -85,7 +85,7 @@ module RuboCop
         private
 
         def autocorrect(corrector, node)
-          if then?(node)
+          if node.then?
             # If the nested `if` is a then node, correct it first,
             # then the next pass will use `correct_to_elsif_from_if_inside_else_form`
             IfThenCorrector.new(node, indentation: 0).call(corrector)
@@ -122,10 +122,6 @@ module RuboCop
 
           corrector.remove(condition)
           corrector.remove(range_by_whole_lines(find_end_range(node), include_final_newline: true))
-        end
-
-        def then?(node)
-          node.loc.begin&.source == 'then'
         end
 
         def find_end_range(node)
