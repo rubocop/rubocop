@@ -111,7 +111,7 @@ module RuboCop
         def contains_guard_clause?(node)
           return false unless (branch = node.if_branch)
 
-          guard_clause_branch?(branch)
+          branch.guard_clause? || guard_clause_branch?(branch)
         end
 
         def next_line_empty_or_allowed_directive_comment?(line)

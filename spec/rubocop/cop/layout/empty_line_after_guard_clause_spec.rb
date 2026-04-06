@@ -399,6 +399,17 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'accepts multiple guard clauses using `and return`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        render :bar and return if condition1?
+        render :baz and return if condition2?
+
+        foobar
+      end
+    RUBY
+  end
+
   it 'accepts a guard clause followed by a multi-line guard clause with `raise`' do
     expect_no_offenses(<<~RUBY)
       def foo
