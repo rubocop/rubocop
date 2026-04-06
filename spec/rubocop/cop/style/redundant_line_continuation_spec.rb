@@ -428,6 +428,34 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when line continuations for interpolated double quoted string' do
+    expect_no_offenses(<<~'RUBY')
+            "longlong-string \
+      #{a}"
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations for interpolated backtick string' do
+    expect_no_offenses(<<~'RUBY')
+            `longlong-command \
+      #{a}`
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations for interpolated regexp' do
+    expect_no_offenses(<<~'RUBY')
+            /longlong-pattern \
+      #{a}/
+    RUBY
+  end
+
+  it 'does not register an offense when line continuations for interpolated dynamic symbol' do
+    expect_no_offenses(<<~'RUBY')
+            :"longlong-symbol \
+      #{a}"
+    RUBY
+  end
+
   it 'does not register an offense when line continuations for single quoted string' do
     expect_no_offenses(<<~'RUBY')
       foo = 'foo \
