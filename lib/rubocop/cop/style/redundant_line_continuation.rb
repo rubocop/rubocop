@@ -82,6 +82,7 @@ module RuboCop
           tIDENTIFIER kBREAK kNEXT kRETURN kSUPER kYIELD
         ].freeze
         ARITHMETIC_OPERATOR_TOKENS = %i[tDIVIDE tDSTAR tMINUS tPERCENT tPLUS tSTAR2].freeze
+        STRING_LITERAL_BEGIN_TOKENS = %i[tSTRING_BEG tXSTRING_BEG tREGEXP_BEG tSYMBEG].freeze
 
         def on_new_investigation
           return unless processed_source.ast
@@ -105,6 +106,7 @@ module RuboCop
             string_concatenation?(range.source_line) ||
             start_with_arithmetic_operator?(range) ||
             inside_string_literal_or_method_with_argument?(range) ||
+            inside_string_literal_with_interpolation?(range) ||
             leading_dot_method_chain_with_blank_line?(range)
         end
 
@@ -130,6 +132,20 @@ module RuboCop
             inside_string_literal?(range, token) ||
               method_with_argument?(line_range, token, next_token)
           end
+        end
+
+        def inside_string_literal_with_interpolation?(range)
+          string_depth = 0
+          processed_source.tokens.each do |token|
+            break if token.pos.begin_pos >= range.begin_pos
+
+            if STRING_LITERAL_BEGIN_TOKENS.include?(token.type)
+              string_depth += 1
+            elsif token.type == :tSTRING_END
+              string_depth -= 1
+            end
+          end
+          string_depth.positive?
         end
 
         def leading_dot_method_chain_with_blank_line?(range)
