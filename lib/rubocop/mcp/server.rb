@@ -190,6 +190,8 @@ module RuboCop
           result = yield(path, source_code, safety)
 
           ::MCP::Tool::Response.new([{ type: 'text', text: result }])
+        rescue RuboCop::Error => e
+          ::MCP::Tool::Response.new([{ type: 'text', text: e.message }], error: true)
         end
       end
       # rubocop:enable Metrics/MethodLength, Metrics/ParameterLists
