@@ -224,15 +224,18 @@ module RuboCop
         end
 
         def find_heredoc_argument(node)
-          return unless node&.call_type?
+          return unless node
 
-          last_arg = node.last_argument
+          node = node.children.first while node.begin_type?
+          return node if heredoc?(node)
+          return unless node.call_type?
 
-          if heredoc?(last_arg)
-            last_arg
-          elsif last_arg&.call_type?
-            find_heredoc_argument(last_arg)
+          node.arguments.reverse_each do |argument|
+            heredoc_argument = find_heredoc_argument(argument)
+            return heredoc_argument if heredoc_argument
           end
+
+          find_heredoc_argument(node.receiver)
         end
 
         def autocorrect_heredoc_argument(corrector, node, heredoc_node, leave_branch, guard)
