@@ -742,6 +742,12 @@ RSpec.describe RuboCop::Cop::Layout::EndAlignment, :config do
                 end && ""
         RUBY
       end
+
+      it 'does not register an offense for an empty `begin`' do
+        expect_no_offenses(<<~RUBY)
+          foo = ()
+        RUBY
+      end
     end
 
     context 'when EnforcedStyleAlignWith is variable' do

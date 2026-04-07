@@ -123,6 +123,7 @@ module RuboCop
           AlignmentCorrector.align_end(corrector, processed_source, node, alignment_node(node))
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the
           # assignment, we let rhs be the receiver of those method calls before
@@ -131,13 +132,14 @@ module RuboCop
 
           # If `rhs` is a `begin` node or a logical operator,
           # unwrap to find the leading conditional.
-          rhs = rhs.child_nodes.first while rhs.type?(:begin, :or, :and)
+          rhs = rhs.child_nodes.first while rhs&.type?(:begin, :or, :and)
 
-          return unless rhs.conditional?
+          return unless rhs&.conditional?
           return if rhs.if_type? && rhs.ternary?
 
           check_asgn_alignment(node, rhs)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def check_asgn_alignment(outer_node, inner_node)
           align_with = {
