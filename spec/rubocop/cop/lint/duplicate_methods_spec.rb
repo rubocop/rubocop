@@ -942,6 +942,108 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  it 'does not register an offense for the same instance method in different Class.new blocks ' \
+     'assigned to different constants' do
+    expect_no_offenses(<<~RUBY)
+      self::A = Class.new do
+        def foo
+          1
+        end
+      end
+      self::B = Class.new do
+        def foo
+          2
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks ' \
+     'assigned to different constants' do
+    expect_no_offenses(<<~RUBY)
+      self::A = Class.new do
+        def self.name
+          'Foo'
+        end
+      end
+      self::B = Class.new do
+        def self.name
+          'Bar'
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for duplicate methods inside the same Class.new block assigned to a constant' do
+    expect_offense(<<~RUBY)
+      self::A = Class.new do
+        def foo
+          1
+        end
+        def foo
+        ^^^^^^^ Method `::A#foo` is defined at both (string):2 and (string):5.
+          2
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks ' \
+     'returned from different methods' do
+    expect_no_offenses(<<~RUBY)
+      def build_foo
+        Class.new do
+          def name
+            'Foo'
+          end
+        end
+      end
+      def build_bar
+        Class.new do
+          def name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks ' \
+     'returned from different methods' do
+    expect_no_offenses(<<~RUBY)
+      def build_foo
+        Class.new do
+          def self.name
+            'Foo'
+          end
+        end
+      end
+      def build_bar
+        Class.new do
+          def self.name
+            'Bar'
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for duplicate methods inside the same Class.new block returned from a method' do
+    expect_offense(<<~RUBY)
+      def build_klass
+        Class.new do
+          def name
+            1
+          end
+          def name
+          ^^^^^^^^ Method `Object#name` is defined at both (string):3 and (string):6.
+            2
+          end
+        end
+      end
+    RUBY
+  end
+
   it 'ignores Module.new blocks which are passed as method arguments' do
     expect_no_offenses(<<~RUBY)
       A.prepend(

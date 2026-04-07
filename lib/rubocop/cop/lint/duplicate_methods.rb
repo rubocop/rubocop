@@ -316,7 +316,7 @@ module RuboCop
 
         def anon_block_scope_id(anon_block)
           parent = anon_block.parent
-          return unless parent&.type?(:any_block, :begin, :call)
+          return unless parent&.type?(:any_block, :begin, :call, :casgn, :any_def)
 
           if (receiver = named_receiver(parent))
             "#{receiver.source}.#{parent.method_name}"
