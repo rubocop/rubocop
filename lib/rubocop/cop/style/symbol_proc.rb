@@ -260,10 +260,10 @@ module RuboCop
         end
 
         def begin_pos_for_replacement(node)
-          expr = node.send_node.source_range
+          send_node = node.send_node
 
-          if (paren_pos = (expr.source =~ /\(\s*\)$/))
-            expr.begin_pos + paren_pos
+          if send_node.parenthesized? && send_node.arguments.empty?
+            send_node.loc.begin.begin_pos
           else
             node.loc.begin.begin_pos
           end
