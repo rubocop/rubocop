@@ -63,19 +63,9 @@ module RuboCop
         end
 
         def spaces_before_left_parenthesis(node)
-          receiver = node.receiver
-          receiver_length = if receiver
-                              receiver.source.length
-                            else
-                              0
-                            end
-          without_receiver = node.source[receiver_length..]
+          return 0 if node.parenthesized?
 
-          # Escape question mark if any.
-          method_regexp = Regexp.escape(node.method_name)
-
-          match = without_receiver.match(/^\s*&?\.?\s*#{method_regexp}(\s+)\(/)
-          match ? match.captures[0].length : 0
+          node.first_argument.source_range.begin_pos - node.loc.selector.end_pos
         end
 
         def space_range(expr, space_length)
