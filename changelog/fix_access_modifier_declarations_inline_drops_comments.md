@@ -1,1 +1,0 @@
-* [#11051](https://github.com/rubocop/rubocop/issues/11051): Fix `Style/AccessModifierDeclarations` inline autocorrect dropping comments between the access modifier and the following method definition. ([@dduugg][])

@@ -1,1 +1,0 @@
-* [#14361](https://github.com/rubocop/rubocop/issues/14361): Fix false positive in `file_to_include?` when a relative `Include` pattern matches a parent directory name in the absolute file path. ([@jonas054][])
