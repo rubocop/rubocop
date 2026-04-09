@@ -5111,7 +5111,7 @@ Style/OneClassPerFile:
   Description: 'Checks that each source file defines at most one top-level class or module.'
   Enabled: pending
   VersionAdded: '1.85'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.86'
   AllowedClasses: []
   Exclude:
     - 'spec/**/*'
@@ -5563,7 +5563,7 @@ Style/RedundantStructKeywordInit:
   Enabled: false
   SafeAutoCorrect: false
   VersionAdded: '1.85'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.86'
 
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'

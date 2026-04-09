@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.86.1 (2026-04-09)
+
 ### Bug fixes
 
 * [#11051](https://github.com/rubocop/rubocop/issues/11051): Fix `Style/AccessModifierDeclarations` inline autocorrect dropping comments between the access modifier and the following method definition. ([@dduugg][])
