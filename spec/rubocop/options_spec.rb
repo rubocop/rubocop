@@ -205,7 +205,9 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
           Additional Modes:
               -L, --list-target-files          List all files RuboCop will inspect.
-                  --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
+                  --list-enabled-cops-for PATH List which cops will inspect a given file or
+                                               directory.
+                  --show-cops [COP1,COP2,...]  Show the given cops, or all cops by
                                                default, and their configurations for the
                                                current directory.
                                                You can use `*` as a wildcard.
