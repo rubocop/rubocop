@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::NumberedParametersLimit, :config do
+  include_context 'with exclude limit tracking'
+
   let(:cop_config) { { 'Max' => max } }
   let(:max) { 2 }
 
@@ -93,7 +95,7 @@ RSpec.describe RuboCop::Cop::Style::NumberedParametersLimit, :config do
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid using more than 2 numbered parameters; 5 detected.
       RUBY
 
-      expect(cop.config_to_allow_offenses).to eq(exclude_limit: { 'Max' => 5 })
+      expect(read_exclude_limit(cop)).to eq('Max' => 5)
     end
   end
 end

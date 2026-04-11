@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
+  include_context 'with exclude limit tracking'
+
   let(:cop_config) { { 'MinDigits' => 5 } }
 
   it 'registers an offense for a long undelimited integer' do
@@ -167,7 +169,7 @@ RSpec.describe RuboCop::Cop::Style::NumericLiterals, :config do
 
   context 'for --auto-gen-config' do
     let(:enabled) { cop.config_to_allow_offenses['Enabled'] }
-    let(:min_digits) { cop.config_to_allow_offenses.dig(:exclude_limit, 'MinDigits') }
+    let(:min_digits) { read_exclude_limit(cop, 'MinDigits') }
 
     context 'when the number is only digits' do
       it 'detects right value of MinDigits based on the longest number' do
