@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
+  include_context 'with exclude limit tracking'
+
   let(:cop_config) { { 'Max' => 2 } }
 
   it 'accepts `Max` levels of nesting' do
@@ -25,7 +27,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       RUBY
-      expect(cop.config_to_allow_offenses[:exclude_limit]).to eq('Max' => 3)
+      expect(read_exclude_limit(cop)).to eq('Max' => 3)
     end
   end
 
@@ -43,7 +45,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       RUBY
-      expect(cop.config_to_allow_offenses[:exclude_limit]).to eq('Max' => 4)
+      expect(read_exclude_limit(cop)).to eq('Max' => 4)
     end
   end
 
@@ -65,7 +67,7 @@ RSpec.describe RuboCop::Cop::Metrics::BlockNesting, :config do
           end
         end
       RUBY
-      expect(cop.config_to_allow_offenses[:exclude_limit]).to eq('Max' => 3)
+      expect(read_exclude_limit(cop)).to eq('Max' => 3)
     end
   end
 

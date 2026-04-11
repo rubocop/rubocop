@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
+  include_context 'with exclude limit tracking'
+
   let(:cop_config) { { 'Max' => 80, 'AllowedPatterns' => nil } }
 
   let(:config) do
@@ -16,7 +18,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
       #{maximum_string}#
       _{maximum_string}^ Line is too long. [81/80]
     RUBY
-    expect(cop.config_to_allow_offenses).to eq(exclude_limit: { 'Max' => 81 })
+    expect(read_exclude_limit(cop)).to eq('Max' => 81)
   end
 
   it 'highlights excessive characters' do
@@ -670,7 +672,7 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
           \t\t#{'#' * 28}a
               #{' ' * 24}^^^ Line is too long. [33/30]
         RUBY
-        expect(cop.config_to_allow_offenses).to eq(exclude_limit: { 'Max' => 33 })
+        expect(read_exclude_limit(cop)).to eq('Max' => 33)
       end
 
       it "accepts a line that's including 1 tab with size 2 and 28 other characters" do
