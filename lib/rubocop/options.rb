@@ -16,7 +16,9 @@ module RuboCop
                       'root of the project. RuboCop will use this path to determine which ' \
                       'cops are enabled (via eg. Include/Exclude), and so that certain cops ' \
                       'like Naming/FileName can be checked.'
-    EXITING_OPTIONS = %i[version verbose_version show_cops show_docs_url lsp mcp].freeze
+    EXITING_OPTIONS = %i[
+      version verbose_version show_cops list_enabled_cops_for show_docs_url lsp mcp
+    ].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
@@ -236,6 +238,7 @@ module RuboCop
     def add_additional_modes(opts)
       section(opts, 'Additional Modes') do
         option(opts, '-L', '--list-target-files')
+        option(opts, '--list-enabled-cops-for PATH')
         option(opts, '--show-cops [COP1,COP2,...]') do |list|
           @options[:show_cops] = list.nil? ? [] : list.split(',')
         end
@@ -599,7 +602,7 @@ module RuboCop
       display_only_correctable:         ['Only output correctable offense messages.'],
       display_only_safe_correctable:    ['Only output safe-correctable offense messages',
                                          'when combined with --display-only-correctable.'],
-      show_cops:                        ['Shows the given cops, or all cops by',
+      show_cops:                        ['Show the given cops, or all cops by',
                                          'default, and their configurations for the',
                                          'current directory.',
                                          'You can use `*` as a wildcard.'],
@@ -628,6 +631,8 @@ module RuboCop
                                          'autocorrected source. This is especially useful',
                                          'when combined with --autocorrect and --stdin.'],
       list_target_files:                'List all files RuboCop will inspect.',
+      list_enabled_cops_for:            ['List which cops will inspect a given file or',
+                                         'directory.'],
       autocorrect:                      'Autocorrect offenses (only when it\'s safe).',
       auto_correct:                     '(same, deprecated)',
       safe_auto_correct:                '(same, deprecated)',

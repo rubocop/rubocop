@@ -282,6 +282,43 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--list-enabled-cops-for' do
+    let(:output) { $stdout.string.lines(chomp: true) }
+
+    before { create_file('example.rb', "# frozen_string_literal: true\n") }
+
+    it 'lists cops enabled by default' do
+      create_file('.rubocop.yml', <<~YAML)
+        plugins:
+          - rubocop-internal_affairs
+      YAML
+
+      expect(cli.run(['--list-enabled-cops-for', 'example.rb'])).to eq(0)
+      expect(output).to include('InternalAffairs/CopDescription')
+    end
+
+    it 'respects inherited department enables and per-cop disables' do
+      create_file('.rubocop-parent.yml', <<~YAML)
+        AllCops:
+          DisabledByDefault: true
+
+        Style:
+          Enabled: true
+
+        Layout/LineLength:
+          Enabled: false
+      YAML
+
+      create_file('.rubocop.yml', <<~YAML)
+        inherit_from: ./.rubocop-parent.yml
+      YAML
+
+      expect(cli.run(['--list-enabled-cops-for', 'example.rb'])).to eq(0)
+      expect(output).to include('Style/Alias')
+      expect(output).not_to include('Layout/LineLength')
+    end
+  end
+
   describe '--version' do
     it 'exits cleanly' do
       expect(cli.run(['-v'])).to eq(0)
