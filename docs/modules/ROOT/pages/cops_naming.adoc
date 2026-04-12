@@ -945,7 +945,7 @@ end
 ----
 
 [#enforcedstyleforleadingunderscores-_optional-namingmemoizedinstancevariablename]
-==== EnforcedStyleForLeadingUnderscores :optional
+==== EnforcedStyleForLeadingUnderscores: optional
 
 [source,ruby]
 ----
