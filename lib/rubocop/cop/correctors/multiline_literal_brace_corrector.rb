@@ -59,11 +59,7 @@ module RuboCop
       end
 
       def content_if_comment_present(corrector, node)
-        range = range_with_surrounding_space(
-          children(node).last.source_range,
-          side: :right
-        ).end.resize(1)
-        if range.source == '#'
+        if processed_source.comment_at_line(children(node).last.last_line)
           select_content_to_be_inserted_after_last_element(corrector, node)
         else
           node.loc.end.source
