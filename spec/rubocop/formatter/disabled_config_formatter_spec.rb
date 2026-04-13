@@ -232,6 +232,28 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
+  context 'when a cop has a frozen array config parameter' do
+    before do
+      default_config = RuboCop::ConfigLoader.default_configuration
+      allow(default_config).to receive(:[]).with('Test/Cop1').and_return(
+        {
+          'Enabled' => true,
+          'AllowedOperators' => %w[* + & | ^].freeze
+        }
+      )
+      allow(default_config).to receive(:[]).with('Test/Cop2').and_return({})
+
+      formatter.started(['test_a.rb'])
+      formatter.file_started('test_a.rb', options)
+      formatter.file_finished('test_a.rb', offenses)
+      formatter.finished(['test_a.rb'])
+    end
+
+    it 'does not raise a `FrozenError`' do
+      expect(output.string).to include('# AllowedOperators: *, +, &, |, ^')
+    end
+  end
+
   context 'with autocorrect supported cop', :restore_registry do
     before do
       stub_cop_class('Test::Cop3') { extend RuboCop::Cop::AutoCorrector }
