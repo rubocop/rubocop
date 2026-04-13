@@ -109,7 +109,7 @@ module RuboCop
       #     @_foo = calculate_expensive_thing
       #   end
       #
-      # @example EnforcedStyleForLeadingUnderscores :optional
+      # @example EnforcedStyleForLeadingUnderscores: optional
       #   # bad
       #   def foo
       #     @something ||= calculate_expensive_thing
