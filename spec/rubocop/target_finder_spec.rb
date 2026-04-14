@@ -678,6 +678,18 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
+    context 'when base_dir is inside a hidden parent directory (e.g. worktree)' do
+      let(:base_dir) { File.expand_path('.worktrees/feature') }
+
+      it 'picks Ruby files normally despite the hidden parent' do
+        create_empty_file('.worktrees/feature/lib/ruby6.rb')
+        create_empty_file('.worktrees/feature/lib/.hidden_in_worktree/ruby7.rb')
+        create_empty_file('.worktrees/feature/ruby8.rb')
+
+        expect(found_basenames).to contain_exactly('ruby6.rb', 'ruby8.rb')
+      end
+    end
+
     context 'w/ --fail-fast option' do
       let(:options) { { force_exclusion: force_exclusion, debug: debug, fail_fast: true } }
 
