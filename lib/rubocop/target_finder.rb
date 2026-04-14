@@ -44,10 +44,10 @@ module RuboCop
       all_files = find_files(base_dir, File::FNM_DOTMATCH)
       base_dir_config = @config_store.for(base_dir)
 
-      target_files = if hidden_path?(base_dir)
+      target_files = if hidden_dir?(base_dir)
                        all_files.select { |file| ruby_file?(file) }
                      else
-                       all_files.select { |file| to_inspect?(file, base_dir_config) }
+                       all_files.select { |file| to_inspect?(file, base_dir, base_dir_config) }
                      end
 
       target_files.sort_by!(&order)
@@ -72,15 +72,22 @@ module RuboCop
 
     private
 
-    def to_inspect?(file, base_dir_config)
+    def to_inspect?(file, base_dir, base_dir_config)
       return false if base_dir_config.file_to_exclude?(file)
-      return true if !hidden_path?(file) && ruby_file?(file)
+      return true if !hidden_file_in_dir?(file, base_dir) && ruby_file?(file)
 
       base_dir_config.file_to_include?(file)
     end
 
-    def hidden_path?(path)
-      path.include?(HIDDEN_PATH_SUBSTRING)
+    def hidden_dir?(dir)
+      basename = File.basename(dir)
+      basename.start_with?('.') && basename != '.' && basename != '..'
+    end
+
+    def hidden_file_in_dir?(file, base_dir)
+      base_dir = "#{base_dir}#{File::SEPARATOR}" unless base_dir.end_with?(File::SEPARATOR)
+      relative = file.delete_prefix(base_dir)
+      relative.start_with?('.') || relative.include?(HIDDEN_PATH_SUBSTRING)
     end
 
     def wanted_dir_patterns(base_dir, exclude_pattern, flags)
