@@ -98,6 +98,14 @@ module RuboCop
         freeze
       end
 
+      def marshal_dump
+        [@severity, @location, @message, @cop_name, @status]
+      end
+
+      def marshal_load(array)
+        @severity, @location, @message, @cop_name, @status = array
+      end
+
       # @api public
       #
       # @!attribute [r] correctable?

@@ -62,6 +62,8 @@ module RuboCop
       @errors = []
       @warnings = []
       @aborting = false
+      @inspected_files = []
+      @report_queue = {}
     end
 
     def run(paths)
@@ -73,7 +75,6 @@ module RuboCop
       if @options[:list_target_files]
         list_files(target_files)
       else
-        warm_cache(target_files) if @options[:parallel]
         inspect_files(target_files)
       end
     rescue Interrupt
@@ -90,21 +91,6 @@ module RuboCop
 
     private
 
-    # Warms up the RuboCop cache by forking a suitable number of RuboCop
-    # instances that each inspects its allotted group of files.
-    def warm_cache(target_files)
-      saved_options = @options.dup
-      if target_files.length <= 1
-        puts 'Skipping parallel inspection: only a single file needs inspection' if @options[:debug]
-        return
-      end
-      puts 'Running parallel inspection' if @options[:debug]
-      %i[autocorrect safe_autocorrect].each { |opt| @options[opt] = false }
-      Parallel.each(target_files) { |target_file| file_offenses(target_file) }
-    ensure
-      @options = saved_options
-    end
-
     def find_target_files(paths)
       target_finder = TargetFinder.new(@config_store, @options)
       mode = if @options[:only_recognized_file_types]
@@ -116,12 +102,15 @@ module RuboCop
       target_files.each(&:freeze).freeze
     end
 
-    def inspect_files(files)
-      inspected_files = []
-
+    def inspect_files(files) # rubocop:disable Metrics/AbcSize
       formatter_set.started(files)
+      file_iterator(files) do |file|
+        offenses = process_file(file)
+        succeeded = offenses.none? { |o| considered_failure?(o) && offense_displayed?(o) }
+        raise Parallel::Break if @options[:fail_fast] && !succeeded
 
-      each_inspected_file(files) { |file| inspected_files << file }
+        [offenses, succeeded]
+      end
     ensure
       # OPTIMIZE: Calling `ResultCache.cleanup` takes time. This optimization
       # mainly targets editors that integrates RuboCop. When RuboCop is run
@@ -129,23 +118,74 @@ module RuboCop
       if files.size > 1 && cached_run?
         ResultCache.cleanup(@config_store, @options[:debug], @options[:cache_root])
       end
-
-      formatter_set.finished(inspected_files.freeze)
+      formatter_set.finished(@inspected_files.freeze)
       formatter_set.close_output_files
     end
 
-    def each_inspected_file(files)
-      files.reduce(true) do |all_passed, file|
-        offenses = process_file(file)
-        yield file
+    def file_iterator(files, &block)
+      all_passed = true
 
-        if offenses.any? { |o| considered_failure?(o) && offense_displayed?(o) }
-          break false if @options[:fail_fast]
+      on_start = ->(file, _index) { file_started(file) }
+      on_finish = lambda do |file, index, (offenses, passed)|
+        all_passed &&= passed
+        finished_report(file, index, offenses)
+      end
 
-          next false
-        end
+      if run_in_parallel?(files)
+        parallel_file_iterator(files, on_start, on_finish, &block)
+      else
+        serial_file_iterator(files, on_start, on_finish, &block)
+      end
 
-        all_passed
+      process_remaining_report_queue
+
+      all_passed
+    end
+
+    def finished_report(file, index, offenses)
+      @report_queue[index] = [file, offenses]
+      @next_index_to_report ||= 0
+      while @report_queue.key?(@next_index_to_report)
+        process_report_queue_entry(@next_index_to_report)
+        @next_index_to_report += 1
+      end
+    end
+
+    def process_report_queue_entry(index)
+      file, offenses = @report_queue.delete(index)
+      file_finished(file, offenses)
+    end
+
+    def process_remaining_report_queue
+      @report_queue.keys.sort.each do |index|
+        process_report_queue_entry(index)
+      end
+    end
+
+    def run_in_parallel?(files)
+      return false if @options[:auto_gen_config]
+      return false unless @options[:parallel]
+
+      if files.size <= 1
+        puts 'Skipping parallel inspection: only a single file needs inspection' if @options[:debug]
+        return false
+      end
+
+      puts 'Running parallel inspection' if @options[:debug]
+      true
+    end
+
+    def parallel_file_iterator(files, on_start, on_finish, &block)
+      Parallel.each(files, start: on_start, finish: on_finish, &block)
+    end
+
+    def serial_file_iterator(files, on_start, on_finish, &block)
+      files.each_with_index do |file, index|
+        on_start.call(file, index)
+        result = yield file
+        on_finish.call(file, index, result)
+      rescue Parallel::Break
+        break
       end
     end
 
@@ -154,16 +194,13 @@ module RuboCop
     end
 
     def process_file(file)
-      file_started(file)
-      offenses = file_offenses(file)
+      file_offenses(file)
     rescue InfiniteCorrectionLoop => e
       raise e if @options[:raise_cop_error]
 
       errors << e
       warn Rainbow(e.message).red
-      offenses = e.offenses.compact.sort.freeze
-    ensure
-      file_finished(file, offenses || [])
+      e.offenses.compact.sort.freeze
     end
 
     def file_offenses(file)
@@ -250,6 +287,7 @@ module RuboCop
     end
 
     def file_finished(file, offenses)
+      @inspected_files << file
       offenses = offenses_to_report(offenses)
       formatter_set.file_finished(file, offenses)
     end
