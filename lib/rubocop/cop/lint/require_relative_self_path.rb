@@ -38,6 +38,8 @@ module RuboCop
         private
 
         def same_file?(file_path, required_feature)
+          return false unless File.extname(file_path) == '.rb'
+
           file_path == required_feature || remove_ext(file_path) == required_feature
         end
 

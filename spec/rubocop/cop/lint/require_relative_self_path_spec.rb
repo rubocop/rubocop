@@ -48,4 +48,16 @@ RSpec.describe RuboCop::Cop::Lint::RequireRelativeSelfPath, :config do
       Dir['test/**/test_*.rb'].each { |f| require_relative f }
     RUBY
   end
+
+  it 'does not register an offense when a `.rake` file requires a file with the same basename' do
+    expect_no_offenses(<<~RUBY, 'foo.rake')
+      require_relative 'foo'
+    RUBY
+  end
+
+  it 'does not register an offense when a file without an extension requires a file with the same basename' do
+    expect_no_offenses(<<~RUBY, 'Rakefile')
+      require_relative 'Rakefile'
+    RUBY
+  end
 end
