@@ -98,7 +98,16 @@ module RuboCop
         MSG_USE_SLASHES = 'Use `//` around regular expression.'
         MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'
 
+        PAIR_DELIMITER_PATTERNS = {
+          ['(', ')'] => /\\.|[()]/,
+          ['[', ']'] => /\\.|[\[\]]/,
+          ['{', '}'] => /\\.|[{}]/,
+          ['<', '>'] => /\\.|[<>]/
+        }.freeze
+
         def on_regexp(node)
+          return if slash_literal?(node) && percent_r_delimiters_conflict?(node)
+
           message = if slash_literal?(node)
                       MSG_USE_PERCENT_R unless allowed_slash_literal?(node)
                     else
@@ -114,6 +123,26 @@ module RuboCop
         end
 
         private
+
+        def percent_r_delimiters_conflict?(node)
+          opening, closing = preferred_delimiters
+          return false unless (pattern = PAIR_DELIMITER_PATTERNS[[opening, closing]])
+
+          !balanced_delimiters?(node_body(node), opening, closing, pattern)
+        end
+
+        def balanced_delimiters?(text, opening, closing, pattern)
+          depth = 0
+          text.scan(pattern) do |match|
+            if match == opening
+              depth += 1
+            elsif match == closing
+              depth -= 1
+              return false if depth.negative?
+            end
+          end
+          depth.zero?
+        end
 
         def allowed_slash_literal?(node)
           (style == :slashes && !contains_disallowed_slash?(node)) || allowed_mixed_slash?(node)
