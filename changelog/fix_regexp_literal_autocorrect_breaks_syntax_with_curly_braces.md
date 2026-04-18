@@ -1,0 +1,1 @@
+* [#15115](https://github.com/rubocop/rubocop/issues/15115): Fix an incorrect autocorrect in `Style/RegexpLiteral` when the regexp contains unbalanced braces that conflict with the preferred `%r` delimiters. ([@koic][])

@@ -68,6 +68,71 @@ RSpec.describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
   end
 
+  describe 'when `%r` delimiters would produce unbalanced braces in the content' do
+    let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
+
+    it 'does not register an offense for an unbalanced opening brace' do
+      expect_no_offenses('x = /{\\//')
+    end
+
+    it 'does not register an offense for an unbalanced closing brace' do
+      expect_no_offenses('x = /}\\//')
+    end
+
+    it 'registers an offense when the braces in the content are balanced' do
+      expect_offense(<<~'RUBY')
+        x = /{foo}\//
+            ^^^^^^^^^ Use `%r` around regular expression.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = %r{{foo}/}
+      RUBY
+    end
+
+    it 'registers an offense when the braces in the content are escaped' do
+      expect_offense(<<~'RUBY')
+        x = /\{foo\//
+            ^^^^^^^^^ Use `%r` around regular expression.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        x = %r{\{foo/}
+      RUBY
+    end
+
+    it 'registers an offense when braces appear only inside interpolation' do
+      expect_offense(<<~'RUBY')
+        x = /\/\A#{"{"}\z/
+            ^^^^^^^^^^^^^^ Use `%r` around regular expression.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        x = %r{/\A#{"{"}\z}
+      RUBY
+    end
+
+    it 'does not register an offense when an escaped backslash precedes an unbalanced brace' do
+      expect_no_offenses('x = /\\\\{\\//')
+    end
+
+    context 'when PercentLiteralDelimiters is configured with angle brackets' do
+      let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%r' => '<>' } } }
+
+      it 'does not register an offense for an unbalanced `<`' do
+        expect_no_offenses('x = /<\\//')
+      end
+    end
+
+    context 'when PercentLiteralDelimiters is configured with square brackets' do
+      let(:percent_literal_delimiters_config) { { 'PreferredDelimiters' => { '%r' => '[]' } } }
+
+      it 'does not register an offense for an unbalanced `]`' do
+        expect_no_offenses('x = /[abc]]\\//')
+      end
+    end
+  end
+
   context 'when EnforcedStyle is set to slashes' do
     let(:cop_config) { { 'EnforcedStyle' => 'slashes' } }
 
