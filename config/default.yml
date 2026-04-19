@@ -4441,7 +4441,8 @@ Style/IfUnlessModifier:
   StyleGuide: '#if-as-a-modifier'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '0.30'
+  VersionChanged: '<<next>>'
+  AllowConsecutiveConditionals: false
 
 Style/IfUnlessModifierOfIfUnless:
   Description: >-
