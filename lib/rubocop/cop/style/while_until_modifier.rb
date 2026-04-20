@@ -16,6 +16,11 @@ module RuboCop
       #   # good
       #   x += 1 while x < 10
       #
+      #   # good
+      #   while x < 10
+      #     y += 1 if x.odd?
+      #   end
+      #
       #   # bad
       #   until x > 10
       #     x += 1
@@ -23,6 +28,11 @@ module RuboCop
       #
       #   # good
       #   x += 1 until x > 10
+      #
+      #   # good
+      #   until x > 10
+      #     y += 1 unless x.even?
+      #   end
       #
       #   # bad
       #   x += 100 while x < 500 # a long comment that makes code too long if it were a single line
@@ -45,6 +55,12 @@ module RuboCop
           end
         end
         alias on_until on_while
+
+        private
+
+        def non_eligible_body?(body)
+          body&.if_type? || super
+        end
       end
     end
   end
