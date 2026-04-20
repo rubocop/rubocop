@@ -57,4 +57,76 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier, :config do
       RUBY
     end
   end
+
+  context 'when the body is a nested `while`' do
+    it 'does not register an offense for while' do
+      expect_no_offenses(<<~RUBY)
+        while foo
+          bar while baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for until' do
+      expect_no_offenses(<<~RUBY)
+        until foo
+          bar while baz
+        end
+      RUBY
+    end
+  end
+
+  context 'when the body is a nested `until`' do
+    it 'does not register an offense for while' do
+      expect_no_offenses(<<~RUBY)
+        while foo
+          bar until baz
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for until' do
+      expect_no_offenses(<<~RUBY)
+        until foo
+          bar until baz
+        end
+      RUBY
+    end
+  end
+
+  context 'when the body is a single-line `case`' do
+    it 'does not register an offense for while' do
+      expect_no_offenses(<<~RUBY)
+        while foo
+          case x; when 42 then a; end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for until' do
+      expect_no_offenses(<<~RUBY)
+        until foo
+          case x; when 42 then a; end
+        end
+      RUBY
+    end
+  end
+
+  context 'when the body is a single-line `case` match' do
+    it 'does not register an offense for while' do
+      expect_no_offenses(<<~RUBY)
+        while foo
+          case x; in 42 then a; end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for until' do
+      expect_no_offenses(<<~RUBY)
+        until foo
+          case x; in 42 then a; end
+        end
+      RUBY
+    end
+  end
 end
