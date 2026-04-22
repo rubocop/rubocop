@@ -380,7 +380,7 @@ module RuboCop
 
         def find_continuation_node(node)
           receiver = node.receiver
-          return receiver.send_node if single_line_block_receiver?(receiver)
+          return leftmost_call_on_same_line(receiver) if single_line_block_receiver?(receiver)
           return unless receiver.call_type? && receiver.loc.dot
           return receiver if receiver.receiver.begin_type? && node.block_node.single_line?
           return unless receiver.loc.dot.line > receiver.receiver.last_line
@@ -392,9 +392,19 @@ module RuboCop
           receiver.single_line? && receiver.any_block_type?
         end
 
+        def leftmost_call_on_same_line(node)
+          current = node.any_block_type? ? node.send_node : node
+          while current.receiver&.call_type? &&
+                current.receiver.loc?(:dot) &&
+                current.receiver.loc.dot.line == current.loc.dot.line
+            current = current.receiver
+          end
+          current
+        end
+
         def handle_descendant_block(node)
           receiver = node.receiver
-          return receiver.send_node if single_line_block_receiver?(receiver)
+          return leftmost_call_on_same_line(receiver) if single_line_block_receiver?(receiver)
 
           block_node = node.each_descendant(:any_block).first
           return unless block_node&.multiline?

@@ -1,0 +1,1 @@
+* [#15122](https://github.com/rubocop/rubocop/issues/15122): Fix false positive in `Layout/MultilineMethodCallIndentation` when a line has multiple chained calls before a single-line block. ([@hammadxcm][])
