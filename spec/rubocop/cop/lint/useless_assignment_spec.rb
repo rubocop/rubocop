@@ -1902,6 +1902,25 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a rescued error variable is not used and no exception type is specified' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        begin
+          do_something
+        rescue => error
+                  ^^^^^ Useless assignment to variable - `error`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          do_something
+        rescue
+        end
+      RUBY
+    end
+  end
+
   context 'when a method argument is reassigned and zero arity super is called' do
     it 'accepts' do
       expect_no_offenses(<<~RUBY)

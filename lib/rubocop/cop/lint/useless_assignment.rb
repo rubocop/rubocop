@@ -40,8 +40,6 @@ module RuboCop
       class UselessAssignment < Base
         extend AutoCorrector
 
-        include RangeHelp
-
         MSG = 'Useless assignment to variable - `%<variable>s`.'
 
         def self.joining_forces
@@ -189,12 +187,9 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize
 
         def remove_exception_assignment_part(corrector, node)
-          corrector.remove(
-            range_between(
-              (node.parent.children.first&.source_range || node.parent.location.keyword).end_pos,
-              node.source_range.end_pos
-            )
-          )
+          range = node.parent.children.first&.source_range || node.parent.location.keyword
+
+          corrector.remove(range.end.join(node.source_range.end))
         end
 
         def rename_variable_with_underscore(corrector, node)
