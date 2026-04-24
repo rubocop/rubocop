@@ -206,16 +206,6 @@ module RuboCop
           body.each_descendant(:str).any?(&:heredoc?)
         end
 
-        def correct_to_multiline(corrector, node)
-          replacement = <<~RUBY.strip
-            def #{receiver(node)}#{node.method_name}#{arguments(node)}
-              #{node.body.source}
-            end
-          RUBY
-
-          corrector.replace(node, replacement)
-        end
-
         def endless_replacement(node)
           <<~RUBY.strip
             def #{receiver(node)}#{node.method_name}#{arguments(node)} = #{node.body.source}

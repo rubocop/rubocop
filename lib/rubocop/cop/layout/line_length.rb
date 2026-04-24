@@ -65,6 +65,7 @@ module RuboCop
         include AllowedPattern
         include RangeHelp
         include LineLengthHelp
+        include EndlessMethodRewriter
         extend AutoCorrector
 
         exclude_limit 'Max'
@@ -92,8 +93,15 @@ module RuboCop
         alias on_hash on_potential_breakable_node
         alias on_send on_potential_breakable_node
         alias on_csend on_potential_breakable_node
-        alias on_def on_potential_breakable_node
-        alias on_defs on_potential_breakable_node
+
+        def on_def(node)
+          if node.endless?
+            track_endless_method(node)
+          else
+            check_for_breakable_node(node)
+          end
+        end
+        alias on_defs on_def
 
         def on_new_investigation
           return unless processed_source.raw_source.include?(';')
@@ -110,6 +118,70 @@ module RuboCop
         private
 
         attr_accessor :breakable_range
+
+        def track_endless_method(node)
+          line_index = node.first_line - processed_source.buffer.first_line
+          endless_methods_by_line[line_index] = node
+        end
+
+        def handle_endless_method_line(line, line_index)
+          if require_endless_methods?
+            return register_required_endless_method_offense(line, line_index)
+          end
+
+          register_endless_method_offense(line, line_index)
+        end
+
+        def require_endless_methods?
+          config.cop_enabled?('Style/EndlessMethod') &&
+            config.for_cop('Style/EndlessMethod')['EnforcedStyle'] == 'require_always'
+        end
+
+        def register_endless_method_offense(line, line_index)
+          message = format(MSG, length: line_length(line), max: max)
+          loc = excess_range(nil, line, line_index)
+
+          add_offense(loc, message: message) do |corrector|
+            self.max = line_length(line)
+
+            correct_to_multiline(corrector, endless_methods_by_line[line_index])
+          end
+        end
+
+        def register_required_endless_method_offense(line, line_index)
+          node = endless_methods_by_line[line_index]
+          loc = excess_range(nil, line, line_index)
+
+          add_offense(loc, message: format(MSG, length: line_length(line), max: max)) do |corrector|
+            self.max = line_length(line)
+
+            if correctable_endless_method_block?(node)
+              correct_endless_method_block_to_multiline(corrector, node)
+            end
+          end
+        end
+
+        def correctable_endless_method_block?(node)
+          block_node = node.body
+
+          block_node&.type?(:any_block) &&
+            block_node.braces? &&
+            block_node.single_line? &&
+            block_node.body &&
+            !receiver_contains_heredoc?(block_node)
+        end
+
+        def correct_endless_method_block_to_multiline(corrector, node)
+          block_node = node.body
+          block_arguments = block_node.arguments? ? " #{block_node.arguments.source}" : ''
+          replacement = [
+            "#{block_node.send_node.source} do#{block_arguments}",
+            "#{indent(node, offset: 2)}#{block_node.body.source}",
+            "#{indent(node)}end"
+          ].join("\n")
+
+          corrector.replace(block_node, replacement)
+        end
 
         def check_for_breakable_node(node)
           breakable_node = extract_breakable_node(node, max)
@@ -237,6 +309,10 @@ module RuboCop
           @breakable_range_by_line_index ||= {}
         end
 
+        def endless_methods_by_line
+          @endless_methods_by_line ||= {}
+        end
+
         def breakable_string_delimiters
           @breakable_string_delimiters ||= {}
         end
@@ -252,10 +328,15 @@ module RuboCop
           [max - indentation_difference(line), 0].max
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_line(line, line_index)
           return if line_length(line) <= max
           return if allowed_line?(line, line_index)
+
+          if endless_methods_by_line.key?(line_index)
+            return handle_endless_method_line(line, line_index)
+          end
+
           if allow_rbs_inline_annotation? && rbs_inline_annotation_on_source_line?(line_index)
             return
           end
@@ -267,7 +348,7 @@ module RuboCop
 
           register_offense(excess_range(nil, line, line_index), line, line_index)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def allowed_line?(line, line_index)
           matches_allowed_pattern?(line) ||
