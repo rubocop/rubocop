@@ -56,6 +56,17 @@ RSpec.describe RuboCop::Cop::InternalAffairs::LocationLineEqualityComparison, :c
     RUBY
   end
 
+  it 'registers an offense and corrects when using `loc.begin.line` with `loc.end.line`' do
+    expect_offense(<<~RUBY)
+      node.loc.begin.line == node.loc.end.line
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `same_line?(node.loc.begin, node.loc.end)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      same_line?(node.loc.begin, node.loc.end)
+    RUBY
+  end
+
   it 'registers an offense and corrects when using `first_line` inside block' do
     expect_offense(<<~RUBY)
       nodes.select do |node|

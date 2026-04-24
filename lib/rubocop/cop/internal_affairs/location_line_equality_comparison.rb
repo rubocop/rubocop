@@ -25,6 +25,7 @@ module RuboCop
         def_node_matcher :line_send, <<~PATTERN
           {
             (send (send _ {:loc :source_range}) {:line :first_line})
+            (send (send (send _ :loc) {:begin :end}) :line)
             (send _ :first_line)
           }
         PATTERN
