@@ -196,6 +196,22 @@ RSpec.describe RuboCop::Cop::Style::DocumentDynamicEvalDefinition, :config do
       RUBY
     end
 
+    it 'does not register an offense when the heredoc contains an escaped interpolation' do
+      expect_no_offenses(<<~RUBY)
+        class_eval(
+          # def something
+          #   puts "escaped \#{interpolation}"
+          # end
+
+          <<~EOT, __FILE__, __LINE__ + 1
+            def \#{my_method}
+              puts "escaped \\\#{interpolation}"
+            end
+          EOT
+        )
+      RUBY
+    end
+
     it 'does not register an offense when using inline comments' do
       expect_no_offenses(<<~RUBY)
         class_eval(
