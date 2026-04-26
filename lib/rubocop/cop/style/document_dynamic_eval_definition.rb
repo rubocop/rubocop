@@ -161,7 +161,12 @@ module RuboCop
           source = source.gsub(COMMENT_REGEXP, '')
           return if source.blank?
 
-          /\s*#{Regexp.escape(source.strip)}/
+          # Treat `\#` (an escaped interpolation marker in the heredoc) as matching
+          # either `\#` or `#` in the comment, since the comment may show either
+          # the literal source form or the runtime appearance.
+          segments = source.strip.split('\\#', -1).map { |segment| Regexp.escape(segment) }
+
+          /\s*#{segments.join('\\\\?#')}/
         end
       end
     end
