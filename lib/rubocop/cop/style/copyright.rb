@@ -46,15 +46,16 @@ module RuboCop
           token = insert_notice_before(processed_source)
           range = token.nil? ? range_between(0, 0) : token.pos
 
-          corrector.insert_before(range, "#{autocorrect_notice}\n")
+          corrector.insert_before(range, "#{normalized_autocorrect_notice}\n")
         end
 
-        def notice
-          cop_config['Notice']
-        end
+        def normalized_autocorrect_notice
+          autocorrect_notice.lines.map do |line|
+            next line if line.start_with?('#')
+            next "#\n" if line.chomp.empty?
 
-        def autocorrect_notice
-          cop_config['AutocorrectNotice']
+            "# #{line}"
+          end.join
         end
 
         def verify_autocorrect_notice!
@@ -62,8 +63,7 @@ module RuboCop
             raise Warning, "#{cop_name}: #{AUTOCORRECT_EMPTY_WARNING}"
           end
 
-          regex = Regexp.new(notice)
-          return if autocorrect_notice.gsub(/^# */, '').match?(regex)
+          return if normalized_autocorrect_notice.gsub(/^# */, '').match?(notice_regexp)
 
           message = "AutocorrectNotice '#{autocorrect_notice}' must match Notice /#{notice}/"
           raise Warning, "#{cop_name}: #{message}"
@@ -91,17 +91,28 @@ module RuboCop
         end
 
         def notice_found?(processed_source)
-          notice_regexp = Regexp.new(notice.lines.map(&:strip).join)
           multiline_notice = +''
           processed_source.tokens.each do |token|
             break unless token.comment?
 
-            multiline_notice << token.text.sub(/\A# */, '')
+            multiline_notice << token.text.sub(/\A# */, '') << "\n"
 
             break if notice_regexp.match?(token.text)
           end
 
           multiline_notice.match?(notice_regexp)
+        end
+
+        def notice_regexp
+          @notice_regexp ||= Regexp.new(notice.sub(/\A\^?#\s?/, ''))
+        end
+
+        def notice
+          cop_config['Notice']
+        end
+
+        def autocorrect_notice
+          cop_config['AutocorrectNotice']
         end
       end
     end
