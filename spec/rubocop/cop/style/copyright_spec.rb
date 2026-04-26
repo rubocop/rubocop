@@ -194,6 +194,110 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     end
   end
 
+  context 'when `AutocorrectNotice` does not start with a `#`' do
+    let(:cop_config) do
+      {
+        'Notice' => '^Copyright (\(c\) )?2[0-9]{3} .+',
+        'AutocorrectNotice' => 'Copyright (c) 2026 My Name'
+      }
+    end
+
+    it 'inserts the notice as a comment line' do
+      expect_offense(<<~RUBY)
+        puts 'Hello world'
+        ^ Include a copyright notice matching [...]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+  end
+
+  context 'when the `Notice` pattern starts with `^#`' do
+    let(:cop_config) do
+      {
+        'Notice' => '^# Copyright (\(c\) )?2[0-9]{3} .+',
+        'AutocorrectNotice' => '# Copyright (c) 2026 My Name'
+      }
+    end
+
+    it 'does not register an offense when the notice is present' do
+      expect_no_offenses(<<~RUBY)
+        # Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+
+    it 'autocorrects with a single `#` prefix' do
+      expect_offense(<<~RUBY)
+        puts 'Hello world'
+        ^ Include a copyright notice matching [...]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+  end
+
+  context 'when `Notice` starts with `^#` and AutocorrectNotice has no `#`' do
+    let(:cop_config) do
+      {
+        'Notice' => '^# Copyright (\(c\) )?2[0-9]{3} .+',
+        'AutocorrectNotice' => 'Copyright (c) 2026 My Name'
+      }
+    end
+
+    it 'autocorrects to a single `#`-prefixed comment' do
+      expect_offense(<<~RUBY)
+        puts 'Hello world'
+        ^ Include a copyright notice matching [...]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+  end
+
+  context 'when `AutocorrectNotice` spans multiple lines without `#` prefixes' do
+    let(:cop_config) do
+      {
+        'Notice' => <<~'COPYRIGHT',
+          Copyright (\(c\) )?2026 Acme Inc.
+
+          License details\.\.\.
+        COPYRIGHT
+        'AutocorrectNotice' => <<~COPYRIGHT
+          Copyright (c) 2026 Acme Inc.
+
+          License details...
+        COPYRIGHT
+      }
+    end
+
+    it 'prefixes each line with `# ` and emits blank lines as `#`' do
+      expect_offense(<<~RUBY)
+        class Foo
+        ^ Include a copyright notice matching [...]
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Copyright (c) 2026 Acme Inc.
+        #
+        # License details...
+
+        class Foo
+        end
+      RUBY
+    end
+  end
+
   context 'when the copyright notice is missing and ' \
           'the source code file starts with shebang and ' \
           'an encoding comment' do
