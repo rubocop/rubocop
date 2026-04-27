@@ -3,7 +3,7 @@
 module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
-  class CommentConfig
+  class CommentConfig # rubocop:disable Metrics/ClassLength
     extend SimpleForwardable
 
     CONFIG_DISABLED_LINE_RANGE_MIN = -Float::INFINITY
@@ -174,9 +174,11 @@ module RuboCop
       end
     end
 
-    def analyze_cop(analysis, directive)
-      # Disabling cops after comments like `#=SomeDslDirective` does not related to single line
-      if !comment_only_line?(directive.line_number) || directive.single_line?
+    def analyze_cop(analysis, directive) # rubocop:disable Metrics/ClassLength
+      # Disabling cops after comments like `#=SomeDslDirective` does not relate to single line
+      if directive.disabled_file? && comment_only_line?(directive.line_number)
+        analyze_disabled_file(analysis, directive)
+      elsif !comment_only_line?(directive.line_number) || directive.single_line?
         analyze_single_line(analysis, directive)
       elsif directive.disabled?
         analyze_disabled(analysis, directive)
@@ -190,6 +192,10 @@ module RuboCop
 
       line = directive.line_number
       CopAnalysis.new(analysis.line_ranges + [(line..line)], analysis.start_line_number)
+    end
+
+    def analyze_disabled_file(analysis, directive)
+      CopAnalysis.new(analysis.line_ranges + [(directive.line_number..Float::INFINITY)], nil)
     end
 
     def analyze_disabled(analysis, directive)

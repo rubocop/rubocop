@@ -2100,6 +2100,7 @@ Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
   VersionAdded: '0.52'
+  VersionChanged: '<<next>>'
   # Maximum number of consecutive lines the cop can be disabled for.
   # 0 allows only single-line disables
   # 1 would mean the maximum allowed is the following:

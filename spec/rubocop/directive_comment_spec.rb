@@ -96,6 +96,12 @@ RSpec.describe RuboCop::DirectiveComment do
       it { is_expected.to eq(%w[todo all]) }
     end
 
+    context 'when disable-file' do
+      let(:text) { '# rubocop:disable-file Foo/Bar' }
+
+      it { is_expected.to eq(['disable-file', 'Foo/Bar']) }
+    end
+
     context 'when typo' do
       let(:text) { '# rudocop:todo Dig/ThisMine' }
 
@@ -140,6 +146,12 @@ RSpec.describe RuboCop::DirectiveComment do
       it { is_expected.to be(true) }
     end
 
+    context 'when disable-file' do
+      let(:text) { '# rubocop:disable-file Foo/Bar' }
+
+      it { is_expected.to be(true) }
+    end
+
     context 'when enable' do
       let(:text) { '# rubocop:enable Foo/Bar' }
 
@@ -150,6 +162,28 @@ RSpec.describe RuboCop::DirectiveComment do
       let(:text) { '# rubocop:todo all' }
 
       it { is_expected.to be(true) }
+    end
+  end
+
+  describe '#disabled_file?' do
+    subject { directive_comment.disabled_file? }
+
+    context 'when disable-file' do
+      let(:text) { '# rubocop:disable-file Foo/Bar' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when disable' do
+      let(:text) { '# rubocop:disable Foo/Bar' }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when enable' do
+      let(:text) { '# rubocop:enable Foo/Bar' }
+
+      it { is_expected.to be(false) }
     end
   end
 
