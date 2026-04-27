@@ -35,7 +35,7 @@ module RuboCop
 
         # rubocop:disable Metrics/CyclomaticComplexity
         def on_send(node)
-          return unless !node.arguments? && node.parenthesized?
+          return if node.arguments? || !node.parenthesized?
           return if ineligible_node?(node)
           return if default_argument?(node)
           return if allowed_method_name?(node.method_name)

@@ -68,7 +68,7 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return unless date_time?(node) || (to_datetime?(node) && disallow_coercion?)
+          return if !date_time?(node) && (!to_datetime?(node) || !disallow_coercion?)
           return if historic_date?(node)
 
           message = to_datetime?(node) ? COERCION_MSG : CLASS_MSG

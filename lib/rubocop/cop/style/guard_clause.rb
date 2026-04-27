@@ -119,7 +119,7 @@ module RuboCop
         alias on_defs on_def
 
         def on_block(node)
-          return unless node.method?(:define_method) || node.method?(:define_singleton_method)
+          return if !node.method?(:define_method) && !node.method?(:define_singleton_method)
 
           on_def(node)
         end

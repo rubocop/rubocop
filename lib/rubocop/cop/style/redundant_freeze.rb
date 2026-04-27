@@ -24,9 +24,9 @@ module RuboCop
         RESTRICT_ON_SEND = %i[freeze].freeze
 
         def on_send(node)
-          return unless node.receiver &&
-                        (immutable_literal?(node.receiver) ||
-                         operation_produces_immutable_object?(node.receiver))
+          return if !node.receiver ||
+                    (!immutable_literal?(node.receiver) &&
+                     !operation_produces_immutable_object?(node.receiver))
 
           add_offense(node) do |corrector|
             corrector.remove(node.loc.dot)

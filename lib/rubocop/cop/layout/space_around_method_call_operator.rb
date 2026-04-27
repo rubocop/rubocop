@@ -43,7 +43,7 @@ module RuboCop
         MSG = 'Avoid using spaces around a method call operator.'
 
         def on_send(node)
-          return unless node.dot? || node.safe_navigation?
+          return if !node.dot? && !node.safe_navigation?
 
           check_space_before_dot(node)
           check_space_after_dot(node)
