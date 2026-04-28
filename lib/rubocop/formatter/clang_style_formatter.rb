@@ -51,7 +51,7 @@ module RuboCop
       end
 
       def to_whitespace(string)
-        "#{string.delete("^\t")}#{' ' * Unicode::DisplayWidth.of(string.delete("\t"))}"
+        "#{string.delete(%(^\t))}#{' ' * Unicode::DisplayWidth.of(string.delete(%(\t)))}"
       end
     end
   end

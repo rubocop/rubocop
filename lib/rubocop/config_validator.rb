@@ -74,7 +74,7 @@ module RuboCop
       @config_obsoletion.reject_obsolete!
       return unless @config_obsoletion.warnings.any?
 
-      warn Rainbow("Warning: #{@config_obsoletion.warnings.join("\n")}").yellow
+      warn Rainbow("Warning: #{@config_obsoletion.warnings.join(%(\n))}").yellow
     end
 
     def check_target_ruby
