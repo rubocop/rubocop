@@ -21,6 +21,7 @@ module RuboCop
         AutoCorrect
         Description
         Enabled
+        Enforcement
         Exclude
         Include
         Reference

@@ -195,7 +195,7 @@ module RuboCop
         @disabled_cache[config] ||= reject { |cop| enabled?(cop, config) }
       end
 
-      def enabled?(cop, config)
+      def enabled?(cop, config) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         return true if options[:only]&.include?(cop.cop_name)
 
         # We need to use `cop_name` in this case, because `for_cop` uses caching
@@ -203,6 +203,12 @@ module RuboCop
         cfg = config.for_cop(cop.cop_name)
 
         cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config)
+
+        # CLI --enforcement overrides config-level enforcement
+        if cop_enabled && options[:enforcement] && cfg['Enforcement']
+          cop_enabled = Config::ENFORCEMENT_HIERARCHY.fetch(cfg['Enforcement'], 0) <=
+                        Config::ENFORCEMENT_HIERARCHY.fetch(options[:enforcement], 0)
+        end
 
         if options.fetch(:safe, false)
           cop_enabled && cfg.fetch('Safe', true)

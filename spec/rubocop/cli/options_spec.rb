@@ -2566,4 +2566,33 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       RESULT
     end
   end
+
+  describe '--enforcement' do
+    before do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          DisabledByDefault: true
+      YAML
+    end
+
+    it 'runs only essential-tagged cops when set to essential' do
+      create_file('example.rb', <<~RUBY)
+        def foo
+          x = 1
+        end
+      RUBY
+
+      expect(cli.run(%w[--enforcement essential
+                        --format simple
+                        --only Lint/UselessAssignment
+                        example.rb])).to eq(1)
+      expect($stdout.string).to include('Lint/UselessAssignment')
+    end
+
+    it 'rejects invalid enforcement levels' do
+      create_file('example.rb', 'x = 1')
+      expect(cli.run(['--enforcement', 'invalid'])).to eq(2)
+      expect($stderr.string).to include('Invalid enforcement level')
+    end
+  end
 end

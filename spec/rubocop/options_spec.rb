@@ -71,6 +71,11 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --ignore-parent-exclusion    Prevent from inheriting `AllCops/Exclude` from
                                                parent folders.
                   --ignore-unrecognized-cops   Ignore unrecognized cops or departments in the config.
+                  --enforcement LEVEL          Run only cops at or below the given
+                                               enforcement level.
+                                                 [essential] critical cops only
+                                                 [standard] essential + common cops
+                                                 [strict] essential + standard + strict cops
                   --force-default-config       Use default configuration even if configuration
                                                files are present in the directory tree.
               -s, --stdin FILE                 Pipe source from STDIN, using FILE in offense
@@ -424,6 +429,24 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       it 'raises cop errors' do
         results = options.parse %w[--raise-cop-error]
         expect(results).to eq([{ raise_cop_error: true }, []])
+      end
+    end
+
+    describe '--enforcement' do
+      it 'accepts valid enforcement levels' do
+        %w[essential standard strict].each do |level|
+          expect { options.parse(['--enforcement', level]) }.not_to raise_error
+        end
+      end
+
+      it 'sets the enforcement option' do
+        results = options.parse %w[--enforcement standard]
+        expect(results.first[:enforcement]).to eq('standard')
+      end
+
+      it 'raises an error for invalid enforcement level' do
+        expect { options.parse %w[--enforcement invalid] }
+          .to raise_error(RuboCop::OptionArgumentError, /Invalid enforcement level/)
       end
     end
 

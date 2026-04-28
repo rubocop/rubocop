@@ -96,6 +96,7 @@ module RuboCop
         option(opts, '--only-recognized-file-types')
         option(opts, '--ignore-parent-exclusion')
         option(opts, '--ignore-unrecognized-cops')
+        option(opts, '--enforcement LEVEL')
         option(opts, '--force-default-config')
         option(opts, '-s', '--stdin FILE')
         option(opts, '--editor-mode')
@@ -390,6 +391,7 @@ module RuboCop
         raise OptionArgumentError, '-C/--cache argument must be true or false'
       end
 
+      validate_enforcement
       validate_auto_gen_config
       validate_autocorrect
       validate_display_only_failed
@@ -403,6 +405,17 @@ module RuboCop
       raise OptionArgumentError, "Incompatible cli options: #{incompatible_options.inspect}"
     end
     # rubocop:enable Metrics/AbcSize
+
+    def validate_enforcement
+      return unless @options.key?(:enforcement)
+
+      level = @options[:enforcement]
+      valid = ConfigValidator::ENFORCEMENT_LEVELS
+      return if valid.include?(level)
+
+      raise OptionArgumentError,
+            "Invalid enforcement level '#{level}'. Valid choices are: #{valid.join(', ')}"
+    end
 
     def validate_auto_gen_config
       return if @options.key?(:auto_gen_config)
@@ -571,6 +584,11 @@ module RuboCop
       ignore_parent_exclusion:          ['Prevent from inheriting `AllCops/Exclude` from',
                                          'parent folders.'],
       ignore_unrecognized_cops:         ['Ignore unrecognized cops or departments in the config.'],
+      enforcement:                      ['Run only cops at or below the given',
+                                         'enforcement level.',
+                                         '  [essential] critical cops only',
+                                         '  [standard] essential + common cops',
+                                         '  [strict] essential + standard + strict cops'],
       force_default_config:             ['Use default configuration even if configuration',
                                          'files are present in the directory tree.'],
       format:                           ['Choose an output formatter. This option',
