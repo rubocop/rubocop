@@ -1602,7 +1602,7 @@ Lint/AmbiguousBlockAssociation:
                  parentheses.
   Enabled: true
   VersionAdded: '0.48'
-  VersionChanged: '1.13'
+  VersionChanged: '<<next>>'
   AllowedMethods: []
   AllowedPatterns: []
 
