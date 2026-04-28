@@ -47,10 +47,10 @@ module RuboCop
         MSG = 'Trailing whitespace detected.'
 
         def on_new_investigation
-          processed_source.lines.each_with_index do |line, index|
+          processed_source.lines.each.with_index(1) do |line, index|
             next unless line.match?(/[[:blank:]]\z/)
 
-            process_line(line, index + 1)
+            process_line(line, index)
           end
         end
 
