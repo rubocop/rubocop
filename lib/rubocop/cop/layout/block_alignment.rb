@@ -202,15 +202,31 @@ module RuboCop
           # the "end" to be aligned with the start of the line where the "do"
           # is, which is a style some people use in multi-line chains of
           # blocks.
-          match = /\S.*/.match(do_loc.source_line)
+          # When the {/do is on a continuation line (e.g., after multi-line
+          # arguments), use the method call's line for alignment instead,
+          # since the continuation line's indentation reflects argument
+          # alignment rather than the block's logical start.
+          reference_loc = block_start_reference_loc(node, do_loc)
+          match = /\S.*/.match(reference_loc.source_line)
           indentation_of_do_line = match.begin(0)
           return unless end_loc.column != indentation_of_do_line || style == :start_of_line
 
           {
             source: match[0],
-            line: do_loc.line,
+            line: reference_loc.line,
             column: indentation_of_do_line
           }
+        end
+
+        def block_start_reference_loc(node, do_loc)
+          # For start_of_block style, always use the do/{  line as-is,
+          # since the user explicitly wants alignment with that line.
+          return do_loc if style == :start_of_block
+
+          selector_loc = node.send_node&.loc&.selector
+          return do_loc unless selector_loc && do_loc.line != selector_loc.line
+
+          selector_loc
         end
 
         def loc_to_source_line_column(loc)
