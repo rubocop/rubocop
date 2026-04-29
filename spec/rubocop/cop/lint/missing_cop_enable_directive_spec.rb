@@ -106,6 +106,41 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
     end
   end
 
+  context 'when a `# rubocop:disable` is wrapped in `# rubocop:push` / `# rubocop:pop`' do
+    let(:cop_config) { { 'MaximumRangeSize' => Float::INFINITY } }
+
+    it 'does not register an offense for a bare `push` / `pop` pair' do
+      expect_no_offenses(<<~RUBY)
+        def test
+          # rubocop:push
+          # rubocop:disable Style/RescueStandardError
+        rescue => e
+          print e
+        end
+        # rubocop:pop
+      RUBY
+    end
+
+    it 'does not register an offense when the disable is closed by `# rubocop:pop` before EOF' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:push
+        # rubocop:disable Layout/SpaceAroundOperators
+        x =   0
+        # rubocop:pop
+        y = 1
+      RUBY
+    end
+
+    it 'registers an offense when `# rubocop:push` has no matching `# rubocop:pop`' do
+      expect_offense(<<~RUBY)
+        # rubocop:push
+        # rubocop:disable Layout/SpaceAroundOperators
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Re-enable Layout/SpaceAroundOperators cop with `# rubocop:enable` after disabling it.
+        x =   0
+      RUBY
+    end
+  end
+
   context 'when the cop is disabled in the config' do
     let(:other_cops) { { 'Layout/LineLength' => { 'Enabled' => false } } }
 

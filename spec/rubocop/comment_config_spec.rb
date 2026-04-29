@@ -758,5 +758,107 @@ RSpec.describe RuboCop::CommentConfig do
         expect(guard_clause_disabled).not_to include(6, 7)
       end
     end
+
+    context 'bare push/pop with disable inside' do
+      let(:source) do
+        <<~RUBY
+          def test
+            # rubocop:push
+            # rubocop:disable Style/RescueStandardError
+          rescue => e
+            print e
+          end
+          # rubocop:pop
+          other
+        RUBY
+      end
+
+      it 'restores the cop after pop even when push has no inline args' do
+        disabled = disabled_lines_of_cop('Style/RescueStandardError')
+
+        expect(disabled).to include(3, 4, 5, 6)
+        expect(disabled).not_to include(1, 2, 7, 8, 9)
+      end
+    end
+
+    context 'bare push/pop preserves outer disable for unrelated cop' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style/Not
+          # rubocop:push
+          # rubocop:disable Style/For
+          for x in [1, 2, 3]
+            not x.nil?
+          end
+          # rubocop:pop
+          tail
+        RUBY
+      end
+
+      it 'restores Style/For at pop while leaving Style/Not disabled' do
+        for_disabled = disabled_lines_of_cop('Style/For')
+        not_disabled = disabled_lines_of_cop('Style/Not')
+
+        expect(for_disabled).to include(3, 4, 5, 6)
+        expect(for_disabled).not_to include(7, 8, 9)
+        expect(not_disabled).to include(1, 2, 3, 4, 5, 6, 7, 8, 9)
+      end
+    end
+
+    context 'inline-arg push/pop restores an unrelated cop disabled inside the block' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:push -Style/GuardClause
+          # rubocop:disable Style/For
+          for x in [1, 2, 3]
+            if x.size == 0
+              return x
+            end
+          end
+          # rubocop:pop
+          for y in [4, 5, 6]
+            puts y
+          end
+        RUBY
+      end
+
+      it 'restores Style/For at pop even though it is not named in the push args' do
+        for_disabled = disabled_lines_of_cop('Style/For')
+        guard_clause_disabled = disabled_lines_of_cop('Style/GuardClause')
+
+        expect(for_disabled).to include(2, 3, 4, 5, 6, 7)
+        expect(for_disabled).not_to include(8, 9, 10, 11)
+        expect(guard_clause_disabled).to include(1, 2, 3, 4, 5, 6, 7)
+        expect(guard_clause_disabled).not_to include(8, 9, 10, 11)
+      end
+    end
+
+    context 'bare push/pop with `# rubocop:enable` for a previously disabled cop' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable Style/For
+          for x in [1, 2, 3]
+            puts x
+          end
+          # rubocop:push
+          # rubocop:enable Style/For
+          for y in [4, 5, 6]
+            puts y
+          end
+          # rubocop:pop
+          for z in [7, 8, 9]
+            puts z
+          end
+        RUBY
+      end
+
+      it 'restores the disabled state of Style/For at pop' do
+        disabled = disabled_lines_of_cop('Style/For')
+
+        expect(disabled).to include(1, 2, 3, 4, 5, 6)
+        expect(disabled).not_to include(7, 8, 9)
+        expect(disabled).to include(10, 11, 12, 13)
+      end
+    end
   end
 end
