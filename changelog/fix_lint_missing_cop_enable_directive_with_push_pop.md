@@ -1,0 +1,1 @@
+* [#15136](https://github.com/rubocop/rubocop/issues/15136): Fix false positive for `Lint/MissingCopEnableDirective` when `# rubocop:disable` is wrapped in a `# rubocop:push` / `# rubocop:pop` block. ([@koic][])
