@@ -1546,4 +1546,99 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
     end
   end
+
+  context 'AllowConsecutiveConditionals' do
+    context 'when `false` (default)' do
+      let(:cop_config) { { 'AllowConsecutiveConditionals' => false } }
+
+      it 'registers an offense for consecutive `if` blocks that fit on a single line' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            do_foo
+          end
+
+          if bar
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            do_bar
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_foo if foo
+
+          do_bar if bar
+        RUBY
+      end
+    end
+
+    context 'when `true`' do
+      let(:cop_config) { { 'AllowConsecutiveConditionals' => true } }
+
+      it 'does not register an offense when the preceding sibling is also an `if` block' do
+        expect_no_offenses(<<~RUBY)
+          if foo
+            do_foo
+          end
+
+          if bar
+            do_bar
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the preceding sibling is an `unless` block' do
+        expect_no_offenses(<<~RUBY)
+          unless foo
+            do_foo
+          end
+
+          if bar
+            do_bar
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when the following sibling is also an `if` block' do
+        expect_no_offenses(<<~RUBY)
+          def func
+            do_something
+
+            if foo
+              do_foo
+            end
+
+            if bar
+              do_bar
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense for each isolated `if` when a non-conditional statement breaks the chain' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            do_foo
+          end
+
+          do_something
+
+          if bar
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            do_bar
+          end
+        RUBY
+      end
+
+      it 'registers an offense for a solitary `if` block' do
+        expect_offense(<<~RUBY)
+          if foo
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            do_foo
+          end
+        RUBY
+      end
+    end
+  end
 end

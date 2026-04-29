@@ -72,6 +72,37 @@ module RuboCop
       #     do_something
       #   end
       #
+      # @example AllowConsecutiveConditionals: false (default)
+      #   # bad
+      #   if foo
+      #     do_foo # a long comment that prevents the modifier form
+      #   end
+      #
+      #   if bar
+      #     do_bar
+      #   end
+      #
+      # @example AllowConsecutiveConditionals: true
+      #   # good
+      #   if foo
+      #     do_foo # a long comment that prevents the modifier form
+      #   end
+      #
+      #   if bar
+      #     do_bar
+      #   end
+      #
+      #   # bad
+      #   if foo
+      #     do_foo # a long comment that prevents the modifier form
+      #   end
+      #
+      #   do_something
+      #
+      #   if bar
+      #     do_bar
+      #   end
+      #
       class IfUnlessModifier < Base # rubocop:disable Metrics/ClassLength
         include StatementModifier
         include LineLengthHelp
@@ -92,6 +123,8 @@ module RuboCop
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_if(node)
           return if endless_method?(node.body) || node.ancestors.any?(&:dstr_type?)
+          return if allowed_consecutive_conditionals? &&
+                    consecutive_conditionals?(node.parent, node)
 
           condition = node.condition
           return if defined_nodes(condition).any? { |n| defined_argument_is_undefined?(node, n) } ||
@@ -355,6 +388,22 @@ module RuboCop
 
         def remove_comment(corrector, _node, comment)
           corrector.remove(range_with_surrounding_space(range: comment.source_range, side: :left))
+        end
+
+        def allowed_consecutive_conditionals?
+          cop_config.fetch('AllowConsecutiveConditionals', false)
+        end
+
+        def consecutive_conditionals?(parent, node)
+          return false unless parent
+
+          siblings = parent.each_child_node.to_a
+          index = siblings.index(node)
+          return false unless index
+
+          prev_sibling = index.positive? ? siblings[index - 1] : nil
+          next_sibling = siblings[index + 1]
+          [prev_sibling, next_sibling].compact.any?(&:if_type?)
         end
       end
     end
