@@ -12,6 +12,13 @@ module RuboCop
       # Specific cops can be allowed with the `AllowedCops` configuration. Note that
       # if this configuration is set, `rubocop:disable all` is still disallowed.
       #
+      # Alternatively, specific cops can be disallowed with the `DisallowedCops`
+      # configuration. When `DisallowedCops` is set, only directives for the listed
+      # cops (and `rubocop:disable all`) will be flagged. This is useful when you want
+      # to protect a small set of critical cops from being disabled rather than
+      # allowlisting all other cops. `AllowedCops` and `DisallowedCops` should not
+      # both be set at the same time; if `DisallowedCops` is set, it takes precedence.
+      #
       # @example
       #   # bad
       #   # rubocop:disable Metrics/AbcSize
@@ -30,6 +37,17 @@ module RuboCop
       #   end
       #   # rubocop:enable Metrics/AbcSize
       #
+      # @example DisallowedCops: [Lint/Void]
+      #   # bad
+      #   # rubocop:disable Lint/Void
+      #   foo
+      #   # rubocop:enable Lint/Void
+      #
+      #   # good
+      #   # rubocop:disable Metrics/AbcSize
+      #   foo
+      #   # rubocop:enable Metrics/AbcSize
+      #
       class DisableCopsWithinSourceCodeDirective < Base
         extend AutoCorrector
 
@@ -40,7 +58,7 @@ module RuboCop
         def on_new_investigation
           processed_source.comments.each do |comment|
             directive_cops = directive_cops(comment)
-            disallowed_cops = directive_cops - allowed_cops
+            disallowed_cops = compute_disallowed_cops(directive_cops)
 
             next unless disallowed_cops.any?
 
@@ -50,8 +68,20 @@ module RuboCop
 
         private
 
+        def compute_disallowed_cops(directive_cops)
+          if disallowed_cops_config.any?
+            if directive_cops.include?('all')
+              directive_cops
+            else
+              directive_cops & disallowed_cops_config
+            end
+          else
+            directive_cops - allowed_cops
+          end
+        end
+
         def register_offense(comment, directive_cops, disallowed_cops)
-          message = if any_cops_allowed?
+          message = if any_cops_allowed? || disallowed_cops_config.any?
                       format(MSG_FOR_COPS, cops: "`#{disallowed_cops.join('`, `')}`")
                     else
                       MSG
@@ -80,6 +110,10 @@ module RuboCop
 
         def any_cops_allowed?
           allowed_cops.any?
+        end
+
+        def disallowed_cops_config
+          @disallowed_cops_config ||= Array(cop_config['DisallowedCops'])
         end
       end
     end
