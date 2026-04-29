@@ -102,7 +102,7 @@ module RuboCop
         @updated_source_file = false
 
         offenses, errors, warnings, corrector =
-          fragments.each_with_object([[], [], [], nil]) do |fragment, data|
+          fragments.each.with_object([[], [], [], nil]) do |fragment, data|
             investigate_fragment(fragment, original, data)
           end
 

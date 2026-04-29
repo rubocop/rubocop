@@ -56,7 +56,7 @@ module RuboCop
 
         def build_preferred_arguments_map(node, preferred_arguments)
           preferred_arguments_map = {}
-          node.arguments.each_with_index do |current_lvar, index|
+          node.arguments.each.with_index do |current_lvar, index|
             preferred_argument = preferred_arguments[index]
             current_argument = current_lvar.source
             preferred_argument = "_#{preferred_argument}" if current_argument.start_with?('_')

@@ -221,7 +221,7 @@ module RuboCop
           # then work through them backwards until we find a candidate. This
           # makes sure we work from the actual root in the case of a path like
           # /home/user/src/project_name/lib.
-          components.reverse.each_with_index do |c, i|
+          components.reverse.each.with_index do |c, i|
             if start.include?(c)
               start_index = components.size - i
               break

@@ -180,7 +180,7 @@ module RuboCop
     end
 
     def serial_file_iterator(files, on_start, on_finish, &block)
-      files.each_with_index do |file, index|
+      files.each.with_index do |file, index|
         on_start.call(file, index)
         result = yield file
         on_finish.call(file, index, result)

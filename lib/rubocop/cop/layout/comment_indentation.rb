@@ -53,7 +53,7 @@ module RuboCop
               'instead of %<correct_comment_indentation>d).'
 
         def on_new_investigation
-          processed_source.comments.each_with_index { |comment, ix| check(comment, ix) }
+          processed_source.comments.each.with_index { |comment, ix| check(comment, ix) }
         end
 
         private

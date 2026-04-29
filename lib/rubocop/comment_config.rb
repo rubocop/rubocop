@@ -116,7 +116,7 @@ module RuboCop
         end
       end
 
-      analyses.each_with_object({}) do |element, hash|
+      analyses.each.with_object({}) do |element, hash|
         cop_name, analysis = *element
         hash[cop_name] = cop_line_ranges(analysis)
       end

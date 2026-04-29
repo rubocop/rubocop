@@ -95,7 +95,7 @@ module RuboCop
         minimum_target_ruby_version 2.7
 
         def on_case_match(case_node)
-          case_node.in_pattern_branches.each_with_object(Set.new) do |in_pattern_node, previous|
+          case_node.in_pattern_branches.each.with_object(Set.new) do |in_pattern_node, previous|
             pattern = in_pattern_node.pattern
             next if previous.add?(pattern_identity(pattern))
 

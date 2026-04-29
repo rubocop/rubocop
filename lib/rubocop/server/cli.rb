@@ -121,7 +121,7 @@ module RuboCop
       end
 
       def delete_server_argument_from(all_arguments)
-        SERVER_OPTIONS.each_with_object([]) do |server_option, server_arguments|
+        SERVER_OPTIONS.each.with_object([]) do |server_option, server_arguments|
           server_arguments << all_arguments.delete(server_option)
         end.compact
       end

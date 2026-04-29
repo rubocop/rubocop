@@ -46,7 +46,7 @@ module RuboCop
           optarg_positions = []
           arg_positions = []
 
-          arguments.each_with_index do |argument, index|
+          arguments.each.with_index do |argument, index|
             optarg_positions << index if argument.optarg_type?
             arg_positions << index if argument.arg_type?
           end
