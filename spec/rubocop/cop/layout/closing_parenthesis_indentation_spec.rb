@@ -525,4 +525,28 @@ RSpec.describe RuboCop::Cop::Layout::ClosingParenthesisIndentation, :config do
       end
     RUBY
   end
+
+  context 'when the cop is configured with `IndentationWidth`' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/ClosingParenthesisIndentation' => { 'IndentationWidth' => 1 },
+        'Layout/IndentationWidth' => { 'Width' => 2 }
+      )
+    end
+
+    it 'uses the per-cop `IndentationWidth` to determine the expected column' do
+      expect_offense(<<~RUBY)
+        some_method(
+          a
+        )
+        ^ Indent `)` to column 1 (not 0)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        some_method(
+          a
+         )
+      RUBY
+    end
+  end
 end
