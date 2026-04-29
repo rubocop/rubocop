@@ -454,21 +454,21 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
     # a chain of calls, and that first dot does not begin its line.
     context 'for semantic alignment' do
       context 'when inside a hash pair without block receiver' do
-        it 'accepts method chain aligned with receiver start inside hash pair' do
+        it 'accepts dot-aligned method chain inside hash pair' do
           expect_no_offenses(<<~RUBY)
             {
               key: Foo.bar
-                   .baz
+                      .baz
             }
           RUBY
         end
 
-        it 'accepts method chain aligned with receiver start inside hash pair with multiple chains' do
+        it 'accepts dot-aligned method chain with multiple chains inside hash pair' do
           expect_no_offenses(<<~RUBY)
             {
               key: Foo.bar
-                   .baz
-                   .qux
+                      .baz
+                      .qux
             }
           RUBY
         end
@@ -478,7 +478,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
             {
               outer: {
                 inner: Foo.bar
-                       .baz
+                          .baz
               }
             }
           RUBY
@@ -488,7 +488,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           expect_no_offenses(<<~RUBY)
             method_call(
               key: Foo.bar
-                   .baz
+                      .baz
             )
           RUBY
         end
@@ -516,23 +516,16 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           RUBY
         end
 
-        it 'accepts multi-dot chain aligned with receiver start in hash pair' do
-          expect_no_offenses(<<~RUBY)
-            method(key: value.foo.bar
-                        .baz)
-          RUBY
-        end
-
         it 'registers an offense for misaligned multi-dot chain in hash pair' do
           expect_offense(<<~RUBY)
             method(key: value.foo.bar
                           .baz)
-                          ^^^^ Align `.baz` with `value.foo.bar` on line 1.
+                          ^^^^ Align `.baz` with `.foo` on line 1.
           RUBY
 
           expect_correction(<<~RUBY)
             method(key: value.foo.bar
-                        .baz)
+                             .baz)
           RUBY
         end
 
@@ -553,15 +546,15 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           expect_offense(<<~RUBY)
             {
               key: Foo.bar
-                      .baz
-                      ^^^^ Align `.baz` with `Foo.bar` on line 2.
+                   .baz
+                   ^^^^ Align `.baz` with `.bar` on line 2.
             }
           RUBY
 
           expect_correction(<<~RUBY)
             {
               key: Foo.bar
-                   .baz
+                      .baz
             }
           RUBY
         end
@@ -624,12 +617,45 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           expect_offense(<<~RUBY)
             Foo.where(id: Bar.select(:id)
                                     .joins(:bar))
-                                    ^^^^^^ Align `.joins` with `Bar.select(:id)` on line 1.
+                                    ^^^^^^ Align `.joins` with `.select` on line 1.
           RUBY
 
           expect_correction(<<~RUBY)
             Foo.where(id: Bar.select(:id)
-                          .joins(:bar))
+                             .joins(:bar))
+          RUBY
+        end
+
+        it 'accepts dot-aligned chain inside hash pair in same-line method call' do
+          expect_no_offenses(<<~RUBY)
+            timeseries.push(
+              {
+                value: timeseries_snapshots.pluck(:membership_gross_value)
+                                           .compact_sum
+                                           .to_f,
+              },
+            )
+          RUBY
+        end
+
+        it 'accepts dot-aligned chain inside hash pair in standalone hash' do
+          expect_no_offenses(<<~RUBY)
+            {
+              alpha_beta_count: @handler.retrieve_all_by(alpha: alpha)
+                                        .authorized.count,
+              beta_count: @handler.retrieve_all.authorized.count
+            }
+          RUBY
+        end
+
+        it 'accepts dot-aligned chain in hash pair inside lambda' do
+          expect_no_offenses(<<~RUBY)
+            filter :season, apply: lambda { |records, values, _options|
+              return records if values.blank?
+
+              records.joins(:match)
+                     .where(matches: { season_id: values })
+            }
           RUBY
         end
       end
@@ -639,7 +665,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           expect_no_offenses(<<~RUBY)
             {
               key: Foo.bar { |x| x }
-                   .baz
+                      .baz
             }
           RUBY
         end
@@ -650,7 +676,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
               key: Foo.bar do |x|
                 x
               end.baz
-                   .qux
+                 .qux
             }
           RUBY
         end
@@ -661,8 +687,8 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
               key: Foo.bar do |x|
                 x
               end.baz
-                 .qux
-                 ^^^^ Align `.qux` with `Foo.bar do |x|` on line 2.
+                    .qux
+                    ^^^^ Align `.qux` with `.baz` on line 4.
             }
           RUBY
 
@@ -671,7 +697,7 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
               key: Foo.bar do |x|
                 x
               end.baz
-                   .qux
+                 .qux
             }
           RUBY
         end
