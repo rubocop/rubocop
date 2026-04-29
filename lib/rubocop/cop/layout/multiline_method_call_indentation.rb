@@ -158,7 +158,7 @@ module RuboCop
           @base = find_hash_pair_alignment_base(node)
           return false if !@base && inside_multiline_chain_arg?(node)
 
-          @base ||= lhs.source_range
+          @base ||= first_dot_alignment_base(node, rhs) || lhs.source_range
           return if aligned_with_first_line_dot?(node, rhs)
 
           calculate_column_delta_offense(rhs, @base.column)
@@ -170,6 +170,31 @@ module RuboCop
 
           first_call = first_call_has_a_dot(node)
           first_call.loc.dot.join(first_call.loc.selector)
+        end
+
+        def first_dot_alignment_base(node, rhs)
+          return unless rhs.source.start_with?('.', '&.')
+
+          first_call = first_call_has_a_dot(node)
+          dot = first_call.loc.dot
+          return unless dot
+          return if first_call == node
+
+          after_block_base = after_multiline_block_base(first_call, node)
+          return after_block_base if after_block_base
+
+          return unless same_line?(dot, first_call.receiver.source_range)
+
+          dot.join(first_call.loc.selector)
+        end
+
+        def after_multiline_block_base(first_call, node)
+          return unless first_call.block_node&.multiline?
+
+          after_block = first_call.block_node.parent
+          return unless after_block&.call_type? && after_block.loc?(:dot) && after_block != node
+
+          after_block.loc.dot.join(after_block.loc.selector)
         end
 
         def inside_multiline_chain_arg?(node)
