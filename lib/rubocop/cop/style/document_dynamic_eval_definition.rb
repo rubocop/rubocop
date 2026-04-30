@@ -161,7 +161,8 @@ module RuboCop
           source = source.gsub(COMMENT_REGEXP, '')
           return if source.blank?
 
-          /\s*#{Regexp.escape(source.strip)}/
+          # Match an escaped interpolation (`\#{...}`) as `#{...}` in the comment.
+          /\s*#{Regexp.escape(source.strip).gsub('\\\\\\#', '\\#')}/
         end
       end
     end
