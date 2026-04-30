@@ -136,7 +136,13 @@ RSpec.describe RuboCop::Cop::Style::ModuleMemberExistenceCheck, :config do
   end
 
   it_behaves_like 'module member inclusion', :class_variables, :class_variable_defined?, false
-  it_behaves_like 'module member inclusion', :constants, :const_defined?
+
+  it 'does not register an offense when using `.constants.include?`' do
+    expect_no_offenses(<<~RUBY)
+      x.constants.include?(:String)
+    RUBY
+  end
+
   it_behaves_like 'module member inclusion', :instance_methods, :method_defined?
   it_behaves_like 'module member inclusion', :private_instance_methods, :private_method_defined?
   it_behaves_like 'module member inclusion', :protected_instance_methods, :protected_method_defined?
