@@ -736,6 +736,30 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     end
   end
 
+  it 'registers an offense and corrects when using nested conditional and branch contains comments before each inner condition' do
+    expect_offense(<<~RUBY)
+      if foo
+        # Comments.
+        if bar
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          # More comments.
+          if baz
+          ^^ Consider merging nested conditions into outer `if` conditions.
+            do_something
+          end
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # Comments.
+      # More comments.
+      if foo && bar && baz
+            do_something
+          end
+    RUBY
+  end
+
   it 'registers an offense and corrects when using guard conditional with outer comment' do
     expect_offense(<<~RUBY)
       # Comment.

@@ -157,12 +157,21 @@ module RuboCop
         end
 
         def correct_for_comment(corrector, node, if_branch)
-          comments = processed_source.ast_with_comments[if_branch].select do |comment|
-            comment.loc.line < if_branch.condition.first_line
-          end
+          return if ignored_nodes.any? { |outer| outer.if_branch.equal?(node) }
+
+          comments = collect_nested_comments(if_branch)
           comment_text = comments.map(&:text).join("\n") << "\n"
 
           corrector.insert_before(node.loc.keyword, comment_text) unless comments.empty?
+        end
+
+        def collect_nested_comments(if_branch)
+          comments = processed_source.ast_with_comments[if_branch].select do |comment|
+            comment.loc.line < if_branch.condition.first_line
+          end
+
+          nested = if_branch.if_branch
+          comments + (offending_branch?(if_branch, nested) ? collect_nested_comments(nested) : [])
         end
 
         def chainable_condition(node)
