@@ -82,15 +82,17 @@ module RuboCop
             !NIL_METHODS.include?(method_name) && !@additional_nil_methods.include?(method_name)
           end
 
-          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
           def sole_condition_of_parent_if?(node)
             child = node
             parent = node.parent
 
             while parent
               if parent.if_type?
-                condition = parent.condition
-                return true if !child.equal?(condition) && non_nil_condition?(condition, node)
+                unless parent.unless?
+                  condition = parent.condition
+                  return true if !child.equal?(condition) && non_nil_condition?(condition, node)
+                end
 
                 parent = find_top_if(parent) if parent.elsif?
               elsif else_branch?(parent)
@@ -104,7 +106,7 @@ module RuboCop
 
             false
           end
-          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
           def non_nil_condition?(condition, node)
             return true if condition == node
