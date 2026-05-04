@@ -174,7 +174,7 @@ module RuboCop
       #     end
       #   end
       #
-      class ClassStructure < Base
+      class ClassStructure < Base # rubocop:disable Metrics/ClassLength
         include VisibilityHelp
         include CommentsHelp
         extend AutoCorrector
@@ -205,18 +205,106 @@ module RuboCop
 
         private
 
-        # Autocorrect by swapping between two nodes autocorrecting them
-        def autocorrect(corrector, node)
+        # Autocorrect by moving the offending node (and any consecutive
+        # movable same-category siblings) before its previous out-of-order
+        # sibling, normalizing the surrounding whitespace.
+        def autocorrect(corrector, node) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
           previous = node.left_siblings.reverse.find do |sibling|
             !ignore_for_autocorrect?(node, sibling)
           end
           return unless previous
 
-          current_range = source_range_with_comment(node)
-          previous_range = source_range_with_comment(previous)
+          current_block = build_current_block(node)
+          prev_begin, prev_end = lines_bounds(previous, previous)
+          block_begin, block_end = lines_bounds(current_block.first, current_block.last)
+          in_between = buffer.source[prev_end...block_begin]
+          next_sibling = next_relevant_sibling(current_block.last)
+          replace_end =
+            next_sibling ? lines_bounds(next_sibling, next_sibling).first : container_end_pos(node)
 
-          corrector.insert_before(previous_range, current_range.source)
-          corrector.remove(current_range)
+          new_text = buffer.source[block_begin...block_end] +
+                     (blank_separator_needed?(in_between) ? "\n" : '') +
+                     buffer.source[prev_begin...prev_end] +
+                     normalize_in_between(in_between, at_end: !next_sibling)
+
+          corrector.replace(Parser::Source::Range.new(buffer, prev_begin, replace_end), new_text)
+        end
+
+        def lines_bounds(first_node, last_node)
+          first_line = first_line_with_comment(first_node)
+          [buffer.line_range(first_line).begin_pos, line_after_pos(effective_last_line(last_node))]
+        end
+
+        def build_current_block(node)
+          block = [node]
+          classification = classify(node)
+
+          node.right_siblings.each do |sibling|
+            sibling_class = classify(sibling)
+            next if ignore?(sibling, sibling_class)
+            break if sibling_class != classification
+            break if dynamic_constant?(sibling)
+
+            block << sibling
+          end
+          block
+        end
+
+        def next_relevant_sibling(node)
+          node.right_siblings.find do |sibling|
+            !ignore?(sibling, classify(sibling))
+          end
+        end
+
+        def container_end_pos(node)
+          container = node.each_ancestor(:class, :sclass, :module).first
+          return buffer.source.length unless container
+
+          buffer.line_range(container.loc.end.line).begin_pos
+        end
+
+        def line_after_pos(line)
+          if line + 1 <= buffer.last_line
+            buffer.line_range(line + 1).begin_pos
+          else
+            buffer.source.length
+          end
+        end
+
+        def effective_last_line(node)
+          max_line = node.last_line
+          node.each_node(:any_str) do |str_node|
+            next unless str_node.heredoc?
+
+            max_line = [max_line, str_node.location.heredoc_end.line].max
+          end
+          max_line
+        end
+
+        def first_line_with_comment(node)
+          first_line = node.first_line
+          (first_line - 1).downto(1) do |line|
+            break unless processed_source.comment_at_line(line)
+            break unless whole_line_comment_at_line?(line)
+
+            first_line = line
+          end
+          first_line
+        end
+
+        def normalize_in_between(in_between, at_end:)
+          if at_end
+            return '' unless in_between.match?(/\S/)
+
+            in_between.sub(/\n+\z/, "\n")
+          else
+            stripped = in_between.sub(/\n+\z/, '')
+            stripped.empty? ? "\n" : "#{stripped}\n\n"
+          end
+        end
+
+        def blank_separator_needed?(in_between)
+          in_between.start_with?("\n") || in_between.include?("\n\n")
         end
 
         # Classifies a node to match with something in the {expected_order}

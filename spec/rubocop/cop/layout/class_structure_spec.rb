@@ -280,6 +280,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         LIMIT = 10
         CONST = 'wrong place'.freeze
         RECURSIVE_BASIC_LITERALS_CONST = [1, 2].freeze
+
         def name; end
 
         DYNAMIC_CONST = foo.freeze
@@ -303,6 +304,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     expect_correction(<<~RUBY)
       class Foo
         PUBLIC_CONST = 'public'
+
         def name; end
 
         PRIVATE_CONST1 = 1
@@ -410,10 +412,10 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
             class method
           EOS
         end
+
         def instance_method
           'instance method'
         end
-
       end
     RUBY
   end
@@ -435,9 +437,9 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         class A
           public def bar
           end
+
           private def foo
           end
-
         end
       RUBY
     end
@@ -458,9 +460,9 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         class A
           def bar
           end
+
           private def foo
           end
-
         end
       RUBY
     end
@@ -483,12 +485,12 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
       expect_correction(<<~RUBY)
         class A
           def bar; end
+
           def qux; end
+
           private def foo; end
 
-
           private def baz; end
-
         end
       RUBY
     end
@@ -510,10 +512,10 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
         class A
           def bar
           end
+
           def foo
           end
           private :foo
-
         end
       RUBY
     end
@@ -539,8 +541,8 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
           def initialize
           end
-          attr_accessor :foo
 
+          attr_accessor :foo
         end
       RUBY
     end

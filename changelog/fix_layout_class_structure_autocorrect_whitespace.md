@@ -1,0 +1,1 @@
+* [#15152](https://github.com/rubocop/rubocop/pull/15152): Fix `Layout/ClassStructure` autocorrect to preserve blank-line separators between groups, move consecutive same-category siblings together, and avoid leaving stray blank lines before the closing `end`. ([@dduugg][])
