@@ -473,6 +473,38 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
       RUBY
     end
 
+    it 'does not register an offense for safe navigation in the body of `unless` with a csend condition' do
+      expect_no_offenses(<<~RUBY)
+        unless foo&.ready?
+          foo&.name
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for safe navigation in modifier `unless` with a csend condition' do
+      expect_no_offenses(<<~RUBY)
+        foo&.name unless foo&.ready?
+      RUBY
+    end
+
+    it 'does not register an offense for safe navigation in the body of `unless` whose condition is the receiver' do
+      expect_no_offenses(<<~RUBY)
+        unless foo
+          foo&.name
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for safe navigation in the body of `unless` with `else`' do
+      expect_no_offenses(<<~RUBY)
+        unless foo&.ready?
+          foo&.name
+        else
+          bar
+        end
+      RUBY
+    end
+
     it 'does not register an offense for chained safe navigation within an if condition' do
       expect_no_offenses(<<~RUBY)
         if foo&.bar&.baz
