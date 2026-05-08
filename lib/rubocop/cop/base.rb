@@ -250,11 +250,13 @@ module RuboCop
       end
 
       def config_to_allow_offenses
-        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] ||= {}
+        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] ||=
+          Formatter::DisabledConfigFormatter::ConfigToAllowHash.new(cop_name)
       end
 
       def config_to_allow_offenses=(hash)
-        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] = hash
+        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] =
+          Formatter::DisabledConfigFormatter::ConfigToAllowHash.new(cop_name, hash)
       end
 
       def target_ruby_version

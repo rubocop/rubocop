@@ -50,7 +50,7 @@ module RuboCop
         def auto_gen_tmp_dir
           @auto_gen_tmp_dir ||= Pathname.new(
             RuboCop::CacheConfig.root_dir_from_toplevel_config
-          ).join('auto-gen-tmp').tap do |path|
+          ).join("auto-gen-tmp-#{Digest::SHA1.hexdigest(Dir.pwd)}").tap do |path|
             path.mkpath
             # Set the temp directory path for ExcludeLimit to use
             RuboCop::ExcludeLimit.tmp_dir = path

@@ -254,6 +254,286 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
+  describe '.merge_cop_config' do
+    def merge(existing, incoming, detected_styles = nil)
+      described_class::ConfigMerger.merge_cop_config(existing, incoming, detected_styles)
+    end
+
+    context 'when both sides have identical scalar values' do
+      it 'returns the existing config' do
+        result = merge({ 'EnforcedStyle' => 'space' }, { 'EnforcedStyle' => 'space' })
+        expect(result).to eq({ 'EnforcedStyle' => 'space' })
+      end
+    end
+
+    context 'when scalar values differ without detected_styles' do
+      it 'disables the cop' do
+        result = merge({ 'EnforcedStyle' => 'space' }, { 'EnforcedStyle' => 'no_space' })
+        expect(result).to eq({ 'Enabled' => false })
+      end
+    end
+
+    context 'when scalar values differ with non-empty detected_styles intersection' do
+      it 'resolves using the detected_styles intersection' do
+        result = merge({ 'EnforcedStyle' => 'space' }, { 'EnforcedStyle' => 'no_space' },
+                       %w[no_space])
+        expect(result).to eq({ 'EnforcedStyle' => 'no_space' })
+      end
+    end
+
+    context 'when scalar values differ with empty detected_styles' do
+      it 'disables the cop' do
+        result = merge({ 'EnforcedStyle' => 'space' }, { 'EnforcedStyle' => 'no_space' }, [])
+        expect(result).to eq({ 'Enabled' => false })
+      end
+    end
+
+    context 'when one side is already disabled' do
+      it 'disables the cop' do
+        result = merge({ 'Enabled' => false }, { 'EnforcedStyle' => 'space' })
+        expect(result).to eq({ 'Enabled' => false })
+      end
+    end
+
+    context 'when one side has keys the other lacks' do
+      it 'merges both sides' do
+        result = merge({ 'EnforcedStyle' => 'space' }, { 'MinSize' => 5 })
+        expect(result).to eq({ 'EnforcedStyle' => 'space', 'MinSize' => 5 })
+      end
+    end
+  end
+
+  describe '.merge_config_overrides' do
+    def merge_overrides(override_a, override_b, cop_class = nil)
+      described_class::ConfigMerger.merge_config_overrides(override_a, override_b, cop_class)
+    end
+
+    context 'when one side is nil' do
+      it 'returns the other side' do
+        expect(merge_overrides({ 'MinSize' => 4 }, nil)).to eq({ 'MinSize' => 4 })
+        expect(merge_overrides(nil, { 'MinSize' => 3 })).to eq({ 'MinSize' => 3 })
+      end
+    end
+
+    context 'when both sides have identical values' do
+      it 'returns the values unchanged' do
+        result = merge_overrides({ 'EnforcedStyle' => 'percent', 'MinSize' => 4 },
+                                 { 'EnforcedStyle' => 'percent', 'MinSize' => 4 })
+        expect(result).to eq({ 'EnforcedStyle' => 'percent', 'MinSize' => 4 })
+      end
+    end
+
+    context 'when values differ and cop defines merge lambdas' do
+      let(:cop_class) do
+        Class.new do
+          def self.config_to_allow_offenses_mergers
+            {
+              'EnforcedStyle' => ->(_a, _b) { 'percent' },
+              'MinSize' => ->(a, b) { [a, b].max }
+            }
+          end
+        end
+      end
+
+      it 'uses the lambdas to resolve conflicts' do
+        result = merge_overrides({ 'EnforcedStyle' => 'percent', 'MinSize' => 4 },
+                                 { 'EnforcedStyle' => 'brackets', 'MinSize' => 3 },
+                                 cop_class)
+        expect(result).to eq({ 'EnforcedStyle' => 'percent', 'MinSize' => 4 })
+      end
+    end
+
+    context 'when values differ and cop has no merge lambdas' do
+      it 'keeps the left-side value' do
+        result = merge_overrides({ 'EnforcedStyle' => 'ruby19' },
+                                 { 'EnforcedStyle' => 'hash_rockets' })
+        expect(result).to eq({ 'EnforcedStyle' => 'ruby19' })
+      end
+    end
+  end
+
+  describe '.merge_config_from_tmp' do
+    around do |example|
+      tmp_dir = Pathname.new(Dir.mktmpdir('rubocop-auto-gen'))
+      original_tmp_dir = RuboCop::ExcludeLimit.tmp_dir
+      RuboCop::ExcludeLimit.tmp_dir = tmp_dir
+      original_config = described_class.config_to_allow_offenses.dup
+      described_class.config_to_allow_offenses = {}
+      begin
+        example.run
+      ensure
+        RuboCop::ExcludeLimit.tmp_dir = original_tmp_dir
+        described_class.config_to_allow_offenses = original_config
+        tmp_dir.rmtree if tmp_dir.exist?
+      end
+    end
+
+    def write_worker_config(cop_name, pid, data)
+      dir = RuboCop::ExcludeLimit.tmp_dir.join('config_to_allow', cop_name.tr('/', '-'))
+      dir.mkpath
+      dir.join("#{pid}.json").write(JSON.dump(data))
+    end
+
+    context 'when workers report overlapping detected_styles' do
+      before do
+        # Layout/FirstHashElementIndentation supports: consistent,
+        # special_inside_parentheses, align_braces.
+        #
+        # A hash literal NOT inside parentheses is ambiguous between
+        # consistent and special_inside_parentheses (both indent
+        # relative to start-of-line). So ambiguous_style_detected
+        # is called with both.
+        #
+        # Worker 1 only saw such hashes, so it persists
+        # EnforcedStyle: consistent (.first) with both possibilities.
+        write_worker_config('Layout/FirstHashElementIndentation', 1001,
+                            'EnforcedStyle' => 'consistent',
+                            '_detected_styles' => %w[consistent special_inside_parentheses])
+        # Worker 2 saw a hash inside parentheses that uniquely matches
+        # special_inside_parentheses, narrowing to a single style.
+        write_worker_config('Layout/FirstHashElementIndentation', 1002,
+                            'EnforcedStyle' => 'special_inside_parentheses',
+                            '_detected_styles' => %w[special_inside_parentheses])
+
+        described_class.merge_config_from_tmp
+      end
+
+      it 'uses the detected_styles intersection to resolve the conflict' do
+        cfg = described_class.config_to_allow_offenses['Layout/FirstHashElementIndentation']
+        expect(cfg).to eq('EnforcedStyle' => 'special_inside_parentheses')
+      end
+    end
+
+    context 'when workers report non-overlapping detected_styles' do
+      before do
+        write_worker_config('Style/HashSyntax', 2001,
+                            'EnforcedStyle' => 'ruby19',
+                            '_detected_styles' => ['ruby19'])
+        write_worker_config('Style/HashSyntax', 2002,
+                            'EnforcedStyle' => 'hash_rockets',
+                            '_detected_styles' => ['hash_rockets'])
+
+        described_class.merge_config_from_tmp
+      end
+
+      it 'disables the cop' do
+        cfg = described_class.config_to_allow_offenses['Style/HashSyntax']
+        expect(cfg).to eq('Enabled' => false)
+      end
+    end
+
+    context 'when three workers progressively narrow the intersection' do
+      before do
+        write_worker_config('Layout/SpaceInsideHashLiteralBraces', 3001,
+                            'EnforcedStyle' => 'space',
+                            '_detected_styles' => %w[space no_space compact])
+        write_worker_config('Layout/SpaceInsideHashLiteralBraces', 3002,
+                            'EnforcedStyle' => 'no_space',
+                            '_detected_styles' => %w[no_space compact])
+        write_worker_config('Layout/SpaceInsideHashLiteralBraces', 3003,
+                            'EnforcedStyle' => 'compact',
+                            '_detected_styles' => %w[compact])
+
+        described_class.merge_config_from_tmp
+      end
+
+      it 'narrows to the common intersection' do
+        cfg = described_class.config_to_allow_offenses['Layout/SpaceInsideHashLiteralBraces']
+        expect(cfg).to eq('EnforcedStyle' => 'compact')
+      end
+    end
+
+    context 'when workers have no detected_styles (scalar-only)' do
+      before do
+        write_worker_config('Style/HashSyntax', 4001, 'EnforcedStyle' => 'ruby19')
+        write_worker_config('Style/HashSyntax', 4002, 'EnforcedStyle' => 'hash_rockets')
+
+        described_class.merge_config_from_tmp
+      end
+
+      it 'falls back to disabling the cop' do
+        cfg = described_class.config_to_allow_offenses['Style/HashSyntax']
+        expect(cfg).to eq('Enabled' => false)
+      end
+    end
+
+    context 'when workers produce conflicting MinSize with _config_overrides (ArrayMinSize cop)' do
+      before do
+        # Worker 1 saw brackets of size 3 → percent + MinSize 4
+        write_worker_config('Style/SymbolArray', 5001,
+                            'EnforcedStyle' => 'percent',
+                            'MinSize' => 4,
+                            '_config_overrides' => {
+                              'EnforcedStyle' => 'percent',
+                              'MinSize' => 4
+                            })
+        # Worker 2 saw brackets of size 2 → percent + MinSize 3
+        write_worker_config('Style/SymbolArray', 5002,
+                            'EnforcedStyle' => 'percent',
+                            'MinSize' => 3,
+                            '_config_overrides' => {
+                              'EnforcedStyle' => 'percent',
+                              'MinSize' => 3
+                            })
+
+        described_class.merge_config_from_tmp
+      end
+
+      it 'uses cop-defined merge lambdas to take the max MinSize' do
+        cfg = described_class.config_to_allow_offenses['Style/SymbolArray']
+        expect(cfg).to eq('EnforcedStyle' => 'percent', 'MinSize' => 4)
+      end
+    end
+
+    context 'when one worker disabled and another has config, both with _config_overrides' do
+      before do
+        # Worker 1 disabled: smallest_percent <= largest_brackets
+        write_worker_config('Style/SymbolArray', 6001,
+                            'Enabled' => false,
+                            '_config_overrides' => {
+                              'EnforcedStyle' => 'percent',
+                              'MinSize' => 4
+                            })
+        # Worker 2 resolved to percent+MinSize
+        write_worker_config('Style/SymbolArray', 6002,
+                            'EnforcedStyle' => 'percent',
+                            'MinSize' => 3,
+                            '_config_overrides' => {
+                              'EnforcedStyle' => 'percent',
+                              'MinSize' => 3
+                            })
+
+        described_class.merge_config_from_tmp
+      end
+
+      it 'uses merged overrides as fallback instead of disabling' do
+        cfg = described_class.config_to_allow_offenses['Style/SymbolArray']
+        expect(cfg).to eq('EnforcedStyle' => 'percent', 'MinSize' => 4)
+      end
+    end
+
+    context 'when only one worker provides _config_overrides' do
+      before do
+        # Worker 1 saw only brackets → EnforcedStyle: brackets, with overrides
+        write_worker_config('Style/WordArray', 7001,
+                            'EnforcedStyle' => 'brackets',
+                            '_config_overrides' => {
+                              'EnforcedStyle' => 'percent',
+                              'MinSize' => 5
+                            })
+        # Worker 2 saw only percent → EnforcedStyle: percent, no overrides
+        write_worker_config('Style/WordArray', 7002, 'EnforcedStyle' => 'percent')
+
+        described_class.merge_config_from_tmp
+      end
+
+      it 'uses the single override as fallback' do
+        cfg = described_class.config_to_allow_offenses['Style/WordArray']
+        expect(cfg).to eq('EnforcedStyle' => 'percent', 'MinSize' => 5)
+      end
+    end
+  end
+
   context 'with autocorrect supported cop', :restore_registry do
     before do
       stub_cop_class('Test::Cop3') { extend RuboCop::Cop::AutoCorrector }

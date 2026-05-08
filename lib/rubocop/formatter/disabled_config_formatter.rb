@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require 'forwardable'
+require 'json'
+
 module RuboCop
   module Formatter
     # This formatter displays a YAML configuration file where all cops that
@@ -37,8 +40,212 @@ module RuboCop
       @config_to_allow_offenses = {}
       @detected_styles = {}
 
+      # A Hash wrapper that automatically persists to a tmp file on mutation.
+      # This enables cross-process aggregation when running --auto-gen-config
+      # in parallel: each forked worker writes its state to a PID-keyed file,
+      # and the parent merges all workers' files before generating the todo.
+      class ConfigToAllowHash
+        extend Forwardable
+
+        def_delegators :@data, :[], :key?, :==, :empty?, :each, :each_key, :merge
+
+        def initialize(cop_name, data = {})
+          @cop_name = cop_name
+          @data = data.dup
+          @metadata = {}
+          persist! unless @data.empty?
+        end
+
+        def to_h
+          @data.dup
+        end
+
+        def []=(key, value)
+          return if @data[key] == value
+
+          @data[key] = value
+          persist!
+        end
+
+        # Stores metadata that is serialized to the JSON tmp file for
+        # cross-process communication but not included in the config hash.
+        def set_metadata(key, value)
+          return if @metadata[key] == value
+
+          @metadata[key] = value
+          persist!
+        end
+
+        def clear
+          return if @data.empty? && @metadata.empty?
+
+          @data.clear
+          @metadata.clear
+          persist!
+        end
+
+        private
+
+        def persist!
+          tmp_dir = ExcludeLimit.tmp_dir
+          return unless tmp_dir
+
+          dir = tmp_dir.join('config_to_allow', @cop_name.tr('/', '-'))
+          dir.mkpath
+
+          serialized = @data.dup
+          @metadata.each { |k, v| serialized[k] = v }
+          detected = Formatter::DisabledConfigFormatter.detected_styles[@cop_name]
+          serialized['_detected_styles'] = detected if detected
+
+          dir.join("#{Process.pid}.json").write(JSON.dump(serialized))
+        end
+      end
+
+      # Encapsulates the logic for merging per-worker cop config state
+      # collected during parallel --auto-gen-config runs.
+      module ConfigMerger
+        DISABLED = { 'Enabled' => false }.freeze
+
+        module_function
+
+        def accumulate_worker_configs(cop_dir, cop_class = nil)
+          worker_data = cop_dir.children.sort.filter_map do |filepath|
+            next unless filepath.file?
+
+            parse_worker_file(filepath)
+          end
+
+          worker_data.inject do |(acc_cfg, acc_meta), (cfg, meta)|
+            merged_meta = merge_metadata(acc_meta, meta, cop_class)
+            merged_cfg = merge_cop_config(acc_cfg, cfg, merged_meta[:detected_styles])
+            [merged_cfg, merged_meta]
+          end
+        end
+
+        def parse_worker_file(filepath)
+          raw = JSON.parse(filepath.read)
+          meta = {
+            detected_styles: raw.delete('_detected_styles'),
+            config_overrides: raw.delete('_config_overrides')
+          }
+          [raw, meta]
+        end
+
+        def merge_metadata(meta_a, meta_b, cop_class = nil)
+          {
+            detected_styles: intersect_styles(meta_a[:detected_styles], meta_b[:detected_styles]),
+            config_overrides: merge_config_overrides(
+              meta_a[:config_overrides],
+              meta_b[:config_overrides],
+              cop_class
+            )
+          }
+        end
+
+        # Merges _config_overrides from multiple workers using cop-defined
+        # merge lambdas. Each cop/module can define how its config options
+        # should be combined by implementing config_to_allow_offenses_mergers.
+        def merge_config_overrides(override_a, override_b, cop_class = nil)
+          return override_a unless override_b
+          return override_b unless override_a
+
+          mergers = cop_config_mergers(cop_class)
+          override_a.merge(override_b) do |key, a_val, b_val|
+            next a_val if a_val == b_val
+
+            mergers[key]&.call(a_val, b_val) || a_val
+          end
+        end
+
+        def cop_config_mergers(cop_class)
+          return {} unless cop_class.respond_to?(:config_to_allow_offenses_mergers)
+
+          cop_class.config_to_allow_offenses_mergers
+        end
+
+        def intersect_styles(style_a, style_b)
+          Array(style_a) & Array(style_b)
+        end
+
+        def disabled_config?(existing, incoming)
+          existing == DISABLED || incoming == DISABLED
+        end
+
+        def merge_cop_config(existing, incoming, detected_styles = nil)
+          return DISABLED if disabled_config?(existing, incoming)
+          return existing if existing == incoming
+
+          merged = existing.merge(incoming)
+          if merged.all? { |k, v| existing.fetch(k, v) == v }
+            merged
+          elsif detected_styles&.any?
+            resolve_with_detected_styles(existing, incoming, detected_styles)
+          else
+            DISABLED
+          end
+        end
+
+        def resolve_with_detected_styles(existing, incoming, detected_styles)
+          resolved_conflict = false
+          (existing.keys | incoming.keys).each_with_object({}) do |key, result|
+            e_val = existing[key]
+            i_val = incoming[key]
+            next result[key] = i_val if e_val.nil?
+            next result[key] = e_val if i_val.nil? || e_val == i_val
+            # detected_styles can only resolve a single style parameter;
+            # a second conflicting key cannot be resolved.
+            return DISABLED if resolved_conflict
+
+            resolved_conflict = true
+            result[key] = detected_styles.first
+          end
+        end
+      end
+
       class << self
         attr_accessor :config_to_allow_offenses, :detected_styles
+
+        # Reads per-cop config_to_allow state from all per-worker tmp files
+        # and merges them. Called before outputting the todo configuration.
+        def merge_config_from_tmp
+          config_dir = ExcludeLimit.tmp_dir&.join('config_to_allow')
+          return unless config_dir&.directory?
+
+          config_dir.children.sort.each do |cop_dir|
+            next unless cop_dir.directory?
+
+            cop_name = cop_dir.basename.to_s.tr('-', '/')
+            merge_cop_config_from_dir(cop_name, cop_dir)
+          end
+        end
+
+        private
+
+        def merge_cop_config_from_dir(cop_name, cop_dir)
+          cop_class = Cop::Registry.global.find_by_cop_name(cop_name)
+          result = ConfigMerger.accumulate_worker_configs(cop_dir, cop_class)
+          return unless result
+
+          accumulated_cfg, accumulated_meta = result
+          accumulated_cfg = apply_config_overrides_fallback(
+            accumulated_cfg, accumulated_meta, cop_class
+          )
+
+          existing = @config_to_allow_offenses[cop_name]
+          existing = existing.to_h if existing.is_a?(ConfigToAllowHash)
+          @config_to_allow_offenses[cop_name] =
+            existing ? ConfigMerger.merge_cop_config(existing, accumulated_cfg) : accumulated_cfg
+        end
+
+        def apply_config_overrides_fallback(cfg, meta, cop_class)
+          if cfg == ConfigMerger::DISABLED && meta[:config_overrides] &&
+             cop_class.respond_to?(:config_to_allow_offenses_mergers)
+            meta[:config_overrides]
+          else
+            cfg
+          end
+        end
       end
 
       def initialize(output, options = {})
@@ -63,6 +270,8 @@ module RuboCop
       end
 
       def finished(_inspected_files)
+        self.class.merge_config_from_tmp
+
         output.puts format(HEADING, command: command, timestamp: timestamp)
 
         # Syntax isn't a real cop and it can't be disabled.
@@ -118,7 +327,7 @@ module RuboCop
 
       def output_cop(cop_name, offense_count)
         output.puts
-        cfg = self.class.config_to_allow_offenses[cop_name] || {}
+        cfg = self.class.config_to_allow_offenses.fetch(cop_name, {}).to_h
         set_max(cfg, cop_name)
 
         # To avoid malformed YAML when potentially reading the config in
@@ -220,6 +429,7 @@ module RuboCop
         # limit is exceeded.
         rejected_keys = ['Enabled']
         rejected_keys << /\AEnforcedStyle\w*/ unless auto_gen_enforced_style?
+        rejected_keys << /\A_/ # Strip internal keys used for parallel merge
         cfg.reject { |key| include_or_match?(rejected_keys, key) }
       end
 

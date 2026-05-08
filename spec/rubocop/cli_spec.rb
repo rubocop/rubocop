@@ -244,6 +244,11 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'when specifying `--auto-gen-config`' do
+        before do
+          RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+          RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
+        end
+
         it 'uses parallel inspection' do
           create_file('example1.rb', <<~RUBY)
             # frozen_string_literal: true
@@ -252,6 +257,29 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           RUBY
           expect(cli.run(['--debug', '--auto-gen-config'])).to eq(0)
           expect($stdout.string).to include('Use parallel by default.')
+        end
+
+        it 'generates EnforcedStyle when multiple files have the same style' do
+          create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)'])
+          create_file('example2.rb', ['# frozen_string_literal: true', '', 'h(:b => 2)'])
+
+          expect(cli.run(['--auto-gen-config'])).to eq(0)
+          todo = File.readlines('.rubocop_todo.yml').drop_while do |line|
+            line.start_with?('#')
+          end.join
+          expect(todo).to include("Style/HashSyntax:\n  EnforcedStyle: hash_rockets")
+        end
+
+        it 'generates Exclude when files have conflicting styles' do
+          create_file('example1.rb', ['# frozen_string_literal: true', '', 'h(:a => 1)'])
+          create_file('example2.rb', ['# frozen_string_literal: true', '', 'h(b: 2)'])
+
+          expect(cli.run(['--auto-gen-config'])).to eq(0)
+          todo = File.readlines('.rubocop_todo.yml').drop_while do |line|
+            line.start_with?('#')
+          end.join
+          expect(todo).to include('Style/HashSyntax:')
+          expect(todo).not_to match %r{Style/HashSyntax:\n\s+EnforcedStyle:}
         end
       end
 

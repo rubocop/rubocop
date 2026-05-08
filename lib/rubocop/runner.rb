@@ -163,7 +163,6 @@ module RuboCop
     end
 
     def run_in_parallel?(files)
-      return false if @options[:auto_gen_config]
       return false unless @options[:parallel]
 
       if files.size <= 1
