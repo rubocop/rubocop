@@ -59,7 +59,7 @@ module RuboCop
 
         def initialize(config = nil, options = nil)
           super
-          @allowed_send_nodes = []
+          @allowed_send_nodes = Set.new.compare_by_identity
           @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }.compare_by_identity
         end
 
@@ -187,7 +187,7 @@ module RuboCop
         def allow_self(node)
           return unless node.send_type? && node.self_receiver?
 
-          @allowed_send_nodes << node
+          @allowed_send_nodes.add(node)
         end
 
         def add_lhs_to_local_variables_scopes(rhs, lhs)
