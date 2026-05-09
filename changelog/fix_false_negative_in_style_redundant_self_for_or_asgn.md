@@ -1,0 +1,1 @@
+* [#15155](https://github.com/rubocop/rubocop/issues/15155): Fix false negatives in `Style/RedundantSelf` when an explicit `self` receiver in one scope matches the LHS of an `||=`, `&&=`, or `op_asgn` in another scope. ([@koic][])
