@@ -99,6 +99,7 @@ module RuboCop
                        end
           return unless key
           return if accumulator_used_in_expressions?(block_node, key, value)
+          return if nested_match?(key) || nested_match?(value)
 
           register_offense(node, block_node, key, value)
         end
@@ -106,6 +107,21 @@ module RuboCop
         def accumulator_used_in_expressions?(block_node, key, value)
           acc_name = accumulator_name(block_node)
           references_variable?(key, acc_name) || references_variable?(value, acc_name)
+        end
+
+        def nested_match?(node)
+          node.each_node(:call).any? do |send_node|
+            next false unless RESTRICT_ON_SEND.include?(send_node.method_name)
+
+            inner_block = send_node.block_node
+            next false unless inner_block
+
+            if send_node.method?(:each_with_object)
+              each_with_object_to_hash?(inner_block)
+            else
+              inject_to_hash?(inner_block)
+            end
+          end
         end
 
         def accumulator_name(block_node)
