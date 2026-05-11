@@ -14,6 +14,19 @@ RSpec.describe RuboCop::Cop::Style::ReduceToHash, :config do
         RUBY
       end
 
+      it 'registers an offense for the inner call when nested without raising a clobbering error' do
+        expect_offense(<<~RUBY)
+          tables.each_with_object({}) { |table, h|
+            h[table.node] = table.columns.each_with_object({}) { |column, i| i[column.name] = column.alias }
+                                          ^^^^^^^^^^^^^^^^ Use `to_h { ... }` instead of `each_with_object`.
+          }
+        RUBY
+
+        expect_correction(<<~RUBY)
+          tables.to_h { |table| [table.node, table.columns.to_h { |column| [column.name, column.alias] }] }
+        RUBY
+      end
+
       it 'registers an offense and corrects with do...end block' do
         expect_offense(<<~RUBY)
           array.each_with_object({}) do |elem, hash|
