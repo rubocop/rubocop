@@ -25,10 +25,10 @@ module RuboCop
           puts Cop::Documentation.default_base_url if cops_array.empty?
 
           cops_array.each do |cop_name|
-            cop = registry_hash[cop_name]
-            next if cop.empty?
+            cop = Cop::Registry.global.find_by_cop_name(cop_name)
+            next unless cop
 
-            url = Cop::Documentation.url_for(cop.first, @config)
+            url = Cop::Documentation.url_for(cop, @config)
             puts url if url
           end
 
@@ -37,10 +37,6 @@ module RuboCop
 
         def cops_array
           @cops_array ||= @options[:show_docs_url]
-        end
-
-        def registry_hash
-          @registry_hash ||= Cop::Registry.global.to_h
         end
       end
     end
