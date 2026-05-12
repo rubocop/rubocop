@@ -49,9 +49,8 @@ module RuboCop
       attr_reader :options, :warnings
 
       def initialize(cops = [], options = {})
-        @registry = {}
-        @departments = {}
-        @cops_by_cop_name = Hash.new { |hash, key| hash[key] = [] }
+        @departments = Set.new
+        @cops_by_badge = {}
 
         @enrollment_queue = cops
         @options = options
@@ -72,22 +71,17 @@ module RuboCop
       # @return [Array<Symbol>] list of departments for current cops.
       def departments
         clear_enrollment_queue
-        @departments.keys
+        @departments.to_a
       end
 
       # @return [Registry] Cops for that specific department.
       def with_department(department)
-        clear_enrollment_queue
-        with(@departments.fetch(department, []))
+        with(cops.select { |cop| cop.department == department })
       end
 
       # @return [Registry] Cops not for a specific department.
       def without_department(department)
-        clear_enrollment_queue
-        without_department = @departments.dup
-        without_department.delete(department)
-
-        with(without_department.values.flatten)
+        with(cops.reject { |cop| cop.department == department })
       end
 
       # @return [Boolean] Checks if given name is department
@@ -160,31 +154,31 @@ module RuboCop
       def unqualified_cop_names
         clear_enrollment_queue
         @unqualified_cop_names ||=
-          Set.new(@cops_by_cop_name.keys.map { |qn| File.basename(qn) }) <<
+          Set.new(@cops_by_badge.keys.map { |badge| File.basename(badge.to_s) }) <<
           'RedundantCopDisableDirective'
       end
 
       def qualify_badge(badge)
         clear_enrollment_queue
         @departments
-          .map { |department, _| badge.with_department(department) }
+          .map { |department| badge.with_department(department) }
           .select { |potential_badge| registered?(potential_badge) }
       end
 
       # @return [Hash{String => Array<Class>}]
       def to_h
         clear_enrollment_queue
-        @cops_by_cop_name
+        @cops_by_badge.to_h { |_badge, cop| [cop.cop_name, [cop]] }
       end
 
       def cops
         clear_enrollment_queue
-        @registry.values
+        @cops_by_badge.values
       end
 
       def length
         clear_enrollment_queue
-        @registry.size
+        @cops_by_badge.size
       end
 
       def enabled(config)
@@ -219,7 +213,8 @@ module RuboCop
       end
 
       def names
-        cops.map(&:cop_name)
+        clear_enrollment_queue
+        @cops_by_badge.keys.map(&:to_s)
       end
 
       def cops_for_department(department)
@@ -236,7 +231,7 @@ module RuboCop
 
       def sort!
         clear_enrollment_queue
-        @registry = @registry.sort_by { |badge, _| badge.cop_name }.to_h
+        @cops_by_badge = @cops_by_badge.sort_by { |badge, _cop| badge.cop_name }.to_h
 
         self
       end
@@ -252,7 +247,9 @@ module RuboCop
       # @param [String] cop_name
       # @return [Class, nil]
       def find_by_cop_name(cop_name)
-        to_h[cop_name].first
+        clear_enrollment_queue
+        badge = Badge.parse(cop_name)
+        @cops_by_badge[badge]
       end
 
       # When a cop name is given returns a single-element array with the cop class.
@@ -289,10 +286,8 @@ module RuboCop
         return if @enrollment_queue.empty?
 
         @enrollment_queue.each do |cop|
-          @registry[cop.badge] = cop
-          @departments[cop.department] ||= []
-          @departments[cop.department] << cop
-          @cops_by_cop_name[cop.cop_name] << cop
+          @cops_by_badge[cop.badge] = cop
+          @departments << cop.department
         end
         @enrollment_queue = []
       end
@@ -318,7 +313,7 @@ module RuboCop
 
       def registered?(badge)
         clear_enrollment_queue
-        @registry.key?(badge)
+        @cops_by_badge.key?(badge)
       end
     end
   end
