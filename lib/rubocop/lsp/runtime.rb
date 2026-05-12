@@ -23,7 +23,6 @@ module RuboCop
         RuboCop::LSP.enable
 
         @runner = RuboCop::Lsp::StdinRunner.new(config_store)
-        @cop_registry = RuboCop::Cop::Registry.global.to_h
 
         @safe_autocorrect = true
         @lint_mode = false
@@ -63,7 +62,7 @@ module RuboCop
           document_encoding,
           offense,
           path,
-          @cop_registry[offense.cop_name]&.first,
+          RuboCop::Cop::Registry.global.find_by_cop_name(offense.cop_name),
           processed_source
         ).to_lsp_diagnostic(config)
       end
