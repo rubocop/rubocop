@@ -104,7 +104,7 @@ module RuboCop
         end
 
         def notice_regexp
-          @notice_regexp ||= Regexp.new(notice.sub(/\A\^?#\s?/, ''))
+          @notice_regexp ||= Regexp.new(notice.sub(/\A(?:\\A|\^)?#(?:\\s[*+?]?|\s)*/, ''))
         end
 
         def notice

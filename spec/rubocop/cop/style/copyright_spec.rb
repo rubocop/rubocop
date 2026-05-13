@@ -243,6 +243,83 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     end
   end
 
+  context 'when the `Notice` pattern starts with `\A#`' do
+    let(:cop_config) do
+      {
+        'Notice' => '\A# Copyright (\(c\) )?2[0-9]{3} .+',
+        'AutocorrectNotice' => '# Copyright (c) 2026 My Name'
+      }
+    end
+
+    it 'does not register an offense when the notice is present' do
+      expect_no_offenses(<<~RUBY)
+        # Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+
+    it 'autocorrects with a single `#` prefix' do
+      expect_offense(<<~RUBY)
+        puts 'Hello world'
+        ^ Include a copyright notice matching [...]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+  end
+
+  context 'when the `Notice` pattern uses `\s+` after `#`' do
+    let(:cop_config) do
+      {
+        'Notice' => '^#\s+Copyright (\(c\) )?2[0-9]{3} .+',
+        'AutocorrectNotice' => '# Copyright (c) 2026 My Name'
+      }
+    end
+
+    it 'does not register an offense when the notice is present' do
+      expect_no_offenses(<<~RUBY)
+        # Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+
+    it 'autocorrects with a single `#` prefix' do
+      expect_offense(<<~RUBY)
+        puts 'Hello world'
+        ^ Include a copyright notice matching [...]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+  end
+
+  context 'when the `Notice` pattern has multiple literal spaces after `#`' do
+    let(:cop_config) do
+      {
+        'Notice' => '^#  Copyright (\(c\) )?2[0-9]{3} .+',
+        'AutocorrectNotice' => '#  Copyright (c) 2026 My Name'
+      }
+    end
+
+    it 'autocorrects preserving the configured spacing' do
+      expect_offense(<<~RUBY)
+        puts 'Hello world'
+        ^ Include a copyright notice matching [...]
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #  Copyright (c) 2026 My Name
+        puts 'Hello world'
+      RUBY
+    end
+  end
+
   context 'when `Notice` starts with `^#` and AutocorrectNotice has no `#`' do
     let(:cop_config) do
       {
