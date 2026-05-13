@@ -154,24 +154,49 @@ RSpec.describe RuboCop::Cop::Registry do
       end
     end
 
+    context 'when there are lazy-loaded cops' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      end
+
+      it 'returns the qualified cop name' do
+        result = registry.qualified_cop_name('LazyLoad/Foo', origin)
+        expect(result).to eql('LazyLoad/Foo')
+      end
+    end
+
     it 'returns the provided name if no namespace is found' do
       expect(registry.qualified_cop_name('NotReal', origin)).to eql('NotReal')
     end
   end
 
-  it 'exposes a mapping of cop names to cop classes' do
-    expect(registry.to_h).to eql(
-      'Lint/BooleanSymbol' => [RuboCop::Cop::Lint::BooleanSymbol],
-      'Lint/DuplicateMethods' => [RuboCop::Cop::Lint::DuplicateMethods],
-      'Layout/FirstArrayElementIndentation' => [
-        RuboCop::Cop::Layout::FirstArrayElementIndentation
-      ],
-      'Metrics/MethodLength' => [RuboCop::Cop::Metrics::MethodLength],
-      'Test/FirstArrayElementIndentation' => [
-        RuboCop::Cop::Test::FirstArrayElementIndentation
-      ],
-      'RSpec/Foo' => [RuboCop::Cop::RSpec::Foo]
-    )
+  describe '#to_h' do
+    it 'exposes a mapping of cop names to cop classes' do
+      expect(registry.to_h).to eql(
+        'Lint/BooleanSymbol' => [RuboCop::Cop::Lint::BooleanSymbol],
+        'Lint/DuplicateMethods' => [RuboCop::Cop::Lint::DuplicateMethods],
+        'Layout/FirstArrayElementIndentation' => [
+          RuboCop::Cop::Layout::FirstArrayElementIndentation
+        ],
+        'Metrics/MethodLength' => [RuboCop::Cop::Metrics::MethodLength],
+        'Test/FirstArrayElementIndentation' => [
+          RuboCop::Cop::Test::FirstArrayElementIndentation
+        ],
+        'RSpec/Foo' => [RuboCop::Cop::RSpec::Foo]
+      )
+    end
+
+    context 'when there are lazy-loaded cops' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      end
+
+      it 'loads them' do
+        expect(registry.to_h['LazyLoad/Foo']).to eq([RuboCop::Cop::LazyLoad::Foo])
+      end
+    end
   end
 
   describe '#cops' do
@@ -193,10 +218,34 @@ RSpec.describe RuboCop::Cop::Registry do
         )
       end
     end
+
+    context 'when there are lazy-loaded cops' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      end
+
+      it 'includes them in the list' do
+        expect(registry.cops).to include(RuboCop::Cop::LazyLoad::Foo)
+      end
+    end
   end
 
-  it 'exposes the number of stored cops' do
-    expect(registry.length).to be(6)
+  describe '#length' do
+    it 'exposes the number of stored cops' do
+      expect(registry.length).to be(6)
+    end
+
+    context 'when there are lazy-loaded cops' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      end
+
+      it 'includes them' do
+        expect(registry.length).to be(7)
+      end
+    end
   end
 
   describe '#enabled' do
@@ -319,17 +368,30 @@ RSpec.describe RuboCop::Cop::Registry do
     end
   end
 
-  it 'exposes a list of cop names' do
-    expect(registry.names).to eql(
-      [
-        'Lint/BooleanSymbol',
-        'Lint/DuplicateMethods',
-        'Layout/FirstArrayElementIndentation',
-        'Metrics/MethodLength',
-        'RSpec/Foo',
-        'Test/FirstArrayElementIndentation'
-      ]
-    )
+  describe '#names' do
+    it 'exposes a list of cop names' do
+      expect(registry.names).to eql(
+        [
+          'Lint/BooleanSymbol',
+          'Lint/DuplicateMethods',
+          'Layout/FirstArrayElementIndentation',
+          'Metrics/MethodLength',
+          'RSpec/Foo',
+          'Test/FirstArrayElementIndentation'
+        ]
+      )
+    end
+
+    context 'when there are lazy-loaded cops' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      end
+
+      it 'includes them in the list' do
+        expect(registry.names).to include('LazyLoad/Foo')
+      end
+    end
   end
 
   describe '#department?' do
@@ -346,6 +408,86 @@ RSpec.describe RuboCop::Cop::Registry do
     it 'returns array of cops for specified department' do
       expect(registry.names_for_department('Lint'))
         .to eq %w[Lint/BooleanSymbol Lint/DuplicateMethods]
+    end
+  end
+
+  describe '#find_by_cop_name' do
+    it 'returns cop class when it exists in the registry' do
+      expect(registry.find_by_cop_name('Lint/BooleanSymbol')).to eq(RuboCop::Cop::Lint::BooleanSymbol)
+    end
+
+    it 'returns nil when it does not exist in the registry' do
+      expect(registry.find_by_cop_name('Foo/Bar')).to be_nil
+    end
+
+    context 'when the cop is lazy-loaded' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      end
+
+      it 'loads it' do
+        expect(registry.find_by_cop_name('LazyLoad/Foo')).to eq(RuboCop::Cop::LazyLoad::Foo)
+      end
+    end
+  end
+
+  describe '#unqualified_cop_names' do
+    it 'returns a set of cop names without the department' do
+      expect(registry.unqualified_cop_names)
+        .to eq(Set['BooleanSymbol', 'DuplicateMethods',
+                   'FirstArrayElementIndentation', 'MethodLength',
+                   'Foo', 'RedundantCopDisableDirective'])
+    end
+
+    context 'when there are lazy-loaded cops' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::LazyLoadedCop', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/LazyLoadedCop', 'RuboCop::Cop::LazyLoad::LazyLoadedCop')
+      end
+
+      it 'includes them' do
+        expect(registry.unqualified_cop_names).to include('LazyLoadedCop')
+      end
+    end
+  end
+
+  describe '#lazy_load' do
+    before do
+      stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+    end
+
+    it 'adds lazy-loaded cop to departments' do
+      expect do
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      end.to change { registry.departments.include?(:LazyLoad) }.from(false).to(true)
+    end
+  end
+
+  describe '#sort!' do
+    it 'sorts the cops by cop name' do
+      expected_order = cops.sort_by { |cop| cop.badge.cop_name }
+
+      expect(cops).not_to eq(expected_order)
+
+      expect do
+        registry.sort!
+      end.to change(registry, :cops).from(cops).to(expected_order)
+    end
+
+    context 'when there are lazy-loaded cops' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      end
+
+      it 'loads them' do
+        expected_order = (cops + [RuboCop::Cop::LazyLoad::Foo]).sort_by { |cop| cop.badge.cop_name }
+
+        expect do
+          registry.sort!
+        end.to change(registry, :cops).to(expected_order)
+      end
     end
   end
 end

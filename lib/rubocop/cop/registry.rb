@@ -51,6 +51,7 @@ module RuboCop
       def initialize(cops = [], options = {})
         @departments = Set.new
         @cops_by_badge = {}
+        @lazy_loaded_cops_by_badge = {}
 
         @enrollment_queue = cops
         @options = options
@@ -58,6 +59,12 @@ module RuboCop
         @enabled_cache = {}.compare_by_identity
         @disabled_cache = {}.compare_by_identity
         @warnings = {}
+      end
+
+      def lazy_load(cop_name, constant_name)
+        badge = Badge.parse(cop_name)
+        @departments << badge.department
+        @lazy_loaded_cops_by_badge[badge] = constant_name
       end
 
       def enlist(cop)
@@ -154,8 +161,8 @@ module RuboCop
       def unqualified_cop_names
         clear_enrollment_queue
         @unqualified_cop_names ||=
-          Set.new(@cops_by_badge.keys.map { |badge| File.basename(badge.to_s) }) <<
-          'RedundantCopDisableDirective'
+          (@cops_by_badge.keys | @lazy_loaded_cops_by_badge.keys)
+          .to_set { |badge| File.basename(badge.to_s) } << 'RedundantCopDisableDirective'
       end
 
       def qualify_badge(badge)
@@ -168,17 +175,19 @@ module RuboCop
       # @return [Hash{String => Array<Class>}]
       def to_h
         clear_enrollment_queue
+        load_all_lazy_cops
         @cops_by_badge.to_h { |_badge, cop| [cop.cop_name, [cop]] }
       end
 
       def cops
         clear_enrollment_queue
+        load_all_lazy_cops
         @cops_by_badge.values
       end
 
       def length
         clear_enrollment_queue
-        @cops_by_badge.size
+        @cops_by_badge.size + @lazy_loaded_cops_by_badge.size
       end
 
       def enabled(config)
@@ -214,7 +223,7 @@ module RuboCop
 
       def names
         clear_enrollment_queue
-        @cops_by_badge.keys.map(&:to_s)
+        @cops_by_badge.keys.map(&:to_s) | @lazy_loaded_cops_by_badge.keys.map(&:to_s)
       end
 
       def cops_for_department(department)
@@ -231,6 +240,7 @@ module RuboCop
 
       def sort!
         clear_enrollment_queue
+        load_all_lazy_cops
         @cops_by_badge = @cops_by_badge.sort_by { |badge, _cop| badge.cop_name }.to_h
 
         self
@@ -249,7 +259,7 @@ module RuboCop
       def find_by_cop_name(cop_name)
         clear_enrollment_queue
         badge = Badge.parse(cop_name)
-        @cops_by_badge[badge]
+        @cops_by_badge[badge] || load_lazy_cop(badge)
       end
 
       # When a cop name is given returns a single-element array with the cop class.
@@ -262,6 +272,7 @@ module RuboCop
 
       def freeze
         clear_enrollment_queue
+        load_all_lazy_cops
         unqualified_cop_names # build cache
         super
       end
@@ -292,6 +303,17 @@ module RuboCop
         @enrollment_queue = []
       end
 
+      def load_all_lazy_cops
+        @lazy_loaded_cops_by_badge.each_key { |badge| load_lazy_cop(badge) }
+      end
+
+      def load_lazy_cop(badge)
+        constant_name = @lazy_loaded_cops_by_badge.delete(badge)
+        return unless constant_name
+
+        @cops_by_badge[badge] = Kernel.const_get(constant_name)
+      end
+
       def with(cops)
         self.class.new(cops)
       end
@@ -313,7 +335,7 @@ module RuboCop
 
       def registered?(badge)
         clear_enrollment_queue
-        @cops_by_badge.key?(badge)
+        @cops_by_badge.key?(badge) || @lazy_loaded_cops_by_badge.key?(badge)
       end
     end
   end
