@@ -60,7 +60,7 @@ module RuboCop
         def print_opt_out_instruction
           puts
           puts 'You can opt out of this message by adding the following to your config ' \
-               '(see https://docs.rubocop.org/rubocop/extensions.html#extension-suggestions ' \
+               '(see https://docs.rubocop.org/rubocop/plugins.html#plugin-suggestions ' \
                'for more options):'
           puts '  AllCops:'
           puts '    SuggestExtensions: false'
