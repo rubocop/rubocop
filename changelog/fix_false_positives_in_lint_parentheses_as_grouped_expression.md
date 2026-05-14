@@ -1,0 +1,1 @@
+* [#15168](https://github.com/rubocop/rubocop/issues/15168): Fix false positives in `Lint/ParenthesesAsGroupedExpression` when the first argument is a call-like expression with its own parentheses, such as `yield(...)`. ([@koic][])
