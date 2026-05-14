@@ -63,7 +63,7 @@ module RuboCop
         end
 
         def spaces_before_left_parenthesis(node)
-          return 0 if node.parenthesized?
+          return 0 if node.parenthesized? || !node.first_argument.source.start_with?('(')
 
           node.first_argument.source_range.begin_pos - node.loc.selector.end_pos
         end
