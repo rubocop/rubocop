@@ -1,1 +1,0 @@
-* [#15163](https://github.com/rubocop/rubocop/pull/15163): Fix false positives in `Style/Copyright` when `Notice` pattern starts with `\A#`, uses `\s` metacharacters, or has multiple spaces after `#`. ([@koic][])

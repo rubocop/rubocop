@@ -1,1 +1,0 @@
-* [#10179](https://github.com/rubocop/rubocop/issues/10179): Fix false positives in `Style/DocumentDynamicEvalDefinition` when the heredoc contains an escaped interpolation (`\#{...}`). ([@eyupcanakman][])

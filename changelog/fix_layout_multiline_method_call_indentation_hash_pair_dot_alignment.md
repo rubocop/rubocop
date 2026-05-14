@@ -1,1 +1,0 @@
-* [#15054](https://github.com/rubocop/rubocop/issues/15054): Fix false positive for `Layout/MultilineMethodCallIndentation` when a dot-aligned method chain is inside a hash pair value. ([@nicolas-finary][])

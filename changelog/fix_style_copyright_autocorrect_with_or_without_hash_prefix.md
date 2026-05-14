@@ -1,1 +1,0 @@
-* [#15130](https://github.com/rubocop/rubocop/issues/15130): Fix incorrect autocorrect in `Style/Copyright` when `AutocorrectNotice` lacks a `#` prefix or `Notice` pattern starts with `^#`. ([@koic][])

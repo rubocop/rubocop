@@ -1,1 +1,0 @@
-* [#15137](https://github.com/rubocop/rubocop/issues/15137): Fix incorrect "does not support IndentationWidth parameter" warning for `Layout/ClosingParenthesisIndentation` and `Layout/CommentIndentation`. ([@koic][])

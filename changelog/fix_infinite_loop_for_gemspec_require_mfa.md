@@ -1,1 +1,0 @@
-* [#15141](https://github.com/rubocop/rubocop/pull/15141): Fix incorrect autocorrect for `Gemspec/RequireMFA` causing an infinite loop when `rubygems_mfa_required` metadata uses a symbol key. ([@koic][])
