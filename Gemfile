@@ -8,7 +8,7 @@ gem 'asciidoctor'
 gem 'bump', require: false
 gem 'fiddle', platform: :windows if RUBY_VERSION >= '3.4'
 gem 'irb'
-gem 'mcp', '>= 0.9.2', '<= 1.0'
+gem 'mcp', '~> 0.16'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
 gem 'rake', '~> 13.0'
 gem 'rspec', '~> 3.7'

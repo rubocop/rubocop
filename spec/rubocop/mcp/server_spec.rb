@@ -68,6 +68,7 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
             description: 'Inspect Ruby code for offenses. ' \
                          'Provide `source_code` to check inline code or `path` to check files.',
             inputSchema: {
+              '$schema': 'https://json-schema.org/draft/2020-12/schema',
               properties: {
                 path: { type: 'string' },
                 source_code: { type: 'string' }
@@ -88,6 +89,7 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
                          'or `path` to correct files. ' \
                          'Set `safety` to false to include unsafe corrections.',
             inputSchema: {
+              '$schema': 'https://json-schema.org/draft/2020-12/schema',
               properties: {
                 path: { type: 'string' },
                 safety: { type: 'boolean' },
