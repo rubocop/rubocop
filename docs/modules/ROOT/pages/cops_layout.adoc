@@ -950,7 +950,7 @@ foo arg,
 | Yes
 | Always
 | 0.49
-| -
+| 1.86
 |===
 
 Checks the indentation of hanging closing parentheses in
@@ -1021,6 +1021,17 @@ some_method(a,
 )
 ----
 
+[#configurable-attributes-layoutclosingparenthesisindentation]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IndentationWidth
+| `<none>`
+| Integer
+|===
+
 [#layoutcommentindentation]
 == Layout/CommentIndentation
 
@@ -1031,7 +1042,7 @@ some_method(a,
 | Yes
 | Always
 | 0.49
-| 1.24
+| 1.86
 |===
 
 Checks the indentation of comments.
@@ -1101,6 +1112,10 @@ a = 1 # A really long comment
 | AllowForAlignment
 | `false`
 | Boolean
+
+| IndentationWidth
+| `<none>`
+| Integer
 |===
 
 [#layoutconditionposition]

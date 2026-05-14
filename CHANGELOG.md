@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.86.2 (2026-05-14)
+
 ### New features
 
 * [#15075](https://github.com/rubocop/rubocop/issues/15075): Implement true runner parallelism. ([@tdeo][])

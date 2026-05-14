@@ -3523,8 +3523,8 @@ Person.ancestors
 | 0.92
 |===
 
-Checks for consistent usage of the `DateTime` class over the
-`Time` class. This cop is disabled by default since these classes,
+Checks for consistent usage of the `Time` class over the
+`DateTime` class. This cop is disabled by default since these classes,
 although highly overlapping, have particularities that make them not
 replaceable in certain situations when dealing with multiple timezones
 and/or DST.
@@ -10801,6 +10801,12 @@ instance methods in the module, then check if a given method is inside that
 array, while `method_defined?` will do direct method lookup, which is much
 faster and consumes less memory.
 
+NOTE: `constants.include?` is not handled by this cop because
+`Module#const_defined?` has different lookup behavior than
+`Module#constants` - `const_defined?` searches up to `Object`
+(top-level constants like `String`, `Integer`, etc.) while
+`constants` does not, which can cause behavior changes after autocorrection.
+
 [#examples-stylemodulememberexistencecheck]
 === Examples
 
@@ -10820,14 +10826,12 @@ Array.method_defined?(:find, false)
 
 # bad
 Array.class_variables.include?(:foo)
-Array.constants.include?(:foo)
 Array.private_instance_methods.include?(:foo)
 Array.protected_instance_methods.include?(:foo)
 Array.public_instance_methods.include?(:foo)
 
 # good
 Array.class_variable_defined?(:foo)
-Array.const_defined?(:foo)
 Array.private_method_defined?(:foo)
 Array.protected_method_defined?(:foo)
 Array.public_method_defined?(:foo)
@@ -20591,6 +20595,11 @@ end
 # good
 x += 1 while x < 10
 
+# good
+while x < 10
+  y += 1 if x.odd?
+end
+
 # bad
 until x > 10
   x += 1
@@ -20598,6 +20607,11 @@ end
 
 # good
 x += 1 until x > 10
+
+# good
+until x > 10
+  y += 1 unless x.even?
+end
 
 # bad
 x += 100 while x < 500 # a long comment that makes code too long if it were a single line
