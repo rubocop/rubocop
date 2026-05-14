@@ -36,7 +36,7 @@ module RuboCop
     end
 
     def force_default_config!
-      @options_config = ConfigLoader.default_configuration
+      @options_config = ConfigLoader.apply_default_overrides(ConfigLoader.default_configuration)
     end
 
     def unvalidated

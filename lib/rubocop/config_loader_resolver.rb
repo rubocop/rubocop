@@ -92,11 +92,11 @@ module RuboCop
     # only cops from user configuration are enabled. If
     # AllCops:EnabledByDefault is true, it changes the Enabled params so that
     # only cops explicitly disabled in user configuration are disabled.
+    # When the `--disable-all-cops` or `--enable-all-cops` CLI option is given,
+    # it takes precedence over the configuration values.
     def merge_with_default(config, config_file, unset_nil:)
       default_configuration = ConfigLoader.default_configuration
-
-      disabled_by_default = config.for_all_cops['DisabledByDefault']
-      enabled_by_default = config.for_all_cops['EnabledByDefault']
+      disabled_by_default, enabled_by_default = resolve_default_overrides(config)
 
       if disabled_by_default || enabled_by_default
         default_configuration = transform(default_configuration) do |params|
@@ -168,6 +168,14 @@ module RuboCop
     end
 
     private
+
+    def resolve_default_overrides(config)
+      if ConfigLoader.disabled_by_default || ConfigLoader.enabled_by_default
+        [ConfigLoader.disabled_by_default, ConfigLoader.enabled_by_default]
+      else
+        [config.for_all_cops['DisabledByDefault'], config.for_all_cops['EnabledByDefault']]
+      end
+    end
 
     def disabled?(hash, department)
       hash[department].is_a?(Hash) && hash[department]['Enabled'] == false

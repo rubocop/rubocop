@@ -24,7 +24,7 @@ module RuboCop
       include FileFinder
 
       attr_accessor :debug, :ignore_parent_exclusion, :disable_pending_cops, :enable_pending_cops,
-                    :ignore_unrecognized_cops
+                    :enabled_by_default, :disabled_by_default, :ignore_unrecognized_cops
       attr_writer :default_configuration, :cache_root
       attr_reader :loaded_plugins, :loaded_features
 
@@ -41,6 +41,8 @@ module RuboCop
         @loaded_features = Set.new
         @disable_pending_cops = nil
         @enable_pending_cops = nil
+        @enabled_by_default = nil
+        @disabled_by_default = nil
         @ignore_parent_exclusion = nil
         @ignore_unrecognized_cops = nil
         @cache_root = nil
@@ -121,7 +123,7 @@ module RuboCop
       end
 
       def configuration_from_file(config_file, check: true)
-        return default_configuration if config_file == DEFAULT_FILE
+        return apply_default_overrides(default_configuration) if config_file == DEFAULT_FILE
 
         config = load_file(config_file, check: check)
         config.validate_after_resolution if check
@@ -188,6 +190,19 @@ module RuboCop
       # Merges the given configuration with the default one.
       def merge_with_default(config, config_file, unset_nil: true)
         resolver.merge_with_default(config, config_file, unset_nil: unset_nil)
+      end
+
+      # Applies CLI overrides for `AllCops/EnabledByDefault` and
+      # `AllCops/DisabledByDefault` to the given configuration. Used when the
+      # configuration would otherwise be returned without going through
+      # `merge_with_default` (e.g. there is no user-supplied `.rubocop.yml`).
+      def apply_default_overrides(config)
+        return config if @enabled_by_default.nil? && @disabled_by_default.nil?
+
+        hash = config.transform_values do |params|
+          params.is_a?(Hash) ? params.merge('Enabled' => !@disabled_by_default) : params
+        end
+        Config.new(hash, config.loaded_path)
       end
 
       # @api private
