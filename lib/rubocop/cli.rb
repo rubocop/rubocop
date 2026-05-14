@@ -189,6 +189,8 @@ module RuboCop
       ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
       ConfigLoader.ignore_unrecognized_cops = @options[:ignore_unrecognized_cops]
+      ConfigLoader.enabled_by_default = @options[:enable_all_cops]
+      ConfigLoader.disabled_by_default = @options[:disable_all_cops]
     end
 
     def set_options_to_pending_cops_reporter

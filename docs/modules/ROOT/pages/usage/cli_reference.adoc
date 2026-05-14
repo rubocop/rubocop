@@ -48,6 +48,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `-d/--debug`
 | Displays some extra debug output.
 
+| `--disable-all-cops`
+| Run with all cops disabled by default, except `Lint/Syntax`. Overrides `AllCops/EnabledByDefault` and `AllCops/DisabledByDefault` in configuration files.
+
 | `--disable-pending-cops`
 | Run without pending cops.
 
@@ -68,6 +71,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 
 | `--display-only-safe-correctable`
 | Only output safe correctable offense messages.
+
+| `--enable-all-cops`
+| Run with all cops enabled, including those disabled by default. Overrides `AllCops/EnabledByDefault` and `AllCops/DisabledByDefault` in configuration files.
 
 | `--enable-pending-cops`
 | Run with pending cops.

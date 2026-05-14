@@ -91,6 +91,8 @@ module RuboCop
         option(opts, '-F', '--fail-fast')
         option(opts, '--disable-pending-cops')
         option(opts, '--enable-pending-cops')
+        option(opts, '--disable-all-cops')
+        option(opts, '--enable-all-cops')
         option(opts, '--ignore-disable-comments')
         option(opts, '--force-exclusion')
         option(opts, '--only-recognized-file-types')
@@ -396,6 +398,7 @@ module RuboCop
       validate_display_only_failed_and_display_only_correctable
       validate_display_only_correctable_and_autocorrect
       validate_lsp_and_editor_mode
+      validate_enable_all_cops_and_disable_all_cops
       disable_parallel_when_invalid_option_combo
 
       return if incompatible_options.size <= 1
@@ -447,6 +450,13 @@ module RuboCop
       return if !@options.key?(:lsp) || !@options.key?(:editor_mode)
 
       raise OptionArgumentError, 'Do not specify `--editor-mode` as it is redundant in `--lsp`.'
+    end
+
+    def validate_enable_all_cops_and_disable_all_cops
+      return if !@options.key?(:enable_all_cops) || !@options.key?(:disable_all_cops)
+
+      raise OptionArgumentError,
+            '--enable-all-cops cannot be used together with --disable-all-cops.'
     end
 
     def validate_autocorrect
@@ -621,8 +631,16 @@ module RuboCop
       display_cop_names:                ['Display cop names in offense messages.',
                                          'Default is true.'],
       disable_pending_cops:             'Run without pending cops.',
+      disable_all_cops:                 ['Run with all cops disabled by default,',
+                                         'except `Lint/Syntax`. Overrides',
+                                         '`AllCops/EnabledByDefault` and',
+                                         '`AllCops/DisabledByDefault` in config files.'],
       display_style_guide:              'Display style guide URLs in offense messages.',
       enable_pending_cops:              'Run with pending cops.',
+      enable_all_cops:                  ['Run with all cops enabled, including those',
+                                         'disabled by default. Overrides',
+                                         '`AllCops/EnabledByDefault` and',
+                                         '`AllCops/DisabledByDefault` in config files.'],
       extra_details:                    'Display extra details in offense messages.',
       lint:                             'Run only lint cops.',
       safe:                             'Run only safe cops.',

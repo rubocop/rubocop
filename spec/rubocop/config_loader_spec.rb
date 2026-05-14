@@ -1716,6 +1716,48 @@ RSpec.describe RuboCop::ConfigLoader do
           expect(cop_enabled?(cop_class)).to be false
         end
       end
+
+      context 'when ConfigLoader.enabled_by_default is set' do
+        let(:config) { '' }
+
+        before { described_class.enabled_by_default = true }
+
+        it 'enables cops that are disabled by default' do
+          cop_class = RuboCop::Cop::Style::CollectionMethods
+          expect(cop_enabled?(cop_class)).to be true
+        end
+
+        it 'overrides AllCops/DisabledByDefault from the config file' do
+          create_file(file_path, <<~YAML)
+            AllCops:
+              DisabledByDefault: true
+          YAML
+
+          cop_class = RuboCop::Cop::Style::CollectionMethods
+          expect(cop_enabled?(cop_class)).to be true
+        end
+      end
+
+      context 'when ConfigLoader.disabled_by_default is set' do
+        let(:config) { '' }
+
+        before { described_class.disabled_by_default = true }
+
+        it 'disables cops that are enabled by default' do
+          cop_class = RuboCop::Cop::Layout::TrailingWhitespace
+          expect(cop_enabled?(cop_class)).to be false
+        end
+
+        it 'overrides AllCops/EnabledByDefault from the config file' do
+          create_file(file_path, <<~YAML)
+            AllCops:
+              EnabledByDefault: true
+          YAML
+
+          cop_class = RuboCop::Cop::Style::CollectionMethods
+          expect(cop_enabled?(cop_class)).to be false
+        end
+      end
     end
 
     context 'when a new cop is introduced' do
