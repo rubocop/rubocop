@@ -1,0 +1,1 @@
+* [#15166](https://github.com/rubocop/rubocop/pull/15166): Add a new `Recursive` option to `Style/MutableConstant`. When enabled, the cop checks and freezes mutable literals nested inside arrays and hashes. The option is disabled by default to preserve existing behavior. ([@paracycle][])
