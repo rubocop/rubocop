@@ -104,6 +104,12 @@ AllCops:
   # When `NewCops` is `disable`, pending cops are disabled in bulk. Can be overridden by
   # the `--disable-pending-cops` command-line option.
   NewCops: pending
+  # When `true`, RuboCop builds a project index (a project-wide map of declarations and references)
+  # once per run and makes it available to cops that opt in.
+  # The project index is implemented by the optional `rubydex` gem; when `rubydex` is not installed,
+  # a warning is shown and the flag has no effect.
+  # The default `false` preserves RuboCop's traditional file-local analysis.
+  UseProjectIndex: false
   # Enables the result cache if `true`. Can be overridden by the `--cache` command
   # line option.
   UseCache: true
@@ -1703,6 +1709,7 @@ Lint/ConstantReassignment:
   Description: 'Checks for constant reassignments.'
   Enabled: pending
   VersionAdded: '1.70'
+  VersionChanged: '<<next>>'
 
 Lint/ConstantResolution:
   Description: 'Checks that constants are fully qualified with `::`.'

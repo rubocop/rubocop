@@ -12,8 +12,13 @@ module RuboCop
       # class/module keyword definitions. It detects reassignment when a constant
       # is first defined one way and then redefined using the `NAME = value` syntax.
       #
-      # The cop cannot catch all offenses, like, for example, when a constant
-      # is reassigned in another file, or when using metaprogramming (`Module#const_set`).
+      # The cop cannot catch all offenses, like, for example, when using metaprogramming
+      # (`Module#const_set`).
+      #
+      # By default the cop also cannot detect reassignment across files.
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed,
+      # the cop additionally consults the project-wide index and reports reassignments
+      # whose previous definition lives in another file.
       #
       # The cop only takes into account constants assigned in a "simple" way: directly
       # inside class/module definition, or within another constant. Other type of assignments
@@ -74,7 +79,10 @@ module RuboCop
       #   end
       #
       class ConstantReassignment < Base
+        include ProjectIndexHelp
+
         MSG = 'Constant `%<constant>s` is already assigned in this namespace.'
+        CROSS_FILE_MSG = 'Constant `%<constant>s` is already assigned in `%<path>s`.'
 
         RESTRICT_ON_SEND = %i[remove_const].freeze
 
@@ -101,9 +109,14 @@ module RuboCop
           return unless simple_assignment?(node)
 
           name = fully_qualified_constant_name(node)
-          return constant_definitions[name] = :casgn unless constant_definitions.key?(name)
 
-          add_offense(node, message: format(MSG, constant: constant_display_name(node)))
+          if constant_definitions.key?(name)
+            add_offense(node, message: format(MSG, constant: constant_display_name(node)))
+            return
+          end
+
+          constant_definitions[name] = :casgn
+          report_cross_file_collision(node, name, constant_display_name(node))
         end
 
         def on_send(node)
@@ -191,6 +204,25 @@ module RuboCop
 
         def constant_definitions
           @constant_definitions ||= {}
+        end
+
+        def report_cross_file_collision(node, fully_qualified_name, display_name)
+          return unless project_index
+          return unless (declaration = project_index[fully_qualified_name.delete_prefix('::')])
+          return unless (prior = prior_definition_in_other_file(declaration))
+
+          msg = format(CROSS_FILE_MSG, constant: display_name, path: prior.location.to_file_path)
+
+          add_offense(node, message: msg)
+        end
+
+        def prior_definition_in_other_file(declaration)
+          current = processed_source.file_path
+
+          declaration.definitions.find do |definition|
+            other = definition.location.to_file_path
+            !File.identical?(other, current)
+          end
         end
       end
     end

@@ -10,6 +10,11 @@ plugins:
 
 AllCops:
   NewCops: enable
+  # Opt into the project-wide rubydex index when the gem is available
+  # (Ruby 3.2+ on supported MRI platforms). Older Rubies, JRuby, and
+  # environments without the gem fall back to file-local analysis with
+  # a one-time warning, so this stays a no-op there.
+  UseProjectIndex: true
   Exclude:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'

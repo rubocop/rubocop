@@ -597,4 +597,74 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
       M = 1
     RUBY
   end
+
+  context 'cross-file detection', :project_index do
+    let(:fixture_dir) do
+      File.expand_path('../../../fixtures/cross_file_const', __dir__)
+    end
+
+    def stage_fixture(tmpdir)
+      ['a.rb', 'b.rb'].each do |name|
+        FileUtils.cp(File.join(fixture_dir, name), File.join(tmpdir, name))
+      end
+    end
+
+    def cop_offenses(tmpdir, cache_root: nil)
+      offenses = project_index_offenses(tmpdir, cache_root: cache_root)
+
+      offenses.select { |offense| offense['cop_name'] == 'Lint/ConstantReassignment' }
+    end
+
+    def run_with_config(body)
+      Dir.mktmpdir do |tmpdir|
+        stage_fixture(tmpdir)
+        write_rubocop_config(tmpdir, body)
+        cop_offenses(tmpdir)
+      end
+    end
+
+    it 'reports a cross-file collision when UseProjectIndex is enabled' do
+      offenses = run_with_config(
+        'AllCops' => { 'UseProjectIndex' => true },
+        'Lint/ConstantReassignment' => { 'Enabled' => true }
+      )
+
+      expect(offenses).not_to be_empty
+      expect(offenses.map { |o| o['message'] }).to all(match(/already assigned in/))
+    end
+
+    it 'does not report any offense when UseProjectIndex is disabled' do
+      offenses = run_with_config(
+        'AllCops' => { 'UseProjectIndex' => false },
+        'Lint/ConstantReassignment' => { 'Enabled' => true }
+      )
+
+      expect(offenses).to be_empty
+    end
+
+    it 'invalidates the cache when an indexed file changes' do
+      Dir.mktmpdir do |tmpdir|
+        Dir.mktmpdir do |cache_dir|
+          stage_fixture(tmpdir)
+          write_rubocop_config(
+            tmpdir,
+            'AllCops' => { 'UseProjectIndex' => true },
+            'Lint/ConstantReassignment' => { 'Enabled' => true }
+          )
+
+          # First run with cache enabled: collision is reported and cached.
+          expect(cop_offenses(tmpdir, cache_root: cache_dir)).not_to be_empty
+
+          # Remove the conflicting definition from a.rb. b.rb is untouched.
+          File.write(File.join(tmpdir, 'a.rb'), "# frozen_string_literal: true\n")
+
+          # Second run with the same cache: the `external_dependency_checksum`
+          # override in `ProjectIndexHelp` hashes indexed-file mtimes, so the
+          # change to a.rb invalidates b.rb's cache entry. Without the override
+          # b.rb would hit a stale cache and still report a collision.
+          expect(cop_offenses(tmpdir, cache_root: cache_dir)).to be_empty
+        end
+      end
+    end
+  end
 end

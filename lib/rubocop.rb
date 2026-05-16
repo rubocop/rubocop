@@ -39,6 +39,7 @@ require_relative 'rubocop/warning'
 
 # rubocop:disable Style/RequireOrder
 
+require_relative 'rubocop/project_index_loader'
 require_relative 'rubocop/cop/util'
 require_relative 'rubocop/cop/offense'
 require_relative 'rubocop/cop/message_annotator'
