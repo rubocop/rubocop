@@ -76,6 +76,17 @@ RSpec.describe RuboCop::Cop::Layout::RedundantLineBreak, :config do
         RUBY
       end
 
+      it 'accepts a safe navigation method call chained onto a single line block' do
+        expect_no_offenses(<<~RUBY)
+          e.select { |i| i.cond? }
+           &.join
+          a = e.select { |i| i.cond? }
+               &.join
+          e.select { |i| i.cond? }
+           &.join + []
+        RUBY
+      end
+
       it 'accepts a method call chained onto a single line numbered block', :ruby27 do
         expect_no_offenses(<<~RUBY)
           e.select { _1.cond? }
