@@ -21,11 +21,19 @@ module RuboCop
     def initialize(patterns)
       @strings = Set.new
       @patterns = []
+      @match_cache = {}
       partition_patterns(patterns)
     end
 
     def match?(path)
-      @strings.include?(path) || @patterns.any? { |pattern| PathUtil.match_path?(pattern, path) }
+      # `FilePatterns.from` memoizes one instance per pattern array (by identity),
+      # so this cache is shared across every cop using the same Include/Exclude
+      # list. Patterns are immutable within a run, so caching by path is safe.
+      cached = @match_cache[path]
+      return cached unless cached.nil?
+
+      @match_cache[path] =
+        @strings.include?(path) || @patterns.any? { |pattern| PathUtil.match_path?(pattern, path) }
     end
 
     private
