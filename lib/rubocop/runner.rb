@@ -72,6 +72,8 @@ module RuboCop
       ResultCache.source_checksum
 
       target_files = find_target_files(paths)
+      @project_index = ProjectIndexLoader.build_index(target_files) if project_index_enabled?
+
       if @options[:list_target_files]
         list_files(target_files)
       else
@@ -100,6 +102,17 @@ module RuboCop
              end
       target_files = target_finder.find(paths, mode)
       target_files.each(&:freeze).freeze
+    end
+
+    def project_index_enabled?
+      return false unless @config_store.for_pwd.for_all_cops['UseProjectIndex']
+
+      unless ProjectIndexLoader.available?
+        ProjectIndexLoader.warn_unavailable
+        return false
+      end
+
+      true
     end
 
     def inspect_files(files) # rubocop:disable Metrics/AbcSize
@@ -171,7 +184,21 @@ module RuboCop
         return false
       end
 
+      return false if project_index_disables_parallel?
+
       puts 'Running parallel inspection' if @options[:debug]
+
+      true
+    end
+
+    def project_index_disables_parallel?
+      return false if @project_index.nil? || !Gem.win_platform?
+
+      if @options[:debug]
+        puts 'Skipping parallel inspection: the project index is enabled and parallel ' \
+             'inspection is not yet supported on Windows.'
+      end
+
       true
     end
 
@@ -406,7 +433,15 @@ module RuboCop
 
     def mobilize_team(processed_source)
       config = @config_store.for_file(processed_source.path)
-      Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
+      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
+
+      if @project_index
+        team.cops.each do |cop|
+          cop.project_index = @project_index
+        end
+      end
+
+      team
     end
 
     def mobilized_cop_classes(config) # rubocop:disable Metrics/AbcSize
@@ -549,8 +584,17 @@ module RuboCop
     # level caching in ResultCache.
     def standby_team(config)
       @team_by_config ||= {}.compare_by_identity
-      @team_by_config[config] ||=
-        Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
+      @team_by_config[config] ||= begin
+        team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
+
+        if @project_index
+          team.cops.each do |cop|
+            cop.project_index = @project_index
+          end
+        end
+
+        team
+      end
     end
   end
 end

@@ -41,6 +41,7 @@ module RuboCop
       include AutocorrectLogic
 
       attr_reader :config, :processed_source
+      attr_accessor :project_index
 
       # Reports of an investigation.
       # Immutable
@@ -306,7 +307,9 @@ module RuboCop
       def ready
         return self if self.class.support_multiple_source?
 
-        self.class.new(@config, @options)
+        self.class.new(@config, @options).tap do |fresh|
+          fresh.project_index = @project_index
+        end
       end
 
       ### Reserved for Cop::Cop
@@ -416,7 +419,10 @@ module RuboCop
       ### Actually private methods
 
       def reset_investigation
-        @currently_disabled_lines = @current_offenses = @processed_source = @current_corrector = nil
+        @currently_disabled_lines = nil
+        @current_offenses = nil
+        @processed_source = nil
+        @current_corrector = nil
       end
 
       # @return [Symbol, Corrector] offense status

@@ -1,0 +1,59 @@
+= Project Index
+
+NOTE: The project index feature was introduced in RuboCop 1.87.
+
+WARNING: This feature is experimental and should not be considered stable. Changes to its behavior or interface may occur.
+
+RuboCop can optionally use https://github.com/Shopify/rubydex[Rubydex] to build
+a project-wide index of declarations and references. When enabled, cops that opt in can
+consult the index to detect issues that span multiple files.
+
+This integration is **opt-in and experimental**. The default behavior of RuboCop is unchanged.
+
+== Enabling
+
+1. Add `rubydex` to your `Gemfile` and `bundle install`:
++
+[source,ruby]
+----
+gem 'rubydex', require: false
+----
+
+2. Set the flag in your `.rubocop.yml`:
++
+[source,yaml]
+----
+AllCops:
+  UseProjectIndex: true
+----
+
+If `UseProjectIndex` is `true` but the `rubydex` gem is not installed, or the running Ruby
+is older than the version `rubydex` supports, RuboCop prints a warning and falls back to
+its standard file-local behavior.
+
+The integration requires Ruby 3.2 or later. On Ruby 3.1 and older, `AllCops/UseProjectIndex`
+has no effect even if set to `true`.
+
+== What it enables
+
+`Lint/ConstantReassignment` reports reassignments whose previous definition lives in another file.
+For example:
+
+[source,ruby]
+----
+# a.rb
+CROSS_FILE_CONST = :first
+
+# b.rb
+CROSS_FILE_CONST = :second
+----
+
+With `UseProjectIndex: true`, RuboCop reports a `Lint/ConstantReassignment` offense referencing the other file.
+Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
+
+== Notes
+
+- `rubydex` requires Ruby 3.2 or newer and ships native (Rust) extensions.
+- Parallel inspection is currently disabled on Windows when `UseProjectIndex` is on;
+  use serial inspection (omit `--parallel`).
+- The index is rebuilt once per `rubocop` invocation; no on-disk index is shared between runs.

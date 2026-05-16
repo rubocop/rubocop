@@ -28,6 +28,7 @@ module RuboCop
     autoload :DocumentationComment, 'rubocop/cop/mixin/documentation_comment'
     autoload :Duplication, 'rubocop/cop/mixin/duplication'
     autoload :RangeHelp, 'rubocop/cop/mixin/range_help'
+    autoload :ProjectIndexHelp, 'rubocop/cop/mixin/project_index_help'
     autoload :AnnotationComment, 'rubocop/cop/mixin/annotation_comment'
     autoload :EmptyParameter, 'rubocop/cop/mixin/empty_parameter'
     autoload :EndKeywordAlignment, 'rubocop/cop/mixin/end_keyword_alignment'
