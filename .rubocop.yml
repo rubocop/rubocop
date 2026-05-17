@@ -381,6 +381,7 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'lib/rubocop/cop/style/redundant_file_extension_in_require.rb'
     - 'lib/rubocop/cop/style/redundant_return.rb'
     - 'lib/rubocop/cop/style/require_order.rb'
+    - 'lib/rubocop/cop/style/require_relative.rb'
     - 'lib/rubocop/cop/style/signal_exception.rb'
     - 'lib/rubocop/cop/style/top_level_method_definition.rb'
 

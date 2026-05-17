@@ -5596,6 +5596,14 @@ Style/RequireOrder:
   SafeAutoCorrect: false
   VersionAdded: '1.40'
 
+Style/RequireRelative:
+  Description: >-
+    Use `require_relative` instead of `require` for paths relative to the
+    current file.
+  StyleGuide: '#prefer-require-relative'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RescueModifier:
   Description: 'Avoid using rescue in its modifier form.'
   StyleGuide: '#no-rescue-modifiers'
