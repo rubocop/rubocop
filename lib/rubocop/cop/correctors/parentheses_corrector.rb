@@ -13,8 +13,7 @@ module RuboCop
           buffer = node.source_range.source_buffer
           corrector.remove(range_with_surrounding_space(range: node.loc.begin, buffer: buffer,
                                                         side: :right, whitespace: true))
-          corrector.remove(range_with_surrounding_space(range: node.loc.end, buffer: buffer,
-                                                        side: :left))
+          remove_close_paren(corrector, node, buffer)
           handle_orphaned_comma(corrector, node)
 
           return unless ternary_condition?(node) && next_char_is_question_mark?(node)
@@ -23,6 +22,38 @@ module RuboCop
         end
 
         private
+
+        # When the line above `)` ends with a comment and a chained call follows `)`,
+        # crossing the newline would pull the chain into the comment. Preserve the newline.
+        def remove_close_paren(corrector, node, buffer)
+          newlines = !comment_above_close_paren_swallows_chain?(node, buffer)
+          corrector.remove(range_with_surrounding_space(range: node.loc.end, buffer: buffer,
+                                                        side: :left, newlines: newlines))
+        end
+
+        def comment_above_close_paren_swallows_chain?(node, buffer)
+          last_child = node.children.last
+          return false unless last_child
+
+          body_end = last_child.source_range.end_pos
+          close_paren_begin = node.loc.end.begin_pos
+          return false if body_end >= close_paren_begin
+
+          source_between = buffer.source[body_end...close_paren_begin]
+          return false unless source_between.match?(/#[^\n]*\n/)
+
+          chained_after_close_paren?(node)
+        end
+
+        def chained_after_close_paren?(node)
+          close_paren = node.loc.end
+          line_text = close_paren.source_line
+          after_paren = line_text[(close_paren.column + 1)..]
+          return false if after_paren.nil?
+
+          trimmed = after_paren.lstrip
+          !trimmed.empty? && !trimmed.start_with?('#')
+        end
 
         def ternary_condition?(node)
           node.parent&.if_type? && node.parent.ternary?

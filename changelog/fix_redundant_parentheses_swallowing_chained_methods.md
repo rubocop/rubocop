@@ -1,0 +1,1 @@
+* [#15135](https://github.com/rubocop/rubocop/issues/15135): Fix incorrect autocorrect for `Style/RedundantParentheses` that swallowed chained method calls into a trailing inline comment on the line above the closing parenthesis. ([@hammadxcm][])

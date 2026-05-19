@@ -404,6 +404,49 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     expect_no_offenses('def foo((bar, baz)); end')
   end
 
+  context 'with a chained call after a multiline parenthesized expression ending with a comment' do
+    it 'preserves the chained call by keeping it on its own line' do
+      expect_offense(<<~RUBY)
+        member_ids = (
+                     ^ Don't use parentheses around a method call.
+          [1, 2, 3].map { |i| i } # comment
+        ).uniq
+      RUBY
+
+      expect_correction(<<~RUBY)
+        member_ids = [1, 2, 3].map { |i| i } # comment
+        .uniq
+      RUBY
+    end
+
+    it 'preserves the chained call when the closing paren is indented' do
+      expect_offense(<<~RUBY)
+        member_ids = (
+                     ^ Don't use parentheses around a method call.
+          [1, 2, 3].map { |i| i } # comment
+          ).uniq
+      RUBY
+
+      expect_correction(<<~RUBY)
+        member_ids = [1, 2, 3].map { |i| i } # comment
+        .uniq
+      RUBY
+    end
+
+    it 'still removes the newline when no chained call follows the closing paren' do
+      expect_offense(<<~RUBY)
+        x = (
+            ^ Don't use parentheses around a method call.
+          foo.bar # comment
+        )
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = foo.bar # comment
+      RUBY
+    end
+  end
+
   it 'registers an offense for parens around parenthesized conditional assignment' do
     expect_offense(<<~RUBY)
       if ((var = 42))
