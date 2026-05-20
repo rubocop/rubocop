@@ -2278,6 +2278,35 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
                                             end
           RUBY
         end
+
+        it 'registers an offense for trailing-dot chain with body misindented relative to selector' do
+          expect_offense(<<~RUBY)
+            Foo.for_operation(arg).
+              pluck(:a, :b).
+              map do |a, b|
+              [b, a]
+              ^{} Use 2 (not 0) spaces for indentation.
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            Foo.for_operation(arg).
+              pluck(:a, :b).
+              map do |a, b|
+                [b, a]
+            end
+          RUBY
+        end
+
+        it 'accepts trailing-dot chain with body indented relative to selector' do
+          expect_no_offenses(<<~RUBY)
+            Foo.for_operation(arg).
+              pluck(:a, :b).
+              map do |a, b|
+                [b, a]
+              end
+          RUBY
+        end
       end
 
       it 'accepts correct indentation for block without method chain' do
