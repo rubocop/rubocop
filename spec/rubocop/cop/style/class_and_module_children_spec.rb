@@ -174,6 +174,42 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    it 'accepts a class whose namespace is a method call' do
+      expect_no_offenses(<<~RUBY)
+        class self.class::Foo
+        end
+      RUBY
+    end
+
+    it 'accepts a module whose namespace is a method call' do
+      expect_no_offenses(<<~RUBY)
+        module self.class::Foo
+        end
+      RUBY
+    end
+
+    it 'accepts a class whose namespace contains a method call at any nesting level' do
+      expect_no_offenses(<<~RUBY)
+        class self.class::Foo::Bar
+        end
+      RUBY
+    end
+
+    it 'registers an offense for not nested classes with a cbase namespace' do
+      expect_offense(<<~RUBY)
+        class ::FooClass::BarClass
+              ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module ::FooClass
+          class BarClass
+          end
+        end
+      RUBY
+    end
+
     it 'accepts :: in parent class on inheritance' do
       expect_no_offenses(<<~RUBY)
         class FooClass

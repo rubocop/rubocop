@@ -181,12 +181,20 @@ module RuboCop
 
         def check_style(node, body, style)
           return if node.identifier.namespace&.cbase_type?
+          return unless const_namespace?(node.identifier.namespace)
 
           if style == :nested
             check_nested_style(node)
           else
             check_compact_style(node, body)
           end
+        end
+
+        def const_namespace?(node)
+          return true if node.nil? || node.cbase_type?
+          return false unless node.const_type?
+
+          const_namespace?(node.namespace)
         end
 
         def check_nested_style(node)
