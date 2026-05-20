@@ -1,0 +1,1 @@
+* [#15174](https://github.com/rubocop/rubocop/pull/15174): Fix incorrect autocorrect for `Style/ClassAndModuleChildren` causing a syntax error when the namespace contains a method call (e.g., `class self.class::Foo; end`). ([@koic][])
