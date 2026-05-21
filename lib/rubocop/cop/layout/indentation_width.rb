@@ -473,8 +473,12 @@ module RuboCop
         end
 
         def block_body_indentation_base(node, end_loc)
-          if style == :relative_to_receiver && dot_on_new_line?(node)
+          return end_loc unless style == :relative_to_receiver
+
+          if dot_on_new_line?(node)
             node.send_node.loc.dot
+          elsif selector_on_new_line?(node)
+            node.send_node.loc.selector
           else
             end_loc
           end
@@ -486,6 +490,14 @@ module RuboCop
 
           receiver = send_node.receiver
           receiver && receiver.last_line < send_node.loc.dot.line
+        end
+
+        def selector_on_new_line?(node)
+          send_node = node.send_node
+          return false unless send_node.loc?(:dot) && send_node.loc?(:selector)
+
+          receiver = send_node.receiver
+          receiver && receiver.last_line < send_node.loc.selector.line
         end
       end
     end
