@@ -82,7 +82,7 @@ require_relative 'rubocop/cop/utils/format_string'
 
 require_relative 'rubocop/cop_lazy_loader'
 
-require_relative 'rubocop/cop/migration/department_name'
+require_relative 'rubocop/cop/migration'
 
 require_relative 'rubocop/cop/bundler/duplicated_gem'
 require_relative 'rubocop/cop/bundler/duplicated_group'
