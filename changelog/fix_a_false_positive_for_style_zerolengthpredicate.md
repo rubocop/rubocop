@@ -1,0 +1,1 @@
+* [#15125](https://github.com/rubocop/rubocop/issues/15125): Fix a false positive for `Style/ZeroLengthPredicate` when the receiver is a local variable assigned from `File.stat`, `File.new`, `Tempfile.new`/`open`, or `StringIO.new`/`open`. ([@TsunakawaShunya][])

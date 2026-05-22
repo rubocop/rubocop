@@ -567,4 +567,99 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
       RUBY
     end
   end
+
+  context 'when the receiver is a local variable assigned from a non-polymorphic source' do
+    it 'does not register an offense for `lvar.size.zero?` assigned from `File.stat`' do
+      expect_no_offenses(<<~RUBY)
+        stat = File.stat('foo')
+        stat.size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense for `lvar.size == 0` assigned from `File.stat`' do
+      expect_no_offenses(<<~RUBY)
+        stat = File.stat('foo')
+        stat.size == 0
+      RUBY
+    end
+
+    it 'does not register an offense for `0 == lvar.size` assigned from `File.stat`' do
+      expect_no_offenses(<<~RUBY)
+        stat = File.stat('foo')
+        0 == stat.size
+      RUBY
+    end
+
+    it 'does not register an offense for `lvar.size != 0` assigned from `File.stat`' do
+      expect_no_offenses(<<~RUBY)
+        stat = File.stat('foo')
+        stat.size != 0
+      RUBY
+    end
+
+    it 'does not register an offense when assigned from `File.new`' do
+      expect_no_offenses(<<~RUBY)
+        f = File.new('foo')
+        f.size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense when assigned from `Tempfile.new`' do
+      expect_no_offenses(<<~RUBY)
+        t = Tempfile.new('foo')
+        t.size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense when assigned from `Tempfile.open`' do
+      expect_no_offenses(<<~RUBY)
+        t = Tempfile.open('foo')
+        t.size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense when assigned from `StringIO.new`' do
+      expect_no_offenses(<<~RUBY)
+        io = StringIO.new('foo')
+        io.size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense with top-level `::File.stat`' do
+      expect_no_offenses(<<~RUBY)
+        stat = ::File.stat('foo')
+        stat.size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense when the assignment is inside a method' do
+      expect_no_offenses(<<~RUBY)
+        def empty_file?(path)
+          stat = File.stat(path)
+          stat.size.zero?
+        end
+      RUBY
+    end
+
+    it 'still registers an offense for an array lvar' do
+      expect_offense(<<~RUBY)
+        arr = [1, 2, 3]
+        arr.size.zero?
+            ^^^^^^^^^^ Use `empty?` instead of `size.zero?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        arr = [1, 2, 3]
+        arr.empty?
+      RUBY
+    end
+
+    it 'still registers an offense when the only preceding assignment is non-polymorphic-incompatible' do
+      expect_offense(<<~RUBY)
+        stat = [1, 2, 3]
+        stat.size.zero?
+             ^^^^^^^^^^ Use `empty?` instead of `size.zero?`.
+      RUBY
+    end
+  end
 end

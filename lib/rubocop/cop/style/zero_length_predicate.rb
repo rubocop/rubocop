@@ -58,6 +58,7 @@ module RuboCop
         def check_zero_length_predicate(node)
           return unless zero_length_predicate?(node.parent)
           return if non_polymorphic_collection?(node.parent)
+          return if non_polymorphic_collection_via_lvar?(node.receiver)
 
           offense = node.loc.selector.join(node.parent.source_range.end)
           message = format(ZERO_MSG, current: offense.source)
@@ -74,6 +75,7 @@ module RuboCop
           lhs, opr, rhs = zero_length_comparison
 
           return if non_polymorphic_collection?(node.parent)
+          return if non_polymorphic_collection_via_lvar?(node.receiver)
 
           add_offense(
             node.parent, message: format(ZERO_MSG, current: "#{lhs} #{opr} #{rhs}")
@@ -89,6 +91,7 @@ module RuboCop
           lhs, opr, rhs = nonzero_length_comparison
 
           return if non_polymorphic_collection?(node.parent)
+          return if non_polymorphic_collection_via_lvar?(node.receiver)
 
           add_offense(
             node.parent, message: format(NONZERO_MSG, current: "#{lhs} #{opr} #{rhs}")
@@ -148,6 +151,37 @@ module RuboCop
           {(send (send (send (const {nil? cbase} :File) :stat _) ...) ...)
            (send (send (send (const {nil? cbase} {:File :Tempfile :StringIO}) {:new :open} ...) ...) ...)}
         PATTERN
+
+        # Matches a constructor expression for a non-polymorphic collection
+        # (an object that implements `#size` but not `#empty?`).
+        # @!method non_polymorphic_constructor?(node)
+        def_node_matcher :non_polymorphic_constructor?, <<~PATTERN
+          {(send (const {nil? cbase} :File) :stat _)
+           (send (const {nil? cbase} {:File :Tempfile :StringIO}) {:new :open} ...)}
+        PATTERN
+
+        def non_polymorphic_collection_via_lvar?(receiver)
+          return false unless receiver&.lvar_type?
+
+          scope = enclosing_lvar_scope(receiver)
+          return false unless scope
+
+          name = receiver.children.first
+          scope.each_descendant(:lvasgn).any? do |asgn|
+            non_polymorphic_lvasgn?(asgn, name, receiver)
+          end
+        end
+
+        def non_polymorphic_lvasgn?(asgn, name, receiver)
+          asgn.children.first == name &&
+            asgn.source_range.end_pos <= receiver.source_range.begin_pos &&
+            non_polymorphic_constructor?(asgn.children[1])
+        end
+
+        def enclosing_lvar_scope(node)
+          node.each_ancestor(:any_def, :block, :class, :module).first ||
+            node.each_ancestor.to_a.last
+        end
       end
     end
   end
