@@ -104,28 +104,30 @@ module RuboCop
 
         def replacement(mode, filename, content, write_node)
           replacement = "#{write_method(mode)}(#{filename.source}, #{content.source})"
+          heredoc = heredoc_in_write(write_node)
+          return replacement unless heredoc
 
-          if heredoc?(write_node)
-            first_argument = write_node.body.first_argument
-
-            <<~REPLACEMENT.chomp
-              #{replacement}
-              #{heredoc_range(first_argument).source}
-            REPLACEMENT
-          else
-            replacement
-          end
+          <<~REPLACEMENT.chomp
+            #{replacement}
+            #{heredoc_range(heredoc).source}
+          REPLACEMENT
         end
 
-        def heredoc?(write_node)
-          write_node.block_type? && (first_argument = write_node.body.first_argument) &&
-            first_argument.respond_to?(:heredoc?) && first_argument.heredoc?
+        def heredoc_in_write(write_node)
+          return unless write_node.block_type? && (first_argument = write_node.body.first_argument)
+
+          find_heredoc(first_argument)
         end
 
-        def heredoc_range(first_argument)
-          range_between(
-            first_argument.loc.heredoc_body.begin_pos, first_argument.loc.heredoc_end.end_pos
-          )
+        def heredoc_range(heredoc)
+          range_between(heredoc.loc.heredoc_body.begin_pos, heredoc.loc.heredoc_end.end_pos)
+        end
+
+        def find_heredoc(node)
+          return node if node.respond_to?(:heredoc?) && node.heredoc?
+          return if node.send_type? && !(receiver = node.receiver)
+
+          find_heredoc(receiver)
         end
       end
     end

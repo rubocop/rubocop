@@ -90,5 +90,24 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
           EOS
       RUBY
     end
+
+    it "registers an offense for and corrects the `File.open` with multiline write block (mode '#{mode}') with heredoc chained method call" do
+      write_method = mode.end_with?('b') ? :binwrite : :write
+
+      expect_offense(<<~RUBY)
+        File.open(filename, '#{mode}') do |f|
+        ^^^^^^^^^^^^^^^^^^^^^#{'^' * mode.length}^^^^^^^^^ Use `File.#{write_method}`.
+          f.write(<<~EOS.gsub(/^/, ''))
+            content
+          EOS
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        File.#{write_method}(filename, <<~EOS.gsub(/^/, ''))
+            content
+          EOS
+      RUBY
+    end
   end
 end
