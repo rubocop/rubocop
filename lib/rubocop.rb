@@ -58,6 +58,7 @@ require_relative 'rubocop/cop/force'
 require_relative 'rubocop/cop/severity'
 require_relative 'rubocop/cop/generator'
 require_relative 'rubocop/cop/generator/configuration_injector'
+require_relative 'rubocop/cop/generator/register_cop_injector'
 require_relative 'rubocop/cop/generator/require_file_injector'
 require_relative 'rubocop/magic_comment'
 
