@@ -11,9 +11,10 @@ module RuboCop
       # if the first argument is a string literal and if the second
       # argument is an array literal.
       #
-      # Autocorrection will be applied when using argument is a literal or known built-in conversion
-      # methods such as `to_d`, `to_f`, `to_h`, `to_i`, `to_r`, `to_s`, and `to_sym` on variables,
-      # provided that their return value is not an array. For example, when using `to_s`,
+      # Autocorrection will be applied when the argument is a literal or uses a known
+      # built-in conversion method such as `to_d`, `to_f`, `to_h`, `to_i`, `to_r`, `to_s`,
+      # and `to_sym` on variables, provided that their return value is not an array.
+      # For example, when using `to_s`,
       # `'%s' % [1, 2, 3].to_s` can be autocorrected without any incompatibility:
       #
       # [source,ruby]

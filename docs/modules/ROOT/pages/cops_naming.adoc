@@ -167,7 +167,7 @@ FOÖ = "foo"
 |===
 
 Makes sure that certain binary operator methods have their
-sole  parameter named `other`.
+sole parameter named `other`.
 
 [#examples-namingbinaryoperatorparametername]
 === Examples
@@ -1252,7 +1252,7 @@ end
 Checks that predicate methods end with `?` and non-predicate methods do not.
 
 The names of predicate methods (methods that return a boolean value) should end
-in a question mark. Methods that don't return a boolean, shouldn't
+in a question mark. Methods that don't return a boolean shouldn't
 end in a question mark.
 
 The cop assesses a predicate method as one that returns boolean values. Likewise,
@@ -1268,7 +1268,7 @@ mode, methods with a question mark will register an offense if any known non-boo
 return values are detected.
 
 The cop also has `AllowedMethods` configuration in order to prevent the cop from
-registering an offense from a method name that does not confirm to the naming
+registering an offense from a method name that does not conform to the naming
 guidelines. By default, `call` is allowed. The cop also has `AllowedPatterns`
 configuration to allow method names by regular expression.
 
@@ -1486,7 +1486,7 @@ methods which begin with a forbidden prefix are not allowed, even if
 they end with a `?`. These methods should be changed to remove the
 prefix.
 
-When `UseSorbetSigs` set to true (optional), the cop will only report
+When `UseSorbetSigs` is set to true (optional), the cop will only report
 offenses if the method has a Sorbet `sig` with a return type of
 `T::Boolean`. Dynamic methods are not supported with this configuration.
 
@@ -1661,7 +1661,7 @@ def_node_matcher(:even?) { |value| }
 | 0.68
 |===
 
-Makes sure that rescued exceptions variables are named as
+Makes sure that rescued exception variables are named as
 expected.
 
 The `PreferredName` config option takes a `String`. It represents

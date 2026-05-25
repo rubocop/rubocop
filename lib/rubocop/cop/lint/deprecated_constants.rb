@@ -14,7 +14,7 @@ module RuboCop
       #       Alternative: 'alternative_value'
       #       DeprecatedVersion: 'deprecated_version'
       #
-      # By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException, `Random::DEFAULT`,
+      # By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException`, `Random::DEFAULT`,
       # `Struct::Group`, and `Struct::Passwd` are configured.
       #
       # @example

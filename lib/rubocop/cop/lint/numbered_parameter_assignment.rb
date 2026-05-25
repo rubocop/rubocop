@@ -16,7 +16,7 @@ module RuboCop
       #   ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
       #   -e:1: _1 is reserved for numbered parameter
       #
-      # NOTE: The parametered parameters are from `_1` to `_9`. This cop checks `_0`, and over `_10`
+      # NOTE: The numbered parameters are from `_1` to `_9`. This cop checks `_0`, and over `_10`
       # as well to prevent confusion.
       #
       # @example

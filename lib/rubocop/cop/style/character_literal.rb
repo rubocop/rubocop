@@ -8,8 +8,8 @@ module RuboCop
       # essentially one-character strings, so this syntax
       # is mostly redundant at this point.
       #
-      # ? character literal can be used to express meta and control character.
-      # That's a good use case of ? literal so it doesn't count it as an offense.
+      # A `?` character literal can be used to express meta and control characters.
+      # That's a good use case of a `?` literal so it doesn't count as an offense.
       #
       # @example
       #   # bad

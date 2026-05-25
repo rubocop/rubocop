@@ -17,7 +17,7 @@ Layout/LineLength:
 
 Most cops are enabled by default. Cops, introduced or significantly updated
 between major versions, are in a special pending status (read more in
-xref:versioning.adoc["Versioning"]). Some cops, configured the above `Enabled: false`
+xref:versioning.adoc["Versioning"]). Some cops, configured with `Enabled: false`
 in https://github.com/rubocop/rubocop/blob/master/config/default.yml[config/default.yml],
 are disabled by default.
 

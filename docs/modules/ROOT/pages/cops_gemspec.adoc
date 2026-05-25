@@ -405,12 +405,12 @@ gem "bar"
 | 1.40
 |===
 
-An attribute assignment method calls should be listed only once
+An attribute assignment method call should be listed only once
 in a gemspec.
 
 Assigning to an attribute with the same name using `spec.foo =` or
 `spec.attribute#[]=` will be an unintended usage. On the other hand,
-duplication of methods such # as `spec.requirements`,
+duplication of methods such as `spec.requirements`,
 `spec.add_runtime_dependency`, and others are permitted because it is
 the intended use of appending values.
 
@@ -588,7 +588,7 @@ spec.add_dependency 'rspec'
 Requires a gemspec to have `rubygems_mfa_required` metadata set.
 
 This setting tells RubyGems that MFA (Multi-Factor Authentication) is
-required for accounts to be able perform privileged operations, such as
+required for accounts to be able to perform privileged operations, such as
 (see RubyGems' documentation for the full list of privileged
 operations):
 
@@ -764,10 +764,10 @@ end
 |===
 
 Checks that `RUBY_VERSION` and `Ruby::VERSION` constants are not used in gemspec.
-Using `RUBY_VERSION` and `Ruby::VERSION` are dangerous because value of the
+Using `RUBY_VERSION` and `Ruby::VERSION` is dangerous because the value of the
 constant is determined by `rake release`.
-It's possible to have dependency based on ruby version used
-to execute `rake release` and not user's ruby version.
+It's possible to have a dependency based on the Ruby version used
+to execute `rake release` and not the user's Ruby version.
 
 [#examples-gemspecrubyversionglobalsusage]
 === Examples

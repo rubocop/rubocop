@@ -10,7 +10,7 @@ module RuboCop
       # a subprocess is created in the same way as `Kernel#open`, and its output is returned.
       # `Kernel#open` may allow unintentional command injection, which is the reason these
       # `IO` methods are a security risk.
-      # Consider to use `File.read` to disable the behavior of subprocess invocation.
+      # Consider using `File.read` to disable the behavior of subprocess invocation.
       #
       # @safety
       #   This cop is unsafe because false positive will occur if the variable passed as

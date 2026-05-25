@@ -10,7 +10,7 @@ module RuboCop
       # Required capitalization can be set with the `DirectiveCapitalization` and
       # `ValueCapitalization` configuration keys.
       #
-      # NOTE: If one of these configuration is set to nil, any capitalization is allowed.
+      # NOTE: If one of these configurations is set to nil, any capitalization is allowed.
       #
       # @example EnforcedStyle: snake_case (default)
       #   # The `snake_case` style will enforce that the frozen string literal

@@ -5,8 +5,8 @@ module RuboCop
     module Style
       # Enforces using `//` or `%r` around regular expressions.
       #
-      # NOTE: The following `%r` cases using a regexp starts with a blank or `=`
-      # as a method argument allowed to prevent syntax errors.
+      # NOTE: The following `%r` cases using a regexp that starts with a blank or `=`
+      # as a method argument are allowed to prevent syntax errors.
       #
       # [source,ruby]
       # ----

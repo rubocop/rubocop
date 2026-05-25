@@ -3,8 +3,8 @@
 module RuboCop
   module Cop
     module Style
-      # Checks for the instantiation of array using redundant `Array` constructor.
-      # Autocorrect replaces to array literal which is the simplest and fastest.
+      # Checks for the instantiation of an array using a redundant `Array` constructor.
+      # Autocorrect replaces it with an array literal which is the simplest and fastest.
       #
       # @example
       #
