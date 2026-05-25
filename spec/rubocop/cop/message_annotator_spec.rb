@@ -243,4 +243,23 @@ RSpec.describe RuboCop::Cop::MessageAnnotator do
                             https://example.com/some_style_guide])
     end
   end
+
+  describe '#style_guide_url' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'StyleGuideBaseURL' => 'http://example.org/styleguide' })
+    end
+
+    it 'returns nil without StyleGuide URL' do
+      expect(annotator.style_guide_url).to be_nil
+    end
+
+    it 'returns only the style guide URL when references are also specified' do
+      config['Cop/Cop'] = {
+        'StyleGuide' => '#target_based_url',
+        'References' => ['https://example.com/reference']
+      }
+
+      expect(annotator.style_guide_url).to eq('http://example.org/styleguide#target_based_url')
+    end
+  end
 end
