@@ -7,7 +7,7 @@ module RuboCop
       # when param passed without parentheses.
       #
       # This cop can customize allowed methods with `AllowedMethods`.
-      # By default, there are no methods to allowed.
+      # By default, there are no allowed methods.
       #
       # @example
       #

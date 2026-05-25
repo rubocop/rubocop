@@ -6,8 +6,8 @@ module RuboCop
       # Detects instances of rubocop:enable comments that can be
       # removed.
       #
-      # When comment enables all cops at once `rubocop:enable all`
-      # that cop checks whether any cop was actually enabled.
+      # When a comment enables all cops at once `rubocop:enable all`
+      # the cop checks whether any cop was actually enabled.
       #
       # @example
       #

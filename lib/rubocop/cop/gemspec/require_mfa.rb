@@ -6,7 +6,7 @@ module RuboCop
       # Requires a gemspec to have `rubygems_mfa_required` metadata set.
       #
       # This setting tells RubyGems that MFA (Multi-Factor Authentication) is
-      # required for accounts to be able perform privileged operations, such as
+      # required for accounts to be able to perform privileged operations, such as
       # (see RubyGems' documentation for the full list of privileged
       # operations):
       #

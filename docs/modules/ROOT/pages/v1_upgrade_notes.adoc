@@ -5,7 +5,7 @@
 
 Your custom cops should continue to work in v1.
 
-Nevertheless it is suggested that you tweak them to use the v1 API by following these steps:
+Nevertheless, it is suggested that you tweak them to use the v1 API by following these steps:
 
 1) Your class should inherit from `RuboCop::Cop::Base` instead of `RuboCop::Cop::Cop`.
 
@@ -39,7 +39,7 @@ end
 
 Your class must `extend AutoCorrector`.
 
-The `corrector` is now yielded from `add_offense`. Move the code of your method `autocorrect` in that block and do not wrap your correction in a lambda. `Corrector` are more powerful and can now be `merge`d.
+The `corrector` is now yielded from `add_offense`. Move the code of your method `autocorrect` into that block and do not wrap your correction in a lambda. `Corrector`s are more powerful and can now be `merge`d.
 
 ==== Example:
 
@@ -109,7 +109,7 @@ If your cop uses `investigate`, `investigate_post_walk`, `join_force?`, or inter
 
 === Upgrading specs
 
-It is highly recommended you use `expect_offense` / `expect_correction` / `expect_no_offense` in your specs, e.g.:
+It is highly recommended you use `expect_offense` / `expect_correction` / `expect_no_offenses` in your specs, e.g.:
 
 [source,ruby]
 ----

@@ -56,7 +56,7 @@ Checks for ambiguous block association with method
 when param passed without parentheses.
 
 This cop can customize allowed methods with `AllowedMethods`.
-By default, there are no methods to allowed.
+By default, there are no allowed methods.
 
 [#examples-lintambiguousblockassociation]
 === Examples
@@ -792,7 +792,7 @@ end
 | -
 |===
 
-Checks for overwriting an exception with an exception result by use ``rescue =>``.
+Checks for overwriting an exception with an exception result by using ``rescue =>``.
 
 You intended to write as `rescue StandardError`.
 However, you have written `rescue => StandardError`.
@@ -826,7 +826,7 @@ end
 | Yes
 | No
 | 1.70
-| -
+| <<next>>
 |===
 
 Checks for constant reassignments.
@@ -838,8 +838,13 @@ The cop tracks constants defined via `NAME = value` syntax as well as
 class/module keyword definitions. It detects reassignment when a constant
 is first defined one way and then redefined using the `NAME = value` syntax.
 
-The cop cannot catch all offenses, like, for example, when a constant
-is reassigned in another file, or when using metaprogramming (`Module#const_set`).
+The cop cannot catch all offenses, like, for example, when using metaprogramming
+(`Module#const_set`).
+
+By default the cop also cannot detect reassignment across files.
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed,
+the cop additionally consults the project-wide index and reports reassignments
+whose previous definition lives in another file.
 
 The cop only takes into account constants assigned in a "simple" way: directly
 inside class/module definition, or within another constant. Other type of assignments
@@ -927,12 +932,12 @@ the code that uses the gem. Enable this cop without using `Only`/`Ignore`
 
 Large projects will over time end up with one or two constant names that
 are problematic because of a conflict with a library or just internally
-using the same name a namespace and a class. To avoid too many unnecessary
-offenses, Enable this cop with `Only: [The, Constant, Names, Causing, Issues]`
+using the same name for a namespace and a class. To avoid too many unnecessary
+offenses, enable this cop with `Only: [The, Constant, Names, Causing, Issues]`
 
-NOTE: `Style/RedundantConstantBase` cop is disabled if this cop is enabled to prevent
-conflicting rules. Because it respects user configurations that want to enable
-this cop which is disabled by default.
+NOTE: `Style/RedundantConstantBase` cop is disabled if this cop is enabled,
+to prevent conflicting rules. This is because it respects user configurations
+that want to enable this cop which is disabled by default.
 
 [#examples-lintconstantresolution]
 === Examples
@@ -1271,7 +1276,7 @@ alternative value as `Alternative`. And you can set the deprecated version as
       Alternative: 'alternative_value'
       DeprecatedVersion: 'deprecated_version'
 
-By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException, `Random::DEFAULT`,
+By default, `NIL`, `TRUE`, `FALSE`, `Net::HTTPServerException`, `Random::DEFAULT`,
 `Struct::Group`, and `Struct::Passwd` are configured.
 
 [#examples-lintdeprecatedconstants]
@@ -2934,7 +2939,7 @@ and will be removed when Ruby 2.5 becomes EOL.
 `ERB.new` with non-keyword arguments is deprecated since ERB 2.2.0.
 Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.
 This cop identifies places where `ERB.new(str, trim_mode, eoutvar)` can
-be replaced by `ERB.new(str, :trim_mode: trim_mode, eoutvar: eoutvar)`.
+be replaced by `ERB.new(str, trim_mode: trim_mode, eoutvar: eoutvar)`.
 
 [#examples-linterbnewarguments]
 === Examples
@@ -3861,7 +3866,7 @@ end
 
 Checks that there is an `# rubocop:enable ...` statement
 after a `# rubocop:disable ...` statement. This will prevent leaving
-cop disables on wide ranges of code, that latter contributors to
+cop disables on wide ranges of code, that later contributors to
 a file wouldn't be aware of.
 
 You can set `MaximumRangeSize` to define the maximum number of
@@ -4134,8 +4139,8 @@ named captures.
 |===
 
 In math and Python, we can use `x < y < z` style comparison to compare
-multiple value. However, we can't use the comparison in Ruby. However,
-the comparison is not syntax error. This cop checks the bad usage of
+multiple values. However, we can't use the comparison in Ruby. However,
+the comparison is not a syntax error. This cop checks the bad usage of
 comparison operators.
 
 [#examples-lintmultiplecomparison]
@@ -4506,7 +4511,7 @@ that are hard to debug. To ensure this doesn't happen,
 always sort the list.
 
 `Dir.glob` and `Dir[]` sort globbed results by default in Ruby 3.0.
-So all bad cases are acceptable when Ruby 3.0 or higher are used.
+So all bad cases are acceptable when Ruby 3.0 or higher is used.
 
 NOTE: This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
 
@@ -4622,9 +4627,9 @@ end
 | 1.1
 |===
 
-Warns the usage of unsafe number conversions. Unsafe
-number conversion can cause unexpected error if auto type conversion
-fails. Cop prefer parsing with number class instead.
+Warns against the usage of unsafe number conversions. Unsafe
+number conversion can cause an unexpected error if auto type conversion
+fails. The cop prefers parsing with a number class instead.
 
 Conversion with `Integer`, `Float`, etc. will raise an `ArgumentError`
 if given input that is not numeric (eg. an empty string), whereas
@@ -4633,10 +4638,10 @@ As such, this cop is disabled by default because it's not necessarily
 always correct to raise if a value is not numeric.
 
 NOTE: Some values cannot be converted properly using one of the `Kernel`
-method (for instance, `Time` and `DateTime` values are allowed by this
+methods (for instance, `Time` and `DateTime` values are allowed by this
 cop by default). Similarly, Rails' duration methods do not work well
 with `Integer()` and can be allowed with `AllowedMethods`. By default,
-there are no methods to allowed.
+there are no allowed methods.
 
 [#safety-lintnumberconversion]
 === Safety
@@ -4761,7 +4766,7 @@ Assigning to a numbered parameter (from `_1` to `_9`) causes an error in Ruby 3.
   ruby 3.0.0p0 (2020-12-25 revision 95aff21468) [x86_64-darwin19]
   -e:1: _1 is reserved for numbered parameter
 
-NOTE: The parametered parameters are from `_1` to `_9`. This cop checks `_0`, and over `_10`
+NOTE: The numbered parameters are from `_1` to `_9`. This cop checks `_0`, and over `_10`
 as well to prevent confusion.
 
 [#examples-lintnumberedparameterassignment]
@@ -5249,8 +5254,8 @@ x += 1
 Detects instances of rubocop:enable comments that can be
 removed.
 
-When comment enables all cops at once `rubocop:enable all`
-that cop checks whether any cop was actually enabled.
+When a comment enables all cops at once `rubocop:enable all`
+the cop checks whether any cop was actually enabled.
 
 [#examples-lintredundantcopenabledirective]
 === Examples
@@ -5799,14 +5804,14 @@ Specifically, these cases are detected for each conversion method:
   or with `String.new` or `String()`.
 * `to_sym` when called on a symbol literal or interpolated symbol.
 * `to_i` when called on an integer literal or with `Integer()`.
-* `to_f` when called on a float literal of with `Float()`.
+* `to_f` when called on a float literal or with `Float()`.
 * `to_r` when called on a rational literal or with `Rational()`.
-* `to_c` when called on a complex literal of with `Complex()`.
+* `to_c` when called on a complex literal or with `Complex()`.
 * `to_a` when called on an array literal, or with `Array.new`, `Array()` or `Array[]`.
 * `to_h` when called on a hash literal, or with `Hash.new`, `Hash()` or `Hash[]`.
 * `to_set` when called on `Set.new` or `Set[]`.
 
-In all cases, chaining one same `to_*` conversion methods listed above is redundant.
+In all cases, chaining one of the same `to_*` conversion methods listed above is redundant.
 
 The cop can also register an offense for chaining conversion methods on methods that are
 expected to return a specific type regardless of receiver (eg. `foo.inspect.to_s` and
@@ -6129,7 +6134,7 @@ end
 | -
 |===
 
-Checks for uses a file requiring itself with `require_relative`.
+Checks for a file requiring itself with `require_relative`.
 
 [#examples-lintrequirerelativeselfpath]
 === Examples
@@ -6712,7 +6717,7 @@ end
 | -
 |===
 
-Checks for a rescued exception that get shadowed by a
+Checks for a rescued exception that gets shadowed by a
 less specific exception being rescued before a more specific
 exception is rescued.
 
@@ -7553,7 +7558,7 @@ end
 | -
 |===
 
-Checks for Regexpes (both literals and via `Regexp.new` / `Regexp.compile`)
+Checks for Regexps (both literals and via `Regexp.new` / `Regexp.compile`)
 that contain unescaped `]` characters.
 
 It emulates the following Ruby warning:
@@ -7767,8 +7772,8 @@ end
 |===
 
 Checks for unreachable code.
-The check are based on the presence of flow of control
-statement in non-final position in `begin` (implicit) blocks.
+The check is based on the presence of flow-of-control
+statements in non-final position in `begin` (implicit) blocks.
 
 [#examples-lintunreachablecode]
 === Examples
@@ -9037,7 +9042,7 @@ end
 Looks for `ruby2_keywords` calls for methods that do not need it.
 
 `ruby2_keywords` should only be called on methods that accept an argument splat
-(`\*args`) but do not explicit keyword arguments (`k:` or `k: true`) or
+(`\*args`) but do not have explicit keyword arguments (`k:` or `k: true`) or
 a keyword splat (`**kwargs`).
 
 [#examples-lintuselessruby2keywords]

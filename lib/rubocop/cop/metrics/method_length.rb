@@ -15,7 +15,7 @@ module RuboCop
       # NOTE: The `ExcludedMethods` and `IgnoredMethods` configuration is
       # deprecated and only kept for backwards compatibility.
       # Please use `AllowedMethods` and `AllowedPatterns` instead.
-      # By default, there are no methods to allowed.
+      # By default, there are no allowed methods.
       #
       # @example CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
       #

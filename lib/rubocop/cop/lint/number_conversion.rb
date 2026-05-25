@@ -3,9 +3,9 @@
 module RuboCop
   module Cop
     module Lint
-      # Warns the usage of unsafe number conversions. Unsafe
-      # number conversion can cause unexpected error if auto type conversion
-      # fails. Cop prefer parsing with number class instead.
+      # Warns against the usage of unsafe number conversions. Unsafe
+      # number conversion can cause an unexpected error if auto type conversion
+      # fails. The cop prefers parsing with a number class instead.
       #
       # Conversion with `Integer`, `Float`, etc. will raise an `ArgumentError`
       # if given input that is not numeric (eg. an empty string), whereas
@@ -14,10 +14,10 @@ module RuboCop
       # always correct to raise if a value is not numeric.
       #
       # NOTE: Some values cannot be converted properly using one of the `Kernel`
-      # method (for instance, `Time` and `DateTime` values are allowed by this
+      # methods (for instance, `Time` and `DateTime` values are allowed by this
       # cop by default). Similarly, Rails' duration methods do not work well
       # with `Integer()` and can be allowed with `AllowedMethods`. By default,
-      # there are no methods to allowed.
+      # there are no allowed methods.
       #
       # @safety
       #   Autocorrection is unsafe because it is not guaranteed that the

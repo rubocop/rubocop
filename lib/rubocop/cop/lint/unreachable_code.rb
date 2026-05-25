@@ -4,8 +4,8 @@ module RuboCop
   module Cop
     module Lint
       # Checks for unreachable code.
-      # The check are based on the presence of flow of control
-      # statement in non-final position in `begin` (implicit) blocks.
+      # The check is based on the presence of flow-of-control
+      # statements in non-final position in `begin` (implicit) blocks.
       #
       # @example
       #

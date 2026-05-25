@@ -1,6 +1,6 @@
 = Automated Code Review
 
-The section describes SaaS solutions that provide automated code reviews for Ruby based on RuboCop.
+This section describes SaaS solutions that provide automated code reviews for Ruby based on RuboCop.
 
 NOTE: The services are listed in alphabetical order.
 
@@ -19,7 +19,7 @@ https://www.codefactor.io[CodeFactor] reports various code metrics like duplicat
 
 == Codety
 
-https://www.codety.io[Codety] detects code issues for 30+ programming languages and IaC frameworks, Codety Scanner is open source and it embeds 6,000+ code analysis rules(including RuboCop rules).
+https://www.codety.io[Codety] detects code issues for 30+ programming languages and IaC frameworks. Codety Scanner is open source and it embeds 6,000+ code analysis rules (including RuboCop rules).
 
 == Pronto
 

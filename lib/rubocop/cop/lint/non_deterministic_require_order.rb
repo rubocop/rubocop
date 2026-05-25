@@ -12,7 +12,7 @@ module RuboCop
       # always sort the list.
       #
       # `Dir.glob` and `Dir[]` sort globbed results by default in Ruby 3.0.
-      # So all bad cases are acceptable when Ruby 3.0 or higher are used.
+      # So all bad cases are acceptable when Ruby 3.0 or higher is used.
       #
       # NOTE: This cop will be deprecated and removed when supporting only Ruby 3.0 and higher.
       #

@@ -3,11 +3,11 @@
 module RuboCop
   module Cop
     module Style
-      # Newcomers to ruby applications may write top-level methods,
+      # Newcomers to Ruby applications may write top-level methods,
       # when ideally they should be organized in appropriate classes or modules.
       # This cop looks for definitions of top-level methods and warns about them.
       #
-      # However for ruby scripts it is perfectly fine to use top-level methods.
+      # However, for Ruby scripts it is perfectly fine to use top-level methods.
       # Hence this cop is disabled by default.
       #
       # @example

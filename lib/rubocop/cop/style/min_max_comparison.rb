@@ -6,7 +6,7 @@ module RuboCop
       # Enforces the use of `max` or `min` instead of comparison for greater or less.
       #
       # NOTE: It can be used if you want to present limit or threshold in Ruby 2.7+.
-      # That it is slow though. So autocorrection will apply generic `max` or `min`:
+      # It is slow though. So autocorrection will apply generic `max` or `min`:
       #
       # [source,ruby]
       # ----
