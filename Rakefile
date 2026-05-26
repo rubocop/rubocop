@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-# For code coverage measurements to work properly, `SimpleCov` should be loaded
-# and started before any application code is loaded.
-require 'simplecov' if ENV['COVERAGE']
-
 desc 'Check for no pending changelog entries before release'
 task release: 'changelog:check_clean' # Before task is required
 
