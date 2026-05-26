@@ -73,7 +73,7 @@ module RuboCop
           first_argument = node.first_argument
           if first_argument.hash_type?
             register_offense_for_hash(node, first_argument)
-          elsif first_argument.splat_type?
+          elsif first_argument.type?(:splat, :forwarded_restarg)
             add_offense(node, message: MSG_SPLAT) unless allowed_splat_argument?
           elsif use_zip_method_without_argument?(first_argument)
             register_offense_for_zip_method(node, first_argument)
