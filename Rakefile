@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 
 # For code coverage measurements to work properly, `SimpleCov` should be loaded
-# and started before any application code is loaded.
-require 'simplecov' if ENV['COVERAGE']
+# and started before any application code is loaded. This must run in the parent
+# process: TestQueue's RSpec runner triggers `--require spec_helper` during suite
+# discovery (before forking workers), which eagerly loads all of `lib/rubocop`.
+# If `Coverage.start` runs after that, those files are invisible to it.
+if ENV['COVERAGE'] && RUBY_VERSION >= '3.1'
+  require 'simplecov'
+  SimpleCov.start
+end
 
 desc 'Check for no pending changelog entries before release'
 task release: 'changelog:check_clean' # Before task is required
