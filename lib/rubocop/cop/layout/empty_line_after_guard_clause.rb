@@ -5,8 +5,10 @@ module RuboCop
     module Layout
       # Enforces empty line after guard clause.
       #
-      # This cop allows `# :nocov:` directive after guard clause because
-      # SimpleCov excludes code from the coverage report by wrapping it in `# :nocov:`:
+      # This cop allows a SimpleCov directive comment after guard clause because
+      # SimpleCov excludes code from the coverage report by wrapping it in such directives.
+      # Both the legacy `# :nocov:` comment and the newer `# simplecov:disable` /
+      # `# simplecov:enable` comments are recognized:
       #
       # [source,ruby]
       # ----
@@ -14,6 +16,13 @@ module RuboCop
       #   # :nocov:
       #   return if condition
       #   # :nocov:
+      #   bar
+      # end
+      #
+      # def foo
+      #   # simplecov:disable
+      #   return if condition
+      #   # simplecov:enable
       #   bar
       # end
       # ----
@@ -58,7 +67,7 @@ module RuboCop
 
         MSG = 'Add empty line after guard clause.'
         END_OF_HEREDOC_LINE = 1
-        SIMPLE_DIRECTIVE_COMMENT_PATTERN = /\A# *:nocov:\z/.freeze
+        SIMPLECOV_COMMENT_PATTERN = /\A#\s*(?::nocov:|simplecov\s*:\s*(?:disable|enable)\b)/.freeze
 
         # @!method guard_clause_branch?(node)
         def_node_matcher :guard_clause_branch?, <<~PATTERN
@@ -213,10 +222,10 @@ module RuboCop
           parent.begin_type? && same_line?(node, node.right_sibling)
         end
 
-        # SimpleCov excludes code from the coverage report by wrapping it in `# :nocov:`:
+        # SimpleCov excludes code from the coverage report by wrapping it in directive comments:
         # https://github.com/simplecov-ruby/simplecov#ignoringskipping-code
         def simplecov_directive_comment?(comment)
-          SIMPLE_DIRECTIVE_COMMENT_PATTERN.match?(comment.text)
+          SIMPLECOV_COMMENT_PATTERN.match?(comment.text)
         end
       end
     end
