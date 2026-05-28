@@ -17,6 +17,7 @@ module RuboCop
     CopConfig = Struct.new(:name, :metadata)
 
     EMPTY_CONFIG = {}.freeze
+    ENFORCEMENT_HIERARCHY = { 'essential' => 0, 'standard' => 1, 'strict' => 2 }.freeze
     DEFAULT_RAILS_VERSION = 5.0
     attr_reader :loaded_path
 
@@ -201,6 +202,17 @@ module RuboCop
       !!for_cop(name)['Enabled']
     end
 
+    def enforcement_level
+      for_all_cops['Enforcement']
+    end
+
+    def cop_within_enforcement?(cop_enforcement)
+      return true unless enforcement_level
+
+      ENFORCEMENT_HIERARCHY.fetch(cop_enforcement, 0) <=
+        ENFORCEMENT_HIERARCHY.fetch(enforcement_level, 0)
+    end
+
     def disabled_new_cops?
       for_all_cops['NewCops'] == 'disable'
     end
@@ -381,7 +393,7 @@ module RuboCop
       Lockfile.new(lockfile_path).gem_versions
     end
 
-    def enable_cop?(qualified_cop_name, cop_options)
+    def enable_cop?(qualified_cop_name, cop_options) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       # If the cop is explicitly enabled or `Lint/Syntax`, the other checks can be skipped.
       return true if cop_options['Enabled'] == true || qualified_cop_name == 'Lint/Syntax'
 
@@ -389,6 +401,11 @@ module RuboCop
       cop_enabled = cop_options.fetch('Enabled') { !for_all_cops['DisabledByDefault'] }
       return true if cop_enabled == 'override_department'
       return false if department && department['Enabled'] == false
+
+      # Enforcement level filtering — only when configured and cop is tagged
+      return false if enforcement_level &&
+                      cop_options['Enforcement'] &&
+                      !cop_within_enforcement?(cop_options['Enforcement'])
 
       cop_enabled
     end
