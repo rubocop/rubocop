@@ -1,0 +1,1 @@
+* [#14979](https://github.com/rubocop/rubocop/issues/14979): Fix false positive in `Layout/BlockAlignment` when a block's `{` or `do` falls on a continuation line after multi-line method arguments. For the default `EnforcedStyleAlignWith: either`, the cop now uses the method call's line as the alignment reference instead of the argument continuation line. ([@55728][])
