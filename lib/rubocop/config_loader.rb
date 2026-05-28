@@ -175,6 +175,7 @@ module RuboCop
         @default_configuration = ConfigLoader.merge_with_default(config, path)
       end
 
+      # simplecov:disable
       # Returns the path RuboCop inferred as the root of the project. No file
       # searches will go past this directory.
       # @deprecated Use `RuboCop::ConfigFinder.project_root` instead.
@@ -186,6 +187,7 @@ module RuboCop
 
         ConfigFinder.project_root
       end
+      # simplecov:enable
 
       # Merges the given configuration with the default one.
       def merge_with_default(config, config_file, unset_nil: true)

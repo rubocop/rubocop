@@ -8,6 +8,7 @@ module RuboCop
     module ConfigurableMax
       private
 
+      # simplecov:disable
       def max=(value)
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
           `max=` is deprecated. Use `exclude_limit <ParameterName>` instead.
@@ -20,6 +21,7 @@ module RuboCop
         filepath = cop_dir.join(max_parameter_name)
         filepath.write("#{value}\n", mode: 'a')
       end
+      # simplecov:enable
 
       def max_parameter_name
         'Max'

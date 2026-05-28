@@ -22,6 +22,7 @@ module RuboCop
         end
       end
 
+      # simplecov:disable
       def self.inherited(_subclass)
         super
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -29,6 +30,7 @@ module RuboCop
           For more information, see https://docs.rubocop.org/rubocop/v1_upgrade_notes.html.
         WARNING
       end
+      # simplecov:enable
 
       def self.support_autocorrect?
         method_defined?(:autocorrect)
@@ -43,6 +45,7 @@ module RuboCop
 
       ### Deprecated registry access
 
+      # simplecov:disable
       # @deprecated Use Registry.global
       def self.registry
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -51,7 +54,9 @@ module RuboCop
 
         Registry.global
       end
+      # simplecov:enable
 
+      # simplecov:disable
       # @deprecated Use Registry.all
       def self.all
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -60,7 +65,9 @@ module RuboCop
 
         Registry.all
       end
+      # simplecov:enable
 
+      # simplecov:disable
       # @deprecated Use Registry.qualified_cop_name
       def self.qualified_cop_name(name, origin)
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -69,6 +76,7 @@ module RuboCop
 
         Registry.qualified_cop_name(name, origin)
       end
+      # simplecov:enable
 
       def add_offense(node_or_range, location: :expression, message: nil, severity: nil, &block)
         @v0_argument = node_or_range
@@ -92,6 +100,7 @@ module RuboCop
         loc.is_a?(Symbol) ? node.loc.public_send(loc) : loc
       end
 
+      # simplecov:disable
       # @deprecated Use class method
       def support_autocorrect?
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -100,7 +109,9 @@ module RuboCop
 
         self.class.support_autocorrect?
       end
+      # simplecov:enable
 
+      # simplecov:disable
       # @deprecated
       def corrections
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -111,6 +122,7 @@ module RuboCop
 
         Legacy::CorrectionsProxy.new(@last_corrector)
       end
+      # simplecov:enable
 
       # Called before all on_... have been called
       def on_new_investigation

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# simplecov:disable
 module RuboCop
   module Cop
     # Common functionality for enforcing a specific superclass.
@@ -42,3 +43,4 @@ module RuboCop
     end
   end
 end
+# simplecov:enable
