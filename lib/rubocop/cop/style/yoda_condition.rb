@@ -147,7 +147,7 @@ module RuboCop
         end
 
         def constant_portion?(node)
-          node.literal? || node.const_type?
+          node.recursive_literal? || node.const_type?
         end
 
         def actual_code_range(node)
