@@ -130,7 +130,7 @@ module RuboCop
         def most_left_indices(grouped_operands)
           indices = { csend_in_and: nil, csend_in_or: nil, send_in_and: nil, send_in_or: nil }
 
-          grouped_operands.each_with_index do |operand, index|
+          grouped_operands.each.with_index do |operand, index|
             indices[:csend_in_and] ||= index if operand_in_and?(operand) && operand.csend_type?
             indices[:csend_in_or] ||= index if operand_in_or?(operand) && operand.csend_type?
             indices[:send_in_and] ||= index if operand_in_and?(operand) && !nilable?(operand)

@@ -320,7 +320,7 @@ module RuboCop
     end
 
     def pending_cops
-      keys.each_with_object([]) do |qualified_cop_name, pending_cops|
+      keys.each.with_object([]) do |qualified_cop_name, pending_cops|
         department = department_of(qualified_cop_name)
         next if department && department['Enabled'] == false
 

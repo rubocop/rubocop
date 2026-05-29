@@ -65,7 +65,7 @@ RSpec.describe RuboCop::CommentConfig do
     end
 
     def disabled_lines_of_cop(cop)
-      (1..source.size).each_with_object([]) do |line_number, disabled_lines|
+      (1..source.size).each.with_object([]) do |line_number, disabled_lines|
         enabled = comment_config.cop_enabled_at_line?(cop, line_number)
         disabled_lines << line_number unless enabled
       end
@@ -289,7 +289,7 @@ RSpec.describe RuboCop::CommentConfig do
 
   describe 'push/pop directives' do
     def disabled_lines_of_cop(cop)
-      (1..source.size).each_with_object([]) do |line_number, disabled_lines|
+      (1..source.size).each.with_object([]) do |line_number, disabled_lines|
         enabled = comment_config.cop_enabled_at_line?(cop, line_number)
         disabled_lines << line_number unless enabled
       end

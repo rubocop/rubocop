@@ -97,7 +97,7 @@ module RuboCop
         def replacement(regexp_node)
           regexp_content = regexp_node.content
           stack = []
-          chars = regexp_content.chars.each_with_object([]) do |char, strings|
+          chars = regexp_content.chars.each.with_object([]) do |char, strings|
             if stack.empty? && char == '\\'
               stack.push(char)
             else

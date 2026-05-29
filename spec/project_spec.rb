@@ -82,7 +82,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
     it 'sorts configuration keys alphabetically' do
       expected = configuration_keys.sort
-      configuration_keys.each_with_index { |key, idx| expect(key).to eq expected[idx] }
+      configuration_keys.each.with_index { |key, idx| expect(key).to eq expected[idx] }
     end
 
     # rubocop:disable RSpec/NoExpectationExample
