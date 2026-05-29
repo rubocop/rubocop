@@ -230,7 +230,14 @@ module RuboCop
           DirectiveComment.new(comment).directive_count
         end
 
+        def cops_to_ignore
+          @cops_to_ignore ||= Set.new(Array(cop_config['CopsToIgnore']))
+        end
+
         def add_offenses(redundant_cops)
+          redundant_cops.reject! do |_comment, cops|
+            cops_to_ignore.intersect?(cops)
+          end
           redundant_cops.each do |comment, cops|
             if all_disabled?(comment) || directive_count(comment) == cops.size
               add_offense_for_entire_comment(comment, cops)
