@@ -67,8 +67,20 @@ module RuboCop
           # If it's not a string within an interpolation, then it's not an
           # offense for this cop.
           return false unless inside_interpolation?(node)
+          return false if nested_double_quotes_cop_handles?(node)
 
           wrong_quotes?(node)
+        end
+
+        def nested_double_quotes_cop_handles?(node)
+          return false unless config.cop_enabled?('Lint/NestedDoubleQuotesInInterpolation')
+
+          node.each_ancestor(:begin).any? do |begin_node|
+            parent = begin_node.parent
+            parent&.type?(:dstr, :dsym) &&
+              parent.loc?(:begin) &&
+              parent.loc.begin.source.end_with?('"')
+          end
         end
       end
     end
