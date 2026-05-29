@@ -190,10 +190,10 @@ module RuboCop
           return if node.arguments.any? || hash_or_set_with_block?(node)
 
           receiver = find_receiver(node)
-          return unless literal_receiver?(node, receiver) ||
-                        constructor?(node, receiver) ||
-                        chained_conversion?(node, receiver) ||
-                        chained_to_typed_method?(node, receiver)
+          return if !literal_receiver?(node, receiver) &&
+                    !constructor?(node, receiver) &&
+                    !chained_conversion?(node, receiver) &&
+                    !chained_to_typed_method?(node, receiver)
 
           message = format(MSG, method: node.method_name)
 

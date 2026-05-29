@@ -45,7 +45,7 @@ module RuboCop
         MSG = "Omit the parentheses in defs when the method doesn't accept any arguments."
 
         def on_def(node)
-          return unless !node.arguments? && (arguments_range = node.arguments.source_range)
+          return if node.arguments? || !(arguments_range = node.arguments.source_range)
           return if parentheses_required?(node, arguments_range)
 
           add_offense(arguments_range) do |corrector|

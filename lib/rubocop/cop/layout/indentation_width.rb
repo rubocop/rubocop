@@ -443,7 +443,7 @@ module RuboCop
           base_uses_tabs = line_uses_tabs?(base_range)
           range_uses_tabs = line_uses_tabs?(range)
 
-          return super unless base_uses_tabs || range_uses_tabs
+          return super if !base_uses_tabs && !range_uses_tabs
 
           visual_column(base_range) - visual_column(range)
         end

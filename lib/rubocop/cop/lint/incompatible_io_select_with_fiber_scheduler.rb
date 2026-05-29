@@ -46,8 +46,14 @@ module RuboCop
         def on_send(node)
           read, write, excepts, timeout = *io_select(node)
           return if excepts && !excepts.children.empty?
-          return unless scheduler_compatible?(read, write) || scheduler_compatible?(write, read)
+          return if !scheduler_compatible?(read, write) && !scheduler_compatible?(write, read)
 
+          register_offense(node, read, write, timeout)
+        end
+
+        private
+
+        def register_offense(node, read, write, timeout)
           preferred = preferred_method(read, write, timeout)
           message = format(MSG, preferred: preferred, current: node.source)
 
@@ -57,8 +63,6 @@ module RuboCop
             corrector.replace(node, preferred)
           end
         end
-
-        private
 
         def scheduler_compatible?(io1, io2)
           return false unless io1&.array_type? && io1.values.size == 1

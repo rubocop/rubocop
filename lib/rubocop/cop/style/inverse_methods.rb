@@ -186,7 +186,7 @@ module RuboCop
         end
 
         def remove_end_parenthesis(corrector, node, method, method_call)
-          return unless EQUALITY_METHODS.include?(method) || method_call.parent.begin_type?
+          return if !EQUALITY_METHODS.include?(method) && !method_call.parent.begin_type?
 
           corrector.remove(end_parentheses(node, method_call))
         end

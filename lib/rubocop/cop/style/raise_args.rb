@@ -57,7 +57,7 @@ module RuboCop
         RESTRICT_ON_SEND = %i[raise fail].freeze
 
         def on_send(node)
-          return unless node.command?(:raise) || node.command?(:fail)
+          return if !node.command?(:raise) && !node.command?(:fail)
 
           case style
           when :compact
