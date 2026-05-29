@@ -45,6 +45,50 @@ RSpec.describe RuboCop::Cop::Lint::RescueException, :config do
     RUBY
   end
 
+  it 'does not register an offense for rescue from `Exception` and re-raise with `raise`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        something
+      rescue Exception
+        handle_exception
+        raise
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for rescue with `Exception => e` and re-raise with `raise`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        something
+      rescue Exception => e
+        handle_exception
+        raise(e)
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for rescue from `Exception` and re-raise with `fail`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        something
+      rescue Exception
+        handle_exception
+        fail
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for rescue with `Exception => e` and re-raise with `fail`' do
+    expect_no_offenses(<<~RUBY)
+      begin
+        something
+      rescue Exception => e
+        handle_exception
+        fail(e)
+      end
+    RUBY
+  end
+
   it 'does not register an offense for rescue with no class' do
     expect_no_offenses(<<~RUBY)
       begin
