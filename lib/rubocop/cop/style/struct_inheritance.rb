@@ -61,6 +61,8 @@ module RuboCop
             corrector.remove(range_with_surrounding_space(parent.loc.end, newlines: false))
           elsif (class_node = parent.parent).body.nil?
             corrector.remove(range_for_empty_class_body(class_node, parent))
+          elsif unparenthesized_struct_new?(parent)
+            wrap_unparenthesized_call_with_do(corrector, parent)
           else
             corrector.insert_after(parent, ' do')
           end
@@ -72,6 +74,17 @@ module RuboCop
           else
             range_by_whole_lines(class_node.loc.end, include_final_newline: true)
           end
+        end
+
+        def unparenthesized_struct_new?(parent)
+          parent.send_type? && parent.arguments.any? && !parent.parenthesized?
+        end
+
+        def wrap_unparenthesized_call_with_do(corrector, parent)
+          args_source = parent.arguments.map(&:source).join(', ')
+          range = parent.loc.selector.end.join(parent.source_range.end)
+
+          corrector.replace(range, "(#{args_source}) do")
         end
       end
     end
