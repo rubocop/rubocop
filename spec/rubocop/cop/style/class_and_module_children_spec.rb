@@ -439,23 +439,27 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
-    it 'registers an offense for tab-intended nested children' do
-      expect_offense(<<~RUBY)
-        module A
-               ^ Use compact module/class definition instead of nested style.
-        \tmodule B
-        \t\tmodule C
-        \t\t\tbody
-        \t\tend
-        \tend
-        end
-      RUBY
+    context 'with tab indentation enforced' do
+      let(:other_cops) { { 'Layout/IndentationStyle' => { 'EnforcedStyle' => 'tabs' } } }
 
-      expect_correction(<<~RUBY)
-        module A::B::C
-        \t\t\tbody
-        end
-      RUBY
+      it 'registers an offense for tab-intended nested children' do
+        expect_offense(<<~RUBY)
+          module A
+                 ^ Use compact module/class definition instead of nested style.
+          \tmodule B
+          \t\tmodule C
+          \t\t\tbody
+          \t\tend
+          \tend
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module A::B::C
+          \tbody
+          end
+        RUBY
+      end
     end
 
     context 'with unindented nested nodes' do
@@ -509,6 +513,8 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       end
 
       context 'with tab-intended nested nodes' do
+        let(:other_cops) { { 'Layout/IndentationStyle' => { 'EnforcedStyle' => 'tabs' } } }
+
         it 'registers an offense and autocorrects when 3rd-level module has unintended body' do
           expect_offense(<<~RUBY)
             module A
@@ -523,7 +529,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
 
           expect_correction(<<~RUBY)
             module A::B::C
-            \t\tbody
+            \tbody
             end
           RUBY
         end
@@ -561,7 +567,7 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
 
           expect_correction(<<~RUBY)
             module A::B::C
-            \t\tbody
+            \tbody
             end
           RUBY
         end

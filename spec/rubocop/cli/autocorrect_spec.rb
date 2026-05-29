@@ -4190,7 +4190,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
     class SomeClient
     \tconversation_request.get_messages(session_id, time_before).map do |message|
-    \t\t\t\tConversationMessagesResponse.new message
+    \t\tConversationMessagesResponse.new message
     \tend
     end
     RUBY

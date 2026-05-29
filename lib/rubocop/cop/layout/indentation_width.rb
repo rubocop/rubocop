@@ -302,12 +302,14 @@ module RuboCop
           # example.
           body_node = body_node.children.first if body_node.begin_type? && !parentheses?(body_node)
 
+          range = offending_range(body_node, indentation)
+
           # Since autocorrect changes a number of lines, and not only the line
           # where the reported offending range is, we avoid autocorrection if
-          # this cop has already found other offenses is the same
+          # this cop has already found other offenses in the same
           # range. Otherwise, two corrections can interfere with each other,
           # resulting in corrupted code.
-          node = if autocorrect? && other_offense_in_same_range?(body_node)
+          node = if autocorrect? && other_offense_in_same_range?(range)
                    nil
                  else
                    body_node
@@ -316,7 +318,7 @@ module RuboCop
           name = style == 'normal' ? '' : " #{style}"
           message = message(configured_indentation_width, indentation, name)
 
-          add_offense(offending_range(body_node, indentation), message: message) do |corrector|
+          add_offense(range, message: message) do |corrector|
             autocorrect(corrector, node)
           end
         end
@@ -352,16 +354,21 @@ module RuboCop
           )
         end
 
-        # Returns true if the given node is within another node that has
+        # Returns true if the given range overlaps with another range that has
         # already been marked for autocorrection by this cop.
-        def other_offense_in_same_range?(node)
-          expr = node.source_range
+        def other_offense_in_same_range?(range)
           @offense_ranges ||= []
 
-          return true if @offense_ranges.any? { |r| within?(expr, r) }
+          return true if @offense_ranges.any? { |r| ranges_overlap?(range, r) }
 
-          @offense_ranges << expr
+          @offense_ranges << range
           false
+        end
+
+        def ranges_overlap?(range1, range2)
+          return true if range1.begin_pos == range2.begin_pos && range1.end_pos == range2.end_pos
+
+          range1.begin_pos < range2.end_pos && range2.begin_pos < range1.end_pos
         end
 
         def indentation_to_check?(base_loc, body_node)

@@ -153,16 +153,20 @@ module RuboCop
         end
         # rubocop:enable Metrics/AbcSize
 
-        def unindent(corrector, node)
+        def unindent(corrector, node) # rubocop:disable Metrics/AbcSize
           return unless node.body.children.last
 
           last_child_leading_spaces = leading_spaces(node.body.children.last)
           return if spaces_size(leading_spaces(node)) == spaces_size(last_child_leading_spaces)
 
-          column_delta = configured_indentation_width - spaces_size(last_child_leading_spaces)
-          return if column_delta.zero?
+          # Use per-line deltas: target = level 1, compute delta from leading whitespace
+          target_indent = configured_indentation_width
+          AlignmentCorrector.correct(corrector, processed_source, node, 0) do |_pos, line_content|
+            next 0 unless line_content.start_with?(/\s/)
 
-          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+            current_indent = spaces_size(line_content[/\A[ \t]*/])
+            target_indent - current_indent
+          end
         end
 
         def leading_spaces(node)
@@ -177,6 +181,10 @@ module RuboCop
         def tab_indentation_width
           config.for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
             configured_indentation_width
+        end
+
+        def indentation_style
+          config.for_cop('Layout/IndentationStyle')['EnforcedStyle'] || 'spaces'
         end
 
         def check_style(node, body, style)
