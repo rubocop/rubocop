@@ -90,6 +90,7 @@ module RuboCop
         def on_send(node)
           numeric, replacement = check(node)
           return unless numeric
+          return if bitwise_zero_comparison?(node, numeric)
 
           return if allowed_method_name?(node.method_name) ||
                     node.each_ancestor(:send, :block).any? do |ancestor|
@@ -106,6 +107,18 @@ module RuboCop
 
         def allowed_method_name?(name)
           allowed_method?(name) || matches_allowed_pattern?(name)
+        end
+
+        def bitwise_zero_comparison?(node, numeric)
+          style == :predicate &&
+            target_ruby_version >= 2.5 &&
+            node.method?(:==) &&
+            zero_integer?(node.first_argument) &&
+            bit_operation?(numeric)
+        end
+
+        def zero_integer?(node)
+          node&.int_type? && node.value.zero?
         end
 
         def check(node)
@@ -178,6 +191,15 @@ module RuboCop
         # @!method inverted_comparison(node)
         def_node_matcher :inverted_comparison, <<~PATTERN
           (send (int 0) ${:== :> :<} [$(...) !gvar_type?])
+        PATTERN
+
+        # @!method bit_operation?(node)
+        def_node_matcher :bit_operation?, <<~PATTERN
+          {
+            (begin
+              (send _ :& _))
+            (send _ :& _)
+          }
         PATTERN
       end
     end
