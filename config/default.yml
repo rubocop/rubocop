@@ -1709,7 +1709,7 @@ Lint/ConstantReassignment:
   Description: 'Checks for constant reassignments.'
   Enabled: pending
   VersionAdded: '1.70'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.87'
 
 Lint/ConstantResolution:
   Description: 'Checks that constants are fully qualified with `::`.'

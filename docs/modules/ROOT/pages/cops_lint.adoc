@@ -826,7 +826,7 @@ end
 | Yes
 | No
 | 1.70
-| <<next>>
+| 1.87
 |===
 
 Checks for constant reassignments.

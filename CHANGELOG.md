@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.87.0 (2026-05-30)
+
 ### New features
 
 * [#15167](https://github.com/rubocop/rubocop/pull/15167): Add `--enable-all-cops` and `--disable-all-cops` command line options that override `AllCops/EnabledByDefault` and `AllCops/DisabledByDefault` in configuration files. ([@koic][])
