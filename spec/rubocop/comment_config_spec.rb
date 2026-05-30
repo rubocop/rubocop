@@ -60,6 +60,10 @@ RSpec.describe RuboCop::CommentConfig do
         # rubocop:disable RSpec/Rails/HttpStatus
         it { is_expected.to have_http_status 200 }                          # 52
         # rubocop:enable RSpec/Rails/HttpStatus
+
+        # rubocop:disable-next-line Style/EmptyMethod
+        def foo                                                             # 56
+        end
       RUBY
       # rubocop:enable Lint/EmptyExpression, Lint/EmptyInterpolation
     end
@@ -171,6 +175,10 @@ RSpec.describe RuboCop::CommentConfig do
     it 'supports disabling cops on a comment line with an EOL comment' do
       expect(disabled_lines_of_cop('Layout/LeadingCommentSpace')).to eq([7, 8, 9, 50])
     end
+
+    it 'supports disabling cops on next line' do
+      expect(disabled_lines_of_cop('Style/EmptyMethod')).to eq([7, 8, 9, 56])
+    end
   end
 
   describe '#cop_disabled_line_ranges' do
@@ -192,6 +200,21 @@ RSpec.describe RuboCop::CommentConfig do
 
     it 'collects line ranges by disabled cops' do
       expect(range).to eq({ 'Metrics/MethodLength' => [1..5], 'Security/Eval' => [8..8] })
+    end
+
+    context 'with disable-next-line' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next-line Metrics/MethodLength
+          def some_method
+            puts 'foo'
+          end
+        RUBY
+      end
+
+      it 'collects a single-line range for the next line' do
+        expect(range).to eq({ 'Metrics/MethodLength' => [2..2] })
+      end
     end
   end
 
@@ -217,6 +240,68 @@ RSpec.describe RuboCop::CommentConfig do
     it 'has values as arrays of extra enabled cops' do
       expect(extra.values.first).to eq ['Metrics/MethodLength', 'Security/Eval']
     end
+
+    shared_examples 'has extra_enabled_comments' do |ctx, src|
+      context ctx do
+        let(:source) { src }
+
+        it 'has extra_enabled_comments' do
+          expect(extra.values.first).to eq ['Metrics/MethodLength']
+        end
+      end
+    end
+
+    it_behaves_like 'has extra_enabled_comments',
+                    'with `rubocop:enable`',
+                    <<~RUBY
+                      # rubocop:enable Metrics/MethodLength
+                      def some_method; end
+                    RUBY
+
+    it_behaves_like 'has extra_enabled_comments',
+                    'with `rubocop:disable-next-line` and `rubocop:enable`',
+                    <<~RUBY
+                      # rubocop:disable-next-line Metrics/MethodLength
+                      def some_method; end
+                      # rubocop:enable Metrics/MethodLength
+                    RUBY
+
+    it_behaves_like 'has extra_enabled_comments',
+                    'with `rubocop:disable` for line and `rubocop:enable`',
+                    <<~RUBY
+                      def some_method; end # rubocop:disable Metrics/MethodLength
+                      # rubocop:enable Metrics/MethodLength
+                    RUBY
+
+    shared_examples 'has no extra_enabled_comments' do |ctx, src|
+      context ctx do
+        let(:source) { src }
+
+        it 'has no extra_enabled_comments' do
+          expect(extra).to eq({})
+        end
+      end
+    end
+
+    it_behaves_like 'has no extra_enabled_comments',
+                    'with `rubocop:disable-next-line`',
+                    <<~RUBY
+                      # rubocop:disable-next-line Metrics/MethodLength
+                      def some_method; end
+                    RUBY
+
+    it_behaves_like 'has no extra_enabled_comments',
+                    'with `rubocop:disable`',
+                    <<~RUBY
+                      # rubocop:disable Metrics/MethodLength
+                      def some_method; end
+                    RUBY
+
+    it_behaves_like 'has no extra_enabled_comments',
+                    'with `rubocop:disable` for line',
+                    <<~RUBY
+                      def some_method; end # rubocop:disable Metrics/MethodLength
+                    RUBY
 
     context 'with push directive disabling Style/GuardClause' do
       let(:source) do
@@ -858,6 +943,151 @@ RSpec.describe RuboCop::CommentConfig do
         expect(disabled).to include(1, 2, 3, 4, 5, 6)
         expect(disabled).not_to include(7, 8, 9)
         expect(disabled).to include(10, 11, 12, 13)
+      end
+    end
+  end
+
+  describe 'disable-next-line directives' do
+    def disabled_lines_of_cop(cop)
+      (1..source.size).each_with_object([]) do |line_number, disabled_lines|
+        enabled = comment_config.cop_enabled_at_line?(cop, line_number)
+        disabled_lines << line_number unless enabled
+      end
+    end
+
+    context 'basic disable-next-line' do
+      let(:source) do
+        <<~RUBY
+          foo
+          # rubocop:disable-next-line Style/For
+          for x in (0..19)
+            puts x
+          end
+        RUBY
+      end
+
+      it 'disables the cop only on the next line' do
+        disabled = disabled_lines_of_cop('Style/For')
+        expect(disabled).to include(3)
+        expect(disabled).not_to include(1, 2, 4, 5)
+      end
+    end
+
+    context 'disable-next-line with multiple cops' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next-line Style/For, Style/Not
+          for x in (not true)
+            puts x
+          end
+        RUBY
+      end
+
+      it 'disables all listed cops only on the next line' do
+        expect(disabled_lines_of_cop('Style/For')).to eq([2])
+        expect(disabled_lines_of_cop('Style/Not')).to eq([2])
+      end
+    end
+
+    context 'disable-next-line does not affect subsequent lines' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next-line Style/For
+          for x in (0..9)
+            puts x
+          end
+          for y in (0..9)
+            puts y
+          end
+        RUBY
+      end
+
+      it 'only disables the immediately following line' do
+        disabled = disabled_lines_of_cop('Style/For')
+        expect(disabled).to eq([2])
+      end
+    end
+
+    context 'disable-next-line at end of file' do
+      let(:source) do
+        <<~RUBY
+          foo
+          # rubocop:disable-next-line Style/For
+        RUBY
+      end
+
+      it 'disables the cop on the line after the comment (even if it does not exist)' do
+        disabled = disabled_lines_of_cop('Style/For')
+        expect(disabled).to include(3)
+        expect(disabled).not_to include(1, 2)
+      end
+    end
+
+    context 'multiple disable-next-line comments for different lines' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next-line Style/For
+          for x in (0..9)
+            puts x
+          end
+          # rubocop:disable-next-line Style/For
+          for y in (0..9)
+            puts y
+          end
+        RUBY
+      end
+
+      it 'disables the cop on each respective next line' do
+        disabled = disabled_lines_of_cop('Style/For')
+        expect(disabled).to eq([2, 6])
+      end
+    end
+
+    context 'disable-next-line combined with regular disable/enable' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next-line Style/For
+          for x in (0..9)
+            puts x
+          end
+          # rubocop:disable Style/For
+          for y in (0..9)
+            puts y
+          end
+          # rubocop:enable Style/For
+          for z in (0..9)
+            puts z
+          end
+        RUBY
+      end
+
+      it 'handles both directive types independently' do
+        disabled = disabled_lines_of_cop('Style/For')
+        expect(disabled).to include(2)
+        expect(disabled).not_to include(3, 4)
+        expect(disabled).to include(5, 6, 7, 8, 9)
+        expect(disabled).not_to include(10, 11, 12)
+      end
+    end
+
+    context 'disable-next-line with all cops' do
+      let(:source) do
+        <<~RUBY
+          foo
+          # rubocop:disable-next-line all
+          bar
+          baz
+        RUBY
+      end
+
+      it 'disables all cops only on the next line' do
+        excluded = [RuboCop::Cop::Lint::RedundantCopDisableDirective, RuboCop::Cop::Lint::Syntax]
+        cops = RuboCop::Cop::Registry.all - excluded
+        cops.each do |cop|
+          disabled = disabled_lines_of_cop(cop)
+          expect(disabled).to include(3), "expected #{cop} to be disabled on line 3"
+          expect(disabled).not_to include(4), "expected #{cop} to be enabled on line 4"
+        end
       end
     end
   end

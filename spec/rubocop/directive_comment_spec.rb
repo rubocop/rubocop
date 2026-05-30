@@ -335,6 +335,12 @@ RSpec.describe RuboCop::DirectiveComment do
 
       it { is_expected.to be(false) }
     end
+
+    context 'when disable-next-line all cops' do
+      let(:text) { '# rubocop:disable-next-line all' }
+
+      it { is_expected.to be(false) }
+    end
   end
 
   describe '#disabled_all?' do
@@ -360,6 +366,18 @@ RSpec.describe RuboCop::DirectiveComment do
 
     context 'when disabled specific cops' do
       let(:text) { '# rubocop:disable Foo/Bar' }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when disable-next-line all cops' do
+      let(:text) { '# rubocop:disable-next-line all' }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when disable-next-line specific cops' do
+      let(:text) { '# rubocop:disable-next-line Foo/Bar' }
 
       it { is_expected.to be(false) }
     end
@@ -440,6 +458,48 @@ RSpec.describe RuboCop::DirectiveComment do
       let(:text) { '# rubocop:enable Foo' }
 
       it { is_expected.to be(false) }
+    end
+  end
+
+  describe '#disabled_next_line?' do
+    subject { directive_comment.disabled_next_line? }
+
+    shared_examples 'checks disabled_next_line?' do |explanation, comment, result|
+      context explanation do
+        let(:text) { comment }
+
+        it { is_expected.to eq result }
+      end
+    end
+
+    it_behaves_like 'checks disabled_next_line?',
+                    'when disabled next line', '# rubocop:disable-next-line all', true
+    it_behaves_like 'checks disabled_next_line?',
+                    'when disabled current line', 'def foo # rubocop:disable all', false
+    it_behaves_like 'checks disabled_next_line?',
+                    'when disabled few lines', '# rubocop:disable Foo/Bar', false
+    it_behaves_like 'checks disabled_next_line?', 'when enabled', '# rubocop:enable Foo/Bar', false
+  end
+
+  describe '#match_captures with disable-next-line' do
+    subject { directive_comment.match_captures }
+
+    context 'when disable-next-line' do
+      let(:text) { '# rubocop:disable-next-line Foo/Bar' }
+
+      it { is_expected.to eq(['disable-next-line', 'Foo/Bar']) }
+    end
+
+    context 'when disable-next-line all' do
+      let(:text) { '# rubocop:disable-next-line all' }
+
+      it { is_expected.to eq(%w[disable-next-line all]) }
+    end
+
+    context 'when disable-next-line with multiple cops' do
+      let(:text) { '# rubocop:disable-next-line Foo/Bar, Baz/Qux' }
+
+      it { is_expected.to eq(['disable-next-line', 'Foo/Bar, Baz/Qux']) }
     end
   end
 

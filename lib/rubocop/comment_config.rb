@@ -3,6 +3,7 @@
 module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
+  # rubocop:disable-next-line Metrics/ClassLength
   class CommentConfig
     extend SimpleForwardable
 
@@ -175,6 +176,8 @@ module RuboCop
       # Disabling cops after comments like `#=SomeDslDirective` does not related to single line
       if !comment_only_line?(directive.line_number) || directive.single_line?
         analyze_single_line(analysis, directive)
+      elsif directive.disabled_next_line?
+        analyze_next_line(analysis, directive)
       elsif directive.disabled?
         analyze_disabled(analysis, directive)
       else
@@ -186,6 +189,11 @@ module RuboCop
       return analysis unless directive.disabled?
 
       line = directive.line_number
+      CopAnalysis.new(analysis.line_ranges + [(line..line)], analysis.start_line_number)
+    end
+
+    def analyze_next_line(analysis, directive)
+      line = directive.line_number + 1
       CopAnalysis.new(analysis.line_ranges + [(line..line)], analysis.start_line_number)
     end
 
@@ -245,6 +253,8 @@ module RuboCop
     # so that `Lint/RedundantCopEnableDirective` can register offenses correctly.
     def handle_switch(directive, names, extras)
       directive.cop_names.each do |name|
+        next if directive.disabled_next_line?
+
         if directive.disabled?
           names[name] += 1
         elsif names[name].positive?

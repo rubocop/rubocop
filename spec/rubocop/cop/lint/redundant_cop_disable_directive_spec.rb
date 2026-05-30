@@ -800,5 +800,101 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
         RUBY
       end
     end
+
+    context 'when cop disabled with `disable-next-line`' do
+      context 'and there is an offense' do
+        let(:offenses) do
+          [
+            RuboCop::Cop::Offense.new(:convention,
+                                      FakeLocation.new(line: 2, column: 0),
+                                      'Class has too many lines.',
+                                      'Metrics/ClassLength')
+          ]
+        end
+
+        it 'returns no offenses' do
+          expect_no_offenses(<<~RUBY)
+            # rubocop:disable-next-line Metrics/ClassLength
+            class Foo
+            end
+          RUBY
+        end
+
+        context 'and cop disabled again with line directive' do
+          it 'returns an offense for the redundant inline disable' do
+            expect_offense(<<~RUBY)
+              # rubocop:disable-next-line Metrics/ClassLength
+              class Foo # rubocop:disable Metrics/ClassLength
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              # rubocop:disable-next-line Metrics/ClassLength
+              class Foo
+              end
+            RUBY
+          end
+        end
+      end
+
+      context 'and there are no offenses' do
+        it 'removes the comment' do
+          expect_offense(<<~RUBY)
+            # rubocop:disable-next-line Metrics/ClassLength
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+            class Foo
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Foo
+            end
+          RUBY
+        end
+      end
+
+      context 'with multiple cops and one has an offense' do
+        let(:offenses) do
+          [
+            RuboCop::Cop::Offense.new(:convention,
+                                      FakeLocation.new(line: 2, column: 0),
+                                      'Class has too many lines.',
+                                      'Metrics/ClassLength')
+          ]
+        end
+
+        it 'returns an offense for the cop without offenses' do
+          expect_offense(<<~RUBY)
+            # rubocop:disable-next-line Metrics/ClassLength, Metrics/MethodLength
+                                                             ^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+            class Foo
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            # rubocop:disable-next-line Metrics/ClassLength
+            class Foo
+            end
+          RUBY
+        end
+      end
+
+      context 'with all cops disabled and no offenses' do
+        it 'removes the comment' do
+          expect_offense(<<~RUBY)
+            # rubocop:disable-next-line all
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of all cops.
+            class Foo
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            class Foo
+            end
+          RUBY
+        end
+      end
+    end
   end
 end
