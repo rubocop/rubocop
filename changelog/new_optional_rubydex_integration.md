@@ -1,1 +1,0 @@
-* [#15173](https://github.com/rubocop/rubocop/pull/15173): Add optional Rubydex integration via `AllCops/UseProjectIndex` to enable cross-file detection in `Lint/ConstantReassignment` (experimental). ([@koic][])

@@ -1,1 +1,0 @@
-* [#15192](https://github.com/rubocop/rubocop/pull/15192): Fix incorrect autocorrect for `Style/StructInheritance` causing a syntax error when the inherited `Struct.new` is called without parentheses. ([@koic][])

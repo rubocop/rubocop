@@ -1,1 +1,0 @@
-* [#15182](https://github.com/rubocop/rubocop/pull/15182): Fix incorrect autocorrect for `Style/Alias` causing a syntax error when the return value of `alias_method` is used, such as an argument to `public`, `private`, `protected`, or `module_function`, or the right-hand side of an assignment. ([@koic][])

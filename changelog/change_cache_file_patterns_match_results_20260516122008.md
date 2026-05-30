@@ -1,1 +1,0 @@
-* [#15171](https://github.com/rubocop/rubocop/pull/15171): Cache `FilePatterns#match?` results per path so cops sharing the same `Include`/`Exclude` configuration do not each repeat `File.fnmatch?` work on every file. ([@Darhazer][])

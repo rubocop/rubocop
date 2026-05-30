@@ -1,1 +1,0 @@
-* [#15180](https://github.com/rubocop/rubocop/pull/15180): Fix incorrect autocorrect for `Style/FileWrite` causing a syntax error when the written heredoc is chained with another method call. ([@koic][])

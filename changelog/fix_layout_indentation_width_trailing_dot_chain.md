@@ -1,1 +1,0 @@
-* [#15175](https://github.com/rubocop/rubocop/pull/15175): Fix `Layout/IndentationWidth` to indent block bodies relative to the method selector for trailing-dot multi-line method chains when `EnforcedStyleAlignWith` is `relative_to_receiver`. ([@ddbrendan][])
