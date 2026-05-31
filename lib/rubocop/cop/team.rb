@@ -17,12 +17,14 @@ module RuboCop
       # @return [Team]
       def self.new(cop_or_classes, config, options = {})
         # Support v0 api:
+        # simplecov:disable
         if cop_or_classes.first.is_a?(Class)
           warn Rainbow(<<~WARNING).yellow, uplevel: 1
             `Team.new` with cop classes is deprecated. Use `Team.mobilize` instead.
           WARNING
           return mobilize(cop_or_classes, config, options)
         end
+        # simplecov:enable
 
         super
       end
@@ -80,6 +82,7 @@ module RuboCop
         @options[:debug]
       end
 
+      # simplecov:disable
       # @deprecated. Use investigate
       # @return Array<offenses>
       def inspect_file(processed_source)
@@ -89,6 +92,7 @@ module RuboCop
 
         investigate(processed_source).offenses
       end
+      # simplecov:enable
 
       # @return [Commissioner::InvestigationReport]
       def investigate(processed_source, offset: 0, original: processed_source)
@@ -113,6 +117,7 @@ module RuboCop
         offenses
       end
 
+      # simplecov:disable
       # @deprecated
       def forces
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -121,6 +126,7 @@ module RuboCop
 
         @forces ||= self.class.forces_for(cops)
       end
+      # simplecov:enable
 
       def external_dependency_checksum
         # The external dependency checksums are cached per RuboCop team so that

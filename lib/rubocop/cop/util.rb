@@ -18,6 +18,7 @@ module RuboCop
         /^\s*#/.match?(line_source)
       end
 
+      # simplecov:disable
       # @deprecated Use `ProcessedSource#line_with_comment?`, `contains_comment?` or similar
       def comment_lines?(node)
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -26,6 +27,7 @@ module RuboCop
 
         processed_source[line_range(node)].any? { |line| comment_line?(line) }
       end
+      # simplecov:enable
 
       def line_range(node)
         node.first_line..node.last_line

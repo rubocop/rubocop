@@ -65,6 +65,7 @@ module RuboCop
         inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
       end
 
+      # simplecov:disable
       # @deprecated Use processed_source.line_with_comment?(line)
       def end_of_line_comment(line) # rubocop:disable Naming/PredicateMethod
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -73,6 +74,7 @@ module RuboCop
 
         processed_source.line_with_comment?(line)
       end
+      # simplecov:enable
 
       # @api private
       def register_offense(offense_node, message_node)

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# simplecov:disable
 module RuboCop
   module Cop
     module Legacy
@@ -35,3 +36,4 @@ module RuboCop
     end
   end
 end
+# simplecov:enable

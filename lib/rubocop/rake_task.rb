@@ -74,6 +74,7 @@ module RuboCop
 
     def setup_subtasks(name, *args, &task_block) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       namespace(name) do
+        # simplecov:disable
         # rubocop:todo Naming/InclusiveLanguage
         task(:auto_correct, *args) do |_, task_args|
           require 'rainbow'
@@ -87,6 +88,7 @@ module RuboCop
           end
         end
         # rubocop:enable Naming/InclusiveLanguage
+        # simplecov:enable
 
         desc "Autocorrect RuboCop offenses (only when it's safe)."
         task(:autocorrect, *args) do |_, task_args|

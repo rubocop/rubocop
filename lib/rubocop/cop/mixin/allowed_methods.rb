@@ -14,6 +14,7 @@ module RuboCop
         allowed_methods.include?(name.to_s)
       end
 
+      # simplecov:disable
       # @deprecated Use allowed_method? instead
       def ignored_method?
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -22,6 +23,7 @@ module RuboCop
 
         allowed_method?
       end
+      # simplecov:enable
 
       # @api public
       def allowed_methods

@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# For code coverage measurements to work properly, `SimpleCov` should be loaded
+# and started before any application code is loaded.
+if ENV['COVERAGE'] && RUBY_VERSION >= '3.1'
+  require 'simplecov'
+  SimpleCov.start
+end
+
 # Disable colors in specs
 require 'rainbow'
 Rainbow.enabled = false

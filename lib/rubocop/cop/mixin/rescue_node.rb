@@ -16,6 +16,7 @@ module RuboCop
         node.resbody_type? && modifier_locations.include?(node.loc.keyword)
       end
 
+      # simplecov:disable
       # @deprecated Use ResbodyNode#exceptions instead
       def rescued_exceptions(resbody)
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -29,6 +30,7 @@ module RuboCop
           []
         end
       end
+      # simplecov:enable
     end
   end
 end

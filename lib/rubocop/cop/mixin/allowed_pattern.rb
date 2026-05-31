@@ -17,6 +17,7 @@ module RuboCop
         matches_allowed_pattern?(line)
       end
 
+      # simplecov:disable
       # @deprecated Use allowed_line? instead
       def ignored_line?(line)
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -25,11 +26,13 @@ module RuboCop
 
         allowed_line?(line)
       end
+      # simplecov:enable
 
       def matches_allowed_pattern?(line)
         allowed_patterns.any? { |pattern| Regexp.new(pattern).match?(line) }
       end
 
+      # simplecov:disable
       # @deprecated Use matches_allowed_pattern? instead
       def matches_ignored_pattern?(line)
         warn Rainbow(<<~WARNING).yellow, uplevel: 1
@@ -38,6 +41,7 @@ module RuboCop
 
         matches_allowed_pattern?(line)
       end
+      # simplecov:enable
 
       def allowed_patterns
         # Since there could be a pattern specified in the default config, merge the two
