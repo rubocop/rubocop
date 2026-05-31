@@ -22,7 +22,7 @@ module RuboCop
 
     def serialize_offense(offense)
       status = :uncorrected if %i[corrected corrected_with_todo].include?(offense.status)
-      {
+      serialized = {
         # Calling #to_s here ensures that the serialization works when using
         # other json serializers such as Oj. Some of these gems do not call
         # #to_s implicitly.
@@ -35,6 +35,8 @@ module RuboCop
         cop_name: offense.cop_name,
         status:   status || offense.status
       }
+      serialized[:style_guide_url] = offense.style_guide_url if offense.style_guide_url
+      serialized
     end
 
     def message(offense)
@@ -47,7 +49,8 @@ module RuboCop
     def deserialize_offenses(offenses)
       offenses.map! do |o|
         location = location_from_source_buffer(o)
-        Cop::Offense.new(o['severity'], location, o['message'], o['cop_name'], o['status'].to_sym)
+        Cop::Offense.new(o['severity'], location, o['message'], o['cop_name'], o['status'].to_sym,
+                         style_guide_url: o['style_guide_url'])
       end
     end
 
