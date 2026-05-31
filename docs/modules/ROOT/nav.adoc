@@ -11,6 +11,7 @@
 ** xref:usage/mcp.adoc[MCP]
 ** xref:usage/server.adoc[Server]
 ** xref:usage/source_code_directives.adoc[Source Code Directives]
+** xref:usage/project_index.adoc[Project Index]
 ** xref:usage/profiling.adoc[Profiling]
 * Configuration
 ** xref:configuration.adoc[Overview]
