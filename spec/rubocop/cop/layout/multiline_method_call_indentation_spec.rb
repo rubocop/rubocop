@@ -1109,6 +1109,40 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'accepts aligned method chain when line has multiple calls before single-line block' do
+      expect_no_offenses(<<~RUBY)
+        users
+          .dup.sort_by { _1.name.lower }
+          .page(params[:page])
+          .per(PER_PAGE)
+      RUBY
+    end
+
+    it 'accepts aligned method chain when line has multiple calls before single-line block with safe navigation' do
+      expect_no_offenses(<<~RUBY)
+        users
+          &.dup&.sort_by { _1.name.lower }
+          &.page(params[:page])
+      RUBY
+    end
+
+    it 'accepts aligned method chain when continuation also has a block' do
+      expect_no_offenses(<<~RUBY)
+        users
+          .dup.sort_by { _1.name }
+          .select { |u| u.active? }
+          .map(&:id)
+      RUBY
+    end
+
+    it 'accepts aligned method chain with three calls before single-line block' do
+      expect_no_offenses(<<~RUBY)
+        users
+          .dup.compact.sort_by { _1.name }
+          .first(10)
+      RUBY
+    end
+
     it 'accepts aligned method chained after single-line block on both calls' do
       expect_no_offenses(<<~RUBY)
         (0..foo).bar { baz }
