@@ -200,12 +200,12 @@ Bundler/GemComment:
   Description: 'Add a comment describing each gem.'
   Enabled: false
   VersionAdded: '0.59'
-  VersionChanged: '0.85'
+  VersionChanged: '1.88'
   Include:
     - '**/*.gemfile'
     - '**/Gemfile'
     - '**/gems.rb'
-  IgnoredGems: []
+  AllowedGems: []
   OnlyFor: []
 
 Bundler/GemFilename:
@@ -2114,6 +2114,7 @@ Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
   VersionAdded: '0.52'
+  VersionChanged: '1.88'
   # Maximum number of consecutive lines the cop can be disabled for.
   # 0 allows only single-line disables
   # 1 would mean the maximum allowed is the following:
@@ -2121,7 +2122,7 @@ Lint/MissingCopEnableDirective:
   #   a = 1
   #   # rubocop:enable SomeCop
   # .inf for any size
-  MaximumRangeSize: .inf
+  MaxRangeSize: .inf
 
 Lint/MissingSuper:
   Description: >-
@@ -2196,11 +2197,11 @@ Lint/NumberConversion:
   Description: 'Checks unsafe usage of number conversion methods.'
   Enabled: false
   VersionAdded: '0.53'
-  VersionChanged: '1.1'
+  VersionChanged: '1.88'
   SafeAutoCorrect: false
   AllowedMethods: []
   AllowedPatterns: []
-  IgnoredClasses:
+  AllowedClasses:
     - Time
     - DateTime
 
@@ -2792,7 +2793,8 @@ Metrics/CollectionLiteralLength:
   Description: 'Checks for `Array` or `Hash` literals with many entries.'
   Enabled: pending
   VersionAdded: '1.47'
-  LengthThreshold: 250
+  VersionChanged: '1.88'
+  Max: 250
 
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
@@ -4140,8 +4142,9 @@ Style/FetchEnvVar:
     - https://rubystyle.guide/#hash-fetch-defaults
   Enabled: pending
   VersionAdded: '1.28'
+  VersionChanged: '1.88'
   # Environment variables to be excluded from the inspection.
-  AllowedVars: []
+  AllowedVariables: []
   # When `true`, autocorrects `ENV["key"]` to `ENV.fetch("key", nil)`.
   # When `false`, autocorrects `ENV["key"]` to `ENV.fetch("key")`.
   DefaultToNil: true

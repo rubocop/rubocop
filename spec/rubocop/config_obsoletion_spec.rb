@@ -576,6 +576,40 @@ RSpec.describe RuboCop::ConfigObsoletion do
       end
     end
 
+    context 'when the configuration includes parameters renamed for consistency' do
+      let(:hash) do
+        {
+          'Bundler/GemComment' => { 'IgnoredGems' => %w[rake] },
+          'Lint/MissingCopEnableDirective' => { 'MaximumRangeSize' => 2 },
+          'Lint/NumberConversion' => { 'IgnoredClasses' => %w[Time] },
+          'Metrics/CollectionLiteralLength' => { 'LengthThreshold' => 100 },
+          'Style/FetchEnvVar' => { 'AllowedVars' => %w[FOO] }
+        }
+      end
+
+      let(:warning_message) { config_obsoletion.warnings.join("\n") }
+
+      let(:expected_message) do
+        <<~OUTPUT.chomp
+          obsolete parameter `IgnoredGems` (for `Bundler/GemComment`) found in example/.rubocop.yml
+          `IgnoredGems` has been renamed to `AllowedGems`.
+          obsolete parameter `IgnoredClasses` (for `Lint/NumberConversion`) found in example/.rubocop.yml
+          `IgnoredClasses` has been renamed to `AllowedClasses`.
+          obsolete parameter `MaximumRangeSize` (for `Lint/MissingCopEnableDirective`) found in example/.rubocop.yml
+          `MaximumRangeSize` has been renamed to `MaxRangeSize`.
+          obsolete parameter `LengthThreshold` (for `Metrics/CollectionLiteralLength`) found in example/.rubocop.yml
+          `LengthThreshold` has been renamed to `Max`.
+          obsolete parameter `AllowedVars` (for `Style/FetchEnvVar`) found in example/.rubocop.yml
+          `AllowedVars` has been renamed to `AllowedVariables`.
+        OUTPUT
+      end
+
+      it 'prints a warning message and does not raise' do
+        expect { config_obsoletion.reject_obsolete! }.not_to raise_error
+        expect(warning_message).to eq(expected_message)
+      end
+    end
+
     context 'when additional obsoletions are defined externally' do
       let(:hash) do
         {

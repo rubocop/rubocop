@@ -66,7 +66,7 @@ module RuboCop
       #   # good
       #   10.minutes.to_i
       #
-      # @example IgnoredClasses: [Time, DateTime] (default)
+      # @example AllowedClasses: [Time, DateTime] (default)
       #
       #   # good
       #   Time.now.to_datetime.to_i
@@ -188,7 +188,7 @@ module RuboCop
         end
 
         def ignored_classes
-          cop_config.fetch('IgnoredClasses', [])
+          cop_config.fetch('AllowedClasses', [])
         end
 
         def ignored_class?(name)

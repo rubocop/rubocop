@@ -2,7 +2,7 @@
 
 RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
   context 'when the maximum range size is infinite' do
-    let(:cop_config) { { 'MaximumRangeSize' => Float::INFINITY } }
+    let(:cop_config) { { 'MaxRangeSize' => Float::INFINITY } }
     let(:other_cops) { { 'Layout/SpaceAroundOperators' => { 'Enabled' => true } } }
 
     it 'registers an offense when a cop is disabled and never re-enabled' do
@@ -43,7 +43,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
   end
 
   context 'when the maximum range size is finite' do
-    let(:cop_config) { { 'MaximumRangeSize' => 2 } }
+    let(:cop_config) { { 'MaxRangeSize' => 2 } }
 
     it 'registers an offense when a cop is disabled for too many lines' do
       expect_offense(<<~RUBY)
@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
   end
 
   context 'when a `# rubocop:disable` is wrapped in `# rubocop:push` / `# rubocop:pop`' do
-    let(:cop_config) { { 'MaximumRangeSize' => Float::INFINITY } }
+    let(:cop_config) { { 'MaxRangeSize' => Float::INFINITY } }
 
     it 'does not register an offense for a bare `push` / `pop` pair' do
       expect_no_offenses(<<~RUBY)

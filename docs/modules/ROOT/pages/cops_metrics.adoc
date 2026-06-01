@@ -338,7 +338,7 @@ end                 # 4 points
 | Yes
 | No
 | 1.47
-| -
+| 1.88
 |===
 
 Checks for literals with extremely many entries. This is indicative of
@@ -396,7 +396,7 @@ SomeFramework.config_for(:something)[:numbers].to_set
 |===
 | Name | Default value | Configurable values
 
-| LengthThreshold
+| Max
 | `250`
 | Integer
 |===

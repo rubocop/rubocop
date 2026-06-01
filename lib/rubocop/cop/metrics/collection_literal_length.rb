@@ -75,7 +75,7 @@ module RuboCop
         private
 
         def collection_threshold
-          cop_config.fetch('LengthThreshold', Float::INFINITY)
+          cop_config.fetch('Max', Float::INFINITY)
         end
       end
     end
