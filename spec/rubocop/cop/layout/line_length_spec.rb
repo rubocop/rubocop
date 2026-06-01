@@ -4,11 +4,14 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
   include_context 'with exclude limit tracking'
 
   let(:cop_config) { { 'Max' => 80, 'AllowedPatterns' => nil } }
+  let(:other_cops) { {} }
 
   let(:config) do
     RuboCop::Config.new(
-      'Layout/LineLength' => { 'URISchemes' => %w[http https] }.merge(cop_config),
-      'Layout/IndentationStyle' => { 'IndentationWidth' => 2 }
+      {
+        'Layout/LineLength' => { 'URISchemes' => %w[http https] }.merge(cop_config),
+        'Layout/IndentationStyle' => { 'IndentationWidth' => 2 }
+      }.merge(other_cops)
     )
   end
 
@@ -1342,6 +1345,150 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             def: "100000", ghi: "100000", jkl: "100000", mno: "100000")
             end
           RUBY
+        end
+      end
+    end
+
+    context 'endless method definition', :ruby30 do
+      let(:cop_config) { super().merge('Max' => 80) }
+
+      context 'when under limit' do
+        it 'does not add any offenses' do
+          expect_no_offenses(<<~RUBY)
+            def foo(bar) = bar.length
+          RUBY
+        end
+      end
+
+      context 'when over limit' do
+        context 'with a simple expression' do
+          it 'adds an offense and autocorrects to multiline definition' do
+            expect_offense(<<~RUBY)
+              def very_long_method_name = some_long_expression_here_that_exceeds_maximum_line_length_configuration
+                                                                                              ^^^^^^^^^^^^^^^^^^^^ Line is too long. [100/80]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def very_long_method_name
+                some_long_expression_here_that_exceeds_maximum_line_length_configuration
+              end
+            RUBY
+          end
+        end
+
+        context 'with a block expression' do
+          it 'adds an offense and autocorrects to multiline definition' do
+            expect_offense(<<~RUBY)
+              def citations = a_method_call[1..].filter_map { |argument| some_other_method(argument) }
+                                                                                              ^^^^^^^^ Line is too long. [88/80]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def citations
+                a_method_call[1..].filter_map { |argument| some_other_method(argument) }
+              end
+            RUBY
+          end
+        end
+
+        context 'with a class method definition' do
+          it 'adds an offense and autocorrects to multiline definition' do
+            expect_offense(<<~RUBY)
+              def self.citations = a_method_call[1..].filter_map { |argument| some_other_method(argument) }
+                                                                                              ^^^^^^^^^^^^^ Line is too long. [93/80]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def self.citations
+                a_method_call[1..].filter_map { |argument| some_other_method(argument) }
+              end
+            RUBY
+          end
+        end
+
+        context 'when nested inside a class' do
+          it 'adds an offense and preserves indentation when autocorrecting to multiline definition' do
+            expect_offense(<<~RUBY)
+              class Foo
+                def citations = a_method_call[1..].filter_map { |argument| some_other_method(argument) }
+                                                                                              ^^^^^^^^^^ Line is too long. [90/80]
+              end
+            RUBY
+
+            expect_correction(<<~RUBY)
+              class Foo
+                def citations
+                  a_method_call[1..].filter_map { |argument| some_other_method(argument) }
+                end
+              end
+            RUBY
+          end
+        end
+      end
+
+      context 'when Style/EndlessMethod requires endless methods' do
+        let(:other_cops) do
+          { 'Style/EndlessMethod' => { 'Enabled' => true, 'EnforcedStyle' => 'require_always' } }
+        end
+
+        context 'when over limit' do
+          it 'adds an offense and converts block braces to do/end' do
+            expect_offense(<<~RUBY)
+              def citations = a_method_call[1..].filter_map { |argument| some_other_method(argument) }
+                                                                                              ^^^^^^^^ Line is too long. [88/80]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def citations = a_method_call[1..].filter_map do |argument|
+                some_other_method(argument)
+              end
+            RUBY
+          end
+
+          it 'adds an offense and converts numblock braces to do/end' do
+            expect_offense(<<~RUBY)
+              def nums = a_method_call[1..].filter_map { _1.some_other_method(long_argument_name) }
+                                                                                              ^^^^^ Line is too long. [85/80]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def nums = a_method_call[1..].filter_map do
+                _1.some_other_method(long_argument_name)
+              end
+            RUBY
+          end
+
+          it 'adds an offense and converts itblock braces to do/end', :ruby34 do
+            expect_offense(<<~RUBY)
+              def its = a_method_call[1..].filter_map { it.some_other_method(long_argument_name) }
+                                                                                              ^^^^ Line is too long. [84/80]
+            RUBY
+
+            expect_correction(<<~RUBY)
+              def its = a_method_call[1..].filter_map do
+                it.some_other_method(long_argument_name)
+              end
+            RUBY
+          end
+
+          context 'when nested inside a class' do
+            it 'adds an offense and preserves indentation when converting block braces to do/end' do
+              expect_offense(<<~RUBY)
+                class Foo
+                  def citations = a_method_call[1..].filter_map { |argument| some_other_method(argument) }
+                                                                                                ^^^^^^^^^^ Line is too long. [90/80]
+                end
+              RUBY
+
+              expect_correction(<<~RUBY)
+                class Foo
+                  def citations = a_method_call[1..].filter_map do |argument|
+                    some_other_method(argument)
+                  end
+                end
+              RUBY
+            end
+          end
         end
       end
     end
