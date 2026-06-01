@@ -3861,7 +3861,7 @@ end
 | Yes
 | No
 | 0.52
-| -
+| 1.88
 |===
 
 Checks that there is an `# rubocop:enable ...` statement
@@ -3869,7 +3869,7 @@ after a `# rubocop:disable ...` statement. This will prevent leaving
 cop disables on wide ranges of code, that later contributors to
 a file wouldn't be aware of.
 
-You can set `MaximumRangeSize` to define the maximum number of
+You can set `MaxRangeSize` to define the maximum number of
 consecutive lines a cop can be disabled for.
 
 - `.inf` any size (default)
@@ -3886,8 +3886,8 @@ a = 1
 [#examples-lintmissingcopenabledirective]
 === Examples
 
-[#maximumrangesize_-_inf-_default_-lintmissingcopenabledirective]
-==== MaximumRangeSize: .inf (default)
+[#maxrangesize_-_inf-_default_-lintmissingcopenabledirective]
+==== MaxRangeSize: .inf (default)
 
 [source,ruby]
 ----
@@ -3904,8 +3904,8 @@ x= 0
 # EOF
 ----
 
-[#maximumrangesize_-2-lintmissingcopenabledirective]
-==== MaximumRangeSize: 2
+[#maxrangesize_-2-lintmissingcopenabledirective]
+==== MaxRangeSize: 2
 
 [source,ruby]
 ----
@@ -3929,7 +3929,7 @@ x += 1
 |===
 | Name | Default value | Configurable values
 
-| MaximumRangeSize
+| MaxRangeSize
 | `Infinity`
 | Float
 |===
@@ -4624,7 +4624,7 @@ end
 | Yes
 | Always (Unsafe)
 | 0.53
-| 1.1
+| 1.88
 |===
 
 Warns against the usage of unsafe number conversions. Unsafe
@@ -4712,8 +4712,8 @@ bar.send { |i| Complex(i) }
 10.minutes.to_i
 ----
 
-[#ignoredclasses_-_time_-datetime_-_default_-lintnumberconversion]
-==== IgnoredClasses: [Time, DateTime] (default)
+[#allowedclasses_-_time_-datetime_-_default_-lintnumberconversion]
+==== AllowedClasses: [Time, DateTime] (default)
 
 [source,ruby]
 ----
@@ -4735,7 +4735,7 @@ Time.now.to_datetime.to_i
 | `[]`
 | Array
 
-| IgnoredClasses
+| AllowedClasses
 | `Time`, `DateTime`
 | Array
 |===

@@ -287,8 +287,8 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     end
   end
 
-  context 'IgnoredClasses' do
-    let(:cop_config) { { 'IgnoredClasses' => %w[Time DateTime] } }
+  context 'AllowedClasses' do
+    let(:cop_config) { { 'AllowedClasses' => %w[Time DateTime] } }
 
     it 'when using Time' do
       expect_no_offenses(<<~RUBY)

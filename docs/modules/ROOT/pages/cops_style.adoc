@@ -5681,7 +5681,7 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 | Yes
 | Always
 | 1.28
-| -
+| 1.88
 |===
 
 Suggests `ENV.fetch` for the replacement of `ENV[]`.
@@ -5735,7 +5735,7 @@ ENV['X'].some_method # (e.g. `.nil?`)
 |===
 | Name | Default value | Configurable values
 
-| AllowedVars
+| AllowedVariables
 | `[]`
 | Array
 

@@ -128,8 +128,8 @@ module RuboCop
         end
 
         def ignored_gem?(node)
-          ignored_gems = Array(cop_config['IgnoredGems'])
-          ignored_gems.include?(node.first_argument.value)
+          allowed_gems = Array(cop_config['AllowedGems'])
+          allowed_gems.include?(node.first_argument.value)
         end
 
         def checked_options_present?(node)

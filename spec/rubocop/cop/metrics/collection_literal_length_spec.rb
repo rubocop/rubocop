@@ -3,7 +3,7 @@
 RSpec.describe RuboCop::Cop::Metrics::CollectionLiteralLength, :config do
   let(:cop_config) do
     {
-      'LengthThreshold' => length_threshold
+      'Max' => length_threshold
     }
   end
   let(:length_threshold) { 10 }

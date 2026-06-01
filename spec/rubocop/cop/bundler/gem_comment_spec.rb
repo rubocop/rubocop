@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
   let(:cop_config) do
     {
       'Include' => ['**/Gemfile'],
-      'IgnoredGems' => ['rake'],
+      'AllowedGems' => ['rake'],
       'OnlyFor' => []
     }
   end
