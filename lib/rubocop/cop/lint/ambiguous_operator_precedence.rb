@@ -44,13 +44,6 @@ module RuboCop
         RESTRICT_ON_SEND = PRECEDENCE.flatten.freeze
         MSG = 'Wrap expressions with varying precedence with parentheses to avoid ambiguity.'
 
-        def on_new_investigation
-          # Cache the precedence of each node being investigated
-          # so that we only need to calculate it once
-          @node_precedences = {}
-          super
-        end
-
         def on_and(node)
           return unless (parent = node.parent)
 
@@ -77,9 +70,7 @@ module RuboCop
         private
 
         def precedence(node)
-          @node_precedences.fetch(node) do
-            PRECEDENCE.index { |operators| operators.include?(operator_name(node)) }
-          end
+          PRECEDENCE.index { |operators| operators.include?(operator_name(node)) }
         end
 
         def operator?(node)

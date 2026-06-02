@@ -80,7 +80,6 @@ module RuboCop
           check_assignment_chain(arg_name, arg_value)
         end
 
-        # rubocop:disable Metrics/AbcSize
         def check_assignment_chain(arg_name, node)
           return unless node.lvasgn_type?
 
@@ -88,7 +87,7 @@ module RuboCop
           current_node = node
 
           while current_node.lvasgn_type?
-            seen_variables << current_node.children.first if current_node.lvasgn_type?
+            seen_variables << current_node.children.first
             current_node = current_node.children.last
           end
 
@@ -99,7 +98,6 @@ module RuboCop
 
           add_offense(current_node, message: format(MSG, arg_name: arg_name))
         end
-        # rubocop:enable Metrics/AbcSize
       end
     end
   end
