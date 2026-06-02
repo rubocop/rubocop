@@ -77,7 +77,7 @@ module RuboCop
           return false unless processed_source.contains_comment?(node.source_range)
 
           line_comment = processed_source.comment_at_line(node.source_range.line)
-          !line_comment || !comment_disables_cop?(line_comment.source)
+          !line_comment || !comment_disables_cop?(line_comment)
         end
 
         def allow_empty_lambdas?
@@ -85,8 +85,8 @@ module RuboCop
         end
 
         def comment_disables_cop?(comment)
-          regexp_pattern = "# rubocop : (disable|todo) ([^,],)* (all|#{cop_name})"
-          Regexp.new(regexp_pattern.gsub(' ', '\s*')).match?(comment)
+          directive = DirectiveComment.new(comment)
+          directive.disabled? && directive.cop_names.include?(cop_name)
         end
       end
     end
