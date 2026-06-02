@@ -65,4 +65,26 @@ RSpec.describe RuboCop::Cop::InternalAffairs::StyleDetectedApiUse, :config do
       RUBY
     end
   end
+
+  it 'registers an offense when style_detected is used in a conditional expression' do
+    expect_offense(<<~RUBY)
+      def on_send(node)
+        return add_offense(node) if style_detected(:foo)
+                                    ^^^^^^^^^^^^^^^^^^^^ `*_style_detected` method called in conditional.
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when style_detected suppresses the positive/negative pairing check' do
+    expect_no_offenses(<<~RUBY)
+      def on_send(node)
+        if offense?
+          add_offense(node)
+        else
+          correct_style_detected
+          style_detected(:foo)
+        end
+      end
+    RUBY
+  end
 end
