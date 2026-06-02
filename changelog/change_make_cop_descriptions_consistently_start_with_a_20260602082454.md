@@ -1,0 +1,1 @@
+* [#15198](https://github.com/rubocop/rubocop/pull/15198): Reword cop descriptions that did not start with a verb (e.g. `Lint/UnreachableCode`, `Metrics/AbcSize`, `Security/Eval`) for consistency. ([@bbatsov][])
