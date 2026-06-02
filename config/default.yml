@@ -372,7 +372,7 @@ Gemspec/RubyVersionGlobalsUsage:
   Include:
     - '**/*.gemspec'
 
-#################### Layout ###########################
+#################### Layout ################################
 
 Layout/AccessModifierIndentation:
   Description: Checks indentation of private/protected visibility modifiers.
@@ -2844,14 +2844,14 @@ Metrics/PerceivedComplexity:
   AllowedPatterns: []
   Max: 8
 
-################## Migration #############################
+#################### Migration #############################
 
 Migration/DepartmentName:
   Description: 'Checks that cop names in `rubocop:disable` (etc.) comments are given with a department name.'
   Enabled: true
   VersionAdded: '0.75'
 
-#################### Naming ##############################
+#################### Naming ################################
 
 Naming/AccessorMethodName:
   Description: Checks the naming of accessor methods for get_/set_.
@@ -3038,7 +3038,10 @@ Naming/InclusiveLanguage:
         - block
     slave:
       WholeWord: true
-      Suggestions: ['replica', 'secondary', 'follower']
+      Suggestions:
+        - replica
+        - secondary
+        - follower
 
 Naming/MemoizedInstanceVariableName:
   Description: >-
@@ -3266,7 +3269,7 @@ Security/YAMLLoad:
   VersionAdded: '0.47'
   SafeAutoCorrect: false
 
-#################### Style ###############################
+#################### Style #################################
 
 Style/AccessModifierDeclarations:
   Description: 'Checks style of how access modifiers are used.'
