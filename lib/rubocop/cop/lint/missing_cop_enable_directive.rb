@@ -23,6 +23,10 @@ module RuboCop
       # # rubocop:enable SomeCop
       # ----
       #
+      # The `# rubocop:disable-file` directive can be used to explicitly
+      # disable a cop for the entire file without requiring a corresponding
+      # `# rubocop:enable`.
+      #
       # @example MaximumRangeSize: .inf (default)
       #
       #   # good
@@ -51,6 +55,14 @@ module RuboCop
       #   x += 1
       #   # Including this, that's 3 lines on which the cop is disabled.
       #   # rubocop:enable Layout/SpaceAroundOperators
+      #
+      # @example Using disable-file directive
+      #
+      #   # good (no rubocop:enable needed)
+      #   # rubocop:disable-file Layout/SpaceAroundOperators
+      #   x= 0
+      #   y= 1
+      #   # EOF
       #
       class MissingCopEnableDirective < Base
         include RangeHelp
@@ -82,19 +94,27 @@ module RuboCop
           return true if line_range.max - line_range.min < max_range + 2
           # This cop is disabled in the config, it is not expected to be re-enabled
           return true if line_range.min == CommentConfig::CONFIG_DISABLED_LINE_RANGE_MIN
-
-          cop_class = RuboCop::Cop::Registry.global.find_by_cop_name cop
-          if cop_class &&
-             !processed_source.registry.enabled?(cop_class, config) &&
-             line_range.max == Float::INFINITY
-            return true
-          end
+          # disable-file directives are intentionally file-wide
+          return true if disable_file_directive?(line_range)
+          return true if cop_disabled_in_config?(cop, line_range)
 
           false
         end
 
+        def cop_disabled_in_config?(cop, line_range)
+          return false unless line_range.max == Float::INFINITY
+
+          cop_class = RuboCop::Cop::Registry.global.find_by_cop_name cop
+          cop_class && !processed_source.registry.enabled?(cop_class, config)
+        end
+
         def max_range
           @max_range ||= cop_config['MaximumRangeSize']
+        end
+
+        def disable_file_directive?(line_range)
+          comment = processed_source.comment_at_line(line_range.begin)
+          comment && DirectiveComment.new(comment).disabled_file?
         end
 
         def message(cop, comment, type = 'cop')
