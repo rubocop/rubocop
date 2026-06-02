@@ -395,4 +395,31 @@ RSpec.describe 'RuboCop Project', type: :feature do
       expect(warnings).to eq []
     end
   end
+
+  describe 'cop specs' do
+    # The offense/correction expectation helpers have a singular/plural asymmetry
+    # (`expect_offense` but `expect_no_offenses`, `expect_correction` but
+    # `expect_no_corrections`) that makes them easy to misspell. A misspelled helper
+    # inside an `expect_offense` heredoc fixture silently does nothing, so the test
+    # passes for the wrong reason. Guard against the known-invalid spellings.
+    it 'do not use misspelled offense/correction expectation helpers' do
+      invalid = %w[
+        expect_no_offense expect_offenses expect_corrections expect_no_correction add_no_offenses
+      ]
+      pattern = /\b(?:#{invalid.join('|')})\b/
+
+      offenders = Dir['spec/rubocop/cop/**/*_spec.rb'].sort.filter_map do |path|
+        lines = File.readlines(path, encoding: Encoding::UTF_8)
+        hits = lines.each_index.select { |index| lines[index].match?(pattern) }
+        next if hits.empty?
+
+        "#{path}:\n  #{hits.map { |index| "#{index + 1}: #{lines[index].strip}" }.join("\n  ")}"
+      end
+
+      expect(offenders).to(be_empty, <<~MSG)
+        Misspelled offense/correction expectation helper(s) found:
+        #{offenders.join("\n")}
+      MSG
+    end
+  end
 end
