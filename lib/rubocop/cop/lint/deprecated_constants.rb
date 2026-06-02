@@ -49,7 +49,7 @@ module RuboCop
           #        Maybe further investigation of RuboCop AST will lead to an essential solution.
           return unless node.loc
 
-          constant = node.absolute? ? constant_name(node, node.short_name) : node.source
+          constant = node.source.delete_prefix('::')
           return unless (deprecated_constant = deprecated_constants[constant])
 
           alternative = deprecated_constant['Alternative']
@@ -62,12 +62,6 @@ module RuboCop
         end
 
         private
-
-        def constant_name(node, nested_constant_name)
-          return nested_constant_name.to_s unless node.namespace.const_type?
-
-          constant_name(node.namespace, "#{node.namespace.short_name}::#{nested_constant_name}")
-        end
 
         def message(good, bad, deprecated_version)
           deprecated_message = ", deprecated since Ruby #{deprecated_version}" if deprecated_version
