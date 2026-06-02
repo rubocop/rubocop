@@ -46,8 +46,7 @@ module RuboCop
 
         def on_block(node)
           return unless let_rubocop_config_new?(node)
-
-          describe = find_describe_method_node(node)
+          return unless (describe = find_describe_method_node(node))
 
           unless (exist_config = describe.last_argument.source == ':config')
             additional_message = ' and specify `:config` in `describe`'
@@ -65,7 +64,10 @@ module RuboCop
         private
 
         def find_describe_method_node(block_node)
-          block_node.ancestors.find { |node| node.block_type? && node.method?(:describe) }.send_node
+          describe = block_node.ancestors.find do |ancestor|
+            ancestor.block_type? && ancestor.method?(:describe)
+          end
+          describe&.send_node
         end
       end
     end
