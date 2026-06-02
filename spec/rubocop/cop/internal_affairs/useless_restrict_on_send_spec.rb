@@ -74,14 +74,11 @@ RSpec.describe RuboCop::Cop::InternalAffairs::UselessRestrictOnSend, :config do
     RUBY
   end
 
-  it 'does not register an offense when using `RESTRICT_ON_SEND` and defines `after_send` with alias_method' do
+  it 'does not register an offense when using `RESTRICT_ON_SEND` and defines `after_send` with string-form alias_method' do
     expect_no_offenses(<<~RUBY)
       class FooCop
         RESTRICT_ON_SEND = %i[bad_method].freeze
-        def after_send(node)
-          # ...
-        end
-        self.alias_method "after_send", "any"
+        alias_method "after_send", "any"
       end
     RUBY
   end

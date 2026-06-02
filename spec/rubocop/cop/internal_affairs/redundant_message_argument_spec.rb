@@ -45,7 +45,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantMessageArgument, :config 
     context 'when there are others keyword arguments' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY, 'example_cop.rb')
-          add_no_offenses(node,
+          add_offense(node,
                       location: :selector,
                       message: message(node),
                       severity: :fatal)
