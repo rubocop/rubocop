@@ -146,6 +146,15 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           output = `ruby -I . "#{rubocop}" --start-server`
           expect(output).to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
         end
+
+        it 'reports the server as running immediately after the command returns' do
+          _stdout, stderr, status = Open3.capture3("ruby -I . \"#{rubocop}\" --start-server")
+          expect(stderr).to eq('')
+          expect(status).to be_success
+
+          server_status = `ruby -I . "#{rubocop}" --server-status`
+          expect(server_status).to match(/RuboCop server \(\d+\) is running\./)
+        end
       end
 
       describe '--stop-server' do

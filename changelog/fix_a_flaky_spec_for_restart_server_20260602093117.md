@@ -1,0 +1,1 @@
+* [#15196](https://github.com/rubocop/rubocop/pull/15196): Fix `--start-server` to wait until the server is running before returning, which fixes a flaky `--restart-server` spec and a race for commands run right after starting the server. ([@koic][])

@@ -57,6 +57,12 @@ module RuboCop
         end
 
         Process.waitpid(pid)
+
+        # The daemon writes its pid file asynchronously after forking, so wait until
+        # the server is actually running before returning. This prevents a race where
+        # a subsequent command (e.g. `--restart-server`) observes an inconsistent
+        # state right after `--start-server` returns.
+        Server.wait_for_running_status!(true)
       end
 
       def write_port_and_token_files
