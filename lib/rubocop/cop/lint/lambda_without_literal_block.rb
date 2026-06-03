@@ -42,7 +42,7 @@ module RuboCop
           end
 
           add_offense(node) do |corrector|
-            corrector.replace(node, node.first_argument.source.delete('&'))
+            corrector.replace(node, node.first_argument.source.delete_prefix('&'))
           end
         end
       end
