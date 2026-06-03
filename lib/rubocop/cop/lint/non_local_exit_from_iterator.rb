@@ -74,7 +74,7 @@ module RuboCop
         end
 
         # @!method chained_send?(node)
-        def_node_matcher :chained_send?, '(send !nil? ...)'
+        def_node_matcher :chained_send?, '(call !nil? ...)'
 
         # @!method define_method?(node)
         def_node_matcher :define_method?, <<~PATTERN
