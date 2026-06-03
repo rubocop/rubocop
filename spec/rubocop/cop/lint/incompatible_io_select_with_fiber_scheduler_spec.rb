@@ -175,4 +175,10 @@ RSpec.describe RuboCop::Cop::Lint::IncompatibleIoSelectWithFiberScheduler, :conf
       collection.select { |item| item.do_something? }
     RUBY
   end
+
+  it 'does not register an offense when the single array element is a splat' do
+    expect_no_offenses(<<~RUBY)
+      IO.select([*reads])
+    RUBY
+  end
 end
