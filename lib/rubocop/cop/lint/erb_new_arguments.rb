@@ -148,7 +148,9 @@ module RuboCop
           arguments = node.arguments
           overridden_kwargs = kwargs.dup
 
-          overridden_kwargs[0] = "trim_mode: #{arguments[2].source}" if arguments[2]
+          if arguments[2] && !arguments[2].hash_type?
+            overridden_kwargs[0] = "trim_mode: #{arguments[2].source}"
+          end
 
           if arguments[3] && !arguments[3].hash_type?
             overridden_kwargs[1] = "eoutvar: #{arguments[3].source}"

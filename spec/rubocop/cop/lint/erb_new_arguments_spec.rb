@@ -100,6 +100,17 @@ RSpec.describe RuboCop::Cop::Lint::ErbNewArguments, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when using `ERB.new` with a non-keyword 2nd argument and a keyword 3rd argument' do
+      expect_offense(<<~RUBY)
+        ERB.new(str, nil, trim_mode: '-')
+                     ^^^ Passing safe_level with the 2nd argument of `ERB.new` is deprecated. Do not use it, and specify other arguments as keyword arguments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        ERB.new(str, trim_mode: '-')
+      RUBY
+    end
+
     context 'when using `ActionView::Template::Handlers::ERB.new`' do
       it 'does not register an offense when using `ERB.new` without arguments' do
         expect_no_offenses(<<~RUBY)
