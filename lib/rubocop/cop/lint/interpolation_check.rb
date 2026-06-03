@@ -24,8 +24,25 @@ module RuboCop
         MSG = 'Interpolation in single quoted string detected. ' \
               'Use double quoted strings if you need interpolation.'
 
-        # rubocop:disable Metrics/CyclomaticComplexity
         def on_str(node)
+          check(node)
+        end
+
+        # A multiline single-quoted string is parsed as a `dstr` of `str` segments, so it
+        # is not covered by `on_str`. Inspect single-quoted `dstr`s here; double-quoted
+        # interpolation is also a `dstr`, hence the delimiter check.
+        def on_dstr(node)
+          # A heredoc is also a `dstr`, but its `loc` is a `Parser::Source::Map::Heredoc`
+          # with no `begin`, so bail before touching it.
+          return if heredoc?(node)
+
+          check(node) if node.loc.begin&.source == "'"
+        end
+
+        private
+
+        # rubocop:disable Metrics/CyclomaticComplexity
+        def check(node)
           return if node.parent&.regexp_type?
           return unless /(?<!\\)#\{.*\}/.match?(node.source)
           return if heredoc?(node)
@@ -35,8 +52,6 @@ module RuboCop
           add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
         # rubocop:enable Metrics/CyclomaticComplexity
-
-        private
 
         def autocorrect(corrector, node)
           starting_token, ending_token = if node.source.include?('"')

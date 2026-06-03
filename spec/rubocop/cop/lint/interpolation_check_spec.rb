@@ -109,4 +109,25 @@ RSpec.describe RuboCop::Cop::Lint::InterpolationCheck, :config do
       'a "b" } #{c}'
     RUBY
   end
+
+  it 'registers an offense and corrects interpolation in a multiline single quoted string' do
+    expect_offense(<<~'RUBY')
+      foo = 'something with #{interpolation}
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Interpolation in single quoted string detected. Use double quoted strings if you need interpolation.
+      spanning lines'
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      foo = "something with #{interpolation}
+      spanning lines"
+    RUBY
+  end
+
+  it 'does not register an offense (or crash) for interpolation in a heredoc' do
+    expect_no_offenses(<<~'RUBY')
+      foo = <<~TEXT
+        something with #{interpolation}
+      TEXT
+    RUBY
+  end
 end
