@@ -43,7 +43,25 @@ module RuboCop
         MSG = 'Do not return from an `ensure` block.'
 
         def on_ensure(node)
-          node.branch&.each_node(:return) { |return_node| add_offense(return_node) }
+          node.branch&.each_node(:return) do |return_node|
+            next if return_from_inner_scope?(return_node, node)
+
+            add_offense(return_node)
+          end
+        end
+
+        private
+
+        # A `return` inside a nested method definition or lambda within the
+        # `ensure` returns from that inner scope, not from the method whose
+        # `ensure` this is, so it is not an offense. A `return` inside a plain
+        # block (or `proc`) does propagate out, so it remains an offense.
+        def return_from_inner_scope?(return_node, ensure_node)
+          return_node.each_ancestor do |ancestor|
+            break if ancestor == ensure_node
+            return true if ancestor.any_def_type? || (ancestor.any_block_type? && ancestor.lambda?)
+          end
+          false
         end
       end
     end

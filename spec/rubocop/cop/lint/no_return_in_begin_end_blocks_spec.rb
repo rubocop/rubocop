@@ -121,4 +121,23 @@ RSpec.describe RuboCop::Cop::Lint::NoReturnInBeginEndBlocks, :config do
     it_behaves_like 'rejects return inside a block', operator
     it_behaves_like 'accepts a block with no return', operator
   end
+
+  it 'does not register an offense for `return` inside a method definition in `begin..end`' do
+    expect_no_offenses(<<~RUBY)
+      x = begin
+        def foo
+          return 1
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for `return` inside a lambda in `begin..end`' do
+    expect_no_offenses(<<~RUBY)
+      x = begin
+        handler = -> { return 1 }
+        handler.call
+      end
+    RUBY
+  end
 end
