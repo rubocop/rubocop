@@ -61,9 +61,13 @@ module RuboCop
         private
 
         def scheduler_compatible?(io1, io2)
-          return false unless io1&.array_type? && io1.values.size == 1
+          return false unless single_io_array?(io1)
 
           io2&.array_type? ? io2.values.empty? : (io2.nil? || io2.nil_type?)
+        end
+
+        def single_io_array?(node)
+          node&.array_type? && node.values.size == 1 && !node.values.first.splat_type?
         end
 
         def preferred_method(read, write, timeout)
