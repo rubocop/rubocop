@@ -104,6 +104,7 @@ module RuboCop
 
         def literal_safe?(node)
           return false unless node
+          return literal_safe?(node.children.first) if node.begin_type?
 
           (node.numeric_type? && node.value.zero?) || node.nil_type?
         end
