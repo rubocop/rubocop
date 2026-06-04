@@ -5,6 +5,11 @@ module RuboCop
     module Lint
       # Checks for redundant `with_object`.
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because the return value changes:
+      #   `each_with_object` returns the memo object, while the corrected `each` returns
+      #   the receiver. This matters when the result of the expression is used.
+      #
       # @example
       #   # bad
       #   ary.each_with_object([]) do |v|
