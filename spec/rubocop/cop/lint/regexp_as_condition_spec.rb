@@ -22,7 +22,7 @@ RSpec.describe RuboCop::Cop::Lint::RegexpAsCondition, :config do
     RUBY
 
     expect_correction(<<~RUBY)
-      if !/foo/ =~ $_
+      if !(/foo/ =~ $_)
       end
     RUBY
   end

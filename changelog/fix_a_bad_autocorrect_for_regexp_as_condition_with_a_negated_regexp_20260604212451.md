@@ -1,0 +1,1 @@
+* [#15221](https://github.com/rubocop/rubocop/pull/15221): Fix a bad autocorrect for `Lint/RegexpAsCondition` when the regexp literal is negated (e.g. `if !/foo/`), which inverted the condition. ([@bbatsov][])

@@ -26,7 +26,15 @@ module RuboCop
           return if node.ancestors.none?(&:conditional?)
           return if part_of_ignored_node?(node)
 
-          add_offense(node) { |corrector| corrector.replace(node, "#{node.source} =~ $_") }
+          add_offense(node) do |corrector|
+            # `!` binds tighter than `=~`, so `!/foo/ =~ $_` would parse as
+            # `(!/foo/) =~ $_`. Wrap the match in parentheses to preserve the meaning.
+            if node.parent&.send_type? && node.parent.method?(:!)
+              corrector.replace(node.parent, "!(#{node.source} =~ $_)")
+            else
+              corrector.replace(node, "#{node.source} =~ $_")
+            end
+          end
 
           ignore_node(node)
         end
