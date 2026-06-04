@@ -95,7 +95,7 @@ module RuboCop
           if parent.module_type?
             namespace = parent.identifier.source
 
-            return allow_implicit_namespaces.include?(namespace)
+            return true if allow_implicit_namespaces.include?(namespace)
           end
 
           implicit_namespace?(parent)
