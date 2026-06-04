@@ -187,4 +187,8 @@ RSpec.describe RuboCop::Cop::Lint::RescueType, :config do
   it_behaves_like 'offenses', '[]'
   it_behaves_like 'offenses', '{}'
   it_behaves_like 'offenses', ':symbol'
+  it_behaves_like 'offenses', 'true'
+  it_behaves_like 'offenses', 'false'
+  it_behaves_like 'offenses', '1r'
+  it_behaves_like 'offenses', '1i'
 end
