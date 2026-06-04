@@ -1,0 +1,1 @@
+* [#15216](https://github.com/rubocop/rubocop/pull/15216): Fix a false positive for `Lint/RaiseException` when `raise Exception` is used inside a module nested within an allowed implicit namespace (e.g. `Gem`). ([@bbatsov][])

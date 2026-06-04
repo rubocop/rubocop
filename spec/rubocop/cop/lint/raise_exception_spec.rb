@@ -138,6 +138,33 @@ RSpec.describe RuboCop::Cop::Lint::RaiseException, :config do
       RUBY
     end
 
+    it 'does not register an offense when Exception is raised within a nested module ' \
+       'inside an allowed namespace' do
+      expect_no_offenses(<<~RUBY)
+        module Gem
+          module Inner
+            def self.foo
+              raise Exception
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when Exception is raised within nested modules ' \
+       'none of which is allowed' do
+      expect_offense(<<~RUBY)
+        module Foo
+          module Bar
+            def self.foo
+              raise Exception
+                    ^^^^^^^^^ Use `StandardError` over `Exception`.
+            end
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense and corrects when Exception with cbase specified' do
       expect_offense(<<~RUBY)
         module Gem
