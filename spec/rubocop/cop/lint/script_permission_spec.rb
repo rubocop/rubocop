@@ -57,6 +57,20 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
           expect(file.stat).not_to be_executable
         end
       end
+
+      context 'if `AutoCorrect: false` is configured for the cop' do
+        let(:cop_config) { { 'AutoCorrect' => false } }
+
+        it 'leaves the file intact' do
+          expect_offense(<<~RUBY, file)
+            #!/usr/bin/ruby
+            ^^^^^^^^^^^^^^^ Script file #{filename} doesn't have execute permission.
+          RUBY
+
+          expect_no_corrections
+          expect(file.stat).not_to be_executable
+        end
+      end
     end
   end
 
@@ -87,6 +101,15 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
 
     it 'skips investigation' do
       expect_no_offenses(source)
+    end
+  end
+
+  context 'with a source that has no file on disk' do
+    it 'does not crash (e.g. an unsaved editor buffer or programmatic source)' do
+      expect_no_offenses(<<~RUBY)
+        #!/usr/bin/ruby
+        puts 'hello, world'
+      RUBY
     end
   end
 end
