@@ -74,7 +74,10 @@ module RuboCop
         end
 
         def cop_name_indention(comment, name)
-          comment.text.index(name)
+          # Match the cop name as a whole token so a shorter name is not found inside a
+          # longer one that shares its prefix (e.g. `Layout/EmptyLines` in
+          # `Layout/EmptyLinesAfterModuleInclusion`).
+          comment.text.index(/#{Regexp.escape(name)}(?!\w)/)
         end
 
         def range_with_comma(comment, name)

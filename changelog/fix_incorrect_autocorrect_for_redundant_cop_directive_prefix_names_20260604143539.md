@@ -1,0 +1,1 @@
+* [#15217](https://github.com/rubocop/rubocop/pull/15217): Fix an incorrect autocorrect for `Lint/RedundantCopDisableDirective` and `Lint/RedundantCopEnableDirective` when a cop name in the directive is a prefix of another cop name in the same directive (e.g. `Lint/AmbiguousOperator` and `Lint/AmbiguousOperatorPrecedence`). ([@bbatsov][])

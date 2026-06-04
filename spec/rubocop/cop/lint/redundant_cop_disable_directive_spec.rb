@@ -210,6 +210,29 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
           end
 
+          context 'multiple cops, where a redundant one shares a prefix with a non-redundant one' do
+            let(:offenses) do
+              [
+                RuboCop::Cop::Offense.new(:convention,
+                                          FakeLocation.new(line: 7, column: 0),
+                                          'Ambiguous operator precedence.',
+                                          'Lint/AmbiguousOperatorPrecedence')
+              ]
+            end
+
+            it 'locates and removes the right cop name' do
+              expect_offense(<<~RUBY.gsub("<\n", '')) # Wrap lines & avoid issue with JRuby
+                # rubocop:disable Lint/AmbiguousOperatorPrecedence, Lint/AmbiguousOperator
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^ <
+                Unnecessary disabling of `Lint/AmbiguousOperator`.
+              RUBY
+
+              expect_correction(<<~RUBY)
+                # rubocop:disable Lint/AmbiguousOperatorPrecedence
+              RUBY
+            end
+          end
+
           context 'multiple cops, with abbreviated names' do
             include_context 'mock console output'
 
