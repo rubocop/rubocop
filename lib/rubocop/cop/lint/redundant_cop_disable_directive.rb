@@ -283,7 +283,10 @@ module RuboCop
         end
 
         def matching_range(haystack, needle)
-          offset = haystack.source.index(needle)
+          # Match the cop name as a whole token so a shorter name is not found inside a
+          # longer one that shares its prefix (e.g. `Lint/AmbiguousOperator` in
+          # `Lint/AmbiguousOperatorPrecedence`).
+          offset = haystack.source.index(/#{Regexp.escape(needle)}(?!\w)/)
           return unless offset
 
           offset += haystack.begin_pos

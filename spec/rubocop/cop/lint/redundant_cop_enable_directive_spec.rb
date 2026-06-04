@@ -175,6 +175,21 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
         # rubocop:enable Layout/LineLength
       RUBY
     end
+
+    it 'locates the right cop when a redundant one shares a prefix with a necessary one' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/EmptyLinesAroundClassBody
+        foo
+        # rubocop:enable Layout/EmptyLinesAroundClassBody, Layout/EmptyLines
+                                                           ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Layout/EmptyLines.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/EmptyLinesAroundClassBody
+        foo
+        # rubocop:enable Layout/EmptyLinesAroundClassBody
+      RUBY
+    end
   end
 
   context 'when middle cop is unnecessarily enabled' do
