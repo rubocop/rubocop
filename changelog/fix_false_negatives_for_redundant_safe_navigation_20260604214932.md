@@ -1,0 +1,1 @@
+* [#15227](https://github.com/rubocop/rubocop/pull/15227): Fix false negatives for `Lint/RedundantSafeNavigation` with `&.respond_to?` on a guaranteed-instance receiver (e.g. `foo.to_s&.respond_to?(:class)`) and with `&.to_h` using a numbered-parameter or `it` block (e.g. `foo&.to_h { _1 } || {}`). ([@bbatsov][])
