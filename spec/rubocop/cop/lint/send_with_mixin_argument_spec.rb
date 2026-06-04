@@ -110,6 +110,28 @@ RSpec.describe RuboCop::Cop::Lint::SendWithMixinArgument, :config do
     RUBY
   end
 
+  it 'registers an offense when using `public_send` with `prepend`' do
+    expect_offense(<<~RUBY)
+      Foo.public_send(:prepend, Bar)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `prepend Bar` instead of `public_send(:prepend, Bar)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Foo.prepend Bar
+    RUBY
+  end
+
+  it 'registers an offense when using `__send__` with `extend`' do
+    expect_offense(<<~RUBY)
+      Foo.__send__(:extend, Bar)
+          ^^^^^^^^^^^^^^^^^^^^^^ Use `extend Bar` instead of `__send__(:extend, Bar)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Foo.extend Bar
+    RUBY
+  end
+
   it 'registers an offense when using `__send__` method' do
     expect_offense(<<~RUBY)
       Foo.__send__(:include, Bar)

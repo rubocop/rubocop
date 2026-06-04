@@ -107,6 +107,19 @@ RSpec.describe RuboCop::Cop::Lint::ShadowedException, :config do
       RUBY
     end
 
+    it 'registers an offense when `rescue Exception` precedes a bare `rescue` clause' do
+      expect_offense(<<~RUBY)
+        begin
+          something
+        rescue Exception
+        ^^^^^^^^^^^^^^^^ Do not shadow rescued Exceptions.
+          handle_exception
+        rescue
+          handle_standard_error
+        end
+      RUBY
+    end
+
     it 'accepts rescuing a single exception that is assigned to a variable' do
       expect_no_offenses(<<~RUBY)
         begin
