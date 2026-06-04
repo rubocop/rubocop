@@ -2360,6 +2360,7 @@ Lint/RefinementImportMethods:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.27'
+  VersionChanged: '<<next>>'
 
 Lint/RegexpAsCondition:
   Description: >-

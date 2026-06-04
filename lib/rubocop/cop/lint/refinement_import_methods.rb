@@ -32,9 +32,12 @@ module RuboCop
       #   end
       #
       class RefinementImportMethods < Base
+        extend AutoCorrector
         extend TargetRubyVersion
 
         MSG = 'Use `import_methods` instead of `%<current>s` because it is deprecated in Ruby 3.1.'
+        MSG_REMOVED = 'Use `import_methods` instead of `%<current>s` ' \
+                      'because it was removed in Ruby 3.2.'
         RESTRICT_ON_SEND = %i[include prepend].freeze
 
         minimum_target_ruby_version 3.1
@@ -44,7 +47,11 @@ module RuboCop
           return unless (parent = node.parent)
           return unless parent.block_type? && parent.method?(:refine)
 
-          add_offense(node.loc.selector, message: format(MSG, current: node.method_name))
+          template = target_ruby_version >= 3.2 ? MSG_REMOVED : MSG
+          message = format(template, current: node.method_name)
+          add_offense(node.loc.selector, message: message) do |corrector|
+            corrector.replace(node.loc.selector, 'import_methods')
+          end
         end
       end
     end
