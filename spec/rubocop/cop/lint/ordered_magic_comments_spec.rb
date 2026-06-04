@@ -59,6 +59,28 @@ RSpec.describe RuboCop::Cop::Lint::OrderedMagicComments, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when an `encoding` magic comment does not precede ' \
+     'a `shareable_constant_value` magic comment' do
+    expect_offense(<<~RUBY)
+      # shareable_constant_value: literal
+      # encoding: ascii
+      ^^^^^^^^^^^^^^^^^ The encoding magic comment should precede all other magic comments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # encoding: ascii
+      # shareable_constant_value: literal
+    RUBY
+  end
+
+  it 'does not register an offense when an `encoding` magic comment precedes ' \
+     'a `shareable_constant_value` magic comment' do
+    expect_no_offenses(<<~RUBY)
+      # encoding: ascii
+      # shareable_constant_value: literal
+    RUBY
+  end
+
   it 'does not register an offense when using `encoding` magic comment is first line' do
     expect_no_offenses(<<~RUBY)
       # encoding: ascii

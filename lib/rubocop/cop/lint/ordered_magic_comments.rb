@@ -38,23 +38,23 @@ module RuboCop
         def on_new_investigation
           return if processed_source.buffer.source.empty?
 
-          encoding_line, frozen_string_literal_line = magic_comment_lines
+          encoding_line, other_magic_comment_line = magic_comment_lines
 
-          return unless encoding_line && frozen_string_literal_line
-          return if encoding_line < frozen_string_literal_line
+          return unless encoding_line && other_magic_comment_line
+          return if encoding_line < other_magic_comment_line
 
           range = processed_source.buffer.line_range(encoding_line + 1)
 
           add_offense(range) do |corrector|
-            autocorrect(corrector, encoding_line, frozen_string_literal_line)
+            autocorrect(corrector, encoding_line, other_magic_comment_line)
           end
         end
 
         private
 
-        def autocorrect(corrector, encoding_line, frozen_string_literal_line)
+        def autocorrect(corrector, encoding_line, other_magic_comment_line)
           range1 = processed_source.buffer.line_range(encoding_line + 1)
-          range2 = processed_source.buffer.line_range(frozen_string_literal_line + 1)
+          range2 = processed_source.buffer.line_range(other_magic_comment_line + 1)
 
           corrector.replace(range1, range2.source)
           corrector.replace(range2, range1.source)
@@ -66,7 +66,7 @@ module RuboCop
           leading_magic_comments.each.with_index do |comment, index|
             if comment.encoding_specified?
               lines[0] = index
-            elsif comment.frozen_string_literal_specified?
+            elsif comment.valid?
               lines[1] = index
             end
 
