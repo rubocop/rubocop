@@ -34,6 +34,7 @@ module RuboCop
           {
             (send $(csend ...) $_ ...)
             (send $(any_block (csend ...) ...) $_ ...)
+            (send $(begin (csend ...)) $_ ...)
           }
         PATTERN
 
