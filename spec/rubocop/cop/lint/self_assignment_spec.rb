@@ -183,6 +183,27 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
     RUBY
   end
 
+  it 'registers an offense when using shorthand-or instance var self-assignment' do
+    expect_offense(<<~RUBY)
+      @foo ||= @foo
+      ^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-or class var self-assignment' do
+    expect_offense(<<~RUBY)
+      @@foo ||= @@foo
+      ^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-and global var self-assignment' do
+    expect_offense(<<~RUBY)
+      $foo &&= $foo
+      ^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
   it 'registers an offense when using attribute self-assignment' do
     expect_offense(<<~RUBY)
       foo.bar = foo.bar

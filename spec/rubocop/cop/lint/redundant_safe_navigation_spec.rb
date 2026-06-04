@@ -223,6 +223,25 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
+  context 'with the other default nil-safe methods in `AllowedMethods`' do
+    let(:cop_config) do
+      { 'AllowedMethods' => %w[instance_of? kind_of? is_a? eql? equal?] }
+    end
+
+    %w[instance_of? kind_of? is_a? eql? equal?].each do |method|
+      it "registers an offense and corrects `&.#{method}` in a condition" do
+        expect_offense(<<~RUBY, method: method)
+          do_something if foo&.%{method}(bar)
+                             ^^ Redundant safe navigation detected, use `.` instead.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          do_something if foo.#{method}(bar)
+        RUBY
+      end
+    end
+  end
+
   it 'does not register an offense when `&.` is used with coercion methods' do
     expect_no_offenses(<<~RUBY)
       foo&.to_s || 'Default string'

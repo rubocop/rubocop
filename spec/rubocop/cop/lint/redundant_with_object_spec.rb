@@ -80,6 +80,12 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithObject, :config do
   end
 
   context 'Ruby 2.7', :ruby27 do
+    it 'does not register an offense when the second numbered parameter is used' do
+      expect_no_offenses(<<~RUBY)
+        ary.each_with_object([]) { _1 << _2 }
+      RUBY
+    end
+
     it 'registers an offense and corrects when using `ary.each_with_object { _1 }`' do
       expect_offense(<<~RUBY)
         ary.each_with_object([]) { _1 }
