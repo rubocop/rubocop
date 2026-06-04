@@ -37,6 +37,7 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
 
   let(:expected_heading_timestamp) { "on #{Time.now} " }
   let(:config_store) { instance_double(RuboCop::ConfigStore) }
+  let(:pwd_config) { instance_double(RuboCop::Config) }
   let(:options) { { config_store: config_store } }
 
   before do
@@ -46,7 +47,8 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     RuboCop::ConfigLoader.clear_options
 
     allow(Time).to receive(:now).and_return(Time.now)
-    allow(config_store).to receive(:for_pwd).and_return(instance_double(RuboCop::Config))
+    allow(config_store).to receive(:for_pwd).and_return(pwd_config)
+    allow(pwd_config).to receive(:[]).and_return(nil)
   end
 
   context 'when any offenses are detected' do
@@ -281,6 +283,41 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
 
     it 'adds a comment about --autocorrect option' do
+      expect(output.string).to eq(expected_rubocop_todo)
+    end
+  end
+
+  context 'with local custom cop autocorrect settings', :restore_registry do
+    let(:cop_name) { 'Custom/TestCop' }
+    let(:offenses) do
+      [RuboCop::Cop::Offense.new(:convention, location, 'message', cop_name)]
+    end
+    let(:expected_rubocop_todo) do
+      [heading,
+       '# Offense count: 1',
+       '# This cop supports unsafe autocorrection (--autocorrect-all).',
+       "#{cop_name}:",
+       '  Exclude:',
+       "    - 'test_autocorrect.rb'",
+       ''].join("\n")
+    end
+
+    before do
+      stub_cop_class('Custom::TestCop') { extend RuboCop::Cop::AutoCorrector }
+
+      allow(pwd_config).to receive(:[]).with(cop_name).and_return({ 'SafeAutoCorrect' => false })
+      allow(RuboCop::ConfigLoader.default_configuration)
+        .to receive(:[])
+        .with(cop_name)
+        .and_return(nil)
+
+      formatter.started(['test_autocorrect.rb'])
+      formatter.file_started('test_autocorrect.rb', options)
+      formatter.file_finished('test_autocorrect.rb', offenses)
+      formatter.finished(['test_autocorrect.rb'])
+    end
+
+    it 'uses project config when default config is unavailable' do
       expect(output.string).to eq(expected_rubocop_todo)
     end
   end
