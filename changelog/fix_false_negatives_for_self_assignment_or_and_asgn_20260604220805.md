@@ -1,0 +1,1 @@
+* [#15233](https://github.com/rubocop/rubocop/pull/15233): Fix false negatives for `Lint/SelfAssignment` with `||=` and `&&=` on constants, attributes, and hash keys (e.g. `Foo ||= Foo`, `foo.bar ||= foo.bar`, `hash['foo'] ||= hash['foo']`). ([@bbatsov][])
