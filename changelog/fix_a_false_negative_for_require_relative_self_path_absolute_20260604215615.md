@@ -1,0 +1,1 @@
+* [#15230](https://github.com/rubocop/rubocop/pull/15230): Fix a false negative for `Lint/RequireRelativeSelfPath` when requiring the current file by name with its extension (e.g. `require_relative 'foo.rb'`) and the file path is absolute. ([@bbatsov][])
