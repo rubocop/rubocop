@@ -158,7 +158,7 @@ module RuboCop
         output_buffer.puts "# Offense count: #{offense_count}" if show_offense_counts?
 
         cop_class = Cop::Registry.global.find_by_cop_name(cop_name)
-        default_cfg = default_config(cop_name)
+        default_cfg = default_config(cop_name) || @config_for_pwd[cop_name]
 
         if supports_safe_autocorrect?(cop_class, default_cfg)
           output_buffer.puts '# This cop supports safe autocorrection (--autocorrect).'
