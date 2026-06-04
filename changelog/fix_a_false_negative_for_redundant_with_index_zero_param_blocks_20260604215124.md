@@ -1,0 +1,1 @@
+* [#15228](https://github.com/rubocop/rubocop/pull/15228): Fix a false negative for `Lint/RedundantWithIndex` when the block takes no arguments (e.g. `ary.each_with_index { do_something }`). ([@bbatsov][])
