@@ -58,6 +58,9 @@ module RuboCop
                          '(op-asgn (lvasgn $_lhs) $_operation ({int lvar} $_rhs))'
 
         def on_send(node)
+          # Safe navigation short-circuits to `nil` when the receiver is `nil`, so the
+          # result is not constant and replacing it with `0`/`1` would change behavior.
+          return if node.csend_type?
           return unless (lhs, operation, rhs = operation_with_constant_result?(node))
           return unless (result = constant_result?(lhs, operation, rhs))
 
