@@ -1,0 +1,1 @@
+* [#15235](https://github.com/rubocop/rubocop/pull/15235): Add autocorrection to `Lint/RefinementImportMethods` (replacing `include`/`prepend` with `import_methods`) and report that the functionality was removed (not just deprecated) on Ruby 3.2+. ([@bbatsov][])
