@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Lint
       # Checks for `rand(1)` calls.
-      # Such calls always return `0`.
+      # Such calls always return `0`, and so do `rand(-1)`, `rand(1.0)`, and `rand(-1.0)`.
       #
       # @example
       #

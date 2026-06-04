@@ -18,6 +18,7 @@ module RuboCop
       # * `to_sym` when called on a symbol literal or interpolated symbol.
       # * `to_i` when called on an integer literal or with `Integer()`.
       # * `to_f` when called on a float literal or with `Float()`.
+      # * `to_d` when called with `BigDecimal()`.
       # * `to_r` when called on a rational literal or with `Rational()`.
       # * `to_c` when called on a complex literal or with `Complex()`.
       # * `to_a` when called on an array literal, or with `Array.new`, `Array()` or `Array[]`.
@@ -62,6 +63,12 @@ module RuboCop
       #   # good - chaining to a type constructor with exceptions suppressed
       #   # in this case, `Integer()` could return `nil`
       #   Integer(var, exception: false).to_i
+      #
+      #   # bad
+      #   BigDecimal(var).to_d
+      #
+      #   # good
+      #   BigDecimal(var)
       #
       #   # bad - chaining the same conversion
       #   foo.to_s.to_s
