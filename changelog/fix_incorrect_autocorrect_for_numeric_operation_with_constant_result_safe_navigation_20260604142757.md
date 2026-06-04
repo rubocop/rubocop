@@ -1,0 +1,1 @@
+* [#15214](https://github.com/rubocop/rubocop/pull/15214): Fix an incorrect autocorrect for `Lint/NumericOperationWithConstantResult` when using safe navigation, as the result is `nil` when the receiver is `nil`. ([@bbatsov][])
