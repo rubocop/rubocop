@@ -1,0 +1,1 @@
+* [#15215](https://github.com/rubocop/rubocop/pull/15215): Fix a false negative for `Lint/OrderedMagicComments` when an `encoding` magic comment is preceded by a magic comment other than `frozen_string_literal` (e.g. `shareable_constant_value`). ([@bbatsov][])
