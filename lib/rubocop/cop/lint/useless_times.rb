@@ -82,6 +82,11 @@ module RuboCop
         end
 
         def autocorrect_block(corrector, node)
+          # A block with multiple arguments can't be reduced to its body (the extra arguments
+          # would become undefined references), and `next`/`break`/`redo` bound to the block
+          # become orphaned (a syntax error) once the block is removed.
+          return if node.arguments.size > 1 || orphans_loop_control_keyword?(node)
+
           block_arg = block_arg(node)
           return if block_reassigns_arg?(node, block_arg)
 
@@ -89,6 +94,13 @@ module RuboCop
           source.gsub!(/\b#{block_arg}\b/, '0') if block_arg
 
           corrector.replace(node, fix_indentation(source, node.loc.column...node.body.loc.column))
+        end
+
+        def orphans_loop_control_keyword?(node)
+          node.body&.each_node(:next, :break, :redo)&.any? do |control|
+            inner = control.each_ancestor.take_while { |ancestor| !ancestor.equal?(node) }
+            inner.none? { |ancestor| ancestor.type?(:any_block, :while, :until, :for) }
+          end
         end
 
         def fix_indentation(source, range)
