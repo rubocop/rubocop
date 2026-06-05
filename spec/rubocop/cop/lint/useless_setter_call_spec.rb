@@ -138,6 +138,17 @@ RSpec.describe RuboCop::Cop::Lint::UselessSetterCall, :config do
     end
   end
 
+  context 'when a variable from a multiple assignment with nested destructuring holds an argument' do
+    it 'accepts the setter call' do
+      expect_no_offenses(<<~RUBY)
+        def test(arg, other_arg)
+          (a, b), c = arg, other_arg
+          c.attr = 5
+        end
+      RUBY
+    end
+  end
+
   context 'when a lvar contains an object passed as argument at the end of the method' do
     it 'accepts the setter call on the lvar' do
       expect_no_offenses(<<~RUBY)
