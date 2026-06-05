@@ -67,16 +67,21 @@ module RuboCop
           range = offense_range(assignment)
 
           add_offense(range, message: message) do |corrector|
-            # In cases like `x = 1, y = 2`, where removing a variable would cause a syntax error,
-            # and where changing `x ||= 1` to `x = 1` would cause `NameError`,
-            # the autocorrect will be skipped, even if the variable is unused.
-            next if sequential_assignment?(assignment_node) ||
-                    assignment_node.parent&.or_asgn_type?
+            next if uncorrectable_assignment?(assignment_node)
 
             autocorrect(corrector, assignment)
           end
 
           ignore_node(assignment_node) if chained_assignment?(assignment_node)
+        end
+
+        # Autocorrect is skipped when removing a variable would cause a syntax error
+        # (`x = 1, y = 2`), or where rewriting `x ||= 1`/`x &&= 1` to `x = 1` would raise
+        # `NameError` because the variable is not declared before the operator assignment.
+        def uncorrectable_assignment?(assignment_node)
+          sequential_assignment?(assignment_node) ||
+            assignment_node.parent&.or_asgn_type? ||
+            assignment_node.parent&.and_asgn_type?
         end
 
         def ignored_assignment?(variable, assignment_node, assignment)
