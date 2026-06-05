@@ -56,7 +56,9 @@ module RuboCop
               {array hash (send (const {nil? cbase} {:Array :Hash}) :new)}
               !#capacity_keyword_argument?
             ])
-            (send (const {nil? cbase} :Hash) :new hash #capacity_keyword_argument?)
+            (send (const {nil? cbase} :Hash) :new
+              {array hash (send (const {nil? cbase} {:Array :Hash}) :new)}
+              #capacity_keyword_argument?)
           }
         PATTERN
 
