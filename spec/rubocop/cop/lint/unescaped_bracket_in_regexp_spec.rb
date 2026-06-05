@@ -26,6 +26,19 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
       end
     end
 
+    context 'unescaped bracket preceded by an escaped backslash' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~'RUBY')
+          /abc\\]123/
+                ^ Regular expression has `]` without escape.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          /abc\\\]123/
+        RUBY
+      end
+    end
+
     context 'unescaped bracket in regexp with regexp options' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)

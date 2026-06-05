@@ -68,7 +68,9 @@ module RuboCop
 
           expr.text.scan(/(?<!\\)\]/) do
             pos = Regexp.last_match.begin(0)
-            next if pos.zero? # if the unescaped bracket is the first character, Ruby does not warn
+            # If the unescaped bracket is the first character of the regexp, Ruby does not warn.
+            # `pos` is relative to the sub-expression, so add its start offset (`expr.ts`).
+            next if (expr.ts + pos).zero?
 
             location = range_at_index(node, expr.ts, pos)
 
