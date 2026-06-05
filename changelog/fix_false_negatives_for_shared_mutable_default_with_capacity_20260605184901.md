@@ -1,0 +1,1 @@
+* [#15247](https://github.com/rubocop/rubocop/pull/15247): Fix false negatives for `Lint/SharedMutableDefault` when a mutable default is combined with a `capacity:` keyword argument and given as an array or `Array.new`/`Hash.new` (e.g. `Hash.new([], capacity: 42)`). ([@bbatsov][])
