@@ -1,0 +1,1 @@
+* [#15243](https://github.com/rubocop/rubocop/pull/15243): Fix a false positive for `Lint/TopLevelReturnWithArgument` when a `return` with an argument is inside a numbered-parameter block or an `it` block. ([@bbatsov][])
