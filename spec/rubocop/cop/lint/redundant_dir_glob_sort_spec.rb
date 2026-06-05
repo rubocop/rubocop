@@ -79,6 +79,41 @@ RSpec.describe RuboCop::Cop::Lint::RedundantDirGlobSort, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects a standalone `Dir.glob(...).sort`' do
+      expect_offense(<<~RUBY)
+        Dir.glob('./lib/**/*.rb').sort
+                                  ^^^^ Remove redundant `sort`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Dir.glob('./lib/**/*.rb')
+      RUBY
+    end
+
+    it 'does not register an offense for a receiverless `sort`' do
+      expect_no_offenses(<<~RUBY)
+        sort { |a, b| a <=> b }
+      RUBY
+    end
+
+    it 'does not register an offense when `sort` is given a comparator block' do
+      expect_no_offenses(<<~RUBY)
+        Dir.glob('./lib/**/*.rb').sort { |a, b| b <=> a }.each(&method(:require))
+      RUBY
+    end
+
+    it 'does not register an offense when `sort` is given a numbered-parameter block' do
+      expect_no_offenses(<<~RUBY)
+        Dir.glob('./lib/**/*.rb').sort { _2 <=> _1 }.each(&method(:require))
+      RUBY
+    end
+
+    it 'does not register an offense when `sort` is given a block-pass argument' do
+      expect_no_offenses(<<~RUBY)
+        Dir.glob('./lib/**/*.rb').sort(&comparator).each(&method(:require))
+      RUBY
+    end
+
     it 'does not register an offense when using `collection.sort`' do
       expect_no_offenses(<<~RUBY)
         collection.sort
