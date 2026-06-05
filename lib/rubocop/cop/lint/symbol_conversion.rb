@@ -77,11 +77,28 @@ module RuboCop
 
         def on_send(node)
           return unless node.receiver
+          return unless (correction = symbol_conversion_correction(node.receiver))
 
-          if node.receiver.type?(:str, :sym)
-            register_offense(node, correction: node.receiver.value.to_sym.inspect)
-          elsif node.receiver.dstr_type?
-            register_offense(node, correction: ":\"#{node.receiver.value.to_sym}\"")
+          register_offense(node, correction: correction)
+        end
+
+        def symbol_conversion_correction(receiver)
+          if receiver.type?(:str, :sym)
+            receiver.value.to_sym.inspect
+          elsif receiver.dstr_type? && !receiver.heredoc?
+            dstr_correction(receiver)
+          end
+        end
+
+        # Reuse the already-escaped inner source for a plain `"..."` string so embedded
+        # quotes stay escaped. Percent literals (`%{}`, `%Q{}`, ...) and adjacent string
+        # concatenation have multi-character or no delimiters, so slicing the source would
+        # corrupt them; fall back to the node's value there.
+        def dstr_correction(receiver)
+          if receiver.loc.begin&.source == '"'
+            ":\"#{receiver.source[1..-2]}\""
+          else
+            ":\"#{receiver.value.to_sym}\""
           end
         end
 
