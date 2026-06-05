@@ -107,7 +107,10 @@ module RuboCop
           end
 
           def process_multiple_assignment(masgn_node)
-            masgn_node.assignments.each_with_index do |lhs_node, index|
+            # Iterate the top-level destructuring slots so each maps to the right-hand side
+            # element at the same position. Using the flattened `assignments` would misalign
+            # the index when a slot is itself a nested destructuring (e.g. `(a, b), c = x, y`).
+            masgn_node.lhs.children.each_with_index do |lhs_node, index|
               next unless ASSIGNMENT_TYPES.include?(lhs_node.type)
 
               if masgn_node.rhs.array_type? && (rhs_node = masgn_node.rhs.children[index])
