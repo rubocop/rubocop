@@ -1,0 +1,1 @@
+* [#15244](https://github.com/rubocop/rubocop/pull/15244): Fix `Lint/TrailingCommaInAttributeDeclaration` to detect a trailing comma before a singleton method definition (e.g. `def self.bar`) and to not crash when a `def` is the sole argument (e.g. `attr_reader def bar; end`). ([@bbatsov][])
