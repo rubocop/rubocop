@@ -2182,8 +2182,8 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
           '`TargetRubyVersion`'
         )
 
-        expect($stderr.string.strip).to match(
-          /1\.9-compatible analysis was dropped after version 0\.41/
+        expect($stderr.string.strip).to include(
+          '1.9-compatible analysis was dropped after version 0.41'
         )
 
         expect($stderr.string.strip).to match(/Supported versions: 2.0/)
@@ -2199,7 +2199,7 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
         YAML
 
         expect(cli.run([])).to eq(2)
-        expect($stderr.string).to match(/cannot load such file -- unknownlibrary/)
+        expect($stderr.string).to include('cannot load such file -- unknownlibrary')
       end
     end
 

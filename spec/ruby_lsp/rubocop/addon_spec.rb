@@ -160,8 +160,8 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
 
           init_response = server.pop_response
           expect(init_response).to be_an_instance_of(RubyLsp::Notification)
-          expect(init_response.params.attributes[:message]).to match(
-            /RuboCop configuration error: Malformed configuration/
+          expect(init_response.params.attributes[:message]).to include(
+            'RuboCop configuration error: Malformed configuration'
           )
 
           process_message(

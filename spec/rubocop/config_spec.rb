@@ -195,7 +195,7 @@ RSpec.describe RuboCop::Config do
 
       it 'does not print a warning' do
         configuration
-        expect($stderr.string).not_to match(/does not support Safe parameter/)
+        expect($stderr.string).not_to include('does not support Safe parameter')
       end
     end
 
@@ -211,7 +211,7 @@ RSpec.describe RuboCop::Config do
 
       it 'does not print a warning' do
         configuration
-        expect($stderr.string).not_to match(/does not support SafeAutoCorrect parameter/)
+        expect($stderr.string).not_to include('does not support SafeAutoCorrect parameter')
       end
     end
 

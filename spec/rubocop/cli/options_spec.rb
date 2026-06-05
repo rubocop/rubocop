@@ -42,14 +42,14 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       context 'on Unix-like systems' do
         it 'prints a message if --debug is specified' do
           cli.run ['--parallel', '--debug']
-          expect($stdout.string).to match(
-            /Skipping parallel inspection: only a single file needs inspection/
+          expect($stdout.string).to include(
+            'Skipping parallel inspection: only a single file needs inspection'
           )
         end
 
         it 'does not print a message if --debug is not specified' do
           cli.run ['--parallel']
-          expect($stdout.string).not_to match(/Running parallel inspection/)
+          expect($stdout.string).not_to include('Running parallel inspection')
         end
       end
 
@@ -62,7 +62,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         it 'does ignore the exclusion in the parent directory configuration' do
           Dir.chdir('subdir') { cli.run ['--parallel', '--ignore-parent-exclusion'] }
-          expect($stdout.string).to match(/Inspecting 1 file/)
+          expect($stdout.string).to include('Inspecting 1 file')
         end
       end
 
@@ -76,7 +76,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         it 'does not parse local configuration' do
           cli.run ['--parallel', '--force-default-config']
-          expect($stdout.string).to match(/Inspecting 1 file/)
+          expect($stdout.string).to include('Inspecting 1 file')
         end
       end
     end
@@ -482,7 +482,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       it 'shows that Ruby version in the output' do
         Dir.chdir('subdir') { cli.run ['-V'] }
-        expect($stdout.string).to match(/analyzing as Ruby 3\.0/)
+        expect($stdout.string).to include('analyzing as Ruby 3.0')
       end
     end
   end
@@ -963,7 +963,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
             1 file inspected, 1 offense detected
           RESULT
-          expect($stderr.string).not_to match(%r{CustomCops/NoMethods has the wrong namespace})
+          expect($stderr.string).not_to include('CustomCops/NoMethods has the wrong namespace')
         end
       end
 
@@ -993,7 +993,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
             1 file inspected, 1 offense detected
           RESULT
-          expect($stderr.string).not_to match(%r{CustomCops/MethodLength has the wrong namespace})
+          expect($stderr.string).not_to include('CustomCops/MethodLength has the wrong namespace')
         end
       end
     end
