@@ -1,0 +1,1 @@
+* [#15245](https://github.com/rubocop/rubocop/pull/15245): Fix a false positive for `Lint/UselessRuby2Keywords` when `ruby2_keywords` in a nested class or module refers to a method of the same name defined in an outer scope. ([@bbatsov][])

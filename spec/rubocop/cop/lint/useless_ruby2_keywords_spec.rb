@@ -132,6 +132,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessRuby2Keywords, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when the `def` is in an outer scope' do
+      expect_no_offenses(<<~RUBY)
+        class Outer
+          def foo(**kwargs)
+          end
+
+          class Inner
+            ruby2_keywords :foo
+          end
+        end
+      RUBY
+    end
   end
 
   context 'with a dynamically defined method' do
