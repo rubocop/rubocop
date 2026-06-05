@@ -630,7 +630,7 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
       )
 
       expect(offenses).not_to be_empty
-      expect(offenses.map { |o| o['message'] }).to all(match(/already assigned in/))
+      expect(offenses.map { |o| o['message'] }).to all(include('already assigned in'))
     end
 
     it 'does not report any offense when UseProjectIndex is disabled' do

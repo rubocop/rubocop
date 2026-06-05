@@ -57,7 +57,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
       it 'returns exit status 0 and display an information message' do
         expect(cli.run(['--start-server', '--no-detach'])).to eq(0)
         expect(cli).to be_exit
-        expect($stdout.string).to match(/RuboCop server starting on/)
+        expect($stdout.string).to include('RuboCop server starting on')
         expect($stderr.string).to eq ''
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe RuboCop::Server::CLI, :isolated_environment do
       it 'returns exit status 0 and display an information message' do
         expect(cli.run(['--restart-server', '--no-detach'])).to eq(0)
         expect(cli).to be_exit
-        expect($stdout.string).to match(/RuboCop server starting on/)
+        expect($stdout.string).to include('RuboCop server starting on')
         expect($stderr.string).to eq "RuboCop server is not running.\n"
       end
     end
