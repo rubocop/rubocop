@@ -1,0 +1,1 @@
+* [#15242](https://github.com/rubocop/rubocop/pull/15242): Fix a bad autocorrect for `Lint/SymbolConversion` when the receiver is an interpolated string containing an embedded double quote (e.g. `"foo#{bar}\"qux".to_sym`), which produced a syntax error. ([@bbatsov][])
