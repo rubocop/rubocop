@@ -192,8 +192,9 @@ module RuboCop
         message, style_guide_url = find_message_and_style_guide_url(nil, message)
         range = Offense::NO_LOCATION
         status = enabled_line?(range.line) ? :unsupported : :disabled
-        current_offenses << Offense.new(severity, range, message, name, status,
-                                        style_guide_url: style_guide_url)
+        current_offenses << Offense.new(
+          severity, range, message, name, status, style_guide_url: style_guide_url
+        )
       end
 
       # Adds an offense on the specified range (or node with an expression)
@@ -215,8 +216,9 @@ module RuboCop
         # template file, we convert it to location info in the original file.
         range = range_for_original(range)
 
-        current_offenses << Offense.new(severity, range, message, name, status, corrector,
-                                        style_guide_url: style_guide_url)
+        current_offenses << Offense.new(
+          severity, range, message, name, status, corrector, style_guide_url: style_guide_url
+        )
       end
 
       # This method should be overridden when a cop's behavior depends
