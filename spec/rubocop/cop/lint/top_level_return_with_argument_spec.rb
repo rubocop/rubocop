@@ -42,6 +42,18 @@ RSpec.describe RuboCop::Cop::Lint::TopLevelReturnWithArgument, :config do
   end
 
   context 'Code segment with block level returns other than the top-level return' do
+    it 'expects no offense from a return with an argument inside a numbered-parameter block' do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].each { return _1 }
+      RUBY
+    end
+
+    it 'expects no offense from a return with an argument inside an `it` block', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        [1, 2, 3].each { return it }
+      RUBY
+    end
+
     it 'expects no offense from the return without arguments' do
       expect_no_offenses(<<~RUBY)
         foo
