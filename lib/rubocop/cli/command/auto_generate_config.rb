@@ -31,6 +31,12 @@ module RuboCop
           result = run_all_cops(line_length_contents)
           reset_auto_gen_tmp_dir
           result
+        ensure
+          # `auto_gen_tmp_dir` points `ExcludeLimit.tmp_dir` at this command's
+          # tmp directory. Clear that process-global state on the way out so
+          # later in-process callers (e.g. other specs in the same test worker)
+          # don't read this run's leftover directory.
+          RuboCop::ExcludeLimit.tmp_dir = nil
         end
 
         private
