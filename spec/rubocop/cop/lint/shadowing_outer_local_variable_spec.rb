@@ -297,6 +297,35 @@ RSpec.describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable, :config do
     end
   end
 
+  context 'when a block argument has same name as a pattern variable' \
+          'from a different branch of the same `case`/`in`', :ruby27 do
+    it 'does not register an offense' do
+      expect_no_offenses(<<~RUBY)
+        case condition
+        in String => foo
+          foo
+        in Integer
+          bar.each do |foo|
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a block argument has same name as a pattern variable' \
+          'from the same branch of a `case`/`in`', :ruby27 do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        case condition
+        in String => foo
+          bar.each do |foo|
+                       ^^^ Shadowing outer local variable - `foo`.
+          end
+        end
+      RUBY
+    end
+  end
+
   context 'when a block argument has different name with outer scope variables' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY)

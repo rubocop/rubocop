@@ -1,0 +1,1 @@
+* [#15224](https://github.com/rubocop/rubocop/pull/15224): Fix a false positive for `Lint/ShadowingOuterLocalVariable` when a block argument has the same name as a pattern variable from a different `in` branch of the same `case`. ([@bbatsov][])
