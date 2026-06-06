@@ -38,7 +38,8 @@ module RuboCop
       #   42)
       #
       class RequireRangeParentheses < Base
-        MSG = 'Wrap the endless range literal `%<range>s` to avoid precedence ambiguity.'
+        MSG = 'Wrap the range literal `%<range>s` in parentheses ' \
+              'to avoid confusion with an endless range.'
 
         def on_irange(node)
           return if node.parent&.begin_type?
