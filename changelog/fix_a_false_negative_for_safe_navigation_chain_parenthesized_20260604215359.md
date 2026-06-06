@@ -1,0 +1,1 @@
+* [#15229](https://github.com/rubocop/rubocop/pull/15229): Fix a false negative for `Lint/SafeNavigationChain` when an ordinary method is chained after a parenthesized safe navigation call (e.g. `(x&.foo).bar`). ([@bbatsov][])
