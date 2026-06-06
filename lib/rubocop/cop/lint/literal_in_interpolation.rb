@@ -119,11 +119,13 @@ module RuboCop
         end
 
         def autocorrected_value_for_string(node)
-          if node.source.start_with?("'", '%q')
-            node.children.last.inspect[1..-2]
-          else
-            node.children.last
-          end
+          return node.source.delete_prefix('"').delete_suffix('"') unless node.value.valid_encoding?
+
+          escape_string_content(node.children.last)
+        end
+
+        def escape_string_content(string)
+          string.gsub(/[\\"]|#(?=[@{$])/, '\\\\\&')
         end
 
         def autocorrected_value_for_symbol(node)
