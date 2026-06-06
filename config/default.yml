@@ -2351,7 +2351,9 @@ Lint/RedundantWithIndex:
 Lint/RedundantWithObject:
   Description: 'Checks for redundant `with_object`.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.51'
+  VersionChanged: '<<next>>'
 
 Lint/RefinementImportMethods:
   Description: 'Use `Refinement#import_methods` when using `include` or `prepend` in `refine` block.'
