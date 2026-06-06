@@ -90,11 +90,34 @@ module RuboCop
         def on_or_asgn(node)
           return if allow_rbs_inline_annotation? && rbs_inline_annotation?(node.lhs)
 
-          add_offense(node) if rhs_matches_lhs?(node.rhs, node.lhs)
+          add_offense(node) if or_and_asgn_self_assignment?(node.lhs, node.rhs)
         end
         alias on_and_asgn on_or_asgn
 
         private
+
+        def or_and_asgn_self_assignment?(lhs, rhs)
+          case lhs.type
+          when :casgn
+            rhs.const_type? && lhs.namespace == rhs.namespace && lhs.short_name == rhs.short_name
+          when :send, :csend
+            reader_self_assignment?(lhs, rhs)
+          else
+            rhs_matches_lhs?(rhs, lhs)
+          end
+        end
+
+        # Compares two reader calls (attribute `foo.bar` or key `hash['foo']`).
+        def reader_self_assignment?(lhs, rhs)
+          return false unless rhs.type == lhs.type
+          return false unless lhs.method?(rhs.method_name)
+          return false unless lhs.receiver == rhs.receiver
+          return false unless lhs.arguments == rhs.arguments
+
+          # `hash[foo] ||= hash[foo]` is intentionally allowed because a method-call key may
+          # return different results on each call.
+          lhs.arguments.none?(&:call_type?)
+        end
 
         def multiple_self_assignment?(node)
           lhs = node.lhs
