@@ -341,6 +341,28 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
     RUBY
   end
 
+  it 'handles double quotes in double quotes when autocorrecting' do
+    expect_offense(<<~'RUBY')
+      "this is #{"\""} silly"
+                 ^^^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "this is \" silly"
+    RUBY
+  end
+
+  it 'handles escaped interpolation text in double quotes when autocorrecting' do
+    expect_offense(<<~'RUBY')
+      "this is #{"\#{1}"} silly"
+                 ^^^^^^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "this is \#{1} silly"
+    RUBY
+  end
+
   it 'handles backslash in single quotes when autocorrecting' do
     expect_offense(<<~'RUBY')
       x = "ABC".gsub(/(A)(B)(C)/, "D#{'\2'}F")
