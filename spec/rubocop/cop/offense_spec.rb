@@ -38,6 +38,22 @@ RSpec.describe RuboCop::Cop::Offense do
     expect(o1 == o2).to be(true)
   end
 
+  it 'preserves style guide URL when marshaled' do
+    offense = described_class.new(
+      :convention,
+      location,
+      'message',
+      'CopName',
+      :corrected,
+      nil,
+      style_guide_url: 'https://rubystyle.guide#instance-vars'
+    )
+
+    loaded_offense = Marshal.load(Marshal.dump(offense))
+
+    expect(loaded_offense.style_guide_url).to eq('https://rubystyle.guide#instance-vars')
+  end
+
   it 'is frozen' do
     expect(offense).to be_frozen
   end
