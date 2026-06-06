@@ -211,6 +211,18 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when `&.respond_to?` with a `nil` method ' \
+     'follows a guaranteed-instance method' do
+    expect_offense(<<~RUBY)
+      foo.to_s&.respond_to?(:class)
+              ^^ Redundant safe navigation detected, use `.` instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_s.respond_to?(:class)
+    RUBY
+  end
+
   it 'does not register an offense when `&.` is used with coercion methods' do
     expect_no_offenses(<<~RUBY)
       foo&.to_s || 'Default string'
@@ -238,6 +250,28 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
 
     expect_correction(<<~RUBY)
       foo.to_h { |k, v| [k, v] }
+    RUBY
+  end
+
+  it 'registers an offense and corrects `&.to_h` having a numbered-parameter block with default' do
+    expect_offense(<<~RUBY)
+      foo&.to_h { _1 } || {}
+         ^^^^^^^^^^^^^^^^^^^ Redundant safe navigation with default literal detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_h { _1 }
+    RUBY
+  end
+
+  it 'registers an offense and corrects `&.to_h` having an `it`-block with default', :ruby34 do
+    expect_offense(<<~RUBY)
+      foo&.to_h { it } || {}
+         ^^^^^^^^^^^^^^^^^^^ Redundant safe navigation with default literal detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo.to_h { it }
     RUBY
   end
 

@@ -183,7 +183,7 @@ module RuboCop
         def_node_matcher :conversion_with_default?, <<~PATTERN
           {
             (or $(csend _ :to_h) (hash))
-            (or (block $(csend _ :to_h) ...) (hash))
+            (or (any_block $(csend _ :to_h) ...) (hash))
             (or $(csend _ :to_a) (array))
             (or $(csend _ :to_i) (int 0))
             (or $(csend _ :to_f) (float 0.0))
@@ -191,7 +191,6 @@ module RuboCop
           }
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
         def on_csend(node)
           range = node.loc.dot
 
@@ -204,14 +203,10 @@ module RuboCop
             end
           end
 
-          unless assume_receiver_instance_exists?(node.receiver)
-            return if !guaranteed_instance?(node.receiver) && !check?(node)
-            return if respond_to_nil_method?(node)
-          end
+          return if guarded_by_nil_receiver?(node)
 
           add_offense(range) { |corrector| corrector.replace(range, '.') }
         end
-        # rubocop:enable Metrics/AbcSize
 
         # rubocop:disable Metrics/AbcSize
         def on_or(node)
@@ -229,6 +224,18 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize
 
         private
+
+        # Returns true when the `&.` is meaningful because the receiver may actually be nil.
+        def guarded_by_nil_receiver?(node)
+          return false if assume_receiver_instance_exists?(node.receiver)
+
+          guaranteed_instance = guaranteed_instance?(node.receiver)
+          return true if !guaranteed_instance && !check?(node)
+
+          # `nil.respond_to?(<nil method>)` is `true`, so `&.` is meaningful when the receiver
+          # may be nil. A guaranteed instance can never be nil, so `&.` is still redundant there.
+          respond_to_nil_method?(node) && !guaranteed_instance
+        end
 
         def assume_receiver_instance_exists?(receiver)
           return true if receiver.const_type? && !receiver.short_name.match?(SNAKE_CASE)
