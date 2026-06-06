@@ -122,6 +122,10 @@ module RuboCop
 
               grandparent = node.parent.parent
               return if grandparent && !ASSIGNMENT_TYPES.include?(grandparent.type)
+            # An empty array/percent literal (`*[]`, `*%w()`, ...) expands to nothing, so
+            # removing the splat would produce invalid or semantically different code.
+            elsif expanded_item.array_type? && expanded_item.children.empty?
+              return
             end
 
             yield

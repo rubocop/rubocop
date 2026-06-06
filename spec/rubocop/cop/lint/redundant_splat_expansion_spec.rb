@@ -296,6 +296,48 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSplatExpansion, :config do
     RUBY
   end
 
+  context 'expanding an empty literal' do
+    it 'does not register an offense for an empty array in a `when` condition' do
+      expect_no_offenses(<<~RUBY)
+        case foo
+        when *[]
+          bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for an empty percent literal in a `when` condition' do
+      expect_no_offenses(<<~RUBY)
+        case foo
+        when *%w()
+          bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for an empty array in a `rescue`' do
+      expect_no_offenses(<<~RUBY)
+        begin
+          foo
+        rescue *[]
+          bar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for an empty array as a method argument' do
+      expect_no_offenses(<<~RUBY)
+        do_something(*[])
+      RUBY
+    end
+
+    it 'does not register an offense for an empty array inside an array literal' do
+      expect_no_offenses(<<~RUBY)
+        [*[]]
+      RUBY
+    end
+  end
+
   context 'splat expansion inside of an array' do
     it 'registers an offense and corrects the expansion of an array literal' \
        'inside of an array literal' do

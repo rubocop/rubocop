@@ -1,0 +1,1 @@
+* [#15220](https://github.com/rubocop/rubocop/pull/15220): Fix a bad autocorrect for `Lint/RedundantSplatExpansion` when splatting an empty literal (e.g. `when *[]` or `rescue *[]`), which expanded to invalid or semantically different code. ([@bbatsov][])
