@@ -121,7 +121,7 @@ module RuboCop
               corrected_method: correct_method(node, receiver)
             )
             add_offense(node, message: message) do |corrector|
-              next if part_of_ignored_node?(node)
+              next if node.csend_type? || part_of_ignored_node?(node)
 
               corrector.replace(node, correct_method(node, node.receiver))
 
