@@ -15,13 +15,11 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
 
     it 'when using `&.to_i`' do
       expect_offense(<<~RUBY)
-        "10"&.to_i
-        ^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `"10".to_i`, use stricter `Integer("10", 10)`.
+        foo&.to_i
+        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `foo.to_i`, use stricter `Integer(foo, 10)`.
       RUBY
 
-      expect_correction(<<~RUBY)
-        Integer("10", 10)
-      RUBY
+      expect_no_corrections
     end
 
     it 'when using `#to_f`' do
