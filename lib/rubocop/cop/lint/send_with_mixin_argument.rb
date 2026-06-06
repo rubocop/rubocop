@@ -45,7 +45,7 @@ module RuboCop
         # @!method send_with_mixin_argument?(node)
         def_node_matcher :send_with_mixin_argument?, <<~PATTERN
           (send
-            (const _ _) {:#{SEND_METHODS.join(' :')}}
+            {nil? self (const _ _)} {:#{SEND_METHODS.join(' :')}}
             ({sym str} $#mixin_method?)
               $(const _ _)+)
         PATTERN
