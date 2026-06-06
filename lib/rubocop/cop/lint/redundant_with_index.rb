@@ -62,7 +62,7 @@ module RuboCop
           {
             (block
               $(call _ {:each_with_index :with_index} ...)
-              (args (arg _)) ...)
+              {(args (arg _)) (args)} ...)
             (numblock
               $(call _ {:each_with_index :with_index} ...) 1 ...)
             (itblock
