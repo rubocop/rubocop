@@ -117,11 +117,11 @@ module RuboCop
 
             message = format(
               MSG,
-              current: "#{receiver.source}.#{to_method}",
+              current: current_method(node, receiver, to_method),
               corrected_method: correct_method(node, receiver)
             )
             add_offense(node, message: message) do |corrector|
-              next if node.csend_type? || part_of_ignored_node?(node)
+              next if safe_navigation?(node) || part_of_ignored_node?(node)
 
               corrector.replace(node, correct_method(node, node.receiver))
 
@@ -156,9 +156,18 @@ module RuboCop
           "{ |i| #{body} }"
         end
 
+        def current_method(node, receiver, to_method)
+          operator = node.csend_type? ? '&.' : '.'
+          "#{receiver.source}#{operator}#{to_method}"
+        end
+
         def remove_parentheses(corrector, node)
           corrector.replace(node.loc.begin, ' ')
           corrector.remove(node.loc.end)
+        end
+
+        def safe_navigation?(node)
+          node.csend_type? || node.each_descendant(:csend).any?
         end
 
         def allow_receiver?(receiver)

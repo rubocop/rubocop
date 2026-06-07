@@ -16,7 +16,16 @@ RSpec.describe RuboCop::Cop::Lint::NumberConversion, :config do
     it 'when using `&.to_i`' do
       expect_offense(<<~RUBY)
         foo&.to_i
-        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `foo.to_i`, use stricter `Integer(foo, 10)`.
+        ^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `foo&.to_i`, use stricter `Integer(foo, 10)`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'when using `#to_i` on a receiver chain containing safe navigation' do
+      expect_offense(<<~RUBY)
+        foo&.bar.to_i
+        ^^^^^^^^^^^^^ Replace unsafe number conversion with number class parsing, instead of using `foo&.bar.to_i`, use stricter `Integer(foo&.bar, 10)`.
       RUBY
 
       expect_no_corrections
