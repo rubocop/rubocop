@@ -53,6 +53,12 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationWithEmpty, :config do
         return if foo.empty?
       RUBY
     end
+
+    it 'does not register an offense when the receiver uses safe navigation' do
+      expect_no_offenses(<<~RUBY)
+        return if foo&.bar&.empty?
+      RUBY
+    end
   end
 
   context 'outside a conditional' do
