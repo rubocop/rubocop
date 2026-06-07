@@ -26,7 +26,7 @@ module RuboCop
 
         # @!method safe_navigation_empty_in_conditional?(node)
         def_node_matcher :safe_navigation_empty_in_conditional?, <<~PATTERN
-          (if (csend _ :empty?) ...)
+          (if (csend !csend :empty?) ...)
         PATTERN
 
         def on_if(node)
