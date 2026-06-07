@@ -71,7 +71,9 @@ module RuboCop
             send_arg && argument_match?(send_arg, def_arg)
           end
 
-          all_present && !extra_positional_arguments?(arguments, def_node)
+          all_present &&
+            !extra_positional_arguments?(arguments, def_node) &&
+            !extra_keyword_arguments?(arguments, def_node)
         end
 
         # The enumerator re-invokes the method with these arguments, so passing more
@@ -97,6 +99,40 @@ module RuboCop
 
         def positional_parameters(def_node)
           def_node.arguments.select { |arg| arg.type?(:arg, :optarg) }
+        end
+
+        # The enumerator re-invokes the method with these arguments, so passing
+        # unexpected keyword arguments raises `ArgumentError` at runtime.
+        def extra_keyword_arguments?(arguments, def_node)
+          return false if variadic_keyword_parameters?(def_node)
+          return false if expandable_keyword_arguments?(arguments)
+
+          (passed_keyword_arguments(arguments) - keyword_parameters(def_node)).any?
+        end
+
+        def variadic_keyword_parameters?(def_node)
+          def_node.arguments.any? { |arg| arg.type?(:kwrestarg, :forward_arg) }
+        end
+
+        # A call-side keyword splat or argument forwarding can expand to any set of keywords.
+        def expandable_keyword_arguments?(arguments)
+          arguments.any? do |arg|
+            arg.forwarded_args_type? || arg.each_child_node(:kwsplat, :forwarded_kwrestarg).any?
+          end
+        end
+
+        def passed_keyword_arguments(arguments)
+          arguments.filter_map do |arg|
+            next unless arg.hash_type?
+
+            arg.pairs.filter_map { |pair| pair.key.value if pair.key.sym_type? }
+          end.flatten
+        end
+
+        def keyword_parameters(def_node)
+          def_node.arguments.filter_map do |arg|
+            arg.children[0] if arg.type?(:kwarg, :kwoptarg)
+          end
         end
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
