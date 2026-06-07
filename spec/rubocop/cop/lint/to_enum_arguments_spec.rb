@@ -72,6 +72,15 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
     RUBY
   end
 
+  it 'registers an offense when an extra keyword argument is passed' do
+    expect_offense(<<~RUBY)
+      def m(x:)
+        return to_enum(:m, x: x, y: 1) unless block_given?
+               ^^^^^^^^^^^^^^^^^^^^^^^ Ensure you correctly provided all the arguments.
+      end
+    RUBY
+  end
+
   it 'registers an offense when splat keyword arg is missing' do
     expect_offense(<<~RUBY)
       def m(x, y = 1, *args, required:, optional: true, **kwargs)
@@ -180,6 +189,14 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
         end
       RUBY
     end
+  end
+
+  it 'does not register an offense when a keyword splat may supply extra keywords' do
+    expect_no_offenses(<<~RUBY)
+      def m(x:)
+        return to_enum(:m, x: x, **kwargs) unless block_given?
+      end
+    RUBY
   end
 
   context 'arguments forwarding', :ruby30 do
