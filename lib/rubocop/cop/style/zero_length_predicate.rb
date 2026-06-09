@@ -9,8 +9,10 @@ module RuboCop
       # `receiver.length < 1` and `receiver.size == 0` that can be
       # replaced by `receiver.empty?` and `!receiver.empty?`.
       #
-      # NOTE: `File`, `Tempfile`, and `StringIO` do not have `empty?`
-      # so allow `size == 0` and `size.zero?`.
+      # NOTE: `File`, `Tempfile`, `StringIO`, and `File::Stat` do not have `empty?`
+      # so allow `size == 0` and `size.zero?`. Note that when a `File::Stat` object
+      # is stored in a variable (e.g. `stat = File.stat(path); stat.size.zero?`),
+      # the cop cannot detect the type and may still register a false positive.
       #
       # @safety
       #   This cop is unsafe because it cannot be guaranteed that the receiver
@@ -146,7 +148,8 @@ module RuboCop
         # @!method non_polymorphic_collection?(node)
         def_node_matcher :non_polymorphic_collection?, <<~PATTERN
           {(send (send (send (const {nil? cbase} :File) :stat _) ...) ...)
-           (send (send (send (const {nil? cbase} {:File :Tempfile :StringIO}) {:new :open} ...) ...) ...)}
+           (send (send (send (const {nil? cbase} {:File :Tempfile :StringIO}) {:new :open} ...) ...) ...)
+           (send (send (send (const (const {nil? cbase} :File) :Stat) :new ...) ...) ...)}
         PATTERN
       end
     end

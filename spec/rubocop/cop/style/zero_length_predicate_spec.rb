@@ -449,15 +449,51 @@ RSpec.describe RuboCop::Cop::Style::ZeroLengthPredicate, :config do
   end
 
   context 'when inspecting a File::Stat object' do
-    it 'does not register an offense' do
+    it 'does not register an offense for `size == 0`' do
       expect_no_offenses(<<~RUBY)
         File.stat(foo).size == 0
       RUBY
     end
 
-    it 'does not register an offense with ::File' do
+    it 'does not register an offense with ::File for `size == 0`' do
       expect_no_offenses(<<~RUBY)
         ::File.stat(foo).size == 0
+      RUBY
+    end
+
+    it 'does not register an offense for `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        File.stat(foo).size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense with ::File for `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        ::File.stat(foo).size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense for `File::Stat.new` with `size == 0`' do
+      expect_no_offenses(<<~RUBY)
+        File::Stat.new(foo).size == 0
+      RUBY
+    end
+
+    it 'does not register an offense for `::File::Stat.new` with `size == 0`' do
+      expect_no_offenses(<<~RUBY)
+        ::File::Stat.new(foo).size == 0
+      RUBY
+    end
+
+    it 'does not register an offense for `File::Stat.new` with `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        File::Stat.new(foo).size.zero?
+      RUBY
+    end
+
+    it 'does not register an offense for `::File::Stat.new` with `size.zero?`' do
+      expect_no_offenses(<<~RUBY)
+        ::File::Stat.new(foo).size.zero?
       RUBY
     end
   end
