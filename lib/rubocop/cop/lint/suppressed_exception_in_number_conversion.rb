@@ -88,6 +88,10 @@ module RuboCop
             return unless (method = numeric_constructor_rescue_nil(node))
           end
 
+          # `Integer(arg, exception: false)` already suppresses the conversion error, so there
+          # is nothing unintentionally swallowed; adding another `exception: false` is wrong.
+          return if exception_keyword_argument?(method)
+
           arguments = method.arguments.map(&:source) << 'exception: false'
           prefer = "#{method.method_name}(#{arguments.join(', ')})"
           prefer = "#{method.receiver.source}#{method.loc.dot.source}#{prefer}" if method.receiver
@@ -99,6 +103,14 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize
 
         private
+
+        def exception_keyword_argument?(method)
+          method.arguments.any? do |argument|
+            argument.hash_type? && argument.pairs.any? do |pair|
+              pair.key.sym_type? && pair.key.value == :exception
+            end
+          end
+        end
 
         def expected_exception_classes_only?(exception_classes)
           return true unless (arguments = exception_classes.first)
