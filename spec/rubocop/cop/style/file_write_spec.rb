@@ -9,6 +9,19 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when a local variable is passed to `f.write`' do
+    expect_offense(<<~RUBY)
+      content = 'hello'
+      File.open(filename, 'w') { |f| f.write(content) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      content = 'hello'
+      File.write(filename, content)
+    RUBY
+  end
+
   it 'does not register an offense when a splat argument is passed to `f.write`' do
     expect_no_offenses(<<~RUBY)
       File.open(filename, 'w') do |f|
@@ -69,6 +82,19 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
 
       expect_correction(<<~RUBY)
         File.#{write_method}(filename, content)
+      RUBY
+    end
+
+    it "registers an offense for and corrects the `File.open` with inline write block (mode '#{mode}') with string literal" do
+      write_method = mode.end_with?('b') ? :binwrite : :write
+
+      expect_offense(<<~RUBY)
+        File.open(filename, '#{mode}') { |f| f.write('hello') }
+        ^^^^^^^^^^^^^^^^^^^^^#{'^' * mode.length}^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.#{write_method}`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        File.#{write_method}(filename, 'hello')
       RUBY
     end
 
