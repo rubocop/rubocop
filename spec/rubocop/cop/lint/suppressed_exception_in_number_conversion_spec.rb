@@ -234,6 +234,18 @@ RSpec.describe RuboCop::Cop::Lint::SuppressedExceptionInNumberConversion, :confi
     RUBY
   end
 
+  it 'does not register an offense when using `Integer(arg, exception: false) rescue nil`' do
+    expect_no_offenses(<<~RUBY)
+      Integer(arg, exception: false) rescue nil
+    RUBY
+  end
+
+  it 'does not register an offense when using `BigDecimal(arg, exception: false) rescue nil`' do
+    expect_no_offenses(<<~RUBY)
+      BigDecimal(arg, exception: false) rescue nil
+    RUBY
+  end
+
   it 'does not register an offense when using `Integer(arg) rescue 42`' do
     expect_no_offenses(<<~RUBY)
       Integer(arg) rescue 42
