@@ -23,7 +23,7 @@ gem 'ruby-lsp', '~> 0.24', platform: :mri if RUBY_VERSION >= '3.0'
 # native binaries for MRI on supported platforms, so we gate by `RUBY_ENGINE` to
 # keep JRuby and other engines unaffected.
 gem 'rubydex', require: false if RUBY_VERSION >= '3.2' && RUBY_ENGINE == 'ruby'
-gem 'simplecov', '1.0.0.rc1' if RUBY_VERSION >= '3.1'
+gem 'simplecov', '1.0.0.rc2' if RUBY_VERSION >= '3.1'
 gem 'stackprof', platform: :mri
 gem 'test-queue'
 gem 'yard', '~> 0.9'
