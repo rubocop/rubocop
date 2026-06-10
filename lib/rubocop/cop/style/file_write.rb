@@ -125,7 +125,7 @@ module RuboCop
 
         def find_heredoc(node)
           return node if node.respond_to?(:heredoc?) && node.heredoc?
-          return if node.send_type? && !(receiver = node.receiver)
+          return unless node.call_type? && (receiver = node.receiver)
 
           find_heredoc(receiver)
         end

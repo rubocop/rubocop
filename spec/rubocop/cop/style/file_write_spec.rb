@@ -17,6 +17,47 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when the written content is a string literal' do
+    expect_offense(<<~RUBY)
+      File.open('/tmp/test.txt', 'wb') { |f| f.write('hello') }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.binwrite`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.binwrite('/tmp/test.txt', 'hello')
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the written content is a local variable' do
+    expect_offense(<<~RUBY)
+      content = 'hello'
+      File.open(filename, 'w') { |f| f.write(content) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      content = 'hello'
+      File.write(filename, content)
+    RUBY
+  end
+
+  it 'registers an offense and corrects when the written heredoc is chained with a safe navigation method call' do
+    expect_offense(<<~RUBY)
+      File.open(filename, 'w') do |f|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~EOS&.gsub(/^/, ''))
+          content
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(filename, <<~EOS&.gsub(/^/, ''))
+          content
+        EOS
+    RUBY
+  end
+
   described_class::TRUNCATING_WRITE_MODES.each do |mode|
     it "registers an offense for and corrects `File.open(filename, '#{mode}').write(content)`" do
       write_method = mode.end_with?('b') ? :binwrite : :write
