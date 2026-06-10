@@ -201,16 +201,35 @@ module RuboCop
           # can be a block, a variable assignment, etc). But we also allow
           # the "end" to be aligned with the start of the line where the "do"
           # is, which is a style some people use in multi-line chains of
-          # blocks.
-          match = /\S.*/.match(do_loc.source_line)
+          # blocks. When the "do" is on a continuation line of multiline
+          # method arguments, the method call's line is used as the reference
+          # instead, since the continuation line's indentation reflects
+          # argument alignment rather than the start of the block.
+          reference_loc = block_begin_reference_loc(node, do_loc)
+          match = /\S.*/.match(reference_loc.source_line)
           indentation_of_do_line = match.begin(0)
           return unless end_loc.column != indentation_of_do_line || style == :start_of_line
 
           {
             source: match[0],
-            line: do_loc.line,
+            line: reference_loc.line,
             column: indentation_of_do_line
           }
+        end
+
+        def block_begin_reference_loc(node, do_loc)
+          # The `start_of_block` style explicitly aligns with the line where
+          # the "do" appears, so the continuation line is used as is.
+          return do_loc if style == :start_of_block
+
+          send_loc = node.send_node.loc
+          selector_loc = if send_loc.respond_to?(:selector)
+                           send_loc.selector
+                         elsif send_loc.respond_to?(:keyword) # `super`
+                           send_loc.keyword
+                         end
+
+          selector_loc && selector_loc.line != do_loc.line ? selector_loc : do_loc
         end
 
         def loc_to_source_line_column(loc)

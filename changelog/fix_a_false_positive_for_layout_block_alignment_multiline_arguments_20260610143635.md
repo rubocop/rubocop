@@ -1,0 +1,1 @@
+* [#14979](https://github.com/rubocop/rubocop/issues/14979): Fix a false positive for `Layout/BlockAlignment` when a block's `{` or `do` is on a continuation line of multiline method arguments. ([@augustocbx][])

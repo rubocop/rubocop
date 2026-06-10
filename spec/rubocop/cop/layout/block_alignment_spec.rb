@@ -215,6 +215,71 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         end
       RUBY
     end
+
+    # Example from issue 14979 of rubocop/rubocop on github:
+    it 'accepts `}` aligned with the method call line when the block follows multiline arguments' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }
+      RUBY
+    end
+
+    it 'accepts `end` aligned with the method call line when `do` follows multiline arguments' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) do
+            process(scheme.constraint)
+          end
+      RUBY
+    end
+
+    it 'accepts `}` aligned with the method call line when the block follows multiline arguments ' \
+       'and is chained' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }.to_s
+      RUBY
+    end
+
+    it 'accepts `}` aligned with the `super` keyword when the block follows multiline arguments' do
+      expect_no_offenses(<<~RUBY)
+        def call
+          super(a,
+                b) {
+            process
+          }
+        end
+      RUBY
+    end
+
+    it 'registers an offense for `}` not aligned with `super` when the block follows ' \
+       'multiline arguments' do
+      expect_offense(<<~RUBY)
+        def call
+          super(a,
+                b) {
+            process
+            }
+            ^ `}` at 5, 4 is not aligned with `super(a,` at 2, 2.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def call
+          super(a,
+                b) {
+            process
+          }
+        end
+      RUBY
+    end
   end
 
   context 'when variables of a mass assignment spans several lines' do
@@ -680,6 +745,26 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
+    it 'registers an offense for `}` aligned with the method call line when the block follows ' \
+       'multiline arguments' do
+      expect_offense(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }
+          ^ `}` at 5, 2 is not aligned with `out` at 1, 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+        }
+      RUBY
+    end
+
     context 'inside a non-endless method' do
       it 'does not register an offense when `end` is aligned with the block start' do
         expect_no_offenses(<<~RUBY)
@@ -835,6 +920,26 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
           .each do
             baz
           end
+      RUBY
+    end
+
+    it 'registers an offense for `}` not aligned with the block start line when the block ' \
+       'follows multiline arguments' do
+      expect_offense(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }
+          ^ `}` at 5, 2 is not aligned with `rgt: foo) {` at 3, 12.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+                    }
       RUBY
     end
 
