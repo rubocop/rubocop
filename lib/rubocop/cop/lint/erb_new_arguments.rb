@@ -87,7 +87,7 @@ module RuboCop
           erb_new_with_non_keyword_arguments(node) do |arguments|
             return if arguments.empty? || correct_arguments?(arguments)
 
-            arguments[1..3].each_with_index do |argument, i|
+            arguments[1..3].each.with_index do |argument, i|
               next if !argument || argument.hash_type?
 
               add_offense(

@@ -102,7 +102,7 @@ module RuboCop
         end
 
         def on_investigation_end
-          processed_source.lines.each_with_index do |line, line_index|
+          processed_source.lines.each.with_index do |line, line_index|
             check_line(line, line_index)
           end
         end

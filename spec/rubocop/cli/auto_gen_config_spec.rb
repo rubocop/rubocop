@@ -936,7 +936,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          'Layout/LineLength:',
          '  Max: 130']
       actual = File.read('.rubocop_todo.yml').split($RS)
-      expected.each_with_index do |line, ix|
+      expected.each.with_index do |line, ix|
         if line.is_a?(String)
           expect(actual[ix]).to eq(line)
         else
@@ -1030,7 +1030,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          'Layout/LineLength:',
          '  Max: 130']
       actual = File.read('.rubocop_todo.yml').split($RS)
-      expected.each_with_index do |line, ix|
+      expected.each.with_index do |line, ix|
         if line.is_a?(String)
           expect(actual[ix]).to eq(line)
         else
@@ -1228,7 +1228,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '  Exclude:',
          "    - 'example.rb'"]
       actual = File.read('.rubocop_todo.yml').split($RS)
-      expected.each_with_index do |line, ix|
+      expected.each.with_index do |line, ix|
         if line.is_a?(String)
           expect(actual[ix]).to eq(line)
         else
@@ -1337,7 +1337,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          'Layout/LineLength:',
          '  Max: 130']
       actual = File.read('.rubocop_todo.yml').split($RS)
-      expected.each_with_index do |line, ix|
+      expected.each.with_index do |line, ix|
         if line.is_a?(String)
           expect(actual[ix]).to eq(line)
         else
