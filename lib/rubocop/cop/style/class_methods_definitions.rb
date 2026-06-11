@@ -140,13 +140,19 @@ module RuboCop
 
         def extract_def_from_sclass(def_node, sclass_node)
           range = source_range_with_comment(def_node)
-          source = range.source.sub!(
-            "def #{def_node.method_name}",
-            "def self.#{def_node.method_name}"
-          )
-
+          source = prefix_def_with_self(range, def_node)
           source = source.gsub(/^ {#{indentation_diff(def_node, sclass_node)}}/, '')
           [range, source.chomp]
+        end
+
+        # Splice in `self.` at the actual `def` keyword rather than substituting the
+        # first textual `def <name>`, which may appear inside a preceding comment.
+        def prefix_def_with_self(range, def_node)
+          keyword_offset = def_node.loc.keyword.begin_pos - range.begin_pos
+          name_end_offset = def_node.loc.name.end_pos - range.begin_pos
+          source = range.source.dup
+          source[keyword_offset...name_end_offset] = "def self.#{def_node.method_name}"
+          source
         end
 
         def indentation_diff(node1, node2)

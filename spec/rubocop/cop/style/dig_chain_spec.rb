@@ -168,6 +168,21 @@ RSpec.describe RuboCop::Cop::Style::DigChain, :config do
       RUBY
     end
 
+    it 'keeps a trailing comment in place and preserves indentation inside a method' do
+      expect_offense(<<~RUBY)
+        def m
+          foo.dig(:a).dig(:b) # c
+              ^^^^^^^^^^^^^^^ Use `dig(:a, :b)` instead of chaining.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def m
+          foo.dig(:a, :b) # c
+        end
+      RUBY
+    end
+
     context '`...` argument forwarding' do
       it 'registers an offense and corrects with forwarded args' do
         expect_offense(<<~RUBY)
