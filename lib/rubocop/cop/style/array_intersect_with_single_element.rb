@@ -29,6 +29,9 @@ module RuboCop
         def on_send(node)
           array, element = single_element(node)
           return unless array
+          # `[*foo]` is not a single element: the splat can expand to any number of
+          # elements, so `intersect?([*foo])` is not equivalent to `include?(*foo)`.
+          return if element.splat_type?
 
           add_offense(
             node.source_range.with(begin_pos: node.loc.selector.begin_pos)

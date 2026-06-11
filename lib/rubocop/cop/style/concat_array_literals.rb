@@ -55,6 +55,10 @@ module RuboCop
               next unless prefer
 
               corrector.replace(offense, prefer)
+            elsif node.arguments.any? { |argument| argument.children.empty? }
+              # In-place bracket removal would leave dangling commas (e.g.
+              # `concat([], [b])` -> `push(, b)`), so rebuild the call instead.
+              corrector.replace(offense, preferred_method(node))
             else
               corrector.replace(node.loc.selector, 'push')
               node.arguments.each do |argument|
@@ -75,7 +79,7 @@ module RuboCop
 
         def preferred_method(node)
           new_arguments =
-            node.arguments.map do |arg|
+            node.arguments.flat_map do |arg|
               if arg.percent_literal?
                 arg.children.map { |child| child.value.inspect }
               else

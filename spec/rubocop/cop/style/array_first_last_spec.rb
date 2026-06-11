@@ -146,4 +146,20 @@ RSpec.describe RuboCop::Cop::Style::ArrayFirstLast, :config do
       arr&.last
     RUBY
   end
+
+  # `arr.first`/`arr.last` have no setter, so rewriting a compound-assignment
+  # target would raise `NoMethodError` at runtime.
+  it 'does not register an offense when `arr[0]` is an op-assignment target' do
+    expect_no_offenses(<<~RUBY)
+      arr[0] += 1
+      arr[-1] -= 1
+    RUBY
+  end
+
+  it 'does not register an offense when `arr[0]` is an or/and-assignment target' do
+    expect_no_offenses(<<~RUBY)
+      arr[0] ||= 1
+      arr[-1] &&= 1
+    RUBY
+  end
 end

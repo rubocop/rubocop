@@ -140,4 +140,26 @@ RSpec.describe RuboCop::Cop::Style::ConcatArrayLiterals, :config do
       arr << item
     RUBY
   end
+
+  it 'registers an offense and corrects when an argument is an empty array literal' do
+    expect_offense(<<~RUBY)
+      arr.concat([], [b])
+          ^^^^^^^^^^^^^^^ Use `push(b)` instead of `concat([], [b])`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.push(b)
+    RUBY
+  end
+
+  it 'registers an offense and corrects with an empty array literal between non-empty ones' do
+    expect_offense(<<~RUBY)
+      arr.concat([a], [], [b])
+          ^^^^^^^^^^^^^^^^^^^^ Use `push(a, b)` instead of `concat([a], [], [b])`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      arr.push(a, b)
+    RUBY
+  end
 end

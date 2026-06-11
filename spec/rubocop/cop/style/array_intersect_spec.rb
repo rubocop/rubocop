@@ -306,6 +306,26 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
       end
     end
 
+    context 'with a safe-navigation receiver' do
+      it 'still registers an offense for a non-negated predicate' do
+        expect_offense(<<~RUBY)
+          a&.intersection(b)&.any?
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use `a&.intersect?(b)` instead of `a&.intersection(b)&.any?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a&.intersect?(b)
+        RUBY
+      end
+
+      it 'does not register an offense for a negated predicate (the rewrite would flip the `nil` result)' do
+        expect_no_offenses(<<~RUBY)
+          a&.intersection(b)&.none?
+          a&.intersection(b)&.empty?
+        RUBY
+      end
+    end
+
     context 'with Array#any?' do
       it 'registers an offense when using `array1.any? { |e| array2.member?(e) }`' do
         expect_offense(<<~RUBY)
