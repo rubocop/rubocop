@@ -145,6 +145,10 @@ module RuboCop
 
           dot = dot_node.loc.dot.source
           bang = straight?(method_name) ? '' : '!'
+          # `a&.intersection(b)&.none?` returns `nil` when `a` is `nil`, but the negated
+          # rewrite `!a&.intersect?(b)` returns `true` there, flipping the result.
+          return if bang == '!' && dot == '&.'
+
           replacement = "#{bang}#{receiver.source}#{dot}intersect?(#{argument.source})"
 
           register_offense(node, replacement)

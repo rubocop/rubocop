@@ -40,8 +40,9 @@ module RuboCop
 
           node = innermost_braces_node(node)
           return if node.parent && brace_method?(node.parent)
+          return if compound_assignment_target?(node)
 
-          preferred = (value.zero? ? 'first' : 'last')
+          preferred = preferred_name(value)
           offense_range = find_offense_range(node)
 
           add_offense(offense_range, message: format(MSG, preferred: preferred)) do |corrector|
@@ -52,6 +53,10 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        def preferred_name(value)
+          value.zero? ? 'first' : 'last'
+        end
 
         def preferred_value(node, value)
           value = ".#{value}" unless node.loc.dot
@@ -73,6 +78,12 @@ module RuboCop
 
         def brace_method?(node)
           node.send_type? && (node.method?(:[]) || node.method?(:[]=))
+        end
+
+        # `arr[0] += 1` etc. would autocorrect to `arr.first += 1`, which calls the
+        # nonexistent `first=`/`last=` setter and raises `NoMethodError`.
+        def compound_assignment_target?(node)
+          node.parent&.type?(:op_asgn, :or_asgn, :and_asgn) && node.parent.children.first == node
         end
       end
     end

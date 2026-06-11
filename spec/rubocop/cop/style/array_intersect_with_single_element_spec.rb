@@ -42,4 +42,12 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersectWithSingleElement, :config do
       RUBY
     end
   end
+
+  context 'with a splat element' do
+    it 'does not register an offense (a splat is not a single element)' do
+      expect_no_offenses(<<~RUBY)
+        array.intersect?([*foo])
+      RUBY
+    end
+  end
 end

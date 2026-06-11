@@ -1,0 +1,1 @@
+* [#15267](https://github.com/rubocop/rubocop/pull/15267): Fix an incorrect autocorrect for `Style/ArrayIntersect` where a negated predicate on a safe-navigation chain (e.g. `a&.intersection(b)&.none?`) was rewritten to `!a&.intersect?(b)`, flipping the result when the receiver is `nil`. ([@bbatsov][])
