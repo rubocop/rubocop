@@ -229,9 +229,9 @@ module RuboCop
             if node.send_node.loc.selector.source == '->'
               corrector.replace(node, "lambda(&:#{node.body.method_name})")
               return
-            else
-              autocorrect_lambda_block(corrector, node)
             end
+
+            autocorrect_lambda_block(corrector, node)
           end
 
           corrector.replace(block_range_with_space(node), "(&:#{node.body.method_name})")

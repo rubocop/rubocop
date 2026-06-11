@@ -5412,6 +5412,11 @@ Style/RedundantEach:
   Safe: false
   VersionAdded: '1.38'
 
+Style/RedundantElse:
+  Description: 'Checks for else blocks that are unreachable when the if branch executes.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantException:
   Description: "Checks for an obsolete RuntimeException argument in raise/fail."
   StyleGuide: '#no-explicit-runtimeerror'
