@@ -30,6 +30,29 @@ RSpec.describe RuboCop::Cop::Style::ClassMethodsDefinitions, :config do
       RUBY
     end
 
+    it 'does not corrupt a preceding comment that mentions `def <name>`' do
+      expect_offense(<<~RUBY)
+        class A
+          class << self
+          ^^^^^^^^^^^^^ Do not define public methods within class << self.
+            # See def two for usage
+            def two
+              :two
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          # See def two for usage
+          def self.two
+            :two
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense and corrects when defining class methods with `class << self` and ' \
        'there is no blank line between method definition and attribute accessor' do
       expect_offense(<<~RUBY)
