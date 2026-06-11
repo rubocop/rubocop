@@ -655,18 +655,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
-    it 'corrects assignment to an unless condition' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for assignment to an `unless` without an `else`' do
+      # `value` is `nil` when the condition is true, so moving the assignment
+      # inside the `unless` would change behavior.
+      expect_no_offenses(<<~RUBY)
         value = unless condition
-        ^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals.
-                      1
-                    end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        unless condition
-          value = 1
-        end
+                  1
+                end
       RUBY
     end
 
