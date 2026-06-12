@@ -38,7 +38,7 @@ module RuboCop
           rhs_elements = Array(rhs).compact # edge case for one constant
 
           return if allowed_lhs?(node.assignments) || allowed_rhs?(rhs) ||
-                    allowed_masign?(node.assignments, rhs_elements)
+                    allowed_masign?(node.assignments, rhs_elements) || contains_heredoc?(rhs)
 
           range = node.source_range.begin.join(rhs.source_range.end)
 
@@ -75,6 +75,13 @@ module RuboCop
 
           # Account for edge case of `Constant::CONSTANT`
           !node.array_type? || elements.any?(&:splat_type?)
+        end
+
+        # Autocorrection splits the assignment into single assignments on
+        # consecutive lines, which would put following assignments into the
+        # heredoc body unless the heredoc bodies were moved along.
+        def contains_heredoc?(node)
+          node.each_descendant(:any_str).any?(&:heredoc?)
         end
 
         def assignment_corrector(node, rhs, order)

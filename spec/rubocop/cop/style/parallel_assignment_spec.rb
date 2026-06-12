@@ -742,6 +742,32 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     RUBY
   end
 
+  it 'allows assigning heredocs' do
+    expect_no_offenses(<<~RUBY)
+      a, b = <<~A, <<~B
+        one
+      A
+        two
+      B
+    RUBY
+  end
+
+  it 'allows assigning an expression containing a heredoc' do
+    expect_no_offenses(<<~RUBY)
+      a, b = foo(<<~A), 2
+        text
+      A
+    RUBY
+  end
+
+  it 'allows assigning heredocs in a modifier statement' do
+    expect_no_offenses(<<~RUBY)
+      a, b = 1, <<~B if condition
+        two
+      B
+    RUBY
+  end
+
   describe 'using custom indentation width' do
     let(:config) do
       RuboCop::Config.new('Style/ParallelAssignment' => {
