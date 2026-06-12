@@ -26,6 +26,61 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
+  it 'registers an offense without autocorrect when a heredoc is opened before the semicolon' do
+    expect_offense(<<~RUBY)
+      x = <<~TEXT; y = 2
+                 ^ Do not use semicolons to terminate expressions.
+        text
+      TEXT
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense without autocorrect when heredocs are opened before and after the semicolon' do
+    expect_offense(<<~RUBY)
+      x = <<~ONE; y = <<~TWO
+                ^ Do not use semicolons to terminate expressions.
+        one
+      ONE
+        two
+      TWO
+    RUBY
+
+    expect_no_corrections
+  end
+
+  it 'registers an offense and corrects when a heredoc is opened after the semicolon' do
+    expect_offense(<<~RUBY)
+      x = 1; y = <<~TEXT
+           ^ Do not use semicolons to terminate expressions.
+        text
+      TEXT
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = 1
+       y = <<~TEXT
+        text
+      TEXT
+    RUBY
+  end
+
+  it 'registers an offense and corrects a line-ending semicolon after a heredoc opening' do
+    expect_offense(<<~RUBY)
+      x = <<~TEXT;
+                 ^ Do not use semicolons to terminate expressions.
+        text
+      TEXT
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<~TEXT
+        text
+      TEXT
+    RUBY
+  end
+
   it 'registers an offense for one line method with two statements' do
     expect_offense(<<~RUBY)
       def foo(a) x(1); y(2); z(3); end
