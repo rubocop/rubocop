@@ -657,6 +657,8 @@ module RuboCop
             remove_whitespace_in_branches(corrector, branch, condition, column)
 
             parent_keyword = branch.parent.loc.keyword
+            return if same_line?(parent_keyword, condition)
+
             corrector.remove_preceding(parent_keyword, parent_keyword.column - column)
           end
         end
