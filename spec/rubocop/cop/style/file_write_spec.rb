@@ -136,4 +136,91 @@ RSpec.describe RuboCop::Cop::Style::FileWrite, :config do
       RUBY
     end
   end
+
+  it 'registers an offense for and corrects the `File.open` with multiline write block with heredoc as an operand' do
+    expect_offense(<<~RUBY)
+      File.open(filename, 'w') do |f|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write('prefix' + <<~EOS)
+          content
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(filename, 'prefix' + <<~EOS)
+          content
+        EOS
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with multiline write block with heredoc as a method argument' do
+    expect_offense(<<~RUBY)
+      File.open(filename, 'w') do |f|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(process(<<~EOS))
+          content
+        EOS
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(filename, process(<<~EOS))
+          content
+        EOS
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with multiline write block with multiple heredocs' do
+    expect_offense(<<~RUBY)
+      File.open(filename, 'w') do |f|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        f.write(<<~HEAD + <<~TAIL)
+          head
+        HEAD
+          tail
+        TAIL
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(filename, <<~HEAD + <<~TAIL)
+          head
+        HEAD
+          tail
+        TAIL
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with inline write block with heredoc' do
+    expect_offense(<<~RUBY)
+      File.open(filename, 'w') { |f| f.write(<<~EOS) }
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        content
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(filename, <<~EOS)
+        content
+      EOS
+    RUBY
+  end
+
+  it 'registers an offense for and corrects the `File.open` with multiline write block with heredoc as a filename' do
+    expect_offense(<<~RUBY)
+      File.open(<<~PATH.strip, 'w') do |f|
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `File.write`.
+        path/to/file
+      PATH
+        f.write(content)
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      File.write(<<~PATH.strip, content)
+        path/to/file
+      PATH
+    RUBY
+  end
 end
