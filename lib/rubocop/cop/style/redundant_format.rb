@@ -108,6 +108,7 @@ module RuboCop
 
         def detect_unnecessary_fields(node)
           return unless node.first_argument&.str_type?
+          return if node.first_argument.heredoc?
 
           string = node.first_argument.value
           arguments = node.arguments[1..]
