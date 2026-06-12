@@ -104,30 +104,33 @@ module RuboCop
 
         def replacement(mode, filename, content, write_node)
           replacement = "#{write_method(mode)}(#{filename.source}, #{content.source})"
-          heredoc = heredoc_in_write(write_node)
-          return replacement unless heredoc
+          heredocs = removed_heredocs(filename, content, write_node)
+          return replacement if heredocs.empty?
 
-          <<~REPLACEMENT.chomp
-            #{replacement}
-            #{heredoc_range(heredoc).source}
-          REPLACEMENT
+          [replacement, *heredocs.map { |heredoc| heredoc_range(heredoc).source }].join("\n")
         end
 
-        def heredoc_in_write(write_node)
-          return unless write_node.block_type? && (first_argument = write_node.body.first_argument)
-
-          find_heredoc(first_argument)
+        # Heredocs opened in the arguments keep working in the replacement, but their
+        # bodies are lost when they lie within the replaced range, so they need to be
+        # restored after the replacement.
+        def removed_heredocs(filename, content, write_node)
+          [filename, content].flat_map { |argument| find_heredocs(argument) }
+                             .select { |heredoc| removed?(heredoc, write_node) }
+                             .sort_by { |heredoc| heredoc.loc.heredoc_body.begin_pos }
         end
 
         def heredoc_range(heredoc)
           range_between(heredoc.loc.heredoc_body.begin_pos, heredoc.loc.heredoc_end.end_pos)
         end
 
-        def find_heredoc(node)
-          return node if node.respond_to?(:heredoc?) && node.heredoc?
-          return if !node.call_type? || node.receiver.nil?
+        def find_heredocs(node)
+          [node, *node.each_descendant(:any_str)].select do |child|
+            child.respond_to?(:heredoc?) && child.heredoc?
+          end
+        end
 
-          find_heredoc(node.receiver)
+        def removed?(heredoc, write_node)
+          heredoc.loc.heredoc_end.end_pos <= write_node.source_range.end_pos
         end
       end
     end
