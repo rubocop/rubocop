@@ -93,6 +93,7 @@ module RuboCop
 
         def on_array(node)
           if bracketed_array_of?(:str, node)
+            return if node.values.any?(&:heredoc?)
             return if complex_content?(node.values)
             return if within_matrix_of_complex_content?(node)
 
