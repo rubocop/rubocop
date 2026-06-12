@@ -128,7 +128,7 @@ module RuboCop
 
           add_offense(range) do |corrector|
             if after_expression
-              corrector.replace(range, "\n")
+              replace_semicolon_with_line_break(corrector, range)
             else
               # Prevents becoming one range instance with subsequent line when endless range
               # without parentheses.
@@ -147,6 +147,21 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+        def replace_semicolon_with_line_break(corrector, range)
+          # Replacing the semicolon with a newline would move the rest of the
+          # line into the body of a heredoc opened earlier on that line.
+          return if heredoc_opened_before_semicolon?(range)
+
+          corrector.replace(range, "\n")
+        end
+
+        def heredoc_opened_before_semicolon?(semicolon_range)
+          processed_source.ast.each_descendant(:any_str).select(&:heredoc?).any? do |heredoc|
+            heredoc.first_line == semicolon_range.line &&
+              heredoc.source_range.end_pos <= semicolon_range.begin_pos
+          end
+        end
 
         def expressions_per_line(exprs)
           # create a map matching lines to the number of expressions on them
