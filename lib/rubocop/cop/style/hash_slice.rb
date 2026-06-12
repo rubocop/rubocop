@@ -19,6 +19,22 @@ module RuboCop
       #   This cop is unsafe because it cannot be guaranteed that the receiver
       #   is a `Hash` or responds to the replacement method.
       #
+      #   Additionally, the replacement may change the order of the resulting
+      #   hash: `Hash#slice` returns entries in the order the keys are given,
+      #   whereas `select`, `filter`, and `reject` preserve the entry order of
+      #   the receiver.
+      #
+      #   For example:
+      #
+      #   [source,ruby]
+      #   ----
+      #   hash = {foo: 1, bar: 2, baz: 3}
+      #   keys = %i[baz foo]
+      #
+      #   hash.select { |k, _v| keys.include?(k) } # => {foo: 1, baz: 3}
+      #   hash.slice(*keys)                        # => {baz: 3, foo: 1}
+      #   ----
+      #
       # @example
       #
       #   # bad
