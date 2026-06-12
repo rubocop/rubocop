@@ -498,8 +498,23 @@ module RuboCop
         patterns = cop_config[parameter]
         return default_result unless patterns
 
-        patterns = FilePatterns.from(patterns)
-        patterns.match?(config.path_relative_to_config(file)) || patterns.match?(file)
+        file_patterns = FilePatterns.from(patterns)
+        relative_file_path = config.path_relative_to_config(file)
+        return true if file_patterns.match?(relative_file_path)
+
+        if parameter == 'Include' && !relative_file_path.start_with?('..')
+          matches_absolute_include_pattern?(patterns, file)
+        else
+          file_patterns.match?(file)
+        end
+      end
+
+      def matches_absolute_include_pattern?(patterns, file)
+        absolute_file_path = absolute?(file) ? file : File.expand_path(file)
+        patterns.any? do |pattern|
+          (absolute?(pattern.to_s) || pattern.to_s.start_with?('..')) &&
+            match_path?(pattern, absolute_file_path)
+        end
       end
 
       def enabled_line?(line_number)
