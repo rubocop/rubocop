@@ -28,6 +28,11 @@ module RuboCop
       # NOTE: From Ruby 3.0, this cop allows explicit freezing of constants when
       # the `shareable_constant_value` directive is used.
       #
+      # NOTE: From Ruby 3.2, constants assigned to `Data.define(...)` are
+      # treated as immutable in `strict` mode, consistent with `Struct.new`.
+      # `Data.define` is a DSL for defining immutable value classes whose
+      # instances are always frozen.
+      #
       # @safety
       #   This cop's autocorrection is unsafe since any mutations on objects that
       #   are made frozen will change from being accepted to raising `FrozenError`,
@@ -69,6 +74,9 @@ module RuboCop
       #       puts 1
       #     end
       #   end.freeze
+      #
+      #   # good
+      #   CONST = Data.define(:name, :age)
       #
       # @example
       #   # Magic comment - shareable_constant_value: literal
@@ -148,6 +156,7 @@ module RuboCop
         def strict_check(value)
           return if immutable_literal?(value)
           return if operation_produces_immutable_object?(value)
+          return if target_ruby_version >= 3.2 && data_define?(value)
           return if frozen_string_literal?(value)
           return if shareable_constant_value?(value)
 
@@ -233,6 +242,14 @@ module RuboCop
             (or (send (const {nil? cbase} :ENV) :[] _) _)
             (send _ {:count :length :size} ...)
             (block (send _ {:count :length :size} ...) ...)
+          }
+        PATTERN
+
+        # @!method data_define?(node)
+        def_node_matcher :data_define?, <<~PATTERN
+          {
+            (send (const {nil? cbase} :Data) :define ...)
+            (block (send (const {nil? cbase} :Data) :define ...) ...)
           }
         PATTERN
 
