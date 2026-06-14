@@ -65,8 +65,8 @@ module RuboCop
           if heredoc_indent_type == '~'
             expected_indent_level = base_indent_level(node) + configured_indentation_width
             return if expected_indent_level == body_indent_level
-          else
-            return unless body_indent_level.zero? || heredoc_squish?(node)
+          elsif !body_indent_level.zero? && !heredoc_squish?(node)
+            return
           end
 
           return if line_too_long?(node)

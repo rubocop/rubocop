@@ -129,11 +129,15 @@ module RuboCop
 
       excludes = for_all_cops['Exclude'] ||= []
       highest_config.for_all_cops['Exclude'].each do |path|
-        unless path.is_a?(Regexp) || absolute?(path)
-          path = File.join(File.dirname(highest_config.loaded_path), path)
-        end
+        path = resolve_exclude_path(path, highest_config)
         excludes << path unless excludes.include?(path)
       end
+    end
+
+    def resolve_exclude_path(path, config)
+      return path if path.is_a?(Regexp) || absolute?(path)
+
+      File.join(File.dirname(config.loaded_path), path)
     end
 
     def deprecation_check

@@ -156,8 +156,8 @@ module RuboCop
 
         def check(value)
           range_enclosed_in_parentheses = range_enclosed_in_parentheses?(value)
-          return unless mutable_literal?(value) ||
-                        (target_ruby_version <= 2.7 && range_enclosed_in_parentheses)
+          return if !mutable_literal?(value) &&
+                    (target_ruby_version > 2.7 || !range_enclosed_in_parentheses)
 
           return if frozen_string_literal?(value)
           return if shareable_constant_value?(value)

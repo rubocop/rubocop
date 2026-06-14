@@ -160,7 +160,7 @@ module RuboCop
         end
 
         def empty_check(node)
-          return unless node.else? && !node.else_branch
+          return if !node.else? || node.else_branch
 
           add_offense(node.loc.else) { |corrector| autocorrect(corrector, node) }
         end

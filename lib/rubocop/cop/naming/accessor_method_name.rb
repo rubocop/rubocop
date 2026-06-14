@@ -41,7 +41,7 @@ module RuboCop
 
         def on_def(node)
           return unless proper_attribute_name?(node)
-          return unless bad_reader_name?(node) || bad_writer_name?(node)
+          return if !bad_reader_name?(node) && !bad_writer_name?(node)
 
           message = message(node)
 

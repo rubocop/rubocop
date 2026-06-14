@@ -67,7 +67,7 @@ module RuboCop
         #
         def on_send(node)
           pattern_node = node.arguments[1]
-          return unless acceptable_heredoc?(pattern_node) || pattern_node.str_type?
+          return if !acceptable_heredoc?(pattern_node) && !pattern_node.str_type?
 
           process_pattern(pattern_node)
           return if node_groups.nil?

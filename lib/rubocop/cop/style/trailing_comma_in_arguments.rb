@@ -147,7 +147,7 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless node.arguments? && (node.parenthesized? || node.method?(:[]))
+          return if !node.arguments? || (!node.parenthesized? && !node.method?(:[]))
 
           check(node, node.arguments, 'parameter of %<article>s method call',
                 node.last_argument.source_range.end_pos,
