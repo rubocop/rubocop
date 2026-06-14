@@ -580,6 +580,36 @@ RSpec.describe RuboCop::Cop::Style::BlockDelimiters, :config do
       RUBY
     end
 
+    it 'does not flag a single-line do-end block containing a block-level `rescue`' do
+      # `{ rescue ... }` is a syntax error, so the block must stay `do...end`.
+      expect_no_offenses(<<~RUBY)
+        foo do rescue => e; bar end
+      RUBY
+    end
+
+    it 'does not flag a single-line do-end block containing a bare `rescue`' do
+      expect_no_offenses(<<~RUBY)
+        foo do rescue; bar end
+      RUBY
+    end
+
+    it 'does not flag a single-line do-end block containing `ensure`' do
+      expect_no_offenses(<<~RUBY)
+        foo do bar ensure baz end
+      RUBY
+    end
+
+    it 'still converts a single-line do-end block with a modifier rescue' do
+      expect_offense(<<~RUBY)
+        foo do bar rescue baz end
+            ^^ Prefer `{...}` over `do...end` for single-line blocks.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo { bar rescue baz }
+      RUBY
+    end
+
     it 'does not autocorrect do-end if {} would change the meaning' do
       expect_offense(<<~RUBY)
         s.subspec 'Subspec' do |sp| end
