@@ -359,6 +359,43 @@ RSpec.describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'with `next`/`break` with arguments on the right' do
+      it 'autocorrects and adds parentheses' do
+        expect_offense(<<~RUBY)
+          items.each do |item|
+            foo and next 1
+                ^^^ Use `&&` instead of `and`.
+            bar and break 2
+                ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          items.each do |item|
+            foo && (next 1)
+            bar && (break 2)
+          end
+        RUBY
+      end
+    end
+
+    context 'with `yield` with arguments on the right' do
+      it 'autocorrects and adds parentheses' do
+        expect_offense(<<~RUBY)
+          def m
+            foo and yield 1
+                ^^^ Use `&&` instead of `and`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def m
+            foo && (yield 1)
+          end
+        RUBY
+      end
+    end
+
     context 'with !obj.method arg on right' do
       it 'autocorrects "and" with && and adds parens' do
         expect_offense(<<~RUBY)
