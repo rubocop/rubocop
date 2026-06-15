@@ -24,10 +24,9 @@ module RuboCop
 
         MSG = 'Do not use `::` for method calls.'
 
-        # @!method java_type_node?(node)
-        def_node_matcher :java_type_node?, <<~PATTERN
-          (send
-            (const nil? :Java) _)
+        # @!method java_root?(node)
+        def_node_matcher :java_root?, <<~PATTERN
+          (const nil? :Java)
         PATTERN
 
         def self.autocorrect_incompatible_with
@@ -37,10 +36,18 @@ module RuboCop
         def on_send(node)
           return unless node.receiver && node.double_colon?
           return if node.camel_case_method?
-          # ignore Java interop code like Java::int
-          return if java_type_node?(node)
+          # ignore Java interop code like `Java::int` or `Java::com::method`
+          return if java_interop?(node)
 
           add_offense(node.loc.dot) { |corrector| corrector.replace(node.loc.dot, '.') }
+        end
+
+        private
+
+        def java_interop?(node)
+          receiver = node.receiver
+          receiver = receiver.receiver while receiver.respond_to?(:receiver) && receiver.receiver
+          java_root?(receiver)
         end
       end
     end
