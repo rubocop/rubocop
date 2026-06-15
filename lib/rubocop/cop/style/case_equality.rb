@@ -96,13 +96,25 @@ module RuboCop
         end
 
         def const_replacement(lhs, rhs)
-          "#{rhs.source}.is_a?(#{lhs.source})"
+          "#{parenthesize_if_needed(rhs)}.is_a?(#{lhs.source})"
         end
 
         def send_replacement(lhs, rhs)
           return unless self_class?(lhs)
 
-          "#{rhs.source}.is_a?(#{lhs.source})"
+          "#{parenthesize_if_needed(rhs)}.is_a?(#{lhs.source})"
+        end
+
+        # `Array === a + b` must become `(a + b).is_a?(Array)`, not
+        # `a + b.is_a?(Array)` (which parses as `a + (b.is_a?(Array))`).
+        def parenthesize_if_needed(node)
+          requires_parentheses?(node) ? "(#{node.source})" : node.source
+        end
+
+        def requires_parentheses?(node)
+          return true if node.type?(:and, :or, :if, :range) || node.assignment?
+
+          node.send_type? && (node.operator_method? || node.unary_operation?)
         end
       end
     end
