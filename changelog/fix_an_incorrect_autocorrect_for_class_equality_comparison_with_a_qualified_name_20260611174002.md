@@ -1,0 +1,1 @@
+* [#15268](https://github.com/rubocop/rubocop/pull/15268): Fix an incorrect autocorrect for `Style/ClassEqualityComparison` inside a namespace when the class name string is already fully qualified (e.g. `bar.class.name == '::Bar'`), which produced `instance_of?(::::Bar)` and was a syntax error. ([@bbatsov][])

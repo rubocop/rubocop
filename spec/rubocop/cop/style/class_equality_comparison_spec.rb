@@ -241,6 +241,36 @@ RSpec.describe RuboCop::Cop::Style::ClassEqualityComparison, :config do
         end
       RUBY
     end
+
+    it 'does not prepend a second `::` when the class name is already fully qualified' do
+      expect_offense(<<~RUBY)
+        module Foo
+          def bar?(value)
+            bar.class.name == '::Bar'
+                ^^^^^^^^^^^^^^^^^^^^^ Use `instance_of?(::Bar)` instead of comparing classes.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Foo
+          def bar?(value)
+            bar.instance_of?(::Bar)
+          end
+        end
+      RUBY
+    end
+  end
+
+  context 'when comparing `Class` itself against a string literal' do
+    it 'registers an offense but does not correct (no valid `instance_of?` rewrite)' do
+      expect_offense(<<~RUBY)
+        var.class == 'Date'
+            ^^^^^^^^^^^^^^^ Use `instance_of?` instead of comparing classes.
+      RUBY
+
+      expect_no_corrections
+    end
   end
 
   context 'with instance variable comparison in module' do
