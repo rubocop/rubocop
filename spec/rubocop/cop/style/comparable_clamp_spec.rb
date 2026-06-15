@@ -244,6 +244,23 @@ RSpec.describe RuboCop::Cop::Style::ComparableClamp, :config do
 
       expect_no_corrections
     end
+
+    it 'wraps an operator-expression receiver in parentheses when correcting' do
+      expect_offense(<<~RUBY)
+        if a + b < low
+        ^^^^^^^^^^^^^^ Use `(a + b).clamp(low, high)` instead of `if/elsif/else`.
+          low
+        elsif high < a + b
+          high
+        else
+          a + b
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a + b).clamp(low, high)
+      RUBY
+    end
   end
 
   context 'target ruby version <= 2.3', :ruby23, unsupported_on: :prism do
