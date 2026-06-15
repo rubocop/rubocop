@@ -56,6 +56,28 @@ RSpec.describe RuboCop::Cop::Style::CaseEquality, :config do
       RUBY
     end
 
+    it 'wraps an operator-expression argument in parentheses when correcting' do
+      expect_offense(<<~RUBY)
+        Array === a + b
+              ^^^ Avoid the use of the case equality operator `===`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (a + b).is_a?(Array)
+      RUBY
+    end
+
+    it 'wraps a negated argument in parentheses when correcting' do
+      expect_offense(<<~RUBY)
+        Array === !foo
+              ^^^ Avoid the use of the case equality operator `===`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (!foo).is_a?(Array)
+      RUBY
+    end
+
     it_behaves_like 'offenses'
   end
 
