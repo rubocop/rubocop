@@ -322,10 +322,37 @@ RSpec.describe RuboCop::Cop::Lint::UselessTimes, :config do
         expect_no_corrections
       end
 
+      it 'does not correct a block whose body uses `redo`' do
+        expect_offense(<<~RUBY)
+          1.times { redo }
+          ^^^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+        RUBY
+
+        expect_no_corrections
+      end
+
       it 'does not correct a block with multiple arguments' do
         expect_offense(<<~RUBY)
           1.times { |i, j| do_something(i, j) }
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not correct a block with a single destructured argument' do
+        expect_offense(<<~RUBY)
+          1.times { |(a, b)| do_something(a, b) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Useless call to `1.times` detected.
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not correct a block with a single splat argument' do
+        expect_offense(<<~RUBY)
+          1.times { |*a| do_something(a) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Useless call to `1.times` detected.
         RUBY
 
         expect_no_corrections
