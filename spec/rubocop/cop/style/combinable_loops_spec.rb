@@ -253,5 +253,25 @@ RSpec.describe RuboCop::Cop::Style::CombinableLoops, :config do
         items.each {}
       RUBY
     end
+
+    it 'does not register an offense (or crash) when one of the `for` loops has an empty body' do
+      expect_no_offenses(<<~RUBY)
+        for item in items
+          do_something(item)
+        end
+        for item in items
+        end
+      RUBY
+    end
+
+    it 'registers an offense but does not correct when the iteration variables differ' do
+      expect_offense(<<~RUBY)
+        for item in items do do_something(item) end
+        for other in items do do_something_else(other) end
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Combine this loop with the previous loop.
+      RUBY
+
+      expect_no_corrections
+    end
   end
 end
