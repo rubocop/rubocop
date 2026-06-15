@@ -160,6 +160,9 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
                     '{:symbol=>{:key=>:symbol}}')
     it_behaves_like('literal interpolation', '{ symbol: { key: :"symbol" } }',
                     '{:symbol=>{:key=>:symbol}}')
+    it_behaves_like('literal interpolation', "{ :'foo-bar' => 1 }", '{:\"foo-bar\"=>1}')
+    it_behaves_like('literal interpolation', '{ symbol: { key: :"foo-bar" } }',
+                    '{:symbol=>{:key=>:\"foo-bar\"}}')
     it_behaves_like('literal interpolation',
                     '{ single_quot_symbol: { key: :"single_quot_in_symbol: \'" } }',
                     '{:single_quot_symbol=>{:key=>:\"single_quot_in_symbol: \'\"}}')
