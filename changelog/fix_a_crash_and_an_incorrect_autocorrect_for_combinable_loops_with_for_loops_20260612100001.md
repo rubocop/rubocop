@@ -1,0 +1,1 @@
+* [#15270](https://github.com/rubocop/rubocop/pull/15270): Fix a crash for `Style/CombinableLoops` when a `for` loop has an empty body, and stop autocorrecting consecutive `for` loops whose iteration variables differ (which produced code referencing an undefined variable). ([@bbatsov][])
