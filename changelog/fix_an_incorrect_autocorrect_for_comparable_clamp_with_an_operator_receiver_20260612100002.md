@@ -1,0 +1,1 @@
+* [#15270](https://github.com/rubocop/rubocop/pull/15270): Fix an incorrect autocorrect for `Style/ComparableClamp` when the clamped value is an operator expression (e.g. `a + b`), which produced mis-parsed code like `a + b.clamp(low, high)`. ([@bbatsov][])

@@ -90,7 +90,7 @@ module RuboCop
             max = if_body.source
           end
 
-          prefer = "#{else_body_source}.clamp(#{min}, #{max})"
+          prefer = "#{parenthesize_if_needed(else_body)}.clamp(#{min}, #{max})"
 
           add_offense(node, message: format(MSG, prefer: prefer)) do |corrector|
             autocorrect(corrector, node, prefer)
@@ -118,6 +118,17 @@ module RuboCop
           lhs, op, rhs = *if_condition
 
           (lhs.source == else_body && op == :<) || (rhs.source == else_body && op == :>)
+        end
+
+        # `a + b` must become `(a + b).clamp(low, high)`, not `a + b.clamp(low, high)`
+        # (which parses as `a + (b.clamp(low, high))`).
+        def parenthesize_if_needed(node)
+          if node.type?(:and, :or, :if, :range) || node.assignment? ||
+             (node.send_type? && (node.operator_method? || node.unary_operation?))
+            "(#{node.source})"
+          else
+            node.source
+          end
         end
       end
     end
