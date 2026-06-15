@@ -120,6 +120,7 @@ module RuboCop
           end_loc = block_node.loc.end
           return unless begins_its_line?(end_loc)
 
+          start_node = start_for_line_node(block_node) if style == :start_of_line
           start_loc = start_node.source_range
           return unless start_loc.column != end_loc.column || style == :start_of_block
 

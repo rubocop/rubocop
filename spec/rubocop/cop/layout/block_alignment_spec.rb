@@ -743,6 +743,39 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
+    context 'when a block is passed as a method argument' do
+      it 'does not register an offense when `}` is aligned with the start of the line for a literal lambda' do
+        expect_no_offenses(<<~RUBY)
+          foo :x, ->(y) {
+            bar
+          }
+        RUBY
+      end
+
+      it 'does not register an offense when `}` is aligned with the start of the line for a brace block' do
+        expect_no_offenses(<<~RUBY)
+          foo :x, bar {
+            baz
+          }
+        RUBY
+      end
+
+      it 'registers an offense and corrects when `}` is not aligned with the start of the line' do
+        expect_offense(<<~RUBY)
+          foo :x, ->(y) {
+            bar
+            }
+            ^ `}` at 3, 2 is not aligned with `foo :x, ->(y) {` at 1, 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo :x, ->(y) {
+            bar
+          }
+        RUBY
+      end
+    end
+
     context 'inside a non-endless method' do
       it 'does not register an offense when `end` is aligned with the block start' do
         expect_no_offenses(<<~RUBY)
