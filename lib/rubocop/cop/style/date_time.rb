@@ -59,12 +59,12 @@ module RuboCop
 
         # @!method historic_date?(node)
         def_node_matcher :historic_date?, <<~PATTERN
-          (send _ _ _ (const (const {nil? (cbase)} :Date) _))
+          (call _ _ _ (const (const {nil? (cbase)} :Date) _))
         PATTERN
 
         # @!method to_datetime?(node)
         def_node_matcher :to_datetime?, <<~PATTERN
-          (call _ :to_datetime)
+          (call !nil? :to_datetime)
         PATTERN
 
         def on_send(node)
