@@ -113,7 +113,7 @@ module RuboCop
               return :lexical
             when :def, :defs
               return :dynamic
-            when :block
+            when :block, :numblock, :itblock
               return :instance_eval if parent.method?(:instance_eval)
 
               return :dynamic
