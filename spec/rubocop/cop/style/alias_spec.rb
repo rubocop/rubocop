@@ -218,6 +218,40 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
       RUBY
     end
 
+    it 'registers an offense for alias in a numbered block', :ruby27 do
+      expect_offense(<<~RUBY)
+        included do
+          do_something(_1)
+          alias :ala :bala
+          ^^^^^ Use `alias_method` instead of `alias`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        included do
+          do_something(_1)
+          alias_method :ala, :bala
+        end
+      RUBY
+    end
+
+    it 'registers an offense for alias in an `it` block', :ruby34 do
+      expect_offense(<<~RUBY)
+        included do
+          do_something(it)
+          alias :ala :bala
+          ^^^^^ Use `alias_method` instead of `alias`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        included do
+          do_something(it)
+          alias_method :ala, :bala
+        end
+      RUBY
+    end
+
     it 'does not register an offense for alias_method with explicit receiver' do
       expect_no_offenses(<<~RUBY)
         class C
@@ -237,6 +271,24 @@ RSpec.describe RuboCop::Cop::Style::Alias, :config do
     it 'does not register an offense for alias_method in a block' do
       expect_no_offenses(<<~RUBY)
         dsl_method do
+          alias_method :ala, :bala
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method in a numbered block', :ruby27 do
+      expect_no_offenses(<<~RUBY)
+        dsl_method do
+          do_something(_1)
+          alias_method :ala, :bala
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for alias_method in an `it` block', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        dsl_method do
+          do_something(it)
           alias_method :ala, :bala
         end
       RUBY

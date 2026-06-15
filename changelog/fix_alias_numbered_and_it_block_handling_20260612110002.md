@@ -1,0 +1,1 @@
+* [#15272](https://github.com/rubocop/rubocop/pull/15272): Fix `Style/Alias` not detecting block scope for numbered-parameter and `it` blocks, which caused a false positive for `alias_method` and a false negative for `alias` inside such blocks. ([@bbatsov][])
