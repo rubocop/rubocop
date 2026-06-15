@@ -1,0 +1,1 @@
+* [#15268](https://github.com/rubocop/rubocop/pull/15268): Fix an incorrect autocorrect for `Style/ClassEqualityComparison` when comparing `Class` itself to a string literal (e.g. `var.class == 'Date'`), which produced `var.instance_of?('Date')` and raised `TypeError`; such comparisons are no longer autocorrected. ([@bbatsov][])
