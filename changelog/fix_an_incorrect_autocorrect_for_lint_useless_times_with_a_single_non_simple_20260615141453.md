@@ -1,0 +1,1 @@
+* [#15288](https://github.com/rubocop/rubocop/pull/15288): Fix an incorrect autocorrect for `Lint/UselessTimes` when a `1.times` block takes a single destructured (`|(a, b)|`) or splat (`|*a|`) argument, which produced a body referencing an undefined variable. ([@bbatsov][])
