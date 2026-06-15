@@ -170,7 +170,10 @@ Format (single line):
 ## PR and Commit Conventions
 
 - Prefix commit messages with `[Fix #N]` when an issue exists.
-- Squash related commits.
+- Each distinct fix belongs in its own logical commit. When a PR bundles several
+  unrelated fixes (e.g. multiple cops, multiple false positives), give each one a
+  separate commit with its own changelog entry rather than squashing them all
+  into a single commit. Squash only commits that are part of the *same* fix.
 - Run `bundle exec rake` and ensure it passes before pushing.
 
 ## Common Mistakes

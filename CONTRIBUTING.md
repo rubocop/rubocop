@@ -42,7 +42,10 @@ $ rubocop -V
   around it.
 * Make sure the test suite is passing and the code you wrote doesn't produce
   RuboCop offenses (usually this is as simple as running `bundle exec rake`).
-* Squash related commits together.
+* Put each distinct fix in its own logical commit with its own changelog entry.
+  When a pull request bundles several unrelated fixes, don't squash them all into
+  a single commit - it makes the change harder to review. Squash only commits that
+  are part of the same fix.
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
 
