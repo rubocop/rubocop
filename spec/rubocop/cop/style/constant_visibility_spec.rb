@@ -21,6 +21,16 @@ RSpec.describe RuboCop::Cop::Style::ConstantVisibility, :config do
           end
         RUBY
       end
+
+      it 'does not crash when the visibility declaration has a numeric literal argument' do
+        expect_offense(<<~RUBY)
+          class Foo
+            BAR = 42
+            ^^^^^^^^ Explicitly make `BAR` public or private using either `#public_constant` or `#private_constant`.
+            private_constant 42
+          end
+        RUBY
+      end
     end
 
     context 'with a multi-statement body' do

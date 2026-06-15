@@ -89,7 +89,10 @@ module RuboCop
 
             arguments = arguments.first.children.first.to_a if arguments.first&.splat_type?
             constant_values = arguments.map do |argument|
-              argument.value.to_sym if argument.respond_to?(:value)
+              # `respond_to?(:value)` is too broad: `int`/`float` nodes respond to it
+              # but their value is a `Numeric`, which has no `to_sym` (e.g.
+              # `private_constant 42`). Only symbol/string arguments are real names.
+              argument.value.to_sym if argument.type?(:sym, :str)
             end
 
             constant_values.include?(node.name)
