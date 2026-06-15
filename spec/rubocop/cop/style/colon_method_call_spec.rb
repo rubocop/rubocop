@@ -68,4 +68,8 @@ RSpec.describe RuboCop::Cop::Style::ColonMethodCall, :config do
   it 'does not register an offense for Java package namespaces' do
     expect_no_offenses('Java::com')
   end
+
+  it 'does not register an offense for a chained Java interop method call' do
+    expect_no_offenses('Java::com::something_method')
+  end
 end
