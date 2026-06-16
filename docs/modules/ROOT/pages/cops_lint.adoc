@@ -5184,7 +5184,7 @@ end
 |===
 
 Checks for `rand(1)` calls.
-Such calls always return `0`.
+Such calls always return `0`, and so do `rand(-1)`, `rand(1.0)`, and `rand(-1.0)`.
 
 [#examples-lintrandone]
 === Examples
@@ -5805,6 +5805,7 @@ Specifically, these cases are detected for each conversion method:
 * `to_sym` when called on a symbol literal or interpolated symbol.
 * `to_i` when called on an integer literal or with `Integer()`.
 * `to_f` when called on a float literal or with `Float()`.
+* `to_d` when called with `BigDecimal()`.
 * `to_r` when called on a rational literal or with `Rational()`.
 * `to_c` when called on a complex literal or with `Complex()`.
 * `to_a` when called on an array literal, or with `Array.new`, `Array()` or `Array[]`.
@@ -5853,6 +5854,12 @@ Integer(var)
 # good - chaining to a type constructor with exceptions suppressed
 # in this case, `Integer()` could return `nil`
 Integer(var, exception: false).to_i
+
+# bad
+BigDecimal(var).to_d
+
+# good
+BigDecimal(var)
 
 # bad - chaining the same conversion
 foo.to_s.to_s
@@ -5918,12 +5925,19 @@ end
 
 | Enabled
 | Yes
-| Always
+| Always (Unsafe)
 | 0.51
-| -
+| 1.88
 |===
 
 Checks for redundant `with_object`.
+
+[#safety-lintredundantwithobject]
+=== Safety
+
+This cop's autocorrection is unsafe because the return value changes:
+`each_with_object` returns the memo object, while the corrected `each` returns
+the receiver. This matters when the result of the expression is used.
 
 [#examples-lintredundantwithobject]
 === Examples
@@ -5961,9 +5975,9 @@ NOTE: Requires Ruby version 3.1
 
 | Pending
 | Yes
-| No
+| Always (Unsafe)
 | 1.27
-| -
+| 1.88
 |===
 
 Checks if `include` or `prepend` is called in `refine` block.
@@ -6045,10 +6059,13 @@ end
 | -
 |===
 
-Checks for expressions where there is a call to a predicate
-method with at least one argument, where no parentheses are used around
-the parameter list, and a boolean operator, && or ||, is used in the
-last argument.
+Checks for method calls with at least one argument where no parentheses
+are used around the parameter list, and the call could be misread as an
+operand of a boolean operator (`&&` or `||`). Two forms are flagged:
+
+* a predicate method whose last argument is a `&&`/`||` expression, and
+* any method whose first argument is a ternary expression with a
+  `&&`/`||` condition.
 
 The idea behind warning for these constructs is that the user might
 be under the impression that the return value from the method call is
@@ -6068,6 +6085,12 @@ end
 if day.is?(:tuesday) && month == :jan
   # ...
 end
+
+# bad
+foo a && b ? c : d
+
+# good
+foo(a && b ? c : d)
 ----
 
 [#lintrequirerangeparentheses]

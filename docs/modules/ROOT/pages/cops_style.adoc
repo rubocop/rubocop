@@ -7523,6 +7523,22 @@ modify the receiver.
 This cop is unsafe because it cannot be guaranteed that the receiver
 is a `Hash` or responds to the replacement method.
 
+Additionally, the replacement may change the order of the resulting
+hash: `Hash#slice` returns entries in the order the keys are given,
+whereas `select`, `filter`, and `reject` preserve the entry order of
+the receiver.
+
+For example:
+
+[source,ruby]
+----
+hash = {foo: 1, bar: 2, baz: 3}
+keys = %i[baz foo]
+
+hash.select { |k, _v| keys.include?(k) } # => {foo: 1, baz: 3}
+hash.slice(*keys)                        # => {baz: 3, foo: 1}
+----
+
 [#examples-stylehashslice]
 === Examples
 
@@ -11309,11 +11325,19 @@ foo if a == 'a' || a == 'b'
 | Yes
 | Always (Unsafe)
 | 0.34
-| 1.8
+| 1.88
 |===
 
 Checks whether some constant value isn't a
 mutable literal (e.g. array or hash).
+
+When the `Recursive` option is enabled, mutable literals nested inside
+arrays and hashes are also frozen, so an offense on the outermost
+unfrozen literal will autocorrect every nested mutable literal as well.
+When the outer literal already has `.freeze` appended, the cop descends
+into it and reports each outermost unfrozen literal underneath. The
+option is disabled by default to preserve existing behavior; opt in to
+get strict nested freezing.
 
 Strict mode can be used to freeze all constants, rather than
 just literals.
@@ -11367,6 +11391,27 @@ TESTING
 CONST = Something.new
 ----
 
+[#recursive_-false-_default_-stylemutableconstant]
+==== Recursive: false (default)
+
+[source,ruby]
+----
+# good - only the outer container needs to be frozen
+CONST = [{ a: [], b: 'foo' }].freeze
+----
+
+[#recursive_-true-stylemutableconstant]
+==== Recursive: true
+
+[source,ruby]
+----
+# bad - nested mutable literals must be frozen too
+CONST = [{ a: [], b: 'foo' }].freeze
+
+# good
+CONST = [{ a: [].freeze, b: 'foo'.freeze }.freeze].freeze
+----
+
 [#enforcedstyle_-strict-stylemutableconstant]
 ==== EnforcedStyle: strict
 
@@ -11414,6 +11459,10 @@ CONST = [1, 2, 3]
 | EnforcedStyle
 | `literals`
 | `literals`, `strict`
+
+| Recursive
+| `false`
+| Boolean
 |===
 
 [#stylenegatedif]
@@ -20983,8 +21032,10 @@ by a predicate method, such as `receiver.length == 0`,
 `receiver.length < 1` and `receiver.size == 0` that can be
 replaced by `receiver.empty?` and `!receiver.empty?`.
 
-NOTE: `File`, `Tempfile`, and `StringIO` do not have `empty?`
-so allow `size == 0` and `size.zero?`.
+NOTE: `File`, `Tempfile`, `StringIO`, and `File::Stat` do not have `empty?`
+so allow `size == 0` and `size.zero?`. Note that when a `File::Stat` object
+is stored in a variable (e.g. `stat = File.stat(path); stat.size.zero?`),
+the cop cannot detect the type and may still register a false positive.
 
 [#safety-stylezerolengthpredicate]
 === Safety

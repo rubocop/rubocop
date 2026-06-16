@@ -2353,14 +2353,14 @@ Lint/RedundantWithObject:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.51'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.88'
 
 Lint/RefinementImportMethods:
   Description: 'Use `Refinement#import_methods` when using `include` or `prepend` in `refine` block.'
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.27'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.88'
 
 Lint/RegexpAsCondition:
   Description: >-
@@ -4882,7 +4882,7 @@ Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
   VersionAdded: '0.34'
-  VersionChanged: "<<next>>"
+  VersionChanged: '1.88'
   SafeAutoCorrect: false
   EnforcedStyle: literals
   SupportedStyles:
