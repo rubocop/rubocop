@@ -1,1 +1,0 @@
-* [#15231](https://github.com/rubocop/rubocop/pull/15231): Fix a false negative for `Lint/SendWithMixinArgument` when `send`/`public_send`/`__send__` is called with no explicit receiver or with a `self` receiver (e.g. `send(:include, Bar)`). ([@bbatsov][])

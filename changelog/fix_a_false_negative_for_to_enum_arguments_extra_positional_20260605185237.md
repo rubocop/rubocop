@@ -1,1 +1,0 @@
-* [#15248](https://github.com/rubocop/rubocop/pull/15248): Fix a false negative for `Lint/ToEnumArguments` when more positional arguments are passed than the method accepts (e.g. `def m(x); to_enum(:m, x, extra); end`), which raises `ArgumentError` when the enumerator is used. ([@bbatsov][])

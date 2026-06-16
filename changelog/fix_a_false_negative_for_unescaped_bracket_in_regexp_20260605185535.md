@@ -1,1 +1,0 @@
-* [#15249](https://github.com/rubocop/rubocop/pull/15249): Fix a false negative for `Lint/UnescapedBracketInRegexp` when an unescaped `]` is preceded by an escaped backslash (e.g. `/abc\\]123/`). ([@bbatsov][])

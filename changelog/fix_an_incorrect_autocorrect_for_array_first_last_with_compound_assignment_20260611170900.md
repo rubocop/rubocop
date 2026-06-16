@@ -1,1 +1,0 @@
-* [#15267](https://github.com/rubocop/rubocop/pull/15267): Fix an incorrect autocorrect for `Style/ArrayFirstLast` when `arr[0]`/`arr[-1]` is the target of a compound assignment (e.g. `arr[0] += 1`), which produced `arr.first += 1` and raised `NoMethodError`. ([@bbatsov][])

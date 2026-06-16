@@ -1,1 +1,0 @@
-* [#15274](https://github.com/rubocop/rubocop/pull/15274): Fix an incorrect autocorrect for `Style/ClassMethodsDefinitions` that corrupted a preceding comment containing `def <name>` and left the method undefined as a class method. ([@bbatsov][])

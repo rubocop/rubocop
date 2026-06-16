@@ -1,1 +1,0 @@
-* [#15225](https://github.com/rubocop/rubocop/pull/15225): Fix a false negative for `Lint/SafeNavigationWithEmpty` when the receiver of `&.empty?` is a local variable, instance variable, constant, or other non-method-call expression. ([@bbatsov][])

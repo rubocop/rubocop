@@ -1,1 +1,0 @@
-* [#15275](https://github.com/rubocop/rubocop/pull/15275): Fix incorrect autocorrects for `Style/FileWrite` that deleted or duplicated heredoc bodies when a heredoc was used as the filename, in an argument expression, or in an inline block. ([@fynsta][])

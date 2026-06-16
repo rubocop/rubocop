@@ -1,1 +1,0 @@
-* [#15267](https://github.com/rubocop/rubocop/pull/15267): Fix a false positive for `Style/ArrayIntersectWithSingleElement` with a splat argument (e.g. `array.intersect?([*foo])`), which is not a single element and was incorrectly rewritten to `array.include?(*foo)`. ([@bbatsov][])

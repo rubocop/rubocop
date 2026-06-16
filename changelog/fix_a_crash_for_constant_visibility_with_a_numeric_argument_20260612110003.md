@@ -1,1 +1,0 @@
-* [#15272](https://github.com/rubocop/rubocop/pull/15272): Fix a crash for `Style/ConstantVisibility` when a visibility declaration has a numeric literal argument (e.g. `private_constant 42`). ([@bbatsov][])

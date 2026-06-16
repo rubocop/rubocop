@@ -1,1 +1,0 @@
-* [#15223](https://github.com/rubocop/rubocop/pull/15223): Make `Lint/RedundantWithObject` autocorrect unsafe, since `each_with_object` returns the memo object while the corrected `each` returns the receiver. ([@bbatsov][])

@@ -1,1 +1,0 @@
-* [#15267](https://github.com/rubocop/rubocop/pull/15267): Fix an incorrect autocorrect for `Style/ConcatArrayLiterals` with an empty array literal argument (e.g. `arr.concat([], [b])`), which produced invalid Ruby like `arr.push(, b)`. ([@bbatsov][])

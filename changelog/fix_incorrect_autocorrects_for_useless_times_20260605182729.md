@@ -1,1 +1,0 @@
-* [#15241](https://github.com/rubocop/rubocop/pull/15241): Fix incorrect autocorrects for `Lint/UselessTimes` when the `times` block uses `next`/`break` (which became a syntax error) or takes multiple block arguments (which became undefined references). ([@bbatsov][])

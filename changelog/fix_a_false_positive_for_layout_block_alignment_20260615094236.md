@@ -1,1 +1,0 @@
-* [#14401](https://github.com/rubocop/rubocop/issues/14401): Fix a false positive for `Layout/BlockAlignment` with `EnforcedStyleAlignWith: start_of_line` when a block is passed as a method argument. ([@augustocbx][])

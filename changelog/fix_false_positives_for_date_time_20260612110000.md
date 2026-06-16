@@ -1,1 +1,0 @@
-* [#15272](https://github.com/rubocop/rubocop/pull/15272): Fix false positives for `Style/DateTime`: a bare `to_datetime` call on implicit self is no longer flagged, and historic-date calls using safe navigation (e.g. `DateTime&.iso8601(str, Date::ENGLAND)`) are now exempted. ([@bbatsov][])

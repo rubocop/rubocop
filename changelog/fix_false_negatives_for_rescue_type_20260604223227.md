@@ -1,1 +1,0 @@
-* [#15226](https://github.com/rubocop/rubocop/pull/15226): Fix false negatives for `Lint/RescueType` when rescuing from `true`, `false`, a rational literal (`1r`), or a complex literal (`1i`), all of which raise a `TypeError` at runtime. ([@bbatsov][])

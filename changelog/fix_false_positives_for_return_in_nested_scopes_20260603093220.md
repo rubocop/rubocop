@@ -1,1 +1,0 @@
-* [#15204](https://github.com/rubocop/rubocop/pull/15204): Fix false positives in `Lint/EnsureReturn` and `Lint/NoReturnInBeginEndBlocks` for `return` inside a nested method definition or lambda. ([@bbatsov][])

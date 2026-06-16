@@ -1,1 +1,0 @@
-* [#15219](https://github.com/rubocop/rubocop/pull/15219): Fix a false positive for `Lint/RedundantDirGlobSort` when `sort` is given a comparator block or a block-pass argument, which is not redundant with the default sorting. ([@bbatsov][])

@@ -1,1 +1,0 @@
-* [#15268](https://github.com/rubocop/rubocop/pull/15268): Fix an incorrect autocorrect for `Style/CaseEquality` when the argument is an operator or unary expression (e.g. `Array === a + b`), which produced mis-parsed code like `a + b.is_a?(Array)`. ([@bbatsov][])

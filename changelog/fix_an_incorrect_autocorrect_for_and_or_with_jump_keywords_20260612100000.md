@@ -1,1 +1,0 @@
-* [#15270](https://github.com/rubocop/rubocop/pull/15270): Fix an incorrect autocorrect for `Style/AndOr` when an operand is `next`, `break`, or `yield` with an argument (e.g. `foo and next 1`), which produced invalid Ruby like `foo && next 1`. ([@bbatsov][])

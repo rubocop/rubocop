@@ -1,1 +1,0 @@
-* [#15239](https://github.com/rubocop/rubocop/pull/15239): Fix a false positive for `Lint/SuppressedExceptionInNumberConversion` when the numeric constructor already passes `exception: false` (e.g. `Integer(arg, exception: false) rescue nil`), which also produced an autocorrect with a duplicate `exception: false` keyword. ([@bbatsov][])

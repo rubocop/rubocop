@@ -1,1 +1,0 @@
-* [#15246](https://github.com/rubocop/rubocop/pull/15246): Fix a false positive for `Lint/UselessSetterCall` when a multiple assignment uses nested destructuring (e.g. `(a, b), c = arg, other_arg`), which misaligned variables with the right-hand side values. ([@bbatsov][])

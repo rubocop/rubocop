@@ -1,1 +1,0 @@
-* [#15222](https://github.com/rubocop/rubocop/pull/15222): Fix `Lint/ScriptPermission` to honor a cop-level `AutoCorrect: false` setting and to not crash on sources without a file on disk (e.g. unsaved editor buffers). ([@bbatsov][])

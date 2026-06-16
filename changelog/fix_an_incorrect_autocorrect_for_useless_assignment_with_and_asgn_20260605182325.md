@@ -1,1 +1,0 @@
-* [#15240](https://github.com/rubocop/rubocop/pull/15240): Fix an incorrect autocorrect for `Lint/UselessAssignment` that rewrote a first-seen `foo &&= 1` to `foo && 1`, raising `NameError` at runtime. ([@bbatsov][])

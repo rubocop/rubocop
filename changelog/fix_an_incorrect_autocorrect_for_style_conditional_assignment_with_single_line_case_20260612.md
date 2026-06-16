@@ -1,1 +1,0 @@
-* [#15280](https://github.com/rubocop/rubocop/pull/15280): Fix an incorrect autocorrect for `Style/ConditionalAssignment` with `EnforcedStyle: assign_inside_condition` and a single-line `case`. ([@fynsta][])

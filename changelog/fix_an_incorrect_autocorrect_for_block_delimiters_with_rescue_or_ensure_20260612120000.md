@@ -1,1 +1,0 @@
-* [#15273](https://github.com/rubocop/rubocop/pull/15273): Fix an incorrect autocorrect for `Style/BlockDelimiters` that converted a single-line `do...end` block containing a block-level `rescue` or `ensure` to `{...}`, producing invalid Ruby. ([@bbatsov][])

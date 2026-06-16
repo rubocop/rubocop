@@ -1,1 +1,0 @@
-* [#15274](https://github.com/rubocop/rubocop/pull/15274): Fix an incorrect autocorrect for `Style/DigChain` that duplicated a trailing comment and dropped indentation when the chain was inside a method or block. ([@bbatsov][])

@@ -1,1 +1,0 @@
-* [#15271](https://github.com/rubocop/rubocop/pull/15271): Fix a false positive for `Style/ConditionalAssignment` with `EnforcedStyle: assign_inside_condition` when assigning an `unless` without an `else` branch (e.g. `x = unless cond; 1; end`), which was rewritten to move the assignment inside the `unless` and changed behavior when the condition was true. ([@bbatsov][])
