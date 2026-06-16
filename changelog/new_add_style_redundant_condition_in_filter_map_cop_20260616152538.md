@@ -1,0 +1,1 @@
+* [#15195](https://github.com/rubocop/rubocop/issues/15195): Add `Style/RedundantConditionInFilterMap` cop: checks for redundant filter_map conditions where the condition equals the returned value. ([@johnbridge314][])
