@@ -109,9 +109,11 @@ module RuboCop
           when :optarg
             send_arg.source == def_arg_name.to_s
           when :kwoptarg, :kwarg
-            send_arg.hash_type? &&
+            keyword_hash_argument?(send_arg) &&
               send_arg.pairs.any? { |pair| passing_keyword_arg?(pair, def_arg_name) }
           when :kwrestarg
+            return false unless keyword_hash_argument?(send_arg)
+
             send_arg.each_child_node(:kwsplat, :forwarded_kwrestarg).any? do |child|
               child.source == def_arg.source
             end
@@ -120,6 +122,10 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+
+        def keyword_hash_argument?(send_arg)
+          send_arg.hash_type? && !send_arg.braces?
+        end
       end
     end
   end

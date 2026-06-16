@@ -1,0 +1,1 @@
+* [#15290](https://github.com/rubocop/rubocop/issues/15290): Fix a false negative for `Lint/ToEnumArguments` when a braced hash is passed to keyword parameters (e.g. `to_enum(:m, { required: required })`), which raises `ArgumentError` when the enumerator is used. ([@RedZapdos123][])
