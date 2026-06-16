@@ -28,10 +28,10 @@ module RuboCop
       #   # bad
       #   hash = {
       #     key: :value
-      #   }
-      #   and_in_a_method_call({
-      #     no: :difference
-      #                        })
+      #          }
+      #   in_a_method_call({
+      #     foo: :bar
+      #   })
       #   takes_multi_pairs_hash(x: {
       #     a: 1,
       #     b: 2
@@ -42,13 +42,12 @@ module RuboCop
       #                          })
       #
       #   # good
-      #   special_inside_parentheses
       #   hash = {
       #     key: :value
       #   }
-      #   but_in_a_method_call({
-      #                          its_like: :this
-      #                        })
+      #   in_a_method_call({
+      #                      foo: :bar
+      #                    })
       #   takes_multi_pairs_hash(x: {
       #                            a: 1,
       #                            b: 2
@@ -67,17 +66,17 @@ module RuboCop
       #   # bad
       #   hash = {
       #     key: :value
-      #   }
-      #   but_in_a_method_call({
-      #                          its_like: :this
-      #                         })
+      #          }
+      #   in_a_method_call({
+      #                     foo: :bar
+      #                   })
       #
       #   # good
       #   hash = {
       #     key: :value
       #   }
-      #   and_in_a_method_call({
-      #     no: :difference
+      #   in_a_method_call({
+      #     foo: :bar
       #   })
       #
       #
