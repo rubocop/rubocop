@@ -223,6 +223,36 @@ RSpec.describe RuboCop::Formatter::DisabledConfigFormatter, :isolated_environmen
     end
   end
 
+  context 'when disable_pending_cops option is passed' do
+    before do
+      formatter.started([])
+      formatter.finished([])
+    end
+
+    let(:formatter) { described_class.new(output, disable_pending_cops: true) }
+
+    let(:expected_heading_command) { 'rubocop --auto-gen-config --disable-pending-cops' }
+
+    it 'includes the option in the generation command' do
+      expect(output.string).to eq(heading)
+    end
+  end
+
+  context 'when enable_pending_cops option is passed' do
+    before do
+      formatter.started([])
+      formatter.finished([])
+    end
+
+    let(:formatter) { described_class.new(output, enable_pending_cops: true) }
+
+    let(:expected_heading_command) { 'rubocop --auto-gen-config --enable-pending-cops' }
+
+    it 'includes the option in the generation command' do
+      expect(output.string).to eq(heading)
+    end
+  end
+
   context 'when no files are inspected' do
     before do
       formatter.started([])

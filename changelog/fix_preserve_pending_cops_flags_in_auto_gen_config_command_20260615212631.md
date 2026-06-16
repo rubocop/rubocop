@@ -1,0 +1,1 @@
+* [#12276](https://github.com/rubocop/rubocop/issues/12276): Fix `--auto-gen-config` to record `--disable-pending-cops` and `--enable-pending-cops` in the generated `.rubocop_todo.yml` command so that `--regenerate-todo` preserves them. ([@augustocbx][])
