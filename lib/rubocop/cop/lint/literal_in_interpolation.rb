@@ -136,12 +136,7 @@ module RuboCop
         end
 
         def autocorrected_value_in_hash_for_symbol(node)
-          # TODO: We need to detect symbol unacceptable names more correctly
-          if / |"|'/.match?(node.value.to_s)
-            ":\\\"#{node.value.to_s.gsub('"') { '\\\\\"' }}\\\""
-          else
-            ":#{node.value}"
-          end
+          escape_string_content(node.value.inspect)
         end
 
         def autocorrected_value_for_array(node)

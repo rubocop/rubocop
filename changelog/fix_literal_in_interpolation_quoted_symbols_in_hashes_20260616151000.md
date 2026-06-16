@@ -1,0 +1,1 @@
+* [#15291](https://github.com/rubocop/rubocop/issues/15291): Fix an incorrect autocorrect for `Lint/LiteralInInterpolation` when interpolated hashes contain symbols that require quoted syntax, such as `:'foo-bar'`. ([@RedZapdos123][])
