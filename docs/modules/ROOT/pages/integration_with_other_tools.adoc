@@ -126,6 +126,11 @@ entries in `additional_dependencies`:
 
 RuboCop supports pre-commit hook integration since version 1.9.
 
+== Git hook integration with hk
+
+https://hk.jdx.dev/[hk] is a fast, polyglot Git hooks manager with
+https://hk.jdx.dev/builtins.html#rubocop[built-in RuboCop support].
+
 == Guard integration
 
 If you're fond of https://github.com/guard/guard[Guard] you might
