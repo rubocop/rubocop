@@ -99,6 +99,24 @@ RSpec.describe RuboCop::Cop::Lint::ToEnumArguments, :config do
     RUBY
   end
 
+  it 'registers an offense when a braced hash is passed for keyword arguments' do
+    expect_offense(<<~RUBY)
+      def m(required:)
+        return to_enum(:m, { required: required }) unless block_given?
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Ensure you correctly provided all the arguments.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when a braced hash is passed for keyword rest arguments' do
+    expect_offense(<<~RUBY)
+      def m(**kwargs)
+        return to_enum(:m, { **kwargs }) unless block_given?
+               ^^^^^^^^^^^^^^^^^^^^^^^^^ Ensure you correctly provided all the arguments.
+      end
+    RUBY
+  end
+
   it 'does not register an offense when not inside method definition' do
     expect_no_offenses(<<~RUBY)
       to_enum(:m)
