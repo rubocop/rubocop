@@ -171,6 +171,81 @@ RSpec.describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
       RUBY
     end
 
+    it 'discounts a case/in block with simple literal patterns like case/when', :ruby27 do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Perceived complexity for `method_name` is too high. [2/1]
+          case value
+          in 1 then call_foo_1
+          in 2 then call_foo_2
+          in 3 then call_foo_3
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'discounts a case/in block with constant/type patterns like case/when', :ruby27 do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Perceived complexity for `method_name` is too high. [2/1]
+          case value
+          in Integer then call_foo_1
+          in String then call_foo_2
+          in Float then call_foo_3
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'counts case/in branches with structural patterns at full complexity', :ruby27 do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Perceived complexity for `method_name` is too high. [4/1]
+          case value
+          in [1, a] then call_foo_1
+          in {b:} then call_foo_2
+          in String => c then call_foo_3
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'counts a guarded case/in branch at full complexity', :ruby27 do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Perceived complexity for `method_name` is too high. [3/1]
+          case value
+          in Integer if value > 0 then call_foo_1
+          in Integer if value < 0 then call_foo_2
+          in Integer then call_foo_3
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'counts a mix of simple and structural case/in branches', :ruby27 do
+      expect_offense(<<~RUBY)
+        def method_name
+        ^^^^^^^^^^^^^^^ Perceived complexity for `method_name` is too high. [3/1]
+          case value
+          in [1, a] then call_foo_1
+          in {b:} then call_foo_2
+          in 3 then call_foo_3
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
     it 'registers an offense for &&' do
       expect_offense(<<~RUBY)
         def method_name
