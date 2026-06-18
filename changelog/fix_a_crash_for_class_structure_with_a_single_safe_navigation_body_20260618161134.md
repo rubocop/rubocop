@@ -1,0 +1,1 @@
+* [#9571](https://github.com/rubocop/rubocop/issues/9571): Fix a crash for `Layout/ClassStructure` when a class body is a single safe-navigation call (e.g. `test&.private_methods(def foo; end)`). ([@bbatsov][])

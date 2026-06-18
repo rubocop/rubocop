@@ -136,6 +136,32 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     end
   end
 
+  context 'when the class body is a single non-def/send node' do
+    it 'does not get confused by (or crash on) a single safe-navigation call body' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          test&.private_methods(def foo; end)
+        end
+      RUBY
+    end
+
+    it 'does not get confused by a single conditional body' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          def foo; end if bar
+        end
+      RUBY
+    end
+
+    it 'does not get confused by a single block body' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          configure { |c| c.foo = 1 }
+        end
+      RUBY
+    end
+  end
+
   it 'registers an offense and corrects when public instance method is before class method' do
     expect_offense(<<~RUBY)
       class Foo
