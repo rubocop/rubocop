@@ -1,0 +1,1 @@
+* [#15302](https://github.com/rubocop/rubocop/issues/15302): Fix an incorrect autocorrect for `Bundler/OrderedGems` and `Gemspec/OrderedDependencies` when the last declaration has no trailing newline, which joined two declarations into a single line. ([@koic][])
