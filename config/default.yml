@@ -2844,7 +2844,7 @@ Metrics/PerceivedComplexity:
   Description: 'Checks that the perceived complexity of methods is not higher than the configured maximum.'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '0.81'
+  VersionChanged: '<<next>>'
   AllowedMethods: []
   AllowedPatterns: []
   Max: 8
