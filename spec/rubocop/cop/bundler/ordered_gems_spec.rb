@@ -46,6 +46,21 @@ RSpec.describe RuboCop::Cop::Bundler::OrderedGems, :config do
     end
   end
 
+  context 'When the final newline is missing' do
+    it 'registers an offense and corrects without joining the declarations' do
+      expect_offense(<<~RUBY, chomp: true)
+        gem 'rubocop'
+        gem 'rspec'
+        ^^^^^^^^^^^ Gems should be sorted in an alphabetical order within their section of the Gemfile. Gem `rspec` should appear before `rubocop`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        gem 'rspec'
+        gem 'rubocop'
+      RUBY
+    end
+  end
+
   context 'When each individual group of line is sorted' do
     it 'does not register any offenses' do
       expect_no_offenses(<<~RUBY)
