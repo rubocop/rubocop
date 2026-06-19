@@ -44,9 +44,7 @@ module RuboCop
 
         def on_regexp(node)
           RuboCop::Util.silence_warnings do
-            node.parsed_tree&.each_expression do |expr|
-              detect_offenses(node, expr)
-            end
+            detect_offenses_in_tree(node, node.parsed_tree)
           end
         end
 
@@ -55,19 +53,43 @@ module RuboCop
           return if node.each_descendant(:dstr).any?
 
           regexp_constructor(node) do |text|
-            parse_regexp(text.value)&.each_expression do |expr|
-              detect_offenses(text, expr)
-            end
+            detect_offenses_in_tree(text, parse_regexp(text.value))
           end
         end
 
         private
 
-        def detect_offenses(node, expr)
-          return unless expr.type?(:literal)
+        # When a character class opens with a bare `]` (e.g. `[^]]`), `regexp_parser` parses
+        # `[^]` / `[]` as an empty set and reports the closing `]` as a separate literal.
+        # Ruby treats that `]` as the end of the class, not as an unescaped bracket,
+        # so the first `]` following an empty set must be skipped.
+        def detect_offenses_in_tree(node, tree)
+          return unless tree
 
+          skip_class_closer = false
+          tree.each_expression do |expr|
+            if empty_character_set?(expr)
+              skip_class_closer = true
+            elsif expr.type?(:literal)
+              skip_class_closer = detect_offenses(node, expr, skip_class_closer)
+            end
+          end
+        end
+
+        def empty_character_set?(expr)
+          expr.type?(:set) && expr.expressions.empty?
+        end
+
+        def detect_offenses(node, expr, skip_class_closer)
           expr.text.scan(/(?<!\\)\]/) do
             pos = Regexp.last_match.begin(0)
+
+            # The first `]` following an empty `[^]` / `[]` set closes the character class.
+            if skip_class_closer
+              skip_class_closer = false
+              next
+            end
+
             # If the unescaped bracket is the first character of the regexp, Ruby does not warn.
             # `pos` is relative to the sub-expression, so add its start offset (`expr.ts`).
             next if (expr.ts + pos).zero?
@@ -78,6 +100,8 @@ module RuboCop
               corrector.replace(location, '\]')
             end
           end
+
+          skip_class_closer
         end
 
         def range_at_index(node, index, offset)
