@@ -1,0 +1,1 @@
+* [#12017](https://github.com/rubocop/rubocop/issues/12017): Fix `Lint/Void` to no longer autocorrect a constant used in a void context, since removing it can change behavior through constant autoloading side effects. ([@bbatsov][])

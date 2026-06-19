@@ -21,6 +21,10 @@ module RuboCop
       # still be called directly and its return value relied upon, so flagging it would be a
       # false positive for this lint.
       #
+      # NOTE: A constant used in a void context is flagged but not autocorrected, since
+      # referencing a constant can trigger autoloading side effects (e.g. forcing a file to
+      # load before a monkey-patch), so removing it may change behavior.
+      #
       # @example CheckForMethodsWithNoSideEffects: false (default)
       #   # bad
       #   def some_method
@@ -261,6 +265,10 @@ module RuboCop
         end
 
         def autocorrect_void_expression(corrector, node)
+          # Referencing a constant can trigger autoloading side effects (e.g. forcing a file
+          # to load before a monkey-patch), so removing it may change behavior. Flag but don't
+          # autocorrect, leaving it to the user.
+          return if node.const_type? && !node.special_keyword?
           return if node.parent.type?(:if, :case, :when, :case_match, :in_pattern)
           return if (def_node = node.each_ancestor(:any_def).first) && def_node.assignment_method?
 
