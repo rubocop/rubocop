@@ -82,6 +82,56 @@ RSpec.describe RuboCop::Cop::Lint::UnescapedBracketInRegexp, :config do
       end
     end
 
+    context 'negated character class with a bare `]` as the first element' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          /[^]]/
+        RUBY
+      end
+
+      it 'does not register an offense when the class contains other elements' do
+        expect_no_offenses(<<~RUBY)
+          /[^]x]/
+        RUBY
+      end
+
+      it 'does not register an offense when surrounded by other characters' do
+        expect_no_offenses(<<~RUBY)
+          /foo[^]]bar/
+        RUBY
+      end
+
+      it 'does not register an offense when followed by an escaped bracket' do
+        expect_no_offenses(<<~'RUBY')
+          /[^]\]]/
+        RUBY
+      end
+
+      it 'registers an offense only for a genuine unescaped bracket after the class' do
+        expect_offense(<<~RUBY)
+          /[^]]x]/
+                ^ Regular expression has `]` without escape.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          /[^]]x\]/
+        RUBY
+      end
+    end
+
+    context 'character class followed by an unescaped bracket' do
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          /[a]]/
+              ^ Regular expression has `]` without escape.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          /[a]\]/
+        RUBY
+      end
+    end
+
     context 'character class in lookbehind' do
       # See https://github.com/ammar/regexp_parser/issues/93
       it 'does not register an offense' do
