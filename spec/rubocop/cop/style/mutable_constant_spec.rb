@@ -480,6 +480,16 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
         end
       end
     RUBY
+    it_behaves_like 'immutable objects', 'Data.define'
+    it_behaves_like 'immutable objects', '::Data.define'
+    it_behaves_like 'immutable objects', 'Data.define(:a, :b)'
+    it_behaves_like 'immutable objects', <<~RUBY
+      Data.define(:node) do
+        def assignment?
+          true
+        end
+      end
+    RUBY
 
     it 'allows calls to freeze' do
       expect_no_offenses(<<~RUBY)
