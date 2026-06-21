@@ -1,0 +1,1 @@
+* [#15311](https://github.com/rubocop/rubocop/pull/15311): Fix a false negative for `Layout/IndentationWidth` when the body of a multiline grouped expression in parentheses is not indented. ([@koic][])
