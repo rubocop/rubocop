@@ -25,6 +25,17 @@ module RuboCop
       #     end
       #   end
       #
+      # @example
+      #   # bad
+      #   value = (
+      #   foo - bar
+      #   )
+      #
+      #   # good
+      #   value = (
+      #     foo - bar
+      #   )
+      #
       # @example AllowedPatterns: ['^\s*module']
       #   # bad
       #   module A
@@ -93,6 +104,16 @@ module RuboCop
           return unless begins_its_line?(node.loc.end)
 
           check_indentation(node.loc.end, node.children.first)
+        end
+
+        def on_begin(node)
+          # Only a parenthesized grouping expression (e.g. `(\n  foo\n)`) has
+          # explicit delimiters. Indent the body one step from the line
+          # the opening parenthesis is on, but only when the closing parenthesis is
+          # first on its line (a body on the opening line is skipped downstream).
+          return unless parentheses?(node) && begins_its_line?(node.loc.end)
+
+          check_indentation(opening_line_start(node.loc.begin), node.children.first)
         end
 
         def on_block(node)
@@ -186,6 +207,13 @@ module RuboCop
           return unless node
 
           AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+        end
+
+        # Returns a range at the first non-space column of the line the opening parenthesis is on,
+        # used as the base to indent the body from.
+        def opening_line_start(begin_loc)
+          column = begin_loc.source_line =~ /\S/
+          source_range(processed_source.buffer, begin_loc.line, column)
         end
 
         def check_members(base, members)

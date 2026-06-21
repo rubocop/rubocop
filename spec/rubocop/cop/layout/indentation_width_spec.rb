@@ -1192,6 +1192,59 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
       end
     end
 
+    context 'with grouped expression' do
+      it 'registers an offense for bad indentation of a parenthesized body' do
+        expect_offense(<<~RUBY)
+          x = (
+          foo - bar
+          ^{} Use 2 (not 0) spaces for indentation.
+          )
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x = (
+            foo - bar
+          )
+        RUBY
+      end
+
+      it 'registers an offense for a parenthesized body with a trailing method call' do
+        expect_offense(<<~RUBY)
+          x = (
+          foo - bar
+          ^{} Use 2 (not 0) spaces for indentation.
+          ).freeze
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x = (
+            foo - bar
+          ).freeze
+        RUBY
+      end
+
+      it 'accepts a correctly indented parenthesized body' do
+        expect_no_offenses(<<~RUBY)
+          x = (
+            foo - bar
+          )
+        RUBY
+      end
+
+      it 'accepts a single-line grouped expression' do
+        expect_no_offenses(<<~RUBY)
+          x = (foo - bar)
+        RUBY
+      end
+
+      it 'accepts a body that begins on the opening parenthesis line' do
+        expect_no_offenses(<<~RUBY)
+          x = (foo +
+               bar)
+        RUBY
+      end
+    end
+
     context 'with while/until' do
       it 'registers an offense for bad indentation of a while body' do
         expect_offense(<<~RUBY)
