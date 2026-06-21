@@ -1,0 +1,1 @@
+* [#15312](https://github.com/rubocop/rubocop/issues/15312): Fix false positives for `Layout/BlockAlignment` when `EnforcedStyleAlignWith: start_of_block` is used and `do` is on a continuation line of a parenthesisless multiline method call. ([@koic][])
