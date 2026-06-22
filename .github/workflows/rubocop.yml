@@ -75,6 +75,17 @@ jobs:
           CI_RUBY_VERSION: ${{ matrix.ruby }}
         run: bundle exec rake spec
 
+  coverage:
+    name: Test coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ruby
+          bundler-cache: true
+      - run: COVERAGE=true bundle exec rake spec
+
   ascii_spec:
     name: Ascii Spec - ${{ matrix.os }} ${{ matrix.ruby }}
     runs-on: ${{ matrix.os }}-latest

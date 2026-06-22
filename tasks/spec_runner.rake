@@ -36,7 +36,7 @@ module RuboCop
     def run_specs
       n_failures = with_encoding do
         if @parallel && Process.respond_to?(:fork)
-          parallel_runner_klass.new(rspec_args).execute
+          ParallelRunner.new(rspec_args).execute
         else
           ::RSpec::Core::Runner.run(rspec_args)
         end
@@ -50,14 +50,6 @@ module RuboCop
     def with_encoding(&block)
       with_default_external_encoding(@temporary_external_encoding) do
         with_default_internal_encoding(@temporary_internal_encoding, &block)
-      end
-    end
-
-    def parallel_runner_klass
-      if ENV['COVERAGE']
-        ParallelCoverageRunner
-      else
-        ParallelRunner
       end
     end
 
@@ -107,6 +99,16 @@ module RuboCop
         ret
       end
 
+      # TestQueue child workers exit via `Kernel.exit!`, which skips `at_exit`
+      # handlers. Compute the worker's SimpleCov result in `cleanup_worker`
+      # (called just before `exit!`) so the resultset is written to disk for the
+      # parent to merge.
+      def cleanup_worker
+        return unless defined?(SimpleCov) && Coverage.running?
+
+        SimpleCov.result
+      end
+
       private
 
       def update_count(failures)
@@ -117,21 +119,6 @@ module RuboCop
         return unless failures
 
         failures.gsub('*)') { "#{@failure_count += 1})" }
-      end
-    end
-
-    # A custom runner for measuring code coverage in parallel.
-    class ParallelCoverageRunner < ParallelRunner
-      def after_fork(num)
-        SimpleCov.command_name "rspec-#{num}"
-      end
-
-      def cleanup_worker
-        SimpleCov.result
-      end
-
-      def summarize
-        SimpleCov.at_exit.call
       end
     end
 
