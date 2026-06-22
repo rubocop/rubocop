@@ -162,21 +162,22 @@ module RuboCop
           column_delta = configured_indentation_width - spaces_size(last_child_leading_spaces)
           return if column_delta.zero?
 
-          AlignmentCorrector.correct(corrector, processed_source, node, column_delta)
+          AlignmentCorrector.correct(
+            corrector, processed_source, node, column_delta, tab_indentation: true
+          )
         end
 
         def leading_spaces(node)
           node.source_range.source_line[/\A\s*/]
         end
 
+        # A tab counts as `configured_indentation_width` columns, matching the
+        # width `AlignmentCorrector` uses to convert `column_delta` back into
+        # tabs. Using `Layout/IndentationStyle`'s own `IndentationWidth` here
+        # would make the delta and the correction disagree.
         def spaces_size(spaces_string)
-          mapping = { "\t" => tab_indentation_width }
+          mapping = { "\t" => configured_indentation_width }
           spaces_string.chars.sum { |character| mapping.fetch(character, 1) }
-        end
-
-        def tab_indentation_width
-          config.for_cop('Layout/IndentationStyle')['IndentationWidth'] ||
-            configured_indentation_width
         end
 
         def check_style(node, body, style)
