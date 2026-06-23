@@ -981,6 +981,35 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
           }
         RUBY
       end
+
+      it 'allows when `end` is aligned with the line where the `do` is and the method has no parentheses' do
+        expect_no_offenses(<<~RUBY)
+          foo bar,
+            baz,
+            key: value do |x|
+              process(x)
+            end
+        RUBY
+      end
+
+      it 'errors when `end` is misaligned and the method has no parentheses' do
+        expect_offense(<<~RUBY)
+          foo bar,
+            baz,
+            key: value do |x|
+              process(x)
+                end
+                ^^^ `end` at 5, 6 is not aligned with `key: value do |x|` at 3, 2.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar,
+            baz,
+            key: value do |x|
+              process(x)
+            end
+        RUBY
+      end
     end
 
     context 'inside a non-endless method' do
