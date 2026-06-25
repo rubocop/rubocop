@@ -23,6 +23,13 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'does not register an offense for a splat argument' do
+    # A splat can expand to any number of elements, so no literal hash can be built.
+    expect_no_offenses(<<~RUBY)
+      Hash[*ary, x]
+    RUBY
+  end
+
   it 'reports different offense for hash argument Hash[]' do
     expect_offense(<<~RUBY)
       Hash[a: b, c: d]
