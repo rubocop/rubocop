@@ -88,6 +88,18 @@ RSpec.describe RuboCop::Cop::Style::FileNull, :config do
     RUBY
   end
 
+  it 'does not register an offense for a string with interpolation' do
+    expect_no_offenses(<<~'RUBY')
+      path = "/dev/null#{suffix}"
+    RUBY
+  end
+
+  it 'does not register an offense for adjacent string literal concatenation' do
+    expect_no_offenses(<<~RUBY)
+      path = "/dev/null" "more"
+    RUBY
+  end
+
   it 'does not register an offense for a string within an array' do
     expect_no_offenses(<<~RUBY)
       ['/dev/null', 'NUL']
