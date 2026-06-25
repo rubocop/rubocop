@@ -62,4 +62,10 @@ RSpec.describe RuboCop::Cop::Style::EnvHome, :config do
       ENV.fetch('HOME', default)
     RUBY
   end
+
+  it "does not register an offense when using `ENV.fetch('HOME')` with a fallback block" do
+    expect_no_offenses(<<~RUBY)
+      ENV.fetch('HOME') { default }
+    RUBY
+  end
 end
