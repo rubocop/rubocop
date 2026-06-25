@@ -1006,6 +1006,39 @@ RSpec.describe RuboCop::Cop::Style::DocumentationMethod, :config do
           RUBY
         end
       end
+
+      describe 'when AllowedMethods is configured for an inline modifier def' do
+        before do
+          config['Style/DocumentationMethod'] =
+            { 'AllowedMethods' => ['bar'], 'RequireForNonPublicMethods' => true }
+        end
+
+        it 'ignores an allowed `module_function` inline def' do
+          expect_no_offenses(<<~RUBY)
+            module Foo
+              module_function def bar; end
+            end
+          RUBY
+        end
+
+        it 'ignores an allowed `ruby2_keywords` inline def' do
+          expect_no_offenses(<<~RUBY)
+            module Foo
+              ruby2_keywords def bar; end
+            end
+          RUBY
+        end
+
+        it 'still registers an offense for a non-allowed `module_function` inline def' do
+          expect_offense(<<~RUBY)
+            module Foo
+              module_function def baz
+              ^^^^^^^^^^^^^^^^^^^^^^^ Missing method documentation comment.
+              end
+            end
+          RUBY
+        end
+      end
     end
   end
 end
