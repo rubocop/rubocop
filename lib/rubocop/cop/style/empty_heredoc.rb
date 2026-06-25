@@ -42,6 +42,10 @@ module RuboCop
         MSG = 'Use an empty string literal instead of heredoc.'
 
         def on_heredoc(node)
+          # A backtick heredoc (`<<~`CMD``) executes a command, so it cannot be
+          # replaced with an empty string literal.
+          return if node.xstr_type?
+
           heredoc_body = node.loc.heredoc_body
 
           return unless heredoc_body.source.empty?
