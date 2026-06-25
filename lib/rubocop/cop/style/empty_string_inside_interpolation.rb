@@ -45,35 +45,45 @@ module RuboCop
         MSG_TRAILING_CONDITIONAL = 'Do not use trailing conditionals in string interpolation.'
         MSG_TERNARY = 'Do not return empty strings in string interpolation.'
 
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
         def on_interpolation(node)
           node.each_child_node(:if) do |child_node|
             if style == :trailing_conditional
-              if empty_if_outcome?(child_node)
-                ternary_style_autocorrect(child_node, child_node.else_branch.source, 'unless')
-              end
-
-              if empty_else_outcome?(child_node)
-                ternary_style_autocorrect(child_node, child_node.if_branch.source, 'if')
-              end
+              trailing_conditional_correction(child_node)
             elsif style == :ternary
-              next unless child_node.modifier_form?
-
-              ternary_component = if child_node.unless?
-                                    "'' : #{child_node.if_branch.source}"
-                                  else
-                                    "#{child_node.if_branch.source} : ''"
-                                  end
-
-              add_offense(node, message: MSG_TRAILING_CONDITIONAL) do |corrector|
-                corrector.replace(node, "\#{#{child_node.condition.source} ? #{ternary_component}}")
-              end
+              ternary_correction(node, child_node)
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         private
+
+        def trailing_conditional_correction(child_node)
+          # A modifier `if`/`unless` is already a trailing conditional and has
+          # no `else` branch, so the ternary-to-trailing rewrite does not apply.
+          return if child_node.modifier_form?
+
+          if empty_if_outcome?(child_node)
+            ternary_style_autocorrect(child_node, child_node.else_branch.source, 'unless')
+          end
+
+          return unless empty_else_outcome?(child_node)
+
+          ternary_style_autocorrect(child_node, child_node.if_branch.source, 'if')
+        end
+
+        def ternary_correction(node, child_node)
+          return unless child_node.modifier_form?
+
+          ternary_component = if child_node.unless?
+                                "'' : #{child_node.if_branch.source}"
+                              else
+                                "#{child_node.if_branch.source} : ''"
+                              end
+
+          add_offense(node, message: MSG_TRAILING_CONDITIONAL) do |corrector|
+            corrector.replace(node, "\#{#{child_node.condition.source} ? #{ternary_component}}")
+          end
+        end
 
         def empty_if_outcome?(node)
           empty_branch_outcome?(node.if_branch)
