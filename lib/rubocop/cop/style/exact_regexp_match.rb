@@ -43,7 +43,8 @@ module RuboCop
           return unless (parsed_regexp = parse_regexp(regexp))
           return unless exact_match_pattern?(parsed_regexp)
 
-          prefer = "#{receiver.source} #{new_method(node)} '#{parsed_regexp[1].text}'"
+          string = escape_single_quotes(parsed_regexp[1].text)
+          prefer = "#{receiver.source} #{new_method(node)} '#{string}'"
 
           add_offense(node, message: format(MSG, prefer: prefer)) do |corrector|
             corrector.replace(node, prefer)
@@ -52,6 +53,12 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        # Escape characters that are special inside a single-quoted string so the
+        # generated literal (e.g. for `/\Afoo'bar\z/`) stays valid Ruby.
+        def escape_single_quotes(text)
+          text.gsub(/['\\]/) { |char| "\\#{char}" }
+        end
 
         def exact_match_pattern?(parsed_regexp)
           tokens = parsed_regexp.map(&:token)
