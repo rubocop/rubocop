@@ -35,6 +35,10 @@ module RuboCop
         PATTERN
 
         def on_send(node)
+          # A trailing block (e.g. `Dir.each_child(path).none? { ... }`) changes
+          # the meaning and is not equivalent to `Dir.empty?`.
+          return if node.block_literal?
+
           offensive?(node) do |const_node, arg_node|
             replacement = "#{bang(node)}#{const_node.source}.empty?(#{arg_node.source})"
             add_offense(node, message: format(MSG, replacement: replacement)) do |corrector|
