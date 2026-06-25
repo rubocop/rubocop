@@ -182,8 +182,16 @@ module RuboCop
         return ":\"#{value.source}\"" if value.dsym_type?
         return "\"#{value.source}\"" if value.dstr_type?
         return ":#{value.source}" if value.sym_type?
+        # The element of a `%w` array can contain characters that are special
+        # inside a single-quoted string (e.g. a `'`), so escape them rather than
+        # wrapping the raw source.
+        return to_single_quoted(value.value) if value.str_type?
 
         "'#{value.source}'"
+      end
+
+      def to_single_quoted(string)
+        "'#{string.gsub(/['\\]/) { |character| "\\#{character}" }}'"
       end
 
       def except_key(node)
