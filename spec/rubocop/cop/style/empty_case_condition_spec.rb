@@ -237,6 +237,24 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
       it_behaves_like 'detect/correct empty case, accept non-empty case'
     end
 
+    context 'with comma-delimited alternatives that bind looser than `||`' do
+      it 'parenthesizes them so the `||` keeps its meaning' do
+        expect_offense(<<~RUBY)
+          case
+          ^^^^ Do not use empty `case` condition, instead use an `if` expression.
+          when x ? a : b, c
+            something
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          if (x ? a : b) || c
+            something
+          end
+        RUBY
+      end
+    end
+
     context 'when used as an argument of a method without comment' do
       let(:source) do
         <<~RUBY
