@@ -289,6 +289,36 @@ RSpec.describe RuboCop::Cop::Style::EmptyCaseCondition, :config do
       it_behaves_like 'detect/correct empty case, accept non-empty case'
     end
 
+    context 'when used as an argument of `yield`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            yield case
+                  when true
+                    1
+                  else
+                    2
+                  end
+          end
+        RUBY
+      end
+    end
+
+    context 'when used as an argument of `super`' do
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          def foo
+            super case
+                  when true
+                    1
+                  else
+                    2
+                  end
+          end
+        RUBY
+      end
+    end
+
     context 'when using `return` in `when` clause and assigning the return value of `case`' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)

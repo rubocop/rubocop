@@ -40,7 +40,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Do not use empty `case` condition, instead use an `if` expression.'
-        NOT_SUPPORTED_PARENT_TYPES = %i[return break next send csend].freeze
+        NOT_SUPPORTED_PARENT_TYPES = %i[return break next send csend yield super].freeze
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_case(case_node)
