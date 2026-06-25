@@ -118,6 +118,20 @@ RSpec.describe RuboCop::Cop::Style::EmptyLiteral, :config do
       it 'does not register an offense for ::Hash.new { _1[_2] = [] }' do
         expect_no_offenses('test = ::Hash.new { _1[_2] = [] }')
       end
+
+      it 'does not register an offense for Array.new with a numbered-parameter block' do
+        expect_no_offenses('test = Array.new { _1 }')
+      end
+    end
+
+    context 'Ruby 3.4', :ruby34 do
+      it 'does not register an offense for Array.new with an `it`-block' do
+        expect_no_offenses('test = Array.new { it }')
+      end
+
+      it 'does not register an offense for Hash.new with an `it`-block' do
+        expect_no_offenses('test = Hash.new { it }')
+      end
     end
 
     it 'autocorrects Hash.new in block' do

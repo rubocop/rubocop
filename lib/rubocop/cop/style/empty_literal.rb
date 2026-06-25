@@ -44,13 +44,18 @@ module RuboCop
         def_node_matcher :str_node, '(send (const {nil? cbase} :String) :new)'
 
         # @!method array_with_block(node)
-        def_node_matcher :array_with_block, '(block (send (const {nil? cbase} :Array) :new) args _)'
+        def_node_matcher :array_with_block, <<~PATTERN
+          {
+            (block (send (const {nil? cbase} :Array) :new) args _)
+            ({numblock itblock} (send (const {nil? cbase} :Array) :new) ...)
+          }
+        PATTERN
 
         # @!method hash_with_block(node)
         def_node_matcher :hash_with_block, <<~PATTERN
           {
             (block (send (const {nil? cbase} :Hash) :new) args _)
-            (numblock (send (const {nil? cbase} :Hash) :new) ...)
+            ({numblock itblock} (send (const {nil? cbase} :Hash) :new) ...)
           }
         PATTERN
 
