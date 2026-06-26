@@ -109,11 +109,20 @@ module RuboCop
 
           node.arguments.map do |arg|
             if arg.hash_type?
-              arg.source
+              hash_argument_source(arg)
             else
               "**#{arg.source}"
             end
           end
+        end
+
+        # A braced hash literal passed to `merge` must have its braces stripped so
+        # its pairs join the surrounding keyword arguments. Keeping the braces would
+        # produce a positional hash after keyword arguments, which is invalid Ruby.
+        def hash_argument_source(hash)
+          return hash.source unless hash.braces?
+
+          hash.pairs.map(&:source).join(', ')
         end
 
         def mergeable?(node)
