@@ -389,6 +389,17 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
+    it 'corrects a single splat argument by passing the array to `%`' do
+      expect_offense(<<~RUBY)
+        format('%s %s', *args)
+        ^^^^^^ Favor `String#%` over `format`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        '%s %s' % args
+      RUBY
+    end
+
     it 'registers an offense for sprintf' do
       expect_offense(<<~RUBY)
         sprintf(something, a)

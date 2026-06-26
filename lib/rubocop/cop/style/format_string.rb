@@ -144,6 +144,10 @@ module RuboCop
         end
 
         def format_single_parameter(arg)
+          # `format(fmt, *args)` is equivalent to `fmt % args`, so unwrap the splat
+          # and render the argument it splats.
+          return format_single_parameter(arg.children.first) if arg.splat_type?
+
           source = arg.source
           return "{ #{source} }" if arg.hash_type?
 
