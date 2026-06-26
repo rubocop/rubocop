@@ -166,6 +166,26 @@ RSpec.describe RuboCop::Cop::Style::MultilineMemoization, :config do
                 )
             RUBY
           end
+
+          it 'does not register an offense for a begin block with a `rescue`' do
+            expect_no_offenses(<<~RUBY)
+              foo ||= begin
+                bar
+              rescue
+                baz
+              end
+            RUBY
+          end
+
+          it 'does not register an offense for a begin block with an `ensure`' do
+            expect_no_offenses(<<~RUBY)
+              foo ||= begin
+                bar
+              ensure
+                baz
+              end
+            RUBY
+          end
         end
       end
     end

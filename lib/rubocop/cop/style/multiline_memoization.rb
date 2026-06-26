@@ -65,8 +65,14 @@ module RuboCop
           if style == :keyword
             rhs.begin_type?
           else
-            rhs.kwbegin_type?
+            # A `begin` block with `rescue`/`ensure` cannot be expressed with
+            # parentheses, so wrapping it in `(` and `)` is not possible.
+            rhs.kwbegin_type? && !contains_rescue_or_ensure?(rhs)
           end
+        end
+
+        def contains_rescue_or_ensure?(node)
+          node.each_child_node(:rescue, :ensure).any?
         end
 
         def keyword_autocorrect(node, corrector)
