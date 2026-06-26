@@ -454,6 +454,33 @@ RSpec.describe RuboCop::Config do
       end
     end
 
+    context 'when the configuration includes an invalid Enforcement value' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          AllCops:
+            Enforcement: invalid
+        YAML
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /invalid.*Enforcement/)
+      end
+    end
+
+    context 'when the configuration includes a valid Enforcement value' do
+      before do
+        create_file(configuration_path, <<~YAML)
+          AllCops:
+            Enforcement: standard
+        YAML
+      end
+
+      it 'does not raise validation error' do
+        expect { configuration.validate }.not_to raise_error
+      end
+    end
+
     context 'when the configuration includes Lint/Syntax cop' do
       before do
         # Force reloading default configuration
@@ -985,6 +1012,110 @@ RSpec.describe RuboCop::Config do
         it 'enables the cop that is not mentioned' do
           expect(cop_enabled('VeryCustomDepartment/CustomCop')).to be true
         end
+      end
+    end
+
+    context 'when enforcement level is configured' do
+      let(:hash) do
+        {
+          'AllCops' => { 'Enforcement' => 'standard' },
+          'Style/StringLiterals' => { 'Enforcement' => 'standard' },
+          'Style/Documentation' => { 'Enforcement' => 'strict' },
+          'Lint/UselessAssignment' => { 'Enforcement' => 'essential' }
+        }
+      end
+
+      it 'enables cops at or below the configured level' do
+        expect(cop_enabled('Lint/UselessAssignment')).to be true
+        expect(cop_enabled('Style/StringLiterals')).to be true
+      end
+
+      it 'disables cops above the configured level' do
+        expect(cop_enabled('Style/Documentation')).to be false
+      end
+
+      context 'when cop is explicitly enabled' do
+        let(:hash) do
+          {
+            'AllCops' => { 'Enforcement' => 'essential' },
+            'Style/Documentation' => { 'Enabled' => true, 'Enforcement' => 'strict' }
+          }
+        end
+
+        it 'respects explicit Enabled: true over enforcement level' do
+          expect(cop_enabled('Style/Documentation')).to be true
+        end
+      end
+
+      context 'when cop has no enforcement tag' do
+        let(:hash) do
+          {
+            'AllCops' => { 'Enforcement' => 'essential' },
+            'Style/AndOr' => {}
+          }
+        end
+
+        it 'is unaffected by enforcement filtering' do
+          expect(cop_enabled('Style/AndOr')).to be true
+        end
+      end
+    end
+  end
+
+  describe '#enforcement_level' do
+    context 'when Enforcement is set' do
+      let(:hash) { { 'AllCops' => { 'Enforcement' => 'standard' } } }
+
+      it 'returns the configured enforcement level' do
+        expect(configuration.enforcement_level).to eq('standard')
+      end
+    end
+
+    context 'when Enforcement is not set' do
+      let(:hash) { {} }
+
+      it 'returns nil' do
+        expect(configuration.enforcement_level).to be_nil
+      end
+    end
+  end
+
+  describe '#cop_within_enforcement?' do
+    context 'when enforcement level is standard' do
+      let(:hash) { { 'AllCops' => { 'Enforcement' => 'standard' } } }
+
+      it 'returns true for essential cops' do
+        expect(configuration).to be_cop_within_enforcement('essential')
+      end
+
+      it 'returns true for standard cops' do
+        expect(configuration).to be_cop_within_enforcement('standard')
+      end
+
+      it 'returns false for strict cops' do
+        expect(configuration).not_to be_cop_within_enforcement('strict')
+      end
+    end
+
+    context 'when enforcement level is essential' do
+      let(:hash) { { 'AllCops' => { 'Enforcement' => 'essential' } } }
+
+      it 'returns true for essential cops' do
+        expect(configuration).to be_cop_within_enforcement('essential')
+      end
+
+      it 'returns false for standard cops' do
+        expect(configuration).not_to be_cop_within_enforcement('standard')
+      end
+    end
+
+    context 'when enforcement level is strict' do
+      let(:hash) { { 'AllCops' => { 'Enforcement' => 'strict' } } }
+
+      it 'returns true for all levels' do
+        expect(configuration).to be_cop_within_enforcement('essential')
+        expect(configuration).to be_cop_within_enforcement('standard')
+        expect(configuration).to be_cop_within_enforcement('strict')
       end
     end
   end
