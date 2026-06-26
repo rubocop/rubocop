@@ -45,6 +45,32 @@ RSpec.describe RuboCop::Cop::Style::DataInheritance, :config do
       RUBY
     end
 
+    it 'registers an offense when extending instance of `Data.define` with an empty brace block' do
+      expect_offense(<<~RUBY)
+        class Person < Data.define(:first_name, :last_name) { }
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Data.define`. Use a block to customize the class.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Person = Data.define(:first_name, :last_name) do
+        end
+      RUBY
+    end
+
+    it 'registers an offense when extending instance of `Data.define` with a brace block' do
+      expect_offense(<<~RUBY)
+        class Person < Data.define(:first_name, :last_name) { def age = 42 }
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Data.define`. Use a block to customize the class.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Person = Data.define(:first_name, :last_name) do def age = 42
+        end
+      RUBY
+    end
+
     it 'registers an offense when extending instance of `Data.define` without `do` ... `end` and class body is empty' do
       expect_offense(<<~RUBY)
         class Person < Data.define(:first_name, :last_name)
