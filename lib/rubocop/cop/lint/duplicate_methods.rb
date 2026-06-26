@@ -119,6 +119,8 @@ module RuboCop
       #   end
       #
       class DuplicateMethods < Base # rubocop:disable Metrics/ClassLength
+        include ProjectIndexHelp
+
         MSG = 'Method `%<method>s` is defined at both %<defined>s and %<current>s.'
         RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr
                               delegate def_delegator def_instance_delegator def_delegators
@@ -341,6 +343,7 @@ module RuboCop
         end
 
         # rubocop:disable Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def found_method(node, method_name, scope_id: nil)
           key = method_key(node, method_name)
           key = "#{key}@#{scope_id}" if scope_id
@@ -358,9 +361,11 @@ module RuboCop
             add_offense(location(node), message: message)
           else
             @definitions[key] = node
+            check_cross_file_duplicate(node, method_name, key)
           end
         end
         # rubocop:enable Metrics/AbcSize
+        # rubocop:enable Metrics/MethodLength
 
         def method_key(node, method_name)
           if (ancestor_def = node.each_ancestor(:any_def).first)
@@ -438,6 +443,49 @@ module RuboCop
           range = node.source_range
           path = smart_path(range.source_buffer.name)
           "#{path}:#{range.line}"
+        end
+
+        def check_cross_file_duplicate(node, method_name, key)
+          return unless project_index
+
+          declaration = find_declaration(method_name, key)
+          return unless declaration
+
+          prior = prior_definition_in_other_file(declaration)
+          return unless prior
+
+          # Rubydex method names for attr_reader and attr_writer are same
+          # Explicit check to not consider attr_reader and attr_writer as duplicates
+          return if prior.is_a?(Rubydex::AttrWriterDefinition) && !method_name.end_with?('=')
+
+          add_cross_file_offense(node, method_name, prior)
+        end
+
+        def find_declaration(method_name, key)
+          project_index.declarations.find do |candidate|
+            candidate.respond_to?(:name) &&
+              candidate.name.gsub('()', '') == method_name &&
+              same_owner_scope?(candidate, key)
+          end
+        end
+
+        def same_owner_scope?(declaration, key)
+          owner_name = key.sub(/[.#][^.#+]+\z/, '')
+          return true if owner_name == key
+
+          declaration.owner&.name == owner_name
+        end
+
+        def add_cross_file_offense(node, method_name, prior)
+          add_offense(
+            location(node),
+            message: format(
+              MSG,
+              method: method_name,
+              defined: prior.location,
+              current: source_location(node)
+            )
+          )
         end
       end
     end

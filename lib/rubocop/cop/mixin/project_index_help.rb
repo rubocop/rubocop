@@ -25,6 +25,15 @@ module RuboCop
         )
       end
 
+      def prior_definition_in_other_file(declaration)
+        current = processed_source.file_path
+
+        declaration.definitions.find do |definition|
+          other = definition.location.to_file_path
+          !File.identical?(other, current)
+        end
+      end
+
       private
 
       def project_index_signature
