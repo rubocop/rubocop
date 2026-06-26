@@ -118,7 +118,13 @@ module RuboCop
         end
 
         def lambda_arg_string(args)
-          args.children.map(&:source).join(', ')
+          # Block-local (shadow) arguments are separated from regular arguments by a
+          # `;`; joining everything with `,` would turn them into extra parameters
+          # and change the lambda's arity.
+          regular, shadow = args.children.partition { |arg| !arg.shadowarg_type? }
+          arg_string = regular.map(&:source).join(', ')
+          arg_string += "; #{shadow.map(&:source).join(', ')}" unless shadow.empty?
+          arg_string
         end
       end
     end
