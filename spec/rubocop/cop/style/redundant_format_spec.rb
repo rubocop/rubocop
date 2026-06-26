@@ -156,7 +156,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it_behaves_like 'offending format specifier', '%s', '1i', "'0+1i'"
         it_behaves_like 'offending format specifier', '%s', 'true', "'true'"
         it_behaves_like 'offending format specifier', '%s', 'false', "'false'"
-        it_behaves_like 'offending format specifier', '%s', 'nil', "'nil'"
+        it_behaves_like 'offending format specifier', '%s', 'nil', "''"
 
         it_behaves_like 'non-offending format specifier', '%s', 'foo'
         it_behaves_like 'non-offending format specifier', '%s', '[]'

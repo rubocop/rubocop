@@ -266,6 +266,14 @@ module RuboCop
         def argument_value(argument)
           argument = argument.children.first if argument.begin_type?
 
+          # `nil` formats to an empty string (`format('%s', nil) == ''`), not the
+          # literal `'nil'` that `argument.source` would return.
+          return if argument.nil_type?
+
+          typed_argument_value(argument)
+        end
+
+        def typed_argument_value(argument)
           if argument.dsym_type?
             dsym_value(argument)
           elsif argument.hash_type?
