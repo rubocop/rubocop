@@ -248,10 +248,21 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       top
     RUBY
 
-    expect_correction(<<~RUBY)
-      CONST = 5
-      top
+    # Referencing a constant can trigger autoloading side effects, so removing it may
+    # change behavior; the offense is reported but not autocorrected.
+    expect_no_corrections
+  end
+
+  it 'registers an offense but does not autocorrect a qualified constant in void context' do
+    expect_offense(<<~RUBY)
+      Foo::Bar
+      ^^^^^^^^ Constant `Foo::Bar` used in void context.
+
+      class Foo::Bar
+      end
     RUBY
+
+    expect_no_corrections
   end
 
   it 'registers an offense for void constant `CONST` with guard condition if not on last line' do
