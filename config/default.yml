@@ -165,6 +165,7 @@ AllCops:
     rubocop-capybara: [capybara]
     rubocop-factory_bot: [factory_bot, factory_bot_rails]
     rubocop-rspec_rails: [rspec-rails]
+    rubocop-i18n: [i18n, gettext]
   # Enable/Disable checking the methods extended by Active Support.
   ActiveSupportExtensionsEnabled: false
   # Future version of Ruby will freeze string literals by default.
