@@ -26,7 +26,7 @@ module RuboCop
         def on_new_investigation
           processed_source.comments.each do |comment|
             next if comment_line?(processed_source[comment.loc.line - 1]) ||
-                    comment.text.match?(/\A# rubocop:(enable|disable)/)
+                    comment.text.match?(/\A# rubocop:(enable|disable|todo)/)
 
             add_offense(comment)
           end
