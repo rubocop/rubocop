@@ -79,4 +79,13 @@ RSpec.describe RuboCop::Cop::Style::OpenStructUse, :config do
       expect_no_offenses('a = 42')
     end
   end
+
+  context 'when a bare `OpenStruct` constant is the root node' do
+    it 'registers an offense without crashing' do
+      expect_offense(<<~RUBY)
+        OpenStruct
+        ^^^^^^^^^^ Avoid using `OpenStruct`; use `Struct`, `Hash`, a class or test doubles instead.
+      RUBY
+    end
+  end
 end
