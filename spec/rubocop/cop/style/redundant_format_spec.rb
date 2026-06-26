@@ -95,6 +95,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
             "\n"
           RUBY
         end
+
+        it 'does not register an offense when the string contains a `%%` sequence' do
+          expect_no_offenses("#{method}('%%')")
+        end
+
+        it 'does not register an offense when the string contains a format specifier' do
+          expect_no_offenses("#{method}('%s')")
+        end
       end
 
       context 'with literal arguments' do
