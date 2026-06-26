@@ -37,6 +37,10 @@ module RuboCop
           return unless (ancestor = node.parent&.parent)
 
           merge_kwargs?(ancestor) do |merge_node, hash_node, other_hash_node|
+            # A block-pass argument (e.g. `merge(other, &block)`) has no keyword
+            # equivalent, so spreading it would produce invalid Ruby (`**&block`).
+            next if other_hash_node.any?(&:block_pass_type?)
+
             add_offense(merge_node) do |corrector|
               autocorrect(corrector, node, hash_node, other_hash_node)
             end
