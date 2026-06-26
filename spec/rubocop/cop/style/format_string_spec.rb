@@ -389,6 +389,17 @@ RSpec.describe RuboCop::Cop::Style::FormatString, :config do
       RUBY
     end
 
+    it 'parenthesizes a single argument that binds looser than `%`' do
+      expect_offense(<<~RUBY)
+        format('%s', a ? b : c)
+        ^^^^^^ Favor `String#%` over `format`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        '%s' % (a ? b : c)
+      RUBY
+    end
+
     it 'corrects a single splat argument by passing the array to `%`' do
       expect_offense(<<~RUBY)
         format('%s %s', *args)

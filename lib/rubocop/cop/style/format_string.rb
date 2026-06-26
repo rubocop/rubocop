@@ -151,7 +151,15 @@ module RuboCop
           source = arg.source
           return "{ #{source} }" if arg.hash_type?
 
-          arg.send_type? && arg.operator_method? && !arg.parenthesized? ? "(#{source})" : source
+          requires_parentheses?(arg) ? "(#{source})" : source
+        end
+
+        # An argument that binds looser than `%` (a ternary, range, assignment, or
+        # operator call) must be parenthesized to keep its meaning.
+        def requires_parentheses?(arg)
+          return true if arg.assignment? || arg.type?(:if, :and, :or, :range)
+
+          arg.send_type? && arg.operator_method? && !arg.parenthesized?
         end
       end
     end
