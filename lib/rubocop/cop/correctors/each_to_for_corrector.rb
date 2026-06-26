@@ -27,7 +27,7 @@ module RuboCop
         if block_node.arguments?
           format(CORRECTION_WITH_ARGUMENTS,
                  collection: collection_node.source,
-                 variables: argument_node.children.first.source)
+                 variables: argument_node.children.map(&:source).join(', '))
         else
           format(CORRECTION_WITHOUT_ARGUMENTS, enumerable: collection_node.source)
         end
