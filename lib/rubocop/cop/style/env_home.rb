@@ -45,6 +45,10 @@ module RuboCop
         def on_send(node)
           return unless env_home?(node)
           return if node.arguments.count == 2 && !node.arguments[1].nil_type?
+          # `ENV.fetch('HOME') { default }` supplies a fallback, just like
+          # `ENV.fetch('HOME', default)`. `Dir.home` ignores the block, so
+          # converting would silently drop it.
+          return if node.block_node
 
           add_offense(node) do |corrector|
             corrector.replace(node, 'Dir.home')
