@@ -237,7 +237,10 @@ module RuboCop
               # quoted and escaped to stay valid (e.g. `%w(it's)` -> `'it\'s'`).
               quote(node.value)
             elsif node.sym_type? && !node.loc?(:begin)
-              ":#{node.source}"
+              # `%i` elements have no per-element delimiter, so a symbol that needs
+              # quoting must be emitted as `:"..."` (e.g. `%i(foo-bar)` -> `:"foo-bar"`),
+              # otherwise `:foo-bar` would parse as `:foo.-(bar)`.
+              node.value.inspect
             else
               node.source
             end

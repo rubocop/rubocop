@@ -292,7 +292,7 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
   end
 
   it 'corrects when a word array element contains a single quote' do
-    expect_offense(<<~'RUBY')
+    expect_offense(<<~RUBY)
       a, b = %w(it's fine)
       ^^^^^^^^^^^^^^^^^^^^ Do not use parallel assignment.
     RUBY
@@ -300,6 +300,18 @@ RSpec.describe RuboCop::Cop::Style::ParallelAssignment, :config do
     expect_correction(<<~'RUBY')
       a = 'it\'s'
       b = 'fine'
+    RUBY
+  end
+
+  it 'corrects when a symbol array element needs quoting' do
+    expect_offense(<<~RUBY)
+      a, b = %i(foo-bar baz)
+      ^^^^^^^^^^^^^^^^^^^^^^ Do not use parallel assignment.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a = :"foo-bar"
+      b = :baz
     RUBY
   end
 
