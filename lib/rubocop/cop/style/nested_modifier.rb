@@ -70,6 +70,7 @@ module RuboCop
 
         def right_hand_operand(node, left_hand_keyword)
           condition = node.condition
+          negated = left_hand_keyword != node.keyword
 
           expr = if condition.send_type? && !condition.arguments.empty? &&
                     !condition.operator_method?
@@ -77,8 +78,8 @@ module RuboCop
                  else
                    condition.source
                  end
-          expr = "(#{expr})" if requires_parens?(condition)
-          expr = "!#{expr}" unless left_hand_keyword == node.keyword
+          expr = "(#{expr})" if requires_parens?(condition, negated)
+          expr = "!#{expr}" if negated
           expr
         end
 
@@ -91,8 +92,12 @@ module RuboCop
           expr
         end
 
-        def requires_parens?(node)
-          node.or_type? || !(RuboCop::AST::Node::COMPARISON_OPERATORS & node.children).empty?
+        def requires_parens?(node, negated)
+          # A negated `&&`/`||` operand must be wrapped so the `!` applies to the
+          # whole expression (e.g. `!(a && b)`, not `!a && b`).
+          (negated && node.operator_keyword?) ||
+            node.or_type? ||
+            !(RuboCop::AST::Node::COMPARISON_OPERATORS & node.children).empty?
         end
       end
     end
