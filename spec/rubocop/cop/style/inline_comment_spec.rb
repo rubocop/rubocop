@@ -14,6 +14,12 @@ RSpec.describe RuboCop::Cop::Style::InlineComment, :config do
     RUBY
   end
 
+  it 'does not register an offense for a `rubocop:todo` directive' do
+    expect_no_offenses(<<~RUBY)
+      two = 1 + 1 # rubocop:todo Layout/ExtraSpacing
+    RUBY
+  end
+
   it 'does not register an offense for a standalone comment' do
     expect_no_offenses('# A standalone comment')
   end
