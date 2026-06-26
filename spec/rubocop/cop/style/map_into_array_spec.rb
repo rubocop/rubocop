@@ -418,6 +418,13 @@ RSpec.describe RuboCop::Cop::Style::MapIntoArray, :config do
     RUBY
   end
 
+  it 'does not register an offense when pushing a named block-pass argument' do
+    expect_no_offenses(<<~RUBY)
+      dest = []
+      src.each { |e| dest.push(&method(:foo)) }
+    RUBY
+  end
+
   it 'does not register an offense when pushing anonymously-forwarded restarg', :ruby32 do
     expect_no_offenses(<<~RUBY)
       def foo(*)
