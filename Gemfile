@@ -11,6 +11,11 @@ gem 'irb'
 gem 'mcp', '~> 0.16'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
 gem 'rake', '~> 13.0'
+# FIXME: rdoc 8.0+ depends on rbs, whose released C extension fails to build on JRuby.
+# rbs 4.1.0.pre.2 ships a `java` platform gem that works on JRuby, so pin to it there
+# until a stable release that supports JRuby ships.
+# https://github.com/ruby/rdoc/issues/1746
+gem 'rbs', '4.1.0.pre.2' if RUBY_ENGINE == 'jruby'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.26.0', require: false
 gem 'rubocop-rake', '~> 0.7.0', require: false
