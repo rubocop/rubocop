@@ -61,7 +61,7 @@ module RuboCop
         def custom_class_or_module_definition?(node)
           parent = node.parent
 
-          parent.type?(:class, :module) && node.left_siblings.empty?
+          parent&.type?(:class, :module) && node.left_siblings.empty?
         end
       end
     end
