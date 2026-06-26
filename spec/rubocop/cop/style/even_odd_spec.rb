@@ -111,6 +111,39 @@ RSpec.describe RuboCop::Cop::Style::EvenOdd, :config do
     RUBY
   end
 
+  it 'wraps an operator receiver in parentheses when converting a * b % 2 == 0' do
+    expect_offense(<<~RUBY)
+      a * b % 2 == 0
+      ^^^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (a * b).even?
+    RUBY
+  end
+
+  it 'wraps a unary operator receiver in parentheses' do
+    expect_offense(<<~RUBY)
+      -a % 2 == 0
+      ^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (-a).even?
+    RUBY
+  end
+
+  it 'does not add parentheses around an index receiver' do
+    expect_offense(<<~RUBY)
+      a[0] % 2 == 0
+      ^^^^^^^^^^^^^ Replace with `Integer#even?`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      a[0].even?
+    RUBY
+  end
+
   it 'accepts x % 2 == 2' do
     expect_no_offenses('x % 2 == 2')
   end
