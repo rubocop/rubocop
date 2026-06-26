@@ -36,6 +36,13 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     RUBY
   end
 
+  it 'does not register an offense when using `it()` in a numbered parameter block' do
+    # A bare `it` is a parse error when a numbered parameter is used.
+    expect_no_offenses(<<~RUBY)
+      0.times { _1 + it() }
+    RUBY
+  end
+
   it 'registers an offense when using `foo.it()` in a single line block' do
     # `Lint/ItWithoutArgumentsInBlock` respects for this syntax.
     expect_offense(<<~RUBY)
