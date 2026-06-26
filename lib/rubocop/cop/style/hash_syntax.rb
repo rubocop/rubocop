@@ -263,6 +263,8 @@ module RuboCop
 
           hash_node = pair_node.parent
           return unless hash_node.parent&.return_type? && !hash_node.braces?
+          # This runs once per pair, but the hash must only be wrapped once.
+          return unless pair_node.equal?(hash_node.pairs.first)
 
           corrector.wrap(hash_node, '{', '}')
         end
