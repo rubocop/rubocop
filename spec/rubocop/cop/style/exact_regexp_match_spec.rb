@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::ExactRegexpMatch, :config do
     RUBY
   end
 
+  it 'escapes single quotes in the corrected string literal' do
+    expect_offense(<<~'RUBY')
+      string =~ /\Afoo'bar\z/
+      ^^^^^^^^^^^^^^^^^^^^^^^ Use `string == 'foo\'bar'`.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      string == 'foo\'bar'
+    RUBY
+  end
+
   it 'registers an offense when using `string === /\Astring\z/`' do
     expect_offense(<<~'RUBY')
       string === /\Astring\z/
