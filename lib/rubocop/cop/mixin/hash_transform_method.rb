@@ -94,6 +94,10 @@ module RuboCop
 
         return unless captures.use_transformed_argname?
 
+        # A splat transforming expression (e.g. `[k, *v]`) can't be used as a
+        # standalone block return value, so the rewrite would produce invalid Ruby.
+        return if captures.transforming_body_expr.splat_type?
+
         message = "Prefer `#{new_method_name}` over `#{match_desc}`."
         add_offense(node, message: message) do |corrector|
           correction = prepare_correction(node)

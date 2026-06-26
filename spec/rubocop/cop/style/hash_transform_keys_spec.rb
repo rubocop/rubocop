@@ -51,6 +51,14 @@ RSpec.describe RuboCop::Cop::Style::HashTransformKeys, :config do
       RUBY
     end
 
+    it 'does not flag map.to_h when the key expression is a splat' do
+      expect_no_offenses('{a: 1}.map { |k, v| [*k, v] }.to_h')
+    end
+
+    it 'does not flag to_h {...} when the key expression is a splat', :ruby26 do
+      expect_no_offenses('{a: 1}.to_h { |k, v| [*k, v] }')
+    end
+
     it 'does not flag each_with_object when key transformation uses value' do
       expect_no_offenses('{a: 1, b: 2}.each_with_object({}) {|(k, v), h| h[foo(v)] = v}')
     end
