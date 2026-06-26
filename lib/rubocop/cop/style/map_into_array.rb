@@ -65,7 +65,7 @@ module RuboCop
 
         # @!method suitable_argument_node?(node)
         def_node_matcher :suitable_argument_node?, <<-PATTERN
-          !{splat forwarded-restarg forwarded-args (hash (forwarded-kwrestarg)) (block-pass nil?)}
+          !{splat forwarded-restarg forwarded-args (hash (forwarded-kwrestarg)) block-pass}
         PATTERN
 
         # @!method each_block_with_push?(node)
