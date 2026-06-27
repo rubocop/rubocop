@@ -1922,6 +1922,37 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--fail-fast option' do
+    it 'reports offenses in the offending file and exits with a failing status' do
+      create_file('example.rb', <<~RUBY)
+        def f
+         x
+        end
+      RUBY
+
+      expect(cli.run(['--fail-fast', '--only', 'Layout/IndentationWidth', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('Layout/IndentationWidth')
+      expect($stdout.string).to include('1 file inspected, 1 offense detected')
+    end
+
+    it 'stops after the first offending file but still reports it' do
+      create_file('a.rb', <<~RUBY)
+        def f
+         x
+        end
+      RUBY
+      create_file('b.rb', <<~RUBY)
+        def g
+         y
+        end
+      RUBY
+
+      expect(cli.run(['--fail-fast', '--only', 'Layout/IndentationWidth', 'a.rb', 'b.rb'])).to eq(1)
+      expect($stdout.string).to include('Layout/IndentationWidth')
+      expect($stdout.string).to include('1 file inspected, 1 offense detected')
+    end
+  end
+
   describe '--fail-level option' do
     let(:target_file) { 'example.rb' }
 
