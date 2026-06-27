@@ -36,7 +36,7 @@ module RuboCop
         private
 
         def non_modifier_then?(node)
-          node.then? && node.loc.begin.line != node.if_branch&.loc&.line
+          node.multiline? && node.then? && node.loc.begin.line != node.if_branch&.loc&.line
         end
       end
     end

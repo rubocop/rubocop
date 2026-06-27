@@ -51,10 +51,12 @@ module RuboCop
           end
 
           arguments_range = range_with_surrounding_space(arguments_range(node), side: :left)
-          # If the method name isn't on the same line as def, move it directly after def
+          # If the method name isn't on the same line as `def`, pull the name and
+          # the opening parenthesis up next to `def` so the collapsed signature
+          # stays on a single line and remains valid Ruby.
           if arguments_range.first_line != opening_line(node)
-            corrector.remove(node.loc.name)
-            corrector.insert_after(node.loc.keyword, " #{node.loc.name.source}")
+            prefix_range = range_between(node.loc.keyword.end_pos, begin_of_arguments.begin_pos)
+            corrector.replace(prefix_range, " #{prefix_range.source.strip}")
           end
 
           corrector.remove(arguments_range)

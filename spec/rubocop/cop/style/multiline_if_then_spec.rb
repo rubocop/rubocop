@@ -136,4 +136,12 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfThen, :config do
       RUBY
     end.not_to raise_error
   end
+
+  it 'does not register an offense for a single-line `if cond then end`' do
+    expect_no_offenses('if cond then end')
+  end
+
+  it 'does not register an offense for a single-line `unless cond then end`' do
+    expect_no_offenses('unless cond then end')
+  end
 end
