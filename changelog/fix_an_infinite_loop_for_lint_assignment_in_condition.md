@@ -1,0 +1,1 @@
+* [#15356](https://github.com/rubocop/rubocop/issues/15356): Fix an infinite loop between `Lint/AssignmentInCondition` and `Style/RedundantParentheses` when an assignment is a statement of a multi-statement `begin` in a condition. ([@koic][])

@@ -78,11 +78,23 @@ module RuboCop
         end
 
         def allowed_construct?(asgn_node)
-          asgn_node.begin_type? || conditional_assignment?(asgn_node)
+          return true if asgn_node.begin_type?
+
+          conditional_assignment?(asgn_node) || discarded_assignment?(asgn_node)
         end
 
         def conditional_assignment?(asgn_node)
           !asgn_node.loc.operator
+        end
+
+        # An assignment that is a statement of a multi-statement `begin`
+        # (e.g. `(foo = bar; baz)`) has its value discarded, so it is not used
+        # as the condition. Wrapping it in parentheses would only conflict with
+        # `Style/RedundantParentheses`, so it is left alone.
+        def discarded_assignment?(asgn_node)
+          parent = asgn_node.parent
+
+          parent&.begin_type? && parent.children.size > 1
         end
 
         def skip_children?(asgn_node)
