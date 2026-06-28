@@ -283,6 +283,26 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
       RUBY
     end
 
+    it 'accepts a self receiver used to distinguish from a rescue exception variable' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          do_something
+        rescue => e
+          self.e
+        end
+      RUBY
+    end
+
+    it 'accepts a self receiver used to distinguish from a rescue exception variable at the top level' do
+      expect_no_offenses(<<~RUBY)
+        begin
+          do_something
+        rescue => e
+          self.e
+        end
+      RUBY
+    end
+
     it 'accepts a self receiver used to distinguish from an argument' do
       expect_no_offenses(<<~RUBY)
         def foo(bar)
