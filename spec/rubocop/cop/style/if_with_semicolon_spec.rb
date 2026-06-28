@@ -12,6 +12,17 @@ RSpec.describe RuboCop::Cop::Style::IfWithSemicolon, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when the condition is an assignment' do
+    expect_offense(<<~RUBY)
+      if a = b; run else dont end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Do not use `if a = b;` - use a ternary operator instead.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (a = b) ? run : dont
+    RUBY
+  end
+
   it 'registers an offense and corrects for one line if/;/end without then body' do
     expect_offense(<<~RUBY)
       if cond; else dont end
