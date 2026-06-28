@@ -1,0 +1,1 @@
+* [#15371](https://github.com/rubocop/rubocop/pull/15371): Fix an incorrect autocorrect for `Style/RedundantException` that changed the exception message when raising `RuntimeError` with a `nil` message. ([@bbatsov][])

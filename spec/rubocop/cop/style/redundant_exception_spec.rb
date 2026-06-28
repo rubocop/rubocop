@@ -93,6 +93,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantException, :config do
     RUBY
   end
 
+  it 'does not register an offense for raise with RuntimeError and a `nil` message' do
+    expect_no_offenses(<<~RUBY)
+      raise RuntimeError, nil
+    RUBY
+  end
+
+  it 'does not register an offense for raise with RuntimeError.new and a `nil` message' do
+    expect_no_offenses(<<~RUBY)
+      raise RuntimeError.new(nil)
+    RUBY
+  end
+
   it 'registers an offense for raise with RuntimeError.new, Object.new and parans' do
     expect_offense(<<~RUBY)
       raise RuntimeError.new(Object.new)
