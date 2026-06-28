@@ -281,6 +281,20 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpEscape, :config do
       end
     end
 
+    context 'with an escaped interpolation sigil after `#` in a `%r{}` literal' do
+      it 'does not register an offense for an instance variable' do
+        expect_no_offenses('foo = %r{#\@not_ivar}')
+      end
+
+      it 'does not register an offense for a global variable' do
+        expect_no_offenses('foo = %r{#\$not_gvar}')
+      end
+
+      it 'does not register an offense for an instance variable in a `%r//` literal' do
+        expect_no_offenses('foo = %r/#\@not_ivar/')
+      end
+    end
+
     context 'with an escape inside an interpolated string' do
       it 'does not register an offense' do
         expect_no_offenses('foo = /#{"\""}/')
