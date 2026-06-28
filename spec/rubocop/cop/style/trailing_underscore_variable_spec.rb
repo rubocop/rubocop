@@ -199,6 +199,30 @@ RSpec.describe RuboCop::Cop::Style::TrailingUnderscoreVariable, :config do
           RUBY
         end
       end
+
+      context 'with a nested destructuring group of only underscores' do
+        it 'does not crash and removes the group' do
+          expect_offense(<<~RUBY)
+            a, (_, _) = foo
+               ^^^^^^ Do not use trailing `_`s in parallel assignment. [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a,  = foo
+          RUBY
+        end
+
+        it 'does not crash and removes a deeply nested group' do
+          expect_offense(<<~RUBY)
+            a, (b, (_, _)) = foo
+                   ^^^^^^ Do not use trailing `_`s in parallel assignment. [...]
+          RUBY
+
+          expect_correction(<<~RUBY)
+            a, (b, ) = foo
+          RUBY
+        end
+      end
     end
   end
 
