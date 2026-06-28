@@ -319,6 +319,10 @@ RSpec.describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
         %s[symbol]
       RUBY
     end
+
+    it 'does not register an offense when the symbol contains the preferred delimiter' do
+      expect_no_offenses('%s([)')
+    end
   end
 
   context '`%x` interpolated system call' do
