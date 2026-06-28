@@ -170,10 +170,10 @@ module RuboCop
         end
 
         def find_semicolon_positions(line)
-          # Scan for all the semicolons on the line
-          semicolons = processed_source[line - 1].enum_for(:scan, ';')
-          semicolons.each do
-            yield Regexp.last_match.begin(0)
+          # Scan for all the semicolon tokens on the line. Iterating tokens rather
+          # than the raw source skips `;` characters inside string/regexp literals.
+          processed_source.tokens.each do |token|
+            yield token.column if token.line == line && token.semicolon?
           end
         end
 

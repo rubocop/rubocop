@@ -26,6 +26,30 @@ RSpec.describe RuboCop::Cop::Style::Semicolon, :config do
     RUBY
   end
 
+  it 'registers an offense for the separator but not a semicolon inside a string literal' do
+    expect_offense(<<~RUBY)
+      x = "foo;bar"; y = 2
+                   ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = "foo;bar"
+       y = 2
+    RUBY
+  end
+
+  it 'registers an offense for the separator but not a semicolon inside a regexp literal' do
+    expect_offense(<<~RUBY)
+      x = /a;b/; y = 2
+               ^ Do not use semicolons to terminate expressions.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = /a;b/
+       y = 2
+    RUBY
+  end
+
   it 'registers an offense without autocorrect when a heredoc is opened before the semicolon' do
     expect_offense(<<~RUBY)
       x = <<~TEXT; y = 2
