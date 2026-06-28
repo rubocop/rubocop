@@ -1,0 +1,1 @@
+* [#15364](https://github.com/rubocop/rubocop/pull/15364): Fix an incorrect autocorrect for `Style/MultipleComparison` that dropped an allowed method comparison appearing between the compared values. ([@bbatsov][])

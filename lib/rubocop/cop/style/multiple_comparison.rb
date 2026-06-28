@@ -70,48 +70,59 @@ module RuboCop
           (send $_ :== ${lvar call})
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
         def on_or(node)
-          root_of_or_node = root_of_or_node(node)
-          return unless node == root_of_or_node
+          return unless node == root_of_or_node(node)
           return unless nested_comparison?(node)
-
-          return unless (variable, values = find_offending_var(node))
+          return unless (variable, values, skipped = find_offending_var(node))
           return if values.size < comparisons_threshold
 
           range = offense_range(values)
+          # Bail when an allowed method comparison sits between the collected
+          # values: collapsing them into a single `include?` would drop it.
+          return if skipped_within_range?(skipped, range)
 
           add_offense(range) do |corrector|
-            elements = values.map(&:source).join(', ')
-            argument = variable.lvar_type? ? variable_name(variable) : variable.source
-            prefer_method = "[#{elements}].include?(#{argument})"
-
-            corrector.replace(range, prefer_method)
+            corrector.replace(range, preferred_method(variable, values))
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-        def find_offending_var(node, variables = Set.new, values = [])
+        def skipped_within_range?(skipped, range)
+          skipped.any? { |node_part| range.contains?(node_part.source_range) }
+        end
+
+        def preferred_method(variable, values)
+          elements = values.map(&:source).join(', ')
+          argument = variable.lvar_type? ? variable_name(variable) : variable.source
+          "[#{elements}].include?(#{argument})"
+        end
+
+        def find_offending_var(node, variables = Set.new, values = [], skipped = [])
           if node.or_type?
-            find_offending_var(node.lhs, variables, values)
-            find_offending_var(node.rhs, variables, values)
+            find_offending_var(node.lhs, variables, values, skipped)
+            find_offending_var(node.rhs, variables, values, skipped)
           elsif simple_double_comparison?(node)
             return
-          elsif (var, obj = simple_comparison(node))
-            return if allow_method_comparison? && obj.call_type?
-
-            variables << var
-            return if variables.size > 1
-
-            values << obj
+          elsif (comparison = simple_comparison(node))
+            collect_comparison(node, comparison, variables, values, skipped)
           end
 
-          [variables.first, values] if variables.any?
+          [variables.first, values, skipped] if variables.any?
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+        def collect_comparison(node, comparison, variables, values, skipped)
+          var, obj = comparison
+          if allow_method_comparison? && obj.call_type?
+            skipped << node
+            return
+          end
+
+          variables << var
+          return if variables.size > 1
+
+          values << obj
+        end
 
         def offense_range(values)
           values.first.parent.source_range.begin.join(values.last.parent.source_range.end)
