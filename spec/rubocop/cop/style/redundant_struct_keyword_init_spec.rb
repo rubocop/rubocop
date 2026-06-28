@@ -24,6 +24,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantStructKeywordInit, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects when `keyword_init` is followed by other keyword arguments' do
+      expect_offense(<<~RUBY)
+        Struct.new(a: 1, keyword_init: nil, b: 2)
+                         ^^^^^^^^^^^^^^^^^ Remove the redundant `keyword_init: nil`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Struct.new(a: 1, b: 2)
+      RUBY
+    end
+
+    it 'registers an offense and corrects when `keyword_init` is the first of several keyword arguments' do
+      expect_offense(<<~RUBY)
+        Struct.new(keyword_init: true, a: 1)
+                   ^^^^^^^^^^^^^^^^^^ Remove the redundant `keyword_init: true`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Struct.new(a: 1)
+      RUBY
+    end
+
     it 'registers an offense when using only `keyword_init: true` in `Struct.new`' do
       expect_offense(<<~RUBY)
         Struct.new(keyword_init: true)
