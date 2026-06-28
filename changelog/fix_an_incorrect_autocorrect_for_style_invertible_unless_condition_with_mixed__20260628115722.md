@@ -1,0 +1,1 @@
+* [#15372](https://github.com/rubocop/rubocop/pull/15372): Fix an incorrect autocorrect for `Style/InvertibleUnlessCondition` with mixed `&&`/`||` conditions, which lost the required parentheses when inverting. ([@bbatsov][])

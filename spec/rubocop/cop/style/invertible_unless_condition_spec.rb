@@ -89,6 +89,17 @@ RSpec.describe RuboCop::Cop::Style::InvertibleUnlessCondition, :config do
         foo if x == y || (((x.even?) && (((y < 5)))) && z.nonzero?)
       RUBY
     end
+
+    it 'registers an offense and corrects parenthesizing an `and` nested in an `or`' do
+      expect_offense(<<~RUBY)
+        foo unless x != y && y >= 5 || x.odd?
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer `if (x == y || y < 5) && x.even?` over `unless x != y && y >= 5 || x.odd?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo if (x == y || y < 5) && x.even?
+      RUBY
+    end
   end
 
   it 'registers an offense and corrects methods without arguments called with implicit receivers' do
