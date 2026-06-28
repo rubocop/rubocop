@@ -100,12 +100,31 @@ module RuboCop
         end
 
         def range(redundant_keyword_init)
-          if redundant_keyword_init.parent.left_siblings.last.is_a?(AST::Node)
-            beginning_of_range = redundant_keyword_init.parent.left_siblings.last.source_range.end
-
-            beginning_of_range.join(redundant_keyword_init.source_range.end)
+          if redundant_keyword_init.parent.pairs.all? { |pair| keyword_init?(pair) }
+            # The hash holds only `keyword_init` pairs, so it is emptied; anchor the
+            # removal before the hash to also drop the comma that precedes it.
+            range_emptying_hash(redundant_keyword_init)
           else
-            redundant_keyword_init
+            # Other pairs remain, so just drop this pair and one adjacent comma.
+            range_within_hash(redundant_keyword_init)
+          end
+        end
+
+        def range_within_hash(pair)
+          if (left = pair.left_sibling)
+            left.source_range.end.join(pair.source_range.end)
+          elsif (right = pair.right_sibling)
+            pair.source_range.begin.join(right.source_range.begin)
+          else
+            pair.source_range
+          end
+        end
+
+        def range_emptying_hash(pair)
+          if (preceding = pair.parent.left_sibling).is_a?(AST::Node)
+            preceding.source_range.end.join(pair.source_range.end)
+          else
+            pair.source_range
           end
         end
       end
