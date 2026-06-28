@@ -100,6 +100,15 @@ module RuboCop
           add_lhs_to_local_variables_scopes(node.rhs, node.lhs)
         end
 
+        # Register the exception variable of `rescue => e` so that `self.e` in the
+        # body is not treated as redundant (it disambiguates the local variable).
+        def on_resbody(node)
+          exception_variable = node.exception_variable
+          return unless exception_variable&.lvasgn_type?
+
+          @local_variables_scopes[node] << exception_variable.name
+        end
+
         def on_in_pattern(node)
           add_match_var_scopes(node)
         end
