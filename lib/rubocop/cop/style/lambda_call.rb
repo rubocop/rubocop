@@ -27,6 +27,9 @@ module RuboCop
 
         def on_send(node)
           return unless node.receiver
+          # Rewriting the call rebuilds it as a single expression, which would drop
+          # any comments inside the argument list, so leave it to be fixed manually.
+          return if comments_in_node?(node)
 
           if offense?(node)
             prefer = prefer(node)
@@ -47,6 +50,14 @@ module RuboCop
         alias on_csend on_send
 
         private
+
+        def comments_in_node?(node)
+          range = node.source_range
+          processed_source.comments.any? do |comment|
+            range.begin_pos <= comment.source_range.begin_pos &&
+              comment.source_range.end_pos <= range.end_pos
+          end
+        end
 
         def offense?(node)
           (explicit_style? && node.implicit_call?) || (implicit_style? && !node.implicit_call?)
