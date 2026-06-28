@@ -130,6 +130,12 @@ RSpec.describe RuboCop::Cop::Style::InvertibleUnlessCondition, :config do
     RUBY
   end
 
+  it 'does not register an offense when the condition is a multi-statement begin' do
+    expect_no_offenses(<<~RUBY)
+      foo unless (x != y; x.odd?)
+    RUBY
+  end
+
   it 'does not register an offense when using non invertible `unless`' do
     expect_no_offenses(<<~RUBY)
       foo unless x != y || x.awesome?

@@ -75,7 +75,9 @@ module RuboCop
         def invertible?(node) # rubocop:disable Metrics/CyclomaticComplexity
           case node&.type
           when :begin
-            invertible?(node.children.first)
+            # A multi-statement `begin` evaluates to its last expression, so it
+            # cannot be inverted by negating a single child.
+            node.children.one? && invertible?(node.children.first)
           when :send
             return false if inheritance_check?(node)
 
