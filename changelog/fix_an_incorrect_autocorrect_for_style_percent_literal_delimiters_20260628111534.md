@@ -1,0 +1,1 @@
+* [#15366](https://github.com/rubocop/rubocop/pull/15366): Fix an incorrect autocorrect for `Style/PercentLiteralDelimiters` that produced invalid Ruby for a `%s` symbol whose content contains the preferred delimiter. ([@bbatsov][])
