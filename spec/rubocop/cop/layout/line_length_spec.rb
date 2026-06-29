@@ -785,6 +785,22 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
             RUBY
           end
 
+          it 'breaks an indented string under a multi-line parent without looping' do
+            expect_offense(<<~RUBY)
+              foo(
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa bbbbbbbbbbb'
+                                                      ^^^^^^ Line is too long. [46/40]
+              )
+            RUBY
+
+            expect_correction(<<~'RUBY')
+              foo(
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ' \
+              'bbbbbbbbbbb'
+              )
+            RUBY
+          end
+
           context 'when AllowHeredoc: false' do
             let(:cop_config) { super().merge('AllowHeredoc' => false) }
 
