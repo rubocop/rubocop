@@ -66,16 +66,26 @@ module RuboCop
 
         # @!method bit_operation?(node)
         def_node_matcher :bit_operation?, <<~PATTERN
-          (begin
-            (send _ :& _))
+          {
+            (begin
+              (send _ :& _))
+            (send _ :& _)
+          }
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
-        def on_send(node)
-          return unless node.receiver&.begin_type?
-          return unless (preferred_method = preferred_method(node))
+        # @!method bit_operation(node)
+        def_node_matcher :bit_operation, <<~PATTERN
+          {
+            (begin
+              $(send _ :& _))
+            $(send _ :& _)
+          }
+        PATTERN
 
-          bit_operation = node.receiver.children.first
+        def on_send(node)
+          return unless (preferred_method = preferred_method(node))
+          return unless (bit_operation = bit_operation(node.receiver))
+
           lhs, _operator, rhs = *bit_operation
 
           preferred = if preferred_method == 'allbits?' && lhs.source == node.first_argument.source
@@ -88,7 +98,6 @@ module RuboCop
             corrector.replace(node, preferred)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 
