@@ -121,6 +121,31 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       end
     end
 
+    context 'when fail-fast is enabled and there is an offense in the inspected file' do
+      let(:options) { { fail_fast: true, formatters: [['progress', formatter_output_path]] } }
+      let(:source) { <<~RUBY }
+        # frozen_string_literal: true
+
+        def INVALID_CODE; end
+      RUBY
+
+      it 'reports the offense and returns false' do
+        expect(runner.run([])).to be false
+        expect(formatter_output).to eq <<~RESULT
+          Inspecting 1 file
+          C
+
+          Offenses:
+
+          example.rb:3:5: C: Naming/MethodName: Use snake_case for method names.
+          def INVALID_CODE; end
+              ^^^^^^^^^^^^
+
+          1 file inspected, 1 offense detected
+        RESULT
+      end
+    end
+
     context 'custom ruby extractors' do
       around do |example|
         described_class.ruby_extractors.unshift(custom_ruby_extractor)

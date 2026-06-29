@@ -120,7 +120,6 @@ module RuboCop
       file_iterator(files) do |file|
         offenses = process_file(file)
         succeeded = offenses.none? { |o| considered_failure?(o) && offense_displayed?(o) }
-        raise Parallel::Break if @options[:fail_fast] && !succeeded
 
         [offenses, succeeded]
       end
@@ -142,6 +141,7 @@ module RuboCop
       on_finish = lambda do |file, index, (offenses, passed)|
         all_passed &&= passed
         finished_report(file, index, offenses)
+        raise Parallel::Break if @options[:fail_fast] && !passed
       end
 
       if run_in_parallel?(files)
