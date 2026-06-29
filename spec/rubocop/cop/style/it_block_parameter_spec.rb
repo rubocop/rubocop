@@ -34,20 +34,13 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
         RUBY
       end
 
-      it 'registers an offense when using twice a single numbered parameters' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense for a multi-line numbered parameter block' do
+        # Converting `_1` to `it` here would only create an uncorrectable
+        # "Avoid using `it` block parameter for multi-line blocks" offense.
+        expect_no_offenses(<<~RUBY)
           block do
             foo(_1)
-                ^^ Use `it` block parameter.
             bar(_1)
-                ^^ Use `it` block parameter.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          block do
-            foo(it)
-            bar(it)
           end
         RUBY
       end
