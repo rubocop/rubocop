@@ -13833,6 +13833,54 @@ p = proc { |n| puts n }
 
 * https://rubystyle.guide#proc
 
+[#stylepublicaccessmodifier]
+== Style/PublicAccessModifier
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.89
+| -
+|===
+
+Checks for explicit usage of the `public` access modifier.
+
+This cop can be used to prevent methods from accidentally becoming
+public when they are added after an explicit `public` modifier later in
+a class or module body.
+
+[#examples-stylepublicaccessmodifier]
+=== Examples
+
+[source,ruby]
+----
+# bad
+class Foo
+  private
+
+  def bar; end
+
+  public
+
+  def baz; end
+end
+
+# bad
+public def foo; end
+
+# good
+class Foo
+  def baz; end
+
+  private
+
+  def bar; end
+end
+----
+
 [#stylequotedsymbols]
 == Style/QuotedSymbols
 

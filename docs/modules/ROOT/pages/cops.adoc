@@ -615,6 +615,7 @@ In the following section you'll find all available cops:
 * xref:cops_style.adoc#stylepredicatewithkind[Style/PredicateWithKind]
 * xref:cops_style.adoc#stylepreferredhashmethods[Style/PreferredHashMethods]
 * xref:cops_style.adoc#styleproc[Style/Proc]
+* xref:cops_style.adoc#stylepublicaccessmodifier[Style/PublicAccessModifier]
 * xref:cops_style.adoc#stylequotedsymbols[Style/QuotedSymbols]
 * xref:cops_style.adoc#styleraiseargs[Style/RaiseArgs]
 * xref:cops_style.adoc#stylerandomwithoffset[Style/RandomWithOffset]
