@@ -174,6 +174,7 @@ module RuboCop
 
           method_node, method_name = find_definition(node)
           return unless method_node
+          return unless nameable_method?(method_name)
 
           body = method_node.body
           return unless body == node || body.children.last == node
@@ -209,6 +210,7 @@ module RuboCop
 
           method_node, method_name = find_definition(node)
           return false unless method_node
+          return false unless nameable_method?(method_name)
 
           defined_memoized?(method_node.body, arg.name) do |defined_ivar, return_ivar, ivar_assign|
             return false if matches?(method_name, ivar_assign)
@@ -248,6 +250,13 @@ module RuboCop
           end
 
           nil
+        end
+
+        # Operator and other non-word method names (e.g. `[]`, `+`, `<=>`) cannot form a
+        # valid instance variable name, so there is no matching ivar to enforce and a
+        # suggested correction like `@[]` would be invalid Ruby.
+        def nameable_method?(method_name)
+          /\A[a-zA-Z_]\w*\z/.match?(method_name.to_s.delete('!?='))
         end
 
         def matches?(method_name, ivar_assign)
