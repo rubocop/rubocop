@@ -6,6 +6,11 @@ module RuboCop
       # Checks for lambdas and procs that always return nil,
       # which can be replaced with an empty lambda or proc instead.
       #
+      # NOTE: A `proc` that returns nil via an explicit `return` is allowed,
+      # because in a `proc` `return` exits the enclosing method, so removing it
+      # would change behavior. A lambda is still reported, since there `return`
+      # only exits the lambda itself.
+      #
       # @example
       #   # bad
       #   -> { nil }
@@ -46,6 +51,9 @@ module RuboCop
         def on_block(node) # rubocop:disable InternalAffairs/NumblockHandler, InternalAffairs/ItblockHandler
           return unless node.lambda_or_proc?
           return unless nil_return?(node.body)
+          # `return` inside a non-lambda proc returns from the enclosing method,
+          # so dropping it changes behavior; only a lambda can omit it safely.
+          return if node.body.return_type? && !node.lambda?
 
           message = format(MSG, type: node.lambda? ? 'lambda' : 'proc')
           add_offense(node, message: message) do |corrector|
