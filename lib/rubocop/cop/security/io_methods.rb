@@ -37,7 +37,7 @@ module RuboCop
           return unless (receiver = node.receiver) && receiver.source == 'IO'
 
           argument = node.first_argument
-          return if argument.respond_to?(:value) && argument.value.strip.start_with?('|')
+          return if argument&.str_type? && argument.value.strip.start_with?('|')
 
           add_offense(node, message: format(MSG, method_name: node.method_name)) do |corrector|
             corrector.replace(receiver, 'File')
