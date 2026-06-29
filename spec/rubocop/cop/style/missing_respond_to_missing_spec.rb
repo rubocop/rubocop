@@ -97,4 +97,41 @@ RSpec.describe RuboCop::Cop::Style::MissingRespondToMissing, :config do
       end
     RUBY
   end
+
+  it 'registers an offense when respond_to_missing? is defined only in a sibling class' do
+    expect_offense(<<~RUBY)
+      class Outer
+        class A
+          def method_missing(name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^ When using `method_missing`, define `respond_to_missing?`.
+          end
+        end
+
+        class B
+          def respond_to_missing?(name, include_private = false)
+            super
+          end
+        end
+      end
+    RUBY
+  end
+
+  it 'allows top-level method_missing and respond_to_missing?' do
+    expect_no_offenses(<<~RUBY)
+      def respond_to_missing?(name, include_private = false)
+        super
+      end
+
+      def method_missing(name)
+      end
+    RUBY
+  end
+
+  it 'registers an offense for a top-level method_missing without respond_to_missing?' do
+    expect_offense(<<~RUBY)
+      def method_missing(name)
+      ^^^^^^^^^^^^^^^^^^^^^^^^ When using `method_missing`, define `respond_to_missing?`.
+      end
+    RUBY
+  end
 end
