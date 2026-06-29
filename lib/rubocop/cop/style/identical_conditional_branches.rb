@@ -216,21 +216,32 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         def correct_assignment(corrector, node, expression, insert_position)
+          indentation = indentation_of(node.parent)
+
           if insert_position == :after_condition
             assignment = node.parent.source_range.with(end_pos: node.source_range.begin_pos)
             corrector.remove(assignment)
-            corrector.insert_after(node, "\n#{assignment.source}#{expression.source}")
+            corrector.insert_after(node, "\n#{indentation}#{assignment.source}#{expression.source}")
           else
-            corrector.insert_before(node.parent, "#{expression.source}\n")
+            corrector.insert_before(node.parent, "#{expression.source}\n#{indentation}")
           end
         end
 
         def correct_no_assignment(corrector, node, expression, insert_position)
+          indentation = indentation_of(node)
+
           if insert_position == :after_condition
-            corrector.insert_after(node, "\n#{expression.source}")
+            corrector.insert_after(node, "\n#{indentation}#{expression.source}")
           else
-            corrector.insert_before(node, "#{expression.source}\n")
+            corrector.insert_before(node, "#{expression.source}\n#{indentation}")
           end
+        end
+
+        # The leading indentation of the line the conditional starts on, so a
+        # hoisted expression keeps the surrounding nesting instead of landing
+        # at column zero.
+        def indentation_of(node)
+          ' ' * node.source_range.column
         end
 
         def last_child_of_parent?(node)
