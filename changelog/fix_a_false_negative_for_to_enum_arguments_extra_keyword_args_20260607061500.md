@@ -1,0 +1,1 @@
+* [#15257](https://github.com/rubocop/rubocop/issues/15257): Fix a false negative for `Lint/ToEnumArguments` when explicit extra keyword arguments are passed (e.g. `def m(x:); to_enum(:m, x: x, y: 1); end`), which raises `ArgumentError` when the enumerator is used. ([@RedZapdos123][])
