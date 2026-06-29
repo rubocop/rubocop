@@ -61,6 +61,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantHeredocDelimiterQuotes, :config do
     RUBY
   end
 
+  it 'registers an offense when using double quotes around a body with interpolation' do
+    expect_offense(<<~'RUBY')
+      do_something(<<~"EOS")
+                   ^^^^^^^^ Remove the redundant heredoc delimiter quotes, use `<<~EOS` instead.
+        #{string} #{interpolation}
+      EOS
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      do_something(<<~EOS)
+        #{string} #{interpolation}
+      EOS
+    RUBY
+  end
+
   it 'does not register an offense when using the redundant heredoc delimiter backquotes' do
     expect_no_offenses(<<~RUBY)
       do_something(<<~`EOS`)
