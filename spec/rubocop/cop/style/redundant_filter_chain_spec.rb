@@ -50,6 +50,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantFilterChain, :config do
       RUBY
     end
 
+    it "registers an offense when using `##{method}` with a numbered-parameter block followed by `#any?`" do
+      expect_offense(<<~RUBY, method: method)
+        arr.%{method} { _1 > 1 }.any?
+            ^{method}^^^^^^^^^^^^^^^^ Use `any?` instead of `#{method}.any?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        arr.any? { _1 > 1 }
+      RUBY
+    end
+
+    it "registers an offense when using `##{method}` with an `it`-parameter block followed by `#any?`", :ruby34 do
+      expect_offense(<<~RUBY, method: method)
+        arr.%{method} { it > 1 }.any?
+            ^{method}^^^^^^^^^^^^^^^^ Use `any?` instead of `#{method}.any?`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        arr.any? { it > 1 }
+      RUBY
+    end
+
     it "does not register an offense when using `##{method}` followed by `#many?`" do
       expect_no_offenses(<<~RUBY)
         arr.#{method} { |x| x > 1 }.many?
