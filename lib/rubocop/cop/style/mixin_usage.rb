@@ -47,7 +47,7 @@ module RuboCop
         # @!method include_statement(node)
         def_node_matcher :include_statement, <<~PATTERN
           (send nil? ${:include :extend :prepend}
-            const)
+            const+)
         PATTERN
 
         # @!method in_top_level_scope?(node)
