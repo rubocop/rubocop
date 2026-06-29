@@ -66,6 +66,29 @@ RSpec.describe RuboCop::Cop::Naming::BinaryOperatorParameterName, :config do
     RUBY
   end
 
+  it 'does not rename a reference to a block parameter that shadows the operator argument' do
+    expect_offense(<<~RUBY)
+      def +(foo)
+            ^^^ When defining the `+` operator, name its argument `other`.
+        result = foo
+        [1, 2, 3].each do |foo|
+          result += foo
+        end
+        result
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def +(other)
+        result = other
+        [1, 2, 3].each do |foo|
+          result += foo
+        end
+        result
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when assigned to argument in method body' do
     expect_offense(<<~RUBY)
       def +(arg)
