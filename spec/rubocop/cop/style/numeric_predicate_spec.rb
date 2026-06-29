@@ -322,6 +322,12 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
             expect_no_offenses('order(Sequel[:number] < 0)')
           end
         end
+
+        context 'with a numbered-parameter block' do
+          it 'allows checking if a number is positive' do
+            expect_no_offenses('where { _1 > 0 }')
+          end
+        end
       end
 
       context 'not ignored method' do

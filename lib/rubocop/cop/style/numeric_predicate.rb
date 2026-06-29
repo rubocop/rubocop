@@ -92,7 +92,7 @@ module RuboCop
           return unless numeric
 
           return if allowed_method_name?(node.method_name) ||
-                    node.each_ancestor(:send, :block).any? do |ancestor|
+                    node.each_ancestor(:send, :any_block).any? do |ancestor|
                       allowed_method_name?(ancestor.method_name)
                     end
 
