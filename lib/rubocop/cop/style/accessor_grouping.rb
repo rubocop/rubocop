@@ -203,12 +203,22 @@ module RuboCop
         end
 
         def range_with_trailing_argument_comment(node)
-          comment = processed_source.ast_with_comments[node.last_argument].last
+          comment = trailing_argument_comment(node)
           if comment
             add_range(node.source_range, comment.source_range)
           else
             node
           end
+        end
+
+        # For a single-line declaration the parser associates the trailing
+        # comment with the first argument, not `last_argument`, so look through
+        # all arguments for a comment that trails the whole node.
+        def trailing_argument_comment(node)
+          comments = node.arguments.filter_map do |argument|
+            processed_source.ast_with_comments[argument].last
+          end
+          comments.find { |comment| comment.source_range.begin_pos >= node.source_range.end_pos }
         end
       end
     end
