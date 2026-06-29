@@ -95,6 +95,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
             "\n"
           RUBY
         end
+
+        it 'does not register an offense when the string contains a `%%` sequence' do
+          expect_no_offenses("#{method}('%%')")
+        end
+
+        it 'does not register an offense when the string contains a format specifier' do
+          expect_no_offenses("#{method}('%s')")
+        end
       end
 
       context 'with literal arguments' do
@@ -148,7 +156,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it_behaves_like 'offending format specifier', '%s', '1i', "'0+1i'"
         it_behaves_like 'offending format specifier', '%s', 'true', "'true'"
         it_behaves_like 'offending format specifier', '%s', 'false', "'false'"
-        it_behaves_like 'offending format specifier', '%s', 'nil', "'nil'"
+        it_behaves_like 'offending format specifier', '%s', 'nil', "''"
 
         it_behaves_like 'non-offending format specifier', '%s', 'foo'
         it_behaves_like 'non-offending format specifier', '%s', '[]'

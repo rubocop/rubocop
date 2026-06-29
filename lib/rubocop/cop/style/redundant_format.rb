@@ -89,6 +89,8 @@ module RuboCop
 
         def on_send(node)
           format_without_additional_args?(node) do |value|
+            next if string_with_format_sequence?(value)
+
             replacement = escape_control_chars(value.source)
 
             add_offense(node, message: message(node, replacement)) do |corrector|
@@ -101,6 +103,24 @@ module RuboCop
         end
 
         private
+
+        # A single-argument `format` whose string still contains a format sequence is
+        # not redundant: `format('%s')` raises at runtime, and `format('%%')` returns
+        # `'%'`, so replacing it with the literal would change behavior.
+        def string_with_format_sequence?(node)
+          string = static_string_value(node)
+          return false unless string
+
+          RuboCop::Cop::Utils::FormatString.new(string).format_sequences.any?
+        end
+
+        def static_string_value(node)
+          if node.str_type?
+            node.value
+          elsif node.dstr_type?
+            node.children.select(&:str_type?).map(&:value).join
+          end
+        end
 
         def message(node, prefer)
           format(MSG, prefer: prefer, method_name: node.method_name)
@@ -246,6 +266,14 @@ module RuboCop
         def argument_value(argument)
           argument = argument.children.first if argument.begin_type?
 
+          # `nil` formats to an empty string (`format('%s', nil) == ''`), not the
+          # literal `'nil'` that `argument.source` would return.
+          return if argument.nil_type?
+
+          typed_argument_value(argument)
+        end
+
+        def typed_argument_value(argument)
           if argument.dsym_type?
             dsym_value(argument)
           elsif argument.hash_type?
