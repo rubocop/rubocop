@@ -136,6 +136,10 @@ module RuboCop
         RequireFileInjector.new(source_path: source_path, root_file_path: root_file_path).inject
       end
 
+      def inject_register_cop(root_dir: 'lib')
+        RegisterCopInjector.new(source_path: source_path, root_dir: root_dir, badge: badge).inject
+      end
+
       def inject_config(config_file_path: 'config/default.yml',
                         version_added: '<<next>>')
         injector =

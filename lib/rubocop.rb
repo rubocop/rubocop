@@ -58,6 +58,7 @@ require_relative 'rubocop/cop/force'
 require_relative 'rubocop/cop/severity'
 require_relative 'rubocop/cop/generator'
 require_relative 'rubocop/cop/generator/configuration_injector'
+require_relative 'rubocop/cop/generator/register_cop_injector'
 require_relative 'rubocop/cop/generator/require_file_injector'
 require_relative 'rubocop/magic_comment'
 
@@ -80,7 +81,9 @@ require_relative 'rubocop/cop/metrics/utils/repeated_attribute_discount'
 
 require_relative 'rubocop/cop/utils/format_string'
 
-require_relative 'rubocop/cop/migration/department_name'
+require_relative 'rubocop/cop_lazy_loader'
+
+require_relative 'rubocop/cop/migration'
 
 require_relative 'rubocop/cop/bundler/duplicated_gem'
 require_relative 'rubocop/cop/bundler/duplicated_group'

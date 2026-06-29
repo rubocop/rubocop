@@ -15,10 +15,16 @@ task :new_cop, [:cop] do |_task, args|
   generator.write_source
   generator.write_spec
 
+  lazy_loaded_departments = [:Migration]
+
   if badge.department == :InternalAffairs
     # InternalAffairs cops are required separately, and not added to config/default.yml
     generator.inject_require(root_file_path: 'lib/rubocop/cop/internal_affairs.rb')
+  elsif lazy_loaded_departments.include?(badge.department)
+    generator.inject_register_cop
+    generator.inject_config
   else
+    # TODO: remove once all departments are lazy loaded
     generator.inject_require
     generator.inject_config
   end
