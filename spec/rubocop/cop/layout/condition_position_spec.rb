@@ -16,6 +16,21 @@ RSpec.describe RuboCop::Cop::Layout::ConditionPosition, :config do
       RUBY
     end
 
+    it 'registers an offense and corrects while preserving a body statement on the condition line' do
+      expect_offense(<<~RUBY)
+        #{keyword}
+          x == 10; do_something
+          ^^^^^^^ Place the condition on the same line as `#{keyword}`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        #{keyword} x == 10
+          do_something
+        end
+      RUBY
+    end
+
     it 'accepts condition on the same line' do
       expect_no_offenses(<<~RUBY)
         #{keyword} x == 10
