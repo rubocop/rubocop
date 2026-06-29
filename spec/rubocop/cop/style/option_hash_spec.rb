@@ -87,6 +87,14 @@ RSpec.describe RuboCop::Cop::Style::OptionHash, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when the options hash is forwarded with an explicit super' do
+      expect_no_offenses(<<~RUBY)
+        def allowed(foo, options = {})
+          super(options)
+        end
+      RUBY
+    end
   end
 
   context 'permitted list' do
