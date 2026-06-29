@@ -85,6 +85,20 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
         end
       RUBY
     end
+
+    it 'does not crash when `define_method` is called without a name argument' do
+      expect_offense(<<~RUBY)
+        define_method do
+        ^^^^^^^^^^^^^^^^ Method has too many lines. [6/5]
+          a = 1
+          a = 2
+          a = 3
+          a = 4
+          a = 5
+          a = 6
+        end
+      RUBY
+    end
   end
 
   context 'when using numbered parameter', :ruby27 do

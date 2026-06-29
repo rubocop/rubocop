@@ -58,7 +58,7 @@ module RuboCop
           return unless node.method?(:define_method)
 
           method_name = node.send_node.first_argument
-          return if method_name.basic_literal? && allowed?(method_name.value)
+          return if method_name&.basic_literal? && allowed?(method_name.value)
 
           check_code_length(node)
         end
