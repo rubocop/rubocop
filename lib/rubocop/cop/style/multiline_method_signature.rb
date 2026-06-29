@@ -87,7 +87,12 @@ module RuboCop
         end
 
         def definition_width(node)
-          node.source_range.begin.join(node.arguments.source_range.end).length
+          # Measure the collapsed single-line width the autocorrect would
+          # produce, not the multi-line source length, so a signature that
+          # would fit on one line is not skipped.
+          signature = node.source_range.begin.join(node.arguments.source_range.end).source
+
+          signature.gsub(/\s+/, ' ').length
         end
       end
     end
