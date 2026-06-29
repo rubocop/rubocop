@@ -45,6 +45,21 @@ RSpec.describe RuboCop::Cop::Style::KeywordParametersOrder, :config do
     RUBY
   end
 
+  it 'does not insert a blank line when a `kwoptarg` already trails the parameters list' do
+    expect_offense(<<~RUBY)
+      def m optional: 1, required:, other_optional: 2
+            ^^^^^^^^^^^ Place optional keyword parameters at the end of the parameters list.
+        do_something
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def m required:, optional: 1, other_optional: 2
+        do_something
+      end
+    RUBY
+  end
+
   it 'registers an offense and corrects when multiple `kwoptarg`s are interleaved with `kwarg`s' do
     expect_offense(<<~RUBY)
       def m(arg, optional1: 1, required1:, optional2: 2, required2:, **rest, &block)
