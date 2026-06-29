@@ -5,6 +5,9 @@ module RuboCop
     module Style
       # Checks for redundant assignment before returning.
       #
+      # When there are comments between the assignment and reference,
+      # the cop will report an offense but it will not autocorrect.
+      #
       # @example
       #   # bad
       #   def test
@@ -99,6 +102,8 @@ module RuboCop
         def check_begin_node(node)
           if (assignment = redundant_assignment?(node))
             add_offense(assignment) do |corrector|
+              next if comments_between_assignment_and_reference?(assignment)
+
               expression = assignment.children[1]
               corrector.replace(assignment, expression.source)
               corrector.remove(assignment.right_sibling)
@@ -107,6 +112,12 @@ module RuboCop
             last_expr = node.children.last
             check_branch(last_expr)
           end
+        end
+
+        def comments_between_assignment_and_reference?(assignment)
+          line_span = assignment.source_range.line..assignment.right_sibling.source_range.line
+
+          processed_source.each_comment_in_lines(line_span).any?
         end
       end
     end
