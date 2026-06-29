@@ -28,6 +28,33 @@ RSpec.describe RuboCop::Cop::Style::NumberedParameters, :config do
       end
     end
 
+    context 'EnforcedStyle: allow_exact_single_line' do
+      let(:cop_config) { { 'EnforcedStyle' => 'allow_exact_single_line' } }
+
+      it 'registers an offense when using numbered parameters with multi-line blocks' do
+        expect_offense(<<~RUBY)
+          collection.each do
+          ^^^^^^^^^^^^^^^^^^ Avoid using numbered parameters for multi-line blocks.
+            puts _1
+          end
+        RUBY
+      end
+
+      it 'registers an offense when using numbered parameters with multi-line method chain' do
+        expect_offense(<<~RUBY)
+          collection.each
+          ^^^^^^^^^^^^^^^ Avoid using numbered parameters for multi-line blocks.
+                    .foo { puts _1 }
+        RUBY
+      end
+
+      it 'does not register an offense when using numbered parameters with single-line blocks' do
+        expect_no_offenses(<<~RUBY)
+          collection.each { puts _1 }
+        RUBY
+      end
+    end
+
     context 'EnforcedStyle: disallow' do
       let(:cop_config) { { 'EnforcedStyle' => 'disallow' } }
 
