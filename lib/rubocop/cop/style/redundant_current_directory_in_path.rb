@@ -26,7 +26,9 @@ module RuboCop
         def on_send(node)
           return unless (first_argument = node.first_argument)
           return unless (index = first_argument.source.index(CURRENT_DIRECTORY_PREFIX))
-          return unless (redundant_length = redundant_path_length(first_argument.str_content))
+
+          content = leading_path_content(first_argument)
+          return unless (redundant_length = redundant_path_length(content))
 
           begin_pos = first_argument.source_range.begin.begin_pos + index
           end_pos = begin_pos + redundant_length
@@ -38,6 +40,16 @@ module RuboCop
         end
 
         private
+
+        # The literal text at the start of the path, which is the whole string
+        # for a plain string and the leading literal segment for an interpolated
+        # one (`nil` when it starts with interpolation).
+        def leading_path_content(node)
+          return node.str_content if node.str_type?
+          return unless node.dstr_type? && (first = node.children.first)&.str_type?
+
+          first.str_content
+        end
 
         def redundant_path_length(path)
           return unless (match = path&.match(REDUNDANT_CURRENT_DIRECTORY_PREFIX))
