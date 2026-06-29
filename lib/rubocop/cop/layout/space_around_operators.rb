@@ -72,6 +72,7 @@ module RuboCop
 
         IRREGULAR_METHODS = %i[[] ! []=].freeze
         EXCESSIVE_SPACE = '  '
+        NUMERIC_TOKEN_TYPES = %i[tINTEGER tFLOAT tRATIONAL tIMAGINARY].freeze
 
         def self.autocorrect_incompatible_with
           [Style::SelfAssignment]
@@ -237,7 +238,7 @@ module RuboCop
           elsif !/^\s.*\s$/.match?(with_space.source)
             "Surrounding space missing for operator `#{operator.source}`."
           elsif excess_leading_space?(type, operator, with_space) ||
-                excess_trailing_space?(right_operand.source_range, with_space)
+                excess_trailing_space?(right_operand, with_space)
             "Operator `#{operator.source}` should be surrounded " \
               'by a single space.'
           end
@@ -259,8 +260,34 @@ module RuboCop
         end
 
         def excess_trailing_space?(right_operand, with_space)
+          right_operand_range = right_operand.source_range
+
           with_space.source.end_with?(EXCESSIVE_SPACE) &&
-            (!allow_for_alignment? || !aligned_with_something?(right_operand))
+            (!allow_for_alignment? ||
+              !(aligned_with_something?(right_operand_range) ||
+                right_aligned_numeric_literal?(right_operand_range)))
+        end
+
+        def right_aligned_numeric_literal?(right_operand_range)
+          numeric_token = leading_numeric_token(right_operand_range)
+          return false unless numeric_token
+
+          aligned_with_adjacent_line?(numeric_token.pos, method(:right_aligned_numeric_token?))
+        end
+
+        def leading_numeric_token(range)
+          processed_source.tokens_within(range).find do |token|
+            token.pos.begin_pos == range.begin_pos && NUMERIC_TOKEN_TYPES.include?(token.type)
+          end
+        end
+
+        def right_aligned_numeric_token?(range, _line, lineno)
+          line_range = processed_source.buffer.line_range(lineno)
+          return false unless line_range
+
+          processed_source.tokens_within(line_range).any? do |token|
+            NUMERIC_TOKEN_TYPES.include?(token.type) && token.pos.last_column == range.last_column
+          end
         end
 
         def align_hash_cop_config
