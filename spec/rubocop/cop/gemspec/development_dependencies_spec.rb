@@ -58,6 +58,19 @@ RSpec.describe RuboCop::Cop::Gemspec::DevelopmentDependencies, :config do
     end
   end
 
+  context 'when `AllowedGems` is nil' do
+    let(:cop_config) { { 'Enabled' => true, 'EnforcedStyle' => 'Gemfile', 'AllowedGems' => nil } }
+
+    it 'does not crash and registers an offense' do
+      expect_offense(<<~RUBY, 'example.gemspec')
+        Gem::Specification.new do |spec|
+          spec.add_development_dependency 'foo'
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Specify development dependencies in Gemfile.
+        end
+      RUBY
+    end
+  end
+
   context 'with `EnforcedStyle: Gemfile`' do
     let(:enforced_style) { 'Gemfile' }
 
