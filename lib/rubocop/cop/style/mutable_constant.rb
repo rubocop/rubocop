@@ -89,6 +89,9 @@ module RuboCop
       #     end
       #   end.freeze
       #
+      #   # good - `Data.define` declares an immutable value type
+      #   CONST = Data.define(:foo, :bar)
+      #
       # @example
       #   # Magic comment - shareable_constant_value: literal
       #
@@ -319,6 +322,8 @@ module RuboCop
             (const _ _)
             (send (const {nil? cbase} :Struct) :new ...)
             (block (send (const {nil? cbase} :Struct) :new ...) ...)
+            (send (const {nil? cbase} :Data) :define ...)
+            (block (send (const {nil? cbase} :Data) :define ...) ...)
             (send _ :freeze)
             (send {float int} {:+ :- :* :** :/ :% :<<} _)
             (send _ {:+ :- :* :** :/ :%} {float int})
