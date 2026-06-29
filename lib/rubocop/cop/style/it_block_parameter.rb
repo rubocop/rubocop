@@ -80,6 +80,9 @@ module RuboCop
 
         def on_numblock(node)
           return if style == :disallow
+          # Under `allow_single_line`, a multi-line block must not use `it`, so
+          # converting a multi-line `_1` would only create an uncorrectable offense.
+          return if style == :allow_single_line && node.multiline?
           return unless node.children[1] == 1
 
           variables = find_block_variables(node, '_1')
