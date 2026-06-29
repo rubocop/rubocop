@@ -224,4 +224,26 @@ RSpec.describe RuboCop::Cop::Gemspec::RequireMFA, :config do
       RUBY
     end
   end
+
+  context 'when a second `Gem::Specification.new` block lacks the metadata' do
+    it 'corrects the offending block without looping into the first one' do
+      expect_offense(<<~RUBY, 'my.gemspec')
+        Gem::Specification.new do |spec|
+          spec.metadata = { 'rubygems_mfa_required' => 'true' }
+        end
+        Gem::Specification.new do |spec|
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `metadata['rubygems_mfa_required']` must be set to `'true'`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        Gem::Specification.new do |spec|
+          spec.metadata = { 'rubygems_mfa_required' => 'true' }
+        end
+        Gem::Specification.new do |spec|
+        spec.metadata['rubygems_mfa_required'] = 'true'
+        end
+      RUBY
+    end
+  end
 end
