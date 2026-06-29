@@ -188,6 +188,13 @@ RSpec.describe RuboCop::Cop::Style::ItBlockParameter, :config do
         RUBY
       end
 
+      it 'does not register an offense when the block argument is only referenced inside a nested block' do
+        # Rewriting `arg` to `it` would bind `it` to the inner block, not the outer one.
+        expect_no_offenses(<<~RUBY)
+          block { |arg| foo.bar { arg.something } }
+        RUBY
+      end
+
       it 'registers an offense when using twice a single named parameters' do
         expect_offense(<<~RUBY)
           block do |arg|

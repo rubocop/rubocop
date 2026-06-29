@@ -112,8 +112,16 @@ module RuboCop
           return [] unless node.body
 
           node.body.each_descendant(:lvar).select do |descendant|
-            descendant.source == block_argument_name
+            descendant.source == block_argument_name && !nested_in_inner_block?(descendant, node)
           end
+        end
+
+        # A reference nested inside another block cannot be rewritten to `it`,
+        # because `it` would resolve to that inner block instead of this one.
+        def nested_in_inner_block?(descendant, node)
+          inner_block = descendant.each_ancestor(:any_block).first
+
+          inner_block && !inner_block.equal?(node)
         end
       end
     end
