@@ -166,7 +166,7 @@ module RuboCop
 
         def anonymous_arguments?(node)
           return true if node.arguments.any? do |arg|
-            arg.type?(:forward_arg, :restarg, :kwrestarg)
+            arg.forward_arg_type? || (arg.type?(:restarg, :kwrestarg) && arg.name.nil?)
           end
           return false unless (last_argument = node.last_argument)
 

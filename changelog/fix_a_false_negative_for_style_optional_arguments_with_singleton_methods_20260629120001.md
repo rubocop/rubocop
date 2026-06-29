@@ -1,0 +1,1 @@
+* [#15386](https://github.com/rubocop/rubocop/pull/15386): Fix a false negative for `Style/OptionalArguments` with singleton methods. ([@bbatsov][])
