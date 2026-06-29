@@ -415,6 +415,29 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense for a comment above an inline access modifier' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          # Explains what bar does.
+          private def bar
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense for a comment above a bare access modifier aligned with the keyword' do
+      expect_offense(<<~RUBY)
+        class A
+        # Explains what bar does.
+        ^^^^^^^^^^^^^^^^^^^^^^^^^ Incorrect indentation detected (column 0 instead of 2).
+        private
+
+          def bar
+          end
+        end
+      RUBY
+    end
   end
 
   context 'when the cop is configured with `IndentationWidth`' do
