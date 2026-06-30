@@ -190,6 +190,53 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
                     '{:array=>{:key=>[\"s1\", \"s2\"]}}')
     it_behaves_like('literal interpolation', '{ array: { key: %i[ s1   s2 ] } }',
                     '{:array=>{:key=>[\"s1\", \"s2\"]}}')
+
+    # String content of nested hash values must be escaped the same way as
+    # top-level interpolated strings, otherwise escaped `#{}`/`#@`/backslashes
+    # become live in the resulting literal and change the output.
+    it 'keeps escaped interpolation in a hash string value escaped' do
+      expect_offense(<<~'RUBY')
+        x = "#{ { foo: "\#{bar}" } }"
+                ^^^^^^^^^^^^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        x = "{:foo=>\"\\\#{bar}\"}"
+      RUBY
+    end
+
+    it 'keeps escaped interpolation in a hash string key escaped' do
+      expect_offense(<<~'RUBY')
+        x = "#{ { "\#{bar}" => 1 } }"
+                ^^^^^^^^^^^^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        x = "{\"\\\#{bar}\"=>1}"
+      RUBY
+    end
+
+    it 'keeps backslashes in a hash string value intact' do
+      expect_offense(<<~'RUBY')
+        x = "#{ { foo: "\\bar" } }"
+                ^^^^^^^^^^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        x = "{:foo=>\"\\\\bar\"}"
+      RUBY
+    end
+
+    it 'keeps escaped instance variable interpolation in a hash string value escaped' do
+      expect_offense(<<~'RUBY')
+        x = "#{ { foo: "\#@bar" } }"
+                ^^^^^^^^^^^^^^^^^ Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        x = "{:foo=>\"\\\#@bar\"}"
+      RUBY
+    end
   end
 
   describe 'type else' do
