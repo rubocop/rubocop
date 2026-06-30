@@ -257,6 +257,28 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
     expect_no_offenses('x = a * b/42r')
   end
 
+  it 'registers an offense for an exponent-assignment operator without spaces and keeps the assignment' do
+    expect_offense(<<~RUBY)
+      base**=exp
+          ^^^ Surrounding space missing for operator `**=`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      base **= exp
+    RUBY
+  end
+
+  it 'registers an offense for a division-assignment operator without spaces and keeps the assignment' do
+    expect_offense(<<~RUBY)
+      val/=2r
+         ^^ Surrounding space missing for operator `/=`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      val /= 2r
+    RUBY
+  end
+
   it 'does not register an offense for slash in non rational literals without spaces' do
     expect_no_offenses(<<~RUBY)
       x = a * b / 42

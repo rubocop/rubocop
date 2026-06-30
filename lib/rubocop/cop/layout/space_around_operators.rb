@@ -204,10 +204,14 @@ module RuboCop
 
         def autocorrect(corrector, range, right_operand)
           range_source = range.source
+          # Match the operator exactly, not by substring, so compound assignments
+          # like `**=` and `/=` are not mistaken for `**` and `/` (which would drop
+          # the `=` and silently change the program's behavior).
+          operator = range_source.strip
 
-          if range_source.include?('**') && !space_around_exponent_operator?
+          if operator == '**' && !space_around_exponent_operator?
             corrector.replace(range, '**')
-          elsif range_source.include?('/') && !space_around_slash_operator?(right_operand)
+          elsif operator == '/' && !space_around_slash_operator?(right_operand)
             corrector.replace(range, '/')
           elsif range_source.end_with?("\n")
             corrector.replace(range, " #{range_source.strip}\n")
