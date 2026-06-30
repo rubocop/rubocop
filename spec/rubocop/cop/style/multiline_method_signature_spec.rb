@@ -259,6 +259,24 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
       end
     end
+
+    context 'when the collapsed signature fits but the multi-line source is longer than the maximum' do
+      let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 20 } } }
+
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def foo(bar,
+          ^^^^^^^^^^^^ Avoid multi-line method signatures.
+                  baz)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(bar, baz)
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when `Layout/LineLength` is disabled' do
