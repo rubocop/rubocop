@@ -1,0 +1,1 @@
+* [#15370](https://github.com/rubocop/rubocop/pull/15370): Fix an incorrect autocorrect for `Style/PerlBackrefs` that rewrote `$+`/`$LAST_PAREN_MATCH` to the non-equivalent `Regexp.last_match(-1)`; these are no longer flagged. ([@bbatsov][])
