@@ -44,15 +44,25 @@ module RuboCop
           message = message(condition)
 
           add_offense(condition, message: message) do |corrector|
-            range = range_by_whole_lines(condition.source_range, include_final_newline: true)
-
             corrector.insert_after(condition.parent.loc.keyword, " #{condition.source}")
-            corrector.remove(range)
+            corrector.remove(removal_range(node, condition))
           end
         end
 
         def message(condition)
           format(MSG, keyword: condition.parent.keyword)
+        end
+
+        # When a body statement shares the condition's line (e.g. `while\n cond; body\nend`),
+        # removing the whole line would delete the body too. In that case only remove the
+        # condition and its trailing separator, preserving the body statement.
+        def removal_range(node, condition)
+          body = node.body
+          if body && body.source_range.line == condition.source_range.last_line
+            range_between(condition.source_range.begin_pos, body.source_range.begin_pos)
+          else
+            range_by_whole_lines(condition.source_range, include_final_newline: true)
+          end
         end
       end
     end

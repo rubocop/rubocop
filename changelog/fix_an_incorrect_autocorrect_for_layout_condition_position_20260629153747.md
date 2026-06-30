@@ -1,0 +1,1 @@
+* [#15398](https://github.com/rubocop/rubocop/pull/15398): Fix an incorrect autocorrect for `Layout/ConditionPosition` that dropped a body statement sharing the condition's line via a semicolon. ([@bbatsov][])
