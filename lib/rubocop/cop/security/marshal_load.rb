@@ -25,7 +25,7 @@ module RuboCop
         # @!method marshal_load(node)
         def_node_matcher :marshal_load, <<~PATTERN
           (send (const {nil? cbase} :Marshal) ${:load :restore}
-          !(send (const {nil? cbase} :Marshal) :dump ...))
+          !(send (const {nil? cbase} :Marshal) :dump ...) _?)
         PATTERN
 
         def on_send(node)
