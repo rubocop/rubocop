@@ -38,6 +38,21 @@ RSpec.describe RuboCop::Cop::Layout::EmptyComment, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects an empty comment trailing a heredoc opener' do
+    expect_offense(<<~RUBY)
+      x = <<~HEREDOC #
+                     ^ Source code comment is empty.
+        hello
+      HEREDOC
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = <<~HEREDOC
+        hello
+      HEREDOC
+    RUBY
+  end
+
   it 'registers an offense and corrects when using an empty comment next to code after comment line' do
     expect_offense(<<~RUBY)
       # comment

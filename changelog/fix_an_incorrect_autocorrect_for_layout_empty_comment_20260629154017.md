@@ -1,0 +1,1 @@
+* [#15399](https://github.com/rubocop/rubocop/pull/15399): Fix an incorrect autocorrect for `Layout/EmptyComment` that deleted a heredoc when removing an empty comment trailing its opener. ([@bbatsov][])
