@@ -42,28 +42,55 @@ module RuboCop
         # @!method nil_check?(node)
         def_node_matcher :nil_check?, '(send _ :nil?)'
 
-        # rubocop:disable Metrics/AbcSize
         def on_send(node)
           return unless node.receiver
 
           style_check?(node) do
             add_offense(node.loc.selector) do |corrector|
               if prefer_comparison?
-                range = node.loc.dot.join(node.loc.selector.end)
-                corrector.replace(range, ' == nil')
+                autocorrect_to_comparison(corrector, node)
               else
-                range = node.receiver.source_range.end.join(node.source_range.end)
-                corrector.replace(range, '.nil?')
+                autocorrect_to_predicate(corrector, node)
               end
-
-              parent = node.parent
-              corrector.wrap(node, '(', ')') if parent.respond_to?(:method?) && parent.method?(:!)
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
+
+        def autocorrect_to_comparison(corrector, node)
+          range = node.loc.dot.join(node.loc.selector.end)
+          corrector.replace(range, ' == nil')
+          # The new `== nil` binds looser than an enclosing operator (e.g. `<<`,
+          # `!`), so wrap it to keep the original precedence.
+          corrector.wrap(node, '(', ')') if operator_expression?(node.parent)
+        end
+
+        def autocorrect_to_predicate(corrector, node)
+          receiver = node.receiver
+          if operator_expression?(receiver)
+            # A looser-binding receiver (e.g. `!x`, `a + b`) must be parenthesized
+            # so the appended `.nil?` applies to the whole expression.
+            corrector.replace(node, "(#{receiver.source}).nil?")
+          else
+            range = receiver.source_range.end.join(node.source_range.end)
+            corrector.replace(range, '.nil?')
+          end
+        end
+
+        def operator_expression?(node)
+          return false unless node
+
+          operator_send?(node) ||
+            node.operator_keyword? ||
+            (node.if_type? && node.ternary?) ||
+            node.type?(:range, :iflipflop, :eflipflop) ||
+            node.assignment?
+        end
+
+        def operator_send?(node)
+          node.send_type? && node.operator_method? && !node.method?(:[]) && !node.method?(:[]=)
+        end
 
         def message(_node)
           prefer_comparison? ? EXPLICIT_MSG : PREDICATE_MSG

@@ -56,7 +56,9 @@ module RuboCop
         def requires_parens?(child)
           child.operator_keyword? ||
             (child.send_type? && child.binary_operation?) ||
-            (child.if_type? && child.ternary?)
+            (child.if_type? && child.ternary?) ||
+            child.type?(:range, :iflipflop, :eflipflop) ||
+            child.assignment?
         end
 
         def correct_opposite_method(corrector, range, child)

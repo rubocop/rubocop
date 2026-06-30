@@ -109,7 +109,7 @@ module RuboCop
 
         def message(node)
           if node.method?(:!=) && !include_semantic_changes?
-            prefer = "!#{node.receiver.source}.nil?"
+            prefer = non_nil_check_replacement(node)
             format(MSG_FOR_REPLACEMENT, prefer: prefer, current: node.source)
           else
             MSG_FOR_REDUNDANCY
@@ -120,11 +120,27 @@ module RuboCop
           cop_config['IncludeSemanticChanges']
         end
 
+        # An operator-expression receiver (e.g. `a + b`) binds looser than the
+        # appended `.nil?`, so it must be parenthesized: `!(a + b).nil?`.
+        def non_nil_check_replacement(node)
+          receiver = node.receiver
+          source = operator_expression?(receiver) ? "(#{receiver.source})" : receiver.source
+          "!#{source}.nil?"
+        end
+
+        def operator_expression?(node)
+          node.operator_keyword? ||
+            (node.send_type? && node.binary_operation?) ||
+            (node.if_type? && node.ternary?) ||
+            node.type?(:range, :iflipflop, :eflipflop) ||
+            node.assignment?
+        end
+
         def autocorrect_comparison(corrector, node)
           if include_semantic_changes?
             corrector.replace(node, node.receiver.source)
           else
-            corrector.replace(node, "!#{node.receiver.source}.nil?")
+            corrector.replace(node, non_nil_check_replacement(node))
           end
         end
 

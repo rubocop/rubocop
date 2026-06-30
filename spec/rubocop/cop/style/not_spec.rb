@@ -82,6 +82,28 @@ RSpec.describe RuboCop::Cop::Style::Not, :config do
     RUBY
   end
 
+  it 'parenthesizes when `not` is applied to a flip-flop' do
+    expect_offense(<<~RUBY)
+      x if not 1..5
+           ^^^ Use `!` instead of `not`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x if !(1..5)
+    RUBY
+  end
+
+  it 'parenthesizes when `not` is applied to an assignment' do
+    expect_offense(<<~RUBY)
+      x if not a = 5
+           ^^^ Use `!` instead of `not`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x if !(a = 5)
+    RUBY
+  end
+
   it 'parenthesizes when `not` is applied to or' do
     expect_offense(<<~RUBY)
       not a || b
