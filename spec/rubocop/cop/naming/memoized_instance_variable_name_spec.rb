@@ -230,6 +230,24 @@ RSpec.describe RuboCop::Cop::Naming::MemoizedInstanceVariableName, :config do
           end
         end
 
+        context 'method name is an operator that cannot form a valid ivar name' do
+          it 'does not register an offense (avoids suggesting an invalid `@[]`)' do
+            expect_no_offenses(<<~RUBY)
+              def []
+                @foo ||= 1
+              end
+            RUBY
+          end
+
+          it 'does not register an offense for a binary operator method' do
+            expect_no_offenses(<<~RUBY)
+              def +(other)
+                @foo ||= other
+              end
+            RUBY
+          end
+        end
+
         context 'code follows memoized variable assignment' do
           it 'does not register an offense' do
             expect_no_offenses(<<~RUBY)
