@@ -1,0 +1,1 @@
+* [#15369](https://github.com/rubocop/rubocop/pull/15369): Fix a false positive for `Style/LambdaCall` when the argument list contains a comment, which the autocorrect would have dropped. ([@bbatsov][])
