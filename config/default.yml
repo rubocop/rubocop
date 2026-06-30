@@ -4658,7 +4658,9 @@ Style/MagicCommentFormat:
 Style/MapCompactWithConditionalBlock:
   Description: 'Prefer `select` or `reject` over `map { ... }.compact`.'
   Enabled: pending
+  SafeAutoCorrect: false
   VersionAdded: '1.30'
+  VersionChanged: '<<next>>'
 
 Style/MapIntoArray:
   Description: 'Checks for usages of `each` with `<<`, `push`, or `append` which can be replaced by `map`.'

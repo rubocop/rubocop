@@ -1,0 +1,1 @@
+* [#15390](https://github.com/rubocop/rubocop/pull/15390): Mark `Style/MapCompactWithConditionalBlock` autocorrect as unsafe because `compact` also removes `nil` elements already present in the collection. ([@bbatsov][])
