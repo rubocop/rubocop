@@ -18,6 +18,19 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
         end
       end
 
+      context 'with block-local (shadow) arguments' do
+        it 'preserves the shadow argument separator' do
+          expect_offense(<<~RUBY)
+            f = ->(x; y) { x }
+                ^^ Use the `lambda` method for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = lambda { |x; y| x }
+          RUBY
+        end
+      end
+
       context 'without arguments' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
@@ -108,6 +121,19 @@ RSpec.describe RuboCop::Cop::Style::Lambda, :config do
 
           expect_correction(<<~RUBY)
             f = -> { x }
+          RUBY
+        end
+      end
+
+      context 'with block-local (shadow) arguments' do
+        it 'preserves the shadow argument separator' do
+          expect_offense(<<~RUBY)
+            f = lambda { |x; y| x }
+                ^^^^^^ Use the `-> { ... }` lambda literal syntax for all lambdas.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            f = ->(x; y) { x }
           RUBY
         end
       end
