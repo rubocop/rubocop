@@ -46,7 +46,7 @@ module RuboCop
         end
 
         def super_used?(node)
-          node.parent.each_node(:zsuper).any?
+          node.parent.each_node(:zsuper, :super).any?
         end
       end
     end
