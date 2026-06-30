@@ -22,6 +22,35 @@ RSpec.describe RuboCop::Cop::Style::IdenticalConditionalBranches, :config do
     end
   end
 
+  context 'when the conditional is nested inside a method' do
+    it 'hoists the trailing expression with the surrounding indentation' do
+      expect_offense(<<~RUBY)
+        def foo
+          if something
+            bar
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+          else
+            baz
+            do_x
+            ^^^^ Move `do_x` out of the conditional.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo
+          if something
+            bar
+          else
+            baz
+          end
+          do_x
+        end
+      RUBY
+    end
+  end
+
   context 'on if..else with identical trailing lines' do
     it 'registers and corrects an offense' do
       expect_offense(<<~RUBY)
