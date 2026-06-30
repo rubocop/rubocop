@@ -95,11 +95,14 @@ module RuboCop
 
         def autocorrect(corrector, node, range, offending_name, preferred_name)
           corrector.replace(range, preferred_name)
-          correct_node(corrector, node.body, offending_name, preferred_name)
+          # Once the exception variable is reassigned, later references point to a
+          # different value, so stop correcting after the reassignment - both in the
+          # body and in the code following the `begin`/`rescue`.
+          return if correct_node(corrector, node.body, offending_name, preferred_name)
           return unless (kwbegin_node = node.parent.each_ancestor(:kwbegin).first)
 
           kwbegin_node.right_siblings.each do |child_node|
-            correct_node(corrector, child_node, offending_name, preferred_name)
+            break if correct_node(corrector, child_node, offending_name, preferred_name)
           end
         end
 
@@ -113,6 +116,8 @@ module RuboCop
           end
         end
 
+        # Returns the reassignment node once the exception variable is reassigned (a truthy
+        # signal to stop correcting later references), or `nil` when no reassignment is found.
         # rubocop:disable Metrics/MethodLength
         def correct_node(corrector, node, offending_name, preferred_name)
           return unless node
@@ -131,9 +136,10 @@ module RuboCop
 
             if child_node.type?(:masgn, :lvasgn)
               correct_reassignment(corrector, child_node, offending_name, preferred_name)
-              break
+              return child_node
             end
           end
+          nil
         end
         # rubocop:enable Metrics/MethodLength
 
