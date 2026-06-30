@@ -82,7 +82,7 @@ module RuboCop
 
           then_code, else_code = else_code, then_code if node.unless?
 
-          "#{node.condition.source} ? #{then_code} : #{else_code}"
+          "#{ternary_condition(node)} ? #{then_code} : #{else_code}"
         end
 
         def correct_elsif(node)
@@ -101,6 +101,14 @@ module RuboCop
           arguments = expr.first_argument.source_range.begin.join(expr.source_range.end)
 
           "#{method.source}(#{arguments.source})"
+        end
+
+        # An assignment used as the condition must be parenthesized, otherwise the
+        # assignment would capture the whole ternary (`a = b ? c : d` instead of
+        # `(a = b) ? c : d`), changing what gets assigned.
+        def ternary_condition(node)
+          condition = node.condition
+          condition.assignment? ? "(#{condition.source})" : condition.source
         end
 
         def build_else_branch(second_condition)
