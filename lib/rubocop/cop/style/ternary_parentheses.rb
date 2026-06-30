@@ -113,6 +113,10 @@ module RuboCop
         def offense?(node)
           condition = node.condition
 
+          # A modifier `if`/`unless` requires the parentheses, e.g. `(a if b) ? x : y`,
+          # so removing them would change the meaning. Don't flag it.
+          return false if parenthesized_modifier_condition?(condition)
+
           if safe_assignment?(condition)
             !safe_assignment_allowed?
           else
@@ -172,6 +176,13 @@ module RuboCop
 
         def unsafe_autocorrect?(condition)
           condition.children.any? { |child| below_ternary_precedence?(child) }
+        end
+
+        def parenthesized_modifier_condition?(condition)
+          return false unless condition.begin_type?
+
+          inner = condition.children.first
+          inner&.if_type? && inner.modifier_form?
         end
 
         def unparenthesized_method_call?(child)

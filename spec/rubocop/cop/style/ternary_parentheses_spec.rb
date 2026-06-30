@@ -359,6 +359,18 @@ RSpec.describe RuboCop::Cop::Style::TernaryParentheses, :config do
         expect_no_corrections
       end
 
+      it 'does not register an offense for a modifier `if` condition' do
+        expect_no_offenses(<<~RUBY)
+          foo = (a if b) ? a : b
+        RUBY
+      end
+
+      it 'does not register an offense for a modifier `unless` condition' do
+        expect_no_offenses(<<~RUBY)
+          foo = (a unless b) ? a : b
+        RUBY
+      end
+
       it 'registers an offense for defined with variable in condition' do
         expect_offense(<<~RUBY)
           foo = (defined? bar) ? a : b
