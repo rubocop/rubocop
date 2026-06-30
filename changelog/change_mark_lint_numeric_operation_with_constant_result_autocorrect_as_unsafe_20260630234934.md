@@ -1,0 +1,1 @@
+* [#15415](https://github.com/rubocop/rubocop/pull/15415): Mark `Lint/NumericOperationWithConstantResult` autocorrect as unsafe because it drops the operands, discarding their side effects and silencing cases where the result is not actually constant (e.g. `x / x` raises when `x` is `0`). ([@bbatsov][])
