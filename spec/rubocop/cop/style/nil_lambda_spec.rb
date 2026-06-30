@@ -187,16 +187,12 @@ RSpec.describe RuboCop::Cop::Style::NilLambda, :config do
       RUBY
     end
 
-    it 'registers an offense when returning nil with `return`' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense when returning nil with `return`' do
+      # `return` in a proc returns from the enclosing method, so it cannot be
+      # safely removed.
+      expect_no_offenses(<<~RUBY)
         proc do
-        ^^^^^^^ Use an empty proc instead of always returning nil.
           return nil
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        proc do
         end
       RUBY
     end
@@ -286,16 +282,12 @@ RSpec.describe RuboCop::Cop::Style::NilLambda, :config do
       RUBY
     end
 
-    it 'registers an offense when returning nil with `return`' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense when returning nil with `return`' do
+      # `return` in a proc returns from the enclosing method, so it cannot be
+      # safely removed.
+      expect_no_offenses(<<~RUBY)
         Proc.new do
-        ^^^^^^^^^^^ Use an empty proc instead of always returning nil.
           return nil
-        end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        Proc.new do
         end
       RUBY
     end
