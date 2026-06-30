@@ -163,7 +163,9 @@ module RuboCop
         def gem_options(node)
           return [] unless node.last_argument&.hash_type?
 
-          node.last_argument.keys.map(&:value)
+          # Only literal keys carry an option name to check; a non-literal key
+          # (e.g. a variable or method call) has no `value` and must be skipped.
+          node.last_argument.keys.filter_map { |key| key.value if key.type?(:sym, :str) }
         end
       end
     end
