@@ -680,6 +680,50 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/ArgumentsForwarding` with `Style/MethodDefParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.2
+    YAML
+    source = <<~RUBY
+      def draw_point **opts
+        draw_rect(**opts)
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Style/ArgumentsForwarding,Style/MethodDefParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def draw_point(**)
+        draw_rect(**)
+      end
+    RUBY
+  end
+
+  it 'corrects `Style/ArgumentsForwarding` with `Style/MethodDefParentheses` for positional and block arguments' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.2
+    YAML
+    source = <<~RUBY
+      def draw_point *args, &block
+        draw_rect(*args, &block)
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Style/ArgumentsForwarding,Style/MethodDefParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def draw_point(*, &)
+        draw_rect(*, &)
+      end
+    RUBY
+  end
+
   describe 'trailing comma cops' do
     let(:source) do
       <<~RUBY
