@@ -2844,7 +2844,7 @@ Metrics/PerceivedComplexity:
   Description: 'Checks that the perceived complexity of methods is not higher than the configured maximum.'
   Enabled: true
   VersionAdded: '0.25'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.88'
   AllowedMethods: []
   AllowedPatterns: []
   Max: 8
@@ -4660,7 +4660,7 @@ Style/MapCompactWithConditionalBlock:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.30'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.88'
 
 Style/MapIntoArray:
   Description: 'Checks for usages of `each` with `<<`, `push`, or `append` which can be replaced by `map`.'

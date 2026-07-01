@@ -9374,13 +9374,26 @@ end
 
 | Pending
 | Yes
-| Always
+| Always (Unsafe)
 | 1.30
-| -
+| 1.88
 |===
 
 Prefer `select` or `reject` over `map { ... }.compact`.
 This cop also handles `filter_map { ... }`, similar to `map { ... }.compact`.
+
+[#safety-stylemapcompactwithconditionalblock]
+=== Safety
+
+This cop is unsafe because `compact` also removes `nil` elements that
+were already present in the receiver, whereas `select`/`reject` keep
+them. The result therefore differs when the collection contains `nil`:
+
+[source,ruby]
+----
+[nil, 1].map { |e| e if e }.compact # => [1]
+[nil, 1].select { |e| e }           # => [nil, 1]
+----
 
 [#examples-stylemapcompactwithconditionalblock]
 === Examples
@@ -12173,6 +12186,11 @@ end
 Checks for lambdas and procs that always return nil,
 which can be replaced with an empty lambda or proc instead.
 
+NOTE: A `proc` that returns nil via an explicit `return` is allowed,
+because in a `proc` `return` exits the enclosing method, so removing it
+would change behavior. A lambda is still reported, since there `return`
+only exits the lambda itself.
+
 [#examples-stylenillambda]
 === Examples
 
@@ -13666,7 +13684,7 @@ Checks for usage of the %Q() syntax when %q() would do.
 
 Looks for uses of Perl-style regexp match
 backreferences and their English versions like
-$1, $2, $&, &+, $MATCH, $PREMATCH, etc.
+$1, $2, $&, $MATCH, $PREMATCH, etc.
 
 [#examples-styleperlbackrefs]
 === Examples

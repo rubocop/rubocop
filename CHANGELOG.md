@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.88.1 (2026-07-01)
+
 ### Bug fixes
 
 * [#15408](https://github.com/rubocop/rubocop/pull/15408): Fix a crash for `Bundler/GemComment` with a non-literal gem option key. ([@bbatsov][])
