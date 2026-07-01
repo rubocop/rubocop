@@ -41,6 +41,10 @@ module RuboCop
             return unless name_node.value.end_with?('.rb')
 
             extension_range = extension_range(name_node)
+            # A backslash right before the extension means the path is escaped;
+            # dropping the extension would either produce invalid Ruby (a trailing
+            # backslash escaping the closing quote) or a confusing path, so skip it.
+            return if escaped_extension?(name_node, extension_range)
 
             add_offense(extension_range) do |corrector|
               corrector.remove(extension_range)
@@ -54,6 +58,11 @@ module RuboCop
           end_of_path_string = name_node.source_range.end_pos
 
           range_between(end_of_path_string - 4, end_of_path_string - 1)
+        end
+
+        def escaped_extension?(name_node, extension_range)
+          offset = extension_range.begin_pos - name_node.source_range.begin_pos
+          name_node.source[0...offset].end_with?('\\')
         end
       end
     end
