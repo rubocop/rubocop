@@ -1,1 +1,0 @@
-* [#15365](https://github.com/rubocop/rubocop/pull/15365): Fix an incorrect autocorrect for `Style/RedundantLineContinuation` that corrupted an earlier line when removing a line continuation at the end of a multi-line file. ([@bbatsov][])

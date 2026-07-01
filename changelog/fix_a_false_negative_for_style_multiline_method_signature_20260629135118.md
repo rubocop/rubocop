@@ -1,1 +1,0 @@
-* [#15396](https://github.com/rubocop/rubocop/pull/15396): Fix a false negative for `Style/MultilineMethodSignature` where a signature that fits on one line was skipped because the multi-line source length was measured instead of the collapsed width. ([@bbatsov][])

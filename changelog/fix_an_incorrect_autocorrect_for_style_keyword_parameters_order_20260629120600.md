@@ -1,1 +1,0 @@
-* [#15387](https://github.com/rubocop/rubocop/pull/15387): Fix an incorrect autocorrect for `Style/KeywordParametersOrder` that inserted a spurious blank line when a keyword optional parameter already trailed the parameters list. ([@bbatsov][])

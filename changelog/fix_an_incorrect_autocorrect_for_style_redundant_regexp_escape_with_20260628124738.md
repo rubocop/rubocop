@@ -1,1 +1,0 @@
-* [#15373](https://github.com/rubocop/rubocop/pull/15373): Fix an incorrect autocorrect for `Style/RedundantRegexpEscape` that stripped a necessary `\@`/`\$` escape after `#` in `%r{}`/`%r//` literals, enabling unintended interpolation. ([@bbatsov][])

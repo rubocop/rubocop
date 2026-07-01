@@ -1,1 +1,0 @@
-* [#15401](https://github.com/rubocop/rubocop/pull/15401): Fix an incorrect autocorrect for `Layout/SpaceAroundOperators` that turned `**=` and `/=` compound assignments into `**`/`/`, dropping the assignment. ([@bbatsov][])

@@ -1,1 +1,0 @@
-* [#15368](https://github.com/rubocop/rubocop/pull/15368): Fix an incorrect autocorrect for `Style/IfWithSemicolon` that changed semantics when the condition was an assignment, by parenthesizing it in the resulting ternary. ([@bbatsov][])

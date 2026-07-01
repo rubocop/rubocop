@@ -1,1 +1,0 @@
-* [#15400](https://github.com/rubocop/rubocop/pull/15400): Fix an incorrect autocorrect for `Layout/EmptyLineBetweenDefs` that inserted a blank line inside a heredoc body when an endless method's body was a heredoc. ([@bbatsov][])
