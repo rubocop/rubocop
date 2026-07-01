@@ -155,8 +155,15 @@ module RuboCop
 
         def less_indented?(line)
           rule = config.for_cop('Layout/AccessModifierIndentation')['EnforcedStyle'] == 'outdent'
-          access_modifier = 'private|protected|public'
-          /\A\s*(end\b|[)}\]])/.match?(line) || (rule && /\A\s*(#{access_modifier})\b/.match?(line))
+          /\A\s*(end\b|[)}\]])/.match?(line) || (rule && bare_access_modifier?(line))
+        end
+
+        # Only a bare access modifier (the keyword alone on its line) is outdented by
+        # `Layout/AccessModifierIndentation`. An inline modifier such as `private def foo`
+        # keeps the regular method indentation, so a comment above it must not be pushed
+        # one level deeper.
+        def bare_access_modifier?(line)
+          /\A\s*(private|protected|public)\s*(#.*)?\z/.match?(line)
         end
 
         def two_alternatives?(line)
