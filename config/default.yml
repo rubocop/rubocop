@@ -5290,6 +5290,11 @@ Style/Proc:
   VersionAdded: '0.9'
   VersionChanged: '0.18'
 
+Style/PublicAccessModifier:
+  Description: 'Checks for explicit usage of the `public` access modifier.'
+  Enabled: pending
+  VersionAdded: '1.89'
+
 Style/QuotedSymbols:
   Description: 'Use a consistent style for quoted symbols.'
   Enabled: pending
