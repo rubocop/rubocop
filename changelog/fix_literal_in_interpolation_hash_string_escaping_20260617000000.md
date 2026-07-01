@@ -1,0 +1,1 @@
+* [#15298](https://github.com/rubocop/rubocop/issues/15298): Fix incorrect autocorrects for `Lint/LiteralInInterpolation` when interpolated hashes contain string keys or values that require escaping in the surrounding string. ([@RedZapdos123][])

@@ -139,6 +139,10 @@ module RuboCop
           escape_string_content(node.value.inspect)
         end
 
+        def autocorrected_value_in_hash_for_string(node)
+          escape_string_content(node.value.inspect)
+        end
+
         def autocorrected_value_for_array(node)
           return node.source.gsub('"', '\"') unless node.percent_literal?
 
@@ -155,7 +159,7 @@ module RuboCop
           "{#{hash_string}}"
         end
 
-        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        # rubocop:disable Metrics/MethodLength
         def autocorrected_value_in_hash(node)
           case node.type
           when :int
@@ -163,7 +167,7 @@ module RuboCop
           when :float
             node.children.last.to_f.to_s
           when :str
-            "\\\"#{node.value.to_s.gsub('"') { '\\\\\"' }}\\\""
+            autocorrected_value_in_hash_for_string(node)
           when :sym
             autocorrected_value_in_hash_for_symbol(node)
           when :array
@@ -174,7 +178,7 @@ module RuboCop
             node.source.gsub('"', '\"')
           end
         end
-        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+        # rubocop:enable Metrics/MethodLength
 
         # Does node print its own source when converted to a string?
         def prints_as_self?(node)
