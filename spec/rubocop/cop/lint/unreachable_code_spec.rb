@@ -14,6 +14,16 @@ RSpec.describe RuboCop::Cop::Lint::UnreachableCode, :config do
     head + body + tail
   end
 
+  it 'registers an offense for every statement following a flow-of-control statement' do
+    expect_offense(wrap(<<~RUBY))
+      return
+      bar
+      ^^^ Unreachable code detected.
+      baz
+      ^^^ Unreachable code detected.
+    RUBY
+  end
+
   %w[return next break retry redo throw raise fail exit exit! abort].each do |t|
     # The syntax using `retry` is not supported in Ruby 3.3 and later.
     next if t == 'retry' && ENV['PARSER_ENGINE'] == 'parser_prism'
