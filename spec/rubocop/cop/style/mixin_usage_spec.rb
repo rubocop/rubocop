@@ -27,6 +27,13 @@ RSpec.describe RuboCop::Cop::Style::MixinUsage, :config do
       RUBY
     end
 
+    it 'registers an offense when including multiple modules at the top level' do
+      expect_offense(<<~RUBY)
+        include Comparable, Enumerable
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `include` is used at the top level. Use inside `class` or `module`.
+      RUBY
+    end
+
     it 'registers an offense when using `include` in method definition outside class or module' do
       expect_offense(<<~RUBY)
         def foo
