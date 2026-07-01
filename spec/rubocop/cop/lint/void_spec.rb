@@ -594,6 +594,19 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
       RUBY
     end
 
+    it 'registers an offense for a safe navigation call' do
+      expect_offense(<<~RUBY)
+        x&.sort
+        ^^^^^^^ Method `#sort` used in void context. Did you mean `#sort!`?
+        top(x)
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x&.sort!
+        top(x)
+      RUBY
+    end
+
     it 'does not register an offense assigning variable' do
       expect_no_offenses(<<~RUBY)
         foo = bar

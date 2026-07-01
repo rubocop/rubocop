@@ -212,7 +212,7 @@ module RuboCop
         end
 
         def check_nonmutating(node)
-          return unless node.type?(:send, :any_block)
+          return unless node.type?(:call, :any_block)
 
           method_name = node.method_name
           return unless NONMUTATING_METHODS.include?(method_name)
@@ -265,7 +265,7 @@ module RuboCop
         end
 
         def autocorrect_nonmutating_send(corrector, node, suggestion)
-          send_node = if node.send_type?
+          send_node = if node.call_type?
                         node
                       else
                         node.send_node
