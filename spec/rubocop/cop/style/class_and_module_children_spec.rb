@@ -458,6 +458,57 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       RUBY
     end
 
+    context 'with tab indentation enforced' do
+      let(:other_cops) { { 'Layout/IndentationStyle' => { 'EnforcedStyle' => 'tabs' } } }
+
+      it 'registers an offense and corrects tab-intended nested children' do
+        expect_offense(<<~RUBY)
+          module A
+                 ^ Use compact module/class definition instead of nested style.
+          \tmodule B
+          \t\tmodule C
+          \t\t\tbody
+          \t\tend
+          \tend
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module A::B::C
+          \tbody
+          end
+        RUBY
+      end
+
+      context "when `Layout/IndentationStyle` has a different `IndentationWidth` than `Layout/IndentationWidth`'s `Width`" do
+        let(:other_cops) do
+          {
+            'Layout/IndentationStyle' => { 'EnforcedStyle' => 'tabs', 'IndentationWidth' => 4 },
+            'Layout/IndentationWidth' => { 'Width' => 2 }
+          }
+        end
+
+        it 'indents the compacted body based on `Layout/IndentationWidth`' do
+          expect_offense(<<~RUBY)
+            module A
+                   ^ Use compact module/class definition instead of nested style.
+            \tmodule B
+            \t\tmodule C
+            \t\t\tbody
+            \t\tend
+            \tend
+            end
+          RUBY
+
+          expect_correction(<<~RUBY)
+            module A::B::C
+            \tbody
+            end
+          RUBY
+        end
+      end
+    end
+
     context 'with unindented nested nodes' do
       it 'registers an offense and autocorrects unindented class' do
         expect_offense(<<~RUBY)

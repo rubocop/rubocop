@@ -206,7 +206,9 @@ module RuboCop
         def autocorrect(corrector, node)
           return unless node
 
-          AlignmentCorrector.correct(corrector, processed_source, node, @column_delta)
+          AlignmentCorrector.correct(
+            corrector, processed_source, node, @column_delta, tab_indentation: true
+          )
         end
 
         # Returns a range at the first non-space column of the line the opening parenthesis is on,

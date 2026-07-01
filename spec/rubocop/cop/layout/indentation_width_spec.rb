@@ -107,7 +107,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
-      it 'detects excessive tab indentation in if statement' do
+      it 'detects and corrects excessive tab indentation in if statement' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         if cond
         \t\tfunc
@@ -115,10 +115,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        if cond
+        \tfunc
+        end
+        RUBY
       end
 
-      it 'detects insufficient tab indentation in class' do
+      it 'detects and corrects insufficient tab indentation in class' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         class A
         def test
@@ -127,10 +131,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        class A
+        \tdef test
+        \tend
+        end
+        RUBY
       end
 
-      it 'detects excessive tab indentation' do
+      it 'detects and corrects excessive tab indentation' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         def test
         \t\t\tputs 'hello'
@@ -138,7 +147,11 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        def test
+        \tputs 'hello'
+        end
+        RUBY
       end
     end
 
@@ -2410,7 +2423,7 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         RUBY
       end
 
-      it 'detects excessive tab indentation in if statement' do
+      it 'detects and corrects excessive tab indentation in if statement' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         if cond
         \t\tfunc
@@ -2418,10 +2431,14 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        if cond
+        \tfunc
+        end
+        RUBY
       end
 
-      it 'detects insufficient tab indentation in class' do
+      it 'detects and corrects insufficient tab indentation in class' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         class A
         def test
@@ -2430,10 +2447,15 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        class A
+        \tdef test
+        \tend
+        end
+        RUBY
       end
 
-      it 'detects excessive tab indentation' do
+      it 'detects and corrects excessive tab indentation' do
         expect_offense(<<-RUBY.gsub(/^        /, ''))
         def test
         \t\t\tputs 'hello'
@@ -2441,7 +2463,70 @@ RSpec.describe RuboCop::Cop::Layout::IndentationWidth, :config do
         end
         RUBY
 
-        expect_no_corrections
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        def test
+        \tputs 'hello'
+        end
+        RUBY
+      end
+
+      it 'detects and corrects excessive tab indentation in nested modules' do
+        expect_offense(<<-RUBY.gsub(/^        /, ''))
+        module Foo
+        \t\tmodule Bar
+        ^^ Use 1 (not 2) tabs for indentation.
+        \t\t\tbaz = 1
+        \t\tend
+        \tend
+        RUBY
+
+        expect_correction(<<-RUBY.gsub(/^        /, ''))
+        module Foo
+        \tmodule Bar
+        \t\tbaz = 1
+        \tend
+        \tend
+        RUBY
+      end
+
+      context "when `Layout/IndentationStyle` has a different `IndentationWidth` than this cop's `Width`" do
+        let(:indentation_style_config) { { 'EnforcedStyle' => 'tabs', 'IndentationWidth' => 4 } }
+
+        it 'corrects based on the indentation width of this cop' do
+          expect_offense(<<-RUBY.gsub(/^          /, ''))
+          class A
+          def test
+          ^{} Use 1 (not 0) tabs for indentation.
+          end
+          end
+          RUBY
+
+          expect_correction(<<-RUBY.gsub(/^          /, ''))
+          class A
+          \tdef test
+          \tend
+          end
+          RUBY
+        end
+      end
+
+      context 'when `Layout/IndentationStyle` has an `IndentationWidth` of zero' do
+        let(:indentation_style_config) { { 'EnforcedStyle' => 'tabs', 'IndentationWidth' => 0 } }
+
+        it 'corrects without raising a division error' do
+          expect_offense(<<-RUBY.gsub(/^          /, ''))
+          if cond
+          \t\tfunc
+          ^^ Use 1 (not 2) tabs for indentation.
+          end
+          RUBY
+
+          expect_correction(<<-RUBY.gsub(/^          /, ''))
+          if cond
+          \tfunc
+          end
+          RUBY
+        end
       end
     end
 

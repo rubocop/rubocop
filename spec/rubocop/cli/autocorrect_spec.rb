@@ -4211,7 +4211,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
 
     class SomeClient
     \tconversation_request.get_messages(session_id, time_before).map do |message|
-    \t\t\t\tConversationMessagesResponse.new message
+    \t\tConversationMessagesResponse.new message
     \tend
     end
     RUBY
@@ -4244,6 +4244,28 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     \tend
     end
     RUBY
+  end
+
+  it 'does not autocorrect or loop with Layout/ArrayAlignment when tab indentation is enforced' do
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/IndentationStyle:
+        EnforcedStyle: tabs
+    YAML
+
+    source = <<-RUBY.gsub(/^    /, '')
+    foo = [1,
+    \t2]
+    RUBY
+    source_file = Pathname('example.rb')
+    create_file(source_file, source)
+
+    status = cli.run(['--autocorrect-all', '--only', 'Layout/ArrayAlignment'])
+    expect(status).to eq(1)
+    expect($stderr.string).to eq('')
+
+    # Aligning to an arbitrary column cannot be expressed with tabs, so the offense is reported
+    # but left uncorrected instead of looping endlessly.
+    expect(source_file.read).to eq(source)
   end
 
   it 'does not cause an infinite loop for Layout/LineLength with SplitStrings' do
