@@ -111,6 +111,25 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
     RUBY
   end
 
+  it 'registers an offense and preserves indentation when class is inside a module' do
+    expect_offense(<<~RUBY)
+      module MyModule
+        class Person < Struct.new(:first_name, :last_name)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+          def foo; end
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      module MyModule
+        Person = Struct.new(:first_name, :last_name) do
+          def foo; end
+        end
+      end
+    RUBY
+  end
+
   it 'accepts plain class' do
     expect_no_offenses(<<~RUBY)
       class Person
