@@ -82,4 +82,26 @@ RSpec.describe RuboCop::Cop::Style::DefWithParentheses, :config do
   it 'accepts empty parentheses in one liners' do
     expect_no_offenses("def to_s() join '/' end")
   end
+
+  it 'reports an offense for empty parens on a single line with a semicolon' do
+    expect_offense(<<~RUBY)
+      def foo(); end
+             ^^ Omit the parentheses in defs when the method doesn't accept any arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo; end
+    RUBY
+  end
+
+  it 'reports an offense for empty parens on a single line with a body after a semicolon' do
+    expect_offense(<<~RUBY)
+      def foo(); bar; end
+             ^^ Omit the parentheses in defs when the method doesn't accept any arguments.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo; bar; end
+    RUBY
+  end
 end

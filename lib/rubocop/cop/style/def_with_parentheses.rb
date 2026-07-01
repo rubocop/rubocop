@@ -57,10 +57,14 @@ module RuboCop
         private
 
         def parentheses_required?(node, arguments_range)
-          return true if node.single_line? && !node.endless?
-
           end_pos = arguments_range.end.end_pos
           token_after_argument = range_between(end_pos, end_pos + 1).source
+
+          # A `;` after the parentheses (e.g. `def foo(); end`) already separates the
+          # signature from the body, so the parentheses can be removed (`def foo; end`).
+          return false if token_after_argument == ';'
+
+          return true if node.single_line? && !node.endless?
 
           token_after_argument == '='
         end
