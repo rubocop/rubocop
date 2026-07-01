@@ -231,6 +231,26 @@ RSpec.describe RuboCop::Cop::Style::MultipleComparison, :config do
       RUBY
     end
 
+    it 'does not register an offense when an allowed method comparison sits between the compared values' do
+      expect_no_offenses(<<~RUBY)
+        var = do_something
+        var == 'bar' || var == foo || var == 'baz'
+      RUBY
+    end
+
+    it 'registers an offense and corrects when the allowed method comparison trails the compared values' do
+      expect_offense(<<~RUBY)
+        var = do_something
+        var == 'bar' || var == 'baz' || var == foo
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid comparing a variable with multiple items in a conditional, use `Array#include?` instead.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        var = do_something
+        ['bar', 'baz'].include?(var) || var == foo
+      RUBY
+    end
+
     it 'registers an offense and corrects when comparing with hash access on rhs' do
       expect_offense(<<~RUBY)
         if a[:key] == 'a' || a[:key] == 'b'
