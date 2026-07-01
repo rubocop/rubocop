@@ -233,12 +233,21 @@ module RuboCop
           def source(node, loc)
             # __FILE__ is treated as a StrNode but has no begin
             if node.str_type? && loc.respond_to?(:begin) && loc.begin.nil?
-              "'#{node.source}'"
+              # `%w` elements have no per-element delimiter, so the value must be
+              # quoted and escaped to stay valid (e.g. `%w(it's)` -> `'it\'s'`).
+              quote(node.value)
             elsif node.sym_type? && !node.loc?(:begin)
-              ":#{node.source}"
+              # `%i` elements have no per-element delimiter, so a symbol that needs
+              # quoting must be emitted as `:"..."` (e.g. `%i(foo-bar)` -> `:"foo-bar"`),
+              # otherwise `:foo-bar` would parse as `:foo.-(bar)`.
+              node.value.inspect
             else
               node.source
             end
+          end
+
+          def quote(string)
+            "'#{string.gsub(/[\\']/) { |char| "\\#{char}" }}'"
           end
 
           def extract_sources(node)
