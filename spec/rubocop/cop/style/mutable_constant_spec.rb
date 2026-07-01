@@ -481,6 +481,23 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       end
     RUBY
 
+    context 'Ruby 3.2 or higher', :ruby32 do
+      it_behaves_like 'immutable objects', 'Data.define'
+      it_behaves_like 'immutable objects', '::Data.define'
+      it_behaves_like 'immutable objects', 'Data.define(:name, :age)'
+      it_behaves_like 'immutable objects', <<~RUBY
+        Data.define(:name) do
+          def greeting
+            'hello'
+          end
+        end
+      RUBY
+    end
+
+    context 'Ruby 3.1 or lower', :ruby31, unsupported_on: :prism do
+      it_behaves_like 'mutable objects', 'Data.define(:name, :age)'
+    end
+
     it 'allows calls to freeze' do
       expect_no_offenses(<<~RUBY)
         CONST = [1].freeze
