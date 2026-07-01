@@ -1,0 +1,1 @@
+* [#15402](https://github.com/rubocop/rubocop/pull/15402): Fix an infinite loop and file corruption for `Layout/LineLength` with `SplitStrings` when an over-long string is indented under a multi-line parent. ([@bbatsov][])
