@@ -54,6 +54,14 @@ module RuboCop
 
       # @api public
       #
+      # @!attribute [r] style_guide_url
+      #
+      # @return [String, nil]
+      #   the URL to the style guide for this offense, or `nil` when not available
+      attr_reader :style_guide_url
+
+      # @api public
+      #
       # @!attribute [r] corrector
       #
       # @return [Corrector | nil]
@@ -88,22 +96,23 @@ module RuboCop
 
       # @api private
       def initialize(severity, location, message, cop_name, # rubocop:disable Metrics/ParameterLists
-                     status = :uncorrected, corrector = nil)
+                     status = :uncorrected, corrector = nil, style_guide_url: nil)
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location
         @message = message.freeze
         @cop_name = cop_name.freeze
         @status = status
         @corrector = corrector
+        @style_guide_url = style_guide_url
         freeze
       end
 
       def marshal_dump
-        [@severity, @location, @message, @cop_name, @status]
+        [@severity, @location, @message, @cop_name, @status, @style_guide_url]
       end
 
       def marshal_load(array)
-        @severity, @location, @message, @cop_name, @status = array
+        @severity, @location, @message, @cop_name, @status, @style_guide_url = array
       end
 
       # @api public

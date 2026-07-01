@@ -140,6 +140,23 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
       }
       expect(hash[:location]).to eq(location_hash)
     end
+
+    context 'when offense has a style guide URL' do
+      let(:offense) do
+        RuboCop::Cop::Offense.new(
+          :convention,
+          location,
+          'This is message',
+          'CopName',
+          :corrected,
+          style_guide_url: 'https://rubystyle.guide#instance-vars'
+        )
+      end
+
+      it 'sets Offense#style_guide_url value for :style_guide_url key' do
+        expect(hash[:style_guide_url]).to eq('https://rubystyle.guide#instance-vars')
+      end
+    end
   end
 
   describe '#hash_for_location' do

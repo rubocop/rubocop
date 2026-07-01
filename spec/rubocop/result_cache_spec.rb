@@ -90,6 +90,21 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
+      context 'an offense with a style guide URL' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :uncorrected,
+            style_guide_url: 'https://rubystyle.guide#underscore-unused-vars'
+          )
+        end
+
+        it 'serializes the style guide URL' do
+          cache.save([offense])
+          expect(cache.load[0].style_guide_url)
+            .to eq('https://rubystyle.guide#underscore-unused-vars')
+        end
+      end
+
       context 'an offense with status unsupported' do
         let(:offense) do
           RuboCop::Cop::Offense.new(
