@@ -195,6 +195,17 @@ RSpec.describe RuboCop::Cop::Style::CollectionCompact, :config, :ruby24 do
     RUBY
   end
 
+  it 'registers an offense and corrects when using safe navigation `grep_v(nil)`' do
+    expect_offense(<<~RUBY)
+      array&.grep_v(nil)
+             ^^^^^^^^^^^ Use `compact` instead of `grep_v(nil)`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      array&.compact
+    RUBY
+  end
+
   it 'registers an offense and corrects when using `grep_v(::NilClass)`' do
     expect_offense(<<~RUBY)
       array.grep_v(::NilClass)
