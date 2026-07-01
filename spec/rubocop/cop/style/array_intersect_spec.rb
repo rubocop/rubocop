@@ -349,6 +349,28 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
         RUBY
       end
 
+      it 'registers an offense when using `array1.any? { |e| array2.include?(e) }`' do
+        expect_offense(<<~RUBY)
+          array1.any? { |e| array2.include?(e) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `array1.intersect?(array2)` instead of `array1.any? { |e| array2.include?(e) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array1.intersect?(array2)
+        RUBY
+      end
+
+      it 'registers an offense when using `array1.none? { |e| array2.include?(e) }`' do
+        expect_offense(<<~RUBY)
+          array1.none? { |e| array2.include?(e) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!array1.intersect?(array2)` instead of `array1.none? { |e| array2.include?(e) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          !array1.intersect?(array2)
+        RUBY
+      end
+
       it 'registers an offense when using `array1.any? { array2.member?(_1) }`' do
         expect_offense(<<~RUBY)
           array1.any? { array2.member?(_1) }
