@@ -73,7 +73,12 @@ module RuboCop
         end
 
         def find_pair_ancestor(node)
-          node.each_ancestor.find(&:pair_type?)
+          node.each_ancestor do |ancestor|
+            return ancestor if ancestor.pair_type?
+            break if grouped_expression?(ancestor) || inside_arg_list_parentheses?(node, ancestor)
+          end
+
+          nil
         end
 
         def unwrap_block_node(node)
