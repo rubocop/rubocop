@@ -1,0 +1,1 @@
+* [#15338](https://github.com/rubocop/rubocop/pull/15338): Fix a false positive for `Style/HashLookupMethod` with safe navigation, where the suggested bracket form would be the unreadable `hash&.[](key)`. ([@bbatsov][])

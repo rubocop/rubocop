@@ -59,14 +59,10 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
     end
 
     context 'when using safe navigation operator' do
-      it 'registers an offense for fetch with one argument' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense for fetch with one argument' do
+        # The bracket equivalent would be the unreadable `hash&.[](key)`.
+        expect_no_offenses(<<~RUBY)
           hash&.fetch(key)
-                ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          (hash[key])
         RUBY
       end
     end
