@@ -234,7 +234,7 @@ module RuboCop
         def autocorrect_class(corrector, node)
           kind = trivial_accessor_kind(node)
 
-          return unless names_match?(node) && kind
+          return unless names_match?(node) && !node.predicate_method? && kind
 
           indent = ' ' * node.loc.column
           corrector.replace(

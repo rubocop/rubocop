@@ -412,6 +412,19 @@ RSpec.describe RuboCop::Cop::Style::TrivialAccessors, :config do
 
       expect_no_corrections
     end
+
+    it 'does not accept predicate-like reader defined as a class method' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def self.foo?
+          ^^^ Use `attr_reader` to define trivial reader methods.
+            @foo
+          end
+        end
+      RUBY
+
+      expect_no_corrections
+    end
   end
 
   context 'allow predicates' do
