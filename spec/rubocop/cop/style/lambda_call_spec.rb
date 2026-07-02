@@ -145,6 +145,16 @@ RSpec.describe RuboCop::Cop::Style::LambdaCall, :config do
       RUBY
     end
 
+    it 'does not register an offense when the argument list contains a comment' do
+      expect_no_offenses(<<~RUBY)
+        x.call(
+          a,
+          # important comment
+          b
+        )
+      RUBY
+    end
+
     it 'registers an offense for opposite + correct' do
       expect_offense(<<~RUBY)
         x.call(a, b)
