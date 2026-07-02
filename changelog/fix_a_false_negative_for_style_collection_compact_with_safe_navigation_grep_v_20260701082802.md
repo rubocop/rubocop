@@ -1,0 +1,1 @@
+* [#15420](https://github.com/rubocop/rubocop/pull/15420): Fix a false negative for `Style/CollectionCompact`, which did not flag `grep_v(nil)`/`grep_v(NilClass)` on a safe-navigation call (e.g. `array&.grep_v(nil)`). ([@bbatsov][])

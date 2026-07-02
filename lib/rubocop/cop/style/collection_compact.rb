@@ -96,7 +96,7 @@ module RuboCop
 
         # @!method grep_v_with_nil?(node)
         def_node_matcher :grep_v_with_nil?, <<~PATTERN
-          (send _ :grep_v {(nil) (const {nil? cbase} :NilClass)})
+          (call _ :grep_v {(nil) (const {nil? cbase} :NilClass)})
         PATTERN
 
         def on_send(node)
