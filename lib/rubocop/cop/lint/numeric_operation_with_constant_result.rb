@@ -15,6 +15,13 @@ module RuboCop
       # can't determine the type of `x`. If `x` is an `Array` or `String`, it doesn't perform
       # a numeric operation.
       #
+      # @safety
+      #   This cop is unsafe because the autocorrection drops the operands, which
+      #   discards any side effects of evaluating them and can change behavior when
+      #   the result is not actually constant. For example, `x / x` raises
+      #   `ZeroDivisionError` when `x` is `0`, and returns `Float::NAN` (not `1`)
+      #   when `x` is `0.0`; replacing it with `1` silences that.
+      #
       # @example
       #
       #   # bad

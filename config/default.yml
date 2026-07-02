@@ -2213,7 +2213,9 @@ Lint/NumberedParameterAssignment:
 Lint/NumericOperationWithConstantResult:
   Description: 'Checks for numeric operations with constant results.'
   Enabled: pending
+  SafeAutoCorrect: false
   VersionAdded: '1.69'
+  VersionChanged: '<<next>>'
 
 Lint/OrAssignmentToConstant:
   Description: 'Checks unintended or-assignment to constant.'
