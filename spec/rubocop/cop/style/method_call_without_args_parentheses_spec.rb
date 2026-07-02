@@ -12,6 +12,49 @@ RSpec.describe RuboCop::Cop::Style::MethodCallWithoutArgsParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense for multiline parens in method call without args' do
+    expect_offense(<<~RUBY)
+      obj.do_something(
+                      ^ Do not use parentheses for method calls with no arguments.
+      )
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something
+    RUBY
+  end
+
+  it 'registers an offense for multiline parens in method call without args with a block' do
+    expect_offense(<<~RUBY)
+      obj.do_something(
+                      ^ Do not use parentheses for method calls with no arguments.
+      ) do
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      obj.do_something do
+      end
+    RUBY
+  end
+
+  it 'accepts parens containing a comment' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something(
+        # comment
+      )
+    RUBY
+  end
+
+  it 'accepts parens containing a comment in method call with a block' do
+    expect_no_offenses(<<~RUBY)
+      obj.do_something(
+        # comment
+      ) do
+      end
+    RUBY
+  end
+
   it 'accepts parentheses for methods starting with an upcase letter' do
     expect_no_offenses('Test()')
   end
