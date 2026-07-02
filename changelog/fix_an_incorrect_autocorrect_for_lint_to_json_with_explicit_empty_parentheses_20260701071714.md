@@ -1,0 +1,1 @@
+* [#15417](https://github.com/rubocop/rubocop/pull/15417): Fix an incorrect autocorrect for `Lint/ToJSON` that produced invalid Ruby (`def to_json(*_args)()`) when the method had explicit empty parentheses. ([@bbatsov][])
