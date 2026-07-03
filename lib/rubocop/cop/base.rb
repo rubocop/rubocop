@@ -545,8 +545,11 @@ module RuboCop
       end
 
       def range_for_original(range)
+        buffer = @current_original.buffer
+        return range if @current_offset.zero? && range.source_buffer.equal?(buffer)
+
         ::Parser::Source::Range.new(
-          @current_original.buffer,
+          buffer,
           range.begin_pos + @current_offset,
           range.end_pos + @current_offset
         )
