@@ -48,8 +48,13 @@ module RuboCop
         def need_heredoc_delimiter_quotes?(node)
           heredoc_delimiter = node.source.delete(heredoc_type(node))
           return true unless heredoc_delimiter.start_with?("'", '"')
+          return true if node.loc.heredoc_end.source.strip.match?(/\W/)
 
-          node.loc.heredoc_end.source.strip.match?(/\W/) ||
+          # A double-quoted delimiter interpolates exactly like an unquoted one,
+          # so its quotes are always redundant. A single-quoted delimiter is
+          # required when the body contains interpolation or escapes that would
+          # otherwise be evaluated.
+          heredoc_delimiter.start_with?("'") &&
             node.loc.heredoc_body.source.match?(STRING_INTERPOLATION_OR_ESCAPED_CHARACTER_PATTERN)
         end
       end
