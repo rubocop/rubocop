@@ -91,7 +91,7 @@ module RuboCop
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_if(node)
-          return if endless_method?(node.body) || node.ancestors.any?(&:dstr_type?)
+          return if endless_method?(node.body) || node.each_ancestor(:dstr).any?
 
           condition = node.condition
           return if defined_nodes(condition).any? { |n| defined_argument_is_undefined?(node, n) } ||
@@ -119,7 +119,7 @@ module RuboCop
           if condition.defined_type?
             [condition]
           else
-            condition.each_descendant.select(&:defined_type?)
+            condition.each_descendant(:defined?)
           end
         end
 
@@ -137,7 +137,7 @@ module RuboCop
           if condition.any_match_pattern_type?
             [condition]
           else
-            condition.each_descendant.select(&:any_match_pattern_type?)
+            condition.each_descendant(:any_match_pattern)
           end
         end
 
@@ -350,7 +350,7 @@ module RuboCop
         end
 
         def comment_on_node_line(node)
-          processed_source.comments.find { |c| same_line?(c, node) }
+          processed_source.comment_at_line(node.first_line)
         end
 
         def remove_comment(corrector, _node, comment)
