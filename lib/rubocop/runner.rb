@@ -346,16 +346,18 @@ module RuboCop
       # inspection iteration. This is used to output meaningful infinite loop
       # error message.
       offenses_by_iteration = []
+      corrected_source = nil
 
-      # When running with --autocorrect, we need to inspect the file (which
-      # includes writing a corrected version of it) until no more corrections
-      # are made. This is because automatic corrections can introduce new
-      # offenses. In the normal case the loop is only executed once.
+      # When running with --autocorrect, we need to inspect the file until no
+      # more corrections are made. This is because automatic corrections can
+      # introduce new offenses. In the normal case the loop is only executed
+      # once. The corrections are kept in memory while iterating and written
+      # back to the file when the loop is done.
       iterate_until_no_changes(processed_source, offenses_by_iteration) do
         # The offenses that couldn't be corrected will be found again so we
         # only keep the corrected ones in order to avoid duplicate reporting.
         !offenses_by_iteration.empty? && offenses_by_iteration.last.select!(&:corrected?)
-        new_offenses, updated_source_file = inspect_file(processed_source)
+        team, new_offenses, updated_source_file = inspect_iteration(processed_source)
         offenses_by_iteration.push(new_offenses)
 
         # We have to reprocess the source to pickup the changes. Since the
@@ -364,12 +366,43 @@ module RuboCop
         break unless updated_source_file
 
         # Autocorrect has happened, don't use the prism result since it is stale.
-        processed_source = get_processed_source(file, nil)
+        # With --stdin the corrected source is kept in @options[:stdin] instead.
+        corrected_source = team.updated_source
+        processed_source = get_processed_source(file, nil, source: corrected_source)
       end
 
       # Return summary of corrected offenses after all iterations
-      offenses = offenses_by_iteration.flatten.uniq
-      [processed_source, offenses]
+      [processed_source, offenses_by_iteration.flatten.uniq]
+    ensure
+      # Write the file once, even when the loop was left through an exception
+      # (e.g. an infinite correction loop), like the per-iteration writes
+      # used to be.
+      File.write(file, corrected_source) if corrected_source
+    end
+
+    def inspect_iteration(processed_source)
+      team = mobilize_team(processed_source)
+      team.defer_corrections = in_memory_corrections_possible?
+      offenses, updated_source_file = inspect_file(processed_source, team)
+      [team, offenses, updated_source_file]
+    end
+
+    # When corrections were written to disk and read back between iterations,
+    # the text-mode write converted LF to CRLF on Windows, and cops like
+    # `Layout/EndOfLine` rely on seeing the source as it would be on disk.
+    # Apply the same conversion to the in-memory source. The final `File.write`
+    # still performs it for the file itself.
+    def emulate_write_read_cycle(source)
+      return source unless Platform.windows?
+
+      source.encode(source.encoding, crlf_newline: true)
+    end
+
+    # Custom ruby extractors may derive their fragments from the file on
+    # disk rather than from the passed processed source, so corrections can
+    # only be kept in memory when the default extractor is used.
+    def in_memory_corrections_possible?
+      self.class.ruby_extractors.one?
     end
 
     def iterate_until_no_changes(source, offenses_by_iteration)
@@ -552,12 +585,19 @@ module RuboCop
     end
 
     # rubocop:disable Metrics/MethodLength
-    def get_processed_source(file, prism_result)
+    def get_processed_source(file, prism_result, source: nil)
       config = @config_store.for_file(file)
       ruby_version = config.target_ruby_version
       parser_engine = config.parser_engine
 
-      processed_source = if @options[:stdin]
+      processed_source = if source
+                           ProcessedSource.new(
+                             emulate_write_read_cycle(source),
+                             ruby_version,
+                             file,
+                             parser_engine: parser_engine
+                           )
+                         elsif @options[:stdin]
                            ProcessedSource.new(
                              @options[:stdin],
                              ruby_version,

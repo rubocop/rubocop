@@ -1,0 +1,1 @@
+* [#15430](https://github.com/rubocop/rubocop/pull/15430): Improve autocorrection performance by keeping corrections in memory across inspection iterations and writing each corrected file only once. ([@bbatsov][])

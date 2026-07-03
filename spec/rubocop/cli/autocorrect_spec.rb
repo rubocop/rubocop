@@ -4406,4 +4406,18 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
       end
     end
   end
+
+  context 'when a correction inserts new lines and `Layout/EndOfLine` expects CRLF' do
+    before { allow(RuboCop::Platform).to receive(:windows?).and_return(true) }
+
+    it 'treats the corrected source as if it had been written to disk and read back' do
+      File.binwrite('example.rb', "puts 1\r\n")
+
+      expect(cli.run(%w[--autocorrect-all
+                        --only Style/FrozenStringLiteralComment,Layout/EndOfLine])).to eq(0)
+      expect($stderr.string).to eq('')
+      expect($stdout.string).not_to include('Layout/EndOfLine')
+      expect(File.binread('example.rb')).to start_with('# frozen_string_literal: true')
+    end
+  end
 end

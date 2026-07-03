@@ -59,6 +59,16 @@ module RuboCop
 
       attr_reader :errors, :warnings, :updated_source_file, :cops
 
+      # When set to true, the corrected source is not written back to the
+      # inspected file; it is exposed through `#updated_source` instead.
+      # @api private
+      attr_accessor :defer_corrections
+
+      # The corrected source of the last investigation, if corrections were
+      # made with `#defer_corrections` enabled.
+      # @api private
+      attr_reader :updated_source
+
       alias updated_source_file? updated_source_file
 
       def initialize(cops, config = nil, options = {})
@@ -135,20 +145,24 @@ module RuboCop
 
       def autocorrect(processed_source, corrector)
         @updated_source_file = false
+        @updated_source = nil
         return unless autocorrect?
         return unless corrector
         return if corrector.empty?
 
-        new_source = corrector.rewrite
+        apply_correction(processed_source, corrector.rewrite)
+        @updated_source_file = true
+      end
 
+      def apply_correction(processed_source, new_source)
         if @options[:stdin]
           # holds source read in from stdin, when --stdin option is used
           @options[:stdin] = new_source
+        elsif defer_corrections
+          @updated_source = new_source
         else
-          filename = processed_source.file_path
-          File.write(filename, new_source)
+          File.write(processed_source.file_path, new_source)
         end
-        @updated_source_file = true
       end
 
       def be_ready
