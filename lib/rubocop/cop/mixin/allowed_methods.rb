@@ -25,11 +25,11 @@ module RuboCop
 
       # @api public
       def allowed_methods
-        if cop_config_deprecated_values.any?(Regexp)
-          cop_config_allowed_methods
-        else
-          cop_config_allowed_methods + cop_config_deprecated_values
-        end
+        @allowed_methods ||= if cop_config_deprecated_values.any?(Regexp)
+                               cop_config_allowed_methods
+                             else
+                               cop_config_allowed_methods + cop_config_deprecated_values
+                             end
       end
 
       def cop_config_allowed_methods

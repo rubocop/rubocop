@@ -27,7 +27,7 @@ module RuboCop
       end
 
       def matches_allowed_pattern?(line)
-        allowed_patterns.any? { |pattern| Regexp.new(pattern).match?(line) }
+        allowed_pattern_regexps.any? { |pattern| pattern.match?(line) }
       end
 
       # @deprecated Use matches_allowed_pattern? instead
@@ -47,6 +47,10 @@ module RuboCop
         else
           cop_config_patterns_values
         end
+      end
+
+      def allowed_pattern_regexps
+        @allowed_pattern_regexps ||= allowed_patterns.map { |pattern| Regexp.new(pattern) }
       end
 
       def cop_config_patterns_values
