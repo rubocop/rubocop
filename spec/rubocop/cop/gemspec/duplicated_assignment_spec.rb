@@ -104,6 +104,30 @@ RSpec.describe RuboCop::Cop::Gemspec::DuplicatedAssignment, :config do
     RUBY
   end
 
+  it 'does not register an offense when the same attribute is assigned in separate specifications' do
+    expect_no_offenses(<<~RUBY)
+      Gem::Specification.new do |spec|
+        spec.name = 'gem1'
+      end
+
+      Gem::Specification.new do |spec|
+        spec.name = 'gem2'
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the same indexed attribute is assigned in separate specifications' do
+    expect_no_offenses(<<~RUBY)
+      Gem::Specification.new do |spec|
+        spec.metadata['key'] = 'value1'
+      end
+
+      Gem::Specification.new do |spec|
+        spec.metadata['key'] = 'value2'
+      end
+    RUBY
+  end
+
   it 'does not register an offense when using `#[]=` with different keys' do
     expect_no_offenses(<<~RUBY)
       Gem::Specification.new do |spec|
