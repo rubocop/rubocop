@@ -110,9 +110,11 @@ module RuboCop
         def_node_matcher :private_directive?, '(send nil? :private ...)'
 
         def on_module(node)
-          return unless node.body&.begin_type?
+          return unless node.body
 
-          each_wrong_style(node.body.children) do |child_node|
+          body_nodes = node.body.begin_type? ? node.body.children : [node.body]
+
+          each_wrong_style(body_nodes) do |child_node|
             add_offense(child_node) do |corrector|
               next if style == :forbidden
 
