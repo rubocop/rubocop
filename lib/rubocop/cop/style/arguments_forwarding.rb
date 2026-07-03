@@ -153,7 +153,7 @@ module RuboCop
         BLOCK_MSG = 'Use anonymous block arguments forwarding (`&`).'
 
         def self.autocorrect_incompatible_with
-          [Naming::BlockForwarding]
+          [Naming::BlockForwarding, Style::MethodDefParentheses]
         end
 
         def on_def(node)

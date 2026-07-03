@@ -102,6 +102,10 @@ module RuboCop
         MSG_PRESENT = 'Use def without parentheses.'
         MSG_MISSING = 'Use def with parentheses when there are parameters.'
 
+        def self.autocorrect_incompatible_with
+          [Style::ArgumentsForwarding]
+        end
+
         def on_def(node)
           args = node.arguments
 
