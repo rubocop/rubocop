@@ -7,6 +7,18 @@ RSpec.describe RuboCop::Cop::Commissioner do
     let(:report) { commissioner.investigate(processed_source) }
     let(:cop_class) do
       stub_const('Fake::FakeCop', Class.new(RuboCop::Cop::Base) do
+                                    # The investigation callbacks are only dispatched
+                                    # to cops that refine them.
+                                    # rubocop:disable Lint/UselessMethodDefinition
+                                    def on_new_investigation
+                                      super
+                                    end
+
+                                    def on_other_file
+                                      super
+                                    end
+                                    # rubocop:enable Lint/UselessMethodDefinition
+
                                     def on_int(node); end
                                     alias_method :on_def, :on_int
                                     alias_method :on_send, :on_int

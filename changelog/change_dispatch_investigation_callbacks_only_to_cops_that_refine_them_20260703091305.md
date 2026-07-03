@@ -1,0 +1,1 @@
+* [#15430](https://github.com/rubocop/rubocop/pull/15430): Improve investigation performance by dispatching `on_new_investigation`, `on_investigation_end`, and `on_other_file` only to cops that refine them, and by skipping `after_*` dispatch when no cop needs it. ([@bbatsov][])

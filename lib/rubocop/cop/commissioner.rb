@@ -64,14 +64,16 @@ module RuboCop
         r = '#' unless RESTRICTED_CALLBACKS.include?(method_name) # has Restricted?
         c = '#' if NO_CHILD_NODES.include?(node_type) # has Children?
 
+        # The `after_` calls are guarded because barely any cop defines an `after_`
+        # callback, and the guard is cheaper than the method call it avoids.
         class_eval(<<~RUBY, __FILE__, __LINE__ + 1)
-                  def on_#{node_type}(node)                               # def on_send(node)
-                    trigger_responding_cops(:on_#{node_type}, node)       #   trigger_responding_cops(:on_send, node)
-              #{r}  trigger_restricted_cops(:on_#{node_type}, node)       #   trigger_restricted_cops(:on_send, node)
-          #{c}      super(node)                                           #   super(node)
-          #{c}      trigger_responding_cops(:after_#{node_type}, node)    #   trigger_responding_cops(:after_send, node)
-          #{c}#{r}  trigger_restricted_cops(:after_#{node_type}, node)    #   trigger_restricted_cops(:after_send, node)
-                  end                                                     # end
+                  def on_#{node_type}(node)                                                                                # def on_send(node)
+                    trigger_responding_cops(:on_#{node_type}, node)                                                        #   trigger_responding_cops(:on_send, node)
+              #{r}  trigger_restricted_cops(:on_#{node_type}, node)                                                        #   trigger_restricted_cops(:on_send, node)
+          #{c}      super(node)                                                                                            #   super(node)
+          #{c}      trigger_responding_cops(:after_#{node_type}, node) if @callbacks[:after_#{node_type}]                  #   trigger_responding_cops(:after_send, node) if @callbacks[:after_send]
+          #{c}#{r}  trigger_restricted_cops(:after_#{node_type}, node) unless @restricted_map[:after_#{node_type}].empty?  #   trigger_restricted_cops(:after_send, node) unless @restricted_map[:after_send].empty?
+                  end                                                                                                      # end
         RUBY
       end
 
@@ -81,13 +83,13 @@ module RuboCop
 
         begin_investigation(processed_source, offset: offset, original: original)
         if processed_source.valid_syntax?
-          invoke(:on_new_investigation, @cops)
+          invoke(:on_new_investigation, @callbacks[:on_new_investigation])
           invoke_with_argument(:investigate, @forces, processed_source)
 
           walk(processed_source.ast) unless @cops.empty?
-          invoke(:on_investigation_end, @cops)
+          invoke(:on_investigation_end, @callbacks[:on_investigation_end])
         else
-          invoke(:on_other_file, @cops)
+          invoke(:on_other_file, @callbacks[:on_other_file])
         end
         reports = @cops.map { |cop| cop.send(:complete_investigation) }
         InvestigationReport.new(processed_source, reports, @errors)
@@ -157,7 +159,7 @@ module RuboCop
       end
 
       def invoke(callback, cops)
-        cops.each { |cop| with_cop_error_handling(cop) { cop.send(callback) } }
+        cops&.each { |cop| with_cop_error_handling(cop) { cop.send(callback) } }
       end
 
       def invoke_with_argument(callback, cops, arg)
