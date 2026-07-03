@@ -1,0 +1,1 @@
+* [#15430](https://github.com/rubocop/rubocop/pull/15430): Improve performance of the per-file cop relevancy check by skipping gem requirement evaluation for cops without gem requirements. ([@bbatsov][])

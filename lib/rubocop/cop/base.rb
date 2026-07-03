@@ -553,7 +553,10 @@ module RuboCop
       end
 
       def target_satisfies_all_gem_version_requirements?
-        self.class.gem_requirements.all? do |gem_name, version_req|
+        gem_requirements = self.class.gem_requirements
+        return true if gem_requirements.empty?
+
+        gem_requirements.all? do |gem_name, version_req|
           all_gem_versions_in_target = @config.gem_versions_in_target
           next false unless all_gem_versions_in_target
 
