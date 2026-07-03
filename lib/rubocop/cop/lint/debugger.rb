@@ -75,9 +75,10 @@ module RuboCop
         MSG = 'Remove debugger entry point `%<source>s`.'
 
         def on_send(node)
+          return unless debugger_method?(node) || debugger_require?(node)
           return if assumed_usage_context?(node)
 
-          add_offense(node) if debugger_method?(node) || debugger_require?(node)
+          add_offense(node)
         end
 
         private
@@ -101,7 +102,18 @@ module RuboCop
         end
 
         def debugger_method?(send_node)
+          return false unless debugger_method_names.include?(send_node.method_name)
+
           debugger_methods.include?(chained_method_name(send_node))
+        end
+
+        # The last segment of each configured debugger method, used to cheaply
+        # rule out the vast majority of `send` nodes before building the
+        # chained method name.
+        def debugger_method_names
+          @debugger_method_names ||= debugger_methods.to_set do |method|
+            method.to_s.split('.').last&.to_sym
+          end
         end
 
         def debugger_require?(send_node)
