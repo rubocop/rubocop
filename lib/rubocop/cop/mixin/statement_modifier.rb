@@ -75,7 +75,7 @@ module RuboCop
       end
 
       def first_line_comment(node)
-        comment = processed_source.comments.find { |c| same_line?(c, node) }
+        comment = processed_source.comment_at_line(node.first_line)
         return unless comment
 
         comment_source = comment.source
