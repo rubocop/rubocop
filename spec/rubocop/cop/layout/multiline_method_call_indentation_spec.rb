@@ -153,6 +153,28 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
           .bar
       RUBY
     end
+
+    it 'accepts a method chain nested inside a parenthesized argument list within a hash pair value' do
+      expect_no_offenses(<<~RUBY)
+        foo(
+          key => Model.joins(
+            Other
+              .arel_table
+              .join_sources
+          )
+        )
+      RUBY
+    end
+
+    it 'accepts a method chain nested inside a grouped expression within a hash pair value' do
+      expect_no_offenses(<<~RUBY)
+        foo(
+          key => (Other
+                    .arel_table
+                    .join_sources)
+        )
+      RUBY
+    end
   end
 
   shared_examples 'common for aligned and indented' do
