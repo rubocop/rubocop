@@ -46,7 +46,7 @@ module RuboCop
           message = format_message_from(processed_source)
 
           add_offense(comment, message: message) do
-            autocorrect if autocorrect_requested?
+            autocorrect if autocorrect?
           end
         end
 
@@ -57,6 +57,10 @@ module RuboCop
         end
 
         def executable?(processed_source)
+          # Virtual sources (LSP buffers, programmatic `ProcessedSource`) have no file on
+          # disk to stat or `chmod`, so treat them as executable to skip the offense.
+          return true unless File.exist?(processed_source.file_path)
+
           # Returns true if stat is executable or if the operating system
           # doesn't distinguish executable files from nonexecutable files.
           # See at: https://github.com/ruby/ruby/blob/ruby_2_4/file.c#L5362

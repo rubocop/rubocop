@@ -90,23 +90,31 @@ module RuboCop
         private
 
         def class_name(class_node, node)
-          if class_name_method?(node.children.first.method_name)
-            if (receiver = class_node.receiver) && class_name_method?(class_node.method_name)
-              return receiver.source
-            end
+          unless class_name_method?(node.children.first.method_name)
+            # `var.class == 'Foo'` compares a `Class` to a `String` (always false) and
+            # has no valid `instance_of?` rewrite, so don't suggest one.
+            return if class_node.str_type?
 
-            if class_node.str_type?
-              value = trim_string_quotes(class_node)
-              value.prepend('::') if require_cbase?(class_node)
-              return value
-            elsif unable_to_determine_type?(class_node)
-              # When a variable or return value of a method is used, it returns nil
-              # because the type is not known and cannot be suggested.
-              return
-            end
+            return class_node.source
           end
 
+          if (receiver = class_node.receiver) && class_name_method?(class_node.method_name)
+            return receiver.source
+          end
+
+          return string_class_name(class_node) if class_node.str_type?
+          # When a variable or return value of a method is used, the type is not known
+          # and cannot be suggested.
+          return if unable_to_determine_type?(class_node)
+
           class_node.source
+        end
+
+        def string_class_name(class_node)
+          value = trim_string_quotes(class_node)
+          # Avoid `::::Foo` when the name is already fully qualified.
+          value.prepend('::') if require_cbase?(class_node) && !value.start_with?('::')
+          value
         end
 
         def class_name_method?(method_name)

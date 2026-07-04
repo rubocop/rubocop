@@ -16,6 +16,18 @@ RSpec.describe RuboCop::Cop::Style::EmptyClassDefinition, :config do
       RUBY
     end
 
+    it 'registers an offense for Class.new assignment to a namespaced constant' do
+      expect_offense(<<~RUBY)
+        Foo::BarError = Class.new(StandardError)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `class` keyword instead of `Class.new` to define an empty class.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo::BarError < StandardError
+        end
+      RUBY
+    end
+
     it 'does not register an offense for Class.new assignment to constant without parent class' do
       expect_no_offenses(<<~RUBY)
         MyClass = Class.new

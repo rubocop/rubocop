@@ -41,6 +41,7 @@ module RuboCop
 
         def on_pair(node)
           return unless string_hash_key?(node)
+          return if node.key.heredoc?
 
           key_content = node.key.str_content
           return unless key_content.valid_encoding?

@@ -83,6 +83,18 @@ RSpec.describe RuboCop::Cop::Style::EmptyStringInsideInterpolation, :config do
           "#{'foo' if condition}"
         RUBY
       end
+
+      it 'does not register an offense (or crash) for a trailing if with an empty string' do
+        expect_no_offenses(<<~'RUBY')
+          "#{'' if condition}"
+        RUBY
+      end
+
+      it 'does not register an offense (or crash) for a trailing unless with an empty string' do
+        expect_no_offenses(<<~'RUBY')
+          "#{'' unless condition}"
+        RUBY
+      end
     end
   end
 

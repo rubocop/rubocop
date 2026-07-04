@@ -6,7 +6,7 @@ module RuboCop
       # Requires a gemspec to have `rubygems_mfa_required` metadata set.
       #
       # This setting tells RubyGems that MFA (Multi-Factor Authentication) is
-      # required for accounts to be able perform privileged operations, such as
+      # required for accounts to be able to perform privileged operations, such as
       # (see RubyGems' documentation for the full list of privileged
       # operations):
       #
@@ -70,7 +70,7 @@ module RuboCop
         def_node_matcher :metadata, <<~PATTERN
           `{
             (send _ :metadata= $_)
-            (send (send _ :metadata) :[]= (str "rubygems_mfa_required") $_)
+            (send (send _ :metadata) :[]= {(str "rubygems_mfa_required") (sym :rubygems_mfa_required)} $_)
           }
         PATTERN
 
@@ -78,13 +78,13 @@ module RuboCop
         def_node_search :metadata_assignment, <<~PATTERN
           `{
             (send _ :metadata= _)
-            (send (send _ :metadata) :[]= (str _) _)
+            (send (send _ :metadata) :[]= {str sym} _)
           }
         PATTERN
 
         # @!method rubygems_mfa_required(node)
         def_node_search :rubygems_mfa_required, <<~PATTERN
-          (pair (str "rubygems_mfa_required") $_)
+          (pair {(str "rubygems_mfa_required") (sym :rubygems_mfa_required)} $_)
         PATTERN
 
         # @!method true_string?(node)
@@ -143,7 +143,10 @@ module RuboCop
             #{block_var}.metadata['rubygems_mfa_required'] = 'true'
           RUBY
 
-          if (last_assignment = metadata_assignment(processed_source.ast).to_a.last)
+          # Scope the search to the current spec block. Searching the whole file
+          # would, for a second `Gem::Specification.new` block, insert the directive
+          # into the first block, leaving this block uncorrected and looping forever.
+          if (last_assignment = metadata_assignment(node).to_a.last)
             corrector.insert_after(last_assignment, "\n#{require_mfa_directive}")
           else
             corrector.insert_before(node.loc.end, "#{require_mfa_directive}\n")

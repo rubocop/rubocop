@@ -23,7 +23,7 @@ module RuboCop
       # `ERB.new` with non-keyword arguments is deprecated since ERB 2.2.0.
       # Use `:trim_mode` and `:eoutvar` keyword arguments to `ERB.new`.
       # This cop identifies places where `ERB.new(str, trim_mode, eoutvar)` can
-      # be replaced by `ERB.new(str, :trim_mode: trim_mode, eoutvar: eoutvar)`.
+      # be replaced by `ERB.new(str, trim_mode: trim_mode, eoutvar: eoutvar)`.
       #
       # @example
       #   # Target codes supports Ruby 2.6 and higher only
@@ -148,7 +148,9 @@ module RuboCop
           arguments = node.arguments
           overridden_kwargs = kwargs.dup
 
-          overridden_kwargs[0] = "trim_mode: #{arguments[2].source}" if arguments[2]
+          if arguments[2] && !arguments[2].hash_type?
+            overridden_kwargs[0] = "trim_mode: #{arguments[2].source}"
+          end
 
           if arguments[3] && !arguments[3].hash_type?
             overridden_kwargs[1] = "eoutvar: #{arguments[3].source}"

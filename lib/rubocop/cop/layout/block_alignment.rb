@@ -18,6 +18,10 @@ module RuboCop
       # `either` (which is the default) : the `end` is allowed to be in either
       # location. The autocorrect will default to `start_of_line`.
       #
+      # When the `do` or `{` appears on a continuation line of multiline
+      # method arguments, the start of the line where the method is called
+      # is used as the alignment target instead of that continuation line.
+      #
       # @example EnforcedStyleAlignWith: either (default)
       #   # bad
       #
@@ -116,6 +120,7 @@ module RuboCop
           end_loc = block_node.loc.end
           return unless begins_its_line?(end_loc)
 
+          start_node = start_for_line_node(block_node) if style == :start_of_line
           start_loc = start_node.source_range
           return unless start_loc.column != end_loc.column || style == :start_of_block
 
@@ -196,21 +201,32 @@ module RuboCop
 
         def compute_do_source_line_column(node, end_loc)
           do_loc = node.loc.begin # Actually it's either do or {.
+          anchor_loc = do_line_anchor_loc(node, do_loc)
 
           # We've found that "end" is not aligned with the start node (which
           # can be a block, a variable assignment, etc). But we also allow
           # the "end" to be aligned with the start of the line where the "do"
           # is, which is a style some people use in multi-line chains of
           # blocks.
-          match = /\S.*/.match(do_loc.source_line)
+          match = /\S.*/.match(anchor_loc.source_line)
           indentation_of_do_line = match.begin(0)
-          return unless end_loc.column != indentation_of_do_line || style == :start_of_line
+          permitted_columns = permitted_do_line_columns(do_loc, indentation_of_do_line)
+          return if permitted_columns.include?(end_loc.column) && style != :start_of_line
 
           {
             source: match[0],
-            line: do_loc.line,
+            line: anchor_loc.line,
             column: indentation_of_do_line
           }
+        end
+
+        # `end` aligned with an argument continuation line that holds the `do`
+        # was accepted before the anchor moved to the method dispatch line;
+        # keep accepting it so that such code does not become an offense.
+        def permitted_do_line_columns(do_loc, indentation_of_do_line)
+          columns = [indentation_of_do_line]
+          columns << (do_loc.source_line =~ /\S/) if style == :either
+          columns
         end
 
         def loc_to_source_line_column(loc)
@@ -239,7 +255,7 @@ module RuboCop
         def compute_start_col(ancestor_node, node)
           if style == :start_of_block
             do_loc = node.loc.begin
-            return do_loc.source_line =~ /\S/
+            return do_line_anchor_loc(node, do_loc).source_line =~ /\S/
           end
           (ancestor_node || node).source_range.column
         end
@@ -252,6 +268,44 @@ module RuboCop
           range = range_between(end_pos - delta, end_pos)
 
           corrector.remove(range)
+        end
+
+        # When the `do` or `{` is on a continuation line of multiline method
+        # arguments, the indentation of that line is not a meaningful
+        # alignment target; anchor on the method dispatch position instead.
+        def do_line_anchor_loc(node, do_loc)
+          if do_line_begins_inside_argument?(node, do_loc)
+            node.send_node.selector || node.send_node.source_range
+          else
+            do_loc
+          end
+        end
+
+        # rubocop:disable Metrics/AbcSize
+        def do_line_begins_inside_argument?(node, do_loc)
+          line_begin_pos = do_loc.begin_pos - do_loc.column
+          first_char_pos = line_begin_pos + (do_loc.source_line =~ /\S/)
+          return false unless inside_parentheses?(node, first_char_pos)
+
+          (node.send_node.arguments + node.arguments).any? do |argument|
+            argument.source_range.begin_pos <= first_char_pos &&
+              first_char_pos < argument.source_range.end_pos
+          end
+        end
+        # rubocop:enable Metrics/AbcSize
+
+        # The continuation line indentation is only an unmeaningful alignment target when
+        # it is dictated by an opening delimiter, i.e. the line begins inside `(` or `[`.
+        # For a bare argument list without parentheses the indentation is the author's
+        # deliberate alignment, so the anchor must not move to the method dispatch line.
+        def inside_parentheses?(node, pos)
+          preceding_tokens = processed_source.tokens.select do |token|
+            token.begin_pos >= node.source_range.begin_pos && token.begin_pos < pos
+          end
+          opens = preceding_tokens.count { |token| token.left_parens? || token.left_bracket? }
+          closes = preceding_tokens.count { |token| token.right_parens? || token.right_bracket? }
+
+          opens > closes
         end
       end
     end

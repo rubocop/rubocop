@@ -91,6 +91,8 @@ module RuboCop
         end
 
         def on_new_investigation
+          return unless @flagged_terms_regex
+
           investigate_filepath if cop_config['CheckFilepaths']
           investigate_tokens
         end
@@ -144,7 +146,7 @@ module RuboCop
         def preprocess_flagged_terms
           allowed_strings = []
           flagged_term_strings = []
-          cop_config['FlaggedTerms'].each do |term, term_definition|
+          (cop_config['FlaggedTerms'] || {}).each do |term, term_definition|
             next if term_definition.nil?
 
             allowed_strings.concat(process_allowed_regex(term_definition['AllowedRegex']))
@@ -181,7 +183,11 @@ module RuboCop
         end
 
         def set_regexes(flagged_term_strings, allowed_strings)
-          @flagged_terms_regex = array_to_ignorecase_regex(flagged_term_strings)
+          # With no flagged terms an empty regex would match everything, so leave the
+          # regex nil and let `on_new_investigation` treat the cop as a no-op.
+          unless flagged_term_strings.empty?
+            @flagged_terms_regex = array_to_ignorecase_regex(flagged_term_strings)
+          end
           @allowed_regex = array_to_ignorecase_regex(allowed_strings) unless allowed_strings.empty?
         end
 

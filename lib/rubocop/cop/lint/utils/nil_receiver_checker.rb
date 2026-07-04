@@ -60,9 +60,7 @@ module RuboCop
               return true if _cant_be_nil?(node.expression, receiver)
             end
 
-            # Due to how `if/else` are implemented (`elsif` is a child of `if` or another `elsif`),
-            # using left_siblings will not work correctly for them.
-            if !else_branch?(node) || (node.if_type? && !node.elsif?)
+            if sequentially_reached?(node)
               node.left_siblings.reverse_each do |sibling|
                 next unless sibling.is_a?(AST::Node)
 
@@ -82,15 +80,17 @@ module RuboCop
             !NIL_METHODS.include?(method_name) && !@additional_nil_methods.include?(method_name)
           end
 
-          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
           def sole_condition_of_parent_if?(node)
             child = node
             parent = node.parent
 
             while parent
               if parent.if_type?
-                condition = parent.condition
-                return true if !child.equal?(condition) && non_nil_condition?(condition, node)
+                unless parent.unless?
+                  condition = parent.condition
+                  return true if !child.equal?(condition) && non_nil_condition?(condition, node)
+                end
 
                 parent = find_top_if(parent) if parent.elsif?
               elsif else_branch?(parent)
@@ -104,12 +104,23 @@ module RuboCop
 
             false
           end
-          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
           def non_nil_condition?(condition, node)
             return true if condition == node
 
             condition.csend_type? && csend_root_receiver(condition) == node
+          end
+
+          # Whether control reaches `node` by falling through its left siblings rather than by
+          # a non-sequential entry. A `resbody` is entered via an exception, the `ensure` branch
+          # runs even after a partway raise, and the `else` arm of an `if/elsif` chain is reached by
+          # branching (its `if/case` siblings are walked via parent recursion instead).
+          def sequentially_reached?(node)
+            return false if node.resbody_type?
+            return false if node.parent&.ensure_type? && node.parent.branch.equal?(node)
+
+            !else_branch?(node) || (node.if_type? && !node.elsif?)
           end
 
           def else_branch?(node)

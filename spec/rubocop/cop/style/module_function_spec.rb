@@ -21,6 +21,21 @@ RSpec.describe RuboCop::Cop::Style::ModuleFunction, :config do
       RUBY
     end
 
+    it 'registers an offense for `extend self` as the only statement in a module' do
+      expect_offense(<<~RUBY)
+        module Test
+          extend self
+          ^^^^^^^^^^^ Use `module_function` instead of `extend self`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module Test
+          module_function
+        end
+      RUBY
+    end
+
     it 'accepts for `extend self` in a module with private methods' do
       expect_no_offenses(<<~RUBY)
         module Test

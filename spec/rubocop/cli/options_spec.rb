@@ -42,14 +42,14 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
       context 'on Unix-like systems' do
         it 'prints a message if --debug is specified' do
           cli.run ['--parallel', '--debug']
-          expect($stdout.string).to match(
-            /Skipping parallel inspection: only a single file needs inspection/
+          expect($stdout.string).to include(
+            'Skipping parallel inspection: only a single file needs inspection'
           )
         end
 
         it 'does not print a message if --debug is not specified' do
           cli.run ['--parallel']
-          expect($stdout.string).not_to match(/Running parallel inspection/)
+          expect($stdout.string).not_to include('Running parallel inspection')
         end
       end
 
@@ -62,7 +62,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         it 'does ignore the exclusion in the parent directory configuration' do
           Dir.chdir('subdir') { cli.run ['--parallel', '--ignore-parent-exclusion'] }
-          expect($stdout.string).to match(/Inspecting 1 file/)
+          expect($stdout.string).to include('Inspecting 1 file')
         end
       end
 
@@ -76,7 +76,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
         it 'does not parse local configuration' do
           cli.run ['--parallel', '--force-default-config']
-          expect($stdout.string).to match(/Inspecting 1 file/)
+          expect($stdout.string).to include('Inspecting 1 file')
         end
       end
     end
@@ -145,6 +145,15 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         it 'start server process and displays an information message' do
           output = `ruby -I . "#{rubocop}" --start-server`
           expect(output).to match(/RuboCop server starting on \d+\.\d+\.\d+\.\d+:\d+\./)
+        end
+
+        it 'reports the server as running immediately after the command returns' do
+          _stdout, stderr, status = Open3.capture3("ruby -I . \"#{rubocop}\" --start-server")
+          expect(stderr).to eq('')
+          expect(status).to be_success
+
+          server_status = `ruby -I . "#{rubocop}" --server-status`
+          expect(server_status).to match(/RuboCop server \(\d+\) is running\./)
         end
       end
 
@@ -473,7 +482,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
       it 'shows that Ruby version in the output' do
         Dir.chdir('subdir') { cli.run ['-V'] }
-        expect($stdout.string).to match(/analyzing as Ruby 3\.0/)
+        expect($stdout.string).to include('analyzing as Ruby 3.0')
       end
     end
   end
@@ -954,7 +963,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
             1 file inspected, 1 offense detected
           RESULT
-          expect($stderr.string).not_to match(%r{CustomCops/NoMethods has the wrong namespace})
+          expect($stderr.string).not_to include('CustomCops/NoMethods has the wrong namespace')
         end
       end
 
@@ -984,7 +993,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
 
             1 file inspected, 1 offense detected
           RESULT
-          expect($stderr.string).not_to match(%r{CustomCops/MethodLength has the wrong namespace})
+          expect($stderr.string).not_to include('CustomCops/MethodLength has the wrong namespace')
         end
       end
     end
@@ -1913,6 +1922,37 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
     end
   end
 
+  describe '--fail-fast option' do
+    it 'reports offenses in the offending file and exits with a failing status' do
+      create_file('example.rb', <<~RUBY)
+        def f
+         x
+        end
+      RUBY
+
+      expect(cli.run(['--fail-fast', '--only', 'Layout/IndentationWidth', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('Layout/IndentationWidth')
+      expect($stdout.string).to include('1 file inspected, 1 offense detected')
+    end
+
+    it 'stops after the first offending file but still reports it' do
+      create_file('a.rb', <<~RUBY)
+        def f
+         x
+        end
+      RUBY
+      create_file('b.rb', <<~RUBY)
+        def g
+         y
+        end
+      RUBY
+
+      expect(cli.run(['--fail-fast', '--only', 'Layout/IndentationWidth', 'a.rb', 'b.rb'])).to eq(1)
+      expect($stdout.string).to include('Layout/IndentationWidth')
+      expect($stdout.string).to include('1 file inspected, 1 offense detected')
+    end
+  end
+
   describe '--fail-level option' do
     let(:target_file) { 'example.rb' }
 
@@ -2180,6 +2220,77 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           "1 file inspected, 2 offenses detected, 1 offense corrected\n"
         )
       end
+    end
+  end
+
+  describe '--enable-all-cops' do
+    before do
+      create_file('example.rb', "# frozen_string_literal: true\n\n[1, 2].collect { |x| x }\n")
+    end
+
+    it 'enables cops that are disabled by default' do
+      expect(cli.run(['--format', 'simple', '--only', 'Style/CollectionMethods',
+                      '--enable-all-cops', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('Style/CollectionMethods')
+    end
+
+    it 'overrides AllCops/DisabledByDefault from the configuration file' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          DisabledByDefault: true
+      YAML
+
+      expect(cli.run(['--format', 'simple', '--only', 'Style/CollectionMethods',
+                      '--enable-all-cops', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('Style/CollectionMethods')
+    end
+
+    it 'works in combination with --force-default-config' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          DisabledByDefault: true
+      YAML
+
+      expect(cli.run(['--format', 'simple', '--only', 'Style/CollectionMethods',
+                      '--enable-all-cops', '--force-default-config', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('Style/CollectionMethods')
+    end
+  end
+
+  describe '--disable-all-cops' do
+    before { create_file('example.rb', "x = 'foo'\n") }
+
+    it 'disables cops that are enabled by default' do
+      expect(cli.run(['--format', 'simple', '--disable-all-cops', 'example.rb'])).to eq(0)
+      expect($stdout.string).to include('no offenses detected')
+    end
+
+    it 'still reports `Lint/Syntax` errors' do
+      create_file('example.rb', '1 /// 2')
+
+      expect(cli.run(['--format', 'simple', '--disable-all-cops', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('Lint/Syntax')
+    end
+
+    it 'overrides AllCops/EnabledByDefault from the configuration file' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          EnabledByDefault: true
+      YAML
+
+      expect(cli.run(['--format', 'simple', '--disable-all-cops', 'example.rb'])).to eq(0)
+      expect($stdout.string).to include('no offenses detected')
+    end
+  end
+
+  describe '--enable-all-cops with --disable-all-cops' do
+    before { create_file('example.rb', 'x = 1') }
+
+    it 'reports an error' do
+      expect(cli.run(['--enable-all-cops', '--disable-all-cops', 'example.rb'])).to eq(2)
+      expect($stderr.string).to include(
+        '--enable-all-cops cannot be used together with --disable-all-cops.'
+      )
     end
   end
 

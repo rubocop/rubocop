@@ -79,6 +79,11 @@ module RuboCop
             corrector.replace(range, replacement)
 
             comments_in_range(node).reverse_each do |comment|
+              # Only relocate comments that the replacement destroys. A trailing
+              # comment after the chain survives in place, so moving it would
+              # duplicate it (and splitting the line drops the indentation).
+              next if comment.source_range.begin_pos >= range.end_pos
+
               corrector.insert_before(node, "#{comment.source}\n")
             end
           end

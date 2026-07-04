@@ -160,6 +160,9 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
                     '{:symbol=>{:key=>:symbol}}')
     it_behaves_like('literal interpolation', '{ symbol: { key: :"symbol" } }',
                     '{:symbol=>{:key=>:symbol}}')
+    it_behaves_like('literal interpolation', "{ :'foo-bar' => 1 }", '{:\"foo-bar\"=>1}')
+    it_behaves_like('literal interpolation', '{ symbol: { key: :"foo-bar" } }',
+                    '{:symbol=>{:key=>:\"foo-bar\"}}')
     it_behaves_like('literal interpolation',
                     '{ single_quot_symbol: { key: :"single_quot_in_symbol: \'" } }',
                     '{:single_quot_symbol=>{:key=>:\"single_quot_in_symbol: \'\"}}')
@@ -338,6 +341,28 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
 
     expect_correction(<<~'RUBY')
       "this is \" silly"
+    RUBY
+  end
+
+  it 'handles double quotes in double quotes when autocorrecting' do
+    expect_offense(<<~'RUBY')
+      "this is #{"\""} silly"
+                 ^^^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "this is \" silly"
+    RUBY
+  end
+
+  it 'handles escaped interpolation text in double quotes when autocorrecting' do
+    expect_offense(<<~'RUBY')
+      "this is #{"\#{1}"} silly"
+                 ^^^^^^^ Literal interpolation detected.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "this is \#{1} silly"
     RUBY
   end
 

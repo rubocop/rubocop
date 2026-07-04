@@ -130,6 +130,80 @@ RSpec.describe RuboCop::Cop::Lint::SelfAssignment, :config do
     RUBY
   end
 
+  it 'registers an offense when using shorthand-or constant self-assignment' do
+    expect_offense(<<~RUBY)
+      Foo ||= Foo
+      ^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-and constant self-assignment' do
+    expect_offense(<<~RUBY)
+      Foo &&= Foo
+      ^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-or attribute self-assignment' do
+    expect_offense(<<~RUBY)
+      foo.bar ||= foo.bar
+      ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-and attribute self-assignment' do
+    expect_offense(<<~RUBY)
+      foo.bar &&= foo.bar
+      ^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-or key self-assignment with a literal key' do
+    expect_offense(<<~RUBY)
+      hash['foo'] ||= hash['foo']
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'does not register an offense for shorthand-or attribute assignment with different attributes' do
+    expect_no_offenses(<<~RUBY)
+      foo.bar ||= foo.baz
+    RUBY
+  end
+
+  it 'does not register an offense for shorthand-or key assignment with different keys' do
+    expect_no_offenses(<<~RUBY)
+      hash['foo'] ||= hash['bar']
+    RUBY
+  end
+
+  it 'does not register an offense for shorthand-or key assignment with a method-call key' do
+    expect_no_offenses(<<~RUBY)
+      hash[foo] ||= hash[foo]
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-or instance var self-assignment' do
+    expect_offense(<<~RUBY)
+      @foo ||= @foo
+      ^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-or class var self-assignment' do
+    expect_offense(<<~RUBY)
+      @@foo ||= @@foo
+      ^^^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
+  it 'registers an offense when using shorthand-and global var self-assignment' do
+    expect_offense(<<~RUBY)
+      $foo &&= $foo
+      ^^^^^^^^^^^^^ Self-assignment detected.
+    RUBY
+  end
+
   it 'registers an offense when using attribute self-assignment' do
     expect_offense(<<~RUBY)
       foo.bar = foo.bar

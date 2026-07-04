@@ -62,7 +62,7 @@ module RuboCop
         def_node_matcher :select_predicate?, <<~PATTERN
           (call
             {
-              (block $(call _ {:select :filter :find_all}) ...)
+              (any_block $(call _ {:select :filter :find_all}) ...)
               $(call _ {:select :filter :find_all} block_pass_type?)
             }
             ${:#{RESTRICT_ON_SEND.join(' :')}})

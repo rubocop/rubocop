@@ -143,4 +143,83 @@ RSpec.describe RuboCop::Cop::Lint::UselessNumericOperation, :config do
       x.bar
     RUBY
   end
+
+  it 'registers an offense for a local variable receiver' do
+    expect_offense(<<~RUBY)
+      x = 1
+      x + 0
+      ^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      x = 1
+      x
+    RUBY
+  end
+
+  it 'registers an offense for an instance variable receiver' do
+    expect_offense(<<~RUBY)
+      @x * 1
+      ^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      @x
+    RUBY
+  end
+
+  it 'registers an offense for a class variable receiver' do
+    expect_offense(<<~RUBY)
+      @@x / 1
+      ^^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      @@x
+    RUBY
+  end
+
+  it 'registers an offense for a global variable receiver' do
+    expect_offense(<<~RUBY)
+      $x - 0
+      ^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      $x
+    RUBY
+  end
+
+  it 'registers an offense for a constant receiver' do
+    expect_offense(<<~RUBY)
+      CONST ** 1
+      ^^^^^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      CONST
+    RUBY
+  end
+
+  it 'registers an offense for an instance variable abbreviated assignment' do
+    expect_offense(<<~RUBY)
+      @x += 0
+      ^^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      @x = @x
+    RUBY
+  end
+
+  it 'registers an offense for a constant abbreviated assignment' do
+    expect_offense(<<~RUBY)
+      CONST *= 1
+      ^^^^^^^^^^ Do not apply inconsequential numeric operations to variables.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      CONST = CONST
+    RUBY
+  end
 end

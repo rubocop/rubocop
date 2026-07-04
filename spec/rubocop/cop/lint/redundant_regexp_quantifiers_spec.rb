@@ -92,6 +92,35 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRegexpQuantifiers, :config do
     end
   end
 
+  context 'with other mixed greedy quantifier combinations' do
+    [['+', '*'], ['*', '+'], ['*', '?'], ['?', '+'], ['?', '*']].each do |inner, outer|
+      it "registers an offense and corrects `(?:a#{inner})#{outer}`" do
+        expect_offense(<<~RUBY)
+          foo = /(?:a#{inner})#{outer}/
+                     ^^^ Replace redundant quantifiers `#{inner}` and `#{outer}` with a single `*`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo = /(?:a*)/
+        RUBY
+      end
+    end
+  end
+
+  context 'with multiple adjacent redundant groups' do
+    it 'registers an offense for each group' do
+      expect_offense(<<~RUBY)
+        foo = /(?:a+)+(?:b+)+/
+                          ^^^ Replace redundant quantifiers `+` and `+` with a single `+`.
+                   ^^^ Replace redundant quantifiers `+` and `+` with a single `+`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = /(?:a+)(?:b+)/
+      RUBY
+    end
+  end
+
   context 'with nested interval quantifiers that can be normalized' do
     it 'registers an offense and corrects' do
       expect_offense(<<~RUBY)

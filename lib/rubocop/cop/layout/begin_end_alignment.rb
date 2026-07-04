@@ -14,7 +14,7 @@ module RuboCop
       # `Layout/EndAlignment` cop aligns with keywords (e.g. `if`, `while`, `case`)
       # by default. On the other hand, `||= begin` that this cop targets tends to
       # align with the start of the line, it defaults to `EnforcedStyleAlignWith: start_of_line`.
-      # These style can be configured by each cop.
+      # These styles can be configured by each cop.
       #
       # @example EnforcedStyleAlignWith: start_of_line (default)
       #   # bad

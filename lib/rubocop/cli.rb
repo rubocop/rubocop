@@ -13,9 +13,8 @@ module RuboCop
     DEFAULT_PARALLEL_OPTIONS = %i[
       color config debug display_style_guide display_time display_only_fail_level_offenses
       display_only_failed editor_mode except extra_details fail_level fix_layout format formatters
-      ignore_disable_comments lint only only_guide_cops require safe
+      ignore_disable_comments lint only only_guide_cops out require safe
       autocorrect safe_autocorrect autocorrect_all
-      auto_gen_config regenerate_todo
     ].freeze
 
     class Finished < StandardError; end
@@ -190,6 +189,8 @@ module RuboCop
       ConfigLoader.enable_pending_cops = @options[:enable_pending_cops]
       ConfigLoader.ignore_parent_exclusion = @options[:ignore_parent_exclusion]
       ConfigLoader.ignore_unrecognized_cops = @options[:ignore_unrecognized_cops]
+      ConfigLoader.enabled_by_default = @options[:enable_all_cops]
+      ConfigLoader.disabled_by_default = @options[:disable_all_cops]
     end
 
     def set_options_to_pending_cops_reporter

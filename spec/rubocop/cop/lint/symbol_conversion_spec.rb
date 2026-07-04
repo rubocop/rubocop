@@ -20,6 +20,16 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
   it_behaves_like 'offense', '"foo_bar".to_sym', ':foo_bar'
   it_behaves_like 'offense', '"foo-bar".to_sym', ':"foo-bar"'
   it_behaves_like 'offense', '"foo-#{bar}".to_sym', ':"foo-#{bar}"'
+  # Interpolated string with an embedded (escaped) double quote.
+  it_behaves_like 'offense', '"foo#{bar}\"qux".to_sym', ':"foo#{bar}\"qux"'
+  # Percent-literal strings have multi-character delimiters, so the source can't just be
+  # sliced; the inner value must be used instead.
+  it_behaves_like 'offense', '%{foo#{bar}}.to_sym', ':"foo#{bar}"'
+  it_behaves_like 'offense', '%Q{foo#{bar}}.to_sym', ':"foo#{bar}"'
+  it_behaves_like 'offense', '%(foo#{bar}).to_sym', ':"foo#{bar}"'
+  it_behaves_like 'offense', '%<foo#{bar}>.to_sym', ':"foo#{bar}"'
+  # Adjacent string concatenation parses as a `dstr` with no `begin` delimiter.
+  it_behaves_like 'offense', '"x" "y#{z}".to_sym', ':"xy#{z}"'
 
   # Unnecessary `intern`
   it_behaves_like 'offense', ':foo.intern', ':foo'
@@ -35,6 +45,14 @@ RSpec.describe RuboCop::Cop::Lint::SymbolConversion, :config do
   it 'does not register an offense for a normal symbol' do
     expect_no_offenses(<<~RUBY)
       :foo
+    RUBY
+  end
+
+  it 'does not register an offense for `to_sym` on an interpolated heredoc' do
+    expect_no_offenses(<<~'RUBY')
+      <<~TEXT.to_sym
+        foo#{bar}
+      TEXT
     RUBY
   end
 

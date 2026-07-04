@@ -126,6 +126,17 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
+    it 'registers an offense for assigning any variable type to a single-line case when' do
+      expect_offense(<<~RUBY, variable: variable)
+        %{variable} = case foo; when "a" then 1; else 2; end
+        ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        case foo; when "a" then #{variable} = 1; else #{variable} = 2; end
+      RUBY
+    end
+
     context '>= Ruby 2.7', :ruby27 do
       it 'registers an offense for assigning any variable type to case in' do
         expect_offense(<<~RUBY, variable: variable)
@@ -149,6 +160,17 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
           else
             #{variable} = 3
           end
+        RUBY
+      end
+
+      it 'registers an offense for assigning any variable type to a single-line case in' do
+        expect_offense(<<~RUBY, variable: variable)
+          %{variable} = case foo; in "a" then 1; else 2; end
+          ^{variable}^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          case foo; in "a" then #{variable} = 1; else #{variable} = 2; end
         RUBY
       end
     end
@@ -633,18 +655,13 @@ RSpec.describe RuboCop::Cop::Style::ConditionalAssignment, :config do
       RUBY
     end
 
-    it 'corrects assignment to an unless condition' do
-      expect_offense(<<~RUBY)
+    it 'does not register an offense for assignment to an `unless` without an `else`' do
+      # `value` is `nil` when the condition is true, so moving the assignment
+      # inside the `unless` would change behavior.
+      expect_no_offenses(<<~RUBY)
         value = unless condition
-        ^^^^^^^^^^^^^^^^^^^^^^^^ Assign variables inside of conditionals.
-                      1
-                    end
-      RUBY
-
-      expect_correction(<<~RUBY)
-        unless condition
-          value = 1
-        end
+                  1
+                end
       RUBY
     end
 

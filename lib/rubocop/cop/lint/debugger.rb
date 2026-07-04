@@ -73,7 +73,6 @@ module RuboCop
       #   require 'my_debugger/start'
       class Debugger < Base
         MSG = 'Remove debugger entry point `%<source>s`.'
-        BLOCK_TYPES = %i[block numblock itblock kwbegin].freeze
 
         def on_send(node)
           return if assumed_usage_context?(node)

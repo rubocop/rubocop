@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # Looks for uses of Perl-style regexp match
       # backreferences and their English versions like
-      # $1, $2, $&, &+, $MATCH, $PREMATCH, etc.
+      # $1, $2, $&, $MATCH, $PREMATCH, etc.
       #
       # @example
       #   # bad
@@ -69,6 +69,10 @@ module RuboCop
         # @return [String, nil]
         def preferred_expression_to(node)
           first = node.to_a.first
+          # NOTE: `$+` / `$LAST_PAREN_MATCH` is deliberately not converted. It
+          # refers to the last group that actually matched, which has no concise
+          # `Regexp.last_match` equivalent (`Regexp.last_match(-1)` is the last
+          # group in the pattern, which may be `nil`).
           case first
           when ::Integer
             "Regexp.last_match(#{first})"
@@ -78,8 +82,6 @@ module RuboCop
             'Regexp.last_match.pre_match'
           when :$', :$POSTMATCH
             'Regexp.last_match.post_match'
-          when :$+, :$LAST_PAREN_MATCH
-            'Regexp.last_match(-1)'
           end
         end
 

@@ -95,6 +95,14 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
             "\n"
           RUBY
         end
+
+        it 'does not register an offense when the string contains a `%%` sequence' do
+          expect_no_offenses("#{method}('%%')")
+        end
+
+        it 'does not register an offense when the string contains a format specifier' do
+          expect_no_offenses("#{method}('%s')")
+        end
       end
 
       context 'with literal arguments' do
@@ -148,7 +156,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
         it_behaves_like 'offending format specifier', '%s', '1i', "'0+1i'"
         it_behaves_like 'offending format specifier', '%s', 'true', "'true'"
         it_behaves_like 'offending format specifier', '%s', 'false', "'false'"
-        it_behaves_like 'offending format specifier', '%s', 'nil', "'nil'"
+        it_behaves_like 'offending format specifier', '%s', 'nil', "''"
 
         it_behaves_like 'non-offending format specifier', '%s', 'foo'
         it_behaves_like 'non-offending format specifier', '%s', '[]'
@@ -478,6 +486,39 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
 
           expect_correction(<<~'RUBY')
             "foo\a\b\t\n\v\f\r\e"
+          RUBY
+        end
+      end
+
+      context 'with heredocs' do
+        it 'registers an offense when the only argument is a heredoc' do
+          expect_offense(<<~RUBY, method: method)
+            %{method}(<<~MESSAGE)
+            ^{method}^^^^^^^^^^^^ Use `<<~MESSAGE` directly instead of `%{method}`.
+              foo
+            MESSAGE
+          RUBY
+
+          expect_correction(<<~RUBY)
+            <<~MESSAGE
+              foo
+            MESSAGE
+          RUBY
+        end
+
+        it 'does not register an offense when a heredoc has annotated fields' do
+          expect_no_offenses(<<~RUBY)
+            #{method}(<<~MESSAGE, greeting: 'Hello')
+              %<greeting>s, world!
+            MESSAGE
+          RUBY
+        end
+
+        it 'does not register an offense when a heredoc has unannotated fields' do
+          expect_no_offenses(<<~RUBY)
+            #{method}(<<~MESSAGE, 1)
+              %d
+            MESSAGE
           RUBY
         end
       end

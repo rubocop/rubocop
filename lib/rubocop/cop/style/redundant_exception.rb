@@ -38,6 +38,10 @@ module RuboCop
 
         def fix_exploded(node)
           exploded?(node) do |command, message|
+            # `raise RuntimeError, nil` uses the class name as the message, so
+            # rewriting it to `raise nil.to_s` (an empty message) would change it.
+            next if message.nil_type?
+
             add_offense(node, message: MSG_1) do |corrector|
               corrector.replace(node, replaced_exploded(node, command, message))
             end
@@ -56,6 +60,8 @@ module RuboCop
 
         def fix_compact(node)
           compact?(node) do |new_call, message|
+            next if message.nil_type?
+
             add_offense(node, message: MSG_2) do |corrector|
               corrector.replace(new_call, replaced_compact(message))
             end

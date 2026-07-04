@@ -10,7 +10,7 @@ class Changelog
   HEADER = /### (.*)/.freeze
   PATH = 'CHANGELOG.md'
   REF_URL = 'https://github.com/rubocop/rubocop'
-  MAX_LENGTH = 50
+  MAX_LENGTH = 80
   CONTRIBUTOR = '[@%<user>s]: https://github.com/%<user>s'
   SIGNATURE = Regexp.new(format(Regexp.escape('[@%<user>s][]'), user: '([\w-]+)'))
   EOF = "\n"
@@ -32,8 +32,15 @@ class Changelog
     def path
       format(
         ENTRIES_PATH_TEMPLATE,
-        type: type, name: str_to_filename(body), timestamp: Time.now.strftime('%Y%m%d%H%M%S')
+        type: type, name: filename_body, timestamp: Time.now.strftime('%Y%m%d%H%M%S')
       )
+    end
+
+    # The changelog body usually starts with the same word as the entry type
+    # (e.g. a `fix` entry begins with "Fix ..."), which would produce a redundant
+    # `fix_fix_...` filename. Drop that leading duplicate.
+    def filename_body
+      str_to_filename(body).delete_prefix("#{type}_")
     end
 
     def content

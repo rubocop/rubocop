@@ -83,6 +83,44 @@ RSpec.describe RuboCop::Cop::Style::SingleLineDoEndBlock, :config do
     RUBY
   end
 
+  it 'registers an offense when using single line `do`...`end` with a heredoc nested in the body' do
+    expect_offense(<<~RUBY)
+      foo do bar(<<~EOS) end
+      ^^^^^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        text
+      EOS
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do
+       bar(<<~EOS)#{' '}
+        text
+      EOS
+      end
+    RUBY
+  end
+
+  it 'registers an offense when using single line `do`...`end` with multiple heredocs in the body' do
+    expect_offense(<<~RUBY)
+      foo do bar(<<~ONE, <<~TWO) end
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer multiline `do`...`end` block.
+        one
+      ONE
+        two
+      TWO
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo do
+       bar(<<~ONE, <<~TWO)#{' '}
+        one
+      ONE
+        two
+      TWO
+      end
+    RUBY
+  end
+
   it 'registers an offense when using single line `do`...`end` with `->` block' do
     expect_offense(<<~RUBY)
       ->(arg) do foo arg end

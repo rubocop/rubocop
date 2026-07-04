@@ -113,9 +113,7 @@ module RuboCop
 
           return unless first_offense
 
-          if unused_variables_only?(first_offense, variables)
-            return unused_range(node.type, mlhs_node, node.rhs)
-          end
+          return unused_range(node, mlhs_node) if unused_variables_only?(first_offense, variables)
 
           return range_for_parentheses(first_offense, mlhs_node) if Util.parentheses?(mlhs_node)
 
@@ -130,13 +128,14 @@ module RuboCop
           offense.source_range == variables.first.source_range
         end
 
-        def unused_range(node_type, mlhs_node, right)
+        def unused_range(node, mlhs_node)
           start_range = mlhs_node.source_range.begin_pos
 
-          end_range = case node_type
-                      when :masgn
-                        right.source_range.begin_pos
-                      when :mlhs
+          # `node` can be an `mlhs` when recursing into a nested destructuring
+          # group; only a `masgn` has a right-hand side to anchor against.
+          end_range = if node.masgn_type?
+                        node.rhs.source_range.begin_pos
+                      else
                         mlhs_node.source_range.end_pos
                       end
 

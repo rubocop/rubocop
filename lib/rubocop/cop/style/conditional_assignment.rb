@@ -283,7 +283,10 @@ module RuboCop
 
           _condition, *branches, else_branch = *assignment
 
-          return unless else_branch
+          # Use the node accessor rather than the raw destructured branch: for
+          # `x = unless cond; body; end` (no `else`) the parser puts `body` in the
+          # else slot, but `else_branch` correctly reports there is no `else` clause.
+          return unless assignment.else_branch
           return if allowed_single_line?([*branches, else_branch])
 
           add_offense(node, message: ASSIGN_TO_CONDITION_MSG) do |corrector|
@@ -657,6 +660,8 @@ module RuboCop
             remove_whitespace_in_branches(corrector, branch, condition, column)
 
             parent_keyword = branch.parent.loc.keyword
+            return if same_line?(parent_keyword, condition)
+
             corrector.remove_preceding(parent_keyword, parent_keyword.column - column)
           end
         end

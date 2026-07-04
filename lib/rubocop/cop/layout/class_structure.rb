@@ -49,7 +49,7 @@ module RuboCop
       #      - private_methods
       # ----
       #
-      # Instead of putting all literals in the expected order, is also
+      # Instead of putting all literals in the expected order, it is also
       # possible to group categories of macros. Visibility levels are handled
       # automatically.
       #
@@ -278,10 +278,14 @@ module RuboCop
 
           return [] unless class_def
 
-          if class_def.type?(:def, :send)
-            [class_def]
-          else
+          # Only a multi-statement body (`begin`/`kwbegin`) wraps several elements; any
+          # single statement (`def`, `send`, `csend`, `if`, ...) is itself the sole element.
+          # Exploding such a node into its children would yield non-node values (e.g. a
+          # method-name `Symbol` from a `csend`) and crash later checks.
+          if class_def.type?(:begin, :kwbegin)
             class_def.children.compact
+          else
+            [class_def]
           end
         end
 

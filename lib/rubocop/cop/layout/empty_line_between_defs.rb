@@ -274,7 +274,20 @@ module RuboCop
         end
 
         def end_loc(node)
-          node.source_range.end
+          end_location = node.source_range.end
+          trailing_heredoc_end(node, end_location) || end_location
+        end
+
+        # For an endless method whose body is a heredoc (e.g. `def a = <<~TEXT`), the
+        # node's source range ends at the heredoc opening line, before the heredoc body.
+        # Use the heredoc's closing delimiter so the def's real end is located after the
+        # heredoc and blank-line insertion does not land inside the heredoc body.
+        def trailing_heredoc_end(node, end_location)
+          heredocs = node.each_descendant(:any_str).select(&:heredoc?)
+          return if heredocs.empty?
+
+          heredoc_end = heredocs.map { |heredoc| heredoc.loc.heredoc_end }.max_by(&:end_pos)
+          heredoc_end if heredoc_end.end_pos > end_location.end_pos
         end
 
         def autocorrect_remove_lines(corrector, newline_pos, count)

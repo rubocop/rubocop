@@ -70,7 +70,7 @@ module RuboCop
 
         def allowed_var?(node)
           env_key_node = node.children.last
-          env_key_node.str_type? && cop_config['AllowedVars'].include?(env_key_node.value)
+          env_key_node.str_type? && cop_config['AllowedVariables'].include?(env_key_node.value)
         end
 
         def used_as_flag?(node)

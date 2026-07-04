@@ -59,6 +59,17 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
       RUBY
     end
 
+    it 'registers an offense for ordinary method call after a parenthesized safe navigation call' do
+      expect_offense(<<~RUBY)
+        (x&.foo).bar
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        (x&.foo)&.bar
+      RUBY
+    end
+
     it 'registers an offense for ordinary method chain exists after safe navigation method call' do
       expect_offense(<<~RUBY)
         something
@@ -548,6 +559,25 @@ RSpec.describe RuboCop::Cop::Lint::SafeNavigationChain, :config do
         something
         x&.select { foo(it) }&.bar
       RUBY
+    end
+
+    context 'with a method added to `AllowedMethods`' do
+      let(:cop_config) { { 'AllowedMethods' => %w[foo] } }
+
+      it 'does not register an offense for the allowed method' do
+        expect_no_offenses('x&.bar.foo')
+      end
+
+      it 'still registers an offense for a method that is not allowed' do
+        expect_offense(<<~RUBY)
+          x&.bar.baz
+                ^^^^ Do not chain ordinary method call after safe navigation operator.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          x&.bar&.baz
+        RUBY
+      end
     end
   end
 end

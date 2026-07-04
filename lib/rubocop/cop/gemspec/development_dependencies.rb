@@ -95,7 +95,7 @@ module RuboCop
         private
 
         def forbidden_gem?(gem_name)
-          !cop_config['AllowedGems'].include?(gem_name)
+          !Array(cop_config['AllowedGems']).include?(gem_name)
         end
 
         def message(_range)

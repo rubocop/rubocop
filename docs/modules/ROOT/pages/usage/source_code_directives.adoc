@@ -86,7 +86,7 @@ The syntax of directives can be checked using the cop `Lint/CopDirectiveSyntax`.
 == Temporarily Enabling Cops in Source Code
 
 In a similar way to disabling cops within source code, you can also temporarily enable specific
-cops if you want to enforce specific rules for part of the totality of a file.
+cops if you want to enforce specific rules for part of a file.
 
 Let's use the cop `Style/AsciiComments`, which is by default `Enabled: false`. Say you want a
 specific file to have ASCII-only comments to be compatible with some post-processing tool:

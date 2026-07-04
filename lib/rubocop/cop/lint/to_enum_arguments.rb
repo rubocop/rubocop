@@ -61,7 +61,7 @@ module RuboCop
         def arguments_match?(arguments, def_node)
           index = 0
 
-          def_node.arguments.reject(&:blockarg_type?).all? do |def_arg|
+          all_present = def_node.arguments.reject(&:blockarg_type?).all? do |def_arg|
             send_arg = arguments[index]
             case def_arg.type
             when :arg, :restarg, :optarg
@@ -70,6 +70,33 @@ module RuboCop
 
             send_arg && argument_match?(send_arg, def_arg)
           end
+
+          all_present && !extra_positional_arguments?(arguments, def_node)
+        end
+
+        # The enumerator re-invokes the method with these arguments, so passing more
+        # positional arguments than the method accepts raises `ArgumentError` at runtime.
+        def extra_positional_arguments?(arguments, def_node)
+          return false if variadic_parameters?(def_node) || expandable_arguments?(arguments)
+
+          positional_arguments(arguments).size > positional_parameters(def_node).size
+        end
+
+        def variadic_parameters?(def_node)
+          def_node.arguments.any? { |arg| arg.type?(:restarg, :forward_arg) }
+        end
+
+        # A splat or argument forwarding on the call side can expand to any arity.
+        def expandable_arguments?(arguments)
+          arguments.any? { |arg| arg.type?(:splat, :forwarded_args, :forwarded_restarg) }
+        end
+
+        def positional_arguments(arguments)
+          arguments.reject { |arg| arg.type?(:hash, :kwsplat, :block_pass, :forwarded_kwrestarg) }
+        end
+
+        def positional_parameters(def_node)
+          def_node.arguments.select { |arg| arg.type?(:arg, :optarg) }
         end
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
@@ -82,9 +109,11 @@ module RuboCop
           when :optarg
             send_arg.source == def_arg_name.to_s
           when :kwoptarg, :kwarg
-            send_arg.hash_type? &&
+            keyword_hash_argument?(send_arg) &&
               send_arg.pairs.any? { |pair| passing_keyword_arg?(pair, def_arg_name) }
           when :kwrestarg
+            return false unless keyword_hash_argument?(send_arg)
+
             send_arg.each_child_node(:kwsplat, :forwarded_kwrestarg).any? do |child|
               child.source == def_arg.source
             end
@@ -93,6 +122,10 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+
+        def keyword_hash_argument?(send_arg)
+          send_arg.hash_type? && !send_arg.braces?
+        end
       end
     end
   end

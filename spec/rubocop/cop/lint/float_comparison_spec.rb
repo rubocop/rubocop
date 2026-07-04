@@ -93,6 +93,14 @@ RSpec.describe RuboCop::Cop::Lint::FloatComparison, :config do
     RUBY
   end
 
+  it 'does not register an offense when comparing against a parenthesized zero or nil' do
+    expect_no_offenses(<<~RUBY)
+      x == (0.0)
+      x == ((0))
+      Float('not_a_float', exception: false) == (nil)
+    RUBY
+  end
+
   it 'does not register an offense when comparing with multiple arguments' do
     expect_no_offenses(<<~RUBY)
       x.==(0.1, 0.2)

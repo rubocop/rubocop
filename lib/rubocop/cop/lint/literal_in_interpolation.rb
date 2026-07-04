@@ -119,11 +119,13 @@ module RuboCop
         end
 
         def autocorrected_value_for_string(node)
-          if node.source.start_with?("'", '%q')
-            node.children.last.inspect[1..-2]
-          else
-            node.children.last
-          end
+          return node.source.delete_prefix('"').delete_suffix('"') unless node.value.valid_encoding?
+
+          escape_string_content(node.children.last)
+        end
+
+        def escape_string_content(string)
+          string.gsub(/[\\"]|#(?=[@{$])/, '\\\\\&')
         end
 
         def autocorrected_value_for_symbol(node)
@@ -134,12 +136,7 @@ module RuboCop
         end
 
         def autocorrected_value_in_hash_for_symbol(node)
-          # TODO: We need to detect symbol unacceptable names more correctly
-          if / |"|'/.match?(node.value.to_s)
-            ":\\\"#{node.value.to_s.gsub('"') { '\\\\\"' }}\\\""
-          else
-            ":#{node.value}"
-          end
+          escape_string_content(node.value.inspect)
         end
 
         def autocorrected_value_for_array(node)

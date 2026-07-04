@@ -27,6 +27,10 @@ RSpec.describe RuboCop::Cop::Lint::AmbiguousBlockAssociation, :config do
   it_behaves_like 'accepts', 'scope :active, Proc.new { where(status: "active") }'
   it_behaves_like('accepts', 'assert_equal posts.find { |p| p.title == "Foo" }, results.first')
   it_behaves_like('accepts', 'assert_equal(posts.find { |p| p.title == "Foo" }, results.first)')
+  # `[]` method call (the block can only associate with the `[]` argument)
+  it_behaves_like('accepts', 'foo[bar { |x| x }]')
+  # assignment method (the block can only associate with the right-hand side)
+  it_behaves_like('accepts', 'obj.attr = bar { |x| x }')
   it_behaves_like('accepts', 'assert_equal(results.first, posts.find { |p| p.title == "Foo" })')
   it_behaves_like('accepts', 'allow(cop).to receive(:on_int) { raise RuntimeError }')
   it_behaves_like('accepts', 'allow(cop).to(receive(:on_int) { raise RuntimeError })')

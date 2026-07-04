@@ -47,7 +47,7 @@ $ rubocop --out result.txt
 # Both progress and offense count formats to $stdout.
 # The offense count formatter outputs only the final summary,
 # so you'll mostly see the outputs from the progress formatter,
-# and at the end the offense count summary will be outputted.
+# and at the end the offense count summary will be output.
 $ rubocop --format progress --format offenses
 
 # Progress format to $stdout and JSON format to the file rubocop.json.

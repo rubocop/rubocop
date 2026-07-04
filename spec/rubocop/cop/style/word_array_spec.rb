@@ -148,6 +148,24 @@ RSpec.describe RuboCop::Cop::Style::WordArray, :config do
       expect_no_offenses("['-', '----']")
     end
 
+    it 'does not register an offense for array of heredocs' do
+      expect_no_offenses(<<~RUBY)
+        [<<~FOO, <<~BAR]
+          foo
+        FOO
+          bar
+        BAR
+      RUBY
+    end
+
+    it 'does not register an offense for array containing a heredoc among strings' do
+      expect_no_offenses(<<~RUBY)
+        ['foo', 'bar', <<~BAZ]
+          baz
+        BAZ
+      RUBY
+    end
+
     it 'registers an offense in a non-ambiguous block context' do
       expect_offense(<<~RUBY)
         foo(['bar', 'baz']) { qux }

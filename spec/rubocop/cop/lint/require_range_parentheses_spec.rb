@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Lint::RequireRangeParentheses, :config do
   it 'registers an offense when the end of the range (`..`) is line break' do
     expect_offense(<<~RUBY)
       42..
-      ^^^^ Wrap the endless range literal `42..` to avoid precedence ambiguity.
+      ^^^^ Wrap the range literal `42..` in parentheses to avoid confusion with an endless range.
       do_something
     RUBY
   end
@@ -12,8 +12,18 @@ RSpec.describe RuboCop::Cop::Lint::RequireRangeParentheses, :config do
   it 'registers an offense when the end of the range (`...`) is line break' do
     expect_offense(<<~RUBY)
       42...
-      ^^^^^ Wrap the endless range literal `42...` to avoid precedence ambiguity.
+      ^^^^^ Wrap the range literal `42...` in parentheses to avoid confusion with an endless range.
       do_something
+    RUBY
+  end
+
+  it 'registers an offense for a multiline range in a `when` clause' do
+    expect_offense(<<~RUBY)
+      case condition
+      when 42..
+           ^^^^ Wrap the range literal `42..` in parentheses to avoid confusion with an endless range.
+        do_something
+      end
     RUBY
   end
 

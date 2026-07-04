@@ -1,0 +1,1 @@
+* [#15423](https://github.com/rubocop/rubocop/issues/15423): Fix false positives in `Layout/MultilineMethodCallIndentation` when a method chain is nested inside a parenthesized argument list or a grouped expression within a hash pair value. ([@koic][])

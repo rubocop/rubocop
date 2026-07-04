@@ -91,6 +91,13 @@ RSpec.describe RuboCop::Cop::Lint::LiteralAssignmentInCondition, :config do
     RUBY
   end
 
+  it 'does not register an offense for a literal assignment inside a block in the condition' do
+    expect_no_offenses(<<~RUBY)
+      if foo { |x| y = 1 }
+      end
+    RUBY
+  end
+
   it 'registers an offense when assigning literal to local variable in `while` condition' do
     expect_offense(<<~RUBY)
       while test = 42

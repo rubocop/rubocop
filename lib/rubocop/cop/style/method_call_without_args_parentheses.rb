@@ -88,8 +88,12 @@ module RuboCop
         #
         def parenthesized_it_method_in_block?(node)
           return false unless node.method?(:it)
-          return false unless (block_node = node.each_ancestor(:block).first)
-          return false unless block_node.arguments.empty_and_without_delimiters?
+          return false unless (block_node = node.each_ancestor(:any_block).first)
+          # Inside a numbered/`it` block, a bare `it` is a parse error (it conflicts
+          # with the implicit parameter), so `it()` must keep its parentheses.
+          if block_node.block_type? && !block_node.arguments.empty_and_without_delimiters?
+            return false
+          end
 
           !node.receiver && node.arguments.empty? && !node.block_literal?
         end

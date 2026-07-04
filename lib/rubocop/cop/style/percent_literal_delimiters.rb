@@ -101,6 +101,8 @@ module RuboCop
         def string_source(node)
           if node.is_a?(String)
             node.scrub
+          elsif node.is_a?(Symbol)
+            node.to_s
           elsif node.respond_to?(:type) && node.type?(:str, :sym)
             node.source
           end

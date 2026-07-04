@@ -353,6 +353,19 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
     end
   end
 
+  context 'when a variable is first assigned with `&&=`' do
+    it 'registers an offense but does not autocorrect (it would raise `NameError`)' do
+      expect_offense(<<~RUBY)
+        def foo
+          bar &&= 1
+          ^^^ Useless assignment to variable - `bar`. Use `&&` instead of `&&=`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+  end
+
   context 'when a variable is assigned multiple times but unreferenced' do
     it 'registers offenses for each assignment' do
       expect_offense(<<~RUBY)
@@ -1897,6 +1910,25 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         rescue FirstError
         rescue SecondError
           p error # => nil
+        end
+      RUBY
+    end
+  end
+
+  context 'when a rescued error variable is not used and no exception type is specified' do
+    it 'registers an offense' do
+      expect_offense(<<~RUBY)
+        begin
+          do_something
+        rescue => error
+                  ^^^^^ Useless assignment to variable - `error`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        begin
+          do_something
+        rescue
         end
       RUBY
     end

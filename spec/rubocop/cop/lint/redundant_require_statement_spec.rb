@@ -186,6 +186,14 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
       RUBY
     end
 
+    context 'target ruby version <= 3.1', :ruby31, unsupported_on: :prism do
+      it 'does not register an offense when requiring `set`' do
+        expect_no_offenses(<<~RUBY)
+          require 'set'
+        RUBY
+      end
+    end
+
     context 'target ruby version >= 3.2', :ruby32 do
       it 'registers an offense and corrects when using requiring `set`' do
         expect_offense(<<~RUBY)
@@ -196,6 +204,14 @@ RSpec.describe RuboCop::Cop::Lint::RedundantRequireStatement, :config do
 
         expect_correction(<<~RUBY)
           require 'uri'
+        RUBY
+      end
+    end
+
+    context 'target ruby version <= 3.3', :ruby33 do
+      it 'does not register an offense when requiring `pathname`' do
+        expect_no_offenses(<<~RUBY)
+          require 'pathname'
         RUBY
       end
     end

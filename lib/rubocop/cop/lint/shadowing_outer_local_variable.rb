@@ -75,6 +75,8 @@ module RuboCop
         end
 
         def same_conditions_node_different_branch?(variable, outer_local_variable)
+          return true if different_case_in_branch?(variable, outer_local_variable)
+
           variable_node = variable_node(variable)
           return false unless node_or_its_ascendant_conditional?(variable_node)
 
@@ -86,6 +88,18 @@ module RuboCop
 
           outer_local_variable_node.if_type? &&
             variable_node == outer_local_variable_node.else_branch
+        end
+
+        # `case ... in` binds variables in the pattern itself, so a block argument in one
+        # `in` branch does not shadow a pattern variable from a different `in` branch of the
+        # same `case` (the branches are mutually exclusive).
+        def different_case_in_branch?(variable, outer_local_variable)
+          inner_branch = variable.scope.node.each_ancestor(:in_pattern).first
+          outer_branch = outer_local_variable.declaration_node.each_ancestor(:in_pattern).first
+
+          return false unless inner_branch && outer_branch
+
+          inner_branch != outer_branch && inner_branch.parent == outer_branch.parent
         end
 
         def variable_node(variable)

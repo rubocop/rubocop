@@ -4,7 +4,7 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
   let(:cop_config) do
     {
       'Include' => ['**/Gemfile'],
-      'IgnoredGems' => ['rake'],
+      'AllowedGems' => ['rake'],
       'OnlyFor' => []
     }
   end
@@ -245,6 +245,14 @@ RSpec.describe RuboCop::Cop::Bundler::GemComment, :config do
           it 'does not register an offense' do
             expect_no_offenses(<<~RUBY, 'Gemfile')
               gem 'rubocop', group: development
+            RUBY
+          end
+        end
+
+        context 'when a gem option uses a non-literal key' do
+          it 'does not crash and does not register an offense' do
+            expect_no_offenses(<<~RUBY, 'Gemfile')
+              gem 'rubocop', key => 'value'
             RUBY
           end
         end

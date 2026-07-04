@@ -62,11 +62,15 @@ module RuboCop
         end
 
         def append_newline_to_last_kwoptarg(arguments, corrector)
-          last_argument = arguments.last
-          return if last_argument.type?(:kwrestarg, :blockarg)
+          # The newline only needs restoring when the moved keyword argument was
+          # the last parameter, so removing it also consumes the line break before
+          # the body. When a `kwoptarg` already trails the list, the body stays
+          # separated and inserting a newline would leave a spurious blank line.
+          return unless arguments.last.kwarg_type?
+          return if arguments.parent.block_type?
 
           last_kwoptarg = arguments.reverse.find(&:kwoptarg_type?)
-          corrector.insert_after(last_kwoptarg, "\n") unless arguments.parent.block_type?
+          corrector.insert_after(last_kwoptarg, "\n")
         end
 
         def remove_kwargs(kwarg_nodes, corrector)

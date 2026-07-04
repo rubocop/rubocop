@@ -69,6 +69,13 @@ RSpec.describe RuboCop::Cop::Style::EmptyHeredoc, :config do
     RUBY
   end
 
+  it 'does not register an offense when using an empty backtick heredoc' do
+    expect_no_offenses(<<~RUBY)
+      foo(<<~`SH`)
+      SH
+    RUBY
+  end
+
   context 'when double-quoted string literals are preferred' do
     let(:other_cops) do
       super().merge('Style/StringLiterals' => { 'EnforcedStyle' => 'double_quotes' })

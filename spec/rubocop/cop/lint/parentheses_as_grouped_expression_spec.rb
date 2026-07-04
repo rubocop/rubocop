@@ -141,6 +141,18 @@ RSpec.describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression, :config do
     expect_no_offenses('a b(c)')
   end
 
+  it 'accepts method with `yield` as arg to method without parens' do
+    expect_no_offenses('a yield(c)')
+  end
+
+  it 'accepts method with `super` as arg to method without parens' do
+    expect_no_offenses('a super(c)')
+  end
+
+  it 'accepts method with `defined?` as arg to method without parens' do
+    expect_no_offenses('a defined?(c)')
+  end
+
   it 'accepts an operator call with argument in parentheses' do
     expect_no_offenses(<<~RUBY)
       a % (b + c)

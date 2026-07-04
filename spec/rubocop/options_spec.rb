@@ -60,6 +60,14 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                                                containing offenses.
                   --disable-pending-cops       Run without pending cops.
                   --enable-pending-cops        Run with pending cops.
+                  --disable-all-cops           Run with all cops disabled by default,
+                                               except `Lint/Syntax`. Overrides
+                                               `AllCops/EnabledByDefault` and
+                                               `AllCops/DisabledByDefault` in config files.
+                  --enable-all-cops            Run with all cops enabled, including those
+                                               disabled by default. Overrides
+                                               `AllCops/EnabledByDefault` and
+                                               `AllCops/DisabledByDefault` in config files.
                   --ignore-disable-comments    Report offenses even if they have been manually disabled
                                                with a `rubocop:disable` or `rubocop:todo` directive.
                   --force-exclusion            Any files excluded by `Exclude` in configuration
@@ -286,6 +294,13 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         msg = 'Do not specify `--editor-mode` as it is redundant in `--lsp`.'
         expect do
           options.parse %w[--lsp --editor-mode]
+        end.to raise_error(RuboCop::OptionArgumentError, msg)
+      end
+
+      it 'rejects using `--enable-all-cops` with `--disable-all-cops`' do
+        msg = '--enable-all-cops cannot be used together with --disable-all-cops.'
+        expect do
+          options.parse %w[--enable-all-cops --disable-all-cops]
         end.to raise_error(RuboCop::OptionArgumentError, msg)
       end
 

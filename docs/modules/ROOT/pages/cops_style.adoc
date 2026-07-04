@@ -323,7 +323,7 @@ other prevents confusion about their different semantics
 is resolved at runtime).
 It also flags uses of `alias :symbol` rather than `alias bareword`.
 
-However, it will always enforce `method_alias` when used `alias`
+However, it will always enforce `alias_method` when `alias` is used
 in an instance method definition and in a singleton method definition.
 If used in a block, always enforce `alias_method`
 unless it is an `instance_eval` block.
@@ -1814,8 +1814,8 @@ Starting with Ruby 1.9 character literals are
 essentially one-character strings, so this syntax
 is mostly redundant at this point.
 
-? character literal can be used to express meta and control character.
-That's a good use case of ? literal so it doesn't count it as an offense.
+A `?` character literal can be used to express meta and control characters.
+That's a good use case of a `?` literal so it doesn't count as an offense.
 
 [#examples-stylecharacterliteral]
 === Examples
@@ -3523,8 +3523,8 @@ Person.ancestors
 | 0.92
 |===
 
-Checks for consistent usage of the `DateTime` class over the
-`Time` class. This cop is disabled by default since these classes,
+Checks for consistent usage of the `Time` class over the
+`DateTime` class. This cop is disabled by default since these classes,
 although highly overlapping, have particularities that make them not
 replaceable in certain situations when dealing with multiple timezones
 and/or DST.
@@ -3774,7 +3774,7 @@ Dir.empty?('path/to/dir')
 |===
 
 Detects comments to enable/disable RuboCop.
-This is useful if want to make sure that every RuboCop error gets fixed
+This is useful if you want to make sure that every RuboCop error gets fixed
 and not quickly disabled with a comment.
 
 Specific cops can be allowed with the `AllowedCops` configuration. Note that
@@ -5681,7 +5681,7 @@ for numbers in the code (eg 1.2e4). Different styles are supported:
 | Yes
 | Always
 | 1.28
-| -
+| 1.88
 |===
 
 Suggests `ENV.fetch` for the replacement of `ENV[]`.
@@ -5735,7 +5735,7 @@ ENV['X'].some_method # (e.g. `.nil?`)
 |===
 | Name | Default value | Configurable values
 
-| AllowedVars
+| AllowedVariables
 | `[]`
 | Array
 
@@ -6288,9 +6288,10 @@ manner for all cases, so only two scenarios are considered -
 if the first argument is a string literal and if the second
 argument is an array literal.
 
-Autocorrection will be applied when using argument is a literal or known built-in conversion
-methods such as `to_d`, `to_f`, `to_h`, `to_i`, `to_r`, `to_s`, and `to_sym` on variables,
-provided that their return value is not an array. For example, when using `to_s`,
+Autocorrection will be applied when the argument is a literal or uses a known
+built-in conversion method such as `to_d`, `to_f`, `to_h`, `to_i`, `to_r`, `to_s`,
+and `to_sym` on variables, provided that their return value is not an array.
+For example, when using `to_s`,
 `'%s' % [1, 2, 3].to_s` can be autocorrected without any incompatibility:
 
 [source,ruby]
@@ -7521,6 +7522,22 @@ modify the receiver.
 
 This cop is unsafe because it cannot be guaranteed that the receiver
 is a `Hash` or responds to the replacement method.
+
+Additionally, the replacement may change the order of the resulting
+hash: `Hash#slice` returns entries in the order the keys are given,
+whereas `select`, `filter`, and `reject` preserve the entry order of
+the receiver.
+
+For example:
+
+[source,ruby]
+----
+hash = {foo: 1, bar: 2, baz: 3}
+keys = %i[baz foo]
+
+hash.select { |k, _v| keys.include?(k) } # => {foo: 1, baz: 3}
+hash.slice(*keys)                        # => {baz: 3, foo: 1}
+----
 
 [#examples-stylehashslice]
 === Examples
@@ -9203,7 +9220,7 @@ both magic comment directives and values.
 Required capitalization can be set with the `DirectiveCapitalization` and
 `ValueCapitalization` configuration keys.
 
-NOTE: If one of these configuration is set to nil, any capitalization is allowed.
+NOTE: If one of these configurations is set to nil, any capitalization is allowed.
 
 [#examples-stylemagiccommentformat]
 === Examples
@@ -9357,13 +9374,26 @@ end
 
 | Pending
 | Yes
-| Always
+| Always (Unsafe)
 | 1.30
-| -
+| 1.88
 |===
 
 Prefer `select` or `reject` over `map { ... }.compact`.
 This cop also handles `filter_map { ... }`, similar to `map { ... }.compact`.
+
+[#safety-stylemapcompactwithconditionalblock]
+=== Safety
+
+This cop is unsafe because `compact` also removes `nil` elements that
+were already present in the receiver, whereas `select`/`reject` keep
+them. The result therefore differs when the collection contains `nil`:
+
+[source,ruby]
+----
+[nil, 1].map { |e| e if e }.compact # => [1]
+[nil, 1].select { |e| e }           # => [nil, 1]
+----
 
 [#examples-stylemapcompactwithconditionalblock]
 === Examples
@@ -10268,7 +10298,7 @@ return foo.minmax
 Enforces the use of `max` or `min` instead of comparison for greater or less.
 
 NOTE: It can be used if you want to present limit or threshold in Ruby 2.7+.
-That it is slow though. So autocorrection will apply generic `max` or `min`:
+It is slow though. So autocorrection will apply generic `max` or `min`:
 
 [source,ruby]
 ----
@@ -10801,6 +10831,12 @@ instance methods in the module, then check if a given method is inside that
 array, while `method_defined?` will do direct method lookup, which is much
 faster and consumes less memory.
 
+NOTE: `constants.include?` is not handled by this cop because
+`Module#const_defined?` has different lookup behavior than
+`Module#constants` - `const_defined?` searches up to `Object`
+(top-level constants like `String`, `Integer`, etc.) while
+`constants` does not, which can cause behavior changes after autocorrection.
+
 [#examples-stylemodulememberexistencecheck]
 === Examples
 
@@ -10820,14 +10856,12 @@ Array.method_defined?(:find, false)
 
 # bad
 Array.class_variables.include?(:foo)
-Array.constants.include?(:foo)
 Array.private_instance_methods.include?(:foo)
 Array.protected_instance_methods.include?(:foo)
 Array.public_instance_methods.include?(:foo)
 
 # good
 Array.class_variable_defined?(:foo)
-Array.const_defined?(:foo)
 Array.private_method_defined?(:foo)
 Array.protected_method_defined?(:foo)
 Array.public_method_defined?(:foo)
@@ -11304,11 +11338,19 @@ foo if a == 'a' || a == 'b'
 | Yes
 | Always (Unsafe)
 | 0.34
-| 1.8
+| 1.88
 |===
 
 Checks whether some constant value isn't a
 mutable literal (e.g. array or hash).
+
+When the `Recursive` option is enabled, mutable literals nested inside
+arrays and hashes are also frozen, so an offense on the outermost
+unfrozen literal will autocorrect every nested mutable literal as well.
+When the outer literal already has `.freeze` appended, the cop descends
+into it and reports each outermost unfrozen literal underneath. The
+option is disabled by default to preserve existing behavior; opt in to
+get strict nested freezing.
 
 Strict mode can be used to freeze all constants, rather than
 just literals.
@@ -11362,6 +11404,27 @@ TESTING
 CONST = Something.new
 ----
 
+[#recursive_-false-_default_-stylemutableconstant]
+==== Recursive: false (default)
+
+[source,ruby]
+----
+# good - only the outer container needs to be frozen
+CONST = [{ a: [], b: 'foo' }].freeze
+----
+
+[#recursive_-true-stylemutableconstant]
+==== Recursive: true
+
+[source,ruby]
+----
+# bad - nested mutable literals must be frozen too
+CONST = [{ a: [], b: 'foo' }].freeze
+
+# good
+CONST = [{ a: [].freeze, b: 'foo'.freeze }.freeze].freeze
+----
+
 [#enforcedstyle_-strict-stylemutableconstant]
 ==== EnforcedStyle: strict
 
@@ -11409,6 +11472,10 @@ CONST = [1, 2, 3]
 | EnforcedStyle
 | `literals`
 | `literals`, `strict`
+
+| Recursive
+| `false`
+| Boolean
 |===
 
 [#stylenegatedif]
@@ -12118,6 +12185,11 @@ end
 
 Checks for lambdas and procs that always return nil,
 which can be replaced with an empty lambda or proc instead.
+
+NOTE: A `proc` that returns nil via an explicit `return` is allowed,
+because in a `proc` `return` exits the enclosing method, so removing it
+would change behavior. A lambda is still reported, since there `return`
+only exits the lambda itself.
 
 [#examples-stylenillambda]
 === Examples
@@ -13612,7 +13684,7 @@ Checks for usage of the %Q() syntax when %q() would do.
 
 Looks for uses of Perl-style regexp match
 backreferences and their English versions like
-$1, $2, $&, &+, $MATCH, $PREMATCH, etc.
+$1, $2, $&, $MATCH, $PREMATCH, etc.
 
 [#examples-styleperlbackrefs]
 === Examples
@@ -14132,8 +14204,8 @@ A.foo
 | -
 |===
 
-Checks for the instantiation of array using redundant `Array` constructor.
-Autocorrect replaces to array literal which is the simplest and fastest.
+Checks for the instantiation of an array using a redundant `Array` constructor.
+Autocorrect replaces it with an array literal which is the simplest and fastest.
 
 [#examples-styleredundantarrayconstructor]
 === Examples
@@ -14508,16 +14580,16 @@ x != y
 | -
 |===
 
-Avoid redundant `::` prefix on constant.
+Avoid redundant `::` prefix on a constant.
 
-How Ruby searches constant is a bit complicated, and it can often be difficult to
+How Ruby searches constants is a bit complicated, and it can often be difficult to
 understand from the code whether the `::` is intended or not. Where `Module.nesting`
 is empty, there is no need to prepend `::`, so it would be nice to consistently
 avoid such meaningless `::` prefix to avoid confusion.
 
-NOTE: This cop is disabled if `Lint/ConstantResolution` cop is enabled to prevent
-conflicting rules. Because it respects user configurations that want to enable
-`Lint/ConstantResolution` cop which is disabled by default.
+NOTE: This cop is disabled if `Lint/ConstantResolution` cop is enabled,
+to prevent conflicting rules. This is because it respects user configurations
+that want to enable `Lint/ConstantResolution` cop which is disabled by default.
 
 [#examples-styleredundantconstantbase]
 === Examples
@@ -15544,8 +15616,8 @@ r = /[ab]/
 | -
 |===
 
-Checks for the instantiation of regexp using redundant `Regexp.new` or `Regexp.compile`.
-Autocorrect replaces to regexp literal which is the simplest and fastest.
+Checks for the instantiation of a regexp using a redundant `Regexp.new` or `Regexp.compile`.
+Autocorrect replaces it with a regexp literal which is the simplest and fastest.
 
 [#examples-styleredundantregexpconstructor]
 === Examples
@@ -16083,8 +16155,8 @@ Struct.new(:foo)
 
 Enforces using `//` or `%r` around regular expressions.
 
-NOTE: The following `%r` cases using a regexp starts with a blank or `=`
-as a method argument allowed to prevent syntax errors.
+NOTE: The following `%r` cases using a regexp that starts with a blank or `=`
+as a method argument are allowed to prevent syntax errors.
 
 [source,ruby]
 ----
@@ -16310,17 +16382,17 @@ require 'a'
 | 0.34
 |===
 
-Checks for uses of `rescue` in its modifier form is added for following
+Checks for uses of `rescue` in its modifier form. It is added for the following
 reasons:
 
 * The syntax of modifier form `rescue` can be misleading because it
   might lead us to believe that `rescue` handles the given exception
-  but it actually rescue all exceptions to return the given rescue
+  but it actually rescues all exceptions to return the given rescue
   block. In this case, value returned by handle_error or
   SomeException.
 
 * Modifier form `rescue` would rescue all the exceptions. It would
-  silently skip all exception or errors and handle the error.
+  silently skip all exceptions or errors and handle the error.
   Example: If `NoMethodError` is raised, modifier form rescue would
   handle the exception.
 
@@ -17096,7 +17168,7 @@ array.grep_v(regexp)
 | 0.29
 |===
 
-Enforces the use the shorthand for self-assignment.
+Enforces the use of the shorthand for self-assignment.
 
 [#examples-styleselfassignment]
 === Examples
@@ -19227,11 +19299,11 @@ foo = (bar = baz) ? a : b
 | -
 |===
 
-Newcomers to ruby applications may write top-level methods,
+Newcomers to Ruby applications may write top-level methods,
 when ideally they should be organized in appropriate classes or modules.
 This cop looks for definitions of top-level methods and warns about them.
 
-However for ruby scripts it is perfectly fine to use top-level methods.
+However, for Ruby scripts it is perfectly fine to use top-level methods.
 Hence this cop is disabled by default.
 
 [#examples-styletoplevelmethoddefinition]
@@ -20350,11 +20422,11 @@ This cop supports two styles:
 
 `forbid_mixed_logical_operators` style forbids the use of more than one type
 of logical operators. This makes the `unless` condition easier to read
-because either all conditions need to be met or any condition need to be met
+because either all conditions need to be met or any condition needs to be met
 in order for the expression to be truthy or falsey.
 
-`forbid_logical_operators` style forbids any use of logical operator.
-This makes it even more easy to read the `unless` condition as
+`forbid_logical_operators` style forbids any use of logical operators.
+This makes it even easier to read the `unless` condition as
 there is only one condition in the expression.
 
 [#examples-styleunlesslogicaloperators]
@@ -20591,6 +20663,11 @@ end
 # good
 x += 1 while x < 10
 
+# good
+while x < 10
+  y += 1 if x.odd?
+end
+
 # bad
 until x > 10
   x += 1
@@ -20598,6 +20675,11 @@ end
 
 # good
 x += 1 until x > 10
+
+# good
+until x > 10
+  y += 1 unless x.even?
+end
 
 # bad
 x += 100 while x < 500 # a long comment that makes code too long if it were a single line
@@ -20968,8 +21050,10 @@ by a predicate method, such as `receiver.length == 0`,
 `receiver.length < 1` and `receiver.size == 0` that can be
 replaced by `receiver.empty?` and `!receiver.empty?`.
 
-NOTE: `File`, `Tempfile`, and `StringIO` do not have `empty?`
-so allow `size == 0` and `size.zero?`.
+NOTE: `File`, `Tempfile`, `StringIO`, and `File::Stat` do not have `empty?`
+so allow `size == 0` and `size.zero?`. Note that when a `File::Stat` object
+is stored in a variable (e.g. `stat = File.stat(path); stat.size.zero?`),
+the cop cannot detect the type and may still register a false positive.
 
 [#safety-stylezerolengthpredicate]
 === Safety

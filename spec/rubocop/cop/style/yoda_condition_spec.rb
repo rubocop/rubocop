@@ -64,6 +64,22 @@ RSpec.describe RuboCop::Cop::Style::YodaCondition, :config do
       expect_no_offenses('[1, 2, 3] <=> [4, 5, 6]')
     end
 
+    it 'accepts array literal containing a non-literal element on left' do
+      expect_no_offenses('[x] == [x].do_something')
+    end
+
+    it 'accepts hash literal containing a non-literal value on left' do
+      expect_no_offenses('{a: x} == foo')
+    end
+
+    it 'accepts array literal containing a splat on left', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def foo(*)
+          [*] == [*].do_something
+        end
+      RUBY
+    end
+
     it 'accepts negation' do
       expect_no_offenses('!true')
       expect_no_offenses('not true')

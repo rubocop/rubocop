@@ -10,7 +10,7 @@ module RuboCop
       # is resolved at runtime).
       # It also flags uses of `alias :symbol` rather than `alias bareword`.
       #
-      # However, it will always enforce `method_alias` when used `alias`
+      # However, it will always enforce `alias_method` when `alias` is used
       # in an instance method definition and in a singleton method definition.
       # If used in a block, always enforce `alias_method`
       # unless it is an `instance_eval` block.
@@ -45,6 +45,7 @@ module RuboCop
           return unless node.command?(:alias_method)
           return unless style == :prefer_alias && alias_keyword_possible?(node)
           return unless node.arguments.count == 2
+          return if alias_method_value_used?(node)
 
           msg = format(MSG_ALIAS_METHOD, current: lexical_scope_type(node))
           add_offense(node.loc.selector, message: msg) do |corrector|
@@ -80,6 +81,14 @@ module RuboCop
           scope_type(node) != :dynamic && node.arguments.all?(&:sym_type?)
         end
 
+        # `alias_method` is a method call whose return value can be used
+        # (e.g., as an argument to `public`/`module_function`, or as an assignment),
+        # but `alias` is a keyword statement that cannot appear in such positions.
+        # Detect these positions so the conversion does not produce a syntax error.
+        def alias_method_value_used?(node)
+          node.argument? || node.parent&.assignment?
+        end
+
         def alias_method_possible?(node)
           scope_type(node) != :instance_eval &&
             node.children.none?(&:gvar_type?) &&
@@ -104,7 +113,7 @@ module RuboCop
               return :lexical
             when :def, :defs
               return :dynamic
-            when :block
+            when :block, :numblock, :itblock
               return :instance_eval if parent.method?(:instance_eval)
 
               return :dynamic

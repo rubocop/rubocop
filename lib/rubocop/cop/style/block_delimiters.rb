@@ -389,9 +389,23 @@ module RuboCop
 
         def require_do_end?(node)
           return false if node.braces? || node.multiline?
-          return false unless (resbody = node.each_descendant(:resbody).first)
 
-          resbody.children.first&.array_type?
+          body = node.body
+          return false unless body
+          # `ensure` and a block-level `rescue` are illegal inside `{ }`; only a
+          # bare modifier rescue (`expr rescue expr`) can be written with braces.
+          return true if body.ensure_type?
+          return false unless body.rescue_type?
+
+          !modifier_rescue?(body)
+        end
+
+        def modifier_rescue?(rescue_node)
+          return false if rescue_node.body.nil? || rescue_node.else_branch
+          return false unless rescue_node.resbody_branches.one?
+
+          resbody = rescue_node.resbody_branches.first
+          resbody.exceptions.empty? && resbody.exception_variable.nil?
         end
 
         def braces_required_method?(method_name)

@@ -413,6 +413,27 @@ RSpec.describe RuboCop::Cop::Naming::RescuedExceptionsVariableName, :config do
           end
         RUBY
       end
+
+      it 'corrects only up to the reassignment, leaving later references untouched' do
+        expect_offense(<<~RUBY)
+          begin
+            do_something
+          rescue StandardError => error
+                                  ^^^^^ Use `e` instead of `error`.
+            error = build_message(error)
+          end
+          puts error
+        RUBY
+
+        expect_correction(<<~RUBY)
+          begin
+            do_something
+          rescue StandardError => e
+            error = build_message(e)
+          end
+          puts error
+        RUBY
+      end
     end
 
     context 'when the variable is reassigned using multiple assignment' do

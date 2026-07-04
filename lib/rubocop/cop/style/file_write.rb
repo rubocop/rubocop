@@ -104,28 +104,33 @@ module RuboCop
 
         def replacement(mode, filename, content, write_node)
           replacement = "#{write_method(mode)}(#{filename.source}, #{content.source})"
+          heredocs = removed_heredocs(filename, content, write_node)
+          return replacement if heredocs.empty?
 
-          if heredoc?(write_node)
-            first_argument = write_node.body.first_argument
+          [replacement, *heredocs.map { |heredoc| heredoc_range(heredoc).source }].join("\n")
+        end
 
-            <<~REPLACEMENT.chomp
-              #{replacement}
-              #{heredoc_range(first_argument).source}
-            REPLACEMENT
-          else
-            replacement
+        # Heredocs opened in the arguments keep working in the replacement, but their
+        # bodies are lost when they lie within the replaced range, so they need to be
+        # restored after the replacement.
+        def removed_heredocs(filename, content, write_node)
+          [filename, content].flat_map { |argument| find_heredocs(argument) }
+                             .select { |heredoc| removed?(heredoc, write_node) }
+                             .sort_by { |heredoc| heredoc.loc.heredoc_body.begin_pos }
+        end
+
+        def heredoc_range(heredoc)
+          range_between(heredoc.loc.heredoc_body.begin_pos, heredoc.loc.heredoc_end.end_pos)
+        end
+
+        def find_heredocs(node)
+          [node, *node.each_descendant(:any_str)].select do |child|
+            child.respond_to?(:heredoc?) && child.heredoc?
           end
         end
 
-        def heredoc?(write_node)
-          write_node.block_type? && (first_argument = write_node.body.first_argument) &&
-            first_argument.respond_to?(:heredoc?) && first_argument.heredoc?
-        end
-
-        def heredoc_range(first_argument)
-          range_between(
-            first_argument.loc.heredoc_body.begin_pos, first_argument.loc.heredoc_end.end_pos
-          )
+        def removed?(heredoc, write_node)
+          heredoc.loc.heredoc_end.end_pos <= write_node.source_range.end_pos
         end
       end
     end

@@ -606,6 +606,30 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineBetweenDefs, :config do
       end
     end
 
+    context 'when the endless method body is a heredoc' do
+      it 'registers an offense and corrects after the heredoc, preserving its body' do
+        expect_offense(<<~RUBY)
+          def foo = <<~TEXT
+            hello
+          TEXT
+          def bar
+          ^^^^^^^ Expected 1 empty line between method definitions; found 0.
+            y
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo = <<~TEXT
+            hello
+          TEXT
+
+          def bar
+            y
+          end
+        RUBY
+      end
+    end
+
     context 'between regular and endless methods' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)

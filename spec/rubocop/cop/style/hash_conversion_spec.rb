@@ -23,6 +23,13 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
     RUBY
   end
 
+  it 'does not register an offense for a splat argument' do
+    # A splat can expand to any number of elements, so no literal hash can be built.
+    expect_no_offenses(<<~RUBY)
+      Hash[*ary, x]
+    RUBY
+  end
+
   it 'reports different offense for hash argument Hash[]' do
     expect_offense(<<~RUBY)
       Hash[a: b, c: d]
@@ -227,6 +234,14 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
         Hash[*ary]
       RUBY
     end
+
+    it 'does not register an offense for an anonymous splat (`*`)', :ruby32 do
+      expect_no_offenses(<<~RUBY)
+        def foo(*)
+          Hash[*]
+        end
+      RUBY
+    end
   end
 
   context 'AllowSplatArgument: false' do
@@ -236,6 +251,17 @@ RSpec.describe RuboCop::Cop::Style::HashConversion, :config do
       expect_offense(<<~RUBY)
         Hash[*ary]
         ^^^^^^^^^^ Prefer `array_of_pairs.to_h` to `Hash[*array]`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'reports uncorrectable offense for an anonymous splat (`*`)', :ruby32 do
+      expect_offense(<<~RUBY)
+        def foo(*)
+          Hash[*]
+          ^^^^^^^ Prefer `array_of_pairs.to_h` to `Hash[*array]`.
+        end
       RUBY
 
       expect_no_corrections

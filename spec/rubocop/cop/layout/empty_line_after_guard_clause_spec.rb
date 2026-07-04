@@ -340,6 +340,88 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterGuardClause, :config do
     RUBY
   end
 
+  it 'accepts using guard clause is after `:nocov:` comment with a trailing reason' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        # :nocov: legacy adapter
+        return if condition
+        # :nocov: legacy adapter
+
+        bar
+      end
+    RUBY
+  end
+
+  it 'accepts a guard clause wrapped in `# simplecov:disable` / `# simplecov:enable` comments' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        # simplecov:disable
+        return if condition
+        # simplecov:enable
+
+        bar
+      end
+    RUBY
+  end
+
+  it 'accepts a guard clause after `# simplecov:enable` with categories and a reason' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        # simplecov:disable line, branch legacy adapter
+        return if condition
+        # simplecov:enable line, branch legacy adapter
+
+        bar
+      end
+    RUBY
+  end
+
+  it 'accepts a guard clause after `# simplecov:enable` without a space after `#`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        #simplecov:disable
+        return if condition
+        #simplecov:enable
+
+        bar
+      end
+    RUBY
+  end
+
+  it 'accepts a guard clause after `# simplecov : enable` with spaces around the colon' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        # simplecov : disable
+        return if condition
+        # simplecov : enable
+
+        bar
+      end
+    RUBY
+  end
+
+  it 'registers an offense when no empty line follows the closing `# simplecov:enable` comment' do
+    expect_offense(<<~RUBY)
+      def foo
+        # simplecov:disable
+        return if condition
+        ^^^^^^^^^^^^^^^^^^^ Add empty line after guard clause.
+        # simplecov:enable
+        bar
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        # simplecov:disable
+        return if condition
+        # simplecov:enable
+
+        bar
+      end
+    RUBY
+  end
+
   it 'accepts a guard clause inside oneliner block' do
     expect_no_offenses(<<~RUBY)
       def foo

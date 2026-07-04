@@ -161,6 +161,50 @@ RSpec.describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     RUBY
   end
 
+  it 'accepts an assignment that is a statement of a multi-statement begin in a condition' do
+    expect_no_offenses(<<~RUBY)
+      if !a || (
+        b = c
+        b == 'd'
+      )
+        foo
+      end
+    RUBY
+  end
+
+  it 'accepts an assignment as the last statement of a multi-statement begin in a condition' do
+    expect_no_offenses(<<~RUBY)
+      if a || (
+        foo
+        b = c
+      )
+        bar
+      end
+    RUBY
+  end
+
+  it 'accepts an assignment method as a statement of a multi-statement begin in a condition' do
+    expect_no_offenses(<<~RUBY)
+      if a || (
+        obj.foo = c
+        obj.foo == 'd'
+      )
+        bar
+      end
+    RUBY
+  end
+
+  it 'accepts an assignment in a multi-statement begin used directly as a condition' do
+    expect_no_offenses(<<~RUBY)
+      if (
+        b = c
+        b == 'd'
+      )
+        foo
+      end
+    RUBY
+  end
+
   it 'registers an offense for = in condition inside a block' do
     expect_offense(<<~RUBY)
       foo { x if y = z }

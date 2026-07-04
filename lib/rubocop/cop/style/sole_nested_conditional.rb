@@ -65,7 +65,10 @@ module RuboCop
 
           message = format(MSG, conditional_type: node.keyword)
           add_offense(if_branch.loc.keyword, message: message) do |corrector|
+            next if ignored_node?(node)
+
             autocorrect(corrector, node, if_branch)
+            ignore_node(if_branch)
           end
         end
 
@@ -115,9 +118,8 @@ module RuboCop
         end
 
         def correct_node(corrector, node)
-          corrector.replace(node.loc.keyword, 'if') if node.unless? && !part_of_ignored_node?(node)
+          corrector.replace(node.loc.keyword, 'if') if node.unless?
           corrector.replace(node.condition, chainable_condition(node))
-          ignore_node(node)
         end
 
         def correct_for_guard_condition_style(corrector, node, if_branch)

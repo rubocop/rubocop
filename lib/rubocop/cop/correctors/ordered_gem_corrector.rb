@@ -18,7 +18,14 @@ module RuboCop
           current_range = declaration_with_comment(node)
           previous_range = declaration_with_comment(previous_declaration)
 
-          ->(corrector) { corrector.swap(current_range, previous_range) }
+          lambda do |corrector|
+            if current_range.source.end_with?("\n")
+              corrector.swap(current_range, previous_range)
+            else
+              corrector.insert_before(previous_range, "#{current_range.source}\n")
+              corrector.remove(current_range)
+            end
+          end
         end
 
         private

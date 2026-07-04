@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Layout
       # Checks for space between the name of a receiver and a left
-      # brackets.
+      # bracket.
       #
       # @example
       #

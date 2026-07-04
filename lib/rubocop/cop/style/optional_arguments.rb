@@ -27,6 +27,7 @@ module RuboCop
         def on_def(node)
           each_misplaced_optional_arg(node.arguments) { |argument| add_offense(argument) }
         end
+        alias on_defs on_def
 
         private
 

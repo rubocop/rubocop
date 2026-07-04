@@ -38,7 +38,7 @@ module RuboCop
           rhs_elements = Array(rhs).compact # edge case for one constant
 
           return if allowed_lhs?(node.assignments) || allowed_rhs?(rhs) ||
-                    allowed_masign?(node.assignments, rhs_elements)
+                    allowed_masign?(node.assignments, rhs_elements) || contains_heredoc?(rhs)
 
           range = node.source_range.begin.join(rhs.source_range.end)
 
@@ -75,6 +75,13 @@ module RuboCop
 
           # Account for edge case of `Constant::CONSTANT`
           !node.array_type? || elements.any?(&:splat_type?)
+        end
+
+        # Autocorrection splits the assignment into single assignments on
+        # consecutive lines, which would put following assignments into the
+        # heredoc body unless the heredoc bodies were moved along.
+        def contains_heredoc?(node)
+          node.each_descendant(:any_str).any?(&:heredoc?)
         end
 
         def assignment_corrector(node, rhs, order)
@@ -226,12 +233,21 @@ module RuboCop
           def source(node, loc)
             # __FILE__ is treated as a StrNode but has no begin
             if node.str_type? && loc.respond_to?(:begin) && loc.begin.nil?
-              "'#{node.source}'"
+              # `%w` elements have no per-element delimiter, so the value must be
+              # quoted and escaped to stay valid (e.g. `%w(it's)` -> `'it\'s'`).
+              quote(node.value)
             elsif node.sym_type? && !node.loc?(:begin)
-              ":#{node.source}"
+              # `%i` elements have no per-element delimiter, so a symbol that needs
+              # quoting must be emitted as `:"..."` (e.g. `%i(foo-bar)` -> `:"foo-bar"`),
+              # otherwise `:foo-bar` would parse as `:foo.-(bar)`.
+              node.value.inspect
             else
               node.source
             end
+          end
+
+          def quote(string)
+            "'#{string.gsub(/[\\']/) { |char| "\\#{char}" }}'"
           end
 
           def extract_sources(node)

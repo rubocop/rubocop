@@ -6,7 +6,7 @@ module RuboCop
       # Enforces the use of `max` or `min` instead of comparison for greater or less.
       #
       # NOTE: It can be used if you want to present limit or threshold in Ruby 2.7+.
-      # That it is slow though. So autocorrection will apply generic `max` or `min`:
+      # It is slow though. So autocorrection will apply generic `max` or `min`:
       #
       # [source,ruby]
       # ----
@@ -55,8 +55,11 @@ module RuboCop
           lhs, operator, rhs = comparison_condition(node.condition)
           return unless operator
 
+          # For `unless`, the branches run opposite to an `if`, so swap them to
+          # keep the `max`/`min` decision correct.
           if_branch = node.if_branch
           else_branch = node.else_branch
+          if_branch, else_branch = else_branch, if_branch if node.unless?
           preferred_method = preferred_method(operator, lhs, rhs, if_branch, else_branch)
           return unless preferred_method
 

@@ -17,7 +17,7 @@ do so.
 
 ```console
 $ rubocop -V
-1.86.1 (using Parser 3.3.7.2, rubocop-ast 1.49.0, analyzing as Ruby 3.4, running on ruby 3.4.8) [x86_64-linux]
+1.88.1 (using Parser 3.3.7.2, rubocop-ast 1.49.0, analyzing as Ruby 3.4, running on ruby 3.4.8) [x86_64-linux]
   - rubocop-performance 1.26.1
   - rubocop-rspec 3.9.0
 ```
@@ -42,7 +42,10 @@ $ rubocop -V
   around it.
 * Make sure the test suite is passing and the code you wrote doesn't produce
   RuboCop offenses (usually this is as simple as running `bundle exec rake`).
-* Squash related commits together.
+* Put each distinct fix in its own logical commit with its own changelog entry.
+  When a pull request bundles several unrelated fixes, don't squash them all into
+  a single commit - it makes the change harder to review. Squash only commits that
+  are part of the same fix.
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
 

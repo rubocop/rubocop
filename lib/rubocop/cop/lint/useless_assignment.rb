@@ -40,8 +40,6 @@ module RuboCop
       class UselessAssignment < Base
         extend AutoCorrector
 
-        include RangeHelp
-
         MSG = 'Useless assignment to variable - `%<variable>s`.'
 
         def self.joining_forces
@@ -69,16 +67,21 @@ module RuboCop
           range = offense_range(assignment)
 
           add_offense(range, message: message) do |corrector|
-            # In cases like `x = 1, y = 2`, where removing a variable would cause a syntax error,
-            # and where changing `x ||= 1` to `x = 1` would cause `NameError`,
-            # the autocorrect will be skipped, even if the variable is unused.
-            next if sequential_assignment?(assignment_node) ||
-                    assignment_node.parent&.or_asgn_type?
+            next if uncorrectable_assignment?(assignment_node)
 
             autocorrect(corrector, assignment)
           end
 
           ignore_node(assignment_node) if chained_assignment?(assignment_node)
+        end
+
+        # Autocorrect is skipped when removing a variable would cause a syntax error
+        # (`x = 1, y = 2`), or where rewriting `x ||= 1`/`x &&= 1` to `x = 1` would raise
+        # `NameError` because the variable is not declared before the operator assignment.
+        def uncorrectable_assignment?(assignment_node)
+          sequential_assignment?(assignment_node) ||
+            assignment_node.parent&.or_asgn_type? ||
+            assignment_node.parent&.and_asgn_type?
         end
 
         def ignored_assignment?(variable, assignment_node, assignment)
@@ -189,12 +192,9 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize
 
         def remove_exception_assignment_part(corrector, node)
-          corrector.remove(
-            range_between(
-              (node.parent.children.first&.source_range || node.parent.location.keyword).end_pos,
-              node.source_range.end_pos
-            )
-          )
+          range = node.parent.children.first&.source_range || node.parent.location.keyword
+
+          corrector.remove(range.end.join(node.source_range.end))
         end
 
         def rename_variable_with_underscore(corrector, node)

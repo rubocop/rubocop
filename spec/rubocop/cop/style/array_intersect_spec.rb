@@ -306,6 +306,26 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
       end
     end
 
+    context 'with a safe-navigation receiver' do
+      it 'still registers an offense for a non-negated predicate' do
+        expect_offense(<<~RUBY)
+          a&.intersection(b)&.any?
+          ^^^^^^^^^^^^^^^^^^^^^^^^ Use `a&.intersect?(b)` instead of `a&.intersection(b)&.any?`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          a&.intersect?(b)
+        RUBY
+      end
+
+      it 'does not register an offense for a negated predicate (the rewrite would flip the `nil` result)' do
+        expect_no_offenses(<<~RUBY)
+          a&.intersection(b)&.none?
+          a&.intersection(b)&.empty?
+        RUBY
+      end
+    end
+
     context 'with Array#any?' do
       it 'registers an offense when using `array1.any? { |e| array2.member?(e) }`' do
         expect_offense(<<~RUBY)
@@ -326,6 +346,28 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
 
         expect_correction(<<~RUBY)
           array1&.intersect?(array2)
+        RUBY
+      end
+
+      it 'registers an offense when using `array1.any? { |e| array2.include?(e) }`' do
+        expect_offense(<<~RUBY)
+          array1.any? { |e| array2.include?(e) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `array1.intersect?(array2)` instead of `array1.any? { |e| array2.include?(e) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          array1.intersect?(array2)
+        RUBY
+      end
+
+      it 'registers an offense when using `array1.none? { |e| array2.include?(e) }`' do
+        expect_offense(<<~RUBY)
+          array1.none? { |e| array2.include?(e) }
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!array1.intersect?(array2)` instead of `array1.none? { |e| array2.include?(e) }`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          !array1.intersect?(array2)
         RUBY
       end
 

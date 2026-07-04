@@ -56,14 +56,9 @@ RSpec.describe RuboCop::Cop::Style::PerlBackrefs, :config do
     RUBY
   end
 
-  it 'autocorrects $+ to Regexp.last_match(-1)' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for $+, which has no concise equivalent' do
+    expect_no_offenses(<<~RUBY)
       $+
-      ^^ Prefer `Regexp.last_match(-1)` over `$+`.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      Regexp.last_match(-1)
     RUBY
   end
 
@@ -100,14 +95,9 @@ RSpec.describe RuboCop::Cop::Style::PerlBackrefs, :config do
     RUBY
   end
 
-  it 'autocorrects $LAST_PAREN_MATCH to Regexp.last_match(-1)' do
-    expect_offense(<<~RUBY)
+  it 'does not register an offense for $LAST_PAREN_MATCH, which has no concise equivalent' do
+    expect_no_offenses(<<~RUBY)
       $LAST_PAREN_MATCH
-      ^^^^^^^^^^^^^^^^^ Prefer `Regexp.last_match(-1)` over `$LAST_PAREN_MATCH`.
-    RUBY
-
-    expect_correction(<<~RUBY)
-      Regexp.last_match(-1)
     RUBY
   end
 

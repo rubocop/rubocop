@@ -36,9 +36,16 @@ module RuboCop
             # The following used `*_args` because `to_json(*args)` has
             # an offense of `Lint/UnusedMethodArgument` cop if `*args`
             # is not used.
-            corrector.insert_after(node.loc.name, '(*_args)')
+            if (opening_parenthesis = node.each_child_node(:args).first.loc.begin)
+              # Explicit empty parentheses (`def to_json()`) are already present,
+              # so insert the argument inside them to avoid producing `to_json(*_args)()`.
+              corrector.insert_after(opening_parenthesis, '*_args')
+            else
+              corrector.insert_after(node.loc.name, '(*_args)')
+            end
           end
         end
+        alias on_defs on_def
       end
     end
   end

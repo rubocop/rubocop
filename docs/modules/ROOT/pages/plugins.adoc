@@ -83,7 +83,7 @@ AllCops:
   SuggestExtensions: false
 ----
 
-Suggest default extensions if `SuggestExtensions: true`.
+Default extensions are suggested when `SuggestExtensions: true`.
 
 You can also opt-out of suggestions for a particular plugin as so (unspecified
 plugins will continue to be notified, as appropriate):

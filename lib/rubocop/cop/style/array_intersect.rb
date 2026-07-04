@@ -47,7 +47,7 @@ module RuboCop
       #
       #   # bad
       #   array1.any? { |elem| array2.member?(elem) }
-      #   array1.none? { |elem| array2.member?(elem) }
+      #   array1.none? { |elem| array2.include?(elem) }
       #
       #   # good
       #   array1.intersect?(array2)
@@ -121,15 +121,15 @@ module RuboCop
             (block
               (call $_receiver ${:any? :none?})
               (args (arg _key))
-              (send $_argument :member? (lvar _key))
+              (send $_argument {:member? :include?} (lvar _key))
             )
             (numblock
               (call $_receiver ${:any? :none?}) 1
-              (send $_argument :member? (lvar :_1))
+              (send $_argument {:member? :include?} (lvar :_1))
             )
             (itblock
               (call $_receiver ${:any? :none?}) :it
-              (send $_argument :member? (lvar :it))
+              (send $_argument {:member? :include?} (lvar :it))
             )
           }
         PATTERN
@@ -145,6 +145,10 @@ module RuboCop
 
           dot = dot_node.loc.dot.source
           bang = straight?(method_name) ? '' : '!'
+          # `a&.intersection(b)&.none?` returns `nil` when `a` is `nil`, but the negated
+          # rewrite `!a&.intersect?(b)` returns `true` there, flipping the result.
+          return if bang == '!' && dot == '&.'
+
           replacement = "#{bang}#{receiver.source}#{dot}intersect?(#{argument.source})"
 
           register_offense(node, replacement)

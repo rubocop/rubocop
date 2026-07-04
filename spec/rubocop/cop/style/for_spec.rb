@@ -455,6 +455,25 @@ RSpec.describe RuboCop::Cop::Style::For, :config do
       RUBY
     end
 
+    it 'keeps all block arguments when each has multiple items' do
+      expect_offense(<<~RUBY)
+        def func
+          [[1, 2]].each do |a, b|
+          ^^^^^^^^^^^^^^^^^^^^^^^ Prefer `for` over `each`.
+            puts a + b
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def func
+          for a, b in [[1, 2]] do
+            puts a + b
+          end
+        end
+      RUBY
+    end
+
     context 'Ruby 2.7', :ruby27 do
       it 'registers an offense for each without an item and uses _ as the item' do
         expect_offense(<<~RUBY)

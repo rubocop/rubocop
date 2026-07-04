@@ -91,12 +91,9 @@ module RuboCop
         command = 'rubocop --auto-gen-config'
 
         command += ' --auto-gen-only-exclude' if @options[:auto_gen_only_exclude]
-
-        if no_exclude_limit?
-          command += ' --no-exclude-limit'
-        elsif @exclude_limit_option
-          command += format(' --exclude-limit %<limit>d', limit: Integer(@exclude_limit_option))
-        end
+        command += ' --disable-pending-cops' if @options[:disable_pending_cops]
+        command += ' --enable-pending-cops' if @options[:enable_pending_cops]
+        command += exclude_limit_option
         command += ' --no-offense-counts' unless show_offense_counts?
 
         command += ' --no-auto-gen-timestamp' unless show_timestamp?
@@ -104,6 +101,16 @@ module RuboCop
         command += ' --no-auto-gen-enforced-style' unless auto_gen_enforced_style?
 
         command
+      end
+
+      def exclude_limit_option
+        if no_exclude_limit?
+          ' --no-exclude-limit'
+        elsif @exclude_limit_option
+          format(' --exclude-limit %<limit>d', limit: Integer(@exclude_limit_option))
+        else
+          ''
+        end
       end
 
       def timestamp
@@ -158,7 +165,7 @@ module RuboCop
         output_buffer.puts "# Offense count: #{offense_count}" if show_offense_counts?
 
         cop_class = Cop::Registry.global.find_by_cop_name(cop_name)
-        default_cfg = default_config(cop_name)
+        default_cfg = default_config(cop_name) || @config_for_pwd[cop_name]
 
         if supports_safe_autocorrect?(cop_class, default_cfg)
           output_buffer.puts '# This cop supports safe autocorrection (--autocorrect).'

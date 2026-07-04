@@ -203,9 +203,10 @@ module RuboCop
 
         def match_acronym?(expected, name)
           expected = expected.to_s
-          name = name.to_s
-
-          allowed_acronyms.any? { |acronym| expected.gsub(acronym.capitalize, acronym) == name }
+          name = allowed_acronyms.reduce(name.to_s) do |result, acronym|
+            result.gsub(acronym, acronym.capitalize)
+          end
+          expected == name
         end
 
         def to_namespace(path) # rubocop:disable Metrics/AbcSize

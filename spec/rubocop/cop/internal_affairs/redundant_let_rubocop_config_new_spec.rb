@@ -85,4 +85,12 @@ RSpec.describe RuboCop::Cop::InternalAffairs::RedundantLetRuboCopConfigNew, :con
       end
     RUBY
   end
+
+  it 'does not register an offense (or crash) when `let(:config)` has no enclosing `describe`' do
+    expect_no_offenses(<<~RUBY)
+      shared_context 'with config' do
+        let(:config) { RuboCop::Config.new }
+      end
+    RUBY
+  end
 end

@@ -15,7 +15,7 @@ module RuboCop
       # NOTE: The `ExcludedMethods` and `IgnoredMethods` configuration is
       # deprecated and only kept for backwards compatibility.
       # Please use `AllowedMethods` and `AllowedPatterns` instead.
-      # By default, there are no methods to allowed.
+      # By default, there are no allowed methods.
       #
       # @example CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
       #
@@ -58,7 +58,7 @@ module RuboCop
           return unless node.method?(:define_method)
 
           method_name = node.send_node.first_argument
-          return if method_name.basic_literal? && allowed?(method_name.value)
+          return if method_name&.basic_literal? && allowed?(method_name.value)
 
           check_code_length(node)
         end

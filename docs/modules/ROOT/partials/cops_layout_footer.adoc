@@ -12,8 +12,8 @@ is available on the following Layout cops:
 * MultilineMethodArgumentLineBreaks
 * MultilineMethodParameterLineBreaks
 
-Those cops ignore their respective expressions if all or the elements of
-the expression are on the same line. If `AllowMultilineFinalElement` is
+Those cops ignore their respective expressions if all of the elements
+of the expression are on the same line. If `AllowMultilineFinalElement` is
 set to `true`, the cop will also ignore multiline expressions if the last
 element starts on the same line, but ends on a different one.
 

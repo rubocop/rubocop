@@ -217,6 +217,69 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
     end
   end
 
+  context 'when there is a line break between the method arguments' do
+    it 'accepts `}` aligned with the start of the line where the method is called' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }
+      RUBY
+    end
+
+    it 'accepts `end` aligned with the start of the line where the method is called' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) do
+            process(scheme.constraint)
+          end
+      RUBY
+    end
+
+    it 'accepts `}` aligned with the start of the line where the method is called ' \
+       'when the block is chained' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+          }.to_s
+      RUBY
+    end
+
+    it 'accepts `}` aligned with the start of the line where the `{` is' do
+      expect_no_offenses(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+                    }
+      RUBY
+    end
+
+    it 'registers an offense and corrects when `}` is aligned with neither the start of the expression ' \
+       'nor the start of the line where the method is called' do
+      expect_offense(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+              }
+              ^ `}` at 5, 6 is not aligned with `out` at 1, 0 or `.brackets(lft: foo,` at 2, 2.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        out
+          .brackets(lft: foo,
+                    rgt: foo) {
+            process(scheme.constraint)
+        }
+      RUBY
+    end
+  end
+
   context 'when variables of a mass assignment spans several lines' do
     it 'accepts end aligned with the variables' do
       expect_no_offenses(<<~RUBY)
@@ -680,6 +743,39 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
+    context 'when a block is passed as a method argument' do
+      it 'does not register an offense when `}` is aligned with the start of the line for a literal lambda' do
+        expect_no_offenses(<<~RUBY)
+          foo :x, ->(y) {
+            bar
+          }
+        RUBY
+      end
+
+      it 'does not register an offense when `}` is aligned with the start of the line for a brace block' do
+        expect_no_offenses(<<~RUBY)
+          foo :x, bar {
+            baz
+          }
+        RUBY
+      end
+
+      it 'registers an offense and corrects when `}` is not aligned with the start of the line' do
+        expect_offense(<<~RUBY)
+          foo :x, ->(y) {
+            bar
+            }
+            ^ `}` at 3, 2 is not aligned with `foo :x, ->(y) {` at 1, 0.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo :x, ->(y) {
+            bar
+          }
+        RUBY
+      end
+    end
+
     context 'inside a non-endless method' do
       it 'does not register an offense when `end` is aligned with the block start' do
         expect_no_offenses(<<~RUBY)
@@ -838,6 +934,84 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
       RUBY
     end
 
+    context 'when there is a line break between the method arguments' do
+      it 'allows when `end` is aligned with the start of the line where the method is called' do
+        expect_no_offenses(<<~RUBY)
+          out
+            .brackets(lft: foo,
+                      rgt: foo) do
+              process(scheme.constraint)
+            end
+        RUBY
+      end
+
+      it 'errors when `end` is aligned with the line where the `do` is' do
+        expect_offense(<<~RUBY)
+          out
+            .brackets(lft: foo,
+                      rgt: foo) do
+              process(scheme.constraint)
+                      end
+                      ^^^ `end` at 5, 12 is not aligned with `.brackets(lft: foo,` at 2, 2.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          out
+            .brackets(lft: foo,
+                      rgt: foo) do
+              process(scheme.constraint)
+            end
+        RUBY
+      end
+
+      it 'allows when `end` is aligned with the start of the line where `super` is called' do
+        expect_no_offenses(<<~RUBY)
+          x = super(foo,
+                    bar) do
+            baz
+          end
+        RUBY
+      end
+
+      it 'allows when `}` is aligned with the start of the line where the lambda is defined' do
+        expect_no_offenses(<<~RUBY)
+          x = ->(a,
+                 b) {
+            baz
+          }
+        RUBY
+      end
+
+      it 'allows when `end` is aligned with the line where the `do` is and the method has no parentheses' do
+        expect_no_offenses(<<~RUBY)
+          foo bar,
+            baz,
+            key: value do |x|
+              process(x)
+            end
+        RUBY
+      end
+
+      it 'errors when `end` is misaligned and the method has no parentheses' do
+        expect_offense(<<~RUBY)
+          foo bar,
+            baz,
+            key: value do |x|
+              process(x)
+                end
+                ^^^ `end` at 5, 6 is not aligned with `key: value do |x|` at 3, 2.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo bar,
+            baz,
+            key: value do |x|
+              process(x)
+            end
+        RUBY
+      end
+    end
+
     context 'inside a non-endless method' do
       it 'does not register an offense when `end` is aligned with the block start' do
         expect_no_offenses(<<~RUBY)
@@ -909,20 +1083,29 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         RUBY
       end
 
-      it 'registers an offense when `end` is aligned with the start of a multiline method definition' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when `end` is aligned with the start of a multiline method definition' do
+        expect_no_offenses(<<~RUBY)
           def foo = bar(123,
                         456) do
             baz
           end
-          ^^^ `end` at 4, 0 is not aligned with `456) do` at 2, 14.
+        RUBY
+      end
+
+      it 'registers an offense when `end` is not aligned with the start of a multiline method definition' do
+        expect_offense(<<~RUBY)
+          def foo = bar(123,
+                        456) do
+            baz
+              end
+              ^^^ `end` at 4, 4 is not aligned with `def foo = bar(123,` at 1, 0.
         RUBY
 
         expect_correction(<<~RUBY)
           def foo = bar(123,
                         456) do
             baz
-                        end
+          end
         RUBY
       end
 
@@ -949,20 +1132,29 @@ RSpec.describe RuboCop::Cop::Layout::BlockAlignment, :config do
         RUBY
       end
 
-      it 'registers an offense when `end` is aligned with the start of a multiline singleton method definition' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when `end` is aligned with the start of a multiline singleton method definition' do
+        expect_no_offenses(<<~RUBY)
           def self.foo = bar(123,
                              456) do
             baz
           end
-          ^^^ `end` at 4, 0 is not aligned with `456) do` at 2, 19.
+        RUBY
+      end
+
+      it 'registers an offense when `end` is not aligned with the start of a multiline singleton method definition' do
+        expect_offense(<<~RUBY)
+          def self.foo = bar(123,
+                             456) do
+            baz
+              end
+              ^^^ `end` at 4, 4 is not aligned with `def self.foo = bar(123,` at 1, 0.
         RUBY
 
         expect_correction(<<~RUBY)
           def self.foo = bar(123,
                              456) do
             baz
-                             end
+          end
         RUBY
       end
 

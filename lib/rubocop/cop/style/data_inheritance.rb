@@ -61,6 +61,10 @@ module RuboCop
 
         def correct_parent(parent, corrector)
           if parent.block_type?
+            # Convert a brace block to `do`, so the class's own `end` closes it
+            # once the closing delimiter is removed; otherwise a dangling `{` is
+            # left behind, producing invalid Ruby.
+            corrector.replace(parent.loc.begin, 'do') if parent.braces?
             corrector.remove(range_with_surrounding_space(parent.loc.end, newlines: false))
           elsif (class_node = parent.parent).body.nil?
             corrector.remove(range_for_empty_class_body(class_node, parent))

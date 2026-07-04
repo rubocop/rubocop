@@ -459,6 +459,33 @@ RSpec.describe RuboCop::Cop::Naming::FileName, :config do
     end
   end
 
+  context 'with multiple consecutive acronyms in class name' do
+    let(:cop_config) do
+      super().merge('ExpectMatchingDefinition' => true, 'AllowedAcronyms' => %w[FOO BAR])
+    end
+
+    it 'does not register an offense when all acronyms are uppercased' do
+      expect_no_offenses(<<~RUBY, '/lib/my_foo_bar.rb')
+        class MyFOOBAR
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when only the first acronym is uppercased' do
+      expect_no_offenses(<<~RUBY, '/lib/my_foo_bar.rb')
+        class MyFOOBar
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when only the last acronym is uppercased' do
+      expect_no_offenses(<<~RUBY, '/lib/my_foo_bar.rb')
+        class MyFooBAR
+        end
+      RUBY
+    end
+  end
+
   context 'with dotfiles' do
     it 'does not register an offense' do
       expect_no_offenses(<<~RUBY, '.pryrc')

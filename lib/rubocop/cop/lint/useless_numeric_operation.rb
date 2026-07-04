@@ -36,31 +36,31 @@ module RuboCop
         RESTRICT_ON_SEND = %i[+ - * / **].freeze
 
         # @!method useless_operation?(node)
-        def_node_matcher :useless_operation?, '(call (call nil? $_) $_ (int $_))'
+        def_node_matcher :useless_operation?, <<~PATTERN
+          (call ${lvar ivar cvar gvar const (send nil? _)} $_ (int $_))
+        PATTERN
 
         # @!method useless_abbreviated_assignment?(node)
-        def_node_matcher :useless_abbreviated_assignment?, '(op-asgn (lvasgn $_) $_ (int $_))'
+        def_node_matcher :useless_abbreviated_assignment?, <<~PATTERN
+          (op-asgn ${lvasgn ivasgn cvasgn gvasgn casgn} $_ (int $_))
+        PATTERN
 
         def on_send(node)
-          return unless useless_operation?(node)
-
-          variable, operation, number = useless_operation?(node)
+          return unless (receiver, operation, number = useless_operation?(node))
           return unless useless?(operation, number)
 
           add_offense(node) do |corrector|
-            corrector.replace(node, variable)
+            corrector.replace(node, receiver.source)
           end
         end
         alias on_csend on_send
 
         def on_op_asgn(node)
-          return unless useless_abbreviated_assignment?(node)
-
-          variable, operation, number = useless_abbreviated_assignment?(node)
+          return unless (variable, operation, number = useless_abbreviated_assignment?(node))
           return unless useless?(operation, number)
 
           add_offense(node) do |corrector|
-            corrector.replace(node, "#{variable} = #{variable}")
+            corrector.replace(node, "#{variable.source} = #{variable.source}")
           end
         end
 

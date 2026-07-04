@@ -167,7 +167,7 @@ gem 'rspec', groups: [:development, :test]
 | Yes
 | No
 | 0.59
-| 0.85
+| 1.88
 |===
 
 Each gem in the Gemfile should have a comment explaining
@@ -280,7 +280,7 @@ gem 'bar', '< 2.1'
 | `+**/*.gemfile+`, `+**/Gemfile+`, `+**/gems.rb+`
 | Array
 
-| IgnoredGems
+| AllowedGems
 | `[]`
 | Array
 

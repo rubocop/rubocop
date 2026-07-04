@@ -59,7 +59,7 @@ module RuboCop
 
         def initialize(config = nil, options = nil)
           super
-          @allowed_send_nodes = []
+          @allowed_send_nodes = Set.new.compare_by_identity
           @local_variables_scopes = Hash.new { |hash, key| hash[key] = [] }.compare_by_identity
         end
 
@@ -98,6 +98,15 @@ module RuboCop
 
         def on_lvasgn(node)
           add_lhs_to_local_variables_scopes(node.rhs, node.lhs)
+        end
+
+        # Register the exception variable of `rescue => e` so that `self.e` in the
+        # body is not treated as redundant (it disambiguates the local variable).
+        def on_resbody(node)
+          exception_variable = node.exception_variable
+          return unless exception_variable&.lvasgn_type?
+
+          @local_variables_scopes[node] << exception_variable.name
         end
 
         def on_in_pattern(node)
@@ -187,7 +196,7 @@ module RuboCop
         def allow_self(node)
           return unless node.send_type? && node.self_receiver?
 
-          @allowed_send_nodes << node
+          @allowed_send_nodes.add(node)
         end
 
         def add_lhs_to_local_variables_scopes(rhs, lhs)

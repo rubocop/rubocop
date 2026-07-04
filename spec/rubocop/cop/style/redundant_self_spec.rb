@@ -128,6 +128,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
     expect_no_offenses('self.logger ||= Rails.logger')
   end
 
+  it 'registers an offense when a self receiver follows an or-assignment with the same left-hand side' do
+    expect_offense(<<~RUBY)
+      self.x ||= 42
+      self.x
+      ^^^^ Redundant `self` detected.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      self.x ||= 42
+      x
+    RUBY
+  end
+
   it 'accepts a self receiver on an lvalue of an and-assignment' do
     expect_no_offenses('self.flag &&= value')
   end
@@ -266,6 +279,26 @@ RSpec.describe RuboCop::Cop::Style::RedundantSelf, :config do
             groups.map! { |g| g.to_sym }
             specs_for(groups)
           end
+        end
+      RUBY
+    end
+
+    it 'accepts a self receiver used to distinguish from a rescue exception variable' do
+      expect_no_offenses(<<~RUBY)
+        def foo
+          do_something
+        rescue => e
+          self.e
+        end
+      RUBY
+    end
+
+    it 'accepts a self receiver used to distinguish from a rescue exception variable at the top level' do
+      expect_no_offenses(<<~RUBY)
+        begin
+          do_something
+        rescue => e
+          self.e
         end
       RUBY
     end

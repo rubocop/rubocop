@@ -35,7 +35,10 @@ module RuboCop
         RESTRICT_ON_SEND = %i[attr_reader attr_writer attr_accessor attr].freeze
 
         def on_send(node)
-          return unless node.attribute_accessor? && node.last_argument.def_type?
+          return unless node.attribute_accessor? && node.last_argument.any_def_type?
+          # A lone `def` argument (e.g. `attr_reader def foo; end`) has no preceding
+          # attribute, so there is no trailing comma to flag.
+          return unless node.arguments.size > 1
 
           trailing_comma = trailing_comma_range(node)
 

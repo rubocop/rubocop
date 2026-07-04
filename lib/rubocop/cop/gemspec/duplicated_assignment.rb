@@ -3,12 +3,12 @@
 module RuboCop
   module Cop
     module Gemspec
-      # An attribute assignment method calls should be listed only once
+      # An attribute assignment method call should be listed only once
       # in a gemspec.
       #
       # Assigning to an attribute with the same name using `spec.foo =` or
       # `spec.attribute#[]=` will be an unintended usage. On the other hand,
-      # duplication of methods such # as `spec.requirements`,
+      # duplication of methods such as `spec.requirements`,
       # `spec.add_runtime_dependency`, and others are permitted because it is
       # the intended use of appending values.
       #
@@ -83,16 +83,26 @@ module RuboCop
         def duplicated_assignment_method_nodes
           assignment_method_declarations(processed_source.ast)
             .select(&:assignment_method?)
-            .group_by(&:method_name)
+            .group_by { |node| [enclosing_specification(node), node.method_name] }
             .values
             .select { |nodes| nodes.size > 1 }
         end
 
         def duplicated_indexed_assignment_method_nodes
           indexed_assignment_method_declarations(processed_source.ast)
-            .group_by { |node| [node.children.first.method_name, node.first_argument] }
+            .group_by { |node| indexed_assignment_key(node) }
             .values
             .select { |nodes| nodes.size > 1 }
+        end
+
+        def indexed_assignment_key(node)
+          [enclosing_specification(node), node.children.first.method_name, node.first_argument]
+        end
+
+        # Assignments in separate `Gem::Specification.new` blocks are not duplicates of
+        # one another, so the enclosing specification is part of the grouping key.
+        def enclosing_specification(node)
+          node.each_ancestor(:block).find { |block| gem_specification?(block) }
         end
 
         def register_offense(node, assignment, line_of_first_occurrence)

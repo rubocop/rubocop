@@ -17,7 +17,7 @@ Layout/LineLength:
 
 Most cops are enabled by default. Cops, introduced or significantly updated
 between major versions, are in a special pending status (read more in
-xref:versioning.adoc["Versioning"]). Some cops, configured the above `Enabled: false`
+xref:versioning.adoc["Versioning"]). Some cops, configured with `Enabled: false`
 in https://github.com/rubocop/rubocop/blob/master/config/default.yml[config/default.yml],
 are disabled by default.
 
@@ -46,6 +46,12 @@ Style:
 All cops in the `Style` department are then enabled. In this case, only the cops
 in the `Style` department that are enabled by default will be enabled.
 The cops in the `Style` department that are disabled by default will remain disabled.
+
+The same effects can be obtained from the command line using `--disable-all-cops`
+and `--enable-all-cops`. These options take precedence over the configuration
+files, which is useful when you want to inspect the source with a different cop
+set without modifying `.rubocop.yml`. Note that `--disable-all-cops` does not
+disable `Lint/Syntax`, which is always enabled.
 
 If a department is disabled, cops in that department can still be individually
 enabled, and that setting overrides the setting for its department in the same

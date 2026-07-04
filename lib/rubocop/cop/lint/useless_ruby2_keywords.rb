@@ -6,7 +6,7 @@ module RuboCop
       # Looks for `ruby2_keywords` calls for methods that do not need it.
       #
       # `ruby2_keywords` should only be called on methods that accept an argument splat
-      # (`\*args`) but do not explicit keyword arguments (`k:` or `k: true`) or
+      # (`\*args`) but do not have explicit keyword arguments (`k:` or `k: true`) or
       # a keyword splat (`**kwargs`).
       #
       # @example
@@ -107,11 +107,15 @@ module RuboCop
         end
 
         def find_method_definition(node, method_name)
-          node.each_ancestor.lazy.map do |ancestor|
-            ancestor.each_child_node(:def, :any_block).find do |child|
+          node.each_ancestor do |ancestor|
+            found = ancestor.each_child_node(:def, :any_block).find do |child|
               method_definition(child, method_name)
             end
-          end.find(&:itself)
+            return found if found
+            # A method defined in an outer lexical scope does not define this scope's method,
+            # so stop searching once a class/module boundary is crossed without a match.
+            return nil if ancestor.type?(:class, :module, :sclass)
+          end
         end
 
         # `ruby2_keywords` is only allowed if there's a `restarg` and no keyword arguments

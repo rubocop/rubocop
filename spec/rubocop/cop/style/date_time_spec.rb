@@ -63,6 +63,10 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
     expect_no_offenses("::DateTime.iso8601('2016-06-29', ::Date::ITALY)")
   end
 
+  it 'does not register an offense when using DateTime with safe navigation for historic date' do
+    expect_no_offenses("DateTime&.iso8601('1751-04-23', Date::ENGLAND)")
+  end
+
   it 'does not register an offense when using DateTime in another namespace' do
     expect_no_offenses('Icalendar::Values::DateTime.new(start_at)')
   end
@@ -81,6 +85,14 @@ RSpec.describe RuboCop::Cop::Style::DateTime, :config do
       expect_offense(<<~RUBY)
         thing&.to_datetime
         ^^^^^^^^^^^^^^^^^^ Do not use `#to_datetime`.
+      RUBY
+    end
+
+    it 'does not register an offense for a bare `to_datetime` call on implicit self' do
+      expect_no_offenses(<<~RUBY)
+        def to_time
+          to_datetime
+        end
       RUBY
     end
   end

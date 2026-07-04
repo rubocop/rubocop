@@ -123,6 +123,32 @@ RSpec.describe RuboCop::Cop::Style::MethodDefParentheses, :config do
         end
       RUBY
     end
+
+    it 'removes the parens for named rest arguments' do
+      expect_offense(<<~RUBY)
+        def foo(*rest)
+               ^^^^^^^ Use def without parentheses.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo *rest
+        end
+      RUBY
+    end
+
+    it 'removes the parens for named keyword rest arguments' do
+      expect_offense(<<~RUBY)
+        def foo(**opts)
+               ^^^^^^^^ Use def without parentheses.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo **opts
+        end
+      RUBY
+    end
   end
 
   shared_examples 'endless methods' do

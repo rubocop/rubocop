@@ -416,4 +416,23 @@ RSpec.describe RuboCop::Cop::Layout::CommentIndentation, :config do
       RUBY
     end
   end
+
+  context 'when the cop is configured with `IndentationWidth`' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Layout/CommentIndentation' => { 'IndentationWidth' => 1 },
+        'Layout/IndentationWidth' => { 'Width' => 2 }
+      )
+    end
+
+    it 'uses the per-cop `IndentationWidth` over `Layout/IndentationWidth`' do
+      expect_no_offenses(<<~RUBY)
+        if foo
+         # comment indented by 1 to align with the keyword `else` below
+        else
+          bar
+        end
+      RUBY
+    end
+  end
 end

@@ -47,8 +47,7 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
 
         expect_correction(<<~RUBY)
-          def foo
-          (bar)
+          def foo(bar)
           end
         RUBY
       end
@@ -66,10 +65,23 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         RUBY
 
         expect_correction(<<~RUBY)
-          def foo
+          def foo(bar)
+          end
+        RUBY
+      end
 
+      it 'registers an offense and corrects when the signature with multiple arguments ' \
+         'spans lines after a `def` keyword on its own line' do
+        expect_offense(<<~RUBY)
+          def
+          ^^^ Avoid multi-line method signatures.
+          foo(bar,
+              baz)
+          end
+        RUBY
 
-          (bar)
+        expect_correction(<<~RUBY)
+          def foo(bar, baz)
           end
         RUBY
       end
@@ -243,6 +255,24 @@ RSpec.describe RuboCop::Cop::Style::MultilineMethodSignature, :config do
         expect_correction(<<~RUBY)
           def foo(bar, baz)
             qux.qux
+          end
+        RUBY
+      end
+    end
+
+    context 'when the collapsed signature fits but the multi-line source is longer than the maximum' do
+      let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 20 } } }
+
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
+          def foo(bar,
+          ^^^^^^^^^^^^ Avoid multi-line method signatures.
+                  baz)
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(bar, baz)
           end
         RUBY
       end

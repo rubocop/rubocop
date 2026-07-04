@@ -151,6 +151,19 @@ RSpec.describe Changelog do
         entry = described_class.new(type: :new, body: body, user: github_user)
         expect(entry.path).to match(%r{\Achangelog/new_add_new_lint_useless_rescue_cop_\d+.md\z})
       end
+
+      it 'does not repeat the type when the body starts with it' do
+        body = 'Fix a false positive for `Lint/FloatComparison`'
+        entry = described_class.new(type: :fix, body: body, user: github_user)
+        expect(entry.path).to include('fix_a_false_positive_for_lint_float_comparison')
+        expect(entry.path).not_to include('fix_fix')
+      end
+
+      it 'keeps the cop name even when it appears after a long description' do
+        body = 'Fix a false positive for `Layout/EmptyLinesAroundExceptionHandlingKeywords`'
+        entry = described_class.new(type: :fix, body: body, user: github_user)
+        expect(entry.path).to include('layout_empty_lines_around_exception_handling_keywords')
+      end
     end
   end
 

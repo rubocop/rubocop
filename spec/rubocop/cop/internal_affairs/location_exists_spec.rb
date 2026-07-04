@@ -291,4 +291,20 @@ RSpec.describe RuboCop::Cop::InternalAffairs::LocationExists, :config do
       RUBY
     end
   end
+
+  context 'when the code does not need `loc?`/`loc_is?`' do
+    it 'does not register an offense for already-corrected code' do
+      expect_no_offenses(<<~RUBY)
+        node.loc?(:begin)
+        node.loc_is?(:begin, '(')
+      RUBY
+    end
+
+    it 'does not register an offense when the `respond_to?` receiver is not `loc`' do
+      expect_no_offenses(<<~RUBY)
+        node.respond_to?(:foo)
+        foo.respond_to?(:bar)
+      RUBY
+    end
+  end
 end

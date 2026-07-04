@@ -124,7 +124,7 @@ module RuboCop
         def single_line_ignoring_receiver?(node)
           return false unless node.loc.begin && node.loc.end
 
-          node.loc.begin.line == node.loc.end.line
+          same_line?(node.loc.begin, node.loc.end)
         end
       end
     end

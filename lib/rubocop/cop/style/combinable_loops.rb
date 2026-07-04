@@ -85,8 +85,13 @@ module RuboCop
         def on_for(node)
           return unless node.parent&.begin_type?
           return unless same_collection_looping_for?(node, node.left_sibling)
+          return unless node.body && node.left_sibling.body
 
           add_offense(node) do |corrector|
+            # Combining loops with different iteration variables would leave the second
+            # body referencing an undefined variable, so only autocorrect when they match.
+            next unless node.variable == node.left_sibling.variable
+
             combine_with_left_sibling(corrector, node)
           end
         end

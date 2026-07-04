@@ -1,0 +1,1 @@
+* [#15397](https://github.com/rubocop/rubocop/pull/15397): Fix an incorrect autocorrect for `Style/IdenticalConditionalBranches` that hoisted the moved expression to column zero instead of matching the surrounding indentation. ([@bbatsov][])

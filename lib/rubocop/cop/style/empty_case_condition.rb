@@ -40,7 +40,7 @@ module RuboCop
         extend AutoCorrector
 
         MSG = 'Do not use empty `case` condition, instead use an `if` expression.'
-        NOT_SUPPORTED_PARENT_TYPES = %i[return break next send csend].freeze
+        NOT_SUPPORTED_PARENT_TYPES = %i[return break next send csend yield super].freeze
 
         # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_case(case_node)
@@ -90,7 +90,17 @@ module RuboCop
             range = range_between(conditions.first.source_range.begin_pos,
                                   conditions.last.source_range.end_pos)
 
-            corrector.replace(range, conditions.map(&:source).join(' || '))
+            corrector.replace(range, conditions.map { |c| parenthesize_condition(c) }.join(' || '))
+          end
+        end
+
+        # A condition that binds looser than `||` (e.g. a ternary, range, or
+        # assignment) must be parenthesized so the joined `||` keeps its meaning.
+        def parenthesize_condition(condition)
+          if condition.assignment? || condition.type?(:if, :and, :or, :range)
+            "(#{condition.source})"
+          else
+            condition.source
           end
         end
 

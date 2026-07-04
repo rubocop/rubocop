@@ -88,7 +88,7 @@ Cop-related errors are silenced by default but can be surfaced using the
 
 == Available cops
 
-In the following section you find all available cops:
+In the following section you'll find all available cops:
 
 // START_COP_LIST
 

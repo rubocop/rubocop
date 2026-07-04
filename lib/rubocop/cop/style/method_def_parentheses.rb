@@ -102,6 +102,10 @@ module RuboCop
         MSG_PRESENT = 'Use def without parentheses.'
         MSG_MISSING = 'Use def with parentheses when there are parameters.'
 
+        def self.autocorrect_incompatible_with
+          [Style::ArgumentsForwarding]
+        end
+
         def on_def(node)
           args = node.arguments
 
@@ -166,7 +170,7 @@ module RuboCop
 
         def anonymous_arguments?(node)
           return true if node.arguments.any? do |arg|
-            arg.type?(:forward_arg, :restarg, :kwrestarg)
+            arg.forward_arg_type? || (arg.type?(:restarg, :kwrestarg) && arg.name.nil?)
           end
           return false unless (last_argument = node.last_argument)
 

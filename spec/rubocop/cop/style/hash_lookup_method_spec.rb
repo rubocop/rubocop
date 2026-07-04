@@ -30,6 +30,18 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
       expect_no_offenses('hash[key]')
     end
 
+    it 'registers an offense for chained fetch calls without raising a clobbering error' do
+      expect_offense(<<~RUBY)
+        result.fetch(:foo).fetch(:bar)
+               ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
+                           ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        result[:foo][:bar]
+      RUBY
+    end
+
     it 'accepts fetch with default value' do
       expect_no_offenses('hash.fetch(key, default)')
     end
@@ -47,14 +59,10 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
     end
 
     context 'when using safe navigation operator' do
-      it 'registers an offense for fetch with one argument' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense for fetch with one argument' do
+        # The bracket equivalent would be the unreadable `hash&.[](key)`.
+        expect_no_offenses(<<~RUBY)
           hash&.fetch(key)
-                ^^^^^ Use `Hash#[]` instead of `Hash#fetch`.
-        RUBY
-
-        expect_correction(<<~RUBY)
-          (hash[key])
         RUBY
       end
     end
@@ -99,6 +107,18 @@ RSpec.describe RuboCop::Cop::Style::HashLookupMethod, :config do
 
     it 'does not flag bracket access with multiple arguments' do
       expect_no_offenses('array[1, 2]')
+    end
+
+    it 'registers an offense for chained bracket access without raising a clobbering error' do
+      expect_offense(<<~RUBY)
+        result[:foo][:bar]
+        ^^^^^^^^^^^^^^^^^^ Use `Hash#fetch` instead of `Hash#[]`.
+        ^^^^^^^^^^^^ Use `Hash#fetch` instead of `Hash#[]`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        result.fetch(:foo).fetch(:bar)
+      RUBY
     end
 
     context 'when using safe navigation operator' do

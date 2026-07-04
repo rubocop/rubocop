@@ -306,6 +306,42 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
         end
       end
 
+      context 'and the offense is preceded by a heredoc' do
+        it 'adds before-and-after the offending line and not around the heredoc' do
+          create_file('.rubocop.yml', <<~YAML)
+            Layout/LineLength:
+              Max: 40
+          YAML
+          create_file('example.rb', <<~RUBY)
+            # frozen_string_literal: true
+
+            puts <<~INPUT
+              111, 138
+            INPUT
+
+            puts 'A line that is longer than the LineLength limit'
+          RUBY
+          expect(exit_code).to eq(0)
+          expect($stdout.string).to eq(<<~OUTPUT)
+            == example.rb ==
+            C:  7: 41: [Todo] Layout/LineLength: Line is too long. [54/40]
+
+            1 file inspected, 1 offense detected, 1 offense corrected
+          OUTPUT
+          expect(File.read('example.rb')).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            puts <<~INPUT
+              111, 138
+            INPUT
+
+            # rubocop:todo Layout/LineLength
+            puts 'A line that is longer than the LineLength limit'
+            # rubocop:enable Layout/LineLength
+          RUBY
+        end
+      end
+
       context 'and the offense is inside a percent array' do
         before do
           create_file('.rubocop.yml', <<~YAML)

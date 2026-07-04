@@ -44,11 +44,12 @@ module RuboCop
           add_offense(node) do |corrector|
             corrector.insert_after(do_line(node), "\n")
 
-            node_body = node.body
-
-            if node_body.respond_to?(:heredoc?) && node_body.heredoc?
+            if (heredoc = trailing_heredoc(node.body))
+              # The heredoc body extends past the `end` on the source, so the
+              # `end` has to be moved after it rather than before, which would
+              # otherwise move it into the heredoc body and break the syntax.
               corrector.remove(node.loc.end)
-              corrector.insert_after(node_body.loc.heredoc_end, "\nend")
+              corrector.insert_after(heredoc.loc.heredoc_end, "\nend")
             else
               corrector.insert_before(node.loc.end, "\n")
             end
@@ -59,6 +60,18 @@ module RuboCop
         alias on_itblock on_block
 
         private
+
+        # Returns the heredoc opened on the block's line whose body extends the
+        # furthest down, whether it is the block body itself or nested within it.
+        def trailing_heredoc(node_body)
+          return unless node_body
+
+          heredocs = [node_body, *node_body.each_descendant].select do |node|
+            node.respond_to?(:heredoc?) && node.heredoc?
+          end
+
+          heredocs.max_by { |heredoc| heredoc.loc.heredoc_end.line }
+        end
 
         def do_line(node)
           if node.type?(:numblock, :itblock) ||

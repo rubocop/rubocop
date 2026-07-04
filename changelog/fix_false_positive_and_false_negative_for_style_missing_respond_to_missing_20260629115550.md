@@ -1,0 +1,1 @@
+* [#15384](https://github.com/rubocop/rubocop/pull/15384): Fix a false positive and a false negative for `Style/MissingRespondToMissing` when `method_missing` is defined at the top level or alongside sibling classes. ([@bbatsov][])

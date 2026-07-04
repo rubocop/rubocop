@@ -65,16 +65,19 @@ module RuboCop
         private
 
         def implements_respond_to_missing?(node)
-          return false unless (grand_parent = node.parent.parent)
+          scope = enclosing_scope(node)
+          search_root = scope || node.parent
+          return false unless search_root
 
-          grand_parent.each_descendant(node.type) do |descendant|
-            return true if descendant.method?(:respond_to_missing?)
-
-            child = descendant.children.first
-            return true if child.respond_to?(:method?) && child.method?(:respond_to_missing?)
+          search_root.each_descendant(node.type).any? do |descendant|
+            descendant.method?(:respond_to_missing?) && enclosing_scope(descendant).equal?(scope)
           end
+        end
 
-          false
+        # The class/module/`class << self` body that lexically contains `node`,
+        # or `nil` when `node` is defined at the top level.
+        def enclosing_scope(node)
+          node.each_ancestor(:class, :module, :sclass).first
         end
       end
     end

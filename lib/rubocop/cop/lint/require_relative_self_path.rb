@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Lint
-      # Checks for uses a file requiring itself with `require_relative`.
+      # Checks for a file requiring itself with `require_relative`.
       #
       # @example
       #
@@ -38,11 +38,13 @@ module RuboCop
         private
 
         def same_file?(file_path, required_feature)
-          file_path == required_feature || remove_ext(file_path) == required_feature
-        end
+          return false unless File.extname(file_path) == '.rb'
 
-        def remove_ext(file_path)
-          File.basename(file_path, File.extname(file_path))
+          # `require_relative` is resolved relative to the current file's directory, so a
+          # bare `foo`/`foo.rb` (no path separator) requires the current file itself. Compare
+          # against the basename so this works whether `file_path` is relative or absolute.
+          basename = File.basename(file_path, '.rb')
+          required_feature == basename || required_feature == "#{basename}.rb"
         end
       end
     end

@@ -56,7 +56,17 @@ module RuboCop
         def traverse_node(node, &block)
           yield node if node.equals_asgn?
 
-          node.each_child_node { |child| traverse_node(child, &block) }
+          node.each_child_node do |child|
+            next if scope_body?(node, child)
+
+            traverse_node(child, &block)
+          end
+        end
+
+        # An assignment inside a block or method body within the condition belongs to
+        # that inner scope rather than the condition itself, so it is not inspected.
+        def scope_body?(node, child)
+          node.type?(:any_block, :any_def) && child == node.body
         end
 
         def all_literals?(node)

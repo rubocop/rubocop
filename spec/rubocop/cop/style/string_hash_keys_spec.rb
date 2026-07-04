@@ -75,4 +75,14 @@ RSpec.describe RuboCop::Cop::Style::StringHashKeys, :config do
       "The sky is green.".gsub!(/green/, "green" => "blue")
     RUBY
   end
+
+  it 'does not register an offense when the string key is a heredoc' do
+    expect_no_offenses(<<~RUBY)
+      {
+        <<~KEY => 1
+          text
+        KEY
+      }
+    RUBY
+  end
 end

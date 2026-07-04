@@ -91,6 +91,12 @@ RSpec.describe RuboCop::Cop::Style::DirEmpty, :config do
       RUBY
     end
 
+    it 'does not register an offense for `Dir.each_child.none?` with a block' do
+      expect_no_offenses(<<~RUBY)
+        Dir.each_child('path/to/dir').none? { |f| f.start_with?('.') }
+      RUBY
+    end
+
     it 'does not register an offense for `Dir.empty?`' do
       expect_no_offenses('Dir.empty?("path/to/dir")')
     end

@@ -128,8 +128,8 @@ module RuboCop
         end
 
         def ignored_gem?(node)
-          ignored_gems = Array(cop_config['IgnoredGems'])
-          ignored_gems.include?(node.first_argument.value)
+          allowed_gems = Array(cop_config['AllowedGems'])
+          allowed_gems.include?(node.first_argument.value)
         end
 
         def checked_options_present?(node)
@@ -163,7 +163,9 @@ module RuboCop
         def gem_options(node)
           return [] unless node.last_argument&.hash_type?
 
-          node.last_argument.keys.map(&:value)
+          # Only literal keys carry an option name to check; a non-literal key
+          # (e.g. a variable or method call) has no `value` and must be skipped.
+          node.last_argument.keys.filter_map { |key| key.value if key.type?(:sym, :str) }
         end
       end
     end

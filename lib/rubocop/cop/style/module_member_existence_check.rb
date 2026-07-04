@@ -13,6 +13,12 @@ module RuboCop
       # array, while `method_defined?` will do direct method lookup, which is much
       # faster and consumes less memory.
       #
+      # NOTE: `constants.include?` is not handled by this cop because
+      # `Module#const_defined?` has different lookup behavior than
+      # `Module#constants` - `const_defined?` searches up to `Object`
+      # (top-level constants like `String`, `Integer`, etc.) while
+      # `constants` does not, which can cause behavior changes after autocorrection.
+      #
       # @example
       #   # bad
       #   Array.instance_methods.include?(:size)
@@ -28,14 +34,12 @@ module RuboCop
       #
       #   # bad
       #   Array.class_variables.include?(:foo)
-      #   Array.constants.include?(:foo)
       #   Array.private_instance_methods.include?(:foo)
       #   Array.protected_instance_methods.include?(:foo)
       #   Array.public_instance_methods.include?(:foo)
       #
       #   # good
       #   Array.class_variable_defined?(:foo)
-      #   Array.const_defined?(:foo)
       #   Array.private_method_defined?(:foo)
       #   Array.protected_method_defined?(:foo)
       #   Array.public_method_defined?(:foo)
@@ -55,7 +59,6 @@ module RuboCop
 
         METHOD_REPLACEMENTS = {
           class_variables: :class_variable_defined?,
-          constants: :const_defined?,
           instance_methods: :method_defined?,
           private_instance_methods: :private_method_defined?,
           protected_instance_methods: :protected_method_defined?,

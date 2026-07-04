@@ -13,6 +13,17 @@ RSpec.describe RuboCop::Cop::Lint::ReturnInVoidContext, :config do
       RUBY
     end
 
+    it 'registers an offense when returning `nil`' do
+      expect_offense(<<~RUBY)
+        class A
+          def initialize
+            return nil
+            ^^^^^^ Do not return a value in `initialize`.
+          end
+        end
+      RUBY
+    end
+
     it 'registers an offense when the value is returned in a block' do
       expect_offense(<<~RUBY)
         class A

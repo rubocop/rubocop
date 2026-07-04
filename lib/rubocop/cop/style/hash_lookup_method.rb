@@ -74,7 +74,7 @@ module RuboCop
 
         def offense_for_brackets?(node)
           style == :brackets && node.receiver && node.method?(:fetch) && node.arguments.one? &&
-            !node.block_literal?
+            !node.block_literal? && !node.csend_type?
         end
 
         def offense_for_fetch?(node)
@@ -82,18 +82,19 @@ module RuboCop
         end
 
         def correct_fetch_to_brackets(corrector, node)
-          receiver = node.receiver.source
           key = node.first_argument.source
-          replacement = "#{receiver}[#{key}]"
-          replacement = "(#{replacement})" if node.csend_type?
-          corrector.replace(node, replacement)
+
+          corrector.replace(node.loc.dot.join(node.source_range.end), "[#{key}]")
         end
 
         def correct_brackets_to_fetch(corrector, node)
-          receiver = node.receiver.source
           key = node.first_argument.source
-          operator = node.csend_type? ? '&.' : '.'
-          corrector.replace(node, "#{receiver}#{operator}fetch(#{key})")
+
+          if node.csend_type?
+            corrector.replace(node.loc.dot.join(node.source_range.end), "&.fetch(#{key})")
+          else
+            corrector.replace(node.loc.selector.join(node.source_range.end), ".fetch(#{key})")
+          end
         end
       end
     end

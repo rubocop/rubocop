@@ -89,4 +89,10 @@ RSpec.describe RuboCop::Cop::Style::KeywordArgumentsMerging, :config do
       foo(x, **options.merge!(other_options))
     RUBY
   end
+
+  it 'does not register an offense when `merge` has a block-pass argument' do
+    expect_no_offenses(<<~RUBY)
+      foo(**opts.merge(other, &my_proc))
+    RUBY
+  end
 end

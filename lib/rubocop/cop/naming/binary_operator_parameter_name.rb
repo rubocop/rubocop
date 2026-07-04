@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Naming
       # Makes sure that certain binary operator methods have their
-      # sole  parameter named `other`.
+      # sole parameter named `other`.
       #
       # @example
       #

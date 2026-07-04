@@ -12,6 +12,28 @@ RSpec.describe RuboCop::Cop::Lint::RedundantWithIndex, :config do
     RUBY
   end
 
+  it 'registers an offense for `ary.each_with_index { do_something }` (no block argument)' do
+    expect_offense(<<~RUBY)
+      ary.each_with_index { do_something }
+          ^^^^^^^^^^^^^^^ Use `each` instead of `each_with_index`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ary.each { do_something }
+    RUBY
+  end
+
+  it 'registers an offense for `ary.each.with_index { do_something }` (no block argument)' do
+    expect_offense(<<~RUBY)
+      ary.each.with_index { do_something }
+               ^^^^^^^^^^ Remove redundant `with_index`.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      ary.each { do_something }
+    RUBY
+  end
+
   it 'registers an offense for `ary&.each_with_index { |v| v }` and corrects to `ary&.each`' do
     expect_offense(<<~RUBY)
       ary&.each_with_index { |v| v }

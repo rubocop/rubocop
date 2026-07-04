@@ -462,6 +462,57 @@ RSpec.describe RuboCop::Cop::Cop, :config do
       it { is_expected.to be(true) }
     end
 
+    context 'when an Include pattern matches a directory above the project root' do
+      let(:cop_config) { { 'Include' => ['**/app/**/*.rb'] } }
+
+      before do
+        allow(config).to receive(:base_dir_for_path_parameters).and_return('/app/myproject')
+      end
+
+      context 'and the file is in an `app` subdirectory of the project' do
+        let(:file) { '/app/myproject/lib/app/file.rb' }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'and the file is not in an `app` subdirectory of the project' do
+        let(:file) { '/app/myproject/spec/file.rb' }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when the Include configuration contains an absolute pattern' do
+      let(:cop_config) { { 'Include' => ['/app/myproject/lib/**/*.rb'] } }
+
+      before do
+        allow(config).to receive(:base_dir_for_path_parameters).and_return('/app/myproject')
+      end
+
+      context 'and the file matches the pattern' do
+        let(:file) { '/app/myproject/lib/file.rb' }
+
+        it { is_expected.to be(true) }
+      end
+
+      context 'and the file doesn\'t match the pattern' do
+        let(:file) { '/app/myproject/spec/file.rb' }
+
+        it { is_expected.to be(false) }
+      end
+    end
+
+    context 'when the file is outside of the configuration directory' do
+      let(:cop_config) { { 'Include' => ['**/foo.rb'] } }
+      let(:file) { '/elsewhere/foo.rb' }
+
+      before do
+        allow(config).to receive(:base_dir_for_path_parameters).and_return('/app/myproject')
+      end
+
+      it { is_expected.to be(true) }
+    end
+
     describe 'for a cop with gem version requirements', :restore_registry do
       subject { cop.relevant_file?(file) }
 

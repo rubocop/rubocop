@@ -53,6 +53,17 @@ RSpec.describe RuboCop::Cop::Style::HashSlice, :config do
         RUBY
       end
 
+      it 'registers and corrects an offense when a `%w` element contains a single quote' do
+        expect_offense(<<~'RUBY')
+          {'a' => 1}.select { |k, v| %w[a'b cd].include?(k) }
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `slice('a\'b', 'cd')` instead.
+        RUBY
+
+        expect_correction(<<~'RUBY')
+          {'a' => 1}.slice('a\'b', 'cd')
+        RUBY
+      end
+
       it 'does not register an offense when using `select` and calling `!include?` method with variable' do
         expect_no_offenses(<<~RUBY)
           array = %i[foo bar]

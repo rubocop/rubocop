@@ -207,6 +207,18 @@ RSpec.describe RuboCop::Cop::Style::HashSyntax, :config do
             return {key: value}
           RUBY
         end
+
+        it 'registers offenses and wraps a multi-pair braceless return only once' do
+          expect_offense(<<~RUBY)
+            return :a => 1, :b => 2
+                   ^^^^^ Use the new Ruby 1.9 hash syntax.
+                            ^^^^^ Use the new Ruby 1.9 hash syntax.
+          RUBY
+
+          expect_correction(<<~RUBY)
+            return {a: 1, b: 2}
+          RUBY
+        end
       end
 
       it 'registers an offense for implicit `call` method' do

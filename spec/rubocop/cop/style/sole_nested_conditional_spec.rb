@@ -609,6 +609,30 @@ RSpec.describe RuboCop::Cop::Style::SoleNestedConditional, :config do
     RUBY
   end
 
+  it 'registers an offense and corrects when nested conditionals contain comments at multiple levels' do
+    expect_offense(<<~RUBY)
+      if foo
+        # Comments.
+        if bar
+        ^^ Consider merging nested conditions into outer `if` conditions.
+          # More comments.
+          if baz
+          ^^ Consider merging nested conditions into outer `if` conditions.
+            do_something
+          end
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      # Comments.
+      # More comments.
+      if foo && bar && baz
+            do_something
+          end
+    RUBY
+  end
+
   it 'registers an offense and corrects when there are outer and inline comments' do
     expect_offense(<<~RUBY)
       # Outer comment.

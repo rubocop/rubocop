@@ -233,7 +233,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
     it 'does not register an offense when given a proper description' do
       expect_no_offenses(<<~RUBY)
         it 'does not flag' do
-          expect_no_offense('code')
+          expect_no_offenses('code')
         end
       RUBY
     end
@@ -241,7 +241,7 @@ RSpec.describe RuboCop::Cop::InternalAffairs::ExampleDescription, :config do
     it 'does not crash when given a proper description that is split with +' do
       expect_no_offenses(<<~RUBY)
         it "does " + 'not register an offense' do
-          expect_no_offense('code')
+          expect_no_offenses('code')
         end
       RUBY
     end

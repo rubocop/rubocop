@@ -17,14 +17,15 @@ module RuboCop
       #   or with `String.new` or `String()`.
       # * `to_sym` when called on a symbol literal or interpolated symbol.
       # * `to_i` when called on an integer literal or with `Integer()`.
-      # * `to_f` when called on a float literal of with `Float()`.
+      # * `to_f` when called on a float literal or with `Float()`.
+      # * `to_d` when called with `BigDecimal()`.
       # * `to_r` when called on a rational literal or with `Rational()`.
-      # * `to_c` when called on a complex literal of with `Complex()`.
+      # * `to_c` when called on a complex literal or with `Complex()`.
       # * `to_a` when called on an array literal, or with `Array.new`, `Array()` or `Array[]`.
       # * `to_h` when called on a hash literal, or with `Hash.new`, `Hash()` or `Hash[]`.
       # * `to_set` when called on `Set.new` or `Set[]`.
       #
-      # In all cases, chaining one same `to_*` conversion methods listed above is redundant.
+      # In all cases, chaining one of the same `to_*` conversion methods listed above is redundant.
       #
       # The cop can also register an offense for chaining conversion methods on methods that are
       # expected to return a specific type regardless of receiver (eg. `foo.inspect.to_s` and
@@ -62,6 +63,12 @@ module RuboCop
       #   # good - chaining to a type constructor with exceptions suppressed
       #   # in this case, `Integer()` could return `nil`
       #   Integer(var, exception: false).to_i
+      #
+      #   # bad
+      #   BigDecimal(var).to_d
+      #
+      #   # good
+      #   BigDecimal(var)
       #
       #   # bad - chaining the same conversion
       #   foo.to_s.to_s

@@ -529,6 +529,27 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects `Style/IfUnlessModifier` with `Style/Next`' do
+    source = <<~RUBY
+      [1, 2, 3].each do |i|
+        if i > 1
+          puts i
+        end
+      end
+    RUBY
+    create_file('example.rb', source)
+    create_file('.rubocop.yml', <<~YAML)
+      Style/Next:
+        MinBodyLength: 1
+    YAML
+    expect(cli.run(['--autocorrect-all', '--only', 'Style/IfUnlessModifier,Style/Next'])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      [1, 2, 3].each do |i|
+        puts i if i > 1
+      end
+    RUBY
+  end
+
   it 'corrects `Style/SoleNestedConditional` with `Style/InverseMethods` and `Style/IfUnlessModifier`' do
     source = <<~RUBY
       unless foo.to_s == 'foo'
@@ -655,6 +676,50 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect(File.read('example.rb')).to eq(<<~RUBY)
       def some_method(&block)
         render &block
+      end
+    RUBY
+  end
+
+  it 'corrects `Style/ArgumentsForwarding` with `Style/MethodDefParentheses`' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.2
+    YAML
+    source = <<~RUBY
+      def draw_point **opts
+        draw_rect(**opts)
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Style/ArgumentsForwarding,Style/MethodDefParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def draw_point(**)
+        draw_rect(**)
+      end
+    RUBY
+  end
+
+  it 'corrects `Style/ArgumentsForwarding` with `Style/MethodDefParentheses` for positional and block arguments' do
+    create_file('.rubocop.yml', <<~YAML)
+      AllCops:
+        TargetRubyVersion: 3.2
+    YAML
+    source = <<~RUBY
+      def draw_point *args, &block
+        draw_rect(*args, &block)
+      end
+    RUBY
+    create_file('example.rb', source)
+    expect(cli.run([
+                     '--autocorrect',
+                     '--only', 'Style/ArgumentsForwarding,Style/MethodDefParentheses'
+                   ])).to eq(0)
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      def draw_point(*, &)
+        draw_rect(*, &)
       end
     RUBY
   end

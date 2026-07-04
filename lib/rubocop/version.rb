@@ -3,12 +3,13 @@
 module RuboCop
   # This module holds the RuboCop version information.
   module Version
-    STRING = '1.86.1'
+    STRING = '1.88.1'
 
     MSG = '%<version>s (using %<parser_version>s, ' \
           'rubocop-ast %<rubocop_ast_version>s, ' \
           'analyzing as Ruby %<target_ruby_version>s, ' \
-          'running on %<ruby_engine>s %<ruby_version>s)%<server_mode>s [%<ruby_platform>s]'
+          'running on %<ruby_engine>s %<ruby_version>s)' \
+          '%<rubydex_indicator>s%<server_mode>s [%<ruby_platform>s]'
 
     MINIMUM_PARSABLE_PRISM_VERSION = 3.3
 
@@ -31,6 +32,7 @@ module RuboCop
                                       rubocop_ast_version: RuboCop::AST::Version::STRING,
                                       target_ruby_version: target_ruby_version,
                                       ruby_engine: RUBY_ENGINE, ruby_version: RUBY_VERSION,
+                                      rubydex_indicator: rubydex_indicator(env),
                                       server_mode: server_mode,
                                       ruby_platform: RUBY_PLATFORM)
         return verbose_version unless env
@@ -150,6 +152,22 @@ module RuboCop
     # @api private
     def self.document_version
       STRING.match('\d+\.\d+').to_s
+    end
+
+    # @api private
+    def self.rubydex_indicator(env)
+      env && rubydex_enabled?(env) && ProjectIndexLoader.available? ? ' +Rubydex' : ''
+    end
+
+    # @api private
+    def self.rubydex_enabled?(env)
+      config_for_pwd(env).for_all_cops['UseProjectIndex']
+    rescue StandardError
+      # Keep `rubocop -V` usable when the config cannot be loaded (broken YAML,
+      # missing `inherit_from` target, etc). It is the first command users run to
+      # diagnose a broken setup, so the indicator just hides rather than letting
+      # the version banner crash.
+      false
     end
 
     # @api private

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
-  let(:cop_config) { { 'AllowedVars' => [] } }
+  let(:cop_config) { { 'AllowedVariables' => [] } }
 
   context 'when it is evaluated with no default values' do
     it 'registers an offense' do
@@ -450,7 +450,7 @@ RSpec.describe RuboCop::Cop::Style::FetchEnvVar, :config do
   end
 
   context 'when the env val is excluded from the inspection by the config' do
-    let(:cop_config) { { 'AllowedVars' => ['X'] } }
+    let(:cop_config) { { 'AllowedVariables' => ['X'] } }
 
     it 'registers no offenses' do
       expect_no_offenses(<<~RUBY)

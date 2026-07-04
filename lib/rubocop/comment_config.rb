@@ -95,7 +95,8 @@ module RuboCop
       end
     end
 
-    def analyze # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    def analyze
       return {} if @no_directives
 
       analyses = Hash.new { |hash, key| hash[key] = CopAnalysis.new([], nil) }
@@ -103,9 +104,9 @@ module RuboCop
 
       each_directive do |directive|
         if directive.push?
-          resolved = resolve_push_cops(directive)
-          @stack.push(snapshot_cops(analyses, resolved.values.flatten))
-          apply_push(analyses, resolved, directive.line_number)
+          restore_point = analyses.transform_values(&:dup)
+          @stack.push(restore_point)
+          apply_push(analyses, resolve_push_cops(directive), directive.line_number)
         elsif directive.pop?
           pop_state(analyses, directive.line_number) if @stack.any?
         else
@@ -121,10 +122,7 @@ module RuboCop
         hash[cop_name] = cop_line_ranges(analysis)
       end
     end
-
-    def snapshot_cops(analyses, cop_names)
-      cop_names.to_h { |name| [name, analyses[name].dup] }
-    end
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     def resolve_push_cops(directive)
       directive.push_args.transform_values do |names|
@@ -155,13 +153,12 @@ module RuboCop
     end
 
     def pop_state(analyses, line)
-      saved = @stack.pop
-      saved.each do |cop, old|
-        cur = analyses[cop]
-        new_range = cur.start_line_number ? [cur.start_line_number..(line - 1)] : []
-        ranges = cur.line_ranges + new_range
-        new_start = old.start_line_number ? line : nil
-        analyses[cop] = CopAnalysis.new(ranges, new_start)
+      restore_point = @stack.pop
+      (restore_point.keys | analyses.keys).each do |cop|
+        current = analyses[cop]
+        new_range = current.start_line_number ? [current.start_line_number..(line - 1)] : []
+        new_start = restore_point[cop]&.start_line_number ? line : nil
+        analyses[cop] = CopAnalysis.new(current.line_ranges + new_range, new_start)
       end
     end
 

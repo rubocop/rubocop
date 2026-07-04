@@ -8,15 +8,26 @@ gem 'asciidoctor'
 gem 'bump', require: false
 gem 'fiddle', platform: :windows if RUBY_VERSION >= '3.4'
 gem 'irb'
-gem 'mcp', '>= 0.9.2', '<= 1.0'
+gem 'mcp', '~> 0.16'
 gem 'memory_profiler', '!= 1.0.2', platform: :mri
 gem 'rake', '~> 13.0'
+# FIXME: rdoc 8.0+ depends on rbs, whose released C extension fails to build on JRuby.
+# rbs 4.1.0.pre.2 ships a `java` platform gem that works on JRuby, so pin to it there
+# until a stable release that supports JRuby ships.
+# https://github.com/ruby/rdoc/issues/1746
+gem 'rbs', '4.1.0.pre.2' if RUBY_ENGINE == 'jruby'
 gem 'rspec', '~> 3.7'
 gem 'rubocop-performance', '~> 1.26.0', require: false
 gem 'rubocop-rake', '~> 0.7.0', require: false
-gem 'rubocop-rspec', '~> 3.9.0', require: false
+gem 'rubocop-rspec', '~> 3.10.1', require: false
 # Ruby LSP supports Ruby 3.0+.
 gem 'ruby-lsp', '~> 0.24', platform: :mri if RUBY_VERSION >= '3.0'
+# Optional project-wide static-analysis index used by `AllCops/UseProjectIndex`.
+# Not a runtime dependency of the rubocop gem itself; only listed here so that
+# the development environment can exercise the integration. The gem only publishes
+# native binaries for MRI on supported platforms, so we gate by `RUBY_ENGINE` to
+# keep JRuby and other engines unaffected.
+gem 'rubydex', require: false if RUBY_VERSION >= '3.2' && RUBY_ENGINE == 'ruby'
 gem 'simplecov', '~> 0.20'
 gem 'stackprof', platform: :mri
 gem 'test-queue'

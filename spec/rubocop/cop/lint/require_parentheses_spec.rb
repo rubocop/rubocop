@@ -24,6 +24,13 @@ RSpec.describe RuboCop::Cop::Lint::RequireParentheses, :config do
     RUBY
   end
 
+  it 'registers an offense for a non-predicate method with a ternary whose condition uses `&&`' do
+    expect_offense(<<~RUBY)
+      foo a && b ? c : d
+      ^^^^^^^^^^ Use parentheses in the method call to avoid confusion about precedence.
+    RUBY
+  end
+
   context 'when using safe navigation operator' do
     it 'registers an offense for missing parentheses around expression with && operator' do
       expect_offense(<<~RUBY)

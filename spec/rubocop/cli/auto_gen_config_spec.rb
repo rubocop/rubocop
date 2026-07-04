@@ -600,7 +600,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
         expect(todo_contents).to eq(<<~YAML)
           # Offense count: 1
           # This cop supports safe autocorrection (--autocorrect).
-          # Configuration parameters: AllowForAlignment.
+          # Configuration parameters: AllowForAlignment, IndentationWidth.
           Layout/CommentIndentation:
             Exclude:
               - 'example1.rb'
@@ -869,7 +869,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 1',
          '# This cop supports safe autocorrection (--autocorrect).',
-         '# Configuration parameters: AllowForAlignment.',
+         '# Configuration parameters: AllowForAlignment, IndentationWidth.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
@@ -972,7 +972,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          '',
          '# Offense count: 1',
          '# This cop supports safe autocorrection (--autocorrect).',
-         '# Configuration parameters: AllowForAlignment.',
+         '# Configuration parameters: AllowForAlignment, IndentationWidth.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",
@@ -1173,7 +1173,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
 
         # Offense count: 1
         # This cop supports safe autocorrection (--autocorrect).
-        # Configuration parameters: AllowForAlignment.
+        # Configuration parameters: AllowForAlignment, IndentationWidth.
         Layout/CommentIndentation:
           Exclude:
             - 'example2.rb'
@@ -1278,7 +1278,7 @@ RSpec.describe 'RuboCop::CLI --auto-gen-config', :isolated_environment do # rubo
          'again.',
          '',
          '# This cop supports safe autocorrection (--autocorrect).',
-         '# Configuration parameters: AllowForAlignment.',
+         '# Configuration parameters: AllowForAlignment, IndentationWidth.',
          'Layout/CommentIndentation:',
          '  Exclude:',
          "    - 'example2.rb'",

@@ -61,4 +61,38 @@ RSpec.describe RuboCop::Cop::Lint::EnsureReturn, :config do
       end
     RUBY
   end
+
+  it 'does not register an offense for `return` inside a lambda in `ensure`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        do_something
+      ensure
+        handler = -> { return 42 }
+        handler.call
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for `return` inside a method definition in `ensure`' do
+    expect_no_offenses(<<~RUBY)
+      def foo
+        do_something
+      ensure
+        def bar
+          return 1
+        end
+      end
+    RUBY
+  end
+
+  it 'registers an offense for `return` inside a block in `ensure`' do
+    expect_offense(<<~RUBY)
+      def foo
+        do_something
+      ensure
+        [1, 2].each { return }
+                      ^^^^^^ Do not return from an `ensure` block.
+      end
+    RUBY
+  end
 end

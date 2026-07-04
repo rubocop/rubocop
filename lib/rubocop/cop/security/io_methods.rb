@@ -10,7 +10,7 @@ module RuboCop
       # a subprocess is created in the same way as `Kernel#open`, and its output is returned.
       # `Kernel#open` may allow unintentional command injection, which is the reason these
       # `IO` methods are a security risk.
-      # Consider to use `File.read` to disable the behavior of subprocess invocation.
+      # Consider using `File.read` to disable the behavior of subprocess invocation.
       #
       # @safety
       #   This cop is unsafe because false positive will occur if the variable passed as
@@ -37,7 +37,7 @@ module RuboCop
           return unless (receiver = node.receiver) && receiver.source == 'IO'
 
           argument = node.first_argument
-          return if argument.respond_to?(:value) && argument.value.strip.start_with?('|')
+          return if argument&.str_type? && argument.value.strip.start_with?('|')
 
           add_offense(node, message: format(MSG, method_name: node.method_name)) do |corrector|
             corrector.replace(receiver, 'File')

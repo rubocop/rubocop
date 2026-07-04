@@ -1,6 +1,26 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Naming::InclusiveLanguage, :config do
+  context 'when `FlaggedTerms` is nil' do
+    let(:cop_config) { { 'FlaggedTerms' => nil } }
+
+    it 'does not crash and registers no offenses' do
+      expect_no_offenses(<<~RUBY)
+        whitelist = 1
+      RUBY
+    end
+  end
+
+  context 'when `FlaggedTerms` is empty' do
+    let(:cop_config) { { 'FlaggedTerms' => {} } }
+
+    it 'does not crash and registers no offenses' do
+      expect_no_offenses(<<~RUBY)
+        whitelist = 1
+      RUBY
+    end
+  end
+
   context 'flagged term matching' do
     let(:cop_config) do
       { 'FlaggedTerms' => { 'whitelist' => {} } }

@@ -58,6 +58,12 @@ RSpec.describe RuboCop::Cop::Security::IoMethods, :config do
     end
   end
 
+  context 'when using `IO` receiver and a non-string-literal argument' do
+    it_behaves_like 'offense', 'IO.read(:some_path)', 'File.read(:some_path)', 'read'
+    it_behaves_like 'offense', 'IO.read(123)', 'File.read(123)', 'read'
+    it_behaves_like 'offense', 'IO.write(123, "hi")', 'File.write(123, "hi")', 'write'
+  end
+
   context 'when using `File` receiver' do
     it_behaves_like 'accepts', 'File.read(path)'
     it_behaves_like 'accepts', 'File.binread(path)'

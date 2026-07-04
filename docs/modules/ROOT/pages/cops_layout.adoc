@@ -317,7 +317,7 @@ keyword is. If it's set to `begin`, the `end` shall be aligned with the
 `Layout/EndAlignment` cop aligns with keywords (e.g. `if`, `while`, `case`)
 by default. On the other hand, `||= begin` that this cop targets tends to
 align with the start of the line, it defaults to `EnforcedStyleAlignWith: start_of_line`.
-These style can be configured by each cop.
+These styles can be configured by each cop.
 
 [#examples-layoutbeginendalignment]
 === Examples
@@ -396,6 +396,10 @@ start of the line where the expression started.
 
 `either` (which is the default) : the `end` is allowed to be in either
 location. The autocorrect will default to `start_of_line`.
+
+When the `do` or `{` appears on a continuation line of multiline
+method arguments, the start of the line where the method is called
+is used as the alignment target instead of that continuation line.
 
 [#examples-layoutblockalignment]
 === Examples
@@ -729,7 +733,7 @@ You can configure the following order:
      - private_methods
 ----
 
-Instead of putting all literals in the expected order, is also
+Instead of putting all literals in the expected order, it is also
 possible to group categories of macros. Visibility levels are handled
 automatically.
 
@@ -950,7 +954,7 @@ foo arg,
 | Yes
 | Always
 | 0.49
-| -
+| 1.86
 |===
 
 Checks the indentation of hanging closing parentheses in
@@ -1021,6 +1025,17 @@ some_method(a,
 )
 ----
 
+[#configurable-attributes-layoutclosingparenthesisindentation]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| IndentationWidth
+| `<none>`
+| Integer
+|===
+
 [#layoutcommentindentation]
 == Layout/CommentIndentation
 
@@ -1031,7 +1046,7 @@ some_method(a,
 | Yes
 | Always
 | 0.49
-| 1.24
+| 1.86
 |===
 
 Checks the indentation of comments.
@@ -1101,6 +1116,10 @@ a = 1 # A really long comment
 | AllowForAlignment
 | `false`
 | Boolean
+
+| IndentationWidth
+| `<none>`
+| Integer
 |===
 
 [#layoutconditionposition]
@@ -1445,8 +1464,10 @@ end
 
 Enforces empty line after guard clause.
 
-This cop allows `# :nocov:` directive after guard clause because
-SimpleCov excludes code from the coverage report by wrapping it in `# :nocov:`:
+This cop allows a SimpleCov directive comment after guard clause because
+SimpleCov excludes code from the coverage report by wrapping it in such directives.
+Both the legacy `# :nocov:` comment and the newer `# simplecov:disable` /
+`# simplecov:enable` comments are recognized:
 
 [source,ruby]
 ----
@@ -1454,6 +1475,13 @@ def foo
   # :nocov:
   return if condition
   # :nocov:
+  bar
+end
+
+def foo
+  # simplecov:disable
+  return if condition
+  # simplecov:enable
   bar
 end
 ----
@@ -2619,10 +2647,10 @@ start of the line where the matching keyword appears.
 
 This `Layout/EndAlignment` cop aligns with keywords (e.g. `if`, `while`, `case`)
 by default. On the other hand, `Layout/BeginEndAlignment` cop aligns with
-`EnforcedStyleAlignWith: start_of_line` by default due to `||= begin` tends
+`EnforcedStyleAlignWith: start_of_line` by default because `||= begin` tends
 to align with the start of the line. `Layout/DefEndAlignment` cop also aligns with
 `EnforcedStyleAlignWith: start_of_line` by default.
-These style can be configured by each cop.
+These styles can be configured by each cop.
 
 [#examples-layoutendalignment]
 === Examples
@@ -3318,10 +3346,10 @@ styles are 'consistent' and 'align_braces'. Here are examples:
 # bad
 hash = {
   key: :value
-}
-and_in_a_method_call({
-  no: :difference
-                     })
+       }
+in_a_method_call({
+  foo: :bar
+})
 takes_multi_pairs_hash(x: {
   a: 1,
   b: 2
@@ -3332,13 +3360,12 @@ takes_multi_pairs_hash(x: {
                        })
 
 # good
-special_inside_parentheses
 hash = {
   key: :value
 }
-but_in_a_method_call({
-                       its_like: :this
-                     })
+in_a_method_call({
+                   foo: :bar
+                 })
 takes_multi_pairs_hash(x: {
                          a: 1,
                          b: 2
@@ -3362,17 +3389,17 @@ takes_multi_pairs_hash(x: {
 # bad
 hash = {
   key: :value
-}
-but_in_a_method_call({
-                       its_like: :this
-                      })
+       }
+in_a_method_call({
+                  foo: :bar
+                })
 
 # good
 hash = {
   key: :value
 }
-and_in_a_method_call({
-  no: :difference
+in_a_method_call({
+  foo: :bar
 })
 ----
 
@@ -4451,6 +4478,19 @@ class A
     puts 'hello'
   end
 end
+----
+
+[source,ruby]
+----
+# bad
+value = (
+foo - bar
+)
+
+# good
+value = (
+  foo - bar
+)
 ----
 
 [#allowedpatterns_-____s_module__-layoutindentationwidth]
@@ -7242,7 +7282,7 @@ foo.map{ |a|
 |===
 
 Checks for space between the name of a receiver and a left
-brackets.
+bracket.
 
 [#examples-layoutspacebeforebrackets]
 === Examples

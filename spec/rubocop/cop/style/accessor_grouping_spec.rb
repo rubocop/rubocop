@@ -555,5 +555,24 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
         RUBY
       end
     end
+
+    context 'when there is a trailing comment on a single-line declaration' do
+      it 'registers an offense and does not duplicate the comment' do
+        expect_offense(<<~RUBY)
+          class Foo
+            attr_reader :bar, :baz # trailing comment
+            ^^^^^^^^^^^^^^^^^^^^^^ Use one attribute per `attr_reader`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class Foo
+            # trailing comment
+          attr_reader :bar
+            attr_reader :baz
+          end
+        RUBY
+      end
+    end
   end
 end

@@ -204,4 +204,62 @@ RSpec.describe RuboCop::Version do
       end
     end
   end
+
+  describe '.rubydex_indicator', :isolated_environment, :restore_configuration, :restore_registry do
+    subject(:indicator) { described_class.rubydex_indicator(env) }
+
+    let(:env) { instance_double(RuboCop::CLI::Environment, config_store: config_store) }
+    let(:config_store) { RuboCop::ConfigStore.new }
+
+    before { RuboCop::ConfigLoader.clear_options }
+
+    context 'when env is nil' do
+      let(:env) { nil }
+
+      it { is_expected.to eq('') }
+    end
+
+    context 'when UseProjectIndex is false' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            UseProjectIndex: false
+        YAML
+      end
+
+      it { is_expected.to eq('') }
+    end
+
+    context 'when UseProjectIndex is true but the gem is unavailable' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            UseProjectIndex: true
+        YAML
+        allow(RuboCop::ProjectIndexLoader).to receive(:available?).and_return(false)
+      end
+
+      it { is_expected.to eq('') }
+    end
+
+    context 'when UseProjectIndex is true and the gem is available' do
+      before do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            UseProjectIndex: true
+        YAML
+        allow(RuboCop::ProjectIndexLoader).to receive(:available?).and_return(true)
+      end
+
+      it { is_expected.to eq(' +Rubydex') }
+    end
+
+    context 'when the config file is malformed' do
+      before do
+        create_file('.rubocop.yml', "AllCops:\n  UseProjectIndex: [\n")
+      end
+
+      it { is_expected.to be_blank }
+    end
+  end
 end

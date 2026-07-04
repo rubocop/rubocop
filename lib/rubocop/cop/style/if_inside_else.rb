@@ -64,7 +64,7 @@ module RuboCop
 
         MSG = 'Convert `if` nested inside `else` to `elsif`.'
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_if(node)
           return if node.ternary? || node.unless?
 
@@ -72,6 +72,7 @@ module RuboCop
 
           return unless else_branch&.if_type? && else_branch.if?
           return if allow_if_modifier_in_else_branch?(else_branch)
+          return if comments_between_else_and_if?(node, else_branch)
 
           add_offense(else_branch.loc.keyword) do |corrector|
             next if part_of_ignored_node?(node)
@@ -80,7 +81,7 @@ module RuboCop
             ignore_node(node)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 
@@ -133,6 +134,18 @@ module RuboCop
 
         def if_condition_range(node, condition)
           range_between(node.loc.keyword.begin_pos, condition.source_range.end_pos)
+        end
+
+        def comments_between_else_and_if?(node, else_branch)
+          return false if else_branch.modifier_form?
+
+          else_end = node.loc.else.end_pos
+          if_begin = else_branch.loc.keyword.begin_pos
+
+          processed_source.comments.any? do |comment|
+            comment_pos = comment.source_range.begin_pos
+            comment_pos > else_end && comment_pos < if_begin
+          end
         end
 
         def allow_if_modifier_in_else_branch?(else_branch)

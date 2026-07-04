@@ -3,9 +3,9 @@
 module RuboCop
   module Cop
     module Lint
-      # Warns the usage of unsafe number conversions. Unsafe
-      # number conversion can cause unexpected error if auto type conversion
-      # fails. Cop prefer parsing with number class instead.
+      # Warns against the usage of unsafe number conversions. Unsafe
+      # number conversion can cause an unexpected error if auto type conversion
+      # fails. The cop prefers parsing with a number class instead.
       #
       # Conversion with `Integer`, `Float`, etc. will raise an `ArgumentError`
       # if given input that is not numeric (eg. an empty string), whereas
@@ -14,10 +14,10 @@ module RuboCop
       # always correct to raise if a value is not numeric.
       #
       # NOTE: Some values cannot be converted properly using one of the `Kernel`
-      # method (for instance, `Time` and `DateTime` values are allowed by this
+      # methods (for instance, `Time` and `DateTime` values are allowed by this
       # cop by default). Similarly, Rails' duration methods do not work well
       # with `Integer()` and can be allowed with `AllowedMethods`. By default,
-      # there are no methods to allowed.
+      # there are no allowed methods.
       #
       # @safety
       #   Autocorrection is unsafe because it is not guaranteed that the
@@ -66,7 +66,7 @@ module RuboCop
       #   # good
       #   10.minutes.to_i
       #
-      # @example IgnoredClasses: [Time, DateTime] (default)
+      # @example AllowedClasses: [Time, DateTime] (default)
       #
       #   # good
       #   Time.now.to_datetime.to_i
@@ -117,11 +117,11 @@ module RuboCop
 
             message = format(
               MSG,
-              current: "#{receiver.source}.#{to_method}",
+              current: current_method(node, receiver, to_method),
               corrected_method: correct_method(node, receiver)
             )
             add_offense(node, message: message) do |corrector|
-              next if part_of_ignored_node?(node)
+              next if safe_navigation?(node) || part_of_ignored_node?(node)
 
               corrector.replace(node, correct_method(node, node.receiver))
 
@@ -156,9 +156,18 @@ module RuboCop
           "{ |i| #{body} }"
         end
 
+        def current_method(node, receiver, to_method)
+          operator = node.csend_type? ? '&.' : '.'
+          "#{receiver.source}#{operator}#{to_method}"
+        end
+
         def remove_parentheses(corrector, node)
           corrector.replace(node.loc.begin, ' ')
           corrector.remove(node.loc.end)
+        end
+
+        def safe_navigation?(node)
+          node.csend_type? || node.each_descendant(:csend).any?
         end
 
         def allow_receiver?(receiver)
@@ -188,7 +197,7 @@ module RuboCop
         end
 
         def ignored_classes
-          cop_config.fetch('IgnoredClasses', [])
+          cop_config.fetch('AllowedClasses', [])
         end
 
         def ignored_class?(name)

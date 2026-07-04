@@ -148,7 +148,7 @@ NodePattern.new('send').match(node) # => true
 
 It matches because the root is a `send` type. Now let's match it deeply using
 parentheses to define details for sub-nodes. If you don't care about what an internal
-node is, you can use `+...+` to skip it and just consider " a node".
+node is, you can use `+...+` to skip it and just consider "a node".
 
 [source,ruby]
 ----
@@ -455,7 +455,7 @@ end
 
 You can specify any gem requirement using https://guides.rubygems.org/patterns/#declaring-dependencies[the same syntax as your `Gemfile`].
 
-You can also handle multiple versions of a gem with `target_gem_version`. It behaves similar to `target_ruby_version`, allowing you to inspect a gem version at runtime:
+You can also handle multiple versions of a gem with `target_gem_version`. It behaves similarly to `target_ruby_version`, allowing you to inspect a gem version at runtime:
 
 [source,ruby]
 ----

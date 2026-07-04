@@ -16,6 +16,21 @@ RSpec.describe RuboCop::Cop::Style::StructInheritance, :config do
     RUBY
   end
 
+  it 'registers an offense and adds parentheses when extending instance of Struct without parentheses' do
+    expect_offense(<<~RUBY)
+      class Person < Struct.new :first_name, :last_name
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Don't extend an instance initialized by `Struct.new`. Use a block to customize the struct.
+        def foo; end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      Person = Struct.new(:first_name, :last_name) do
+        def foo; end
+      end
+    RUBY
+  end
+
   it 'registers an offense when extending instance of ::Struct' do
     expect_offense(<<~RUBY)
       class Person < ::Struct.new(:first_name, :last_name)

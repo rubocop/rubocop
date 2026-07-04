@@ -73,7 +73,7 @@ module RuboCop
           first_argument = node.first_argument
           if first_argument.hash_type?
             register_offense_for_hash(node, first_argument)
-          elsif first_argument.splat_type?
+          elsif first_argument.type?(:splat, :forwarded_restarg)
             add_offense(node, message: MSG_SPLAT) unless allowed_splat_argument?
           elsif use_zip_method_without_argument?(first_argument)
             register_offense_for_zip_method(node, first_argument)
@@ -121,16 +121,24 @@ module RuboCop
         end
 
         def multi_argument(node)
+          # A splat argument can expand to any number of elements, so the pairs
+          # can't be built statically and there is no literal hash to suggest.
+          return if node.arguments.any?(&:splat_type?)
+
           if node.arguments.count.odd?
             add_offense(node, message: MSG_LITERAL_MULTI_ARG)
           else
-            add_offense(node, message: MSG_LITERAL_MULTI_ARG) do |corrector|
-              corrector.replace(node, args_to_hash(node.arguments))
+            correct_multi_argument(node)
+          end
+        end
 
-              parent = node.parent
-              if parent&.send_type? && !parent.method?(:to_h) && !parent.parenthesized?
-                add_parentheses(parent, corrector)
-              end
+        def correct_multi_argument(node)
+          add_offense(node, message: MSG_LITERAL_MULTI_ARG) do |corrector|
+            corrector.replace(node, args_to_hash(node.arguments))
+
+            parent = node.parent
+            if parent&.send_type? && !parent.method?(:to_h) && !parent.parenthesized?
+              add_parentheses(parent, corrector)
             end
           end
         end

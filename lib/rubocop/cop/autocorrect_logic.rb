@@ -50,7 +50,8 @@ module RuboCop
 
       def disable_offense(offense_range)
         unbreakable_range = multiline_ranges(offense_range)&.find do |range|
-          eol_comment_would_be_inside_literal?(offense_range, range)
+          offense_range.overlaps?(range) &&
+            eol_comment_would_be_inside_literal?(offense_range, range)
         end
 
         if unbreakable_range

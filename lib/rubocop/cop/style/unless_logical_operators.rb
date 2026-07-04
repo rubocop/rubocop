@@ -14,11 +14,11 @@ module RuboCop
       #
       # `forbid_mixed_logical_operators` style forbids the use of more than one type
       # of logical operators. This makes the `unless` condition easier to read
-      # because either all conditions need to be met or any condition need to be met
+      # because either all conditions need to be met or any condition needs to be met
       # in order for the expression to be truthy or falsey.
       #
-      # `forbid_logical_operators` style forbids any use of logical operator.
-      # This makes it even more easy to read the `unless` condition as
+      # `forbid_logical_operators` style forbids any use of logical operators.
+      # This makes it even easier to read the `unless` condition as
       # there is only one condition in the expression.
       #
       # @example EnforcedStyle: forbid_mixed_logical_operators (default)

@@ -43,4 +43,19 @@ RSpec.describe RuboCop::Cop::Security::MarshalLoad, :config do
       Marshal.restore(Marshal.dump({}))
     RUBY
   end
+
+  it 'registers an offense for the two-argument form with a proc' do
+    expect_offense(<<~RUBY)
+      Marshal.load(data, proc)
+              ^^^^ Avoid using `Marshal.load`.
+      Marshal.restore(data, proc)
+              ^^^^^^^ Avoid using `Marshal.restore`.
+    RUBY
+  end
+
+  it 'allows deep cloning even when a proc is passed' do
+    expect_no_offenses(<<~RUBY)
+      Marshal.load(Marshal.dump({}), proc)
+    RUBY
+  end
 end

@@ -140,7 +140,11 @@ module RuboCop
         end
 
         def method_allowed?(node)
-          allowed_methods.include?(node.method_name)
+          # For a modifier form like `module_function def foo; end`, `node` is the
+          # `module_function`/`ruby2_keywords` send; the real method name is on its
+          # `def`/`defs` argument, not the modifier itself.
+          method_name = node.send_type? ? node.first_argument.method_name : node.method_name
+          allowed_methods.include?(method_name)
         end
 
         def allowed_methods

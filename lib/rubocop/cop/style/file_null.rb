@@ -78,10 +78,12 @@ module RuboCop
 
         def acceptable?(node)
           # Using a hardcoded null device is acceptable when inside an array or
-          # inside a hash to ensure behavior doesn't change.
+          # inside a hash to ensure behavior doesn't change. A `str` that is part of
+          # an interpolated or concatenated string (`dstr`) is not a standalone null
+          # device either, and replacing it would corrupt the surrounding string.
           return false unless node.parent
 
-          node.parent.type?(:array, :pair)
+          node.parent.type?(:array, :pair, :dstr)
         end
       end
     end
