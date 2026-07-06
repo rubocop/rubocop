@@ -41,7 +41,9 @@ module RuboCop
           return unless struct_constructor?(node.parent_class)
 
           add_offense(node.parent_class) do |corrector|
-            corrector.remove(range_with_surrounding_space(node.loc.keyword, newlines: false))
+            corrector.remove(
+              range_with_surrounding_space(node.loc.keyword, side: :right, newlines: false)
+            )
             corrector.replace(node.loc.operator, '=')
 
             correct_parent(node.parent_class, corrector)
