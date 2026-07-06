@@ -796,6 +796,65 @@ RSpec.describe RuboCop::Cop::Layout::ElseAlignment, :config do
       RUBY
     end
 
+    it 'accepts a correctly aligned else when the block is within an operator method call' do
+      expect_no_offenses(<<~RUBY)
+        foo << array_like.map do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
+    it 'accepts a correctly aligned else when the block is a method argument' do
+      expect_no_offenses(<<~RUBY)
+        foo(array_like.map do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end)
+      RUBY
+    end
+
+    it 'accepts a correctly aligned else with an assignment and an operator method call' do
+      expect_no_offenses(<<~RUBY)
+        result = foo << array_like.map do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
+    it 'registers an offense for misaligned else when the block is within an operator method call' do
+      expect_offense(<<~RUBY)
+        foo << array_like.map do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+          else
+          ^^^^ Align `else` with `foo`.
+          puts 'normal handling'
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo << array_like.map do |n|
+          puts 'do something error prone'
+        rescue SomeException
+          puts 'error handling'
+        else
+          puts 'normal handling'
+        end
+      RUBY
+    end
+
     it 'registers an offense for misaligned else' do
       expect_offense(<<~RUBY)
         array_like.each do |n|
