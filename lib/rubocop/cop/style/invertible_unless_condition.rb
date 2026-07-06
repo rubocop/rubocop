@@ -75,7 +75,9 @@ module RuboCop
         def invertible?(node) # rubocop:disable Metrics/CyclomaticComplexity
           case node&.type
           when :begin
-            invertible?(node.children.first)
+            # A multi-statement `begin` evaluates to its last expression, so it
+            # cannot be inverted by negating a single child.
+            node.children.one? && invertible?(node.children.first)
           when :send
             return false if inheritance_check?(node)
 
@@ -124,10 +126,15 @@ module RuboCop
         end
 
         def preferred_logical_condition(node)
-          preferred_lhs = preferred_condition(node.lhs)
-          preferred_rhs = preferred_condition(node.rhs)
+          preferred_lhs = preferred_operand(node, node.lhs)
+          preferred_rhs = preferred_operand(node, node.rhs)
 
           "#{preferred_lhs} #{node.inverse_operator} #{preferred_rhs}"
+        end
+
+        def preferred_operand(node, operand)
+          preferred = preferred_condition(operand)
+          parenthesize_inverted_operand?(node, operand) ? "(#{preferred})" : preferred
         end
 
         def autocorrect(corrector, node)
@@ -138,9 +145,22 @@ module RuboCop
             autocorrect_send_node(corrector, node)
           when :or, :and
             corrector.replace(node.loc.operator, node.inverse_operator)
-            autocorrect(corrector, node.lhs)
-            autocorrect(corrector, node.rhs)
+            autocorrect_operand(corrector, node, node.lhs)
+            autocorrect_operand(corrector, node, node.rhs)
           end
+        end
+
+        def autocorrect_operand(corrector, node, operand)
+          autocorrect(corrector, operand)
+          corrector.wrap(operand, '(', ')') if parenthesize_inverted_operand?(node, operand)
+        end
+
+        # When an `and` is nested in an `or`, inverting both operators turns the
+        # `and` into an `or` that now binds looser than its parent, so it must be
+        # parenthesized to keep the original grouping (`a && b || c` inverts to
+        # `(!a || !b) && !c`, not `!a || !b && !c`).
+        def parenthesize_inverted_operand?(node, operand)
+          node.or_type? && operand.and_type?
         end
 
         def autocorrect_send_node(corrector, node)
