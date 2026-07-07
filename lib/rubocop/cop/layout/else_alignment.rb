@@ -92,13 +92,7 @@ module RuboCop
           case parent.type
           when :def, :defs then base_for_method_definition(parent)
           when :kwbegin then parent.loc.begin
-          when :block, :numblock, :itblock
-            assignment_node = assignment_node(parent)
-            if same_line?(parent, assignment_node)
-              assignment_node.source_range
-            else
-              parent.send_node.source_range
-            end
+          when :block, :numblock, :itblock then start_line_range(parent)
           else node.loc.keyword
           end
         end
@@ -142,13 +136,6 @@ module RuboCop
           add_offense(else_range, message: message) do |corrector|
             autocorrect(corrector, else_range)
           end
-        end
-
-        def assignment_node(node)
-          assignment_node = node.ancestors.first
-          return unless assignment_node&.assignment?
-
-          assignment_node
         end
       end
     end
