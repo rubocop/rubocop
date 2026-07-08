@@ -1,1 +1,0 @@
-* [#15360](https://github.com/rubocop/rubocop/issues/15360): Fix an incorrect autocorrect for `Style/ArgumentsForwarding` and `Style/MethodDefParentheses` when autocorrection conflicts while adding parentheses to method definition arguments. ([@koic][])

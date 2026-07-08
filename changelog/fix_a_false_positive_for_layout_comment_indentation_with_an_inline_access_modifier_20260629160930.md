@@ -1,1 +1,0 @@
-* [#15403](https://github.com/rubocop/rubocop/pull/15403): Fix a false positive for `Layout/CommentIndentation` with a comment above an inline access modifier (e.g. `private def foo`) when `Layout/AccessModifierIndentation` is configured with `EnforcedStyle: outdent`. ([@grk][])

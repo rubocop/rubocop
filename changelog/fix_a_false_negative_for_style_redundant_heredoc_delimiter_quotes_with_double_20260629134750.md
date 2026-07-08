@@ -1,1 +1,0 @@
-* [#15395](https://github.com/rubocop/rubocop/pull/15395): Fix a false negative for `Style/RedundantHeredocDelimiterQuotes` with double-quoted delimiters whose body contains interpolation or escapes. ([@bbatsov][])

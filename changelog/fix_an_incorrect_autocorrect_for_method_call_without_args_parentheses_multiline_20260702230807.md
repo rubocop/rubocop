@@ -1,1 +1,0 @@
-* [#15426](https://github.com/rubocop/rubocop/issues/15426): Fix an incorrect autocorrect for `Style/MethodCallWithoutArgsParentheses` when empty parentheses span multiple lines and the method call has a block. ([@koic][])

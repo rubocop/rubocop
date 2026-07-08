@@ -1,1 +1,0 @@
-* [#15428](https://github.com/rubocop/rubocop/issues/15428): Fix an incorrect autocorrect for `Style/TrivialAccessors` when `AllowPredicates: false` is set and a trivial reader is defined as a predicate class method. ([@koic][])

@@ -1,1 +1,0 @@
-* [#15422](https://github.com/rubocop/rubocop/pull/15422): Fix a false negative for `Style/DefWithParentheses` with a single-line definition whose body follows a semicolon (e.g. `def foo(); end`), where the parentheses can be safely omitted. ([@bbatsov][])

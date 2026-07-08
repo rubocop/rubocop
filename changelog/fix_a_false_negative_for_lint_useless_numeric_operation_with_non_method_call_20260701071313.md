@@ -1,1 +1,0 @@
-* [#15416](https://github.com/rubocop/rubocop/pull/15416): Fix a false negative for `Lint/UselessNumericOperation`, which only flagged bare method-call receivers and ignored local variables, instance/class/global variables, and constants (e.g. `@x + 0`, `CONST * 1`). ([@bbatsov][])

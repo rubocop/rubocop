@@ -1,1 +1,0 @@
-* [#15430](https://github.com/rubocop/rubocop/pull/15430): Improve performance of cops using `AllowedPatterns`, `ForbiddenPatterns`, and `AllowedMethods` by compiling the configured patterns only once. ([@bbatsov][])

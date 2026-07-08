@@ -1,1 +1,0 @@
-* [#15418](https://github.com/rubocop/rubocop/pull/15418): Fix a false negative for `Lint/UnreachableCode`, which only flagged the first statement after a flow-of-control statement instead of every unreachable statement that followed it. ([@bbatsov][])

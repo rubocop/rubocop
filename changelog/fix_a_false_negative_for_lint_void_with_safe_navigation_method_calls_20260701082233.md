@@ -1,1 +1,0 @@
-* [#15419](https://github.com/rubocop/rubocop/pull/15419): Fix a false negative for `Lint/Void` where safe-navigation calls to nonmutating methods (e.g. `x&.sort`) were not flagged when `CheckForMethodsWithNoSideEffects` is enabled. ([@bbatsov][])

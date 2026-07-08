@@ -1,1 +1,0 @@
-* [#15421](https://github.com/rubocop/rubocop/pull/15421): Fix a false negative for `Style/ArrayIntersect` with the block form using `include?` (e.g. `array1.any? { |e| array2.include?(e) }`), which was only detected for `member?`. ([@bbatsov][])
