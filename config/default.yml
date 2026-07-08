@@ -2215,7 +2215,7 @@ Lint/NumericOperationWithConstantResult:
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.69'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.88'
 
 Lint/OrAssignmentToConstant:
   Description: 'Checks unintended or-assignment to constant.'

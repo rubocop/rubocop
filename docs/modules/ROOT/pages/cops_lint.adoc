@@ -4789,9 +4789,9 @@ non_numbered_parameter_name = :value
 
 | Pending
 | Yes
-| Always
+| Always (Unsafe)
 | 1.69
-| -
+| 1.88
 |===
 
 Certain numeric operations have a constant result, usually 0 or 1.
@@ -4805,6 +4805,15 @@ are handled by `Lint/UselessNumericOperation`.
 NOTE: This cop doesn't detect offenses for the `-` and `%` operator because it
 can't determine the type of `x`. If `x` is an `Array` or `String`, it doesn't perform
 a numeric operation.
+
+[#safety-lintnumericoperationwithconstantresult]
+=== Safety
+
+This cop is unsafe because the autocorrection drops the operands, which
+discards any side effects of evaluating them and can change behavior when
+the result is not actually constant. For example, `x / x` raises
+`ZeroDivisionError` when `x` is `0`, and returns `Float::NAN` (not `1`)
+when `x` is `0.0`; replacing it with `1` silences that.
 
 [#examples-lintnumericoperationwithconstantresult]
 === Examples
