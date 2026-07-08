@@ -396,6 +396,31 @@ RSpec.describe 'RuboCop Project', type: :feature do
     end
   end
 
+  describe 'department cop registration' do
+    {
+      Bundler: 'bundler',
+      Gemspec: 'gemspec',
+      Layout: 'layout',
+      Lint: 'lint',
+      Metrics: 'metrics',
+      Migration: 'migration',
+      Naming: 'naming',
+      Security: 'security',
+      Style: 'style'
+    }.each do |department, dir|
+      it "registers every cop file in `lib/rubocop/cop/#{dir}` exactly once" do
+        cop_root = File.expand_path('../lib/rubocop/cop', __dir__)
+        files = Dir[File.join(cop_root, dir, '*.rb')].sort
+
+        registered = RuboCop::Cop::Registry.global.names_for_department(department).map do |name|
+          Object.const_source_location("RuboCop::Cop::#{name.sub('/', '::')}").first
+        end.sort
+
+        expect(registered).to eq(files)
+      end
+    end
+  end
+
   describe 'cop specs' do
     # The offense/correction expectation helpers have a singular/plural asymmetry
     # (`expect_offense` but `expect_no_offenses`, `expect_correction` but

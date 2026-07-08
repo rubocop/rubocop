@@ -144,6 +144,28 @@ RSpec.describe RuboCop::Cop::Team do
       end
     end
 
+    context 'when a cop disabled in the config is opted back in by a comment directive' do
+      let(:config) do
+        RuboCop::ConfigLoader.merge_with_default(
+          RuboCop::Config.new('Layout/LineLength' => { 'Enabled' => false }), ''
+        )
+      end
+
+      let(:cop_names) { offenses.map(&:cop_name) }
+
+      before do
+        create_file(file_path, ['# rubocop:enable Layout/LineLength', '#' * 130, 'puts test'])
+      end
+
+      it 'does not mobilize the cop into the team' do
+        expect(team.cops.map(&:cop_name)).not_to include('Layout/LineLength')
+      end
+
+      it 'mobilizes the cop on demand and reports its offenses' do
+        expect(cop_names).to include('Layout/LineLength')
+      end
+    end
+
     context 'when autocorrection is enabled' do
       let(:options) { { autocorrect: true } }
 

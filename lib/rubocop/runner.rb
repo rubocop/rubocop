@@ -479,27 +479,31 @@ module RuboCop
       team
     end
 
-    def mobilized_cop_classes(config) # rubocop:disable Metrics/AbcSize
+    def mobilized_cop_classes(config)
       @mobilized_cop_classes ||= {}.compare_by_identity
       @mobilized_cop_classes[config] ||= begin
-        cop_classes = Cop::Registry.all
-
         # `@options[:only]` and `@options[:except]` are not qualified until
-        # needed so that the Registry can be fully loaded, including any
-        # cops added by `require`s.
+        # needed so that the registry contains any cops added by `require`s,
+        # which register eagerly when their files are loaded.
         qualify_option_cop_names
 
         OptionsValidator.new(@options).validate_cop_options
 
-        if @options[:only]
-          cop_classes.select! { |c| c.match?(@options[:only]) }
-        else
-          filter_cop_classes(cop_classes, config)
-        end
+        # Filtering by badge keeps lazy-loaded cops unloaded; only the cops
+        # that survive the filter and are enabled will be loaded.
+        Cop::Registry.global.filter_by_badge(@options) { |badge| mobilize_cop_badge?(badge, config) }
+      end
+    end
 
-        cop_classes.reject! { |c| c.match?(@options[:except]) }
+    def mobilize_cop_badge?(badge, config)
+      return false if badge.department == :Test
+      return false if badge.match_name?(@options[:except])
 
-        Cop::Registry.new(cop_classes, @options)
+      if @options[:only]
+        badge.match_name?(@options[:only])
+      else
+        # use only cops that link to a style guide if requested.
+        !style_guide_cops_only?(config) || config.for_cop(badge.to_s)['StyleGuide']
       end
     end
 
@@ -511,13 +515,6 @@ module RuboCop
           Cop::Registry.qualified_cop_name(cop_name, "--#{option} option")
         end
       end
-    end
-
-    def filter_cop_classes(cop_classes, config)
-      # use only cops that link to a style guide if requested
-      return unless style_guide_cops_only?(config)
-
-      cop_classes.select! { |cop| config.for_cop(cop)['StyleGuide'] }
     end
 
     def style_guide_cops_only?(config)

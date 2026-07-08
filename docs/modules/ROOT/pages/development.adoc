@@ -24,7 +24,7 @@ Use the bundled rake task `new_cop` to generate a cop template:
 $ bundle exec rake 'new_cop[Department/Name]'
 [create] lib/rubocop/cop/department/name.rb
 [create] spec/rubocop/cop/department/name_spec.rb
-[modify] lib/rubocop.rb - `require_relative 'rubocop/cop/department/name'` was injected.
+[modify] lib/rubocop/cop/department.rb - `register_cop :Name, "#{__dir__}/department/name"` was injected.
 [modify] A configuration for the cop is added into config/default.yml.
 Do 4 steps:
   1. Modify the description of Department/Name in config/default.yml
@@ -35,6 +35,37 @@ Do 4 steps:
      for your new cop.
 
 ----
+
+=== Cop lazy loading
+
+Cops are not required from `lib/rubocop.rb`. Instead, each department has a module file
+(e.g. `lib/rubocop/cop/style.rb`) that registers its cops with the global registry through
+`RuboCop::Cop::LazyLoader#register_cop`:
+
+[source,ruby]
+----
+module RuboCop
+  module Cop
+    # Cops for the `Style` department. ...
+    module Style
+      extend LazyLoader
+
+      register_cop :HashSyntax, "#{__dir__}/style/hash_syntax"
+      # ...
+    end
+  end
+end
+----
+
+A registered cop appears in the registry by name right away, but its file is loaded only
+when the cop class is needed, e.g. when the cop is enabled for an inspection run.
+This significantly speeds up loading RuboCop, since a typical run loads only the enabled cops.
+The path passed to `register_cop` must be absolute so that loading does not depend on `$LOAD_PATH`;
+interpolating `+__dir__+` as in the example above is the intended usage. Plugin authors can adopt
+the same mechanism for their own department modules.
+
+The `new_cop` rake task maintains the `register_cop` directives for you, so usually there is
+no need to edit the department module file by hand.
 
 [[understanding-the-ast]]
 == Understanding the AST

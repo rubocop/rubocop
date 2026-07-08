@@ -19,7 +19,7 @@ task :new_cop, [:cop] do |_task, args|
     # InternalAffairs cops are required separately, and not added to config/default.yml
     generator.inject_require(root_file_path: 'lib/rubocop/cop/internal_affairs.rb')
   else
-    generator.inject_require
+    generator.inject_registration
     generator.inject_config
   end
 

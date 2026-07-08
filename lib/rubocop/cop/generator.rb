@@ -136,6 +136,10 @@ module RuboCop
         RequireFileInjector.new(source_path: source_path, root_file_path: root_file_path).inject
       end
 
+      def inject_registration
+        RegistrationInjector.new(source_path: source_path, badge: badge).inject
+      end
+
       def inject_config(config_file_path: 'config/default.yml',
                         version_added: '<<next>>')
         injector =

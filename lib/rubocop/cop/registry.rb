@@ -50,21 +50,37 @@ module RuboCop
 
       def initialize(cops = [], options = {})
         @departments = Set.new
+        # Maps each badge to its cop class, or to the fully qualified constant name (a `String`)
+        # when the cop is registered for lazy loading and its file is not loaded yet.
+        # A single insertion-ordered map keeps the registration order stable no matter when
+        # a lazy-loaded cop's file gets loaded, because reassigning an existing key preserves
+        # its position; the cop execution order depends on this order.
         @cops_by_badge = {}
-        @lazy_loaded_cops_by_badge = {}
 
         @enrollment_queue = cops
         @options = options
 
         @enabled_cache = {}.compare_by_identity
         @disabled_cache = {}.compare_by_identity
+        @disabled_names_cache = {}.compare_by_identity
         @warnings = {}
       end
 
-      def lazy_load(cop_name, constant_name)
-        badge = Badge.parse(cop_name)
+      # Registers a cop by its badge and constant name without loading the class.
+      # The constant is resolved (loading the cop's file through `autoload`) only
+      # when the cop class itself is needed.
+      #
+      # @param badge [Badge, String] the badge, or the qualified cop name
+      # @param constant_name [String] the fully qualified constant name
+      def lazy_load(badge, constant_name)
+        badge = Badge.parse(badge) if badge.is_a?(String)
+
+        # File any cops enlisted earlier first, so that the registration
+        # order follows the call order.
+        clear_enrollment_queue
+
         @departments << badge.department
-        @lazy_loaded_cops_by_badge[badge] = constant_name
+        @cops_by_badge[badge] = constant_name unless @cops_by_badge[badge].is_a?(Class)
       end
 
       def enlist(cop)
@@ -72,7 +88,16 @@ module RuboCop
       end
 
       def dismiss(cop)
-        raise "Cop #{cop} could not be dismissed" unless @enrollment_queue.delete(cop)
+        dismissed = !@enrollment_queue.delete(cop).nil?
+
+        # A lazy-loaded cop that was not enlisted yet is dismissed by removing its registration.
+        # Anonymous cop classes cannot have a badge.
+        if !cop.name.nil? && @cops_by_badge[cop.badge].is_a?(String)
+          @cops_by_badge.delete(cop.badge)
+          dismissed = true
+        end
+
+        raise "Cop #{cop} could not be dismissed" unless dismissed
       end
 
       # @return [Array<Symbol>] list of departments for current cops.
@@ -83,12 +108,26 @@ module RuboCop
 
       # @return [Registry] Cops for that specific department.
       def with_department(department)
-        with(cops.select { |cop| cop.department == department })
+        filter_by_badge { |badge| badge.department == department }
       end
 
       # @return [Registry] Cops not for a specific department.
       def without_department(department)
-        with(cops.reject { |cop| cop.department == department })
+        filter_by_badge { |badge| badge.department != department }
+      end
+
+      # Returns a new registry containing the cops whose badge satisfies the given block,
+      # keeping lazy-loaded cops unloaded.
+      #
+      # @api private
+      # @return [Registry]
+      def filter_by_badge(options = {})
+        clear_enrollment_queue
+        copy = self.class.new([], options)
+        @cops_by_badge.each do |badge, cop_or_name|
+          copy.add_entry(badge, cop_or_name) if yield(badge)
+        end
+        copy
       end
 
       # @return [Boolean] Checks if given name is department
@@ -97,7 +136,7 @@ module RuboCop
       end
 
       def contains_cop_matching?(names)
-        cops.any? { |cop| cop.match?(names) }
+        registered_badges.any? { |badge| badge.match_name?(names) }
       end
 
       # Convert a user provided cop name into a properly namespaced name
@@ -160,9 +199,10 @@ module RuboCop
 
       def unqualified_cop_names
         clear_enrollment_queue
-        @unqualified_cop_names ||=
-          (@cops_by_badge.keys | @lazy_loaded_cops_by_badge.keys)
-          .to_set { |badge| File.basename(badge.to_s) } << 'RedundantCopDisableDirective'
+
+        @unqualified_cop_names ||= @cops_by_badge.keys.to_set do |badge|
+          File.basename(badge.to_s)
+        end << 'RedundantCopDisableDirective'
       end
 
       def qualify_badge(badge)
@@ -187,52 +227,64 @@ module RuboCop
 
       def length
         clear_enrollment_queue
-        @cops_by_badge.size + @lazy_loaded_cops_by_badge.size
+        @cops_by_badge.size
       end
 
+      # Returns the enabled cop classes, loading lazy-loaded cops only when they are enabled.
+      #
+      # @return [Array<Class>]
       def enabled(config)
-        @enabled_cache[config] ||= select { |cop| enabled?(cop, config) }
+        @enabled_cache[config] ||= registered_badges.filter_map do |badge|
+          next unless enabled_cop_name?(badge.to_s, config)
+
+          cop_or_name = @cops_by_badge[badge]
+          cop_or_name.is_a?(String) ? load_lazy_cop(badge) : cop_or_name
+        end
       end
 
       def disabled(config)
         @disabled_cache[config] ||= reject { |cop| enabled?(cop, config) }
       end
 
-      def enabled?(cop, config)
-        return true if options[:only]&.include?(cop.cop_name)
-
-        # We need to use `cop_name` in this case, because `for_cop` uses caching
-        # which expects cop names or cop classes as keys.
-        cfg = config.for_cop(cop.cop_name)
-
-        cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config, cop)
-
-        if options.fetch(:safe, false)
-          cop_enabled && cfg.fetch('Safe', true)
-        else
-          cop_enabled
+      # Returns the names of the disabled cops without loading any of them.
+      #
+      # @api private
+      # @return [Array<String>]
+      def disabled_names(config)
+        @disabled_names_cache[config] ||= registered_badges.filter_map do |badge|
+          name = badge.to_s
+          name unless enabled_cop_name?(name, config)
         end
       end
 
+      def enabled?(cop, config)
+        enabled_cop_name?(cop.cop_name, config)
+      end
+
+      # @param cop [Class, String, nil] the cop class or the qualified cop name
       def enabled_pending_cop?(cop_cfg, config, cop = nil)
         return false if @options[:disable_pending_cops]
         return false unless cop_cfg.fetch('Enabled') == 'pending'
         return true if @options[:enable_pending_cops]
+        return config.enabled_new_cops? unless cop
 
-        cop ? config.enabled_new_cop?(cop.cop_name) : config.enabled_new_cops?
+        cop_name = cop.is_a?(String) ? cop : cop.cop_name
+        config.enabled_new_cop?(cop_name)
       end
 
       def names
         clear_enrollment_queue
-        @cops_by_badge.keys.map(&:to_s) | @lazy_loaded_cops_by_badge.keys.map(&:to_s)
+        @cops_by_badge.keys.map(&:to_s)
       end
 
       def cops_for_department(department)
-        cops.select { |cop| cop.department == department.to_sym }
+        with_department(department.to_sym).cops
       end
 
       def names_for_department(department)
-        cops_for_department(department).map(&:cop_name)
+        department = department.to_sym
+
+        registered_badges.filter_map { |badge| badge.to_s if badge.department == department }
       end
 
       def ==(other)
@@ -260,7 +312,9 @@ module RuboCop
       def find_by_cop_name(cop_name)
         clear_enrollment_queue
         badge = Badge.parse(cop_name)
-        @cops_by_badge[badge] || load_lazy_cop(badge)
+        cop_or_name = @cops_by_badge[badge]
+
+        cop_or_name.is_a?(String) ? load_lazy_cop(badge) : cop_or_name
       end
 
       # When a cop name is given returns a single-element array with the cop class.
@@ -288,35 +342,90 @@ module RuboCop
         @warnings[path]
       end
 
+      protected
+
+      # Adds an already-loaded cop class or a lazy-load constant name under the given badge,
+      # used to build filtered copies.
+      def add_entry(badge, cop_or_name)
+        @departments << badge.department
+        @cops_by_badge[badge] = cop_or_name
+      end
+
       private
 
       def initialize_copy(reg)
-        initialize(reg.cops, reg.options)
+        super
+        @cops_by_badge = @cops_by_badge.dup
+        @enrollment_queue = @enrollment_queue.dup
+        @departments = @departments.dup
+        @enabled_cache = {}.compare_by_identity
+        @disabled_cache = {}.compare_by_identity
+        @disabled_names_cache = {}.compare_by_identity
+        @warnings = {}
+        @unqualified_cop_names = nil
       end
 
       def clear_enrollment_queue
         return if @enrollment_queue.empty?
 
         @enrollment_queue.each do |cop|
+          # Reassigning a badge that was registered for lazy loading keeps
+          # its original position in the insertion-ordered map.
           @cops_by_badge[cop.badge] = cop
           @departments << cop.department
         end
         @enrollment_queue = []
       end
 
+      def registered_badges
+        clear_enrollment_queue
+        @cops_by_badge.keys
+      end
+
+      def enabled_cop_name?(cop_name, config)
+        return true if options[:only]&.include?(cop_name)
+
+        # We need to use the cop name in this case, because `for_cop` uses
+        # caching which expects cop names or cop classes as keys.
+        cfg = config.for_cop(cop_name)
+
+        cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config, cop_name)
+
+        if options.fetch(:safe, false)
+          cop_enabled && cfg.fetch('Safe', true)
+        else
+          cop_enabled
+        end
+      end
+
       def load_all_lazy_cops
-        @lazy_loaded_cops_by_badge.each_key { |badge| load_lazy_cop(badge) }
+        # Take a snapshot because loading a cop can load (and thereby register)
+        # another lazy-loaded cop, e.g. its superclass.
+        badges = @cops_by_badge.keys
+        badges.each { |badge| load_lazy_cop(badge) if @cops_by_badge[badge].is_a?(String) }
       end
 
+      # @return [Class, nil] the loaded cop class, or nil if the cop excluded
+      #   itself from the registry while being loaded
       def load_lazy_cop(badge)
-        constant_name = @lazy_loaded_cops_by_badge.delete(badge)
-        return unless constant_name
+        constant_name = @cops_by_badge[badge]
+        return constant_name unless constant_name.is_a?(String)
 
-        @cops_by_badge[badge] = Kernel.const_get(constant_name)
-      end
-
-      def with(cops)
-        self.class.new(cops)
+        cop = Kernel.const_get(constant_name)
+        if equal?(self.class.global)
+          # Resolving the constant fires the autoload, which makes
+          # `Base.inherited` enlist the class into the global registry.
+          # Enrolling through the queue keeps `exclude_from_registry` honored:
+          # a cop that dismissed itself leaves a dangling constant name behind
+          # and is removed from the registry.
+          clear_enrollment_queue
+          cop_or_name = @cops_by_badge[badge]
+          @cops_by_badge.delete(badge) if cop_or_name.is_a?(String)
+          cop_or_name.is_a?(Class) ? cop_or_name : nil
+        else
+          # `Base.inherited` enlists into the global registry, not this copy.
+          @cops_by_badge[badge] = cop
+        end
       end
 
       def resolve_badge(given_badge, real_badge, source_path, warn: true)
@@ -336,7 +445,7 @@ module RuboCop
 
       def registered?(badge)
         clear_enrollment_queue
-        @cops_by_badge.key?(badge) || @lazy_loaded_cops_by_badge.key?(badge)
+        @cops_by_badge.key?(badge)
       end
     end
   end

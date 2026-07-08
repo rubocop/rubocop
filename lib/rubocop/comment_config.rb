@@ -55,14 +55,32 @@ module RuboCop
 
     def extra_enabled_comments
       disable_count = Hash.new(0)
-      registry.disabled(config).each do |cop|
-        disable_count[cop.cop_name] += 1
+      registry.disabled_names(config).each do |cop_name|
+        disable_count[cop_name] += 1
       end
       extra_enabled_comments_with_names(extras: Hash.new { |h, k| h[k] = [] }, names: disable_count)
     end
 
     def comment_only_line?(line_number)
       non_comment_token_line_numbers.none?(line_number)
+    end
+
+    # The names of the cops that are opted in by an `enable` comment directive,
+    # used to mobilize cops disabled in the config on demand.
+    #
+    # @api private
+    # @return [Set<String>]
+    def opt_in_cops
+      @opt_in_cops ||= begin
+        cops = Set.new
+        each_directive do |directive|
+          next unless directive.enabled?
+          next if directive.all_cops?
+
+          cops.merge(directive.raw_cop_names)
+        end
+        cops
+      end
     end
 
     private
@@ -80,19 +98,6 @@ module RuboCop
       end
 
       extras
-    end
-
-    def opt_in_cops
-      @opt_in_cops ||= begin
-        cops = Set.new
-        each_directive do |directive|
-          next unless directive.enabled?
-          next if directive.all_cops?
-
-          cops.merge(directive.raw_cop_names)
-        end
-        cops
-      end
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
@@ -163,10 +168,10 @@ module RuboCop
     end
 
     def inject_disabled_cops_directives(analyses)
-      registry.disabled(config).each do |cop|
-        analyses[cop.cop_name] = analyze_cop(
-          analyses[cop.cop_name],
-          DirectiveComment.new(ConfigDisabledCopDirectiveComment.new(cop.cop_name))
+      registry.disabled_names(config).each do |cop_name|
+        analyses[cop_name] = analyze_cop(
+          analyses[cop_name],
+          DirectiveComment.new(ConfigDisabledCopDirectiveComment.new(cop_name))
         )
       end
     end
