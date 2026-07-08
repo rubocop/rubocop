@@ -29,8 +29,17 @@ module RuboCop
 
       # @return [Team] with cops assembled from the given `cop_classes`
       def self.mobilize(cop_classes, config, options = {})
-        cops = mobilize_cops(cop_classes, config, options)
-        new(cops, config, options)
+        if cop_classes.is_a?(Registry)
+          # Instantiate only the enabled cops so that disabled lazy-loaded cops are not loaded.
+          # The registry is kept on standby to mobilize a disabled cop when a comment directive
+          # opts it back in.
+          cops = cop_classes.enabled(config).map { |cop_class| cop_class.new(config, options) }
+          team = new(cops, config, options)
+          team.standby_registry = cop_classes
+          team
+        else
+          new(mobilize_cops(cop_classes, config, options), config, options)
+        end
       end
 
       # @return [Array<Cop::Base>]
@@ -69,12 +78,20 @@ module RuboCop
       # @api private
       attr_reader :updated_source
 
+      # Registry used to mobilize cops that were not instantiated because they are disabled in
+      # the config, when a comment directive opts them back in for a file.
+      #
+      # @api private
+      attr_writer :standby_registry
+
       alias updated_source_file? updated_source_file
 
       def initialize(cops, config = nil, options = {})
         @cops = cops
         @config = config
         @options = options
+        @standby_registry = nil
+        @standby_cops = {}
         reset
         @ready = true
         @registry = Registry.new(cops, options.dup)
@@ -170,6 +187,7 @@ module RuboCop
 
         reset
         @cops.map!(&:ready)
+        @standby_cops.transform_values! { |cop| cop&.ready }
         @ready = true
       end
 
@@ -234,13 +252,40 @@ module RuboCop
 
       # @return [Array<cop>]
       def roundup_relevant_cops(processed_source)
-        cops.select do |cop|
+        (cops + opted_in_standby_cops(processed_source)).select do |cop|
           next false if cop.excluded_file?(processed_source.file_path)
           next true if processed_source.comment_config.cop_opted_in?(cop)
           next false unless @registry.enabled?(cop, @config)
 
           support_target_ruby_version?(cop) && support_target_rails_version?(cop)
         end
+      end
+
+      # Cops that were not mobilized because they are disabled in the config,
+      # but are opted back in for the given file by an `enable` comment directive.
+      # Their classes are loaded on demand.
+      #
+      # @return [Array<cop>]
+      def opted_in_standby_cops(processed_source)
+        return [] unless @standby_registry
+
+        opted_in_names = processed_source.comment_config.opt_in_cops
+        return [] if opted_in_names.empty?
+
+        @mobilized_cop_names ||= Set.new(cops.map(&:cop_name))
+        opted_in_names.filter_map do |cop_name|
+          next if @mobilized_cop_names.include?(cop_name)
+
+          standby_cop(cop_name)
+        end
+      end
+
+      def standby_cop(cop_name)
+        return @standby_cops[cop_name] if @standby_cops.key?(cop_name)
+
+        cop_class = @standby_registry.find_by_cop_name(cop_name)
+
+        @standby_cops[cop_name] = cop_class&.new(@config, @options)
       end
 
       def support_target_ruby_version?(cop)

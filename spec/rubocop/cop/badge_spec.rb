@@ -82,6 +82,26 @@ RSpec.describe RuboCop::Cop::Badge do
     end
   end
 
+  describe '#match_name?' do
+    subject(:badge) { described_class.parse('Foo/Bar') }
+
+    it 'returns true when the given names include the qualified name' do
+      expect(badge).to be_match_name(['Foo/Bar'])
+    end
+
+    it 'returns true when the given names include the department name' do
+      expect(badge).to be_match_name(['Foo'])
+    end
+
+    it 'returns false when the given names include neither' do
+      expect(badge).not_to be_match_name(['Foo/Baz'])
+    end
+
+    it 'returns false when no names are given' do
+      expect(badge).not_to be_match_name(nil)
+    end
+  end
+
   describe '#camel_case' do
     it 'converts "lint" to CamelCase' do
       expect(described_class.camel_case('lint')).to eq('Lint')

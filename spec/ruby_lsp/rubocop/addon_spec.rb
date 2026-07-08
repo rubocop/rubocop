@@ -216,8 +216,11 @@ describe 'RubyLSP::RuboCop::Addon', :isolated_environment, :lsp do
       end
 
       context 'infinite loop error' do
+        include_context 'maintain registry'
+
         before do
-          allow(RuboCop::Cop::Registry).to receive(:all).and_return([cop])
+          allow(RuboCop::Cop::Registry.global).to receive(:filter_by_badge)
+            .and_return(RuboCop::Cop::Registry.new([cop]))
         end
 
         let(:cop) { RuboCop::Cop::Test::InfiniteLoopDuringAutocorrectWithChangeCop }

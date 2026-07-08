@@ -89,6 +89,7 @@ Layout/LineLength:
   Max: 100
   AllowedPatterns:
     - !ruby/regexp /\A +(it|describe|context|shared_examples|include_examples|it_behaves_like) ["']/
+    - !ruby/regexp /\A +register_cop :/
 
 Lint/InterpolationCheck:
   Exclude:
@@ -118,6 +119,10 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*.rb'
+    # Department modules are generated lists of `register_cop` directives.
+    - lib/rubocop/cop/layout.rb
+    - lib/rubocop/cop/lint.rb
+    - lib/rubocop/cop/style.rb
 
 Naming/InclusiveLanguage:
   Enabled: true

@@ -36,6 +36,25 @@ RSpec.describe RuboCop::Cop::Registry do
     expect(registry.cops).not_to include(klass)
   end
 
+  context 'when cloning a registry with lazy-loaded cops' do
+    before { registry.lazy_load('LazyLoad/Unresolvable', 'RuboCop::Cop::LazyLoad::Unresolvable') }
+
+    it 'preserves lazy-loaded cops without loading them' do
+      copy = registry.dup
+
+      expect(copy.names).to include('LazyLoad/Unresolvable')
+    end
+
+    it 'loads lazy-loaded cops in the copy independently of the source' do
+      stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+      registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      copy = registry.dup
+
+      expect(copy.find_by_cop_name('LazyLoad/Foo')).to eq(RuboCop::Cop::LazyLoad::Foo)
+      expect(registry.names).to include('LazyLoad/Foo')
+    end
+  end
+
   context 'when dismissing a cop class' do
     let(:cop_class) { RuboCop::Cop::Metrics::AbcSize }
 
@@ -59,6 +78,20 @@ RSpec.describe RuboCop::Cop::Registry do
     end
   end
 
+  context 'when dismissing a lazy-loaded cop class' do
+    before do
+      stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+      registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+      registry.enlist(RuboCop::Cop::LazyLoad::Foo)
+    end
+
+    it 'removes the lazy registration as well' do
+      registry.dismiss(RuboCop::Cop::LazyLoad::Foo)
+
+      expect(registry.names).not_to include('LazyLoad/Foo')
+    end
+  end
+
   it 'exposes cop departments' do
     expect(registry.departments).to eql(%i[Lint Layout Metrics RSpec Test])
   end
@@ -69,6 +102,15 @@ RSpec.describe RuboCop::Cop::Registry do
 
   it 'can filter down to all but one type' do
     expect(registry.without_department(:Lint)).to eq(described_class.new(cops.drop(2)))
+  end
+
+  context 'when filtering by department with lazy-loaded cops' do
+    before { registry.lazy_load('LazyLoad/Unresolvable', 'RuboCop::Cop::LazyLoad::Unresolvable') }
+
+    it 'keeps lazy-loaded cops unloaded' do
+      expect(registry.with_department(:LazyLoad).names).to eq(['LazyLoad/Unresolvable'])
+      expect(registry.without_department(:LazyLoad).names).not_to include('LazyLoad/Unresolvable')
+    end
   end
 
   describe '#contains_cop_matching?' do
@@ -243,6 +285,18 @@ RSpec.describe RuboCop::Cop::Registry do
       end
 
       it 'includes them' do
+        expect(registry.length).to be(7)
+      end
+    end
+
+    context 'when a lazy-loaded cop is also enlisted directly' do
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+        registry.enlist(RuboCop::Cop::LazyLoad::Foo)
+      end
+
+      it 'does not count the cop twice' do
         expect(registry.length).to be(7)
       end
     end
@@ -553,6 +607,34 @@ RSpec.describe RuboCop::Cop::Registry do
         end
       end
     end
+
+    context 'when there are lazy-loaded cops' do
+      let(:config) do
+        RuboCop::Config.new('LazyLoad/Unresolvable' => { 'Enabled' => false })
+      end
+
+      before do
+        stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+        registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+        registry.lazy_load('LazyLoad/Unresolvable', 'RuboCop::Cop::LazyLoad::Unresolvable')
+      end
+
+      it 'loads only the enabled cops' do
+        expect(enabled_cops).to include(RuboCop::Cop::LazyLoad::Foo)
+      end
+    end
+  end
+
+  describe '#disabled_names' do
+    let(:config) do
+      RuboCop::Config.new('LazyLoad/Unresolvable' => { 'Enabled' => false })
+    end
+
+    before { registry.lazy_load('LazyLoad/Unresolvable', 'RuboCop::Cop::LazyLoad::Unresolvable') }
+
+    it 'returns the disabled cop names without loading lazy-loaded cops' do
+      expect(registry.disabled_names(config)).to eq(['LazyLoad/Unresolvable'])
+    end
   end
 
   describe '#names' do
@@ -596,6 +678,14 @@ RSpec.describe RuboCop::Cop::Registry do
       expect(registry.names_for_department('Lint'))
         .to eq %w[Lint/BooleanSymbol Lint/DuplicateMethods]
     end
+
+    context 'when there are lazy-loaded cops' do
+      before { registry.lazy_load('LazyLoad/Unresolvable', 'RuboCop::Cop::LazyLoad::Unresolvable') }
+
+      it 'includes them without loading them' do
+        expect(registry.names_for_department('LazyLoad')).to eq(['LazyLoad/Unresolvable'])
+      end
+    end
   end
 
   describe '#find_by_cop_name' do
@@ -615,6 +705,19 @@ RSpec.describe RuboCop::Cop::Registry do
 
       it 'loads it' do
         expect(registry.find_by_cop_name('LazyLoad/Foo')).to eq(RuboCop::Cop::LazyLoad::Foo)
+      end
+    end
+
+    context 'when a lazy-loaded cop excludes itself from the global registry' do
+      it 'does not register the cop' do
+        described_class.with_temporary_global(registry) do
+          stub_const('RuboCop::Cop::LazyLoad::Foo', Class.new(RuboCop::Cop::Base))
+          RuboCop::Cop::LazyLoad::Foo.exclude_from_registry
+          registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
+
+          expect(registry.find_by_cop_name('LazyLoad/Foo')).to be_nil
+          expect(registry.names).not_to include('LazyLoad/Foo')
+        end
       end
     end
   end
@@ -648,6 +751,14 @@ RSpec.describe RuboCop::Cop::Registry do
       expect do
         registry.lazy_load('LazyLoad/Foo', 'RuboCop::Cop::LazyLoad::Foo')
       end.to change { registry.departments.include?(:LazyLoad) }.from(false).to(true)
+    end
+
+    it 'accepts a badge' do
+      badge = RuboCop::Cop::Badge.for('RuboCop::Cop::LazyLoad::Foo')
+      registry.lazy_load(badge, 'RuboCop::Cop::LazyLoad::Foo')
+
+      expect(registry.names).to include('LazyLoad/Foo')
+      expect(registry.find_by_cop_name('LazyLoad/Foo')).to eq(RuboCop::Cop::LazyLoad::Foo)
     end
   end
 

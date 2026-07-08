@@ -23,7 +23,7 @@ lib/rubocop/cop/<department>/<cop_name>.rb   # Cop source
 spec/rubocop/cop/<department>/<cop_name>_spec.rb  # Cop spec
 config/default.yml                           # Default configuration for every cop
 changelog/                                   # Pending changelog entries (one per file)
-lib/rubocop.rb                               # Require list (auto-updated by generator)
+lib/rubocop/cop/<department>.rb              # Department module with `register_cop` directives for lazy loading (auto-updated by generator)
 ```
 
 Departments: `Bundler`, `Gemspec`, `Layout`, `Lint`, `Metrics`, `Migration`,
@@ -38,7 +38,8 @@ bundle exec rake 'new_cop[Department/CopName]'
 ```
 
 This generates the source file, spec file, `config/default.yml` entry, and
-`require` in `lib/rubocop.rb`. After generation:
+a `register_cop` directive in the department module (`lib/rubocop/cop/<department>.rb`),
+which registers the cop for lazy loading. After generation:
 
 1. Update the description in `config/default.yml`.
 2. Implement the cop.
