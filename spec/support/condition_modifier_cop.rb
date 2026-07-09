@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
+RSpec.shared_examples 'condition modifier cop' do |keyword, extra = nil, parens_message = nil|
+  base_message = "Favor modifier `#{keyword}` usage when having a single-line body."
+  parenthesized_message = parens_message || "#{base_message}#{extra}"
+
   let(:other_cops) { { 'Layout/LineLength' => { 'Max' => 80 } } }
 
   context "for a multiline '#{keyword}'" do
@@ -36,7 +39,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
       it 'registers an offense even for a long modifier statement' do
         expect_offense(<<~RUBY, keyword: keyword)
           %{keyword} foo
-          ^{keyword} Favor modifier `#{keyword}` usage when having a single-line body.#{extra_message}
+          ^{keyword} Favor modifier `#{keyword}` usage when having a single-line body.#{extra}
             "This string would make the line longer than eighty characters if combined with the statement."
           end
         RUBY
@@ -55,7 +58,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it 'corrects it if result fits in one line' do
       expect_offense(<<~RUBY, keyword: keyword)
         %{keyword} condition
-        ^{keyword} Favor modifier `#{keyword}` usage when having a single-line body.#{extra_message}
+        ^{keyword} Favor modifier `#{keyword}` usage when having a single-line body.#{extra}
           do_something
         end
       RUBY
@@ -83,7 +86,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it 'corrects it when assignment is in body' do
       expect_offense(<<~RUBY, keyword: keyword)
         %{keyword} true
-        ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+        ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra}
           x = 0
         end
       RUBY
@@ -96,7 +99,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it "doesn't break when used as RHS of local var assignment" do
       expect_offense(<<~RUBY, keyword: keyword)
         a = %{keyword} b
-            ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+            ^{keyword} #{parenthesized_message}
           1
         end
       RUBY
@@ -109,7 +112,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it "doesn't break when used as RHS of instance var assignment" do
       expect_offense(<<~RUBY, keyword: keyword)
         @a = %{keyword} b
-             ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+             ^{keyword} #{parenthesized_message}
           1
         end
       RUBY
@@ -122,7 +125,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it "doesn't break when used as RHS of class var assignment" do
       expect_offense(<<~RUBY, keyword: keyword)
         @@a = %{keyword} b
-              ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+              ^{keyword} #{parenthesized_message}
           1
         end
       RUBY
@@ -135,7 +138,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it "doesn't break when used as RHS of constant assignment" do
       expect_offense(<<~RUBY, keyword: keyword)
         A = %{keyword} b
-            ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+            ^{keyword} #{parenthesized_message}
           1
         end
       RUBY
@@ -148,7 +151,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it "doesn't break when used as RHS of binary arithmetic" do
       expect_offense(<<~RUBY, keyword: keyword)
         a + %{keyword} b
-            ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+            ^{keyword} #{parenthesized_message}
           1
         end
       RUBY
@@ -161,7 +164,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it 'handles inline comments during autocorrection' do
       expect_offense(<<~RUBY, keyword: keyword)
         %{keyword} bar # important comment not to be nuked
-        ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+        ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra}
           baz
         end
       RUBY
@@ -174,7 +177,7 @@ RSpec.shared_examples 'condition modifier cop' do |keyword, extra_message = nil|
     it 'handles one-line usage' do
       expect_offense(<<~RUBY, keyword: keyword)
         %{keyword} foo; bar; end
-        ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra_message}
+        ^{keyword} Favor modifier `%{keyword}` usage when having a single-line body.#{extra}
       RUBY
 
       expect_correction(<<~RUBY)
