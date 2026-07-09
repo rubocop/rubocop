@@ -92,6 +92,7 @@ RSpec.describe RuboCop::Cop::Style::NegativeArrayIndex, :config do
   end
 
   it_behaves_like 'does not register an offense', 'arr[]'
+  it_behaves_like 'does not register an offense', 'arr[()]'
   it_behaves_like 'does not register an offense', 'arr[index]'
   it_behaves_like 'does not register an offense', 'arr[1]'
   it_behaves_like 'does not register an offense', 'arr[-2]'

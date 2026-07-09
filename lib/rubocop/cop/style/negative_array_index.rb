@@ -91,8 +91,9 @@ module RuboCop
           end
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def range_with_length_subtraction?(range_node, array_receiver)
-          return false unless range_node.range_type?
+          return false unless range_node&.range_type?
 
           range_end = range_node.end
           range_start = range_node.begin
@@ -107,6 +108,7 @@ module RuboCop
 
           receivers_match_strict?(length_receiver, array_receiver)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def handle_range_pattern(receiver, range_node, index_arg)
           range_end = range_node.end
