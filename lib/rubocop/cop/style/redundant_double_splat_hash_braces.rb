@@ -116,6 +116,14 @@ module RuboCop
           end
         end
 
+        def mergeable?(node)
+          return true unless node.call_type?
+          return false unless MERGE_METHODS.include?(node.method_name)
+          return true unless (parent = node.parent)
+
+          mergeable?(parent)
+        end
+
         # A braced hash literal passed to `merge` must have its braces stripped so
         # its pairs join the surrounding keyword arguments. Keeping the braces would
         # produce a positional hash after keyword arguments, which is invalid Ruby.
@@ -123,14 +131,6 @@ module RuboCop
           return hash.source unless hash.braces?
 
           hash.pairs.map(&:source).join(', ')
-        end
-
-        def mergeable?(node)
-          return true unless node.call_type?
-          return false unless MERGE_METHODS.include?(node.method_name)
-          return true unless (parent = node.parent)
-
-          mergeable?(parent)
         end
       end
     end

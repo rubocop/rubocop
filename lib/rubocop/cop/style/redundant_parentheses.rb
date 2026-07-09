@@ -205,13 +205,6 @@ module RuboCop
           parent.call_type? && parent.parenthesized? && parent.receiver != begin_node
         end
 
-        # `and`/`or` keyword operators bind looser than the method-argument
-        # boundary, so `foo((x and y))` cannot drop its parentheses without
-        # becoming a syntax error (unlike `&&`/`||`).
-        def keyword_logical_operator?(node)
-          node.operator_keyword? && node.semantic_operator?
-        end
-
         def oneline_rescue_parentheses_required?(begin_node, node)
           return false unless node.rescue_type?
           return false unless (parent = begin_node.parent)
@@ -291,6 +284,13 @@ module RuboCop
             (node.end.nil? && begin_node == parent.children.last)
         end
         # rubocop:enable Metrics/CyclomaticComplexity
+
+        # `and`/`or` keyword operators bind looser than the method-argument
+        # boundary, so `foo((x and y))` cannot drop its parentheses without
+        # becoming a syntax error (unlike `&&`/`||`).
+        def keyword_logical_operator?(node)
+          node.operator_keyword? && node.semantic_operator?
+        end
 
         def disallowed_one_line_pattern_matching?(begin_node, node)
           if (parent = begin_node.parent)
