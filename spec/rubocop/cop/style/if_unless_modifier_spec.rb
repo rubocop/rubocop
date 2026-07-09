@@ -18,8 +18,11 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   let(:other_cops) { { 'Layout/LineLength' => line_length_config } }
 
   extra = ' Another good alternative is the usage of control flow `&&`/`||`.'
-  it_behaves_like 'condition modifier cop', :if, extra
-  it_behaves_like 'condition modifier cop', :unless, extra
+  parens_message = 'Favor modifier `%s` usage when having a single-line body. ' \
+                   'Wrap the expression in parentheses to keep the current behavior, ' \
+                   'as it is part of a larger expression.'
+  it_behaves_like 'condition modifier cop', :if, extra, format(parens_message, 'if')
+  it_behaves_like 'condition modifier cop', :unless, extra, format(parens_message, 'unless')
 
   context 'modifier if that does not fit on one line' do
     let(:spaces) { ' ' * 59 }
@@ -654,7 +657,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   it 'adds parens in autocorrect when if-end used with `||` operator' do
     expect_offense(<<~RUBY)
       a || if b
-           ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+           ^^ Favor modifier `if` usage when having a single-line body. Wrap the expression in parentheses to keep the current behavior, as it is part of a larger expression.
         1
       end
     RUBY
@@ -667,13 +670,26 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   it 'adds parens in autocorrect when if-end used with `&&` operator' do
     expect_offense(<<~RUBY)
       a && if b
-           ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+           ^^ Favor modifier `if` usage when having a single-line body. Wrap the expression in parentheses to keep the current behavior, as it is part of a larger expression.
         1
       end
     RUBY
 
     expect_correction(<<~RUBY)
       a && (1 if b)
+    RUBY
+  end
+
+  it 'adds parens in autocorrect when if-end is LHS of `||` operator' do
+    expect_offense(<<~RUBY)
+      if b
+      ^^ Favor modifier `if` usage when having a single-line body. Wrap the expression in parentheses to keep the current behavior, as it is part of a larger expression.
+        1
+      end || a
+    RUBY
+
+    expect_correction(<<~RUBY)
+      (1 if b) || a
     RUBY
   end
 
@@ -1228,7 +1244,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         expect_offense(<<~RUBY)
           {
             first_key: if first_cond
-                       ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+                       ^^ Favor modifier `if` usage when having a single-line body. Wrap the expression in parentheses to keep the current behavior, as it is part of a larger expression.
                             first_expr
                           end,
             second_key: (second_expr if second_cond)
@@ -1249,7 +1265,7 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
         expect_offense(<<~RUBY)
           {
             first_key: if first_cond
-                       ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+                       ^^ Favor modifier `if` usage when having a single-line body. Wrap the expression in parentheses to keep the current behavior, as it is part of a larger expression.
                          first_expr
                        end,
             second_key: second_cond ? second_then : second_else
