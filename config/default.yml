@@ -172,11 +172,18 @@ AllCops:
   # For now this will behave as if set to false but in future ruby versions
   # (likely 4.0) it will be true by default.
   StringLiteralsFrozenByDefault: ~
+  # Enforcement levels allow selecting a strictness tier for analysis.
+  # When set, only cops tagged with an enforcement level at or below the
+  # configured level will be enabled. Cops without an Enforcement tag are
+  # unaffected. Can be overridden by the `--enforcement` command-line option.
+  # Valid choices are: essential, standard, strict.
+  # Enforcement: ~
 
 #################### Bundler ###############################
 
 Bundler/DuplicatedGem:
   Description: 'Checks for duplicate gem entries in Gemfile.'
+  Enforcement: essential
   Enabled: true
   Severity: warning
   VersionAdded: '0.46'
@@ -638,6 +645,7 @@ Layout/EmptyLineBetweenDefs:
 
 Layout/EmptyLines:
   Description: "Don't use several empty lines in a row."
+  Enforcement: standard
   StyleGuide: '#two-or-more-empty-lines'
   Enabled: true
   VersionAdded: '0.49'
@@ -754,6 +762,7 @@ Layout/EndAlignment:
 
 Layout/EndOfLine:
   Description: 'Use Unix-style line endings.'
+  Enforcement: standard
   StyleGuide: '#crlf'
   Enabled: true
   VersionAdded: '0.49'
@@ -1002,6 +1011,7 @@ Layout/HeredocIndentation:
 
 Layout/IndentationConsistency:
   Description: 'Keep indentation straight.'
+  Enforcement: standard
   StyleGuide: '#spaces-indentation'
   Enabled: true
   VersionAdded: '0.49'
@@ -1037,6 +1047,7 @@ Layout/IndentationStyle:
 
 Layout/IndentationWidth:
   Description: 'Use 2 spaces for indentation.'
+  Enforcement: standard
   StyleGuide: '#spaces-indentation'
   Enabled: true
   VersionAdded: '0.49'
@@ -1061,6 +1072,7 @@ Layout/InitialIndentation:
 
 Layout/LeadingCommentSpace:
   Description: 'Comments should start with a space.'
+  Enforcement: standard
   StyleGuide: '#hash-space'
   Enabled: true
   VersionAdded: '0.49'
@@ -1404,6 +1416,7 @@ Layout/SpaceAroundMethodCallOperator:
 
 Layout/SpaceAroundOperators:
   Description: 'Use a single space around operators.'
+  Enforcement: standard
   StyleGuide: '#spaces-operators'
   Enabled: true
   VersionAdded: '0.49'
@@ -1505,6 +1518,7 @@ Layout/SpaceInsideBlockBraces:
                  Checks that block braces have or don't have surrounding space.
                  For blocks taking parameters, checks that the left brace has
                  or doesn't have trailing space.
+  Enforcement: standard
   Enabled: true
   VersionAdded: '0.49'
   EnforcedStyle: space
@@ -1595,6 +1609,7 @@ Layout/TrailingEmptyLines:
 
 Layout/TrailingWhitespace:
   Description: 'Avoid trailing whitespace.'
+  Enforcement: standard
   StyleGuide: '#no-trailing-whitespace'
   Enabled: true
   VersionAdded: '0.49'
@@ -1686,6 +1701,7 @@ Lint/BooleanSymbol:
 
 Lint/CircularArgumentReference:
   Description: "Default values in optional keyword arguments and optional ordinal arguments should not refer back to the name of the argument."
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.33'
 
@@ -1732,6 +1748,7 @@ Lint/DataDefineOverride:
 
 Lint/Debugger:
   Description: 'Checks for debugger calls.'
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.14'
   VersionChanged: '1.63'
@@ -1857,6 +1874,7 @@ Lint/DuplicateElsifCondition:
 
 Lint/DuplicateHashKey:
   Description: 'Checks for duplicate keys in hash literals.'
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.34'
   VersionChanged: '0.77'
@@ -1873,6 +1891,7 @@ Lint/DuplicateMatchPattern:
 
 Lint/DuplicateMethods:
   Description: 'Checks for duplicate method definitions.'
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.29'
 
@@ -1933,6 +1952,7 @@ Lint/EmptyConditionalBody:
 
 Lint/EmptyEnsure:
   Description: 'Checks for empty ensure block.'
+  Enforcement: essential
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.10'
@@ -1997,11 +2017,13 @@ Lint/FloatOutOfRange:
   Description: >-
                  Catches floating-point literals too large or small for Ruby to
                  represent.
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.36'
 
 Lint/FormatParameterMismatch:
   Description: 'Checks for a mismatch between the format fields and the arguments to `format`/`sprintf`/`%`.'
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.33'
 
@@ -2492,6 +2514,7 @@ Lint/StructNewOverride:
 
 Lint/SuppressedException:
   Description: "Don't suppress exceptions."
+  Enforcement: essential
   StyleGuide: '#dont-hide-exceptions'
   Enabled: true
   VersionAdded: '0.9'
@@ -2517,6 +2540,7 @@ Lint/SymbolConversion:
 
 Lint/Syntax:
   Description: 'Checks for syntax errors.'
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.9'
 
@@ -2591,6 +2615,7 @@ Lint/UnmodifiedReduceAccumulator:
 
 Lint/UnreachableCode:
   Description: 'Checks for unreachable code.'
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.9'
 
@@ -2659,6 +2684,7 @@ Lint/UselessAccessModifier:
 
 Lint/UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
+  Enforcement: essential
   StyleGuide: '#underscore-unused-vars'
   Enabled: true
   AutoCorrect: contextual
@@ -2736,6 +2762,7 @@ Lint/UselessTimes:
 
 Lint/Void:
   Description: 'Checks for operators, literals, lambdas, and procs used in void context.'
+  Enforcement: essential
   Enabled: true
   AutoCorrect: contextual
   VersionAdded: '0.9'
@@ -2746,6 +2773,7 @@ Lint/Void:
 
 Metrics/AbcSize:
   Description: 'Checks that the ABC size of methods is not higher than the configured maximum.'
+  Enforcement: strict
   References:
     - https://wiki.c2.com/?AbcMetric
     - https://en.wikipedia.org/wiki/ABC_Software_Metric
@@ -2761,6 +2789,7 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
+  Enforcement: strict
   Enabled: true
   VersionAdded: '0.44'
   VersionChanged: '1.5'
@@ -2787,6 +2816,7 @@ Metrics/BlockNesting:
 
 Metrics/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
+  Enforcement: strict
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '0.87'
@@ -2804,6 +2834,7 @@ Metrics/CollectionLiteralLength:
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
   Description: 'Checks that the cyclomatic complexity of methods is not higher than the configured maximum.'
+  Enforcement: strict
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '0.81'
@@ -2813,6 +2844,7 @@ Metrics/CyclomaticComplexity:
 
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
+  Enforcement: strict
   StyleGuide: '#short-methods'
   Enabled: true
   VersionAdded: '0.25'
@@ -2834,6 +2866,7 @@ Metrics/ModuleLength:
 
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
+  Enforcement: strict
   StyleGuide: '#too-many-params'
   Enabled: true
   VersionAdded: '0.25'
@@ -2844,6 +2877,7 @@ Metrics/ParameterLists:
 
 Metrics/PerceivedComplexity:
   Description: 'Checks that the perceived complexity of methods is not higher than the configured maximum.'
+  Enforcement: strict
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '1.88'
@@ -2920,6 +2954,7 @@ Naming/ClassAndModuleCamelCase:
 
 Naming/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
+  Enforcement: standard
   StyleGuide: '#screaming-snake-case'
   Enabled: true
   VersionAdded: '0.50'
@@ -3065,6 +3100,7 @@ Naming/MemoizedInstanceVariableName:
 
 Naming/MethodName:
   Description: 'Use the configured style when naming methods.'
+  Enforcement: standard
   StyleGuide: '#snake-case-symbols-methods-vars'
   Enabled: true
   VersionAdded: '0.50'
@@ -3176,6 +3212,7 @@ Naming/RescuedExceptionsVariableName:
 
 Naming/VariableName:
   Description: 'Use the configured style when naming variables.'
+  Enforcement: standard
   StyleGuide: '#snake-case-symbols-methods-vars'
   Enabled: true
   VersionAdded: '0.50'
@@ -3225,6 +3262,7 @@ Security/CompoundHash:
 
 Security/Eval:
   Description: 'Checks for the use of `Kernel#eval` and `Binding#eval` with dynamic arguments.'
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.47'
 
@@ -3261,6 +3299,7 @@ Security/MarshalLoad:
 
 Security/Open:
   Description: 'Checks for the use of `Kernel#open` and `URI.open` with dynamic data.'
+  Enforcement: essential
   Enabled: true
   VersionAdded: '0.53'
   VersionChanged: '1.0'
@@ -3294,6 +3333,7 @@ Style/AccessModifierDeclarations:
 
 Style/AccessorGrouping:
   Description: 'Checks for grouping of accessors in `class` and `module` bodies.'
+  Enforcement: strict
   Enabled: true
   VersionAdded: '0.87'
   EnforcedStyle: grouped
@@ -3604,6 +3644,7 @@ Style/CharacterLiteral:
 
 Style/ClassAndModuleChildren:
   Description: 'Checks style of children classes and modules.'
+  Enforcement: standard
   StyleGuide: '#namespace-definition'
   # Moving from compact to nested children requires knowledge of whether the
   # outer parent is a module or a class. Moving from nested to compact requires
@@ -3704,6 +3745,7 @@ Style/CollectionCompact:
 # Align with the style guide.
 Style/CollectionMethods:
   Description: 'Enforces the use of consistent method names from the `Enumerable` module.'
+  Enforcement: strict
   StyleGuide: '#map-find-select-reduce-include-size'
   Enabled: false
   VersionAdded: '0.9'
@@ -3939,6 +3981,7 @@ Style/DocumentDynamicEvalDefinition:
 
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
+  Enforcement: strict
   Enabled: true
   VersionAdded: '0.9'
   AllowedConstants: []
@@ -4081,6 +4124,7 @@ Style/EndBlock:
 
 Style/EndlessMethod:
   Description: 'Avoid the use of multi-lined endless method definitions.'
+  Enforcement: strict
   StyleGuide: '#endless-methods'
   Enabled: pending
   VersionAdded: '1.8'
@@ -4261,6 +4305,7 @@ Style/FrozenStringLiteralComment:
   Description: >-
                  Add the frozen_string_literal comment to the top of files
                  to help transition to frozen string literals by default.
+  Enforcement: standard
   Enabled: true
   VersionAdded: '0.36'
   VersionChanged: '0.79'
@@ -4301,6 +4346,7 @@ Style/GlobalVars:
 
 Style/GuardClause:
   Description: 'Checks for conditionals that can be replaced with guard clauses.'
+  Enforcement: strict
   StyleGuide: '#no-nested-conditionals'
   Enabled: true
   VersionAdded: '0.20'
@@ -4388,6 +4434,7 @@ Style/HashSyntax:
   Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
                  { :a => 1, :b => 2 }.
+  Enforcement: standard
   StyleGuide: '#hash-literals'
   Enabled: true
   VersionAdded: '0.9'
@@ -4455,6 +4502,7 @@ Style/IfUnlessModifier:
   Description: >-
                  Favor modifier if/unless usage when you have a
                  single-line body.
+  Enforcement: strict
   StyleGuide: '#if-as-a-modifier'
   Enabled: true
   VersionAdded: '0.9'
@@ -4759,6 +4807,7 @@ Style/MissingElse:
                 Style/UnlessElse and Style/EmptyElse be enabled.
                 This will conflict with Style/EmptyElse if
                 Style/EmptyElse is configured to style "both".
+  Enforcement: strict
   Enabled: false
   VersionAdded: '0.30'
   VersionChanged: '0.38'
@@ -5018,6 +5067,7 @@ Style/Next:
 
 Style/NilComparison:
   Description: 'Prefer x.nil? to x == nil.'
+  Enforcement: standard
   StyleGuide: '#predicate-methods'
   Enabled: true
   VersionAdded: '0.12'
@@ -5536,6 +5586,7 @@ Style/RedundantRegexpEscape:
 
 Style/RedundantReturn:
   Description: "Don't use return where it's not required."
+  Enforcement: standard
   StyleGuide: '#no-explicit-return'
   Enabled: true
   VersionAdded: '0.10'
@@ -5545,6 +5596,7 @@ Style/RedundantReturn:
 
 Style/RedundantSelf:
   Description: "Don't use self where it's not needed."
+  Enforcement: standard
   StyleGuide: '#no-self-unless-required'
   Enabled: true
   VersionAdded: '0.10'
@@ -5866,6 +5918,7 @@ Style/StringHashKeys:
 
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
+  Enforcement: standard
   StyleGuide: '#consistent-string-literals'
   Enabled: true
   VersionAdded: '0.9'
@@ -5953,6 +6006,7 @@ Style/SymbolLiteral:
 
 Style/SymbolProc:
   Description: 'Use symbols as procs instead of blocks when possible.'
+  Enforcement: standard
   Enabled: true
   Safe: false
   VersionAdded: '0.26'
@@ -6025,6 +6079,7 @@ Style/TrailingCommaInArguments:
 
 Style/TrailingCommaInArrayLiteral:
   Description: 'Checks for trailing comma in array literals.'
+  Enforcement: standard
   StyleGuide: '#no-trailing-array-commas'
   Enabled: true
   VersionAdded: '0.53'
