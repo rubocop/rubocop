@@ -1,0 +1,1 @@
+* [#15367](https://github.com/rubocop/rubocop/pull/15367): Fix an incorrect autocorrect for `Style/RedundantFileExtensionInRequire` that produced invalid Ruby when a backslash preceded the `.rb` extension. ([@bbatsov][])

@@ -15,6 +15,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantFileExtensionInRequire, :config do
     RUBY
   end
 
+  it 'does not register an offense when a backslash precedes the extension' do
+    expect_no_offenses(<<~'RUBY')
+      require 'foo\.rb'
+      require 'foo\\.rb'
+    RUBY
+  end
+
   it 'does not register an offense when requiring filename ending with `.so`' do
     expect_no_offenses(<<~RUBY)
       require 'foo.so'
