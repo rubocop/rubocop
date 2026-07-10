@@ -1,0 +1,1 @@
+* [#15440](https://github.com/rubocop/rubocop/pull/15440): Add `AllowedMethods` option to `Style/MutableConstant` to exempt method calls (e.g. Sorbet's `type_template`) from strict mode. ([@dduugg][])

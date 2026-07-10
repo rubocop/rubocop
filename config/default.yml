@@ -4886,7 +4886,7 @@ Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: true
   VersionAdded: '0.34'
-  VersionChanged: '1.88'
+  VersionChanged: '<<next>>'
   SafeAutoCorrect: false
   EnforcedStyle: literals
   SupportedStyles:
@@ -4898,6 +4898,9 @@ Style/MutableConstant:
     # no harm in freezing an already frozen object.
     - literals
     - strict
+  # Method calls (with or without a block) whose return values are treated as
+  # immutable, e.g. Sorbet's `type_template`. Only relevant in strict mode.
+  AllowedMethods: []
   # When `true`, recursively check and freeze mutable literals nested inside
   # arrays and hashes (e.g. `[{a: []}]` becomes `[{a: [].freeze}.freeze].freeze`).
   Recursive: false

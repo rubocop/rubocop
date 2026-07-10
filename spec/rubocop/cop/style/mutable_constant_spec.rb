@@ -497,6 +497,53 @@ RSpec.describe RuboCop::Cop::Style::MutableConstant, :config do
       RUBY
     end
 
+    context 'with AllowedMethods' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'strict', 'AllowedMethods' => ['type_template'] }
+      end
+
+      it 'allows an allowed method call with a block' do
+        expect_no_offenses(<<~RUBY)
+          CONST = type_template { { fixed: T::Hash[String, T.untyped] } }
+        RUBY
+      end
+
+      it 'allows an allowed method call without a block' do
+        expect_no_offenses(<<~RUBY)
+          CONST = type_template
+        RUBY
+      end
+
+      it 'allows an allowed method call with a receiver' do
+        expect_no_offenses(<<~RUBY)
+          CONST = T.type_template
+        RUBY
+      end
+
+      it 'allows an allowed method call with `||=`' do
+        expect_no_offenses(<<~RUBY)
+          CONST ||= type_template { { fixed: T::Hash[String, T.untyped] } }
+        RUBY
+      end
+
+      it 'allows an allowed method call with safe navigation' do
+        expect_no_offenses(<<~RUBY)
+          CONST = foo&.type_template
+        RUBY
+      end
+
+      it 'registers an offense for method calls that are not allowed' do
+        expect_offense(<<~RUBY)
+          CONST = type_member { { fixed: T::Hash[String, T.untyped] } }
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Freeze mutable objects assigned to constants.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          CONST = type_member { { fixed: T::Hash[String, T.untyped] } }.freeze
+        RUBY
+      end
+    end
+
     context 'splat expansion' do
       context 'expansion of a range' do
         it 'registers an offense and corrects to use to_a.freeze' do

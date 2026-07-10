@@ -36,6 +36,12 @@ module RuboCop
       # NOTE: From Ruby 3.0, this cop allows explicit freezing of constants when
       # the `shareable_constant_value` directive is used.
       #
+      # The `AllowedMethods` option can be used to exempt method calls (with or
+      # without a block) whose return values should be treated as immutable,
+      # such as Sorbet's `type_template` and `type_member`. This option only
+      # has an effect with `EnforcedStyle: strict`, since method calls are
+      # never flagged with `EnforcedStyle: literals`.
+      #
       # @safety
       #   This cop's autocorrection is unsafe since any mutations on objects that
       #   are made frozen will change from being accepted to raising `FrozenError`,
@@ -92,6 +98,10 @@ module RuboCop
       #   # good - `Data.define` declares an immutable value type
       #   CONST = Data.define(:foo, :bar)
       #
+      # @example AllowedMethods: ['type_template'] (with EnforcedStyle: strict)
+      #   # good
+      #   CONST = type_template { { fixed: T::Hash[String, T.untyped] } }
+      #
       # @example
       #   # Magic comment - shareable_constant_value: literal
       #
@@ -140,6 +150,7 @@ module RuboCop
         private_constant :ShareableConstantValue
 
         include ShareableConstantValue
+        include AllowedMethods
         include FrozenStringLiteral
         include ConfigurableEnforcedStyle
         extend AutoCorrector
@@ -190,6 +201,7 @@ module RuboCop
         def strict_check(value)
           return if immutable_literal?(value)
           return if operation_produces_immutable_object?(value)
+          return if allowed_method_call?(value)
           return if frozen_string_literal?(value)
           return if shareable_constant_value?(value)
 
@@ -202,6 +214,11 @@ module RuboCop
           return if shareable_constant_value?(value)
 
           true
+        end
+
+        def allowed_method_call?(value)
+          call = value.any_block_type? ? value.send_node : value
+          call.call_type? && allowed_method?(call.method_name)
         end
 
         def mutable_or_unfrozen_range?(value)
