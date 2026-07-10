@@ -98,6 +98,24 @@ module RuboCop
       #
       #   name = 'John'      #: String
       #
+      # @example AllowYARDCommentBlockSeparator: false (default)
+      #
+      #   # bad
+      #
+      #   # Copyright (c) Example Corp
+      #   #-
+      #   class Client
+      #   end
+      #
+      # @example AllowYARDCommentBlockSeparator: true
+      #
+      #   # good
+      #
+      #   # Copyright (c) Example Corp
+      #   #-
+      #   class Client
+      #   end
+      #
       class LeadingCommentSpace < Base
         include RangeHelp
         extend AutoCorrector
@@ -113,6 +131,7 @@ module RuboCop
             next if gemfile_ruby_comment?(comment)
             next if rbs_inline_annotation?(comment)
             next if steep_annotation?(comment)
+            next if yard_comment_block_separator?(comment)
 
             add_offense(comment) do |corrector|
               expr = comment.source_range
@@ -196,6 +215,14 @@ module RuboCop
 
         def steep_annotation?(comment)
           allow_steep_annotation? && comment.text.start_with?(/#[$:]/)
+        end
+
+        def allow_yard_comment_block_separator?
+          cop_config['AllowYARDCommentBlockSeparator']
+        end
+
+        def yard_comment_block_separator?(comment)
+          allow_yard_comment_block_separator? && comment.text.match?(/\A#-\s*\z/)
         end
       end
     end
