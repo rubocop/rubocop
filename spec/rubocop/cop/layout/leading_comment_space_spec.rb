@@ -367,4 +367,85 @@ RSpec.describe RuboCop::Cop::Layout::LeadingCommentSpace, :config do
       end
     end
   end
+
+  describe 'YARD comment-block separator' do
+    context 'when config option is disabled' do
+      let(:cop_config) { { 'AllowYARDCommentBlockSeparator' => false } }
+
+      it 'registers an offense and corrects using `#-` comment-block separator' do
+        expect_offense(<<~RUBY)
+          # Some comment
+          #-
+          ^^ Missing space after `#`.
+          class Foo
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # Some comment
+          # -
+          class Foo
+          end
+        RUBY
+      end
+    end
+
+    context 'when config option is enabled' do
+      let(:cop_config) { { 'AllowYARDCommentBlockSeparator' => true } }
+
+      it 'does not register an offense when using `#-` comment-block separator' do
+        expect_no_offenses(<<~RUBY)
+          # Some comment
+          #-
+          class Foo
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when using `#-` comment-block separator in consecutive comment blocks' do
+        expect_no_offenses(<<~RUBY)
+          # Some comment
+          #-
+
+          # Another comment
+          #-
+          class Foo
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when using indented `#-` comment-block separator' do
+        expect_no_offenses(<<~RUBY)
+          class Foo
+            # Some comment
+            #-
+            def bar
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense and corrects when the comment has content after `#-`' do
+        expect_offense(<<~RUBY)
+          #-foo
+          ^^^^^ Missing space after `#`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # -foo
+        RUBY
+      end
+
+      it 'registers an offense and corrects when using `#+`' do
+        expect_offense(<<~RUBY)
+          #+
+          ^^ Missing space after `#`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # +
+        RUBY
+      end
+    end
+  end
 end
