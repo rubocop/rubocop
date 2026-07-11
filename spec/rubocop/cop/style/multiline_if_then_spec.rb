@@ -62,6 +62,15 @@ RSpec.describe RuboCop::Cop::Style::MultilineIfThen, :config do
     RUBY
   end
 
+  it 'accepts `then` with a body on the same line followed by an `elsif` without `then`' do
+    expect_no_offenses(<<~RUBY)
+      if cond1 then a
+      elsif cond2
+        b
+      end
+    RUBY
+  end
+
   it 'accepts table style if/then/elsif/ends' do
     expect_no_offenses(<<~RUBY)
       if    @io == $stdout then str << "$stdout"

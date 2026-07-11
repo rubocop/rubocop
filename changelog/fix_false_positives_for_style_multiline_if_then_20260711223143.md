@@ -1,0 +1,1 @@
+* [#15445](https://github.com/rubocop/rubocop/issues/15445): Fix false positives in `Style/MultilineIfThen` when using the Prism parser engine and an `elsif` without `then` follows a branch using `then` with a body on the same line. ([@koic][])
