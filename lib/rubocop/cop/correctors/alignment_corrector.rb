@@ -12,20 +12,28 @@ module RuboCop
       class << self
         attr_reader :processed_source
 
-        def correct(corrector, processed_source, node, column_delta)
+        # `tab_indentation` may only be set by callers whose `column_delta` represents
+        # whole indentation levels (e.g. `Layout/IndentationWidth`).
+        # Alignment to an arbitrary column cannot be expressed with tabs, so those callers
+        # leave tab correction disabled to avoid producing a never-converging correction.
+        def correct(corrector, processed_source, node, column_delta, tab_indentation: false)
           return unless node
 
           @processed_source = processed_source
-          # Disable autocorrection for tabs as it requires special handling
-          return if using_tabs?
 
           expr = node.respond_to?(:loc) ? node.source_range : node
           return if block_comment_within?(expr)
 
           taboo_ranges = inside_string_ranges(node)
 
-          each_line(expr) do |line_begin_pos|
-            autocorrect_line(corrector, line_begin_pos, expr, column_delta, taboo_ranges)
+          if using_tabs?
+            return unless tab_indentation
+
+            correct_tab_indentation(corrector, expr, column_delta, taboo_ranges)
+          else
+            each_line(expr) do |line_begin_pos|
+              autocorrect_line(corrector, line_begin_pos, expr, column_delta, taboo_ranges)
+            end
           end
         end
 
@@ -56,6 +64,48 @@ module RuboCop
           elsif /\A[ \t]+\z/.match?(range.source)
             corrector.remove(range)
           end
+        end
+
+        # Tab indentation is corrected by rewriting each line's leading whitespace to
+        # the target number of tabs. Working in whole tabs rather than applying a column delta
+        # keeps the result idempotent, which avoids the infinite loops that delta-based correction
+        # caused for tabs.
+        def correct_tab_indentation(corrector, expr, column_delta, taboo_ranges)
+          buffer = expr.source_buffer
+
+          each_line(expr) do |line_begin_pos|
+            line_range = buffer.line_range(buffer.line_for_position(line_begin_pos))
+            correct_tab_line(corrector, line_range, column_delta, taboo_ranges)
+          end
+        end
+
+        def correct_tab_line(corrector, line_range, column_delta, taboo_ranges)
+          leading = line_range.source[/\A[ \t]*/]
+          return if leading.length == line_range.source.length # blank line
+
+          leading_range = range_between(line_range.begin_pos, line_range.begin_pos + leading.length)
+          return if taboo_ranges.any? { |t| within?(leading_range, t) }
+
+          target = target_tab_indentation(leading, column_delta)
+          corrector.replace(leading_range, target) unless leading == target
+        end
+
+        def target_tab_indentation(leading, column_delta)
+          width = configured_indentation_width
+          return leading unless width.positive?
+
+          visual_width = leading.chars.sum { |char| char == "\t" ? width : 1 }
+
+          "\t" * ([visual_width + column_delta, 0].max / width)
+        end
+
+        # The number of columns a single tab spans. This must match the width
+        # `Layout/IndentationWidth` uses to compute `column_delta`, otherwise
+        # the division below would not land on a tab boundary. `Layout/IndentationStyle`
+        # has its own `IndentationWidth`, but that only governs how that cop replaces tabs
+        # with spaces, so it must not be consulted here.
+        def configured_indentation_width
+          processed_source.config.for_cop('Layout/IndentationWidth')['Width'] || 2
         end
 
         def inside_string_ranges(node)
