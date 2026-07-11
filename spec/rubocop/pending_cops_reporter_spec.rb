@@ -51,5 +51,39 @@ RSpec.describe RuboCop::PendingCopsReporter do
         end
       end
     end
+
+    context 'when a department sets a version for NewCops in a required file' do
+      let(:parent_config) do
+        {
+          'Lint' => { 'NewCops' => '0.90' },
+          'Lint/BooleanSymbol' => { 'Enabled' => 'pending', 'VersionAdded' => '0.90' },
+          'Lint/DuplicateBranch' => { 'Enabled' => 'pending', 'VersionAdded' => '1.3' }
+        }
+      end
+
+      it 'prints a warning only for cops added after the version' do
+        expect(described_class).to receive(:warn_on_pending_cops) do |pending_cops|
+          expect(pending_cops.map(&:name)).to eq(['Lint/DuplicateBranch'])
+        end
+        report_pending_cops
+      end
+    end
+
+    context 'when a department sets `NewCops: pending` and `AllCops` sets `NewCops: enable` in a required file' do
+      let(:parent_config) do
+        {
+          'AllCops' => { 'NewCops' => 'enable' },
+          'Lint' => { 'NewCops' => 'pending' },
+          'Lint/BooleanSymbol' => { 'Enabled' => 'pending', 'VersionAdded' => '0.90' }
+        }
+      end
+
+      it 'prints a warning for the cops of the department' do
+        expect(described_class).to receive(:warn_on_pending_cops) do |pending_cops|
+          expect(pending_cops.map(&:name)).to eq(['Lint/BooleanSymbol'])
+        end
+        report_pending_cops
+      end
+    end
   end
 end

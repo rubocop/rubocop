@@ -731,6 +731,86 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           end
         end
 
+        context 'when specifying `NewCops` for the Style department in .rubocop.yml' do
+          let(:output) { `ruby -I . "#{rubocop}" --require redirect.rb` }
+          let(:all_cops_config) { '' }
+          let(:cli_option) { '' }
+
+          before do
+            create_file('rubocop_ext.rb', <<~RUBY)
+              module RuboCop
+                module Cop
+                  module Style
+                    class SomeCop < Base
+                      def on_new_investigation
+                        add_global_offense('Some message')
+                      end
+                    end
+                  end
+                end
+              end
+            RUBY
+
+            create_file('.rubocop.yml', <<~YAML)
+              require: rubocop_ext
+
+              #{all_cops_config}
+
+              Style:
+                NewCops: #{new_cops_value}
+
+              Style/SomeCop:
+                Description: Something
+                Enabled: pending
+                VersionAdded: '0.80'
+            YAML
+          end
+
+          context 'when the cop was added after the specified version' do
+            let(:new_cops_value) { "'0.79'" }
+
+            it 'displays a pending cop warning and does not run the cop' do
+              expect(output).to start_with(pending_cop_warning)
+              expect(output).to include("Style/SomeCop: # new in 0.80\n  Enabled: true")
+              expect(output).not_to include('Some message')
+            end
+          end
+
+          context 'when the cop was added in the specified version' do
+            let(:new_cops_value) { "'0.80'" }
+
+            it 'does not include the cop in the pending cop warning and runs the cop' do
+              expect(output).not_to include('Style/SomeCop: # new in 0.80')
+              expect(output).to include('Some message')
+            end
+          end
+
+          context 'when `AllCops` has `NewCops: disable`' do
+            let(:new_cops_value) { "'0.80'" }
+            let(:all_cops_config) { <<~YAML }
+              AllCops:
+                NewCops: disable
+            YAML
+
+            it 'does not include the cop in the pending cop warning and runs the cop because ' \
+               'the department takes precedence over `AllCops`' do
+              expect(output).not_to include('Style/SomeCop: # new in 0.80')
+              expect(output).to include('Some message')
+            end
+          end
+
+          context 'when using `--disable-pending-cops` command-line option' do
+            let(:new_cops_value) { 'enable' }
+            let(:output) { `ruby -I . "#{rubocop}" --require redirect.rb --disable-pending-cops` }
+
+            it 'does not display a pending cop warning and does not run the cop because ' \
+               'the command-line option takes precedence over .rubocop.yml' do
+              expect(output).not_to start_with(pending_cop_warning)
+              expect(output).not_to include('Some message')
+            end
+          end
+        end
+
         context 'when Style department is disabled' do
           before do
             create_file('.rubocop.yml', <<~YAML)

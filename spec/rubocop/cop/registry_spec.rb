@@ -365,6 +365,193 @@ RSpec.describe RuboCop::Cop::Registry do
           expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
         end
       end
+
+      context 'when specifying `NewCops: enable` option for a department in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'Lint' => { 'NewCops' => 'enable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'includes them' do
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `NewCops: enable` option for another department in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'Style' => { 'NewCops' => 'enable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'does not include them' do
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `NewCops: disable` option for a department and ' \
+              '`NewCops: enable` option for `AllCops` in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => { 'NewCops' => 'enable' },
+            'Lint' => { 'NewCops' => 'disable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'does not include them because the department takes precedence over `AllCops`' do
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `NewCops: enable` option for a department and `NewCops: disable` option for `AllCops` in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => { 'NewCops' => 'disable' },
+            'Lint' => { 'NewCops' => 'enable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'includes them because the department takes precedence over `AllCops`' do
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `NewCops: pending` option for a department and `NewCops: enable` option for `AllCops` in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'AllCops' => { 'NewCops' => 'enable' },
+            'Lint' => { 'NewCops' => 'pending' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'does not include them because the department takes precedence over `AllCops`' do
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying a version for `NewCops` option for a department in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'Lint' => { 'NewCops' => '0.90' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending', 'VersionAdded' => version_added }
+          )
+        end
+
+        context 'when the cop was added before the specified version' do
+          let(:version_added) { '0.89' }
+
+          it 'includes them' do
+            expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+
+        context 'when the cop was added in the specified version' do
+          let(:version_added) { '0.90' }
+
+          it 'includes them' do
+            expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+
+        context 'when the cop was added after the specified version' do
+          let(:version_added) { '0.91' }
+
+          it 'does not include them' do
+            expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+
+        context 'when the cop has `VersionAdded: N/A`' do
+          let(:version_added) { 'N/A' }
+
+          it 'does not include them' do
+            expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+
+        context 'when the cop has `VersionAdded: <<next>>`' do
+          let(:version_added) { '<<next>>' }
+
+          it 'does not include them' do
+            expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+
+        context 'when the cop has no `VersionAdded`' do
+          let(:config) do
+            RuboCop::Config.new(
+              'Lint' => { 'NewCops' => '0.90' },
+              'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+            )
+          end
+
+          it 'does not include them' do
+            expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+          end
+        end
+      end
+
+      context 'when specifying a version as an unquoted YAML value for `NewCops` option for a department in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'Lint' => { 'NewCops' => 1.19 },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending', 'VersionAdded' => '1.19' }
+          )
+        end
+
+        it 'includes them' do
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `--disable-pending-cops` command-line option and `NewCops: enable` option for a department in .rubocop.yml' do
+        let(:options) { { disable_pending_cops: true } }
+        let(:config) do
+          RuboCop::Config.new(
+            'Lint' => { 'NewCops' => 'enable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'does not include them because command-line option takes precedence over .rubocop.yml' do
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `--enable-pending-cops` command-line option and ' \
+              '`NewCops: disable` option for a department in .rubocop.yml' do
+        let(:options) { { enable_pending_cops: true } }
+        let(:config) do
+          RuboCop::Config.new(
+            'Lint' => { 'NewCops' => 'disable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'includes them because command-line option takes precedence over .rubocop.yml' do
+          expect(enabled_cops).to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
+
+      context 'when specifying `Enabled: false` and `NewCops: enable` options ' \
+              'for a department in .rubocop.yml' do
+        let(:config) do
+          RuboCop::Config.new(
+            'Lint' => { 'Enabled' => false, 'NewCops' => 'enable' },
+            'Lint/BooleanSymbol' => { 'Enabled' => 'pending' }
+          )
+        end
+
+        it 'does not include them because `Enabled: false` takes precedence' do
+          expect(enabled_cops).not_to include(RuboCop::Cop::Lint::BooleanSymbol)
+        end
+      end
     end
   end
 
@@ -434,10 +621,10 @@ RSpec.describe RuboCop::Cop::Registry do
 
   describe '#unqualified_cop_names' do
     it 'returns a set of cop names without the department' do
-      expect(registry.unqualified_cop_names)
-        .to eq(Set['BooleanSymbol', 'DuplicateMethods',
-                   'FirstArrayElementIndentation', 'MethodLength',
-                   'Foo', 'RedundantCopDisableDirective'])
+      expect(registry.unqualified_cop_names).to eq(Set[
+        'BooleanSymbol', 'DuplicateMethods', 'FirstArrayElementIndentation', 'MethodLength',
+        'Foo', 'RedundantCopDisableDirective'
+     ])
     end
 
     context 'when there are lazy-loaded cops' do

@@ -20,7 +20,7 @@ module RuboCop
       attr_accessor :disable_pending_cops, :enable_pending_cops
 
       def warn_if_needed(config)
-        return if possible_new_cops?(config)
+        return if disable_pending_cops || enable_pending_cops
 
         pending_cops = pending_cops_only_qualified(config.pending_cops)
         warn_on_pending_cops(pending_cops) unless pending_cops.empty?
@@ -30,11 +30,6 @@ module RuboCop
 
       def pending_cops_only_qualified(pending_cops)
         pending_cops.select { |cop| Cop::Registry.qualified_cop?(cop.name) }
-      end
-
-      def possible_new_cops?(config)
-        disable_pending_cops || enable_pending_cops ||
-          config.disabled_new_cops? || config.enabled_new_cops?
       end
 
       def warn_on_pending_cops(pending_cops)
