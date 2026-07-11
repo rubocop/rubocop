@@ -205,7 +205,7 @@ module RuboCop
         # which expects cop names or cop classes as keys.
         cfg = config.for_cop(cop.cop_name)
 
-        cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config)
+        cop_enabled = cfg.fetch('Enabled') == true || enabled_pending_cop?(cfg, config, cop)
 
         if options.fetch(:safe, false)
           cop_enabled && cfg.fetch('Safe', true)
@@ -214,11 +214,12 @@ module RuboCop
         end
       end
 
-      def enabled_pending_cop?(cop_cfg, config)
+      def enabled_pending_cop?(cop_cfg, config, cop = nil)
         return false if @options[:disable_pending_cops]
+        return false unless cop_cfg.fetch('Enabled') == 'pending'
+        return true if @options[:enable_pending_cops]
 
-        cop_cfg.fetch('Enabled') == 'pending' &&
-          (@options[:enable_pending_cops] || config.enabled_new_cops?)
+        cop ? config.enabled_new_cop?(cop.cop_name) : config.enabled_new_cops?
       end
 
       def names

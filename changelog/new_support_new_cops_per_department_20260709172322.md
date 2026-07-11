@@ -1,0 +1,1 @@
+* [#8565](https://github.com/rubocop/rubocop/pull/8565): Support `NewCops` in department configuration to enable pending cops per department, including cops added up to a specific version (e.g. `Style: NewCops: '1.19'`). ([@koic][])

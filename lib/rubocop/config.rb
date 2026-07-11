@@ -209,6 +209,20 @@ module RuboCop
       for_all_cops['NewCops'] == 'enable'
     end
 
+    # Whether the given pending cop should be enabled, based on the `NewCops` setting of
+    # its department (if any) or of `AllCops`. A department may set `NewCops` to `enable`,
+    # `disable`, `pending`, or a version, in which case pending cops added in that version
+    # or earlier are enabled.
+    def enabled_new_cop?(qualified_cop_name)
+      setting = new_cops_setting_for(qualified_cop_name)
+
+      case setting.to_s
+      when 'enable' then true
+      when '', 'pending', 'disable' then false
+      else new_cops_version_covers?(setting, qualified_cop_name)
+      end
+    end
+
     def active_support_extensions_enabled?
       for_all_cops['ActiveSupportExtensionsEnabled']
     end
@@ -326,6 +340,7 @@ module RuboCop
 
         cop_metadata = self[qualified_cop_name]
         next unless cop_metadata['Enabled'] == 'pending'
+        next if new_cops_covered?(qualified_cop_name)
 
         pending_cops << CopConfig.new(qualified_cop_name, cop_metadata)
       end
@@ -398,6 +413,44 @@ module RuboCop
       return nil if cop_department.empty?
 
       self[cop_department.join('/')]
+    end
+
+    # The effective `NewCops` setting for the given cop: the department-level
+    # setting if present, otherwise the `AllCops` setting.
+    def new_cops_setting_for(qualified_cop_name)
+      department = department_of(qualified_cop_name)
+      setting = department['NewCops'] if department
+
+      setting || for_all_cops['NewCops']
+    end
+
+    # Whether the cop's pending status is resolved by a `NewCops` setting,
+    # so that it should not appear in the pending cops warning.
+    # Unlike `enabled_new_cop?`, `disable` counts as covered.
+    def new_cops_covered?(qualified_cop_name)
+      setting = new_cops_setting_for(qualified_cop_name)
+
+      case setting.to_s
+      when 'enable', 'disable' then true
+      when '', 'pending' then false
+      else new_cops_version_covers?(setting, qualified_cop_name)
+      end
+    end
+
+    def new_cops_version_covers?(new_cops_version, qualified_cop_name)
+      cop_metadata = self[qualified_cop_name]
+      version_added = comparable_version(cop_metadata['VersionAdded']) if cop_metadata
+      pinned_version = comparable_version(new_cops_version)
+      return false if version_added.nil? || pinned_version.nil?
+
+      version_added <= pinned_version
+    end
+
+    # Returns a `Gem::Version` for values like `'1.19'` or `1.19`, and `nil`
+    # for non-version values like `'N/A'` or `'<<next>>'`.
+    def comparable_version(value)
+      value = value.to_s
+      Gem::Version.new(value) if value.match?(/\A\d/) && Gem::Version.correct?(value)
     end
   end
 end

@@ -893,6 +893,171 @@ RSpec.describe RuboCop::Config do
     it { is_expected.to be_cop_enabled('Metrics/MethodLength') }
   end
 
+  describe '#pending_cops' do
+    subject(:pending_cops) { configuration.pending_cops.map(&:name) }
+
+    let(:hash) do
+      {
+        'Lint/Foo' => { 'Enabled' => 'pending', 'VersionAdded' => '1.18' },
+        'Lint/Bar' => { 'Enabled' => 'pending', 'VersionAdded' => '1.20' },
+        'Style/Baz' => { 'Enabled' => 'pending', 'VersionAdded' => '1.19' }
+      }.merge(new_cops_config)
+    end
+    let(:new_cops_config) { {} }
+
+    context 'when `NewCops` is not set' do
+      it 'returns all pending cops' do
+        expect(pending_cops).to eq(%w[Lint/Foo Lint/Bar Style/Baz])
+      end
+    end
+
+    context 'when `AllCops` has `NewCops: enable`' do
+      let(:new_cops_config) { { 'AllCops' => { 'NewCops' => 'enable' } } }
+
+      it 'returns no cops' do
+        expect(pending_cops).to be_empty
+      end
+    end
+
+    context 'when `AllCops` has `NewCops: disable`' do
+      let(:new_cops_config) { { 'AllCops' => { 'NewCops' => 'disable' } } }
+
+      it 'returns no cops' do
+        expect(pending_cops).to be_empty
+      end
+    end
+
+    context 'when a department has `NewCops: enable`' do
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => 'enable' } } }
+
+      it 'returns only cops of other departments' do
+        expect(pending_cops).to eq(%w[Style/Baz])
+      end
+    end
+
+    context 'when a department has `NewCops: disable`' do
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => 'disable' } } }
+
+      it 'returns only cops of other departments' do
+        expect(pending_cops).to eq(%w[Style/Baz])
+      end
+    end
+
+    context 'when a department has a version for `NewCops`' do
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => '1.19' } } }
+
+      it 'returns cops of the department added after the version and cops of other departments' do
+        expect(pending_cops).to eq(%w[Lint/Bar Style/Baz])
+      end
+    end
+
+    context 'when a department has `NewCops: pending` and `AllCops` has `NewCops: enable`' do
+      let(:new_cops_config) do
+        { 'AllCops' => { 'NewCops' => 'enable' }, 'Lint' => { 'NewCops' => 'pending' } }
+      end
+
+      it 'returns only cops of the department' do
+        expect(pending_cops).to eq(%w[Lint/Foo Lint/Bar])
+      end
+    end
+
+    context 'when a department has `Enabled: false`' do
+      let(:new_cops_config) { { 'Lint' => { 'Enabled' => false } } }
+
+      it 'returns only cops of other departments' do
+        expect(pending_cops).to eq(%w[Style/Baz])
+      end
+    end
+  end
+
+  describe '#enabled_new_cop?' do
+    subject(:enabled_new_cop) { configuration.enabled_new_cop?('Lint/Foo') }
+
+    let(:hash) do
+      { 'Lint/Foo' => { 'Enabled' => 'pending', 'VersionAdded' => '1.19' } }.merge(new_cops_config)
+    end
+    let(:new_cops_config) { {} }
+
+    context 'when `NewCops` is not set' do
+      it { is_expected.to be(false) }
+    end
+
+    context 'when `AllCops` has `NewCops: enable`' do
+      let(:new_cops_config) { { 'AllCops' => { 'NewCops' => 'enable' } } }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when `AllCops` has `NewCops: disable`' do
+      let(:new_cops_config) { { 'AllCops' => { 'NewCops' => 'disable' } } }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when `AllCops` has `NewCops: pending`' do
+      let(:new_cops_config) { { 'AllCops' => { 'NewCops' => 'pending' } } }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the department has `NewCops: enable`' do
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => 'enable' } } }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the department has `NewCops: disable` and `AllCops` has `NewCops: enable`' do
+      let(:new_cops_config) do
+        { 'AllCops' => { 'NewCops' => 'enable' }, 'Lint' => { 'NewCops' => 'disable' } }
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the department has a version for `NewCops` equal to `VersionAdded`' do
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => '1.19' } } }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the department has a version for `NewCops` lower than `VersionAdded`' do
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => '1.18' } } }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the department has a version for `NewCops` higher than `VersionAdded`' do
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => '1.20' } } }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the department has a Float version for `NewCops`' do
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => 1.19 } } }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the department has a version for `NewCops` and the cop has `VersionAdded: N/A`' do
+      let(:hash) do
+        {
+          'Lint' => { 'NewCops' => '1.19' },
+          'Lint/Foo' => { 'Enabled' => 'pending', 'VersionAdded' => 'N/A' }
+        }
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the department has a version for `NewCops` and the cop is not configured' do
+      subject(:enabled_new_cop) { configuration.enabled_new_cop?('Lint/Undefined') }
+
+      let(:new_cops_config) { { 'Lint' => { 'NewCops' => '1.19' } } }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   context 'whether the cop is enabled' do
     def cop_enabled(cop_class)
       configuration.for_cop(cop_class).fetch('Enabled')

@@ -104,6 +104,33 @@ AllCops:
 
 NOTE: The command-line option takes precedence over the `.rubocop.yml` file.
 
+=== Enabling/Disabling Pending Cops per Department
+
+A single version in `AllCops` cannot express which pending cops to enable, because extension gems follow their own version schemes.
+Instead, `NewCops` can be set for a department, in which case it takes precedence over the `AllCops` setting for the cops of that department.
+In addition to `enable`, `disable`, and `pending`, a department accepts a version, which enables all pending cops of the department
+that were added in the specified version or earlier:
+
+[source,yaml]
+----
+AllCops:
+  NewCops: disable # keywords only, as before
+
+Lint:
+  NewCops: enable  # a department overrides `AllCops`
+
+Style:
+  NewCops: '1.19'  # enables pending cops with `VersionAdded` <= 1.19
+
+Minitest:
+  NewCops: '0.10'  # an extension is pinned to its own version
+----
+
+Pending cops added in a later version keep emitting the warning, so you can review them and bump the version at your own pace.
+Since each department is pinned to its own version, this also works for extensions whose version schemes differ from RuboCop's.
+
+NOTE: Quote the version to avoid YAML interpreting it as a number (for example, an unquoted `1.20` is read as `1.2`).
+
 === Enabling/Disabling Individual Pending Cops
 
 Finally, you can enable/disable individual pending cops by setting their `Enabled` configuration to either `true` or `false` in your `.rubocop.yml` file:
