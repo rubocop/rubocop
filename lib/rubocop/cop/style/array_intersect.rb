@@ -121,15 +121,15 @@ module RuboCop
             (block
               (call $_receiver ${:any? :none?})
               (args (arg _key))
-              (send $_argument {:member? :include?} (lvar _key))
+              (send $!nil? {:member? :include?} (lvar _key))
             )
             (numblock
               (call $_receiver ${:any? :none?}) 1
-              (send $_argument {:member? :include?} (lvar :_1))
+              (send $!nil? {:member? :include?} (lvar :_1))
             )
             (itblock
               (call $_receiver ${:any? :none?}) :it
-              (send $_argument {:member? :include?} (lvar :it))
+              (send $!nil? {:member? :include?} (lvar :it))
             )
           }
         PATTERN

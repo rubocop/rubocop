@@ -371,6 +371,18 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
         RUBY
       end
 
+      it 'does not register an offense when using `array1.any? { |e| include?(e) }`' do
+        expect_no_offenses(<<~RUBY)
+          array1.any? { |e| include?(e) }
+        RUBY
+      end
+
+      it 'does not register an offense when using `array1.any? { |e| member?(e) }`' do
+        expect_no_offenses(<<~RUBY)
+          array1.any? { |e| member?(e) }
+        RUBY
+      end
+
       it 'registers an offense when using `array1.any? { array2.member?(_1) }`' do
         expect_offense(<<~RUBY)
           array1.any? { array2.member?(_1) }
@@ -435,6 +447,12 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
 
         expect_correction(<<~RUBY)
           !array1.intersect?(array2)
+        RUBY
+      end
+
+      it 'does not register an offense when using `array1.none? { member?(_1) }`' do
+        expect_no_offenses(<<~RUBY)
+          array1.none? { member?(_1) }
         RUBY
       end
 

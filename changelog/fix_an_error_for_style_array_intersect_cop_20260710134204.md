@@ -1,0 +1,1 @@
+* [#15442](https://github.com/rubocop/rubocop/pull/15442): Fix an error for `Style/ArrayIntersect` cop when the block-based check calls `member?`/`include?` without an explicit receiver. ([@dduugg][])
