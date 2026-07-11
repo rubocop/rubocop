@@ -16,11 +16,10 @@ module RuboCop
       # enumerator.each { |item| item >= 2 } #=> [2, 3]
       # ----
       #
-      # NOTE: Return values in assignment method definitions such as `def foo=(arg)` are
-      # detected because they are in a void context. However, autocorrection does not remove
-      # the return value, as that would change behavior. In such cases, whether to remove
-      # the return value or rename the method to something more appropriate should be left to
-      # the user.
+      # NOTE: The last expression in an assignment method definition such as `def foo=(arg)`
+      # is not flagged. Ruby discards it (the method returns its argument), but the method can
+      # still be called directly and its return value relied upon, so flagging it would be a
+      # false positive for this lint.
       #
       # @example CheckForMethodsWithNoSideEffects: false (default)
       #   # bad
@@ -109,7 +108,7 @@ module RuboCop
         def check_begin(node)
           expressions = *node
           inside_each_block = node.each_ancestor(:any_block).first&.method?(:each)
-          expressions.pop if !in_void_context?(node) || inside_each_block
+          expressions.pop if !in_void_context?(node) || inside_each_block || setter_method?(node)
           expressions.each do |expr|
             check_void_op(expr) { inside_each_block }
             check_expression(expr)
@@ -242,6 +241,10 @@ module RuboCop
           return false unless parent && parent.children.last == node
 
           parent.respond_to?(:void_context?) && parent.void_context?
+        end
+
+        def setter_method?(node)
+          node.parent&.any_def_type? && node.parent.assignment_method?
         end
 
         def autocorrect_void_op(corrector, node)
