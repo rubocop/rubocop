@@ -2645,7 +2645,18 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
   end
 
   describe '--mcp' do
-    let(:initialize_request) { { jsonrpc: '2.0', id: '1', method: 'initialize' }.to_json }
+    let(:initialize_request) do
+      {
+        jsonrpc: '2.0',
+        id: '1',
+        method: 'initialize',
+        params: {
+          protocolVersion: '2025-06-18',
+          capabilities: {},
+          clientInfo: { name: 'test_client', version: '1.0.0' }
+        }
+      }.to_json
+    end
 
     it 'starts MCP server and responds to initialize request' do
       # Using `cli.run` would not detect missing requires because spec_helper.rb

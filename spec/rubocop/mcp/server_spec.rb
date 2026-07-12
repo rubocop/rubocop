@@ -17,7 +17,12 @@ RSpec.describe RuboCop::MCP::Server, :isolated_environment, :lsp do
       [{
         jsonrpc: '2.0',
         id: '42',
-        method: 'initialize'
+        method: 'initialize',
+        params: {
+          protocolVersion: '2025-06-18',
+          capabilities: {},
+          clientInfo: { name: 'test_client', version: '1.0.0' }
+        }
       }]
     end
 
