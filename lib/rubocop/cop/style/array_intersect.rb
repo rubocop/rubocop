@@ -30,6 +30,11 @@ module RuboCop
       # only cases where exactly one argument is provided can be replaced with
       # `Array#intersect?` and are handled by this cop.
       #
+      # NOTE: In the block form, `include?` is only detected when its receiver is
+      # an array literal, because `include?` is defined with different semantics
+      # on many non-array classes (e.g. `String#include?` checks for substrings).
+      # `member?` does not have this restriction.
+      #
       # @safety
       #   This cop cannot guarantee that `array1` and `array2` are
       #   actually arrays while method `intersect?` is for arrays only.
@@ -47,7 +52,7 @@ module RuboCop
       #
       #   # bad
       #   array1.any? { |elem| array2.member?(elem) }
-      #   array1.none? { |elem| array2.include?(elem) }
+      #   array1.none? { |elem| [1, 2].include?(elem) }
       #
       #   # good
       #   array1.intersect?(array2)
@@ -121,15 +126,15 @@ module RuboCop
             (block
               (call $_receiver ${:any? :none?})
               (args (arg _key))
-              (send $!nil? {:member? :include?} (lvar _key))
+              (send $!nil? ${:member? :include?} (lvar _key))
             )
             (numblock
               (call $_receiver ${:any? :none?}) 1
-              (send $!nil? {:member? :include?} (lvar :_1))
+              (send $!nil? ${:member? :include?} (lvar :_1))
             )
             (itblock
               (call $_receiver ${:any? :none?}) :it
-              (send $!nil? {:member? :include?} (lvar :it))
+              (send $!nil? ${:member? :include?} (lvar :it))
             )
           }
         PATTERN
@@ -156,7 +161,14 @@ module RuboCop
         alias on_csend on_send
 
         def on_block(node)
-          return unless (receiver, method_name, argument = any_none_block_intersection(node))
+          return unless (captures = any_none_block_intersection(node))
+
+          receiver, method_name, argument, block_method = captures
+
+          # `include?` is defined with different semantics on many non-array classes
+          # (e.g. `String#include?` checks for substrings), so it is only a reliable
+          # signal of an intersection check when the receiver is an array literal.
+          return if block_method == :include? && !argument.array_type?
 
           dot = node.send_node.loc.dot.source
           bang = method_name == :any? ? '' : '!'
