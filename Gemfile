@@ -28,7 +28,9 @@ gem 'ruby-lsp', '~> 0.24', platform: :mri if RUBY_VERSION >= '3.0'
 # native binaries for MRI on supported platforms, so we gate by `RUBY_ENGINE` to
 # keep JRuby and other engines unaffected.
 gem 'rubydex', require: false if RUBY_VERSION >= '3.2' && RUBY_ENGINE == 'ruby'
-gem 'simplecov', '~> 0.20'
+# SimpleCov 1.0 requires Ruby 3.2+. Coverage measurement is opt-in (`COVERAGE=1`)
+# and unnecessary on the older Rubies in the CI matrix.
+gem 'simplecov', '~> 1.0' if RUBY_VERSION >= '3.2'
 gem 'stackprof', platform: :mri
 gem 'test-queue'
 gem 'yard', '~> 0.9'
