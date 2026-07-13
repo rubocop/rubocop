@@ -36,7 +36,13 @@ module RuboCop
         private
 
         def non_modifier_then?(node)
-          node.multiline? && node.then? && node.loc.begin.line != node.if_branch&.loc&.line
+          node.multiline? && own_then?(node) && node.loc.begin.line != node.if_branch&.loc&.line
+        end
+
+        # Prism gives an `elsif` with no `then` of its own the previous branch's `then` location,
+        # which lies outside the node.
+        def own_then?(node)
+          node.then? && node.source_range.contains?(node.loc.begin)
         end
       end
     end
