@@ -37,6 +37,16 @@ module RuboCop
       #   x&.foo      # raises NoMethodError
       #   ----
       #
+      #   Additionally, when a method chain is converted, a `NoMethodError` that
+      #   the original code raised for an intermediate `nil` value is suppressed:
+      #
+      #   [source,ruby]
+      #   ----
+      #   x = Struct.new(:foo).new(nil)
+      #   x && x.foo.bar  # raises NoMethodError
+      #   x&.foo&.bar     # returns nil
+      #   ----
+      #
       # @example
       #   # bad
       #   foo.bar if foo
