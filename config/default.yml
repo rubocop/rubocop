@@ -2409,8 +2409,9 @@ Lint/ReturnInVoidContext:
 Lint/SafeNavigationChain:
   Description: 'Do not chain ordinary method call after safe navigation operator.'
   Enabled: true
+  SafeAutoCorrect: false
   VersionAdded: '0.47'
-  VersionChanged: '0.77'
+  VersionChanged: '<<next>>'
   AllowedMethods:
     - present?
     - blank?
