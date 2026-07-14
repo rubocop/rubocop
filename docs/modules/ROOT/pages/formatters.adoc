@@ -243,6 +243,7 @@ The JSON structure is like the following example:
           "severity": "convention",
           "message": "Line is too long. [81/80]",
           "cop_name": "Layout/LineLength",
+          "style_guide_url": "https://rubystyle.guide#max-line-length",
           "corrected": true,
           "correctable": true,
           "location": {
@@ -280,6 +281,9 @@ The JSON structure is like the following example:
   }
 }
 ----
+
+The `style_guide_url` key is present for an offense only when the cop provides
+a style guide URL.
 
 == JUnit Style Formatter
 

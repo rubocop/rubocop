@@ -69,8 +69,6 @@ module RuboCop
         [style_guide_url, *reference_urls].compact
       end
 
-      private
-
       def style_guide_url
         url = cop_config['StyleGuide']
         return nil if url.nil? || url.empty?
@@ -84,6 +82,8 @@ module RuboCop
           end
         end
       end
+
+      private
 
       # Returns the base style guide URL from AllCops or the specific department
       #

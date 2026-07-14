@@ -47,7 +47,7 @@ module RuboCop
       end
 
       def hash_for_offense(offense)
-        {
+        hash = {
           severity:    offense.severity.name,
           message:     offense.message,
           cop_name:    offense.cop_name,
@@ -55,6 +55,8 @@ module RuboCop
           correctable: offense.correctable?,
           location:    hash_for_location(offense)
         }
+        hash[:style_guide_url] = offense.style_guide_url if offense.style_guide_url
+        hash
       end
 
       # TODO: Consider better solution for Offense#real_column.
