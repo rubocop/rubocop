@@ -2038,6 +2038,12 @@ Lint/ImplicitStringConcatenation:
   Enabled: true
   VersionAdded: '0.36'
 
+Lint/ImplicitTypeCoercion:
+  Description: 'Checks for mathematical operations that do nothing except implicitly changing the type of the receiver.'
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+
 Lint/IncompatibleIoSelectWithFiberScheduler:
   Description: 'Checks for `IO.select` that is incompatible with Fiber Scheduler.'
   Enabled: pending
