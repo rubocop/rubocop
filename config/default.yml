@@ -5587,6 +5587,16 @@ Style/RedundantStructKeywordInit:
   VersionAdded: '1.85'
   VersionChanged: '1.86'
 
+Style/RedundantTap:
+  Description: >-
+    Checks for redundant `#tap` calls where the block only invokes a method
+    that returns the receiver.
+  Enabled: pending
+  Safe: false
+  VersionAdded: '<<next>>'
+  MethodsReturningSelf:
+    - freeze
+
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: '#percent-r'
