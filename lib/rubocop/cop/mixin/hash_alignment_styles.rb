@@ -96,20 +96,37 @@ module RuboCop
         end
 
         def hash_rocket_delta(first_pair, current_pair)
-          first_pair.loc.column + max_key_width(first_pair.parent) + 1 -
-            current_pair.loc.operator.column
+          target_operator_column(first_pair) - current_pair.loc.operator.column
         end
 
         def value_delta(first_pair, current_pair)
-          correct_value_column = first_pair.key.loc.column +
-                                 max_key_width(first_pair.parent) +
-                                 max_delimiter_width(first_pair.parent)
+          correct_value_column = target_operator_column(first_pair) +
+                                 max_delimiter_width(first_pair.parent) - 1
 
           current_pair.value_omission? ? 0 : correct_value_column - current_pair.value.loc.column
         end
 
+        # The column the separator should land on: the shared key margin
+        # plus the widest single-line key, or, if larger, a multiline key's
+        # own last-line end column. The latter can't be measured from a
+        # multiline key's (newline-including) source length, so it's a
+        # separate candidate rather than folded into `max_key_width`.
+        def target_operator_column(first_pair)
+          hash_node = first_pair.parent
+          candidates = multiline_key_end_columns(hash_node)
+
+          key_width = max_key_width(hash_node)
+          candidates << (first_pair.loc.column + key_width + 1) if key_width.positive?
+
+          candidates.max
+        end
+
+        def multiline_key_end_columns(hash_node)
+          hash_node.keys.reject(&:single_line?).map { |key| key.source_range.end.column + 1 }
+        end
+
         def max_key_width(hash_node)
-          hash_node.keys.map { |key| key.source.length }.max
+          hash_node.keys.select(&:single_line?).map { |key| key.source.length }.max || 0
         end
 
         def max_delimiter_width(hash_node)
