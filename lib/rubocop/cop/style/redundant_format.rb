@@ -183,7 +183,7 @@ module RuboCop
           return false unless sequence.variable_width?
 
           argument = arguments[sequence.variable_width_argument_number - 1]
-          !numeric?(argument)
+          argument.nil? || !numeric?(argument)
         end
 
         # rubocop:disable Metrics/AbcSize

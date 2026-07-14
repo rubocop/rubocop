@@ -311,6 +311,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
             RUBY
           end
 
+          it 'does not register an offense when the positional variable width argument is missing' do
+            expect_no_offenses(<<~RUBY)
+              #{method}('%*9$d', 1)
+            RUBY
+          end
+
           it 'does not register an offense when the star argument is not literal' do
             expect_no_offenses(<<~RUBY)
               #{method}('%*s', foo, 'bar')
