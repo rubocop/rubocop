@@ -287,6 +287,89 @@ RSpec.describe RuboCop::CommentConfig do
     end
   end
 
+  describe 'disable-file directive' do
+    def disabled_lines_of_cop(cop)
+      (1..source.size).each_with_object([]) do |line_number, disabled_lines|
+        enabled = comment_config.cop_enabled_at_line?(cop, line_number)
+        disabled_lines << line_number unless enabled
+      end
+    end
+
+    context 'when disable-file is used on its own line' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-file Metrics/MethodLength
+          def some_method
+            puts 'foo'
+          end
+        RUBY
+      end
+
+      it 'disables the cop for the entire file' do
+        disabled = disabled_lines_of_cop('Metrics/MethodLength')
+        expect(disabled).to eq((1..source.size).to_a)
+      end
+    end
+
+    context 'when disable-file is used in the middle of a file' do
+      let(:source) do
+        <<~RUBY
+          def some_method
+            puts 'foo'
+          end
+          # rubocop:disable-file Metrics/MethodLength
+          def other_method
+            puts 'bar'
+          end
+        RUBY
+      end
+
+      it 'disables the cop from the directive line to end of file' do
+        disabled = disabled_lines_of_cop('Metrics/MethodLength')
+        expect(disabled).to eq((4..source.size).to_a)
+      end
+    end
+
+    context 'when disable-file is used inline' do
+      let(:source) do
+        <<~RUBY
+          x = 1 # rubocop:disable-file Metrics/MethodLength
+          def some_method
+            puts 'foo'
+          end
+        RUBY
+      end
+
+      it 'only disables the cop on that single line' do
+        disabled = disabled_lines_of_cop('Metrics/MethodLength')
+        expect(disabled).to eq([1])
+      end
+    end
+
+    context 'when disable-file is combined with regular disable/enable' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-file Layout/LineLength
+          y = 1
+          # rubocop:disable Layout/SpaceAroundOperators
+          x =   0
+          # rubocop:enable Layout/SpaceAroundOperators
+          z = 2
+        RUBY
+      end
+
+      it 'disables LineLength for the entire file' do
+        disabled = disabled_lines_of_cop('Layout/LineLength')
+        expect(disabled).to eq((1..source.size).to_a)
+      end
+
+      it 'disables SpaceAroundOperators only in the range' do
+        disabled = disabled_lines_of_cop('Layout/SpaceAroundOperators')
+        expect(disabled).to eq([3, 4, 5])
+      end
+    end
+  end
+
   describe 'push/pop directives' do
     def disabled_lines_of_cop(cop)
       (1..source.size).each_with_object([]) do |line_number, disabled_lines|

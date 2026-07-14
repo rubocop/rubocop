@@ -34,6 +34,15 @@ You can also disable _all_ cops with
 # rubocop:enable all
 ----
 
+You can disable a cop for an entire file, which does not require a
+matching # rubocop:enable
+
+[source,ruby]
+----
+# rubocop:disable-file Layout/LineLength
+[...]
+----
+
 In cases where you want to differentiate intentionally-disabled cops vs. cops
 you'd like to revisit later, you can use `rubocop:todo` as an alias of
 `rubocop:disable`.

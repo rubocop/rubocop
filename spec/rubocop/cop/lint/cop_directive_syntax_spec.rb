@@ -37,6 +37,18 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
     RUBY
   end
 
+  it 'does not register an offense for disable-file directives' do
+    expect_no_offenses(<<~RUBY)
+      # rubocop:disable-file Layout/LineLength
+    RUBY
+  end
+
+  it 'does not register an offense for disable-file with multiple cops' do
+    expect_no_offenses(<<~RUBY)
+      # rubocop:disable-file Layout/LineLength, Style/Encoding
+    RUBY
+  end
+
   it 'registers an offense for multiple cops a without comma' do
     expect_offense(<<~RUBY)
       # rubocop:disable Layout/LineLength Style/Encoding
@@ -61,7 +73,7 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
   it 'registers an offense for incorrect mode' do
     expect_offense(<<~RUBY)
       # rubocop:disabled Layout/LineLength
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `todo`, `push`, or `pop`.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The mode name must be one of `enable`, `disable`, `disable-file`, `todo`, `push`, or `pop`.
     RUBY
   end
 
