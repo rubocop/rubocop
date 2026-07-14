@@ -5390,6 +5390,11 @@ Style/RedundantCondition:
     - infinite?
     - nonzero?
 
+Style/RedundantConditionInFilterMap:
+  Description: 'Checks for redundant conditions in filter_map.'
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Style/RedundantConditional:
   Description: "Don't return true/false from a conditional."
   Enabled: true
