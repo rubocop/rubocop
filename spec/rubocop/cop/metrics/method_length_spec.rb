@@ -283,6 +283,20 @@ RSpec.describe RuboCop::Cop::Metrics::MethodLength, :config do
     RUBY
   end
 
+  it 'registers an offense when a method contains a heredoc and `__ENCODING__`' do
+    expect_offense(<<~RUBY)
+      def m
+      ^^^^^ Method has too many lines. [6/5]
+        a = 1
+        a = 2
+        a = <<~TEXT
+          text
+        TEXT
+        __ENCODING__
+      end
+    RUBY
+  end
+
   context 'when CountComments is enabled' do
     before { cop_config['CountComments'] = true }
 

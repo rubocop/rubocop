@@ -189,7 +189,7 @@ module RuboCop
           def source_from_node_with_heredoc(node)
             last_line = -1
             node.each_descendant do |descendant|
-              next unless descendant.source
+              next if descendant.loc.nil? || descendant.source_range.nil?
 
               descendant_last_line =
                 if heredoc_node?(descendant)
