@@ -1824,6 +1824,30 @@ Lint/DeprecatedConstants:
       Alternative: 'Etc::Passwd'
       DeprecatedVersion: '3.0'
 
+Lint/DeprecatedMethods:
+  Description: 'Checks for calls to methods that have been configured as deprecated.'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+  # Deprecations are configured as a list of rules. Each rule matches calls
+  # either by method name (`Method`, with an optional constant `Receiver`) or
+  # by node pattern (`Pattern`, see
+  # https://docs.rubocop.org/rubocop-ast/node_pattern.html), and can have a
+  # `Replacement` used for autocorrection and a `Message` overriding the
+  # default offense message. With `Pattern`, `Replacement` and `Message` can
+  # refer to the sources of the pattern's captures with `$1`, `$2`, and so on.
+  #
+  # Rules:
+  #   - Method: serialize
+  #     Replacement: serialize_with_codec
+  #   - Method: find
+  #     Receiver: Book
+  #     Replacement: BookRepository.fetch
+  #   - Pattern: '(call (const {cbase nil?} :Book) :find_by (hash (pair (sym :id) $_)))'
+  #     Replacement: 'BookRepository.find_by_custom_id!($1)'
+  #
+  Rules: []
+
 Lint/DeprecatedOpenSSLConstant:
   Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
   Enabled: true
