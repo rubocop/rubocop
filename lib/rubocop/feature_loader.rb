@@ -76,12 +76,6 @@ module RuboCop
       @feature.start_with?('.')
     end
 
-    # @param [LoadError] error
-    # @return [Boolean]
-    def seems_cannot_load_such_file_error?(error)
-      error.path == target
-    end
-
     # @return [String]
     def target
       if relative?

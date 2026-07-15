@@ -201,12 +201,6 @@ module RuboCop
           end
         end
 
-        def next_to_bracket?(token, side: :right)
-          line_index, col = line_and_column_for(token)
-          line = processed_source.lines[line_index]
-          side == :right ? line[col] == ']' : line[col + 2] == '['
-        end
-
         def compact_offense(node, token, side: :right)
           if side == :right
             space_offense(node, token, :left, MSG, NO_SPACE_COMMAND)
