@@ -313,10 +313,6 @@ module RuboCop
         end
         alias max_line_length max
 
-        def allow_heredoc?
-          allowed_heredoc
-        end
-
         def allowed_heredoc
           cop_config['AllowHeredoc']
         end
@@ -342,10 +338,6 @@ module RuboCop
             range.cover?(line_number) &&
               (allowed_heredoc == true || allowed_heredoc.include?(delimiter))
           end
-        end
-
-        def line_in_heredoc?(line_number)
-          heredocs.any? { |range, _delimiter| range.cover?(line_number) }
         end
 
         def receiver_contains_heredoc?(node)

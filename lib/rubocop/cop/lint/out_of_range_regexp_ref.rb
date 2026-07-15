@@ -119,10 +119,6 @@ module RuboCop
         def regexp_receiver?(send_node)
           send_node.receiver&.regexp_type?
         end
-
-        def nth_ref_receiver?(send_node)
-          send_node.receiver&.nth_ref_type?
-        end
       end
     end
   end

@@ -50,10 +50,6 @@ module RuboCop
 
         private
 
-        def disable_comment_offset
-          Regexp.last_match(1).length
-        end
-
         def check_cop_name(name, comment, offset)
           start = comment.source_range.begin_pos + offset
           range = range_between(start, start + name.length)
