@@ -27,6 +27,25 @@ module RuboCop
 
       private
 
+      # Returns the definitions among `definitions` that live in a file other than the
+      # one being inspected, ordered by path and line. Definitions without a `file://`
+      # URI (e.g. Rubydex's built-in declarations) are ignored.
+      def definitions_in_other_files(definitions)
+        current = processed_source.file_path
+
+        definitions
+          .select { |definition| definition.location.uri.start_with?(FILE_URI_PREFIX) }
+          .reject { |definition| File.identical?(definition.location.to_file_path, current) }
+          .sort_by do |definition|
+          [definition.location.to_file_path,
+           definition.location.start_line]
+        end
+      end
+
+      def prior_definition_in_other_file(definitions)
+        definitions_in_other_files(definitions).first
+      end
+
       def project_index_signature
         project_index.documents.filter_map do |doc|
           uri = doc.uri

@@ -661,6 +661,24 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
       expect(offenses).to be_empty
     end
 
+    it 'does not error when a built-in constant name is assigned' do
+      Dir.mktmpdir do |tmpdir|
+        # `Module` has a built-in (non-file) definition in the index; scanning
+        # for a prior definition must not trip over its `rubydex:built-in` URI.
+        File.write(File.join(tmpdir, 'built_in.rb'), "Module = 1\n")
+        write_rubocop_config(
+          tmpdir,
+          'AllCops' => { 'UseProjectIndex' => true },
+          'Lint/ConstantReassignment' => { 'Enabled' => true }
+        )
+
+        offenses = nil
+        expect { offenses = cop_offenses(tmpdir) }.not_to output(/An error occurred/).to_stderr
+
+        expect(offenses).to be_empty
+      end
+    end
+
     it 'invalidates the cache when an indexed file changes' do
       Dir.mktmpdir do |tmpdir|
         Dir.mktmpdir do |cache_dir|
