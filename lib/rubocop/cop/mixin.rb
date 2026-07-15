@@ -65,6 +65,7 @@ module RuboCop
     autoload :PrecedingFollowingAlignment, "#{__dir__}/mixin/preceding_following_alignment"
     autoload :PreferredDelimiters, "#{__dir__}/mixin/preferred_delimiters"
     autoload :RationalLiteral, "#{__dir__}/mixin/rational_literal"
+    autoload :ReparsedEquivalence, "#{__dir__}/mixin/reparsed_equivalence"
     autoload :RequireLibrary, "#{__dir__}/mixin/require_library"
     autoload :RescueNode, "#{__dir__}/mixin/rescue_node"
     autoload :SafeAssignment, "#{__dir__}/mixin/safe_assignment"

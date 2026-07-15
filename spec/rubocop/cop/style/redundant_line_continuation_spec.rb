@@ -1091,4 +1091,28 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
         c = [1, 2, 3]
     RUBY
   end
+
+  it 'registers an offense for a line continuation after the last string of a concatenation' do
+    expect_offense(<<~'RUBY')
+      def foo
+        'first' \
+          'second' \
+                   ^ Redundant line continuation.
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      def foo
+        'first' \\
+          'second'#{trailing_whitespace}
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for a line continuation in an endless method definition', :ruby30 do
+    expect_no_offenses(<<~'RUBY')
+      def foo = 1 \
+        + 2
+    RUBY
+  end
 end

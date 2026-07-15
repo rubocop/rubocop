@@ -172,7 +172,7 @@ module RuboCop
             'Indent the right bracket the same as the first position ' \
             'after the preceding left parenthesis.'
           when :parent_hash_key
-            'Indent the right bracket the same as the parent hash key.' \
+            'Indent the right bracket the same as the parent hash key.'
           else
             'Indent the right bracket the same as the start of the line ' \
             'where the left bracket is.'
