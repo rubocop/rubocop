@@ -13,6 +13,22 @@ module RuboCop
           OMIT_MSG = 'Omit parentheses for method calls with arguments.'
           private_constant :OMIT_MSG
 
+          # Above this size, an unverifiable candidate is reported based on
+          # the style logic alone instead of reparsing a huge fragment; in
+          # practice only machine-generated files come near it.
+          MAX_VERIFICATION_FRAGMENT_SIZE = 64 * 1024
+          private_constant :MAX_VERIFICATION_FRAGMENT_SIZE
+
+          def on_investigation_end
+            verified_omit_offenses.each do |node|
+              add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
+                autocorrect(corrector, node)
+              end
+            end
+
+            super
+          end
+
           private
 
           def omit_parentheses(node) # rubocop:disable Metrics/PerceivedComplexity
@@ -26,9 +42,86 @@ module RuboCop
             return if allowed_camel_case_method_call?(node)
             return if allowed_string_interpolation_method_call?(node)
 
-            add_offense(offense_range(node), message: OMIT_MSG) do |corrector|
-              autocorrect(corrector, node)
+            (@pending_omit_offenses ||= []) << node
+          end
+
+          # Each candidate's exact correction is applied to a copy of the
+          # source and verified to parse to the same AST before the offense is
+          # registered, so an omission that would change how the code parses
+          # is never reported or offered. Candidates sharing a reparse scope
+          # are verified together with a single reparse first, falling back to
+          # per-candidate verification only when the batch does not hold.
+          def verified_omit_offenses
+            pending = @pending_omit_offenses || []
+            @pending_omit_offenses = []
+
+            # Group by scope identity: structurally identical definitions in
+            # different places must not share a group.
+            groups = {}.compare_by_identity
+            pending.each { |node| (groups[omission_reparse_scope(node)] ||= []) << node }
+
+            groups.flat_map { |scope, nodes| verified_group(scope, nodes) }
+          end
+
+          def verified_group(scope, nodes)
+            return nodes if verification_too_large?(scope)
+
+            if nodes.one? || !verified_omission?(scope, nodes)
+              nodes.select { |node| verified_omission?(scope, [node]) }
+            else
+              nodes
             end
+          end
+
+          def verification_too_large?(scope)
+            (scope ? scope.source_range.size : processed_source.raw_source.size) >
+              MAX_VERIFICATION_FRAGMENT_SIZE
+          end
+
+          def verified_omission?(scope, nodes)
+            corrector = Corrector.new(processed_source)
+            nodes.each { |node| autocorrect(corrector, node) }
+            corrected = corrector.process
+
+            if scope
+              fragment = corrected_scope_fragment(scope, corrected)
+              omission_parses_equivalently?(scope.source, scope, fragment)
+            else
+              omission_parses_equivalently?(
+                processed_source.raw_source, processed_source.ast, corrected
+              )
+            end
+          rescue ::Parser::ClobberingError
+            false
+          end
+
+          # The corrections' edits are all contained within the scope, so the
+          # corrected fragment can be cut out of the corrected source by
+          # adjusting for the edits' length delta.
+          def corrected_scope_fragment(scope, corrected)
+            delta = corrected.length - processed_source.raw_source.length
+            scope_range = scope.source_range
+
+            corrected[scope_range.begin_pos...(scope_range.end_pos + delta)]
+          end
+
+          def omission_reparse_scope(node)
+            scope = node.each_ancestor(:any_def, :class, :module, :sclass).first
+            scope if scope&.source_range&.contains?(node.source_range)
+          end
+
+          # Both sides are parsed with the original path so that `__FILE__`
+          # resolves identically. When the fragment uses `__LINE__`, both
+          # sides are reparsed so that fragment line offsets do not produce
+          # spurious differences.
+          def omission_parses_equivalently?(original, original_ast, corrected)
+            if original.include?('__LINE__')
+              original_ast = parse(original, processed_source.path).ast
+            end
+
+            rewritten = parse(corrected, processed_source.path)
+
+            rewritten.valid_syntax? && original_ast && rewritten.ast == original_ast
           end
 
           def autocorrect(corrector, node)
