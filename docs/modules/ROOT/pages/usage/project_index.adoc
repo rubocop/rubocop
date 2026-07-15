@@ -88,6 +88,10 @@ when nesting a compact definition (`class Foo::Bar`), the namespace wrapper's ke
 `module`) is resolved from the actual definition of `Foo` instead of guessed, and compacting a
 nested definition is skipped when the outer namespace is not defined elsewhere (the compact form
 would raise `NameError` at load time).
+`Lint/MissingSuper` skips the constructor offense when the class' entire ancestry is resolvable
+in the index and no ancestor defines `initialize` - in that case `super` would only reach the
+no-op `Object#initialize`. This removes the need to list project-local abstract base classes in
+`AllowedParentClasses`.
 
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 

@@ -21,6 +21,13 @@ module RuboCop
       # `AllowedParentClasses` option to specify which classes should be allowed
       # *in addition to* `Object` and `BasicObject`.
       #
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed,
+      # the constructor check additionally consults the project-wide index: if the
+      # class' entire ancestry is resolvable and no ancestor defines `initialize`,
+      # no offense is registered, since `super` would only reach the no-op
+      # `Object#initialize`. Classes whose ancestry contains an unresolvable
+      # superclass or mixin (e.g. one defined in a gem) are still reported.
+      #
       # @example
       #   # bad
       #   class Employee < Person
@@ -83,6 +90,8 @@ module RuboCop
       #   end
       #
       class MissingSuper < Base
+        include ProjectIndexHelp
+
         CONSTRUCTOR_MSG = 'Call `super` to initialize state of the parent class.'
         CALLBACK_MSG    = 'Call `super` to invoke callback defined in the parent class.'
 
@@ -140,7 +149,8 @@ module RuboCop
 
             !allowed_class?(super_class)
           elsif (class_node = node.each_ancestor(:class).first)
-            class_node.parent_class && !allowed_class?(class_node.parent_class)
+            class_node.parent_class && !allowed_class?(class_node.parent_class) &&
+              !index_verified_stateless_ancestry?(class_node)
           else
             false
           end
@@ -152,6 +162,60 @@ module RuboCop
 
         def allowed_classes
           @allowed_classes ||= STATELESS_CLASSES + cop_config.fetch('AllowedParentClasses', [])
+        end
+
+        # With the project index, the offense is skipped when the class' whole ancestry
+        # is resolvable and none of the inherited ancestors defines `initialize` —
+        # `super` would only reach the no-op `Object#initialize`. An unresolvable
+        # superclass or mixin anywhere in the chain (e.g. a class from a gem) means
+        # the ancestry cannot be verified and the offense is kept.
+        def index_verified_stateless_ancestry?(class_node)
+          return false unless project_index
+
+          declaration = resolve_in_index(class_node)
+          return false unless declaration.is_a?(Rubydex::Class)
+
+          ancestors = declaration.ancestors.to_a
+          inherited = ancestors.reject { |ancestor| ancestor.name == declaration.name }
+          return false if inherited.any? { |ancestor| ancestor.member('initialize()') }
+
+          ancestors.all? { |ancestor| resolved_ancestry_definitions?(ancestor) }
+        end
+
+        def resolve_in_index(class_node)
+          identifier = class_node.identifier
+          nesting = if identifier.absolute?
+                      []
+                    else
+                      class_node.each_ancestor(:class, :module)
+                                .map { |ancestor| ancestor.identifier.const_name }.reverse
+                    end
+
+          project_index.resolve_constant(identifier.const_name, nesting)
+        end
+
+        def resolved_ancestry_definitions?(declaration)
+          declaration.definitions.all? do |definition|
+            superclass_reference_resolved?(definition) && mixin_references_resolved?(definition)
+          end
+        end
+
+        def superclass_reference_resolved?(definition)
+          return true unless definition.is_a?(Rubydex::ClassDefinition)
+
+          !definition.superclass.is_a?(Rubydex::UnresolvedConstantReference)
+        end
+
+        def mixin_references_resolved?(definition)
+          return true unless definition.respond_to?(:mixins)
+
+          definition.mixins.none? do |mixin|
+            # `extend` affects the singleton class and cannot introduce an
+            # inherited `initialize`.
+            next false if mixin.is_a?(Rubydex::Extend)
+
+            mixin.constant_reference.is_a?(Rubydex::UnresolvedConstantReference)
+          end
         end
       end
     end

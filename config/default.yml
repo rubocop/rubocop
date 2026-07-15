@@ -2141,7 +2141,7 @@ Lint/MissingSuper:
                   without calls to `super`.
   Enabled: true
   VersionAdded: '0.89'
-  VersionChanged: '1.4'
+  VersionChanged: '<<next>>'
   AllowedParentClasses: []
 
 Lint/MixedCaseRange:
