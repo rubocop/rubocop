@@ -1,0 +1,1 @@
+* [#15474](https://github.com/rubocop/rubocop/pull/15474): Fix false positives for `Style/MethodCallWithArgsParentheses` `omit_parentheses` style by verifying each omission by reparsing before registering an offense. ([@bbatsov][])
