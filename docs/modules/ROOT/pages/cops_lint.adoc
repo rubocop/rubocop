@@ -1818,7 +1818,7 @@ end
 | Yes
 | No
 | 0.29
-| -
+| <<next>>
 |===
 
 Checks for duplicated instance (or singleton) method
@@ -1827,6 +1827,17 @@ definitions.
 NOTE: Aliasing a method to itself is allowed, as it indicates that
 the developer intends to suppress Ruby's method redefinition warnings.
 See https://bugs.ruby-lang.org/issues/13574.
+
+By default the cop can only detect duplicates within a single file.
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed,
+the cop additionally consults the project-wide index and reports methods
+whose duplicate definition lives in another file.
+
+NOTE: The project index does not record whether a definition in another
+file is wrapped in a conditional, so a platform-specific redefinition in
+another file may still be reported. Aliasing the method to itself (see above)
+before redefining marks the redefinition as intentional and is respected
+across files.
 
 [#examples-lintduplicatemethods]
 === Examples

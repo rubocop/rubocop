@@ -1877,6 +1877,7 @@ Lint/DuplicateMethods:
   Description: 'Checks for duplicate method definitions.'
   Enabled: true
   VersionAdded: '0.29'
+  VersionChanged: '<<next>>'
 
 Lint/DuplicateRegexpCharacterClassElement:
   Description: 'Checks for duplicate elements in Regexp character classes.'

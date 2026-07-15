@@ -49,6 +49,28 @@ CROSS_FILE_CONST = :second
 ----
 
 With `UseProjectIndex: true`, RuboCop reports a `Lint/ConstantReassignment` offense referencing the other file.
+
+`Lint/DuplicateMethods` reports methods whose duplicate definition lives in another file.
+For example:
+
+[source,ruby]
+----
+# a.rb
+class Foo
+  def bar; end
+end
+
+# b.rb
+class Foo
+  def bar; end
+end
+----
+
+With `UseProjectIndex: true`, RuboCop reports a `Lint/DuplicateMethods` offense in each file,
+referencing the definition in the other one. Redefining a method from another file on purpose
+(e.g. a monkey patch) can be signaled with the self-alias trick (`alias bar bar` right before
+the redefinition), which also suppresses Ruby's method redefinition warning.
+
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 
 == Notes

@@ -8,7 +8,9 @@
 module RuboCop
   class PendingCopsReporter
     class << self
-      remove_method :warn_on_pending_cops
+      # The self-alias suppresses Ruby's method redefinition warning and marks
+      # the redefinition as intentional for `Lint/DuplicateMethods`.
+      alias warn_on_pending_cops warn_on_pending_cops
       def warn_on_pending_cops(config)
         # noop
       end
