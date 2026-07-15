@@ -73,6 +73,13 @@ Layout/RedundantLineBreak:
 Layout/TrailingWhitespace:
   AllowInHeredoc: false
 
+# The deprecated module itself is under test there; whether the reference
+# resolves depends on rubydex availability, so an inline disable would be
+# flagged as redundant in environments without the index.
+Lint/DeprecatedReference:
+  Exclude:
+    - 'spec/rubocop/cop/mixin/enforce_superclass_spec.rb'
+
 Lint/AmbiguousBlockAssociation:
   Exclude:
     - 'spec/**/*.rb'
