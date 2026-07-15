@@ -10,6 +10,17 @@ module RuboCop
       # the developer intends to suppress Ruby's method redefinition warnings.
       # See https://bugs.ruby-lang.org/issues/13574.
       #
+      # By default the cop can only detect duplicates within a single file.
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed,
+      # the cop additionally consults the project-wide index and reports methods
+      # whose duplicate definition lives in another file.
+      #
+      # NOTE: The project index does not record whether a definition in another
+      # file is wrapped in a conditional, so a platform-specific redefinition in
+      # another file may still be reported. Aliasing the method to itself (see above)
+      # before redefining marks the redefinition as intentional and is respected
+      # across files.
+      #
       # @example
       #
       #   # bad
@@ -119,7 +130,15 @@ module RuboCop
       #   end
       #
       class DuplicateMethods < Base # rubocop:disable Metrics/ClassLength
+        include ProjectIndexHelp
+
         MSG = 'Method `%<method>s` is defined at both %<defined>s and %<current>s.'
+
+        # Method names the cop registers that can be looked up in the project index:
+        # a fully qualified namespace followed by `#` (instance) or `.` (singleton)
+        # and the method name.
+        INDEXABLE_METHOD_NAME =
+          /\A(?<owner>[A-Z]\w*(?:::[A-Z]\w*)*)(?<separator>[#.])(?<name>[^#.]+)\z/.freeze
         RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr
                               delegate def_delegator def_instance_delegator def_delegators
                               def_instance_delegators].freeze
@@ -128,6 +147,14 @@ module RuboCop
           super
           @definitions = {}
           @scopes = Hash.new { |hash, key| hash[key] = [] }
+          @self_aliased = Set.new
+        end
+
+        def on_new_investigation
+          # The self-alias trick declares an intentional redefinition only within
+          # the file that uses it, so the tracked names do not carry over.
+          @self_aliased = Set.new
+          super
         end
 
         def on_def(node)
@@ -157,7 +184,11 @@ module RuboCop
         def on_alias(node)
           name, original_name = method_alias?(node)
           return unless name && original_name
-          return if name == original_name
+
+          if name == original_name
+            track_self_alias(node, name)
+            return
+          end
           return if node.ancestors.any?(&:if_type?)
 
           found_instance_method(node, name)
@@ -208,7 +239,10 @@ module RuboCop
           name, original_name = alias_method?(node)
 
           if name && original_name
-            return if name == original_name
+            if name == original_name
+              track_self_alias(node, name)
+              return
+            end
             return if inside_condition?(node)
 
             found_instance_method(node, name)
@@ -340,27 +374,45 @@ module RuboCop
           found_method(node, "#{singleton_receiver_node.method_name}.#{name}")
         end
 
-        # rubocop:disable Metrics/AbcSize
         def found_method(node, method_name, scope_id: nil)
           key = method_key(node, method_name)
           key = "#{key}@#{scope_id}" if scope_id
           scope = node.each_ancestor(:rescue, :ensure).first&.type
 
           if @definitions.key?(key)
-            if scope && !@scopes[scope].include?(key)
-              @definitions[key] = node
-              @scopes[scope] << key
-              return
-            end
-
-            message = message_for_dup(node, method_name, key)
-
-            add_offense(location(node), message: message)
+            found_redefinition(node, method_name, key, scope)
           else
             @definitions[key] = node
+            check_cross_file_duplicate(node, method_name) if scope_id.nil? && scope.nil?
           end
         end
-        # rubocop:enable Metrics/AbcSize
+
+        def found_redefinition(node, method_name, key, scope)
+          if scope && !@scopes[scope].include?(key)
+            @definitions[key] = node
+            @scopes[scope] << key
+          elsif intentional_cross_file_redefinition?(node, method_name, key)
+            @definitions[key] = node
+          else
+            add_offense(location(node), message: message_for_dup(node, method_name, key))
+          end
+        end
+
+        # The self-alias trick (`alias foo foo` or `alias_method :foo, :foo` right before
+        # a `def`) suppresses Ruby's method redefinition warning, signaling an intentional
+        # redefinition of a method defined in another file.
+        def intentional_cross_file_redefinition?(node, method_name, key)
+          @self_aliased.include?(method_name) &&
+            @definitions[key].source_range.source_buffer.name !=
+              node.source_range.source_buffer.name
+        end
+
+        def track_self_alias(node, name)
+          scope = node.parent_module_name
+          return unless scope
+
+          @self_aliased << "#{humanize_scope(scope)}#{name}"
+        end
 
         def method_key(node, method_name)
           if (ancestor_def = node.each_ancestor(:any_def).first)
@@ -438,6 +490,74 @@ module RuboCop
           range = node.source_range
           path = smart_path(range.source_buffer.name)
           "#{path}:#{range.line}"
+        end
+
+        def check_cross_file_duplicate(node, method_name)
+          return unless project_index
+          return if @self_aliased.include?(method_name)
+          return if node.each_ancestor(:any_def).any?
+          return unless (prior = cross_file_prior_definition(method_name))
+
+          message = format(MSG, method: method_name,
+                                defined: index_source_location(prior),
+                                current: source_location(node))
+          add_offense(location(node), message: message)
+        end
+
+        def cross_file_prior_definition(method_name)
+          return unless (match = INDEXABLE_METHOD_NAME.match(method_name))
+
+          definitions = definitions_in_other_files(
+            indexed_definitions(match[:owner], match[:separator], match[:name])
+          )
+          return if definitions.empty? || cross_file_self_alias_trick?(definitions)
+
+          first_indexed_definition(definitions)
+        end
+
+        def indexed_definitions(owner, separator, name)
+          namespace = separator == '.' ? "#{owner}::<#{owner.split('::').last}>" : owner
+
+          if name.match?(/\A\w+=\z/)
+            # Rubydex indexes `attr_writer :foo` under `foo` rather than `foo=`, so
+            # writer definitions come from both the `foo=` and the `foo` declarations.
+            indexed_declaration_definitions(namespace, name) +
+              indexed_declaration_definitions(namespace, name.delete_suffix('='))
+              .select { |definition| writer_attr_definition?(definition) }
+          else
+            indexed_declaration_definitions(namespace, name).grep_v(Rubydex::AttrWriterDefinition)
+          end
+        end
+
+        def indexed_declaration_definitions(namespace, name)
+          project_index["#{namespace}##{name}()"]&.definitions.to_a
+        end
+
+        def writer_attr_definition?(definition)
+          definition.is_a?(Rubydex::AttrWriterDefinition) ||
+            definition.is_a?(Rubydex::AttrAccessorDefinition)
+        end
+
+        # An alias of the method alongside one of its definitions in another file may be
+        # the self-alias trick marking an intentional redefinition there, so no offense
+        # is registered. A genuine `alias` duplicate is still reported when the alias
+        # itself is inspected.
+        def cross_file_self_alias_trick?(definitions)
+          aliases, others = definitions.partition do |definition|
+            definition.is_a?(Rubydex::MethodAliasDefinition)
+          end
+          alias_paths = aliases.map { |definition| definition.location.to_file_path }
+
+          others.any? { |definition| alias_paths.include?(definition.location.to_file_path) }
+        end
+
+        def first_indexed_definition(definitions)
+          definitions.find { |definition| !definition.is_a?(Rubydex::MethodAliasDefinition) }
+        end
+
+        def index_source_location(definition)
+          location = definition.location
+          "#{smart_path(location.to_file_path)}:#{location.to_display.start_line}"
         end
       end
     end

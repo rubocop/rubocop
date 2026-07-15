@@ -818,6 +818,86 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     end
   end
 
+  it 'does not register an offense when the self-alias trick is used to redefine ' \
+     'a method from another file' do
+    expect_no_offenses(<<~RUBY, 'first.rb')
+      class A
+        def some_method
+          implement 1
+        end
+      end
+    RUBY
+
+    expect_no_offenses(<<~RUBY, 'second.rb')
+      class A
+        alias_method :some_method, :some_method
+        def some_method
+          implement 2
+        end
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when the `alias` self-alias trick is used to redefine ' \
+     'a method from another file' do
+    expect_no_offenses(<<~RUBY, 'first.rb')
+      class A
+        def some_method
+          implement 1
+        end
+      end
+    RUBY
+
+    expect_no_offenses(<<~RUBY, 'second.rb')
+      class A
+        alias some_method some_method
+        def some_method
+          implement 2
+        end
+      end
+    RUBY
+  end
+
+  # rubocop:disable InternalAffairs/ExampleDescription -- `expect_no_offenses` is only the
+  # cross-file setup; the example asserts the offense in the second file.
+  it 'registers an offense when the self-alias trick from a previous file is used ' \
+     'without a redefinition in its own file' do
+    expect_no_offenses(<<~RUBY, 'first.rb')
+      class A
+        alias_method :some_method, :some_method
+        def some_method
+          implement 1
+        end
+      end
+    RUBY
+
+    expect_offense(<<~RUBY, 'second.rb')
+      class A
+        def some_method
+        ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both first.rb:3 and second.rb:2.
+          implement 2
+        end
+      end
+    RUBY
+  end
+  # rubocop:enable InternalAffairs/ExampleDescription
+
+  it 'registers an offense for a same-file duplicate even when the self-alias trick ' \
+     'is used for the same method' do
+    expect_offense(<<~RUBY, 'test.rb')
+      class A
+        alias_method :some_method, :some_method
+        def some_method
+          implement 1
+        end
+        def some_method
+        ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both test.rb:3 and test.rb:6.
+          implement 2
+        end
+      end
+    RUBY
+  end
+
   it_behaves_like('in scope', 'class', 'class A')
   it_behaves_like('in scope', 'module', 'module A')
   it_behaves_like('in scope', 'dynamic class', 'A = Class.new do')
@@ -1681,6 +1761,59 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
         ^^^^^^^^^^^^^ Method `Object#something` is defined at both /no/project/root/foo.rb:1 and /no/project/root/foo.rb:3.
         end
       RUBY
+    end
+  end
+
+  context 'cross-file detection', :project_index do
+    let(:fixture_dir) do
+      File.expand_path('../../../fixtures/cross_file_duplicate_methods', __dir__)
+    end
+
+    def stage_fixture(tmpdir)
+      Dir.glob(File.join(fixture_dir, '*.rb')).each do |file|
+        FileUtils.cp(file, tmpdir)
+      end
+    end
+
+    def cop_offenses(tmpdir)
+      offenses = project_index_offenses(tmpdir)
+
+      offenses.select { |offense| offense['cop_name'] == 'Lint/DuplicateMethods' }
+    end
+
+    def run_with_config(body)
+      Dir.mktmpdir do |tmpdir|
+        stage_fixture(tmpdir)
+        write_rubocop_config(tmpdir, body)
+        cop_offenses(tmpdir)
+      end
+    end
+
+    # The fixture contains:
+    # * `a.rb`/`b.rb` - `A#some_method` defined with `def` in both files
+    # * `c.rb`/`d.rb` - `attr_reader :shared_attr` and `attr_writer :shared_attr` on `B`
+    # * `e.rb`/`f.rb` - `attr_writer :val` and `def val=` on `C`
+    # * `g.rb`/`h.rb` - `def self.build` on `D` in both files
+    # * `i.rb`       - a unique method
+    # * `j.rb`/`k.rb` - `F#patched` redefined in `k.rb` using the self-alias trick
+    it 'reports duplicates defined in another file when UseProjectIndex is enabled' do
+      offenses = run_with_config('AllCops' => { 'UseProjectIndex' => true })
+      messages = offenses.to_h { |o| [File.basename(o['path']), o['message']] }
+
+      expect(offenses.size).to eq(6)
+      expect(messages.keys.sort).to eq(%w[a.rb b.rb e.rb f.rb g.rb h.rb])
+      expect(messages['a.rb']).to include('`A#some_method`', 'a.rb:2', 'b.rb:2')
+      expect(messages['b.rb']).to include('`A#some_method`', 'a.rb:2', 'b.rb:2')
+      expect(messages['e.rb']).to include('`C#val=`', 'e.rb:2', 'f.rb:2')
+      expect(messages['f.rb']).to include('`C#val=`', 'e.rb:2', 'f.rb:2')
+      expect(messages['g.rb']).to include('`D.build`', 'g.rb:2', 'h.rb:2')
+      expect(messages['h.rb']).to include('`D.build`', 'g.rb:2', 'h.rb:2')
+    end
+
+    it 'does not report cross-file duplicates when UseProjectIndex is disabled' do
+      offenses = run_with_config('AllCops' => { 'UseProjectIndex' => false })
+
+      expect(offenses).to be_empty
     end
   end
 end

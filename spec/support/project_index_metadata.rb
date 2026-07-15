@@ -27,7 +27,9 @@ module ProjectIndexSpecHelpers
       options = project_index_runner_options(output_path, cache_root)
       RuboCop::Runner.new(options, config_store).run(paths || [tmpdir])
     end
-    JSON.load_file(output_path).fetch('files').flat_map { |f| f['offenses'] }
+    JSON.load_file(output_path).fetch('files').flat_map do |file|
+      file['offenses'].map { |offense| offense.merge('path' => file['path']) }
+    end
   end
 
   private
