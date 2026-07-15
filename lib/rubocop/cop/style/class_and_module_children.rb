@@ -23,9 +23,14 @@ module RuboCop
       #
       #   Moving from `compact` to `nested` children requires knowledge of whether the
       #   outer parent is a module or a class. Moving from `nested` to `compact` requires
-      #   verification that the outer parent is defined elsewhere. RuboCop does not
-      #   have the knowledge to perform either operation safely and thus requires
+      #   verification that the outer parent is defined elsewhere. By default RuboCop does
+      #   not have the knowledge to perform either operation safely and thus requires
       #   manual oversight.
+      #
+      #   When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed,
+      #   the project-wide index is consulted to resolve whether the outer parent is a
+      #   class or a module, and compacting is skipped when the outer parent is not
+      #   defined elsewhere.
       #
       # @example EnforcedStyle: nested (default)
       #   # bad
@@ -53,6 +58,7 @@ module RuboCop
       class ClassAndModuleChildren < Base
         include Alignment
         include ConfigurableEnforcedStyle
+        include ProjectIndexHelp
         include RangeHelp
         extend AutoCorrector
 
@@ -96,6 +102,21 @@ module RuboCop
         end
 
         def namespace_keyword(node)
+          indexed_namespace_keyword(node) || heuristic_namespace_keyword(node)
+        end
+
+        def indexed_namespace_keyword(node)
+          return nil unless project_index
+
+          declaration = resolve_in_index(node.identifier.namespace.const_name, node)
+
+          case declaration
+          when Rubydex::Class then 'class'
+          when Rubydex::Module then 'module'
+          end
+        end
+
+        def heuristic_namespace_keyword(node)
           class_definition = node.left_sibling&.each_node(:class)&.find do |class_node|
             class_node.identifier == node.identifier.namespace
           end
@@ -121,10 +142,52 @@ module RuboCop
           # Compacting produces a definition whose type's style resolves to `nested`,
           # making autocorrection ping-pong between the two forms.
           return if style_for_kind(node.body.type) == :nested
+          return unless compactible_namespace?(node)
 
           compact_node(corrector, node)
           remove_end(corrector, node.body)
           unindent(corrector, node)
+        end
+
+        # Compacting removes this definition of the namespace, so the result raises
+        # `NameError` at load time unless the namespace is also defined somewhere else.
+        # With the project index this is verified before correcting; without it the
+        # correction is performed regardless (the cop's autocorrection is unsafe).
+        def compactible_namespace?(node)
+          return true unless project_index
+
+          declaration = resolve_in_index(node.identifier.const_name, node)
+          return false unless declaration.is_a?(Rubydex::Namespace)
+
+          declaration.definitions.any? { |definition| definition_elsewhere?(definition, node) }
+        end
+
+        def definition_elsewhere?(definition, node)
+          location = definition.location
+          return true unless location.uri.start_with?(FILE_URI_PREFIX)
+
+          !same_file?(location.to_file_path, processed_source.file_path) ||
+            location.to_display.start_line != node.first_line
+        rescue StandardError
+          # A path that cannot be converted or compared cannot prove the
+          # namespace is defined elsewhere; err on not correcting.
+          false
+        end
+
+        def same_file?(path, other)
+          return true if File.identical?(path, other)
+
+          normalized = [path, other].map { |p| File.expand_path(p).tr('\\', '/') }
+          normalized.uniq.one? || (Platform.windows? && normalized[0].casecmp?(normalized[1]))
+        end
+
+        def resolve_in_index(const_name, node)
+          project_index.resolve_constant(const_name, lexical_nesting(node))
+        end
+
+        def lexical_nesting(node)
+          node.each_ancestor(:class, :module).map { |ancestor| ancestor.identifier.const_name }
+                                             .reverse
         end
 
         def compact_node(corrector, node)

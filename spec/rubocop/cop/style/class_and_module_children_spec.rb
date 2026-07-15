@@ -828,42 +828,6 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         expect_no_corrections
       end
     end
-
-    context 'EnforcedStyle: compact + EnforcedStyleForModules: nested' do
-      let(:cop_config) do
-        { 'EnforcedStyle' => 'compact', 'EnforcedStyleForModules' => 'nested' }
-      end
-
-      it 'registers an offense for a compact module and autocorrects it' do
-        expect_offense(<<~RUBY)
-          module FooModule::BarModule
-                 ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          module FooModule
-            module BarModule
-            end
-          end
-        RUBY
-      end
-
-      it 'registers an offense for classes with nested children' do
-        expect_offense(<<~RUBY)
-          class FooClass
-                ^^^^^^^^ Use compact module/class definition instead of nested style.
-            class BarClass
-            end
-          end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          class FooClass::BarClass
-          end
-        RUBY
-      end
-    end
   end
 
   context 'when EnforcedStyleForModules is set' do
@@ -908,6 +872,225 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
           module FooModule::BarModule
             def method_example
             end
+          end
+        RUBY
+      end
+    end
+
+    context 'EnforcedStyle: compact + EnforcedStyleForModules: nested' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'compact', 'EnforcedStyleForModules' => 'nested' }
+      end
+
+      it 'registers an offense for a compact module and autocorrects it' do
+        expect_offense(<<~RUBY)
+          module FooModule::BarModule
+                 ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense for classes with nested children' do
+        expect_offense(<<~RUBY)
+          class FooClass
+                ^^^^^^^^ Use compact module/class definition instead of nested style.
+            class BarClass
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class FooClass::BarClass
+          end
+        RUBY
+      end
+    end
+  end
+
+  context 'with a project index', :project_index do
+    def build_index(sources)
+      graph = Rubydex::Graph.new
+      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+      graph.resolve
+      graph
+    end
+
+    context 'EnforcedStyle: nested' do
+      let(:cop_config) { { 'EnforcedStyle' => 'nested' } }
+
+      it 'nests with the `class` keyword when the index resolves the namespace to a class' do
+        cop.project_index = build_index('file:///lib/foo_class.rb' => "class FooClass\nend\n")
+
+        expect_offense(<<~RUBY)
+          class FooClass::BarClass
+                ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class FooClass
+            class BarClass
+            end
+          end
+        RUBY
+      end
+
+      it 'nests with the `module` keyword when the index resolves the namespace to a module' do
+        cop.project_index = build_index('file:///lib/foo_mod.rb' => "module FooModule\nend\n")
+
+        expect_offense(<<~RUBY)
+          module FooModule::BarModule
+                 ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+      end
+
+      it 'resolves the namespace through the lexical nesting' do
+        cop.project_index = build_index(
+          'file:///lib/wrap.rb' => "module Wrap\n  class FooClass\n  end\nend\n"
+        )
+
+        expect_offense(<<~RUBY)
+          module Wrap
+            class Other
+            end
+            class FooClass::BarClass
+                  ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module Wrap
+            class Other
+            end
+            class FooClass
+                class BarClass
+                end
+            end
+          end
+        RUBY
+      end
+
+      it 'falls back to the module keyword when the namespace is not in the index' do
+        cop.project_index = build_index('file:///lib/unrelated.rb' => "class Unrelated\nend\n")
+
+        expect_offense(<<~RUBY)
+          class FooClass::BarClass
+                ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooClass
+            class BarClass
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'EnforcedStyle: compact' do
+      let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
+
+      # Platform-realistic paths: the cop compares indexed definition paths
+      # with the inspected file's path, and drive-less fake paths behave
+      # differently on Windows.
+      let(:current_path) { File.expand_path('current.rb') }
+      let(:other_path) { File.expand_path('other.rb') }
+
+      def file_uri(path)
+        path.start_with?('/') ? "file://#{path}" : "file:///#{path}"
+      end
+
+      it 'does not autocorrect when the namespace is not defined elsewhere' do
+        source = <<~RUBY
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+        cop.project_index = build_index(file_uri(current_path) => source)
+
+        expect_offense(<<~RUBY, current_path)
+          module FooModule
+                 ^^^^^^^^^ Use compact module/class definition instead of nested style.
+            module BarModule
+            end
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'autocorrects when the namespace is defined in another file' do
+        source = <<~RUBY
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+        cop.project_index = build_index(
+          'file:///lib/current.rb' => source,
+          'file:///lib/other.rb' => "module FooModule\nend\n"
+        )
+
+        expect_offense(<<~RUBY, current_path)
+          module FooModule
+                 ^^^^^^^^^ Use compact module/class definition instead of nested style.
+            module BarModule
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooModule::BarModule
+          end
+        RUBY
+      end
+
+      it 'autocorrects when the namespace is also defined elsewhere in the same file' do
+        source = <<~RUBY
+          module FooModule
+          end
+
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+        cop.project_index = build_index(file_uri(current_path) => source)
+
+        expect_offense(<<~RUBY, current_path)
+          module FooModule
+          end
+
+          module FooModule
+                 ^^^^^^^^^ Use compact module/class definition instead of nested style.
+            module BarModule
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooModule
+          end
+
+          module FooModule::BarModule
           end
         RUBY
       end
