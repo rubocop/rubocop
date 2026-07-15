@@ -865,6 +865,36 @@ RSpec.describe RuboCop::Cop::Style::RedundantParentheses, :config do
     RUBY
   end
 
+  it 'registers offenses in structurally identical definitions in different classes' do
+    expect_offense(<<~RUBY)
+      class A
+        def same
+          (foo)
+          ^^^^^ Don't use parentheses around a method call.
+        end
+      end
+      class B
+        def same
+          (foo)
+          ^^^^^ Don't use parentheses around a method call.
+        end
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+      class A
+        def same
+          foo
+        end
+      end
+      class B
+        def same
+          foo
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offense for parens around last expressions in method body' do
     expect_offense(<<~RUBY)
       def x

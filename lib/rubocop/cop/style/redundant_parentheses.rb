@@ -15,6 +15,7 @@ module RuboCop
       #
       class RedundantParentheses < Base # rubocop:disable Metrics/ClassLength
         include Parentheses
+        include ReparsedEquivalence
         extend AutoCorrector
 
         ALLOWED_NODE_TYPES = %i[or send splat kwsplat].freeze
@@ -30,10 +31,31 @@ module RuboCop
         # @!method allowed_pin_operator?(node)
         def_node_matcher :allowed_pin_operator?, '^(pin (begin !{lvar ivar cvar gvar}))'
 
+        # Above this size, an unverifiable candidate is reported based on the
+        # message logic alone (the pre-verification behavior) instead of
+        # reparsing a huge fragment per candidate; in practice only
+        # machine-generated files come near it.
+        MAX_VERIFICATION_FRAGMENT_SIZE = 64 * 1024
+
+        def on_new_investigation
+          @pending_offenses = []
+          super
+        end
+
         def on_begin(node)
           return if !parentheses?(node) || parens_allowed?(node) || ignore_syntax?(node)
 
           check(node)
+        end
+
+        def on_investigation_end
+          verified_offenses.each do |node, message|
+            add_offense(node, message: message) do |corrector|
+              ParenthesesCorrector.correct(corrector, node)
+            end
+          end
+
+          super
         end
 
         private
@@ -44,7 +66,6 @@ module RuboCop
 
         def parens_allowed?(node)
           empty_parentheses?(node) ||
-            first_arg_begins_with_hash_literal?(node) ||
             rescue?(node) ||
             in_pattern_matching_in_method_argument?(node) ||
             allowed_pin_operator?(node) ||
@@ -111,28 +132,11 @@ module RuboCop
           node.children.empty?
         end
 
-        def first_arg_begins_with_hash_literal?(node)
-          # Don't flag `method ({key: value})` or `method ({key: value}.method)`
-          hash_literal = method_chain_begins_with_hash_literal(node.children.first)
-          if (root_method = node.each_ancestor(:call).to_a.last)
-            parenthesized = root_method.parenthesized_call?
-          end
-          hash_literal && first_argument?(node) && !parentheses?(hash_literal) && !parenthesized
-        end
-
         def in_pattern_matching_in_method_argument?(begin_node)
           return false unless begin_node.parent&.call_type?
           return false unless (node = begin_node.children.first)
 
           target_ruby_version <= 2.7 ? node.match_pattern_type? : node.match_pattern_p_type?
-        end
-
-        def method_chain_begins_with_hash_literal(node)
-          return if node.nil?
-          return node if node.hash_type?
-          return unless node.send_type?
-
-          method_chain_begins_with_hash_literal(node.children.first)
         end
 
         def check(begin_node)
@@ -231,8 +235,6 @@ module RuboCop
           return check_unary(begin_node, node) if node.unary_operation?
 
           return unless method_call_with_redundant_parentheses?(begin_node, node)
-          return if call_chain_starts_with_int?(begin_node, node) ||
-                    do_end_block_in_method_chain?(begin_node, node)
 
           offense(begin_node, 'a method call')
         end
@@ -247,9 +249,93 @@ module RuboCop
         end
 
         def offense(node, msg)
-          add_offense(node, message: "Don't use parentheses around #{msg}.") do |corrector|
-            ParenthesesCorrector.correct(corrector, node)
+          @pending_offenses << [node, "Don't use parentheses around #{msg}."]
+        end
+
+        # Each candidate's exact correction is applied to a copy of the source
+        # and verified to parse to the same AST (modulo the removed grouping)
+        # before the offense is registered, so redundancy never depends on
+        # hand-maintained knowledge of Ruby's grammar. Candidates sharing a
+        # reparse scope are verified together with a single reparse first,
+        # falling back to per-candidate verification only when the batch does
+        # not hold.
+        def verified_offenses
+          # Group by scope identity: structurally identical definitions in
+          # different places must not share a group.
+          groups = {}.compare_by_identity
+          @pending_offenses.each do |offense|
+            (groups[reparse_scope(offense.first)] ||= []) << offense
           end
+
+          groups.flat_map do |scope, offenses|
+            if offenses.one? || !batch_verified?(scope, offenses)
+              offenses.select { |node, _| verified_correction?(scope, node) }
+            else
+              offenses
+            end
+          end
+        end
+
+        # Method definitions and class/module bodies neither capture outer
+        # local variables nor continue an outer expression, so they parse
+        # standalone. Blocks and single statements do not qualify: an outer
+        # local would reparse as a method call.
+        def reparse_scope(node)
+          scope = node.each_ancestor(:any_def, :class, :module, :sclass).first
+          scope if scope&.source_range&.contains?(node.source_range)
+        end
+
+        def batch_verified?(scope, offenses)
+          corrector = Corrector.new(processed_source)
+          offenses.map(&:first).each { |node| ParenthesesCorrector.correct(corrector, node) }
+
+          corrected_source_verified?(scope, corrector.process)
+        rescue ::Parser::ClobberingError
+          false
+        end
+
+        def verified_correction?(scope, node)
+          return true if scope && scope.source_range.size > MAX_VERIFICATION_FRAGMENT_SIZE
+
+          corrector = Corrector.new(processed_source)
+          ParenthesesCorrector.correct(corrector, node)
+
+          corrected_source_verified?(scope, corrector.process)
+        end
+
+        # The correction's edits are all contained within the scope, so the
+        # corrected fragment can be cut out of the corrected source by
+        # adjusting for the edits' length delta.
+        def corrected_source_verified?(scope, corrected)
+          if scope
+            delta = corrected.length - processed_source.raw_source.length
+            scope_range = scope.source_range
+            fragment = corrected[scope_range.begin_pos...(scope_range.end_pos + delta)]
+
+            parses_fragment_identically_ignoring_grouping?(scope, fragment)
+          else
+            parses_identically_ignoring_grouping?(corrected)
+          end
+        end
+
+        # `&&` and `||` cannot be redefined, so regrouping a chain of the same
+        # operator (`x && (y && z)` to `x && y && z`) is semantically
+        # transparent even though the trees differ; normalize both to left
+        # association before comparing.
+        def collapse_groupings(node)
+          collapsed = super
+          return collapsed unless collapsed.is_a?(::Parser::AST::Node)
+
+          left, right = collapsed.children
+          if collapsed.type?(:and, :or) &&
+             right.is_a?(::Parser::AST::Node) && right.type == collapsed.type
+            inner_left, inner_right = right.children
+            collapsed = collapse_groupings(
+              collapsed.updated(nil, [collapsed.updated(nil, [left, inner_left]), inner_right])
+            )
+          end
+
+          collapsed
         end
 
         def suspect_unary?(node)
@@ -261,13 +347,10 @@ module RuboCop
         end
 
         def disallowed_literal?(begin_node, node)
-          if node.range_type?
-            return false unless (parent = begin_node.parent)
+          return true unless node.range_type?
+          return false unless (parent = begin_node.parent)
 
-            parent.begin_type? && parent.children.one?
-          else
-            !raised_to_power_negative_numeric?(begin_node, node)
-          end
+          parent.begin_type? && parent.children.one?
         end
 
         # rubocop:disable Metrics/CyclomaticComplexity
@@ -289,17 +372,6 @@ module RuboCop
           end
 
           node.any_match_pattern_type? && node.each_ancestor.none?(&:operator_keyword?)
-        end
-
-        def raised_to_power_negative_numeric?(begin_node, node)
-          return false unless node.numeric_type?
-
-          next_sibling = begin_node.right_sibling
-          return false unless next_sibling
-
-          base_value = node.children.first
-
-          base_value.negative? && next_sibling == :**
         end
 
         def keyword_with_redundant_parentheses?(node)
@@ -332,30 +404,6 @@ module RuboCop
 
         def only_begin_arg?(args)
           args.one? && args.first&.begin_type?
-        end
-
-        def first_argument?(node)
-          return true if first_call_argument?(node)
-
-          node.each_ancestor.any? { |ancestor| first_argument?(ancestor) }
-        end
-
-        # @!method first_call_argument?(node)
-        def_node_matcher :first_call_argument?, <<~PATTERN
-          {^(call _ _ equal?(%0) ...)
-           ^({super yield} equal?(%0) ...)}
-        PATTERN
-
-        def call_chain_starts_with_int?(begin_node, send_node)
-          recv = first_part_of_call_chain(send_node)
-          recv&.int_type? && (parent = begin_node.parent) &&
-            parent.send_type? && (parent.method?(:-@) || parent.method?(:+@))
-        end
-
-        def do_end_block_in_method_chain?(begin_node, node)
-          return false unless (block = node.each_descendant(:any_block).first)
-
-          block.keywords? && begin_node.each_ancestor(:call).any?
         end
       end
     end
