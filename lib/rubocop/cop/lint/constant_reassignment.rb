@@ -209,20 +209,11 @@ module RuboCop
         def report_cross_file_collision(node, fully_qualified_name, display_name)
           return unless project_index
           return unless (declaration = project_index[fully_qualified_name.delete_prefix('::')])
-          return unless (prior = prior_definition_in_other_file(declaration))
+          return unless (prior = prior_definition_in_other_file(declaration.definitions))
 
           msg = format(CROSS_FILE_MSG, constant: display_name, path: prior.location.to_file_path)
 
           add_offense(node, message: msg)
-        end
-
-        def prior_definition_in_other_file(declaration)
-          current = processed_source.file_path
-
-          declaration.definitions.find do |definition|
-            other = definition.location.to_file_path
-            !File.identical?(other, current)
-          end
         end
       end
     end
