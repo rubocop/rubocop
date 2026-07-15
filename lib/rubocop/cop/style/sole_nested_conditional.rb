@@ -57,11 +57,10 @@ module RuboCop
         end
 
         def on_if(node)
-          return if node.ternary? || node.else? || node.elsif?
+          return unless offending_conditional?(node)
 
           if_branch = node.if_branch
-          return if use_variable_assignment_in_condition?(node.condition, if_branch)
-          return unless offending_branch?(node, if_branch)
+          return unless correction_parses?(node, if_branch)
 
           message = format(MSG, conditional_type: node.keyword)
           add_offense(if_branch.loc.keyword, message: message) do |corrector|
@@ -73,6 +72,29 @@ module RuboCop
         end
 
         private
+
+        def offending_conditional?(node)
+          return false if node.ternary? || node.else? || node.elsif?
+
+          if_branch = node.if_branch
+          return false if use_variable_assignment_in_condition?(node.condition, if_branch)
+
+          offending_branch?(node, if_branch)
+        end
+
+        # Merging the conditionals intentionally produces a different AST, so
+        # full equivalence cannot be checked, but the corrected source must at
+        # least remain parseable: the exact correction is applied to a copy of
+        # the source and reparsed before the offense is registered, which
+        # suppresses the entire produces-invalid-code bug class.
+        def correction_parses?(node, if_branch)
+          corrector = Corrector.new(processed_source)
+          autocorrect(corrector, node, if_branch)
+
+          parse(corrector.process, processed_source.path).valid_syntax?
+        rescue ::Parser::ClobberingError
+          false
+        end
 
         def use_variable_assignment_in_condition?(condition, if_branch)
           assigned_variables = assigned_variables(condition)
