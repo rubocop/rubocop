@@ -1,0 +1,1 @@
+* [#15452](https://github.com/rubocop/rubocop/pull/15452): Fix a false positive for `Layout/HashAlignment` when using `EnforcedHashRocketStyle: table` and a hash key spans multiple lines. ([@dduugg][])
