@@ -83,6 +83,11 @@ a parent class defined elsewhere in the project.
 `Style/StaticClass` does not report classes that are subclassed anywhere in the project.
 `Naming/PredicatePrefix` and `Naming/AccessorMethodName` do not suggest renaming methods
 that override a method defined by an ancestor elsewhere in the project.
+`Style/ClassAndModuleChildren` uses the index to make its (unsafe) autocorrection more reliable:
+when nesting a compact definition (`class Foo::Bar`), the namespace wrapper's keyword (`class` or
+`module`) is resolved from the actual definition of `Foo` instead of guessed, and compacting a
+nested definition is skipped when the outer namespace is not defined elsewhere (the compact form
+would raise `NameError` at load time).
 
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 

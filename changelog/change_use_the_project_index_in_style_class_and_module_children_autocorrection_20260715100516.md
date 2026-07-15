@@ -1,0 +1,1 @@
+* [#15463](https://github.com/rubocop/rubocop/pull/15463): Change `Style/ClassAndModuleChildren` autocorrection to consult the project index for the namespace kind and definition sites when `UseProjectIndex` is enabled. ([@bbatsov][])

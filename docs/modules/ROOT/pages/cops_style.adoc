@@ -1848,7 +1848,7 @@ That's a good use case of a `?` literal so it doesn't count as an offense.
 | Yes
 | Always (Unsafe)
 | 0.19
-| 1.74
+| <<next>>
 |===
 
 Checks that namespaced classes and modules are defined with a consistent style.
@@ -1875,9 +1875,14 @@ Autocorrection is unsafe.
 
 Moving from `compact` to `nested` children requires knowledge of whether the
 outer parent is a module or a class. Moving from `nested` to `compact` requires
-verification that the outer parent is defined elsewhere. RuboCop does not
-have the knowledge to perform either operation safely and thus requires
+verification that the outer parent is defined elsewhere. By default RuboCop does
+not have the knowledge to perform either operation safely and thus requires
 manual oversight.
+
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed,
+the project-wide index is consulted to resolve whether the outer parent is a
+class or a module, and compacting is skipped when the outer parent is not
+defined elsewhere.
 
 [#examples-styleclassandmodulechildren]
 === Examples
