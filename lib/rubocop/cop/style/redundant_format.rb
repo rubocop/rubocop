@@ -182,7 +182,7 @@ module RuboCop
         def unknown_variable_width?(sequence, arguments)
           return false unless sequence.variable_width?
 
-          argument = arguments[sequence.variable_width_argument_number - 1]
+          argument = positional_argument(arguments, sequence.variable_width_argument_number)
           argument.nil? || !numeric?(argument)
         end
 
@@ -195,7 +195,7 @@ module RuboCop
             arguments.delete_at(sequence.variable_width_argument_number - 1)
             arguments.shift
           elsif sequence.arg_number
-            arguments[sequence.arg_number.to_i - 1]
+            positional_argument(arguments, sequence.arg_number.to_i)
           else
             arguments.shift
           end
@@ -218,6 +218,15 @@ module RuboCop
           else
             false
           end
+        end
+
+        # `Array#[]` raises `RangeError` for an index beyond the 64-bit range
+        # (e.g. `format('%*9999999999999999999999$d', 1)`) instead of returning `nil`,
+        # so the index needs to be checked before accessing the array.
+        def positional_argument(arguments, number)
+          index = number - 1
+
+          arguments[index] if index < arguments.size
         end
 
         def numeric?(argument)
