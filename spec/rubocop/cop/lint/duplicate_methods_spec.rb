@@ -816,6 +816,51 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
         end
       RUBY
     end
+
+    context 'cross-file detection', :project_index do
+      let(:fixture_dir) do
+        File.expand_path('../../../fixtures/cross_file_duplicate_methods', __dir__)
+      end
+
+      def stage_fixture(tmpdir)
+        %w[a.rb b.rb c.rb d.rb e.rb].each do |name|
+          FileUtils.cp(File.join(fixture_dir, name), File.join(tmpdir, name))
+        end
+      end
+
+      def cop_offenses(tmpdir)
+        offenses = project_index_offenses(tmpdir)
+
+        offenses.select { |offense| offense['cop_name'] == 'Lint/DuplicateMethods' }
+      end
+
+      def run_with_config(body)
+        Dir.mktmpdir do |tmpdir|
+          stage_fixture(tmpdir)
+          write_rubocop_config(tmpdir, body)
+          cop_offenses(tmpdir)
+        end
+      end
+
+      it 'reports a duplicate method defined in another file when UseProjectIndex is enabled' do
+        offenses = run_with_config(
+          'AllCops' => { 'UseProjectIndex' => true },
+          'Lint/DuplicateMethods' => { 'Enabled' => true }
+        )
+
+        expect(offenses).not_to be_empty
+        expect(offenses.first['message']).to include('a.rb:4', 'b.rb:4')
+      end
+
+      it 'does not report a cross-file duplicate when UseProjectIndex is disabled' do
+        offenses = run_with_config(
+          'AllCops' => { 'UseProjectIndex' => false },
+          'Lint/DuplicateMethods' => { 'Enabled' => true }
+        )
+
+        expect(offenses).to be_empty
+      end
+    end
   end
 
   it_behaves_like('in scope', 'class', 'class A')
