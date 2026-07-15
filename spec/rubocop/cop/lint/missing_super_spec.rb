@@ -258,4 +258,149 @@ RSpec.describe RuboCop::Cop::Lint::MissingSuper, :config do
       RUBY
     end
   end
+
+  context 'with a project index', :project_index do
+    def build_index(sources)
+      graph = Rubydex::Graph.new
+      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+      graph.resolve
+      graph
+    end
+
+    def index_with_current(sources = {})
+      build_index(sources.merge('file:///lib/current.rb' => current_source))
+    end
+
+    let(:current_source) do
+      <<~RUBY
+        class Child < Parent
+          def initialize
+            @foo = 1
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when no ancestor defines `initialize`' do
+      cop.project_index = index_with_current('file:///lib/parent.rb' => "class Parent\nend\n")
+
+      expect_no_offenses(current_source, '/lib/current.rb')
+    end
+
+    it 'registers an offense when the parent defines `initialize`' do
+      cop.project_index = index_with_current(
+        'file:///lib/parent.rb' => "class Parent\n  def initialize\n  end\nend\n"
+      )
+
+      expect_offense(<<~RUBY, '/lib/current.rb')
+        class Child < Parent
+          def initialize
+          ^^^^^^^^^^^^^^ Call `super` to initialize state of the parent class.
+            @foo = 1
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when a grandparent defines `initialize`' do
+      cop.project_index = index_with_current(
+        'file:///lib/parent.rb' => "class Parent < GrandParent\nend\n",
+        'file:///lib/grand_parent.rb' => "class GrandParent\n  def initialize\n  end\nend\n"
+      )
+
+      expect_offense(<<~RUBY, '/lib/current.rb')
+        class Child < Parent
+          def initialize
+          ^^^^^^^^^^^^^^ Call `super` to initialize state of the parent class.
+            @foo = 1
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when an included module defines `initialize`' do
+      cop.project_index = index_with_current(
+        'file:///lib/parent.rb' => "class Parent\n  include Initializable\nend\n",
+        'file:///lib/initializable.rb' => "module Initializable\n  def initialize\n  end\nend\n"
+      )
+
+      expect_offense(<<~RUBY, '/lib/current.rb')
+        class Child < Parent
+          def initialize
+          ^^^^^^^^^^^^^^ Call `super` to initialize state of the parent class.
+            @foo = 1
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the parent is not in the index' do
+      cop.project_index = index_with_current
+
+      expect_offense(<<~RUBY, '/lib/current.rb')
+        class Child < Parent
+          def initialize
+          ^^^^^^^^^^^^^^ Call `super` to initialize state of the parent class.
+            @foo = 1
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the ancestry contains an unresolvable superclass' do
+      cop.project_index = index_with_current(
+        'file:///lib/parent.rb' => "class Parent < SomeGemClass\nend\n"
+      )
+
+      expect_offense(<<~RUBY, '/lib/current.rb')
+        class Child < Parent
+          def initialize
+          ^^^^^^^^^^^^^^ Call `super` to initialize state of the parent class.
+            @foo = 1
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the ancestry contains an unresolvable include' do
+      cop.project_index = index_with_current(
+        'file:///lib/parent.rb' => "class Parent\n  include SomeGemModule\nend\n"
+      )
+
+      expect_offense(<<~RUBY, '/lib/current.rb')
+        class Child < Parent
+          def initialize
+          ^^^^^^^^^^^^^^ Call `super` to initialize state of the parent class.
+            @foo = 1
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the ancestry contains only an unresolvable `extend`' do
+      cop.project_index = index_with_current(
+        'file:///lib/parent.rb' => "class Parent\n  extend SomeGemModule\nend\n"
+      )
+
+      expect_no_offenses(current_source, '/lib/current.rb')
+    end
+
+    it 'resolves the parent through the lexical nesting' do
+      source = <<~RUBY
+        module Wrap
+          class Child < Parent
+            def initialize
+              @foo = 1
+            end
+          end
+        end
+      RUBY
+      cop.project_index = build_index(
+        'file:///lib/current.rb' => source,
+        'file:///lib/parent.rb' => "module Wrap\n  class Parent\n  end\nend\n"
+      )
+
+      expect_no_offenses(source, '/lib/current.rb')
+    end
+  end
 end
