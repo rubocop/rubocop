@@ -2644,6 +2644,18 @@ Lint/UnusedMethodArgument:
   NotImplementedExceptions:
     - NotImplementedError
 
+Lint/UnusedPrivateMethod:
+  Description: >-
+                  Checks for private instance methods that are not referenced
+                  anywhere in the project. Requires `AllCops/UseProjectIndex`
+                  to be enabled.
+  # This cop is disabled by default because symbol-based references from other
+  # files (e.g. Rails callbacks declared in a concern) cannot be detected and
+  # would be reported as false positives. It is intended for occasional
+  # dead-code sweeps rather than permanent enforcement.
+  Enabled: false
+  VersionAdded: '<<next>>'
+
 Lint/UriEscapeUnescape:
   Description: >-
                  `URI.escape` method is obsolete and should not be used. Instead, use

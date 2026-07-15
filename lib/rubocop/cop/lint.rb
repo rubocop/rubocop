@@ -146,6 +146,7 @@ module RuboCop
       register_cop :UnreachablePatternBranch, "#{__dir__}/lint/unreachable_pattern_branch"
       register_cop :UnusedBlockArgument, "#{__dir__}/lint/unused_block_argument"
       register_cop :UnusedMethodArgument, "#{__dir__}/lint/unused_method_argument"
+      register_cop :UnusedPrivateMethod, "#{__dir__}/lint/unused_private_method"
       register_cop :UriEscapeUnescape, "#{__dir__}/lint/uri_escape_unescape"
       register_cop :UriRegexp, "#{__dir__}/lint/uri_regexp"
       register_cop :UselessAccessModifier, "#{__dir__}/lint/useless_access_modifier"
