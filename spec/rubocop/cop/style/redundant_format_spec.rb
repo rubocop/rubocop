@@ -247,6 +247,12 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
               #{method}('%2$s %1$i', 'abcd', '5')
             RUBY
           end
+
+          it 'does not register an offense when the argument number is beyond the 64-bit range' do
+            expect_no_offenses(<<~RUBY)
+              #{method}('%999999999999999999999999999999999999999999999999999999999999$d', 1)
+            RUBY
+          end
         end
 
         context 'with `*` in specifier' do
@@ -314,6 +320,13 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
           it 'does not register an offense when the positional variable width argument is missing' do
             expect_no_offenses(<<~RUBY)
               #{method}('%*9$d', 1)
+            RUBY
+          end
+
+          it 'does not register an offense when the positional variable width argument number ' \
+             'is beyond the 64-bit range' do
+            expect_no_offenses(<<~RUBY)
+              #{method}('%*999999999999999999999999999999999999999999999999999999999999$d', 1)
             RUBY
           end
 
