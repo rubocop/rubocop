@@ -1,0 +1,1 @@
+* [#15321](https://github.com/rubocop/rubocop/issues/15321): Fix `Style/ClassAndModuleChildren` ignoring `EnforcedStyleForClasses` and `EnforcedStyleForModules`, and skip autocorrection when mixed per-type styles make the result ambiguous. ([@bbatsov][])

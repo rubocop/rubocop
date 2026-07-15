@@ -60,7 +60,7 @@ module RuboCop
         COMPACT_MSG = 'Use compact module/class definition instead of nested style.'
 
         def on_class(node)
-          return if node.parent_class && style != :nested
+          return if node.parent_class && style_for_classes != :nested
 
           check_style(node, node.body, style_for_classes)
         end
@@ -72,7 +72,7 @@ module RuboCop
         private
 
         def nest_or_compact(corrector, node)
-          style = node.class_type? ? style_for_classes : style_for_modules
+          style = style_for_kind(node.type)
 
           if style == :nested
             nest_definition(corrector, node)
@@ -82,21 +82,25 @@ module RuboCop
         end
 
         def nest_definition(corrector, node)
+          keyword = namespace_keyword(node)
+          # A namespace wrapper whose style resolves to `compact` would itself violate
+          # that style, making autocorrection ping-pong between the two forms.
+          return if style_for_kind(keyword.to_sym) == :compact
+
           padding = indentation(node) + leading_spaces(node)
           padding_for_trailing_end = padding.sub(' ' * node.loc.end.column, '')
 
-          replace_namespace_keyword(corrector, node)
+          corrector.replace(node.loc.keyword, keyword)
           split_on_double_colon(corrector, node, padding)
           add_trailing_end(corrector, node, padding_for_trailing_end)
         end
 
-        def replace_namespace_keyword(corrector, node)
+        def namespace_keyword(node)
           class_definition = node.left_sibling&.each_node(:class)&.find do |class_node|
             class_node.identifier == node.identifier.namespace
           end
-          namespace_keyword = class_definition ? 'class' : 'module'
 
-          corrector.replace(node.loc.keyword, namespace_keyword)
+          class_definition ? 'class' : 'module'
         end
 
         def split_on_double_colon(corrector, node, padding)
@@ -114,6 +118,10 @@ module RuboCop
         end
 
         def compact_definition(corrector, node)
+          # Compacting produces a definition whose type's style resolves to `nested`,
+          # making autocorrection ping-pong between the two forms.
+          return if style_for_kind(node.body.type) == :nested
+
           compact_node(corrector, node)
           remove_end(corrector, node.body)
           unindent(corrector, node)
@@ -219,7 +227,7 @@ module RuboCop
         end
 
         def autocorrect(corrector, node)
-          return if node.class_type? && node.parent_class && style != :nested
+          return if node.class_type? && node.parent_class && style_for_classes != :nested
 
           nest_or_compact(corrector, node)
         end
@@ -232,12 +240,16 @@ module RuboCop
           node.identifier.source.include?('::')
         end
 
+        def style_for_kind(kind)
+          kind == :class ? style_for_classes : style_for_modules
+        end
+
         def style_for_classes
-          cop_config['EnforcedStyleForClasses'] || style
+          cop_config['EnforcedStyleForClasses']&.to_sym || style
         end
 
         def style_for_modules
-          cop_config['EnforcedStyleForModules'] || style
+          cop_config['EnforcedStyleForModules']&.to_sym || style
         end
       end
     end
