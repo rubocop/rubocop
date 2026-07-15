@@ -754,6 +754,116 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
         RUBY
       end
     end
+
+    context 'EnforcedStyle: compact + EnforcedStyleForClasses: nested' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'compact', 'EnforcedStyleForClasses' => 'nested' }
+      end
+
+      it 'registers an offense for a compact class but does not autocorrect it when ' \
+         'the module style would immediately re-compact the namespace wrapper' do
+        expect_offense(<<~RUBY)
+          class FooClass::BarClass
+                ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense for a compact class with a superclass' do
+        expect_offense(<<~RUBY)
+          class FooClass::BarClass < Super
+                ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'autocorrects a compact class when the namespace is known to be a class' do
+        expect_offense(<<~RUBY)
+          class FooClass
+          end
+          class FooClass::BarClass
+                ^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class FooClass
+          end
+          class FooClass
+            class BarClass
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense for modules with nested children' do
+        expect_offense(<<~RUBY)
+          module FooModule
+                 ^^^^^^^^^ Use compact module/class definition instead of nested style.
+            module BarModule
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooModule::BarModule
+          end
+        RUBY
+      end
+
+      it 'registers an offense for a module with a nested class but does not autocorrect it ' \
+         'when the class style would immediately re-nest the compacted definition' do
+        expect_offense(<<~RUBY)
+          module FooModule
+                 ^^^^^^^^^ Use compact module/class definition instead of nested style.
+            class BarClass
+            end
+          end
+        RUBY
+
+        expect_no_corrections
+      end
+    end
+
+    context 'EnforcedStyle: compact + EnforcedStyleForModules: nested' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'compact', 'EnforcedStyleForModules' => 'nested' }
+      end
+
+      it 'registers an offense for a compact module and autocorrects it' do
+        expect_offense(<<~RUBY)
+          module FooModule::BarModule
+                 ^^^^^^^^^^^^^^^^^^^^ Use nested module/class definitions instead of compact style.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          module FooModule
+            module BarModule
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense for classes with nested children' do
+        expect_offense(<<~RUBY)
+          class FooClass
+                ^^^^^^^^ Use compact module/class definition instead of nested style.
+            class BarClass
+            end
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          class FooClass::BarClass
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyleForModules is set' do
