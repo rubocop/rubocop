@@ -70,6 +70,8 @@ With `UseProjectIndex: true`, RuboCop reports a `Lint/DuplicateMethods` offense 
 referencing the definition in the other one. Redefining a method from another file on purpose
 (e.g. a monkey patch) can be signaled with the self-alias trick (`alias bar bar` right before
 the redefinition), which also suppresses Ruby's method redefinition warning.
+`Lint/DeprecatedReference` (pending) is entirely powered by the index: it reports calls to methods
+and references to constants documented with a YARD `@deprecated` tag anywhere in the project.
 
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 

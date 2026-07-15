@@ -29,6 +29,7 @@ module RuboCop
       register_cop :DeprecatedClassMethods, "#{__dir__}/lint/deprecated_class_methods"
       register_cop :DeprecatedConstants, "#{__dir__}/lint/deprecated_constants"
       register_cop :DeprecatedOpenSSLConstant, "#{__dir__}/lint/deprecated_open_ssl_constant"
+      register_cop :DeprecatedReference, "#{__dir__}/lint/deprecated_reference"
       register_cop :DisjunctiveAssignmentInConstructor, "#{__dir__}/lint/disjunctive_assignment_in_constructor"
       register_cop :DuplicateBranch, "#{__dir__}/lint/duplicate_branch"
       register_cop :DuplicateCaseCondition, "#{__dir__}/lint/duplicate_case_condition"

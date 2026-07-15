@@ -1831,6 +1831,14 @@ Lint/DeprecatedOpenSSLConstant:
   Enabled: true
   VersionAdded: '0.84'
 
+Lint/DeprecatedReference:
+  Description: >-
+                  Checks for references to methods and constants documented
+                  as deprecated with a YARD `@deprecated` tag.
+                  Requires `AllCops/UseProjectIndex` to be enabled.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/DisjunctiveAssignmentInConstructor:
   Description: 'In constructor, plain assignment is preferred over disjunctive.'
   Enabled: true
