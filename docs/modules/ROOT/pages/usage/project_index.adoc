@@ -97,6 +97,8 @@ constant provably resolves identically without it.
 `Lint/ConstantResolution` reports only genuinely ambiguous constants - those that resolve to a
 different declaration through the surrounding nesting than they would fully qualified - which
 makes the cop practical to enable without `Only`/`Ignore` lists.
+`Style/Documentation` accepts a reopened class or module when any of its other definition
+sites carries a documentation comment, instead of requiring a comment at every reopening.
 
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 

@@ -13,6 +13,11 @@ module RuboCop
       # a `#:nodoc:` comment next to it. Likewise, `#:nodoc: all` does the
       # same for all its children.
       #
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+      # installed, a reopened class or module is not reported when any of its
+      # other definition sites (in the same or another file) carries a
+      # documentation comment.
+      #
       # @example
       #   # bad
       #   class Person
@@ -71,9 +76,14 @@ module RuboCop
       #
       class Documentation < Base
         include DocumentationComment
+        include ProjectIndexHelp
         include RangeHelp
 
         MSG = 'Missing top-level documentation comment for `%<type>s %<identifier>s`.'
+
+        # Comments that configure tooling rather than document the code.
+        DIRECTIVE_COMMENT_REGEXP = /\A\#\s*(rubocop:|frozen_string_literal:|encoding:|
+                                            shareable_constant_value:|typed:|-\*-)/x.freeze
 
         # @!method constant_definition?(node)
         def_node_matcher :constant_definition?, '{class module casgn}'
@@ -109,10 +119,74 @@ module RuboCop
           return if constant_allowed?(node)
           return if nodoc_self_or_outer_module?(node)
           return if include_statement_only?(body)
+          return if documented_elsewhere?(node)
 
+          add_documentation_offense(node)
+        end
+
+        def add_documentation_offense(node)
           range = range_between(node.source_range.begin_pos, node.loc.name.end_pos)
           message = format(MSG, type: node.type, identifier: identifier(node))
           add_offense(range, message: message)
+        end
+
+        # A reopened class or module is typically documented at a single
+        # definition site. When `AllCops/UseProjectIndex` is enabled, the
+        # documentation requirement is satisfied by a comment on any other
+        # definition of the same class or module.
+        def documented_elsewhere?(node)
+          return false unless project_index
+
+          declaration = resolve_in_index(node)
+          return false unless declaration.is_a?(Rubydex::Namespace)
+
+          declaration.definitions.any? do |definition|
+            other_definition?(definition, node) && documenting_comments?(definition)
+          end
+        rescue StandardError
+          false
+        end
+
+        def resolve_in_index(node)
+          identifier = node.identifier
+          segments = identifier.const_name.split('::')
+          nesting = identifier.absolute? ? [] : lexical_nesting(node)
+
+          declaration = project_index.resolve_constant(segments.first, nesting)
+          segments.drop(1).each do |segment|
+            return nil unless declaration.is_a?(Rubydex::Namespace)
+
+            declaration = project_index.resolve_constant(segment, [declaration.name])
+          end
+
+          declaration
+        end
+
+        def lexical_nesting(node)
+          node.each_ancestor(:class, :module)
+              .map { |ancestor| ancestor.identifier.const_name }.reverse
+        end
+
+        def other_definition?(definition, node)
+          location = definition.location
+          return false unless location.uri.start_with?(FILE_URI_PREFIX)
+
+          !same_file?(location.to_file_path, processed_source.file_path) ||
+            location.to_display.start_line != node.first_line
+        end
+
+        def same_file?(path, other)
+          return true if File.identical?(path, other)
+
+          normalized = [path, other].map { |p| File.expand_path(p).tr('\\', '/') }
+          normalized.uniq.one? || (Platform.windows? && normalized[0].casecmp?(normalized[1]))
+        end
+
+        def documenting_comments?(definition)
+          definition.comments.to_a.any? do |comment|
+            text = comment.string.strip
+            !text.empty? && !DIRECTIVE_COMMENT_REGEXP.match?(text)
+          end
         end
 
         def nodoc_self_or_outer_module?(node)
