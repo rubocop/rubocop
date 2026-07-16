@@ -94,6 +94,9 @@ no-op `Object#initialize`. This removes the need to list project-local abstract 
 `AllowedParentClasses`.
 `Style/RedundantConstantBase` also reports a leading `::` inside a namespace when the
 constant provably resolves identically without it.
+`Lint/ConstantResolution` reports only genuinely ambiguous constants - those that resolve to a
+different declaration through the surrounding nesting than they would fully qualified - which
+makes the cop practical to enable without `Only`/`Ignore` lists.
 
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 

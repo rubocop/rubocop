@@ -125,4 +125,71 @@ RSpec.describe RuboCop::Cop::Lint::ConstantResolution, :config do
       RUBY
     end
   end
+
+  context 'with a project index', :project_index do
+    let(:cop_config) { {} }
+
+    def build_index(sources)
+      graph = Rubydex::Graph.new
+      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+      graph.resolve
+      graph
+    end
+
+    def index_with_current(source, sources = {})
+      build_index(sources.merge('file:///current.rb' => source))
+    end
+
+    it 'registers an offense when the constant is shadowed by the surrounding nesting' do
+      source = <<~RUBY
+        module App
+          def self.load
+            Config.load
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source,
+        'file:///config.rb' => "class Config\nend\n",
+        'file:///app_config.rb' => "module App\n  class Config\n  end\nend\n"
+      )
+
+      expect_offense(<<~RUBY, 'current.rb')
+        module App
+          def self.load
+            Config.load
+            ^^^^^^ Fully qualify this constant to avoid possibly ambiguous resolution.
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the constant resolves identically either way' do
+      source = <<~RUBY
+        module App
+          def self.load
+            Config.load
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, 'file:///config.rb' => "class Config\nend\n"
+      )
+
+      expect_no_offenses(source, 'current.rb')
+    end
+
+    it 'does not register an offense when the constant is not in the index' do
+      source = <<~RUBY
+        module App
+          def self.parse(json)
+            JSON.parse(json)
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(source)
+
+      expect_no_offenses(source, 'current.rb')
+    end
+  end
 end
