@@ -66,6 +66,8 @@ module RuboCop
       #   Login
       #
       class ConstantResolution < Base
+        include ProjectIndexHelp
+
         MSG = 'Fully qualify this constant to avoid possibly ambiguous resolution.'
 
         # @!method unqualified_const?(node)
