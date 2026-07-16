@@ -108,7 +108,7 @@ module RuboCop
         def indexed_namespace_keyword(node)
           return nil unless project_index
 
-          declaration = resolve_in_index(node.identifier.namespace.const_name, node)
+          declaration = resolve_constant_in_index(node.identifier.namespace)
 
           case declaration
           when Rubydex::Class then 'class'
@@ -156,7 +156,7 @@ module RuboCop
         def compactible_namespace?(node)
           return true unless project_index
 
-          declaration = resolve_in_index(node.identifier.const_name, node)
+          declaration = resolve_constant_in_index(node.identifier)
           return false unless declaration.is_a?(Rubydex::Namespace)
 
           declaration.definitions.any? { |definition| definition_elsewhere?(definition, node) }
@@ -172,22 +172,6 @@ module RuboCop
           # A path that cannot be converted or compared cannot prove the
           # namespace is defined elsewhere; err on not correcting.
           false
-        end
-
-        def same_file?(path, other)
-          return true if File.identical?(path, other)
-
-          normalized = [path, other].map { |p| File.expand_path(p).tr('\\', '/') }
-          normalized.uniq.one? || (Platform.windows? && normalized[0].casecmp?(normalized[1]))
-        end
-
-        def resolve_in_index(const_name, node)
-          project_index.resolve_constant(const_name, lexical_nesting(node))
-        end
-
-        def lexical_nesting(node)
-          node.each_ancestor(:class, :module).map { |ancestor| ancestor.identifier.const_name }
-                                             .reverse
         end
 
         def compact_node(corrector, node)

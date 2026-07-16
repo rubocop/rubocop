@@ -46,6 +46,75 @@ module RuboCop
         definitions_in_other_files(definitions).first
       end
 
+      # Resolves a constant node the way Ruby does: the first segment through
+      # the lexical nesting and every following segment inside the previous
+      # one. (Qualified names cannot be passed to `resolve_constant` as a
+      # whole, since it only applies the nesting to the full name.)
+      def resolve_constant_in_index(const_node)
+        segments = const_node.const_name.split('::')
+        nesting = const_node.absolute? ? [] : lexical_nesting_of(const_node)
+
+        declaration = project_index.resolve_constant(segments.first, nesting)
+        segments.drop(1).each do |segment|
+          return nil unless declaration.is_a?(Rubydex::Namespace)
+
+          declaration = project_index.resolve_constant(segment, [declaration.name])
+        end
+
+        declaration
+      end
+
+      # The lexical nesting the node's constants resolve through, outermost
+      # first. Only scopes whose *body* contains the node count: a class or
+      # module's identifier and superclass expression are evaluated before its
+      # scope exists, so ancestors reached through them are excluded.
+      def lexical_nesting_of(node)
+        nesting = []
+        child = node
+
+        node.each_ancestor do |ancestor|
+          if ancestor.type?(:class, :module) && child.equal?(ancestor.body)
+            nesting << ancestor.identifier.const_name
+          end
+          child = ancestor
+        end
+
+        nesting.reverse
+      end
+
+      # The declaration of `declaration`'s singleton class, or nil when no
+      # singleton method is defined on it anywhere in the project.
+      def indexed_singleton_of(declaration)
+        project_index["#{declaration.name}::<#{declaration.name.split('::').last}>"]
+      end
+
+      # A namespace without any singleton method has no singleton-class
+      # declaration of its own, so the lookup starts from the first ancestor
+      # that has one; its `find_member` covers the rest of the chain.
+      def indexed_singleton_member(namespace, member_name)
+        namespace.ancestors.each do |ancestor|
+          singleton = indexed_singleton_of(ancestor)
+          return singleton.find_member(member_name) if singleton
+        end
+
+        nil
+      end
+
+      # Whether an ancestor of `scope` other than `scope` itself defines
+      # `member_name`.
+      def inherited_index_member?(scope, member_name)
+        scope.ancestors.any? do |ancestor|
+          ancestor.name != scope.name && ancestor.member(member_name)
+        end
+      end
+
+      def same_file?(path, other)
+        return true if File.identical?(path, other)
+
+        normalized = [path, other].map { |p| File.expand_path(p).tr('\\', '/') }
+        normalized.uniq.one? || (Platform.windows? && normalized[0].casecmp?(normalized[1]))
+      end
+
       def project_index_signature
         project_index.documents.filter_map do |doc|
           uri = doc.uri

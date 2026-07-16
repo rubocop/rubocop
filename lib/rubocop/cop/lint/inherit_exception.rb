@@ -73,7 +73,7 @@ module RuboCop
             add_offense(parent_class, message: message(parent_class)) do |corrector|
               corrector.replace(parent_class, preferred_base_class)
             end
-          elsif (via = inherits_exception_via(node, parent_class))
+          elsif (via = inherits_exception_via(parent_class))
             # No autocorrection: the `Exception` inheritance lives at another
             # class' definition site, possibly in another file.
             message = format(INDIRECT_MSG, prefer: preferred_base_class, via: via)
@@ -107,10 +107,10 @@ module RuboCop
         # is not indexed, so a chain ending in it shows up as an ancestor whose
         # superclass reference is unresolved and literally named `Exception`.
         # Returns the name of that ancestor, or `nil`.
-        def inherits_exception_via(node, parent_class)
+        def inherits_exception_via(parent_class)
           return nil unless project_index && parent_class.const_type?
 
-          declaration = resolve_in_index(node, parent_class)
+          declaration = resolve_constant_in_index(parent_class)
           return nil unless declaration.is_a?(Rubydex::Class)
 
           exception_ancestor(declaration)&.name
@@ -132,30 +132,6 @@ module RuboCop
             superclass.is_a?(Rubydex::UnresolvedConstantReference) &&
               superclass.name.delete_prefix('::') == 'Exception'
           end
-        end
-
-        def resolve_in_index(node, parent_class)
-          segments = parent_class.const_name.split('::')
-
-          declaration = project_index.resolve_constant(
-            segments.first, lexical_nesting(node, parent_class)
-          )
-          segments.drop(1).each do |segment|
-            return nil unless declaration.is_a?(Rubydex::Namespace)
-
-            declaration = project_index.resolve_constant(segment, [declaration.name])
-          end
-
-          declaration
-        end
-
-        # The superclass expression resolves in the scopes enclosing the class
-        # definition, not inside it.
-        def lexical_nesting(node, parent_class)
-          return [] if parent_class.absolute?
-
-          node.each_ancestor(:class, :module)
-              .map { |ancestor| ancestor.identifier.const_name }.reverse
         end
 
         def inherit_exception_class_with_omitted_namespace?(class_node)

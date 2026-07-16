@@ -88,45 +88,13 @@ module RuboCop
           return false unless project_index
           return false unless (namespace_node = node.each_ancestor(:class, :module).first)
 
-          declaration = resolve_in_index(namespace_node)
+          declaration = resolve_constant_in_index(namespace_node.identifier)
           return false unless declaration.is_a?(Rubydex::Namespace)
 
-          scope = node.defs_type? ? singleton_of(declaration) : declaration
-          !scope.nil? && inherited_member?(scope, "#{node.method_name}()")
+          scope = node.defs_type? ? indexed_singleton_of(declaration) : declaration
+          !scope.nil? && inherited_index_member?(scope, "#{node.method_name}()")
         rescue StandardError
           false
-        end
-
-        def inherited_member?(scope, member_name)
-          scope.ancestors.any? do |ancestor|
-            ancestor.name != scope.name && ancestor.member(member_name)
-          end
-        end
-
-        def singleton_of(declaration)
-          project_index["#{declaration.name}::<#{declaration.name.split('::').last}>"]
-        end
-
-        def resolve_in_index(namespace_node)
-          segments = namespace_node.identifier.const_name.split('::')
-
-          declaration = project_index.resolve_constant(
-            segments.first, lexical_nesting(namespace_node)
-          )
-          segments.drop(1).each do |segment|
-            return nil unless declaration.is_a?(Rubydex::Namespace)
-
-            declaration = project_index.resolve_constant(segment, [declaration.name])
-          end
-
-          declaration
-        end
-
-        def lexical_nesting(namespace_node)
-          return [] if namespace_node.identifier.absolute?
-
-          namespace_node.each_ancestor(:class, :module)
-                        .map { |ancestor| ancestor.identifier.const_name }.reverse
         end
       end
     end

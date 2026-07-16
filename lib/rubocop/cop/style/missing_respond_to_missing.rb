@@ -81,10 +81,10 @@ module RuboCop
           return false unless project_index
           return false unless (namespace_node = node.each_ancestor(:class, :module).first)
 
-          declaration = resolve_in_index(namespace_node)
+          declaration = resolve_constant_in_index(namespace_node.identifier)
           return false unless declaration.is_a?(Rubydex::Namespace)
 
-          scope = singleton_definition?(node) ? singleton_of(declaration) : declaration
+          scope = singleton_definition?(node) ? indexed_singleton_of(declaration) : declaration
           !scope&.member('respond_to_missing?()').nil?
         rescue StandardError
           false
@@ -92,32 +92,6 @@ module RuboCop
 
         def singleton_definition?(node)
           node.defs_type? || node.each_ancestor(:sclass, :class, :module).first&.sclass_type?
-        end
-
-        def singleton_of(declaration)
-          project_index["#{declaration.name}::<#{declaration.name.split('::').last}>"]
-        end
-
-        def resolve_in_index(namespace_node)
-          segments = namespace_node.identifier.const_name.split('::')
-
-          declaration = project_index.resolve_constant(
-            segments.first, lexical_nesting(namespace_node)
-          )
-          segments.drop(1).each do |segment|
-            return nil unless declaration.is_a?(Rubydex::Namespace)
-
-            declaration = project_index.resolve_constant(segment, [declaration.name])
-          end
-
-          declaration
-        end
-
-        def lexical_nesting(namespace_node)
-          return [] if namespace_node.identifier.absolute?
-
-          namespace_node.each_ancestor(:class, :module)
-                        .map { |ancestor| ancestor.identifier.const_name }.reverse
         end
 
         def implements_respond_to_missing?(node)

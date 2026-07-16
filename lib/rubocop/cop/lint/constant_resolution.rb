@@ -91,28 +91,13 @@ module RuboCop
         # index cannot resolve at all (e.g. constants from gems), are not
         # reported.
         def ambiguous_resolution?(node)
-          relative = project_index.resolve_constant(node.short_name.to_s, lexical_nesting(node))
-          absolute = project_index.resolve_constant(node.short_name.to_s, [])
+          name = node.short_name.to_s
+          relative = project_index.resolve_constant(name, lexical_nesting_of(node))
+          absolute = project_index.resolve_constant(name, [])
 
           !relative.nil? && !absolute.nil? && relative.name != absolute.name
         rescue StandardError
           false
-        end
-
-        def lexical_nesting(node)
-          scopes = node.each_ancestor(:class, :module).reject do |ancestor|
-            in_superclass_expression?(node, ancestor)
-          end
-
-          scopes.map { |ancestor| ancestor.identifier.const_name }.reverse
-        end
-
-        # A constant in the superclass expression resolves in the scopes
-        # enclosing the class definition, not inside it.
-        def in_superclass_expression?(node, ancestor)
-          ancestor.class_type? &&
-            ancestor.parent_class&.each_descendant(:const)
-                    &.any? { |descendant| descendant.equal?(node) }
         end
 
         def const_name?(name)
