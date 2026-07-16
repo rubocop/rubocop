@@ -57,7 +57,10 @@ module RuboCop
       # Resolves a constant node the way Ruby does: the first segment through
       # the lexical nesting and every following segment inside the previous
       # one. (Qualified names cannot be passed to `resolve_constant` as a
-      # whole, since it only applies the nesting to the full name.)
+      # whole, since it only applies the nesting to the full name. Later
+      # segments use `find_member` — the namespace and its ancestors — since
+      # `resolve_constant` cannot take an already-resolved namespace as the
+      # scope, only names as they appear in source.)
       def resolve_constant_in_index(const_node)
         segments = const_node.const_name.split('::')
         nesting = const_node.absolute? ? [] : lexical_nesting_of(const_node)
@@ -66,7 +69,7 @@ module RuboCop
         segments.drop(1).each do |segment|
           return nil unless declaration.is_a?(Rubydex::Namespace)
 
-          declaration = project_index.resolve_constant(segment, [declaration.name])
+          declaration = declaration.find_member(segment)
         end
 
         declaration

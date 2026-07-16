@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::ProjectIndexHelp, :project_index do
 
       attr_accessor :project_index
 
-      public :project_index_signature
+      public :project_index_signature, :resolve_constant_in_index
     end
   end
 
@@ -16,6 +16,28 @@ RSpec.describe RuboCop::Cop::ProjectIndexHelp, :project_index do
     sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
     graph.resolve
     graph
+  end
+
+  describe '#resolve_constant_in_index' do
+    it 'resolves a qualified reference to a member of a nested namespace' do
+      source = <<~RUBY
+        module A
+          module B
+            class C
+            end
+          end
+
+          B::C
+        end
+      RUBY
+      helper = helper_class.new
+      helper.project_index = build_index('file:///nested.rb' => source)
+
+      processed = RuboCop::ProcessedSource.new(source, RUBY_VERSION.to_f)
+      ref = processed.ast.each_node(:const).find { |node| node.const_name == 'B::C' }
+
+      expect(helper.resolve_constant_in_index(ref).name).to eq('A::B::C')
+    end
   end
 
   describe '#project_index_signature' do
