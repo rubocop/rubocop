@@ -80,7 +80,10 @@ module RuboCop
         def on_new_investigation
           return unless processed_source.ast
 
-          redundant_ranges(line_continuation_candidates).each do |range|
+          # A backslash is redundant if the source parses to the same AST
+          # without it; verification is the offense logic itself, so oversized
+          # scopes are reparsed regardless of size.
+          verified_by_reparse(line_continuation_candidates, oversized: :verify).each do |range|
             add_offense(range) do |corrector|
               corrector.remove_leading(range, 1)
             end
@@ -90,6 +93,10 @@ module RuboCop
         end
 
         private
+
+        def apply_reparse_correction(corrector, range)
+          corrector.remove_leading(range, 1)
+        end
 
         def line_continuation_candidates
           candidates = []
@@ -102,48 +109,6 @@ module RuboCop
           end
 
           candidates
-        end
-
-        # All candidates are first verified together with a single reparse: in
-        # the common case a file's continuations are either all redundant or
-        # all significant, so most files need at most one reparse regardless of
-        # how many continuations they contain.
-        def redundant_ranges(candidates)
-          return [] if candidates.empty?
-          return candidates if candidates.size > 1 && removable_backslashes?(candidates)
-
-          candidates.select { |range| removable_backslashes?([range]) }
-        end
-
-        # A backslash is redundant if the source parses to the same AST without
-        # it. Comments are not part of the AST, so backslashes in comments are
-        # excluded up front. When all backslashes lie within a method
-        # definition, only that definition is reparsed instead of the whole
-        # file.
-        def removable_backslashes?(ranges)
-          if (scope = enclosing_def_node(ranges))
-            parses_identically_to_node?(scope, without_backslashes(scope.source, ranges,
-                                                                   scope.source_range.begin_pos))
-          else
-            parses_identically?(without_backslashes(processed_source.raw_source, ranges, 0))
-          end
-        end
-
-        def without_backslashes(source, ranges, base)
-          source = source.dup
-          ranges.reverse_each { |range| source.slice!(range.begin_pos - base) }
-          source
-        end
-
-        # A method definition parses standalone, so it can serve as the
-        # reparse scope for the backslashes it contains.
-        def enclosing_def_node(ranges)
-          processed_source.ast.each_node(:any_def) do |node|
-            source_range = node.source_range
-            return node if ranges.all? { |range| source_range.contains?(range) }
-          end
-
-          nil
         end
 
         def within_comment?(range)
@@ -180,7 +145,7 @@ module RuboCop
 
           range = trailing_line_continuation_range(last_line_number)
           return if within_comment?(range)
-          return unless removable_backslashes?([range])
+          return if verified_by_reparse([range], oversized: :verify).empty?
 
           add_offense(range) do |corrector|
             corrector.remove_trailing(range, 1)

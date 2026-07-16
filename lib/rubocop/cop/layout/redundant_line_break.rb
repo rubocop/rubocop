@@ -49,6 +49,7 @@ module RuboCop
       class RedundantLineBreak < Base
         include CheckAssignment
         include CheckSingleLineSuitability
+        include ReparsedEquivalence
         extend AutoCorrector
 
         MSG = 'Redundant line break detected.'
@@ -82,7 +83,10 @@ module RuboCop
         end
 
         def register_offense(node)
-          return unless verified_correction?(node)
+          # The exact single-line correction is verified to parse equivalently
+          # before the offense is registered, so a join that would change how
+          # the code parses is never reported or offered.
+          return if verified_by_reparse([node], oversized: :verify).empty?
 
           add_offense(node) do |corrector|
             corrector.replace(node, to_single_line(node.source).strip)
@@ -90,58 +94,20 @@ module RuboCop
           ignore_node(node)
         end
 
-        # The exact single-line correction is verified to parse to the same
-        # AST before the offense is registered, so a join that would change
-        # how the code parses is never reported or offered. When the node lies
-        # within a method definition or class/module body (which parse
-        # standalone), only that scope is reparsed.
-        def verified_correction?(node)
-          corrector = Corrector.new(processed_source)
+        def apply_reparse_correction(corrector, node)
           corrector.replace(node, to_single_line(node.source).strip)
-          corrected = corrector.process
-          scope = reparse_scope(node)
-
-          if scope
-            parses_equivalently?(scope.source, scope, corrected_scope_fragment(scope, corrected))
-          else
-            parses_equivalently?(processed_source.raw_source, processed_source.ast, corrected)
-          end
         end
 
-        def reparse_scope(node)
-          scope = node.each_ancestor(:any_def, :class, :module, :sclass).first
-          scope if scope&.source_range&.contains?(node.source_range)
-        end
-
-        def corrected_scope_fragment(scope, corrected)
-          delta = corrected.length - processed_source.raw_source.length
-          scope_range = scope.source_range
-
-          corrected[scope_range.begin_pos...(scope_range.end_pos + delta)]
-        end
-
-        # Both sides are parsed with the original path so that `__FILE__`
-        # resolves identically. When the fragment uses `__LINE__`, both sides
-        # are reparsed with the keyword neutralized: joining lines shifts the
-        # value of any later `__LINE__`, exactly as any other line-removing
-        # correction does, and that shift should not block the offense.
-        def parses_equivalently?(original, original_ast, corrected)
-          if original.include?('__LINE__')
-            original_ast = parse(neutralize_line_keyword(original), processed_source.path).ast
-            corrected = neutralize_line_keyword(corrected)
-          end
-
-          rewritten = parse(corrected, processed_source.path)
-          return false unless rewritten.valid_syntax? && original_ast
-
-          fold_string_concatenation(rewritten.ast) == fold_string_concatenation(original_ast)
-        end
-
-        def neutralize_line_keyword(source)
-          # The replacement must stay valid in every position `__LINE__` can
-          # appear in (expression, symbol, string content); an ordinary
-          # identifier parses symmetrically on both sides.
+        # Joining lines shifts the value of any later `__LINE__`, exactly as
+        # any other line-removing correction does; neutralize it on both sides
+        # with an identifier, which stays valid in every position the keyword
+        # can appear in.
+        def preprocess_reparsed_source(source)
           source.gsub(/\b__LINE__\b/, '__LINE0__')
+        end
+
+        def normalize_reparsed_ast(node)
+          fold_string_concatenation(node)
         end
 
         # Joining lines merges split string literals (`"a" \<newline> "b"` into
