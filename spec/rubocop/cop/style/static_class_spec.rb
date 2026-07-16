@@ -151,4 +151,67 @@ RSpec.describe RuboCop::Cop::Style::StaticClass, :config do
       end
     RUBY
   end
+
+  context 'with a project index', :project_index do
+    def build_index(sources)
+      graph = Rubydex::Graph.new
+      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+      graph.resolve
+      graph
+    end
+
+    def index_with_current(source, sources = {})
+      build_index(sources.merge('file:///current.rb' => source))
+    end
+
+    it 'does not register an offense when the class is subclassed in another file' do
+      source = <<~RUBY
+        class Tools
+          def self.hammer
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, 'file:///sub.rb' => "class PowerTools < Tools\nend\n"
+      )
+
+      expect_no_offenses(source, 'current.rb')
+    end
+
+    it 'registers an offense when no subclass exists in the project' do
+      source = <<~RUBY
+        class Tools
+          def self.hammer
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, 'file:///other.rb' => "class Unrelated\nend\n"
+      )
+
+      expect_offense(<<~RUBY, 'current.rb')
+        class Tools
+        ^^^^^^^^^^^ Prefer modules to classes with only class methods.
+          def self.hammer
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when subclassed transitively' do
+      source = <<~RUBY
+        class Tools
+          def self.hammer
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source,
+        'file:///mid.rb' => "class GardenTools < Tools\nend\n",
+        'file:///sub.rb' => "class PowerTools < GardenTools\nend\n"
+      )
+
+      expect_no_offenses(source, 'current.rb')
+    end
+  end
 end

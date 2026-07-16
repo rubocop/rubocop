@@ -12,6 +12,11 @@ module RuboCop
       #   for some other subclass, monkey-patched with instance methods or
       #   a dummy instance is instantiated from it somewhere.
       #
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+      # installed, classes that are subclassed anywhere in the project are
+      # not reported, since converting them to modules would break their
+      # subclasses.
+      #
       # @example
       #   # bad
       #   class SomeClass
@@ -44,6 +49,7 @@ module RuboCop
       #   end
       #
       class StaticClass < Base
+        include ProjectIndexHelp
         include RangeHelp
         include VisibilityHelp
         extend AutoCorrector
@@ -53,6 +59,7 @@ module RuboCop
         def on_class(class_node)
           return if class_node.parent_class
           return unless class_convertible_to_module?(class_node)
+          return if subclassed_in_project?(class_node)
 
           add_offense(class_node) do |corrector|
             autocorrect(corrector, class_node)
@@ -60,6 +67,42 @@ module RuboCop
         end
 
         private
+
+        # When `AllCops/UseProjectIndex` is enabled, a class with descendants
+        # anywhere in the project is not reported: converting it to a module
+        # would break its subclasses.
+        def subclassed_in_project?(class_node)
+          return false unless project_index
+
+          declaration = resolve_in_index(class_node)
+          return false unless declaration.is_a?(Rubydex::Class)
+
+          declaration.descendants.any? { |descendant| descendant.name != declaration.name }
+        rescue StandardError
+          false
+        end
+
+        def resolve_in_index(class_node)
+          segments = class_node.identifier.const_name.split('::')
+
+          declaration = project_index.resolve_constant(
+            segments.first, lexical_nesting(class_node)
+          )
+          segments.drop(1).each do |segment|
+            return nil unless declaration.is_a?(Rubydex::Namespace)
+
+            declaration = project_index.resolve_constant(segment, [declaration.name])
+          end
+
+          declaration
+        end
+
+        def lexical_nesting(class_node)
+          return [] if class_node.identifier.absolute?
+
+          class_node.each_ancestor(:class, :module)
+                    .map { |ancestor| ancestor.identifier.const_name }.reverse
+        end
 
         def autocorrect(corrector, class_node)
           corrector.replace(class_node.loc.keyword, 'module')

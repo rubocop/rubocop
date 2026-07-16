@@ -5855,6 +5855,7 @@ Style/StabbyLambdaParentheses:
 Style/StaticClass:
   Description: 'Prefer modules to classes with only class methods.'
   StyleGuide: '#modules-vs-classes'
+  VersionChanged: '<<next>>'
   Enabled: false
   Safe: false
   VersionAdded: '1.3'
