@@ -70,33 +70,44 @@ With `UseProjectIndex: true`, RuboCop reports a `Lint/DuplicateMethods` offense 
 referencing the definition in the other one. Redefining a method from another file on purpose
 (e.g. a monkey patch) can be signaled with the self-alias trick (`alias bar bar` right before
 the redefinition), which also suppresses Ruby's method redefinition warning.
+
 `Lint/DeprecatedReference` (pending) is entirely powered by the index: it reports calls to methods
 and references to constants documented with a YARD `@deprecated` tag anywhere in the project.
+
 `Lint/UnusedPrivateMethod` (disabled by default) uses the index for project-wide dead-code
 detection: it reports private instance methods whose names are never referenced anywhere in
 the indexed project. Since symbol-based references from other files (e.g. Rails callbacks
 declared in a concern) cannot be detected, it is best suited for occasional dead-code sweeps.
+
 `Style/MissingRespondToMissing` accepts a `respond_to_missing?` defined in another definition
 of the same class or module (e.g. a reopening in another file).
+
 `Lint/InheritException` also reports classes that inherit from `Exception` indirectly, through
 a parent class defined elsewhere in the project.
+
 `Style/StaticClass` does not report classes that are subclassed anywhere in the project.
+
 `Naming/PredicatePrefix` and `Naming/AccessorMethodName` do not suggest renaming methods
 that override a method defined by an ancestor elsewhere in the project.
+
 `Style/ClassAndModuleChildren` uses the index to make its (unsafe) autocorrection more reliable:
 when nesting a compact definition (`class Foo::Bar`), the namespace wrapper's keyword (`class` or
 `module`) is resolved from the actual definition of `Foo` instead of guessed, and compacting a
 nested definition is skipped when the outer namespace is not defined elsewhere (the compact form
 would raise `NameError` at load time).
+
 `Lint/MissingSuper` skips the constructor offense when the class' entire ancestry is resolvable
 in the index and no ancestor defines `initialize` - in that case `super` would only reach the
 no-op `Object#initialize`. This removes the need to list project-local abstract base classes in
 `AllowedParentClasses`.
+
 `Style/RedundantConstantBase` also reports a leading `::` inside a namespace when the
 constant provably resolves identically without it.
+
 `Lint/ConstantResolution` reports only genuinely ambiguous constants - those that resolve to a
 different declaration through the surrounding nesting than they would fully qualified - which
 makes the cop practical to enable without `Only`/`Ignore` lists.
+
 `Style/Documentation` accepts a reopened class or module when any of its other definition
 sites carries a documentation comment, instead of requiring a comment at every reopening.
 
