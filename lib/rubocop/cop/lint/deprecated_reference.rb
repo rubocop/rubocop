@@ -83,7 +83,7 @@ module RuboCop
           return unless project_index
           return if node.parent&.defined_module
 
-          declaration = resolve_constant_node(node)
+          declaration = resolve_constant_in_index(node)
           return unless declaration && deprecated?(declaration)
           return if within_deprecated_definition?(node)
 
@@ -108,17 +108,17 @@ module RuboCop
           return nil unless namespace.is_a?(Rubydex::Namespace)
 
           if singleton_context?(node)
-            singleton_member(namespace, "#{node.method_name}()")
+            indexed_singleton_member(namespace, "#{node.method_name}()")
           else
             namespace.find_member("#{node.method_name}()")
           end
         end
 
         def const_receiver_declaration(node, receiver)
-          namespace = resolve_constant_node(receiver)
+          namespace = resolve_constant_in_index(receiver)
           return nil unless namespace.is_a?(Rubydex::Namespace)
 
-          singleton_member(namespace, "#{node.method_name}()")
+          indexed_singleton_member(namespace, "#{node.method_name}()")
         end
 
         def enclosing_namespace(node)
@@ -126,47 +126,8 @@ module RuboCop
           return project_index['Object'] unless namespace_node
 
           @namespace_cache.fetch(namespace_node) do
-            @namespace_cache[namespace_node] = resolve_constant_node(namespace_node.identifier)
+            @namespace_cache[namespace_node] = resolve_constant_in_index(namespace_node.identifier)
           end
-        end
-
-        # Resolves a constant the way Ruby does: the first segment through the
-        # lexical nesting and every following segment inside the previous one.
-        # (Qualified names cannot be passed to `resolve_constant` as a whole,
-        # since it only applies the nesting to the full name.)
-        def resolve_constant_node(const_node)
-          segments = const_node.const_name.split('::')
-          nesting = const_node.absolute? ? [] : lexical_nesting(const_node)
-
-          declaration = project_index.resolve_constant(segments.first, nesting)
-          segments.drop(1).each do |segment|
-            return nil unless declaration.is_a?(Rubydex::Namespace)
-
-            declaration = project_index.resolve_constant(segment, [declaration.name])
-          end
-
-          declaration
-        end
-
-        def lexical_nesting(node)
-          node.each_ancestor(:class, :module)
-              .map { |ancestor| ancestor.identifier.const_name }.reverse
-        end
-
-        # A namespace without any singleton method has no singleton-class
-        # declaration of its own, so the lookup starts from the first ancestor
-        # that has one; its `find_member` covers the rest of the chain.
-        def singleton_member(namespace, member_name)
-          namespace.ancestors.each do |ancestor|
-            singleton = singleton_of(ancestor)
-            return singleton.find_member(member_name) if singleton
-          end
-
-          nil
-        end
-
-        def singleton_of(namespace)
-          project_index["#{namespace.name}::<#{namespace.name.split('::').last}>"]
         end
 
         # Whether an implicit-receiver call runs with the class or module itself

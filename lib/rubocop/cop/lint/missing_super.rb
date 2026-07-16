@@ -172,7 +172,7 @@ module RuboCop
         def index_verified_stateless_ancestry?(class_node)
           return false unless project_index
 
-          declaration = resolve_in_index(class_node)
+          declaration = resolve_constant_in_index(class_node.identifier)
           return false unless declaration.is_a?(Rubydex::Class)
 
           ancestors = declaration.ancestors.to_a
@@ -180,18 +180,6 @@ module RuboCop
           return false if inherited.any? { |ancestor| ancestor.member('initialize()') }
 
           ancestors.all? { |ancestor| resolved_ancestry_definitions?(ancestor) }
-        end
-
-        def resolve_in_index(class_node)
-          identifier = class_node.identifier
-          nesting = if identifier.absolute?
-                      []
-                    else
-                      class_node.each_ancestor(:class, :module)
-                                .map { |ancestor| ancestor.identifier.const_name }.reverse
-                    end
-
-          project_index.resolve_constant(identifier.const_name, nesting)
         end
 
         def resolved_ancestry_definitions?(declaration)

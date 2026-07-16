@@ -98,36 +98,10 @@ module RuboCop
         end
 
         def method_declaration(node, namespace_node)
-          namespace = resolve_namespace(namespace_node)
+          namespace = resolve_constant_in_index(namespace_node.identifier)
           return nil unless namespace.is_a?(Rubydex::Namespace)
 
           namespace.member("#{node.method_name}()")
-        end
-
-        # Resolves the enclosing namespace segment by segment, since
-        # `resolve_constant` does not resolve qualified names against
-        # a lexical nesting.
-        def resolve_namespace(namespace_node)
-          identifier = namespace_node.identifier
-          segments = identifier.const_name.split('::')
-
-          declaration = project_index.resolve_constant(
-            segments.first, lexical_nesting(namespace_node, identifier)
-          )
-          segments.drop(1).each do |segment|
-            return nil unless declaration.is_a?(Rubydex::Namespace)
-
-            declaration = project_index.resolve_constant(segment, [declaration.name])
-          end
-
-          declaration
-        end
-
-        def lexical_nesting(namespace_node, identifier)
-          return [] if identifier.absolute?
-
-          namespace_node.each_ancestor(:class, :module)
-                        .map { |ancestor| ancestor.identifier.const_name }.reverse
         end
 
         def referenced?(method_name)

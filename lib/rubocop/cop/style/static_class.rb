@@ -74,34 +74,12 @@ module RuboCop
         def subclassed_in_project?(class_node)
           return false unless project_index
 
-          declaration = resolve_in_index(class_node)
+          declaration = resolve_constant_in_index(class_node.identifier)
           return false unless declaration.is_a?(Rubydex::Class)
 
           declaration.descendants.any? { |descendant| descendant.name != declaration.name }
         rescue StandardError
           false
-        end
-
-        def resolve_in_index(class_node)
-          segments = class_node.identifier.const_name.split('::')
-
-          declaration = project_index.resolve_constant(
-            segments.first, lexical_nesting(class_node)
-          )
-          segments.drop(1).each do |segment|
-            return nil unless declaration.is_a?(Rubydex::Namespace)
-
-            declaration = project_index.resolve_constant(segment, [declaration.name])
-          end
-
-          declaration
-        end
-
-        def lexical_nesting(class_node)
-          return [] if class_node.identifier.absolute?
-
-          class_node.each_ancestor(:class, :module)
-                    .map { |ancestor| ancestor.identifier.const_name }.reverse
         end
 
         def autocorrect(corrector, class_node)

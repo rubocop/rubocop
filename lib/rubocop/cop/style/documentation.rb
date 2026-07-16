@@ -137,7 +137,7 @@ module RuboCop
         def documented_elsewhere?(node)
           return false unless project_index
 
-          declaration = resolve_in_index(node)
+          declaration = resolve_constant_in_index(node.identifier)
           return false unless declaration.is_a?(Rubydex::Namespace)
 
           declaration.definitions.any? do |definition|
@@ -147,39 +147,12 @@ module RuboCop
           false
         end
 
-        def resolve_in_index(node)
-          identifier = node.identifier
-          segments = identifier.const_name.split('::')
-          nesting = identifier.absolute? ? [] : lexical_nesting(node)
-
-          declaration = project_index.resolve_constant(segments.first, nesting)
-          segments.drop(1).each do |segment|
-            return nil unless declaration.is_a?(Rubydex::Namespace)
-
-            declaration = project_index.resolve_constant(segment, [declaration.name])
-          end
-
-          declaration
-        end
-
-        def lexical_nesting(node)
-          node.each_ancestor(:class, :module)
-              .map { |ancestor| ancestor.identifier.const_name }.reverse
-        end
-
         def other_definition?(definition, node)
           location = definition.location
           return false unless location.uri.start_with?(FILE_URI_PREFIX)
 
           !same_file?(location.to_file_path, processed_source.file_path) ||
             location.to_display.start_line != node.first_line
-        end
-
-        def same_file?(path, other)
-          return true if File.identical?(path, other)
-
-          normalized = [path, other].map { |p| File.expand_path(p).tr('\\', '/') }
-          normalized.uniq.one? || (Platform.windows? && normalized[0].casecmp?(normalized[1]))
         end
 
         def documenting_comments?(definition)
