@@ -119,6 +119,34 @@ RSpec.describe RuboCop::Cop::Style::Copyright, :config do
     end
   end
 
+  context 'when the copyright notice is missing and no `AutocorrectNotice` is configured' do
+    include_context 'mock console output'
+
+    before { cop_config['AutocorrectNotice'] = nil }
+
+    # Investigate through a team without `raise_error` so that a raised `RuboCop::Warning`
+    # is reported to stderr the way the runner does it, instead of being re-raised by
+    # the default spec harness.
+    def investigate_source(autocorrect:)
+      cop.instance_variable_get(:@options)[:autocorrect] = autocorrect
+      processed_source = parse_source("names = []\n")
+      RuboCop::Cop::Team.new([cop], configuration).investigate(processed_source)
+    end
+
+    it 'warns on stderr when autocorrection is requested' do
+      investigate_source(autocorrect: true)
+
+      expect($stderr.string).to include(described_class::AUTOCORRECT_EMPTY_WARNING)
+    end
+
+    it 'registers an offense without warning on stderr during inspection' do
+      report = investigate_source(autocorrect: false)
+
+      expect(report.offenses.size).to eq(1)
+      expect($stderr.string).to be_empty
+    end
+  end
+
   context 'when the copyright notice comes after any code' do
     it 'adds an offense' do
       cop_config['AutocorrectNotice'] = '# Copyright (c) 2015 Acme Inc.'

@@ -1,0 +1,1 @@
+* [#15490](https://github.com/rubocop/rubocop/pull/15490): Change `Style/Copyright` to validate `AutocorrectNotice` only when autocorrection is requested (`-a`/`-A`), so plain inspection no longer raises a warning. ([@koic][])
