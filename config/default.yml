@@ -2068,7 +2068,7 @@ Lint/InheritException:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.41'
-  VersionChanged: '1.26'
+  VersionChanged: '<<next>>'
   # The default base class in favour of `Exception`.
   EnforcedStyle: standard_error
   SupportedStyles:

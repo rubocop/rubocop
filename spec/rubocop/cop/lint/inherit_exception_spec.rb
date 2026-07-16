@@ -195,4 +195,89 @@ RSpec.describe RuboCop::Cop::Lint::InheritException, :config do
       end
     end
   end
+
+  context 'with a project index', :project_index do
+    let(:cop_config) { { 'EnforcedStyle' => 'standard_error' } }
+
+    def build_index(sources)
+      graph = Rubydex::Graph.new
+      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+      graph.resolve
+      graph
+    end
+
+    def index_with_current(source, sources = {})
+      build_index(sources.merge('file:///current.rb' => source))
+    end
+
+    it 'registers an offense without autocorrection when the parent inherits `Exception` in another file' do
+      source = <<~RUBY
+        class MyError < BaseError
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, 'file:///base.rb' => "class BaseError < Exception\nend\n"
+      )
+
+      expect_offense(<<~RUBY, 'current.rb')
+        class MyError < BaseError
+                        ^^^^^^^^^ Inherit from `StandardError` instead of `Exception` (inherited via `BaseError`).
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense when `Exception` is inherited two hops away' do
+      source = <<~RUBY
+        class MyError < MidError
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source,
+        'file:///mid.rb' => "class MidError < BaseError\nend\n",
+        'file:///base.rb' => "class BaseError < Exception\nend\n"
+      )
+
+      expect_offense(<<~RUBY, 'current.rb')
+        class MyError < MidError
+                        ^^^^^^^^ Inherit from `StandardError` instead of `Exception` (inherited via `BaseError`).
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the parent inherits `StandardError` in another file' do
+      source = <<~RUBY
+        class MyError < BaseError
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, 'file:///base.rb' => "class BaseError < StandardError\nend\n"
+      )
+
+      expect_no_offenses(source, 'current.rb')
+    end
+
+    it 'does not register an offense when the parent inherits an unresolvable class' do
+      source = <<~RUBY
+        class MyError < BaseError
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, 'file:///base.rb' => "class BaseError < SomeGemError\nend\n"
+      )
+
+      expect_no_offenses(source, 'current.rb')
+    end
+
+    it 'does not register an offense when the parent is not in the index' do
+      source = <<~RUBY
+        class MyError < SomeGemError
+        end
+      RUBY
+      cop.project_index = index_with_current(source)
+
+      expect_no_offenses(source, 'current.rb')
+    end
+  end
 end
