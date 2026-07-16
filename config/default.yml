@@ -2887,6 +2887,7 @@ Migration/DepartmentName:
 Naming/AccessorMethodName:
   Description: Checks the naming of accessor methods for get_/set_.
   StyleGuide: '#accessor_mutator_method_names'
+  VersionChanged: '<<next>>'
   Enabled: true
   VersionAdded: '0.50'
 
@@ -3163,7 +3164,7 @@ Naming/PredicatePrefix:
   StyleGuide: '#bool-methods-qmark'
   Enabled: true
   VersionAdded: '0.50'
-  VersionChanged: '1.75'
+  VersionChanged: '<<next>>'
   # Predicate name prefixes.
   NamePrefix:
     - is_

@@ -184,4 +184,52 @@ RSpec.describe RuboCop::Cop::Naming::AccessorMethodName, :config do
       end
     RUBY
   end
+
+  context 'with a project index', :project_index do
+    def build_index(sources)
+      graph = Rubydex::Graph.new
+      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+      graph.resolve
+      graph
+    end
+
+    it 'does not register an offense when the method overrides an ancestor method' do
+      source = <<~RUBY
+        class Child < Base
+          def get_value
+            @value
+          end
+        end
+      RUBY
+      cop.project_index = build_index(
+        'file:///current.rb' => source,
+        'file:///base.rb' => "class Base\n  def get_value\n    nil\n  end\nend\n"
+      )
+
+      expect_no_offenses(source, 'current.rb')
+    end
+
+    it 'registers an offense when no ancestor defines the method' do
+      source = <<~RUBY
+        class Child < Base
+          def get_value
+            @value
+          end
+        end
+      RUBY
+      cop.project_index = build_index(
+        'file:///current.rb' => source,
+        'file:///base.rb' => "class Base\nend\n"
+      )
+
+      expect_offense(<<~RUBY, 'current.rb')
+        class Child < Base
+          def get_value
+              ^^^^^^^^^ Do not prefix reader method names with `get_`.
+            @value
+          end
+        end
+      RUBY
+    end
+  end
 end

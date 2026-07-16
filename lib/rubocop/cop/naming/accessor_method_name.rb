@@ -11,6 +11,11 @@ module RuboCop
       # Getters (`get_attribute`) must have no arguments to be registered,
       # and setters (`set_attribute(value)`) must have exactly one.
       #
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+      # installed, methods that override a method defined by an ancestor
+      # elsewhere in the project are not reported, since renaming an override
+      # breaks the inherited contract.
+      #
       # @example
       #   # bad
       #   def set_attribute(value)
@@ -36,12 +41,15 @@ module RuboCop
       #   def set_value
       #   end
       class AccessorMethodName < Base
+        include ProjectIndexHelp
+
         MSG_READER = 'Do not prefix reader method names with `get_`.'
         MSG_WRITER = 'Do not prefix writer method names with `set_`.'
 
         def on_def(node)
           return unless proper_attribute_name?(node)
           return unless bad_reader_name?(node) || bad_writer_name?(node)
+          return if overrides_inherited_method?(node)
 
           message = message(node)
 
@@ -71,6 +79,54 @@ module RuboCop
           node.method_name.to_s.start_with?('set_') &&
             node.arguments.one? &&
             node.first_argument.arg_type?
+        end
+
+        # When `AllCops/UseProjectIndex` is enabled, methods that override a
+        # method defined by an ancestor elsewhere in the project are not
+        # reported: renaming an override breaks the inherited contract.
+        def overrides_inherited_method?(node)
+          return false unless project_index
+          return false unless (namespace_node = node.each_ancestor(:class, :module).first)
+
+          declaration = resolve_in_index(namespace_node)
+          return false unless declaration.is_a?(Rubydex::Namespace)
+
+          scope = node.defs_type? ? singleton_of(declaration) : declaration
+          !scope.nil? && inherited_member?(scope, "#{node.method_name}()")
+        rescue StandardError
+          false
+        end
+
+        def inherited_member?(scope, member_name)
+          scope.ancestors.any? do |ancestor|
+            ancestor.name != scope.name && ancestor.member(member_name)
+          end
+        end
+
+        def singleton_of(declaration)
+          project_index["#{declaration.name}::<#{declaration.name.split('::').last}>"]
+        end
+
+        def resolve_in_index(namespace_node)
+          segments = namespace_node.identifier.const_name.split('::')
+
+          declaration = project_index.resolve_constant(
+            segments.first, lexical_nesting(namespace_node)
+          )
+          segments.drop(1).each do |segment|
+            return nil unless declaration.is_a?(Rubydex::Namespace)
+
+            declaration = project_index.resolve_constant(segment, [declaration.name])
+          end
+
+          declaration
+        end
+
+        def lexical_nesting(namespace_node)
+          return [] if namespace_node.identifier.absolute?
+
+          namespace_node.each_ancestor(:class, :module)
+                        .map { |ancestor| ancestor.identifier.const_name }.reverse
         end
       end
     end

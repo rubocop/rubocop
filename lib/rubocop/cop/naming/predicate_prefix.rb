@@ -21,6 +21,11 @@ module RuboCop
       # offenses if the method has a Sorbet `sig` with a return type of
       # `T::Boolean`. Dynamic methods are not supported with this configuration.
       #
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+      # installed, methods that override a method defined by an ancestor
+      # elsewhere in the project are not reported, since renaming an override
+      # breaks the inherited contract.
+      #
       # @example NamePrefix: ['is_', 'has_', 'have_'] (default)
       #   # bad
       #   def is_even(value)
@@ -101,6 +106,7 @@ module RuboCop
       #   def_node_matcher(:even?) { |value| }
       #
       class PredicatePrefix < Base
+        include ProjectIndexHelp
         include AllowedMethods
 
         # @!method dynamic_method_define(node)
@@ -124,16 +130,22 @@ module RuboCop
         end
 
         def on_def(node)
-          predicate_prefixes.each do |prefix|
-            method_name = node.method_name.to_s
+          method_name = node.method_name.to_s
+          offending_prefixes = offending_prefixes_for(node, method_name)
+          return if offending_prefixes.empty? || overrides_inherited_method?(node)
 
-            next if allowed_method_name?(method_name, prefix)
-            next if use_sorbet_sigs? && !sorbet_sig?(node, return_type: 'T::Boolean')
-
+          offending_prefixes.each do |prefix|
             add_offense(
               node.loc.name,
               message: message(method_name, expected_name(method_name, prefix))
             )
+          end
+        end
+
+        def offending_prefixes_for(node, method_name)
+          predicate_prefixes.reject do |prefix|
+            allowed_method_name?(method_name, prefix) ||
+              (use_sorbet_sigs? && !sorbet_sig?(node, return_type: 'T::Boolean'))
           end
         end
         alias on_defs on_def
@@ -197,6 +209,54 @@ module RuboCop
 
         def method_definition_macro?(macro_name)
           cop_config['MethodDefinitionMacros'].include?(macro_name.to_s)
+        end
+
+        # When `AllCops/UseProjectIndex` is enabled, methods that override a
+        # method defined by an ancestor elsewhere in the project are not
+        # reported: renaming an override breaks the inherited contract.
+        def overrides_inherited_method?(node)
+          return false unless project_index
+          return false unless (namespace_node = node.each_ancestor(:class, :module).first)
+
+          declaration = resolve_in_index(namespace_node)
+          return false unless declaration.is_a?(Rubydex::Namespace)
+
+          scope = node.defs_type? ? singleton_of(declaration) : declaration
+          !scope.nil? && inherited_member?(scope, "#{node.method_name}()")
+        rescue StandardError
+          false
+        end
+
+        def inherited_member?(scope, member_name)
+          scope.ancestors.any? do |ancestor|
+            ancestor.name != scope.name && ancestor.member(member_name)
+          end
+        end
+
+        def singleton_of(declaration)
+          project_index["#{declaration.name}::<#{declaration.name.split('::').last}>"]
+        end
+
+        def resolve_in_index(namespace_node)
+          segments = namespace_node.identifier.const_name.split('::')
+
+          declaration = project_index.resolve_constant(
+            segments.first, lexical_nesting(namespace_node)
+          )
+          segments.drop(1).each do |segment|
+            return nil unless declaration.is_a?(Rubydex::Namespace)
+
+            declaration = project_index.resolve_constant(segment, [declaration.name])
+          end
+
+          declaration
+        end
+
+        def lexical_nesting(namespace_node)
+          return [] if namespace_node.identifier.absolute?
+
+          namespace_node.each_ancestor(:class, :module)
+                        .map { |ancestor| ancestor.identifier.const_name }.reverse
         end
       end
     end
