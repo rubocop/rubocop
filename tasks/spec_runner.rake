@@ -64,7 +64,7 @@ module RuboCop
     # A parallel spec runner implementation, heavily inspired by
     # `TestQueue::Runner::RSpec`, but modified so that it takes an argument
     # (an array of paths of specs to run) instead of relying on ARGV.
-    class ParallelRunner < ::TestQueue::Runner
+    class ParallelRunner < TestQueue::Runner
       SUMMARY_REGEXP = /(?<=# SUMMARY BEGIN\n).*(?=\n# SUMMARY END)/m.freeze
       FAILURE_OUTPUT_REGEXP = /(?<=# FAILURES BEGIN\n\n).*(?=# FAILURES END)/m.freeze
       RERUN_REGEXP = /(?<=# RERUN BEGIN\n).+(?=\n# RERUN END)/m.freeze
@@ -137,7 +137,7 @@ module RuboCop
 
     # A TestQueue framework that is explicitly given RSpec arguments instead of
     # implicitly reading ARGV.
-    class Framework < ::TestQueue::TestFramework::RSpec
+    class Framework < TestQueue::TestFramework::RSpec
       def initialize(rspec_args)
         super()
         formatter_args = %w[
