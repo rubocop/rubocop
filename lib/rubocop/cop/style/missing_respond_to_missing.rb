@@ -28,6 +28,11 @@ module RuboCop
       # delegator.upcase # => FOO
       # ----
       #
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+      # installed, `respond_to_missing?` defined in another definition of the
+      # same class or module (e.g. a reopening in another file) also
+      # satisfies the check.
+      #
       # @example
       #   # bad
       #   def method_missing(name, *args)
@@ -52,17 +57,68 @@ module RuboCop
       #   end
       #
       class MissingRespondToMissing < Base
+        include ProjectIndexHelp
+
         MSG = 'When using `method_missing`, define `respond_to_missing?`.'
 
         def on_def(node)
           return unless node.method?(:method_missing)
           return if implements_respond_to_missing?(node)
+          return if respond_to_missing_elsewhere?(node)
 
           add_offense(node)
         end
         alias on_defs on_def
 
         private
+
+        # When `AllCops/UseProjectIndex` is enabled, `respond_to_missing?`
+        # defined in another definition of the same class or module (e.g. a
+        # reopening in another file) also satisfies the check. Ancestors are
+        # not consulted: overriding `method_missing` warrants a matching
+        # `respond_to_missing?` for the same class.
+        def respond_to_missing_elsewhere?(node)
+          return false unless project_index
+          return false unless (namespace_node = node.each_ancestor(:class, :module).first)
+
+          declaration = resolve_in_index(namespace_node)
+          return false unless declaration.is_a?(Rubydex::Namespace)
+
+          scope = singleton_definition?(node) ? singleton_of(declaration) : declaration
+          !scope&.member('respond_to_missing?()').nil?
+        rescue StandardError
+          false
+        end
+
+        def singleton_definition?(node)
+          node.defs_type? || node.each_ancestor(:sclass, :class, :module).first&.sclass_type?
+        end
+
+        def singleton_of(declaration)
+          project_index["#{declaration.name}::<#{declaration.name.split('::').last}>"]
+        end
+
+        def resolve_in_index(namespace_node)
+          segments = namespace_node.identifier.const_name.split('::')
+
+          declaration = project_index.resolve_constant(
+            segments.first, lexical_nesting(namespace_node)
+          )
+          segments.drop(1).each do |segment|
+            return nil unless declaration.is_a?(Rubydex::Namespace)
+
+            declaration = project_index.resolve_constant(segment, [declaration.name])
+          end
+
+          declaration
+        end
+
+        def lexical_nesting(namespace_node)
+          return [] if namespace_node.identifier.absolute?
+
+          namespace_node.each_ancestor(:class, :module)
+                        .map { |ancestor| ancestor.identifier.const_name }.reverse
+        end
 
         def implements_respond_to_missing?(node)
           scope = enclosing_scope(node)
