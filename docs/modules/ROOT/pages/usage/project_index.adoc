@@ -78,6 +78,8 @@ the indexed project. Since symbol-based references from other files (e.g. Rails 
 declared in a concern) cannot be detected, it is best suited for occasional dead-code sweeps.
 `Style/MissingRespondToMissing` accepts a `respond_to_missing?` defined in another definition
 of the same class or module (e.g. a reopening in another file).
+`Lint/InheritException` also reports classes that inherit from `Exception` indirectly, through
+a parent class defined elsewhere in the project.
 
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 

@@ -12,6 +12,11 @@ module RuboCop
       #   exception class handle `StandardError` and its subclasses,
       #   but not `Exception` and its subclasses.
       #
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+      # installed, indirect inheritance is also detected: a class whose parent
+      # (defined anywhere in the project) ultimately inherits from `Exception`
+      # is reported, without autocorrection.
+      #
       # @example EnforcedStyle: standard_error (default)
       #   # bad
       #
@@ -39,9 +44,11 @@ module RuboCop
       #   C = Class.new(RuntimeError)
       class InheritException < Base
         include ConfigurableEnforcedStyle
+        include ProjectIndexHelp
         extend AutoCorrector
 
         MSG = 'Inherit from `%<prefer>s` instead of `Exception`.'
+        INDIRECT_MSG = 'Inherit from `%<prefer>s` instead of `Exception` (inherited via `%<via>s`).'
         PREFERRED_BASE_CLASS = {
           runtime_error: 'RuntimeError',
           standard_error: 'StandardError'
@@ -57,13 +64,20 @@ module RuboCop
         PATTERN
 
         def on_class(node)
-          return unless node.parent_class && exception_class?(node.parent_class)
-          return if inherit_exception_class_with_omitted_namespace?(node)
+          parent_class = node.parent_class
+          return unless parent_class
 
-          message = message(node.parent_class)
+          if exception_class?(parent_class)
+            return if inherit_exception_class_with_omitted_namespace?(node)
 
-          add_offense(node.parent_class, message: message) do |corrector|
-            corrector.replace(node.parent_class, preferred_base_class)
+            add_offense(parent_class, message: message(parent_class)) do |corrector|
+              corrector.replace(parent_class, preferred_base_class)
+            end
+          elsif (via = inherits_exception_via(node, parent_class))
+            # No autocorrection: the `Exception` inheritance lives at another
+            # class' definition site, possibly in another file.
+            message = format(INDIRECT_MSG, prefer: preferred_base_class, via: via)
+            add_offense(parent_class, message: message)
           end
         end
 
@@ -86,6 +100,62 @@ module RuboCop
 
         def exception_class?(class_node)
           class_node.const_name == 'Exception'
+        end
+
+        # When `AllCops/UseProjectIndex` is enabled, indirect inheritance is
+        # detected by walking the parent's indexed ancestry: `Exception` itself
+        # is not indexed, so a chain ending in it shows up as an ancestor whose
+        # superclass reference is unresolved and literally named `Exception`.
+        # Returns the name of that ancestor, or `nil`.
+        def inherits_exception_via(node, parent_class)
+          return nil unless project_index && parent_class.const_type?
+
+          declaration = resolve_in_index(node, parent_class)
+          return nil unless declaration.is_a?(Rubydex::Class)
+
+          exception_ancestor(declaration)&.name
+        rescue StandardError
+          nil
+        end
+
+        def exception_ancestor(declaration)
+          declaration.ancestors.find do |ancestor|
+            ancestor.is_a?(Rubydex::Class) && exception_superclass_reference?(ancestor)
+          end
+        end
+
+        def exception_superclass_reference?(ancestor)
+          ancestor.definitions.any? do |definition|
+            next false unless definition.is_a?(Rubydex::ClassDefinition)
+
+            superclass = definition.superclass
+            superclass.is_a?(Rubydex::UnresolvedConstantReference) &&
+              superclass.name.delete_prefix('::') == 'Exception'
+          end
+        end
+
+        def resolve_in_index(node, parent_class)
+          segments = parent_class.const_name.split('::')
+
+          declaration = project_index.resolve_constant(
+            segments.first, lexical_nesting(node, parent_class)
+          )
+          segments.drop(1).each do |segment|
+            return nil unless declaration.is_a?(Rubydex::Namespace)
+
+            declaration = project_index.resolve_constant(segment, [declaration.name])
+          end
+
+          declaration
+        end
+
+        # The superclass expression resolves in the scopes enclosing the class
+        # definition, not inside it.
+        def lexical_nesting(node, parent_class)
+          return [] if parent_class.absolute?
+
+          node.each_ancestor(:class, :module)
+              .map { |ancestor| ancestor.identifier.const_name }.reverse
         end
 
         def inherit_exception_class_with_omitted_namespace?(class_node)
