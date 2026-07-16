@@ -17,6 +17,14 @@ module RuboCop
       # remains after stripping `file://` from a `file:///C:/...` URI.
       WINDOWS_DRIVE_PREFIX = %r{\A/(?=[A-Za-z]:[/\\])}.freeze
 
+      class << self
+        # The signature is a property of the index, not of the cop, and computing
+        # it stats every indexed file, so all cops sharing an index share one
+        # computation. A single-entry cache (instead of a hash keyed by index)
+        # avoids retaining stale graphs in long-lived processes.
+        attr_accessor :cached_index_signature
+      end
+
       def external_dependency_checksum
         return nil unless project_index
 
@@ -116,6 +124,15 @@ module RuboCop
       end
 
       def project_index_signature
+        index, signature = ProjectIndexHelp.cached_index_signature
+        return signature if index.equal?(project_index)
+
+        compute_project_index_signature.tap do |computed|
+          ProjectIndexHelp.cached_index_signature = [project_index, computed]
+        end
+      end
+
+      def compute_project_index_signature
         project_index.documents.filter_map do |doc|
           uri = doc.uri
           next if uri == BUILTIN_DOCUMENT_URI

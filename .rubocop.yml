@@ -219,6 +219,7 @@ RSpec/SpecFilePathFormat:
     RedundantLetRuboCopConfigNew: redundant_let_rubocop_config_new
   Exclude:
     - spec/rubocop/cop/mixin/enforce_superclass_spec.rb
+    - spec/rubocop/cop/mixin/project_index_help_spec.rb
 
 RSpec/MessageSpies:
   EnforcedStyle: receive
