@@ -1715,6 +1715,7 @@ Lint/ConstantReassignment:
 
 Lint/ConstantResolution:
   Description: 'Checks that constants are fully qualified with `::`.'
+  VersionChanged: '<<next>>'
   Enabled: false
   VersionAdded: '0.86'
   # Restrict this cop to only looking at certain names
