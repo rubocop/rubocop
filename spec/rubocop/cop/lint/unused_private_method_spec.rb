@@ -13,13 +13,6 @@ RSpec.describe RuboCop::Cop::Lint::UnusedPrivateMethod, :config do
   end
 
   context 'with a project index', :project_index do
-    def build_index(sources)
-      graph = Rubydex::Graph.new
-      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
-      graph.resolve
-      graph
-    end
-
     def index_with_current(sources = {})
       build_index(sources.merge('file:///lib/current.rb' => current_source))
     end

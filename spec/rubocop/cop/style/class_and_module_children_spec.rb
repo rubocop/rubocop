@@ -915,13 +915,6 @@ RSpec.describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
   end
 
   context 'with a project index', :project_index do
-    def build_index(sources)
-      graph = Rubydex::Graph.new
-      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
-      graph.resolve
-      graph
-    end
-
     context 'EnforcedStyle: nested' do
       let(:cop_config) { { 'EnforcedStyle' => 'nested' } }
 

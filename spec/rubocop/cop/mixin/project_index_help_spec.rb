@@ -11,13 +11,6 @@ RSpec.describe RuboCop::Cop::ProjectIndexHelp, :project_index do
     end
   end
 
-  def build_index(sources)
-    graph = Rubydex::Graph.new
-    sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
-    graph.resolve
-    graph
-  end
-
   describe '#resolve_constant_in_index' do
     it 'resolves a qualified reference to a member of a nested namespace' do
       source = <<~RUBY
