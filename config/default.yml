@@ -5424,6 +5424,7 @@ Style/RedundantConditional:
 
 Style/RedundantConstantBase:
   Description: Avoid redundant `::` prefix on constant.
+  VersionChanged: '<<next>>'
   Enabled: pending
   VersionAdded: '1.40'
 

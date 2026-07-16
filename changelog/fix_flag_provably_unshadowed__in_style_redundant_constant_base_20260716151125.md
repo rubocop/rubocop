@@ -1,0 +1,1 @@
+* [#15486](https://github.com/rubocop/rubocop/pull/15486): Fix false negatives for `Style/RedundantConstantBase` inside namespaces when the constant provably resolves identically without `::` (`UseProjectIndex`). ([@bbatsov][])

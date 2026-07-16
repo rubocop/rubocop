@@ -14,6 +14,11 @@ module RuboCop
       # to prevent conflicting rules. This is because it respects user configurations
       # that want to enable `Lint/ConstantResolution` cop which is disabled by default.
       #
+      # When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+      # installed, a leading `::` inside a namespace is also reported when the
+      # constant provably resolves to the same declaration with and without
+      # the base, i.e. nothing in the surrounding nesting shadows it.
+      #
       # @example
       #   # bad
       #   ::Const
@@ -41,13 +46,14 @@ module RuboCop
       #     ::Const
       #   end
       class RedundantConstantBase < Base
+        include ProjectIndexHelp
         extend AutoCorrector
 
         MSG = 'Remove redundant `::`.'
 
         def on_cbase(node)
           return if lint_constant_resolution_cop_enabled?
-          return unless bad?(node)
+          return unless bad?(node) || provably_unshadowed?(node)
 
           add_offense(node) do |corrector|
             corrector.remove(node)
@@ -55,6 +61,36 @@ module RuboCop
         end
 
         private
+
+        # When `AllCops/UseProjectIndex` is enabled, `::` inside a namespace is
+        # also redundant when the first constant segment resolves to the same
+        # declaration with and without the base, i.e. nothing in the
+        # surrounding nesting shadows it.
+        def provably_unshadowed?(node)
+          return false unless project_index
+          return false unless (segment = first_constant_segment(node))
+
+          nesting = module_nesting_ancestors_of(node)
+                    .map { |ancestor| ancestor.identifier.const_name }.reverse
+
+          !nesting.empty? && same_resolution?(segment, nesting)
+        rescue StandardError
+          false
+        end
+
+        def same_resolution?(segment, nesting)
+          relative = project_index.resolve_constant(segment, nesting)
+          absolute = project_index.resolve_constant(segment, [])
+
+          !relative.nil? && !absolute.nil? && relative.name == absolute.name
+        end
+
+        def first_constant_segment(node)
+          parent = node.parent
+          return nil unless parent&.const_type?
+
+          parent.short_name.to_s
+        end
 
         def lint_constant_resolution_cop_enabled?
           lint_constant_resolution_config.fetch('Enabled', false)

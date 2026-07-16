@@ -109,4 +109,77 @@ RSpec.describe RuboCop::Cop::Style::RedundantConstantBase, :config do
       end
     end
   end
+
+  context 'with a project index', :project_index do
+    def build_index(sources)
+      graph = Rubydex::Graph.new
+      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+      graph.resolve
+      graph
+    end
+
+    def index_with_current(source, sources = {})
+      build_index(sources.merge('file:///current.rb' => source))
+    end
+
+    it 'registers an offense inside a namespace when nothing shadows the constant' do
+      source = <<~RUBY
+        module App
+          def self.load
+            ::Config.load
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, 'file:///config.rb' => "class Config\nend\n"
+      )
+
+      expect_offense(<<~RUBY, 'current.rb')
+        module App
+          def self.load
+            ::Config.load
+            ^^ Remove redundant `::`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        module App
+          def self.load
+            Config.load
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the namespace shadows the constant' do
+      source = <<~RUBY
+        module App
+          def self.load
+            ::Config.load
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source,
+        'file:///config.rb' => "class Config\nend\n",
+        'file:///app_config.rb' => "module App\n  class Config\n  end\nend\n"
+      )
+
+      expect_no_offenses(source, 'current.rb')
+    end
+
+    it 'does not register an offense when the constant is not in the index' do
+      source = <<~RUBY
+        module App
+          def self.parse(json)
+            ::JSON.parse(json)
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(source)
+
+      expect_no_offenses(source, 'current.rb')
+    end
+  end
 end
