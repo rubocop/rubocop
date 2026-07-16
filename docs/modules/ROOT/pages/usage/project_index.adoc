@@ -81,6 +81,8 @@ of the same class or module (e.g. a reopening in another file).
 `Lint/InheritException` also reports classes that inherit from `Exception` indirectly, through
 a parent class defined elsewhere in the project.
 `Style/StaticClass` does not report classes that are subclassed anywhere in the project.
+`Naming/PredicatePrefix` and `Naming/AccessorMethodName` do not suggest renaming methods
+that override a method defined by an ancestor elsewhere in the project.
 
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 

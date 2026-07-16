@@ -1,0 +1,1 @@
+* [#15488](https://github.com/rubocop/rubocop/pull/15488): Fix false positives for `Naming/PredicatePrefix` and `Naming/AccessorMethodName` when the method overrides an ancestor method defined in the project (`UseProjectIndex`). ([@bbatsov][])
