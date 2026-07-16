@@ -56,4 +56,10 @@ Index-aware cops automatically pick up the index whenever it is built; no per-co
 - `rubydex` requires Ruby 3.2 or newer and ships native (Rust) extensions.
 - Parallel inspection is currently disabled on Windows when `UseProjectIndex` is on;
   use serial inspection (omit `--parallel`).
-- The index is rebuilt once per `rubocop` invocation; no on-disk index is shared between runs.
+- The index always covers the whole project (rooted at the directory containing `Gemfile`
+  or `gems.rb`, falling back to the current directory), regardless of which files a
+  particular run inspects. Inspecting a single file therefore reports the same cross-file
+  offenses as a full run.
+- The index is rebuilt once per `rubocop` invocation; no on-disk index is shared between
+  runs. Indexing is fast (roughly 100ms for a couple thousand files), but very large
+  monorepos will notice the per-run cost on single-file runs.

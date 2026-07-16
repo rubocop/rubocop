@@ -72,7 +72,7 @@ module RuboCop
       ResultCache.source_checksum
 
       target_files = find_target_files(paths)
-      @project_index = ProjectIndexLoader.build_index(target_files) if project_index_enabled?
+      build_project_index(target_files)
 
       if @options[:list_target_files]
         list_files(target_files)
@@ -102,6 +102,24 @@ module RuboCop
              end
       target_files = target_finder.find(paths, mode)
       target_files.each(&:freeze).freeze
+    end
+
+    def build_project_index(target_files)
+      return unless project_index_enabled?
+
+      @project_index = ProjectIndexLoader.build_index(project_index_files(target_files))
+    end
+
+    # The index always covers the whole project, not just the files being
+    # inspected: cross-file offenses must not depend on which files a
+    # particular run happens to include, or single-file runs (editors, CI
+    # sharding) would see different offenses than full runs. The project is
+    # rooted at the directory of the configuration that enabled the index.
+    def project_index_files(target_files)
+      root = @config_store.for_pwd.base_dir_for_path_parameters
+      (find_target_files([root]) | target_files).sort
+    rescue Errno::ENOENT
+      target_files
     end
 
     def project_index_enabled?

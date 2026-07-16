@@ -19,13 +19,13 @@ module ProjectIndexSpecHelpers
     File.write(File.join(tmpdir, '.rubocop.yml'), YAML.dump(merged))
   end
 
-  def project_index_offenses(tmpdir, cache_root: nil)
+  def project_index_offenses(tmpdir, cache_root: nil, paths: nil)
     output_path = File.join(tmpdir, 'offenses.json')
     Dir.chdir(tmpdir) do
       config_store = RuboCop::ConfigStore.new
       config_store.options_config = File.join(tmpdir, '.rubocop.yml')
       options = project_index_runner_options(output_path, cache_root)
-      RuboCop::Runner.new(options, config_store).run([tmpdir])
+      RuboCop::Runner.new(options, config_store).run(paths || [tmpdir])
     end
     JSON.load_file(output_path).fetch('files').flat_map { |f| f['offenses'] }
   end

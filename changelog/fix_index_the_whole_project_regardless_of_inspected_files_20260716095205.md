@@ -1,0 +1,1 @@
+* [#15481](https://github.com/rubocop/rubocop/pull/15481): Fix cross-file offenses depending on which files are inspected: the project index now always covers the whole project (`UseProjectIndex`). ([@bbatsov][])

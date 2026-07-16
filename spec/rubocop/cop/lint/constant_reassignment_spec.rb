@@ -633,6 +633,25 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
       expect(offenses.map { |o| o['message'] }).to all(include('already assigned in'))
     end
 
+    it 'reports a cross-file collision when only one file is inspected' do
+      Dir.mktmpdir do |tmpdir|
+        stage_fixture(tmpdir)
+        write_rubocop_config(
+          tmpdir,
+          'AllCops' => { 'UseProjectIndex' => true },
+          'Lint/ConstantReassignment' => { 'Enabled' => true }
+        )
+
+        # The index covers the whole project even when a single file is
+        # inspected, so the offense set does not depend on the run's scope.
+        offenses = project_index_offenses(tmpdir, paths: [File.join(tmpdir, 'a.rb')])
+                   .select { |offense| offense['cop_name'] == 'Lint/ConstantReassignment' }
+
+        expect(offenses).not_to be_empty
+        expect(offenses.map { |o| o['message'] }).to all(include('already assigned in'))
+      end
+    end
+
     it 'does not report any offense when UseProjectIndex is disabled' do
       offenses = run_with_config(
         'AllCops' => { 'UseProjectIndex' => false },
