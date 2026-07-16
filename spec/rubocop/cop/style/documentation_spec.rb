@@ -572,13 +572,6 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
       path.start_with?('/') ? "file://#{path}" : "file:///#{path}"
     end
 
-    def build_index(sources)
-      graph = Rubydex::Graph.new
-      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
-      graph.resolve
-      graph
-    end
-
     def index_with_current(source, sources = {})
       build_index(sources.merge(file_uri(current_path) => source))
     end

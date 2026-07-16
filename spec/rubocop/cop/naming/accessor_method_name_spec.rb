@@ -186,13 +186,6 @@ RSpec.describe RuboCop::Cop::Naming::AccessorMethodName, :config do
   end
 
   context 'with a project index', :project_index do
-    def build_index(sources)
-      graph = Rubydex::Graph.new
-      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
-      graph.resolve
-      graph
-    end
-
     it 'does not register an offense when the method overrides an ancestor method' do
       source = <<~RUBY
         class Child < Base

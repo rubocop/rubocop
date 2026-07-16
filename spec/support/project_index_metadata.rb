@@ -13,6 +13,15 @@ module ProjectIndexSpecHelpers
     'AllowSymlinksInCacheRootDirectory' => true
   }.freeze
 
+  # Builds a resolved in-memory index from a `uri => source` hash, for specs
+  # that exercise index-aware cop logic directly.
+  def build_index(sources)
+    graph = Rubydex::Graph.new
+    sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+    graph.resolve
+    graph
+  end
+
   def write_rubocop_config(tmpdir, config)
     merged = config.dup
     merged['AllCops'] = DEFAULT_ALL_COPS.merge(merged.fetch('AllCops', {}))
