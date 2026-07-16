@@ -1,0 +1,1 @@
+* [#15483](https://github.com/rubocop/rubocop/pull/15483): Fix a false positive for `Style/MissingRespondToMissing` when `respond_to_missing?` is defined in a reopening of the class and `UseProjectIndex` is enabled. ([@bbatsov][])

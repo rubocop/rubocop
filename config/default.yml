@@ -4802,6 +4802,7 @@ Style/MissingRespondToMissing:
   StyleGuide: '#no-method-missing'
   Enabled: true
   VersionAdded: '0.56'
+  VersionChanged: '<<next>>'
 
 Style/MixinGrouping:
   Description: 'Checks for grouping of mixins in `class` and `module` bodies.'
