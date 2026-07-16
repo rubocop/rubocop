@@ -31,14 +31,8 @@ module RuboCop
         # @!method allowed_pin_operator?(node)
         def_node_matcher :allowed_pin_operator?, '^(pin (begin !{lvar ivar cvar gvar}))'
 
-        # Above this size, an unverifiable candidate is reported based on the
-        # message logic alone (the pre-verification behavior) instead of
-        # reparsing a huge fragment per candidate; in practice only
-        # machine-generated files come near it.
-        MAX_VERIFICATION_FRAGMENT_SIZE = 64 * 1024
-
         def on_new_investigation
-          @pending_offenses = []
+          @pending_offenses = {}.compare_by_identity
           super
         end
 
@@ -49,8 +43,11 @@ module RuboCop
         end
 
         def on_investigation_end
-          verified_offenses.each do |node, message|
-            add_offense(node, message: message) do |corrector|
+          # Each candidate's exact correction is verified by reparsing before
+          # the offense is registered, so redundancy never depends on
+          # hand-maintained knowledge of Ruby's grammar.
+          verified_by_reparse(@pending_offenses.keys).each do |node|
+            add_offense(node, message: @pending_offenses[node]) do |corrector|
               ParenthesesCorrector.correct(corrector, node)
             end
           end
@@ -249,93 +246,48 @@ module RuboCop
         end
 
         def offense(node, msg)
-          @pending_offenses << [node, "Don't use parentheses around #{msg}."]
+          @pending_offenses[node] = "Don't use parentheses around #{msg}."
         end
 
-        # Each candidate's exact correction is applied to a copy of the source
-        # and verified to parse to the same AST (modulo the removed grouping)
-        # before the offense is registered, so redundancy never depends on
-        # hand-maintained knowledge of Ruby's grammar. Candidates sharing a
-        # reparse scope are verified together with a single reparse first,
-        # falling back to per-candidate verification only when the batch does
-        # not hold.
-        def verified_offenses
-          # Group by scope identity: structurally identical definitions in
-          # different places must not share a group.
-          groups = {}.compare_by_identity
-          @pending_offenses.each do |offense|
-            (groups[reparse_scope(offense.first)] ||= []) << offense
-          end
-
-          groups.flat_map do |scope, offenses|
-            if offenses.one? || !batch_verified?(scope, offenses)
-              offenses.select { |node, _| verified_correction?(scope, node) }
-            else
-              offenses
-            end
-          end
-        end
-
-        # Method definitions and class/module bodies neither capture outer
-        # local variables nor continue an outer expression, so they parse
-        # standalone. Blocks and single statements do not qualify: an outer
-        # local would reparse as a method call.
-        def reparse_scope(node)
-          scope = node.each_ancestor(:any_def, :class, :module, :sclass).first
-          scope if scope&.source_range&.contains?(node.source_range)
-        end
-
-        def batch_verified?(scope, offenses)
-          corrector = Corrector.new(processed_source)
-          offenses.map(&:first).each { |node| ParenthesesCorrector.correct(corrector, node) }
-
-          corrected_source_verified?(scope, corrector.process)
-        rescue ::Parser::ClobberingError
-          false
-        end
-
-        def verified_correction?(scope, node)
-          return true if scope && scope.source_range.size > MAX_VERIFICATION_FRAGMENT_SIZE
-
-          corrector = Corrector.new(processed_source)
+        def apply_reparse_correction(corrector, node)
           ParenthesesCorrector.correct(corrector, node)
-
-          corrected_source_verified?(scope, corrector.process)
         end
 
-        # The correction's edits are all contained within the scope, so the
-        # corrected fragment can be cut out of the corrected source by
-        # adjusting for the edits' length delta.
-        def corrected_source_verified?(scope, corrected)
-          if scope
-            delta = corrected.length - processed_source.raw_source.length
-            scope_range = scope.source_range
-            fragment = corrected[scope_range.begin_pos...(scope_range.end_pos + delta)]
+        # Grouping parentheses are transparent to the comparison: single-child
+        # `begin` nodes are collapsed, a parenthesized statement sequence
+        # inside another sequence is spliced in place, and chains of the same
+        # `&&`/`||` operator are normalized to left association (`x && (y &&
+        # z)` and `x && y && z` differ as trees but `&&` and `||` cannot be
+        # redefined, so same-operator regrouping is semantically transparent).
+        def normalize_reparsed_ast(node)
+          return node unless node.is_a?(::Parser::AST::Node)
 
-            parses_fragment_identically_ignoring_grouping?(scope, fragment)
+          children = node.children.map { |child| normalize_reparsed_ast(child) }
+          children = splice_nested_sequences(children) if %i[begin kwbegin].include?(node.type)
+
+          node = node.updated(nil, children)
+          if node.begin_type? && children.one? && children.first.is_a?(::Parser::AST::Node)
+            children.first
           else
-            parses_identically_ignoring_grouping?(corrected)
+            rotate_same_operator(node)
           end
         end
 
-        # `&&` and `||` cannot be redefined, so regrouping a chain of the same
-        # operator (`x && (y && z)` to `x && y && z`) is semantically
-        # transparent even though the trees differ; normalize both to left
-        # association before comparing.
-        def collapse_groupings(node)
-          collapsed = super
-          return collapsed unless collapsed.is_a?(::Parser::AST::Node)
-
-          left, right = collapsed.children
-          if collapsed.type?(:and, :or) &&
-             right.is_a?(::Parser::AST::Node) && right.type == collapsed.type
-            inner_left, inner_right = right.children
-            collapsed = collapse_groupings(
-              collapsed.updated(nil, [collapsed.updated(nil, [left, inner_left]), inner_right])
-            )
+        def splice_nested_sequences(children)
+          children.flat_map do |child|
+            child.is_a?(::Parser::AST::Node) && child.begin_type? ? child.children : [child]
           end
+        end
 
-          collapsed
+        def rotate_same_operator(node)
+          return node unless node.type?(:and, :or)
+
+          right = node.rhs
+          return node unless right.is_a?(::Parser::AST::Node) && right.type == node.type
+
+          rotated_left = rotate_same_operator(node.updated(nil, [node.lhs, right.lhs]))
+
+          rotate_same_operator(node.updated(nil, [rotated_left, right.rhs]))
         end
 
         def suspect_unary?(node)

@@ -48,6 +48,7 @@ module RuboCop
       #   end if condition_a
       class SoleNestedConditional < Base
         include RangeHelp
+        include ReparsedEquivalence
         extend AutoCorrector
 
         MSG = 'Consider merging nested conditions into outer `%<conditional_type>s` conditions.'
@@ -60,7 +61,7 @@ module RuboCop
           return unless offending_conditional?(node)
 
           if_branch = node.if_branch
-          return unless correction_parses?(node, if_branch)
+          return unless correction_parses?(node)
 
           message = format(MSG, conditional_type: node.keyword)
           add_offense(if_branch.loc.keyword, message: message) do |corrector|
@@ -84,16 +85,10 @@ module RuboCop
 
         # Merging the conditionals intentionally produces a different AST, so
         # full equivalence cannot be checked, but the corrected source must at
-        # least remain parseable: the exact correction is applied to a copy of
-        # the source and reparsed before the offense is registered, which
-        # suppresses the entire produces-invalid-code bug class.
-        def correction_parses?(node, if_branch)
-          corrector = Corrector.new(processed_source)
-          autocorrect(corrector, node, if_branch)
-
-          parse(corrector.process, processed_source.path).valid_syntax?
-        rescue ::Parser::ClobberingError
-          false
+        # least remain parseable (see `ReparsedEquivalence#correction_parses?`),
+        # which suppresses the entire produces-invalid-code bug class.
+        def apply_reparse_correction(corrector, node)
+          autocorrect(corrector, node, node.if_branch)
         end
 
         def use_variable_assignment_in_condition?(condition, if_branch)

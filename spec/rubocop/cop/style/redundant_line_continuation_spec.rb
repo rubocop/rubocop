@@ -1092,6 +1092,19 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'registers an offense when `__FILE__` appears in the surrounding scope' do
+    expect_offense(<<~'RUBY')
+      class A
+        ROOT = __FILE__
+        def same
+          foo(bar, \
+                   ^ Redundant line continuation.
+              baz)
+        end
+      end
+    RUBY
+  end
+
   it 'registers an offense for a line continuation after the last string of a concatenation' do
     expect_offense(<<~'RUBY')
       def foo
