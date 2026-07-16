@@ -561,4 +561,130 @@ RSpec.describe RuboCop::Cop::Style::Documentation, :config do
       end
     end
   end
+
+  context 'with a project index', :project_index do
+    # Platform-realistic paths: the cop compares indexed definition paths
+    # with the inspected file's path.
+    let(:current_path) { File.expand_path('current.rb') }
+    let(:other_path) { File.expand_path('other.rb') }
+
+    def file_uri(path)
+      path.start_with?('/') ? "file://#{path}" : "file:///#{path}"
+    end
+
+    def build_index(sources)
+      graph = Rubydex::Graph.new
+      sources.each { |uri, source| graph.index_source(uri, source, 'ruby') }
+      graph.resolve
+      graph
+    end
+
+    def index_with_current(source, sources = {})
+      build_index(sources.merge(file_uri(current_path) => source))
+    end
+
+    it 'does not register an offense when the class is documented at another definition site' do
+      source = <<~RUBY
+        class Person
+          def foo; end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, file_uri(other_path) => "# Description of Person.\nclass Person\nend\n"
+      )
+
+      expect_no_offenses(source, current_path)
+    end
+
+    it 'does not register an offense when an earlier definition in the same file is documented' do
+      source = <<~RUBY
+        # Description of Person.
+        class Person
+        end
+
+        class Person
+          def foo; end
+        end
+      RUBY
+      cop.project_index = index_with_current(source)
+
+      expect_no_offenses(source, current_path)
+    end
+
+    it 'registers an offense when no definition site is documented' do
+      source = <<~RUBY
+        class Person
+          def foo; end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, file_uri(other_path) => "class Person\nend\n"
+      )
+
+      expect_offense(<<~RUBY, current_path)
+        class Person
+        ^^^^^^^^^^^^ Missing top-level documentation comment for `class Person`.
+          def foo; end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the other definition only has directive comments' do
+      source = <<~RUBY
+        class Person
+          def foo; end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source,
+        file_uri(other_path) => "# rubocop:disable Style/ClassVars\nclass Person\nend\n" \
+                                "# rubocop:enable Style/ClassVars\n"
+      )
+
+      expect_offense(<<~RUBY, current_path)
+        class Person
+        ^^^^^^^^^^^^ Missing top-level documentation comment for `class Person`.
+          def foo; end
+        end
+      RUBY
+    end
+
+    it 'resolves nested namespaces to the right declaration' do
+      source = <<~RUBY
+        module Outer
+          class Person
+            def foo; end
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source,
+        file_uri(other_path) => "module Outer\n  # Documented here.\n  class Person\n  end\nend\n"
+      )
+
+      expect_no_offenses(source, current_path)
+    end
+
+    it 'registers an offense when only a different class with the same name is documented' do
+      source = <<~RUBY
+        module Outer
+          class Person
+            def foo; end
+          end
+        end
+      RUBY
+      cop.project_index = index_with_current(
+        source, file_uri(other_path) => "# Top-level Person.\nclass Person\nend\n"
+      )
+
+      expect_offense(<<~RUBY, current_path)
+        module Outer
+          class Person
+          ^^^^^^^^^^^^ Missing top-level documentation comment for `class Outer::Person`.
+            def foo; end
+          end
+        end
+      RUBY
+    end
+  end
 end

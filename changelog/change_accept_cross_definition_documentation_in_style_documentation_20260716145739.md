@@ -1,0 +1,1 @@
+* [#15482](https://github.com/rubocop/rubocop/pull/15482): Change `Style/Documentation` to accept a reopened class or module documented at another definition site when `UseProjectIndex` is enabled. ([@bbatsov][])
