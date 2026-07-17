@@ -110,6 +110,12 @@ AllCops:
   # a warning is shown and the flag has no effect.
   # The default `false` preserves RuboCop's traditional file-local analysis.
   UseProjectIndex: false
+  # When the project index is enabled, also index the sources of the gems in
+  # the project's bundle. This lets index-aware cops resolve ancestry chains
+  # and members that live in gems (e.g. framework base classes), at the cost
+  # of extra memory proportional to the bundle's size. Has no effect when
+  # `UseProjectIndex` is `false` or when RuboCop does not run inside Bundler.
+  ProjectIndexIncludesGems: false
   # Enables the result cache if `true`. Can be overridden by the `--cache` command
   # line option.
   UseCache: true

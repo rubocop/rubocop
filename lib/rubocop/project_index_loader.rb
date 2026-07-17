@@ -62,5 +62,21 @@ module RuboCop
     rescue StandardError => e
       warn Rainbow("rubydex index build failed: #{e.message}. Continuing without it.").yellow
     end
+
+    # The Ruby source files of every gem in the project's bundle, for
+    # `AllCops/ProjectIndexIncludesGems`. Returns an empty array when RuboCop
+    # does not run inside Bundler, so the option silently degrades to
+    # project-only indexing.
+    def bundled_gem_source_files
+      return [] unless defined?(Bundler) && Bundler::SharedHelpers.in_bundle?
+
+      Bundler.load.specs.flat_map do |spec|
+        Dir.glob(File.join(spec.full_gem_path, 'lib', '**', '*.rb'))
+      end
+    rescue StandardError => e
+      message = "rubydex bundle indexing failed: #{e.message}. Indexing the project only."
+      warn Rainbow(message).yellow
+      []
+    end
   end
 end
