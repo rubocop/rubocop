@@ -179,31 +179,9 @@ module RuboCop
           inherited = ancestors.reject { |ancestor| ancestor.name == declaration.name }
           return false if inherited.any? { |ancestor| ancestor.member('initialize()') }
 
-          ancestors.all? { |ancestor| resolved_ancestry_definitions?(ancestor) }
-        end
-
-        def resolved_ancestry_definitions?(declaration)
-          declaration.definitions.all? do |definition|
-            superclass_reference_resolved?(definition) && mixin_references_resolved?(definition)
-          end
-        end
-
-        def superclass_reference_resolved?(definition)
-          return true unless definition.is_a?(Rubydex::ClassDefinition)
-
-          !definition.superclass.is_a?(Rubydex::UnresolvedConstantReference)
-        end
-
-        def mixin_references_resolved?(definition)
-          return true unless definition.respond_to?(:mixins)
-
-          definition.mixins.none? do |mixin|
-            # `extend` affects the singleton class and cannot introduce an
-            # inherited `initialize`.
-            next false if mixin.is_a?(Rubydex::Extend)
-
-            mixin.constant_reference.is_a?(Rubydex::UnresolvedConstantReference)
-          end
+          # `extend` affects the singleton class and cannot introduce an
+          # inherited `initialize`, so unresolved extends are tolerated.
+          fully_resolved_index_ancestry?(declaration, ignore_extend: true)
         end
       end
     end

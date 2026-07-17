@@ -119,6 +119,38 @@ module RuboCop
         end
       end
 
+      # Whether every link of the declaration's ancestry is resolved in the
+      # index: no definition of any ancestor has an unresolved superclass or
+      # mixin reference. Unresolved links silently vanish from `ancestors`,
+      # so this is the completeness check that must pass before reasoning
+      # about what an ancestry does or does not define. `extend` mixins only
+      # affect the singleton class; pass `ignore_extend: true` when reasoning
+      # about instance-side ancestry only.
+      def fully_resolved_index_ancestry?(declaration, ignore_extend: false)
+        declaration.ancestors.all? do |ancestor|
+          ancestor.definitions.all? do |definition|
+            resolved_superclass_reference?(definition) &&
+              resolved_mixin_references?(definition, ignore_extend: ignore_extend)
+          end
+        end
+      end
+
+      def resolved_superclass_reference?(definition)
+        return true unless definition.is_a?(Rubydex::ClassDefinition)
+
+        !definition.superclass.is_a?(Rubydex::UnresolvedConstantReference)
+      end
+
+      def resolved_mixin_references?(definition, ignore_extend: false)
+        return true unless definition.respond_to?(:mixins)
+
+        definition.mixins.none? do |mixin|
+          next false if ignore_extend && mixin.is_a?(Rubydex::Extend)
+
+          mixin.constant_reference.is_a?(Rubydex::UnresolvedConstantReference)
+        end
+      end
+
       def same_file?(path, other)
         return true if File.identical?(path, other)
 
