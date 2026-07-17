@@ -878,30 +878,38 @@ RSpec.describe RuboCop::Cop::Lint::Void, :config do
     RUBY
   end
 
-  it 'registers two offenses for void literals in a setter method' do
+  it 'registers an offense only for the non-last void literal in a setter method' do
     expect_offense(<<~RUBY)
       def foo=(rhs)
         42
         ^^ Literal `42` used in void context.
         42
-        ^^ Literal `42` used in void context.
       end
     RUBY
 
     expect_no_corrections
   end
 
-  it 'registers two offenses for void literals in a class setter method' do
+  it 'registers an offense only for the non-last void literal in a class setter method' do
     expect_offense(<<~RUBY)
       def self.foo=(rhs)
         42
         ^^ Literal `42` used in void context.
         42
-        ^^ Literal `42` used in void context.
       end
     RUBY
 
     expect_no_corrections
+  end
+
+  it 'does not register an offense for the return value of a setter method' do
+    expect_no_offenses(<<~RUBY)
+      def name=(name)
+        @name = name
+        reset
+        name
+      end
+    RUBY
   end
 
   it 'registers an offense only for non-last void literal in a `#each` method' do
