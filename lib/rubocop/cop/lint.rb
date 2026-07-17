@@ -80,6 +80,7 @@ module RuboCop
       register_cop :MixedCaseRange, "#{__dir__}/lint/mixed_case_range"
       register_cop :MixedRegexpCaptureTypes, "#{__dir__}/lint/mixed_regexp_capture_types"
       register_cop :MultipleComparison, "#{__dir__}/lint/multiple_comparison"
+      register_cop :NameTypo, "#{__dir__}/lint/name_typo"
       register_cop :NestedMethodDefinition, "#{__dir__}/lint/nested_method_definition"
       register_cop :NestedPercentLiteral, "#{__dir__}/lint/nested_percent_literal"
       register_cop :NextWithoutAccumulator, "#{__dir__}/lint/next_without_accumulator"
