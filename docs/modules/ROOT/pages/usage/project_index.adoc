@@ -34,6 +34,27 @@ its standard file-local behavior.
 The integration requires Ruby 3.2 or later. On Ruby 3.1 and older, `AllCops/UseProjectIndex`
 has no effect even if set to `true`.
 
+=== Indexing gem sources
+
+By default the index covers only the project's own files, so ancestry chains and members
+that live in gems are unresolvable, and index-aware cops fall back to their conservative
+behavior whenever one is involved (e.g. a class inheriting from a framework base class).
+Setting `AllCops/ProjectIndexIncludesGems: true` additionally indexes the sources of every
+gem in the project's bundle:
+
+[source,yaml]
+----
+AllCops:
+  UseProjectIndex: true
+  ProjectIndexIncludesGems: true
+----
+
+This makes ancestry-based reasoning conclusive for most real-world classes (on RuboCop's
+own repository it raises the share of classes with a fully resolvable ancestry from about
+20% to about 97%) at the cost of extra memory proportional to the bundle's size and a
+slightly longer index build. The option requires RuboCop to run inside Bundler; outside a
+bundle it silently degrades to project-only indexing.
+
 == What it enables
 
 `Lint/ConstantReassignment` reports reassignments whose previous definition lives in another file.

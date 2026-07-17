@@ -117,9 +117,19 @@ module RuboCop
     # rooted at the directory of the configuration that enabled the index.
     def project_index_files(target_files)
       root = @config_store.for_pwd.base_dir_for_path_parameters
-      (find_target_files([root]) | target_files).sort
-    rescue Errno::ENOENT
-      target_files
+      project_files = begin
+        find_target_files([root]) | target_files
+      rescue Errno::ENOENT
+        target_files
+      end
+
+      (project_files | bundled_gem_files).sort
+    end
+
+    def bundled_gem_files
+      return [] unless @config_store.for_pwd.for_all_cops['ProjectIndexIncludesGems']
+
+      ProjectIndexLoader.bundled_gem_source_files
     end
 
     def project_index_enabled?
