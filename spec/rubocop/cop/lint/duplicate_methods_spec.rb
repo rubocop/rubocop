@@ -1247,6 +1247,59 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
   end
 
   it 'does not register an offense for the same instance method in different Class.new blocks ' \
+     'passed to the same named-receiver method call' do
+    expect_no_offenses(<<~RUBY)
+      T.cast(
+        Class.new(Base) do
+          def perform
+            1
+          end
+        end,
+        T.class_of(Base)
+      )
+
+      T.cast(
+        Class.new(Base) do
+          def perform
+            2
+          end
+        end,
+        T.class_of(Base)
+      )
+    RUBY
+  end
+
+  it 'does not register an offense for the same class method in different Class.new blocks ' \
+     'passed to the same named-receiver method call' do
+    expect_no_offenses(<<~RUBY)
+      T.cast(
+        Class.new(Base) do
+          def self.perform
+            1
+          end
+        end,
+        T.class_of(Base)
+      )
+
+      T.cast(
+        Class.new(Base) do
+          def self.perform
+            2
+          end
+        end,
+        T.class_of(Base)
+      )
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks ' \
+     'on the same line passed to the same named-receiver method call' do
+    expect_no_offenses(<<~RUBY)
+      T.cast(Class.new(Base) { def perform; 1; end }, T.class_of(Base)); T.cast(Class.new(Base) { def perform; 2; end }, T.class_of(Base))
+    RUBY
+  end
+
+  it 'does not register an offense for the same instance method in different Class.new blocks ' \
      'inside blocks with multiple statements' do
     expect_no_offenses(<<~RUBY)
       foo do
