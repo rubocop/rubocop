@@ -21,6 +21,54 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
   it_behaves_like 'condition modifier cop', :if, extra
   it_behaves_like 'condition modifier cop', :unless, extra
 
+  context 'multiline if whose modifier form is long but allowed by `Layout/LineLength`' do
+    let(:long_url) { 'https://some.example.com/with/a/rather?long&and=very&complicated=path' }
+
+    context 'when the excess is an allowed URI' do
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          if url == '#{long_url}'
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            puts 1
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          puts 1 if url == '#{long_url}'
+        RUBY
+      end
+
+      context 'and AllowURI is false' do
+        let(:allow_uri) { false }
+
+        it 'accepts' do
+          expect_no_offenses(<<~RUBY)
+            if url == '#{long_url}'
+              puts 1
+            end
+          RUBY
+        end
+      end
+    end
+
+    context 'when the modifier form matches an allowed pattern' do
+      let(:line_length_config) { super().merge('AllowedPatterns' => ['^\s*puts']) }
+
+      it 'registers an offense' do
+        expect_offense(<<~RUBY)
+          if condition_with_a_rather_long_name_taking_up_space
+          ^^ Favor modifier `if` usage when having a single-line body. Another good alternative is the usage of control flow `&&`/`||`.
+            puts 'a long message that would not fit within the configured maximum'
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          puts 'a long message that would not fit within the configured maximum' if condition_with_a_rather_long_name_taking_up_space
+        RUBY
+      end
+    end
+  end
+
   context 'modifier if that does not fit on one line' do
     let(:spaces) { ' ' * 59 }
     let(:body) { "puts '#{spaces}'" }
