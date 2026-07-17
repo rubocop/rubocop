@@ -235,6 +235,13 @@ module RuboCop
             ...)
         PATTERN
 
+        # @!method class_new_block?(node)
+        def_node_matcher :class_new_block?, <<~PATTERN
+          (block
+            (send (const _ :Class) :new ...)
+            ...)
+        PATTERN
+
         def on_send(node) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
           name, original_name = alias_method?(node)
 
@@ -352,11 +359,25 @@ module RuboCop
           parent = anon_block.parent
           return unless parent&.type?(:any_block, :begin, :call, :casgn, :any_def)
 
-          if (receiver = named_receiver(parent))
+          if (receiver = scope_receiver(parent, anon_block))
             "#{receiver.source}.#{parent.method_name}"
           elsif !parent.begin_type? || parent.parent&.any_block_type?
-            source_location(anon_block)
+            anon_block_identity(anon_block)
           end
+        end
+
+        # When a Class.new block is passed as an argument to a named-receiver
+        # method call (e.g. T.cast(Class.new(Base) do ... end, ...)), the
+        # receiver-based scope id (e.g. "T.cast") is the same for every call,
+        # causing false positives for methods defined in distinct anonymous
+        # classes. Return nil so the block falls through to the unique
+        # source-location-based scope id.
+        # Module.new blocks are excluded because they may be intentionally
+        # mixed into the same target via prepend/include/extend.
+        def scope_receiver(parent, anon_block)
+          return if class_new_block?(anon_block) && parent.call_type?
+
+          named_receiver(parent)
         end
 
         def named_receiver(node)
@@ -558,6 +579,16 @@ module RuboCop
         def index_source_location(definition)
           location = definition.location
           "#{smart_path(location.to_file_path)}:#{location.to_display.start_line}"
+        end
+
+        # Internal identity for an anonymous block, used as a scope key.
+        # Includes the source range's begin position to distinguish blocks
+        # that share the same line (e.g. two Class.new calls separated by `;`).
+        # The user-facing offense message still uses `source_location`, which
+        # shows only `path:line`.
+        def anon_block_identity(anon_block)
+          range = anon_block.source_range
+          "#{smart_path(range.source_buffer.name)}:#{range.line}:#{range.begin_pos}"
         end
       end
     end

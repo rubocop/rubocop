@@ -1,0 +1,1 @@
+* [#15058](https://github.com/rubocop/rubocop/issues/15058): Fix false positives in `Lint/DuplicateMethods` for anonymous classes (`Class.new`) passed as arguments to the same named-receiver method call (e.g. `T.cast`). Each `Class.new` block is an independent class, so methods defined in different blocks should not be treated as duplicates. ([@rafaelfranca][])
