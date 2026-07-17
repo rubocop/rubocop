@@ -63,7 +63,7 @@ module RuboCop
             # if/unless keyword. A preceding assignment is needed to put the
             # variable in scope. For this reason we skip to the next assignment
             # here.
-            next if in_modifier_conditional?(assignment)
+            next if in_modifier_conditional?(assignment, node)
 
             break if !assignment.branch || assignment.branch == reference.branch
 
@@ -74,12 +74,24 @@ module RuboCop
         end
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
-        def in_modifier_conditional?(assignment)
-          parent = assignment.node.parent
-          parent = parent.parent if parent&.begin_type?
-          return false if parent.nil?
+        def in_modifier_conditional?(assignment, reference_node)
+          conditional = modifier_conditional_of(assignment.node)
+          return false unless conditional
 
-          parent.basic_conditional? && parent.modifier_form?
+          # The out-of-scope problem only affects a reference in the modifier body (to the
+          # left of the keyword); a reference after the modifier is put in scope by the
+          # condition's assignment, so an earlier assignment there is genuinely useless.
+          covers?(conditional, reference_node) && !covers?(conditional.condition, reference_node)
+        end
+
+        def modifier_conditional_of(node)
+          node.each_ancestor(:if, :while, :until).find do |conditional|
+            conditional.modifier_form? && covers?(conditional.condition, node)
+          end
+        end
+
+        def covers?(container, node)
+          container.equal?(node) || container.source_range.contains?(node.source_range)
         end
 
         def capture_with_block!

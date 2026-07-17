@@ -15,6 +15,58 @@ RSpec.describe RuboCop::Cop::Lint::UselessAssignment, :config do
         puts a unless a = 123
       RUBY
     end
+
+    it 'accepts when the reassignment is nested in the condition expression' do
+      expect_no_offenses(<<~RUBY)
+        a = nil
+        puts a if (a = 123) != 0
+      RUBY
+    end
+
+    it 'accepts when the reference is inside string interpolation' do
+      expect_no_offenses(<<~'RUBY')
+        nerrs = 0
+        raise "there were #{nerrs}" if (nerrs = get_nerrs) != 0
+      RUBY
+    end
+
+    it 'still registers a useless assignment that follows the modifier' do
+      expect_offense(<<~'RUBY')
+        a = 0
+        puts "x #{a}" if (a = 1) != 0
+        a = 2
+        ^ Useless assignment to variable - `a`.
+      RUBY
+    end
+
+    it 'still registers an earlier assignment shadowed before the modifier' do
+      expect_offense(<<~'RUBY')
+        a = nil
+        ^ Useless assignment to variable - `a`.
+        a = 5
+        puts "x #{a}" if (a = 123) != 0
+      RUBY
+    end
+
+    it 'does not suppress a same-named variable in a different scope' do
+      expect_offense(<<~'RUBY')
+        a = nil
+        ^ Useless assignment to variable - `a`.
+        def foo
+          a = 10
+          puts "x #{a}" if (a = 1) != 0
+        end
+      RUBY
+    end
+
+    it 'still registers an earlier assignment when the reference follows the modifier' do
+      expect_offense(<<~RUBY)
+        x = 0
+        ^ Useless assignment to variable - `x`.
+        y = 1 if (x = 2) > 0
+        puts x, y
+      RUBY
+    end
   end
 
   context 'when a variable is assigned and assigned again in a modifier loop condition' do
