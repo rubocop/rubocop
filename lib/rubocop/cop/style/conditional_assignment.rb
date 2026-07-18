@@ -203,6 +203,7 @@ module RuboCop
       class ConditionalAssignment < Base
         include ConditionalAssignmentHelper
         include ConfigurableEnforcedStyle
+        include ReparsedEquivalence
         extend AutoCorrector
 
         MSG = 'Use the return of the conditional for variable assignment and comparison.'
@@ -288,6 +289,7 @@ module RuboCop
           # else slot, but `else_branch` correctly reports there is no `else` clause.
           return unless assignment.else_branch
           return if allowed_single_line?([*branches, else_branch])
+          return unless safe_to_correct?(node)
 
           add_offense(node, message: ASSIGN_TO_CONDITION_MSG) do |corrector|
             autocorrect(corrector, node)
@@ -367,6 +369,7 @@ module RuboCop
           return unless allowed_statements?(branches)
           return if allowed_single_line?(branches)
           return if correction_exceeds_line_limit?(node, branches)
+          return unless safe_to_correct?(node)
 
           add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
@@ -377,6 +380,25 @@ module RuboCop
           else
             move_assignment_outside_condition(corrector, node)
           end
+        end
+
+        # The correction rewrites the conditional structurally, so full AST
+        # equivalence cannot be asserted, but the result must at least reparse
+        # to valid Ruby. Applying the correction to a throwaway buffer here
+        # also exercises the branch-shape handling before an offense is even
+        # reported, so unusual branches that the corrector cannot handle are
+        # left alone instead of crashing or emitting invalid code - the bug
+        # class behind most of this cop's history.
+        def safe_to_correct?(node)
+          correction_parses?(node)
+        rescue StandardError
+          false
+        end
+
+        # `ReparsedEquivalence#correction_parses?` contract: apply the exact
+        # correction this cop would perform.
+        def apply_reparse_correction(corrector, node)
+          autocorrect(corrector, node)
         end
 
         def allowed_statements?(branches)
