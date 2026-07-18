@@ -181,6 +181,22 @@ RSpec.describe RuboCop::Server::Cache do
     end
 
     describe '.pid_running?', :isolated_environment do
+      it 'does not create the cache directory when checking for a running server' do
+        cache_class.cache_root_path = Dir.pwd
+        cache_root = File.join(Dir.pwd, 'rubocop_cache')
+
+        expect(cache_class).not_to be_pid_running
+        expect(File).not_to exist(cache_root)
+      end
+
+      it 'works when the cache path is a file' do
+        cache_class.cache_root_path = Dir.pwd
+        cache_root = create_empty_file('rubocop_cache')
+
+        expect(cache_class).not_to be_pid_running
+        expect(File).to be_file(cache_root)
+      end
+
       it 'works properly when concurrency with server stopping and cleaning cache dir' do
         expect(described_class).to receive(:pid_path).and_wrap_original do |method|
           result = method.call

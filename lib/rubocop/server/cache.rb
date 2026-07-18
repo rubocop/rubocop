@@ -64,9 +64,13 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize
 
         def dir
-          Pathname.new(File.join(cache_path, project_dir_cache_key)).tap do |d|
+          dir_path.tap do |d|
             d.mkpath unless d.exist?
           end
+        end
+
+        def dir_path
+          Pathname.new(File.join(cache_path, project_dir_cache_key))
         end
 
         def cache_path
@@ -87,8 +91,8 @@ module RuboCop
           dir.join('token')
         end
 
-        def pid_path
-          dir.join('pid')
+        def pid_path(create_dir: true)
+          (create_dir ? dir : dir_path).join('pid')
         end
 
         def lock_path
@@ -108,8 +112,9 @@ module RuboCop
         end
 
         def pid_running?
-          Process.kill(0, pid_path.read.to_i) == 1
-        rescue Errno::ESRCH, Errno::ENOENT, Errno::EACCES, Errno::EROFS, Errno::ENAMETOOLONG
+          Process.kill(0, pid_path(create_dir: false).read.to_i) == 1
+        rescue Errno::ESRCH, Errno::ENOENT, Errno::EACCES, Errno::EROFS, Errno::ENAMETOOLONG,
+               Errno::ENOTDIR
           false
         end
 
