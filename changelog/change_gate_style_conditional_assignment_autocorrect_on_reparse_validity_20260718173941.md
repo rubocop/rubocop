@@ -1,0 +1,1 @@
+* [#15497](https://github.com/rubocop/rubocop/pull/15497): Make `Style/ConditionalAssignment` skip cases it cannot safely rewrite instead of emitting invalid code or erroring on unusual branch shapes. ([@bbatsov][])
