@@ -129,6 +129,18 @@ module RuboCop
       #     delegate :foo, to: :bar
       #   end
       #
+      # @example DelegatingMethods: ['delegate', 'expose'] (default: ['delegate'])
+      #   # A project's own `delegate`-shaped macros can be registered so the
+      #   # methods they define are recognized (with
+      #   # `AllCops/ActiveSupportExtensionsEnabled: true`).
+      #
+      #   # bad
+      #   def foo
+      #     1
+      #   end
+      #
+      #   expose :foo, to: :bar
+      #
       class DuplicateMethods < Base # rubocop:disable Metrics/ClassLength
         include ProjectIndexHelp
 
@@ -139,9 +151,10 @@ module RuboCop
         # and the method name.
         INDEXABLE_METHOD_NAME =
           /\A(?<owner>[A-Z]\w*(?:::[A-Z]\w*)*)(?<separator>[#.])(?<name>[^#.]+)\z/.freeze
-        RESTRICT_ON_SEND = %i[alias_method attr_reader attr_writer attr_accessor attr
-                              delegate def_delegator def_instance_delegator def_delegators
-                              def_instance_delegators].freeze
+        # No `RESTRICT_ON_SEND`: the delegating method names are configurable
+        # (`DelegatingMethods`), so `on_send` must see every call. The handler
+        # returns quickly for calls that are not method definitions, and
+        # benchmarks show no measurable cost over the previous fixed list.
 
         def initialize(config = nil, options = nil)
           super
@@ -199,9 +212,12 @@ module RuboCop
           (send nil? :alias_method (sym $_name) (sym $_original_name))
         PATTERN
 
-        # @!method delegate_method?(node)
-        def_node_matcher :delegate_method?, <<~PATTERN
-          (send nil? :delegate
+        # Matches the argument shape of an Active Support `delegate` call
+        # (`delegate :a, :b, to: :target`), regardless of the method name; the
+        # name is checked separately against `DelegatingMethods`.
+        # @!method delegate_args(node)
+        def_node_matcher :delegate_args, <<~PATTERN
+          (send nil? _
             ({sym str} $_)+
             (hash <(pair (sym :to) {sym str}) ...>)
           )
@@ -255,7 +271,7 @@ module RuboCop
             found_instance_method(node, name)
           elsif (attr = node.attribute_accessor?)
             on_attr(node, *attr)
-          elsif active_support_extensions_enabled? && (names = delegate_method?(node))
+          elsif delegating_method?(node) && (names = delegate_args(node))
             return if inside_condition?(node)
 
             on_delegate(node, names)
@@ -296,6 +312,19 @@ module RuboCop
         def message_for_dup(node, method_name, key)
           format(MSG, method: method_name, defined: source_location(@definitions[key]),
                       current: source_location(node))
+        end
+
+        # Recognizing a delegating call as a method definition is Active
+        # Support behavior, so it stays gated on `ActiveSupportExtensionsEnabled`
+        # as it was when only `delegate` was supported. `DelegatingMethods` lets
+        # a project register its own `delegate`-shaped macros.
+        def delegating_method?(node)
+          active_support_extensions_enabled? &&
+            delegating_methods.include?(node.method_name.to_s)
+        end
+
+        def delegating_methods
+          cop_config.fetch('DelegatingMethods', ['delegate'])
         end
 
         def on_delegate(node, method_names)
