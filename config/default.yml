@@ -1887,6 +1887,13 @@ Lint/DuplicateMethods:
   Enabled: true
   VersionAdded: '0.29'
   VersionChanged: '<<next>>'
+  # Methods that define instance methods by delegation, in the style of
+  # Active Support's `delegate` (`delegate :foo, :bar, to: :target`). Register
+  # a project's own `delegate`-shaped macros here so the cop recognizes the
+  # methods they define. Only takes effect when `AllCops/ActiveSupportExtensionsEnabled`
+  # is `true`.
+  DelegatingMethods:
+    - delegate
 
 Lint/DuplicateRegexpCharacterClassElement:
   Description: 'Checks for duplicate elements in Regexp character classes.'
