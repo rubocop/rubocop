@@ -120,6 +120,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessRuby2Keywords, :config do
       RUBY
     end
 
+    it 'does not register an offense when no method definition is found in a block' do
+      expect_no_offenses(<<~RUBY)
+        do_something do
+          ruby2_keywords :foo
+        end
+      RUBY
+    end
+
     it 'does not register an offense when the `def` is at a different depth' do
       expect_no_offenses(<<~RUBY)
         class C

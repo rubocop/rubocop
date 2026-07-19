@@ -116,6 +116,8 @@ module RuboCop
             # so stop searching once a class/module boundary is crossed without a match.
             return nil if ancestor.type?(:class, :module, :sclass)
           end
+
+          nil
         end
 
         # `ruby2_keywords` is only allowed if there's a `restarg` and no keyword arguments
