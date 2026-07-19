@@ -129,4 +129,39 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier, :config do
       RUBY
     end
   end
+
+  context 'when the modifier form is long but allowed by `Layout/LineLength`' do
+    let(:other_cops) do
+      { 'Layout/LineLength' => { 'Enabled' => true, 'Max' => 40, 'AllowURI' => allow_uri } }
+    end
+    let(:allow_uri) { true }
+    let(:long_url) { 'https://example.com/a/rather/long/path?with=query' }
+
+    context 'when the excess is an allowed URI' do
+      it 'registers an offense and corrects to modifier form' do
+        expect_offense(<<~RUBY)
+          while url == '#{long_url}'
+          ^^^^^ Favor modifier `while` usage when having a single-line body.
+            step
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          step while url == '#{long_url}'
+        RUBY
+      end
+    end
+
+    context 'when AllowURI is false' do
+      let(:allow_uri) { false }
+
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
+          while url == '#{long_url}'
+            step
+          end
+        RUBY
+      end
+    end
+  end
 end

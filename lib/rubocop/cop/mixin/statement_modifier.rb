@@ -5,6 +5,7 @@ module RuboCop
     # Common functionality for modifier cops.
     module StatementModifier
       include LineLengthHelp
+      include AllowedPattern
 
       private
 
@@ -35,16 +36,51 @@ module RuboCop
       end
 
       def modifier_fits_on_single_line?(node)
-        return true unless max_line_length
-
-        length_in_modifier_form(node) <= max_line_length
+        acceptable_line_length?(line_in_modifier_form(node), node.first_line)
       end
 
-      def length_in_modifier_form(node)
+      def line_in_modifier_form(node)
         keyword_element = node.loc.keyword
         code_before = keyword_element.source_line[0...keyword_element.column]
-        expression = to_modifier_form(node)
-        line_length("#{code_before}#{expression}#{code_after(node)}")
+
+        "#{code_before}#{to_modifier_form(node)}#{code_after(node)}"
+      end
+
+      # Rather than comparing the rendered modifier form against the bare
+      # maximum, ask the question `Layout/LineLength` would: a line the user's
+      # configuration exempts (`Layout/LineLength` disabled at that line, an
+      # allowed pattern, an allowed cop directive, an allowed URI) fits by
+      # definition. This keeps every modifier cop consistent with
+      # `Layout/LineLength` instead of each reimplementing part of its policy.
+      def acceptable_line_length?(line, line_number)
+        return true unless max_line_length
+        return true if line_length(line) <= max_line_length
+        return true unless line_length_enabled_at_line?(line_number)
+        return true if matches_allowed_pattern?(line)
+
+        if allow_cop_directives? && directive_on_source_line?(line_number - 1)
+          return line_length_without_directive(line) <= max_line_length
+        end
+
+        allowed_by_uri?(line)
+      end
+
+      def allowed_by_uri?(line)
+        return false unless allow_uri?
+
+        uri_range = find_excessive_range(line, :uri)
+        !uri_range.nil? && allowed_position?(line, uri_range)
+      end
+
+      def line_length_enabled_at_line?(line)
+        processed_source.comment_config.cop_enabled_at_line?('Layout/LineLength', line)
+      end
+
+      # `Layout/LineLength`'s allowed patterns, so a modifier line that the
+      # user has configured that cop to accept is not flagged for length here.
+      def allowed_patterns
+        line_length_config = config.for_cop('Layout/LineLength')
+        line_length_config['AllowedPatterns'] || line_length_config['IgnoredPatterns'] || []
       end
 
       def to_modifier_form(node)

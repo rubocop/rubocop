@@ -72,10 +72,8 @@ module RuboCop
       #     do_something
       #   end
       #
-      class IfUnlessModifier < Base # rubocop:disable Metrics/ClassLength
+      class IfUnlessModifier < Base
         include StatementModifier
-        include LineLengthHelp
-        include AllowedPattern
         include RangeHelp
         include CommentsHelp
         extend AutoCorrector
@@ -188,52 +186,9 @@ module RuboCop
           max_line_length.between?(source_length - comment.source_range.length, source_length)
         end
 
-        def allowed_patterns
-          line_length_config = config.for_cop('Layout/LineLength')
-          line_length_config['AllowedPatterns'] || line_length_config['IgnoredPatterns'] || []
-        end
-
         def too_long_single_line?(node)
-          return false unless max_line_length
-
           range = node.source_range
-          return false unless range.single_line?
-          return false unless line_length_enabled_at_line?(range.first_line)
-
-          line = range.source_line
-          return false if line_length(line) <= max_line_length
-
-          too_long_line_based_on_config?(range, line)
-        end
-
-        def too_long_line_based_on_config?(range, line)
-          return false if matches_allowed_pattern?(line)
-
-          too_long = too_long_line_based_on_allow_cop_directives?(range, line)
-          return too_long unless too_long == :undetermined
-
-          too_long_line_based_on_allow_uri?(line)
-        end
-
-        def too_long_line_based_on_allow_cop_directives?(range, line)
-          if allow_cop_directives? && directive_on_source_line?(range.line - 1)
-            return line_length_without_directive(line) > max_line_length
-          end
-
-          :undetermined
-        end
-
-        def too_long_line_based_on_allow_uri?(line)
-          if allow_uri?
-            uri_range = find_excessive_range(line, :uri)
-            return false if uri_range && allowed_position?(line, uri_range)
-          end
-
-          true
-        end
-
-        def line_length_enabled_at_line?(line)
-          processed_source.comment_config.cop_enabled_at_line?('Layout/LineLength', line)
+          range.single_line? && !acceptable_line_length?(range.source_line, range.first_line)
         end
 
         def named_capture_in_condition?(node)

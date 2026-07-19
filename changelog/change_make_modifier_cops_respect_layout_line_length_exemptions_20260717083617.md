@@ -1,0 +1,1 @@
+* [#15493](https://github.com/rubocop/rubocop/pull/15493): Make `Style/IfUnlessModifier`, `Style/WhileUntilModifier`, `Style/GuardClause`, and other modifier cops respect `Layout/LineLength` exemptions (allowed patterns, cop directives, allowed URIs) when checking whether the modifier form fits on one line. ([@bbatsov][])
