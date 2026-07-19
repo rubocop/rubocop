@@ -254,6 +254,11 @@ module RuboCop
         def correct_if_node(node, cond)
           result = condition_evaluation?(node, cond)
 
+          # When the branch that survives the literal condition is missing,
+          # there is no meaningful correction, so no offense is registered.
+          surviving_branch = result ? node.if_branch : node.else_branch
+          return if surviving_branch.nil? && (node.elsif? || node.else?)
+
           new_node = if node.elsif? && result
                        "else\n  #{range_with_comments(node.if_branch).source}"
                      elsif node.elsif? && !result
