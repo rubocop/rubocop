@@ -91,6 +91,12 @@ module RuboCop
                      status = :uncorrected, corrector = nil)
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location
+
+        # Pre-compute the position eagerly because the offense is frozen and
+        # `location.line` / `location.column` are expensive to compute; sorting
+        # many offenses calls them repeatedly through `#<=>`.
+        @line = location.line
+        @column = location.column
         @message = message.freeze
         @cop_name = cop_name.freeze
         @status = status
@@ -104,6 +110,8 @@ module RuboCop
 
       def marshal_load(array)
         @severity, @location, @message, @cop_name, @status = array
+        @line = @location.line
+        @column = @location.column
       end
 
       # @api public
@@ -167,14 +175,10 @@ module RuboCop
       end
 
       # @api private
-      def line
-        location.line
-      end
+      attr_reader :line
 
       # @api private
-      def column
-        location.column
-      end
+      attr_reader :column
 
       # @api private
       def source_line
