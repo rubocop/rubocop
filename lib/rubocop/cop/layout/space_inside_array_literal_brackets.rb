@@ -94,10 +94,10 @@ module RuboCop
             return empty_offenses(node, left, right, EMPTY_MSG)
           end
 
-          start_ok = next_to_newline?(node, left)
+          start_ok = next_to_newline?(tokens, left)
           end_ok = node.single_line? ? false : end_has_own_line?(right)
 
-          issue_offenses(node, left, right, start_ok, end_ok)
+          issue_offenses(node, tokens, left, right, start_ok, end_ok)
         end
         alias on_array_pattern on_array
 
@@ -117,7 +117,7 @@ module RuboCop
           elsif style == :space
             SpaceCorrector.add_space(processed_source, corrector, left, right)
           else
-            compact_corrections(corrector, node, left, right)
+            compact_corrections(corrector, tokens, left, right)
           end
         end
 
@@ -134,8 +134,8 @@ module RuboCop
           cop_config['EnforcedStyleForEmptyBrackets']
         end
 
-        def next_to_newline?(node, token)
-          processed_source.tokens_within(node)[index_for(node, token) + 1].line != token.line
+        def next_to_newline?(tokens, token)
+          tokens[index_for(tokens, token) + 1].line != token.line
         end
 
         def end_has_own_line?(token)
@@ -145,59 +145,64 @@ module RuboCop
           !/\S/.match?(processed_source.lines[line][0..col])
         end
 
-        def index_for(node, token)
-          processed_source.tokens_within(node).index(token)
+        def index_for(tokens, token)
+          tokens.index(token)
         end
 
         def line_and_column_for(token)
           [token.line - 1, token.column - 1]
         end
 
-        def issue_offenses(node, left, right, start_ok, end_ok)
+        # rubocop:disable Metrics/ParameterLists
+        def issue_offenses(node, tokens, left, right, start_ok, end_ok)
           case style
           when :no_space
-            start_ok = next_to_comment?(node, left)
+            start_ok = next_to_comment?(tokens, left)
             no_space_offenses(node, left, right, MSG, start_ok: start_ok, end_ok: end_ok)
           when :space
             space_offenses(node, left, right, MSG, start_ok: start_ok, end_ok: end_ok)
           else
-            compact_offenses(node, left, right, start_ok, end_ok)
+            compact_offenses(node, tokens, left, right, start_ok, end_ok)
           end
         end
+        # rubocop:enable Metrics/ParameterLists
 
-        def next_to_comment?(node, token)
-          processed_source.tokens_within(node)[index_for(node, token) + 1].comment?
+        def next_to_comment?(tokens, token)
+          tokens[index_for(tokens, token) + 1].comment?
         end
 
-        def compact_offenses(node, left, right, start_ok, end_ok)
-          if qualifies_for_compact?(node, left, side: :left)
+        # rubocop:disable Metrics/ParameterLists
+        def compact_offenses(node, tokens, left, right, start_ok, end_ok)
+          if qualifies_for_compact?(tokens, left, side: :left)
             compact_offense(node, left, side: :left)
-          elsif !multi_dimensional_array?(node, left, side: :left)
+          elsif !multi_dimensional_array?(tokens, left, side: :left)
             space_offenses(node, left, nil, MSG, start_ok: start_ok, end_ok: true)
           end
-          if qualifies_for_compact?(node, right)
+
+          if qualifies_for_compact?(tokens, right)
             compact_offense(node, right)
-          elsif !multi_dimensional_array?(node, right)
+          elsif !multi_dimensional_array?(tokens, right)
             space_offenses(node, nil, right, MSG, start_ok: true, end_ok: end_ok)
           end
         end
+        # rubocop:enable Metrics/ParameterLists
 
-        def qualifies_for_compact?(node, token, side: :right)
+        def qualifies_for_compact?(tokens, token, side: :right)
           if side == :right
-            multi_dimensional_array?(node, token) && token.space_before?
+            multi_dimensional_array?(tokens, token) && token.space_before?
           else
-            multi_dimensional_array?(node, token, side: :left) && token.space_after?
+            multi_dimensional_array?(tokens, token, side: :left) && token.space_after?
           end
         end
 
-        def multi_dimensional_array?(node, token, side: :right)
+        def multi_dimensional_array?(tokens, token, side: :right)
           offset = side == :right ? -1 : +1
-          i = index_for(node, token) + offset
-          i += offset while processed_source.tokens_within(node)[i].new_line?
+          i = index_for(tokens, token) + offset
+          i += offset while tokens[i].new_line?
           if side == :right
-            processed_source.tokens_within(node)[i].right_bracket?
+            tokens[i].right_bracket?
           else
-            processed_source.tokens_within(node)[i].left_bracket?
+            tokens[i].left_bracket?
           end
         end
 
@@ -209,14 +214,14 @@ module RuboCop
           end
         end
 
-        def compact_corrections(corrector, node, left, right)
-          if multi_dimensional_array?(node, left, side: :left)
+        def compact_corrections(corrector, tokens, left, right)
+          if multi_dimensional_array?(tokens, left, side: :left)
             compact(corrector, left, :right)
           elsif !left.space_after?
             corrector.insert_after(left.pos, ' ')
           end
 
-          if multi_dimensional_array?(node, right)
+          if multi_dimensional_array?(tokens, right)
             compact(corrector, right, :left)
           elsif !right.space_before?
             corrector.insert_before(right.pos, ' ')
