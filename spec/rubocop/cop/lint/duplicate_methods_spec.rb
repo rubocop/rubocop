@@ -699,6 +699,71 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
           end
         RUBY
       end
+
+      it "does not register an offense for an unregistered delegating method in #{type}" do
+        expect_no_offenses(<<~RUBY, 'example.rb')
+          #{opening_line}
+            def some_method
+              implement 1
+            end
+
+            expose :some_method, to: :foo
+          end
+        RUBY
+      end
+    end
+
+    context 'with a custom `DelegatingMethods` and `ActiveSupportExtensionsEnabled: true`' do
+      let(:config) do
+        RuboCop::Config.new(
+          'AllCops' => { 'ActiveSupportExtensionsEnabled' => true },
+          'Lint/DuplicateMethods' => { 'DelegatingMethods' => %w[delegate expose] }
+        )
+      end
+
+      it "registers an offense for a registered custom delegating method in #{type}" do
+        expect_offense(<<~RUBY, 'example.rb')
+          #{opening_line}
+            def some_method
+              implement 1
+            end
+            expose :some_method, to: :foo
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
+          end
+        RUBY
+      end
+
+      it "still registers an offense for the built-in `delegate` in #{type}" do
+        expect_offense(<<~RUBY, 'example.rb')
+          #{opening_line}
+            def some_method
+              implement 1
+            end
+            delegate :some_method, to: :foo
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Method `#{receiver}#some_method` is defined at both example.rb:2 and example.rb:5.
+          end
+        RUBY
+      end
+    end
+
+    context 'with a custom `DelegatingMethods` and `ActiveSupportExtensionsEnabled: false`' do
+      let(:config) do
+        RuboCop::Config.new(
+          'AllCops' => { 'ActiveSupportExtensionsEnabled' => false },
+          'Lint/DuplicateMethods' => { 'DelegatingMethods' => %w[delegate expose] }
+        )
+      end
+
+      it "does not register an offense for a custom delegating method in #{type}" do
+        expect_no_offenses(<<~RUBY, 'example.rb')
+          #{opening_line}
+            def some_method
+              implement 1
+            end
+            expose :some_method, to: :foo
+          end
+        RUBY
+      end
     end
 
     context 'when `AllCops/ActiveSupportExtensionsEnabled: false`' do
