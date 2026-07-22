@@ -1,0 +1,1 @@
+* [#15505](https://github.com/rubocop/rubocop/pull/15505): Fix incompatible autocorrect between `Style/Lambda` and `Style/SymbolProc` producing a syntax error like `->(x)(&:method)` when both cops run on `lambda { |x| x.method }`. ([@koic][])
