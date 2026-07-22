@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Style::Lambda, :config do
+  describe '.autocorrect_incompatible_with' do
+    it 'declares `Style::SymbolProc` as incompatible to avoid producing `->(x)(&:method)`' do
+      expect(described_class.autocorrect_incompatible_with).to include(RuboCop::Cop::Style::SymbolProc)
+    end
+  end
+
   context 'with enforced `lambda` style' do
     let(:cop_config) { { 'EnforcedStyle' => 'lambda' } }
 
