@@ -1,0 +1,1 @@
+* [#16396](https://github.com/rubocop/rubocop/pull/16396): Fix `--auto-gen-config` intermittently generating a `.rubocop_todo.yml` that contains only the header, caused by a stale cached options digest making the second phase read the first phase's results. ([@koic][])
