@@ -6,11 +6,14 @@ require 'tmpdir'
 # or stubbing Dir.pwd get a fresh value.
 RSpec.configure { |c| c.before { RuboCop::PathUtil.reset_pwd } }
 
-RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLength
-  around do |example| # rubocop:disable Metrics/BlockLength
+# rubocop:disable Metrics/BlockLength
+RSpec.shared_context 'isolated environment' do
+  around do |example|
     Dir.mktmpdir do |tmpdir|
       original_home = Dir.home
       original_xdg_config_home = ENV.fetch('XDG_CONFIG_HOME', nil)
+      original_xdg_cache_home = ENV.fetch('XDG_CACHE_HOME', nil)
+      original_rubocop_cache_root = ENV.fetch('RUBOCOP_CACHE_ROOT', nil)
 
       # Make sure to expand all symlinks in the path first. Otherwise we may
       # get mismatched pathnames when loading config files later on.
@@ -22,6 +25,12 @@ RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLe
       Dir.mkdir(virtual_home)
       ENV['HOME'] = virtual_home
       ENV.delete('XDG_CONFIG_HOME')
+
+      # `XDG_CACHE_HOME` and `RUBOCOP_CACHE_ROOT` are set on some CI runners and
+      # would otherwise point the result cache at a fixed directory shared across examples
+      # and parallel test-queue workers, letting one example's cache leak into another.
+      ENV.delete('XDG_CACHE_HOME')
+      ENV.delete('RUBOCOP_CACHE_ROOT')
 
       base_dir = example.metadata[:project_inside_home] ? virtual_home : tmpdir
       root = example.metadata[:root]
@@ -38,6 +47,8 @@ RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLe
       ensure
         ENV['HOME'] = original_home
         ENV['XDG_CONFIG_HOME'] = original_xdg_config_home
+        ENV['XDG_CACHE_HOME'] = original_xdg_cache_home
+        ENV['RUBOCOP_CACHE_ROOT'] = original_rubocop_cache_root
 
         RuboCop::ResultCache.reset_config_cache
         RuboCop::ConfigLoader.clear_options # This also resets RuboCop::FileFinder.root_level
@@ -58,6 +69,7 @@ RSpec.shared_context 'isolated environment' do # rubocop:disable Metrics/BlockLe
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 # Workaround for https://github.com/rubocop/rubocop/issues/12978,
 # there should already be no gemfile in the temp directory
