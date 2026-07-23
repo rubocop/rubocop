@@ -33,6 +33,7 @@ module RuboCop
               node.each_descendant(:lvar, :lvasgn) do |lvar|
                 lvar_location = lvar.loc.name
                 next unless lvar_location.source == arg.source
+                next if shadowed?(lvar, arg.source, node)
 
                 corrector.replace(lvar_location, 'other')
               end
@@ -46,6 +47,21 @@ module RuboCop
           return false if EXCLUDED.include?(name)
 
           !/\A[[:word:]]/.match?(name) || OP_LIKE_METHODS.include?(name)
+        end
+
+        # A reference is shadowed when an enclosing block within the method redeclares the
+        # parameter name (as a block parameter or block-local). Such a reference points to
+        # the block's variable, not the operator's parameter, so it must not be renamed.
+        def shadowed?(node, name, def_node)
+          node.each_ancestor(:block).any? do |block|
+            def_node.source_range.contains?(block.source_range) && redeclares?(block, name)
+          end
+        end
+
+        def redeclares?(block, name)
+          block.arguments.any? do |argument|
+            argument.respond_to?(:name) && argument.name.to_s == name
+          end
         end
       end
     end
