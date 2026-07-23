@@ -81,6 +81,10 @@ module RuboCop
         MSG_USE_MODIFIER = 'Favor modifier `%<keyword>s` usage when having a ' \
                            'single-line body. Another good alternative is ' \
                            'the usage of control flow `&&`/`||`.'
+        MSG_USE_MODIFIER_PARENS = 'Favor modifier `%<keyword>s` usage when having a ' \
+                                  'single-line body. Wrap the expression in parentheses ' \
+                                  'to keep the current behavior, as it is part of a ' \
+                                  'larger expression.'
         MSG_USE_NORMAL = 'Modifier form of `%<keyword>s` makes the line too long.'
 
         def self.autocorrect_incompatible_with
@@ -141,7 +145,7 @@ module RuboCop
 
         def message(node)
           if single_line_as_modifier?(node) && !named_capture_in_condition?(node)
-            MSG_USE_MODIFIER
+            parenthesize?(node) ? MSG_USE_MODIFIER_PARENS : MSG_USE_MODIFIER
           elsif too_long_due_to_modifier?(node)
             MSG_USE_NORMAL
           end
