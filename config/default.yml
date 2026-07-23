@@ -2162,6 +2162,16 @@ Lint/MultipleComparison:
   VersionAdded: '0.47'
   VersionChanged: '1.1'
 
+Lint/NameTypo:
+  Description: >-
+    Checks for probable typos in constant and method names,
+    using the project index.
+  Enabled: pending
+  CheckConstants: true
+  CheckMethods: true
+  AllowedNames: []
+  VersionAdded: '<<next>>'
+
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'
   StyleGuide: '#no-nested-methods'
