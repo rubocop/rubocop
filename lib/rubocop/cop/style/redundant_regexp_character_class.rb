@@ -74,7 +74,7 @@ module RuboCop
 
           non_redundant =
             whitespace_in_free_space_mode?(node, class_elem) ||
-            backslash_b?(class_elem) || octal_requiring_char_class?(class_elem) ||
+            backslash_b?(class_elem) || backreference_requiring_char_class?(class_elem) ||
             requires_escape_outside_char_class?(class_elem)
 
           !non_redundant
@@ -104,10 +104,11 @@ module RuboCop
           elem == '\b'
         end
 
-        def octal_requiring_char_class?(elem)
-          # The octal escapes \1 to \7 only work inside a character class
-          # because they would be a backreference outside it.
-          elem.match?(/\A\\[1-7]\z/)
+        def backreference_requiring_char_class?(elem)
+          # `\1` to `\9` only match a literal digit inside a character class;
+          # outside it they are backreferences (and a syntax error when the
+          # referenced group does not exist), so the class is not redundant.
+          elem.match?(/\A\\[1-9]\z/)
         end
 
         def requires_escape_outside_char_class?(elem)
