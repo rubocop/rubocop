@@ -86,14 +86,12 @@ RSpec.describe RuboCop::CacheConfig do
     end
 
     context 'when RUBOCOP_CACHE_ROOT environment variable is set' do
-      around do |example|
-        original = ENV.fetch('RUBOCOP_CACHE_ROOT', nil)
+      # Set `RUBOCOP_CACHE_ROOT` from within the isolated environment,
+      # which strips the ambient value on entry and restores it on exit.
+      # Setting it from an outer `around` would be wiped by that isolation
+      # before the example runs.
+      before do
         ENV['RUBOCOP_CACHE_ROOT'] = '/tmp/env-cache-root'
-        begin
-          example.run
-        ensure
-          ENV['RUBOCOP_CACHE_ROOT'] = original
-        end
       end
 
       context 'with no CacheRootDirectory in config', :isolated_environment do
@@ -129,14 +127,12 @@ RSpec.describe RuboCop::CacheConfig do
     end
 
     context 'when XDG_CACHE_HOME environment variable is set' do
-      around do |example|
-        original = ENV.fetch('XDG_CACHE_HOME', nil)
+      # Set `XDG_CACHE_HOME` from within the isolated environment,
+      # which strips the ambient value on entry and restores it on exit.
+      # Setting it from an outer `around` would be wiped by that isolation
+      # before the example runs.
+      before do
         ENV['XDG_CACHE_HOME'] = '/tmp/xdg-cache'
-        begin
-          example.run
-        ensure
-          ENV['XDG_CACHE_HOME'] = original
-        end
       end
 
       context 'with no CacheRootDirectory in config', :isolated_environment do
