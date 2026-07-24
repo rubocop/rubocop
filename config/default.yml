@@ -3404,7 +3404,7 @@ Style/ArrayIntersect:
   VersionAdded: '1.40'
 
 Style/ArrayIntersectWithSingleElement:
-  Description: 'Use `include?(element)` instead of `intersect?([element])`.'
+  Description: 'Use `include?(element)` instead of `intersect?([element])` and `intersection([element]).any?`.'
   Enabled: 'pending'
   Safe: false
   VersionAdded: '1.81'
