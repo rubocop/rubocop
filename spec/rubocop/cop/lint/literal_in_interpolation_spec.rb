@@ -190,6 +190,58 @@ RSpec.describe RuboCop::Cop::Lint::LiteralInInterpolation, :config do
                     '{:array=>{:key=>[\"s1\", \"s2\"]}}')
     it_behaves_like('literal interpolation', '{ array: { key: %i[ s1   s2 ] } }',
                     '{:array=>{:key=>[\"s1\", \"s2\"]}}')
+
+    it 'handles escaped interpolation text in hash values when autocorrecting' do
+      literal = '{ foo: "\#{bar}" }'
+
+      expect_offense(<<~'RUBY', literal: literal)
+        "this is the #{%{literal}}"
+                       ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "this is the {:foo=>\"\\\#{bar}\"}"
+      RUBY
+    end
+
+    it 'handles escaped interpolation text in hash keys when autocorrecting' do
+      literal = '{ "\#{bar}" => 1 }'
+
+      expect_offense(<<~'RUBY', literal: literal)
+        "this is the #{%{literal}}"
+                       ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "this is the {\"\\\#{bar}\"=>1}"
+      RUBY
+    end
+
+    it 'handles backslashes in hash string values when autocorrecting' do
+      literal = '{ foo: "\\bar" }'
+
+      expect_offense(<<~'RUBY', literal: literal)
+        "this is the #{%{literal}}"
+                       ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "this is the {:foo=>\"\\bar\"}"
+      RUBY
+    end
+
+    it 'handles escaped instance variable interpolation text in hash values when autocorrecting' do
+      literal = '{ foo: "\#@bar" }'
+
+      expect_offense(<<~'RUBY', literal: literal)
+        "this is the #{%{literal}}"
+                       ^{literal} Literal interpolation detected.
+      RUBY
+
+      expect_correction(<<~'RUBY')
+        "this is the {:foo=>\"\\\#@bar\"}"
+      RUBY
+    end
   end
 
   describe 'type else' do
