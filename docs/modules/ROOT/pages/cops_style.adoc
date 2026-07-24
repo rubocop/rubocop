@@ -3785,6 +3785,10 @@ and not quickly disabled with a comment.
 Specific cops can be allowed with the `AllowedCops` configuration. Note that
 if this configuration is set, `rubocop:disable all` is still disallowed.
 
+Directives with trailing comments can be allowed with the
+`AllowTrailingComment` configuration. The trailing comment must start with
+`--` and include explanatory text.
+
 [#examples-styledisablecopswithinsourcecodedirective]
 === Examples
 
@@ -3813,6 +3817,18 @@ end
 # rubocop:enable Metrics/AbcSize
 ----
 
+[#allowtrailingcomment_-_true_-styledisablecopswithinsourcecodedirective]
+==== AllowTrailingComment: true
+
+[source,ruby]
+----
+# good
+# rubocop:disable Metrics/AbcSize -- Reason for disabling.
+def foo
+end
+# rubocop:enable Metrics/AbcSize
+----
+
 [#configurable-attributes-styledisablecopswithinsourcecodedirective]
 === Configurable attributes
 
@@ -3822,6 +3838,10 @@ end
 | AllowedCops
 | `[]`
 | Array
+
+| AllowTrailingComment
+| `false`
+| Boolean
 |===
 
 [#styledocumentdynamicevaldefinition]

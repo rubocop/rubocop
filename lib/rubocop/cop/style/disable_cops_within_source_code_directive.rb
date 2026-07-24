@@ -12,6 +12,10 @@ module RuboCop
       # Specific cops can be allowed with the `AllowedCops` configuration. Note that
       # if this configuration is set, `rubocop:disable all` is still disallowed.
       #
+      # Directives with trailing comments can be allowed with the
+      # `AllowTrailingComment` configuration. The trailing comment must start with
+      # `--` and include explanatory text.
+      #
       # @example
       #   # bad
       #   # rubocop:disable Metrics/AbcSize
@@ -30,6 +34,13 @@ module RuboCop
       #   end
       #   # rubocop:enable Metrics/AbcSize
       #
+      # @example AllowTrailingComment: true
+      #   # good
+      #   # rubocop:disable Metrics/AbcSize -- Reason for disabling.
+      #   def foo
+      #   end
+      #   # rubocop:enable Metrics/AbcSize
+      #
       class DisableCopsWithinSourceCodeDirective < Base
         extend AutoCorrector
 
@@ -38,11 +49,19 @@ module RuboCop
         MSG_FOR_COPS = 'RuboCop disable/enable directives for %<cops>s are not permitted.'
 
         def on_new_investigation
+          documented_cops = []
+
           processed_source.comments.each do |comment|
-            directive_cops = directive_cops(comment)
+            directive_comment = DirectiveComment.new(comment)
+            directive_cops = directive_cops(directive_comment)
             disallowed_cops = directive_cops - allowed_cops
 
             next unless disallowed_cops.any?
+
+            if trailing_comment_allowed?(directive_comment, directive_cops, documented_cops)
+              documented_cops |= directive_cops if directive_comment.disabled?
+              next
+            end
 
             register_offense(comment, directive_cops, disallowed_cops)
           end
@@ -69,13 +88,36 @@ module RuboCop
           end
         end
 
-        def directive_cops(comment)
-          match_captures = DirectiveComment.new(comment).match_captures
+        def directive_cops(directive_comment)
+          match_captures = directive_comment.match_captures
           match_captures && match_captures[1] ? match_captures[1].split(',').map(&:strip) : []
         end
 
         def allowed_cops
           Array(cop_config['AllowedCops'])
+        end
+
+        def trailing_comment_allowed?(directive_comment, directive_cops, documented_cops)
+          return false unless cop_config['AllowTrailingComment']
+
+          if directive_comment.disabled?
+            trailing_comment?(directive_comment)
+          elsif directive_comment.enabled?
+            (directive_cops - documented_cops).empty?
+          else
+            false
+          end
+        end
+
+        def trailing_comment?(directive_comment)
+          trailing_comment_text(directive_comment).match?(/\A\s*#{DirectiveComment::TRAILING_COMMENT_MARKER}\s+\S/)
+        end
+
+        def trailing_comment_text(directive_comment)
+          comment = directive_comment.comment
+          directive_end = directive_comment.range.end_pos - comment.source_range.begin_pos
+
+          comment.text[directive_end..].to_s
         end
 
         def any_cops_allowed?

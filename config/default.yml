@@ -3954,6 +3954,7 @@ Style/DisableCopsWithinSourceCodeDirective:
   VersionAdded: '0.82'
   VersionChanged: '1.9'
   AllowedCops: []
+  AllowTrailingComment: false
 
 Style/DocumentDynamicEvalDefinition:
   Description: >-
