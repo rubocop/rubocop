@@ -7,10 +7,11 @@ module RuboCop
       #
       # It provides four `EnforcedStyle` options:
       #
-      # 1. `allow_single_line` (default) ... Always uses the `it` block parameter in a single line.
-      # 2. `only_numbered_parameters` ... Detects only numbered block parameters.
-      # 3. `always` ... Always uses the `it` block parameter.
-      # 4. `disallow` ... Disallows the `it` block parameter.
+      # 1. `allow_single_line` (default) ... Uses the `it` block parameter in a single line.
+      # 2. `allow_exact_single_line` ... Uses the `it` block parameter in an exact single line.
+      # 3. `only_numbered_parameters` ... Detects only numbered block parameters.
+      # 4. `always` ... Always uses the `it` block parameter.
+      # 5. `disallow` ... Disallows the `it` block parameter.
       #
       # A single numbered parameter is detected when `allow_single_line`,
       # `only_numbered_parameters`, or `always`.
@@ -25,6 +26,23 @@ module RuboCop
       #   # good
       #   block { do_something(it) }
       #   block { |named_param| do_something(named_param) }
+      #   block.foo
+      #        .bar { do_something(it) }
+      #   block.foo.bar { do_something(it) }
+      #
+      # @example EnforcedStyle: allow_exact_single_line
+      #   # bad
+      #   block do
+      #     do_something(it)
+      #   end
+      #   block { do_something(_1) }
+      #   block.foo
+      #        .bar { do_something(it) }
+      #
+      #   # good
+      #   block { do_something(it) }
+      #   block { |named_param| do_something(named_param) }
+      #   block.foo.bar { do_something(it) }
       #
       # @example EnforcedStyle: only_numbered_parameters
       #   # bad
@@ -95,6 +113,10 @@ module RuboCop
           case style
           when :allow_single_line
             return if node.single_line?
+
+            add_offense(node, message: MSG_AVOID_IT_PARAMETER_MULTILINE)
+          when :allow_exact_single_line
+            return if same_line?(node.source_range.begin, node.source_range.end)
 
             add_offense(node, message: MSG_AVOID_IT_PARAMETER_MULTILINE)
           when :disallow
