@@ -163,7 +163,7 @@ module RuboCop
           when :float
             node.children.last.to_f.to_s
           when :str
-            "\\\"#{node.value.to_s.gsub('"') { '\\\\\"' }}\\\""
+            escape_string_content(node.value.inspect)
           when :sym
             autocorrected_value_in_hash_for_symbol(node)
           when :array
