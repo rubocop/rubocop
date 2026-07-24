@@ -38,6 +38,11 @@ RSpec.describe RuboCop::Cop::Style::NumericPredicate, :config do
         expect_no_offenses('0 == $CHILD_STATUS')
       end
 
+      it 'does not register an offense for bit flag zero comparisons handled by Style/BitwisePredicate', :ruby25 do
+        expect_no_offenses('stat.mode & 0o077 == 0o000')
+        expect_no_offenses('(stat.mode & 0o077) == 0')
+      end
+
       context 'when comparing against a method argument variable' do
         it 'registers an offense' do
           expect_offense(<<~RUBY)
