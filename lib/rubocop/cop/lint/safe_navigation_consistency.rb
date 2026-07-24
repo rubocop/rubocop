@@ -39,10 +39,10 @@ module RuboCop
       #   foo.bar || foo.baz
       #
       #   # bad
-      #   foo&.bar && (foobar.baz || foo&.baz)
+      #   foo.bar && (foo&.baz)
       #
       #   # good
-      #   foo&.bar && (foobar.baz || foo.baz)
+      #   foo.bar && (foo.baz)
       #
       class SafeNavigationConsistency < Base
         include NilMethods
@@ -121,6 +121,8 @@ module RuboCop
         def operand_nodes(operand, operand_nodes)
           if operand.operator_keyword?
             collect_operands(operand, operand_nodes)
+          elsif operand.begin_type?
+            operand.children.each { |child| operand_nodes(child, operand_nodes) }
           elsif operand.call_type?
             operand_nodes << operand
           end
@@ -142,19 +144,15 @@ module RuboCop
         # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def operand_in_and?(node)
-          return true if node.parent.and_type?
+          node = node.parent while node.parent.begin_type?
 
-          parent = node.parent.parent while node.parent.begin_type?
-
-          parent&.and_type?
+          node.parent&.and_type?
         end
 
         def operand_in_or?(node)
-          return true if node.parent.or_type?
+          node = node.parent while node.parent.begin_type?
 
-          parent = node.parent.parent while node.parent.begin_type?
-
-          parent&.or_type?
+          node.parent&.or_type?
         end
 
         def nilable?(node)
