@@ -42,6 +42,16 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     end
   end
 
+  shared_examples 'accepts empty symbol' do
+    # Prism parses a quoted empty hash key as an empty symbol node,
+    # whereas the parser gem emits a `dsym` node.
+    it 'accepts an empty symbol hash key', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        x = { "": [] }
+      RUBY
+    end
+  end
+
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
@@ -69,6 +79,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'snake_case', '_1'
 
     it_behaves_like 'accepts integer symbols'
+    it_behaves_like 'accepts empty symbol'
 
     it 'registers an offense for normal case numbering in symbol' do
       expect_offense(<<~RUBY)
@@ -143,6 +154,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'normalcase', '_1'
 
     it_behaves_like 'accepts integer symbols'
+    it_behaves_like 'accepts empty symbol'
 
     it 'registers an offense for snake case numbering in symbol' do
       expect_offense(<<~RUBY)
@@ -212,6 +224,7 @@ RSpec.describe RuboCop::Cop::Naming::VariableNumber, :config do
     it_behaves_like 'accepts', 'non_integer', '_1'
 
     it_behaves_like 'accepts integer symbols'
+    it_behaves_like 'accepts empty symbol'
 
     it 'registers an offense for snake case numbering in symbol' do
       expect_offense(<<~RUBY)
