@@ -132,7 +132,9 @@ module RuboCop
 
         def on_sym(node)
           @node = node
-          return if allowed_identifier?(node.value)
+
+          # Prism parses a quoted empty hash key (`{ "": value }`) as an empty symbol node.
+          return if node.value.empty? || allowed_identifier?(node.value)
 
           check_name(node, node.value, node) if cop_config['CheckSymbols']
         end
