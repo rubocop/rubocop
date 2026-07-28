@@ -93,4 +93,48 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       end
     end
   end
+
+  context 'with AllowTrailingComment' do
+    let(:cop_config) { { 'AllowTrailingComment' => true } }
+
+    it 'does not register an offense for a disable directive with a trailing comment' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Metrics/AbcSize -- This method has domain-specific branching.
+        def foo
+        end
+        # rubocop:enable Metrics/AbcSize
+      RUBY
+    end
+
+    it 'registers an offense for a disable directive with only a trailing comment marker' do
+      expect_offense(<<~RUBY)
+        def foo # rubocop:disable Metrics/AbcSize --
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        def foo#{trailing_whitespace}
+        end
+      RUBY
+    end
+
+    context 'with AllowedCops' do
+      let(:cop_config) do
+        {
+          'AllowedCops' => ['Metrics/AbcSize'],
+          'AllowTrailingComment' => true
+        }
+      end
+
+      it 'does not register an offense for a non-allowed cop with a trailing comment' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity -- Temporary workaround.
+          def foo
+          end
+          # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        RUBY
+      end
+    end
+  end
 end
