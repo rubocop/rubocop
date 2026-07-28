@@ -41,7 +41,8 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
         result: {
           capabilities: {
             textDocumentSync: { openClose: true, change: 2 },
-            documentFormattingProvider: true
+            documentFormattingProvider: true,
+            codeActionProvider: true
           }
         }
       )
@@ -179,6 +180,88 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
           ], uri: 'file:///path/to/file.rb'
         }
       )
+    end
+  end
+
+  describe 'code action' do
+    let(:autocorrect_action) do
+      {
+        title: 'Autocorrect Style/FrozenStringLiteralComment',
+        kind: 'quickfix',
+        isPreferred: true,
+        edit: {
+          documentChanges: [{
+            textDocument: { uri: 'file:///path/to/file.rb', version: nil },
+            edits: [{
+              newText: "# frozen_string_literal: true\n",
+              range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } }
+            }]
+          }]
+        }
+      }
+    end
+    let(:disable_action) do
+      {
+        title: 'Disable Style/FrozenStringLiteralComment for this line',
+        kind: 'quickfix',
+        edit: {
+          documentChanges: [{
+            textDocument: { uri: 'file:///path/to/file.rb', version: nil },
+            edits: [{
+              newText: ' # rubocop:disable Style/FrozenStringLiteralComment',
+              range: { start: { line: 0, character: 6 }, end: { line: 0, character: 6 } }
+            }]
+          }]
+        }
+      }
+    end
+    let(:diagnostic) do
+      {
+        range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+        data: { correctable: true, code_actions: [autocorrect_action, disable_action] }
+      }
+    end
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: 5,
+        method: 'textDocument/codeAction',
+        params: {
+          textDocument: { uri: 'file:///path/to/file.rb' },
+          range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+          context: { diagnostics: [diagnostic], only: ['quickfix'] }
+        }
+      }]
+    end
+
+    it 'returns the quickfix actions the diagnostics carry' do
+      expect(stderr).to eq('')
+      expect(messages.count).to eq(1)
+      expect(messages.first).to eq(
+        jsonrpc: '2.0',
+        id: 5,
+        result: [autocorrect_action, disable_action]
+      )
+    end
+
+    context 'when the request restricts the kinds to ones the actions do not match' do
+      let(:requests) do
+        [{
+          jsonrpc: '2.0',
+          id: 6,
+          method: 'textDocument/codeAction',
+          params: {
+            textDocument: { uri: 'file:///path/to/file.rb' },
+            range: { start: { line: 0, character: 0 }, end: { line: 0, character: 1 } },
+            context: { diagnostics: [diagnostic], only: ['source.fixAll'] }
+          }
+        }]
+      end
+
+      it 'returns no actions' do
+        expect(stderr).to eq('')
+        expect(messages.first).to eq(jsonrpc: '2.0', id: 6, result: [])
+      end
     end
   end
 

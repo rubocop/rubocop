@@ -1,0 +1,1 @@
+* [#15511](https://github.com/rubocop/rubocop/pull/15511): Support `textDocument/codeAction` requests in the built-in language server, so LSP clients that request code actions (Eglot, Helix, Flycheck, ...) can apply RuboCop's autocorrects, not only clients that read them off the published diagnostic. ([@bbatsov][])

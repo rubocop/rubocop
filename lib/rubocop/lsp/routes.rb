@@ -50,6 +50,7 @@ module RuboCop
           result: LanguageServer::Protocol::Interface::InitializeResult.new(
             capabilities: LanguageServer::Protocol::Interface::ServerCapabilities.new(
               document_formatting_provider: true,
+              code_action_provider: true,
               text_document_sync: LanguageServer::Protocol::Interface::TextDocumentSyncOptions.new(
                 change: LanguageServer::Protocol::Constant::TextDocumentSyncKind::INCREMENTAL,
                 open_close: true
@@ -105,6 +106,10 @@ module RuboCop
       handle 'textDocument/formatting' do |request|
         uri = request[:params][:textDocument][:uri]
         @server.write(id: request[:id], result: format_file(uri))
+      end
+
+      handle 'textDocument/codeAction' do |request|
+        @server.write(id: request[:id], result: code_actions_for(request[:params]))
       end
 
       handle 'workspace/didChangeConfiguration' do |_request|
@@ -217,6 +222,24 @@ module RuboCop
             end: { line: text.count("\n") + 1, character: 0 }
           }
         }]
+      end
+
+      # Returns the quickfix code actions for a `textDocument/codeAction` request.
+      #
+      # RuboCop attaches each offense's autocorrect and disable-line actions to
+      # the diagnostic it publishes, under the diagnostic's `data` (see
+      # `Diagnostic#to_lsp_diagnostic`).  The LSP spec preserves that `data`
+      # between `textDocument/publishDiagnostics` and `textDocument/codeAction`,
+      # so the client hands the diagnostics back in the request's context and we
+      # can surface their actions without re-analyzing the file.  This makes the
+      # actions available to clients that request code actions rather than
+      # reading them off the diagnostic (Eglot, Helix, Flycheck, ...).
+      def code_actions_for(params)
+        diagnostics = params.dig(:context, :diagnostics) || []
+        only = params.dig(:context, :only)
+
+        diagnostics.flat_map { |diagnostic| diagnostic.dig(:data, :code_actions) || [] }
+                   .select { |action| only.nil? || only.include?(action[:kind]) }
       end
 
       def diagnostic(file_uri, text)
