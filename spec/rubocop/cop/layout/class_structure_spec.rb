@@ -162,6 +162,77 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     end
   end
 
+  context 'when class body elements are wrapped in a begin block' do
+    it 'registers an offense and corrects misordered elements inside a begin block' do
+      expect_offense(<<~RUBY)
+        class Foo
+          begin
+            private def do_internal_work; end
+            public def do_something; end
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          begin
+            public def do_something; end
+            private def do_internal_work; end
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects misordered elements inside nested begin blocks' do
+      expect_offense(<<~RUBY)
+        class Foo
+          begin
+            begin
+              private def do_internal_work; end
+              public def do_something; end
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+            end
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          begin
+            begin
+              public def do_something; end
+              private def do_internal_work; end
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense for ordered elements inside a begin block' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          begin
+            public def do_something; end
+            private def do_internal_work; end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not get confused by a begin block with a rescue clause' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          begin
+            require 'optional_dependency'
+          rescue LoadError
+            nil
+          end
+        end
+      RUBY
+    end
+  end
+
   it 'registers an offense and corrects when public instance method is before class method' do
     expect_offense(<<~RUBY)
       class Foo
