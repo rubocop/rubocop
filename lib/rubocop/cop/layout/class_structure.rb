@@ -283,7 +283,7 @@ module RuboCop
           # Exploding such a node into its children would yield non-node values (e.g. a
           # method-name `Symbol` from a `csend`) and crash later checks.
           if class_def.type?(:begin, :kwbegin)
-            class_def.children.compact
+            flatten_class_elements(class_def)
           else
             [class_def]
           end
@@ -294,6 +294,12 @@ module RuboCop
             classification.to_s.end_with?('=') ||
             expected_order.index(classification).nil? ||
             private_constant?(node)
+        end
+
+        def flatten_class_elements(node)
+          node.children.compact.flat_map do |child|
+            child.kwbegin_type? ? flatten_class_elements(child) : [child]
+          end
         end
 
         def ignore_for_autocorrect?(node, sibling)
