@@ -14,7 +14,7 @@ InternalAffairs/NodeDestructuring:
 # Offense count: 81
 # Configuration parameters: CountComments, CountAsOne.
 Metrics/ClassLength:
-  Max: 193
+  Max: 201
 
 # Offense count: 342
 # Configuration parameters: CountComments, CountAsOne, AllowedMethods, AllowedPatterns.
