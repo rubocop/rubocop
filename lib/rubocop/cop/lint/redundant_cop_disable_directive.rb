@@ -114,7 +114,7 @@ module RuboCop
           line_ranges.each_with_index do |line_range, line_range_index|
             next if should_skip_line_range?(cop, line_range)
 
-            comment = processed_source.comment_at_line(line_range.begin)
+            comment = comment_for_line(line_range.begin)
             next if skip_directive?(comment)
 
             next_range = line_ranges[line_range_index + 1]
@@ -152,7 +152,7 @@ module RuboCop
             # whether there are offenses or not.
             next unless followed_ranges?(previous_range, range)
 
-            comment = processed_source.comment_at_line(range.begin)
+            comment = comment_for_line(range.begin)
 
             next unless comment
             # Comments disabling all cops don't count since it's reasonable
@@ -327,6 +327,11 @@ module RuboCop
         def ends_its_line?(range)
           line = range.source_buffer.source_line(range.last_line)
           (line =~ /\s*\z/) == range.last_column
+        end
+
+        # For `disable-next-line`, the comment is on the line before the disabled line
+        def comment_for_line(line)
+          processed_source.comment_at_line(line) || processed_source.comment_at_line(line - 1)
         end
 
         def department_marker?(department)

@@ -24,7 +24,7 @@ module RuboCop
     # @api private
     PUSH_POP_ARGS_PATTERN = "([+\\-]#{COP_NAME_PATTERN_NC}(?:\\s+[+\\-]#{COP_NAME_PATTERN_NC})*)"
     # @api private
-    AVAILABLE_MODES = %w[disable enable todo push pop].freeze
+    AVAILABLE_MODES = %w[disable-next-line disable enable todo push pop].freeze
     # @api private
     DIRECTIVE_MARKER_PATTERN = '# rubocop : '
     # @api private
@@ -112,6 +112,11 @@ module RuboCop
       %w[disable todo].include?(mode)
     end
 
+    # Checks if this directive disables cops only on the next line
+    def disabled_next_line?
+      mode == 'disable-next-line'
+    end
+
     # Checks if this directive enables cops
     def enabled?
       mode == 'enable'
@@ -134,12 +139,12 @@ module RuboCop
 
     # Checks if this directive enables all cops
     def enabled_all?
-      !disabled? && all_cops?
+      enabled? && all_cops?
     end
 
     # Checks if this directive disables all cops
     def disabled_all?
-      disabled? && all_cops?
+      (disabled? || disabled_next_line?) && all_cops?
     end
 
     # Checks if all cops specified in this directive
