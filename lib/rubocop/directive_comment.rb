@@ -12,6 +12,8 @@ module RuboCop
     # @api private
     LINT_SYNTAX_COP = "#{LINT_DEPARTMENT}/Syntax"
     # @api private
+    STYLE_DISABLE_COPS_DIRECTIVE_COP = 'Style/DisableCopsWithinSourceCodeDirective'
+    # @api private
     COP_NAME_PATTERN = '([A-Za-z]\w+/)*(?:[A-Za-z]\w+)'
     # @api private
     COP_NAME_PATTERN_NC = '(?:[A-Za-z]\w+/)*[A-Za-z]\w+'

@@ -861,4 +861,48 @@ RSpec.describe RuboCop::CommentConfig do
       end
     end
   end
+
+  describe 'Style/DisableCopsWithinSourceCodeDirective prevention' do
+    subject(:disabled_ranges) { comment_config.cop_disabled_line_ranges }
+
+    let(:source) do
+      <<~RUBY
+        # rubocop:disable Style/DisableCopsWithinSourceCodeDirective
+        # rubocop:disable Metrics/MethodLength
+        def foo
+        end
+        # rubocop:enable Metrics/MethodLength
+      RUBY
+    end
+
+    context 'when the cop is explicitly enabled' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Style/DisableCopsWithinSourceCodeDirective' => { 'Enabled' => true },
+          'Metrics/MethodLength' => { 'Enabled' => true }
+        )
+      end
+
+      it 'does not add the cop to disabled line ranges' do
+        expect(disabled_ranges).not_to have_key('Style/DisableCopsWithinSourceCodeDirective')
+      end
+
+      it 'still disables other cops' do
+        expect(disabled_ranges).to have_key('Metrics/MethodLength')
+      end
+    end
+
+    context 'when the cop is not enabled' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Style/DisableCopsWithinSourceCodeDirective' => { 'Enabled' => false },
+          'Metrics/MethodLength' => { 'Enabled' => true }
+        )
+      end
+
+      it 'allows the cop to be disabled by directive comments' do
+        expect(disabled_ranges).to have_key('Style/DisableCopsWithinSourceCodeDirective')
+      end
+    end
+  end
 end

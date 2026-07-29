@@ -1,0 +1,1 @@
+* [#14598](https://github.com/rubocop/rubocop/issues/14598): Make `Style/DisableCopsWithinSourceCodeDirective` impossible to disable via directive comments when explicitly enabled with `Enabled: true`. ([@rafaelfranca][])
