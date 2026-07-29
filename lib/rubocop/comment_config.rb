@@ -124,6 +124,8 @@ module RuboCop
 
       analyses.each_with_object({}) do |element, hash|
         cop_name, analysis = *element
+        next if prevent_directive_disabling?(cop_name)
+
         hash[cop_name] = cop_line_ranges(analysis)
       end
     end
@@ -225,6 +227,15 @@ module RuboCop
 
     def qualified_cop_name(cop_name)
       Cop::Registry.qualified_cop_name(cop_name.strip, processed_source.file_path)
+    end
+
+    # `Style/DisableCopsWithinSourceCodeDirective` cannot be disabled via
+    # directive comments when it is explicitly enabled with `Enabled: true`.
+    # This prevents users from bypassing the cop by writing a disable
+    # directive that targets this cop itself.
+    def prevent_directive_disabling?(cop_name)
+      cop_name == DirectiveComment::STYLE_DISABLE_COPS_DIRECTIVE_COP &&
+        config.dig(cop_name, 'Enabled') == true
     end
 
     def non_comment_token_line_numbers

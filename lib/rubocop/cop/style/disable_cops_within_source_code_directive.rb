@@ -19,6 +19,10 @@ module RuboCop
       # allowlisting all other cops. `AllowedCops` and `DisallowedCops` should not
       # both be set at the same time; if `DisallowedCops` is set, it takes precedence.
       #
+      # This cop cannot be disabled via directive comments when it is explicitly
+      # enabled with `Enabled: true`. This prevents users from bypassing the cop
+      # with `# rubocop:disable Style/DisableCopsWithinSourceCodeDirective`.
+      #
       # @example
       #   # bad
       #   # rubocop:disable Metrics/AbcSize

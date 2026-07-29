@@ -133,10 +133,14 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
     end
 
     context 'when disabling all cops' do
-      # `rubocop:disable all` disables this cop as well, so its offense is suppressed.
-      it 'does not register an offense' do
-        expect_no_offenses(<<~RUBY)
+      it 'registers an offense and corrects' do
+        expect_offense(<<~RUBY)
           foo # rubocop:disable all
+              ^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives for `all` are not permitted.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo#{trailing_whitespace}
         RUBY
       end
     end
@@ -200,6 +204,56 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
 
       expect_correction(<<~RUBY)
         foo # rubocop:disable Lint/Void
+      RUBY
+    end
+  end
+
+  context 'when a directive tries to disable this cop' do
+    it 'registers an offense for the self-disabling directive and remains active' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Style/DisableCopsWithinSourceCodeDirective
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        def foo # rubocop:disable Metrics/CyclomaticComplexity
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        def foo#{trailing_whitespace}
+        end
+      RUBY
+    end
+
+    it 'registers an offense when disabling all cops and remains active' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable all
+        ^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        def foo # rubocop:disable Metrics/CyclomaticComplexity
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        def foo#{trailing_whitespace}
+        end
+      RUBY
+    end
+
+    it 'registers an offense for disabling via department directive and remains active' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Style
+        ^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        def foo # rubocop:disable Metrics/CyclomaticComplexity
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+
+        def foo#{trailing_whitespace}
+        end
       RUBY
     end
   end
