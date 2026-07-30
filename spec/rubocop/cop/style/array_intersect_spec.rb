@@ -479,14 +479,24 @@ RSpec.describe RuboCop::Cop::Style::ArrayIntersect, :config do
         RUBY
       end
 
-      it 'registers an offense when using `array1&.none? { |e| array2.member?(e) }`' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense when using `array1&.none? { |e| array2.member?(e) }` ' \
+         '(the rewrite would flip the `nil` result)' do
+        expect_no_offenses(<<~RUBY)
           array1&.none? { |e| array2.member?(e) }
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `!array1&.intersect?(array2)` instead of `array1&.none? { |e| array2.member?(e) }`.
         RUBY
+      end
 
-        expect_correction(<<~RUBY)
-          !array1&.intersect?(array2)
+      it 'does not register an offense when using `array1&.none? { |e| array2.include?(e) }` ' \
+         '(the rewrite would flip the `nil` result)' do
+        expect_no_offenses(<<~RUBY)
+          array1&.none? { |e| array2.include?(e) }
+        RUBY
+      end
+
+      it 'does not register an offense when using `array1&.none? { array2.include?(_1) }` ' \
+         '(the rewrite would flip the `nil` result)' do
+        expect_no_offenses(<<~RUBY)
+          array1&.none? { array2.include?(_1) }
         RUBY
       end
 

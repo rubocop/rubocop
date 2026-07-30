@@ -164,11 +164,7 @@ module RuboCop
           return unless (captures = any_none_block_intersection(node))
 
           receiver, method_name, argument, block_method = captures
-
-          # `include?` is defined with different semantics on many non-array classes
-          # (e.g. `String#include?` checks for substrings), so it is only a reliable
-          # signal of an intersection check when the receiver is an array literal.
-          return if block_method == :include? && !argument.array_type?
+          return if uncorrectable_block_intersection?(node, method_name, argument, block_method)
 
           dot = node.send_node.loc.dot.source
           bang = method_name == :any? ? '' : '!'
@@ -196,6 +192,17 @@ module RuboCop
 
         def straight?(method_name)
           STRAIGHT_METHODS.include?(method_name.to_sym)
+        end
+
+        def uncorrectable_block_intersection?(node, method_name, argument, block_method)
+          # `a&.none? { |elem| b.include?(elem) }` returns `nil` when `a` is `nil`,
+          # but the negated rewrite `!a&.intersect?(b)` returns `true` there, flipping the result.
+          return true if method_name == :none? && node.send_node.safe_navigation?
+
+          # `include?` is defined with different semantics on many non-array classes
+          # (e.g. `String#include?` checks for substrings), so it is only a reliable
+          # signal of an intersection check when the receiver is an array literal.
+          block_method == :include? && !argument.array_type?
         end
 
         def register_offense(node, replacement)
