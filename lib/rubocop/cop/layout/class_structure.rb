@@ -251,7 +251,7 @@ module RuboCop
           key = category || name
           visibility_key =
             if node.def_modifier?
-              "#{name}_methods"
+              name.end_with?('_class_method') ? "#{name}s" : "#{name}_methods"
             else
               "#{node_visibility(node)}_#{key}"
             end
