@@ -17,6 +17,7 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
           protected_methods
           private_attribute_macros
           private_delegate
+          private_class_methods
           private_methods
         ],
         'Categories' => {
@@ -586,6 +587,82 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
 
           private def baz; end
 
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects public class method with modifier declared after private class method with modifier' do
+      expect_offense(<<~RUBY)
+        class A
+          private_class_method def self.do_internal_work
+          end
+
+          public_class_method def self.do_something
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `public_class_methods` is supposed to appear before `private_class_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          public_class_method def self.do_something
+          end
+          private_class_method def self.do_internal_work
+          end
+
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when public class method with modifier is declared before private class method with modifier' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          public_class_method def self.do_something
+          end
+
+          private_class_method def self.do_internal_work
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects private class method with modifier declared after private instance method' do
+      expect_offense(<<~RUBY)
+        class A
+          private
+
+          def do_something
+          end
+
+          private_class_method def self.do_internal_work
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `private_class_methods` is supposed to appear before `private_methods`.
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class A
+          private
+
+          private_class_method def self.do_internal_work
+          end
+          def do_something
+          end
+
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when private class method with modifier is declared before private instance method' do
+      expect_no_offenses(<<~RUBY)
+        class A
+          private
+
+          private_class_method def self.do_internal_work
+          end
+
+          def do_something
+          end
         end
       RUBY
     end

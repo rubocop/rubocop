@@ -518,7 +518,7 @@ Layout/ClassStructure:
   Enabled: false
   SafeAutoCorrect: false
   VersionAdded: '0.52'
-  VersionChanged: '1.53'
+  VersionChanged: '<<next>>'
   Categories:
     module_inclusion:
       - include
@@ -531,6 +531,7 @@ Layout/ClassStructure:
     - initializer
     - public_methods
     - protected_methods
+    - private_class_methods
     - private_methods
 
 Layout/ClosingHeredocIndentation:

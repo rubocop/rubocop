@@ -372,6 +372,12 @@ module RuboCop
 
       private
 
+      ### Reserved for Commissioner
+
+      private_class_method def self.restrict_on_send
+        @restrict_on_send ||= self::RESTRICT_ON_SEND.to_a.freeze
+      end
+
       ### Reserved for Cop::Cop
 
       def callback_argument(range)
@@ -398,10 +404,6 @@ module RuboCop
 
       def current_offenses
         @current_offenses ||= []
-      end
-
-      private_class_method def self.restrict_on_send
-        @restrict_on_send ||= self::RESTRICT_ON_SEND.to_a.freeze
       end
 
       EMPTY_OFFENSES = [].freeze
