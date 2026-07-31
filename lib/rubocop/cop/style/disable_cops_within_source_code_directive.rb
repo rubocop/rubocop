@@ -77,10 +77,10 @@ module RuboCop
             if directive_cops.include?('all')
               directive_cops
             else
-              directive_cops & disallowed_cops_config
+              directive_cops.uniq.select { |cop| disallowed_cops_config.include?(cop) }
             end
           else
-            directive_cops - allowed_cops
+            directive_cops.reject { |cop| allowed_cops.include?(cop) }
           end
         end
 
@@ -109,7 +109,7 @@ module RuboCop
         end
 
         def allowed_cops
-          Array(cop_config['AllowedCops'])
+          @allowed_cops ||= Array(cop_config['AllowedCops']).to_set
         end
 
         def any_cops_allowed?
@@ -117,7 +117,7 @@ module RuboCop
         end
 
         def disallowed_cops_config
-          @disallowed_cops_config ||= Array(cop_config['DisallowedCops'])
+          @disallowed_cops_config ||= Array(cop_config['DisallowedCops']).to_set
         end
       end
     end

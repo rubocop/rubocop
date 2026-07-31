@@ -119,6 +119,19 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       end
     end
 
+    context 'when the same disallowed cop is named twice in one directive' do
+      it 'reports it once and removes the whole directive' do
+        expect_offense(<<~RUBY)
+          foo # rubocop:disable Lint/Void, Lint/Void
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives for `Lint/Void` are not permitted.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          foo#{trailing_whitespace}
+        RUBY
+      end
+    end
+
     context 'when enabling all cops' do
       it 'registers an offense and corrects' do
         expect_offense(<<~RUBY)
