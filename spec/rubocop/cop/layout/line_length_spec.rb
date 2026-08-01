@@ -669,7 +669,9 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
 
   it 'checks a large collection literal with one element per line in a reasonable amount of time' do
     # Should take under a second, but 5 seconds is plenty of margin.
-    Timeout.timeout(5) do
+    # JRuby is given a larger margin because parsing and AST traversal are much slower there,
+    # especially before JIT warmup.
+    Timeout.timeout(RUBY_ENGINE == 'jruby' ? 30 : 5) do
       expect_no_offenses(<<~RUBY)
         [
           #{Array.new(10_000) { |n| format("['%04X', 0x%04X],", n, n) }.join("\n  ")}
