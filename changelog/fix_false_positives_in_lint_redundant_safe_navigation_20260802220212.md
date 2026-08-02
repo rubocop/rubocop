@@ -1,0 +1,1 @@
+* [#15517](https://github.com/rubocop/rubocop/issues/15517): Fix false positives in `Lint/RedundantSafeNavigation` when `InferNonNilReceiver` is enabled and the receiver name is rebound by a nested block (`it` or a shadowed block parameter). ([@koic][])

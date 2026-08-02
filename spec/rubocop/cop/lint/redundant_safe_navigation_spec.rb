@@ -1023,6 +1023,210 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when `it` in a nested block refers to a different implicit parameter', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        foo.map { it.map { it&.bar } }
+      RUBY
+    end
+
+    it 'does not register an offense when `it` in a nested block refers to a different implicit parameter with Ruby 3.3 analysis', :ruby33 do
+      expect_no_offenses(<<~RUBY)
+        foo.map { it.map { it&.bar } }
+      RUBY
+    end
+
+    it 'does not register an offense when a nested block parameter shadows the outer one' do
+      expect_no_offenses(<<~RUBY)
+        foo.map { |v| v.map { |v| v&.bar } }
+      RUBY
+    end
+
+    it 'does not register an offense when a shadowing block parameter is guarded by the outer parameter as a condition' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |v|
+          if v
+            bar { |v| v&.baz }
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when `it` in a nested block is guarded by the outer `it` as a condition', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        foo.each do
+          if it
+            bar { it&.baz }
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when method is called on `it` in the same block', :ruby34 do
+      expect_offense(<<~RUBY)
+        foo.each do
+          it.bar
+          it&.baz
+            ^^ Redundant safe navigation on non-nil receiver (detected by analyzing previous code/method invocations).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.each do
+          it.bar
+          it.baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when method is called on `it` in the same block with Ruby 3.3 analysis', :ruby33 do
+      expect_offense(<<~RUBY)
+        foo.each do
+          it.bar
+          it&.baz
+            ^^ Redundant safe navigation on non-nil receiver (detected by analyzing previous code/method invocations).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.each do
+          it.bar
+          it.baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when an outer variable is used in a block without shadowing' do
+      expect_offense(<<~RUBY)
+        val = foo
+        val.bar
+        baz.each { val&.qux }
+                      ^^ Redundant safe navigation on non-nil receiver (detected by analyzing previous code/method invocations).
+      RUBY
+
+      expect_correction(<<~RUBY)
+        val = foo
+        val.bar
+        baz.each { val.qux }
+      RUBY
+    end
+
+    it 'registers an offense and corrects when a block parameter is guarded by itself as a condition in the same block' do
+      expect_offense(<<~RUBY)
+        foo.each do |v|
+          if v
+            v&.bar
+             ^^ Redundant safe navigation on non-nil receiver (detected by analyzing previous code/method invocations).
+          end
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.each do |v|
+          if v
+            v.bar
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a variable in a method definition nested in a block is guarded by a same-named outer parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |v|
+          if v
+            def m
+              v = bar
+              v&.baz
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when `it` in a method definition nested in a block is guarded by the outer `it` as a condition', :ruby33 do
+      expect_no_offenses(<<~RUBY)
+        foo.each do
+          if it
+            def m
+              it&.bar
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a variable in a singleton method definition nested in a block is guarded by a same-named outer parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |v|
+          if v
+            def self.m
+              v = bar
+              v&.baz
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a variable in a class body nested in a block is guarded by a same-named outer parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |v|
+          if v
+            class C
+              v = bar
+              v&.baz
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a variable in a module body nested in a block is guarded by a same-named outer parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |v|
+          if v
+            module M
+              v = bar
+              v&.baz
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when a variable in a singleton class body nested in a block is guarded by a same-named outer parameter' do
+      expect_no_offenses(<<~RUBY)
+        foo.each do |v|
+          if v
+            class << self
+              v = bar
+              v&.baz
+            end
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when method is called on a same-named parameter of a sibling block' do
+      expect_no_offenses(<<~RUBY)
+        foo.each { |v| v.bar }
+        baz.each { |v| v&.qux }
+      RUBY
+    end
+
+    it 'does not register an offense when method is called on a numbered parameter of a sibling block' do
+      expect_no_offenses(<<~RUBY)
+        foo.each { _1.bar }
+        baz.each { _1&.qux }
+      RUBY
+    end
+
+    it 'does not register an offense when method is called on `it` of a sibling block', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        foo.each { it.bar }
+        baz.each { it&.qux }
+      RUBY
+    end
   end
 
   it 'registers an offense when `&.` is used for `to_s`' do
