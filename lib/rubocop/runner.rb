@@ -67,6 +67,8 @@ module RuboCop
     end
 
     def run(paths)
+      @inspection_team_by_config = {}.compare_by_identity
+
       # Compute the cache source checksum once to avoid potential
       # inconsistencies between workers.
       ResultCache.source_checksum
@@ -503,15 +505,8 @@ module RuboCop
 
     def mobilize_team(processed_source)
       config = @config_store.for_file(processed_source.path)
-      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
-
-      if @project_index
-        team.cops.each do |cop|
-          cop.project_index = @project_index
-        end
-      end
-
-      team
+      @inspection_team_by_config ||= {}.compare_by_identity
+      @inspection_team_by_config[config] ||= assemble_team(config)
     end
 
     def mobilized_cop_classes(config)
@@ -657,18 +652,20 @@ module RuboCop
     # otherwise dormant team that can be used for config- and option-
     # level caching in ResultCache.
     def standby_team(config)
-      @team_by_config ||= {}.compare_by_identity
-      @team_by_config[config] ||= begin
-        team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
+      @standby_team_by_config ||= {}.compare_by_identity
+      @standby_team_by_config[config] ||= assemble_team(config)
+    end
 
-        if @project_index
-          team.cops.each do |cop|
-            cop.project_index = @project_index
-          end
+    def assemble_team(config)
+      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
+
+      if @project_index
+        team.cops.each do |cop|
+          cop.project_index = @project_index
         end
-
-        team
       end
+
+      team
     end
   end
 end

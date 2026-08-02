@@ -93,6 +93,34 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       end
     end
 
+    context 'with a cop supporting multiple sources', :restore_registry do
+      let(:source) { '' }
+      let!(:persisting_cop_class) do
+        stub_cop_class('Custom::Persisting') do
+          def self.support_multiple_source?
+            true
+          end
+        end
+      end
+      let(:options) do
+        super().merge(cache: 'false', only: ['Custom/Persisting'])
+      end
+
+      before do
+        create_empty_file('example2.rb')
+        create_file('.rubocop.yml', <<~YAML)
+          Custom/Persisting:
+            Enabled: true
+        YAML
+      end
+
+      it 'uses the same cop instance for every file' do
+        expect(persisting_cop_class).to receive(:new).once.and_call_original
+
+        expect(runner.run([])).to be true
+      end
+    end
+
     context 'if there is an offense in an inspected file' do
       let(:source) { <<~RUBY }
         # frozen_string_literal: true
