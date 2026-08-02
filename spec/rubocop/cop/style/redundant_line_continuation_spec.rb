@@ -501,6 +501,29 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
     RUBY
   end
 
+  it 'does not register an offense when consecutive line continuations join two string literals' do
+    expect_no_offenses(<<~'RUBY')
+      foo 'bar' \
+          \
+          'baz'
+    RUBY
+  end
+
+  it 'registers an offense and corrects when a line continuation is followed by a blank line before a string literal' do
+    expect_offense(<<~'RUBY')
+      foo 'bar' \
+                ^ Redundant line continuation.
+
+      'baz'
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo 'bar'#{trailing_whitespace}
+
+      'baz'
+    RUBY
+  end
+
   it 'registers an offense for an interpolated string argument followed by line continuation' do
     expect_offense(<<~'RUBY')
       foo("#{bar}", \
@@ -1127,5 +1150,21 @@ RSpec.describe RuboCop::Cop::Style::RedundantLineContinuation, :config do
       def foo = 1 \
         + 2
     RUBY
+  end
+
+  it 'checks a large string concatenation joined by line continuations in a reasonable amount of time' do
+    # Each backslash joins two string literals, so it must be rejected by token inspection alone;
+    # verifying each one with a reparse of the surrounding module would take minutes.
+    # JRuby is given a larger margin because parsing and AST traversal are much slower there,
+    # especially before JIT warm-up.
+    Timeout.timeout(RUBY_ENGINE == 'jruby' ? 30 : 5) do
+      expect_no_offenses(<<~RUBY)
+        module Foo
+          CONST = '' \\
+            #{Array.new(2000) { |i| "'string#{i}' \\" }.join("\n    ")}
+            'last'
+        end
+      RUBY
+    end
   end
 end

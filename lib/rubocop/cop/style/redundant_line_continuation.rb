@@ -76,6 +76,8 @@ module RuboCop
         LINE_CONTINUATION = '\\'
         LINE_CONTINUATION_PATTERN = /(\\\n)/.freeze
         STRING_TOKEN_TYPES = %i[tSTRING tSTRING_CONTENT].freeze
+        STRING_LITERAL_ENDING_TOKEN_TYPES = %i[tSTRING tSTRING_END].freeze
+        STRING_LITERAL_BEGINNING_TOKEN_TYPES = %i[tSTRING tSTRING_BEG].freeze
 
         def on_new_investigation
           return unless processed_source.ast
@@ -102,7 +104,8 @@ module RuboCop
           candidates = []
 
           each_match_range(processed_source.ast.source_range, LINE_CONTINUATION_PATTERN) do |range|
-            next if within_comment?(range) || within_string_content?(range)
+            next if within_comment?(range) || implicit_string_concatenation?(range)
+            next if within_string_content?(range)
             next if leading_dot_method_chain_with_blank_line?(range)
 
             candidates << range
@@ -115,6 +118,20 @@ module RuboCop
           processed_source.comments.any? do |comment|
             comment.source_range.overlaps?(range)
           end
+        end
+
+        # A backslash directly joining two string literals is never redundant:
+        # removing it moves the second literal onto its own logical line,
+        # severing the implicit string concatenation. Skipping these up front
+        # avoids reparse verification, which is prohibitively slow on generated
+        # files gluing thousands of string fragments with line continuations.
+        def implicit_string_concatenation?(range)
+          tokens = processed_source.sorted_tokens
+
+          token_before = last_token_before(tokens, range)
+          return false unless string_literal_ending_on_line?(token_before, range.line)
+
+          string_literal_beginning_on_line?(first_token_after(tokens, range), range.line + 1)
         end
 
         # A backslash in string content is never a redundant line continuation
@@ -136,6 +153,27 @@ module RuboCop
           return false unless range.source_line.strip.start_with?('.', '&.')
 
           processed_source[range.line].strip.empty?
+        end
+
+        def last_token_before(tokens, range)
+          index = tokens.bsearch_index { |token| token.end_pos > range.begin_pos }
+          index&.positive? ? tokens[index - 1] : nil
+        end
+
+        def first_token_after(tokens, range)
+          tokens.bsearch { |token| token.begin_pos >= range.end_pos }
+        end
+
+        def string_literal_ending_on_line?(token, line)
+          return false unless token
+
+          STRING_LITERAL_ENDING_TOKEN_TYPES.include?(token.type) && token.pos.last_line == line
+        end
+
+        def string_literal_beginning_on_line?(token, line)
+          return false unless token
+
+          STRING_LITERAL_BEGINNING_TOKEN_TYPES.include?(token.type) && token.line == line
         end
 
         def inspect_end_of_ruby_code_line_continuation
