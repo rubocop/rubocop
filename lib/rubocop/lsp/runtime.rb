@@ -43,6 +43,10 @@ module RuboCop
         @runner.formatted_source
       end
 
+      def reset_project_index
+        @runner.reset_project_index
+      end
+
       def offenses(path, text, document_encoding = nil, prism_result: nil)
         diagnostic_options = {}
         diagnostic_options[:only] = config_only_options if @lint_mode || @layout_mode

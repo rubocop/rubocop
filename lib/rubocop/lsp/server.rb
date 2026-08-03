@@ -61,6 +61,10 @@ module RuboCop
         @runtime.layout_mode = options[:layout_mode]
       end
 
+      def reset_project_index
+        @runtime.reset_project_index
+      end
+
       def stop(&block)
         at_exit(&block) if block
         exit

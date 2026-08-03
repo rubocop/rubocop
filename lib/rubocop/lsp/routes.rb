@@ -117,13 +117,17 @@ module RuboCop
       end
 
       handle 'workspace/didChangeWatchedFiles' do |request|
-        changed = request[:params][:changes].any? do |change|
+        config_changed = request[:params][:changes].any? do |change|
           CONFIGURATION_FILE_PATTERNS.any? { |path| change[:uri].end_with?(path) }
         end
 
-        if changed
+        if config_changed
           Logger.log('Configuration file changed; restart required')
           @server.stop
+        else
+          # A watched source file changed on disk, so the project index may be
+          # stale; drop it so the next diagnostics run rebuilds it.
+          @server.reset_project_index
         end
       end
 
@@ -164,7 +168,9 @@ module RuboCop
       end
 
       handle 'textDocument/didSave' do |_request|
-        # Nothing to do
+        # The buffer's contents are now on disk, so the project index may be
+        # stale; drop it so the next diagnostics run rebuilds it.
+        @server.reset_project_index
       end
 
       handle '$/cancelRequest' do |_request|
