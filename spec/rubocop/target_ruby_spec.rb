@@ -503,6 +503,15 @@ RSpec.describe RuboCop::TargetRuby, :isolated_environment do
           expect(File).not_to receive(:file?).with(/gems\.locked/)
           expect(target_ruby.version).to eq default_version
         end
+
+        context 'when mise.toml contains a ruby version with single quotes' do
+          let(:mise_toml) { ['[tools]', "ruby = '3.0.0'"] }
+          let(:ruby_version_to_f) { 3.0 }
+
+          it 'reads it to determine the target ruby version' do
+            expect(target_ruby.version).to eq ruby_version_to_f
+          end
+        end
       end
 
       context 'when mise.toml contains different runtimes' do
