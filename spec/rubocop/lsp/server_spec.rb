@@ -42,7 +42,10 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
           capabilities: {
             textDocumentSync: { openClose: true, change: 2 },
             documentFormattingProvider: true,
-            codeActionProvider: true
+            codeActionProvider: { codeActionKinds: ['quickfix'] },
+            executeCommandProvider: {
+              commands: ['rubocop.formatAutocorrects', 'rubocop.formatAutocorrectsAll']
+            }
           }
         }
       )

@@ -21,6 +21,10 @@ module RuboCop
         RuboCop::CLI::Command::AutoGenerateConfig::AUTO_GENERATED_FILE
       ].freeze
 
+      # Commands handled by `workspace/executeCommand`. Advertised to the client
+      # via `executeCommandProvider` so it knows which commands it can invoke.
+      EXECUTE_COMMANDS = %w[rubocop.formatAutocorrects rubocop.formatAutocorrectsAll].freeze
+
       def self.handle(name, &block)
         define_method(:"handle_#{name}", &block)
       end
@@ -50,7 +54,12 @@ module RuboCop
           result: LanguageServer::Protocol::Interface::InitializeResult.new(
             capabilities: LanguageServer::Protocol::Interface::ServerCapabilities.new(
               document_formatting_provider: true,
-              code_action_provider: true,
+              code_action_provider: LanguageServer::Protocol::Interface::CodeActionOptions.new(
+                code_action_kinds: [LanguageServer::Protocol::Constant::CodeActionKind::QUICK_FIX]
+              ),
+              execute_command_provider: LanguageServer::Protocol::Interface::ExecuteCommandOptions.new(
+                commands: EXECUTE_COMMANDS
+              ),
               text_document_sync: LanguageServer::Protocol::Interface::TextDocumentSyncOptions.new(
                 change: LanguageServer::Protocol::Constant::TextDocumentSyncKind::INCREMENTAL,
                 open_close: true
