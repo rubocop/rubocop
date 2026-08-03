@@ -956,7 +956,7 @@ array1.intersect?(array2)
 | -
 |===
 
-Use `include?(element)` instead of `intersect?([element])`.
+Use `include?(element)` instead of `intersect?([element])` and `intersection([element]).any?`.
 
 [#safety-stylearrayintersectwithsingleelement]
 === Safety
@@ -970,6 +970,7 @@ The receiver might not be an array.
 ----
 # bad
 array.intersect?([element])
+array.intersection([element]).any?
 
 # good
 array.include?(element)
