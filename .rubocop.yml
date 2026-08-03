@@ -121,6 +121,7 @@ Metrics/BlockLength:
 Metrics/ClassLength:
   Exclude:
     - lib/rubocop/config_obsoletion.rb
+    - lib/rubocop/lsp/routes.rb
     - lib/rubocop/options.rb
 
 Metrics/ModuleLength:

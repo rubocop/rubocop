@@ -1731,4 +1731,40 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
       result
     end
   end
+
+  describe 'when a document is saved' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        method: 'textDocument/didSave',
+        params: { textDocument: { uri: 'file:///path/to/file.rb' } }
+      }]
+    end
+
+    it 'refreshes the project index' do
+      # rubocop:disable RSpec/AnyInstance
+      expect_any_instance_of(RuboCop::Lsp::StdinRunner).to receive(:reset_project_index)
+      # rubocop:enable RSpec/AnyInstance
+
+      result
+    end
+  end
+
+  describe 'when a watched source file changes' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        method: 'workspace/didChangeWatchedFiles',
+        params: { changes: [{ uri: 'file:///path/to/other.rb' }] }
+      }]
+    end
+
+    it 'refreshes the project index' do
+      # rubocop:disable RSpec/AnyInstance
+      expect_any_instance_of(RuboCop::Lsp::StdinRunner).to receive(:reset_project_index)
+      # rubocop:enable RSpec/AnyInstance
+
+      result
+    end
+  end
 end

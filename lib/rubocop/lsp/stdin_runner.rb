@@ -60,7 +60,27 @@ module RuboCop
         @options[:stdin]
       end
 
+      # Drop the cached project index so the next run rebuilds it. Called when a
+      # file is saved or a watched file changes, i.e. when the on-disk state the
+      # index is derived from may have changed.
+      def reset_project_index
+        @project_index = nil
+        @project_index_built = false
+      end
+
       private
+
+      # The project index is built from files on disk, not from the in-memory
+      # buffer, so it does not change while the user is typing. Build it once and
+      # reuse it across runs instead of re-walking and re-indexing the whole
+      # project on every request; `reset_project_index` drops the cache when the
+      # on-disk state changes.
+      def build_project_index(target_files)
+        return if @project_index_built
+
+        super
+        @project_index_built = true
+      end
 
       def file_finished(_file, offenses)
         @offenses = offenses
