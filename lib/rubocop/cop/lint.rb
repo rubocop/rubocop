@@ -13,6 +13,7 @@ module RuboCop
       register_cop :AmbiguousOperatorPrecedence, "#{__dir__}/lint/ambiguous_operator_precedence"
       register_cop :AmbiguousRange, "#{__dir__}/lint/ambiguous_range"
       register_cop :AmbiguousRegexpLiteral, "#{__dir__}/lint/ambiguous_regexp_literal"
+      register_cop :ArgumentMismatch, "#{__dir__}/lint/argument_mismatch"
       register_cop :ArrayLiteralInRegexp, "#{__dir__}/lint/array_literal_in_regexp"
       register_cop :AssignmentInCondition, "#{__dir__}/lint/assignment_in_condition"
       register_cop :BigDecimalNew, "#{__dir__}/lint/big_decimal_new"

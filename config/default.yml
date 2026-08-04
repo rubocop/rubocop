@@ -1660,6 +1660,13 @@ Lint/AmbiguousRegexpLiteral:
   VersionAdded: '0.17'
   VersionChanged: '0.83'
 
+Lint/ArgumentMismatch:
+  Description: >-
+    Checks for calls that pass the wrong number of positional arguments
+    to a method, using the project index.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/ArrayLiteralInRegexp:
   Description: 'Checks for an array literal interpolated inside a regexp.'
   Enabled: pending
