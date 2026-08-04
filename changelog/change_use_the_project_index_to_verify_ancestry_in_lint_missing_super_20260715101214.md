@@ -1,1 +1,0 @@
-* [#15464](https://github.com/rubocop/rubocop/pull/15464): Change `Lint/MissingSuper` to skip the constructor offense when the project index shows no ancestor defines `initialize` (`UseProjectIndex`). ([@bbatsov][])

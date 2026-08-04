@@ -1,1 +1,0 @@
-* [#15513](https://github.com/rubocop/rubocop/pull/15513): Improve `Style/DisableCopsWithinSourceCodeDirective` performance on large `AllowedCops` and `DisallowedCops` lists by matching directives against memoized sets instead of rebuilding an array lookup per comment. ([@corsonknowles][])

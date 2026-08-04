@@ -1,1 +1,0 @@
-* [#15484](https://github.com/rubocop/rubocop/pull/15484): Fix false negatives for `Lint/InheritException` when `Exception` is inherited indirectly through a project class (`UseProjectIndex`). ([@bbatsov][])

@@ -1,1 +1,0 @@
-* [#15261](https://github.com/rubocop/rubocop/issues/15261): Mention the required parentheses in the `Style/IfUnlessModifier` offense message when the condition is part of a larger expression. ([@rafa-el-souza][])

@@ -1,1 +1,0 @@
-* [#15521](https://github.com/rubocop/rubocop/pull/15521): Advertise `executeCommandProvider` and the supported code action kinds in the language server's capabilities, so clients can discover the `rubocop.formatAutocorrects` and `rubocop.formatAutocorrectsAll` commands. ([@bbatsov][])

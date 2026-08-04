@@ -1,1 +1,0 @@
-* [#15521](https://github.com/rubocop/rubocop/pull/15521): Improve language server performance by caching the project index across requests instead of rebuilding it on every keystroke when `AllCops/UseProjectIndex` is enabled. ([@bbatsov][])

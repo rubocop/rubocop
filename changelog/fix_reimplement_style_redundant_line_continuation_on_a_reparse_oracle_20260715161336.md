@@ -1,1 +1,0 @@
-* [#15471](https://github.com/rubocop/rubocop/pull/15471): Fix false negatives for `Style/RedundantLineContinuation` by verifying backslash removal against a reparse of the source instead of hand-written grammar rules. ([@bbatsov][])

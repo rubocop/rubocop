@@ -1,1 +1,0 @@
-* [#15466](https://github.com/rubocop/rubocop/pull/15466): Add new `Lint/DeprecatedReference` cop to detect references to methods and constants documented as `@deprecated`, powered by the project index. ([@bbatsov][])
