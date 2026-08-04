@@ -1,0 +1,1 @@
+* [#15526](https://github.com/rubocop/rubocop/issues/15526): Fix false positives in `Layout/MultilineMethodCallIndentation` when a line has multiple single-line blocks before a multiline block. ([@koic][])
