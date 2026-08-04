@@ -54,6 +54,7 @@ module RuboCop
       register_cop :EmptyInterpolation, "#{__dir__}/lint/empty_interpolation"
       register_cop :EmptyWhen, "#{__dir__}/lint/empty_when"
       register_cop :EnsureReturn, "#{__dir__}/lint/ensure_return"
+      register_cop :ImplicitTypeCoercion, "#{__dir__}/lint/implicit_type_coercion"
       register_cop :SharedMutableDefault, "#{__dir__}/lint/shared_mutable_default"
       register_cop :ErbNewArguments, "#{__dir__}/lint/erb_new_arguments"
       register_cop :FlipFlop, "#{__dir__}/lint/flip_flop"
