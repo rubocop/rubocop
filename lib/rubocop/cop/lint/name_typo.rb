@@ -129,11 +129,10 @@ module RuboCop
         end
 
         def constant_typo_suggestion(node)
-          return nil if literal_names.include?(node.short_name.to_s)
-
           namespace = resolve_constant_in_index(node.namespace)
           return nil unless namespace.is_a?(Rubydex::Namespace)
           return nil if namespace.find_member(node.short_name.to_s)
+          return nil if literal_names.include?(node.short_name.to_s)
 
           spell_check(node.short_name, constant_member_names(namespace))
         rescue StandardError
@@ -145,10 +144,10 @@ module RuboCop
         def method_typo_suggestion(node)
           setter = setter_call?(node)
           base = setter ? node.method_name.to_s.delete_suffix('=') : node.method_name.to_s
-          return nil if literal_names.include?(base)
 
           declaration = unknown_method_owner(node, base)
           return nil unless declaration
+          return nil if literal_names.include?(base)
 
           suggestion = spell_check(base, method_member_names(declaration))
           suggestion && setter ? "#{suggestion}=" : suggestion
