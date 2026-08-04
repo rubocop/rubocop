@@ -151,3 +151,6 @@ Index-aware cops automatically pick up the index whenever it is built; no per-co
 - The index is rebuilt once per `rubocop` invocation; no on-disk index is shared between
   runs. Indexing is fast (roughly 100ms for a couple thousand files), but very large
   monorepos will notice the per-run cost on single-file runs.
+- The language server is the exception: it builds the index once per session and reuses it
+  across requests, rebuilding only when a file is saved or a watched file changes. Editing a
+  buffer therefore does not pay the indexing cost on every keystroke.
