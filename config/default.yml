@@ -518,7 +518,7 @@ Layout/ClassStructure:
   Enabled: false
   SafeAutoCorrect: false
   VersionAdded: '0.52'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   Categories:
     module_inclusion:
       - include
@@ -1624,7 +1624,7 @@ Lint/AmbiguousBlockAssociation:
                  parentheses.
   Enabled: true
   VersionAdded: '0.48'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   AllowedMethods: []
   AllowedPatterns: []
 
@@ -1722,7 +1722,7 @@ Lint/ConstantReassignment:
 
 Lint/ConstantResolution:
   Description: 'Checks that constants are fully qualified with `::`.'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   Enabled: false
   VersionAdded: '0.86'
   # Restrict this cop to only looking at certain names
@@ -1845,7 +1845,7 @@ Lint/DeprecatedReference:
                   as deprecated with a YARD `@deprecated` tag.
                   Requires `AllCops/UseProjectIndex` to be enabled.
   Enabled: pending
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.89'
 
 Lint/DisjunctiveAssignmentInConstructor:
   Description: 'In constructor, plain assignment is preferred over disjunctive.'
@@ -1893,7 +1893,7 @@ Lint/DuplicateMethods:
   Description: 'Checks for duplicate method definitions.'
   Enabled: true
   VersionAdded: '0.29'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   # Methods that define instance methods by delegation, in the style of
   # Active Support's `delegate` (`delegate :foo, :bar, to: :target`). Register
   # a project's own `delegate`-shaped macros here so the cop recognizes the
@@ -2083,7 +2083,7 @@ Lint/InheritException:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.41'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   # The default base class in favour of `Exception`.
   EnforcedStyle: standard_error
   SupportedStyles:
@@ -2156,7 +2156,7 @@ Lint/MissingSuper:
                   without calls to `super`.
   Enabled: true
   VersionAdded: '0.89'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   AllowedParentClasses: []
 
 Lint/MixedCaseRange:
@@ -2184,7 +2184,7 @@ Lint/NameTypo:
   CheckConstants: true
   CheckMethods: true
   AllowedNames: []
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.89'
 
 Lint/NestedMethodDefinition:
   Description: 'Do not use nested method definitions.'
@@ -2447,7 +2447,7 @@ Lint/SafeNavigationChain:
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.47'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   AllowedMethods:
     - present?
     - blank?
@@ -2679,7 +2679,7 @@ Lint/UnusedPrivateMethod:
   # would be reported as false positives. It is intended for occasional
   # dead-code sweeps rather than permanent enforcement.
   Enabled: false
-  VersionAdded: '<<next>>'
+  VersionAdded: '1.89'
 
 Lint/UriEscapeUnescape:
   Description: >-
@@ -2912,7 +2912,7 @@ Migration/DepartmentName:
 Naming/AccessorMethodName:
   Description: Checks the naming of accessor methods for get_/set_.
   StyleGuide: '#accessor_mutator_method_names'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   Enabled: true
   VersionAdded: '0.50'
 
@@ -3189,7 +3189,7 @@ Naming/PredicatePrefix:
   StyleGuide: '#bool-methods-qmark'
   Enabled: true
   VersionAdded: '0.50'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   # Predicate name prefixes.
   NamePrefix:
     - is_
@@ -3664,7 +3664,7 @@ Style/ClassAndModuleChildren:
   SafeAutoCorrect: false
   Enabled: true
   VersionAdded: '0.19'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   #
   # Basically there are two different styles:
   #
@@ -3976,7 +3976,7 @@ Style/DisableCopsWithinSourceCodeDirective:
                  Forbids disabling/enabling cops within source code.
   Enabled: false
   VersionAdded: '0.82'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   AllowedCops: []
   DisallowedCops: []
 
@@ -3993,7 +3993,7 @@ Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true
   VersionAdded: '0.9'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   AllowedConstants: []
   Exclude:
     - 'spec/**/*'
@@ -4831,7 +4831,7 @@ Style/MissingRespondToMissing:
   StyleGuide: '#no-method-missing'
   Enabled: true
   VersionAdded: '0.56'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
 
 Style/MixinGrouping:
   Description: 'Checks for grouping of mixins in `class` and `module` bodies.'
@@ -5451,7 +5451,7 @@ Style/RedundantConditional:
 
 Style/RedundantConstantBase:
   Description: Avoid redundant `::` prefix on constant.
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   Enabled: pending
   VersionAdded: '1.40'
 
@@ -5885,7 +5885,7 @@ Style/StabbyLambdaParentheses:
 Style/StaticClass:
   Description: 'Prefer modules to classes with only class methods.'
   StyleGuide: '#modules-vs-classes'
-  VersionChanged: '<<next>>'
+  VersionChanged: '1.89'
   Enabled: false
   Safe: false
   VersionAdded: '1.3'

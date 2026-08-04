@@ -11,6 +11,8 @@
 
 ## master (unreleased)
 
+## 1.89.0 (2026-08-04)
+
 ### New features
 
 * [#15492](https://github.com/rubocop/rubocop/pull/15492): Add AllCops/ProjectIndexIncludesGems for bundle-wide indexing. ([@bbatsov][])

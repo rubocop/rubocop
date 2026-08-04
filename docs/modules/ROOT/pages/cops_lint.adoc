@@ -49,11 +49,16 @@ x != y # or x = !y
 | Yes
 | Always
 | 0.48
-| 1.13
+| 1.89
 |===
 
 Checks for ambiguous block association with method
 when param passed without parentheses.
+
+This cop also detects `do...end` blocks that are likely intended for
+an enumerable method in the arguments but actually bind to the outer
+method call. For example, in `render json: data.map do |x| x end`,
+Ruby parses the `do...end` block as belonging to `render`, not `map`.
 
 This cop can customize allowed methods with `AllowedMethods`.
 By default, there are no allowed methods.
@@ -71,6 +76,18 @@ some_method a { |val| puts val }
 some_method(a { |val| puts val })
 # or (different meaning)
 some_method(a) { |val| puts val }
+
+# bad
+render json: data.map do |item|
+  item.to_h
+end
+
+# good
+render json: data.map { |item| item.to_h }
+
+# good
+mapped = data.map { |item| item.to_h }
+render json: mapped
 
 # good
 # Operator methods require no disambiguation
@@ -919,7 +936,7 @@ end
 | Yes
 | No
 | 0.86
-| -
+| 1.89
 |===
 
 Checks that certain constants are fully qualified.
@@ -938,6 +955,12 @@ offenses, enable this cop with `Only: [The, Constant, Names, Causing, Issues]`
 NOTE: `Style/RedundantConstantBase` cop is disabled if this cop is enabled,
 to prevent conflicting rules. This is because it respects user configurations
 that want to enable this cop which is disabled by default.
+
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+installed, only genuinely ambiguous constants are reported: those
+that resolve to a different declaration through the surrounding
+nesting than they would fully qualified. This makes the cop practical
+to enable without `Only`/`Ignore` lists.
 
 [#examples-lintconstantresolution]
 === Examples
@@ -1353,6 +1376,74 @@ OpenSSL::Digest::SHA256.digest('foo')
 
 # good
 OpenSSL::Digest.digest('SHA256', 'foo')
+----
+
+[#lintdeprecatedreference]
+== Lint/DeprecatedReference
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.89
+| -
+|===
+
+Checks for calls to methods and references to constants that are documented
+as deprecated with a YARD `@deprecated` tag.
+
+The check is powered by the project-wide index, so it only runs when
+`AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed.
+Without the index the cop does nothing.
+
+Only references that can be resolved without type inference are checked:
+constants, method calls without an explicit receiver (or with `self`),
+which are looked up in the enclosing class or module and its ancestry,
+and calls whose receiver is a constant, which are looked up in that
+namespace's singleton class. Calls on arbitrary objects are not checked.
+
+References made from a definition that is itself deprecated are allowed,
+so deprecated implementations can keep calling each other.
+
+[#examples-lintdeprecatedreference]
+=== Examples
+
+[source,ruby]
+----
+# Given a deprecated method and constant:
+#
+#   class Api
+#     # @deprecated Use `#new_method` instead.
+#     def old_method
+#     end
+#
+#     # @deprecated
+#     OLD_TIMEOUT = 10
+#   end
+
+# bad
+class Client < Api
+  def call
+    old_method
+  end
+
+  def timeout
+    OLD_TIMEOUT
+  end
+end
+
+# good
+class Client < Api
+  def call
+    new_method
+  end
+
+  def timeout
+    NEW_TIMEOUT
+  end
+end
 ----
 
 [#lintdisjunctiveassignmentinconstructor]
@@ -1818,7 +1909,7 @@ end
 | Yes
 | No
 | 0.29
-| <<next>>
+| 1.89
 |===
 
 Checks for duplicated instance (or singleton) method
@@ -1958,6 +2049,34 @@ if cond
   delegate :foo, to: :bar
 end
 ----
+
+[#delegatingmethods_-__delegate__-_expose__-_default_-__delegate___-lintduplicatemethods]
+==== DelegatingMethods: ['delegate', 'expose'] (default: ['delegate'])
+
+[source,ruby]
+----
+# A project's own `delegate`-shaped macros can be registered so the
+# methods they define are recognized (with
+# `AllCops/ActiveSupportExtensionsEnabled: true`).
+
+# bad
+def foo
+  1
+end
+
+expose :foo, to: :bar
+----
+
+[#configurable-attributes-lintduplicatemethods]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| DelegatingMethods
+| `delegate`
+| Array
+|===
 
 [#lintduplicateregexpcharacterclasselement]
 == Lint/DuplicateRegexpCharacterClassElement
@@ -3490,12 +3609,17 @@ end
 | Yes
 | Always (Unsafe)
 | 0.41
-| 1.26
+| 1.89
 |===
 
 Looks for error classes inheriting from `Exception`.
 It is configurable to suggest using either `StandardError` (default) or
 `RuntimeError` instead.
+
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+installed, indirect inheritance is also detected: a class whose parent
+(defined anywhere in the project) ultimately inherits from `Exception`
+is reported, without autocorrection.
 
 [#safety-lintinheritexception]
 === Safety
@@ -3955,7 +4079,7 @@ x += 1
 | Yes
 | No
 | 0.89
-| <<next>>
+| 1.89
 |===
 
 Checks for the presence of constructors and lifecycle callbacks
@@ -4174,6 +4298,106 @@ x < y < z
 x < y && y < z
 10 <= x && x <= 20
 ----
+
+[#lintnametypo]
+== Lint/NameTypo
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Pending
+| Yes
+| No
+| 1.89
+| -
+|===
+
+Checks for probable typos in constant and method names: a name that
+does not resolve anywhere in the project, used in a namespace the
+project does define, with a close-named sibling to suggest instead.
+
+The check is powered by the project-wide index, so it only runs when
+`AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed.
+Without the index the cop does nothing.
+
+Constants are checked only in qualified references (`Foo::Bar`) whose
+namespace resolves in the index; bare names cannot be distinguished
+from constants provided by gems or the standard library. Methods are
+checked only in calls on constant receivers (`Foo.bar`) whose entire
+indexed ancestry is resolved, so methods gained through gem classes or
+dynamic definitions never produce offenses. In both cases an offense
+requires a similarly named alternative to exist — an unknown name
+alone is not reported, since the index does not see gems or the
+standard library.
+
+Names that appear as symbols or inside string literals in the same
+file are never reported, since they usually belong to runtime
+definitions the index cannot see (`stub_const`, `const_set`,
+`define_method`, and the like).
+
+[#examples-lintnametypo]
+=== Examples
+
+[source,ruby]
+----
+# bad - Services::UserCraetor is not defined, Services::UserCreator is
+Services::UserCraetor.new
+
+# good
+Services::UserCreator.new
+
+# bad - Report.generate_sumary is not defined, Report.generate_summary is
+Report.generate_sumary
+
+# good
+Report.generate_summary
+----
+
+[#checkconstants_-false-lintnametypo]
+==== CheckConstants: false
+
+[source,ruby]
+----
+# good - constant references are not checked
+Services::UserCraetor.new
+----
+
+[#checkmethods_-false-lintnametypo]
+==== CheckMethods: false
+
+[source,ruby]
+----
+# good - method calls are not checked
+Report.generate_sumary
+----
+
+[#allowednames_-__generate_sumary__-lintnametypo]
+==== AllowedNames: ['generate_sumary']
+
+[source,ruby]
+----
+# good - the name is explicitly allowed
+Report.generate_sumary
+----
+
+[#configurable-attributes-lintnametypo]
+=== Configurable attributes
+
+|===
+| Name | Default value | Configurable values
+
+| CheckConstants
+| `true`
+| Boolean
+
+| CheckMethods
+| `true`
+| Boolean
+
+| AllowedNames
+| `[]`
+| Array
+|===
 
 [#lintnestedmethoddefinition]
 == Lint/NestedMethodDefinition
@@ -6347,9 +6571,9 @@ NOTE: Requires Ruby version 2.3
 
 | Enabled
 | Yes
-| Always
+| Always (Unsafe)
 | 0.47
-| 0.77
+| 1.89
 |===
 
 The safe navigation operator returns nil if the receiver is
@@ -6357,6 +6581,15 @@ nil. If you chain an ordinary method call after a safe
 navigation operator, it raises NoMethodError. We should use a
 safe navigation operator after a safe navigation operator.
 This cop checks for the problem outlined above.
+
+[#safety-lintsafenavigationchain]
+=== Safety
+
+This cop's autocorrection is unsafe because it changes the behavior of
+the code: `x&.foo.bar` raises `NoMethodError` when `x` or `x&.foo` is `nil`,
+whereas the corrected `x&.foo&.bar` returns `nil` instead. The autocorrection
+also assumes that extending safe navigation through the chain is intended,
+while removing the first `&.` may be what was intended instead.
 
 [#examples-lintsafenavigationchain]
 === Examples
@@ -8300,6 +8533,70 @@ end
 
 * https://rubystyle.guide#underscore-unused-vars
 
+[#lintunusedprivatemethod]
+== Lint/UnusedPrivateMethod
+
+|===
+| Enabled by default | Safe | Supports autocorrection | Version Added | Version Changed
+
+| Disabled
+| Yes
+| No
+| 1.89
+| -
+|===
+
+Checks for private instance methods that are not referenced anywhere
+in the project.
+
+The check is powered by the project-wide index, so it only runs when
+`AllCops/UseProjectIndex` is enabled and the `rubydex` gem is installed.
+Without the index the cop does nothing.
+
+A method counts as referenced when a call with its name appears anywhere
+in the indexed project (regardless of the receiver), when it is the source
+of an `alias`, or when its name appears in the same file as a symbol or
+inside a string literal (covering `send(:name)` and declarative DSLs like
+`before_action :name`). Methods defined in classes or modules with
+descendants are not checked, since they may be invoked through `super`
+or inherited dispatch, and neither are methods whose names are built
+dynamically (e.g. `send("do_#{action}")`).
+
+The cop is disabled by default because symbol-based references from
+*other* files (e.g. a Rails callback declared in a concern) cannot be
+detected and would be reported as false positives. It is best suited
+for occasional dead-code sweeps rather than permanent enforcement.
+
+[#examples-lintunusedprivatemethod]
+=== Examples
+
+[source,ruby]
+----
+# bad - `helper` is never referenced anywhere in the project
+class Service
+  def call
+    do_something
+  end
+
+  private
+
+  def helper
+  end
+end
+
+# good
+class Service
+  def call
+    do_something(helper)
+  end
+
+  private
+
+  def helper
+  end
+end
+----
+
 [#linturiescapeunescape]
 == Lint/UriEscapeUnescape
 
@@ -9264,11 +9561,14 @@ enumerator = [1, 2, 3].filter
 enumerator.each { |item| item >= 2 } #=> [2, 3]
 ----
 
-NOTE: Return values in assignment method definitions such as `def foo=(arg)` are
-detected because they are in a void context. However, autocorrection does not remove
-the return value, as that would change behavior. In such cases, whether to remove
-the return value or rename the method to something more appropriate should be left to
-the user.
+NOTE: The last expression in an assignment method definition such as `def foo=(arg)`
+is not flagged. Ruby discards it (the method returns its argument), but the method can
+still be called directly and its return value relied upon, so flagging it would be a
+false positive for this lint.
+
+NOTE: A constant used in a void context is flagged but not autocorrected, since
+referencing a constant can trigger autoloading side effects (e.g. forcing a file to
+load before a monkey-patch), so removing it may change behavior.
 
 [#examples-lintvoid]
 === Examples

@@ -876,6 +876,11 @@ NOTE: Although `Array#intersection` can take zero or multiple arguments,
 only cases where exactly one argument is provided can be replaced with
 `Array#intersect?` and are handled by this cop.
 
+NOTE: In the block form, `include?` is only detected when its receiver is
+an array literal, because `include?` is defined with different semantics
+on many non-array classes (e.g. `String#include?` checks for substrings).
+`member?` does not have this restriction.
+
 [#safety-stylearrayintersect]
 === Safety
 
@@ -899,7 +904,7 @@ array1.intersection(array2).none?
 
 # bad
 array1.any? { |elem| array2.member?(elem) }
-array1.none? { |elem| array2.include?(elem) }
+array1.none? { |elem| [1, 2].include?(elem) }
 
 # good
 array1.intersect?(array2)
@@ -1848,7 +1853,7 @@ That's a good use case of a `?` literal so it doesn't count as an offense.
 | Yes
 | Always (Unsafe)
 | 0.19
-| <<next>>
+| 1.89
 |===
 
 Checks that namespaced classes and modules are defined with a consistent style.
@@ -3775,7 +3780,7 @@ Dir.empty?('path/to/dir')
 | Yes
 | Always
 | 0.82
-| 1.9
+| 1.89
 |===
 
 Detects comments to enable/disable RuboCop.
@@ -3784,6 +3789,17 @@ and not quickly disabled with a comment.
 
 Specific cops can be allowed with the `AllowedCops` configuration. Note that
 if this configuration is set, `rubocop:disable all` is still disallowed.
+
+Alternatively, specific cops can be disallowed with the `DisallowedCops`
+configuration. When `DisallowedCops` is set, only directives for the listed
+cops (and `all`) will be flagged. This is useful when you want
+to protect a small set of critical cops from being disabled rather than
+allowlisting all other cops. `AllowedCops` and `DisallowedCops` should not
+both be set at the same time; if `DisallowedCops` is set, it takes precedence.
+
+This cop cannot be disabled via directive comments when it is explicitly
+enabled with `Enabled: true`. This prevents users from bypassing the cop
+with `# rubocop:disable Style/DisableCopsWithinSourceCodeDirective`.
 
 [#examples-styledisablecopswithinsourcecodedirective]
 === Examples
@@ -3813,6 +3829,22 @@ end
 # rubocop:enable Metrics/AbcSize
 ----
 
+[#disallowedcops_-_lintvoid_-styledisablecopswithinsourcecodedirective]
+==== DisallowedCops: [Lint/Void]
+
+[source,ruby]
+----
+# bad
+# rubocop:disable Lint/Void
+foo
+# rubocop:enable Lint/Void
+
+# good
+# rubocop:disable Metrics/AbcSize
+foo
+# rubocop:enable Metrics/AbcSize
+----
+
 [#configurable-attributes-styledisablecopswithinsourcecodedirective]
 === Configurable attributes
 
@@ -3820,6 +3852,10 @@ end
 | Name | Default value | Configurable values
 
 | AllowedCops
+| `[]`
+| Array
+
+| DisallowedCops
 | `[]`
 | Array
 |===
@@ -3929,7 +3965,7 @@ class_eval("def #{unsafe_method}!(*params); end # def capitalize!(*params); end"
 | Yes
 | No
 | 0.9
-| -
+| 1.89
 |===
 
 Checks for missing top-level documentation of classes and
@@ -3941,6 +3977,11 @@ declarations.
 The documentation requirement is annulled if the class or module has
 a `#:nodoc:` comment next to it. Likewise, `#:nodoc: all` does the
 same for all its children.
+
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+installed, a reopened class or module is not reported when any of its
+other definition sites (in the same or another file) carries a
+documentation comment.
 
 [#examples-styledocumentation]
 === Examples
@@ -10483,7 +10524,7 @@ end
 | Yes
 | No
 | 0.56
-| -
+| 1.89
 |===
 
 Checks for the presence of `method_missing` without also
@@ -10510,6 +10551,11 @@ delegator.respond_to?(:upcase) # => false
 # But you can call it.
 delegator.upcase # => FOO
 ----
+
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+installed, `respond_to_missing?` defined in another definition of the
+same class or module (e.g. a reopening in another file) also
+satisfies the check.
 
 [#examples-stylemissingrespondtomissing]
 === Examples
@@ -11454,6 +11500,9 @@ CONST = Struct.new do
     puts 1
   end
 end.freeze
+
+# good - `Data.define` declares an immutable value type
+CONST = Data.define(:foo, :bar)
 ----
 
 [source,ruby]
@@ -14287,6 +14336,9 @@ x.join
 
 Checks for redundant assignment before returning.
 
+When there are comments between the assignment and reference,
+the cop will report an offense but it will not autocorrect.
+
 [#examples-styleredundantassignment]
 === Examples
 
@@ -14582,7 +14634,7 @@ x != y
 | Yes
 | Always
 | 1.40
-| -
+| 1.89
 |===
 
 Avoid redundant `::` prefix on a constant.
@@ -14595,6 +14647,11 @@ avoid such meaningless `::` prefix to avoid confusion.
 NOTE: This cop is disabled if `Lint/ConstantResolution` cop is enabled,
 to prevent conflicting rules. This is because it respects user configurations
 that want to enable `Lint/ConstantResolution` cop which is disabled by default.
+
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+installed, a leading `::` inside a namespace is also reported when the
+constant provably resolves to the same declaration with and without
+the base, i.e. nothing in the surrounding nesting shadows it.
 
 [#examples-styleredundantconstantbase]
 === Examples
@@ -15359,10 +15416,13 @@ String.new("#{foo} bar")
 
 Checks for redundant line continuation.
 
-This cop marks a line continuation as redundant if removing the backslash
-does not result in a syntax error.
-However, a backslash at the end of a comment or
-for string concatenation is not redundant and is not considered an offense.
+A line continuation is redundant when removing the backslash does not
+change how the program parses: the source is reparsed without the
+backslash and the resulting AST is compared to the original. Only
+backslashes that are pure noise are reported; backslashes that are
+significant — inside strings, for string concatenation, before an
+operator or argument that would otherwise start a new statement, and
+so on — are left alone, as are backslashes in comments.
 
 [#examples-styleredundantlinecontinuation]
 === Examples
@@ -16806,6 +16866,16 @@ x && x.foo  # return false
 x&.foo      # raises NoMethodError
 ----
 
+Additionally, when a method chain is converted, a `NoMethodError` that
+the original code raised for an intermediate `nil` value is suppressed:
+
+[source,ruby]
+----
+x = Struct.new(:foo).new(nil)
+x && x.foo.bar  # raises NoMethodError
+x&.foo&.bar     # returns nil
+----
+
 [#examples-stylesafenavigation]
 === Examples
 
@@ -18119,12 +18189,17 @@ There are two different styles. Defaults to `require_parentheses`.
 | No
 | Always (Unsafe)
 | 1.3
-| -
+| 1.89
 |===
 
 Checks for places where classes with only class methods can be
 replaced with a module. Classes should be used only when it makes sense to create
 instances out of them.
+
+When `AllCops/UseProjectIndex` is enabled and the `rubydex` gem is
+installed, classes that are subclassed anywhere in the project are
+not reported, since converting them to modules would break their
+subclasses.
 
 [#safety-stylestaticclass]
 === Safety

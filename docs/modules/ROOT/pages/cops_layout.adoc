@@ -684,7 +684,7 @@ end
 | Yes
 | Always (Unsafe)
 | 0.52
-| 1.53
+| 1.89
 |===
 
 Checks if the code style follows the `ExpectedOrder` configuration:
@@ -876,7 +876,7 @@ end
 | 
 
 | ExpectedOrder
-| `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `public_methods`, `protected_methods`, `private_methods`
+| `module_inclusion`, `constants`, `public_class_methods`, `initializer`, `public_methods`, `protected_methods`, `private_class_methods`, `private_methods`
 | Array
 |===
 
@@ -4741,6 +4741,32 @@ end
 name = 'John'      #: String
 ----
 
+[#allowyardcommentblockseparator_-false-_default_-layoutleadingcommentspace]
+==== AllowYARDCommentBlockSeparator: false (default)
+
+[source,ruby]
+----
+# bad
+
+# Copyright (c) Example Corp
+#-
+class Client
+end
+----
+
+[#allowyardcommentblockseparator_-true-layoutleadingcommentspace]
+==== AllowYARDCommentBlockSeparator: true
+
+[source,ruby]
+----
+# good
+
+# Copyright (c) Example Corp
+#-
+class Client
+end
+----
+
 [#configurable-attributes-layoutleadingcommentspace]
 === Configurable attributes
 
@@ -4760,6 +4786,10 @@ name = 'John'      #: String
 | Boolean
 
 | AllowSteepAnnotation
+| `false`
+| Boolean
+
+| AllowYARDCommentBlockSeparator
 | `false`
 | Boolean
 |===
