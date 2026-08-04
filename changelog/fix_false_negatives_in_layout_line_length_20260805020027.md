@@ -1,0 +1,1 @@
+* [#15525](https://github.com/rubocop/rubocop/issues/15525): Fix false negatives in `Layout/LineLength` when a constant path like `Http::UploadedFile` matches `URISchemes` case-insensitively. ([@koic][])

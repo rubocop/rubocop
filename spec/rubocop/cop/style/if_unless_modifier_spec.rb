@@ -54,6 +54,16 @@ RSpec.describe RuboCop::Cop::Style::IfUnlessModifier, :config do
       end
     end
 
+    context 'when the excess is a constant path containing `Http::`' do
+      it 'accepts' do
+        expect_no_offenses(<<~RUBY)
+          unless long_variable_name.is_a?(ExampleNamespace::Networking::Http::Response)
+            puts 1
+          end
+        RUBY
+      end
+    end
+
     context 'when the modifier form matches an allowed pattern' do
       let(:line_length_config) { super().merge('AllowedPatterns' => ['^\s*puts']) }
 
