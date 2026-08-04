@@ -209,5 +209,90 @@ RSpec.describe RuboCop::Cop::Lint::DeprecatedReference, :config do
         RUBY
       end
     end
+
+    # A declaration reopened across files has one definition per site, and only
+    # counts as deprecated when every one of them is tagged. The bare
+    # `@deprecated` tags keep the message independent of which definition the
+    # index yields first.
+    context 'for declarations with multiple definitions' do
+      let(:current_source) do
+        <<~RUBY
+          class Client < Api
+            def call
+              old_method
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when every definition of a method is deprecated' do
+        cop.project_index = index_with_current(
+          'file:///lib/api_a.rb' => "class Api\n  # @deprecated\n  def old_method\n  end\nend\n",
+          'file:///lib/api_b.rb' => "class Api\n  # @deprecated\n  def old_method\n  end\nend\n"
+        )
+
+        expect_offense(<<~RUBY, '/lib/current.rb')
+          class Client < Api
+            def call
+              old_method
+              ^^^^^^^^^^ Method `old_method` is deprecated.
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when a later definition of a method is not deprecated' do
+        cop.project_index = index_with_current(
+          'file:///lib/api_a.rb' => "class Api\n  # @deprecated\n  def old_method\n  end\nend\n",
+          'file:///lib/api_b.rb' => "class Api\n  def old_method\n  end\nend\n"
+        )
+
+        expect_no_offenses(<<~RUBY, '/lib/current.rb')
+          class Client < Api
+            def call
+              old_method
+            end
+          end
+        RUBY
+      end
+
+      it 'does not register an offense when an earlier definition of a method is not deprecated' do
+        cop.project_index = index_with_current(
+          'file:///lib/api_a.rb' => "class Api\n  def old_method\n  end\nend\n",
+          'file:///lib/api_b.rb' => "class Api\n  # @deprecated\n  def old_method\n  end\nend\n"
+        )
+
+        expect_no_offenses(<<~RUBY, '/lib/current.rb')
+          class Client < Api
+            def call
+              old_method
+            end
+          end
+        RUBY
+      end
+
+      it 'registers an offense when every definition of a class is deprecated' do
+        cop.project_index = index_with_current(
+          'file:///lib/legacy_a.rb' => "# @deprecated\nclass Legacy\nend\n",
+          'file:///lib/legacy_b.rb' => "# @deprecated\nclass Legacy\nend\n"
+        )
+
+        expect_offense(<<~RUBY, '/lib/current.rb')
+          Legacy.new
+          ^^^^^^ Constant `Legacy` is deprecated.
+        RUBY
+      end
+
+      it 'does not register an offense when only one definition of a class is deprecated' do
+        cop.project_index = index_with_current(
+          'file:///lib/legacy_a.rb' => "# @deprecated\nclass Legacy\nend\n",
+          'file:///lib/legacy_b.rb' => "class Legacy\nend\n"
+        )
+
+        expect_no_offenses(<<~RUBY, '/lib/current.rb')
+          Legacy.new
+        RUBY
+      end
+    end
   end
 end

@@ -150,10 +150,19 @@ module RuboCop
           false
         end
 
+        # Enumerated in a single pass that stops at the first non-deprecated
+        # definition, since materializing every definition of a declaration
+        # that is almost never deprecated dominates the cop's cost.
         def deprecated?(declaration)
-          definitions = declaration.definitions.to_a
+          any = false
 
-          definitions.any? && definitions.all?(&:deprecated?)
+          declaration.definitions.each do |definition|
+            return false unless definition.deprecated?
+
+            any = true
+          end
+
+          any
         end
 
         # References from a definition that is itself documented as deprecated
