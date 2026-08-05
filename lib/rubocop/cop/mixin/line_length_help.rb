@@ -128,7 +128,13 @@ module RuboCop
           # Additionally, the RFC2396_PARSER alias is only available on 3.4 for now.
           # Extra info at https://github.com/ruby/uri/issues/118
           parser = defined?(URI::RFC2396_PARSER) ? URI::RFC2396_PARSER : URI::DEFAULT_PARSER
-          parser.make_regexp(config.for_cop('Layout/LineLength')['URISchemes'])
+          schemes = config.for_cop('Layout/LineLength')['URISchemes']
+          regexp = parser.make_regexp(schemes)
+
+          # `make_regexp` in uri 1.1.0+ matches schemes case-insensitively, which makes
+          # constant paths like `Http::UploadedFile` look like URIs. Require the exact case
+          # given in `URISchemes`.
+          schemes ? /(?=#{Regexp.union(schemes)}:)#{regexp}/ : regexp
         end
       end
 

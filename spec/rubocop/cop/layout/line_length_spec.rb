@@ -259,6 +259,34 @@ RSpec.describe RuboCop::Cop::Layout::LineLength, :config do
         RUBY
       end
     end
+
+    context 'and AllowQualifiedName option is not enabled' do
+      let(:cop_config) { { 'Max' => 80, 'AllowURI' => true, 'AllowQualifiedName' => false } }
+
+      it 'registers an offense when the excessive characters are part of a constant path containing `Http::`' do
+        expect_offense(<<~RUBY)
+          # The argument passed to obj.do_something must be an instance of Networking::Http::Response
+                                                                                          ^^^^^^^^^^^ Line is too long. [91/80]
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'registers an offense when the excessive characters are part of a URI whose scheme case differs from `URISchemes`' do
+        expect_offense(<<~RUBY)
+          # See: HTTPS://GITHUB.COM/RUBOCOP/RUBOCOP/COMMIT/3B48D8BDF5B1C2E05E35061837309890F04AB08C
+                                                                                          ^^^^^^^^^ Line is too long. [89/80]
+        RUBY
+
+        expect_no_corrections
+      end
+
+      it 'does not register an offense when the excessive characters are part of a URI matching `URISchemes` exactly' do
+        expect_no_offenses(<<~RUBY)
+          # See: https://github.com/rubocop/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c
+        RUBY
+      end
+    end
   end
 
   context 'when AllowQualifiedName option is enabled' do
