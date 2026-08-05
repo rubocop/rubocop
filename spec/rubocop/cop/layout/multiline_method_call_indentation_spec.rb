@@ -1165,6 +1165,53 @@ RSpec.describe RuboCop::Cop::Layout::MultilineMethodCallIndentation, :config do
       RUBY
     end
 
+    it 'accepts aligned method chain when line has multiple single-line blocks before a multiline block' do
+      expect_no_offenses(<<~RUBY)
+        obj
+          .foo { _1.a }.bar { _1.b }
+          .each do |x|
+          do_something(x)
+        end
+      RUBY
+    end
+
+    it 'accepts aligned method chain when line has multiple single-line blocks before a method call' do
+      expect_no_offenses(<<~RUBY)
+        obj
+          .foo { _1.a }.bar { _1.b }
+          .baz(x)
+      RUBY
+    end
+
+    it 'accepts aligned method chain when line has multiple single-line blocks with safe navigation' do
+      expect_no_offenses(<<~RUBY)
+        obj
+          &.foo { _1.a }&.bar { _1.b }
+          &.each do |x|
+          do_something(x)
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects misaligned method call after multiple single-line blocks' do
+      expect_offense(<<~RUBY)
+        obj
+          .foo { _1.a }.bar { _1.b }
+            .each do |x|
+            ^^^^^ Align `.each` with `.foo` on line 2.
+            do_something(x)
+          end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        obj
+          .foo { _1.a }.bar { _1.b }
+          .each do |x|
+          do_something(x)
+        end
+      RUBY
+    end
+
     it 'accepts aligned method chained after single-line block on both calls' do
       expect_no_offenses(<<~RUBY)
         (0..foo).bar { baz }

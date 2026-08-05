@@ -423,11 +423,11 @@ module RuboCop
         end
 
         def leftmost_call_on_same_line(node)
-          current = node.any_block_type? ? node.send_node : node
-          while current.receiver&.call_type? &&
-                current.receiver.loc?(:dot) &&
-                current.receiver.loc.dot.line == current.loc.dot.line
-            current = current.receiver
+          current = unwrap_block_node(node)
+          while (receiver = unwrap_block_node(current.receiver)) &&
+                receiver.call_type? && receiver.loc?(:dot) &&
+                receiver.loc.dot.line == current.loc.dot.line
+            current = receiver
           end
           current
         end
