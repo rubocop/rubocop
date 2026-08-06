@@ -149,17 +149,26 @@ module RuboCop
         def adjust_str(part)
           case part.type
           when :str
-            if single_quoted?(part)
-              part.value.gsub(/(\\|"|#\{|#@|#\$)/, '\\\\\&')
-            else
-              part.value.inspect[1..-2]
-            end
+            adjust_str_literal(part)
           when :dstr, :begin
             part.children.map do |child|
               adjust_str(child)
             end.join
           else
             "\#{#{part.source}}"
+          end
+        end
+
+        def adjust_str_literal(part)
+          if single_quoted?(part)
+            part.value.gsub(/(\\|"|#\{|#@|#\$)/, '\\\\\&')
+          elsif double_quoted?(part)
+            # Reuse the source as written - rebuilding it from the value via
+            # `inspect` would rewrite the author's escape notation
+            # (e.g. `\x0a` into `\n`).
+            part.source[1..-2]
+          else
+            part.value.inspect[1..-2]
           end
         end
 
@@ -171,6 +180,10 @@ module RuboCop
 
         def single_quoted?(str_node)
           str_node.source.start_with?("'")
+        end
+
+        def double_quoted?(str_node)
+          str_node.source.start_with?('"')
         end
 
         def mode
