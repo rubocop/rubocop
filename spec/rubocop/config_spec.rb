@@ -855,6 +855,39 @@ RSpec.describe RuboCop::Config do
           'Bar' => 43 }
       )
     end
+
+    context 'when both the department and the cop define `Exclude`' do
+      let(:hash) do
+        {
+          'Style' => { 'Exclude' => ['foo.rb'] },
+          'Style/Alias' => { 'Exclude' => ['bar.rb'] }
+        }
+      end
+
+      it 'merges the two `Exclude` lists' do
+        expect(configuration.for_badge(RuboCop::Cop::Style::Alias.badge)).to eq(
+          { 'Enabled' => true,
+            'Exclude' => ['foo.rb', 'bar.rb'] }
+        )
+      end
+    end
+
+    context 'when only the cop defines `Exclude`' do
+      let(:hash) do
+        {
+          'Style' => { 'Foo' => 42 },
+          'Style/Alias' => { 'Exclude' => ['bar.rb'] }
+        }
+      end
+
+      it 'keeps the cop `Exclude`' do
+        expect(configuration.for_badge(RuboCop::Cop::Style::Alias.badge)).to eq(
+          { 'Enabled' => true,
+            'Foo' => 42,
+            'Exclude' => ['bar.rb'] }
+        )
+      end
+    end
   end
 
   describe '#for_enabled_cop' do

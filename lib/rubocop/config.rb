@@ -168,7 +168,11 @@ module RuboCop
         department_config = self[badge.department_name]
         cop_config = for_cop(badge.to_s)
         if department_config
-          department_config.merge(cop_config)
+          merged_config = department_config.merge(cop_config)
+          if department_config['Exclude'] && cop_config['Exclude']
+            merged_config['Exclude'] = department_config['Exclude'] | cop_config['Exclude']
+          end
+          merged_config
         else
           cop_config
         end
