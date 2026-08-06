@@ -35,8 +35,14 @@ module RuboCop
         condition.each_node.any?(&:lvasgn_type?)
       end
 
+      # The rendered modifier form is compared against the bare maximum, not
+      # `acceptable_line_length?`: `Layout/LineLength`'s exemptions describe
+      # long lines the user tolerates, not permission to manufacture new ones,
+      # so collapsing to modifier form must never push a line past the maximum.
       def modifier_fits_on_single_line?(node)
-        acceptable_line_length?(line_in_modifier_form(node), node.first_line)
+        return true unless max_line_length
+
+        line_length(line_in_modifier_form(node)) <= max_line_length
       end
 
       def line_in_modifier_form(node)
@@ -46,12 +52,12 @@ module RuboCop
         "#{code_before}#{to_modifier_form(node)}#{code_after(node)}"
       end
 
-      # Rather than comparing the rendered modifier form against the bare
-      # maximum, ask the question `Layout/LineLength` would: a line the user's
-      # configuration exempts (`Layout/LineLength` disabled at that line, an
-      # allowed pattern, an allowed cop directive, an allowed URI) fits by
-      # definition. This keeps every modifier cop consistent with
-      # `Layout/LineLength` instead of each reimplementing part of its policy.
+      # Whether an existing line is acceptable to `Layout/LineLength`,
+      # exemptions (the cop disabled at that line, an allowed pattern, an
+      # allowed cop directive, an allowed URI) included. Only for judging
+      # lines already in the source as too long - see
+      # `modifier_fits_on_single_line?` for why the exemptions must not apply
+      # when deciding whether a modifier line may be created.
       def acceptable_line_length?(line, line_number)
         return true unless max_line_length
         return true if line_length(line) <= max_line_length

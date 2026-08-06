@@ -138,16 +138,11 @@ RSpec.describe RuboCop::Cop::Style::WhileUntilModifier, :config do
     let(:long_url) { 'https://example.com/a/rather/long/path?with=query' }
 
     context 'when the excess is an allowed URI' do
-      it 'registers an offense and corrects to modifier form' do
-        expect_offense(<<~RUBY)
+      it 'does not register an offense' do
+        expect_no_offenses(<<~RUBY)
           while url == '#{long_url}'
-          ^^^^^ Favor modifier `while` usage when having a single-line body.
             step
           end
-        RUBY
-
-        expect_correction(<<~RUBY)
-          step while url == '#{long_url}'
         RUBY
       end
     end
