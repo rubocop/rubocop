@@ -1023,6 +1023,57 @@ RSpec.describe RuboCop::Cop::Lint::RedundantSafeNavigation, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense when the receiver is `it` shadowing an outer `it`', :ruby34 do
+      expect_no_offenses(<<~RUBY)
+        p(values.map { it.map { it&.upcase } })
+      RUBY
+    end
+
+    it 'does not register an offense when the receiver is a block parameter shadowing an outer one' do
+      expect_no_offenses(<<~RUBY)
+        p(values.map { |val| val.map { |val| val&.upcase } })
+      RUBY
+    end
+
+    it 'does not register an offense when the receiver shadows a variable used as a parent `if` condition' do
+      expect_no_offenses(<<~RUBY)
+        val = f
+        if val
+          arr.map { |val| val&.foo }
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when method is called on a block parameter in the same block' do
+      expect_offense(<<~RUBY)
+        values.map do |val|
+          val.bar
+          val&.baz
+             ^^ Redundant safe navigation on non-nil receiver (detected by analyzing previous code/method invocations).
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        values.map do |val|
+          val.bar
+          val.baz
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when method is called on an unshadowed variable before the block' do
+      expect_offense(<<~RUBY)
+        foo.bar
+        arr.each { foo&.baz }
+                      ^^ Redundant safe navigation on non-nil receiver (detected by analyzing previous code/method invocations).
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo.bar
+        arr.each { foo.baz }
+      RUBY
+    end
   end
 
   it 'registers an offense when `&.` is used for `to_s`' do
