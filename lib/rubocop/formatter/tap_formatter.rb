@@ -68,7 +68,9 @@ module RuboCop
 
       def message(offense)
         message =
-          if offense.corrected_with_todo?
+          if offense.disabled?
+            '[Suppressed] '
+          elsif offense.corrected_with_todo?
             '[Todo] '
           elsif offense.corrected?
             '[Corrected] '

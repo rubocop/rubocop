@@ -173,6 +173,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --display-only-safe-correctable
                                                Only output safe-correctable offense messages
                                                when combined with --display-only-correctable.
+                  --display-suppressed         Also output offenses suppressed by directive
+                                               comments. They do not affect the exit code.
 
           Autocorrection:
               -a, --autocorrect                Autocorrect offenses (only when it's safe).
