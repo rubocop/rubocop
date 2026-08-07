@@ -439,6 +439,20 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       expect(found_basenames).to include('ruby3.rb')
     end
 
+    context 'when the base dir is relative' do
+      let(:base_dir) { '.' }
+
+      it 'does not search excluded top level directories' do
+        config = instance_double(RuboCop::Config)
+        exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
+        allow(config).to receive(:for_all_cops).and_return(exclude_property)
+        allow(config_store).to receive(:for).and_return(config)
+
+        expect(found_basenames).not_to include('ruby1.rb')
+        expect(found_basenames).to include('ruby3.rb')
+      end
+    end
+
     it 'works also if a folder is named ","' do
       create_empty_file(',/ruby4.rb')
 

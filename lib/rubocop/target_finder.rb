@@ -116,8 +116,13 @@ module RuboCop
 
     def combined_exclude_glob_patterns(base_dir)
       exclude = @config_store.for(base_dir).for_all_cops['Exclude'] || []
+      # `Exclude` patterns coming from the configuration are always absolute, while `base_dir`
+      # can be relative (e.g. `rubocop .`). Strip the absolute prefix, but keep the resulting
+      # pattern anchored at `base_dir` so that it matches the directories yielded by
+      # `Dir.glob(File.join(base_dir, '*/'))`, which are relative when `base_dir` is.
+      absolute_base_dir = File.expand_path(base_dir)
       patterns = exclude.select { |pattern| pattern.is_a?(String) && pattern.end_with?('/**/*') }
-                        .map { |pattern| pattern.sub("#{base_dir}/", '') }
+                        .map { |pattern| pattern.sub("#{absolute_base_dir}/", '') }
       "#{base_dir}/{#{patterns.join(',')}}"
     end
 
