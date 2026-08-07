@@ -97,13 +97,34 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           end
 
           context 'an unknown cop' do
-            it 'returns an offense' do
+            it 'returns an offense without removing the directive' do
               expect_offense(<<~RUBY)
                 # rubocop:disable UnknownCop
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `UnknownCop` (unknown cop).
               RUBY
 
-              expect_correction('')
+              expect_no_corrections
+            end
+          end
+
+          context 'an unknown cop alongside a cop with offenses' do
+            let(:offenses) do
+              [
+                RuboCop::Cop::Offense.new(:convention,
+                                          FakeLocation.new(line: 2, column: 0),
+                                          'Method has too many lines.',
+                                          'Metrics/MethodLength')
+              ]
+            end
+
+            it 'returns an offense without removing the unknown cop from the directive' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable UnknownCop, Metrics/MethodLength
+                                  ^^^^^^^^^^ Unnecessary disabling of `UnknownCop` (unknown cop).
+                def m; end
+              RUBY
+
+              expect_no_corrections
             end
           end
 
@@ -314,7 +335,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{message}
               RUBY
 
-              expect_correction('')
+              expect_no_corrections
             end
 
             context 'when the department starts with a lowercase letter' do
@@ -324,7 +345,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `lint/SelfAssignment` (did you mean `Lint/SelfAssignment`?).
                 RUBY
 
-                expect_correction('')
+                expect_no_corrections
               end
             end
 
@@ -335,7 +356,7 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Lint/selfAssignment` (did you mean `Lint/SelfAssignment`?).
                 RUBY
 
-                expect_correction('')
+                expect_no_corrections
               end
             end
           end
