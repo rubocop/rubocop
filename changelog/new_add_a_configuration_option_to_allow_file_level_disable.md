@@ -1,0 +1,1 @@
+* [#5933](https://github.com/rubocop/rubocop/issues/5933): Add `# rubocop:disable-file` directive for explicitly disabling cops for an entire file without requiring a corresponding `# rubocop:enable`. ([@nzlaura][])
