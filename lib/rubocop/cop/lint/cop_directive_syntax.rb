@@ -42,6 +42,18 @@ module RuboCop
       #   # good
       #   # rubocop:disable Layout/LineLength -- comment
       #
+      #   # bad
+      #   # rucocop:disable Layout/LineLength
+      #
+      #   # good
+      #   # rubocop:disable Layout/LineLength
+      #
+      #   # bad
+      #   # rubocop:disable Layout/LineLenght
+      #
+      #   # good
+      #   # rubocop:disable Layout/LineLength
+      #
       class CopDirectiveSyntax < Base
         COMMON_MSG = 'Malformed directive comment detected.'
 
@@ -50,19 +62,37 @@ module RuboCop
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
         MALFORMED_COP_NAMES_MSG = 'Cop names must be separated by commas. ' \
                                   'Comment in the directive must start with `--`.'
+        INVALID_KEYWORD_MSG = 'The directive keyword must be `rubocop`, not `%<keyword>s`.'
+        UNKNOWN_COP_MSG = 'Unknown cop name `%<name>s`%<suggestion>s.'
+
+        # A comment that looks like an attempted directive: any keyword
+        # followed by a colon and a valid mode name.
+        NEAR_MISS_KEYWORD_REGEXP = /
+          \A\#+\s*(?<keyword>[A-Za-z][\w-]*)\s*:\s*
+          (?:#{DirectiveComment::AVAILABLE_MODES.join('|')})\b
+        /x.freeze
 
         def on_new_investigation
           processed_source.comments.each do |comment|
             directive_comment = DirectiveComment.new(comment)
-            next unless directive_comment.start_with_marker?
-            next unless directive_comment.malformed?
-
-            message = offense_message(directive_comment)
-            add_offense(comment, message: message)
+            if directive_comment.start_with_marker?
+              check_directive(comment, directive_comment)
+            elsif (keyword = near_miss_keyword(comment))
+              message = format("#{COMMON_MSG} #{INVALID_KEYWORD_MSG}", keyword: keyword)
+              add_offense(comment, message: message)
+            end
           end
         end
 
         private
+
+        def check_directive(comment, directive_comment)
+          if directive_comment.malformed?
+            add_offense(comment, message: offense_message(directive_comment))
+          elsif (name = unknown_cop_name(directive_comment))
+            add_offense(comment, message: unknown_cop_message(directive_comment, name))
+          end
+        end
 
         # rubocop:disable Metrics/MethodLength
         def offense_message(directive_comment)
@@ -82,6 +112,42 @@ module RuboCop
           "#{COMMON_MSG} #{additional_msg}"
         end
         # rubocop:enable Metrics/MethodLength
+
+        def near_miss_keyword(comment)
+          match = comment.text.match(NEAR_MISS_KEYWORD_REGEXP)
+          return unless match
+
+          keyword = match[:keyword]
+          return if keyword == 'rubocop'
+
+          keyword if similar_to_rubocop?(keyword)
+        end
+
+        def similar_to_rubocop?(keyword)
+          return true if keyword.casecmp?('rubocop')
+          # `DidYouMean` is not always available - see `NameSimilarity`.
+          return false unless defined?(DidYouMean::Levenshtein)
+
+          DidYouMean::Levenshtein.distance(keyword.downcase, 'rubocop') <= 2
+        end
+
+        def unknown_cop_name(directive_comment)
+          return if directive_comment.push? || directive_comment.pop? || directive_comment.all_cops?
+
+          registry = directive_comment.cop_registry
+          directive_comment.raw_cop_names.find do |name|
+            next false if registry.department?(name)
+
+            qualified = registry.qualified_cop_name(name, nil, warn: false)
+            !registry.contains_cop_matching?([qualified])
+          end
+        end
+
+        def unknown_cop_message(directive_comment, name)
+          similar = NameSimilarity.find_similar_name(name, directive_comment.cop_registry.names)
+          suggestion = similar ? " (did you mean `#{similar}`?)" : ''
+          format(UNKNOWN_COP_MSG, name: name, suggestion: suggestion)
+        end
       end
     end
   end

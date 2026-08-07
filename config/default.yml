@@ -1734,6 +1734,7 @@ Lint/CopDirectiveSyntax:
   Description: 'Checks that `# rubocop:` directives are strictly formatted.'
   Enabled: pending
   VersionAdded: '1.72'
+  VersionChanged: '<<next>>'
 
 Lint/DataDefineOverride:
   Description: 'Disallow overriding the `Data` built-in methods via `Data.define`.'
