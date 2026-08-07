@@ -20,6 +20,14 @@ RSpec.describe RuboCop::Cop::Metrics::ParameterLists, :config do
     RUBY
   end
 
+  it 'accepts a multi-line parameter list with a disable directive on its last line' do
+    expect_no_offenses(<<~RUBY)
+      def meth(a, b, c,
+               d, e) # rubocop:disable Metrics/ParameterLists
+      end
+    RUBY
+  end
+
   it 'accepts a proc with more than 4 parameters' do
     expect_no_offenses(<<~RUBY)
       proc { |a, b, c, d, e| }

@@ -45,6 +45,20 @@ module RuboCop
       disabled_line_ranges.none? { |range| range.include?(line_number) }
     end
 
+    # Whether the cop is enabled for all of the given line span. The cop
+    # counts as disabled for the span when any of its disabled ranges
+    # overlaps it, so that a directive on any line of a multi-line offense
+    # suppresses the offense.
+    def cop_enabled_at_lines?(cop, first_line, last_line)
+      cop = cop.cop_name if cop.respond_to?(:cop_name)
+      disabled_line_ranges = cop_disabled_line_ranges[cop]
+      return true unless disabled_line_ranges
+
+      disabled_line_ranges.none? do |range|
+        range.end >= first_line && range.begin <= last_line
+      end
+    end
+
     def cop_opted_in?(cop)
       opt_in_cops.include?(cop.cop_name)
     end
