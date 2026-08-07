@@ -105,8 +105,8 @@ module RuboCop
           end
 
           if max_range == Float::INFINITY
-            # A range opened by `# rubocop:push` is closed by `# rubocop:pop`,
-            # not by `# rubocop:enable`.
+            # A range opened by `rubocop:push` is closed by `rubocop:pop`,
+            # not by `rubocop:enable`.
             enabling_directive = directive.push? ? '# rubocop:pop' : '# rubocop:enable'
             format(MSG, cop: cop, type: type, directive: enabling_directive)
           else

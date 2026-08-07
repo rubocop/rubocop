@@ -30,21 +30,55 @@ module RuboCop
       #   foo = "1"
       #   # rubocop:enable all
       #   baz
+      #
+      #   # bad
+      #   foo = 1
+      #   # rubocop:pop
+      #
+      #   # good
+      #   # rubocop:push -Style/StringLiterals
+      #   foo = "1"
+      #   # rubocop:pop
       class RedundantCopEnableDirective < Base
         include RangeHelp
         include SurroundingSpace
         extend AutoCorrector
 
         MSG = 'Unnecessary enabling of %<cop>s.'
+        MSG_ORPHAN_POP = 'Unnecessary `rubocop:pop` without a matching `rubocop:push`.'
 
         def on_new_investigation
-          return if processed_source.blank? || !processed_source.raw_source.include?('enable')
+          return if processed_source.blank?
 
+          source = processed_source.raw_source
+          check_extra_enables if source.include?('enable')
+          check_orphan_pops if source.include?('pop')
+        end
+
+        private
+
+        def check_extra_enables
           offenses = processed_source.comment_config.extra_enabled_comments
           offenses.each { |comment, cop_names| register_offense(comment, cop_names) }
         end
 
-        private
+        def check_orphan_pops
+          push_depth = 0
+          processed_source.comments.each do |comment|
+            directive = DirectiveComment.new(comment)
+            if directive.push?
+              push_depth += 1
+            elsif directive.pop?
+              push_depth.zero? ? register_orphan_pop(directive) : push_depth -= 1
+            end
+          end
+        end
+
+        def register_orphan_pop(directive)
+          add_offense(directive.range, message: MSG_ORPHAN_POP) do |corrector|
+            corrector.remove(range_with_surrounding_space(directive.range, side: :right))
+          end
+        end
 
         def register_offense(comment, cop_names)
           directive = DirectiveComment.new(comment)

@@ -2141,7 +2141,7 @@ Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
   VersionAdded: '0.52'
-  VersionChanged: '1.88'
+  VersionChanged: '<<next>>'
   # Maximum number of consecutive lines the cop can be disabled for.
   # 0 allows only single-line disables
   # 1 would mean the maximum allowed is the following:
@@ -2324,6 +2324,7 @@ Lint/RedundantCopEnableDirective:
   Description: Checks for rubocop:enable comments that can be removed.
   Enabled: true
   VersionAdded: '0.76'
+  VersionChanged: '<<next>>'
 
 Lint/RedundantDirGlobSort:
   Description: 'Checks for redundant `sort` method to `Dir.glob` and `Dir[]`.'
