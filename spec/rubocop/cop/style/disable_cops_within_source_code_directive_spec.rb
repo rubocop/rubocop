@@ -270,4 +270,64 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
       RUBY
     end
   end
+
+  context 'when AllowTrailingComment is true' do
+    let(:cop_config) { { 'AllowTrailingComment' => true } }
+
+    it 'registers an offense for a disable directive without a justification' do
+      expect_offense(<<~RUBY)
+        x = 0 # rubocop:disable Layout/SpaceAroundOperators
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        x = 0#{trailing_whitespace}
+      RUBY
+    end
+
+    it 'does not register an offense for a disable directive with a justification' do
+      expect_no_offenses(<<~RUBY)
+        x = 0 # rubocop:disable Layout/SpaceAroundOperators -- aligning with the table below
+      RUBY
+    end
+
+    it 'does not register an offense for an enable directive closing a justified disable' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable Metrics/AbcSize -- legacy method, tracked in JIRA-123
+        def foo
+        end
+        # rubocop:enable Metrics/AbcSize
+      RUBY
+    end
+
+    it 'registers an offense for a `todo` directive without a justification' do
+      expect_offense(<<~RUBY)
+        x = 0 # rubocop:todo Layout/SpaceAroundOperators
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+      RUBY
+    end
+
+    context 'combined with AllowedCops' do
+      let(:cop_config) do
+        { 'AllowTrailingComment' => true, 'AllowedCops' => ['Metrics/AbcSize'] }
+      end
+
+      it 'does not register an offense for an allowed cop without a justification' do
+        expect_no_offenses(<<~RUBY)
+          # rubocop:disable Metrics/AbcSize
+          def foo
+          end
+          # rubocop:enable Metrics/AbcSize
+        RUBY
+      end
+
+      it 'registers an offense for a non-allowed cop without a justification' do
+        expect_offense(<<~RUBY)
+          def foo # rubocop:disable Metrics/CyclomaticComplexity
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable directives without a `--` justification comment are not permitted.
+          end
+        RUBY
+      end
+    end
+  end
 end
