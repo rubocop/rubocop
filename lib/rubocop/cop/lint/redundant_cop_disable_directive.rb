@@ -259,14 +259,23 @@ module RuboCop
           location = DirectiveComment.new(comment).range
           cop_names = cops.sort.map { |c| describe(c) }.join(', ')
 
-          add_offense(location, message: message(cop_names)) do |corrector|
-            range = comment_range_with_surrounding_space(location, comment.source_range)
+          # An unknown cop may just not be loaded in this run (e.g. a custom
+          # cop whose configuration failed to load) - removing its directive
+          # would destroy something that cannot be restored, so only report.
+          return add_offense(location, message: message(cop_names)) if any_unknown_cop?(cops)
 
-            if leave_free_comment?(comment, range)
-              corrector.replace(range, ' # ')
-            else
-              corrector.remove(range)
-            end
+          add_offense(location, message: message(cop_names)) do |corrector|
+            remove_entire_comment(corrector, location, comment)
+          end
+        end
+
+        def remove_entire_comment(corrector, location, comment)
+          range = comment_range_with_surrounding_space(location, comment.source_range)
+
+          if leave_free_comment?(comment, range)
+            corrector.replace(range, ' # ')
+          else
+            corrector.remove(range)
           end
         end
 
@@ -276,12 +285,27 @@ module RuboCop
           ranges = cop_ranges.map { |_, r| r }
 
           cop_ranges.each do |cop, range|
-            cop_name = describe(cop)
-            add_offense(range, message: message(cop_name)) do |corrector|
-              range = directive_range_in_list(range, ranges)
-              corrector.remove(range)
-            end
+            add_offense_for_cop_in_list(cop, range, ranges)
           end
+        end
+
+        def add_offense_for_cop_in_list(cop, range, ranges)
+          cop_name = describe(cop)
+          return add_offense(range, message: message(cop_name)) if unknown_cop?(cop)
+
+          add_offense(range, message: message(cop_name)) do |corrector|
+            corrector.remove(directive_range_in_list(range, ranges))
+          end
+        end
+
+        def any_unknown_cop?(cops)
+          cops.any? { |cop| unknown_cop?(cop) }
+        end
+
+        def unknown_cop?(cop)
+          return false if cop == 'all' || department_marker?(cop)
+
+          !all_cop_names.include?(cop)
         end
 
         def leave_free_comment?(comment, range)
