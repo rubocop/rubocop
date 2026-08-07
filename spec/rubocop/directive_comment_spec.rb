@@ -115,6 +115,40 @@ RSpec.describe RuboCop::DirectiveComment do
     end
   end
 
+  describe '#reason' do
+    subject { directive_comment.reason }
+
+    context 'when there is a trailing comment' do
+      let(:text) { '# rubocop:disable Metrics/AbcSize -- this is a good reason' }
+
+      it { is_expected.to eq('this is a good reason') }
+    end
+
+    context 'when there is a trailing comment on an EOL directive' do
+      let(:text) { '# rubocop:todo Metrics/AbcSize, Lint/Void -- see #1234' }
+
+      it { is_expected.to eq('see #1234') }
+    end
+
+    context 'when there is no trailing comment' do
+      let(:text) { '# rubocop:disable Metrics/AbcSize' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when the trailing comment marker has no text after it' do
+      let(:text) { '# rubocop:disable Metrics/AbcSize --' }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when trailing text does not start with the marker' do
+      let(:text) { '# rubocop:disable Metrics/AbcSize because reasons' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#single_line?' do
     subject { directive_comment.single_line? }
 

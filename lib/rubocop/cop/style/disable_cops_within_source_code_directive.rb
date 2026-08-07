@@ -19,6 +19,12 @@ module RuboCop
       # allowlisting all other cops. `AllowedCops` and `DisallowedCops` should not
       # both be set at the same time; if `DisallowedCops` is set, it takes precedence.
       #
+      # With `AllowTrailingComment` set to `true`, a disable directive carrying
+      # a `--` trailing justification comment is allowed, so a team can require
+      # every disable to be documented instead of banning them outright. Enable
+      # directives are not checked in this mode, since they end a suppression
+      # rather than start one.
+      #
       # This cop cannot be disabled via directive comments when it is explicitly
       # enabled with `Enabled: true`. This prevents users from bypassing the cop
       # with `# rubocop:disable Style/DisableCopsWithinSourceCodeDirective`.
@@ -52,16 +58,28 @@ module RuboCop
       #   foo
       #   # rubocop:enable Metrics/AbcSize
       #
+      # @example AllowTrailingComment: true
+      #   # bad
+      #   x = 0 # rubocop:disable Layout/SpaceAroundOperators
+      #
+      #   # good
+      #   x = 0 # rubocop:disable Layout/SpaceAroundOperators -- would misalign the table
+      #
       class DisableCopsWithinSourceCodeDirective < Base
         extend AutoCorrector
 
         # rubocop:enable Lint/RedundantCopDisableDirective
         MSG = 'RuboCop disable/enable directives are not permitted.'
         MSG_FOR_COPS = 'RuboCop disable/enable directives for %<cops>s are not permitted.'
+        MSG_MISSING_REASON = 'RuboCop disable directives without a `--` justification ' \
+                             'comment are not permitted.'
 
         def on_new_investigation
           processed_source.comments.each do |comment|
-            directive_cops = directive_cops(comment)
+            directive = DirectiveComment.new(comment)
+            next if allow_trailing_comment? && (directive.reason || directive.enabled?)
+
+            directive_cops = directive_cops(directive)
             disallowed_cops = compute_disallowed_cops(directive_cops)
 
             next unless disallowed_cops.any?
@@ -85,13 +103,7 @@ module RuboCop
         end
 
         def register_offense(comment, directive_cops, disallowed_cops)
-          message = if any_cops_allowed? || disallowed_cops_config.any?
-                      format(MSG_FOR_COPS, cops: "`#{disallowed_cops.join('`, `')}`")
-                    else
-                      MSG
-                    end
-
-          add_offense(comment, message: message) do |corrector|
+          add_offense(comment, message: offense_message(disallowed_cops)) do |corrector|
             replacement = ''
 
             if directive_cops.length != disallowed_cops.length
@@ -103,9 +115,23 @@ module RuboCop
           end
         end
 
-        def directive_cops(comment)
-          match_captures = DirectiveComment.new(comment).match_captures
+        def offense_message(disallowed_cops)
+          if allow_trailing_comment?
+            MSG_MISSING_REASON
+          elsif any_cops_allowed? || disallowed_cops_config.any?
+            format(MSG_FOR_COPS, cops: "`#{disallowed_cops.join('`, `')}`")
+          else
+            MSG
+          end
+        end
+
+        def directive_cops(directive)
+          match_captures = directive.match_captures
           match_captures && match_captures[1] ? match_captures[1].split(',').map(&:strip) : []
+        end
+
+        def allow_trailing_comment?
+          cop_config['AllowTrailingComment']
         end
 
         def allowed_cops

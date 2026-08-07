@@ -80,6 +80,18 @@ module RuboCop
       MALFORMED_DIRECTIVE_WITHOUT_COP_NAME_REGEXP.match?(comment.text)
     end
 
+    # The text of the directive's optional `--` trailing comment, or `nil`
+    # when there is none.
+    def reason
+      return unless @match_data
+
+      tail = @match_data.post_match.lstrip
+      return unless tail.start_with?(TRAILING_COMMENT_MARKER)
+
+      reason = tail.delete_prefix(TRAILING_COMMENT_MARKER).strip
+      reason unless reason.empty?
+    end
+
     # Checks if this directive relates to single line
     def single_line?
       !comment.text.start_with?(DIRECTIVE_COMMENT_REGEXP)
