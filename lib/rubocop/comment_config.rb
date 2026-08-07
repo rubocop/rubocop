@@ -240,7 +240,12 @@ module RuboCop
     end
 
     def qualified_cop_name(cop_name)
-      Cop::Registry.qualified_cop_name(cop_name.strip, processed_source.file_path)
+      # A directive naming a cop under the wrong department is not honored -
+      # the mistake is surfaced by `Lint/RedundantCopDisableDirective` (with a
+      # did-you-mean hint) instead of a stderr warning that is easy to miss
+      # and disappears entirely on cached runs.
+      Cop::Registry.qualified_cop_name(cop_name.strip, processed_source.file_path,
+                                       correct_namespace: false)
     end
 
     # `Style/DisableCopsWithinSourceCodeDirective` cannot be disabled via

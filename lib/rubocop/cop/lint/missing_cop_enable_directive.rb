@@ -80,17 +80,22 @@ module RuboCop
           # This has to remain a strict inequality to handle
           # the case when max_range is Float::INFINITY
           return true if line_range.max - line_range.min < max_range + 2
+          # A name that is not registered as written (e.g. a wrongly-namespaced
+          # cop) suppresses nothing; `Lint/RedundantCopDisableDirective` reports
+          # it, so demanding its re-enablement would only add noise.
+          return true unless Registry.global.names.include?(cop)
+
+          expected_open_range?(cop, line_range)
+        end
+
+        def expected_open_range?(cop, line_range)
           # This cop is disabled in the config, it is not expected to be re-enabled
           return true if line_range.min == CommentConfig::CONFIG_DISABLED_LINE_RANGE_MIN
 
-          cop_class = RuboCop::Cop::Registry.global.find_by_cop_name cop
-          if cop_class &&
+          cop_class = RuboCop::Cop::Registry.global.find_by_cop_name(cop)
+          !!(cop_class &&
              !processed_source.registry.enabled?(cop_class, config) &&
-             line_range.max == Float::INFINITY
-            return true
-          end
-
-          false
+             line_range.max == Float::INFINITY)
         end
 
         def max_range

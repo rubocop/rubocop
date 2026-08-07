@@ -195,6 +195,22 @@ RSpec.describe RuboCop::CommentConfig do
     end
   end
 
+  describe 'a directive with a wrongly-namespaced cop name' do
+    let(:source) do
+      <<~RUBY
+        x = 1 # rubocop:disable Style/Void
+      RUBY
+    end
+
+    it 'does not disable the correctly-namespaced cop' do
+      expect(comment_config).to be_cop_enabled_at_line('Lint/Void', 1)
+    end
+
+    it 'tracks the range under the name as written' do
+      expect(comment_config.cop_disabled_line_ranges).to eq({ 'Style/Void' => [1..1] })
+    end
+  end
+
   describe '#cop_enabled_at_lines?' do
     let(:source) do
       <<~RUBY

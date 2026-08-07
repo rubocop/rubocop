@@ -352,6 +352,17 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
             end
           end
 
+          context 'a cop qualified with the wrong department' do
+            it 'returns an offense suggesting the correctly-namespaced cop' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Style/Void
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Style/Void` (did you mean `Lint/Void`?).
+              RUBY
+
+              expect_no_corrections
+            end
+          end
+
           context 'misspelled cops' do
             it 'returns an offense' do
               message = 'Unnecessary disabling of `KlassLength` (unknown ' \
