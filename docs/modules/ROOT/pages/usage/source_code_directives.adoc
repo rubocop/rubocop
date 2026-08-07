@@ -74,6 +74,12 @@ You can add a comment to the disabling/enabling directive by prefixing it with `
 
 The syntax of directives can be checked using the cop `Lint/CopDirectiveSyntax`.
 
+To see what the directives in a codebase actually suppress, run with
+`--display-suppressed`: suppressed offenses are reported tagged `[Suppressed]`
+(including their `--` justification in the JSON formatter) without affecting
+the exit code. Relatedly, `--ignore-disable-comments` runs cops as if no
+directives existed at all.
+
 == Temporarily Enabling Cops in Source Code
 
 In a similar way to disabling cops within source code, you can also temporarily enable specific

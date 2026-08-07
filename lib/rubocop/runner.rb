@@ -264,7 +264,8 @@ module RuboCop
       file_offense_cache(file) do
         source, offenses = do_inspection_loop(file)
         offenses = add_redundant_disables(file, offenses.compact.sort, source)
-        offenses.sort.reject(&:disabled?).freeze
+        offenses = offenses.reject(&:disabled?) unless @options[:display_suppressed]
+        offenses.sort.freeze
       end
     end
 

@@ -236,4 +236,27 @@ RSpec.describe RuboCop::Cop::Offense do
       expect(offense.highlighted_area.length).to eq 0
     end
   end
+
+  context 'when the offense is suppressed by a directive' do
+    subject(:offense) do
+      described_class.new(:convention, location, 'message', 'CopName', :disabled, nil,
+                          justification: 'a good reason')
+    end
+
+    it 'exposes the directive justification' do
+      expect(offense.justification).to eq('a good reason')
+    end
+
+    it 'is not correctable' do
+      expect(offense).not_to be_correctable
+    end
+
+    it 'round-trips the justification through marshalling' do
+      expect(Marshal.load(Marshal.dump(offense)).justification).to eq('a good reason')
+    end
+  end
+
+  it 'defaults justification to nil' do
+    expect(offense.justification).to be_nil
+  end
 end

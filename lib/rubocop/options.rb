@@ -132,6 +132,7 @@ module RuboCop
         option(opts, '--display-only-fail-level-offenses')
         option(opts, '--display-only-correctable')
         option(opts, '--display-only-safe-correctable')
+        option(opts, '--display-suppressed')
       end
     end
 
@@ -611,6 +612,8 @@ module RuboCop
       display_only_correctable:         ['Only output correctable offense messages.'],
       display_only_safe_correctable:    ['Only output safe-correctable offense messages',
                                          'when combined with --display-only-correctable.'],
+      display_suppressed:               ['Also output offenses suppressed by directive',
+                                         'comments. They do not affect the exit code.'],
       show_cops:                        ['Show the given cops, or all cops by',
                                          'default, and their configurations for the',
                                          'current directory.',

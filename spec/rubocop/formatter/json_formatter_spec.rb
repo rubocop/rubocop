@@ -128,6 +128,23 @@ RSpec.describe RuboCop::Formatter::JSONFormatter do
       expect(hash[:corrected]).to be(true)
     end
 
+    it 'does not include suppression keys for a regular offense' do
+      expect(hash).not_to have_key(:suppressed)
+      expect(hash).not_to have_key(:justification)
+    end
+
+    context 'for an offense suppressed by a directive' do
+      let(:offense) do
+        RuboCop::Cop::Offense.new(:convention, location, 'This is message', 'CopName', :disabled,
+                                  nil, justification: 'a fine reason')
+      end
+
+      it 'includes the suppression keys' do
+        expect(hash[:suppressed]).to be(true)
+        expect(hash[:justification]).to eq('a fine reason')
+      end
+    end
+
     it 'sets value of #hash_for_location for :location key' do
       location_hash = {
         start_line: 2,

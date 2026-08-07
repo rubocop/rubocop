@@ -47,7 +47,7 @@ module RuboCop
       end
 
       def hash_for_offense(offense)
-        {
+        hash = {
           severity:    offense.severity.name,
           message:     offense.message,
           cop_name:    offense.cop_name,
@@ -55,6 +55,15 @@ module RuboCop
           correctable: offense.correctable?,
           location:    hash_for_location(offense)
         }
+
+        # Suppressed offenses appear only under `--display-suppressed`, so
+        # these keys are additive for existing consumers.
+        if offense.disabled?
+          hash[:suppressed] = true
+          hash[:justification] = offense.justification
+        end
+
+        hash
       end
 
       # TODO: Consider better solution for Offense#real_column.

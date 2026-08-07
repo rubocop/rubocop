@@ -209,12 +209,14 @@ module RuboCop
         message = find_message(range_to_pass, message)
 
         status, corrector = enabled_lines?(range) ? correct(range, &block) : :disabled
+        justification = suppression_reason(range) if status == :disabled
 
         # Since this range may be generated from Ruby code embedded in some
         # template file, we convert it to location info in the original file.
         range = range_for_original(range)
 
-        current_offenses << Offense.new(severity, range, message, name, status, corrector)
+        current_offenses << Offense.new(severity, range, message, name, status, corrector,
+                                        justification: justification)
       end
 
       # This method should be overridden when a cop's behavior depends
@@ -532,6 +534,23 @@ module RuboCop
 
         comment_config = @processed_source.comment_config
         comment_config.cop_enabled_at_lines?(self, range.first_line, range.last_line)
+      end
+
+      # The `--` reason on the directive that suppresses offenses on this
+      # range, or `nil` when the directive carries none.
+      def suppression_reason(range)
+        covering = covering_disabled_range(range)
+        return unless covering && !covering.begin.to_f.infinite?
+
+        comment = @processed_source.comment_at_line(covering.begin)
+        comment && DirectiveComment.new(comment).reason
+      end
+
+      def covering_disabled_range(range)
+        disabled_ranges = @processed_source.comment_config.cop_disabled_line_ranges[cop_name]
+        disabled_ranges&.find do |disabled_range|
+          disabled_range.end >= range.first_line && disabled_range.begin <= range.last_line
+        end
       end
 
       def find_severity(_range, severity)

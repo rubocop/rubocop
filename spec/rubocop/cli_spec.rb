@@ -559,6 +559,21 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RESULT
     end
 
+    it 'reports suppressed offenses with `--display-suppressed` without affecting the exit code' do
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        x = 1 # rubocop:disable Lint/UselessAssignment -- demo data
+      RUBY
+      expect(cli.run(['--format', 'emacs', '--display-suppressed', 'example.rb'])).to eq(0)
+      expect($stdout.string)
+        .to include('[Suppressed] Lint/UselessAssignment: Useless assignment to variable - `x`')
+
+      $stdout.string.clear
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
+      expect($stdout.string).not_to include('Suppressed')
+    end
+
     it 'can disable all cops on a single line' do
       create_file('example.rb', 'y("123", 123456) # rubocop:disable all')
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)

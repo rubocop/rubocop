@@ -86,9 +86,19 @@ module RuboCop
 
       NO_LOCATION = PseudoSourceRange.new(1, 0, '', 0, 0).freeze
 
+      # @api public
+      #
+      # @!attribute [r] justification
+      #
+      # @return [String, nil]
+      #   the reason given on the directive that suppressed this offense
+      #   (the text after `--`), or `nil` when the offense is not suppressed
+      #   or the directive carries no reason
+      attr_reader :justification
+
       # @api private
       def initialize(severity, location, message, cop_name, # rubocop:disable Metrics/ParameterLists
-                     status = :uncorrected, corrector = nil)
+                     status = :uncorrected, corrector = nil, justification: nil)
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location
 
@@ -101,15 +111,16 @@ module RuboCop
         @cop_name = cop_name.freeze
         @status = status
         @corrector = corrector
+        @justification = justification.freeze
         freeze
       end
 
       def marshal_dump
-        [@severity, @location, @message, @cop_name, @status]
+        [@severity, @location, @message, @cop_name, @status, @justification]
       end
 
       def marshal_load(array)
-        @severity, @location, @message, @cop_name, @status = array
+        @severity, @location, @message, @cop_name, @status, @justification = array
         @line = @location.line
         @column = @location.column
       end
@@ -121,8 +132,10 @@ module RuboCop
       # @return [Boolean]
       #   whether this offense can be automatically corrected via autocorrect.
       #   This includes todo comments, for example when requested with `--disable-uncorrectable`.
+      #   An offense suppressed by a directive comment is not correctable -
+      #   autocorrect will not touch it.
       def correctable?
-        @status != :unsupported
+        @status != :unsupported && @status != :disabled
       end
 
       # @api public
