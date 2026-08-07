@@ -378,4 +378,42 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
       RUBY
     end
   end
+
+  context 'with `rubocop:pop` directives' do
+    it 'registers an offense and corrects a `pop` without a matching `push`' do
+      expect_offense(<<~RUBY)
+        foo = 1
+        # rubocop:pop
+        ^^^^^^^^^^^^^ Unnecessary `rubocop:pop` without a matching `rubocop:push`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo = 1
+      RUBY
+    end
+
+    it 'registers an offense for a second `pop` after a matched pair' do
+      expect_offense(<<~RUBY)
+        # rubocop:push -Style/StringLiterals
+        foo = "1"
+        # rubocop:pop
+        # rubocop:pop
+        ^^^^^^^^^^^^^ Unnecessary `rubocop:pop` without a matching `rubocop:push`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:push -Style/StringLiterals
+        foo = "1"
+        # rubocop:pop
+      RUBY
+    end
+
+    it 'does not register an offense for a matched `push` / `pop` pair' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:push -Style/StringLiterals
+        foo = "1"
+        # rubocop:pop
+      RUBY
+    end
+  end
 end
