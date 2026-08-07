@@ -12,6 +12,14 @@ module RuboCop
         autocorrect_requested? && disable_uncorrectable? && autocorrect_enabled?
       end
 
+      # Whether a correction exists but is skipped because it is unsafe in a
+      # safe autocorrect run, while `--disable-uncorrectable` asks for a todo
+      # comment on everything this run cannot correct.
+      def skipped_unsafe_correction_with_disable_uncorrectable?
+        autocorrect_requested? && disable_uncorrectable? &&
+          @options.fetch(:safe_autocorrect, false) && !safe_autocorrect?
+      end
+
       def autocorrect_requested?
         @options.fetch(:autocorrect, false)
       end
