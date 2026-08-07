@@ -102,4 +102,68 @@ RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
     RUBY
   end
+
+  context 'with a near-miss directive keyword' do
+    it 'registers an offense for a typo in the keyword' do
+      expect_offense(<<~RUBY)
+        # rucocop:disable Layout/LineLength
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The directive keyword must be `rubocop`, not `rucocop`.
+      RUBY
+    end
+
+    it 'registers an offense for a wrongly-cased keyword' do
+      expect_offense(<<~RUBY)
+        # RuboCop:disable Layout/LineLength
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The directive keyword must be `rubocop`, not `RuboCop`.
+      RUBY
+    end
+
+    it 'registers an offense for a trailing near-miss directive' do
+      expect_offense(<<~RUBY)
+        a = 1 # robocop:disable Layout/LineLength
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. The directive keyword must be `rubocop`, not `robocop`.
+      RUBY
+    end
+
+    it 'does not register an offense for other tools directives' do
+      expect_no_offenses(<<~RUBY)
+        # pylint: disable=foo
+      RUBY
+    end
+
+    it 'does not register an offense for prose mentioning a mode name after a colon' do
+      expect_no_offenses(<<~RUBY)
+        # TODO: disable the cop here eventually
+      RUBY
+    end
+  end
+
+  context 'with an unknown cop name' do
+    it 'registers an offense with a suggestion for a misspelled cop name' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLenght
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unknown cop name `Layout/LineLenght` (did you mean `Layout/LineLength`?).
+      RUBY
+    end
+
+    it 'registers an offense in a list of cop names' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength, Style/Encodingg
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unknown cop name `Style/Encodingg` (did you mean `Style/Encoding`?).
+      RUBY
+    end
+
+    it 'registers an offense for an unknown cop name in an enable directive' do
+      expect_offense(<<~RUBY)
+        # rubocop:enable Layout/LineLenght
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unknown cop name `Layout/LineLenght` (did you mean `Layout/LineLength`?).
+      RUBY
+    end
+
+    it 'does not register an offense for an unqualified cop name that resolves' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable LineLength
+      RUBY
+    end
+  end
 end
