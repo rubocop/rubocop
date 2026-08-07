@@ -23,8 +23,8 @@ module RuboCop
         global.without_department(:Test).cops
       end
 
-      def self.qualified_cop_name(name, origin, warn: true)
-        global.qualified_cop_name(name, origin, warn: warn)
+      def self.qualified_cop_name(name, origin, warn: true, correct_namespace: true)
+        global.qualified_cop_name(name, origin, warn: warn, correct_namespace: correct_namespace)
       end
 
       # Changes momentarily the global registry
@@ -171,11 +171,19 @@ module RuboCop
       # @note Emits a warning if the provided name has an incorrect namespace
       #
       # @return [String] Qualified cop name
-      def qualified_cop_name(name, path, warn: true)
+      def qualified_cop_name(name, path, warn: true, correct_namespace: true)
         badge = Badge.parse(name)
         print_department_missing_warning(name, path) if warn && department_missing?(badge, name)
         return name if registered?(badge)
+        # A name qualified with the wrong department is returned as is when
+        # namespace correction is not wanted, so the caller can surface the
+        # mistake instead of silently acting on the corrected name.
+        return name if badge.qualified? && !correct_namespace
 
+        resolve_cop_name(badge, name, path, warn)
+      end
+
+      def resolve_cop_name(badge, name, path, warn)
         potential_badges = qualify_badge(badge)
 
         case potential_badges.size

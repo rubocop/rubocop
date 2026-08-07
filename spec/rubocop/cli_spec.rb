@@ -546,13 +546,13 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
                    '  # rubocop: enable Style/NumericLiterals',
                    'end'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
-      expect($stderr.string)
-        .to eq(['example.rb: Warning: Style/LineLength has the wrong ' \
-                'namespace - replace it with Layout/LineLength',
-                ''].join("\n"))
-      # 2 real cops were disabled, and 1 that was incorrect
-      # 2 real cops was enabled, but only 1 had been disabled correctly
+      expect($stderr.string).to be_empty
+      # 2 real cops were disabled; the wrongly-namespaced `Style/LineLength` is
+      # not honored and gets reported with a suggestion instead.
+      # 2 real cops were enabled, but only 1 had been disabled correctly.
       expect($stdout.string).to eq(<<~RESULT)
+        #{abs('example.rb')}:3:19: W: Lint/RedundantCopDisableDirective: Unnecessary disabling of `Style/LineLength` (did you mean `Layout/LineLength`?).
+        #{abs('example.rb')}:4:121: C: Layout/LineLength: Line is too long. [130/120]
         #{abs('example.rb')}:8:21: W: [Correctable] Lint/RedundantCopEnableDirective: Unnecessary enabling of Layout/LineLength.
         #{abs('example.rb')}:9:121: C: Layout/LineLength: Line is too long. [132/120]
         #{abs('example.rb')}:11:5: C: [Correctable] Style/StringLiterals: Prefer single-quoted strings when you don't need string interpolation or special symbols.

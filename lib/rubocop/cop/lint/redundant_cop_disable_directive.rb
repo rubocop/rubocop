@@ -116,6 +116,11 @@ module RuboCop
         end
 
         def pending_cop_not_run?(cop)
+          # `Config#for_cop` corrects wrongly-namespaced names, but a name that
+          # is not registered as written never suppresses anything, so it is
+          # reported as unknown rather than exempted via the corrected cop.
+          return false unless all_cop_names.include?(cop)
+
           cop_cfg = config.for_cop(cop)
           cop_cfg['Enabled'] == 'pending' &&
             !processed_source.registry.enabled_pending_cop?(cop_cfg, config, cop)
@@ -342,7 +347,13 @@ module RuboCop
 
         SIMILAR_COP_NAMES_CACHE = Hash.new do |hash, cop_name|
           hash[:all_cop_names] = Registry.global.names unless hash.key?(:all_cop_names)
-          hash[cop_name] = NameSimilarity.find_similar_name(cop_name, hash[:all_cop_names])
+          # A registered cop with the same base name is a better suggestion
+          # than anything spelling similarity can find - the most common
+          # mistake is qualifying a cop with the wrong department.
+          basename = "/#{cop_name.split('/').last}"
+          same_basename = hash[:all_cop_names].find { |name| name.end_with?(basename) }
+          hash[cop_name] =
+            same_basename || NameSimilarity.find_similar_name(cop_name, hash[:all_cop_names])
         end
         private_constant :SIMILAR_COP_NAMES_CACHE
 

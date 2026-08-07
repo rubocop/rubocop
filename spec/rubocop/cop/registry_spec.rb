@@ -166,6 +166,30 @@ RSpec.describe RuboCop::Cop::Registry do
       expect(qualified).to eql('Metrics/MethodLength')
     end
 
+    context 'when namespace correction is not wanted' do
+      it 'returns a wrongly-namespaced name as is, without a warning' do
+        qualified = nil
+
+        expect do
+          qualified = registry.qualified_cop_name('Style/MethodLength', origin,
+                                                  correct_namespace: false)
+        end.not_to output.to_stderr
+
+        expect(qualified).to eql('Style/MethodLength')
+      end
+
+      it 'still qualifies names without a namespace' do
+        warning = "/app/.rubocop.yml: Warning: no department given for MethodLength.\n"
+        qualified = nil
+
+        expect do
+          qualified = registry.qualified_cop_name('MethodLength', origin, correct_namespace: false)
+        end.to output(warning).to_stderr
+
+        expect(qualified).to eql('Metrics/MethodLength')
+      end
+    end
+
     context 'when cops share the same class name' do
       let(:cops) do
         [
