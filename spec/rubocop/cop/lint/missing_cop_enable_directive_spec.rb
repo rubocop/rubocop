@@ -139,6 +139,14 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
         x =   0
       RUBY
     end
+
+    it 'suggests `# rubocop:pop` when a `push` with inline args has no matching `pop`' do
+      expect_offense(<<~RUBY)
+        # rubocop:push -Layout/SpaceAroundOperators
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Re-enable Layout/SpaceAroundOperators cop with `# rubocop:pop` after disabling it.
+        x =   0
+      RUBY
+    end
   end
 
   context 'when the cop is disabled in the config' do
