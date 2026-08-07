@@ -366,6 +366,35 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
         end
       end
 
+      context 'and there is a multi-line offense' do
+        let(:offenses) do
+          [
+            RuboCop::Cop::Offense.new(:convention,
+                                      FakeLocation.new(line: 1, column: 8, last_line: 2),
+                                      'Avoid parameter lists longer than 5 parameters.',
+                                      'Metrics/ParameterLists')
+          ]
+        end
+
+        it 'returns no offense for a directive on a later line of the offense' do
+          expect_no_offenses(<<~RUBY)
+            def foo(a:, b:, c:,
+                    d:, e:, f:) # rubocop:disable Metrics/ParameterLists
+            end
+          RUBY
+        end
+
+        it 'returns an offense for a directive on a line past the offense' do
+          expect_offense(<<~RUBY)
+            def foo(a:, b:, c:,
+                    d:, e:, f:)
+              do_something # rubocop:disable Metrics/ParameterLists
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ParameterLists`.
+            end
+          RUBY
+        end
+      end
+
       context 'and there are two offenses' do
         let(:message) { 'Replace class var @@class_var with a class instance var.' }
         let(:cop_name) { 'Style/ClassVars' }

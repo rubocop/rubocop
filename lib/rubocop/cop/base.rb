@@ -208,7 +208,7 @@ module RuboCop
         severity = find_severity(range_to_pass, severity)
         message = find_message(range_to_pass, message)
 
-        status, corrector = enabled_line?(range.line) ? correct(range, &block) : :disabled
+        status, corrector = enabled_lines?(range) ? correct(range, &block) : :disabled
 
         # Since this range may be generated from Ruby code embedded in some
         # template file, we convert it to location info in the original file.
@@ -522,6 +522,16 @@ module RuboCop
         return true if @options[:ignore_disable_comments] || !@processed_source
 
         @processed_source.comment_config.cop_enabled_at_line?(self, line_number)
+      end
+
+      # A multi-line offense is suppressed by a directive on any line of its
+      # range, not only its first line, matching the intuition that the
+      # directive is attached to the offending code.
+      def enabled_lines?(range)
+        return true if @options[:ignore_disable_comments] || !@processed_source
+
+        comment_config = @processed_source.comment_config
+        comment_config.cop_enabled_at_lines?(self, range.first_line, range.last_line)
       end
 
       def find_severity(_range, severity)

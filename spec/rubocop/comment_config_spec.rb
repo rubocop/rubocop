@@ -195,6 +195,28 @@ RSpec.describe RuboCop::CommentConfig do
     end
   end
 
+  describe '#cop_enabled_at_lines?' do
+    let(:source) do
+      <<~RUBY
+        def foo(a,
+                b) # rubocop:disable Metrics/ParameterLists
+        end
+      RUBY
+    end
+
+    it 'returns false when a disabled range overlaps any line of the span' do
+      expect(comment_config).not_to be_cop_enabled_at_lines('Metrics/ParameterLists', 1, 2)
+    end
+
+    it 'returns true when no disabled range overlaps the span' do
+      expect(comment_config).to be_cop_enabled_at_lines('Metrics/ParameterLists', 3, 3)
+    end
+
+    it 'returns true for a cop without directives' do
+      expect(comment_config).to be_cop_enabled_at_lines('Style/ClassVars', 1, 3)
+    end
+  end
+
   describe '#extra_enabled_comments' do
     subject(:extra) { comment_config.extra_enabled_comments }
 

@@ -198,7 +198,11 @@ module RuboCop
         end
 
         def range_with_offense?(range, offenses = offenses_to_check)
-          offenses.none? { |offense| range.cover?(offense.line) }
+          # An offense is covered when the disabled range overlaps any line of
+          # its span, mirroring how offenses are suppressed.
+          offenses.none? do |offense|
+            offense.line <= range.end && offense.location.last_line >= range.begin
+          end
         end
 
         def all_disabled?(comment)
