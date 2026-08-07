@@ -55,7 +55,7 @@ module RuboCop
       class MissingCopEnableDirective < Base
         include RangeHelp
 
-        MSG = 'Re-enable %<cop>s %<type>s with `# rubocop:enable` after disabling it.'
+        MSG = 'Re-enable %<cop>s %<type>s with `%<directive>s` after disabling it.'
         MSG_BOUND = 'Re-enable %<cop>s %<type>s within %<max_range>s lines after disabling it.'
 
         def on_new_investigation
@@ -98,13 +98,17 @@ module RuboCop
         end
 
         def message(cop, comment, type = 'cop')
+          directive = DirectiveComment.new(comment)
           if department_enabled?(cop, comment)
             type = 'department'
             cop = cop.split('/').first
           end
 
           if max_range == Float::INFINITY
-            format(MSG, cop: cop, type: type)
+            # A range opened by `# rubocop:push` is closed by `# rubocop:pop`,
+            # not by `# rubocop:enable`.
+            enabling_directive = directive.push? ? '# rubocop:pop' : '# rubocop:enable'
+            format(MSG, cop: cop, type: type, directive: enabling_directive)
           else
             format(MSG_BOUND, cop: cop, type: type, max_range: max_range)
           end
