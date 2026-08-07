@@ -42,6 +42,43 @@ RSpec.describe 'RuboCop::CLI --disable-uncorrectable', :isolated_environment do 
       RUBY
     end
 
+    context 'with a cop whose autocorrect is unsafe' do
+      let(:cli_opts) { %w[--autocorrect --format simple --disable-uncorrectable] }
+
+      before do
+        create_file('example.rb', <<~RUBY)
+          # frozen_string_literal: true
+
+          require 'set'
+          require 'set'
+        RUBY
+      end
+
+      it 'adds a todo comment in a safe autocorrect run' do
+        expect(exit_code).to eq(0)
+        expect($stderr.string).to eq('')
+        expect(File.read('example.rb')).to eq(<<~RUBY)
+          # frozen_string_literal: true
+
+          require 'set'
+          require 'set' # rubocop:todo Lint/DuplicateRequire
+        RUBY
+      end
+
+      context 'when unsafe autocorrect is requested' do
+        let(:cli_opts) { %w[--autocorrect-all --format simple --disable-uncorrectable] }
+
+        it 'corrects instead of adding a todo comment' do
+          expect(exit_code).to eq(0)
+          expect(File.read('example.rb')).to eq(<<~RUBY)
+            # frozen_string_literal: true
+
+            require 'set'
+          RUBY
+        end
+      end
+    end
+
     context 'if one one-line disable statement fits' do
       it 'adds it' do
         setup_long_line

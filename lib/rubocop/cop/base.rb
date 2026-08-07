@@ -447,6 +447,10 @@ module RuboCop
       def use_corrector(range, corrector)
         if autocorrect?
           attempt_correction(range, corrector)
+        elsif skipped_unsafe_correction_with_disable_uncorrectable?
+          # The unsafe correction will not run, so the offense is
+          # uncorrectable for this run and gets a todo comment.
+          attempt_correction(range, nil)
         elsif corrector && (always_autocorrect? || (contextual_autocorrect? && !LSP.enabled?))
           :uncorrected
         else

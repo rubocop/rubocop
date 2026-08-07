@@ -211,7 +211,7 @@ module RuboCop
         # run the other cops when no corrections are left
         on_duty = roundup_relevant_cops(processed_source)
 
-        autocorrect_cops, other_cops = on_duty.partition(&:autocorrect?)
+        autocorrect_cops, other_cops = partition_by_correcting(on_duty)
         report = investigate_partial(autocorrect_cops, processed_source,
                                      offset: offset, original: original)
 
@@ -251,6 +251,15 @@ module RuboCop
       end
 
       # @return [Array<cop>]
+      # A cop whose unsafe correction is skipped still inserts todo comments
+      # under `--disable-uncorrectable`, so it must run with the correcting
+      # cops - correctors of the later `other_cops` round are never applied.
+      def partition_by_correcting(cops)
+        cops.partition do |cop|
+          cop.autocorrect? || cop.skipped_unsafe_correction_with_disable_uncorrectable?
+        end
+      end
+
       def roundup_relevant_cops(processed_source)
         (cops + opted_in_standby_cops(processed_source)).select do |cop|
           next false if cop.excluded_file?(processed_source.file_path)
