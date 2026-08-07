@@ -479,6 +479,81 @@ RSpec.describe RuboCop::Cop::Lint::ConstantReassignment, :config do
     RUBY
   end
 
+  it 'does not register an offense for the same constant in a compact and a top-level namespace' do
+    expect_no_offenses(<<~RUBY)
+      module Matcher
+        FOO = :bar
+      end
+
+      module Documentation::Matcher
+        FOO = :baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same constant in two compact namespaces' do
+    expect_no_offenses(<<~RUBY)
+      module A::Matcher
+        FOO = :bar
+      end
+
+      module B::Matcher
+        FOO = :baz
+      end
+    RUBY
+  end
+
+  it 'does not register an offense for the same constant in a compact class and a top-level class' do
+    expect_no_offenses(<<~RUBY)
+      class Matcher
+        FOO = :bar
+      end
+
+      class Documentation::Matcher
+        FOO = :baz
+      end
+    RUBY
+  end
+
+  it 'registers an offense when reassigning a constant inside a compact namespace' do
+    expect_offense(<<~RUBY)
+      module A::B
+        FOO = :bar
+        FOO = :baz
+        ^^^^^^^^^^ Constant `FOO` is already assigned in this namespace.
+      end
+    RUBY
+  end
+
+  it 'registers an offense when a compact namespace reopens a nested namespace' do
+    expect_offense(<<~RUBY)
+      module A
+        module B
+          FOO = :bar
+        end
+      end
+
+      module A::B
+        FOO = :baz
+        ^^^^^^^^^^ Constant `FOO` is already assigned in this namespace.
+      end
+    RUBY
+  end
+
+  it 'does not register an offense when an absolute compact namespace escapes the enclosing namespace' do
+    expect_no_offenses(<<~RUBY)
+      module Outer
+        FOO = :bar
+      end
+
+      module Outer
+        module ::Other::Outer
+          FOO = :baz
+        end
+      end
+    RUBY
+  end
+
   it 'does not register an offense when class keyword reopens after constant assignment' do
     expect_no_offenses(<<~RUBY)
       FooError = Class.new(StandardError)
