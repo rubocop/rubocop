@@ -105,9 +105,20 @@ module RuboCop
 
         def each_redundant_disable(&block)
           cop_disabled_line_ranges.each do |cop, line_ranges|
+            # A pending cop that is not enabled in this run produces no
+            # offenses, so its directives cannot be judged - they typically
+            # prepare the code for the moment the cop gets enabled.
+            next if pending_cop_not_run?(cop)
+
             each_already_disabled(cop, line_ranges, &block)
             each_line_range(cop, line_ranges, &block)
           end
+        end
+
+        def pending_cop_not_run?(cop)
+          cop_cfg = config.for_cop(cop)
+          cop_cfg['Enabled'] == 'pending' &&
+            !processed_source.registry.enabled_pending_cop?(cop_cfg, config, cop)
         end
 
         def each_line_range(cop, line_ranges)
