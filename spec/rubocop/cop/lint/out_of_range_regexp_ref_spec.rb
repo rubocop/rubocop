@@ -138,6 +138,47 @@ RSpec.describe RuboCop::Cop::Lint::OutOfRangeRegexpRef, :config do
     RUBY
   end
 
+  it 'registers an offense for a reference following `match?` on an element access with a symbol key' do
+    expect_offense(<<~RUBY)
+      foo[:bar].match?(/(baz)/) && $1
+                                   ^^ $1 is out of range (no regexp capture groups detected).
+    RUBY
+  end
+
+  it 'registers an offense when an element access with a symbol key follows a regexp match' do
+    expect_offense(<<~RUBY)
+      /(foo)/ =~ bar
+      baz[:qux]
+      puts $2
+           ^^ $2 is out of range (1 regexp capture group detected).
+    RUBY
+  end
+
+  it 'registers an offense when an element access with an integer index follows a regexp match' do
+    expect_offense(<<~RUBY)
+      /(foo)/ =~ bar
+      baz[0]
+      puts $2
+           ^^ $2 is out of range (1 regexp capture group detected).
+    RUBY
+  end
+
+  it 'does not register an offense when an element access with a non-literal argument follows a regexp match' do
+    expect_no_offenses(<<~RUBY)
+      /(foo)/ =~ bar
+      baz[qux]
+      puts $2
+    RUBY
+  end
+
+  it 'does not register an offense when an element access with a string argument follows a regexp match' do
+    expect_no_offenses(<<~RUBY)
+      /(foo)/ =~ bar
+      baz['qux']
+      puts $2
+    RUBY
+  end
+
   it 'does not register an offense when in range references are used inside a when clause' do
     expect_no_offenses(<<~RUBY)
       case "foobar"

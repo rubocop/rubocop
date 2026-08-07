@@ -1,0 +1,1 @@
+* [#15541](https://github.com/rubocop/rubocop/issues/15541): Fix a false negative for `Lint/OutOfRangeRegexpRef` when a preceding element access with a non-string literal argument (e.g. `hash[:key]`) discarded the tracked capture count. ([@koic][])
