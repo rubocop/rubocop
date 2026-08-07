@@ -214,6 +214,14 @@ RSpec.describe RuboCop::Cop::Lint::UselessMethodDefinition, :config do
     RUBY
   end
 
+  it 'does not register an offense when method definition contains rest keyword arguments' do
+    expect_no_offenses(<<~RUBY)
+      def method(**options)
+        super
+      end
+    RUBY
+  end
+
   it 'does not register an offense when method definition with generic method macro containing only `super` call' do
     expect_no_offenses(<<~RUBY)
       do_something def method
