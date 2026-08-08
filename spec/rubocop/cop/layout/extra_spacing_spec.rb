@@ -366,6 +366,60 @@ RSpec.describe RuboCop::Cop::Layout::ExtraSpacing, :config do
         end
       RUBY
     end
+
+    it 'registers an offense and corrects when the only vertically aligned line is in a preceding sibling block' do
+      expect_offense(<<~RUBY)
+        foo do
+          bar(:abcd) { it.qux }
+        end
+
+        foo do
+          bar(:b) {  it }
+                   ^ Unnecessary spacing detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        foo do
+          bar(:abcd) { it.qux }
+        end
+
+        foo do
+          bar(:b) { it }
+        end
+      RUBY
+    end
+
+    it 'registers an offense and corrects when an assignment is aligned only with one in a preceding sibling block' do
+      expect_offense(<<~RUBY)
+        if foo
+          aaa  = 1
+             ^ Unnecessary spacing detected.
+        end
+        if bar
+          bbb  = 1
+             ^ Unnecessary spacing detected.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        if foo
+          aaa = 1
+        end
+        if bar
+          bbb = 1
+        end
+      RUBY
+    end
+
+    it 'allows extra spacing when aligned with an assignment beyond a nested multiline entry' do
+      expect_no_offenses(<<~RUBY)
+        foo  = {
+                 a: 1
+               }
+        bar  = 2
+      RUBY
+    end
   end
 
   context 'when AllowForAlignment is false' do
