@@ -31,6 +31,37 @@ Then you can start removing the entries in the generated
 in the code. You can also regenerate your `.rubocop_todo.yml` using
 the same options by running `rubocop --regenerate-todo`.
 
+[[keeping-the-todo-from-rotting]]
+== Keeping the TODO from rotting
+
+Entries in `.rubocop_todo.yml` outlive their purpose silently: when an
+excluded file is fixed as a side effect of other work, or deleted, nothing
+tells you the entry is no longer needed. Running with
+`--report-unused-todo-entries` reports every `Exclude` entry whose cop no
+longer flags its file and fails the run when any are found:
+
+[source,console]
+----
+$ rubocop --report-unused-todo-entries
+
+1 unused todo entry found in `.rubocop_todo.yml`:
+  Style/ClassVars: lib/fixed_file.rb
+----
+
+Regenerating the todo also removes stale entries, but the two commands
+serve opposite purposes. Regeneration re-baselines: it rewrites the whole
+file, and in doing so also *absorbs any new offenses* into the todo list -
+run in CI, it would legitimize every newly introduced offense.
+`--report-unused-todo-entries` only ever moves in one direction: new
+offenses still fail the build as usual, and stale entries fail it too until
+they are removed. That makes it safe to run on every CI build as a ratchet
+that forces the todo list to shrink over time, while `--regenerate-todo`
+remains a deliberate, local re-baselining step.
+
+Entries for cops that are not loaded in the current run (for example,
+extension cops when running plain `rubocop`) are not judged, since the
+absence of their offenses proves nothing.
+
 Another way of silencing offense reports, aside from configuration, is
 through xref:usage/source_code_directives.adoc[source code directives]. These can be added manually or
 automatically.
