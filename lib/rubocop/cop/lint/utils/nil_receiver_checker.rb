@@ -12,6 +12,7 @@ module RuboCop
             @receiver = receiver
             @additional_nil_methods = additional_nil_methods
             @checked_nodes = {}.compare_by_identity
+            @receiver_scope_block = find_receiver_scope_block
           end
 
           def cant_be_nil?
@@ -60,6 +61,11 @@ module RuboCop
               return true if _cant_be_nil?(node.expression, receiver)
             end
 
+            # Nodes are compared structurally, so a same-named variable beyond the
+            # block that binds the receiver would match even though it is a
+            # different variable - stop before crossing that block.
+            return false if @receiver_scope_block.equal?(node.parent)
+
             if sequentially_reached?(node)
               node.left_siblings.reverse_each do |sibling|
                 next unless sibling.is_a?(AST::Node)
@@ -76,21 +82,41 @@ module RuboCop
           end
           # rubocop:enable Metrics
 
+          # The innermost block whose parameters bind the receiver - an explicit
+          # or shadowed parameter, `it`, or a numbered parameter. Nodes outside
+          # that block's body can only refer to a different, same-named variable.
+          def find_receiver_scope_block
+            return unless @receiver.lvar_type?
+
+            name = @receiver.children.first
+            child = @receiver
+            @receiver.each_ancestor do |ancestor|
+              return nil if ancestor.type?(:any_def, :sclass)
+              return ancestor if rebinds_name?(ancestor, child, name)
+
+              child = ancestor
+            end
+
+            nil
+          end
+
+          def rebinds_name?(ancestor, child, name)
+            ancestor.any_block_type? && ancestor.body.equal?(child) &&
+              ancestor.argument_list.any? { |argument| argument.name == name }
+          end
+
           def non_nil_method?(method_name)
             !NIL_METHODS.include?(method_name) && !@additional_nil_methods.include?(method_name)
           end
 
-          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
           def sole_condition_of_parent_if?(node)
             child = node
             parent = node.parent
 
-            while parent
+            while parent && !parent.equal?(@receiver_scope_block)
               if parent.if_type?
-                unless parent.unless?
-                  condition = parent.condition
-                  return true if !child.equal?(condition) && non_nil_condition?(condition, node)
-                end
+                return true if non_nil_if_condition?(parent, child, node)
 
                 parent = find_top_if(parent) if parent.elsif?
               elsif else_branch?(parent)
@@ -104,7 +130,14 @@ module RuboCop
 
             false
           end
-          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+          def non_nil_if_condition?(if_node, child, node)
+            return false if if_node.unless?
+
+            condition = if_node.condition
+            !child.equal?(condition) && non_nil_condition?(condition, node)
+          end
 
           def non_nil_condition?(condition, node)
             return true if condition == node
