@@ -21,7 +21,10 @@ module RuboCop
 
       args.uniq.each do |arg|
         files += if File.directory?(arg)
-                   target_files_in_dir(arg.chomp(File::SEPARATOR))
+                   # Expand the directory so that the traversal can prune directories the
+                   # config excludes - the exclude patterns are absolute paths, and glued
+                   # onto a relative base (`rubocop .`) they never match anything.
+                   target_files_in_dir(File.expand_path(arg.chomp(File::SEPARATOR)))
                  else
                    process_explicit_path(arg, mode)
                  end

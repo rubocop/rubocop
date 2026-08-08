@@ -217,6 +217,30 @@ RSpec.describe RuboCop::TargetFinder, :isolated_environment do
       end
     end
 
+    context 'when a relative directory path is passed and the configuration excludes a directory' do
+      let(:args) { ['.'] }
+
+      before do
+        create_empty_file('excluded/ruby5.rb')
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            Exclude:
+              - 'excluded/**/*'
+        YAML
+      end
+
+      it 'prunes the excluded directory instead of traversing it' do
+        globbed_patterns = []
+        allow(Dir).to receive(:glob).and_wrap_original do |original, *glob_args, &block|
+          globbed_patterns.concat(Array(glob_args.first))
+          original.call(*glob_args, &block)
+        end
+
+        expect(found_files).not_to include(a_string_including('excluded'))
+        expect(globbed_patterns).not_to include(a_string_including('excluded'))
+      end
+    end
+
     context 'when a hidden directory path is passed' do
       let(:args) { ['.hidden'] }
 
