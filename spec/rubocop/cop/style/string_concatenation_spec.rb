@@ -34,6 +34,17 @@ RSpec.describe RuboCop::Cop::Style::StringConcatenation, :config do
     RUBY
   end
 
+  it 'preserves the escape notation of double-quoted strings' do
+    expect_offense(<<~'RUBY')
+      "\x0a" + "test" + "A" + "\xff"
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Prefer string interpolation to string concatenation.
+    RUBY
+
+    expect_correction(<<~'RUBY')
+      "\x0atestA\xff"
+    RUBY
+  end
+
   it 'correctly handles nested concatenatable parts' do
     expect_offense(<<~RUBY)
       (user.vip? ? greeting + ', ' : '') + user.name + ' <' + user.email + '>'
