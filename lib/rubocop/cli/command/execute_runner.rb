@@ -30,6 +30,10 @@ module RuboCop
 
           maybe_print_corrected_source
 
+          merge_todo_audit_status(runner_status(runner, all_pass_or_excluded))
+        end
+
+        def runner_status(runner, all_pass_or_excluded)
           if runner.aborting?
             STATUS_INTERRUPTED
           elsif all_pass_or_excluded && runner.errors.empty?
@@ -37,6 +41,33 @@ module RuboCop
           else
             STATUS_OFFENSES
           end
+        end
+
+        def merge_todo_audit_status(status)
+          return status if status == STATUS_INTERRUPTED || !@options[:report_unused_todo_entries]
+
+          audit_status = report_unused_todo_entries
+          status == STATUS_SUCCESS ? audit_status : status
+        end
+
+        def report_unused_todo_entries
+          audit = TodoAudit.new(@config_store, @options)
+          unused = audit.unused_entries
+
+          if unused.nil?
+            warn Rainbow("No `#{audit.todo_file}` found; nothing to audit.").yellow
+            return STATUS_SUCCESS
+          end
+          return STATUS_SUCCESS if unused.empty?
+
+          print_unused_todo_entries(audit.todo_file, unused)
+          STATUS_OFFENSES
+        end
+
+        def print_unused_todo_entries(todo_file, unused)
+          noun = unused.size == 1 ? 'entry' : 'entries'
+          warn Rainbow("\n#{unused.size} unused todo #{noun} found in `#{todo_file}`:").red
+          unused.each { |entry| warn "  #{entry.cop_name}: #{entry.path}" }
         end
 
         def with_redirect
