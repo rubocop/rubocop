@@ -69,7 +69,15 @@ module RuboCop
           line = processed_source.lines[lineno]
           index = line =~ /\S/
           next unless index
-          next if indent && indent != index
+
+          if indent
+            # When searching for the nearest line with the same indentation,
+            # more deeply indented lines are nested content of the current group
+            # and are skipped, but a less deeply indented line ends the enclosing block:
+            # an alignment anchor beyond it would be coincidental.
+            break if index < indent
+            next if index > indent
+          end
 
           return yield(range, line, lineno + 1)
         end

@@ -1,0 +1,1 @@
+* [#15554](https://github.com/rubocop/rubocop/issues/15554): Change `AllowForAlignment` to no longer treat a same-indentation line beyond the enclosing block as an alignment anchor for `Layout/ExtraSpacing`, `Layout/SpaceAroundOperators`, and `Layout/SpaceBeforeFirstArg`. ([@koic][])
