@@ -2720,6 +2720,7 @@ Lint/UselessConstantScoping:
   Description: 'Checks for useless constant scoping.'
   Enabled: pending
   VersionAdded: '1.72'
+  VersionChanged: '<<next>>'
 
 Lint/UselessDefaultValueArgument:
   Description: 'Checks for usage of `fetch` or `Array.new` with default value argument and block.'

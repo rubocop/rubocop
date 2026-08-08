@@ -10,6 +10,11 @@ module RuboCop
       # It does not support autocorrection due to behavior change and multiple ways to fix it.
       # Or a public constant may be intended.
       #
+      # Constant assignments that define classes or modules via `Class.new`, `Module.new`,
+      # `Struct.new`, or `Data.define` are allowed. Those forms are class and module definitions
+      # written with assignment syntax, and match the common practice of placing nested
+      # `class` / `module` bodies after `private` without intending private constant visibility.
+      #
       # @example
       #
       #   # bad
@@ -29,6 +34,19 @@ module RuboCop
       #     PUBLIC_CONST = 42 # If private scope is not intended.
       #   end
       #
+      #   # good - class/module definitions via assignment, same as nested `class`/`module`
+      #   class Foo
+      #     private
+      #
+      #     def some_private_method
+      #     end
+      #
+      #     MyClass = Class.new
+      #     MyModule = Module.new
+      #     MyStruct = Struct.new(:name)
+      #     MyData = Data.define(:name)
+      #   end
+      #
       class UselessConstantScoping < Base
         MSG = 'Useless `private` access modifier for constant scope.'
 
@@ -37,9 +55,27 @@ module RuboCop
           (send nil? :private_constant $...)
         PATTERN
 
+        # Matches class/module-like constant assignments. Nested `class` / `module`
+        # keyword definitions are not visited by this cop; these assignment forms are
+        # the equivalent syntax and should be treated the same way.
+        # @!method class_or_module_definition_assignment?(node)
+        def_node_matcher :class_or_module_definition_assignment?, <<~PATTERN
+          {
+            (send (const {nil? cbase} {:Class :Module :Struct}) :new ...)
+            (send (const {nil? cbase} :Data) :define ...)
+            (any_block
+              {
+                (send (const {nil? cbase} {:Class :Module :Struct}) :new ...)
+                (send (const {nil? cbase} :Data) :define ...)
+              }
+              ...)
+          }
+        PATTERN
+
         def on_casgn(node)
           return unless after_private_modifier?(node.left_siblings)
           return if private_constantize?(node.right_siblings, node.name)
+          return if class_or_module_definition_assignment?(node.expression)
 
           add_offense(node)
         end
