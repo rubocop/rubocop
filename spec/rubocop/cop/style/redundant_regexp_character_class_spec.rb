@@ -333,6 +333,18 @@ RSpec.describe RuboCop::Cop::Style::RedundantRegexpCharacterClass, :config do
     end
   end
 
+  context 'with a character class containing a `\8` or `\9` escape' do
+    # `\8` and `\9` match a literal digit inside a character class but are
+    # backreferences outside it (a syntax error when the group does not exist).
+    it 'does not register an offense for `\8`' do
+      expect_no_offenses('foo = /[\8]/')
+    end
+
+    it 'does not register an offense for `\9`' do
+      expect_no_offenses('foo = /[\9]/')
+    end
+  end
+
   context 'with a character class containing a character requiring escape outside' do
     # Not implemented for now, since we would have to escape on autocorrect, and the cop message
     # would need to be dynamic to not be misleading.
