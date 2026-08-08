@@ -192,6 +192,8 @@ RSpec.describe RuboCop::Options, :isolated_environment do
                   --regenerate-todo            Regenerate the TODO configuration file using
                                                the last configuration. If there is no existing
                                                TODO file, acts like --auto-gen-config.
+                  --report-unused-todo-entries Also report TODO configuration file entries that
+                                               are no longer needed, and fail if any are found.
                   --exclude-limit COUNT        Set the limit for how many files to explicitly exclude.
                                                If there are more files than the limit, the cop will
                                                be disabled instead. Default is 15.

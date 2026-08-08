@@ -156,6 +156,9 @@ $ rubocop --only Rails/Blank,Layout/HeredocIndentation,Naming/FileName
 | `--regenerate-todo`
 | Regenerate the TODO list using the same options as the last time it was generated with `--auto-gen-config` (generation options can be overridden).
 
+| `--report-unused-todo-entries`
+| Also report `.rubocop_todo.yml` `Exclude` entries that are no longer needed - files the cop would not flag anymore, or files that no longer exist - and fail the run when any are found. Useful in CI to keep the TODO list shrinking.
+
 | `--safe`
 | Run only safe cops.
 
