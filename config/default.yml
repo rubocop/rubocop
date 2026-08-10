@@ -3975,6 +3975,14 @@ Style/DirEmpty:
   Enabled: pending
   VersionAdded: '1.48'
 
+Style/DirectiveScope:
+  Description: >-
+                 Checks for directive scopes that can be expressed with the
+                 tighter `disable-next` form.
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Style/DisableCopsWithinSourceCodeDirective:
   Description: >-
                  Forbids disabling/enabling cops within source code.

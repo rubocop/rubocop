@@ -58,6 +58,7 @@ module RuboCop
       register_cop :DigChain, "#{__dir__}/style/dig_chain"
       register_cop :Dir, "#{__dir__}/style/dir"
       register_cop :DirEmpty, "#{__dir__}/style/dir_empty"
+      register_cop :DirectiveScope, "#{__dir__}/style/directive_scope"
       register_cop :DisableCopsWithinSourceCodeDirective, "#{__dir__}/style/disable_cops_within_source_code_directive"
       register_cop :DocumentationMethod, "#{__dir__}/style/documentation_method"
       register_cop :Documentation, "#{__dir__}/style/documentation"

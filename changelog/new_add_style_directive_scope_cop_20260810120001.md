@@ -1,0 +1,1 @@
+* [#15559](https://github.com/rubocop/rubocop/pull/15559): Add new `Style/DirectiveScope` cop to flag `disable`/`enable` pairs and disable-only `push`/`pop` scopes that wrap a single statement and can use `disable-next` instead. ([@bbatsov][])
