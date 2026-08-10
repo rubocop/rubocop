@@ -89,6 +89,11 @@ A blank line breaks the attachment: the directive applies to nothing, and
 `disable-next` whose statement produces no offenses. Unlike `disable`,
 a `disable-next` cannot appear at the end of a code line.
 
+Since only blank lines break the attachment, a `disable-next` also chains
+past other directive comments - including `rubocop:push` and `rubocop:pop` -
+and composes with them: inside a pushed scope, a statement is covered by
+both the pushed settings and any `disable-next` above it.
+
 If you want to disable a cop that inspects comments, you can do so by
 adding an "inner comment" on the comment line.
 
@@ -269,3 +274,29 @@ end
 ----
 
 Each `pop` restores the state to what it was at the corresponding `push`.
+
+== Choosing a Directive Form
+
+The forms are ordered here from the tightest scope to the widest - prefer
+the tightest one that fits, since it suppresses the least and cannot drift
+as the code around it changes:
+
+* *End-of-line `disable`* - a single offense on a single line. The most
+  common form. Reach for the next one when the comment would push the line
+  over the length limit, or when several cops need separate justifications.
+* *`disable-next`* - everything about one statement, however many lines it
+  spans: a method definition, a class body, a loop. The scope is derived
+  from the code itself, so it never needs re-adjusting when the statement
+  grows or shrinks.
+* *`disable` / `enable` pair* - an explicit region spanning several
+  statements. The boundaries are yours to maintain:
+  `Lint/MissingCopEnableDirective` guards against forgetting the closing
+  `enable`.
+* *`push` / `pop`* - a region where you change several settings at once
+  (disabling some cops, enabling others) and want the previous state
+  restored exactly, including inside nested scopes. Unlike a
+  `disable`/`enable` pair, `pop` cannot get the restored state wrong,
+  because it never states it - it restores whatever was saved.
+
+`todo` and `todo-next` are aliases of `disable` and `disable-next` that mark
+a suppression you intend to revisit rather than a deliberate exception.

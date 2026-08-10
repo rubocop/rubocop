@@ -331,6 +331,22 @@ RSpec.describe RuboCop::CommentConfig do
       end
     end
 
+    context 'when chained past push/pop directives' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next Style/ClassVars
+          # rubocop:push
+          @@a = 1
+          # rubocop:pop
+          @@b = 2
+        RUBY
+      end
+
+      it 'attaches to the statement beyond the push directive' do
+        expect(comment_config.cop_disabled_line_ranges['Style/ClassVars']).to eq([3..3])
+      end
+    end
+
     context 'with a department' do
       let(:source) do
         <<~RUBY
