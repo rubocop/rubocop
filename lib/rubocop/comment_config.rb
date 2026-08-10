@@ -5,6 +5,7 @@ module RuboCop
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
     extend SimpleForwardable
+    include DisableNext
 
     CONFIG_DISABLED_LINE_RANGE_MIN = -Float::INFINITY
 
@@ -25,8 +26,6 @@ module RuboCop
       end
     end
 
-    CopAnalysis = Struct.new(:line_ranges, :start_line_number)
-
     attr_reader :processed_source
 
     def_delegators :@processed_source, :config, :registry
@@ -35,14 +34,11 @@ module RuboCop
       @processed_source = processed_source
       @no_directives = !processed_source.raw_source.include?('rubocop')
       @stack = []
+      @detached_next_directives = []
     end
 
     def cop_enabled_at_line?(cop, line_number)
-      cop = cop.cop_name if cop.respond_to?(:cop_name)
-      disabled_line_ranges = cop_disabled_line_ranges[cop]
-      return true unless disabled_line_ranges
-
-      disabled_line_ranges.none? { |range| range.include?(line_number) }
+      cop_enabled_at_lines?(cop, line_number, line_number)
     end
 
     # Whether the cop is enabled for all of the given line span. The cop
@@ -102,7 +98,9 @@ module RuboCop
     def extra_enabled_comments_with_names(extras:, names:)
       each_directive do |directive|
         next unless comment_only_line?(directive.line_number)
-        next if directive.push? || directive.pop?
+        # Push/pop and next-statement directives close themselves, so they
+        # play no part in the disable/enable pairing.
+        next if directive.push? || directive.pop? || directive.disable_next?
 
         if directive.enabled_all?
           handle_enable_all(directive, names, extras)
@@ -125,9 +123,11 @@ module RuboCop
         if directive.push?
           restore_point = analyses.transform_values(&:dup)
           @stack.push(restore_point)
-          apply_push(analyses, resolve_push_cops(directive), directive.line_number)
+          apply_push(analyses, resolve_push_cops(directive), directive)
         elsif directive.pop?
           pop_state(analyses, directive.line_number) if @stack.any?
+        elsif directive.disable_next?
+          apply_disable_next(analyses, directive)
         else
           directive.cop_names.each do |cop_name|
             cop_name = qualified_cop_name(cop_name)
@@ -157,30 +157,34 @@ module RuboCop
       cops.map { |c| qualified_cop_name(c) }
     end
 
-    def apply_push(analyses, resolved_cops, line)
+    def apply_push(analyses, resolved_cops, directive)
       resolved_cops.each do |op, cops|
-        cops.each { |cop| apply_cop_op(analyses, op, cop, line) }
+        cops.each { |cop| apply_cop_op(analyses, op, cop, directive) }
       end
     end
 
-    def apply_cop_op(analyses, operation, cop, line)
+    def apply_cop_op(analyses, operation, cop, directive)
       analysis = analyses[cop]
+      line = directive.line_number
       if operation == '-' && !analysis.start_line_number
-        analyses[cop] = CopAnalysis.new(analysis.line_ranges, line)
+        analyses[cop] = CopAnalysis.new(analysis.line_ranges, line, directive)
       elsif operation == '+' && analysis.start_line_number
-        analyses[cop] =
-          CopAnalysis.new(analysis.line_ranges + [analysis.start_line_number..line], nil)
+        analyses[cop] = CopAnalysis.new(analysis.close(line), nil)
       end
     end
 
     def pop_state(analyses, line)
       restore_point = @stack.pop
       (restore_point.keys | analyses.keys).each do |cop|
-        current = analyses[cop]
-        new_range = current.start_line_number ? [current.start_line_number..(line - 1)] : []
-        new_start = restore_point[cop]&.start_line_number ? line : nil
-        analyses[cop] = CopAnalysis.new(current.line_ranges + new_range, new_start)
+        analyses[cop] = popped_analysis(analyses[cop], restore_point[cop], line)
       end
+    end
+
+    def popped_analysis(current, restored, line)
+      ranges = current.close(line - 1)
+      return CopAnalysis.new(ranges, nil) unless restored&.start_line_number
+
+      CopAnalysis.new(ranges, line, restored.start_directive)
     end
 
     def inject_disabled_cops_directives(analyses)
@@ -207,27 +211,21 @@ module RuboCop
       return analysis unless directive.disabled?
 
       line = directive.line_number
-      CopAnalysis.new(analysis.line_ranges + [(line..line)], analysis.start_line_number)
+      range = DirectiveRange.new(line, line, directive)
+      CopAnalysis.new(analysis.line_ranges + [range], analysis.start_line_number,
+                      analysis.start_directive)
     end
 
     def analyze_disabled(analysis, directive)
-      line = directive.line_number
-      start_line = analysis.start_line_number
-      new_ranges = start_line ? analysis.line_ranges + [start_line..line] : analysis.line_ranges
-      CopAnalysis.new(new_ranges, line)
+      CopAnalysis.new(analysis.close(directive.line_number), directive.line_number, directive)
     end
 
     def analyze_rest(analysis, directive)
-      line = directive.line_number
-      start_line = analysis.start_line_number
-      new_ranges = start_line ? analysis.line_ranges + [start_line..line] : analysis.line_ranges
-      CopAnalysis.new(new_ranges, nil)
+      CopAnalysis.new(analysis.close(directive.line_number), nil)
     end
 
     def cop_line_ranges(analysis)
-      return analysis.line_ranges unless analysis.start_line_number
-
-      analysis.line_ranges + [(analysis.start_line_number..Float::INFINITY)]
+      analysis.close(Float::INFINITY)
     end
 
     def each_directive

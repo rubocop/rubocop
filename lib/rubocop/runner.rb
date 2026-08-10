@@ -322,7 +322,13 @@ module RuboCop
     end
 
     def check_for_redundant_disables?(source)
-      return false if source.disabled_line_ranges.empty? || except_redundant_cop_disable_directive?
+      return false if except_redundant_cop_disable_directive?
+      # Detached `disable-next` directives produce no disabled ranges but must
+      # still be reported as redundant.
+      if source.disabled_line_ranges.empty? &&
+         source.comment_config.detached_next_directives.empty?
+        return false
+      end
 
       !@options[:only]
     end

@@ -53,6 +53,42 @@ comment.
 for x in (0..19) # rubocop:disable Style/For
 ----
 
+== Disabling Cops for the Next Statement
+
+A `disable-next` directive on its own line disables the listed cops for the
+whole statement that follows it - however many lines that statement spans.
+This avoids both the end-of-line comment (which can push a line over the
+length limit) and a `disable`/`enable` pair around a single construct.
+
+[source,ruby]
+----
+# rubocop:disable-next Metrics/MethodLength
+def complicated_method
+  # the whole method definition is covered
+end
+----
+
+The scope is the next _statement_, so a method definition, a class body or a
+loop are each covered in full by a single directive. Everything the other
+directives support works here too: multiple cops, department names, `all`,
+and a trailing `--` comment. `todo-next` is the equivalent of `rubocop:todo`.
+
+Directives on consecutive comment lines stack onto the same statement, which
+is useful for giving each cop its own justification:
+
+[source,ruby]
+----
+# rubocop:disable-next Metrics/MethodLength -- legacy, tracked in #123
+# rubocop:disable-next Metrics/AbcSize -- ditto
+def complicated_method
+end
+----
+
+A blank line breaks the attachment: the directive applies to nothing, and
+`Lint/RedundantCopDisableDirective` will flag it, as it does any
+`disable-next` whose statement produces no offenses. Unlike `disable`,
+a `disable-next` cannot appear at the end of a code line.
+
 If you want to disable a cop that inspects comments, you can do so by
 adding an "inner comment" on the comment line.
 

@@ -72,7 +72,12 @@ module RuboCop
 
         def each_missing_enable
           processed_source.disabled_line_ranges.each do |cop, line_ranges|
-            line_ranges.each { |line_range| yield cop, line_range }
+            line_ranges.each do |line_range|
+              # A `disable-next` scope closes itself with its statement.
+              next if line_range.respond_to?(:directive) && line_range.directive.disable_next?
+
+              yield cop, line_range
+            end
           end
         end
 

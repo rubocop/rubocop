@@ -115,6 +115,38 @@ RSpec.describe RuboCop::DirectiveComment do
     end
   end
 
+  describe '#disable_next?' do
+    subject { directive_comment.disable_next? }
+
+    context 'when disable-next' do
+      let(:text) { '# rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength' }
+
+      it { is_expected.to be(true) }
+
+      it 'is a disabling directive with the listed cops' do
+        expect(directive_comment).to be_disabled
+        expect(directive_comment.raw_cop_names).to eq(%w[Metrics/AbcSize Metrics/MethodLength])
+      end
+    end
+
+    context 'when todo-next' do
+      let(:text) { '# rubocop:todo-next Metrics/AbcSize -- a reason' }
+
+      it { is_expected.to be(true) }
+
+      it 'is a disabling directive and keeps the reason' do
+        expect(directive_comment).to be_disabled
+        expect(directive_comment.reason).to eq('a reason')
+      end
+    end
+
+    context 'when a plain disable' do
+      let(:text) { '# rubocop:disable Metrics/AbcSize' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#reason' do
     subject { directive_comment.reason }
 
