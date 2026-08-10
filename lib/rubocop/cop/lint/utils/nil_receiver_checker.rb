@@ -12,6 +12,8 @@ module RuboCop
             @receiver = receiver
             @additional_nil_methods = additional_nil_methods
             @checked_nodes = {}.compare_by_identity
+            @receiver_binding_name = binding_name(receiver)
+            @receiver_binding_scope = binding_scope(receiver) if @receiver_binding_name
           end
 
           def cant_be_nil?
@@ -34,7 +36,9 @@ module RuboCop
             when :def, :defs, :class, :module, :sclass
               return false
             when :send
-              return non_nil_method?(node.method_name) if node.receiver == receiver
+              if node.receiver == receiver && same_binding_as_receiver?(node.receiver)
+                return non_nil_method?(node.method_name)
+              end
 
               node.arguments.each do |argument|
                 return true if _cant_be_nil?(argument, receiver)
@@ -107,9 +111,61 @@ module RuboCop
           # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
           def non_nil_condition?(condition, node)
-            return true if condition == node
+            return true if condition == node && same_binding_as_receiver?(condition)
+            return false unless condition.csend_type?
 
-            condition.csend_type? && csend_root_receiver(condition) == node
+            root_receiver = csend_root_receiver(condition)
+
+            root_receiver == node && same_binding_as_receiver?(root_receiver)
+          end
+
+          # Structurally equal occurrences can be different variables: `it` binds to
+          # its innermost block, and a block parameter can shadow an outer variable of
+          # the same name. Evidence about such a receiver only holds when both occurrences
+          # resolve to the same binding.
+          def same_binding_as_receiver?(occurrence)
+            return true unless @receiver_binding_name
+
+            binding_scope(occurrence).equal?(@receiver_binding_scope)
+          end
+
+          # The name whose binding can differ between structurally equal occurrences:
+          # a local variable (block parameters included), or a bare `it` call, which is
+          # how `it` parses when the target Ruby version is below 3.4 even though the code
+          # may run on 3.4+ where `it` is the implicit block parameter.
+          def binding_name(node)
+            if node.lvar_type?
+              node.children.first
+            elsif node.send_type? && !node.receiver && node.method?(:it) && node.arguments.empty?
+              :it
+            end
+          end
+
+          def binding_scope(occurrence)
+            node = occurrence
+
+            while (parent = node.parent)
+              case parent.type
+              when :block, :numblock, :itblock
+                # Only the body is inside the block's scope; the send node and the arguments of
+                # the block node evaluate in the outer scope.
+                return parent if parent.body.equal?(node) && block_binds_name?(parent)
+              when :def, :defs, :class, :module, :sclass
+                return parent
+              end
+
+              node = parent
+            end
+
+            nil
+          end
+
+          def block_binds_name?(block_node)
+            name = @receiver_binding_name
+
+            return true if block_node.argument_list.any? { |argument| argument.name == name }
+
+            name == :it && block_node.arguments.empty?
           end
 
           # Whether control reaches `node` by falling through its left siblings rather than by
