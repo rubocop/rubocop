@@ -114,6 +114,19 @@ module RuboCop
       )
     end
 
+    # `#range` stops at the cop list, so a `--` reason sits outside it. The reason documents the
+    # directive and means nothing once the directive is gone, so removal has to cover both. Any
+    # other trailing text is an ordinary comment and is left alone.
+    def range_with_reason
+      directive_range = range
+      trailing = Parser::Source::Range.new(
+        comment.source_range.source_buffer, directive_range.end_pos, comment.source_range.end_pos
+      )
+      return directive_range unless trailing.source.lstrip.start_with?(TRAILING_COMMENT_MARKER)
+
+      directive_range.with(end_pos: comment.source_range.end_pos)
+    end
+
     # Returns match captures to directive comment pattern
     def match_captures
       @match_captures ||= @match_data && begin

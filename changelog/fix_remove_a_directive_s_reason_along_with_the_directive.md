@@ -1,0 +1,1 @@
+* [#15561](https://github.com/rubocop/rubocop/pull/15561): Fix `Lint/RedundantCopDisableDirective` and `Lint/RedundantCopEnableDirective` leaving a directive's `--` reason behind when removing the directive. ([@corsonknowles][])

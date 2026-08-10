@@ -89,12 +89,18 @@ module RuboCop
               range_of_offense(comment, name),
               message: format(MSG, cop: all_or_name(name))
             ) do |corrector|
-              if directive.match?(cop_names)
-                corrector.remove(range_with_surrounding_space(directive.range, side: :right))
-              else
-                corrector.remove(range_with_comma(comment, name))
-              end
+              corrector.remove(removal_range(directive, comment, cop_names, name))
             end
+          end
+        end
+
+        # When every cop on the directive is redundant the whole comment goes, `--` reason
+        # included; otherwise just the one cop is spliced out of the list.
+        def removal_range(directive, comment, cop_names, name)
+          if directive.match?(cop_names)
+            range_with_surrounding_space(directive.range_with_reason, side: :right)
+          else
+            range_with_comma(comment, name)
           end
         end
 

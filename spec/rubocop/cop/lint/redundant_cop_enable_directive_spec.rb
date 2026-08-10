@@ -33,6 +33,20 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopEnableDirective, :config do
     RUBY
   end
 
+  # Without taking the reason along, the `#` is removed but its text is not, leaving bare
+  # words behind that do not parse.
+  it 'registers an offense and removes the `--` reason with the directive' do
+    expect_offense(<<~RUBY)
+      foo
+      # rubocop:enable Layout/LineLength -- no longer needed
+                       ^^^^^^^^^^^^^^^^^ Unnecessary enabling of Layout/LineLength.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      foo
+    RUBY
+  end
+
   it 'registers an offense and corrects when the first cop is unnecessarily enabled' do
     expect_offense(<<~RUBY)
       # rubocop:disable Layout/LineLength
