@@ -293,12 +293,14 @@ module RuboCop
           end
 
           add_offense(location, message: message(cop_names)) do |corrector|
-            remove_entire_comment(corrector, location, comment)
+            remove_entire_comment(corrector, comment)
           end
         end
 
-        def remove_entire_comment(corrector, location, comment)
-          range = comment_range_with_surrounding_space(location, comment.source_range)
+        def remove_entire_comment(corrector, comment)
+          # Take the `--` reason with the directive; `leave_free_comment?` keeps anything else.
+          directive_range = DirectiveComment.new(comment).range_with_reason
+          range = comment_range_with_surrounding_space(directive_range, comment.source_range)
 
           if leave_free_comment?(comment, range)
             corrector.replace(range, ' # ')
