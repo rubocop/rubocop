@@ -113,9 +113,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
   end
 
   RSpec.shared_examples 'a literal with interpolation' do |l, r|
-    # rubocop:disable RSpec/IncludeExamples
+    # rubocop:disable-next RSpec/IncludeExamples
     include_examples 'common no offenses', l, r
-    # rubocop:enable RSpec/IncludeExamples
 
     it 'registers an offense and corrects an escaped # before interpolation' do
       expect_offense(<<~'RUBY', l: l, r: r)
@@ -209,9 +208,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
   end
 
   RSpec.shared_examples 'a literal without interpolation' do |l, r|
-    # rubocop:disable RSpec/IncludeExamples
+    # rubocop:disable-next RSpec/IncludeExamples
     include_examples 'common no offenses', l, r
-    # rubocop:enable RSpec/IncludeExamples
 
     it 'does not register an offense for an escaped # with following {' do
       expect_no_offenses(wrap('\#{my_lvar}'))
@@ -346,9 +344,8 @@ RSpec.describe RuboCop::Cop::Style::RedundantStringEscape, :config do
   end
 
   context 'with an interpolation-enabled HEREDOC' do
-    # rubocop:disable RSpec/IncludeExamples
+    # rubocop:disable-next RSpec/IncludeExamples
     include_examples 'common no offenses', "<<~MYHEREDOC\n", "\nMYHEREDOC"
-    # rubocop:enable RSpec/IncludeExamples
 
     it 'does not register an offense for a heredoc interpolating a string with an allowed escape' do
       expect_no_offenses(<<~'RUBY')

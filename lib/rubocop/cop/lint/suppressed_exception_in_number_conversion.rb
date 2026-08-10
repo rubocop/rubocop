@@ -78,7 +78,7 @@ module RuboCop
 
         minimum_target_ruby_version 2.6
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_rescue(node)
           if (method, exception_classes = begin_numeric_constructor_rescue_nil(node.parent))
             return unless expected_exception_classes_only?(exception_classes)
@@ -100,7 +100,6 @@ module RuboCop
             corrector.replace(node, prefer)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 

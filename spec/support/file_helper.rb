@@ -3,7 +3,7 @@
 require 'fileutils'
 
 module FileHelper
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def create_file(file_path, content, retain_line_terminators: false)
     file_path = File.expand_path(file_path)
 
@@ -31,13 +31,11 @@ module FileHelper
 
     file_path
   end
-  # rubocop:enable Metrics/MethodLength
 
-  # rubocop:disable InternalAffairs/CreateEmptyFile
+  # rubocop:disable-next InternalAffairs/CreateEmptyFile
   def create_empty_file(file_path)
     create_file(file_path, '')
   end
-  # rubocop:enable InternalAffairs/CreateEmptyFile
 
   def create_link(link_path, target_path)
     link_path = File.expand_path(link_path)

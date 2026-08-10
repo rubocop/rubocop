@@ -49,7 +49,7 @@ module RuboCop
         FileFinder.root_level = nil
       end
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable-next Metrics/AbcSize
       def load_file(file, check: true)
         path = file_path(file)
 
@@ -73,7 +73,6 @@ module RuboCop
 
         Config.create(hash, path, check: check)
       end
-      # rubocop:enable Metrics/AbcSize
 
       def load_yaml_configuration(absolute_path)
         file_contents = read_file(absolute_path)

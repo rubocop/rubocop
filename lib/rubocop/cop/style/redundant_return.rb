@@ -108,7 +108,7 @@ module RuboCop
           corrector.insert_after(node.children.last, '}')
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def check_branch(node)
           return unless node
 
@@ -124,7 +124,6 @@ module RuboCop
             check_begin_node(node)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def check_return_node(node)
           return if cop_config['AllowMultipleReturnValues'] && node.children.size > 1

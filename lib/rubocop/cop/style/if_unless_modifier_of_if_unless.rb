@@ -28,7 +28,7 @@ module RuboCop
 
         MSG = 'Avoid modifier `%<keyword>s` after another conditional.'
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_if(node)
           return unless node.modifier_form? && node.body.if_type?
 
@@ -37,7 +37,6 @@ module RuboCop
             corrector.remove(node.if_branch.source_range.end.join(node.condition.source_range.end))
           end
         end
-        # rubocop:enable Metrics/AbcSize
       end
     end
   end

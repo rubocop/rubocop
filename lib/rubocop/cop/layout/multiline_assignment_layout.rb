@@ -71,7 +71,7 @@ module RuboCop
 
         BLOCK_TYPES = %i[block numblock itblock].freeze
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_assignment(node, rhs)
           return if node.send_type? && node.loc.operator&.source != '='
           return unless rhs
@@ -80,7 +80,6 @@ module RuboCop
 
           check_by_enforced_style(node, rhs)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def check_by_enforced_style(node, rhs)
           case style

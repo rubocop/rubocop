@@ -97,7 +97,7 @@ module RuboCop
           }
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return if target_ruby_version < 2.6 && node.method?(:filter)
           return unless (block_node = node.block_node)
@@ -113,7 +113,6 @@ module RuboCop
 
           register_offense(node, block_node, regexp, replacement)
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         alias on_csend on_send
 
         private

@@ -2,7 +2,7 @@
 
 # FIXME: Moving Rails department code to RuboCop Rails will remove
 # the following rubocop:disable comment.
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
@@ -27,7 +27,7 @@ module RuboCop
       config
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
     def initialize(hash = RuboCop::ConfigLoader.default_configuration, loaded_path = nil)
       @loaded_path = loaded_path
       @for_cop = Hash.new do |h, cop|
@@ -72,7 +72,6 @@ module RuboCop
       @badge_config_cache = {}.compare_by_identity
       @clusivity_config_exists_cache = {}
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def loaded_plugins
       @loaded_plugins ||= ConfigLoader.loaded_plugins
@@ -458,4 +457,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

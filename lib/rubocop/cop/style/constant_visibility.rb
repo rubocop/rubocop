@@ -82,7 +82,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def visibility_declaration?(node)
           node.parent.each_child_node(:send).any? do |child|
             next false unless (arguments = visibility_declaration_for(child))
@@ -98,7 +98,6 @@ module RuboCop
             constant_values.include?(node.name)
           end
         end
-        # rubocop:enable Metrics/AbcSize
       end
     end
   end

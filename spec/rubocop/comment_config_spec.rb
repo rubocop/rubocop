@@ -5,7 +5,7 @@ RSpec.describe RuboCop::CommentConfig do
 
   describe '#cop_enabled_at_line?' do
     let(:source) do
-      # rubocop:disable Lint/EmptyExpression, Lint/EmptyInterpolation
+      # rubocop:disable-next Lint/EmptyExpression, Lint/EmptyInterpolation
       <<~RUBY
         # rubocop:disable Metrics/MethodLength with a comment why
         def some_method
@@ -61,7 +61,6 @@ RSpec.describe RuboCop::CommentConfig do
         it { is_expected.to have_http_status 200 }                          # 52
         # rubocop:enable RSpec/Rails/HttpStatus
       RUBY
-      # rubocop:enable Lint/EmptyExpression, Lint/EmptyInterpolation
     end
 
     def disabled_lines_of_cop(cop)

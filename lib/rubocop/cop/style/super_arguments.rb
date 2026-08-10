@@ -103,7 +103,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def arguments_identical?(def_node, super_node, def_args, super_args)
           return false if argument_list_size_differs?(def_args, super_args, super_node)
 
@@ -120,7 +120,6 @@ module RuboCop
 
           true
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def argument_list_size_differs?(def_args, super_args, super_node)
           # If the def node has a block argument and the super node has an explicit block,

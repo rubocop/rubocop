@@ -173,7 +173,7 @@ module RuboCop
           node.receiver.nil? && !node.arguments?
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def autocorrect(corrector, assignment)
           if assignment.exception_assignment?
             remove_exception_assignment_part(corrector, assignment.node)
@@ -189,7 +189,6 @@ module RuboCop
             remove_local_variable_assignment_part(corrector, assignment.node)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def remove_exception_assignment_part(corrector, node)
           range = node.parent.children.first&.source_range || node.parent.location.keyword

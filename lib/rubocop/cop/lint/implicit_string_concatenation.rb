@@ -28,7 +28,7 @@ module RuboCop
         FOR_METHOD = ' Or, if they were intended to be separate method ' \
                      'arguments, separate them with a comma.'
 
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
         def on_dstr(node)
           each_bad_cons(node) do |lhs_node, rhs_node|
             range = lhs_node.source_range.join(rhs_node.source_range)
@@ -52,7 +52,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         private
 

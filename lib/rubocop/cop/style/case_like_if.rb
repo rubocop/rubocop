@@ -98,7 +98,7 @@ module RuboCop
             node.elsif_conditional? && min_branches_count?(node)
         end
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable-next Metrics/MethodLength
         def find_target(node)
           case node.type
           when :begin
@@ -116,7 +116,6 @@ module RuboCop
             find_target_in_send_node(node)
           end
         end
-        # rubocop:enable Metrics/MethodLength
 
         def find_target_in_send_node(node)
           case node.method_name
@@ -181,7 +180,7 @@ module RuboCop
           conditions << condition if condition
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def condition_from_send_node(node, target)
           case node.method_name
           when :is_a?
@@ -196,7 +195,6 @@ module RuboCop
             condition_from_include_or_cover_node(node, target)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def condition_from_equality_node(node, target)
           condition = condition_from_binary_op(node.receiver, node.first_argument, target)

@@ -92,7 +92,7 @@ module RuboCop
           second.int_type? ? second.to_a.first : :unknown
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def range_size(range_node)
           vals = range_node.to_a
           return :unknown unless vals.all? { |val| val.nil? || val.int_type? }
@@ -107,7 +107,6 @@ module RuboCop
             (low..high).size
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def source_range(shuffle_node, node)
           shuffle_node.loc.selector.join(node.source_range.end)

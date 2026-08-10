@@ -112,7 +112,7 @@ module RuboCop
       extras
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def analyze
       return {} if @no_directives
 
@@ -143,7 +143,6 @@ module RuboCop
         hash[cop_name] = cop_line_ranges(analysis)
       end
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     def resolve_push_cops(directive)
       directive.push_args.transform_values do |names|

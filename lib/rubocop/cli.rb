@@ -35,7 +35,7 @@ module RuboCop
     # @param args [Array<String>] command line arguments
     # @return [Integer] UNIX exit code
     #
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:disable-next Metrics/MethodLength, Metrics/AbcSize
     def run(args = ARGV)
       time_start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 
@@ -80,11 +80,10 @@ module RuboCop
         puts "Finished in #{elapsed_time.round(5)} seconds"
       end
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     private
 
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:disable-next Metrics/MethodLength, Metrics/AbcSize
     def profile_if_needed
       return yield unless @options[:profile]
 
@@ -116,7 +115,6 @@ module RuboCop
       end
       status
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def require_gem(name)
       require name

@@ -180,7 +180,7 @@ module RuboCop
             !use_hash_key_access?(if_branch)
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def if_branch_is_true_type_and_else_is_not?(node)
           return false unless node.ternary? || node.if?
 
@@ -190,7 +190,6 @@ module RuboCop
 
           node.if_branch&.true_type? && node.else_branch && !node.else_branch.true_type?
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def branches_have_assignment?(node)
           _condition, if_branch, else_branch = *node # rubocop:disable InternalAffairs/NodeDestructuring
@@ -240,7 +239,7 @@ module RuboCop
           "#{method.source}(#{arguments.source})"
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def if_source(if_branch, arithmetic_operation)
           if branches_have_method?(if_branch.parent) && if_branch.parenthesized?
             if_branch.source.delete_suffix(')')
@@ -257,7 +256,6 @@ module RuboCop
             if_branch.source
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def else_source(else_branch, arithmetic_operation) # rubocop:disable Metrics/AbcSize
           if arithmetic_operation

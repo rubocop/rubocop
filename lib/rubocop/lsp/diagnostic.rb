@@ -35,7 +35,7 @@ module RuboCop
         code_actions
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
       def to_lsp_diagnostic(config)
         highlighted = @offense.highlighted_area
 
@@ -61,7 +61,6 @@ module RuboCop
           }
         )
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       private
 
@@ -82,7 +81,7 @@ module RuboCop
         LanguageServer::Protocol::Interface::CodeDescription.new(href: doc_url)
       end
 
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable-next Metrics/MethodLength
       def autocorrect_action
         LanguageServer::Protocol::Interface::CodeAction.new(
           title: "Autocorrect #{@offense.cop_name}",
@@ -101,9 +100,8 @@ module RuboCop
           is_preferred: true
         )
       end
-      # rubocop:enable Metrics/MethodLength
 
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable-next Metrics/MethodLength
       def offense_replacements
         @offense.corrector.as_replacements.map do |range, replacement|
           LanguageServer::Protocol::Interface::TextEdit.new(
@@ -121,9 +119,8 @@ module RuboCop
           )
         end
       end
-      # rubocop:enable Metrics/MethodLength
 
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable-next Metrics/MethodLength
       def disable_line_action
         LanguageServer::Protocol::Interface::CodeAction.new(
           title: "Disable #{@offense.cop_name} for this line",
@@ -141,7 +138,6 @@ module RuboCop
           )
         )
       end
-      # rubocop:enable Metrics/MethodLength
 
       def line_disable_comment
         DisableCommentEdits.new(

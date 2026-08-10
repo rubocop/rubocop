@@ -49,7 +49,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def complexity_score_for(node)
           case node.type
           when :case
@@ -74,7 +74,6 @@ module RuboCop
             super
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         def simple_in_pattern?(in_pattern_node)
           # `in_pattern_node.children[1]` is the guard (`if`/`unless`), or `nil`.

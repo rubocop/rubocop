@@ -208,7 +208,7 @@ module RuboCop
           add_offense(range) { |corrector| corrector.replace(range, '.') }
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_or(node)
           conversion_with_default?(node) do |send_node|
             range = send_node.loc.dot.begin.join(node.source_range.end)
@@ -221,7 +221,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 

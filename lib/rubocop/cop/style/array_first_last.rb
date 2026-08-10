@@ -31,7 +31,7 @@ module RuboCop
         MSG = 'Use `%<preferred>s`.'
         RESTRICT_ON_SEND = %i[[]].freeze
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_send(node)
           return unless node.arguments.size == 1 && node.first_argument.int_type?
 
@@ -49,7 +49,6 @@ module RuboCop
             corrector.replace(offense_range, preferred_value(node, preferred))
           end
         end
-        # rubocop:enable Metrics/AbcSize
         alias on_csend on_send
 
         private

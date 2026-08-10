@@ -156,7 +156,7 @@ module RuboCop
         summary
       end
 
-      # rubocop:disable Metrics/MethodLength, Metrics/ParameterLists
+      # rubocop:disable-next Metrics/MethodLength, Metrics/ParameterLists
       def build_tool(
         name:, description:,
         title:, destructive_hint:, idempotent_hint:, read_only_hint:, safety_required:
@@ -194,7 +194,6 @@ module RuboCop
           ::MCP::Tool::Response.new([{ type: 'text', text: e.message }], error: true)
         end
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/ParameterLists
     end
   end
 end

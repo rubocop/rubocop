@@ -42,7 +42,7 @@ module RuboCop
         # @!method nil_check?(node)
         def_node_matcher :nil_check?, '(send _ :nil?)'
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_send(node)
           return unless node.receiver
 
@@ -61,7 +61,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 

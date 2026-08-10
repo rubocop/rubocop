@@ -51,7 +51,7 @@ module RuboCop
 
     private
 
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable-next Metrics/AbcSize
     def define_options
       OptionParser.new do |opts|
         opts.banner = rainbow.wrap('Usage: rubocop [options] [file1, file2, ...]').bright
@@ -71,7 +71,6 @@ module RuboCop
         add_profile_options(opts) if RUBY_ENGINE == 'ruby' && !Platform.windows?
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     def add_check_options(opts) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       section(opts, 'Basic Options') do # rubocop:disable Metrics/BlockLength
@@ -385,7 +384,7 @@ module RuboCop
       %i[only except].each { |opt| OptionsValidator.validate_cop_list(@options[opt]) }
     end
 
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable-next Metrics/AbcSize
     def validate_compatibility # rubocop:disable Metrics/MethodLength
       if only_includes_redundant_disable?
         raise OptionArgumentError, 'Lint/RedundantCopDisableDirective cannot be used with --only.'
@@ -408,7 +407,6 @@ module RuboCop
 
       raise OptionArgumentError, "Incompatible cli options: #{incompatible_options.inspect}"
     end
-    # rubocop:enable Metrics/AbcSize
 
     def validate_auto_gen_config
       return if @options.key?(:auto_gen_config)
@@ -530,7 +528,7 @@ module RuboCop
 
   # This module contains help texts for command line options.
   # @api private
-  # rubocop:disable Metrics/ModuleLength
+  # rubocop:disable-next Metrics/ModuleLength
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
     FORMATTER_OPTION_LIST = RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys
@@ -696,5 +694,4 @@ module RuboCop
       memory:                           'Profile rubocop memory usage.'
     }.freeze
   end
-  # rubocop:enable Metrics/ModuleLength
 end

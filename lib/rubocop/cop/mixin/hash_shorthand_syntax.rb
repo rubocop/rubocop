@@ -117,7 +117,7 @@ module RuboCop
           use_modifier_form_without_parenthesized_method_call?(method_dispatch_node)
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       def def_node_that_require_parentheses(node)
         last_pair = node.parent.pairs.last
         return unless last_pair.key.source == last_pair.value.source
@@ -131,7 +131,6 @@ module RuboCop
 
         DefNode.new(def_node) unless def_node && def_node.arguments.empty?
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
       def find_ancestor_method_dispatch_node(node)
         return unless (ancestor = node.parent.parent)

@@ -63,7 +63,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def redundant_feature?(feature_name)
           feature_name == 'enumerator' ||
             (target_ruby_version >= 2.1 && feature_name == 'thread') ||
@@ -73,7 +73,6 @@ module RuboCop
             (target_ruby_version >= 3.2 && feature_name == 'set') ||
             (target_ruby_version >= 4.0 && feature_name == 'pathname')
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
     end
   end

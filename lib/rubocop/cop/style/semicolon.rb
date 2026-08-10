@@ -83,7 +83,7 @@ module RuboCop
           processed_source.tokens.group_by(&:line)
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def semicolon_position(tokens)
           if tokens.last.semicolon?
             -1
@@ -100,7 +100,6 @@ module RuboCop
             -4
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def exist_semicolon_before_right_curly_brace?(tokens)
           tokens[-2]&.right_curly_brace? && tokens[-3]&.semicolon?
@@ -122,7 +121,7 @@ module RuboCop
           tokens[1]&.type == :tSTRING_DBEG && tokens[2]&.semicolon?
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
         def register_semicolon(line, column, after_expression, token_before_semicolon = nil)
           range = source_range(processed_source.buffer, line, column)
 
@@ -146,7 +145,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         def replace_semicolon_with_line_break(corrector, range)
           # Replacing the semicolon with a newline would move the rest of the

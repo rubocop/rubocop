@@ -60,7 +60,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def redundant_each_method(node)
           return if node.last_argument&.block_pass_type?
 
@@ -81,7 +81,6 @@ module RuboCop
 
           prev_method if detected || prev_method.method?(:reverse_each)
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def range(node)
           return node.selector unless node.method?(:each)

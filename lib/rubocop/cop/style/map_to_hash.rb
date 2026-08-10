@@ -67,7 +67,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def autocorrect(corrector, to_h, map)
           removal_range = range_between(to_h.loc.dot.begin_pos, to_h.loc.selector.end_pos)
 
@@ -83,7 +83,6 @@ module RuboCop
             corrector.replace(argument, argument.source[1..-2])
           end
         end
-        # rubocop:enable Metrics/AbcSize
       end
     end
   end

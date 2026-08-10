@@ -139,7 +139,7 @@ module RuboCop
           grandparent.array_type? && grandparent.children.size > 1
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def replacement_range_and_content(node)
           variable = node.children.first
           expression = node.source_range
@@ -157,7 +157,6 @@ module RuboCop
             [node.loc.operator, '']
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def array_splat?(node)
           node.children.first.array_type?

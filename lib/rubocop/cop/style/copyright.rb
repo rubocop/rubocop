@@ -25,7 +25,7 @@ module RuboCop
         MSG = 'Include a copyright notice matching /%<notice>s/ before any code.'
         AUTOCORRECT_EMPTY_WARNING = 'An AutocorrectNotice must be defined in your RuboCop config'
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_new_investigation
           return if notice.empty? || notice_found?(processed_source)
 
@@ -43,7 +43,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 

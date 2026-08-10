@@ -1725,11 +1725,10 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     end
 
     it 'decodes URI-encoded paths for file system operations' do
-      # rubocop:disable RSpec/AnyInstance
+      # rubocop:disable-next RSpec/AnyInstance
       expect_any_instance_of(RuboCop::Runner).to receive(:run).with(
         ['/path/with spaces/file.rb']
       ).and_call_original
-      # rubocop:enable RSpec/AnyInstance
 
       result
     end
@@ -1745,9 +1744,8 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     end
 
     it 'refreshes the project index' do
-      # rubocop:disable RSpec/AnyInstance
+      # rubocop:disable-next RSpec/AnyInstance
       expect_any_instance_of(RuboCop::Lsp::StdinRunner).to receive(:reset_project_index)
-      # rubocop:enable RSpec/AnyInstance
 
       result
     end
@@ -1763,9 +1761,8 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     end
 
     it 'refreshes the project index' do
-      # rubocop:disable RSpec/AnyInstance
+      # rubocop:disable-next RSpec/AnyInstance
       expect_any_instance_of(RuboCop::Lsp::StdinRunner).to receive(:reset_project_index)
-      # rubocop:enable RSpec/AnyInstance
 
       result
     end

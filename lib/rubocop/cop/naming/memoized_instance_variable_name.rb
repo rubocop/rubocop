@@ -167,7 +167,7 @@ module RuboCop
         PATTERN
 
         # rubocop:disable Metrics/AbcSize
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable-next Metrics/MethodLength
         def on_or_asgn(node)
           lhs = node.lhs
           return unless lhs.ivasgn_type?
@@ -192,7 +192,6 @@ module RuboCop
             corrector.replace(lhs.loc.name, "@#{suggested_var}")
           end
         end
-        # rubocop:enable Metrics/MethodLength
         # rubocop:enable Metrics/AbcSize
 
         # @!method defined_memoized?(node, ivar)
@@ -203,7 +202,7 @@ module RuboCop
             $(ivasgn %1 _))
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
         def on_defined?(node)
           arg = node.first_argument
           return false unless arg.ivar_type?
@@ -233,7 +232,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
         private
 

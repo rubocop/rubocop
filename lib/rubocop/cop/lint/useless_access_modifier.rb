@@ -210,7 +210,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_child_nodes(node, unused, cur_vis)
           node.child_nodes.each do |child|
             if child.send_type? && access_modifier?(child)
@@ -228,7 +228,6 @@ module RuboCop
 
           [cur_vis, unused]
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def check_send_node(node, cur_vis, unused)
           if node.bare_access_modifier?

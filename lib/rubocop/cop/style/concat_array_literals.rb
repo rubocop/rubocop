@@ -30,7 +30,7 @@ module RuboCop
           'Use `push` with elements as arguments without array brackets instead of `%<current>s`.'
         RESTRICT_ON_SEND = %i[concat].freeze
 
-        # rubocop:disable Metrics
+        # rubocop:disable-next Metrics
         def on_send(node)
           return if node.arguments.empty?
           return unless node.arguments.all?(&:array_type?)
@@ -68,7 +68,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics
         alias on_csend on_send
 
         private

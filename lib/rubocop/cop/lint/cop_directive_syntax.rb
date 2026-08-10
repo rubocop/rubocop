@@ -105,7 +105,7 @@ module RuboCop
             !processed_source.comment_config.comment_only_line?(directive_comment.line_number)
         end
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable-next Metrics/MethodLength
         def offense_message(directive_comment)
           comment = directive_comment.comment
           after_marker = comment.text.sub(DirectiveComment::DIRECTIVE_MARKER_REGEXP, '')
@@ -122,7 +122,6 @@ module RuboCop
 
           "#{COMMON_MSG} #{additional_msg}"
         end
-        # rubocop:enable Metrics/MethodLength
 
         def near_miss_keyword(comment)
           match = comment.text.match(NEAR_MISS_KEYWORD_REGEXP)

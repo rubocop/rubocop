@@ -38,7 +38,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def autocorrect(corrector, node, begin_of_arguments)
           arguments = node.arguments
           joined_arguments = arguments.map(&:source).join(', ')
@@ -62,7 +62,6 @@ module RuboCop
           corrector.remove(arguments_range)
           corrector.insert_after(begin_of_arguments, joined_arguments)
         end
-        # rubocop:enable Metrics/AbcSize
 
         def last_line_source_of_arguments(arguments)
           processed_source[arguments.last_line - 1].strip

@@ -87,7 +87,7 @@ module RuboCop
           corrector.replace(range, correction)
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def ignored_literal_ranges(ast)
           # which lines start inside a string literal?
           return [] if ast.nil?
@@ -106,7 +106,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def comment_ranges(comments)
           comments.map(&:source_range)

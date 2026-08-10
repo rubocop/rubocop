@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/NumericLiteralPrefix
+# rubocop:disable-next Style/NumericLiteralPrefix
 RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
   subject(:cop) { described_class.new(config, options) }
 
@@ -113,4 +113,3 @@ RSpec.describe RuboCop::Cop::Lint::ScriptPermission, :config do
     end
   end
 end
-# rubocop:enable Style/NumericLiteralPrefix

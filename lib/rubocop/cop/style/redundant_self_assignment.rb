@@ -55,7 +55,7 @@ module RuboCop
               ...))
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_lvasgn(node)
           return unless (rhs = node.rhs)
           return unless rhs.type?(:any_block, :call) && method_returning_self?(rhs.method_name)
@@ -69,7 +69,6 @@ module RuboCop
             corrector.replace(node, rhs.source)
           end
         end
-        # rubocop:enable Metrics/AbcSize
         alias on_ivasgn on_lvasgn
         alias on_cvasgn on_lvasgn
         alias on_gvasgn on_lvasgn

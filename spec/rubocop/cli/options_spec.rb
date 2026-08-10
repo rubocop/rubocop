@@ -1771,7 +1771,7 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
         end
       end
 
-      # rubocop:disable Layout/LineContinuationLeadingSpace
+      # rubocop:disable-next Layout/LineContinuationLeadingSpace
       context 'when clang format is specified' do
         it 'outputs with clang format' do
           create_file('example1.rb', ['x= 0 ', '#' * 130, 'y ', 'puts x'])
@@ -1866,7 +1866,6 @@ RSpec.describe 'RuboCop::CLI options', :isolated_environment do # rubocop:disabl
           ].join("\n"))
         end
       end
-      # rubocop:enable Layout/LineContinuationLeadingSpace
 
       context 'when emacs format is specified' do
         it 'outputs with emacs format' do

@@ -106,7 +106,7 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
       end
 
       context 'with literal arguments' do
-        # rubocop:disable Metrics/ParameterLists
+        # rubocop:disable-next Metrics/ParameterLists
         shared_examples 'offending format specifier' do |specifier, value, result, start_delim = "'", end_delim = "'", **metadata|
           it 'registers an offense and corrects', **metadata do
             options = {
@@ -127,7 +127,6 @@ RSpec.describe RuboCop::Cop::Style::RedundantFormat, :config do
             RUBY
           end
         end
-        # rubocop:enable Metrics/ParameterLists
 
         shared_examples 'non-offending format specifier' do |specifier, value|
           it 'does not register an offense' do

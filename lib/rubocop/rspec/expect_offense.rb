@@ -117,7 +117,7 @@ module RuboCop
         source
       end
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable-next Metrics/AbcSize
       def expect_offense(source, file = nil, severity: nil, chomp: false, **replacements)
         expected_annotations = parse_annotations(source, **replacements)
         source = expected_annotations.plain_source
@@ -138,9 +138,8 @@ module RuboCop
 
         @offenses
       end
-      # rubocop:enable Metrics/AbcSize
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
+      # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
       def expect_correction(correction, loop: true, source: nil)
         if source
           expected_annotations = parse_annotations(source, raise_error: false)
@@ -177,7 +176,6 @@ module RuboCop
         expect(new_source).to eq(correction)
         expect(@processed_source).to be_valid_syntax, 'Expected correction to be valid syntax'
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
 
       def expect_no_corrections
         raise '`expect_no_corrections` must follow `expect_offense`' unless @processed_source

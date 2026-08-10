@@ -67,7 +67,7 @@ module RuboCop
           node.parent && parentheses?(node.parent)
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def correct_rescue_block(corrector, node, parenthesized)
           operation = node.body
 
@@ -83,7 +83,6 @@ module RuboCop
             #{node_offset}end
           RESCUE_CLAUSE
         end
-        # rubocop:enable Metrics/AbcSize
 
         def indentation_and_offset(node, parenthesized)
           node_indentation = indentation(node)

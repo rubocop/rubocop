@@ -85,7 +85,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def find_consistent_parts(grouped_operands)
           csend_in_and, csend_in_or, send_in_and, send_in_or = most_left_indices(grouped_operands)
 
@@ -99,7 +99,6 @@ module RuboCop
             ['.', csend_in_or]
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def already_appropriate_call?(operand, dot_op)
           return true if operand.safe_navigation? && dot_op == '&.'
@@ -126,7 +125,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def most_left_indices(grouped_operands)
           indices = { csend_in_and: nil, csend_in_or: nil, send_in_and: nil, send_in_or: nil }
 
@@ -139,7 +138,6 @@ module RuboCop
 
           indices.values
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def operand_in_and?(node)
           return true if node.parent.and_type?

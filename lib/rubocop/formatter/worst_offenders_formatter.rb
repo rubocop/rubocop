@@ -32,7 +32,7 @@ module RuboCop
         report_summary(@offense_counts)
       end
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable-next Metrics/AbcSize
       def report_summary(offense_counts)
         per_file_counts = ordered_offense_counts(offense_counts)
         total_count = total_offense_count(offense_counts)
@@ -50,7 +50,6 @@ module RuboCop
 
         output.puts
       end
-      # rubocop:enable Metrics/AbcSize
 
       def ordered_offense_counts(offense_counts)
         offense_counts.sort_by { |k, v| [-v, k] }.to_h

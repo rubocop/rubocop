@@ -88,7 +88,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_while_post(node)
           return if node.condition.source == 'true'
 
@@ -102,7 +102,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def on_until(node)
           return if node.condition.source == 'false'
@@ -118,7 +117,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_until_post(node)
           return if node.condition.source == 'false'
 
@@ -132,7 +131,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def on_case(case_node)
           if (cond = case_node.condition)
@@ -250,7 +248,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def correct_if_node(node, cond)
           result = condition_evaluation?(node, cond)
 
@@ -281,7 +279,6 @@ module RuboCop
             ignore_node(node)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       end
     end
   end

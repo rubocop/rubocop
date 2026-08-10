@@ -83,7 +83,7 @@ module RuboCop
           }
         PATTERN
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable-next Metrics/MethodLength
         def flow_expression?(node)
           return report_on_flow_command?(node) if flow_command?(node)
 
@@ -102,7 +102,6 @@ module RuboCop
             false
           end
         end
-        # rubocop:enable Metrics/MethodLength
 
         def check_if(node)
           if_branch = node.if_branch

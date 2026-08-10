@@ -153,7 +153,7 @@ module RuboCop
           check_expression(case_node.else_branch) if case_node.else_branch
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_void_op(node, &block)
           node = node.children.first while node&.begin_type?
           return unless node&.call_type? && OPERATORS.include?(node.method_name)
@@ -168,7 +168,6 @@ module RuboCop
             autocorrect_void_op(corrector, node)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def check_var(node)
           return unless node.variable? || node.const_type?

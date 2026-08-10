@@ -56,7 +56,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity
         def only_reraising?(resbody_node)
           return false if use_exception_variable_in_ensure?(resbody_node)
 
@@ -70,7 +70,6 @@ module RuboCop
 
           exception_objects(resbody_node).include?(exception_name)
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
         def use_exception_variable_in_ensure?(resbody_node)
           return false unless (exception_variable = resbody_node.exception_variable)

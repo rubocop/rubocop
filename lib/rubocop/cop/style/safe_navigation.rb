@@ -152,7 +152,7 @@ module RuboCop
         # @!method strip_begin(node)
         def_node_matcher :strip_begin, '{ (begin $!begin) $!(begin) }'
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_if(node)
           return if allowed_if_condition?(node)
 
@@ -170,7 +170,6 @@ module RuboCop
             corrector.insert_before(method_call.loc.dot, '&') unless method_call.safe_navigation?
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def on_and(node) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
           collect_and_clauses(node).each do |(lhs, lhs_operator_range), (rhs, _rhs_operator_range)|

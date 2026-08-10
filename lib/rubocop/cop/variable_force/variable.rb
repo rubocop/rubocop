@@ -47,7 +47,7 @@ module RuboCop
           !@references.empty?
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def reference!(node)
           reference = Reference.new(node, @scope)
           @references << reference
@@ -72,7 +72,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def in_modifier_conditional?(assignment, reference_node)
           conditional = modifier_conditional_of(assignment.node)

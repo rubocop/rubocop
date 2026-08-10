@@ -66,7 +66,7 @@ module RuboCop
           DETERMINISTIC_REGEX.match?(regexp_node.source)
         end
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable-next Metrics/MethodLength
         def preferred_argument(regexp_node)
           new_argument = replacement(regexp_node)
 
@@ -92,7 +92,6 @@ module RuboCop
 
           "#{quote}#{new_argument}#{quote}"
         end
-        # rubocop:enable Metrics/MethodLength
 
         def replacement(regexp_node)
           regexp_content = regexp_node.content
