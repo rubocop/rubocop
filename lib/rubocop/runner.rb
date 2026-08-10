@@ -501,17 +501,31 @@ module RuboCop
       end
     end
 
+    # Teams are reused across files (and autocorrect iterations) of the same
+    # config: `Team#investigate` refreshes every non-persistent cop through
+    # `be_ready`, while cops that opt in via `support_multiple_source?` keep
+    # their instance and can accumulate cross-file state. Note that under
+    # `--parallel` each worker process has its own teams, so persistence is
+    # scoped to a worker.
     def mobilize_team(processed_source)
       config = @config_store.for_file(processed_source.path)
-      team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
-
-      if @project_index
-        team.cops.each do |cop|
-          cop.project_index = @project_index
-        end
+      # A long-lived runner (the LSP's `StdinRunner`) swaps `@options` between
+      # runs - teams built with the old options must not be reused then.
+      unless @mobilized_teams_options.equal?(@options)
+        @mobilized_teams_options = @options
+        @mobilized_teams = {}.compare_by_identity
       end
+      @mobilized_teams[config] ||= begin
+        team = Cop::Team.mobilize(mobilized_cop_classes(config), config, @options)
 
-      team
+        if @project_index
+          team.cops.each do |cop|
+            cop.project_index = @project_index
+          end
+        end
+
+        team
+      end
     end
 
     def mobilized_cop_classes(config)

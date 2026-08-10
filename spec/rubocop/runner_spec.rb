@@ -439,6 +439,54 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
     end
   end
 
+  describe '#run with a cop that supports multiple sources', :restore_registry do
+    subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
+
+    let(:options) { { formatters: [['progress', formatter_output_path]] } }
+
+    before do
+      create_file('multi_source_cop.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        module RuboCop
+          module Cop
+            module MultiTest
+              class InstanceTracker < Base
+                class << self
+                  attr_accessor :instance_ids
+                end
+                self.instance_ids = []
+
+                def self.support_multiple_source?
+                  true
+                end
+
+                def on_new_investigation
+                  self.class.instance_ids << object_id
+                end
+              end
+            end
+          end
+        end
+      RUBY
+      create_file('.rubocop.yml', <<~YAML)
+        require: ./multi_source_cop.rb
+        MultiTest/InstanceTracker:
+          Enabled: true
+      YAML
+      create_file('file1.rb', "# frozen_string_literal: true\n\nputs 1\n")
+      create_file('file2.rb', "# frozen_string_literal: true\n\nputs 2\n")
+    end
+
+    it 'reuses the same cop instance across files' do
+      runner.run(%w[file1.rb file2.rb])
+
+      ids = RuboCop::Cop::MultiTest::InstanceTracker.instance_ids
+      expect(ids.size).to eq(2)
+      expect(ids.uniq.size).to eq(1)
+    end
+  end
+
   describe '#run with cops autocorrecting each-other' do
     include_context 'mock console output'
 
