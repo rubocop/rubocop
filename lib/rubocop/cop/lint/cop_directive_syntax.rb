@@ -58,10 +58,12 @@ module RuboCop
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
-        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `todo`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
+        INVALID_MODE_NAME_MSG = 'The mode name must be one of `enable`, `disable`, `disable-next`, `todo`, `todo-next`, `push`, or `pop`.' # rubocop:disable Layout/LineLength
         MISSING_COP_NAME_MSG = 'The cop name is missing.'
         MALFORMED_COP_NAMES_MSG = 'Cop names must be separated by commas. ' \
                                   'Comment in the directive must start with `--`.'
+        NEXT_DIRECTIVE_AT_EOL_MSG = 'A `-next` directive must be on its own line, above the ' \
+                                    'statement it applies to.'
         INVALID_KEYWORD_MSG = 'The directive keyword must be `rubocop`, not `%<keyword>s`.'
         UNKNOWN_COP_MSG = 'Unknown cop name `%<name>s`%<suggestion>s.'
 
@@ -69,7 +71,7 @@ module RuboCop
         # followed by a colon and a valid mode name.
         NEAR_MISS_KEYWORD_REGEXP = /
           \A\#+\s*(?<keyword>[A-Za-z][\w-]*)\s*:\s*
-          (?:#{DirectiveComment::AVAILABLE_MODES.join('|')})\b
+          (?:#{DirectiveComment::MODES_PATTERN})\b
         /x.freeze
 
         def on_new_investigation
@@ -89,9 +91,18 @@ module RuboCop
         def check_directive(comment, directive_comment)
           if directive_comment.malformed?
             add_offense(comment, message: offense_message(directive_comment))
+          elsif misplaced_next_directive?(directive_comment)
+            add_offense(comment, message: NEXT_DIRECTIVE_AT_EOL_MSG)
           elsif (name = unknown_cop_name(directive_comment))
             add_offense(comment, message: unknown_cop_message(directive_comment, name))
           end
+        end
+
+        # An EOL `disable-next` is not honored - it must fail loudly instead
+        # of silently doing nothing.
+        def misplaced_next_directive?(directive_comment)
+          directive_comment.disable_next? &&
+            !processed_source.comment_config.comment_only_line?(directive_comment.line_number)
         end
 
         # rubocop:disable Metrics/MethodLength

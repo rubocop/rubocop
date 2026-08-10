@@ -559,6 +559,44 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       RESULT
     end
 
+    it 'can disable cops for the following statement with `disable-next`' do
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        # rubocop:disable-next Lint/UselessAssignment -- kept for documentation purposes
+        useless = compute(1,
+                          2)
+        also_useless = 3
+      RUBY
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('6:1: W: [Correctable] Lint/UselessAssignment')
+      expect($stdout.string).not_to include('4:1')
+    end
+
+    it 'carries a `disable-next` justification into `--display-suppressed` JSON output' do
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        # rubocop:disable-next Lint/UselessAssignment -- kept for documentation purposes
+        useless = 1
+      RUBY
+      expect(cli.run(['--format', 'json', '--display-suppressed', 'example.rb'])).to eq(0)
+      expect($stdout.string).to include('"justification":"kept for documentation purposes"')
+    end
+
+    it 'reports a detached `disable-next` even when no cop is disabled in the config' do
+      create_file('.rubocop.yml', <<~YAML)
+        AllCops:
+          EnabledByDefault: true
+      YAML
+      create_file('example.rb', <<~RUBY)
+        puts 1
+        # rubocop:disable-next Lint/UselessAssignment
+      RUBY
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+      expect($stdout.string).to include('Unnecessary disabling of `Lint/UselessAssignment`')
+    end
+
     it 'reports suppressed offenses with `--display-suppressed` without affecting the exit code' do
       create_file('example.rb', <<~RUBY)
         # frozen_string_literal: true

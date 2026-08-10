@@ -195,6 +195,159 @@ RSpec.describe RuboCop::CommentConfig do
     end
   end
 
+  describe 'disable-next directives' do
+    let(:source) do
+      <<~RUBY
+        # rubocop:disable-next Metrics/MethodLength
+        def foo(a,
+                b)
+          puts a
+        end
+        puts 1
+      RUBY
+    end
+
+    it 'disables the cop for the whole following statement' do
+      expect(comment_config.cop_disabled_line_ranges['Metrics/MethodLength']).to eq([2..5])
+    end
+
+    it 'attaches the opening directive to the range' do
+      range = comment_config.cop_disabled_line_ranges['Metrics/MethodLength'].first
+      expect(range.directive.comment.text).to eq('# rubocop:disable-next Metrics/MethodLength')
+      expect(range.directive.reason).to be_nil
+    end
+
+    context 'when directives stack on consecutive comment lines' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next Metrics/MethodLength
+          # rubocop:disable-next Metrics/AbcSize -- another reason
+          def foo
+            puts 1
+          end
+        RUBY
+      end
+
+      it 'scopes both directives to the same statement' do
+        expect(comment_config.cop_disabled_line_ranges['Metrics/MethodLength']).to eq([3..5])
+        expect(comment_config.cop_disabled_line_ranges['Metrics/AbcSize']).to eq([3..5])
+      end
+    end
+
+    context 'when a blank line separates the directive from the code' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next Metrics/MethodLength
+
+          def foo
+            puts 1
+          end
+        RUBY
+      end
+
+      it 'does not attach and records the directive as detached' do
+        expect(comment_config.cop_disabled_line_ranges['Metrics/MethodLength']).to be_nil
+        expect(comment_config.detached_next_directives.map(&:line_number)).to eq([1])
+      end
+    end
+
+    context 'when nothing follows the directive' do
+      let(:source) { "puts 1\n# rubocop:disable-next Metrics/MethodLength\n" }
+
+      it 'records the directive as detached' do
+        expect(comment_config.detached_next_directives.map(&:line_number)).to eq([2])
+      end
+    end
+
+    context 'when the directive sits at the end of a code line' do
+      let(:source) { "puts 1 # rubocop:disable-next Metrics/MethodLength\nputs 2\n" }
+
+      it 'is not honored and is recorded as detached' do
+        expect(comment_config.cop_disabled_line_ranges['Metrics/MethodLength']).to be_nil
+        expect(comment_config.detached_next_directives.map(&:line_number)).to eq([1])
+      end
+    end
+
+    context 'when the statement contains a heredoc' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next Layout/LineLength
+          foo(<<~TEXT)
+            some text
+          TEXT
+          puts 1
+        RUBY
+      end
+
+      it 'extends the scope to the heredoc end' do
+        expect(comment_config.cop_disabled_line_ranges['Layout/LineLength']).to eq([2..4])
+      end
+    end
+
+    context 'when several statements share the target line' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:disable-next Style/Semicolon
+          a = 1; b = 2
+          c = 3
+        RUBY
+      end
+
+      it 'scopes to that line only' do
+        expect(comment_config.cop_disabled_line_ranges['Style/Semicolon']).to eq([2..2])
+      end
+    end
+
+    context 'when the next statement is a `when` clause' do
+      let(:source) do
+        <<~RUBY
+          case foo
+          # rubocop:disable-next Lint/EmptyWhen
+          when :a
+            nil
+          when :b
+            puts 1
+          end
+        RUBY
+      end
+
+      it 'scopes to the clause, not the whole `case`' do
+        expect(comment_config.cop_disabled_line_ranges['Lint/EmptyWhen']).to eq([3..4])
+      end
+    end
+
+    context 'when the next code line starts no statement' do
+      let(:source) do
+        <<~RUBY
+          def foo
+            puts 1
+          # rubocop:disable-next Layout/DefEndAlignment
+            end
+        RUBY
+      end
+
+      it 'scopes to that line alone' do
+        expect(comment_config.cop_disabled_line_ranges['Layout/DefEndAlignment']).to eq([4..4])
+      end
+    end
+
+    context 'with a department' do
+      let(:source) do
+        <<~RUBY
+          # rubocop:todo-next Style
+          @@foo = 1
+          @@bar = 2
+        RUBY
+      end
+
+      it 'disables every cop of the department for the statement' do
+        ranges = comment_config.cop_disabled_line_ranges
+        expect(ranges['Style/ClassVars']).to eq([2..2])
+        expect(ranges['Style/FrozenStringLiteralComment']).to eq([2..2])
+      end
+    end
+  end
+
   describe 'a directive with a wrongly-namespaced cop name' do
     let(:source) do
       <<~RUBY

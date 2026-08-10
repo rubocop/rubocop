@@ -26,13 +26,17 @@ module RuboCop
     # @api private
     PUSH_POP_ARGS_PATTERN = "([+\\-]#{COP_NAME_PATTERN_NC}(?:\\s+[+\\-]#{COP_NAME_PATTERN_NC})*)"
     # @api private
-    AVAILABLE_MODES = %w[disable enable todo push pop].freeze
+    AVAILABLE_MODES = %w[disable enable todo push pop disable-next todo-next].freeze
+    # @api private
+    # Longest first, so a `-next` mode is not matched as its prefix
+    # (`-` is a word boundary).
+    MODES_PATTERN = AVAILABLE_MODES.sort_by { |mode| -mode.length }.join('|').freeze
     # @api private
     DIRECTIVE_MARKER_PATTERN = '# rubocop : '
     # @api private
     DIRECTIVE_MARKER_REGEXP = Regexp.new(DIRECTIVE_MARKER_PATTERN.gsub(' ', '\s*'))
     # @api private
-    DIRECTIVE_HEADER_PATTERN = "#{DIRECTIVE_MARKER_PATTERN}((?:#{AVAILABLE_MODES.join('|')}))\\b"
+    DIRECTIVE_HEADER_PATTERN = "#{DIRECTIVE_MARKER_PATTERN}((?:#{MODES_PATTERN}))\\b"
     # @api private
     DIRECTIVE_COMMENT_REGEXP = Regexp.new(
       "#{DIRECTIVE_HEADER_PATTERN}(?:\\s+#{COPS_PATTERN}|\\s+#{PUSH_POP_ARGS_PATTERN})?"
@@ -123,7 +127,12 @@ module RuboCop
 
     # Checks if this directive disables cops
     def disabled?
-      %w[disable todo].include?(mode)
+      %w[disable todo].include?(mode) || disable_next?
+    end
+
+    # Checks if this directive disables cops for the next statement only
+    def disable_next?
+      %w[disable-next todo-next].include?(mode)
     end
 
     # Checks if this directive enables cops

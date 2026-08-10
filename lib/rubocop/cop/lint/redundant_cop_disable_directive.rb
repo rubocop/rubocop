@@ -104,6 +104,8 @@ module RuboCop
         end
 
         def each_redundant_disable(&block)
+          each_detached_next_directive(&block)
+
           cop_disabled_line_ranges.each do |cop, line_ranges|
             # A pending cop that is not enabled in this run produces no
             # offenses, so its directives cannot be judged - they typically
@@ -130,7 +132,7 @@ module RuboCop
           line_ranges.each_with_index do |line_range, line_range_index|
             next if should_skip_line_range?(cop, line_range)
 
-            comment = processed_source.comment_at_line(line_range.begin)
+            comment = directive_comment(line_range)
             next if skip_directive?(comment)
 
             next_range = line_ranges[line_range_index + 1]
@@ -141,6 +143,24 @@ module RuboCop
 
         def should_skip_line_range?(cop, line_range)
           ignore_offense?(line_range) || expected_final_disable?(cop, line_range)
+        end
+
+        # A range opened by a `disable-next` directive starts at the statement,
+        # not at the directive comment above it, so ask the range itself.
+        def directive_comment(line_range)
+          if line_range.respond_to?(:directive)
+            line_range.directive.comment
+          else
+            processed_source.comment_at_line(line_range.begin)
+          end
+        end
+
+        # A `disable-next` with no statement attached (or misplaced at the end
+        # of a code line) suppresses nothing, so it is redundant by definition.
+        def each_detached_next_directive
+          processed_source.comment_config.detached_next_directives.each do |directive|
+            directive.raw_cop_names.each { |cop| yield directive.comment, cop }
+          end
         end
 
         def skip_directive?(comment)
@@ -168,7 +188,7 @@ module RuboCop
             # whether there are offenses or not.
             next unless followed_ranges?(previous_range, range)
 
-            comment = processed_source.comment_at_line(range.begin)
+            comment = directive_comment(range)
 
             next unless comment
             # Comments disabling all cops don't count since it's reasonable
@@ -267,7 +287,10 @@ module RuboCop
           # An unknown cop may just not be loaded in this run (e.g. a custom
           # cop whose configuration failed to load) - removing its directive
           # would destroy something that cannot be restored, so only report.
-          return add_offense(location, message: message(cop_names)) if any_unknown_cop?(cops)
+          # A misplaced EOL `disable-next` should be moved, not deleted.
+          if any_unknown_cop?(cops) || misplaced_next_directive?(comment)
+            return add_offense(location, message: message(cop_names))
+          end
 
           add_offense(location, message: message(cop_names)) do |corrector|
             remove_entire_comment(corrector, location, comment)
@@ -305,6 +328,12 @@ module RuboCop
 
         def any_unknown_cop?(cops)
           cops.any? { |cop| unknown_cop?(cop) }
+        end
+
+        def misplaced_next_directive?(comment)
+          directive = DirectiveComment.new(comment)
+          directive.disable_next? &&
+            !processed_source.comment_config.comment_only_line?(directive.line_number)
         end
 
         def unknown_cop?(cop)

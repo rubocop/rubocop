@@ -271,8 +271,31 @@ RSpec.describe RuboCop::Cop::Style::DisableCopsWithinSourceCodeDirective, :confi
     end
   end
 
+  it 'registers an offense and corrects a `disable-next` directive' do
+    expect_offense(<<~RUBY)
+      # rubocop:disable-next Metrics/AbcSize
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ RuboCop disable/enable directives are not permitted.
+      def foo
+      end
+    RUBY
+
+    expect_correction(<<~RUBY)
+
+      def foo
+      end
+    RUBY
+  end
+
   context 'when AllowTrailingComment is true' do
     let(:cop_config) { { 'AllowTrailingComment' => true } }
+
+    it 'does not register an offense for a `disable-next` with a justification' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable-next Metrics/AbcSize -- legacy method
+        def foo
+        end
+      RUBY
+    end
 
     it 'registers an offense for a disable directive without a justification' do
       expect_offense(<<~RUBY)

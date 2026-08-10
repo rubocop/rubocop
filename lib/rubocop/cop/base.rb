@@ -544,10 +544,7 @@ module RuboCop
       # range, or `nil` when the directive carries none.
       def suppression_reason(range)
         covering = covering_disabled_range(range)
-        return unless covering && !covering.begin.to_f.infinite?
-
-        comment = @processed_source.comment_at_line(covering.begin)
-        comment && DirectiveComment.new(comment).reason
+        covering.directive.reason if covering.respond_to?(:directive)
       end
 
       def covering_disabled_range(range)

@@ -104,6 +104,17 @@ RSpec.describe RuboCop::Cop::Lint::MissingCopEnableDirective, :config do
         # Some other code
       RUBY
     end
+
+    it 'does not register an offense for a `disable-next` scope larger than the limit' do
+      expect_no_offenses(<<~RUBY)
+        # rubocop:disable-next Layout/SpaceAroundOperators
+        x =   0 +
+              1 +
+              2 +
+              3
+        # Some other code
+      RUBY
+    end
   end
 
   context 'when a `# rubocop:disable` is wrapped in `# rubocop:push` / `# rubocop:pop`' do
