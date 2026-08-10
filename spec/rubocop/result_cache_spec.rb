@@ -116,6 +116,27 @@ RSpec.describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
+      context 'an offense suppressed by a directive carrying a justification' do
+        let(:offense) do
+          RuboCop::Cop::Offense.new(
+            :warning, location, 'unused var', 'Lint/UselessAssignment', :disabled,
+            justification: 'kept for the vendored payload'
+          )
+        end
+
+        it 'serializes them with the justification' do
+          cache.save([offense])
+          expect(cache.load[0].justification).to eq('kept for the vendored payload')
+        end
+      end
+
+      context 'an offense that carries no justification' do
+        it 'serializes them with a nil justification' do
+          cache.save(offenses)
+          expect(cache.load[0].justification).to be_nil
+        end
+      end
+
       context 'a global offense' do
         let(:no_location) { RuboCop::Cop::Offense::NO_LOCATION }
         let(:global_offense) do
