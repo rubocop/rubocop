@@ -25,7 +25,7 @@ module RuboCop
       end
       private_constant :SYMBOL_TO_STRING_CACHE
 
-      # rubocop:disable Metrics
+      # rubocop:disable-next Metrics
       def style_detected(detected)
         return if no_acceptable_style?
 
@@ -51,7 +51,6 @@ module RuboCop
           config_to_allow_offenses[style_parameter_name] = updated_list.first
         end
       end
-      # rubocop:enable Metrics
 
       def no_acceptable_style?
         config_to_allow_offenses['Enabled'] == false

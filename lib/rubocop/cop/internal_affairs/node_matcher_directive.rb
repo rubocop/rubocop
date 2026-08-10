@@ -146,7 +146,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable-next Metrics/MethodLength
         def formatted_message(offense_type, directive, actual_name, method_name)
           case offense_type
           when :wrong_name
@@ -166,7 +166,6 @@ module RuboCop
             format(MSG, method: method_name)
           end
         end
-        # rubocop:enable Metrics/MethodLength
 
         def remove_receiver(current)
           current.delete_prefix('self.')

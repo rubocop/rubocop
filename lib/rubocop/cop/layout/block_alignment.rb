@@ -281,7 +281,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def do_line_begins_inside_argument?(node, do_loc)
           line_begin_pos = do_loc.begin_pos - do_loc.column
           first_char_pos = line_begin_pos + (do_loc.source_line =~ /\S/)
@@ -292,7 +292,6 @@ module RuboCop
               first_char_pos < argument.source_range.end_pos
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         # The continuation line indentation is only an unmeaningful alignment target when
         # it is dictated by an opening delimiter, i.e. the line begins inside `(` or `[`.

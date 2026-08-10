@@ -167,7 +167,7 @@ module RuboCop
           [Layout::SpaceBeforeBlockBraces]
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_block(node)
           symbol_proc?(node) do |dispatch_node, arguments_node, method_name|
             if active_support_extensions_enabled?
@@ -184,7 +184,6 @@ module RuboCop
             register_offense(node, method_name, dispatch_node.method_name)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         alias on_numblock on_block
         alias on_itblock on_block
 

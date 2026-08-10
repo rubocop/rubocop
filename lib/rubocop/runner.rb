@@ -611,7 +611,7 @@ module RuboCop
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable-next Metrics/MethodLength
     def get_processed_source(file, prism_result, source: nil)
       config = @config_store.for_file(file)
       ruby_version = config.target_ruby_version
@@ -645,7 +645,6 @@ module RuboCop
       processed_source.registry = mobilized_cop_classes(config)
       processed_source
     end
-    # rubocop:enable Metrics/MethodLength
 
     # A Cop::Team instance is stateful and may change when inspecting.
     # The "standby" team for a given config is an initialized but

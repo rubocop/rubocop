@@ -3,7 +3,7 @@
 # `be_match` here calls `FilePatterns#match?(path)`, which is unrelated to the
 # RSpec-builtin `match` matcher (regex/pattern), so the predicate matcher is
 # not redundant in this file.
-# rubocop:disable RSpec/RedundantPredicateMatcher
+# rubocop:disable-next RSpec/RedundantPredicateMatcher
 RSpec.describe RuboCop::FilePatterns do
   describe '#match?' do
     let(:patterns) { ['lib/**/*.rb', 'README.md'] }
@@ -57,4 +57,3 @@ RSpec.describe RuboCop::FilePatterns do
     end
   end
 end
-# rubocop:enable RSpec/RedundantPredicateMatcher

@@ -36,7 +36,7 @@ module RuboCop
 
         MSG = 'Prefer multiline `do`...`end` block.'
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_block(node)
           return if node.multiline? || node.braces?
           return if single_line_blocks_preferred? && suitable_as_single_line?(node)
@@ -55,7 +55,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
         alias on_numblock on_block
         alias on_itblock on_block
 

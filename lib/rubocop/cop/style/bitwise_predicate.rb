@@ -70,7 +70,7 @@ module RuboCop
             (send _ :& _))
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_send(node)
           return unless node.receiver&.begin_type?
           return unless (preferred_method = preferred_method(node))
@@ -88,7 +88,6 @@ module RuboCop
             corrector.replace(node, preferred)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 

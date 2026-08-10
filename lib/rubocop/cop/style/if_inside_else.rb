@@ -64,7 +64,7 @@ module RuboCop
 
         MSG = 'Convert `if` nested inside `else` to `elsif`.'
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_if(node)
           return if node.ternary? || node.unless?
 
@@ -81,7 +81,6 @@ module RuboCop
             ignore_node(node)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 

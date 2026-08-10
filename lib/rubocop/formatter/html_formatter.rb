@@ -74,11 +74,10 @@ module RuboCop
         end
 
         # Make Kernel#binding public.
-        # rubocop:disable Lint/UselessMethodDefinition
+        # rubocop:disable-next Lint/UselessMethodDefinition
         def binding
           super
         end
-        # rubocop:enable Lint/UselessMethodDefinition
 
         def decorated_message(offense)
           offense.message.gsub(/`(.+?)`/) { "<code>#{escape(Regexp.last_match(1))}</code>" }
@@ -144,11 +143,10 @@ module RuboCop
         }.freeze
 
         # Make Kernel#binding public.
-        # rubocop:disable Lint/UselessMethodDefinition
+        # rubocop:disable-next Lint/UselessMethodDefinition
         def binding
           super
         end
-        # rubocop:enable Lint/UselessMethodDefinition
       end
     end
   end

@@ -115,7 +115,7 @@ module RuboCop
     # with the addition that any value that is a hash, and occurs in both
     # arguments, will also be merged. And so on.
     #
-    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable-next Metrics/AbcSize
     def merge(base_hash, derived_hash, **opts)
       result = base_hash.merge(derived_hash)
       keys_appearing_in_both = base_hash.keys & derived_hash.keys
@@ -132,7 +132,6 @@ module RuboCop
       end
       result
     end
-    # rubocop:enable Metrics/AbcSize
 
     # An `Enabled: true` setting in user configuration for a cop overrides an
     # `Enabled: false` setting for its department.

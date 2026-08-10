@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Common methods shared by Style/TrailingCommaInArguments,
     # Style/TrailingCommaInArrayLiteral and Style/TrailingCommaInHashLiteral
-    # rubocop:disable Metrics/ModuleLength
+    # rubocop:disable-next Metrics/ModuleLength
     module TrailingComma
       include ConfigurableEnforcedStyle
       include RangeHelp
@@ -95,7 +95,7 @@ module RuboCop
         node.multiline? && !allowed_multiline_argument?(node)
       end
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable-next Metrics/AbcSize
       def method_name_and_arguments_on_same_line?(node)
         return false if !node.call_type? || node.last_line != node.last_argument.last_line
         return true if node.last_argument.hash_type? && node.last_argument.braces?
@@ -104,7 +104,6 @@ module RuboCop
 
         line == node.last_argument.last_line
       end
-      # rubocop:enable Metrics/AbcSize
 
       # A single argument with the closing bracket on the same line as the end
       # of the argument is not considered multiline, even if the argument
@@ -223,6 +222,5 @@ module RuboCop
         false
       end
     end
-    # rubocop:enable Metrics/ModuleLength
   end
 end

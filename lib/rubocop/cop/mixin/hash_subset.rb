@@ -5,7 +5,7 @@ module RuboCop
     # Common functionality for Style/HashExcept and Style/HashSlice cops.
     # It registers an offense on methods with blocks that are equivalent
     # to Hash#except or Hash#slice.
-    # rubocop:disable Metrics/ModuleLength
+    # rubocop:disable-next Metrics/ModuleLength
     module HashSubset
       include RangeHelp
       extend NodePattern::Macros
@@ -206,6 +206,5 @@ module RuboCop
         range_between(node.loc.selector.begin_pos, node.parent.loc.end.end_pos)
       end
     end
-    # rubocop:enable Metrics/ModuleLength
   end
 end

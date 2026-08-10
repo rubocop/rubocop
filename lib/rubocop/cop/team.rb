@@ -9,7 +9,7 @@ module RuboCop
     # For performance reasons, Team will first dispatch cops & forces in two groups,
     # first the ones needed for autocorrection (if any), then the rest
     # (unless autocorrections happened).
-    # rubocop:disable Metrics/ClassLength
+    # rubocop:disable-next Metrics/ClassLength
     class Team
       InvestigationResult = Struct.new(:report, :corrector)
       private_constant :InvestigationResult
@@ -404,6 +404,5 @@ module RuboCop
         end
       end
     end
-    # rubocop:enable Metrics/ClassLength
   end
 end

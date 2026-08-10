@@ -6,7 +6,7 @@ require 'tmpdir'
 # or stubbing Dir.pwd get a fresh value.
 RSpec.configure { |c| c.before { RuboCop::PathUtil.reset_pwd } }
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 RSpec.shared_context 'isolated environment' do
   around do |example|
     Dir.mktmpdir do |tmpdir|
@@ -69,7 +69,6 @@ RSpec.shared_context 'isolated environment' do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength
 
 # Workaround for https://github.com/rubocop/rubocop/issues/12978,
 # there should already be no gemfile in the temp directory

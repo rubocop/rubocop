@@ -85,7 +85,7 @@ RSpec.describe 'RuboCop Project', type: :feature do
       configuration_keys.each_with_index { |key, idx| expect(key).to eq expected[idx] }
     end
 
-    # rubocop:disable RSpec/NoExpectationExample
+    # rubocop:disable-next RSpec/NoExpectationExample
     it 'has a SupportedStyles for all EnforcedStyle and EnforcedStyle is valid' do
       errors = []
       cop_names.each do |name|
@@ -107,9 +107,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
 
       raise errors.join("\n") unless errors.empty?
     end
-    # rubocop:enable RSpec/NoExpectationExample
 
-    # rubocop:disable RSpec/NoExpectationExample
+    # rubocop:disable-next RSpec/NoExpectationExample
     it 'does not have any duplication' do
       fname = File.expand_path('../config/default.yml', __dir__)
       content = File.read(fname)
@@ -118,7 +117,6 @@ RSpec.describe 'RuboCop Project', type: :feature do
               "on line #{key1.start_line} and line #{key2.start_line}"
       end
     end
-    # rubocop:enable RSpec/NoExpectationExample
 
     %w[Safe SafeAutoCorrect AutoCorrect].each do |metadata|
       it "does not include `#{metadata}: true`" do
@@ -291,9 +289,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
     let(:path) { File.expand_path('../CHANGELOG.md', __dir__) }
     let(:entries) { lines.grep(/^\*/).map(&:chomp) }
 
-    # rubocop:disable RSpec/IncludeExamples
+    # rubocop:disable-next RSpec/IncludeExamples
     include_examples 'has Changelog format'
-    # rubocop:enable RSpec/IncludeExamples
 
     context 'future entries' do
       let(:allowed_cop_names) do
@@ -321,9 +318,8 @@ RSpec.describe 'RuboCop Project', type: :feature do
         context "For #{path}" do
           let(:path) { path }
 
-          # rubocop:disable RSpec/IncludeExamples
+          # rubocop:disable-next RSpec/IncludeExamples
           include_examples 'has Changelog format'
-          # rubocop:enable RSpec/IncludeExamples
 
           it 'has a link to the issue or pull request address at the beginning' do
             repo = 'rubocop/rubocop'

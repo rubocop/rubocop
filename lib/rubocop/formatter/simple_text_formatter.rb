@@ -106,7 +106,7 @@ module RuboCop
         include Colorizable
         include TextUtil
 
-        # rubocop:disable Metrics/ParameterLists
+        # rubocop:disable-next Metrics/ParameterLists
         def initialize(
           file_count, offense_count, correction_count, correctable_count, rainbow,
           safe_autocorrect: false
@@ -118,7 +118,6 @@ module RuboCop
           @rainbow = rainbow
           @safe_autocorrect = safe_autocorrect
         end
-        # rubocop:enable Metrics/ParameterLists
 
         def summary
           if @correction_count.positive?

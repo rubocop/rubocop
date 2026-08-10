@@ -83,14 +83,13 @@ module RuboCop
           yield range.end if range.end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def acceptable?(node)
           node.begin_type? ||
             node.literal? || rational_literal?(node) ||
             node.variable? || node.const_type? || node.self_type? ||
             (node.call_type? && acceptable_call?(node))
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def acceptable_call?(node)
           return true if node.unary_operation?

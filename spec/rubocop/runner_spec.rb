@@ -165,7 +165,7 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
       end
 
       context 'when the extractor matches' do
-        # rubocop:disable Layout/LineLength
+        # rubocop:disable-next Layout/LineLength
         let(:custom_ruby_extractor) do
           lambda do |_processed_source|
             [
@@ -184,7 +184,6 @@ RSpec.describe RuboCop::Runner, :isolated_environment do
             ]
           end
         end
-        # rubocop:enable Layout/LineLength
 
         let(:source) do
           <<~RUBY

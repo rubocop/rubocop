@@ -41,7 +41,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def check(node)
           return if node.parent&.regexp_type?
           return unless /(?<!\\)#\{.*\}/.match?(node.source)
@@ -51,7 +51,6 @@ module RuboCop
 
           add_offense(node) { |corrector| autocorrect(corrector, node) }
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def autocorrect(corrector, node)
           starting_token, ending_token = if node.source.include?('"')

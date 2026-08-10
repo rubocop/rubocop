@@ -22,7 +22,7 @@ module RuboCop
 
           private
 
-          # rubocop:disable Metrics
+          # rubocop:disable-next Metrics
           def _cant_be_nil?(node, receiver)
             return false unless node
 
@@ -78,13 +78,12 @@ module RuboCop
               false
             end
           end
-          # rubocop:enable Metrics
 
           def non_nil_method?(method_name)
             !NIL_METHODS.include?(method_name) && !@additional_nil_methods.include?(method_name)
           end
 
-          # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+          # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
           def sole_condition_of_parent_if?(node)
             child = node
             parent = node.parent
@@ -108,7 +107,6 @@ module RuboCop
 
             false
           end
-          # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
           def non_nil_condition?(condition, node)
             return true if condition == node && same_binding_as_receiver?(condition)

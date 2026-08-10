@@ -153,7 +153,7 @@ module RuboCop
           [token.line - 1, token.column - 1]
         end
 
-        # rubocop:disable Metrics/ParameterLists
+        # rubocop:disable-next Metrics/ParameterLists
         def issue_offenses(node, tokens, left, right, start_ok, end_ok)
           case style
           when :no_space
@@ -165,13 +165,12 @@ module RuboCop
             compact_offenses(node, tokens, left, right, start_ok, end_ok)
           end
         end
-        # rubocop:enable Metrics/ParameterLists
 
         def next_to_comment?(tokens, token)
           tokens[index_for(tokens, token) + 1].comment?
         end
 
-        # rubocop:disable Metrics/ParameterLists
+        # rubocop:disable-next Metrics/ParameterLists
         def compact_offenses(node, tokens, left, right, start_ok, end_ok)
           if qualifies_for_compact?(tokens, left, side: :left)
             compact_offense(node, left, side: :left)
@@ -185,7 +184,6 @@ module RuboCop
             space_offenses(node, nil, right, MSG, start_ok: true, end_ok: end_ok)
           end
         end
-        # rubocop:enable Metrics/ParameterLists
 
         def qualifies_for_compact?(tokens, token, side: :right)
           if side == :right

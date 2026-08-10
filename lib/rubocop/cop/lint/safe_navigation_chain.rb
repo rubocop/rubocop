@@ -45,7 +45,7 @@ module RuboCop
           }
         PATTERN
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_send(node)
           return unless require_safe_navigation?(node)
 
@@ -63,7 +63,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 

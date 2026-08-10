@@ -36,14 +36,14 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         expect { options.parse ['--help'] }.to exit_with_code(0)
       end
 
-      # rubocop:disable RSpec/ExampleLength
+      # rubocop:disable-next RSpec/ExampleLength
       it 'shows help text' do
         begin
           options.parse(['--help'])
         rescue SystemExit # rubocop:disable Lint/SuppressedException
         end
 
-        # rubocop:todo Naming/InclusiveLanguage
+        # rubocop:todo-next Naming/InclusiveLanguage
         expected_help = <<~OUTPUT
           Usage: rubocop [options] [file1, file2, ...]
 
@@ -237,7 +237,6 @@ RSpec.describe RuboCop::Options, :isolated_environment do
               -v, --version                    Display version.
               -V, --verbose-version            Display verbose version.
         OUTPUT
-        # rubocop:enable Naming/InclusiveLanguage
 
         if RUBY_ENGINE == 'ruby' && !RuboCop::Platform.windows?
           expected_help += <<~OUTPUT
@@ -250,7 +249,6 @@ RSpec.describe RuboCop::Options, :isolated_environment do
 
         expect($stdout.string).to eq(expected_help)
       end
-      # rubocop:enable RSpec/ExampleLength
 
       it 'lists all builtin formatters' do
         begin
@@ -668,7 +666,7 @@ RSpec.describe RuboCop::Options, :isolated_environment do
       end
     end
 
-    # rubocop:todo Naming/InclusiveLanguage
+    # rubocop:todo-next Naming/InclusiveLanguage
     describe 'deprecated options' do
       describe '--auto-correct' do
         it 'emits a warning and sets the correct options instead' do
@@ -698,7 +696,6 @@ RSpec.describe RuboCop::Options, :isolated_environment do
         end
       end
     end
-    # rubocop:enable Naming/InclusiveLanguage
 
     def expect_autocorrect_options_for_fix_layout
       options_keys = options.instance_variable_get(:@options).keys

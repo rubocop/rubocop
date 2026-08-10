@@ -135,7 +135,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
         def argument_match?(send_arg, def_arg)
           def_arg_name = def_arg.children[0]
 
@@ -157,7 +157,6 @@ module RuboCop
             send_arg.forwarded_args_type?
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
 
         def keyword_hash_argument?(send_arg)
           send_arg.hash_type? && !send_arg.braces?

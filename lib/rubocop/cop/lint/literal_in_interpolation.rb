@@ -24,7 +24,7 @@ module RuboCop
         MSG = 'Literal interpolation detected.'
         COMPOSITE = %i[array hash pair irange erange].freeze
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def on_interpolation(begin_node)
           final_node = begin_node.children.last
           return unless offending?(final_node)
@@ -50,7 +50,6 @@ module RuboCop
             corrector.replace(final_node.parent, replacement)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         private
 
@@ -74,7 +73,7 @@ module RuboCop
           node.array_type? && grandparent.regexp_type?
         end
 
-        # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/MethodLength, Metrics/CyclomaticComplexity
         def autocorrected_value(node)
           case node.type
           when :int
@@ -95,7 +94,6 @@ module RuboCop
             node.source.gsub('"', '\"')
           end
         end
-        # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
         def handle_special_regexp_chars(begin_node, value)
           parent_node = begin_node.parent
@@ -155,7 +153,7 @@ module RuboCop
           "{#{hash_string}}"
         end
 
-        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        # rubocop:disable-next Metrics/MethodLength, Metrics/AbcSize
         def autocorrected_value_in_hash(node)
           case node.type
           when :int
@@ -174,7 +172,6 @@ module RuboCop
             node.source.gsub('"', '\"')
           end
         end
-        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         # Does node print its own source when converted to a string?
         def prints_as_self?(node)

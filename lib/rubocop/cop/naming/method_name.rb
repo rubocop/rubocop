@@ -209,7 +209,7 @@ module RuboCop
           forbidden_identifier?(name) || forbidden_pattern?(name)
         end
 
-        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        # rubocop:disable-next Metrics/MethodLength, Metrics/AbcSize
         def register_forbidden_name(node)
           if node.any_def_type?
             name_node = node.loc.name
@@ -227,7 +227,6 @@ module RuboCop
           message = format(MSG_FORBIDDEN, identifier: method_name)
           add_offense(name_node, message: message)
         end
-        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         def attr_name(name_item)
           sym_name(name_item) || str_name(name_item)

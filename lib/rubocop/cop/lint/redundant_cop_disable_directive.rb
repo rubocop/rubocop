@@ -2,7 +2,7 @@
 
 # The Lint/RedundantCopDisableDirective cop needs to be disabled so as
 # to be able to provide a (bad) example of a redundant disable.
-# rubocop:disable Lint/RedundantCopDisableDirective
+# rubocop:disable-next Lint/RedundantCopDisableDirective
 module RuboCop
   module Cop
     module Lint
@@ -178,7 +178,7 @@ module RuboCop
           end
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def each_already_disabled(cop, line_ranges)
           line_ranges.each_cons(2) do |previous_range, range|
             next if ignore_offense?(range)
@@ -206,7 +206,6 @@ module RuboCop
             yield comment, redundant if redundant
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def find_redundant_cop(cop, range)
           cop_offenses = offenses_to_check.select { |offense| offense.cop_name == cop }
@@ -423,4 +422,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Lint/RedundantCopDisableDirective

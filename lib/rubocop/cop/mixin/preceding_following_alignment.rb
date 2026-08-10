@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Common functionality for checking whether an AST node/token is aligned
     # with something on a preceding or following line
-    # rubocop:disable Metrics/ModuleLength
+    # rubocop:disable-next Metrics/ModuleLength
     module PrecedingFollowingAlignment
       # Tokens that end with an `=`, as well as `<<`, that can be aligned together:
       # `=`, `==`, `===`, `!=`, `<=`, `>=`, `<<` and operator assignment (`+=`, etc).
@@ -222,6 +222,5 @@ module RuboCop
         asgn_tokens.reject { |t| eqls_to_ignore.include?(t.begin_pos) }
       end
     end
-    # rubocop:enable Metrics/ModuleLength
   end
 end

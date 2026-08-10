@@ -5,7 +5,7 @@ module RuboCop
     module Style
       class MethodCallWithArgsParentheses
         # Style omit_parentheses
-        # rubocop:disable Metrics/ModuleLength, Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/ModuleLength, Metrics/CyclomaticComplexity
         module OmitParentheses
           include RangeHelp
           include ReparsedEquivalence
@@ -150,7 +150,7 @@ module RuboCop
             node.parent&.class_type? && node.parent.single_line?
           end
 
-          # rubocop:disable Metrics/PerceivedComplexity
+          # rubocop:disable-next Metrics/PerceivedComplexity
           def call_with_ambiguous_arguments?(node)
             call_with_braced_block?(node) ||
               call_in_argument_with_block?(node) ||
@@ -163,7 +163,6 @@ module RuboCop
                   ambiguous_literal?(n) || logical_operator?(n)
               end
           end
-          # rubocop:enable Metrics/PerceivedComplexity
 
           def call_with_braced_block?(node)
             node.type?(:call, :super) && node.block_node&.braces?
@@ -269,7 +268,6 @@ module RuboCop
             last_argument.hash_type? && last_argument.children.any?(&:forwarded_kwrestarg_type?)
           end
         end
-        # rubocop:enable Metrics/ModuleLength, Metrics/CyclomaticComplexity
       end
     end
   end

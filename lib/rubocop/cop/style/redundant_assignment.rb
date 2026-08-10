@@ -57,7 +57,7 @@ module RuboCop
 
         private
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def check_branch(node)
           return unless node
 
@@ -72,7 +72,6 @@ module RuboCop
             check_begin_node(node)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def check_case_node(node)
           node.when_branches.each { |when_node| check_branch(when_node.body) }

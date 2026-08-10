@@ -123,7 +123,7 @@ module RuboCop
           AlignmentCorrector.align_end(corrector, processed_source, node, alignment_node(node))
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the
           # assignment, we let rhs be the receiver of those method calls before
@@ -139,7 +139,6 @@ module RuboCop
 
           check_asgn_alignment(node, rhs)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def check_asgn_alignment(outer_node, inner_node)
           align_with = {

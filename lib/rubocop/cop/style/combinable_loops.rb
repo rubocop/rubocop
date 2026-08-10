@@ -64,7 +64,7 @@ module RuboCop
 
         MSG = 'Combine this loop with the previous loop.'
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def on_block(node)
           return unless node.parent&.begin_type?
           return unless collection_looping_method?(node)
@@ -77,7 +77,6 @@ module RuboCop
             combine_with_left_sibling(corrector, node)
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         alias on_numblock on_block
         alias on_itblock on_block

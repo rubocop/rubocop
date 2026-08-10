@@ -228,7 +228,7 @@ module RuboCop
           "Prefer #{message_text(style)} over #{message_text(detected_style)}."
         end
 
-        # rubocop:disable Style/FormatStringToken
+        # rubocop:disable-next Style/FormatStringToken
         def message_text(style)
           {
             annotated: 'annotated tokens (like `%<foo>s`)',
@@ -236,7 +236,6 @@ module RuboCop
             unannotated: 'unannotated tokens (like `%s`)'
           }[style]
         end
-        # rubocop:enable Style/FormatStringToken
 
         def tokens(str_node, &block)
           return if str_node.source == '__FILE__'

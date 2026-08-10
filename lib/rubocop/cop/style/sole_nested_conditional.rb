@@ -148,7 +148,7 @@ module RuboCop
           corrector.remove(range_with_surrounding_space(range, newlines: false))
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def correct_for_basic_condition_style(corrector, node, if_branch)
           range = range_between(
             node.condition.source_range.end_pos, if_branch.condition.source_range.begin_pos
@@ -164,7 +164,6 @@ module RuboCop
                       end
           corrector.remove(end_range)
         end
-        # rubocop:enable Metrics/AbcSize
 
         def autocorrect_outer_condition_modify_form(corrector, node, if_branch)
           correct_node(corrector, if_branch)

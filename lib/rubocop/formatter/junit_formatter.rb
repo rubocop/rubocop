@@ -47,7 +47,7 @@ module RuboCop
         end
       end
 
-      # rubocop:disable Layout/LineLength,Metrics/AbcSize,Metrics/MethodLength
+      # rubocop:disable-next Layout/LineLength,Metrics/AbcSize,Metrics/MethodLength
       def finished(_inspected_files)
         output.puts %(<?xml version='1.0'?>)
         output.puts %(<testsuites>)
@@ -70,7 +70,6 @@ module RuboCop
         output.puts %(  </testsuite>)
         output.puts %(</testsuites>)
       end
-      # rubocop:enable Layout/LineLength,Metrics/AbcSize,Metrics/MethodLength
 
       private
 

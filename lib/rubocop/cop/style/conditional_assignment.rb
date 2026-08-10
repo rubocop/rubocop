@@ -448,7 +448,7 @@ module RuboCop
       # Helper module to provide common methods to ConditionalAssignment
       # correctors
       module ConditionalCorrectorHelper
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity
         def remove_whitespace_in_branches(corrector, branch, condition, column)
           branch.each_node do |child|
             next if child.source_range.nil?
@@ -468,7 +468,6 @@ module RuboCop
 
           corrector.remove_preceding(condition.loc.end, condition.loc.end.column - column)
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
         def same_line?(node1, node2)
           RuboCop::Cop::Util.same_line?(node1, node2)

@@ -152,7 +152,7 @@ module RuboCop
           check_send(begin_node, node) if call_node?(node)
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
         def find_offense_message(begin_node, node)
           return 'a keyword' if keyword_with_redundant_parentheses?(node)
           return 'a literal' if node.literal? && disallowed_literal?(begin_node, node)
@@ -189,7 +189,6 @@ module RuboCop
             'a comparison expression'
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         # @!method interpolation?(node)
         def_node_matcher :interpolation?, '[^begin ^^dstr]'
@@ -305,7 +304,7 @@ module RuboCop
           parent.begin_type? && parent.children.one?
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def body_range?(begin_node, node)
           return false if begin_node.chained?
           return false unless node.range_type?
@@ -315,7 +314,6 @@ module RuboCop
           (node.begin.nil? && begin_node == parent.children.first) ||
             (node.end.nil? && begin_node == parent.children.last)
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def disallowed_one_line_pattern_matching?(begin_node, node)
           if (parent = begin_node.parent)

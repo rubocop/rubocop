@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 module RuboCop
   module Cop
     module Style
@@ -344,7 +344,7 @@ module RuboCop
           node.respond_to?(:block_node) && node.block_node
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def get_blocks(node, &block)
           case node.type
           when :block, :numblock, :itblock
@@ -368,9 +368,8 @@ module RuboCop
             node.each_child_node { |child| get_blocks(child, &block) }
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
-        # rubocop:disable Metrics/CyclomaticComplexity -- inlined special_method checks to avoid double evaluation
+        # rubocop:disable-next Metrics/CyclomaticComplexity -- inlined special_method checks to avoid double evaluation
         def proper_block_style?(node)
           return true if require_do_end?(node)
 
@@ -385,7 +384,6 @@ module RuboCop
           when :always_braces       then node.braces?
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def require_do_end?(node)
           return false if node.braces? || node.multiline?
@@ -507,4 +505,3 @@ module RuboCop
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

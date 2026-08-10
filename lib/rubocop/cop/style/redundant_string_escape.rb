@@ -75,7 +75,7 @@ module RuboCop
           node.loc.to_hash.key?(:begin) && !node.loc.begin.nil?
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def allowed_escape?(node, range)
           escaped = range.source[(1..-1)]
 
@@ -95,7 +95,6 @@ module RuboCop
 
           false
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def interpolation_not_enabled?(node)
           single_quoted?(node) ||

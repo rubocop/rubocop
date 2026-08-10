@@ -63,7 +63,7 @@ module RuboCop
         end
     end
 
-    # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def match_path?(pattern, path)
       case pattern
       when String
@@ -89,7 +89,6 @@ module RuboCop
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # Returns true for an absolute Unix or Windows path.
     def absolute?(path)

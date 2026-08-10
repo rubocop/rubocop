@@ -137,7 +137,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     "NOTE: Requires Ruby version #{requirement}\n\n"
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def properties(cop)
     header = [
       'Enabled by default', 'Safe', 'Supports autocorrection', 'Version Added',
@@ -160,7 +160,6 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     ]]
     "#{to_table(header, content)}\n"
   end
-  # rubocop:enable Metrics/MethodLength
 
   def cop_header(cop)
     content = +"\n"
@@ -217,7 +216,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     "xref:#{filename}#allowmultilinefinalelement[AllowMultilineFinalElement]"
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity,Metrics/MethodLength
+  # rubocop:disable-next Metrics/CyclomaticComplexity,Metrics/MethodLength
   def configurable_values(cop_config, name)
     case name
     when /^Enforced/
@@ -244,7 +243,6 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       end
     end
   end
-  # rubocop:enable Metrics/CyclomaticComplexity,Metrics/MethodLength
 
   def to_table(header, content)
     table = ['|===', "| #{header.join(' | ')}\n\n"].join("\n")
@@ -303,7 +301,7 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
     "\ninclude::../partials/#{filename}[]\n"
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def print_cops_of_department(department)
     selected_cops = cops_of_department(department)
     content = +<<~HEADER
@@ -323,7 +321,6 @@ class CopsDocumentationGenerator # rubocop:disable Metrics/ClassLength
       file.write("#{content.strip}\n")
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def print_cop_with_doc(cop) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     cop_config = config.for_cop(cop)

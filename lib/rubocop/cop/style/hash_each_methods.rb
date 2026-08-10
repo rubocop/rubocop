@@ -76,7 +76,7 @@ module RuboCop
         alias on_numblock on_block
         alias on_itblock on_block
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def check_unused_block_args(node, key, value)
           return if node.body.nil?
 
@@ -96,7 +96,6 @@ module RuboCop
             register_each_args_offense(node, message, 'each_value', unused_range)
           end
         end
-        # rubocop:enable Metrics/AbcSize
 
         def on_block_pass(node)
           kv_each_with_block_pass(node.parent) do |target, method|

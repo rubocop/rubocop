@@ -328,7 +328,7 @@ module RuboCop
           [max - indentation_difference(line), 0].max
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def check_line(line, line_index)
           return if line_length(line) <= max
           return if allowed_line?(line, line_index)
@@ -348,7 +348,6 @@ module RuboCop
 
           register_offense(excess_range(nil, line, line_index), line, line_index)
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         def allowed_line?(line, line_index)
           matches_allowed_pattern?(line) ||

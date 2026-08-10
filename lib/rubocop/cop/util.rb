@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # This module contains a collection of useful utility methods.
-    # rubocop:disable Metrics/ModuleLength
+    # rubocop:disable-next Metrics/ModuleLength
     module Util
       include PathUtil
 
@@ -35,7 +35,7 @@ module RuboCop
         node.loc_is?(:end, ')')
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
       def add_parentheses(node, corrector)
         if node.args_type?
           arguments_range = node.source_range
@@ -55,7 +55,6 @@ module RuboCop
           corrector.insert_after(args_end(node), ')')
         end
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def any_descendant?(node, *types)
         if block_given?
@@ -210,6 +209,5 @@ module RuboCop
         source == target || (source.is_a?(Array) && source.include?(target))
       end
     end
-    # rubocop:enable Metrics/ModuleLength
   end
 end

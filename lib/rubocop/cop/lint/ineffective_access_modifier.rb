@@ -80,7 +80,7 @@ module RuboCop
                       alternative: alternative)
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def ineffective_modifier(node, ignored_methods = nil, modifier = nil, &block)
           node.each_child_node do |child|
             case child.type
@@ -97,7 +97,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def access_modifier?(node)
           node.bare_access_modifier? && !node.method?(:module_function)

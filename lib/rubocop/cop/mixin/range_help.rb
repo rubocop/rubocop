@@ -116,14 +116,13 @@ module RuboCop
         end
       end
 
-      # rubocop:disable Metrics/ParameterLists
+      # rubocop:disable-next Metrics/ParameterLists
       def final_pos(src, pos, increment, continuations, newlines, whitespace)
         pos = move_pos(src, pos, increment, true, /[ \t]/)
         pos = move_pos_str(src, pos, increment, continuations, "\\\n")
         pos = move_pos(src, pos, increment, newlines, /\n/)
         move_pos(src, pos, increment, whitespace, /\s/)
       end
-      # rubocop:enable Metrics/ParameterLists
 
       def move_pos(src, pos, step, condition, regexp)
         offset = step == -1 ? -1 : 0

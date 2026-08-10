@@ -46,7 +46,7 @@ module RuboCop
           @corrected_nodes = nil
         end
 
-        # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/AbcSize,Metrics/CyclomaticComplexity
         def on_if(node)
           return unless if_else?(node)
           return unless (condition = unwrap_begin_nodes(node.condition))
@@ -64,7 +64,6 @@ module RuboCop
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize,Metrics/CyclomaticComplexity
 
         private
 

@@ -3,7 +3,7 @@
 module RuboCop
   # Handles validation of configuration, for example cop names, parameter
   # names, and Ruby versions.
-  # rubocop:disable Metrics/ClassLength
+  # rubocop:disable-next Metrics/ClassLength
   class ConfigValidator
     extend SimpleForwardable
 
@@ -324,5 +324,4 @@ module RuboCop
         "is supposed to be #{supposed_values} and #{Rainbow(value).yellow} is not."
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

@@ -91,7 +91,7 @@ module RuboCop
           [Style::Next, Style::SoleNestedConditional]
         end
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_if(node)
           return if endless_method?(node.body) || node.each_ancestor(:dstr).any?
 
@@ -109,7 +109,6 @@ module RuboCop
             ignore_node(node)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 

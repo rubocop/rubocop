@@ -55,7 +55,7 @@ module RuboCop
 
       private
 
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+      # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
       def process_arguments(argv)
         server_arguments = delete_server_argument_from(argv)
 
@@ -84,9 +84,8 @@ module RuboCop
 
         STATUS_SUCCESS
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
 
-      # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+      # rubocop:disable-next Metrics/CyclomaticComplexity, Metrics/MethodLength
       def run_command(server_command, detach:)
         case server_command
         when '--server'
@@ -107,7 +106,6 @@ module RuboCop
           Server::ClientCommand::Status.new.run
         end
       end
-      # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
       def fetch_cache_root_path_from(arguments)
         cache_root = arguments.detect { |argument| argument.start_with?('--cache-root') }

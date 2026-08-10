@@ -26,7 +26,7 @@ module RuboCop
           splat kwsplat forwarded_args forwarded_restarg forwarded_kwrestarg block_pass
         ].freeze
 
-        # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+        # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         def on_send(node)
           return unless (dot = node.loc.dot)
           return if unary_method_no_operator?(node)
@@ -44,7 +44,6 @@ module RuboCop
             corrector.insert_after(selector, ' ') if insert_space_after?(node)
           end
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
         private
 

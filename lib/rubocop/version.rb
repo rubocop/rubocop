@@ -23,7 +23,7 @@ module RuboCop
 
     # NOTE: Marked as private but used by gems like standard.
     # @api private
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable-next Metrics/MethodLength
     def self.version(debug: false, env: nil)
       if debug
         target_ruby_version = target_ruby_version(env)
@@ -48,7 +48,6 @@ module RuboCop
         STRING
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     # @api private
     def self.verbose(env: nil)
@@ -72,7 +71,7 @@ module RuboCop
     end
 
     # @api private
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def self.extension_versions(env)
       plugins = config_for_pwd(env).loaded_plugins
       plugin_versions = plugins.filter_map do |plugin|
@@ -108,7 +107,6 @@ module RuboCop
 
       plugin_versions + feature_versions
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     # @api private
     def self.target_ruby_version(env)

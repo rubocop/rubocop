@@ -217,7 +217,7 @@ module RuboCop
           acceptable_19_syntax_symbol?(pair.key.source)
         end
 
-        # rubocop:disable Metrics/CyclomaticComplexity
+        # rubocop:disable-next Metrics/CyclomaticComplexity
         def acceptable_19_syntax_symbol?(sym_name)
           sym_name.delete_prefix!(':')
 
@@ -237,7 +237,6 @@ module RuboCop
           (sym_name.start_with?("'") && sym_name.end_with?("'")) ||
             (sym_name.start_with?('"') && sym_name.end_with?('"'))
         end
-        # rubocop:enable Metrics/CyclomaticComplexity
 
         def check(pairs, delim, msg)
           pairs.each do |pair|

@@ -45,7 +45,7 @@ module RuboCop
           @project_dir_cache_key ||= project_dir[1..].tr('/', '+')
         end
 
-        # rubocop:disable Metrics/AbcSize
+        # rubocop:disable-next Metrics/AbcSize
         def restart_key(args_config_file_path: nil)
           lockfile_path = LOCKFILE_NAMES.map do |lockfile_name|
             Pathname(project_dir).join(lockfile_name)
@@ -61,7 +61,6 @@ module RuboCop
 
           Digest::SHA1.hexdigest(version_data + config_data + inherit_from_data + require_data)
         end
-        # rubocop:enable Metrics/AbcSize
 
         def dir
           dir_path.tap do |d|
