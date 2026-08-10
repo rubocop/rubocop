@@ -584,6 +584,24 @@ RSpec.describe RuboCop::CLI, :isolated_environment do
       expect($stdout.string).to include('"justification":"kept for documentation purposes"')
     end
 
+    it 'keeps the justification when the offense is served from the result cache' do
+      create_file('example.rb', <<~RUBY)
+        # frozen_string_literal: true
+
+        # rubocop:disable-next Lint/UselessAssignment -- kept for documentation purposes
+        useless = 1
+      RUBY
+      args = ['--format', 'json', '--display-suppressed', '--cache', 'true',
+              '--cache-root', '.cache', 'example.rb']
+
+      expect(cli.run(args)).to eq(0)
+      expect($stdout.string).to include('"justification":"kept for documentation purposes"')
+
+      $stdout.string.clear
+      expect(cli.run(args)).to eq(0)
+      expect($stdout.string).to include('"justification":"kept for documentation purposes"')
+    end
+
     it 'reports a detached `disable-next` even when no cop is disabled in the config' do
       create_file('.rubocop.yml', <<~YAML)
         AllCops:
