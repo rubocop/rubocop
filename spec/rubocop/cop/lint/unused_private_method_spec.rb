@@ -212,5 +212,45 @@ RSpec.describe RuboCop::Cop::Lint::UnusedPrivateMethod, :config do
         end
       RUBY
     end
+
+    describe 'the reference-name cache' do
+      it 'is computed once per index and shared across cop instances' do
+        index = index_with_current
+
+        first_cop = cop
+        first_cop.project_index = index
+        first_cop_names = first_cop.send(:referenced_names)
+
+        second_cop = described_class.new
+        second_cop.project_index = index
+        second_cop_names = second_cop.send(:referenced_names)
+
+        expect(second_cop_names).to be(first_cop_names)
+      end
+
+      it 'replaces the cached entry when the index changes, rather than accumulating it' do
+        other_source = <<~RUBY
+          class Other
+            def go(service)
+              service.helper
+            end
+          end
+        RUBY
+
+        first_cop = cop
+        first_cop.project_index = index_with_current('file:///lib/other.rb' => other_source)
+        first_cop_names = first_cop.send(:referenced_names)
+
+        second_cop = described_class.new
+        second_cop.project_index = index_with_current
+        second_cop_names = second_cop.send(:referenced_names)
+
+        expect(second_cop_names).not_to eq(first_cop_names)
+
+        index, cached = described_class.cached_reference_names
+        expect(index).to be(second_cop.project_index)
+        expect(cached).to be(second_cop_names)
+      end
+    end
   end
 end

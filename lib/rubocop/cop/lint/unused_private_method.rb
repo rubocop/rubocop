@@ -62,11 +62,11 @@ module RuboCop
                                         marshal_dump marshal_load].to_set.freeze
 
         class << self
-          # The reference-name set is derived once per index and shared by the
-          # per-file cop instances.
-          def reference_names_cache
-            @reference_names_cache ||= {}.compare_by_identity
-          end
+          # The reference-name set is a property of the index, not of the cop
+          # instance, so all per-file instances share one computation. A
+          # single-entry cache (instead of a hash keyed by index) avoids
+          # retaining stale graphs in long-lived processes.
+          attr_accessor :cached_reference_names
         end
 
         def on_new_investigation
@@ -111,9 +111,17 @@ module RuboCop
         end
 
         def referenced_names
-          self.class.reference_names_cache[project_index] ||=
-            project_index.method_references
-                         .to_set { |reference| reference.name.delete_suffix('()') }
+          index, names = self.class.cached_reference_names
+          return names if index.equal?(project_index)
+
+          compute_referenced_names.tap do |computed|
+            self.class.cached_reference_names = [project_index, computed]
+          end
+        end
+
+        def compute_referenced_names
+          project_index.method_references
+                       .to_set { |reference| reference.name.delete_suffix('()') }
         end
 
         # Symbol literals and identifier-like tokens inside string literals in the

@@ -1,0 +1,1 @@
+* [#15556](https://github.com/rubocop/rubocop/pull/15556): Fix `Lint/UnusedPrivateMethod` retaining every past `project_index` object it has seen (and the index graph reachable from each), rather than only the most recent one. This caused unbounded memory growth in long-lived processes such as `rubocop --server`. ([@bquorning][])
