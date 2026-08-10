@@ -16,31 +16,36 @@ module RuboCop
         @detached_next_directives
       end
 
+      # The line range of the statement a `disable-next` directive on the
+      # given line scopes to (or would scope to), or `nil` when no statement
+      # is attached. A directive is only honored on a comment-only line.
+      # Stacked directives share the target, so the computation is memoized.
+      # @api private
+      def statement_scope_after(line)
+        return nil unless comment_only_line?(line)
+
+        code_line = attached_code_line(line)
+        return nil unless code_line
+
+        (@statement_bounds ||= {})[code_line] ||= statement_bounds_at(code_line)
+      end
+
       private
 
       def apply_disable_next(analyses, directive)
-        bounds = next_statement_bounds(directive)
+        bounds = statement_scope_after(directive.line_number)
         return @detached_next_directives << directive unless bounds
 
+        range = DirectiveRange.new(bounds.begin, bounds.end, directive)
         directive.cop_names.each do |cop_name|
-          cop_name = qualified_cop_name(cop_name)
-          analysis = analyses[cop_name]
-          range = DirectiveRange.new(bounds.begin, bounds.end, directive)
-          analyses[cop_name] = CopAnalysis.new(analysis.line_ranges + [range],
-                                               analysis.start_line_number, analysis.start_directive)
+          add_next_range(analyses, qualified_cop_name(cop_name), range)
         end
       end
 
-      # The directive scopes to the following statement, so it is only
-      # honored on a comment-only line with a statement attached below.
-      # Stacked directives share the target, so the computation is memoized.
-      def next_statement_bounds(directive)
-        return nil unless comment_only_line?(directive.line_number)
-
-        line = attached_code_line(directive.line_number)
-        return nil unless line
-
-        (@next_statement_bounds ||= {})[line] ||= statement_bounds_at(line)
+      def add_next_range(analyses, cop_name, range)
+        analysis = analyses[cop_name]
+        analyses[cop_name] = CopAnalysis.new(analysis.line_ranges + [range],
+                                             analysis.start_line_number, analysis.start_directive)
       end
 
       def attached_code_line(directive_line)

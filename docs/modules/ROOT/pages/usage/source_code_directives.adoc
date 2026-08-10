@@ -300,3 +300,7 @@ as the code around it changes:
 
 `todo` and `todo-next` are aliases of `disable` and `disable-next` that mark
 a suppression you intend to revisit rather than a deliberate exception.
+
+The `Style/DirectiveScope` cop can enforce the tightest-form preference: it
+flags `disable`/`enable` pairs and disable-only `push`/`pop` scopes that
+wrap a single statement, and converts them to `disable-next`.
