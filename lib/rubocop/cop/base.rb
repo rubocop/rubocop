@@ -127,6 +127,8 @@ module RuboCop
       # in the `on_new_investigation` callback.
       # If your cop does autocorrections, be aware that your instance may be called
       # multiple times with the same `processed_source.path` but different content.
+      # Note that under `--parallel` each worker process has its own cop
+      # instances, so state persists only within a worker's share of the files.
       def self.support_multiple_source?
         false
       end
