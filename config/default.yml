@@ -1416,6 +1416,7 @@ Layout/SpaceAroundOperators:
   StyleGuide: '#spaces-operators'
   Enabled: true
   VersionAdded: '0.49'
+  VersionChanged: '<<next>>'
   # When `true`, allows most uses of extra spacing if the intent is to align
   # with an operator on the previous or next line, not counting empty lines
   # or comment lines.

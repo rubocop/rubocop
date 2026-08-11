@@ -377,6 +377,98 @@ RSpec.describe RuboCop::Cop::Layout::SpaceAroundOperators, :config do
         "" => foo
       RUBY
     end
+
+    context 'with endless method definitions' do
+      it 'registers an offense for a parameterless definition without space after `=`' do
+        expect_offense(<<~RUBY)
+          def foo =1
+                  ^ Surrounding space missing for operator `=`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo = 1
+        RUBY
+      end
+
+      it 'registers an offense for a parenthesized definition without space around `=`' do
+        expect_offense(<<~RUBY)
+          def foo()=1
+                   ^ Surrounding space missing for operator `=`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo() = 1
+        RUBY
+      end
+
+      it 'registers an offense for a parenthesized definition without space after `=`' do
+        expect_offense(<<~RUBY)
+          def foo() =1
+                    ^ Surrounding space missing for operator `=`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo() = 1
+        RUBY
+      end
+
+      it 'registers an offense for a parenthesized definition without space before `=`' do
+        expect_offense(<<~RUBY)
+          def foo()= 1
+                   ^ Surrounding space missing for operator `=`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo() = 1
+        RUBY
+      end
+
+      it 'registers an offense for a definition with parameters without space around `=`' do
+        expect_offense(<<~RUBY)
+          def foo(a, b)=a + b
+                       ^ Surrounding space missing for operator `=`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def foo(a, b) = a + b
+        RUBY
+      end
+
+      it 'registers an offense for a singleton definition without space after `=`' do
+        expect_offense(<<~RUBY)
+          def self.foo =1
+                       ^ Surrounding space missing for operator `=`.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          def self.foo = 1
+        RUBY
+      end
+
+      it 'does not register an offense for a correctly spaced definition' do
+        expect_no_offenses(<<~RUBY)
+          def foo = 1
+          def bar() = 2
+          def self.baz = 3
+        RUBY
+      end
+
+      it 'does not register an offense when the body is on the next line after `=`' do
+        expect_no_offenses(<<~RUBY)
+          def foo() =
+            1
+        RUBY
+      end
+
+      # An operator at the beginning of a continuation line is ignored by this cop as a whole,
+      # not just for endless method definitions.
+      it 'does not register an offense when `=` is at the beginning of a continuation line' do
+        expect_no_offenses(<<~RUBY)
+          def foo()
+            =1
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyleForExponentOperator is space' do

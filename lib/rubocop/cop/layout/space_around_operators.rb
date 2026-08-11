@@ -129,6 +129,12 @@ module RuboCop
           check_operator(:class, node.loc.operator, rhs)
         end
 
+        def on_def(node)
+          return unless node.endless?
+
+          check_operator(:assignment, node.loc.assignment, node.body)
+        end
+
         def on_binary(node)
           rhs = node.rhs
 
@@ -170,6 +176,7 @@ module RuboCop
         alias on_or_asgn  on_assignment
         alias on_and_asgn on_assignment
         alias on_op_asgn  on_assignment
+        alias on_defs     on_def
 
         private
 
