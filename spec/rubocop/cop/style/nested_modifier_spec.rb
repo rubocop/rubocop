@@ -76,6 +76,17 @@ RSpec.describe RuboCop::Cop::Style::NestedModifier, :config do
     RUBY
   end
 
+  it 'parenthesizes a negated `&&` operand in autocorrection' do
+    expect_offense(<<~RUBY)
+      something if a && b unless c
+                ^^ Avoid using nested modifiers.
+    RUBY
+
+    expect_correction(<<~RUBY)
+      something unless c || !(a && b)
+    RUBY
+  end
+
   it 'adds parentheses when needed in autocorrection' do
     expect_offense(<<~RUBY)
       something if a || b if c || d
