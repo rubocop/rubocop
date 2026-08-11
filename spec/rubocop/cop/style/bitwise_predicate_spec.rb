@@ -25,6 +25,17 @@ RSpec.describe RuboCop::Cop::Style::BitwisePredicate, :config do
         RUBY
       end
 
+      it 'registers an offense when using unparenthesized `&` in conjunction with `> 0`' do
+        expect_offense(<<~RUBY)
+          variable & flags > 0
+          ^^^^^^^^^^^^^^^^^^^^ Replace with `variable.anybits?(flags)` for comparison with bit flags.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          variable.anybits?(flags)
+        RUBY
+      end
+
       it 'registers an offense when using `&` in conjunction with `>= 1` for comparisons' do
         expect_offense(<<~RUBY)
           (variable & flags) >= 1
@@ -142,6 +153,17 @@ RSpec.describe RuboCop::Cop::Style::BitwisePredicate, :config do
 
         expect_correction(<<~RUBY)
           variable.nobits?(flags)
+        RUBY
+      end
+
+      it 'registers an offense when using unparenthesized `&` in conjunction with `== 0`' do
+        expect_offense(<<~RUBY)
+          stat.mode & 0o077 == 0o000
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^ Replace with `stat.mode.nobits?(0o077)` for comparison with bit flags.
+        RUBY
+
+        expect_correction(<<~RUBY)
+          stat.mode.nobits?(0o077)
         RUBY
       end
 
