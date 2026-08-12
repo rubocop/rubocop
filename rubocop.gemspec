@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
     'rubygems_mfa_required' => 'true'
   }
 
-  s.add_dependency('json', '~> 2.3')
+  s.add_dependency('json', '>= 2.3')
   # NOTE: language_server-protocol gem doesn't use semantic versioning. Its versions follow x.y.z.t,
   # where x.y.z indicates the Language Server Protocol Specification, t is an incrementing number.
   s.add_dependency('language_server-protocol', '~> 3.17.0.2')
