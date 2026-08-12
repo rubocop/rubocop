@@ -5,7 +5,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       class Foo; end
-      ^ Add an empty line after magic comments.
+      ^ Expected at least 1 empty line after magic comments; found 0.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -19,7 +19,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     expect_offense(<<~RUBY)
       # rbs_inline: enabled
       class Foo; end
-      ^ Add an empty line after magic comments.
+      ^ Expected at least 1 empty line after magic comments; found 0.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -33,7 +33,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     expect_offense(<<~RUBY)
       # rbs_inline: disabled
       class Foo; end
-      ^ Add an empty line after magic comments.
+      ^ Expected at least 1 empty line after magic comments; found 0.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     expect_offense(<<~RUBY)
       # typed: true
       class Foo; end
-      ^ Add an empty line after magic comments.
+      ^ Expected at least 1 empty line after magic comments; found 0.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -68,7 +68,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       # Documentation for Foo
-      ^ Add an empty line after magic comments.
+      ^ Expected at least 1 empty line after magic comments; found 0.
       class Foo; end
     RUBY
 
@@ -85,7 +85,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
       # encoding: utf-8
       # frozen_string_literal: true
       class Foo; end
-      ^ Add an empty line after magic comments.
+      ^ Expected at least 1 empty line after magic comments; found 0.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -174,7 +174,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
       # frozen_string_literal: true
       # shareable_constant_value: none
       class Foo; end
-      ^ Add an empty line after magic comments.
+      ^ Expected at least 1 empty line after magic comments; found 0.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -189,7 +189,7 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
     expect_offense(<<~RUBY)
       # frozen_string_literal: true
       # Hello!
-      ^ Add an empty line after magic comments.
+      ^ Expected at least 1 empty line after magic comments; found 0.
     RUBY
 
     expect_correction(<<~RUBY)
@@ -213,5 +213,94 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
 
   it 'accepts a source file with only a magic comment' do
     expect_no_offenses('# frozen_string_literal: true')
+  end
+
+  it 'accepts a magic comment followed only by empty lines' do
+    expect_no_offenses("# frozen_string_literal: true\n\n  \n\n")
+  end
+
+  it 'accepts more empty lines than required' do
+    expect_no_offenses(<<~RUBY)
+      # frozen_string_literal: true
+
+
+      class Foo; end
+    RUBY
+  end
+
+  context 'when `NumberOfEmptyLines: 2`' do
+    let(:cop_config) { { 'NumberOfEmptyLines' => 2 } }
+
+    it 'registers an offense for code that immediately follows the comment' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: true
+        class Foo; end
+        ^ Expected at least 2 empty lines after magic comments; found 0.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+
+
+        class Foo; end
+      RUBY
+    end
+
+    it 'registers an offense when only one empty line follows the comment' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: true
+
+        ^{} Expected at least 2 empty lines after magic comments; found 1.
+        class Foo; end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+
+
+        class Foo; end
+      RUBY
+    end
+
+    it 'accepts code separated from the comment by two empty lines' do
+      expect_no_offenses(<<~RUBY)
+        # frozen_string_literal: true
+
+
+        class Foo; end
+      RUBY
+    end
+
+    it 'accepts more empty lines than required' do
+      expect_no_offenses(<<~RUBY)
+        # frozen_string_literal: true
+
+
+
+        class Foo; end
+      RUBY
+    end
+
+    it 'accepts a source file with only a magic comment' do
+      expect_no_offenses('# frozen_string_literal: true')
+    end
+  end
+
+  describe 'invalid `NumberOfEmptyLines` configuration' do
+    shared_examples 'invalid value' do |value|
+      context "when `NumberOfEmptyLines: #{value.inspect}`" do
+        let(:cop_config) { { 'NumberOfEmptyLines' => value } }
+
+        it 'raises a validation error' do
+          expect { expect_no_offenses('# frozen_string_literal: true') }
+            .to raise_error(RuboCop::ValidationError, /only accepts a positive integer/)
+        end
+      end
+    end
+
+    it_behaves_like 'invalid value', 0
+    it_behaves_like 'invalid value', -1
+    it_behaves_like 'invalid value', 1.5
+    it_behaves_like 'invalid value', 'two'
   end
 end
