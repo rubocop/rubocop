@@ -190,33 +190,58 @@ module RuboCop
 
         # Validates code style on class declaration.
         # Add offense when find a node out of expected order.
+        # A node is out of order when its category is expected earlier than
+        # the highest-priority category seen so far, so that a low-priority element
+        # (even an unmovable one) cannot mask disorder among the elements that follow it.
+        # Consecutive elements of the same category are reported only once,
+        # on the first element of the group.
         def on_class(class_node)
-          previous = -1
-          walk_over_nested_class_definition(class_node) do |node, category|
-            index = expected_order.index(category)
-            if index < previous
-              message = format(MSG, category: category, previous: expected_order[previous])
-              add_offense(node, message: message) { |corrector| autocorrect(corrector, node) }
+          # Corrections are registered in reverse source order because an insertion at
+          # a given position lands before any insertion already made there;
+          # this keeps the source order of nodes moved before the same anchor.
+          out_of_order_elements(class_node).reverse_each do |node, category, previous|
+            message = format(MSG, category: category, previous: previous)
+
+            add_offense(node, message: message) do |corrector|
+              autocorrect(corrector, node)
             end
-            previous = index
           end
         end
         alias on_sclass on_class
 
         private
 
-        # Autocorrect by swapping between two nodes autocorrecting them
-        def autocorrect(corrector, node)
-          previous = node.left_siblings.reverse.find do |sibling|
-            !ignore_for_autocorrect?(node, sibling)
+        def out_of_order_elements(class_node)
+          out_of_order = []
+          max_index = -1
+          previous_category = nil
+          walk_over_nested_class_definition(class_node) do |node, category|
+            index = expected_order.index(category)
+            if index < max_index && category != previous_category
+              out_of_order << [node, category, expected_order[max_index]]
+            end
+            max_index = index if index > max_index
+            previous_category = category
           end
-          return unless previous
+          out_of_order
+        end
 
-          current_range = source_range_with_comment(node)
-          previous_range = source_range_with_comment(previous)
+        # Autocorrect by moving the node, together with the contiguous group of
+        # same-category elements that follows it, to its expected position.
+        def autocorrect(corrector, node)
+          return if dynamic_constant?(node)
 
-          corrector.insert_before(previous_range, current_range.source)
-          corrector.remove(current_range)
+          anchor = insertion_anchor(node)
+          return unless anchor
+
+          anchor_range = source_range_with_comment(anchor)
+          # Reversed for the same reason offenses are registered in reverse source order:
+          # the last insertion at a position comes first.
+          movable_group(node).reverse_each do |group_node|
+            current_range = source_range_with_comment(group_node)
+            corrector.insert_before(anchor_range, current_range.source)
+            corrector.remove(current_range)
+          end
         end
 
         # Classifies a node to match with something in the {expected_order}
@@ -302,15 +327,6 @@ module RuboCop
           end
         end
 
-        def ignore_for_autocorrect?(node, sibling)
-          classification = classify(node)
-          sibling_class = classify(sibling)
-
-          ignore?(sibling, sibling_class) ||
-            classification == sibling_class ||
-            dynamic_constant?(node)
-        end
-
         def humanize_node(node)
           if node.def_type?
             return :initializer if node.method?(:initialize)
@@ -326,6 +342,66 @@ module RuboCop
           expression = node.expression
           expression.send_type? &&
             !(expression.method?(:freeze) && expression.receiver&.recursive_basic_literal?)
+        end
+
+        # The expected position of the node: the first left sibling within its movable span
+        # whose category is expected to appear after the node's.
+        # Requiring a strictly later category keeps the order of elements sharing a category stable.
+        def insertion_anchor(node)
+          index = expected_order.index(classify(node))
+
+          movable_span(node).find do |sibling|
+            classification = classify(sibling)
+
+            !ignore?(sibling, classification) && expected_order.index(classification) > index
+          end
+        end
+
+        # The node together with the contiguous same-category right siblings,
+        # so that the whole group moves in a single pass while the offense is
+        # reported only on its first element.
+        def movable_group(node)
+          classification = classify(node)
+          group = [node]
+
+          node.right_siblings.each do |sibling|
+            break unless classify(sibling) == classification
+            break if ignore?(sibling, classification) || dynamic_constant?(sibling)
+
+            group << sibling
+          end
+
+          group
+        end
+
+        # Left siblings the node may be reordered with: those after the last barrier.
+        # Ignored elements within the span are simply jumped over.
+        def movable_span(node)
+          left_siblings = node.left_siblings
+          barrier_index = left_siblings.rindex { |sibling| barrier?(node, sibling) }
+
+          barrier_index ? left_siblings[(barrier_index + 1)..] : left_siblings
+        end
+
+        # A dynamic constant blocks every element: the cop does not move such constants,
+        # and letting other elements jump over one would change execution order just the same.
+        # A bare visibility modifier blocks only the elements whose meaning depends on
+        # the visibility section they appear in.
+        def barrier?(node, sibling)
+          dynamic_constant?(sibling) || (visibility_dependent?(node) && visibility_block?(sibling))
+        end
+
+        # Whether moving the node across a bare visibility modifier would change its meaning.
+        # This is the case for `def` nodes and for macros whose category is classified by visibility
+        # (e.g. `attr_accessor` when the expected order lists `private_attribute_macros`).
+        # Inline visibility (`private def foo`, `def self.foo`) travels with the node.
+        def visibility_dependent?(node)
+          return true if node.def_type?
+          return false if !node.send_type? || node.def_modifier?
+
+          key = find_category(node.method_name) || node.method_name.to_s
+
+          VISIBILITY_SCOPES.any? { |visibility| expected_order.include?("#{visibility}_#{key}") }
         end
 
         def private_constant?(node)

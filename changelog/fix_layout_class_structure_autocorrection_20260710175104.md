@@ -1,0 +1,1 @@
+* [#10449](https://github.com/rubocop/rubocop/issues/10449): Fix `Layout/ClassStructure` autocorrection producing a wrong order when an element cannot be moved, and make offenses report the category that actually blocks the expected order. ([@koic][])
