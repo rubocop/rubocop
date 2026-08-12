@@ -1222,7 +1222,7 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     expect($stdout.string).to eq(<<~RESULT)
       == example.rb ==
       C:  1:  1: [Corrected] Style/FrozenStringLiteralComment: Missing frozen string literal comment.
-      C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Add an empty line after magic comments.
+      C:  2:  1: [Corrected] Layout/EmptyLineAfterMagicComment: Expected at least 1 empty line after magic comments; found 0.
       C:  3:  1: Style/Documentation: Missing top-level documentation comment for class A.
       W:  4:  3: [Corrected] Lint/RedundantCopDisableDirective: Unnecessary disabling of Metrics/MethodLength.
       C:  5:  3: [Corrected] Layout/IndentationWidth: Use 2 (not 6) spaces for indentation.
