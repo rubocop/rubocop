@@ -618,6 +618,11 @@ Layout/EmptyLineAfterMagicComment:
   StyleGuide: '#separate-magic-comments-from-code'
   Enabled: true
   VersionAdded: '0.49'
+  VersionChanged: '<<next>>'
+  # The number of empty lines required after the last magic comment. Set this to `2`
+  # when using YARD, which otherwise treats the magic comments as documentation for
+  # the first module or class in the file.
+  RequiredBlankLines: 1
 
 Layout/EmptyLineAfterMultilineCondition:
   Description: 'Enforces empty line after multiline condition.'
