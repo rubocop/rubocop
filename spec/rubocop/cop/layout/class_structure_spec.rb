@@ -720,6 +720,185 @@ RSpec.describe RuboCop::Cop::Layout::ClassStructure, :config do
     end
   end
 
+  context 'when misordered elements share their expected position' do
+    it 'corrects them in a single pass, preserving their relative order' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def do_something; end
+          include M
+          ^^^^^^^^^ `module_inclusion` is supposed to appear before `public_methods`.
+          CONST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY, loop: false)
+        class Foo
+          include M
+          CONST = 1
+          def do_something; end
+        end
+      RUBY
+    end
+
+    it 'reports the category blocking the expected order, not the adjacent element' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def self.do_something; end
+
+          def initialize; end
+
+          include M
+          ^^^^^^^^^ `module_inclusion` is supposed to appear before `initializer`.
+          CONST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `initializer`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY, loop: false)
+        class Foo
+          include M
+          CONST = 1
+          def self.do_something; end
+
+          def initialize; end
+
+        end
+      RUBY
+    end
+  end
+
+  context 'when consecutive elements of the same category are misordered' do
+    it 'registers an offense only on the first element and moves the whole group in a single pass' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def do_something; end
+          FIRST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          SECOND = 2
+        end
+      RUBY
+
+      expect_correction(<<~RUBY, loop: false)
+        class Foo
+          FIRST = 1
+          SECOND = 2
+          def do_something; end
+        end
+      RUBY
+    end
+  end
+
+  context 'when a constant not assigned with a literal sits between misordered elements' do
+    it 'registers offenses but does not move elements across the constant' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def do_something; end
+          CONST = [*foo].freeze
+          ^^^^^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          include M
+          ^^^^^^^^^ `module_inclusion` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense for a misordered element that follows the constant' do
+      expect_offense(<<~RUBY)
+        class Foo
+          validates :name
+          CONST = do_something.freeze
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ `constants` is supposed to appear before `macros`.
+          attr_reader :foo
+          ^^^^^^^^^^^^^^^^ `attribute_macros` is supposed to appear before `macros`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'moves only the part of a group that precedes the constant' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def do_something; end
+          FIRST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+          DYNAMIC = do_something.freeze
+          SECOND = 2
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          FIRST = 1
+          def do_something; end
+          DYNAMIC = do_something.freeze
+          SECOND = 2
+        end
+      RUBY
+    end
+  end
+
+  context 'when correcting would move an element across a bare visibility modifier' do
+    it 'registers an offense for a method but does not correct' do
+      expect_offense(<<~RUBY)
+        class Foo
+          private
+
+          def do_internal_work; end
+
+          public
+
+          def do_something; end
+          ^^^^^^^^^^^^^^^^^^^^^ `public_methods` is supposed to appear before `private_methods`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'registers an offense for an attribute macro but does not correct' do
+      expect_offense(<<~RUBY)
+        class Foo
+          private
+
+          def do_internal_work; end
+
+          public
+
+          attr_reader :foo
+          ^^^^^^^^^^^^^^^^ `attribute_macros` is supposed to appear before `private_methods`.
+        end
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'corrects a misordered constant, which may cross the modifier' do
+      expect_offense(<<~RUBY)
+        class Foo
+          def do_something; end
+
+          private
+
+          CONST = 1
+          ^^^^^^^^^ `constants` is supposed to appear before `public_methods`.
+        end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        class Foo
+          CONST = 1
+          def do_something; end
+
+          private
+
+        end
+      RUBY
+    end
+  end
+
   context 'when singleton class' do
     context 'simple example' do
       specify do
