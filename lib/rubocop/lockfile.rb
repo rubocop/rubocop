@@ -59,6 +59,18 @@ module RuboCop
       end
     end
 
+    # Names of gems sourced from a local path, i.e. `path:` dependencies and the
+    # project's own gem when the `Gemfile` uses `gemspec`. Git sources are not
+    # included: their code lives outside the project, like a released gem's.
+    # @return [Array<String>]
+    def path_sourced_gem_names
+      return [] unless parser
+
+      parser.specs.filter_map do |spec|
+        spec.name if path_source?(spec.source)
+      end
+    end
+
     # Whether this lockfile includes the named gem, directly or indirectly.
     # @param [String] name
     # @return [Boolean]
@@ -67,6 +79,12 @@ module RuboCop
     end
 
     private
+
+    # `Bundler::Source::Git` is a subclass of `Bundler::Source::Path`, but a git
+    # source is a remote one.
+    def path_source?(source)
+      source.is_a?(::Bundler::Source::Path) && !source.is_a?(::Bundler::Source::Git)
+    end
 
     # @return [Bundler::LockfileParser, nil]
     def parser

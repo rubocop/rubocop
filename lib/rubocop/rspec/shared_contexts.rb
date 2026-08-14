@@ -135,6 +135,8 @@ RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
 
   let(:gem_versions) { {} }
 
+  let(:path_sourced_gems) { [] }
+
   ### Utilities
 
   def source_range(range, buffer: source_buffer)
@@ -179,6 +181,7 @@ RSpec.shared_context 'config' do # rubocop:disable Metrics/BlockLength
         **gem_versions.transform_values { |value| Gem::Version.new(value) }
       }
     )
+    allow(config).to receive(:path_sourced_gems_in_target).and_return(path_sourced_gems)
 
     config
   end

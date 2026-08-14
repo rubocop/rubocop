@@ -104,6 +104,51 @@ RSpec.describe RuboCop::Lockfile, :isolated_environment do
     end
   end
 
+  describe '#path_sourced_gem_names' do
+    subject { super().path_sourced_gem_names }
+
+    it_behaves_like 'error states'
+
+    it { is_expected.to eq([]) }
+
+    context 'when gems are sourced from a path or a git repository' do
+      let(:lockfile) do
+        create_file('Gemfile.lock', <<~LOCKFILE)
+          PATH
+            remote: .
+            specs:
+              my_gem (1.0.0)
+
+          PATH
+            remote: vendor/other_gem
+            specs:
+              other_gem (1.0.0)
+
+          GIT
+            remote: https://github.com/rubocop/rubocop.git
+            revision: 0000000000000000000000000000000000000000
+            specs:
+              rubocop (1.0.0)
+
+          GEM
+            specs:
+              rake (13.0.1)
+
+          PLATFORMS
+            ruby
+
+          DEPENDENCIES
+            my_gem!
+            other_gem!
+            rake (~> 13.0)
+            rubocop!
+        LOCKFILE
+      end
+
+      it { is_expected.to contain_exactly('my_gem', 'other_gem') }
+    end
+  end
+
   describe '#includes_gem?' do
     subject { super().includes_gem?(name) }
 

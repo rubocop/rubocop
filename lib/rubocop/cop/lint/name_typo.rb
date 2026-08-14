@@ -27,6 +27,13 @@ module RuboCop
       # alone is not reported, since the index does not see gems or the
       # standard library.
       #
+      # For the same reason, a namespace whose root segment names a gem in the
+      # bundle (`Flipper` for the `flipper` gem) is left alone: a project that
+      # reopens it (`module Flipper; module Adapters; ...`) makes it resolve in
+      # the index, while the members the gem itself defines stay invisible and
+      # would look like typos. Enabling `AllCops/ProjectIndexIncludesGems`
+      # indexes those sources and restores the check.
+      #
       # Names that appear as symbols or inside string literals in the same
       # file are never reported, since they usually belong to runtime
       # definitions the index cannot see (`stub_const`, `const_set`,
@@ -132,11 +139,47 @@ module RuboCop
           namespace = resolve_constant_in_index(node.namespace)
           return nil unless namespace.is_a?(Rubydex::Namespace)
           return nil if namespace.find_member(node.short_name.to_s)
+          return nil unless complete_index_members?(namespace)
           return nil if literal_names.include?(node.short_name.to_s)
 
           spell_check(node.short_name, constant_member_names(namespace))
         rescue StandardError
           nil
+        end
+
+        # Whether the index can be trusted to list everything the namespace
+        # defines. A name missing from an incomplete member list is not
+        # evidence of a typo, so both gaps have to be ruled out first:
+        # an ancestor that does not resolve may contribute the name, and so
+        # may a gem that reopens the namespace.
+        def complete_index_members?(declaration)
+          fully_resolved_index_ancestry?(declaration) && !gem_owned_namespace?(declaration)
+        end
+
+        # Whether the namespace's root segment names a gem in the bundle,
+        # which is then free to define members the index never sees: gem
+        # sources are only indexed when `AllCops/ProjectIndexIncludesGems`
+        # is enabled. A project that reopens such a namespace to add its own
+        # members (`module Flipper; module Adapters; ...`) makes it resolve
+        # in the index while most of what it holds stays invisible.
+        def gem_owned_namespace?(declaration)
+          return false if config.for_all_cops['ProjectIndexIncludesGems']
+
+          root = declaration.name.to_s.split('::').first.to_s
+          bundled_gem_namespaces.include?(root.downcase)
+        end
+
+        # Gem names normalized towards the constant they conventionally
+        # provide: `flipper` for `Flipper`, `activerecord` for `ActiveRecord`.
+        def bundled_gem_namespaces
+          @bundled_gem_namespaces ||= bundled_gem_names.to_set { |name| name.delete('-_').downcase }
+        end
+
+        # The bundle's gems except those sourced from a local path, whose code
+        # lives in the project and is indexed like the rest of it — among them
+        # the project's own gem, which its lockfile lists in the `PATH` section.
+        def bundled_gem_names
+          (config.gem_versions_in_target || {}).keys - (config.path_sourced_gems_in_target || [])
         end
 
         # Writers are indexed under the reader's name, so setter calls are
@@ -155,13 +198,15 @@ module RuboCop
           nil
         end
 
-        # The receiver's declaration when it resolves in the index, its whole
-        # ancestry is resolved, and the method is not found — nil otherwise.
+        # The receiver's declaration when it resolves in the index, everything
+        # it can inherit or be reopened with is visible there, and the method
+        # is not found — nil otherwise.
         def unknown_method_owner(node, base)
           declaration = resolve_constant_in_index(node.receiver)
           return nil unless declaration.is_a?(Rubydex::Namespace)
           return nil if responds_in_index?(declaration, node.method_name.to_s, base)
           return nil unless fully_resolved_index_ancestry?(declaration)
+          return nil if gem_owned_namespace?(declaration)
 
           declaration
         end
