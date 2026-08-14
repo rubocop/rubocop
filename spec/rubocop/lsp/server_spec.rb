@@ -1459,6 +1459,61 @@ RSpec.describe RuboCop::LSP::Server, :isolated_environment do
     end
   end
 
+  describe 'execute command without arguments' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: 99,
+        method: 'workspace/executeCommand',
+        params: {
+          command: 'rubocop.formatAutocorrects'
+        }
+      }]
+    end
+
+    it 'handles requests' do
+      expect(stderr.chomp).to eq(
+        '[server] Missing document URI in arguments for rubocop.formatAutocorrects'
+      )
+      expect(messages.last).to eq(
+        jsonrpc: '2.0',
+        id: 99,
+        error: {
+          code: -32_602,
+          message: 'Missing document URI in arguments for rubocop.formatAutocorrects'
+        }
+      )
+    end
+  end
+
+  describe 'execute command with empty arguments' do
+    let(:requests) do
+      [{
+        jsonrpc: '2.0',
+        id: 99,
+        method: 'workspace/executeCommand',
+        params: {
+          command: 'rubocop.formatAutocorrectsAll',
+          arguments: []
+        }
+      }]
+    end
+
+    it 'handles requests' do
+      expect(stderr.chomp).to eq(
+        '[server] Missing document URI in arguments for rubocop.formatAutocorrectsAll'
+      )
+      expect(messages.last).to eq(
+        jsonrpc: '2.0',
+        id: 99,
+        error: {
+          code: -32_602,
+          message: 'Missing document URI in arguments for rubocop.formatAutocorrectsAll'
+        }
+      )
+    end
+  end
+
   describe 'did open on ignored path' do
     let(:requests) do
       [{
