@@ -81,6 +81,68 @@ RSpec.describe RuboCop::Cop::Lint::NameTypo, :config do
         RUBY
       end
 
+      context 'when the namespace names a gem in the bundle' do
+        let(:gem_versions) { { 'services' => '1.0.0' } }
+
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            Services::UserCraetor.new
+          RUBY
+        end
+
+        context 'when the gem name is underscored' do
+          let(:gem_versions) { { 'ser_vices' => '1.0.0' } }
+
+          it 'does not register an offense' do
+            expect_no_offenses(<<~RUBY)
+              Services::UserCraetor.new
+            RUBY
+          end
+        end
+
+        context 'when the gem is sourced from a local path' do
+          let(:path_sourced_gems) { ['services'] }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              Services::UserCraetor.new
+                        ^^^^^^^^^^^ Possible typo: `UserCraetor` is not defined in `Services`. Did you mean `UserCreator`?
+            RUBY
+          end
+        end
+
+        context 'when gem sources are indexed' do
+          let(:all_cops_config) { super().merge('ProjectIndexIncludesGems' => true) }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              Services::UserCraetor.new
+                        ^^^^^^^^^^^ Possible typo: `UserCraetor` is not defined in `Services`. Did you mean `UserCreator`?
+            RUBY
+          end
+        end
+      end
+
+      context 'when the ancestry is not fully resolved' do
+        before do
+          cop.project_index = build_index(
+            'file:///services.rb' => <<~RUBY
+              class Services < External::Base
+                class UserCreator; end
+
+                class UserDeleter; end
+              end
+            RUBY
+          )
+        end
+
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            Services::UserCraetor.new
+          RUBY
+        end
+      end
+
       context 'when CheckConstants is false' do
         let(:cop_config) { { 'CheckConstants' => false } }
 
@@ -226,6 +288,27 @@ RSpec.describe RuboCop::Cop::Lint::NameTypo, :config do
           expect_no_offenses(<<~RUBY)
             Report.generate_sumary
           RUBY
+        end
+      end
+
+      context 'when the receiver names a gem in the bundle' do
+        let(:gem_versions) { { 'report' => '1.0.0' } }
+
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            Report.generate_sumary
+          RUBY
+        end
+
+        context 'when the gem is sourced from a local path' do
+          let(:path_sourced_gems) { ['report'] }
+
+          it 'registers an offense' do
+            expect_offense(<<~RUBY)
+              Report.generate_sumary
+                     ^^^^^^^^^^^^^^^ Possible typo: `Report` does not respond to `generate_sumary`. Did you mean `generate_summary`?
+            RUBY
+          end
         end
       end
 

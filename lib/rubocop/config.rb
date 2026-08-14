@@ -355,6 +355,14 @@ module RuboCop
       @gem_versions_in_target ||= read_gem_versions_from_target_lockfile
     end
 
+    # Returns the names of the target's gems that are sourced from a local path
+    # (i.e. `path:` dependencies and the project's own gem when the `Gemfile`
+    # uses `gemspec`), whose code therefore lives in the project itself.
+    # @returns [Array<String>, nil] The gem names, or nil without a lockfile.
+    def path_sourced_gems_in_target
+      @path_sourced_gems_in_target ||= read_path_sourced_gems_from_target_lockfile
+    end
+
     def inspect # :nodoc:
       "#<#{self.class.name}:#{object_id} @loaded_path=#{loaded_path}>"
     end
@@ -397,6 +405,14 @@ module RuboCop
       return nil unless lockfile_path
 
       Lockfile.new(lockfile_path).gem_versions
+    end
+
+    # @returns [Array<String>, nil] The names of the gems sourced from a local path.
+    def read_path_sourced_gems_from_target_lockfile
+      lockfile_path = bundler_lock_file_path
+      return nil unless lockfile_path
+
+      Lockfile.new(lockfile_path).path_sourced_gem_names
     end
 
     def enable_cop?(qualified_cop_name, cop_options)

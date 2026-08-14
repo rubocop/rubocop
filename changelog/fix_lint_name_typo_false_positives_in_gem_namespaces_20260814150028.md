@@ -1,0 +1,1 @@
+* [#15568](https://github.com/rubocop/rubocop/pull/15568): Fix `Lint/NameTypo` registering false positives for names provided by a gem whose namespace the project reopens, and for constants read from a namespace with an unresolved ancestor. ([@HoneyryderChuck][])
