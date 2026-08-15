@@ -151,25 +151,13 @@ module RuboCop
           return
         end
 
-        uri = request[:params][:arguments][0][:uri]
-        formatted = nil
-
-        # The `workspace/executeCommand` is an LSP method triggered by intentional user actions,
-        # so the user's intention for autocorrection is respected.
-        LSP.disable { formatted = format_file(uri, command: command) }
-
-        @server.write(
-          id: request[:id],
-          method: 'workspace/applyEdit',
-          params: {
-            label: label,
-            edit: {
-              changes: {
-                uri => formatted
-              }
-            }
-          }
-        )
+        # Clients such as Eglot can invoke a command without arguments, so respond with
+        # an error instead of letting the server crash on a missing URI.
+        if (uri = document_uri_from(request))
+          write_formatting_edits(request, uri: uri, command: command, label: label)
+        else
+          write_invalid_arguments_error(request, command)
+        end
       end
 
       handle 'textDocument/willSave' do |_request|
@@ -217,6 +205,47 @@ module RuboCop
           lint_mode: request.dig(:params, :initializationOptions, :lintMode) == true,
           layout_mode: request.dig(:params, :initializationOptions, :layoutMode) == true
         }
+      end
+
+      def document_uri_from(request)
+        argument = request.dig(:params, :arguments, 0)
+
+        argument[:uri] if argument.is_a?(Hash)
+      end
+
+      def write_formatting_edits(request, uri:, command:, label:)
+        formatted = nil
+
+        # The `workspace/executeCommand` is an LSP method triggered by intentional user actions,
+        # so the user's intention for autocorrection is respected.
+        LSP.disable { formatted = format_file(uri, command: command) }
+
+        @server.write(
+          id: request[:id],
+          method: 'workspace/applyEdit',
+          params: {
+            label: label,
+            edit: {
+              changes: {
+                uri => formatted
+              }
+            }
+          }
+        )
+      end
+
+      def write_invalid_arguments_error(request, command)
+        message = "Missing document URI in arguments for #{command}"
+
+        @server.write(
+          id: request[:id],
+          error: LanguageServer::Protocol::Interface::ResponseError.new(
+            code: LanguageServer::Protocol::Constant::ErrorCodes::INVALID_PARAMS,
+            message: message
+          )
+        )
+
+        Logger.log(message)
       end
 
       def format_file(file_uri, command: nil)
