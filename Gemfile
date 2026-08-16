@@ -17,7 +17,7 @@ gem 'rake', '~> 13.0'
 # https://github.com/ruby/rdoc/issues/1746
 gem 'rbs', '4.1.0.pre.2' if RUBY_ENGINE == 'jruby'
 gem 'rspec', '~> 3.7'
-gem 'rubocop-performance', '~> 1.26.0', require: false
+gem 'rubocop-performance', '~> 1.27.0', require: false
 gem 'rubocop-rake', '~> 0.7.0', require: false
 gem 'rubocop-rspec', '~> 3.10.1', require: false
 # Ruby LSP supports Ruby 3.0+.
