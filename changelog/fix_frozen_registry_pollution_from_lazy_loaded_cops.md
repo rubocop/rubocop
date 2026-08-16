@@ -1,0 +1,1 @@
+* [#15572](https://github.com/rubocop/rubocop/pull/15572): Fix `RuboCop::Cop::Registry#freeze` to freeze its internal collections, so that registering a lazily loaded cop after the freeze fails fast at the registration site instead of corrupting the registry. ([@koic][])

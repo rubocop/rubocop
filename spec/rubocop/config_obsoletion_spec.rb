@@ -320,6 +320,12 @@ RSpec.describe RuboCop::ConfigObsoletion do
     context 'when the extensions are loaded via inherit_gem', :restore_registry do
       include_context 'mock console output'
 
+      # Resolving the inherited gem config requires `rubocop-performance` in-process,
+      # which may only lazily register its cops (rubocop-performance 1.27+). Load them while
+      # the temporary global registry is still in place, so that their deferred class definitions
+      # cannot fire later and enlist into the frozen global registry.
+      after { RuboCop::Cop::Registry.global.load_all_lazy_cops }
+
       let(:resolver) { RuboCop::ConfigLoaderResolver.new }
       let(:gem_root) { File.expand_path('gems') }
 
