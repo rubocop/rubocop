@@ -32,6 +32,11 @@ RSpec.describe RuboCop::Version do
 
     before { RuboCop::ConfigLoader.clear_options }
 
+    # Requiring an extension may only lazily register its cops (e.g. rubocop-performance 1.27+).
+    # Load them while the temporary global registry is still in place, so that their deferred class
+    # definitions cannot fire later and enlist into the frozen global registry.
+    after { RuboCop::Cop::Registry.global.load_all_lazy_cops }
+
     context 'when no extensions are required' do
       before do
         create_file('.rubocop.yml', <<~YAML)

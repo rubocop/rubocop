@@ -333,10 +333,33 @@ module RuboCop
         cop ? [cop] : cops_for_department(directive)
       end
 
+      # Loads all cops that are registered for lazy loading. Useful when lazily registered cops
+      # must not outlive the current global registry, e.g. before a temporary global registry is
+      # discarded in tests.
+      #
+      # @api private
+      def load_all_lazy_cops
+        # Take a snapshot because loading a cop can load (and thereby register)
+        # another lazy-loaded cop, e.g. its superclass.
+        badges = @cops_by_badge.keys
+
+        badges.each do |badge|
+          load_lazy_cop(badge) if @cops_by_badge[badge].is_a?(String)
+        end
+      end
+
       def freeze
         clear_enrollment_queue
         load_all_lazy_cops
         unqualified_cop_names # build cache
+
+        # Freeze the structural collections as well, so that a cop class defined after
+        # the freeze fails fast at its `enlist`/`lazy_load` call site instead of corrupting
+        # the registry and failing much later.
+        @cops_by_badge.freeze
+        @departments.freeze
+        @enrollment_queue.freeze
+
         super
       end
 
@@ -404,13 +427,6 @@ module RuboCop
         else
           cop_enabled
         end
-      end
-
-      def load_all_lazy_cops
-        # Take a snapshot because loading a cop can load (and thereby register)
-        # another lazy-loaded cop, e.g. its superclass.
-        badges = @cops_by_badge.keys
-        badges.each { |badge| load_lazy_cop(badge) if @cops_by_badge[badge].is_a?(String) }
       end
 
       # @return [Class, nil] the loaded cop class, or nil if the cop excluded
