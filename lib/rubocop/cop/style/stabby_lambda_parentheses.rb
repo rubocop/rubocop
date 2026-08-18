@@ -25,6 +25,8 @@ module RuboCop
 
         MSG_REQUIRE = 'Wrap stabby lambda arguments with parentheses.'
         MSG_NO_REQUIRE = 'Do not wrap stabby lambda arguments with parentheses.'
+        RESTRICT_ON_SEND = %i[lambda].freeze
+
         def on_send(node)
           return unless stabby_lambda_with_args?(node)
           return unless redundant_parentheses?(node) || missing_parentheses?(node)
