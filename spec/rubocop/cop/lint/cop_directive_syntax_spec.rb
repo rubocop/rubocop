@@ -1,6 +1,213 @@
 # frozen_string_literal: true
 
 RSpec.describe RuboCop::Cop::Lint::CopDirectiveSyntax, :config do
+  describe 'autocorrection' do
+    it 'inserts the missing comma between two cop names' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength Style/Encoding
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength, Style/Encoding
+      RUBY
+    end
+
+    it 'inserts the missing commas between three cop names' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength Style/Encoding Lint/Void
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength, Style/Encoding, Lint/Void
+      RUBY
+    end
+
+    it 'inserts the missing comma when only some commas are present' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength, Style/Encoding Lint/Void
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength, Style/Encoding, Lint/Void
+      RUBY
+    end
+
+    it 'replaces a `#` comment marker with `--`' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength # this is why
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength -- this is why
+      RUBY
+    end
+
+    it 'keeps punctuation in a `#` comment verbatim' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength # the URL below is long, sadly
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:disable Layout/LineLength -- the URL below is long, sadly
+      RUBY
+    end
+
+    it 'replaces a `#` comment marker with `--` in a `push` directive' do
+      expect_offense(<<~RUBY)
+        # rubocop:push +Layout/LineLength # this is why
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:push +Layout/LineLength -- this is why
+      RUBY
+    end
+
+    it 'replaces a `#` comment marker with `--` in a `next` directive' do
+      expect_offense(<<~RUBY)
+        # rubocop:next +Layout/LineLength # this is why
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # rubocop:next +Layout/LineLength -- this is why
+      RUBY
+    end
+
+    # Correcting these would mean guessing where the cop names end, and a wrong
+    # guess would disable a cop the author never named.
+    it 'does not correct an unmarked trailing comment' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength this is why
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct a comment whose first word is a department name' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Metrics/AbcSize Metrics are noisy in this file
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct a comment that mixes a department name into prose' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength Style choice, leave it
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct cop names followed by a comment' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength Style/Encoding this is why
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct a department name after a cop name' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Style/Eval Security
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct an unqualified cop name after a cop name' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength Encoding
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct an ambiguous unqualified cop name after a cop name' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength SelfAssignment
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct lowercase words that resolve to cop names' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Metrics/BlockNesting for loop
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not insert commas between `push` arguments' do
+      expect_offense(<<~RUBY)
+        # rubocop:push +Layout/LineLength Style/Encoding
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not insert commas between `next` arguments' do
+      expect_offense(<<~RUBY)
+        # rubocop:next +Layout/LineLength Style/Encoding
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not insert a comma after `all`' do
+      expect_offense(<<~RUBY)
+        # rubocop:enable all Style/Encoding
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct a stray trailing comma' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct stray trailing punctuation' do
+      expect_offense(<<~RUBY)
+        # rubocop:disable Layout/LineLength:
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Malformed directive comment detected. Cop names must be separated by commas. Comment in the directive must start with `--`.
+      RUBY
+
+      expect_no_corrections
+    end
+
+    it 'does not correct a directive with a missing mode name' do
+      expect_offense(<<~RUBY)
+        # rubocop:
+        ^^^^^^^^^^ Malformed directive comment detected. The mode name is missing.
+      RUBY
+
+      expect_no_corrections
+    end
+  end
+
   it 'does not register an offense for a single cop name' do
     expect_no_offenses(<<~RUBY)
       # rubocop:disable Layout/LineLength
