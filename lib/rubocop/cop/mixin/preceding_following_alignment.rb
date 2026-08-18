@@ -182,20 +182,58 @@ module RuboCop
       # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       # rubocop:disable Metrics/PerceivedComplexity, Metrics/MethodLength
       def relevant_assignment_lines(line_range)
+        relevant_lines(line_range) { |line_number| assignment_lines.include?(line_number) }
+      end
+
+      def alignment_lines(line_number)
+        @alignment_lines_by_line ||= {}
+        return @alignment_lines_by_line[line_number] if @alignment_lines_by_line.key?(line_number)
+
+        lines = alignment_line_ranges(line_number).flatten.uniq.sort.freeze
+
+        lines.each { |line| @alignment_lines_by_line[line] = lines }
+      end
+
+      def alignment_line_ranges(line_number)
+        last_line = processed_source.lines.length
+
+        [
+          relevant_lines(line_number.downto(1), definition_boundary_lines) do |line|
+            !aligned_comment_lines.include?(line)
+          end,
+          relevant_lines(line_number.upto(last_line), definition_boundary_lines) do |line|
+            !aligned_comment_lines.include?(line)
+          end
+        ]
+      end
+
+      def definition_boundary_lines
+        @definition_boundary_lines ||= begin
+          nodes = processed_source.ast&.each_node(:any_def) || []
+
+          nodes.each_with_object(Set.new) do |node, lines|
+            lines << node.first_line << node.last_line
+          end
+        end
+      end
+
+      def relevant_lines(line_range, boundary_lines = [])
         result                        = []
-        original_line_indent          = processed_source.line_indentation(line_range.first)
+        original_line                 = line_range.first
+        original_line_indent          = processed_source.line_indentation(original_line)
         relevant_line_indent_at_level = true
 
         line_range.each do |line_number|
           current_line_indent = processed_source.line_indentation(line_number)
           blank_line          = processed_source.lines[line_number - 1].blank?
 
-          if (current_line_indent < original_line_indent && !blank_line) ||
+          if (line_number != original_line && boundary_lines.include?(line_number)) ||
+             (current_line_indent < original_line_indent && !blank_line) ||
              (relevant_line_indent_at_level && blank_line)
             break
           end
 
-          result << line_number if assignment_lines.include?(line_number) &&
+          result << line_number if yield(line_number) &&
                                    current_line_indent == original_line_indent
 
           unless blank_line
