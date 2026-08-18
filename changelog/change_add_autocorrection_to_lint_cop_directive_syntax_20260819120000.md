@@ -1,0 +1,1 @@
+* [#15578](https://github.com/rubocop/rubocop/pull/15578): Add unsafe autocorrection to `Lint/CopDirectiveSyntax` for directives that omit the commas between cop names, and for trailing comments marked with `#` instead of `--`. ([@corsonknowles][])
