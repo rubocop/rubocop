@@ -8,6 +8,15 @@ module RuboCop
       #
       # A comment can be added to the directive by prefixing it with `--`.
       #
+      # @safety
+      #   This cop's autocorrection is unsafe because inserting the missing comma
+      #   changes which cops a directive suppresses. A `rubocop:disable` listing
+      #   `Layout/LineLength Style/Encoding` disables only the first cop today;
+      #   once the comma is added it disables both, so offenses that were being
+      #   reported quietly stop being reported. Merging several directives on one
+      #   line into a single directive widens the suppression the same way, so it
+      #   is also only applied by `-A`.
+      #
       # @example
       #   # bad
       #   # rubocop:disable Layout/LineLength Style/Encoding
@@ -70,6 +79,14 @@ module RuboCop
         INVALID_KEYWORD_MSG = 'The directive keyword must be `rubocop`, not `%<keyword>s`.'
         UNKNOWN_COP_MSG = 'Unknown cop name `%<name>s`%<suggestion>s.'
 
+        MALFORMED_MSG = {
+          missing_mode_name: MISSING_MODE_NAME_MSG,
+          invalid_mode_name: INVALID_MODE_NAME_MSG,
+          missing_cop_name: MISSING_COP_NAME_MSG,
+          invalid_signed_args: INVALID_SIGNED_ARGS_MSG,
+          malformed_cop_names: MALFORMED_COP_NAMES_MSG
+        }.freeze
+
         # A comment that looks like an attempted directive: any keyword
         # followed by a colon and a valid mode name.
         NEAR_MISS_KEYWORD_REGEXP = /
@@ -97,7 +114,9 @@ module RuboCop
               merge_directives(corrector, comment, directives)
             end
           elsif directive_comment.malformed?
-            add_offense(comment, message: offense_message(directive_comment))
+            add_offense(comment, message: offense_message(directive_comment)) do |corrector|
+              autocorrect_cop_names(corrector, directive_comment)
+            end
           elsif misplaced_next_directive?(directive_comment)
             add_offense(comment, message: NEXT_DIRECTIVE_AT_EOL_MSG)
           elsif (name = unknown_cop_name(directive_comment))
@@ -171,24 +190,79 @@ module RuboCop
             directive_comment.next?
         end
 
-        # rubocop:disable-next Metrics/MethodLength
         def offense_message(directive_comment)
+          "#{COMMON_MSG} #{MALFORMED_MSG.fetch(malformed_kind(directive_comment))}"
+        end
+
+        # The shape of the malformation, as a symbol, so that the message and the
+        # corrector agree on it without either depending on the message wording.
+        def malformed_kind(directive_comment)
           comment = directive_comment.comment
           after_marker = comment.text.sub(DirectiveComment::DIRECTIVE_MARKER_REGEXP, '')
           mode = after_marker.split(' ', 2).first
-          additional_msg = if mode.nil?
-                             MISSING_MODE_NAME_MSG
-                           elsif !DirectiveComment::AVAILABLE_MODES.include?(mode)
-                             INVALID_MODE_NAME_MSG
-                           elsif directive_comment.missing_cop_name?
-                             MISSING_COP_NAME_MSG
-                           elsif directive_comment.invalid_signed_args?
-                             INVALID_SIGNED_ARGS_MSG
-                           else
-                             MALFORMED_COP_NAMES_MSG
-                           end
+          if mode.nil?
+            :missing_mode_name
+          elsif !DirectiveComment::AVAILABLE_MODES.include?(mode)
+            :invalid_mode_name
+          elsif directive_comment.missing_cop_name?
+            :missing_cop_name
+          elsif directive_comment.invalid_signed_args?
+            :invalid_signed_args
+          else
+            :malformed_cop_names
+          end
+        end
 
-          "#{COMMON_MSG} #{additional_msg}"
+        # Two shapes are mechanical, and nothing else is corrected: either every
+        # trailing token is a known cop name (a comma was left out), or the trailing
+        # text is marked as a comment with `#` (the wrong marker was used). Text that
+        # mixes the two cannot be split without guessing where the names end, and a
+        # wrong guess would disable a cop the author never named.
+        def autocorrect_cop_names(corrector, directive_comment)
+          return unless malformed_kind(directive_comment) == :malformed_cop_names
+
+          comment = directive_comment.comment
+          return unless (match = comment.text.match(DirectiveComment::DIRECTIVE_COMMENT_REGEXP))
+
+          trailing = match.post_match
+          # A second directive belongs on its own line. Marking it as a comment would
+          # be a silent change of meaning, and merging is `MULTIPLE_DIRECTIVES_MSG`.
+          return if DirectiveComment::DIRECTIVE_MARKER_REGEXP.match?(trailing)
+
+          if (names = omitted_cop_names(trailing, directive_comment))
+            corrector.replace(comment, "#{match[0]}, #{names.join(', ')}")
+          elsif (reason = marked_as_comment(trailing))
+            corrector.replace(
+              comment, "#{match[0]} #{DirectiveComment::TRAILING_COMMENT_MARKER} #{reason}"
+            )
+          end
+        end
+
+        # Only when *every* token is an exact qualified cop name, so that rebuilding the
+        # list as comma-separated drops nothing but the separators themselves. Anything
+        # else, including a department or a bare name, may be prose and is left alone.
+        # `push` and `next` arguments are not comma-separated, and `all` takes no names.
+        def omitted_cop_names(trailing, directive_comment)
+          return if directive_comment.push? || directive_comment.next? ||
+                    directive_comment.all_cops?
+
+          names = trailing.strip.split(/[\s,]+/)
+          return if names.empty?
+
+          registry = directive_comment.cop_registry
+          names if names.all? { |name| qualified_cop_name?(registry, name) }
+        end
+
+        # Sliced from the source rather than tokenized, so commas and other
+        # punctuation the author typed survive the correction verbatim.
+        def marked_as_comment(trailing)
+          match = trailing.match(/\A\s*\#+\s*(?<reason>\S.*?)\s*\z/)
+          match[:reason] if match
+        end
+
+        def qualified_cop_name?(registry, name)
+          name.include?('/') && !registry.department?(name) &&
+            registry.contains_cop_matching?([name])
         end
 
         def near_miss_keyword(comment)
