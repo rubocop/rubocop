@@ -105,6 +105,10 @@ module RuboCop
 
         MSG = 'Use %<style>s for method names.'
         MSG_FORBIDDEN = '`%<identifier>s` is forbidden, use another method name instead.'
+        RESTRICT_ON_SEND = %i[
+          define_method define_singleton_method new define alias_method
+          attr attr_reader attr_writer attr_accessor
+        ].freeze
 
         OPERATOR_METHODS = %i[| ^ & <=> == === =~ > >= < <= << >> + - * /
                               % ** ~ +@ -@ !@ ~@ [] []= ! != !~ `].to_set.freeze
