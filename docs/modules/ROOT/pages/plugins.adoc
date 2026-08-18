@@ -68,6 +68,33 @@ If a path containing `-` is given, it will be used as is, but if we
 cannot find the file to load, we will replace `-` with `/` and try it
 again as when Bundler loads gems.
 
+== Custom `AllCops` Settings
+
+A plugin can introduce its own settings under `AllCops` (for example, `rubocop-rails` provides `AllCops: TargetRailsVersion`)
+by declaring the key with a nil value in the `AllCops` section of its own configuration file, shown here for a hypothetical
+`TargetFrameworkVersion` setting:
+
+[source,yaml]
+----
+# config/default.yml in the plugin gem.
+AllCops:
+  TargetFrameworkVersion: ~
+----
+
+When the plugin is loaded, its `AllCops` keys are merged into the default configuration, so users of the plugin can set
+the key in their project's configuration and pass configuration validation without
+"AllCops does not support X parameter" warnings:
+
+[source,yaml]
+----
+# A project's .rubocop.yml.
+plugins:
+  - rubocop-framework # The plugin declaring `TargetFrameworkVersion`
+
+AllCops:
+  TargetFrameworkVersion: 7.1
+----
+
 == Plugin Suggestions
 
 Depending on what gems you have in your bundle, RuboCop might suggest plugins

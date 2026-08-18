@@ -62,6 +62,73 @@ RSpec.describe RuboCop::Plugin::ConfigurationIntegrator, :isolated_environment d
       end
     end
 
+    context 'when a plugin declares a custom `AllCops` key alongside another plugin' do
+      let(:rubocop_config) { RuboCop::Config.new }
+      let(:declaring_plugin) do
+        Class.new(LintRoller::Plugin) do
+          def rules(_context)
+            LintRoller::Rules.new(
+              type: :path, config_format: :rubocop, value: 'declaring_default.yml'
+            )
+          end
+        end
+      end
+      let(:other_plugin) do
+        Class.new(LintRoller::Plugin) do
+          def rules(_context)
+            LintRoller::Rules.new(type: :path, config_format: :rubocop, value: 'other_default.yml')
+          end
+        end
+      end
+
+      before do
+        create_file('declaring_default.yml', <<~YAML)
+          AllCops:
+            TargetFrameworkVersion: ~
+        YAML
+        create_file('other_default.yml', <<~YAML)
+          AllCops:
+            Exclude:
+              - db/*schema.rb
+        YAML
+      end
+
+      after do
+        RuboCop::ConfigLoader.default_configuration = nil
+      end
+
+      shared_examples 'keeps the declared key' do
+        it 'keeps the key in the default configuration' do
+          integrated_config
+
+          default_all_cops = RuboCop::ConfigLoader.default_configuration['AllCops']
+          expect(default_all_cops).to have_key('TargetFrameworkVersion')
+        end
+
+        it 'recognizes the key when validating a user configuration' do
+          integrated_config
+
+          expect do
+            RuboCop::Config.create(
+              { 'AllCops' => { 'TargetFrameworkVersion' => 7.1 } }, '.rubocop.yml', check: true
+            )
+          end.not_to output(/AllCops does not support TargetFrameworkVersion parameter/).to_stderr
+        end
+      end
+
+      context 'when the other plugin is loaded after the declaring plugin' do
+        let(:plugins) { [declaring_plugin.new, other_plugin.new] }
+
+        it_behaves_like 'keeps the declared key'
+      end
+
+      context 'when the declaring plugin is loaded after the other plugin' do
+        let(:plugins) { [other_plugin.new, declaring_plugin.new] }
+
+        it_behaves_like 'keeps the declared key'
+      end
+    end
+
     context 'when using a plugin with `Plugin` type is `:object`' do
       let(:rubocop_config) do
         RuboCop::Config.new('Style/FrozenStringLiteralComment' => { 'Exclude' => %w[**/*.arb] })
