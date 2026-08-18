@@ -14,10 +14,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+# `timeout-minutes` on each job is a guard against intermittent CI hangs:
+# a job hitting its limit is hung, not slow. A normal run finishes in about
+# 1-2 minutes on ubuntu, 4-5 minutes on Windows, and 15 minutes on JRuby.
 jobs:
   spec-ubuntu:
     name: Spec - ubuntu ${{ matrix.ruby }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -41,6 +45,7 @@ jobs:
   spec-jruby:
     name: Spec - JRuby
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
@@ -54,6 +59,7 @@ jobs:
     needs: spec-ubuntu # Don't spend CI resources on slow Windows specs if CI won't pass anyway.
     name: Spec - windows ${{ matrix.ruby }}
     runs-on: windows-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -78,6 +84,7 @@ jobs:
   ascii_spec:
     name: Ascii Spec - ${{ matrix.os }} ${{ matrix.ruby }}
     runs-on: ${{ matrix.os }}-latest
+    timeout-minutes: 20
 
     strategy:
       fail-fast: false
@@ -101,6 +108,7 @@ jobs:
   documentation_check:
     name: Documentation Check
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
@@ -113,6 +121,7 @@ jobs:
   prism:
     runs-on: ubuntu-latest
     name: Prism
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: ruby/setup-ruby@v1
