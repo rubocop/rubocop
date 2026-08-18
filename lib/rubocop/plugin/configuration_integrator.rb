@@ -59,7 +59,11 @@ module RuboCop
 
               plugin_config.make_excludes_absolute
 
-              ConfigLoader.merge_with_default(plugin_config, plugin_config_path)
+              # `unset_nil: false` keeps `AllCops` keys declared with a nil value by a plugin
+              # (e.g. `TargetRailsVersion: ~` of rubocop-rails); `merge_all_cop_settings` above
+              # carries such keys into each subsequent plugin's config, where `unset_nil: true`
+              # would delete them from the combined configuration.
+              ConfigLoader.merge_with_default(plugin_config, plugin_config_path, unset_nil: false)
             end
           end
         end
