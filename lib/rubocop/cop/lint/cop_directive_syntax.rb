@@ -55,6 +55,8 @@ module RuboCop
       #   # rubocop:disable Layout/LineLength
       #
       class CopDirectiveSyntax < Base
+        extend AutoCorrector
+
         COMMON_MSG = 'Malformed directive comment detected.'
 
         MISSING_MODE_NAME_MSG = 'The mode name is missing.'
@@ -90,7 +92,9 @@ module RuboCop
 
         def check_directive(comment, directive_comment)
           if directive_comment.malformed?
-            add_offense(comment, message: offense_message(directive_comment))
+            add_offense(comment, message: offense_message(directive_comment)) do |corrector|
+              autocorrect_cop_names(corrector, directive_comment)
+            end
           elsif misplaced_next_directive?(directive_comment)
             add_offense(comment, message: NEXT_DIRECTIVE_AT_EOL_MSG)
           elsif (name = unknown_cop_name(directive_comment))
@@ -105,22 +109,72 @@ module RuboCop
             !processed_source.comment_config.comment_only_line?(directive_comment.line_number)
         end
 
-        # rubocop:disable-next Metrics/MethodLength
         def offense_message(directive_comment)
+          "#{COMMON_MSG} #{additional_message(directive_comment)}"
+        end
+
+        def additional_message(directive_comment)
           comment = directive_comment.comment
           after_marker = comment.text.sub(DirectiveComment::DIRECTIVE_MARKER_REGEXP, '')
           mode = after_marker.split(' ', 2).first
-          additional_msg = if mode.nil?
-                             MISSING_MODE_NAME_MSG
-                           elsif !DirectiveComment::AVAILABLE_MODES.include?(mode)
-                             INVALID_MODE_NAME_MSG
-                           elsif directive_comment.missing_cop_name?
-                             MISSING_COP_NAME_MSG
-                           else
-                             MALFORMED_COP_NAMES_MSG
-                           end
+          if mode.nil?
+            MISSING_MODE_NAME_MSG
+          elsif !DirectiveComment::AVAILABLE_MODES.include?(mode)
+            INVALID_MODE_NAME_MSG
+          elsif directive_comment.missing_cop_name?
+            MISSING_COP_NAME_MSG
+          else
+            MALFORMED_COP_NAMES_MSG
+          end
+        end
 
-          "#{COMMON_MSG} #{additional_msg}"
+        # Only the cop-names shape has an unambiguous correction. A missing or invalid
+        # mode name, or a missing cop name, cannot be guessed from the source.
+        def autocorrect_cop_names(corrector, directive_comment)
+          return unless additional_message(directive_comment) == MALFORMED_COP_NAMES_MSG
+
+          comment = directive_comment.comment
+          match = comment.text.match(DirectiveComment::DIRECTIVE_COMMENT_REGEXP)
+          trailing = match&.post_match.to_s
+          return if trailing.strip.empty?
+          # A second directive in the same comment has to move to its own line. Marking
+          # it as a comment instead would silently stop disabling its cops.
+          return if DirectiveComment::DIRECTIVE_MARKER_REGEXP.match?(trailing)
+
+          corrector.replace(comment, corrected_directive(match[0], trailing, directive_comment))
+        end
+
+        def corrected_directive(head, trailing, directive_comment)
+          omitted_cops, remainder = split_trailing_cop_names(trailing, directive_comment)
+          corrected = head.dup
+          corrected << ", #{omitted_cops.join(', ')}" unless omitted_cops.empty?
+          unless remainder.empty?
+            corrected << " #{DirectiveComment::TRAILING_COMMENT_MARKER} #{remainder}"
+          end
+          corrected
+        end
+
+        # Leading words that name a real cop or department were meant to be part of the
+        # comma-separated list; whatever follows them is the author's comment.
+        def split_trailing_cop_names(trailing, directive_comment)
+          registry = directive_comment.cop_registry
+          tokens = trailing.strip.split(/[\s,]+/)
+          omitted_cops = []
+          omitted_cops << tokens.shift while known_cop_name?(registry, tokens.first)
+
+          remainder = tokens.join(' ').sub(/\A\#+\s*/, '')
+          # Punctuation left over after the cop names is a typo, not a comment worth keeping.
+          remainder = '' if remainder.match?(/\A[[:punct:]]+\z/)
+
+          [omitted_cops, remainder]
+        end
+
+        def known_cop_name?(registry, name)
+          return false unless name
+          return false unless /\A#{DirectiveComment::COP_NAME_PATTERN_NC}\z/o.match?(name)
+          return true if registry.department?(name)
+
+          registry.contains_cop_matching?([registry.qualified_cop_name(name, nil, warn: false)])
         end
 
         def near_miss_keyword(comment)
