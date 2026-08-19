@@ -283,6 +283,7 @@ module RuboCop
       register_cop :SymbolProc, "#{__dir__}/style/symbol_proc"
       register_cop :TallyMethod, "#{__dir__}/style/tally_method"
       register_cop :TernaryParentheses, "#{__dir__}/style/ternary_parentheses"
+      register_cop :TimeNow, "#{__dir__}/style/time_now"
       register_cop :TopLevelMethodDefinition, "#{__dir__}/style/top_level_method_definition"
       register_cop :TrailingBodyOnClass, "#{__dir__}/style/trailing_body_on_class"
       register_cop :TrailingBodyOnMethodDefinition, "#{__dir__}/style/trailing_body_on_method_definition"
