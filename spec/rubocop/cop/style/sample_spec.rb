@@ -25,6 +25,19 @@ RSpec.describe RuboCop::Cop::Style::Sample, :config do
     end
   end
 
+  # `shuffle` and `sample` consume a given generator differently, so for a seeded generator
+  # the correction would select different elements and is not applied.
+  shared_examples 'offense without autocorrection' do |wrong, right|
+    it "registers an offense without autocorrection for #{wrong}" do
+      expect_offense(<<~RUBY, wrong: wrong)
+        [1, 2, 3].%{wrong}
+                  ^{wrong} Use `#{right}` instead of `#{wrong}`.
+      RUBY
+
+      expect_no_corrections
+    end
+  end
+
   shared_examples 'accepts' do |acceptable|
     it "accepts #{acceptable}" do
       expect_no_offenses("[1, 2, 3].#{acceptable}")
@@ -55,11 +68,16 @@ RSpec.describe RuboCop::Cop::Style::Sample, :config do
   it_behaves_like('offense', 'shuffle.slice(0, 3)', 'sample(3)')
   it_behaves_like('offense', 'shuffle.slice(0..3)', 'sample(4)')
   it_behaves_like('offense', 'shuffle.slice(0...3)', 'sample(3)')
-  it_behaves_like('offense', 'shuffle(random: Random.new).first', 'sample(random: Random.new)')
-  it_behaves_like('offense', 'shuffle(random: Random.new).first(2)',
-                  'sample(2, random: Random.new)')
-  it_behaves_like('offense', 'shuffle(random: foo).last(bar)', 'sample(bar, random: foo)')
-  it_behaves_like('offense', 'shuffle(random: Random.new)[0..3]', 'sample(4, random: Random.new)')
+  it_behaves_like('offense without autocorrection',
+                  'shuffle(random: Random.new).first', 'sample(random: Random.new)')
+  it_behaves_like('offense without autocorrection',
+                  'shuffle(random: Random.new).first(2)', 'sample(2, random: Random.new)')
+  it_behaves_like('offense without autocorrection',
+                  'shuffle(random: foo).last(bar)', 'sample(bar, random: foo)')
+  it_behaves_like('offense without autocorrection',
+                  'shuffle(random: Random.new)[0..3]', 'sample(4, random: Random.new)')
+  it_behaves_like('offense without autocorrection',
+                  'shuffle(random: Random.new(123)).first(5)', 'sample(5, random: Random.new(123))')
 
   it_behaves_like('accepts', 'sample')
   it_behaves_like('accepts', 'shuffle')
