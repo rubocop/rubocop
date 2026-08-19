@@ -25,21 +25,21 @@ module RuboCop
         super
 
         @test_case_elements = []
+        @config_store = nil
 
         reset_count
       end
 
+      def file_started(_file, options)
+        @config_store = options[:config_store]
+      end
+
       def file_finished(file, offenses)
         @inspected_file_count += 1
+        @offense_count += offenses.count
 
-        # TODO: Returns all cops with the same behavior as
-        # the original rubocop-junit-formatter.
-        # https://github.com/mikian/rubocop-junit-formatter/blob/v0.1.4/lib/rubocop/formatter/junit_formatter.rb#L9
-        #
-        # In the future, it would be preferable to return only enabled cops.
-        Cop::Registry.all.each do |cop|
+        cops_for(file).each do |cop|
           target_offenses = offenses_for_cop(offenses, cop)
-          @offense_count += target_offenses.count
 
           next unless relevant_for_output?(options, target_offenses)
 
@@ -73,6 +73,14 @@ module RuboCop
 
       private
 
+      def cops_for(file)
+        # `file_started` is not called when this formatter is used directly through the API,
+        # in which case all cops are returned for compatibility.
+        return Cop::Registry.all if @config_store.nil?
+
+        registry.enabled(@config_store.for_file(file))
+      end
+
       def relevant_for_output?(options, target_offenses)
         !options[:display_only_failed] || target_offenses.any?
       end
@@ -87,6 +95,16 @@ module RuboCop
           name: cop.cop_name
         ).tap do |test_case_element|
           add_failure_to(test_case_element, target_offenses, cop.cop_name)
+        end
+      end
+
+      # Filtering by badge keeps lazy-loaded cops unloaded; `Registry#enabled` then loads only
+      # the enabled cops, the same set the runner mobilizes.
+      def registry
+        @registry ||= Cop::Registry.global.filter_by_badge(options) do |badge|
+          next false if badge.department == :Test || badge.match_name?(options[:except])
+
+          options[:only].nil? || badge.match_name?(options[:only])
         end
       end
 

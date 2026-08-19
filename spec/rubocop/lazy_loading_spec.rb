@@ -106,4 +106,33 @@ RSpec.describe 'cop lazy loading' do # rubocop:disable RSpec/DescribeClass
     expect(values['alias_loaded']).to eq('true')
     expect(values['copyright_loaded']).to eq('false')
   end
+
+  it 'does not load cops disabled in the config when using the junit formatter' do
+    output = run_script(<<~RUBY)
+      require 'rubocop'
+      require 'tmpdir'
+
+      xml = nil
+      Dir.mktmpdir do |dir|
+        file = File.join(dir, 'example.rb')
+        File.write(file, "# frozen_string_literal: true\\n")
+        out = File.join(dir, 'junit.xml')
+        RuboCop::CLI.new.run([
+          '--force-default-config', '--cache', 'false', '--format', 'junit', '--out', out, file
+        ])
+
+        xml = File.read(out)
+      end
+
+      loaded = $LOADED_FEATURES.grep(#{cop_file_pattern})
+      puts "copyright_loaded=\#{loaded.any? { |file| file.end_with?('style/copyright.rb') }}"
+      puts "copyright_testcase=\#{xml.include?("name='Style/Copyright'")}"
+      puts "enabled_testcase=\#{xml.include?("name='Style/Alias'")}"
+    RUBY
+
+    values = output.scan(/^(\w+)=(.+)$/).to_h
+    expect(values['copyright_loaded']).to eq('false')
+    expect(values['copyright_testcase']).to eq('false')
+    expect(values['enabled_testcase']).to eq('true')
+  end
 end
