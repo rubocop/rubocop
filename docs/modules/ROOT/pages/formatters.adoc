@@ -322,9 +322,8 @@ results. A typical invocation in this type of scenario might look like:
 $ rubocop --format junit --out test-reports/junit.xml
 ----
 
-Since there is one XML node for each cop for each file, the size of the resulting
-XML can get quite large. If it is too large for you, you can restrict the output
-to just failures by adding the `--display-only-failed` option.
+Since there is one XML node for each enabled cop for each file, the size of the resulting XML can get quite large.
+If it is too large for you, you can restrict the output to just failures by adding the `--display-only-failed` option.
 
 == Offense Count Formatter
 
