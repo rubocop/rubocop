@@ -142,6 +142,32 @@ RSpec.describe RuboCop::Cop::Lint::UnusedPrivateMethod, :config do
       expect_no_offenses(source, '/lib/current.rb')
     end
 
+    it 'does not register an offense for runtime hook methods' do
+      source = <<~RUBY
+        class Service
+          private
+
+          def inherited(subclass)
+          end
+
+          def const_missing(name)
+          end
+
+          def method_added(name)
+          end
+
+          def singleton_method_undefined(name)
+          end
+
+          def coerce(other)
+          end
+        end
+      RUBY
+      cop.project_index = build_index('file:///lib/current.rb' => source)
+
+      expect_no_offenses(source, '/lib/current.rb')
+    end
+
     it 'does not register an offense for a singleton method' do
       source = <<~RUBY
         class Service

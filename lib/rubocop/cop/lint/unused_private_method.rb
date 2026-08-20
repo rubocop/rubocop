@@ -57,9 +57,16 @@ module RuboCop
         IDENTIFIER_PATTERN = /[a-zA-Z_]\w*[?!=]?/.freeze
 
         # Methods invoked implicitly by the Ruby runtime.
-        IMPLICITLY_INVOKED_METHODS = %i[initialize initialize_copy initialize_clone
-                                        initialize_dup method_missing respond_to_missing?
-                                        marshal_dump marshal_load].to_set.freeze
+        IMPLICITLY_INVOKED_METHODS = %i[
+          initialize initialize_copy initialize_clone initialize_dup
+          method_missing respond_to_missing? marshal_dump marshal_load
+          coerce instance_variables_to_inspect
+          inherited included extended prepended
+          append_features extend_object prepend_features
+          const_missing const_added
+          method_added method_removed method_undefined
+          singleton_method_added singleton_method_removed singleton_method_undefined
+        ].to_set.freeze
 
         class << self
           # The reference-name set is a property of the index, not of the cop
