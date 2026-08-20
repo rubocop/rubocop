@@ -2701,7 +2701,10 @@ Lint/UnusedPrivateMethod:
   # would be reported as false positives. It is intended for occasional
   # dead-code sweeps rather than permanent enforcement.
   Enabled: false
+  AllowedNames: []
+  AllowedPatterns: []
   VersionAdded: '1.89'
+  VersionChanged: '<<next>>'
 
 Lint/UriEscapeUnescape:
   Description: >-

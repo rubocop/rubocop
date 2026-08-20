@@ -21,6 +21,11 @@ module RuboCop
       # not checked, since they may be invoked through `super` or inherited
       # dispatch.
       #
+      # Methods whose names are composed by a framework (e.g. Rails
+      # `attribute_method_suffix` generating `attribute?` methods) can be
+      # excluded from the check with `AllowedNames` (exact names) or
+      # `AllowedPatterns` (regular expressions).
+      #
       # The cop is disabled by default because symbol-based references from
       # *other* files (e.g. a Rails callback declared in a concern) cannot be
       # detected and would be reported as false positives. It is best suited
@@ -51,7 +56,26 @@ module RuboCop
       #     end
       #   end
       #
+      # @example AllowedNames: ['attribute?']
+      #   # good - the name is explicitly allowed
+      #   class Contact
+      #     private
+      #
+      #     def attribute?
+      #     end
+      #   end
+      #
+      # @example AllowedPatterns: ['_hook\z']
+      #   # good - the name matches an allowed pattern
+      #   class Service
+      #     private
+      #
+      #     def before_save_hook
+      #     end
+      #   end
+      #
       class UnusedPrivateMethod < Base
+        include AllowedPattern
         include ProjectIndexHelp
 
         MSG = 'Private method `%<method>s` appears to be unused.'
@@ -101,11 +125,18 @@ module RuboCop
 
         def checkable_declaration(node)
           return nil if IMPLICITLY_INVOKED_METHODS.include?(node.method_name)
+          return nil if allowed_name?(node.method_name)
           return nil if node.each_ancestor(:any_def, :any_block, :sclass).any?
           return nil unless (namespace_node = node.each_ancestor(:class, :module).first)
 
           declaration = method_declaration(node, namespace_node)
           declaration if declaration&.private?
+        end
+
+        def allowed_name?(method_name)
+          name = method_name.to_s
+
+          cop_config.fetch('AllowedNames', []).include?(name) || matches_allowed_pattern?(name)
         end
 
         def method_declaration(node, namespace_node)
