@@ -129,6 +129,7 @@ module RuboCop
       register_cop :ShadowedException, "#{__dir__}/lint/shadowed_exception"
       register_cop :ShadowingOuterLocalVariable, "#{__dir__}/lint/shadowing_outer_local_variable"
       register_cop :StructNewOverride, "#{__dir__}/lint/struct_new_override"
+      register_cop :SuperArgumentMismatch, "#{__dir__}/lint/super_argument_mismatch"
       register_cop :SuppressedException, "#{__dir__}/lint/suppressed_exception"
       register_cop :SuppressedExceptionInNumberConversion, "#{__dir__}/lint/suppressed_exception_in_number_conversion"
       register_cop :SymbolConversion, "#{__dir__}/lint/symbol_conversion"
