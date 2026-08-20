@@ -44,6 +44,7 @@ module RuboCop
     # Deprecated aliases of `AllowedMethods` and `AllowedPattern`, defined in those files.
     autoload :IgnoredMethods, "#{__dir__}/mixin/allowed_methods"
     autoload :IgnoredPattern, "#{__dir__}/mixin/allowed_pattern"
+    autoload :IndexedMethodArity, "#{__dir__}/mixin/indexed_method_arity"
     autoload :IntegerNode, "#{__dir__}/mixin/integer_node"
     autoload :Interpolation, "#{__dir__}/mixin/interpolation"
     autoload :LineLengthHelp, "#{__dir__}/mixin/line_length_help"

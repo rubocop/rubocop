@@ -2548,6 +2548,13 @@ Lint/StructNewOverride:
   Enabled: true
   VersionAdded: '0.81'
 
+Lint/SuperArgumentMismatch:
+  Description: >-
+    Checks for `super` calls that pass the wrong number of positional
+    arguments to the overridden implementation, using the project index.
+  Enabled: pending
+  VersionAdded: '<<next>>'
+
 Lint/SuppressedException:
   Description: "Don't suppress exceptions."
   StyleGuide: '#dont-hide-exceptions'

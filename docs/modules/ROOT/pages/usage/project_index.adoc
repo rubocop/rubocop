@@ -141,6 +141,10 @@ when a similarly named alternative exists, and suggests it. `CheckConstants` and
 the wrong number of positional arguments to a singleton method defined in the project, when
 the receiver and its whole ancestry are resolved in the index.
 
+`Lint/SuperArgumentMismatch` (pending) reports `super` calls with explicit arguments that
+pass the wrong number of positional arguments to the overridden implementation, when the
+enclosing class and its whole ancestry are resolved in the index.
+
 Index-aware cops automatically pick up the index whenever it is built; no per-cop opt-in is required.
 
 == Notes
