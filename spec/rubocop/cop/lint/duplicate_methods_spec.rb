@@ -963,6 +963,136 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
     RUBY
   end
 
+  context 'with Active Support redefinition markers and `ActiveSupportExtensionsEnabled: true`' do
+    let(:config) do
+      RuboCop::Config.new('AllCops' => { 'ActiveSupportExtensionsEnabled' => true })
+    end
+
+    it 'does not register an offense when `silence_redefinition_of_method` marks ' \
+       'a redefinition of a method from another file' do
+      expect_no_offenses(<<~RUBY, 'first.rb')
+        class A
+          def some_method
+            implement 1
+          end
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY, 'second.rb')
+        class A
+          silence_redefinition_of_method :some_method
+          def some_method
+            implement 2
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when the marker uses a string method name' do
+      expect_no_offenses(<<~RUBY, 'first.rb')
+        class A
+          def some_method
+            implement 1
+          end
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY, 'second.rb')
+        class A
+          silence_redefinition_of_method 'some_method'
+          def some_method
+            implement 2
+          end
+        end
+      RUBY
+    end
+
+    it 'does not register an offense when `redefine_method` marks ' \
+       'a redefinition of a method from another file' do
+      expect_no_offenses(<<~RUBY, 'first.rb')
+        class A
+          def some_method
+            implement 1
+          end
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY, 'second.rb')
+        class A
+          redefine_method(:some_method) do
+            implement 2
+          end
+
+          def some_method
+            implement 3
+          end
+        end
+      RUBY
+    end
+
+    # rubocop:disable InternalAffairs/ExampleDescription -- `expect_no_offenses` is only the
+    # cross-file setup; the example asserts the offense in the second file.
+    it 'registers an offense when the marker names a different method' do
+      expect_no_offenses(<<~RUBY, 'first.rb')
+        class A
+          def some_method
+            implement 1
+          end
+        end
+      RUBY
+
+      expect_offense(<<~RUBY, 'second.rb')
+        class A
+          silence_redefinition_of_method :other_method
+          def some_method
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both first.rb:2 and second.rb:3.
+            implement 2
+          end
+        end
+      RUBY
+    end
+    # rubocop:enable InternalAffairs/ExampleDescription
+
+    it 'registers an offense for a same-file duplicate even when the method is marked' do
+      expect_offense(<<~RUBY, 'test.rb')
+        class A
+          silence_redefinition_of_method :some_method
+          def some_method
+            implement 1
+          end
+          def some_method
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both test.rb:3 and test.rb:6.
+            implement 2
+          end
+        end
+      RUBY
+    end
+  end
+
+  # rubocop:disable InternalAffairs/ExampleDescription -- `expect_no_offenses` is only the
+  # cross-file setup; the example asserts the offense in the second file.
+  it 'registers an offense despite `silence_redefinition_of_method` when ' \
+     '`ActiveSupportExtensionsEnabled` is disabled' do
+    expect_no_offenses(<<~RUBY, 'first.rb')
+      class A
+        def some_method
+          implement 1
+        end
+      end
+    RUBY
+
+    expect_offense(<<~RUBY, 'second.rb')
+      class A
+        silence_redefinition_of_method :some_method
+        def some_method
+        ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both first.rb:2 and second.rb:3.
+          implement 2
+        end
+      end
+    RUBY
+  end
+  # rubocop:enable InternalAffairs/ExampleDescription
+
   it_behaves_like('in scope', 'class', 'class A')
   it_behaves_like('in scope', 'module', 'module A')
   it_behaves_like('in scope', 'dynamic class', 'A = Class.new do')
@@ -1932,6 +2062,34 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
       offenses = run_with_config('AllCops' => { 'UseProjectIndex' => false })
 
       expect(offenses).to be_empty
+    end
+
+    # The fixture contains:
+    # * `a.rb`/`b.rb` - `G#marked` redefined in `b.rb` with a preceding
+    #   `silence_redefinition_of_method :marked`
+    # * `c.rb`/`d.rb` - `H#helper` redefined in `d.rb`, whose marker names a
+    #   different method (`other_helper`)
+    # * `e.rb`/`f.rb` - `I#gen` redefined in `f.rb` with a `redefine_method(:gen)` marker
+    context 'with Active Support redefinition markers' do
+      let(:fixture_dir) do
+        File.expand_path('../../../fixtures/cross_file_duplicate_methods_active_support', __dir__)
+      end
+
+      it 'does not report redefinitions marked with Active Support markers when ' \
+         '`ActiveSupportExtensionsEnabled` is enabled' do
+        offenses = run_with_config(
+          'AllCops' => { 'UseProjectIndex' => true, 'ActiveSupportExtensionsEnabled' => true }
+        )
+
+        expect(offenses.map { |offense| File.basename(offense['path']) }.sort).to eq(%w[c.rb d.rb])
+      end
+
+      it 'reports marked redefinitions when `ActiveSupportExtensionsEnabled` is disabled' do
+        offenses = run_with_config('AllCops' => { 'UseProjectIndex' => true })
+
+        expect(offenses.map { |offense| File.basename(offense['path']) }.sort)
+          .to eq(%w[a.rb b.rb c.rb d.rb e.rb f.rb])
+      end
     end
   end
 end
