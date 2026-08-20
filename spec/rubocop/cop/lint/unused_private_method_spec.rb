@@ -394,6 +394,76 @@ RSpec.describe RuboCop::Cop::Lint::UnusedPrivateMethod, :config do
       RUBY
     end
 
+    context 'with AllowedNames' do
+      let(:cop_config) { { 'AllowedNames' => ['attribute?'] } }
+
+      it 'does not register an offense for an allowed name' do
+        source = <<~RUBY
+          class Contact
+            private
+
+            def attribute?
+            end
+          end
+        RUBY
+        cop.project_index = build_index('file:///lib/current.rb' => source)
+
+        expect_no_offenses(source, '/lib/current.rb')
+      end
+
+      it 'registers an offense for a name that is not allowed' do
+        cop.project_index = index_with_current
+
+        expect_offense(<<~RUBY, '/lib/current.rb')
+          class Service
+            def call
+            end
+
+            private
+
+            def helper
+            ^^^^^^^^^^ Private method `helper` appears to be unused.
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'with AllowedPatterns' do
+      let(:cop_config) { { 'AllowedPatterns' => ['_hook\z'] } }
+
+      it 'does not register an offense for a name matching an allowed pattern' do
+        source = <<~RUBY
+          class Service
+            private
+
+            def before_save_hook
+            end
+          end
+        RUBY
+        cop.project_index = build_index('file:///lib/current.rb' => source)
+
+        expect_no_offenses(source, '/lib/current.rb')
+      end
+
+      it 'registers an offense for a name not matching any allowed pattern' do
+        cop.project_index = index_with_current
+
+        expect_offense(<<~RUBY, '/lib/current.rb')
+          class Service
+            def call
+            end
+
+            private
+
+            def helper
+            ^^^^^^^^^^ Private method `helper` appears to be unused.
+            end
+          end
+        RUBY
+      end
+    end
+
     describe 'the reference-name cache' do
       it 'is computed once per index and shared across cop instances' do
         index = index_with_current
