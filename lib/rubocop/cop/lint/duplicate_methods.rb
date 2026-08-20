@@ -21,6 +21,10 @@ module RuboCop
       # before redefining marks the redefinition as intentional and is respected
       # across files.
       #
+      # NOTE: Methods defined with `define_method` are not recorded in the project
+      # index, so a duplicate whose other definition uses `define_method` cannot
+      # be detected across files.
+      #
       # @example
       #
       #   # bad
