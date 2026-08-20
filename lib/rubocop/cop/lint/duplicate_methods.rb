@@ -27,6 +27,15 @@ module RuboCop
       # index, so a duplicate whose other definition uses `define_method` cannot
       # be detected across files.
       #
+      # Cross-file duplicates whose other definition lives in a file matching one
+      # of the `AllowedCrossFilePaths` patterns are not reported. This suits files
+      # that redefine application methods but are never loaded together with them,
+      # such as standalone scripts. Patterns are matched with the same glob (or
+      # regexp) semantics as `Exclude`, against the other file's path relative to
+      # the directory of the `.rubocop.yml` that configures the cop; absolute
+      # patterns are matched against the absolute path. Offenses inside such files
+      # themselves are best silenced with an ordinary per-cop `Exclude`.
+      #
       # @example
       #
       #   # bad
@@ -140,6 +149,17 @@ module RuboCop
       #   silence_redefinition_of_method :foo
       #   def foo
       #     1
+      #   end
+      #
+      # @example AllowedCrossFilePaths: ['script/**/*'] (default: [])
+      #   # Cross-file duplicates whose other definition lives in a file
+      #   # matching one of the patterns are not reported.
+      #
+      #   # good - assuming `AppHelper#format` is also defined in
+      #   # `script/backfill.rb`, which is never loaded with this file
+      #   class AppHelper
+      #     def format
+      #     end
       #   end
       #
       # @example DelegatingMethods: ['delegate', 'expose'] (default: ['delegate'])
@@ -470,11 +490,22 @@ module RuboCop
           if scope && !@scopes[scope].include?(key)
             @definitions[key] = node
             @scopes[scope] << key
-          elsif intentional_cross_file_redefinition?(node, method_name, key)
+          elsif intentional_cross_file_redefinition?(node, method_name, key) ||
+                allowed_cross_file_redefinition?(node, key)
             @definitions[key] = node
           else
             add_offense(location(node), message: message_for_dup(node, method_name, key))
           end
+        end
+
+        # `AllowedCrossFilePaths` also covers duplicates detected without the index,
+        # when the cop instance carries definitions over from an earlier file of the
+        # same run.
+        def allowed_cross_file_redefinition?(node, key)
+          other_path = @definitions[key].source_range.source_buffer.name
+          return false if other_path == node.source_range.source_buffer.name
+
+          allowed_cross_file_path?(other_path)
         end
 
         # The self-alias trick (`alias foo foo` or `alias_method :foo, :foo` right before
@@ -589,11 +620,25 @@ module RuboCop
 
           definitions = definitions_in_other_files(
             indexed_definitions(match[:owner], match[:separator], match[:name])
-          )
+          ).reject { |definition| allowed_cross_file_path?(definition.location.to_file_path) }
           return if definitions.empty? || cross_file_self_alias_trick?(definitions)
           return if cross_file_redefinition_marker?(definitions, match[:name])
 
           first_indexed_definition(definitions)
+        end
+
+        # Cross-file duplicates whose other definition site matches one of the
+        # `AllowedCrossFilePaths` patterns are skipped (e.g. standalone scripts that
+        # are never loaded together with the code they redefine). Patterns are
+        # matched like `Exclude` patterns, against the path relative to the
+        # directory of the config file that configures the cop; absolute patterns
+        # are matched against the absolute path.
+        def allowed_cross_file_path?(path)
+          patterns = cop_config.fetch('AllowedCrossFilePaths', [])
+          return false if patterns.empty?
+
+          relative = config.path_relative_to_config(path)
+          patterns.any? { |pattern| match_path?(pattern, relative) || match_path?(pattern, path) }
         end
 
         def indexed_definitions(owner, separator, name)

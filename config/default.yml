@@ -1895,7 +1895,7 @@ Lint/DuplicateMethods:
   Description: 'Checks for duplicate method definitions.'
   Enabled: true
   VersionAdded: '0.29'
-  VersionChanged: '1.89'
+  VersionChanged: '<<next>>'
   # Methods that define instance methods by delegation, in the style of
   # Active Support's `delegate` (`delegate :foo, :bar, to: :target`). Register
   # a project's own `delegate`-shaped macros here so the cop recognizes the
@@ -1903,6 +1903,14 @@ Lint/DuplicateMethods:
   # is `true`.
   DelegatingMethods:
     - delegate
+  # Cross-file duplicates (detected with `AllCops/UseProjectIndex`) whose other
+  # definition lives in a file matching one of these patterns are not reported.
+  # Useful for files that redefine application methods but are never loaded
+  # together with them, such as standalone scripts. Patterns follow the same
+  # glob (or regexp) semantics as `Exclude` and are matched against the other
+  # file's path relative to the directory of the config file; absolute patterns
+  # are matched against the absolute path.
+  AllowedCrossFilePaths: []
 
 Lint/DuplicateRegexpCharacterClassElement:
   Description: 'Checks for duplicate elements in Regexp character classes.'

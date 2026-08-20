@@ -1093,6 +1093,64 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
   end
   # rubocop:enable InternalAffairs/ExampleDescription
 
+  context 'with `AllowedCrossFilePaths`' do
+    let(:cop_config) { { 'AllowedCrossFilePaths' => ['scripts/**/*'] } }
+
+    it 'does not register an offense when the other definition site matches an allowed path' do
+      expect_no_offenses(<<~RUBY, 'scripts/import.rb')
+        class A
+          def some_method
+            implement 1
+          end
+        end
+      RUBY
+
+      expect_no_offenses(<<~RUBY, 'app/model.rb')
+        class A
+          def some_method
+            implement 2
+          end
+        end
+      RUBY
+    end
+
+    # rubocop:disable InternalAffairs/ExampleDescription -- `expect_no_offenses` is only the
+    # cross-file setup; the example asserts the offense in the second file.
+    it 'registers an offense when the other definition site does not match an allowed path' do
+      expect_no_offenses(<<~RUBY, 'app/model.rb')
+        class A
+          def some_method
+            implement 1
+          end
+        end
+      RUBY
+
+      expect_offense(<<~RUBY, 'app/other.rb')
+        class A
+          def some_method
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both app/model.rb:2 and app/other.rb:2.
+            implement 2
+          end
+        end
+      RUBY
+    end
+    # rubocop:enable InternalAffairs/ExampleDescription
+
+    it 'registers an offense for a same-file duplicate even in a file matching an allowed path' do
+      expect_offense(<<~RUBY, 'scripts/import.rb')
+        class A
+          def some_method
+            implement 1
+          end
+          def some_method
+          ^^^^^^^^^^^^^^^ Method `A#some_method` is defined at both scripts/import.rb:2 and scripts/import.rb:5.
+            implement 2
+          end
+        end
+      RUBY
+    end
+  end
+
   it_behaves_like('in scope', 'class', 'class A')
   it_behaves_like('in scope', 'module', 'module A')
   it_behaves_like('in scope', 'dynamic class', 'A = Class.new do')
@@ -2031,6 +2089,10 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
 
     def run_with_config(body)
       Dir.mktmpdir do |tmpdir|
+        # Resolve the `/var` -> `/private/var` macOS tmpdir symlink so that paths
+        # derived from the config location line up with the paths the index
+        # reports (`AllowedCrossFilePaths` matching relies on that).
+        tmpdir = File.realpath(tmpdir)
         stage_fixture(tmpdir)
         write_rubocop_config(tmpdir, body)
         cop_offenses(tmpdir)
@@ -2062,6 +2124,19 @@ RSpec.describe RuboCop::Cop::Lint::DuplicateMethods, :config do
       offenses = run_with_config('AllCops' => { 'UseProjectIndex' => false })
 
       expect(offenses).to be_empty
+    end
+
+    it 'does not report duplicates whose other definition site matches `AllowedCrossFilePaths`' do
+      offenses = run_with_config(
+        'AllCops' => { 'UseProjectIndex' => true },
+        'Lint/DuplicateMethods' => { 'AllowedCrossFilePaths' => ['b.rb', 'f*.rb', 'h.rb'] }
+      )
+
+      # The offense within an allowed file itself remains: its other definition
+      # site (`a.rb`/`e.rb`/`g.rb`) matches no allowed pattern. Silencing those
+      # is the job of an ordinary per-cop `Exclude`.
+      expect(offenses.map { |offense| File.basename(offense['path']) }.sort)
+        .to eq(%w[b.rb f.rb h.rb])
     end
 
     # The fixture contains:
