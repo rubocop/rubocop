@@ -1,0 +1,1 @@
+* [#15593](https://github.com/rubocop/rubocop/pull/15593): Fix false positives for `Lint/UnusedPrivateMethod` for private definitions of Ruby runtime hooks like `inherited` and `const_missing`. ([@bbatsov][])
