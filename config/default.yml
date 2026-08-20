@@ -427,7 +427,7 @@ Layout/ArrayAlignment:
   Description: >-
                  Align the elements of an array literal if they span more than
                  one line.
-  StyleGuide: '#no-double-indent'
+  StyleGuide: '#align-multiline-arrays'
   Enabled: true
   VersionAdded: '0.49'
   VersionChanged: '0.77'
@@ -1851,6 +1851,7 @@ Lint/DeprecatedReference:
 
 Lint/DisjunctiveAssignmentInConstructor:
   Description: 'In constructor, plain assignment is preferred over disjunctive.'
+  StyleGuide: '#disjunctive-assignment-in-constructor'
   Enabled: true
   Safe: false
   VersionAdded: '0.62'
@@ -2169,6 +2170,7 @@ Lint/MixedCaseRange:
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
+  StyleGuide: '#do-not-mix-named-and-numbered-captures'
   Enabled: true
   VersionAdded: '0.85'
 
@@ -2508,6 +2510,7 @@ Lint/ShadowedException:
   Description: >-
                   Avoid rescuing a higher level exception
                   before a lower level exception.
+  StyleGuide: '#exception-ordering'
   Enabled: true
   VersionAdded: '0.41'
 
@@ -2620,6 +2623,7 @@ Lint/UnexpectedBlockArity:
 
 Lint/UnifiedInteger:
   Description: 'Use Integer instead of Fixnum or Bignum.'
+  StyleGuide: '#integer-type-checking'
   Enabled: true
   VersionAdded: '0.43'
 
@@ -3419,6 +3423,7 @@ Style/ArrayCoercion:
 
 Style/ArrayFirstLast:
   Description: 'Use `arr.first` and `arr.last` instead of `arr[0]` and `arr[-1]`.'
+  StyleGuide: '#first-and-last'
   References:
     - '#first-and-last'
   Enabled: false
@@ -3882,6 +3887,7 @@ Style/ConditionalAssignment:
                  Use the return value of `if` and `case` statements for
                  assignment to a variable and variable comparison instead
                  of assigning that variable inside of each branch.
+  StyleGuide: '#use-if-case-returns'
   Enabled: true
   VersionAdded: '0.36'
   VersionChanged: '0.47'
@@ -3942,7 +3948,7 @@ Style/DataInheritance:
 
 Style/DateTime:
   Description: 'Use Time over DateTime.'
-  StyleGuide: '#date-time'
+  StyleGuide: '#no-datetime'
   Enabled: false
   VersionAdded: '0.51'
   VersionChanged: '0.92'
@@ -4064,6 +4070,7 @@ Style/EmptyCaseCondition:
 
 Style/EmptyClassDefinition:
   Description: 'Enforces consistent style for empty class definitions.'
+  StyleGuide: '#single-line-classes'
   Enabled: pending
   VersionAdded: '1.84'
   VersionChanged: '1.86'
@@ -4229,12 +4236,14 @@ Style/FileEmpty:
 
 Style/FileNull:
   Description: 'Use `File::NULL` instead of hardcoding "dev/null".'
+  StyleGuide: '#null-devices'
   Enabled: pending
   SafeAutoCorrect: false
   VersionAdded: '1.69'
 
 Style/FileOpen:
   Description: 'Checks for `File.open` without a block, which can leak file descriptors.'
+  StyleGuide: '#auto-release-resources'
   Enabled: pending
   Safe: false
   VersionAdded: '1.85'
@@ -4299,6 +4308,7 @@ Style/FormatString:
 
 Style/FormatStringToken:
   Description: 'Use a consistent style for format string tokens.'
+  StyleGuide: '#named-format-tokens'
   Enabled: true
   VersionAdded: '0.49'
   VersionChanged: '1.74'
@@ -4488,6 +4498,7 @@ Style/HashSyntax:
 
 Style/HashTransformKeys:
   Description: 'Prefer `transform_keys` over `each_with_object`, `map`, or `to_h`.'
+  StyleGuide: '#hash-transform-methods'
   Enabled: true
   VersionAdded: '0.80'
   VersionChanged: '0.90'
@@ -4495,6 +4506,7 @@ Style/HashTransformKeys:
 
 Style/HashTransformValues:
   Description: 'Prefer `transform_values` over `each_with_object`, `map`, or `to_h`.'
+  StyleGuide: '#hash-transform-methods'
   Enabled: true
   VersionAdded: '0.80'
   VersionChanged: '0.90'
@@ -4665,7 +4677,7 @@ Style/KeywordArgumentsMerging:
 
 Style/KeywordParametersOrder:
   Description: 'Enforces that optional keyword parameters are placed at the end of the parameters list.'
-  StyleGuide: '#keyword-parameters-order'
+  StyleGuide: '#keyword-arguments-order'
   Enabled: true
   VersionAdded: '0.90'
   VersionChanged: '1.7'
@@ -4698,6 +4710,7 @@ Style/LineEndConcatenation:
   Description: >-
                  Use \ instead of + or << to concatenate two string literals at
                  line end.
+  StyleGuide: '#heredoc-long-strings'
   Enabled: true
   SafeAutoCorrect: false
   VersionAdded: '0.18'
@@ -4995,7 +5008,7 @@ Style/NegatedIfElseCondition:
 
 Style/NegatedUnless:
   Description: 'Favor if over unless for negative conditions.'
-  StyleGuide: '#if-for-negatives'
+  StyleGuide: '#unless-for-negatives'
   Enabled: true
   VersionAdded: '0.69'
   EnforcedStyle: both
@@ -5198,6 +5211,7 @@ Style/ObjectThen:
 
 Style/OneClassPerFile:
   Description: 'Checks that each source file defines at most one top-level class or module.'
+  StyleGuide: '#one-class-per-file'
   Enabled: pending
   VersionAdded: '1.85'
   VersionChanged: '1.86'
@@ -5563,6 +5577,7 @@ Style/RedundantInterpolationUnfreeze:
 
 Style/RedundantLineContinuation:
   Description: 'Checks for redundant line continuation.'
+  StyleGuide: '#no-trailing-backslash'
   Enabled: pending
   VersionAdded: '1.49'
 
@@ -5599,6 +5614,7 @@ Style/RedundantRegexpConstructor:
 
 Style/RedundantRegexpEscape:
   Description: 'Checks for redundant escapes in Regexps.'
+  StyleGuide: '#limit-escapes'
   Enabled: true
   VersionAdded: '0.85'
 
@@ -6142,6 +6158,7 @@ Style/TrailingUnderscoreVariable:
   Description: >-
                  Checks for the usage of unneeded trailing underscores at the
                  end of parallel variable assignment.
+  StyleGuide: '#trailing-underscore-variables'
   Enabled: true
   VersionAdded: '0.31'
   VersionChanged: '0.35'
