@@ -19,7 +19,9 @@ module RuboCop
       # file is wrapped in a conditional, so a platform-specific redefinition in
       # another file may still be reported. Aliasing the method to itself (see above)
       # before redefining marks the redefinition as intentional and is respected
-      # across files.
+      # across files. With `AllCops/ActiveSupportExtensionsEnabled: true`, Active
+      # Support's redefinition markers (`silence_redefinition_of_method` and
+      # `redefine_method`) are honored the same way.
       #
       # NOTE: Methods defined with `define_method` are not recorded in the project
       # index, so a duplicate whose other definition uses `define_method` cannot
@@ -133,6 +135,13 @@ module RuboCop
       #     delegate :foo, to: :bar
       #   end
       #
+      #   # good - Active Support's redefinition markers signal an intentional
+      #   # redefinition of a method defined in another file
+      #   silence_redefinition_of_method :foo
+      #   def foo
+      #     1
+      #   end
+      #
       # @example DelegatingMethods: ['delegate', 'expose'] (default: ['delegate'])
       #   # A project's own `delegate`-shaped macros can be registered so the
       #   # methods they define are recognized (with
@@ -164,13 +173,14 @@ module RuboCop
           super
           @definitions = {}
           @scopes = Hash.new { |hash, key| hash[key] = [] }
-          @self_aliased = Set.new
+          @intentionally_redefined = Set.new
         end
 
         def on_new_investigation
-          # The self-alias trick declares an intentional redefinition only within
-          # the file that uses it, so the tracked names do not carry over.
-          @self_aliased = Set.new
+          # The self-alias trick and Active Support's redefinition markers declare
+          # an intentional redefinition only within the file that uses them, so the
+          # tracked names do not carry over.
+          @intentionally_redefined = Set.new
           super
         end
 
@@ -203,7 +213,7 @@ module RuboCop
           return unless name && original_name
 
           if name == original_name
-            track_self_alias(node, name)
+            track_intentional_redefinition(node, name)
             return
           end
           return if node.ancestors.any?(&:if_type?)
@@ -245,6 +255,15 @@ module RuboCop
           )
         PATTERN
 
+        # Matches Active Support's markers of an intentional method redefinition:
+        # `silence_redefinition_of_method :name` suppresses Ruby's redefinition
+        # warning for a subsequent definition of `name`, and
+        # `redefine_method(:name) { ... }` both silences the warning and redefines.
+        # @!method active_support_redefinition_marker(node)
+        def_node_matcher :active_support_redefinition_marker, <<~PATTERN
+          (send nil? {:silence_redefinition_of_method :redefine_method} ({sym str} $_) ...)
+        PATTERN
+
         # @!method sym_name(node)
         def_node_matcher :sym_name, '(sym $_name)'
 
@@ -267,7 +286,7 @@ module RuboCop
 
           if name && original_name
             if name == original_name
-              track_self_alias(node, name)
+              track_intentional_redefinition(node, name)
               return
             end
             return if inside_condition?(node)
@@ -287,6 +306,12 @@ module RuboCop
             return if inside_condition?(node)
 
             names.each { |name| found_instance_method(node, name) }
+          elsif (name = active_support_redefinition_marker(node))
+            # `redefine_method` takes a block; scope resolution must start from the
+            # block node, since `parent_module_name` cannot see through a block
+            # ancestor that is not a module constructor.
+            track_intentional_redefinition(node.block_node || node, name) if
+              active_support_extensions_enabled?
           end
         end
 
@@ -454,18 +479,19 @@ module RuboCop
 
         # The self-alias trick (`alias foo foo` or `alias_method :foo, :foo` right before
         # a `def`) suppresses Ruby's method redefinition warning, signaling an intentional
-        # redefinition of a method defined in another file.
+        # redefinition of a method defined in another file. Active Support's redefinition
+        # markers (tracked when `ActiveSupportExtensionsEnabled` is on) signal the same.
         def intentional_cross_file_redefinition?(node, method_name, key)
-          @self_aliased.include?(method_name) &&
+          @intentionally_redefined.include?(method_name) &&
             @definitions[key].source_range.source_buffer.name !=
               node.source_range.source_buffer.name
         end
 
-        def track_self_alias(node, name)
+        def track_intentional_redefinition(node, name)
           scope = node.parent_module_name
           return unless scope
 
-          @self_aliased << "#{humanize_scope(scope)}#{name}"
+          @intentionally_redefined << "#{humanize_scope(scope)}#{name}"
         end
 
         def method_key(node, method_name)
@@ -548,7 +574,7 @@ module RuboCop
 
         def check_cross_file_duplicate(node, method_name)
           return unless project_index
-          return if @self_aliased.include?(method_name)
+          return if @intentionally_redefined.include?(method_name)
           return if node.each_ancestor(:any_def).any?
           return unless (prior = cross_file_prior_definition(method_name))
 
@@ -565,6 +591,7 @@ module RuboCop
             indexed_definitions(match[:owner], match[:separator], match[:name])
           )
           return if definitions.empty? || cross_file_self_alias_trick?(definitions)
+          return if cross_file_redefinition_marker?(definitions, match[:name])
 
           first_indexed_definition(definitions)
         end
@@ -603,6 +630,28 @@ module RuboCop
           alias_paths = aliases.map { |definition| definition.location.to_file_path }
 
           others.any? { |definition| alias_paths.include?(definition.location.to_file_path) }
+        end
+
+        # An Active Support redefinition marker alongside one of the definitions in
+        # another file marks the redefinition there as intentional, like the
+        # self-alias trick. The index does not record the marker's method-name
+        # argument, so the other file's source is searched for a marker naming
+        # the method.
+        def cross_file_redefinition_marker?(definitions, name)
+          return false unless active_support_extensions_enabled?
+
+          definitions.map { |definition| definition.location.to_file_path }.uniq.any? do |path|
+            redefinition_marker_in_file?(path, name)
+          end
+        end
+
+        def redefinition_marker_in_file?(path, name)
+          return false unless File.readable?(path)
+
+          escaped = Regexp.escape(name)
+          marker = /\b(?:silence_redefinition_of_method|redefine_method)\s*\(?\s*
+                    (?::#{escaped}|(["'])#{escaped}\1)(?![\w=!?])/x
+          File.read(path).scrub.match?(marker)
         end
 
         def first_indexed_definition(definitions)
