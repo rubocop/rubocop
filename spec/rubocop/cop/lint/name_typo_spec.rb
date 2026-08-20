@@ -143,6 +143,14 @@ RSpec.describe RuboCop::Cop::Lint::NameTypo, :config do
         end
       end
 
+      it 'registers an offense when the file contains a binary string literal' do
+        expect_offense(<<~'RUBY')
+          DATA = "\xFF\xFE".b
+          Services::UserCraetor.new
+                    ^^^^^^^^^^^ Possible typo: `UserCraetor` is not defined in `Services`. Did you mean `UserCreator`?
+        RUBY
+      end
+
       context 'when CheckConstants is false' do
         let(:cop_config) { { 'CheckConstants' => false } }
 

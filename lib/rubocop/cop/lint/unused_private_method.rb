@@ -135,7 +135,10 @@ module RuboCop
               if literal.sym_type?
                 names << literal.value.to_s
               else
-                literal.value.scan(IDENTIFIER_PATTERN) { |token| names << token }
+                # `scan` raises on binary string literals with invalid byte sequences.
+                value = literal.value
+                value = value.scrub unless value.valid_encoding?
+                value.scan(IDENTIFIER_PATTERN) { |token| names << token }
               end
             end
         end

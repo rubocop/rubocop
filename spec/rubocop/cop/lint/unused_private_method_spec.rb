@@ -175,6 +175,32 @@ RSpec.describe RuboCop::Cop::Lint::UnusedPrivateMethod, :config do
       expect_no_offenses(source, '/lib/current.rb')
     end
 
+    it 'registers an offense when the file contains a binary string literal' do
+      source = <<~'RUBY'
+        class Service
+          DATA = "\xFF\xFE".b
+
+          private
+
+          def helper
+          end
+        end
+      RUBY
+      cop.project_index = build_index('file:///lib/current.rb' => source)
+
+      expect_offense(<<~'RUBY', '/lib/current.rb')
+        class Service
+          DATA = "\xFF\xFE".b
+
+          private
+
+          def helper
+          ^^^^^^^^^^ Private method `helper` appears to be unused.
+          end
+        end
+      RUBY
+    end
+
     it 'does not register an offense when the method name appears inside a string literal' do
       source = <<~RUBY
         class Service
