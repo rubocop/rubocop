@@ -14,10 +14,12 @@ module RuboCop
       # in the indexed project (regardless of the receiver), when it is the source
       # of an `alias`, or when its name appears in the same file as a symbol or
       # inside a string literal (covering `send(:name)` and declarative DSLs like
-      # `before_action :name`). Methods defined in classes or modules with
-      # descendants are not checked, since they may be invoked through `super`
-      # or inherited dispatch, and neither are methods whose names are built
-      # dynamically (e.g. `send("do_#{action}")`).
+      # `before_action :name`). An interpolated symbol or string with a literal
+      # prefix (e.g. `send(:"format_#{type}")`) counts as a reference to every
+      # method whose name starts with that prefix; fully dynamic names cannot
+      # be detected. Methods defined in classes or modules with descendants are
+      # not checked, since they may be invoked through `super` or inherited
+      # dispatch.
       #
       # The cop is disabled by default because symbol-based references from
       # *other* files (e.g. a Rails callback declared in a concern) cannot be
@@ -55,6 +57,7 @@ module RuboCop
         MSG = 'Private method `%<method>s` appears to be unused.'
 
         IDENTIFIER_PATTERN = /[a-zA-Z_]\w*[?!=]?/.freeze
+        NAME_PREFIX_PATTERN = /[a-zA-Z_]\w*\z/.freeze
 
         # Methods invoked implicitly by the Ruby runtime.
         IMPLICITLY_INVOKED_METHODS = %i[
@@ -78,6 +81,7 @@ module RuboCop
 
         def on_new_investigation
           @literal_names = nil
+          @literal_name_prefixes = nil
           super
         end
 
@@ -114,7 +118,8 @@ module RuboCop
         def referenced?(method_name)
           name = method_name.to_s
 
-          referenced_names.include?(name) || literal_names.include?(name)
+          referenced_names.include?(name) || literal_names.include?(name) ||
+            literal_name_prefixes.any? { |prefix| name.start_with?(prefix) }
         end
 
         def referenced_names
@@ -148,6 +153,29 @@ module RuboCop
                 value.scan(IDENTIFIER_PATTERN) { |token| names << token }
               end
             end
+        end
+
+        # The leading literal fragment of an interpolated symbol or string acts
+        # as a method-name prefix: `send(:"format_#{type}")` may invoke any
+        # method whose name starts with `format_`. Only the leading fragment
+        # qualifies (a mid-string fragment is not a name prefix), and a fully
+        # dynamic name contributes nothing.
+        def literal_name_prefixes
+          @literal_name_prefixes ||=
+            processed_source.ast.each_descendant(:dsym, :dstr)
+                            .with_object(Set.new) do |literal, prefixes|
+              prefix = interpolation_prefix(literal)
+              prefixes << prefix if prefix
+            end
+        end
+
+        def interpolation_prefix(node)
+          return nil if node.children.all?(&:str_type?)
+
+          leading_fragment = node.children.first
+          return nil unless leading_fragment&.str_type?
+
+          leading_fragment.value[NAME_PREFIX_PATTERN]
         end
 
         # A method defined in a class or module with descendants may be invoked

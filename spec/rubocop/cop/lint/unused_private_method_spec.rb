@@ -243,6 +243,135 @@ RSpec.describe RuboCop::Cop::Lint::UnusedPrivateMethod, :config do
       expect_no_offenses(source, '/lib/current.rb')
     end
 
+    it 'does not register an offense when an interpolated symbol provides the name prefix' do
+      source = <<~'RUBY'
+        class Service
+          def call(type)
+            send(:"format_#{type}")
+          end
+
+          private
+
+          def format_octal
+          end
+
+          def format_hex
+          end
+        end
+      RUBY
+      cop.project_index = build_index('file:///lib/current.rb' => source)
+
+      expect_no_offenses(source, '/lib/current.rb')
+    end
+
+    it 'does not register an offense when an interpolated string provides the name prefix' do
+      source = <<~'RUBY'
+        class Service
+          def call(action)
+            send("do_#{action}")
+          end
+
+          private
+
+          def do_start
+          end
+        end
+      RUBY
+      cop.project_index = build_index('file:///lib/current.rb' => source)
+
+      expect_no_offenses(source, '/lib/current.rb')
+    end
+
+    it 'registers an offense for a private method not matching an interpolated prefix' do
+      source = <<~'RUBY'
+        class Service
+          def call(type)
+            send(:"format_#{type}")
+          end
+
+          private
+
+          def render_html
+          end
+        end
+      RUBY
+      cop.project_index = build_index('file:///lib/current.rb' => source)
+
+      expect_offense(<<~'RUBY', '/lib/current.rb')
+        class Service
+          def call(type)
+            send(:"format_#{type}")
+          end
+
+          private
+
+          def render_html
+          ^^^^^^^^^^^^^^^ Private method `render_html` appears to be unused.
+          end
+        end
+      RUBY
+    end
+
+    it 'registers an offense when the interpolated name has no literal prefix' do
+      source = <<~'RUBY'
+        class Service
+          def call(type)
+            send(:"#{type}_format")
+          end
+
+          private
+
+          def octal_format
+          end
+        end
+      RUBY
+      cop.project_index = build_index('file:///lib/current.rb' => source)
+
+      expect_offense(<<~'RUBY', '/lib/current.rb')
+        class Service
+          def call(type)
+            send(:"#{type}_format")
+          end
+
+          private
+
+          def octal_format
+          ^^^^^^^^^^^^^^^^ Private method `octal_format` appears to be unused.
+          end
+        end
+      RUBY
+    end
+
+    it 'does not treat a mid-string fragment as a name prefix' do
+      source = <<~'RUBY'
+        class Service
+          def call(type, suffix)
+            send(:"#{type}format_#{suffix}")
+          end
+
+          private
+
+          def format_octal
+          end
+        end
+      RUBY
+      cop.project_index = build_index('file:///lib/current.rb' => source)
+
+      expect_offense(<<~'RUBY', '/lib/current.rb')
+        class Service
+          def call(type, suffix)
+            send(:"#{type}format_#{suffix}")
+          end
+
+          private
+
+          def format_octal
+          ^^^^^^^^^^^^^^^^ Private method `format_octal` appears to be unused.
+          end
+        end
+      RUBY
+    end
+
     # Symbol-based references from other files cannot be detected; this is
     # the documented reason the cop is disabled by default.
     it 'registers an offense (known limitation) when the method is referenced only ' \
