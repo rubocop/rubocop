@@ -41,6 +41,9 @@ module RuboCop
     autoload :HashAlignmentStyles, "#{__dir__}/mixin/hash_alignment_styles"
     autoload :HashSubset, "#{__dir__}/mixin/hash_subset"
     autoload :HashTransformMethod, "#{__dir__}/mixin/hash_transform_method"
+    # Deprecated aliases of `AllowedMethods` and `AllowedPattern`, defined in those files.
+    autoload :IgnoredMethods, "#{__dir__}/mixin/allowed_methods"
+    autoload :IgnoredPattern, "#{__dir__}/mixin/allowed_pattern"
     autoload :IntegerNode, "#{__dir__}/mixin/integer_node"
     autoload :Interpolation, "#{__dir__}/mixin/interpolation"
     autoload :LineLengthHelp, "#{__dir__}/mixin/line_length_help"

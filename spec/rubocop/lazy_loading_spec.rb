@@ -39,6 +39,19 @@ RSpec.describe 'cop lazy loading' do # rubocop:disable RSpec/DescribeClass
     expect(values['length']).to eq(values['configured'])
   end
 
+  it 'keeps the deprecated mixin aliases reachable' do
+    output = run_script(<<~RUBY)
+      require 'rubocop'
+
+      puts "ignored_methods=\#{RuboCop::Cop::IgnoredMethods}"
+      puts "ignored_pattern=\#{RuboCop::Cop::IgnoredPattern}"
+    RUBY
+
+    values = output.scan(/^(\w+)=(.+)$/).to_h
+    expect(values['ignored_methods']).to eq('RuboCop::Cop::AllowedMethods')
+    expect(values['ignored_pattern']).to eq('RuboCop::Cop::AllowedPattern')
+  end
+
   it 'does not register a cop twice when its file is required directly' do
     output = run_script(<<~RUBY)
       require 'rubocop'
