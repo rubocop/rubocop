@@ -2160,6 +2160,13 @@ Lint/Loop:
   VersionChanged: '1.3'
   Safe: false
 
+Lint/MisplacedMagicComment:
+  Description: 'Checks for magic comments placed where Ruby silently ignores them.'
+  StyleGuide: '#magic-comments-first'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Lint/MissingCopEnableDirective:
   Description: 'Checks for a `# rubocop:enable` after `# rubocop:disable`.'
   Enabled: true
