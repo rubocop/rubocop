@@ -34,6 +34,8 @@ RuboCop server starting on 127.0.0.1:55772.
 NOTE: The `rubocop` command is executed using the server process if a server is started.
 Whenever a server process is not running, it will load the RuboCop runtime files and execute.
 (same behavior as with RuboCop 1.30 and lower)
+`--lsp` and `--mcp` are exceptions: they always run in the current process, even while
+a server is running, because they serve their protocol on standard input and output.
 
 If a server is already running, the command only displays the server's PID. A new server will not be started.
 
