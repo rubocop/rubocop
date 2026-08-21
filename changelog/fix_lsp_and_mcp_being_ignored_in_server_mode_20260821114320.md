@@ -1,0 +1,1 @@
+* [#15589](https://github.com/rubocop/rubocop/issues/15589): Fix `--lsp` and `--mcp` being silently ignored when the RuboCop server is running: they now start the protocol server in the current process instead of being forwarded to the server as a lint request. ([@koic][])

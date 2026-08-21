@@ -50,6 +50,32 @@ RSpec.describe 'rubocop --server', :isolated_environment do # rubocop:disable RS
       end
     end
 
+    context 'when using `--mcp` while the server is running' do
+      it 'starts the MCP server in the current process instead of forwarding to the server' do
+        create_file('.rubocop.yml', <<~YAML)
+          AllCops:
+            NewCops: disable
+            SuggestExtensions: false
+        YAML
+
+        expect(`ruby -I . "#{rubocop}" --start-server`).to include('RuboCop server starting on')
+
+        request = {
+          jsonrpc: '2.0', id: 1, method: 'initialize',
+          params: {
+            protocolVersion: '2025-06-18', capabilities: {},
+            clientInfo: { name: 'probe', version: '1.0' }
+          }
+        }
+        stdout, _stderr, status = Open3.capture3(
+          "ruby -I . \"#{rubocop}\" --mcp", stdin_data: "#{JSON.generate(request)}\n"
+        )
+
+        expect(status).to be_success
+        expect(stdout).to include('"serverInfo"')
+      end
+    end
+
     context 'when using --config option after update specified config file' do
       it 'displays a restart information message' do
         create_file('.rubocop_todo.yml', <<~YAML)

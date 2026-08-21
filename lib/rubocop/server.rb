@@ -17,6 +17,11 @@ module RuboCop
   module Server
     TIMEOUT = 20
 
+    # Options that start a long-lived protocol server on stdio in the current process.
+    # They must never be forwarded to the server process, which would run them as
+    # a lint request and silently produce no protocol response.
+    IN_PROCESS_PROTOCOL_OPTIONS = %w[--lsp --mcp].freeze
+
     autoload :CLI, 'rubocop/server/cli'
     autoload :Cache, 'rubocop/server/cache'
     autoload :ClientCommand, 'rubocop/server/client_command'
@@ -34,6 +39,15 @@ module RuboCop
         return false unless support_server? # Never running.
 
         Cache.pid_running?
+      end
+
+      # Whether the invocation should be forwarded to the running server process.
+      # `--lsp` and `--mcp` always run in the current process even when the server is running:
+      # they serve a protocol on stdio, which the server's `exec` command cannot do.
+      def forward_to_server?(argv = ARGV)
+        return false unless running?
+
+        (IN_PROCESS_PROTOCOL_OPTIONS & argv).empty?
       end
 
       def wait_for_running_status!(expected)
