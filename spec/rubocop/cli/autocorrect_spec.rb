@@ -2336,6 +2336,42 @@ RSpec.describe 'RuboCop::CLI --autocorrect', :isolated_environment do # rubocop:
     RUBY
   end
 
+  it 'corrects without an infinite loop when using `Layout/ArgumentAlignment`, ' \
+     '`Layout/ClosingParenthesisIndentation`, `Layout/FirstArgumentIndentation`, and ' \
+     '`Layout/FirstMethodArgumentLineBreak` with `AllowMultilineFinalElement: true` ' \
+     'and specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment`' do
+    create_file('example.rb', <<~RUBY)
+      # frozen_string_literal: true
+
+      expect(execute_request(
+               "some_url",
+        :request_method => "PATCH"
+      )).to be_throttled
+    RUBY
+
+    create_file('.rubocop.yml', <<~YAML)
+      Layout/ArgumentAlignment:
+        EnforcedStyle: with_fixed_indentation
+      Layout/FirstMethodArgumentLineBreak:
+        Enabled: true
+        AllowMultilineFinalElement: true
+    YAML
+
+    expect(cli.run(['--autocorrect', '--only', %w[
+      Layout/ArgumentAlignment Layout/ClosingParenthesisIndentation
+      Layout/FirstArgumentIndentation Layout/FirstMethodArgumentLineBreak
+    ].join(',')])).to eq(0)
+    expect($stderr.string).to eq('')
+    expect(File.read('example.rb')).to eq(<<~RUBY)
+      # frozen_string_literal: true
+
+      expect(execute_request(
+        "some_url",
+        :request_method => "PATCH"
+      )).to be_throttled
+    RUBY
+  end
+
   it 'corrects when specifying `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
      '`EnforcedStyle: consistent` of `Layout/FirstArgumentIndentation`' do
     create_file('example.rb', <<~RUBY)

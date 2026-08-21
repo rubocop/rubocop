@@ -711,6 +711,61 @@ RSpec.describe RuboCop::Cop::Layout::FirstArgumentIndentation, :config do
         RUBY
       end
     end
+
+    context 'when `EnforcedStyle: with_fixed_indentation` of `Layout/ArgumentAlignment` and ' \
+            '`Layout/FirstMethodArgumentLineBreak` is enabled' do
+      let(:other_cops) do
+        {
+          'Layout/IndentationWidth' => { 'Width' => indentation_width },
+          'Layout/ArgumentAlignment' => { 'EnforcedStyle' => 'with_fixed_indentation' },
+          'Layout/FirstMethodArgumentLineBreak' => { 'Enabled' => true }
+        }
+      end
+
+      it 'accepts an inner method call that does not start its own line, ' \
+         'deferring to `Layout/ArgumentAlignment`' do
+        expect_no_offenses(<<~RUBY)
+          expect(execute_request(
+            "some_url",
+            :request_method => "PATCH"
+          )).to be_throttled
+        RUBY
+      end
+
+      it 'registers an offense and corrects an inner method call that starts its own line' do
+        expect_offense(<<~RUBY)
+          expect(
+            execute_request(
+                 "some_url",
+                 ^^^^^^^^^^ Indent the first argument one step more than `execute_request(`.
+                 :request_method => "PATCH"
+            )).to be_throttled
+        RUBY
+
+        expect_correction(<<~RUBY)
+          expect(
+            execute_request(
+              "some_url",
+              :request_method => "PATCH"
+            )).to be_throttled
+        RUBY
+      end
+
+      it 'registers an offense and corrects an inner method call with a single argument' do
+        expect_offense(<<~RUBY)
+          run(described_class.new(
+            attributes
+            ^^^^^^^^^^ Indent the first argument one step more than `described_class.new(`.
+          ))
+        RUBY
+
+        expect_correction(<<~RUBY)
+          run(described_class.new(
+                attributes
+          ))
+        RUBY
+      end
+    end
   end
 
   context 'when EnforcedStyle is consistent' do

@@ -156,7 +156,8 @@ module RuboCop
           return unless should_check?(node)
           return if same_line?(node, node.first_argument)
           return if enforce_first_argument_with_fixed_indentation? &&
-                    !enable_layout_first_method_argument_line_break?
+                    (!enable_layout_first_method_argument_line_break? ||
+                     conflicts_with_fixed_indentation_alignment?(node))
 
           indent = base_indentation(node) + configured_indentation_width
 
@@ -308,6 +309,25 @@ module RuboCop
 
         def enable_layout_first_method_argument_line_break?
           config.cop_enabled?('Layout/FirstMethodArgumentLineBreak')
+        end
+
+        def conflicts_with_fixed_indentation_alignment?(node)
+          return false unless special_inner_call_indentation?(node)
+          return false unless argument_alignment_applies?(node)
+
+          base_indentation(node) != indentation_of_method_line(node)
+        end
+
+        def argument_alignment_applies?(node)
+          return false if !node.call_type? || node.method?(:[]=)
+
+          node.arguments.size >= 2 ||
+            (node.first_argument.hash_type? && node.first_argument.pairs.count >= 2)
+        end
+
+        def indentation_of_method_line(node)
+          lineno = node.loc.selector ? node.loc.selector.line : node.loc.begin.line
+          processed_source.lines[lineno - 1] =~ /\S/
         end
       end
     end

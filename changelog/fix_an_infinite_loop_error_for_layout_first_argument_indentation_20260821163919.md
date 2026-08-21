@@ -1,0 +1,1 @@
+* [#15590](https://github.com/rubocop/rubocop/issues/15590): Fix an infinite loop error for `Layout/FirstArgumentIndentation` when `EnforcedStyle: with_fixed_indentation` is specified for `Layout/ArgumentAlignment` and `Layout/FirstMethodArgumentLineBreak` is enabled with `AllowMultilineFinalElement: true`. ([@Starlexxx][])
