@@ -181,6 +181,47 @@ RSpec.describe RuboCop::DirectiveComment do
     end
   end
 
+  describe '#range_with_reason' do
+    # Needs real source ranges, so build an actual comment rather than a double.
+    subject(:covered) { described_class.new(real_comment).range_with_reason.source }
+
+    let(:real_comment) do
+      RuboCop::ProcessedSource.new(source, RUBY_VERSION.to_f).comments.first
+    end
+
+    context 'when the directive carries a `--` reason' do
+      let(:source) { "x = 1 # rubocop:disable Style/StringLiterals -- a good reason\n" }
+
+      it 'covers the directive and the reason' do
+        expect(covered).to eq('# rubocop:disable Style/StringLiterals -- a good reason')
+      end
+    end
+
+    context 'when the marker has no text after it' do
+      let(:source) { "x = 1 # rubocop:disable Style/StringLiterals --\n" }
+
+      it 'still covers the marker, which is meaningless on its own' do
+        expect(covered).to eq('# rubocop:disable Style/StringLiterals --')
+      end
+    end
+
+    context 'when the trailing text is an ordinary comment' do
+      let(:source) { "x = 1 # rubocop:disable Style/StringLiterals - just a note\n" }
+
+      it 'covers only the directive' do
+        expect(covered).to eq('# rubocop:disable Style/StringLiterals')
+      end
+    end
+
+    context 'when there is no trailing text' do
+      let(:source) { "x = 1 # rubocop:disable Style/StringLiterals\n" }
+
+      it 'covers only the directive' do
+        expect(covered).to eq('# rubocop:disable Style/StringLiterals')
+      end
+    end
+  end
+
   describe '#single_line?' do
     subject { directive_comment.single_line? }
 

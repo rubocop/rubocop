@@ -39,6 +39,15 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
               expect_correction('')
             end
 
+            it 'removes a standalone directive together with its `--` reason' do
+              expect_offense(<<~RUBY)
+                # rubocop:disable Metrics/MethodLength -- kept for documentation purposes
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/MethodLength`.
+              RUBY
+
+              expect_correction('')
+            end
+
             describe 'when that cop was previously enabled' do
               it 'returns no offense' do
                 expect_no_offenses(<<~RUBY)
@@ -891,6 +900,23 @@ RSpec.describe RuboCop::Cop::Lint::RedundantCopDisableDirective, :config do
           # rubocop:disable Metrics
           def bar
             do_something # rubocop:disable Metrics/ClassLength
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
+          end
+        RUBY
+
+        expect_correction(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something
+          end
+        RUBY
+      end
+
+      it 'removes cop duplicated by department and the `--` reason with it' do
+        expect_offense(<<~RUBY)
+          # rubocop:disable Metrics
+          def bar
+            do_something # rubocop:disable Metrics/ClassLength -- the reason
                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Unnecessary disabling of `Metrics/ClassLength`.
           end
         RUBY
