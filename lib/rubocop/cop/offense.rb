@@ -236,6 +236,16 @@ module RuboCop
         column + 1
       end
 
+      # @api private
+      #
+      # The minimum value of `real_column` is 1, so the minimum value of
+      # `real_last_column` is also 1. A non-zero `last_column` is used as is,
+      # because the 0-based end-exclusive column is the same as the 1-based
+      # column of the last character.
+      def real_last_column
+        last_column.zero? ? 1 : last_column
+      end
+
       # @api public
       #
       # @return [Boolean]

@@ -68,6 +68,18 @@ RSpec.describe RuboCop::Cop::Offense do
     end
   end
 
+  describe '#real_last_column' do
+    let(:location) do
+      source_buffer = Parser::Source::Buffer.new('test', 1)
+      source_buffer.source = "abc\n"
+      Parser::Source::Range.new(source_buffer, 0, 3)
+    end
+
+    it 'returns the 1-based column of the last character' do
+      expect(offense.real_last_column).to eq 3
+    end
+  end
+
   describe '#severity_level' do
     subject(:severity_level) do
       described_class.new(severity, location, 'message', 'CopName').severity.level
@@ -228,6 +240,10 @@ RSpec.describe RuboCop::Cop::Offense do
 
     it 'returns a real column' do
       expect(offense.real_column).to eq 1
+    end
+
+    it 'returns a real last column' do
+      expect(offense.real_last_column).to eq 1
     end
 
     it 'returns a highlighted area' do
