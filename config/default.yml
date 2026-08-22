@@ -4196,6 +4196,13 @@ Style/EnvHome:
   Safe: false
   VersionAdded: '1.29'
 
+Style/Eql:
+  Description: 'Do not use `eql?` when using `==` will do.'
+  StyleGuide: '#eql'
+  Enabled: pending
+  SafeAutoCorrect: false
+  VersionAdded: '<<next>>'
+
 Style/EvalWithLocation:
   Description: 'Pass `__FILE__` and `__LINE__` to `eval` method, as they are used by backtraces.'
   Enabled: true
