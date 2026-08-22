@@ -214,4 +214,99 @@ RSpec.describe RuboCop::Cop::Layout::EmptyLineAfterMagicComment, :config do
   it 'accepts a source file with only a magic comment' do
     expect_no_offenses('# frozen_string_literal: true')
   end
+
+  it 'accepts a magic comment followed only by blank lines' do
+    expect_no_offenses("# frozen_string_literal: true\n\n  \n\n")
+  end
+
+  context 'when `RequiredBlankLines: 2`' do
+    let(:cop_config) { { 'RequiredBlankLines' => 2 } }
+
+    it 'registers an offense for code that immediately follows the comment' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: true
+        class Foo; end
+        ^ Add 2 empty lines after magic comments.
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+
+
+        class Foo; end
+      RUBY
+    end
+
+    it 'registers an offense when only one empty line follows the comment' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: true
+
+        ^{} Add 2 empty lines after magic comments.
+        class Foo; end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+
+
+        class Foo; end
+      RUBY
+    end
+
+    it 'registers an offense and removes the surplus when too many empty lines follow' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: true
+
+
+
+        ^{} Add 2 empty lines after magic comments.
+        class Foo; end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+
+
+        class Foo; end
+      RUBY
+    end
+
+    it 'accepts code separated from the comment by two empty lines' do
+      expect_no_offenses(<<~RUBY)
+        # frozen_string_literal: true
+
+
+        class Foo; end
+      RUBY
+    end
+
+    it 'accepts a source file with only a magic comment' do
+      expect_no_offenses('# frozen_string_literal: true')
+    end
+  end
+
+  context 'when `RequiredBlankLines: 0`' do
+    let(:cop_config) { { 'RequiredBlankLines' => 0 } }
+
+    it 'registers an offense and removes the empty line after the comment' do
+      expect_offense(<<~RUBY)
+        # frozen_string_literal: true
+
+        ^{} Add 0 empty lines after magic comments.
+        class Foo; end
+      RUBY
+
+      expect_correction(<<~RUBY)
+        # frozen_string_literal: true
+        class Foo; end
+      RUBY
+    end
+
+    it 'accepts code that immediately follows the comment' do
+      expect_no_offenses(<<~RUBY)
+        # frozen_string_literal: true
+        class Foo; end
+      RUBY
+    end
+  end
 end
