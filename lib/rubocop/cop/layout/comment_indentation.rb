@@ -64,10 +64,10 @@ module RuboCop
           autocorrect_one(corrector, comment)
         end
 
-        # Corrects all comment lines that occur immediately before the given
-        # comment and have the same indentation. This is to avoid a long chain
-        # of correcting, saving the file, parsing and inspecting again, and
-        # then correcting one more line, and so on.
+        # Corrects all preceding comment lines that have the same indentation
+        # and are separated from the given comment by nothing but blank lines.
+        # This is to avoid a long chain of correcting, saving the file, parsing
+        # and inspecting again, and then correcting one more line, and so on.
         def autocorrect_preceding_comments(corrector, comment)
           comments = processed_source.comments
           index = comments.index(comment)
@@ -82,7 +82,10 @@ module RuboCop
         def should_correct?(preceding_comment, reference_comment)
           loc = preceding_comment.loc
           ref_loc = reference_comment.loc
-          loc.line == ref_loc.line - 1 && loc.column == ref_loc.column
+          return false unless loc.column == ref_loc.column
+          return false unless own_line_comment?(preceding_comment)
+
+          ((loc.line + 1)...ref_loc.line).all? { |line| processed_source[line - 1].blank? }
         end
 
         def autocorrect_one(corrector, comment)
